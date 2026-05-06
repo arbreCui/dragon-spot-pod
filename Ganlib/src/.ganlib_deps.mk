@@ -1,0 +1,40 @@
+DRVUF5.o: hdf5_wrap.o
+KDIOP.o: LCMAUX.o
+lcmmod.o: LCMAUX.o
+LCMTLC.o: LCMAUX.o lcmmod.o
+REDGET.o: LCMAUX.o
+XABORT.o: LCMAUX.o
+ganlib.o: LCMAUX.o LCMTLC.o OPNMOD.o XDREED.o filmod.o lcmmod.o
+GANMAIN.o: ganlib.o
+ganmod.o: ganlib.o
+KERNEL.o: ganlib.o
+DRV000.o: ganlib.o
+DRVADD.o: ganlib.o
+DRVBAC.o: ganlib.o
+DRVGRP.o: ganlib.o
+DRVMO1.o: ganlib.o
+DRVMPX.o: ganlib.o
+DRVREC.o: ganlib.o
+DRVSTA.o: ganlib.o
+DRVUTL.o: ganlib.o
+LCMADD.o: ganlib.o
+LCMEXS.o: ganlib.o
+LCMGCD.o: ganlib.o
+LCMGCL.o: ganlib.o
+LCMLIB.o: ganlib.o
+LCMNAN.o: ganlib.o
+LCMNOD.o: ganlib.o
+LCMNOS.o: ganlib.o
+LCMPCD.o: ganlib.o
+LCMPCL.o: ganlib.o
+LCMSTA.o: ganlib.o
+LCMULT.o: ganlib.o
+MSTCDI.o: ganlib.o
+MSTCPB.o: ganlib.o
+MSTGET.o: ganlib.o
+MSTMOV.o: ganlib.o
+MSTPUT.o: ganlib.o
+MSTR.o: ganlib.o
+DRVEQU.o: ganlib.o hdf5_wrap.o
+DRVMPI.o: ganlib.o
+SNDMPI.o: ganlib.o

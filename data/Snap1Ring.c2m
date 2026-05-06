@@ -1,0 +1,214 @@
+****************************************************************
+* Snap1Ring.c2m -- IRENA 1-ring assembly snapshot factory        *
+*                                                                *
+* Mirror of SpotSnapBld (pincell) but adapted to the 1/12 hex    *
+* 1-fuel-ring assembly: NMIX=6, 132 radial regions.              *
+* MIX mapping in irena_assembly_tiso_1_12_1ring.dat:             *
+*   1 = Na, 2 = AIM1 clad, 3 = He gap, 4 = MOX (single ring),    *
+*   5 = He hole, 6 = EM10 boitier                                *
+*                                                                *
+* CALL:                                                          *
+*   MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow ::     *
+*       <<T_comb>> <<T_clad>> <<T_Na>> ;                         *
+*                                                                *
+* Author: B. Cui (W4 D4-A, 2026-04-26)                           *
+****************************************************************
+PARAMETER  MICROLIB2 SYSTEM FLUX TRACK TRACK_f glow ::
+  ::: LINKED_LIST MICROLIB2 SYSTEM FLUX TRACK ;
+  ::: SEQ_BINARY  TRACK_f                       ;
+  ::: SEQ_ASCII   glow                          ; ;
+LINKED_LIST MICROLIB TRACK_T ;
+SEQ_BINARY TRACK_T_f ;
+MODULE LIB: SALT: MCCGT: TONE: ASM: FLU: GREP: DELETE: END: ABORT: ;
+PROCEDURE rnr_cc rnr_interpol ;
+REAL T_comb T_clad T_Na ;
+:: >>T_comb<< >>T_clad<< >>T_Na<< ;
+
+STRING Library := "DLIB8R1_366" ;
+REAL p_Pu p_U := 0.21 0.79 ;
+
+REAL p_Pu38 p_Pu39 p_Pu40 p_Pu41 p_Pu42 p_Am p_U5 p_U8
+     p_Fe_AIM1 p_Cr_AIM1 p_Ni_AIM1 p_Mn_AIM1
+     p_Mo_AIM1 p_Si_AIM1 p_Ti_AIM1
+     p_Fe_EM10 p_Cr_EM10 p_Ni_EM10 p_Mo_EM10
+     p_Mn_EM10 p_C_EM10 p_Si_EM10 p_Ti_EM10
+  := 0.0259 0.552 0.2585 0.0727 0.0787 0.0122 0.002 0.998
+     0.6575 0.145 0.155 0.015 0.015 0.0085 0.004
+     0.89 0.085 0.005 0.01 0.005 0.001 0.003 0.0002 ;
+
+REAL a_comb a_AIM1 a_AIM1_Na a_EM10 a_F17 a_na a_B ;
+rnr_interpol :: <<T_comb>> <<T_clad>> <<T_Na>>
+  >>a_comb<< >>a_AIM1<< >>a_AIM1_Na<< >>a_EM10<<
+  >>a_F17<< >>a_na<< >>a_B<< ;
+
+REAL N_Na N_U5 N_U8 N_Pu38 N_Pu39 N_Pu40 N_Pu41 N_Pu42 N_Am N_O
+     N_U5_f N_U8_f N_O_f
+     N_Fe54_AIM1 N_Fe56_AIM1 N_Fe57_AIM1 N_Fe58_AIM1
+     N_Cr50_AIM1 N_Cr52_AIM1 N_Cr53_AIM1 N_Cr54_AIM1
+     N_Ni58_AIM1 N_Ni60_AIM1 N_Ni61_AIM1 N_Ni62_AIM1
+     N_Ni64_AIM1 N_Mn55_AIM1
+     N_Mo92_AIM1 N_Mo94_AIM1 N_Mo95_AIM1 N_Mo96_AIM1
+     N_Mo97_AIM1 N_Mo98_AIM1 N_Mo100_AIM1 N_Si_AIM1 N_Ti_AIM1
+     N_Fe54_EM10 N_Fe56_EM10 N_Fe57_EM10 N_Fe58_EM10
+     N_Cr50_EM10 N_Cr52_EM10 N_Cr53_EM10 N_Cr54_EM10
+     N_Ni58_EM10 N_Ni60_EM10 N_Ni61_EM10 N_Ni62_EM10
+     N_Ni64_EM10 N_Mn55_EM10
+     N_Mo92_EM10 N_Mo94_EM10 N_Mo95_EM10 N_Mo96_EM10
+     N_Mo97_EM10 N_Mo98_EM10 N_Mo100_EM10
+     N_C12_EM10 N_Si_EM10 N_Ti_EM10
+     N_He_1 N_He_2 ;
+
+rnr_cc ::
+  <<p_Pu38>> <<p_Pu39>> <<p_Pu40>> <<p_Pu41>> <<p_Pu42>>
+  <<p_Am>> <<p_U5>> <<p_U8>> <<p_Pu>> <<p_U>>
+  <<p_Fe_AIM1>> <<p_Cr_AIM1>> <<p_Ni_AIM1>> <<p_Mo_AIM1>>
+  <<p_Mn_AIM1>> <<p_Si_AIM1>> <<p_Ti_AIM1>>
+  <<p_Fe_EM10>> <<p_Cr_EM10>> <<p_Ni_EM10>> <<p_Mo_EM10>>
+  <<p_Mn_EM10>> <<p_C_EM10>>  <<p_Si_EM10>> <<p_Ti_EM10>>
+  <<a_comb>> <<a_AIM1>> <<a_EM10>> <<a_na>>
+  <<T_comb>> <<T_clad>> <<T_Na>>
+  >>N_Na<< >>N_U5<< >>N_U8<< >>N_Pu38<< >>N_Pu39<< >>N_Pu40<<
+  >>N_Pu41<< >>N_Pu42<< >>N_Am<< >>N_O<<
+  >>N_U5_f<< >>N_U8_f<< >>N_O_f<<
+  >>N_Fe54_AIM1<< >>N_Fe56_AIM1<< >>N_Fe57_AIM1<< >>N_Fe58_AIM1<<
+  >>N_Cr50_AIM1<< >>N_Cr52_AIM1<< >>N_Cr53_AIM1<< >>N_Cr54_AIM1<<
+  >>N_Ni58_AIM1<< >>N_Ni60_AIM1<< >>N_Ni61_AIM1<< >>N_Ni62_AIM1<<
+  >>N_Ni64_AIM1<< >>N_Mn55_AIM1<< >>N_Mo92_AIM1<< >>N_Mo94_AIM1<<
+  >>N_Mo95_AIM1<< >>N_Mo96_AIM1<< >>N_Mo97_AIM1<< >>N_Mo98_AIM1<<
+  >>N_Mo100_AIM1<< >>N_Si_AIM1<<  >>N_Ti_AIM1<<
+  >>N_Fe54_EM10<< >>N_Fe56_EM10<< >>N_Fe57_EM10<< >>N_Fe58_EM10<<
+  >>N_Cr50_EM10<< >>N_Cr52_EM10<< >>N_Cr53_EM10<< >>N_Cr54_EM10<<
+  >>N_Ni58_EM10<< >>N_Ni60_EM10<< >>N_Ni61_EM10<< >>N_Ni62_EM10<<
+  >>N_Ni64_EM10<< >>N_Mn55_EM10<< >>N_Mo92_EM10<< >>N_Mo94_EM10<<
+  >>N_Mo95_EM10<< >>N_Mo96_EM10<< >>N_Mo97_EM10<< >>N_Mo98_EM10<<
+  >>N_Mo100_EM10<< >>N_C12_EM10<< >>N_Si_EM10<<   >>N_Ti_EM10<<
+  >>N_He_1<< >>N_He_2<< ;
+
+REAL T_comb_K T_clad_K T_Na_K ;
+EVALUATE T_comb_K := T_comb 273.15 + ;
+EVALUATE T_clad_K := T_clad 273.15 + ;
+EVALUATE T_Na_K   := T_Na   273.15 + ;
+
+ECHO "Snap1Ring: T_comb=" T_comb "C  T_comb_K=" T_comb_K ;
+
+* MIX mapping in 1-ring .dat:
+*   1=Na, 2=AIM1, 3=He gap, 4=MOX, 5=He hole, 6=EM10
+MICROLIB := LIB: ::
+    EDIT 0
+    NMIX 6
+    CTRA APOL
+    ANIS 3
+    MIXS LIB: DRAGON FIL: <<Library>>
+    MIX 4 (*COMBUSTIBLE MOX - SINGLE RING*) <<T_comb_K>>
+    U5 = U235 <<N_U5>> 1
+    U8 = U238 <<N_U8>> 1
+    Pu38 = Pu238 <<N_Pu38>> 1
+    Pu39 = Pu239 <<N_Pu39>> 1
+    Pu40 = Pu240 <<N_Pu40>> 1
+    Pu41 = Pu241 <<N_Pu41>> 1
+    Pu42 = Pu242 <<N_Pu42>> 1
+    Am = Am241 <<N_Am>> 1
+
+    MIX 1 (*SODIUM*) <<T_Na_K>> NOEV
+    Na = Na23 <<N_Na>>
+
+    MIX 4 (*COMBUSTIBLE MOX*) <<T_comb_K>>
+    O = O16 <<N_O>> NOEV
+
+    MIX 2 (*ACIER AIM1 GAINE COMBUSTIBLE*) <<T_clad_K>> NOEV
+    Fe54_AIM1 = 'Fe54' <<N_Fe54_AIM1>> 2
+    Fe56_AIM1 = 'Fe56' <<N_Fe56_AIM1>> 2
+    Fe57_AIM1 = 'Fe57' <<N_Fe57_AIM1>> 2
+    Fe58_AIM1 = 'Fe58' <<N_Fe58_AIM1>> 2
+    Cr50_AIM1 = 'Cr50' <<N_Cr50_AIM1>> 2
+    Cr52_AIM1 = 'Cr52' <<N_Cr52_AIM1>> 2
+    Cr53_AIM1 = 'Cr53' <<N_Cr53_AIM1>> 2
+    Cr54_AIM1 = 'Cr54' <<N_Cr54_AIM1>> 2
+    Ni58_AIM1 = 'Ni58' <<N_Ni58_AIM1>> 2
+    Ni60_AIM1 = 'Ni60' <<N_Ni60_AIM1>> 2
+    Ni61_AIM1 = 'Ni61' <<N_Ni61_AIM1>> 2
+    Ni62_AIM1 = 'Ni62' <<N_Ni62_AIM1>> 2
+    Ni64_AIM1 = 'Ni64' <<N_Ni64_AIM1>> 2
+    Mn55_AIM1 = 'Mn55' <<N_Mn55_AIM1>> 2
+    Mo92_AIM1 = 'Mo92' <<N_Mo92_AIM1>> 2
+    Mo94_AIM1 = 'Mo94' <<N_Mo94_AIM1>> 2
+    Mo95_AIM1 = 'Mo95' <<N_Mo95_AIM1>> 2
+    Mo96_AIM1 = 'Mo96' <<N_Mo96_AIM1>> 2
+    Mo97_AIM1 = 'Mo97' <<N_Mo97_AIM1>> 2
+    Mo98_AIM1 = 'Mo98' <<N_Mo98_AIM1>> 2
+    Mo100_AIM1 = 'Mo100' <<N_Mo100_AIM1>> 2
+    Si_AIM1 = 'Si28' <<N_Si_AIM1>> 2
+    Ti_AIM1 = 'Ti48' <<N_Ti_AIM1>> 2
+
+    MIX 6 (*ACIER EM10 BOITIER*) <<T_Na_K>> NOEV
+    Fe54_EM10 = 'Fe54' <<N_Fe54_EM10>> 3
+    Fe56_EM10 = 'Fe56' <<N_Fe56_EM10>> 3
+    Fe57_EM10 = 'Fe57' <<N_Fe57_EM10>> 3
+    Fe58_EM10 = 'Fe58' <<N_Fe58_EM10>> 3
+    Cr50_EM10 = 'Cr50' <<N_Cr50_EM10>> 3
+    Cr52_EM10 = 'Cr52' <<N_Cr52_EM10>> 3
+    Cr53_EM10 = 'Cr53' <<N_Cr53_EM10>> 3
+    Cr54_EM10 = 'Cr54' <<N_Cr54_EM10>> 3
+    Ni58_EM10 = 'Ni58' <<N_Ni58_EM10>> 3
+    Ni60_EM10 = 'Ni60' <<N_Ni60_EM10>> 3
+    Ni61_EM10 = 'Ni61' <<N_Ni61_EM10>> 3
+    Ni62_EM10 = 'Ni62' <<N_Ni62_EM10>> 3
+    Ni64_EM10 = 'Ni64' <<N_Ni64_EM10>> 3
+    Mn55_EM10 = 'Mn55' <<N_Mn55_EM10>> 3
+    Mo92_EM10 = 'Mo92' <<N_Mo92_EM10>> 3
+    Mo94_EM10 = 'Mo94' <<N_Mo94_EM10>> 3
+    Mo95_EM10 = 'Mo95' <<N_Mo95_EM10>> 3
+    Mo96_EM10 = 'Mo96' <<N_Mo96_EM10>> 3
+    Mo97_EM10 = 'Mo97' <<N_Mo97_EM10>> 3
+    Mo98_EM10 = 'Mo98' <<N_Mo98_EM10>> 3
+    Mo100_EM10 = 'Mo100' <<N_Mo100_EM10>> 3
+    C_EM10 = 'C12' <<N_C12_EM10>>
+    Si_EM10 = 'Si28' <<N_Si_EM10>> 3
+    Ti_EM10 = 'Ti48' <<N_Ti_EM10>> 3
+
+    MIX 5 (*GAZ INERTE INTERIEUR PASTILLE*) <<T_comb_K>> NOEV
+    He4int = 'He4' <<N_He_1>>
+
+    MIX 3 (*GAZ INERTE ENTRE PASTILLE ET GAINE*) <<T_clad_K>> NOEV
+    He4ext = 'He4' <<N_He_2>>
+;
+
+* Step 1: SALT MERGMIX for TONE
+TRACK_T TRACK_T_f := SALT: glow ::
+    EDIT 0
+    ANIS 1
+    TISO 24 50.0 LONG
+    MERGMIX
+    ;
+
+ECHO "Snap1Ring: TONE self-shielding (MERGMIX track)" ;
+MICROLIB2 := TONE: MICROLIB TRACK_T TRACK_T_f ::
+    EDIT 0 MXIT 20 EPS 1.0E-5 TRAN PIJ ;
+
+TRACK_T TRACK_T_f := DELETE: TRACK_T TRACK_T_f ;
+
+* Step 2: re-SALT (BATCH, no MERGMIX) + MCCGT for ASM:ARM (matches the
+* working 1-ring driver in main branch).
+TRACK TRACK_f := SALT: glow ::
+    EDIT 0
+    BATCH 100
+    TISO 24 100.0 LONG
+    ;
+TRACK := MCCGT: TRACK TRACK_f ::
+    EDIT 0
+    GAUS 4 AAC 80 TMT STIS 1 EPSI 1E-6 MCU 10000
+    ;
+
+ECHO "Snap1Ring: ASM:ARM" ;
+SYSTEM := ASM: MICROLIB2 TRACK TRACK_f :: EDIT 0 ARM ;
+
+ECHO "Snap1Ring: FLU TYPE K" ;
+FLUX := FLU: SYSTEM MICROLIB2 TRACK TRACK_f ::
+    EDIT 0 TYPE K EXTE 30 1.0E-4 ;
+
+REAL k_snap ;
+GREP: FLUX :: GETVAL 'K-EFFECTIVE' 1 >>k_snap<< ;
+ECHO "Snap1Ring: snap K_TYPEK_radial =" k_snap " (T_comb=" T_comb "C)" ;
+
+MICROLIB := DELETE: MICROLIB ;
+END: ;

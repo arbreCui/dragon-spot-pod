@@ -1,0 +1,85 @@
+****************************************************************
+*                                                              *
+* Procedure : SpotProc.c2m                                     *
+* Purpose   : Synthetic Proper Orthogonal Tracking procedure   *
+*             in fundamental mode condition                    *
+* Author    : A. Hebert                                        *
+*                                                              *
+* CALL      :                                                  *
+*  SPOFLX := SpotProc MICROLIB SNAP SPOTRK ;                   *
+*                                                              *
+*  Input objects:                                              *
+*    SNAP     : archive containing snapshot radial trackings   *
+*    MICROLIB : microlib with subgroups                        *
+*    SPOTRK   : axial SPOT tracking                            *
+*    eps      : SPOT convergence criterion                     *
+*                                                              *
+*  Output object:                                              *
+*    SPOFLX   : axial SPOT fluxes                              *
+*    SNAP     : archive containing snapshot assembly objects   *
+*               and radial fluxes                              *
+*                                                              *
+****************************************************************
+PARAMETER  SPOFLX SNAP MICROLIB SPOTRK ::
+  ::: LINKED_LIST SPOFLX SNAP MICROLIB SPOTRK ; ;
+LINKED_LIST TRACK SYSTEM FLUX LEAK1D MICROLIB2 ;
+MODULE USS: ASM: FLU: SPOT: BACKUP: RECOVER: GREP: DELETE: UTL: ABORT: END: ;
+REAL eps ; :: >>eps<< ;
+*
+INTEGER isnap nsnap ;
+GREP: SNAP :: GETVAL 'LISTDIM' 1 >>nsnap<< ;
+REAL errspo := 1.0 ;
+INTEGER iter := 0 ;
+REAL refkef ;
+WHILE  errspo eps > DO
+  EVALUATE iter := iter 1 + ;
+  ECHO "----------------------------------" ;
+  ECHO "SpotProc: SPOT leakage iteration" iter ;
+  ECHO "----------------------------------" ;
+  EVALUATE isnap := 0 ;
+  WHILE isnap nsnap < DO
+    EVALUATE isnap := isnap 1 + ;
+    ECHO "----------------------------" ;
+    ECHO "SpotProc: Process snapshot" isnap ;
+    ECHO "----------------------------" ;
+    TRACK := RECOVER: SNAP :: ITEM <<isnap>> ;
+    IF iter 20 > THEN
+      ECHO "SpotProc: maximum number of SPOT leakage iterations reached" ;
+      ABORT: ;
+    ELSEIF iter 1 = THEN
+      MICROLIB2 := USS: MICROLIB TRACK :: TRAN PASS 2 ARM ;
+      SYSTEM := ASM: MICROLIB2 TRACK :: EDIT 2 ARM ;
+      SNAP := BACKUP: SNAP SYSTEM :: ITEM <<isnap>> ;
+      FLUX :=  FLU: MICROLIB2 TRACK SYSTEM ::
+        EDIT 1 TYPE B B1 SIGS BUCK -1.0E-2 EXTE 200 1.0E-5 ;
+    ELSE
+      MICROLIB2 := USS: MICROLIB TRACK :: TRAN PASS 2 ARM ;
+      SYSTEM := ASM: MICROLIB2 TRACK SNAP :: EDIT 2 ARM LK1D <<isnap>> ;
+      FLUX := RECOVER: SNAP :: ITEM <<isnap>> ;
+      FLUX :=  FLU: FLUX MICROLIB2 TRACK SYSTEM ::
+        EDIT 1 TYPE B B1 SIGS KEFF <<refkef>> EXTE 200 1.0E-5 ;
+    ENDIF ;
+    SNAP := BACKUP: SNAP MICROLIB2 :: ITEM <<isnap>> ;
+    SNAP := BACKUP: SNAP FLUX :: ITEM <<isnap>> ;
+    TRACK MICROLIB2 SYSTEM FLUX := DELETE: TRACK MICROLIB2 SYSTEM FLUX ;
+  ENDWHILE ;
+  *----
+  * Solve the axial SPOT system
+  *----
+  MICROLIB2 := RECOVER: SNAP :: ITEM <<isnap>> ;
+  SYSTEM := ASM: MICROLIB2 SPOTRK SNAP :: EDIT 2 LK2D ;
+  IF iter 1 = THEN
+    SPOFLX SNAP :=  FLU: SNAP MICROLIB2 SPOTRK SYSTEM ::
+      EDIT 1 TYPE K B1 SIGS EXTE 500 5.0E-7 SPOT >>errspo<< ;
+  ELSE
+    SPOFLX SNAP :=  FLU: SPOFLX SNAP MICROLIB2 SPOTRK SYSTEM ::
+      EDIT 1 TYPE K B1 SIGS EXTE 500 5.0E-7 SPOT >>errspo<< ;
+  ENDIF ;
+  GREP: SPOFLX :: GETVAL 'K-EFFECTIVE' 1 >>refkef<< ;
+  MICROLIB2 SYSTEM := DELETE: MICROLIB2 SYSTEM ;
+  ECHO "SpotProc: LEAK1D error step at iteration" iter "=" errspo ;
+ENDWHILE ;
+ECHO "------------------------------------------------" ;
+ECHO "SpotProc: SPOT converged in" iter "leakage iterations" ;
+ECHO "------------------------------------------------" ;
+END: ;

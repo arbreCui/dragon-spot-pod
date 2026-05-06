@@ -1,0 +1,147 @@
+****************************************************************
+*  d3_sanity.x2m -- minimal SPODB2 patch sanity test            *
+*                                                                *
+*  Goal: answer one binary question:                             *
+*    On the patched binary, does the second-time entry into      *
+*    SPODB2 find a non-empty SPOT-LEAK1D in IPSNAP?              *
+*                                                                *
+*  i.e. is errspo on outer iter 2 still 1.0E10 (sentinel,        *
+*  meaning ILONG=0 branch was taken; OLD never read), or         *
+*  does it become a real number (~ 1E-4 range, comparable to     *
+*  DB2 magnitude shown by SPODB2 prints)?                        *
+*                                                                *
+*  Setup (per user spec):                                        *
+*    max_o   = 2     (run exactly 2 outer iters)                 *
+*    eps_o   = 1E-2  (loose; not expected to converge —          *
+*                     we want max_o, not eps_o, to terminate)    *
+*    eps_pod = 0     (no POD compression, fastest path)          *
+*    flu_eps = 1E-4  (relaxed; FLU inner loop convergence)       *
+*    nsnap   = 5     (same as d3_iter_ab.x2m)                    *
+*                                                                *
+*  Diagnostic output to look for in log (in order):              *
+*    1. "SpotPodItr: outer iter 1 K= ... errspo= 1.000000e+10"   *
+*       (expected: sentinel, IPSNAP first entry, ILONG=0)        *
+*    2. "SPODB2: LEAK1D ACCURACY= 1.0000E+10  ..."               *
+*       (matches; iter 1 is the ILONG=0 branch)                  *
+*    3. "SpotPodItr: outer iter 2 K= ... errspo= ?"              *
+*       PASS  if errspo is finite (e.g. 1E-3 .. 1E-5)            *
+*       FAIL  if errspo is still 1.000000e+10                    *
+*    4. "SPODB2: LEAK1D ACCURACY= <small> ..."                   *
+*       PASS  if iter-2 SPODB2 line shows accuracy ~ DB2 mag     *
+*                                                                *
+*  Author: B. Cui (sanity test, 2026-05-02)                      *
+****************************************************************
+
+SEQ_ASCII glow_rnr   :: FILE './irena_pincell.dat' ;
+SEQ_ASCII glowpost.ps :: FILE './glowpost_d3_sanity.eps' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX
+            SNAP GEOM_AXIAL TRKAX FLXAX ;
+
+MODULE  G2S: SPOT: GEO: BACKUP: DELETE: GREP: UTL: END: ABORT: ;
+
+PROCEDURE SpotPodItr SpotSnapBld assertS rnr_cc rnr_interpol ;
+
+glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
+
+ECHO "================================================" ;
+ECHO "D3 SANITY: SPODB2 patch IPSNAP-read verification" ;
+ECHO "  max_o=2, eps_o=1E-2, eps_pod=0, flu_eps=1E-4" ;
+ECHO "================================================" ;
+
+REAL T_clad_C := 620.0 ;
+REAL T_Na_C   := 475.0 ;
+
+*--- snapshot 1: T_comb = 600 C ---
+ECHO "---- snapshot 1 (T_comb=600 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    600.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 1 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 1 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 1 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 2: T_comb = 700 C ---
+ECHO "---- snapshot 2 (T_comb=700 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    700.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 2 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 2 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 2 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 2 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 3: T_comb = 750 C ---
+ECHO "---- snapshot 3 (T_comb=750 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    750.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 3 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 3 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 3 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 3 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 4: T_comb = 800 C ---
+ECHO "---- snapshot 4 (T_comb=800 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    800.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 4 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 4 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 4 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 4 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 5: T_comb = 900 C ---
+ECHO "---- snapshot 5 (T_comb=900 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    900.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 5 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 5 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 5 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 5 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+UTL: SNAP :: DIR ;
+
+GEOM_AXIAL := GEO: :: CAR1D 5
+        X- VOID X+ VOID
+        MIX  1 2 3 4 5
+        MESHX 0.0 40.0 60.0 140.0 160.0 200.0
+        SPLITX 1 1 1 1 1
+        ;
+
+TRKAX := SPOT: GEOM_AXIAL SNAP ::
+        EDIT 2 MAXR 2500 TITL 'D3 sanity axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+REAL    eps      := 1.0E-4 ;
+INTEGER rank_pod := 0 ;
+REAL    flu_eps  := 1.0E-4 ;
+REAL    eps_o    := 1.0E-2 ;
+INTEGER max_o    := 2 ;
+REAL    eps_pod  := 0.0 ;
+
+ECHO "================================================" ;
+ECHO "D3 SANITY: launch SpotPodItr (max_o=2, eps_pod=0)" ;
+ECHO "================================================" ;
+FLXAX SNAP := SpotPodItr SNAP GEOM_AXIAL TRKAX ::
+                  <<eps>> <<eps_pod>> <<rank_pod>> <<flu_eps>>
+                  <<eps_o>> <<max_o>> ;
+REAL k_final ;
+GREP: FLXAX :: GETVAL 'K-EFFECTIVE' 1 >>k_final<< ;
+
+ECHO "================================================" ;
+ECHO "D3 SANITY: result" ;
+ECHO "================================================" ;
+ECHO "  final K =" k_final ;
+ECHO "  Look in log for:" ;
+ECHO "    SpotPodItr: outer iter 2 K= ... errspo= ???" ;
+ECHO "    SPODB2: LEAK1D ACCURACY= ???" ;
+ECHO "  PASS if iter-2 errspo is finite (~1E-3..1E-5)" ;
+ECHO "  FAIL if iter-2 errspo is still 1.000000e+10" ;
+
+ECHO "d3_sanity complete" ;
+END: ;
+QUIT "LIST" .

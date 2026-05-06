@@ -1,0 +1,167 @@
+****************************************************************
+*                                                              *
+*  irena_pincell_spot_d3_het_pod.x2m                           *
+*                                                              *
+*  W4 D3 heterogeneous 5-snapshot POD A/B (eps_pod=1E-3).      *
+*                                                              *
+*  Stage 2 (homogeneous) demonstrated POD plumbing + LPOD=TRUE *
+*  path but matrix rank = 1 by construction (5 identical snap),*
+*  so SVD truncation is trivial. D3 introduces real physics    *
+*  heterogeneity by varying fuel temperature 600/700/750/800/  *
+*  900 C across the 5 snapshots (Doppler broadening of U238    *
+*  and Pu239 resonances changes the spectrum). The leakage     *
+*  matrix V*L*phi should now have rank >= 2 with non-trivial   *
+*  sigma_2/sigma_1 in [1E-3, 1E-1] -- giving SVD truncation    *
+*  something real to compress.                                 *
+*                                                              *
+*  Goal: |Δρ| < 1 pcm POD vs eps_pod=0 baseline AND SPOPOD log *
+*  shows rank >= 2 with sigma spectrum non-trivial.            *
+*                                                              *
+*  Geometry: same 8-region IRENA pincell as stage-1/2.         *
+*  Library: DLIB8R1_366 SHEM-366 ENDF/B-VIII.1.                *
+*  Snapshot factory: data/SpotSnapBld.c2m (procedure that    *
+*    rebuilds MICROLIB at given T_comb, runs TONE+ASM:ARM+FLU  *
+*    TYPE K, returns MICROLIB2/SYSTEM/FLUX). 5 invocations.    *
+*                                                              *
+*  Author: B. Cui (W4 D3 POD A/B, 2026-04-26)                  *
+****************************************************************
+
+SEQ_ASCII glow_rnr   :: FILE './irena_pincell.dat' ;
+SEQ_ASCII glowpost.ps :: FILE './glowpost_d3.eps' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX
+            SNAP_BASE GEOM_AXIAL TRKAX_BASE FLXAX_BASE ;
+
+MODULE  G2S: SPOT: GEO: BACKUP: DELETE: GREP: UTL: END: ABORT: ;
+
+PROCEDURE SpotPodMic SpotSnapBld assertS rnr_cc rnr_interpol ;
+
+*================================================================
+* GLOW geometry plot
+*================================================================
+glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
+
+* SpotSnapBld owns the SALT+MCCGT+TONE+ASM+FLU pipeline per-snapshot.
+* We do NOT pre-build a global TRACK here -- each snapshot gets its
+* own (TRACK, MICROLIB2, SYSTEM, FLUX) with the temperature varying.
+
+*================================================================
+* TODO 2 (D3): build 5 heterogeneous snapshots, each at a
+*   different fuel temperature. Snapshots share the same TRACK,
+*   only MICROLIB2/SYSTEM/FLUX differ via Doppler broadening.
+*================================================================
+ECHO "================================================" ;
+ECHO "D3 baseline: building heterogeneous 5-snapshot SNAP_BASE" ;
+ECHO "  T_comb sweep: 600 / 700 / 750 / 800 / 900 C" ;
+ECHO "================================================" ;
+
+* T_clad and T_Na constant; only T_comb varies
+REAL T_clad_C := 620.0 ;
+REAL T_Na_C   := 475.0 ;
+
+*--- snapshot 1: T_comb = 600 C ---
+ECHO "---- D3 snapshot 1 (T_comb=600 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    600.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_BASE := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_BASE := BACKUP: SNAP_BASE MICROLIB2 :: ITEM 1 ;
+SNAP_BASE := BACKUP: SNAP_BASE SYSTEM    :: ITEM 1 ;
+SNAP_BASE := BACKUP: SNAP_BASE FLUX      :: ITEM 1 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 2: T_comb = 700 C ---
+ECHO "---- D3 snapshot 2 (T_comb=700 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    700.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_BASE := BACKUP: SNAP_BASE TRACK     :: ITEM 2 ;
+SNAP_BASE := BACKUP: SNAP_BASE MICROLIB2 :: ITEM 2 ;
+SNAP_BASE := BACKUP: SNAP_BASE SYSTEM    :: ITEM 2 ;
+SNAP_BASE := BACKUP: SNAP_BASE FLUX      :: ITEM 2 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 3: T_comb = 750 C (matches stage-1 baseline) ---
+ECHO "---- D3 snapshot 3 (T_comb=750 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    750.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_BASE := BACKUP: SNAP_BASE TRACK     :: ITEM 3 ;
+SNAP_BASE := BACKUP: SNAP_BASE MICROLIB2 :: ITEM 3 ;
+SNAP_BASE := BACKUP: SNAP_BASE SYSTEM    :: ITEM 3 ;
+SNAP_BASE := BACKUP: SNAP_BASE FLUX      :: ITEM 3 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 4: T_comb = 800 C ---
+ECHO "---- D3 snapshot 4 (T_comb=800 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    800.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_BASE := BACKUP: SNAP_BASE TRACK     :: ITEM 4 ;
+SNAP_BASE := BACKUP: SNAP_BASE MICROLIB2 :: ITEM 4 ;
+SNAP_BASE := BACKUP: SNAP_BASE SYSTEM    :: ITEM 4 ;
+SNAP_BASE := BACKUP: SNAP_BASE FLUX      :: ITEM 4 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 5: T_comb = 900 C ---
+ECHO "---- D3 snapshot 5 (T_comb=900 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    900.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_BASE := BACKUP: SNAP_BASE TRACK     :: ITEM 5 ;
+SNAP_BASE := BACKUP: SNAP_BASE MICROLIB2 :: ITEM 5 ;
+SNAP_BASE := BACKUP: SNAP_BASE SYSTEM    :: ITEM 5 ;
+SNAP_BASE := BACKUP: SNAP_BASE FLUX      :: ITEM 5 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+UTL: SNAP_BASE :: DIR ;
+
+*================================================================
+* TODO 5 (D3): GEOM_AXIAL CAR1D 5, total 200 cm, same as stage-1.
+*================================================================
+GEOM_AXIAL := GEO: :: CAR1D 5
+        X- VOID X+ VOID
+        MIX  1 2 3 4 5
+        MESHX 0.0 40.0 60.0 140.0 160.0 200.0
+        SPLITX 1 1 1 1 1
+        ;
+
+*================================================================
+* TODO 6 (D3): TRKAX_BASE = SPOT(GEOM_AXIAL, SNAP_BASE).
+*   SCAT 3 matches MICROLIB ANIS 3.
+*================================================================
+TRKAX_BASE := SPOT: GEOM_AXIAL SNAP_BASE ::
+        EDIT 2 MAXR 2500
+        TITL 'IRENA pincell axial SPOT, D3 het baseline'
+        ALLG
+        DIAM 1
+        SN 8
+        SCAT 3
+        ;
+
+*================================================================
+* TODO 7 (D3 POD A/B): eps_pod=1E-3 -> LPOD=TRUE -> SPOPOD called per
+*   group; expected rank >= 2 because heterogeneous T snapshots produce
+*   non-trivial sigma_2 / sigma_1 in [1E-3, 1E-1].
+*================================================================
+REAL eps      := 1.0E-4 ;
+* D3 POD A/B: only change vs het baseline below.
+REAL eps_pod  := 1.0E-3 ;
+INTEGER rank_pod := 0 ;
+
+ECHO "================================================" ;
+ECHO "D3 POD A/B: SpotPodMic + eps_pod=1E-3 (LPOD=TRUE, SPOPOD active)" ;
+ECHO "================================================" ;
+
+* SpotPodMic 2nd parameter slot is a dummy LCM, ignored by the
+* procedure (stage-1 redesign RECOVERs MICROLIB2 from SNAP_BASE
+* directly). We pass GEOM_AXIAL just to satisfy the API.
+FLXAX_BASE SNAP_BASE := SpotPodMic
+                          SNAP_BASE GEOM_AXIAL TRKAX_BASE ::
+                          <<eps>> <<eps_pod>> <<rank_pod>> ;
+
+REAL kfinal ;
+GREP: FLXAX_BASE :: GETVAL 'K-EFFECTIVE' 1 >>kfinal<< ;
+ECHO "==================================================" ;
+ECHO "D3 POD A/B K_SPOT_FINAL_het_pod =" kfinal ;
+ECHO "==================================================" ;
+
+ECHO "irena_pincell_spot_d3_het_pod complete" ;
+END: ;
+QUIT "LIST" .

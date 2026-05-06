@@ -1,0 +1,226 @@
+****************************************************************
+*                                                              *
+* d4a_combined_ac_fix.x2m -- W4 D4-A combined A/C, fixed driver*
+*                                                              *
+* PURPOSE                                                      *
+*   The original combined_ab driver reused a single SNAP_BASE  *
+*   archive across two SpotPodEps calls; FLU TYPE K SPOT       *
+*   rebinds SNAP on each call, so PASS B saw PASS A's mutated  *
+*   archive --> +1469 pcm contamination artifact (now formally *
+*   superseded; see spot_v3_w4.md D4-A Layer 2).               *
+*                                                              *
+*   diag_abc resolved the anomaly with three independent       *
+*   archives (SNAP_A/B/C) and reported PASS B == PASS A        *
+*   bit-identical at K=1.163428 plus PASS C = 1.163425 at      *
+*   eps_pod=1E-3 (Delta-rho = -2.2 pcm). That bit-identical    *
+*   B==A is itself proof that BACKUP-twice (now BACKUP-thrice  *
+*   in diag_abc) yields independent LCM archives -- mutating  *
+*   one archive does not propagate to its siblings.            *
+*                                                              *
+*   This driver is the fixed combined A/C: same BACKUP-twice   *
+*   pattern as diag_abc (snapshot phase BACKUPs each in-memory *
+*   tuple into BOTH SNAP_A and SNAP_C), then runs PASS A and   *
+*   PASS C only -- PASS B (full-rank SVD control) is dropped   *
+*   because diag_abc already closed the SVD-implementation     *
+*   question. Cost ~11h vs 17h for diag_abc.                   *
+*                                                              *
+* ACCEPTANCE                                                   *
+*   - K_A should match D4-A baseline = 1.163428 exactly.       *
+*   - K_C should match diag_abc PASS C = 1.163425 (Drho=-2.2). *
+*   - +1469 pcm anomaly MUST NOT reproduce. Reproduction would *
+*     mean the BACKUP-twice independence claim is false on a   *
+*     two-archive driver (was true on three-archive diag_abc); *
+*     would force re-opening procedure interface or GANLIB     *
+*     internals.                                               *
+*                                                              *
+*   This run is the formal acceptance evidence for closing the *
+*   D4-A SNAP-aliasing investigation.                          *
+*                                                              *
+* COST  ~11h  (5 x Snap1Ring 1h45 = 5h + 2 x axial SPOT 3h)    *
+*                                                              *
+* Author: B. Cui  (W4 D4-A combined A/C fix, 2026-04-29)       *
+****************************************************************
+
+SEQ_ASCII glow_rnr     :: FILE './irena_assembly_tiso_1_12_1ring.dat' ;
+SEQ_ASCII glowpost.ps  :: FILE './glowpost_d4a_fix.eps' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX
+            SNAP_A SNAP_C
+            GEOM_AXIAL TRKAX_A TRKAX_C
+            FLXAX_A FLXAX_C ;
+
+MODULE  G2S: SPOT: GEO: BACKUP: DELETE: GREP: UTL: END: ABORT: ;
+
+PROCEDURE SpotPodEps Snap1Ring assertS rnr_cc rnr_interpol ;
+
+glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
+
+ECHO "================================================" ;
+ECHO "D4-A combined A/C FIX: 1-ring 5-snap, two clean archives" ;
+ECHO "  Snapshot phase BACKUPs each tuple into BOTH" ;
+ECHO "  SNAP_A and SNAP_C (BACKUP-twice pattern, proven" ;
+ECHO "  by diag_abc PASS B==PASS A bit-identical)." ;
+ECHO "  PASS A: SNAP_A, eps_pod=0    -- baseline" ;
+ECHO "  PASS C: SNAP_C, eps_pod=1E-3 -- POD truncation" ;
+ECHO "  +1469 pcm anomaly MUST NOT reproduce." ;
+ECHO "================================================" ;
+
+REAL T_clad_C := 620.0 ;
+REAL T_Na_C   := 475.0 ;
+
+*--- snapshot 1: T=600 -- BACKUP into A, C ---
+ECHO "---- D4-A snapshot 1 (T_comb=600 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    600.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 1 ;
+SNAP_C := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 1 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 1 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 1 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 2: T=700 ---
+ECHO "---- D4-A snapshot 2 (T_comb=700 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    700.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 2 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 3: T=750 ---
+ECHO "---- D4-A snapshot 3 (T_comb=750 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    750.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 3 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 4: T=800 ---
+ECHO "---- D4-A snapshot 4 (T_comb=800 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    800.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 4 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 5: T=900 ---
+ECHO "---- D4-A snapshot 5 (T_comb=900 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    900.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 5 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+ECHO "---- snapshot phase complete; archive structure ----" ;
+UTL: SNAP_A :: DIR ;
+UTL: SNAP_C :: DIR ;
+
+GEOM_AXIAL := GEO: :: CAR1D 5
+        X- VOID X+ VOID
+        MIX  1 2 3 4 5
+        MESHX 0.0 40.0 60.0 140.0 160.0 200.0
+        SPLITX 1 1 1 1 1
+        ;
+
+TRKAX_A := SPOT: GEOM_AXIAL SNAP_A ::
+        EDIT 2 MAXR 2500
+        TITL 'D4-A combined A/C fix PASS A axial SPOT'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+TRKAX_C := SPOT: GEOM_AXIAL SNAP_C ::
+        EDIT 2 MAXR 2500
+        TITL 'D4-A combined A/C fix PASS C axial SPOT'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+REAL    eps      := 1.0E-4 ;
+INTEGER rank_pod := 0 ;
+REAL    flu_eps  := 1.0E-5 ;
+
+*================================================================
+*  PASS A: SNAP_A, eps_pod=0  (baseline)
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A FIX PASS A: SNAP_A, eps_pod=0 (baseline)" ;
+ECHO "================================================" ;
+REAL eps_pod_a := 0.0 ;
+FLXAX_A SNAP_A := SpotPodEps
+                       SNAP_A GEOM_AXIAL TRKAX_A ::
+                       <<eps>> <<eps_pod_a>> <<rank_pod>> <<flu_eps>> ;
+REAL k_A ;
+GREP: FLXAX_A :: GETVAL 'K-EFFECTIVE' 1 >>k_A<< ;
+ECHO "D4-A FIX K_A (baseline, expect 1.163428) =" k_A ;
+
+*================================================================
+*  PASS C: SNAP_C, eps_pod=1E-3  (POD truncation)
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A FIX PASS C: SNAP_C, eps_pod=1E-3 (POD)" ;
+ECHO "================================================" ;
+REAL eps_pod_c := 1.0E-3 ;
+FLXAX_C SNAP_C := SpotPodEps
+                       SNAP_C GEOM_AXIAL TRKAX_C ::
+                       <<eps>> <<eps_pod_c>> <<rank_pod>> <<flu_eps>> ;
+REAL k_C ;
+GREP: FLXAX_C :: GETVAL 'K-EFFECTIVE' 1 >>k_C<< ;
+ECHO "D4-A FIX K_C (eps=1E-3 POD, expect 1.163425) =" k_C ;
+
+*================================================================
+*  Summary
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A combined A/C FIX summary" ;
+ECHO "================================================" ;
+ECHO "  PASS A baseline    (eps=0)    =" k_A
+     "  (expect 1.163428)" ;
+ECHO "  PASS C POD eps=1E-3           =" k_C
+     "  (expect 1.163425)" ;
+ECHO "" ;
+ECHO "ACCEPTANCE GATES:" ;
+ECHO "  Gate 1: K_A = 1.163428" ;
+ECHO "          baseline pass reproduces standalone/diag_abc" ;
+ECHO "          baseline (NOT a writeback-isolation claim;" ;
+ECHO "          PASS A still writes back to SNAP_A by design)." ;
+ECHO "  Gate 2: K_C = 1.163425" ;
+ECHO "          POD pass reproduces diag_abc PASS C across" ;
+ECHO "          a different (two-archive vs three-archive)" ;
+ECHO "          driver shape -- cross-driver POD reproducibility." ;
+ECHO "  Gate 3: Delta-rho(C-A) ~= -2.2 pcm, NOT +1469 pcm" ;
+ECHO "          repaired combined-style A/C driver does not" ;
+ECHO "          reproduce the SNAP-aliasing artifact -- this" ;
+ECHO "          is the closing evidence." ;
+ECHO "" ;
+ECHO "  All three gates passing -> D4-A SNAP-aliasing" ;
+ECHO "  investigation closed. 1-ring eps_POD scan becomes" ;
+ECHO "  the next science step (not bug diagnosis)." ;
+
+ECHO "d4a_combined_ac_fix complete" ;
+END: ;
+QUIT "LIST" .

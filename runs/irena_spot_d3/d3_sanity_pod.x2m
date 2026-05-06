@@ -1,0 +1,147 @@
+****************************************************************
+*  d3_sanity_pod.x2m -- POD-case companion to d3_sanity.x2m     *
+*                                                                *
+*  Goal: verify whether handoff number K_B = 1.409777            *
+*    (claimed POD eps=1E-3 converged outer iter result) is real. *
+*                                                                *
+*    d3_sanity.x2m (no-POD)  produced  K = 1.410130 (matches     *
+*    handoff K_A — that number is therefore real).               *
+*                                                                *
+*    K_B = 1.409777 is currently unsupported by any log file in  *
+*    the runs/ tree. This run is the binary check.               *
+*                                                                *
+*  Setup (same as d3_sanity except eps_pod):                     *
+*    max_o   = 2     (run exactly 2 outer iters)                 *
+*    eps_o   = 1E-2  (loose; max_o terminates)                   *
+*    eps_pod = 1E-3  (Variant III POD compression)               *
+*    rank_pod= 0     (rank cap disabled; eps_pod alone)          *
+*    flu_eps = 1E-4                                              *
+*    nsnap   = 5                                                 *
+*                                                                *
+*  Verdict on K_B = 1.409777:                                    *
+*    PASS  if final K_SPOT ~ 1.409777  +/- a few pcm             *
+*    FAIL  if final K_SPOT differs > 10 pcm from 1.409777        *
+*    NEW   if final K_SPOT is a third value entirely (handoff    *
+*          number invented; real POD K is X)                     *
+*                                                                *
+*  Also expect: SPOPOD prints of POD rank per group; iter 2      *
+*  errspo finite (patch still works under POD).                  *
+*                                                                *
+*  Author: B. Cui (POD sanity, 2026-05-02)                       *
+****************************************************************
+
+SEQ_ASCII glow_rnr   :: FILE './irena_pincell.dat' ;
+SEQ_ASCII glowpost.ps :: FILE './glowpost_d3_sanity_pod.eps' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX
+            SNAP GEOM_AXIAL TRKAX FLXAX ;
+
+MODULE  G2S: SPOT: GEO: BACKUP: DELETE: GREP: UTL: END: ABORT: ;
+
+PROCEDURE SpotPodItr SpotSnapBld assertS rnr_cc rnr_interpol ;
+
+glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
+
+ECHO "================================================" ;
+ECHO "D3 SANITY POD: K_B=1.409777 verification (POD eps=1E-3)" ;
+ECHO "  max_o=2, eps_o=1E-2, eps_pod=1E-3, flu_eps=1E-4" ;
+ECHO "================================================" ;
+
+REAL T_clad_C := 620.0 ;
+REAL T_Na_C   := 475.0 ;
+
+*--- snapshot 1: T_comb = 600 C ---
+ECHO "---- snapshot 1 (T_comb=600 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    600.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 1 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 1 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 1 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 2: T_comb = 700 C ---
+ECHO "---- snapshot 2 (T_comb=700 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    700.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 2 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 2 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 2 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 2 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 3: T_comb = 750 C ---
+ECHO "---- snapshot 3 (T_comb=750 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    750.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 3 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 3 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 3 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 3 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 4: T_comb = 800 C ---
+ECHO "---- snapshot 4 (T_comb=800 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    800.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 4 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 4 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 4 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 4 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 5: T_comb = 900 C ---
+ECHO "---- snapshot 5 (T_comb=900 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    900.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP := BACKUP: SNAP TRACK     :: ITEM 5 ;
+SNAP := BACKUP: SNAP MICROLIB2 :: ITEM 5 ;
+SNAP := BACKUP: SNAP SYSTEM    :: ITEM 5 ;
+SNAP := BACKUP: SNAP FLUX      :: ITEM 5 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+UTL: SNAP :: DIR ;
+
+GEOM_AXIAL := GEO: :: CAR1D 5
+        X- VOID X+ VOID
+        MIX  1 2 3 4 5
+        MESHX 0.0 40.0 60.0 140.0 160.0 200.0
+        SPLITX 1 1 1 1 1
+        ;
+
+TRKAX := SPOT: GEOM_AXIAL SNAP ::
+        EDIT 2 MAXR 2500 TITL 'D3 sanity POD axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+REAL    eps      := 1.0E-4 ;
+INTEGER rank_pod := 0 ;
+REAL    flu_eps  := 1.0E-4 ;
+REAL    eps_o    := 1.0E-2 ;
+INTEGER max_o    := 2 ;
+REAL    eps_pod  := 1.0E-3 ;
+
+ECHO "================================================" ;
+ECHO "D3 SANITY POD: launch SpotPodItr (max_o=2, eps_pod=1E-3)" ;
+ECHO "================================================" ;
+FLXAX SNAP := SpotPodItr SNAP GEOM_AXIAL TRKAX ::
+                  <<eps>> <<eps_pod>> <<rank_pod>> <<flu_eps>>
+                  <<eps_o>> <<max_o>> ;
+REAL k_final ;
+GREP: FLXAX :: GETVAL 'K-EFFECTIVE' 1 >>k_final<< ;
+
+ECHO "================================================" ;
+ECHO "D3 SANITY POD: result" ;
+ECHO "================================================" ;
+ECHO "  final K_POD =" k_final ;
+ECHO "  K_NoPOD reference (d3_sanity, today) = 1.410130" ;
+ECHO "  Handoff claim K_B = 1.409777" ;
+ECHO "  dK_pcm vs K_NoPOD =" k_final 1.410130 - 1.0E5 * ;
+ECHO "  dK_pcm vs handoff K_B =" k_final 1.409777 - 1.0E5 * ;
+ECHO "  Verdict:" ;
+ECHO "    PASS  if final K matches 1.409777 within ~5 pcm" ;
+ECHO "    FAIL  if final K differs >10 pcm from 1.409777" ;
+
+ECHO "d3_sanity_pod complete" ;
+END: ;
+QUIT "LIST" .

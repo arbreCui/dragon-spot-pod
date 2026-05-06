@@ -1,0 +1,176 @@
+****************************************************************
+*  d3_iter_ab.x2m -- D3 outer iteration A/B comparison           *
+*    Two independent SPOT outer-iteration runs:                  *
+*      A: eps_pod = 0    (no POD compression, baseline)          *
+*      B: eps_pod = 1E-3 (Variant III POD)                       *
+*    Each on its own SNAP archive (BACKUP-multi pattern) so the  *
+*    SPOT-LEAK1D feedback in one does not contaminate the other. *
+*                                                                *
+*    Compares converged outer-iteration K — this is the FIRST    *
+*    physically-meaningful POD-vs-no-POD probe (stage-1 numbers  *
+*    were first-iterate, not converged).                         *
+*                                                                *
+*  Author: B. Cui (W4 D5 prep, 2026-05-01)                       *
+****************************************************************
+
+SEQ_ASCII glow_rnr   :: FILE './irena_pincell.dat' ;
+SEQ_ASCII glowpost.ps :: FILE './glowpost_d3_iter.eps' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX
+            SNAP_A SNAP_B GEOM_AXIAL TRKAX_A TRKAX_B
+            FLXAX_A FLXAX_B ;
+
+MODULE  G2S: SPOT: GEO: BACKUP: DELETE: GREP: UTL: END: ABORT: ;
+
+PROCEDURE SpotPodItr SpotSnapBld assertS rnr_cc rnr_interpol ;
+
+glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
+
+ECHO "================================================" ;
+ECHO "D3 outer-iter A/B: 5 snapshots BACKUPed into SNAP_A and SNAP_B" ;
+ECHO "  A : eps_pod=0    no-POD outer iter" ;
+ECHO "  B : eps_pod=1E-3 POD outer iter" ;
+ECHO "================================================" ;
+
+REAL T_clad_C := 620.0 ;
+REAL T_Na_C   := 475.0 ;
+
+*--- snapshot 1: T_comb = 600 C ---
+ECHO "---- snapshot 1 (T_comb=600 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    600.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 1 ;
+SNAP_B := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_B := BACKUP: SNAP_B MICROLIB2 :: ITEM 1 ;
+SNAP_B := BACKUP: SNAP_B SYSTEM    :: ITEM 1 ;
+SNAP_B := BACKUP: SNAP_B FLUX      :: ITEM 1 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 2: T_comb = 700 C ---
+ECHO "---- snapshot 2 (T_comb=700 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    700.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 2 ;
+SNAP_B := BACKUP: SNAP_B TRACK     :: ITEM 2 ;
+SNAP_B := BACKUP: SNAP_B MICROLIB2 :: ITEM 2 ;
+SNAP_B := BACKUP: SNAP_B SYSTEM    :: ITEM 2 ;
+SNAP_B := BACKUP: SNAP_B FLUX      :: ITEM 2 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 3: T_comb = 750 C ---
+ECHO "---- snapshot 3 (T_comb=750 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    750.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 3 ;
+SNAP_B := BACKUP: SNAP_B TRACK     :: ITEM 3 ;
+SNAP_B := BACKUP: SNAP_B MICROLIB2 :: ITEM 3 ;
+SNAP_B := BACKUP: SNAP_B SYSTEM    :: ITEM 3 ;
+SNAP_B := BACKUP: SNAP_B FLUX      :: ITEM 3 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 4: T_comb = 800 C ---
+ECHO "---- snapshot 4 (T_comb=800 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    800.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 4 ;
+SNAP_B := BACKUP: SNAP_B TRACK     :: ITEM 4 ;
+SNAP_B := BACKUP: SNAP_B MICROLIB2 :: ITEM 4 ;
+SNAP_B := BACKUP: SNAP_B SYSTEM    :: ITEM 4 ;
+SNAP_B := BACKUP: SNAP_B FLUX      :: ITEM 4 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 5: T_comb = 900 C ---
+ECHO "---- snapshot 5 (T_comb=900 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotSnapBld glow_rnr ::
+    900.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 5 ;
+SNAP_B := BACKUP: SNAP_B TRACK     :: ITEM 5 ;
+SNAP_B := BACKUP: SNAP_B MICROLIB2 :: ITEM 5 ;
+SNAP_B := BACKUP: SNAP_B SYSTEM    :: ITEM 5 ;
+SNAP_B := BACKUP: SNAP_B FLUX      :: ITEM 5 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+UTL: SNAP_A :: DIR ;
+UTL: SNAP_B :: DIR ;
+
+GEOM_AXIAL := GEO: :: CAR1D 5
+        X- VOID X+ VOID
+        MIX  1 2 3 4 5
+        MESHX 0.0 40.0 60.0 140.0 160.0 200.0
+        SPLITX 1 1 1 1 1
+        ;
+
+TRKAX_A := SPOT: GEOM_AXIAL SNAP_A ::
+        EDIT 2 MAXR 2500 TITL 'D3 outer iter A axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+TRKAX_B := SPOT: GEOM_AXIAL SNAP_B ::
+        EDIT 2 MAXR 2500 TITL 'D3 outer iter B axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+REAL    eps      := 1.0E-4 ;
+INTEGER rank_pod := 0 ;
+REAL    flu_eps  := 1.0E-5 ;
+REAL    eps_o    := 1.0E-6 ;
+INTEGER max_o    := 50 ;
+
+*================================================================
+*  PASS A : eps_pod = 0   (no-POD converged outer iter)
+*================================================================
+ECHO "================================================" ;
+ECHO "D3 outer iter PASS A: eps_pod=0 (no-POD)" ;
+ECHO "================================================" ;
+REAL eps_pod_a := 0.0 ;
+FLXAX_A SNAP_A := SpotPodItr SNAP_A GEOM_AXIAL TRKAX_A ::
+                  <<eps>> <<eps_pod_a>> <<rank_pod>> <<flu_eps>>
+                  <<eps_o>> <<max_o>> ;
+REAL k_A ;
+GREP: FLXAX_A :: GETVAL 'K-EFFECTIVE' 1 >>k_A<< ;
+ECHO "D3 outer iter K_A (eps=0,    converged) =" k_A ;
+
+*================================================================
+*  PASS B : eps_pod = 1E-3   (POD converged outer iter)
+*================================================================
+ECHO "================================================" ;
+ECHO "D3 outer iter PASS B: eps_pod=1E-3 (POD)" ;
+ECHO "================================================" ;
+REAL eps_pod_b := 1.0E-3 ;
+FLXAX_B SNAP_B := SpotPodItr SNAP_B GEOM_AXIAL TRKAX_B ::
+                  <<eps>> <<eps_pod_b>> <<rank_pod>> <<flu_eps>>
+                  <<eps_o>> <<max_o>> ;
+REAL k_B ;
+GREP: FLXAX_B :: GETVAL 'K-EFFECTIVE' 1 >>k_B<< ;
+ECHO "D3 outer iter K_B (eps=1E-3, converged) =" k_B ;
+
+*================================================================
+*  Summary
+*================================================================
+ECHO "================================================" ;
+ECHO "D3 outer iter A/B summary" ;
+ECHO "================================================" ;
+ECHO "  PASS A no-POD  converged K =" k_A ;
+ECHO "  PASS B POD 1E-3 converged K =" k_B ;
+ECHO "  dK_AB pcm =" k_B k_A - 1.0E5 * ;
+ECHO "" ;
+ECHO "  This is the first physically-meaningful POD vs no-POD" ;
+ECHO "  comparison (stage-1 K=1.383424 was first-iterate, not" ;
+ECHO "  converged outer iter)." ;
+
+ECHO "d3_iter_ab complete" ;
+END: ;
+QUIT "LIST" .

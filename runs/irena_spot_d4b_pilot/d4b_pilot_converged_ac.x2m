@@ -1,0 +1,239 @@
+****************************************************************
+*                                                              *
+* d4b_pilot.x2m -- D4-B pilot A/C, ledger-governed  *
+*                                                              *
+* PURPOSE                                                      *
+*   First "ledger-governed" experiment after the 2026-05-02    *
+*   evidence pivot. Replaces stage-1 SpotPodEps with outer-iter*
+*   SpotPodItr to produce the converged D4-A K_A and K_C,      *
+*   superseding the stage-1 K=1.163428 / 1.163425 narrative.   *
+*                                                              *
+*   Derived from d4a_combined_ac_fix.x2m by replacing the two  *
+*   SpotPodEps calls with SpotPodItr (same archive structure,  *
+*   no SNAP-aliasing artifact: BACKUP-twice pattern preserved).*
+*                                                              *
+* DELTAS vs d4a_combined_ac_fix.x2m                            *
+*   - PROCEDURE  SpotPodEps  -->  SpotPodItr                   *
+*   - Add eps_o = 1E-4 (outer-iter convergence)                *
+*   - Add max_o = 50    (outer-iter cap)                       *
+*   - PASS A and PASS C calls now pass <<eps_o>> <<max_o>>     *
+*   - Output filenames d4b_pilot.{log,err}              *
+*   - glowpost   glowpost_d4b_pilot.eps                    *
+*                                                              *
+* SETUP (per pre-flight gate)                                  *
+*   eps_o   = 1E-4   (outer-iter convergence target)           *
+*   max_o   = 50     (cap; expect 2-5 iters from D3 sanity)    *
+*   eps_pod = 0      (PASS A no-POD)                           *
+*   eps_pod = 1E-3   (PASS C POD truncation)                   *
+*   rank_pod= 0      (rank cap disabled, eps_pod alone)        *
+*   flu_eps = 1E-5   (FLU inner; tighter than D3 sanity 1E-4   *
+*                    because D4-B 1/12 multi-ring is a science result,  *
+*                    not just plumbing-validation)             *
+*   nsnap   = 5      (T_comb in {600,700,750,800,900})         *
+*                                                              *
+* BINARY                                                       *
+*   PATCHED live Dragon at bin/Darwin_arm64/Dragon. Frozen     *
+*   prod cannot run outer iter (no SPODB2 patch). Confirm      *
+*   binary is post-codesign before launch.                     *
+*                                                              *
+* COST estimate                                                *
+*   Snapshot phase  ~5 x 1h45 = 8-9h (frozen-binary baseline)  *
+*   PASS A converged ~2-3 outer iters x ~1h SPOF = 2-3h        *
+*   PASS C converged similar                                   *
+*   Total ~12-15h. Run overnight. May need eps_pod_b/c lower   *
+*   if outer-iter count is high; check after first iter.       *
+*                                                              *
+* LEDGER ENTRY (must be added immediately after run completes) *
+*   - run_id: d4b_pilot                                 *
+*   - status: valid-converged (or whatever applies)            *
+*   - K_iter1_first_iterate: should match stage-1 K=1.163428   *
+*   - K_converged: PASS A and PASS C, with errspo at converged *
+*   - source_line: log lines for SpotPodItr: done.             *
+*   - trust_basis: patched binary, sanity-validated SpotPodItr *
+*   See SPOT_doc/evidence_ledger.md for format.                *
+*                                                              *
+* Author: B. Cui, ledger-governed (2026-05-02)                 *
+****************************************************************
+
+SEQ_ASCII glow_rnr     :: FILE './irena_assembly_tiso_1_12.dat' ;
+SEQ_ASCII glowpost.ps  :: FILE './glowpost_d4b_pilot.eps' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX
+            SNAP_A SNAP_C
+            GEOM_AXIAL TRKAX_A TRKAX_C
+            FLXAX_A FLXAX_C ;
+
+MODULE  G2S: SPOT: GEO: BACKUP: DELETE: GREP: UTL: END: ABORT: ;
+
+PROCEDURE SpotPodItr SnapMring assertS rnr_cc rnr_interpol ;
+
+glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
+
+ECHO "================================================" ;
+ECHO "D4-B pilot A/C: ledger-governed run" ;
+ECHO "  PASS A: SNAP_A, eps_pod=0    (no-POD converged)" ;
+ECHO "  PASS C: SNAP_C, eps_pod=1E-3 (POD converged)" ;
+ECHO "  eps_o=1E-4, max_o=50" ;
+ECHO "  Compare iter-1 K to stage-1 1.163428 / 1.163425" ;
+ECHO "  Compare converged K_C - K_A to D3 sanity Drho=-17.8 pcm" ;
+ECHO "================================================" ;
+
+REAL T_clad_C := 620.0 ;
+REAL T_Na_C   := 475.0 ;
+
+*--- snapshot 1: T=600 -- BACKUP into A, C ---
+ECHO "---- D4-B snapshot 1 (T_comb=600 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SnapMring glow_rnr ::
+    600.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 1 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 1 ;
+SNAP_C := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 1 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 1 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 1 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 2: T=700 ---
+ECHO "---- D4-B snapshot 2 (T_comb=700 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SnapMring glow_rnr ::
+    700.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 2 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 2 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 2 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 3: T=750 ---
+ECHO "---- D4-B snapshot 3 (T_comb=750 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SnapMring glow_rnr ::
+    750.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 3 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 3 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 3 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 4: T=800 ---
+ECHO "---- D4-B snapshot 4 (T_comb=800 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SnapMring glow_rnr ::
+    800.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 4 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 4 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 4 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 5: T=900 ---
+ECHO "---- D4-B snapshot 5 (T_comb=900 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SnapMring glow_rnr ::
+    900.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_A := BACKUP: SNAP_A TRACK     :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A MICROLIB2 :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A SYSTEM    :: ITEM 5 ;
+SNAP_A := BACKUP: SNAP_A FLUX      :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C TRACK     :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C MICROLIB2 :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C SYSTEM    :: ITEM 5 ;
+SNAP_C := BACKUP: SNAP_C FLUX      :: ITEM 5 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+ECHO "---- snapshot phase complete; archive structure ----" ;
+UTL: SNAP_A :: DIR ;
+UTL: SNAP_C :: DIR ;
+
+GEOM_AXIAL := GEO: :: CAR1D 5
+        X- VOID X+ VOID
+        MIX  1 2 3 4 5
+        MESHX 0.0 40.0 60.0 140.0 160.0 200.0
+        SPLITX 1 1 1 1 1
+        ;
+
+TRKAX_A := SPOT: GEOM_AXIAL SNAP_A ::
+        EDIT 2 MAXR 2500
+        TITL 'D4-B pilot PASS A axial SPOT'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+TRKAX_C := SPOT: GEOM_AXIAL SNAP_C ::
+        EDIT 2 MAXR 2500
+        TITL 'D4-B pilot PASS C axial SPOT'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+REAL    eps      := 1.0E-4 ;
+INTEGER rank_pod := 0 ;
+REAL    flu_eps  := 1.0E-5 ;
+REAL    eps_o    := 1.0E-4 ;
+INTEGER max_o    := 50 ;
+
+*================================================================
+*  PASS A: SNAP_A, eps_pod=0  (baseline, no-POD)
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-B PILOT PASS A: SNAP_A, eps_pod=0 (no-POD)" ;
+ECHO "  iter 1 should match stage-1 K_A = 1.163428" ;
+ECHO "================================================" ;
+REAL eps_pod_a := 0.0 ;
+FLXAX_A SNAP_A := SpotPodItr SNAP_A GEOM_AXIAL TRKAX_A ::
+                  <<eps>> <<eps_pod_a>> <<rank_pod>> <<flu_eps>>
+                  <<eps_o>> <<max_o>> ;
+REAL k_A ;
+GREP: FLXAX_A :: GETVAL 'K-EFFECTIVE' 1 >>k_A<< ;
+ECHO "D4-B PILOT K_A (eps=0,    converged) =" k_A ;
+
+*================================================================
+*  PASS C: SNAP_C, eps_pod=1E-3  (POD truncation)
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-B PILOT PASS C: SNAP_C, eps_pod=1E-3 (POD)" ;
+ECHO "  iter 1 should match stage-1 K_C = 1.163425" ;
+ECHO "================================================" ;
+REAL eps_pod_c := 1.0E-3 ;
+FLXAX_C SNAP_C := SpotPodItr SNAP_C GEOM_AXIAL TRKAX_C ::
+                  <<eps>> <<eps_pod_c>> <<rank_pod>> <<flu_eps>>
+                  <<eps_o>> <<max_o>> ;
+REAL k_C ;
+GREP: FLXAX_C :: GETVAL 'K-EFFECTIVE' 1 >>k_C<< ;
+ECHO "D4-B PILOT K_C (eps=1E-3, converged) =" k_C ;
+
+*================================================================
+*  Summary
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-B PILOT A/C summary" ;
+ECHO "================================================" ;
+ECHO "  PASS A no-POD     converged K =" k_A ;
+ECHO "  PASS C POD 1E-3   converged K =" k_C ;
+ECHO "  Delta-rho_AC pcm =" k_C k_A - 1.0E5 * ;
+ECHO "" ;
+ECHO "ACCEPTANCE GATES (post-run, write into evidence_ledger.md):" ;
+ECHO "  Gate 1: K_A iter 1 ~ 1.163428 (stage-1 reference)" ;
+ECHO "  Gate 2: K_C iter 1 ~ 1.163425 (stage-1 reference)" ;
+ECHO "  Gate 3: K_A converged > K_A iter 1 by 'a few hundred to" ;
+ECHO "          a few thousand pcm' (axial leakage feedback;" ;
+ECHO "          D3 saw +1350 pcm; D4-B 1/12 multi-ring has different" ;
+ECHO "          geometry so magnitude not directly comparable)" ;
+ECHO "  Gate 4: SpotPodItr: done. converged= 1 in both passes" ;
+ECHO "          (errspo < eps_o = 1E-4)" ;
+ECHO "  Gate 5: Delta-rho(C-A) at converged level is the real" ;
+ECHO "          POD truncation cost; report alongside D3 -17.8 pcm" ;
+ECHO "" ;
+ECHO "  After run: add row to evidence_ledger.md, then update" ;
+ECHO "  handoff §5 row 'D4-B 1/12 multi-ring converged' from TODO to done." ;
+
+ECHO "d4b_pilot complete" ;
+END: ;
+QUIT "LIST" .

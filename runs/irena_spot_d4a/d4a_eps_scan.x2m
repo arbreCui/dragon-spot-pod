@@ -1,0 +1,344 @@
+****************************************************************
+*                                                              *
+*  d4a_eps_scan.x2m -- W4 D4-A 1-ring eps_pod scan              *
+*                                                              *
+*  Single driver, 5 snapshots BACKUPed into 6 independent      *
+*  archives (one per eps), then 6 SPOT axial trackings + 6     *
+*  SpotPodEps PASS calls. Six independent archives because     *
+*  SpotPodEps writes back to its SNAP argument (FLU TYPE K     *
+*  SPOT mutates SNAP); aliasing was already resolved by the    *
+*  D4-A diag_abc / fix work, so the archive isolation pattern  *
+*  here is the proven one.                                     *
+*                                                              *
+*  Six eps points:                                             *
+*     E0 = 0.0     (baseline, no POD truncation)               *
+*     E1 = 1.0E-1                                              *
+*     E2 = 1.0E-2                                              *
+*     E3 = 1.0E-3   (matches d4a_combined_ac_fix PASS C)       *
+*     E4 = 1.0E-4                                              *
+*     E5 = 1.0E-5                                              *
+*                                                              *
+*  Acceptance:                                                 *
+*    - K_E0 must equal d4a A/C K_A = 1.163428 exactly          *
+*      (production binary bit-identity at 1-ring scale).       *
+*    - K_E3 must equal d4a A/C K_C = 1.163425 exactly          *
+*      (ditto, for the POD path).                              *
+*    - K_E1 .. K_E5 trace a monotone curve in eps, with        *
+*      Drho(eps) collapsing to zero as eps -> 0.               *
+*                                                              *
+*  Cost estimate ~29h: 5 x Snap1Ring (~1h each) + 6 x          *
+*  SPOT/SpotPodEps PASS (~4h each).                            *
+*                                                              *
+*  Author: B. Cui (W4 D4-A eps scan, 2026-05-01)               *
+****************************************************************
+
+SEQ_ASCII glow_rnr     :: FILE './irena_assembly_tiso_1_12_1ring.dat' ;
+SEQ_ASCII glowpost.ps  :: FILE './glowpost_d4a_scan.eps' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX
+            SNAP_E0 SNAP_E1 SNAP_E2 SNAP_E3 SNAP_E4 SNAP_E5
+            GEOM_AXIAL
+            TRKAX_E0 TRKAX_E1 TRKAX_E2 TRKAX_E3 TRKAX_E4 TRKAX_E5
+            FLXAX_E0 FLXAX_E1 FLXAX_E2 FLXAX_E3 FLXAX_E4 FLXAX_E5 ;
+
+MODULE  G2S: SPOT: GEO: BACKUP: DELETE: GREP: UTL: END: ABORT: ;
+
+PROCEDURE SpotPodEps Snap1Ring assertS rnr_cc rnr_interpol ;
+
+glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
+
+ECHO "================================================" ;
+ECHO "D4-A eps_pod scan: 1-ring 5-snap, 6 archives" ;
+ECHO "  E0 eps=0       (baseline, expect K=1.163428)" ;
+ECHO "  E1 eps=1.0E-1" ;
+ECHO "  E2 eps=1.0E-2" ;
+ECHO "  E3 eps=1.0E-3  (expect K=1.163425, A/C reproducer)" ;
+ECHO "  E4 eps=1.0E-4" ;
+ECHO "  E5 eps=1.0E-5" ;
+ECHO "================================================" ;
+
+REAL T_clad_C := 620.0 ;
+REAL T_Na_C   := 475.0 ;
+
+*--- snapshot 1: T=600 -- BACKUP into all 6 archives ---
+ECHO "---- snapshot 1 (T_comb=600 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    600.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_E0 := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_E0 := BACKUP: SNAP_E0 MICROLIB2 :: ITEM 1 ;
+SNAP_E0 := BACKUP: SNAP_E0 SYSTEM    :: ITEM 1 ;
+SNAP_E0 := BACKUP: SNAP_E0 FLUX      :: ITEM 1 ;
+SNAP_E1 := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_E1 := BACKUP: SNAP_E1 MICROLIB2 :: ITEM 1 ;
+SNAP_E1 := BACKUP: SNAP_E1 SYSTEM    :: ITEM 1 ;
+SNAP_E1 := BACKUP: SNAP_E1 FLUX      :: ITEM 1 ;
+SNAP_E2 := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_E2 := BACKUP: SNAP_E2 MICROLIB2 :: ITEM 1 ;
+SNAP_E2 := BACKUP: SNAP_E2 SYSTEM    :: ITEM 1 ;
+SNAP_E2 := BACKUP: SNAP_E2 FLUX      :: ITEM 1 ;
+SNAP_E3 := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_E3 := BACKUP: SNAP_E3 MICROLIB2 :: ITEM 1 ;
+SNAP_E3 := BACKUP: SNAP_E3 SYSTEM    :: ITEM 1 ;
+SNAP_E3 := BACKUP: SNAP_E3 FLUX      :: ITEM 1 ;
+SNAP_E4 := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_E4 := BACKUP: SNAP_E4 MICROLIB2 :: ITEM 1 ;
+SNAP_E4 := BACKUP: SNAP_E4 SYSTEM    :: ITEM 1 ;
+SNAP_E4 := BACKUP: SNAP_E4 FLUX      :: ITEM 1 ;
+SNAP_E5 := BACKUP: TRACK     :: LIST 5 ITEM 1 ;
+SNAP_E5 := BACKUP: SNAP_E5 MICROLIB2 :: ITEM 1 ;
+SNAP_E5 := BACKUP: SNAP_E5 SYSTEM    :: ITEM 1 ;
+SNAP_E5 := BACKUP: SNAP_E5 FLUX      :: ITEM 1 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 2: T=700 ---
+ECHO "---- snapshot 2 (T_comb=700 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    700.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_E0 := BACKUP: SNAP_E0 TRACK     :: ITEM 2 ;
+SNAP_E0 := BACKUP: SNAP_E0 MICROLIB2 :: ITEM 2 ;
+SNAP_E0 := BACKUP: SNAP_E0 SYSTEM    :: ITEM 2 ;
+SNAP_E0 := BACKUP: SNAP_E0 FLUX      :: ITEM 2 ;
+SNAP_E1 := BACKUP: SNAP_E1 TRACK     :: ITEM 2 ;
+SNAP_E1 := BACKUP: SNAP_E1 MICROLIB2 :: ITEM 2 ;
+SNAP_E1 := BACKUP: SNAP_E1 SYSTEM    :: ITEM 2 ;
+SNAP_E1 := BACKUP: SNAP_E1 FLUX      :: ITEM 2 ;
+SNAP_E2 := BACKUP: SNAP_E2 TRACK     :: ITEM 2 ;
+SNAP_E2 := BACKUP: SNAP_E2 MICROLIB2 :: ITEM 2 ;
+SNAP_E2 := BACKUP: SNAP_E2 SYSTEM    :: ITEM 2 ;
+SNAP_E2 := BACKUP: SNAP_E2 FLUX      :: ITEM 2 ;
+SNAP_E3 := BACKUP: SNAP_E3 TRACK     :: ITEM 2 ;
+SNAP_E3 := BACKUP: SNAP_E3 MICROLIB2 :: ITEM 2 ;
+SNAP_E3 := BACKUP: SNAP_E3 SYSTEM    :: ITEM 2 ;
+SNAP_E3 := BACKUP: SNAP_E3 FLUX      :: ITEM 2 ;
+SNAP_E4 := BACKUP: SNAP_E4 TRACK     :: ITEM 2 ;
+SNAP_E4 := BACKUP: SNAP_E4 MICROLIB2 :: ITEM 2 ;
+SNAP_E4 := BACKUP: SNAP_E4 SYSTEM    :: ITEM 2 ;
+SNAP_E4 := BACKUP: SNAP_E4 FLUX      :: ITEM 2 ;
+SNAP_E5 := BACKUP: SNAP_E5 TRACK     :: ITEM 2 ;
+SNAP_E5 := BACKUP: SNAP_E5 MICROLIB2 :: ITEM 2 ;
+SNAP_E5 := BACKUP: SNAP_E5 SYSTEM    :: ITEM 2 ;
+SNAP_E5 := BACKUP: SNAP_E5 FLUX      :: ITEM 2 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 3: T=750 ---
+ECHO "---- snapshot 3 (T_comb=750 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    750.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_E0 := BACKUP: SNAP_E0 TRACK     :: ITEM 3 ;
+SNAP_E0 := BACKUP: SNAP_E0 MICROLIB2 :: ITEM 3 ;
+SNAP_E0 := BACKUP: SNAP_E0 SYSTEM    :: ITEM 3 ;
+SNAP_E0 := BACKUP: SNAP_E0 FLUX      :: ITEM 3 ;
+SNAP_E1 := BACKUP: SNAP_E1 TRACK     :: ITEM 3 ;
+SNAP_E1 := BACKUP: SNAP_E1 MICROLIB2 :: ITEM 3 ;
+SNAP_E1 := BACKUP: SNAP_E1 SYSTEM    :: ITEM 3 ;
+SNAP_E1 := BACKUP: SNAP_E1 FLUX      :: ITEM 3 ;
+SNAP_E2 := BACKUP: SNAP_E2 TRACK     :: ITEM 3 ;
+SNAP_E2 := BACKUP: SNAP_E2 MICROLIB2 :: ITEM 3 ;
+SNAP_E2 := BACKUP: SNAP_E2 SYSTEM    :: ITEM 3 ;
+SNAP_E2 := BACKUP: SNAP_E2 FLUX      :: ITEM 3 ;
+SNAP_E3 := BACKUP: SNAP_E3 TRACK     :: ITEM 3 ;
+SNAP_E3 := BACKUP: SNAP_E3 MICROLIB2 :: ITEM 3 ;
+SNAP_E3 := BACKUP: SNAP_E3 SYSTEM    :: ITEM 3 ;
+SNAP_E3 := BACKUP: SNAP_E3 FLUX      :: ITEM 3 ;
+SNAP_E4 := BACKUP: SNAP_E4 TRACK     :: ITEM 3 ;
+SNAP_E4 := BACKUP: SNAP_E4 MICROLIB2 :: ITEM 3 ;
+SNAP_E4 := BACKUP: SNAP_E4 SYSTEM    :: ITEM 3 ;
+SNAP_E4 := BACKUP: SNAP_E4 FLUX      :: ITEM 3 ;
+SNAP_E5 := BACKUP: SNAP_E5 TRACK     :: ITEM 3 ;
+SNAP_E5 := BACKUP: SNAP_E5 MICROLIB2 :: ITEM 3 ;
+SNAP_E5 := BACKUP: SNAP_E5 SYSTEM    :: ITEM 3 ;
+SNAP_E5 := BACKUP: SNAP_E5 FLUX      :: ITEM 3 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 4: T=800 ---
+ECHO "---- snapshot 4 (T_comb=800 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    800.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_E0 := BACKUP: SNAP_E0 TRACK     :: ITEM 4 ;
+SNAP_E0 := BACKUP: SNAP_E0 MICROLIB2 :: ITEM 4 ;
+SNAP_E0 := BACKUP: SNAP_E0 SYSTEM    :: ITEM 4 ;
+SNAP_E0 := BACKUP: SNAP_E0 FLUX      :: ITEM 4 ;
+SNAP_E1 := BACKUP: SNAP_E1 TRACK     :: ITEM 4 ;
+SNAP_E1 := BACKUP: SNAP_E1 MICROLIB2 :: ITEM 4 ;
+SNAP_E1 := BACKUP: SNAP_E1 SYSTEM    :: ITEM 4 ;
+SNAP_E1 := BACKUP: SNAP_E1 FLUX      :: ITEM 4 ;
+SNAP_E2 := BACKUP: SNAP_E2 TRACK     :: ITEM 4 ;
+SNAP_E2 := BACKUP: SNAP_E2 MICROLIB2 :: ITEM 4 ;
+SNAP_E2 := BACKUP: SNAP_E2 SYSTEM    :: ITEM 4 ;
+SNAP_E2 := BACKUP: SNAP_E2 FLUX      :: ITEM 4 ;
+SNAP_E3 := BACKUP: SNAP_E3 TRACK     :: ITEM 4 ;
+SNAP_E3 := BACKUP: SNAP_E3 MICROLIB2 :: ITEM 4 ;
+SNAP_E3 := BACKUP: SNAP_E3 SYSTEM    :: ITEM 4 ;
+SNAP_E3 := BACKUP: SNAP_E3 FLUX      :: ITEM 4 ;
+SNAP_E4 := BACKUP: SNAP_E4 TRACK     :: ITEM 4 ;
+SNAP_E4 := BACKUP: SNAP_E4 MICROLIB2 :: ITEM 4 ;
+SNAP_E4 := BACKUP: SNAP_E4 SYSTEM    :: ITEM 4 ;
+SNAP_E4 := BACKUP: SNAP_E4 FLUX      :: ITEM 4 ;
+SNAP_E5 := BACKUP: SNAP_E5 TRACK     :: ITEM 4 ;
+SNAP_E5 := BACKUP: SNAP_E5 MICROLIB2 :: ITEM 4 ;
+SNAP_E5 := BACKUP: SNAP_E5 SYSTEM    :: ITEM 4 ;
+SNAP_E5 := BACKUP: SNAP_E5 FLUX      :: ITEM 4 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+*--- snapshot 5: T=900 ---
+ECHO "---- snapshot 5 (T_comb=900 C) ----" ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := Snap1Ring glow_rnr ::
+    900.0 <<T_clad_C>> <<T_Na_C>> ;
+SNAP_E0 := BACKUP: SNAP_E0 TRACK     :: ITEM 5 ;
+SNAP_E0 := BACKUP: SNAP_E0 MICROLIB2 :: ITEM 5 ;
+SNAP_E0 := BACKUP: SNAP_E0 SYSTEM    :: ITEM 5 ;
+SNAP_E0 := BACKUP: SNAP_E0 FLUX      :: ITEM 5 ;
+SNAP_E1 := BACKUP: SNAP_E1 TRACK     :: ITEM 5 ;
+SNAP_E1 := BACKUP: SNAP_E1 MICROLIB2 :: ITEM 5 ;
+SNAP_E1 := BACKUP: SNAP_E1 SYSTEM    :: ITEM 5 ;
+SNAP_E1 := BACKUP: SNAP_E1 FLUX      :: ITEM 5 ;
+SNAP_E2 := BACKUP: SNAP_E2 TRACK     :: ITEM 5 ;
+SNAP_E2 := BACKUP: SNAP_E2 MICROLIB2 :: ITEM 5 ;
+SNAP_E2 := BACKUP: SNAP_E2 SYSTEM    :: ITEM 5 ;
+SNAP_E2 := BACKUP: SNAP_E2 FLUX      :: ITEM 5 ;
+SNAP_E3 := BACKUP: SNAP_E3 TRACK     :: ITEM 5 ;
+SNAP_E3 := BACKUP: SNAP_E3 MICROLIB2 :: ITEM 5 ;
+SNAP_E3 := BACKUP: SNAP_E3 SYSTEM    :: ITEM 5 ;
+SNAP_E3 := BACKUP: SNAP_E3 FLUX      :: ITEM 5 ;
+SNAP_E4 := BACKUP: SNAP_E4 TRACK     :: ITEM 5 ;
+SNAP_E4 := BACKUP: SNAP_E4 MICROLIB2 :: ITEM 5 ;
+SNAP_E4 := BACKUP: SNAP_E4 SYSTEM    :: ITEM 5 ;
+SNAP_E4 := BACKUP: SNAP_E4 FLUX      :: ITEM 5 ;
+SNAP_E5 := BACKUP: SNAP_E5 TRACK     :: ITEM 5 ;
+SNAP_E5 := BACKUP: SNAP_E5 MICROLIB2 :: ITEM 5 ;
+SNAP_E5 := BACKUP: SNAP_E5 SYSTEM    :: ITEM 5 ;
+SNAP_E5 := BACKUP: SNAP_E5 FLUX      :: ITEM 5 ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE: MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+
+ECHO "---- snapshot phase complete; archives ready ----" ;
+
+GEOM_AXIAL := GEO: :: CAR1D 5
+        X- VOID X+ VOID
+        MIX  1 2 3 4 5
+        MESHX 0.0 40.0 60.0 140.0 160.0 200.0
+        SPLITX 1 1 1 1 1
+        ;
+
+TRKAX_E0 := SPOT: GEOM_AXIAL SNAP_E0 ::
+        EDIT 2 MAXR 2500 TITL 'D4-A eps_scan E0 axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+TRKAX_E1 := SPOT: GEOM_AXIAL SNAP_E1 ::
+        EDIT 2 MAXR 2500 TITL 'D4-A eps_scan E1 axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+TRKAX_E2 := SPOT: GEOM_AXIAL SNAP_E2 ::
+        EDIT 2 MAXR 2500 TITL 'D4-A eps_scan E2 axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+TRKAX_E3 := SPOT: GEOM_AXIAL SNAP_E3 ::
+        EDIT 2 MAXR 2500 TITL 'D4-A eps_scan E3 axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+TRKAX_E4 := SPOT: GEOM_AXIAL SNAP_E4 ::
+        EDIT 2 MAXR 2500 TITL 'D4-A eps_scan E4 axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+TRKAX_E5 := SPOT: GEOM_AXIAL SNAP_E5 ::
+        EDIT 2 MAXR 2500 TITL 'D4-A eps_scan E5 axial'
+        ALLG DIAM 1 SN 8 SCAT 3 ;
+
+REAL    eps      := 1.0E-4 ;
+INTEGER rank_pod := 0 ;
+REAL    flu_eps  := 1.0E-5 ;
+
+*================================================================
+*  E0 : eps_pod = 0    (baseline; expect 1.163428)
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A scan E0: eps_pod=0 (baseline)" ;
+ECHO "================================================" ;
+REAL eps_pod_0 := 0.0 ;
+FLXAX_E0 SNAP_E0 := SpotPodEps SNAP_E0 GEOM_AXIAL TRKAX_E0 ::
+                       <<eps>> <<eps_pod_0>> <<rank_pod>> <<flu_eps>> ;
+REAL k_e0 ;
+GREP: FLXAX_E0 :: GETVAL 'K-EFFECTIVE' 1 >>k_e0<< ;
+ECHO "D4-A scan K_E0 (eps=0,    expect 1.163428) =" k_e0 ;
+
+*================================================================
+*  E1 : eps_pod = 1.0E-1
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A scan E1: eps_pod=1.0E-1" ;
+ECHO "================================================" ;
+REAL eps_pod_1 := 1.0E-1 ;
+FLXAX_E1 SNAP_E1 := SpotPodEps SNAP_E1 GEOM_AXIAL TRKAX_E1 ::
+                       <<eps>> <<eps_pod_1>> <<rank_pod>> <<flu_eps>> ;
+REAL k_e1 ;
+GREP: FLXAX_E1 :: GETVAL 'K-EFFECTIVE' 1 >>k_e1<< ;
+ECHO "D4-A scan K_E1 (eps=1E-1) =" k_e1 ;
+
+*================================================================
+*  E2 : eps_pod = 1.0E-2
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A scan E2: eps_pod=1.0E-2" ;
+ECHO "================================================" ;
+REAL eps_pod_2 := 1.0E-2 ;
+FLXAX_E2 SNAP_E2 := SpotPodEps SNAP_E2 GEOM_AXIAL TRKAX_E2 ::
+                       <<eps>> <<eps_pod_2>> <<rank_pod>> <<flu_eps>> ;
+REAL k_e2 ;
+GREP: FLXAX_E2 :: GETVAL 'K-EFFECTIVE' 1 >>k_e2<< ;
+ECHO "D4-A scan K_E2 (eps=1E-2) =" k_e2 ;
+
+*================================================================
+*  E3 : eps_pod = 1.0E-3   (A/C reproducer; expect 1.163425)
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A scan E3: eps_pod=1.0E-3 (A/C reproducer)" ;
+ECHO "================================================" ;
+REAL eps_pod_3 := 1.0E-3 ;
+FLXAX_E3 SNAP_E3 := SpotPodEps SNAP_E3 GEOM_AXIAL TRKAX_E3 ::
+                       <<eps>> <<eps_pod_3>> <<rank_pod>> <<flu_eps>> ;
+REAL k_e3 ;
+GREP: FLXAX_E3 :: GETVAL 'K-EFFECTIVE' 1 >>k_e3<< ;
+ECHO "D4-A scan K_E3 (eps=1E-3, expect 1.163425) =" k_e3 ;
+
+*================================================================
+*  E4 : eps_pod = 1.0E-4
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A scan E4: eps_pod=1.0E-4" ;
+ECHO "================================================" ;
+REAL eps_pod_4 := 1.0E-4 ;
+FLXAX_E4 SNAP_E4 := SpotPodEps SNAP_E4 GEOM_AXIAL TRKAX_E4 ::
+                       <<eps>> <<eps_pod_4>> <<rank_pod>> <<flu_eps>> ;
+REAL k_e4 ;
+GREP: FLXAX_E4 :: GETVAL 'K-EFFECTIVE' 1 >>k_e4<< ;
+ECHO "D4-A scan K_E4 (eps=1E-4) =" k_e4 ;
+
+*================================================================
+*  E5 : eps_pod = 1.0E-5
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A scan E5: eps_pod=1.0E-5" ;
+ECHO "================================================" ;
+REAL eps_pod_5 := 1.0E-5 ;
+FLXAX_E5 SNAP_E5 := SpotPodEps SNAP_E5 GEOM_AXIAL TRKAX_E5 ::
+                       <<eps>> <<eps_pod_5>> <<rank_pod>> <<flu_eps>> ;
+REAL k_e5 ;
+GREP: FLXAX_E5 :: GETVAL 'K-EFFECTIVE' 1 >>k_e5<< ;
+ECHO "D4-A scan K_E5 (eps=1E-5) =" k_e5 ;
+
+*================================================================
+*  Summary
+*================================================================
+ECHO "================================================" ;
+ECHO "D4-A 1-ring eps_pod scan summary" ;
+ECHO "================================================" ;
+ECHO "  E0 eps=0      K =" k_e0 "  (expect 1.163428)" ;
+ECHO "  E1 eps=1E-1   K =" k_e1 ;
+ECHO "  E2 eps=1E-2   K =" k_e2 ;
+ECHO "  E3 eps=1E-3   K =" k_e3 "  (expect 1.163425)" ;
+ECHO "  E4 eps=1E-4   K =" k_e4 ;
+ECHO "  E5 eps=1E-5   K =" k_e5 ;
+ECHO "" ;
+ECHO "  Acceptance:" ;
+ECHO "    Gate A: K_E0 = 1.163428 (1-ring bit-identity)" ;
+ECHO "    Gate B: K_E3 = 1.163425 (POD path A/C reproducer)" ;
+ECHO "    Gate C: K_E5 -> K_E0 monotonically as eps -> 0" ;
+
+ECHO "d4a_eps_scan complete" ;
+END: ;
+QUIT "LIST" .
