@@ -27,9 +27,11 @@ rm -f _DUMMY _main* _SpotPodItr* _SpotSnapBld* _Spot* _assert* _rnr* \
       rnr_cc.c2m rnr_cc.l2m rnr_cc.o2m \
       rnr_interpol.c2m rnr_interpol.l2m rnr_interpol.o2m \
       DLIB8R1_370 \
+      irena_pincell.dat \
       d3_sanity_pod.log d3_sanity_pod.err 2>/dev/null || true
 
 ln -sf "$LIB/DLIB_370" DLIB8R1_370
+ln -sf "$DAT/irena_pincell.dat"      .
 ln -sf "$MAIN/SpotPodItr.c2m"        .
 ln -sf "$MAIN/SpotSnapBld.c2m"       .
 ln -sf "$MAIN/assertS.c2m"           .
