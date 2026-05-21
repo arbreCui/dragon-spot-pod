@@ -18,7 +18,7 @@
 *  shows rank >= 2 with sigma spectrum non-trivial.            *
 *                                                              *
 *  Geometry: same 8-region IRENA pincell as stage-1/2.         *
-*  Library: DLIB8R1_366 SHEM-366 ENDF/B-VIII.1.                *
+*  Library: DLIB8R1_370 SHEM-370 ENDF/B-VIII.1.                *
 *  Snapshot factory: data/SpotSnapBld.c2m (procedure that    *
 *    rebuilds MICROLIB at given T_comb, runs TONE+ASM:ARM+FLU  *
 *    TYPE K, returns MICROLIB2/SYSTEM/FLUX). 5 invocations.    *

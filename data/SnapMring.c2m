@@ -37,7 +37,7 @@ PROCEDURE rnr_cc rnr_interpol ;
 REAL T_comb T_clad T_Na ;
 :: >>T_comb<< >>T_clad<< >>T_Na<< ;
 
-STRING Library := "DLIB8R1_366" ;
+STRING Library := "DLIB8R1_370" ;
 REAL p_Pu p_U := 0.21 0.79 ;
 
 REAL p_Pu38 p_Pu39 p_Pu40 p_Pu41 p_Pu42 p_Am p_U5 p_U8

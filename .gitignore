@@ -56,6 +56,7 @@ runs/**/assertS.c2m
 runs/**/rnr_cc.c2m
 runs/**/rnr_interpol.c2m
 runs/**/DLIB8R1_366
+runs/**/DLIB8R1_370
 runs/**/DLIBJ312_315
 runs/**/irena_*.dat
 
