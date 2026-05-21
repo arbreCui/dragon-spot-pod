@@ -133,30 +133,30 @@ ifeq ($(intel),1)
   FFLAGS = -fPIC
   FFLAG77 = -fPIC
   lib = ../lib/$(DIRNAME)_intel
-  libUtl = ../../Utilib/lib/$(DIRNAME)_intel
-  libGan = ../../Ganlib/lib/$(DIRNAME)_intel
-  libTri = ../../Trivac/lib/$(DIRNAME)_intel
+  libUtl = ../Utilib/lib/$(DIRNAME)_intel
+  libGan = ../Ganlib/lib/$(DIRNAME)_intel
+  libTri = ../Trivac/lib/$(DIRNAME)_intel
   bin = ../bin/$(DIRNAME)_intel
   lib_module = ../lib/$(DIRNAME)_intel/modules
-  INCLUDE = -I../../Ganlib/lib/$(DIRNAME)_intel/modules/
+  INCLUDE = -I../Ganlib/lib/$(DIRNAME)_intel/modules/
 else
   ifeq ($(nvidia),1)
     lib = ../lib/$(DIRNAME)_nvidia
-    libUtl = ../../Utilib/lib/$(DIRNAME)_nvidia
-    libGan = ../../Ganlib/lib/$(DIRNAME)_nvidia
-    libTri = ../../Trivac/lib/$(DIRNAME)_nvidia
+    libUtl = ../Utilib/lib/$(DIRNAME)_nvidia
+    libGan = ../Ganlib/lib/$(DIRNAME)_nvidia
+    libTri = ../Trivac/lib/$(DIRNAME)_nvidia
     bin = ../bin/$(DIRNAME)_nvidia
     lib_module = ../lib/$(DIRNAME)_nvidia/modules
-    INCLUDE = -I../../Ganlib/lib/$(DIRNAME)_nvidia/modules/
+    INCLUDE = -I../Ganlib/lib/$(DIRNAME)_nvidia/modules/
   else
     ifeq ($(llvm),1)
       lib = ../lib/$(DIRNAME)_llvm
-      libUtl = ../../Utilib/lib/$(DIRNAME)_llvm
-      libGan = ../../Ganlib/lib/$(DIRNAME)_llvm
-      libTri = ../../Trivac/lib/$(DIRNAME)_llvm
+      libUtl = ../Utilib/lib/$(DIRNAME)_llvm
+      libGan = ../Ganlib/lib/$(DIRNAME)_llvm
+      libTri = ../Trivac/lib/$(DIRNAME)_llvm
       bin = ../bin/$(DIRNAME)_llvm
       lib_module = ../lib/$(DIRNAME)_llvm/modules
-      INCLUDE = -I../../Ganlib/lib/$(DIRNAME)_llvm/modules/
+      INCLUDE = -I../Ganlib/lib/$(DIRNAME)_llvm/modules/
       FFLAGS += -mmlir -fdynamic-heap-array
       ifeq ($(OS),Darwin)
         LFLAGS += -lclang_rt.osx
@@ -166,12 +166,12 @@ else
       endif
     else
       lib = ../lib/$(DIRNAME)
-      libUtl = ../../Utilib/lib/$(DIRNAME)
-      libGan = ../../Ganlib/lib/$(DIRNAME)
-      libTri = ../../Trivac/lib/$(DIRNAME)
+      libUtl = ../Utilib/lib/$(DIRNAME)
+      libGan = ../Ganlib/lib/$(DIRNAME)
+      libTri = ../Trivac/lib/$(DIRNAME)
       bin = ../bin/$(DIRNAME)
       lib_module = ../lib/$(DIRNAME)/modules
-      INCLUDE = -I../../Ganlib/lib/$(DIRNAME)/modules/
+      INCLUDE = -I../Ganlib/lib/$(DIRNAME)/modules/
     endif
 endif
 endif
@@ -185,7 +185,7 @@ endif
 SRCC = $(shell ls *.c 2>/dev/null)
 SRC77 = $(shell ls *.f 2>/dev/null)
 SRCF77 = $(shell ls *.F 2>/dev/null)
-SRC90 = $(shell $(PY) ../../script/make_depend.py *.f90 *.F90 2>/dev/null)
+SRC90 = $(shell $(PY) ../script/make_depend.py *.f90 *.F90 2>/dev/null)
 OBJC = $(SRCC:.c=.o)
 OBJ90 = $(patsubst %.f90,%.o,$(patsubst %.F90,%.o,$(SRC90)))
 OBJ77 = $(SRC77:.f=.o)
@@ -200,7 +200,7 @@ ifeq ($(PY),)
 	@echo "# Dependencies not generated: no Python available" > $(DEPS_MK)
 else
 	@echo "# Generating Fortran dependencies into $(DEPS_MK)"; \
-	$(PY) ../../script/make_depend.py --make-deps $(SRC90) $(SRC77) $(SRCF77) > $(DEPS_MK) || { rm -f $(DEPS_MK); exit 1; }
+	$(PY) ../script/make_depend.py --make-deps $(SRC90) $(SRC77) $(SRCF77) > $(DEPS_MK) || { rm -f $(DEPS_MK); exit 1; }
 endif
 else
 SUBMAKE_DEPS :=
@@ -227,9 +227,9 @@ ifeq ($(hdf5),1)
 	@echo 'Dragon: hdf5 is defined'
 endif
 sub-make:
-	$(MAKE) openmp=$(openmp) intel=$(intel) nvidia=$(nvidia) llvm=$(llvm) hdf5=$(hdf5) -C ../../Utilib/src
-	$(MAKE) openmp=$(openmp) intel=$(intel) nvidia=$(nvidia) llvm=$(llvm) hdf5=$(hdf5) -C ../../Ganlib/src
-	$(MAKE) openmp=$(openmp) intel=$(intel) nvidia=$(nvidia) llvm=$(llvm) hdf5=$(hdf5) -C ../../Trivac/src
+	$(MAKE) openmp=$(openmp) intel=$(intel) nvidia=$(nvidia) llvm=$(llvm) hdf5=$(hdf5) -C ../Utilib/src
+	$(MAKE) openmp=$(openmp) intel=$(intel) nvidia=$(nvidia) llvm=$(llvm) hdf5=$(hdf5) -C ../Ganlib/src
+	$(MAKE) openmp=$(openmp) intel=$(intel) nvidia=$(nvidia) llvm=$(llvm) hdf5=$(hdf5) -C ../Trivac/src
 %.o : %.c $(SUBMAKE_DEPS)
 	$(C) $(CFLAGS) $(FLAGS) $(opt) $(COMP) -c $< -o $@
 %.o : %.f90 $(SUBMAKE_DEPS)
@@ -266,5 +266,5 @@ Dragon: libDragon.a DRAGON.o $(bin)/ sub-make
 	$(libUtl)/libUtilib.a $(libGan)/libGanlib.a $(LFLAGS) -o Dragon
 	cp $@ $(bin)/$@
 clean:
-	$(MAKE) -C ../../Trivac/src clean
+	$(MAKE) -C ../Trivac/src clean
 	/bin/rm -f *.o *.mod *.a sub-make temp.* Dragon $(DEPS_MK) *.pp.f *.pp.f90 ._*

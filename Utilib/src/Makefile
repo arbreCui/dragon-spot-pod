@@ -206,12 +206,12 @@ ifneq ($(filter Darwin Linux,$(OS)),)
 libUtilib.a: $(OBJC) $(OBJ90) $(OBJ77) $(OBJF77) $(lib)/
 	ar rcs $@ $(OBJC) $(OBJ90) $(OBJ77) $(OBJF77)
 	cp $@ $(lib)/$@
-	cp *.mod $(lib_module)
+	if ls *.mod 1> /dev/null 2>&1; then cp *.mod $(lib_module); fi
 else
 libUtilib.a: $(OBJC) $(OBJ90) $(OBJ77) $(OBJF77) $(lib)/
 	ar r $@ $(OBJC) $(OBJ90) $(OBJ77) $(OBJF77)
 	cp $@ $(lib)/$@
-	cp *.mod $(lib_module)
+	if ls *.mod 1> /dev/null 2>&1; then cp *.mod $(lib_module); fi
 endif
 clean:
 	/bin/rm -f *.o *.mod *.a $(DEPS_MK) *.pp.f *.pp.f90 ._*
