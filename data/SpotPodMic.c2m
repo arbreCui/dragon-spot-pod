@@ -71,7 +71,7 @@ ECHO "SpotPodMic: axial-stage MICROLIB2 MAXMIX=" maxmix_axial
 *----
 * Axial SPOT system assembly with POD compression (variant III).
 * CDOOR='SPOT' on SPOTRK -> ASMDRV branches to SPOT door, NOT
-* MCCGA. eps_pod=0 + rank_pod=0 -> SPOASM.f:264 LPOD=FALSE ->
+* MCCGA. eps_pod=0 + rank_pod=0 -> SPOASM.f LPOD guard FALSE ->
 * SPOPOD never called (W2 D2 + reviewer round 7 wording).
 *----
 SYSTEM := ASM: MICROLIB2 SPOTRK SNAP ::

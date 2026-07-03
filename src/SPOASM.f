@@ -7,9 +7,11 @@
 * Dragon assembly of SPOT information.
 *
 * When EPS_POD > 0 or RANK_POD > 0 the per-group radial leakage matrix
-* LEAK2D is compressed by Proper Orthogonal Decomposition through the
-* SPOPOD subroutine before being stored in the SPOT system. This
-* regularises the SPOT external leakage iteration.
+* LEAK2D is filtered by Proper Orthogonal Decomposition through the
+* SPOPOD subroutine before being stored in the SPOT system. The POD
+* acts on the pure-radial variable Y' = V*(L2D+L1D)*phi (Variant III'),
+* whose columns sum to zero at every outer iteration. This regularises
+* the SPOT external leakage iteration.
 *
 *Copyright:
 * Copyright (C) 2024 Ecole Polytechnique de Montreal
@@ -26,8 +28,9 @@
 * IPTRK    pointer to the tracking LCM object.
 * IPSNAP   pointer to the snapshot archive object.
 * IMPX     print flag (equal to zero for no print).
-* EPS_POD  POD truncation tolerance (sigma_r/sigma_1). <=0 disables POD.
-* RANK_POD POD explicit rank cap. <=0 means use EPS_POD only.
+* EPS_POD  POD filter tolerance (Tikhonov factor f=1/2 at
+*          sigma = EPS_POD*sigma_1). <=0 disables POD.
+* RANK_POD POD explicit hard rank cap. <=0 means use EPS_POD only.
 *
 *-----------------------------------------------------------------------
 *
@@ -63,8 +66,10 @@
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: W
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: POD_SIG
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: DB2
-*     Variant III: arrays for snapshot fluxes and volumes
+*     Variant III': arrays for snapshot fluxes, volumes and axial
+*     leakages
       REAL, ALLOCATABLE, DIMENSION(:)     :: VOLREG
+      REAL, ALLOCATABLE, DIMENSION(:,:)   :: XL1DK
       REAL, ALLOCATABLE, DIMENSION(:,:,:) :: PHIRK
 *----
 *  RECOVER GENERAL TRACKING INFORMATION
@@ -172,6 +177,8 @@
       JPSNAP2=LCMGID(IPSNAP,'SYSTEM')
       JPSNAP3=LCMGID(IPSNAP,'FLUX')
       ALLOCATE(LEAK1D(NGRP))
+      ALLOCATE(XL1DK(NSNAP,NGRP))
+      XL1DK(:NSNAP,:NGRP)=0.0
       DO ISNAP=1,NSNAP
         ! recover axial leakage information
         KPSNAP=LCMGIL(JPSNAP3,ISNAP)
@@ -181,6 +188,12 @@
         ELSE
           LEAK1D(:NGRP)=0.0
         ENDIF
+*       Variant III': keep the per-snapshot axial leakage so the POD
+*       can act on the pure-radial variable Y' = V*(L2D+L1D)*phi,
+*       whose columns sum to zero at EVERY outer iteration (the
+*       -LEAK1D share in DB2 below makes 1^T(V*L2D*phi) = -L1D*sum(V*phi)
+*       from the second outer iteration onward).
+        XL1DK(ISNAP,:NGRP)=LEAK1D(:NGRP)
         ! recover other reaction rates
         KPSNAP=LCMGIL(JPSNAP1,ISNAP)
         CALL LCMGET(KPSNAP,'KEYFLX',IDL2D)
@@ -224,8 +237,8 @@
             DB2(ISNAP,I,IGR)=-TXSC2D(IBM)+SXSC2D(IBM,1)-LEAK1D(IGR)+
      1      SOUR2D(IUNK,ISNAP,IGR)/FLUX2D(IUNK,ISNAP,IGR)
             SSUM=SSUM+DB2(ISNAP,I,IGR)*FLUX2D(IUNK,ISNAP,IGR)*VOL2D(I)
-*           Variant III: store the per-region snapshot flux and (once)
-*           the region volume for downstream POD on V*L*phi.
+*           Variant III': store the per-region snapshot flux and (once)
+*           the region volume for downstream POD on V*(L2D+L1D)*phi.
             PHIRK(I,ISNAP,IGR)=FLUX2D(IUNK,ISNAP,IGR)
             IF(ISNAP.EQ.1.AND.IGR.EQ.1) VOLREG(I)=VOL2D(I)
           ENDDO
@@ -251,7 +264,7 @@
       CALL LCMPUT(IPSYS,'STATE-VECTOR',NSTATE,1,ISTATE)
       JPSYS=LCMLID(IPSYS,'GROUP',NGRP)
 *----
-*  POD COMPRESSION OF LEAK2D (per energy group).
+*  POD FILTERING OF LEAK2D (per energy group).
 *  Active when EPS_POD > 0 or RANK_POD > 0; otherwise SPOPOD returns
 *  DB2 unchanged. Singular spectrum and effective rank are stored in
 *  the SPOT system for downstream diagnostics.
@@ -278,7 +291,8 @@
      1  SXSC(0,1,IGR))
         CALL LCMPUT(KPSYS,'NREG2D',1,1,NREG2D)
         CALL LCMPUT(KPSYS,'NSNAP',1,1,NSNAP)
-*       Variant III: POD filtering of L^{2D} via SVD on V*L*phi.
+*       Variant III': POD filtering of L^{2D} via SVD on the
+*       pure-radial variable V*(L2D+L1D)*phi (see SPOPOD.f90).
 *       SPOPOD is called only when POD is actively requested (LPOD true);
 *       otherwise we skip to keep baseline byte-identical with H\'ebert
 *       ev3809. This is critical: even calling SPOPOD with EPS_POD<=0
@@ -286,7 +300,7 @@
 *       and shift baseline keff (W2 D2 finding).
         IF(LPOD) THEN
           CALL SPOPOD(NREG2D,NSNAP,DB2(1,1,IGR),
-     1                PHIRK(1,1,IGR),VOLREG,
+     1                PHIRK(1,1,IGR),VOLREG,XL1DK(1,IGR),
      2                EPS_POD,RANK_POD,PHI_MIN_POD,
      3                IRANK,W,
      4                ERR_PRE_POD,ERR_POST_POD,
@@ -326,13 +340,13 @@
 *  SCRATCH STORAGE DEALLOCATION
 *----
       DEALLOCATE(POD_SIG,POD_RANK,W)
-      DEALLOCATE(VOLREG,PHIRK)
+      DEALLOCATE(VOLREG,XL1DK,PHIRK)
       DEALLOCATE(VOL2D,IDL2D,MAT2D)
       DEALLOCATE(SXSC,TXSC,DB2,SOUR2D,FLUX2D)
       RETURN
   100 FORMAT(44H SPOASM: RADIAL NEUTRON BALANCE FOR SNAPSHOT,I5,
      1 9H IN GROUP,I5,2H =,1P,E12.4)
-  200 FORMAT(/' SPOASM: POD compression of LEAK2D enabled. ',
+  200 FORMAT(/' SPOASM: POD filtering of LEAK2D enabled. ',
      1 'eps_pod=',1P,E10.3,'  rank_max=',I3)
   210 FORMAT(' SPOASM: POD ranks across',I4,' groups: min=',I3,
      1 ', max=',I3,' (out of NSNAP=',I3,')')

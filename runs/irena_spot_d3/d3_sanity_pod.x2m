@@ -1,33 +1,37 @@
 ****************************************************************
 *  d3_sanity_pod.x2m -- POD-case companion to d3_sanity.x2m     *
 *                                                                *
-*  Goal: verify whether handoff number K_B = 1.409777            *
-*    (claimed POD eps=1E-3 converged outer iter result) is real. *
+*  Reference values, SHEM-370 tree, Variant III' (POD on        *
+*  Y' = V*(L2D+L1D)*phi, Tikhonov filters), 2026-07-03:          *
+*    K_A (no-POD, d3_sanity.x2m)   = 1.411218                   *
+*    K_B (POD eps=1E-3, this deck) = 1.411206  (-0.6 pcm)       *
+*    ERR_PRE flat across ASM calls 1-3: median ~2.0E-6          *
+*    (assembly-rounding level at every outer iteration).        *
 *                                                                *
-*    d3_sanity.x2m (no-POD)  produced  K = 1.410130 (matches     *
-*    handoff K_A — that number is therefore real).               *
-*                                                                *
-*    K_B = 1.409777 is currently unsupported by any log file in  *
-*    the runs/ tree. This run is the binary check.               *
+*  History: the pre-SHEM-370 handoff numbers K_A=1.410130 /      *
+*    K_B=1.409777 are superseded by the 366->370 library         *
+*    migration (commit fe651a8); the 2026-05-21 attempt at this  *
+*    run was killed externally mid-solve (empty .err), so K_B    *
+*    was first measured in-tree on 2026-07-03.                   *
 *                                                                *
 *  Setup (same as d3_sanity except eps_pod):                     *
 *    max_o   = 2     (run exactly 2 outer iters)                 *
 *    eps_o   = 1E-2  (loose; max_o terminates)                   *
-*    eps_pod = 1E-3  (Variant III POD compression)               *
+*    eps_pod = 1E-3  (Variant III' POD filtering)                *
 *    rank_pod= 0     (rank cap disabled; eps_pod alone)          *
 *    flu_eps = 1E-4                                              *
 *    nsnap   = 5                                                 *
 *                                                                *
-*  Verdict on K_B = 1.409777:                                    *
-*    PASS  if final K_SPOT ~ 1.409777  +/- a few pcm             *
-*    FAIL  if final K_SPOT differs > 10 pcm from 1.409777        *
-*    NEW   if final K_SPOT is a third value entirely (handoff    *
-*          number invented; real POD K is X)                     *
+*  Verdict gates:                                                *
+*    PASS  if final K_SPOT ~ 1.411206  +/- a few pcm             *
+*    FAIL  if final K_SPOT differs > 10 pcm from 1.411206        *
 *                                                                *
-*  Also expect: SPOPOD prints of POD rank per group; iter 2      *
-*  errspo finite (patch still works under POD).                  *
+*  Also expect: SPOPOD prints of POD rank per group (min 1,      *
+*  max 3 of 5); iter 2 errspo finite (patch works under POD);    *
+*  pre/post-SVD constraint residuals ~1E-6 at ALL ASM calls.     *
 *                                                                *
-*  Author: B. Cui (POD sanity, 2026-05-02)                       *
+*  Author: B. Cui (POD sanity 2026-05-02; Variant III' refs      *
+*          updated 2026-07-03)                                   *
 ****************************************************************
 
 SEQ_ASCII glow_rnr   :: FILE './irena_pincell.dat' ;
@@ -44,7 +48,7 @@ PROCEDURE SpotPodItr SpotSnapBld assertS rnr_cc rnr_interpol ;
 glowpost.ps := G2S: glow_rnr :: (*DRAWMIX*) ;
 
 ECHO "================================================" ;
-ECHO "D3 SANITY POD: K_B=1.409777 verification (POD eps=1E-3)" ;
+ECHO "D3 SANITY POD: K_B=1.411206 regression (POD eps=1E-3)" ;
 ECHO "  max_o=2, eps_o=1E-2, eps_pod=1E-3, flu_eps=1E-4" ;
 ECHO "================================================" ;
 
@@ -134,13 +138,13 @@ ECHO "================================================" ;
 ECHO "D3 SANITY POD: result" ;
 ECHO "================================================" ;
 ECHO "  final K_POD =" k_final ;
-ECHO "  K_NoPOD reference (d3_sanity, today) = 1.410130" ;
-ECHO "  Handoff claim K_B = 1.409777" ;
-ECHO "  dK_pcm vs K_NoPOD =" k_final 1.410130 - 1.0E5 * ;
-ECHO "  dK_pcm vs handoff K_B =" k_final 1.409777 - 1.0E5 * ;
+ECHO "  K_NoPOD reference (d3_sanity, 2026-07-03) = 1.411218" ;
+ECHO "  K_POD reference (this deck, 2026-07-03)   = 1.411206" ;
+ECHO "  dK_pcm vs K_NoPOD =" k_final 1.411218 - 1.0E5 * ;
+ECHO "  dK_pcm vs K_POD ref =" k_final 1.411206 - 1.0E5 * ;
 ECHO "  Verdict:" ;
-ECHO "    PASS  if final K matches 1.409777 within ~5 pcm" ;
-ECHO "    FAIL  if final K differs >10 pcm from 1.409777" ;
+ECHO "    PASS  if final K matches 1.411206 within ~5 pcm" ;
+ECHO "    FAIL  if final K differs >10 pcm from 1.411206" ;
 
 ECHO "d3_sanity_pod complete" ;
 END: ;
