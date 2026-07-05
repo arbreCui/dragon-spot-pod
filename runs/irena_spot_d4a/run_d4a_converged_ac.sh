@@ -25,7 +25,7 @@ set -eu
 
 ROOT="/Users/wen/spot"
 RUN="$ROOT/runs/irena_spot_d4a"
-LIB="/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin"
+LIB="/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/assembly"
 DAT="$ROOT/data/rnr_0burn_spot_proc"
 MAIN="$ROOT/data"
 
