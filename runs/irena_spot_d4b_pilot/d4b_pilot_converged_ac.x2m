@@ -3,10 +3,13 @@
 * d4b_pilot.x2m -- D4-B pilot A/C, ledger-governed  *
 *                                                              *
 * PURPOSE                                                      *
-*   First "ledger-governed" experiment after the 2026-05-02    *
-*   evidence pivot. Replaces stage-1 SpotPodEps with outer-iter*
-*   SpotPodItr to produce the converged D4-A K_A and K_C,      *
-*   superseding the stage-1 K=1.163428 / 1.163425 narrative.   *
+*   D4-B pilot: converged A/C on the 1/12 hex MULTI-RING       *
+*   assembly (SnapMring, 4 MOX rings, 207 regions). Produces   *
+*   the multi-ring K_A / K_C and the rank-vs-N data point       *
+*   between D4-A (N=132) and D4-C (N=1802); go/no-go for D4-C. *
+*   In-tree 1-ring counterparts (SHEM-370, evidence_ledger.md):*
+*   stage-1 K=1.163271; converged K_A=1.183264, K_C=1.183274,  *
+*   Delta-rho_AC=+1.03 pcm.                                    *
 *                                                              *
 *   Derived from d4a_combined_ac_fix.x2m by replacing the two  *
 *   SpotPodEps calls with SpotPodItr (same archive structure,  *
@@ -37,16 +40,17 @@
 *   binary is post-codesign before launch.                     *
 *                                                              *
 * COST estimate                                                *
-*   Snapshot phase  ~5 x 1h45 = 8-9h (frozen-binary baseline)  *
-*   PASS A converged ~2-3 outer iters x ~1h SPOF = 2-3h        *
-*   PASS C converged similar                                   *
-*   Total ~12-15h. Run overnight. May need eps_pod_b/c lower   *
-*   if outer-iter count is high; check after first iter.       *
+*   Multi-ring (207 regions, 4-ring TONE): ~50-60h total.      *
+*   Calibration: D4-A 1-ring (132 regions) actual was ~31h     *
+*   with 5+4 outer iters (snapshots ~9h, ~2.4h per outer       *
+*   iter). Expect 5-ish iters per pass here too, not 2-3.      *
 *                                                              *
 * LEDGER ENTRY (must be added immediately after run completes) *
 *   - run_id: d4b_pilot                                 *
 *   - status: valid-converged (or whatever applies)            *
-*   - K_iter1_first_iterate: should match stage-1 K=1.163428   *
+*   - K_iter1_first_iterate: first in-tree multi-ring stage-1  *
+*     measurement; expect within a few hundred pcm of the      *
+*     1-ring stage-1 K=1.163271 (ring refinement effect)       *
 *   - K_converged: PASS A and PASS C, with errspo at converged *
 *   - source_line: log lines for SpotPodItr: done.             *
 *   - trust_basis: patched binary, sanity-validated SpotPodItr *
@@ -75,7 +79,7 @@ ECHO "D4-B pilot A/C: ledger-governed run" ;
 ECHO "  PASS A: SNAP_A, eps_pod=0    (no-POD converged)" ;
 ECHO "  PASS C: SNAP_C, eps_pod=1E-3 (POD converged)" ;
 ECHO "  eps_o=1E-4, max_o=50" ;
-ECHO "  Compare iter-1 K to stage-1 1.163428 / 1.163425" ;
+ECHO "  Compare iter-1 K to 1-ring stage-1 1.163271 (this tree)" ;
 ECHO "  Compare converged K_C - K_A to D3 sanity Drho=-17.8 pcm" ;
 ECHO "================================================" ;
 
@@ -184,7 +188,7 @@ INTEGER max_o    := 50 ;
 *================================================================
 ECHO "================================================" ;
 ECHO "D4-B PILOT PASS A: SNAP_A, eps_pod=0 (no-POD)" ;
-ECHO "  iter 1 should match stage-1 K_A = 1.163428" ;
+ECHO "  iter 1 = first multi-ring stage-1 K_A (expect ~1.163 +/- few hundred pcm)" ;
 ECHO "================================================" ;
 REAL eps_pod_a := 0.0 ;
 FLXAX_A SNAP_A := SpotPodItr SNAP_A GEOM_AXIAL TRKAX_A ::
@@ -199,7 +203,7 @@ ECHO "D4-B PILOT K_A (eps=0,    converged) =" k_A ;
 *================================================================
 ECHO "================================================" ;
 ECHO "D4-B PILOT PASS C: SNAP_C, eps_pod=1E-3 (POD)" ;
-ECHO "  iter 1 should match stage-1 K_C = 1.163425" ;
+ECHO "  iter 1 = first multi-ring stage-1 K_C (expect slightly below K_A; D4-A saw -13 pcm)" ;
 ECHO "================================================" ;
 REAL eps_pod_c := 1.0E-3 ;
 FLXAX_C SNAP_C := SpotPodItr SNAP_C GEOM_AXIAL TRKAX_C ::
@@ -220,8 +224,10 @@ ECHO "  PASS C POD 1E-3   converged K =" k_C ;
 ECHO "  Delta-rho_AC pcm =" k_C k_A - 1.0E5 * ;
 ECHO "" ;
 ECHO "ACCEPTANCE GATES (post-run, write into evidence_ledger.md):" ;
-ECHO "  Gate 1: K_A iter 1 ~ 1.163428 (stage-1 reference)" ;
-ECHO "  Gate 2: K_C iter 1 ~ 1.163425 (stage-1 reference)" ;
+ECHO "  Gate 1: K_A iter 1 within a few hundred pcm of 1-ring" ;
+ECHO "          stage-1 1.163271 (ring-refinement effect only)" ;
+ECHO "  Gate 2: K_C iter 1 slightly below K_A iter 1" ;
+ECHO "          (Tikhonov attenuation; D4-A saw -13 pcm)" ;
 ECHO "  Gate 3: K_A converged > K_A iter 1 by 'a few hundred to" ;
 ECHO "          a few thousand pcm' (axial leakage feedback;" ;
 ECHO "          D3 saw +1350 pcm; D4-B 1/12 multi-ring has different" ;
@@ -229,7 +235,8 @@ ECHO "          geometry so magnitude not directly comparable)" ;
 ECHO "  Gate 4: SpotPodItr: done. converged= 1 in both passes" ;
 ECHO "          (errspo < eps_o = 1E-4)" ;
 ECHO "  Gate 5: Delta-rho(C-A) at converged level is the real" ;
-ECHO "          POD truncation cost; report alongside D3 -17.8 pcm" ;
+ECHO "          POD filtering cost; report alongside D3 -0.6 pcm" ;
+ECHO "          and D4-A +1.03 pcm (this tree, Variant III')" ;
 ECHO "" ;
 ECHO "  After run: add row to evidence_ledger.md, then update" ;
 ECHO "  handoff §5 row 'D4-B 1/12 multi-ring converged' from TODO to done." ;
