@@ -14,6 +14,7 @@ citable references.
 | `d4a_baseline` | 2026-07-05 | d4a_het_baseline.x2m, eps=0 | — (stage-1) | **1.163271** (stage-1 final) | — | PASS | 132-region 1/12-hex 1-ring assembly, 5-T Doppler ladder; ~9.2 h wall; 0 warnings |
 | `d4a_converged_ac` PASS A | 2026-07-07 | d4a_converged_ac.x2m, eps=0 | 1.163271 (=baseline, bit-identical) | **1.183264** | 8.71e-05 | PASS | converged=1 in 5 outer iters; axial leakage ≈ +2000 pcm |
 | `d4a_converged_ac` PASS C | 2026-07-07 | d4a_converged_ac.x2m, eps=1e-3 | 1.163123 | **1.183274** | 8.15e-05 | PASS | converged=1 in 4 outer iters; **Δρ(A→C) = +1.03 pcm**; iter-1 offset −13 pcm washes out in the converged loop; ERR_PRE flat 1.39e-5 median across all 5 ASM passes; ranks 1–3 of 5 |
+| `d4b_dry` | 2026-07-08 | d4b_dry_snapMring.x2m, single 750 °C snapshot | — | **K_TYPEK_radial = 1.367221** | — | PASS | 4-ring SnapMring end-to-end validation; +0.9 pcm vs 1-ring 1.367208 (ring refinement nearly neutral); all 3 gates pass; clean exit |
 
 ## Reference values (this tree)
 
