@@ -216,7 +216,9 @@ src/                       Dragon main source (full vendor of upstream
                             as part of this work:
   SPOT.f                   Hébert + Cui (KEYFLX$ANIS index fix,
                             EPSI -> SVDEPS write fix; see commit log)
-  SPOT1P.f90               Hébert, 1D axial SN with scattering reduction
+  SPOT1P.f90               Hébert + Cui (1D axial SN with scattering
+                            reduction; defensive guard on singular
+                            per-region systems, 2026-07)
   SPOF.f                   Hébert
   SPOASM.f                 Hébert + Cui POD entry points
   SPODB2.f                 Hébert + Cui IPSNAP patch + FLU2 div-zero guard

@@ -68,9 +68,19 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
   double precision, allocatable, dimension(:,:) :: AA,shoot
   double precision, allocatable, dimension(:,:,:) :: BB,afb
   double precision, allocatable, dimension(:,:,:,:) :: funk
+  ! Defensive guard against degenerate axial systems (Cui, 2026-07):
+  ! near-zero-flux groups (deep thermal in a fast spectrum, made worse
+  ! by fine radial subdivision) can drive |db2| so large that the
+  ! per-region dense systems lose rank in double precision. Instead of
+  ! aborting the whole run, the affected solution is zeroed (pure
+  ! source-driven sweep / absorbing floor), occurrences are counted,
+  ! and the run aborts only if EVERY region is singular in one call.
+  integer :: nsing_call
+  integer, save :: nsing_total=0
   !
   allocate(afb(npq,nfloor+1,nreg2d),AA(npq,nreg2d),BB(npq,npq,nreg2d),funk(ielem,nfloor,npq,nreg2d), &
   & shoot(npq,npq+1))
+  nsing_call=0
   !----
   !  set matrix AA
   !----
@@ -122,7 +132,20 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
     !  shooting method solution.
     !----
     call ALSBD(npq,1,shoot,ier,npq)
-    if(ier.ne.0) call XABORT('SPOT1P: singular matrix.')
+    if(ier.ne.0) then
+      ! Degenerate shooting matrix: zero the closure correction for
+      ! this region (falls back to the source-driven sweep with
+      ! vacuum inlet) and continue. See guard note above.
+      !$omp critical(spot1p_sing)
+      nsing_call=nsing_call+1
+      nsing_total=nsing_total+1
+      if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
+        write(6,'(a,i7,a,i12,a)') ' SPOT1P: singular shooting matrix in region', &
+        & k2d,' (occurrence',nsing_total,'); solution zeroed.'
+      endif
+      !$omp end critical(spot1p_sing)
+      shoot(:npq,npq+1)=0.0d0
+    endif
     do ip=1,npq
       xnei(ip,k2d)=real(shoot(ip,npq+1))
     enddo
@@ -144,6 +167,7 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
     enddo
   enddo ! k2d
   !$omp end parallel do
+  if(nsing_call.ge.nreg2d) call XABORT('SPOT1P: singular shooting matrix in every region.')
   !----
   !  recompute SN flux with target boundary fluxes
   !----
@@ -263,7 +287,22 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
         !  flux calculation on axial floor with scattering reduction.
         !----
         call ALSBD(iepq,1,sigt_m,ier,iepq)
-        if(ier.ne.0) call XABORT('SPOT1P-swap: singular matrix.')
+        if(ier.ne.0) then
+          ! Degenerate floor system: treat this (floor, region) as
+          ! perfectly absorbing and continue. See guard note above.
+          !$omp critical(spot1p_sing)
+          nsing_total=nsing_total+1
+          if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
+            write(6,'(a,i7,a,i5,a,i12,a)') ' SPOT1P-swap: singular matrix in region', &
+            & k2d,' floor',ifloor,' (occurrence',nsing_total,'); flux zeroed.'
+          endif
+          !$omp end critical(spot1p_sing)
+          do ip=1,npq
+            funk(:ielem,ifloor,ip,k2d)=0.0
+            afb(ip,ifloor+1,k2d)=0.0d0
+          enddo
+          cycle
+        endif
         !
         do ip=1,npq
           funk(:ielem,ifloor,ip,k2d)=0.0
