@@ -77,10 +77,14 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
   ! and the run aborts only if EVERY region is singular in one call.
   integer :: nsing_call
   integer, save :: nsing_total=0
+  logical :: lbad
+  logical, allocatable, dimension(:) :: lsing
   !
   allocate(afb(npq,nfloor+1,nreg2d),AA(npq,nreg2d),BB(npq,npq,nreg2d),funk(ielem,nfloor,npq,nreg2d), &
   & shoot(npq,npq+1))
   nsing_call=0
+  allocate(lsing(nreg2d))
+  lsing(:nreg2d)=.false.
   !----
   !  set matrix AA
   !----
@@ -145,6 +149,7 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
       endif
       !$omp end critical(spot1p_sing)
       shoot(:npq,npq+1)=0.0d0
+      lsing(k2d)=.true.
     endif
     do ip=1,npq
       xnei(ip,k2d)=real(shoot(ip,npq+1))
@@ -174,6 +179,51 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
   call swap(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,lfixup,mat1d,vol1d,mat,keyflx, &
   & total,sgas,qext,du,w,pl,db2,afb,funk)
   !----
+  !  sanitise degenerate regions before taking flux moments: a region
+  !  flagged singular above keeps a garbage sweep flux from its
+  !  near-singular floor systems, and even unflagged near-singular
+  !  solves (ier=0, condition ~1/eps) can return astronomically large
+  !  values. Left alone these poison the fission-source integral of
+  !  the outer eigenvalue iteration (observed: KEFF 9.3e6 -> -5.5e43
+  !  -> NaN on the d4b multi-ring pilot). Zero the whole region-group:
+  !  physically these are near-zero-flux groups whose contribution to
+  !  K is negligible. The test .not.(|x|<1e30) also catches NaN.
+  !----
+  do k2d=1,nreg2d
+    lbad=lsing(k2d)
+    if(.not.lbad) then
+      floors: do ifloor=1,nfloor
+        do ip=1,npq
+          do iel=1,ielem
+            if(.not.(abs(funk(iel,ifloor,ip,k2d)).lt.1.0d30)) then
+              lbad=.true.
+              exit floors
+            endif
+          enddo
+          if(.not.(abs(afb(ip,ifloor+1,k2d)).lt.1.0d30)) then
+            lbad=.true.
+            exit floors
+          endif
+        enddo
+      enddo floors
+      if(lbad) then
+        !$omp critical(spot1p_sing)
+        nsing_total=nsing_total+1
+        if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
+          write(6,'(a,i7,a,i12,a)') ' SPOT1P: non-finite/huge axial flux in region', &
+          & k2d,' (occurrence',nsing_total,'); region zeroed.'
+        endif
+        !$omp end critical(spot1p_sing)
+      endif
+    endif
+    if(lbad) then
+      funk(:ielem,:nfloor,:npq,k2d)=0.0d0
+      afb(:npq,:nfloor+1,k2d)=0.0d0
+      xnei(:npq,k2d)=0.0
+      cour(1,k2d)=0.0
+    endif
+  enddo
+  !----
   !  compute Legendre moments of the flux.
   !----
   flux(:ielem,:nsct,:nfloor,:nreg2d)=0.0
@@ -192,7 +242,7 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
       enddo
     enddo
   enddo
-  deallocate(shoot,funk,BB,AA,afb)
+  deallocate(lsing,shoot,funk,BB,AA,afb)
   return
   contains
   subroutine swap(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,lfixup,mat1d,vol1d,mat,keyflx, &
