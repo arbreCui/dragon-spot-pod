@@ -86,6 +86,35 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
   allocate(lsing(nreg2d))
   lsing(:nreg2d)=.false.
   !----
+  !  pre-flag regions with non-physical radial leakage data. Real
+  !  cross sections are O(1e0-1e2) cm-1; L2D = Q/phi - St + Ss0 - L1D
+  !  in a near-zero-flux cell reaches 1e10+ (and can be huge negative
+  !  when the MOC source moment underflows before the flux). Such a
+  !  floor operator has enormous gain or absorption: its sweep flux is
+  !  garbage of arbitrary magnitude -- output-magnitude clamps alone
+  !  proved insufficient (observed sub-1e30 garbage driving KEFF to
+  !  1e24 on the d4b pilot). Detect at the data level and deactivate
+  !  the region for this group: physically these are degenerate
+  !  near-zero-flux groups with negligible contribution to K.
+  !  The test .not.(|x|<cap) also catches NaN. Cap 1e4 sits well
+  !  above any physical value and well below the garbage scale.
+  !----
+  do k2d=1,nreg2d
+    do is=1,nsnap
+      if(.not.(abs(db2(is,k2d)).lt.1.0d4)) then
+        lsing(k2d)=.true.
+        nsing_total=nsing_total+1
+        if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
+          write(6,'(a,i7,a,1p,e11.3,a,i3,a,i12,a)') &
+          & ' SPOT1P: non-physical radial leakage in region',k2d, &
+          & ' (L2D=',db2(is,k2d),', snapshot',is,', occurrence', &
+          & nsing_total,'); region deactivated.'
+        endif
+        exit
+      endif
+    enddo
+  enddo
+  !----
   !  set matrix AA
   !----
   afb(:npq,:nfloor+1,:nreg2d)=0.0d0
@@ -109,6 +138,13 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
   !----
   !$omp parallel do private(shoot,ico,ip,ier)
   do k2d=1,nreg2d
+    if(lsing(k2d)) then
+      ! deactivated region: vacuum solution, no shooting solve
+      xnei(:npq,k2d)=0.0
+      afb(:npq,1,k2d)=0.0d0
+      cour(1,k2d)=0.0
+      cycle
+    endif
     shoot(:npq,:npq)=0.0d0
     shoot(:npq,npq+1)=AA(:npq,k2d)
     if((ncode(1).eq.1).and.(ncode(2).eq.1)) then
@@ -275,6 +311,12 @@ subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
     !----
     !$omp parallel do private(ifloor,isnap,ip,jnd1,ibm,volume,il,i,j,q,sig,qqq,ie1,ie2,ier,ssign)
     do k2d=1,nreg2d
+      if(lsing(k2d)) then
+        ! deactivated region (non-physical L2D): zero sweep, no solve
+        funk(:ielem,:nfloor,:npq,k2d)=0.0d0
+        afb(:npq,2:nfloor+1,k2d)=0.0d0
+        cycle
+      endif
       do ifloor=1,nfloor
         sigt_m(:iepq,:iepq+1)=0.0d0
         isnap=mat1d(ifloor)
