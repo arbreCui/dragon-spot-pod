@@ -127,8 +127,50 @@ def main() -> None:
         ):
             fail(f"malformed output marker at log line {log_line}")
     echoes = parse_echoes(lines)
-    if len(echoes) != 19:
-        fail(f"expected exactly 19 output markers, found {len(echoes)}")
+    init_tolerance_echoes = [
+        item
+        for item in echoes
+        if item.payload.startswith("ITERATIVE-MAP-INIT-TOLERANCE")
+    ]
+    map_tolerance_echoes = [
+        item
+        for item in echoes
+        if item.payload.startswith("ITERATIVE-MAP-MAP-TOLERANCE")
+    ]
+    legacy_tolerance_echoes = [
+        item
+        for item in echoes
+        if item.payload.startswith("ITERATIVE-MAP-INNER-TOLERANCE")
+    ]
+    split_tolerance = bool(
+        init_tolerance_echoes or map_tolerance_echoes
+    )
+    if split_tolerance:
+        if (
+            len(init_tolerance_echoes) != 1
+            or len(map_tolerance_echoes) != 1
+            or legacy_tolerance_echoes
+        ):
+            fail("invalid split initializer/map tolerance markers")
+        expected_echo_count = 20
+        tolerance_markers = [
+            "ITERATIVE-MAP-INIT-TOLERANCE",
+            "ITERATIVE-MAP-MAP-TOLERANCE",
+        ]
+    else:
+        if (
+            len(legacy_tolerance_echoes) != 1
+            or init_tolerance_echoes
+            or map_tolerance_echoes
+        ):
+            fail("invalid one-map tolerance marker")
+        expected_echo_count = 19
+        tolerance_markers = ["ITERATIVE-MAP-INNER-TOLERANCE"]
+    if len(echoes) != expected_echo_count:
+        fail(
+            f"expected exactly {expected_echo_count} output markers, "
+            f"found {len(echoes)}"
+        )
 
     if re.search(
         r"\bXABORT\b|\bABORT\b|ERROR STOP|\bFATAL\b|"
@@ -171,7 +213,7 @@ def main() -> None:
     ordered = [
         "ITERATIVE-MAP-BEGIN",
         "ITERATIVE-MAP-RANK",
-        "ITERATIVE-MAP-INNER-TOLERANCE",
+        *tolerance_markers,
         "ITERATIVE-MAP-BASIS-BUILT",
         "ITERATIVE-MAP-STATE0",
         "ITERATIVE-MAP-LEAKAGE0",
@@ -204,6 +246,9 @@ def main() -> None:
     complete_line = one_echo(
         echoes, "ITERATIVE-MAP-COMPLETE"
     ).log_line
+    expected_end_source = (
+        one_echo(echoes, "ITERATIVE-MAP-COMPLETE").source_line + 1
+    )
     interlude = [
         line.strip()
         for line in lines[complete_line : normal_end_line - 1]
@@ -211,7 +256,11 @@ def main() -> None:
     ]
     if (
         len(interlude) != 2
-        or re.fullmatch(r"<\|END: ;[ \t]*\|<0097", interlude[0]) is None
+        or re.fullmatch(
+            rf"<\|END: ;[ \t]*\|<{expected_end_source:04d}",
+            interlude[0],
+        )
+        is None
         or re.fullmatch(
             rf"cle2000_c: cpu time=[ \t]*{NUMBER} second",
             interlude[1],
@@ -224,13 +273,30 @@ def main() -> None:
     rank = int(rank_values[0])
     if rank_values[0] != rank or rank != 1:
         fail("the frozen one-map fixture must use rank 1")
-    solver_eps = marker_numbers(
-        echoes, "ITERATIVE-MAP-INNER-TOLERANCE", 1
-    )[0]
-    if solver_eps <= 0.0:
+    if split_tolerance:
+        init_eps = marker_numbers(
+            echoes, "ITERATIVE-MAP-INIT-TOLERANCE", 1
+        )[0]
+        solver_eps = marker_numbers(
+            echoes, "ITERATIVE-MAP-MAP-TOLERANCE", 1
+        )[0]
+    else:
+        solver_eps = marker_numbers(
+            echoes, "ITERATIVE-MAP-INNER-TOLERANCE", 1
+        )[0]
+        init_eps = solver_eps
+    if init_eps <= 0.0 or solver_eps <= 0.0:
         fail("declared solver tolerance is not positive")
+    init_eps_bits = struct.unpack(">I", struct.pack(">f", init_eps))[0]
     solver_eps_bits = struct.unpack(">I", struct.pack(">f", solver_eps))[0]
-    if solver_eps_bits != 0x350637BD:
+    if init_eps_bits != 0x350637BD:
+        fail("initializer tolerance differs from the frozen protocol")
+    if split_tolerance:
+        if solver_eps_bits != 0x348637BD:
+            fail("map tolerance differs from the frozen h/2 protocol")
+        if f32(2.0 * f32(solver_eps)) != f32(init_eps):
+            fail("map tolerance is not the exact binary32 half")
+    elif solver_eps_bits != 0x350637BD:
         fail("solver tolerance differs from the frozen one-map protocol")
     state0_echo = one_echo(echoes, "ITERATIVE-MAP-STATE0")
     leakage0_echo = one_echo(echoes, "ITERATIVE-MAP-LEAKAGE0")
@@ -295,7 +361,6 @@ def main() -> None:
         and radial_end_line < outer_lines[4]
     ):
         fail("the five FLU solves are not one axial, three radial, one axial")
-    declared_eps32 = f32(solver_eps)
     for index, (outer_match, inner_match) in enumerate(zip(outer, inner), 1):
         iextf, maxout = (int(outer_match.group(i)) for i in (1, 2))
         keff = as_float(outer_match.group(3))
@@ -338,7 +403,8 @@ def main() -> None:
         ):
             # The solver prints binary32 controls with eight digits after the
             # decimal. This is a representation check, not a physics margin.
-            printed_declared = float(f"{declared_eps32:.8E}")
+            expected_eps = init_eps if index == 1 else solver_eps
+            printed_declared = float(f"{f32(expected_eps):.8E}")
             if actual != printed_declared:
                 fail(
                     f"solve {index} {label} differs from the deck's "
@@ -747,6 +813,11 @@ def main() -> None:
     )
 
     print("ONE-MAP RUNTIME STRUCTURE PASS")
+    if split_tolerance:
+        print(
+            "ONE-MAP RUNTIME TOLERANCE SCHEDULE PASS: "
+            "initializer=h; map=h/2"
+        )
     print("ONE-MAP RUNTIME INNER SOLVES PASS: 2 axial + 3 radial")
     print("ONE-MAP RUNTIME FIXED-SPACE RADIAL UPDATE PASS: 3 planes")
     print(

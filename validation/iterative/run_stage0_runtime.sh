@@ -47,6 +47,12 @@ before=$(shasum -a 256 \
     { print }
   ' "$ROOT/validation/iterative/one_corrected_map.x2m" |
     "$DRAGON_BIN" > one_map_syntax.log 2>&1
+  awk '
+    /ECHO "ITERATIVE-MAP-BEGIN"/ { print "IF 0 1 = THEN" }
+    /ECHO "ITERATIVE-MAP-COMPLETE"/ { print "ENDIF ;" }
+    { print }
+  ' "$ROOT/validation/iterative/inner_sensitivity_map.x2m" |
+    "$DRAGON_BIN" > inner_sensitivity_syntax.log 2>&1
 )
 
 gfortran -std=f2008 -O0 -Wall -Wextra -ffp-contract=off -fno-fast-math \
@@ -79,6 +85,10 @@ rg 'ITERATIVE-STATE-NOSOLVE-COMPLETE' \
   "$WORK/state_residual.log" >/dev/null
 rg 'ITERATIVE-MAP-COMPLETE' "$WORK/one_map_syntax.log" >/dev/null
 rg 'normal end of execution' "$WORK/one_map_syntax.log" >/dev/null
+rg 'ITERATIVE-MAP-COMPLETE' \
+  "$WORK/inner_sensitivity_syntax.log" >/dev/null
+rg 'normal end of execution' \
+  "$WORK/inner_sensitivity_syntax.log" >/dev/null
 
 after=$(shasum -a 256 \
   "$SEED_DIR/state8_axial.xsm" "$SEED_DIR/state9_axial.xsm")
@@ -87,4 +97,4 @@ test "$before" = "$after"
 cat "$WORK/fixed_basis_check.log"
 rg 'SPOSTATE NCOEF|SPOPROJ FIXED-SPACE|SPOXCONV RRHO' \
   "$WORK/state_residual.log"
-echo "ITERATIVE STAGE0 RUNTIME PASS: no transport solve; fixed basis, canonical state, residual plumbing, and the one-map deck syntax are executable."
+echo "ITERATIVE STAGE0 RUNTIME PASS: no transport solve; fixed basis, canonical state, residual plumbing, and both bounded-map deck syntaxes are executable."

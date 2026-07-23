@@ -154,9 +154,16 @@ Here \(D_L=\|L^+-L\|_\infty\) accompanies the dimensionless relative leakage
 residual \(R_L\); it is a recorded diagnostic, not a fourth convergence
 criterion.
 
-The next numerical gate is the predeclared inner-tolerance sensitivity from
-the same \(x_0\), not a long trajectory. The complete receipt is in
-[validation/iterative/one_map_result.md](validation/iterative/one_map_result.md).
+The next numerical gate is frozen before calculation. The initializer remains
+at binary32 \(h=\mathtt{0x350637bd}\); only the three radial solves and
+returned axial solve in \(G\) use the exact binary32 half
+\(h/2=\mathtt{0x348637bd}\). The two lanes must reproduce the same
+`basis_reference.xsm` and `state0_axial.xsm` byte for byte. Sensitivity is
+reported separately for \(R_\rho,R_L,D_L,R_a\), with no weighted score or
+fitted factor. The one-map receipt is in
+[validation/iterative/one_map_result.md](validation/iterative/one_map_result.md);
+the Stage-4 controls are in
+[validation/iterative/inner_sensitivity_protocol.json](validation/iterative/inner_sensitivity_protocol.json).
 
 ## Validation route
 
@@ -212,3 +219,21 @@ VERIFY_REFERENCE=1 \
 same-input replay hashes. An in-tree build may omit the two `GANLIB_*`
 overrides. This runner verifies one raw map when its independent runtime and
 XSM checks pass. It does not qualify outer convergence.
+
+The next bounded command keeps the initializer at \(h\) and evaluates one map
+at \(h/2\) from the same frozen \(x_0\):
+
+```sh
+DRAGON_BIN=/absolute/path/to/Dragon \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+SEED_DIR=/absolute/path/to/iterative-seed \
+BASELINE_DIR=/absolute/path/to/iterative-map1 \
+KEEP_WORK=1 \
+  sh validation/iterative/run_inner_sensitivity.sh
+```
+
+This first command is a capture, not an outer iteration or a Stage-4
+qualification. Even if all four scale orderings are `RESOLVED`, its state is
+`PENDING-REPLAY`. Final qualification requires a fresh isolated run with
+`H2_REFERENCE` containing exactly the five captured scientific XSM hashes.

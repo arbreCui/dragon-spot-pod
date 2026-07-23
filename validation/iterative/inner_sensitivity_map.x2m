@@ -1,0 +1,118 @@
+****************************************************************
+* Stage 4: one h/2 map from exactly the Stage-3 initial state.  *
+*                                                              *
+* The initializer remains at h.  Only the four solves in G      *
+* (three radial and one returned axial solve) use h/2.          *
+* There is no relaxation, fit, or empirical model factor.       *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+
+XSM_FILE SNAP_SEED :: FILE './initial_snapshots.xsm' ;
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+
+XSM_FILE BASIS_REF :: FILE './basis_reference.xsm' ;
+XSM_FILE AX0_ARCH :: FILE './state0_axial.xsm' ;
+XSM_FILE SYS1_ARCH :: FILE './state1_system.xsm' ;
+XSM_FILE AX1_ARCH :: FILE './state1_axial.xsm' ;
+XSM_FILE SNAP1_ARCH :: FILE './state1_snapshots.xsm' ;
+
+LINKED_LIST SNAP TRACK SYSTEM_NEXT AX_PREVIOUS AX_CURRENT ;
+
+MODULE RECOVER: ASM: FLU: SPOGBAL: SPOSTATE: SPOXCONV:
+       SPOPROJ: SPOLEAK: GREP: END: ;
+PROCEDURE SpotRefFS ;
+
+INTEGER spod_rank := 1 ;
+REAL init_eps := 5.0E-7 ;
+REAL map_eps := 2.5E-7 ;
+REAL k0 k1 gbal gbal_group ;
+REAL leak0_change leak1_change ;
+INTEGER fixed_marker fs_count ;
+DOUBLE rbal source_l2 source_max ;
+DOUBLE rrho rleak dleak ra ;
+
+ECHO "ITERATIVE-MAP-BEGIN" ;
+ECHO "ITERATIVE-MAP-RANK" spod_rank ;
+ECHO "ITERATIVE-MAP-INIT-TOLERANCE" init_eps ;
+ECHO "ITERATIVE-MAP-MAP-TOLERANCE" map_eps ;
+
+SNAP := RECOVER: SNAP_SEED :: ITEM 1 ;
+TRACK := RECOVER: SNAP :: ITEM 3 ;
+
+****************************************************************
+* Offline initialization: reproduce the Stage-3 x0 at h.       *
+****************************************************************
+BASIS_REF := ASM: MACROLIB3 TRACK_AX SNAP ::
+  EDIT 1 SPOD <<spod_rank>> ;
+ECHO "ITERATIVE-MAP-BASIS-BUILT" ;
+
+AX_PREVIOUS := FLU: MACROLIB3 TRACK_AX BASIS_REF ::
+  EDIT -3 TYPE K B1 SIGS EXTE 500 <<init_eps>>
+  UNKT <<init_eps>> THER <<init_eps>> ;
+AX_PREVIOUS := SPOGBAL:
+  AX_PREVIOUS TRACK_AX BASIS_REF MACROLIB3 :: ;
+AX_PREVIOUS := SPOSTATE:
+  AX_PREVIOUS TRACK_AX BASIS_REF MACROLIB3 :: ;
+GREP: AX_PREVIOUS :: GETVAL 'K-EFFECTIVE' 1 >>k0<< ;
+AX0_ARCH := AX_PREVIOUS ;
+ECHO "ITERATIVE-MAP-STATE0" k0 ;
+
+* L0 is returned without damping and becomes part of x0.
+SNAP := SPOLEAK: SNAP AX_PREVIOUS TRACK_AX :: >>leak0_change<< ;
+ECHO "ITERATIVE-MAP-LEAKAGE0" leak0_change ;
+
+****************************************************************
+* One raw refined map x1_h2=G_h2(x0).                          *
+****************************************************************
+* Reconstruct the feedback strictly as B*a0 from the canonical state.
+SNAP := SPOPROJ: SNAP AX_PREVIOUS TRACK_AX :: FIXB ;
+
+* Re-solve all three radial planes with frozen F*p0/k0 and feedback L0.
+ECHO "ITERATIVE-MAP-RADIAL-BEGIN" ;
+SNAP := SpotRefFS SNAP TRACK TRACK_f ::
+  <<k0>> <<map_eps>> ;
+ECHO "ITERATIVE-MAP-RADIAL-END" ;
+
+* Rebuild only the current radial response; reuse B bit for bit.
+SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
+  EDIT 1 SPOD <<spod_rank>> FIXB ;
+GREP: SYSTEM_NEXT :: GETVAL 'SPOT-FIXB' 1 >>fixed_marker<< ;
+GREP: SYSTEM_NEXT :: GETVAL 'SPOT-FS-N' 1 >>fs_count<< ;
+GREP: SYSTEM_NEXT :: GETVAL 'SPOT-RBAL' 1 >>rbal<< ;
+GREP: SYSTEM_NEXT :: GETVAL 'SPOT-Q-L2' 1 >>source_l2<< ;
+GREP: SYSTEM_NEXT :: GETVAL 'SPOT-Q-MAX' 1 >>source_max<< ;
+ECHO "ITERATIVE-MAP-RADIAL-CONTRACT"
+  fixed_marker fs_count rbal source_l2 source_max ;
+
+AX_CURRENT := FLU: MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+  EDIT -3 TYPE K B1 SIGS EXTE 500 <<map_eps>>
+  UNKT <<map_eps>> THER <<map_eps>> ;
+AX_CURRENT := SPOGBAL:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+GREP: AX_CURRENT :: GETVAL 'K-EFFECTIVE' 1 >>k1<< ;
+GREP: AX_CURRENT :: GETVAL 'SPOT-GBAL' 1 >>gbal<< ;
+GREP: AX_CURRENT :: GETVAL 'SPOT-GBAL-MAX' 1 >>gbal_group<< ;
+AX_CURRENT := SPOSTATE:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+
+* These four numbers are the raw refined-map defect at the common x0.
+AX_CURRENT := SPOXCONV: AX_CURRENT AX_PREVIOUS :: ;
+GREP: AX_CURRENT :: GETVAL 'SPOT-X-RRHO' 1 >>rrho<< ;
+GREP: AX_CURRENT :: GETVAL 'SPOT-X-RLEAK' 1 >>rleak<< ;
+GREP: AX_CURRENT :: GETVAL 'SPOT-X-DLEAK' 1 >>dleak<< ;
+GREP: AX_CURRENT :: GETVAL 'SPOT-X-RA' 1 >>ra<< ;
+ECHO "ITERATIVE-MAP-RAW-DEFECT-X0" rrho rleak dleak ra ;
+ECHO "ITERATIVE-MAP-STATE1" k1 gbal gbal_group ;
+
+* Close x1_h2 for independent comparison; still no damping.
+SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak1_change<< ;
+ECHO "ITERATIVE-MAP-LEAKAGE1" leak1_change ;
+SYS1_ARCH := SYSTEM_NEXT ;
+AX1_ARCH := AX_CURRENT ;
+SNAP1_ARCH := SNAP ;
+
+ECHO "ITERATIVE-MAP-COMPLETE" ;
+END: ;
+QUIT "LIST" .

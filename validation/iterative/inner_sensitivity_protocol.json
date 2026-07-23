@@ -1,0 +1,51 @@
+{
+  "schema": "spot-inner-sensitivity-v1",
+  "method": "fixed-space Galerkin-SPOD inner-tolerance sensitivity",
+  "groups": 370,
+  "planes": 3,
+  "rank": 1,
+  "initializer_solver_eps_f32_bits": "0x350637bd",
+  "baseline_map_solver_eps_f32_bits": "0x350637bd",
+  "refined_map_solver_eps_f32_bits": "0x348637bd",
+  "refinement_identity": "2 * refined_map_solver_eps == baseline_map_solver_eps in binary32",
+  "maxout": 500,
+  "maxinr": 740,
+  "initializer_axial_solves": 1,
+  "map_radial_solves": 3,
+  "map_axial_solves": 1,
+  "outer_updates": 1,
+  "same_x0_evidence": [
+    "identical Dragon executable, procedures, seed archives, rank and initializer controls",
+    "byte-identical basis_reference.xsm",
+    "byte-identical state0_axial.xsm",
+    "bitwise-identical canonical a, rho, L, basis, Gram matrix, plane heights and normalization",
+    "bitwise-identical radial SPOT-LEAK1D, SPOT-QFISS and SPOT-FS-K inputs"
+  ],
+  "reported_vectors": [
+    "D_out_h = D(x1_h, x0)",
+    "D_out_h2 = D(x1_h2, x0)",
+    "D_in = D(x1_h2, x1_h)"
+  ],
+  "components": [
+    "R_rho",
+    "R_L",
+    "D_L",
+    "R_a"
+  ],
+  "component_rule": {
+    "positive_outer": "RESOLVED iff D_in < D_out_h",
+    "zero_outer": "RESOLVED iff D_in == 0 at stored precision",
+    "otherwise": "UNRESOLVED"
+  },
+  "aggregation": null,
+  "relaxation": null,
+  "fitting": null,
+  "outer_convergence": "not_evaluated",
+  "h2_replay": "required before final Stage-4 qualification",
+  "stage4_state_rule": {
+    "any_component_unresolved": "UNRESOLVED",
+    "all_components_resolved_without_h2_replay": "PENDING-REPLAY",
+    "all_components_resolved_with_h2_replay": "QUALIFIED"
+  },
+  "stage5_authorization": "only if all four components are RESOLVED and both lanes pass every physical and execution contract"
+}

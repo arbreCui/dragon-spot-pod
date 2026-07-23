@@ -83,3 +83,20 @@ because they total about 258 MB; set `SEED_DIR` if they are stored elsewhere.
 The full active protocol is
 `SPOT_doc/validation_plan.md`. These commands do not qualify iterative
 convergence.
+
+Stage 4 is a separate, predeclared same-\(x_0\) sensitivity experiment:
+
+```sh
+DRAGON_BIN=/absolute/path/to/Dragon \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+SEED_DIR=/absolute/path/to/iterative-seed \
+BASELINE_DIR=/absolute/path/to/iterative-map1 \
+KEEP_WORK=1 \
+  sh validation/iterative/run_inner_sensitivity.sh
+```
+
+It keeps the initializer at \(h\), applies \(h/2\) only to the four solves in
+the map, and does not authorize a second outer return. This first capture can
+only be `PENDING-REPLAY` or `UNRESOLVED`; a fresh run against an exact
+five-scientific-file `H2_REFERENCE` is required for `QUALIFIED`.

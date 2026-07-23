@@ -171,10 +171,11 @@ denote the four separately reported quantities defined above; it is a vector,
 not a weighted scalar score. Report
 
 \[
-\mathcal D_{\rm out}=\mathcal D(x_{1,h},x_0)
+\mathcal D_{{\rm out},h}=\mathcal D(x_{1,h},x_0),\qquad
+\mathcal D_{{\rm out},h/2}=\mathcal D(x_{1,h/2},x_0)
 \]
 
-as the outer map defect and
+as the two independently replayed outer map defects and
 
 \[
 \mathcal D_{\rm in}=\mathcal D(x_{1,h/2},x_{1,h})
@@ -183,12 +184,45 @@ as the outer map defect and
 as inner-solver sensitivity.
 
 Each component of \(\mathcal D_{\rm in}\) is reported beside its corresponding
-component of \(\mathcal D_{\rm out}\); no cross-component weighting or scalar
+components of both outer defects; the predeclared ordering rule below compares
+it with \(\mathcal D_{{\rm out},h}\). No cross-component weighting or scalar
 aggregation is allowed. \(\mathcal D_{\rm in}\) is neither an outer residual
-nor a rigorous error bound. It is not subtracted from
-\(\mathcal D_{\rm out}\), fitted into a correction, or used to choose a
-relaxation factor. If the corresponding component scales cannot be separated,
-the result is `UNRESOLVED`.
+nor a rigorous error bound. It is not subtracted from either outer defect,
+fitted into a correction, or used to choose a relaxation factor. If the
+corresponding component scales cannot be separated, the result is
+`UNRESOLVED`.
+
+For the first Stage-4 fixture, the binary32 controls are frozen as
+
+\[
+h=\mathtt{0x350637bd},\qquad h/2=\mathtt{0x348637bd},
+\]
+
+and binary32 arithmetic satisfies \(2(h/2)=h\) exactly. The initializer
+remains at \(h\) in both lanes. Only the three radial solves and one returned
+axial solve inside \(G\) use \(h/2\) in the refined lane. The Dragon
+executable, procedures, four seed archives, rank and all other controls are
+unchanged. The two lanes must reproduce the complete basis and canonical
+\(x_0\) archives byte for byte; the actual radial `SPOT-LEAK1D`,
+`SPOT-QFISS` and `SPOT-FS-K` inputs must also agree bitwise.
+
+For each component \(i\), the scale ordering is classified without a fitted
+factor:
+
+```text
+D_out,h,i > 0 and D_in,i < D_out,h,i  -> RESOLVED
+D_out,h,i = 0 and D_in,i = 0           -> RESOLVED at stored precision
+otherwise                               -> UNRESOLVED
+```
+
+If any component is not resolved, Stage 4 is `UNRESOLVED`. If all four are
+resolved on the first capture, it is still `PENDING-REPLAY`. It becomes
+`QUALIFIED` only after a fresh isolated \(h/2\) run reproduces exactly the
+five frozen scientific XSM hashes and again passes both lanes' physical and
+execution contracts. Only `QUALIFIED` authorizes Stage 5. This ordering is
+not an error bound or a convergence claim. The protocol is frozen in
+`validation/iterative/inner_sensitivity_protocol.json`; no \(h/2\)
+transport result had been observed when these rules were committed.
 
 ## Stage 5 — direct Picard convergence
 

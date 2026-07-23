@@ -14,5 +14,9 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_state_math.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_one_map_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/check_inner_sensitivity_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_inner_sensitivity_status.py"
 sh "$ROOT/validation/level1/run_level1.sh"
 sh "$ROOT/validation/level2/run_level2.sh"

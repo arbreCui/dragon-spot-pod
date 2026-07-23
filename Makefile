@@ -39,6 +39,11 @@ spot-one-map :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)
 	DRAGON_BIN="$(DRAGON_BIN)" sh validation/iterative/run_one_map_runtime.sh
+spot-inner-sensitivity :
+	@test -n "$(DRAGON_BIN)" || \
+	  (echo "set DRAGON_BIN to the frozen Stage-3 executable" >&2; exit 2)
+	DRAGON_BIN="$(DRAGON_BIN)" \
+	  sh validation/iterative/run_inner_sensitivity.sh
 clean :
 	$(MAKE) clean -C src
 tests :

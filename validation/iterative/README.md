@@ -137,3 +137,46 @@ This is one deterministic point evaluation of \(G\), not a convergence
 claim. The next gate is the systematic inner-tolerance sensitivity from the
 same \(x_0\). A second outer return and any long Picard trajectory remain
 unauthorized as qualification evidence until that gate is resolved.
+
+## Inner-tolerance sensitivity
+
+`inner_sensitivity_map.x2m` preserves the Stage-3 initializer tolerance
+\(h=\mathtt{0x350637bd}\) and uses the exact binary32 half
+\(h/2=\mathtt{0x348637bd}\) only for the three radial and one returned axial
+solve in \(G\). `check_inner_sensitivity_contract.py` locks that schedule
+before any refined result is observed.
+
+The runner is
+
+```sh
+DRAGON_BIN=/absolute/path/to/Dragon \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+SEED_DIR=/absolute/path/to/iterative-seed \
+BASELINE_DIR=/absolute/path/to/iterative-map1 \
+KEEP_WORK=1 \
+  sh validation/iterative/run_inner_sensitivity.sh
+```
+
+It requires the frozen Stage-3 executable, seeds and five baseline XSM
+objects. The basis and complete \(x_0\) archives must be byte identical.
+Independent Ganlib-only checks recompute
+\(\mathcal D_{\rm out,h}\), \(\mathcal D_{\rm out,h/2}\) and
+\(\mathcal D_{\rm in}\) component by component and compare the actual radial
+leakage, fission-source and eigenvalue inputs bitwise. No scalar score,
+relaxation or fitted factor is introduced.
+
+The precise controls and scale-ordering rule are in
+`inner_sensitivity_protocol.json`. A fresh \(h/2\) replay is required before
+Stage 4 is finally qualified. `KEEP_WORK=1` preserves the first isolated
+work directory so its five scientific hashes can be frozen. A replay
+reference must contain exactly, in order, the hashes for
+`basis_reference.xsm`, `state0_axial.xsm`, `state1_system.xsm`,
+`state1_axial.xsm`, and `state1_snapshots.xsm`; arbitrary or partial checksum
+lists fail closed.
+
+The machine state is `UNRESOLVED` if any component fails the predeclared
+ordering, `PENDING-REPLAY` if all four pass on the first capture, and
+`QUALIFIED` only if all four pass again in a fresh isolated replay whose five
+scientific files match the frozen reference. Only `QUALIFIED` authorizes
+Stage 5.
