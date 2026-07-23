@@ -20,6 +20,9 @@ RUNTIME_PATH = ROOT / "validation/iterative/check_one_map_runtime.py"
 STATUS_PATH = (
     ROOT / "validation/iterative/check_inner_sensitivity_status.py"
 )
+FAILURE_PATH = (
+    ROOT / "validation/iterative/check_inner_sensitivity_failure.py"
+)
 ONE_MAP_XSM_PATH = ROOT / "validation/iterative/check_one_map_xsm.f90"
 PAIR_XSM_PATH = ROOT / "validation/iterative/check_inner_sensitivity_xsm.f90"
 RUNNER_PATH = ROOT / "validation/iterative/run_inner_sensitivity.sh"
@@ -41,6 +44,7 @@ for path in (
     REFERENCE_PATH,
     RUNTIME_PATH,
     STATUS_PATH,
+    FAILURE_PATH,
     ONE_MAP_XSM_PATH,
     PAIR_XSM_PATH,
     RUNNER_PATH,
@@ -56,6 +60,9 @@ refresh = REFRESH_PATH.read_text(encoding="utf-8", errors="strict")
 plane = PLANE_PATH.read_text(encoding="utf-8", errors="strict")
 runtime = RUNTIME_PATH.read_text(encoding="utf-8", errors="strict")
 status_checker = STATUS_PATH.read_text(encoding="utf-8", errors="strict")
+failure_checker = FAILURE_PATH.read_text(
+    encoding="utf-8", errors="strict"
+)
 one_map_xsm = ONE_MAP_XSM_PATH.read_text(encoding="utf-8", errors="strict")
 pair_xsm = PAIR_XSM_PATH.read_text(encoding="utf-8", errors="strict")
 runner = RUNNER_PATH.read_text(encoding="utf-8", errors="strict")
@@ -427,6 +434,7 @@ for name in (
     "inner_sensitivity_protocol.json",
     "inner_sensitivity_reference.sha256",
     "check_inner_sensitivity_contract.py",
+    "check_inner_sensitivity_failure.py",
     "check_inner_sensitivity_status.py",
     "check_one_map_runtime.py",
     "check_one_map_xsm.f90",
@@ -478,6 +486,14 @@ for token in (
 ):
     if token not in status_checker:
         violations.append(f"status checker does not bind {token}")
+for token in (
+    "INVALID-INNER-NONCONVERGENCE",
+    "STAGE4 INVALID",
+    "STAGE5 NOT-AUTHORIZED",
+    "OUTER-CONVERGENCE NOT-EVALUATED",
+):
+    if token not in failure_checker:
+        violations.append(f"failure checker does not bind {token}")
 for source, owner in (
     (one_map_xsm, "one-map XSM checker"),
     (pair_xsm, "pair XSM checker"),

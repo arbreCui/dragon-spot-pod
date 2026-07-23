@@ -224,6 +224,24 @@ not an error bound or a convergence claim. The protocol is frozen in
 `validation/iterative/inner_sensitivity_protocol.json`; no \(h/2\)
 transport result had been observed when these rules were committed.
 
+The subsequent capture failed before component classification. Its
+initializer and returned axial solves terminated strictly, but all three
+radial fixed-source solves exhausted `MAXOUT=500` with `STATE=2`. Therefore
+the capture is `INVALID`, not `UNRESOLVED`: no valid \(x_{1,h/2}\) exists,
+the written returned state is excluded, and neither
+\(\mathcal D_{{\rm out},h/2}\) nor \(\mathcal D_{\rm in}\) is reported.
+Stage 5 remains unauthorized.
+
+The terminal radial tests are binary32 successive-iterate changes rather than
+an independent \(A\phi-q\) residual. Increasing `MAXOUT` is not authorized
+without evidence of contraction. The next diagnostic must first be frozen
+and is limited to one radial plane: two common-restart arms of exactly six
+steps, one retaining the native `ACCE 3 3` cycle and one using stationary
+`ACCE 1 0`, with identical physical inputs and rebalancing. Every iterate
+change and acceleration factor is recorded, while a separate binary64
+postprocessor accumulates the normalized equation backward residual. Six
+steps are the native acceleration period, not a fitted stopping parameter.
+
 ## Stage 5 — direct Picard convergence
 
 Only after Stages 0--4 pass may the direct update

@@ -154,16 +154,22 @@ Here \(D_L=\|L^+-L\|_\infty\) accompanies the dimensionless relative leakage
 residual \(R_L\); it is a recorded diagnostic, not a fourth convergence
 criterion.
 
-The next numerical gate is frozen before calculation. The initializer remains
-at binary32 \(h=\mathtt{0x350637bd}\); only the three radial solves and
-returned axial solve in \(G\) use the exact binary32 half
-\(h/2=\mathtt{0x348637bd}\). The two lanes must reproduce the same
-`basis_reference.xsm` and `state0_axial.xsm` byte for byte. Sensitivity is
-reported separately for \(R_\rho,R_L,D_L,R_a\), with no weighted score or
-fitted factor. The one-map receipt is in
-[validation/iterative/one_map_result.md](validation/iterative/one_map_result.md);
-the Stage-4 controls are in
-[validation/iterative/inner_sensitivity_protocol.json](validation/iterative/inner_sensitivity_protocol.json).
+The Stage-4 controls were frozen and pushed before evaluating \(h/2\). The
+initializer reproduced the same basis and \(x_0\), but all three radial
+fixed-source solves exhausted `MAXOUT=500` without satisfying
+\(h/2=\mathtt{0x348637bd}\). The initializer and returned axial solves passed.
+Therefore the capture is `INVALID-INNER-NONCONVERGENCE`: its returned
+`state1` is not \(G_{h/2}(x_0)\), no inner-sensitivity vector is formed, and
+Stage 5 is not authorized.
+
+The failure is numerical, not evidence that the physical SPOT fixed point
+diverges. The active FLU tests are binary32 successive-iterate changes, not
+an independent equation residual. Simply increasing `MAXOUT` has no measured
+contraction basis. The next gate is instead a predeclared, single-plane
+six-step diagnostic of the native acceleration cycle against unaccelerated
+fixed-point iteration, with an independently accumulated binary64 backward
+residual. Exact results and evidence boundaries are in
+[validation/iterative/inner_sensitivity_result.md](validation/iterative/inner_sensitivity_result.md).
 
 ## Validation route
 
@@ -172,7 +178,7 @@ the Stage-4 controls are in
 3. replay one complete map twice and require identical scientific records
    (passed for the first corrected map);
 4. compare one production map with one tighter-tolerance map from the same
-   input;
+   input (currently blocked by strict radial inner nonconvergence);
 5. only then study direct Picard convergence;
 6. after convergence, repeat rank/mesh/angle refinement and independent 3D
    comparison for the iterative solution.
@@ -220,8 +226,8 @@ same-input replay hashes. An in-tree build may omit the two `GANLIB_*`
 overrides. This runner verifies one raw map when its independent runtime and
 XSM checks pass. It does not qualify outer convergence.
 
-The next bounded command keeps the initializer at \(h\) and evaluates one map
-at \(h/2\) from the same frozen \(x_0\):
+The failed Stage-4 capture command is retained for provenance. It is not the
+next calculation to repeat:
 
 ```sh
 DRAGON_BIN=/absolute/path/to/Dragon \
@@ -233,7 +239,7 @@ KEEP_WORK=1 \
   sh validation/iterative/run_inner_sensitivity.sh
 ```
 
-This first command is a capture, not an outer iteration or a Stage-4
-qualification. Even if all four scale orderings are `RESOLVED`, its state is
-`PENDING-REPLAY`. Final qualification requires a fresh isolated run with
-`H2_REFERENCE` containing exactly the five captured scientific XSM hashes.
+The current frozen solver returns `STAGE4 INVALID` because its three radial
+solves do not meet \(h/2\). Do not use the written `state1` files or launch a
+longer `MAXOUT` continuation. The short numerical-floor diagnostic described
+in the result receipt must be frozen first.

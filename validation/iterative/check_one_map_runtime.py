@@ -202,6 +202,12 @@ def main() -> None:
     ]:
         fail(f"unexpected text after Dragon normal end: {footer}")
     if re.search(
+        r"^[ \t]*FLU2DR-DIAG[ \t]+(?:OUTER|INNER)\b",
+        text,
+        re.MULTILINE,
+    ):
+        fail("one or more FLU solves did not reach strict termination")
+    if re.search(
         r"^.*\bCONVERG(?:ED|ENCE)\b.*$",
         text,
         re.IGNORECASE | re.MULTILINE,

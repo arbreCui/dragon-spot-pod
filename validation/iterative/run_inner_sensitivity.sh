@@ -154,6 +154,7 @@ shasum -a 256 \
   "$DRAGON_BIN" "$DECK" "$PROTOCOL" "$REFERENCE" \
   "$ROOT/validation/iterative/one_corrected_map.x2m" \
   "$ROOT/validation/iterative/check_inner_sensitivity_contract.py" \
+  "$ROOT/validation/iterative/check_inner_sensitivity_failure.py" \
   "$ROOT/validation/iterative/check_inner_sensitivity_status.py" \
   "$ROOT/validation/iterative/check_one_map_runtime.py" \
   "$ROOT/validation/iterative/check_one_map_xsm.f90" \
@@ -177,9 +178,39 @@ fi
   "$DRAGON_BIN" < "$DECK" > inner_sensitivity.log 2>&1
 )
 
-PYTHONDONTWRITEBYTECODE=1 python3 \
+if ! PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_one_map_runtime.py" \
-  "$WORK/inner_sensitivity.log" > "$WORK/runtime_check.log"
+  "$WORK/inner_sensitivity.log" > "$WORK/runtime_check.log" 2>&1
+then
+  cat "$WORK/runtime_check.log"
+  if PYTHONDONTWRITEBYTECODE=1 python3 \
+    "$ROOT/validation/iterative/check_inner_sensitivity_failure.py" \
+    "$WORK/inner_sensitivity.log" "$PROTOCOL" \
+    > "$WORK/failure_check.log"
+  then
+    cmp "$BASELINE_DIR/basis_reference.xsm" \
+      "$WORK/basis_reference.xsm"
+    cmp "$BASELINE_DIR/state0_axial.xsm" "$WORK/state0_axial.xsm"
+    shasum -a 256 -c "$WORK/input_manifest.sha256" \
+      > "$WORK/input_replay_failure.log"
+    shasum -a 256 \
+      "$WORK/input_manifest.sha256" \
+      "$WORK/input_replay_failure.log" \
+      "$WORK/inner_sensitivity.log" "$WORK/runtime_check.log" \
+      "$WORK/failure_check.log" \
+      "$WORK/basis_reference.xsm" "$WORK/state0_axial.xsm" \
+      "$WORK/state1_system.xsm" "$WORK/state1_axial.xsm" \
+      "$WORK/state1_snapshots.xsm" \
+      "$WORK/check_one_map_xsm.nm" \
+      "$WORK/check_inner_sensitivity_xsm.nm" \
+      > "$WORK/failure_artifact_manifest.sha256"
+    cat "$WORK/failure_check.log"
+    echo "INNER-SENSITIVITY FAILURE INPUT REPLAY PASS"
+  else
+    echo "INNER-SENSITIVITY FAIL: runtime failure is not the frozen inner-nonconvergence outcome." >&2
+  fi
+  exit 1
+fi
 
 (
   cd "$WORK"

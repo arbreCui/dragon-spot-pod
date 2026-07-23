@@ -134,9 +134,9 @@ in `one_map_protocol.json`; exact values and hashes are in
 `one_map_result.md`.
 
 This is one deterministic point evaluation of \(G\), not a convergence
-claim. The next gate is the systematic inner-tolerance sensitivity from the
-same \(x_0\). A second outer return and any long Picard trajectory remain
-unauthorized as qualification evidence until that gate is resolved.
+claim. The systematic inner-tolerance sensitivity from the same \(x_0\) was
+attempted next and failed its strict radial inner-solver gate. A second outer
+return and any long Picard trajectory remain unauthorized.
 
 ## Inner-tolerance sensitivity
 
@@ -159,8 +159,8 @@ KEEP_WORK=1 \
 ```
 
 It requires the frozen Stage-3 executable, seeds and five baseline XSM
-objects. The basis and complete \(x_0\) archives must be byte identical.
-Independent Ganlib-only checks recompute
+objects. The basis and complete \(x_0\) archives must be byte identical. If
+all five solves terminate strictly, independent Ganlib-only checks recompute
 \(\mathcal D_{\rm out,h}\), \(\mathcal D_{\rm out,h/2}\) and
 \(\mathcal D_{\rm in}\) component by component and compare the actual radial
 leakage, fission-source and eigenvalue inputs bitwise. No scalar score,
@@ -180,3 +180,25 @@ ordering, `PENDING-REPLAY` if all four pass on the first capture, and
 `QUALIFIED` only if all four pass again in a fresh isolated replay whose five
 scientific files match the frozen reference. Only `QUALIFIED` authorizes
 Stage 5.
+
+The first capture did not reach that classification stage. All three radial
+fixed-source solves exhausted `MAXOUT=500` with strict `STATE=2`; their final
+unknown changes were \(5.03027\times10^{-7}\),
+\(5.29329\times10^{-7}\), and \(6.19920\times10^{-7}\), above
+\(h/2=2.5\times10^{-7}\). The initializer and returned axial solves passed,
+but the written `state1` objects are invalid as \(G_{h/2}(x_0)\).
+
+`check_inner_sensitivity_failure.py` recognizes only this complete,
+normal-ending three-plane failure pattern and emits:
+
+```text
+CAPTURE INVALID-INNER-NONCONVERGENCE
+STAGE4 INVALID
+STAGE5 NOT-AUTHORIZED
+OUTER-CONVERGENCE NOT-EVALUATED
+```
+
+The exact receipt and next short diagnostic are in
+[inner_sensitivity_result.md](inner_sensitivity_result.md). Do not increase
+`MAXOUT` or rerun the three-plane capture: the next step is to freeze the
+six-step, single-plane numerical-floor diagnostic described there.

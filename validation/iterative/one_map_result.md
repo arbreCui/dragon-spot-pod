@@ -109,10 +109,14 @@ markers and both independent checker results are identical.
 map runtime structure : PASS
 fixed-space XSM state : PASS
 same-input replay     : PASS
-inner sensitivity     : PENDING
+inner sensitivity     : INVALID-INNER-NONCONVERGENCE
 outer convergence     : NOT EVALUATED
 ```
 
-The next formal calculation is the predeclared inner-tolerance sensitivity
-from the same \(x_0\). A second outer return or a long Picard trajectory is
-not yet qualification evidence.
+The subsequently predeclared inner-tolerance capture from the same \(x_0\)
+did not produce a valid \(G_{h/2}(x_0)\): all three radial solves exhausted
+their frozen iteration limit. Its returned state is excluded, Stage 5 is not
+authorized, and a second outer return or long Picard trajectory is not
+qualification evidence. See
+[inner_sensitivity_result.md](inner_sensitivity_result.md) for the strict
+receipt and the next bounded numerical diagnostic.

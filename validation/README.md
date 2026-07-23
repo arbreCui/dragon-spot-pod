@@ -42,9 +42,14 @@ reconstructs the feedback as \(Ba\).
 
 The independent no-transport fixture passes. One corrected transport map
 \(x_1=G(x_0)\) and one fresh replay also pass their runtime and Ganlib-only
-state checks; the five scientific XSM outputs are byte identical. The next
-unresolved gate is inner-tolerance sensitivity from the same \(x_0\). No
-iterative convergence claim exists yet.
+state checks; the five scientific XSM outputs are byte identical.
+
+The subsequent same-\(x_0\), \(h/2\) capture is
+`INVALID-INNER-NONCONVERGENCE`: all three radial solves exhausted
+`MAXOUT=500`, while the initializer and returned axial solves passed. Its
+written `state1` files are not accepted scientific outputs, Stage 5 remains
+unauthorized, and no iterative-convergence claim exists. The exact receipt
+is [iterative/inner_sensitivity_result.md](iterative/inner_sensitivity_result.md).
 
 ## Commands that remain valid
 
@@ -84,7 +89,7 @@ The full active protocol is
 `SPOT_doc/validation_plan.md`. These commands do not qualify iterative
 convergence.
 
-Stage 4 is a separate, predeclared same-\(x_0\) sensitivity experiment:
+The failed Stage-4 command is retained for provenance, not as the next run:
 
 ```sh
 DRAGON_BIN=/absolute/path/to/Dragon \
@@ -96,7 +101,8 @@ KEEP_WORK=1 \
   sh validation/iterative/run_inner_sensitivity.sh
 ```
 
-It keeps the initializer at \(h\), applies \(h/2\) only to the four solves in
-the map, and does not authorize a second outer return. This first capture can
-only be `PENDING-REPLAY` or `UNRESOLVED`; a fresh run against an exact
-five-scientific-file `H2_REFERENCE` is required for `QUALIFIED`.
+It kept the initializer at \(h\) and applied \(h/2\) only to the four solves
+in the map, but strict radial termination failed before sensitivity could be
+classified. Do not raise `MAXOUT` or use its returned state. The next
+authorized work is the short single-plane numerical-floor diagnostic frozen
+in [iterative/inner_sensitivity_result.md](iterative/inner_sensitivity_result.md).
