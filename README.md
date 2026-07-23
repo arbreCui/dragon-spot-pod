@@ -166,10 +166,17 @@ The failure is numerical, not evidence that the physical SPOT fixed point
 diverges. The active FLU tests are binary32 successive-iterate changes, not
 an independent equation residual. Simply increasing `MAXOUT` has no measured
 contraction basis. The next gate is instead a predeclared, single-plane
-six-step diagnostic of the native acceleration cycle against unaccelerated
-fixed-point iteration, with an independently accumulated binary64 backward
-residual. Exact results and evidence boundaries are in
-[validation/iterative/inner_sensitivity_result.md](validation/iterative/inner_sensitivity_result.md).
+bounded diagnostic of the native `ACCE 3 3` solver against a
+`FLU2AC`-off `ACCE 1 0` arm. Each arm uses the normal strict early exit and
+at most six outer updates. One stationary production-map probe from each
+terminal state is then compared by an independent Ganlib-only binary64
+fixed-point-defect checker. This is not a full \(A\phi-q\) backward
+residual. The exact controls are machine-frozen in
+[radial_floor_protocol.json](validation/iterative/radial_floor_protocol.json)
+and executed by
+[run_radial_floor_diagnostic.sh](validation/iterative/run_radial_floor_diagnostic.sh).
+The failure receipt and evidence boundaries are in
+[inner_sensitivity_result.md](validation/iterative/inner_sensitivity_result.md).
 
 ## Validation route
 

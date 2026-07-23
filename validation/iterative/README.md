@@ -200,5 +200,9 @@ OUTER-CONVERGENCE NOT-EVALUATED
 
 The exact receipt and next short diagnostic are in
 [inner_sensitivity_result.md](inner_sensitivity_result.md). Do not increase
-`MAXOUT` or rerun the three-plane capture: the next step is to freeze the
-six-step, single-plane numerical-floor diagnostic described there.
+`MAXOUT` or rerun the three-plane capture: the next step is to run the
+frozen at-most-six-step, single-plane production-map diagnostic described
+there.
+Its machine-readable controls are
+[radial_floor_protocol.json](radial_floor_protocol.json), and the runner is
+[run_radial_floor_diagnostic.sh](run_radial_floor_diagnostic.sh).

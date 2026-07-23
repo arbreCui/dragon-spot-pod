@@ -1,0 +1,39 @@
+****************************************************************
+* One stationary production-map probe from a bounded arm end.  *
+*                                                              *
+* MAXOUT=1 and the native IT>=2 success condition guarantee    *
+* exactly one outer update. Its expected FLU diagnostic is not *
+* a convergence claim; only the pre/post defect is retained.   *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+
+XSM_FILE MACRO0 :: FILE './restart_macro0.xsm' ;
+XSM_FILE FSOURCE :: FILE './restart_source.xsm' ;
+XSM_FILE SYSTEM :: FILE './restart_system.xsm' ;
+XSM_FILE TRACK :: FILE './restart_track.xsm' ;
+XSM_FILE FLUX :: FILE './probe_post.xsm' ;
+
+MODULE FLU: END: ;
+
+INTEGER outer_cap := 1 ;
+INTEGER inner_cap := 740 ;
+INTEGER free_steps := 1 ;
+INTEGER accelerated_steps := 0 ;
+REAL solver_eps := 2.5E-7 ;
+
+ECHO "RADIAL-FLOOR-PROBE-BEGIN" "@ARM@" ;
+ECHO "RADIAL-FLOOR-PROBE-HISTORY" "RESET" ;
+ECHO "RADIAL-FLOOR-PROBE-CONTROLS"
+  outer_cap inner_cap solver_eps free_steps accelerated_steps ;
+
+FLUX := FLU: FLUX MACRO0 TRACK TRACK_f SYSTEM FSOURCE ::
+  EDIT 1 TYPE S INIT ON REBA ON
+  EXTE <<outer_cap>> <<solver_eps>>
+  UNKT <<solver_eps>>
+  THER <<inner_cap>> <<solver_eps>>
+  ACCE <<free_steps>> <<accelerated_steps>> ;
+
+ECHO "RADIAL-FLOOR-PROBE-COMPLETE" "@ARM@" ;
+END: ;
+QUIT "LIST" .

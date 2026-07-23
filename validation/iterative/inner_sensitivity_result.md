@@ -73,19 +73,36 @@ Consequently:
 - the failed `state1` files are forensic artifacts, not
   \(G_{h/2}(x_0)\).
 
-## Next bounded diagnostic
+## Frozen bounded diagnostic
 
-Before another transport run, freeze a numerical-only plane-1 protocol:
+The numerical-only plane-1 protocol is frozen before another transport run:
 
 1. restart both arms from the same preserved cap-500 plane-1 flux;
 2. keep \(A\), \(q\), \(x_0\), rebalancing and all physical data identical;
-3. run exactly one native six-step acceleration cycle with `ACCE 3 3`;
-4. run exactly six stationary steps with `ACCE 1 0`;
-5. record every \(E_{\rm unk}\), \(E_{\rm inr}\) and acceleration factor;
-6. independently accumulate a normalized \(A\phi-q\) backward residual in
-   binary64.
+3. run the production `ACCE 3 3` arm with normal strict early termination
+   and a cap of six outer updates;
+4. run the production `ACCE 1 0` arm with the same strict early termination
+   and cap;
+5. from each terminal state, apply exactly one `ACCE 1 0` stationary
+   production-map probe;
+6. record every \(E_{\rm unk}\), \(E_{\rm inr}\) and printed acceleration
+   factor, and independently compute the probe's volume-weighted and maximum
+   fixed-point defects in binary64.
 
-Six steps come from the solver's native acceleration period, not a fitted
-parameter. This diagnostic is much smaller than another three-plane
-`MAXOUT=500` run and introduces no relaxation, calibration or empirical
-acceptance coefficient.
+Six is the native three-free/three-accelerated period, not a fitted stopping
+parameter. A strict production termination before six is retained rather
+than suppressed. The restart contains only the cap flux, so both solver
+histories and the acceleration phase reset; the native arm is not a
+continuation through iterations 501--506. Moreover `ACCE` controls inner as
+well as outer `FLU2AC`, while rebalancing remains active.
+
+The archived MCCG objects do not contain a complete materialized discrete
+operator. The independently computed quantity is therefore
+\(\|T_{h/2}(\phi)-\phi\|/\|\phi\|\), not a full \(A\phi-q\) backward
+residual. It is reported without an acceptance threshold and cannot qualify
+Stage 4 or authorize Stage 5. This diagnostic is much smaller than another
+three-plane `MAXOUT=500` run and introduces no relaxation, calibration or
+empirical coefficient. The exact predeclared controls are in
+[radial_floor_protocol.json](radial_floor_protocol.json), with execution and
+provenance gates in
+[run_radial_floor_diagnostic.sh](run_radial_floor_diagnostic.sh).

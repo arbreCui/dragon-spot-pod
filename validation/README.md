@@ -104,5 +104,8 @@ KEEP_WORK=1 \
 It kept the initializer at \(h\) and applied \(h/2\) only to the four solves
 in the map, but strict radial termination failed before sensitivity could be
 classified. Do not raise `MAXOUT` or use its returned state. The next
-authorized work is the short single-plane numerical-floor diagnostic frozen
-in [iterative/inner_sensitivity_result.md](iterative/inner_sensitivity_result.md).
+authorized work is the bounded single-plane production-map diagnostic frozen
+by
+[iterative/radial_floor_protocol.json](iterative/radial_floor_protocol.json)
+and described in
+[iterative/inner_sensitivity_result.md](iterative/inner_sensitivity_result.md).

@@ -1,0 +1,76 @@
+{
+  "schema": "spot-radial-floor-diagnostic-v1",
+  "purpose": "bounded plane-1 numerical diagnostic after the invalid Stage-4 h/2 capture",
+  "scientific_scope": "diagnostic only; it neither repairs nor qualifies the failed Stage-4 map",
+  "plane": 1,
+  "groups": 370,
+  "production_solver": {
+    "module": "FLU:",
+    "implementation": "FLU2DR",
+    "source_modification": false,
+    "calculation_type": "S",
+    "door": "MCCG",
+    "rebalancing": "ON and identical in both arms and both probes",
+    "solver_eps_f32_bits": "0x348637bd",
+    "maxinr": 740,
+    "strict_gate": "EEXT < EPSOUT and EUNK < EPSUNK and EINR < EPSINR and inner STATE == 1 and IEXTF >= 2"
+  },
+  "common_restart": {
+    "source": "preserved plane-1 terminal flux from the invalid h/2 MAXOUT=500 capture",
+    "arm_input_bytes": "identical",
+    "physical_inputs": "bitwise-identical operator, fixed source, system, track, tolerance and rebalancing",
+    "cycle_history": "reset independently on entry to each fresh FLU2DR invocation; no AKEEP or ZMU history is transferred"
+  },
+  "acce_coupling": "one ACCE pair controls both the inner and outer FLU2DR acceleration schedules within an invocation; their counters are distinct, both restart at one, and they may not be tuned independently",
+  "main_arms": [
+    {
+      "id": "NATIVE",
+      "maxout": 6,
+      "free_steps": 3,
+      "accelerated_steps": 3,
+      "termination": "normal strict early exit at IEXTF 2 through 6, otherwise a diagnostic cap at IEXTF 6"
+    },
+    {
+      "id": "STATIONARY",
+      "maxout": 6,
+      "free_steps": 1,
+      "accelerated_steps": 0,
+      "termination": "normal strict early exit at IEXTF 2 through 6, otherwise a diagnostic cap at IEXTF 6"
+    }
+  ],
+  "terminal_probes": {
+    "count": 2,
+    "input": "the corresponding main-arm terminal flux",
+    "maxout": 1,
+    "free_steps": 1,
+    "accelerated_steps": 0,
+    "cycle_history": "reset on entry to the fresh probe FLU2DR invocation",
+    "termination": "diagnostic cap at IEXTF 1 because the production strict gate requires IEXTF >= 2",
+    "quantity": "one stationary production-map step; a Ganlib-only checker reports its post-minus-pre fixed-point defect"
+  },
+  "raw_log_contract": {
+    "main_arm_terminal_states": [
+      "STRICT",
+      "CAP"
+    ],
+    "record_every_inner_iteration": "EINR and ZMU from each IN(n) FLX record",
+    "record_every_outer_iteration": "EUNK and ZMU from each OUT(n) FLX record",
+    "probe_state": "ONE-STEP-DIAGNOSTIC",
+    "comparison_states": [
+      "BOTH-STRICT",
+      "NATIVE-ONLY-STRICT",
+      "STATIONARY-ONLY-STRICT",
+      "BOTH-CAP",
+      "INCONCLUSIVE-NO-OUTER-ACCELERATION"
+    ]
+  },
+  "fixed_point_defect": "the Ganlib-only post-minus-pre stationary production-map fixed-point defect is not an independently assembled A*phi-q equation residual, a transport error bound, or a convergence proof; a NATIVE strict exit before IEXTF 4 is inconclusive because no outer accelerated step occurred",
+  "threshold": null,
+  "aggregation": null,
+  "relaxation": null,
+  "fitting": null,
+  "causal_claim": null,
+  "stage4_status": "INVALID",
+  "stage5_status": "NOT-AUTHORIZED",
+  "outer_convergence": "NOT-EVALUATED"
+}

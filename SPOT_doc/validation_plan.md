@@ -233,14 +233,41 @@ the written returned state is excluded, and neither
 Stage 5 remains unauthorized.
 
 The terminal radial tests are binary32 successive-iterate changes rather than
-an independent \(A\phi-q\) residual. Increasing `MAXOUT` is not authorized
-without evidence of contraction. The next diagnostic must first be frozen
-and is limited to one radial plane: two common-restart arms of exactly six
-steps, one retaining the native `ACCE 3 3` cycle and one using stationary
-`ACCE 1 0`, with identical physical inputs and rebalancing. Every iterate
-change and acceleration factor is recorded, while a separate binary64
-postprocessor accumulates the normalized equation backward residual. Six
-steps are the native acceleration period, not a fitted stopping parameter.
+an independent \(A\phi-q\) residual. The archived MCCG objects do not
+materialize the complete discrete operator, so a Ganlib-only checker cannot
+honestly reconstruct that residual. Increasing `MAXOUT` is not authorized
+without evidence of contraction.
+
+The next diagnostic is frozen before execution and is limited to plane 1. Two
+fresh arms start from the same cap-500 flux and use identical \(A\), \(q\),
+physical inputs and rebalancing. The native arm retains `ACCE 3 3`; the
+`FLU2AC`-off arm uses `ACCE 1 0`. Each keeps the production strict early
+exit and is capped at six outer updates, one native acceleration period.
+From each terminal state, exactly one `ACCE 1 0` production-map probe is
+applied. A Ganlib-only binary64 checker reports
+
+\[
+D_{V,2}=
+\left[
+\frac{\sum_{g,r}V_r
+ (T_{h/2}(\phi)_{g,r}-\phi_{g,r})^2}
+ {\sum_{g,r}V_r\phi_{g,r}^2}
+\right]^{1/2},
+\qquad
+D_{\max}=
+\frac{\max_{g,r}|T_{h/2}(\phi)_{g,r}-\phi_{g,r}|}
+{\max_{g,r}|\phi_{g,r}|}.
+\]
+
+These are stationary production-map fixed-point defects, not equation
+backward errors or acceptance thresholds. The restart resets the two stored
+iteration histories and acceleration-cycle phase, and `ACCE` controls both
+inner and outer `FLU2AC`; the diagnostic cannot be described as iterations
+501--506 or as a pure outer-acceleration experiment. The complete
+machine-readable contract is
+[radial_floor_protocol.json](../validation/iterative/radial_floor_protocol.json);
+the bounded runner is
+[run_radial_floor_diagnostic.sh](../validation/iterative/run_radial_floor_diagnostic.sh).
 
 ## Stage 5 — direct Picard convergence
 
