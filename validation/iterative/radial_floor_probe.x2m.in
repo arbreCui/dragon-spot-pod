@@ -28,7 +28,7 @@ ECHO "RADIAL-FLOOR-PROBE-CONTROLS"
   outer_cap inner_cap solver_eps free_steps acc_steps ;
 
 FLUX := FLU: FLUX MACRO0 TRACK TRACK_f SYSTEM FSOURCE ::
-  EDIT 1 TYPE S INIT ON REBA ON
+  EDIT 1 TYPE S INIT ON REBA
   EXTE <<outer_cap>> <<solver_eps>>
   UNKT <<solver_eps>>
   THER <<inner_cap>> <<solver_eps>>

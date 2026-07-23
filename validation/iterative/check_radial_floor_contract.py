@@ -335,7 +335,7 @@ def require_template(
         f"INTEGER outer_cap := {maxout} ;",
         "INTEGER inner_cap := 740 ;",
         "REAL solver_eps := 2.5E-7 ;",
-        "TYPE S INIT ON REBA ON",
+        "TYPE S INIT ON REBA",
         "EXTE <<outer_cap>> <<solver_eps>>",
         "UNKT <<solver_eps>>",
         "THER <<inner_cap>> <<solver_eps>>",
@@ -345,6 +345,10 @@ def require_template(
             violations.append(f"{role} template does not bind {token}")
     if len(re.findall(r":=\s*FLU:", text, re.IGNORECASE)) != 1:
         violations.append(f"{role} template must call production FLU once")
+    if re.search(r"\bREBA[ \t]+ON\b", text, re.IGNORECASE):
+        violations.append(
+            f"{role} template uses illegal FLUGPI syntax REBA ON"
+        )
     if f32_bits(2.5e-7) != 0x348637BD:
         violations.append("host binary32 h/2 identity is false")
     for pattern, description in (
