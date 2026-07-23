@@ -19,6 +19,7 @@
     "source": "preserved plane-1 terminal flux from the invalid h/2 MAXOUT=500 capture",
     "arm_input_bytes": "identical",
     "physical_inputs": "bitwise-identical operator, fixed source, system, track, tolerance and rebalancing",
+    "cap_leakage_metadata": "excluded from fixed-input equality because post-radial SPOLEAK replaced FLUX/SPOT-LEAK1D with returned-axial L1; the actual cap-solve input is SYSTEM/SPOT-LEAK1D and is copied unchanged to both arms",
     "cycle_history": "reset independently on entry to each fresh FLU2DR invocation; no AKEEP or ZMU history is transferred"
   },
   "acce_coupling": "one ACCE pair controls both the inner and outer FLU2DR acceleration schedules within an invocation; their counters are distinct, both restart at one, and they may not be tuned independently",

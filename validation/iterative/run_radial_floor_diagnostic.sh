@@ -81,8 +81,11 @@ inode_of() {
 
 require_normal_end() {
   log=$1
-  count=$(grep -c '^normal end of execution for dragon$' "$log" || true)
-  if [ "$count" -ne 1 ]; then
+  count=$(grep -Ec \
+    '^ normal end of execution for dragon 5  Version 5\.1\.0[[:space:]]*$' \
+    "$log" || true)
+  phrase_count=$(grep -c 'normal end of execution for dragon' "$log" || true)
+  if [ "$count" -ne 1 ] || [ "$phrase_count" -ne 1 ]; then
     echo "RADIAL-FLOOR FAIL: missing unique Dragon normal end in $log" >&2
     exit 1
   fi
@@ -232,21 +235,12 @@ done
 
 (
   cd "$WORK"
-  mkdir preflight
-  for name in cap native_pre native_post stationary_pre stationary_post
-  do
-    cp restart_cap.xsm "preflight/$name.xsm"
-    cmp restart_cap.xsm "preflight/$name.xsm"
-  done
   ./check_radial_floor_xsm restart_track.xsm restart_source.xsm \
-    restart_system.xsm preflight/cap.xsm \
-    preflight/native_pre.xsm preflight/native_post.xsm \
-    preflight/stationary_pre.xsm preflight/stationary_post.xsm \
+    restart_system.xsm restart_cap.xsm PREPARED \
     > restart_xsm_check.log
   shasum -a 256 -c prepared_manifest.sha256 \
     > prepared_replay_preflight.log
 )
-rm -rf "$WORK/preflight"
 
 mkdir -p "$WORK/native" "$WORK/stationary"
 copy_common_inputs "$WORK/native"

@@ -206,3 +206,9 @@ there.
 Its machine-readable controls are
 [radial_floor_protocol.json](radial_floor_protocol.json), and the runner is
 [run_radial_floor_diagnostic.sh](run_radial_floor_diagnostic.sh).
+The preflight reads only the real TRACK, SOURCE, SYSTEM and forensic CAP
+objects; it does not fabricate solver outputs. The CAP flux carries
+returned-axial \(L_1\) metadata written after its radial solve, whereas that
+solve used the unchanged system \(L_0\). Thus only CAP leakage metadata is
+excluded. The final audit still requires every newly produced arm/probe flux
+to carry system \(L_0\) bit for bit before it reports either one-step defect.

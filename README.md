@@ -177,6 +177,11 @@ and executed by
 [run_radial_floor_diagnostic.sh](validation/iterative/run_radial_floor_diagnostic.sh).
 The failure receipt and evidence boundaries are in
 [inner_sensitivity_result.md](validation/iterative/inner_sensitivity_result.md).
+The forensic cap flux carries the later returned-axial \(L_1\) metadata
+written by `SPOLEAK`; the cap solve itself used the archived system's
+\(L_0\). The checker therefore excludes only that stale cap metadata and
+requires every newly solved pre/post flux to reproduce the actual system
+leakage bit for bit.
 
 ## Validation route
 

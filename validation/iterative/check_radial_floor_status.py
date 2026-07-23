@@ -20,6 +20,10 @@ import struct
 NUMBER = r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[EeDd][+-]?\d+)?"
 EPS_BITS = 0x348637BD
 ARM_IDS = ("NATIVE", "STATIONARY")
+NORMAL_END_RE = re.compile(
+    r"^ normal end of execution for dragon 5  Version 5\.1\.0[ \t]*$",
+    re.MULTILINE,
+)
 
 EXPECTED_PROTOCOL = {
     "schema": "spot-radial-floor-diagnostic-v1",
@@ -56,6 +60,12 @@ EXPECTED_PROTOCOL = {
         "physical_inputs": (
             "bitwise-identical operator, fixed source, system, track, "
             "tolerance and rebalancing"
+        ),
+        "cap_leakage_metadata": (
+            "excluded from fixed-input equality because post-radial "
+            "SPOLEAK replaced FLUX/SPOT-LEAK1D with returned-axial L1; "
+            "the actual cap-solve input is SYSTEM/SPOT-LEAK1D and is "
+            "copied unchanged to both arms"
         ),
         "cycle_history": (
             "reset independently on entry to each fresh FLU2DR "
@@ -352,8 +362,12 @@ def parse_controls(
     return maxout, maxinr, eps, free_steps, accelerated_steps
 
 
-def validate_log_envelope(text: str, description: str) -> None:
-    if text.count("normal end of execution for dragon") != 1:
+def validate_log_envelope(text: str, description: str) -> int:
+    normal_ends = list(NORMAL_END_RE.finditer(text))
+    if (
+        len(normal_ends) != 1
+        or text.count("normal end of execution for dragon") != 1
+    ):
         fail(f"{description} lacks one normal Dragon termination")
     if len(re.findall(r"cle2000_c:\s*cpu time=", text)) != 1:
         fail(f"{description} lacks one CLE-2000 CPU receipt")
@@ -380,6 +394,7 @@ def validate_log_envelope(text: str, description: str) -> None:
     for pattern in header_patterns:
         if len(re.findall(pattern, text)) != 1:
             fail(f"{description} lacks one production header: {pattern}")
+    return normal_ends[0].start()
 
 
 def validate_history(
@@ -505,7 +520,7 @@ def parse_run(
     except UnicodeDecodeError as exc:
         fail(f"{path.name} is not strict UTF-8/ASCII: {exc}")
     description = f"{role.lower()} {arm_id}"
-    validate_log_envelope(text, description)
+    normal_end_position = validate_log_envelope(text, description)
 
     marker_prefix = f"RADIAL-FLOOR-{role}"
     echo_matches = [
@@ -590,7 +605,7 @@ def parse_run(
         < outer.position
         < inner.position
         < complete_position
-        < text.index("normal end of execution for dragon")
+        < normal_end_position
     ):
         fail(
             f"{description} marker, history, terminal, or normal-end "

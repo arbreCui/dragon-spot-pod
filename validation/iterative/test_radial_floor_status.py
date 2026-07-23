@@ -14,6 +14,7 @@ import unittest
 HERE = Path(__file__).resolve().parent
 CHECKER = HERE / "check_radial_floor_status.py"
 PROTOCOL = HERE / "radial_floor_protocol.json"
+NORMAL_END = " normal end of execution for dragon 5  Version 5.1.0"
 
 
 def echo(payload: str, source_line: int) -> str:
@@ -150,7 +151,7 @@ def main_arm_log(
         *warnings,
         echo(f"RADIAL-FLOOR-ARM-COMPLETE {arm_id}", 40),
         "cle2000_c: cpu time= 1.000 second",
-        "normal end of execution for dragon",
+        NORMAL_END,
     ]
     return "\n".join(rows) + "\n"
 
@@ -186,7 +187,7 @@ def probe_log(arm_id: str) -> str:
         " *** FLU2DR: CONVERGENCE NOT REACHED ***",
         echo(f"RADIAL-FLOOR-PROBE-COMPLETE {arm_id}", 40),
         "cle2000_c: cpu time= 1.000 second",
-        "normal end of execution for dragon",
+        NORMAL_END,
     ]
     return "\n".join(rows) + "\n"
 
@@ -396,8 +397,13 @@ class RadialFloorStatusTests(unittest.TestCase):
                 1,
             ),
             "scientific claim": native.replace(
-                "normal end of execution for dragon",
-                "STAGE5 AUTHORIZED\nnormal end of execution for dragon",
+                NORMAL_END,
+                "STAGE5 AUTHORIZED\n" + NORMAL_END,
+            ),
+            "duplicate footer": native + NORMAL_END + "\n",
+            "forged footer suffix": native.replace(
+                NORMAL_END,
+                NORMAL_END + " FORGED",
             ),
         }
         for name, arm_a in tampered.items():

@@ -77,7 +77,7 @@ protocol = json.loads(protocol_text)
 # Freeze the declared scientific meaning and the absence of tunable
 # acceptance machinery.
 if sha256(PATHS["protocol"]) != (
-    "787b024fde76b0fdd35cdfb9b79408cb794f6b5f499078da5bb2726766d0e001"
+    "6a68bb319c382b96df7289e848bbfb4da3341bf6406b72cfe2c381e579d863a2"
 ):
     violations.append("radial-floor protocol bytes differ from the freeze")
 if set(protocol) != {
@@ -157,6 +157,14 @@ expected_arms = [
 ]
 if protocol.get("main_arms") != expected_arms:
     violations.append("two main-arm controls changed")
+common_restart = protocol.get("common_restart", {})
+if common_restart.get("cap_leakage_metadata") != (
+    "excluded from fixed-input equality because post-radial SPOLEAK "
+    "replaced FLUX/SPOT-LEAK1D with returned-axial L1; the actual "
+    "cap-solve input is SYSTEM/SPOT-LEAK1D and is copied unchanged to "
+    "both arms"
+):
+    violations.append("cap leakage-metadata timing contract changed")
 probes = protocol.get("terminal_probes", {})
 if (
     probes.get("count") != 2
@@ -403,9 +411,14 @@ for token in (
     "artifact_replay.log",
     "shasum",
     "cmp",
+    "PREPARED",
+    "phrase_count",
+    "^ normal end of execution for dragon 5  Version 5\\.1\\.0",
 ):
     if token not in runner:
         violations.append(f"runner does not bind {token}")
+if "preflight/" in runner or "mkdir preflight" in runner:
+    violations.append("runner fabricates surrogate preflight solver outputs")
 for forbidden, description in (
     (r"\bRELAX(?:ATION)?\b|\bDAMP(?:ING)?\b", "relaxation"),
     (r"\bALPHA\b|\bOMEGA\b", "mixing parameter"),
@@ -445,6 +458,8 @@ for token in (
     "test_cap",
     "probe",
     "tamper",
+    "duplicate footer",
+    "forged footer suffix",
 ):
     if token.lower() not in tests.lower():
         violations.append(f"synthetic status tests do not bind {token}")
@@ -453,7 +468,10 @@ for token in (
 # mutate them or call production SPOT/FLU solver routines.
 for token in (
     "RADIAL-FLOOR-XSM",
-    "SOURCE-AND-LEAKAGE-METADATA BITWISE PASS",
+    "SOURCE-METADATA BITWISE PASS",
+    "CAP LEAKAGE-METADATA EXCLUDED",
+    "PREPARED NO SOLVER OUTPUTS",
+    "SOLVER-OUTPUT LEAKAGE-METADATA BITWISE PASS",
     "QUANTITY ONE-STEP PRODUCTION-MAP FIXED-POINT DEFECT",
     "V2-NUM",
     "V2-DEN",
@@ -469,6 +487,14 @@ for token in (
 ):
     if token not in xsm:
         violations.append(f"XSM checker does not bind output token {token}")
+for token in (
+    "case(5)",
+    "input_count=4",
+    "case(nargs)",
+    "call load_flux(trim(path(4))",
+):
+    if token not in xsm:
+        violations.append(f"XSM checker does not bind PREPARED split: {token}")
 if re.search(
     r"\b(?:LCMPUT|LCMPTC|LCMPPD|LCMLID|LCMLIL|LCMEQU|LCMDEL)\b",
     xsm,

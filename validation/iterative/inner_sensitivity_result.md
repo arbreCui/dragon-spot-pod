@@ -106,3 +106,12 @@ empirical coefficient. The exact predeclared controls are in
 [radial_floor_protocol.json](radial_floor_protocol.json), with execution and
 provenance gates in
 [run_radial_floor_diagnostic.sh](run_radial_floor_diagnostic.sh).
+
+One archived-field distinction is essential. After the failed radial solves,
+the returned axial call to `SPOLEAK` replaced each forensic
+`FLUX/SPOT-LEAK1D` record with fresh \(L_1\). The radial solve had actually
+used the still-archived `SYSTEM/SPOT-LEAK1D` \(=L_0\). The bounded restart
+therefore uses the system record without modification. Its independent
+checker excludes only the stale cap leakage metadata, while requiring
+source/\(k\) identity for the cap and bitwise system-leakage identity for
+every newly solved arm/probe flux.

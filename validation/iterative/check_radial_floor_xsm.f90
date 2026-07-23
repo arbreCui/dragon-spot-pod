@@ -3,13 +3,19 @@ program check_radial_floor_xsm
   ! diagnostic.
   !
   ! Arguments:
-  !   track source system cap
-  !   native_pre native_post stationary_pre stationary_post
+  !   PREPARED: track source system cap PREPARED
+  !   FINAL:    track source system cap
+  !             native_pre native_post stationary_pre stationary_post
   !
   ! TRACK, SOURCE, and SYSTEM are the common immutable inputs.  CAP and the
-  ! four arm objects are L_FLUX objects.  Every L_FLUX object must carry a
-  ! bitwise copy of the frozen SPOT-QFISS, SPOT-FS-K, and SPOT-LEAK1D
-  ! inputs.  For each arm, PRE is phi and POST is the one-step T(phi).
+  ! four arm objects are L_FLUX objects.  Every object must carry a bitwise
+  ! copy of frozen SPOT-QFISS and SPOT-FS-K.  The forensic CAP leakage
+  ! metadata is excluded because the returned-axial SPOLEAK call replaced it
+  ! with L1 after the cap solve; SYSTEM retains the actual L0 solve input.
+  ! In final mode the four new solver outputs must carry SYSTEM/SPOT-LEAK1D
+  ! bit for bit.  PREPARED mode reads no surrogate solver outputs and
+  ! performs only the pre-solve structural and source checks.  For each arm,
+  ! PRE is phi and POST is one step T(phi).
   !
   ! The two reported fixed-point defects are input-normalized:
   !
@@ -64,18 +70,30 @@ program check_radial_floor_xsm
   end type defect_result
 
   character(len=1024) :: path(nargs)
+  character(len=16) :: mode
   character(len=16), parameter :: flux_owner(nflux) = &
     [character(len=16) :: 'CAP','NATIVE PRE','NATIVE POST', &
       'STATIONARY PRE','STATIONARY POST']
   type(frozen_input) :: frozen
   type(flux_state) :: flux(nflux)
   type(defect_result) :: native,stationary
-  integer :: i,j
+  integer :: argument_count,input_count,i,j
+  logical :: prepared_mode
 
-  if (command_argument_count() /= nargs) call fail( &
-    'EIGHT ARGUMENTS EXPECTED: TRACK SOURCE SYSTEM CAP '// &
-    'NATIVE_PRE NATIVE_POST STATIONARY_PRE STATIONARY_POST.')
-  do i=1,nargs
+  argument_count=command_argument_count()
+  select case(argument_count)
+  case(5)
+    call get_command_argument(5,mode)
+    if (trim(mode) /= 'PREPARED') call fail('INVALID CHECKER MODE.')
+    prepared_mode=.true.
+    input_count=4
+  case(nargs)
+    prepared_mode=.false.
+    input_count=nargs
+  case default
+    call fail('EXPECTED FOUR XSM ARGUMENTS PLUS PREPARED, OR EIGHT XSM ARGUMENTS.')
+  end select
+  do i=1,input_count
     call get_command_argument(i,path(i))
     if (len_trim(path(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
     if (len_trim(path(i)) > max_xsm_path) &
@@ -89,22 +107,31 @@ program check_radial_floor_xsm
   call load_track(trim(path(1)),frozen)
   call load_source(trim(path(2)),frozen)
   call load_system(trim(path(3)),frozen)
-  do i=1,nflux
-    call load_flux(trim(path(i+3)),trim(flux_owner(i)),frozen,flux(i))
-  enddo
-
-  call compute_defect(flux(2),flux(3),frozen,native)
-  call compute_defect(flux(4),flux(5),frozen,stationary)
+  call load_flux(trim(path(4)),trim(flux_owner(1)),frozen,flux(1),.false.)
+  if (.not.prepared_mode) then
+    do i=2,nflux
+      call load_flux(trim(path(i+3)),trim(flux_owner(i)),frozen,flux(i), &
+        .true.)
+    enddo
+    call compute_defect(flux(2),flux(3),frozen,native)
+    call compute_defect(flux(4),flux(5),frozen,stationary)
+  endif
 
   write(6,'(A,3(1X,I0))') 'RADIAL-FLOOR-XSM DIMS', &
     frozen%ngroup,frozen%nregion,frozen%nunknown
-  write(6,'(A)') &
-    'RADIAL-FLOOR-XSM SOURCE-AND-LEAKAGE-METADATA BITWISE PASS'
-  write(6,'(A)') &
-    'RADIAL-FLOOR-XSM QUANTITY ONE-STEP PRODUCTION-MAP FIXED-POINT DEFECT'
-  write(6,'(A)') 'RADIAL-FLOOR-XSM ORDER GROUP-MAJOR REGION-MINOR'
-  call print_defect('NATIVE',native)
-  call print_defect('STATIONARY',stationary)
+  write(6,'(A)') 'RADIAL-FLOOR-XSM SOURCE-METADATA BITWISE PASS'
+  write(6,'(A)') 'RADIAL-FLOOR-XSM CAP LEAKAGE-METADATA EXCLUDED'
+  if (prepared_mode) then
+    write(6,'(A)') 'RADIAL-FLOOR-XSM PREPARED NO SOLVER OUTPUTS'
+  else
+    write(6,'(A)') &
+      'RADIAL-FLOOR-XSM SOLVER-OUTPUT LEAKAGE-METADATA BITWISE PASS'
+    write(6,'(A)') &
+      'RADIAL-FLOOR-XSM QUANTITY ONE-STEP PRODUCTION-MAP FIXED-POINT DEFECT'
+    write(6,'(A)') 'RADIAL-FLOOR-XSM ORDER GROUP-MAJOR REGION-MINOR'
+    call print_defect('NATIVE',native)
+    call print_defect('STATIONARY',stationary)
+  endif
   write(6,'(A)') 'RADIAL-FLOOR-XSM COMPLETE'
 
 contains
@@ -234,10 +261,11 @@ contains
   end subroutine load_system
 
 
-  subroutine load_flux(xsm_path,owner,data,state_data)
+  subroutine load_flux(xsm_path,owner,data,state_data,check_leakage)
     character(len=*), intent(in) :: xsm_path,owner
     type(frozen_input), intent(in) :: data
     type(flux_state), intent(out) :: state_data
+    logical, intent(in) :: check_leakage
     type(c_ptr) :: root,flux_groups,q_outer,q_groups
     integer :: state(nstate),marker,group
     real(real32), allocatable :: qfiss(:,:),leakage(:)
@@ -276,7 +304,10 @@ contains
     allocate(leakage(data%ngroup))
     allocate(qfiss(data%nunknown,data%ngroup))
     call LCMGET(root,'SPOT-LEAK1D',leakage)
-    if (any(real32_bits(leakage) /= real32_bits(data%leakage))) &
+    if (any(.not.ieee_is_finite(leakage))) &
+      call fail(trim(owner)//' HAS NON-FINITE SPOT-LEAK1D.')
+    if (check_leakage.and. &
+        any(real32_bits(leakage) /= real32_bits(data%leakage))) &
       call fail(trim(owner)//' SPOT-LEAK1D DIFFERS BITWISE.')
     q_outer=LCMGID(root,'SPOT-QFISS')
     call require_list_item(q_outer,1,data%ngroup,10, &

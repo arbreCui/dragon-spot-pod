@@ -268,6 +268,11 @@ machine-readable contract is
 [radial_floor_protocol.json](../validation/iterative/radial_floor_protocol.json);
 the bounded runner is
 [run_radial_floor_diagnostic.sh](../validation/iterative/run_radial_floor_diagnostic.sh).
+The forensic cap `FLUX/SPOT-LEAK1D` is not an input record: the final
+`SPOLEAK` call replaced it with returned-axial \(L_1\). The actual cap solve
+used `SYSTEM/SPOT-LEAK1D` \(=L_0\). Accordingly, cap leakage metadata is
+excluded from bitwise equality, while all newly produced arm/probe fluxes
+must carry the unchanged system leakage exactly.
 
 ## Stage 5 — direct Picard convergence
 
