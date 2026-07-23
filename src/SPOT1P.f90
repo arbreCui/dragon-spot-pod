@@ -1,421 +1,450 @@
 !-----------------------------------------------------------------------
 !
-!Purpose:
-! solution of the SN equations with the synthesis Proper orthogonal
-! tracking (SPOT) method.
+! Purpose:
+!   Solve the coupled one-dimensional SN equations in a radial POD
+!   trial space and reconstruct the physical regional flux.
 !
-!Copyright:
-! Copyright (C) 2025 Ecole Polytechnique de Montreal
-! This library is free software; you can redistribute it and/or
-! modify it under the terms of the GNU Lesser General Public
-! License as published by the Free Software Foundation; either
-! version 2.1 of the License, or (at your option) any later version
+! The radial expansion for one energy group is
 !
-!Author(s): A. Hebert
+!        psi_i(z,mu) = sum_a B_i^a A_a(z,mu),
 !
-!Parameters: input
-! nreg2d  number of meshes in the xy plane.
-! nfloor  number of axial floors.
-! ielem   degree of the spatial approximation (=1: diamond scheme).
-! nmat    number of material mixtures.
-! nsnap   number of snapshots.
-! ischm   method of spatial discretisation:
-!         =1: High-Order Diamond Differencing (HODD) - default;
-!         =2: Discontinuous Galerkin finite element method (DG).
-! npq     number of SN directions.
-! nsct    maximum number of spherical harmonics moments of the flux
-!         (1: isotropic scattering in LAB; 2: linearly anisotropic).
-! mat1d   snapshot index assigned to each floor.
-! vol1d   width of each floor.
-! mat     material mixture index in each region.
-! vol     volumes of each region.
-! keyflx  index of flux components in unknown vector.
-! total   macroscopic total cross sections.
-! db2     radial DB2 leakage on each snapshot.
-! ncode   axial boundary condition indices.
-! zcode   axial albedos.
-! qext    legendre components of the fixed source.
-! lfixup  flag to enable negative flux fixup.
-! du      first direction cosines ($\mu$).
-! w       weights.
-! pl      discrete values of the spherical harmonics corresponding
-!         to the 1D SN quadrature.
-! xnei    SN boundary fluxes on the input plane.
+! where B is volume-orthonormal.  Material operators and sources are
+! projected with the same volume inner product.  RANK therefore equals
+! the number of axial modal unknowns; POD is not an input filter.
 !
-!Parameters: output
-! flux    Legendre components of the flux.
-! cour    net currents on boundary meshes.
-! xnei    SN boundary fluxes on the exit plane.
+! This first clean implementation intentionally supports the constant
+! diamond spatial approximation only.
 !
 !-----------------------------------------------------------------------
-!
-subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct, &
-& lfixup,mat1d,vol1d,mat,keyflx,total,sgas,db2,ncode,zcode,qext, &
-& du,w,pl,flux,cour,xnei)
-  !----
-  !  subroutine arguments
-  !----
-  integer nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,mat1d(nfloor), &
-  & mat(nfloor,nreg2d),keyflx(nfloor,nreg2d),ncode(2)
-  real vol1d(nfloor),total(0:nmat),sgas(0:nmat,nsct),zcode(2), &
-  & qext(ielem,nsct,nfloor,nreg2d),du(npq),w(npq),pl(nsct,npq), &
-  & flux(ielem,nsct,nfloor,nreg2d),cour(nfloor+1,nreg2d),xnei(npq,nreg2d)
-  logical lfixup
-  double precision db2(nsnap,nreg2d)
-  !----
-  !  local variables and allocatable arrays
-  !----
-  double precision, allocatable, dimension(:,:) :: AA,shoot
-  double precision, allocatable, dimension(:,:,:) :: BB,afb
-  double precision, allocatable, dimension(:,:,:,:) :: funk
-  ! Defensive guard against degenerate axial systems (Cui, 2026-07):
-  ! near-zero-flux groups (deep thermal in a fast spectrum, made worse
-  ! by fine radial subdivision) can drive |db2| so large that the
-  ! per-region dense systems lose rank in double precision. Instead of
-  ! aborting the whole run, the affected solution is zeroed (pure
-  ! source-driven sweep / absorbing floor), occurrences are counted,
-  ! and the run aborts only if EVERY region is singular in one call.
-  integer :: nsing_call
-  integer, save :: nsing_total=0
-  logical :: lbad
-  logical, allocatable, dimension(:) :: lsing
-  !
-  allocate(afb(npq,nfloor+1,nreg2d),AA(npq,nreg2d),BB(npq,npq,nreg2d),funk(ielem,nfloor,npq,nreg2d), &
-  & shoot(npq,npq+1))
-  nsing_call=0
-  allocate(lsing(nreg2d))
-  lsing(:nreg2d)=.false.
-  !----
-  !  pre-flag regions with non-physical radial leakage data. Real
-  !  cross sections are O(1e0-1e2) cm-1; L2D = Q/phi - St + Ss0 - L1D
-  !  in a near-zero-flux cell reaches 1e10+ (and can be huge negative
-  !  when the MOC source moment underflows before the flux). Such a
-  !  floor operator has enormous gain or absorption: its sweep flux is
-  !  garbage of arbitrary magnitude -- output-magnitude clamps alone
-  !  proved insufficient (observed sub-1e30 garbage driving KEFF to
-  !  1e24 on the d4b pilot). Detect at the data level and deactivate
-  !  the region for this group: physically these are degenerate
-  !  near-zero-flux groups with negligible contribution to K.
-  !  The test .not.(|x|<cap) also catches NaN. Cap 1e4 sits well
-  !  above any physical value and well below the garbage scale.
-  !----
-  do k2d=1,nreg2d
-    do is=1,nsnap
-      if(.not.(abs(db2(is,k2d)).lt.1.0d4)) then
-        lsing(k2d)=.true.
-        nsing_total=nsing_total+1
-        if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
-          write(6,'(a,i7,a,1p,e11.3,a,i3,a,i12,a)') &
-          & ' SPOT1P: non-physical radial leakage in region',k2d, &
-          & ' (L2D=',db2(is,k2d),', snapshot',is,', occurrence', &
-          & nsing_total,'); region deactivated.'
-        endif
-        exit
+subroutine SPOT1P(nreg2d,nfloor,ielem,nmat,nsnap,nmode,ischm,npq,nsct, &
+                  lfixup,mat1d,vol1d,mat,total,sgas,basis,vol2d, &
+                  radial2d,ncode,zcode,qext,du,w,pl,flux,cour,xnei)
+  use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
+  implicit none
+  integer, parameter :: dp=kind(1.0d0)
+
+  integer, intent(in) :: nreg2d,nfloor,ielem,nmat,nsnap,nmode,ischm,npq,nsct
+  integer, intent(in) :: mat1d(nfloor),mat(nfloor,nreg2d),ncode(2)
+  real, intent(in) :: vol1d(nfloor),total(0:nmat),sgas(0:nmat,nsct)
+  real, intent(in) :: basis(nreg2d,nmode),vol2d(nreg2d),zcode(2)
+  real, intent(in) :: radial2d(nreg2d,nsnap)
+  real, intent(in) :: qext(ielem,nsct,nfloor,nreg2d)
+  real, intent(in) :: du(npq),w(npq),pl(nsct,npq)
+  real, intent(out) :: flux(ielem,nsct,nfloor,nreg2d)
+  real, intent(out) :: cour(nfloor+1,nreg2d),xnei(npq,nreg2d)
+  logical, intent(in) :: lfixup
+
+  integer :: i,a,b,n,m,l,ifloor,iface,ibm,isnap,ico,row,opp,half
+  integer :: npositive,nnegative,npair
+  integer :: nstate,ier
+  double precision :: vtot,wi,albedo_left,albedo_right
+  double precision, allocatable :: weight(:),total_m(:,:,:)
+  double precision, allocatable :: radial_m(:,:,:)
+  double precision, allocatable :: scat_m(:,:,:,:),source_m(:,:,:)
+  double precision, allocatable :: mn(:,:),dn(:,:),aa(:),bb(:,:)
+  double precision, allocatable :: shoot(:,:),face(:,:,:),cell(:,:,:)
+  double precision, allocatable :: modal_flux(:,:,:),modal_cour(:,:)
+  integer, allocatable :: opposite(:)
+  logical :: translation
+
+  if (ielem /= 1 .or. ischm /= 1) &
+    call XABORT('SPOT1P: ONLY CONSTANT DIAMOND SPATIAL APPROXIMATION IS SUPPORTED.')
+  if (lfixup) &
+    call XABORT('SPOT1P: NEGATIVE-FLUX FIXUP IS NOT IMPLEMENTED.')
+  if (nmode <= 0 .or. nmode > nreg2d) &
+    call XABORT('SPOT1P: INVALID POD MODE COUNT.')
+  if (mod(npq,2) /= 0 .or. npq <= 0) &
+    call XABORT('SPOT1P: AN EVEN SN ORDER IS REQUIRED.')
+  if (any(vol1d <= 0.0) .or. any(vol2d <= 0.0)) &
+    call XABORT('SPOT1P: NONPOSITIVE VOLUME.')
+  if (any(.not.ieee_is_finite(du)) .or. &
+      any(.not.ieee_is_finite(w)) .or. any(w <= 0.0)) &
+    call XABORT('SPOT1P: INVALID SN QUADRATURE DATA.')
+
+  half=npq/2
+  npositive=count(du > 0.0)
+  nnegative=count(du < 0.0)
+  if (npositive /= half .or. nnegative /= half) &
+    call XABORT('SPOT1P: INVALID SYMMETRIC SN DIRECTIONS.')
+  allocate(opposite(npq))
+  opposite=0
+  do n=1,npq
+    npair=0
+    do m=1,npq
+      ! Unary negation is exact for a finite stored IEEE real.  Compare
+      ! representations so the pairing contains no numerical tolerance.
+      if (transfer(du(m),0) == transfer(-du(n),0)) then
+        npair=npair+1
+        opposite(n)=m
       endif
     enddo
+    if (npair /= 1) &
+      call XABORT('SPOT1P: SN DIRECTION HAS NO UNIQUE EXACT OPPOSITE.')
   enddo
-  !----
-  !  set matrix AA
-  !----
-  afb(:npq,:nfloor+1,:nreg2d)=0.0d0
-  call swap(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,lfixup,mat1d,vol1d,mat,keyflx, &
-  & total,sgas,qext,du,w,pl,db2,afb,funk)
-  AA(:npq,:nreg2d)=afb(:npq,nfloor+1,:nreg2d)
-  !----
-  !  set matrix BB
-  !----
-  do ico=1,npq
-    afb(:npq,:nfloor+1,:nreg2d)=0.0d0
-    afb(ico,1,:nreg2d)=1.0d0
-    call swap(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,lfixup,mat1d,vol1d,mat,keyflx, &
-    & total,sgas,qext,du,w,pl,db2,afb,funk)
-    do k2d=1,nreg2d
-      BB(:npq,ico,k2d)=afb(:npq,nfloor+1,k2d)-AA(:npq,k2d)
-    enddo
+  do n=1,npq
+    if (opposite(opposite(n)) /= n) &
+      call XABORT('SPOT1P: SN OPPOSITE MAP IS NOT AN INVOLUTION.')
+    if (count(opposite == n) /= 1) &
+      call XABORT('SPOT1P: SN OPPOSITE MAP IS NOT ONE-TO-ONE.')
+    if (transfer(w(opposite(n)),0) /= transfer(w(n),0)) &
+      call XABORT('SPOT1P: OPPOSITE SN WEIGHTS DIFFER.')
   enddo
-  !----
-  !  parallel shooting method
-  !----
-  !$omp parallel do private(shoot,ico,ip,ier)
-  do k2d=1,nreg2d
-    if(lsing(k2d)) then
-      ! deactivated region: vacuum solution, no shooting solve
-      xnei(:npq,k2d)=0.0
-      afb(:npq,1,k2d)=0.0d0
-      cour(1,k2d)=0.0
-      cycle
-    endif
-    shoot(:npq,:npq)=0.0d0
-    shoot(:npq,npq+1)=AA(:npq,k2d)
-    if((ncode(1).eq.1).and.(ncode(2).eq.1)) then
-      ! void boundary conditions
-      do ico=1,npq/2
-        shoot(:npq/2,ico)=-BB(:npq/2,ico,k2d)
-      enddo
-      do ico=npq/2+1,npq
-        shoot(ico,ico)=1.0d0
-      enddo
-    else if((ncode(1).eq.4).and.(ncode(2).eq.4)) then
-      ! tran boundary conditions
-      do ico=1,npq/2
-        shoot(ico,ico)=zcode(2)
-        shoot(:npq,ico)=shoot(:npq,ico)-BB(:npq,ico,k2d)
-      enddo
-      do ico=npq/2+1,npq
-        shoot(ico,ico)=1.0d0
-        shoot(:npq,ico)=shoot(:npq,ico)-zcode(1)*BB(:npq,ico,k2d)
-      enddo
-    else
-      call XABORT('SPOT1P: non supported type of boundary conditions.')
-    endif
-    !----
-    !  shooting method solution.
-    !----
-    call ALSBD(npq,1,shoot,ier,npq)
-    if(ier.ne.0) then
-      ! Degenerate shooting matrix: zero the closure correction for
-      ! this region (falls back to the source-driven sweep with
-      ! vacuum inlet) and continue. See guard note above.
-      !$omp critical(spot1p_sing)
-      nsing_call=nsing_call+1
-      nsing_total=nsing_total+1
-      if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
-        write(6,'(a,i7,a,i12,a)') ' SPOT1P: singular shooting matrix in region', &
-        & k2d,' (occurrence',nsing_total,'); solution zeroed.'
-      endif
-      !$omp end critical(spot1p_sing)
-      shoot(:npq,npq+1)=0.0d0
-      lsing(k2d)=.true.
-    endif
-    do ip=1,npq
-      xnei(ip,k2d)=real(shoot(ip,npq+1))
-    enddo
-    !----
-    !  flux reconstruction.
-    !----
-    if((ncode(1).eq.1).and.(ncode(2).eq.1)) then
-      ! void boundary conditions
-      afb(:npq/2,1,k2d)=shoot(:npq/2,npq+1)
-      afb(npq/2+1:npq,1,k2d)=0.0d0
-    else if((ncode(1).eq.4).and.(ncode(2).eq.4)) then
-      ! tran boundary conditions
-      afb(:npq/2,1,k2d)=shoot(:npq/2,npq+1)
-      afb(npq/2+1:npq,1,k2d)=zcode(1)*shoot(npq/2+1:npq,npq+1)
-    endif
-    cour(1,k2d)=0.0 ! set inlet current
-    do ip=1,npq
-      cour(1,k2d)=cour(1,k2d)+w(ip)*real(afb(ip,1,k2d))*pl(2,ip)
-    enddo
-  enddo ! k2d
-  !$omp end parallel do
-  if(nsing_call.ge.nreg2d) call XABORT('SPOT1P: singular shooting matrix in every region.')
-  !----
-  !  recompute SN flux with target boundary fluxes
-  !----
-  call swap(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,lfixup,mat1d,vol1d,mat,keyflx, &
-  & total,sgas,qext,du,w,pl,db2,afb,funk)
-  !----
-  !  sanitise degenerate regions before taking flux moments: a region
-  !  flagged singular above keeps a garbage sweep flux from its
-  !  near-singular floor systems, and even unflagged near-singular
-  !  solves (ier=0, condition ~1/eps) can return astronomically large
-  !  values. Left alone these poison the fission-source integral of
-  !  the outer eigenvalue iteration (observed: KEFF 9.3e6 -> -5.5e43
-  !  -> NaN on the d4b multi-ring pilot). Zero the whole region-group:
-  !  physically these are near-zero-flux groups whose contribution to
-  !  K is negligible. The test .not.(|x|<1e30) also catches NaN.
-  !----
-  do k2d=1,nreg2d
-    lbad=lsing(k2d)
-    if(.not.lbad) then
-      floors: do ifloor=1,nfloor
-        do ip=1,npq
-          do iel=1,ielem
-            if(.not.(abs(funk(iel,ifloor,ip,k2d)).lt.1.0d30)) then
-              lbad=.true.
-              exit floors
-            endif
-          enddo
-          if(.not.(abs(afb(ip,ifloor+1,k2d)).lt.1.0d30)) then
-            lbad=.true.
-            exit floors
-          endif
-        enddo
-      enddo floors
-      if(lbad) then
-        !$omp critical(spot1p_sing)
-        nsing_total=nsing_total+1
-        if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
-          write(6,'(a,i7,a,i12,a)') ' SPOT1P: non-finite/huge axial flux in region', &
-          & k2d,' (occurrence',nsing_total,'); region zeroed.'
-        endif
-        !$omp end critical(spot1p_sing)
-      endif
-    endif
-    if(lbad) then
-      funk(:ielem,:nfloor,:npq,k2d)=0.0d0
-      afb(:npq,:nfloor+1,k2d)=0.0d0
-      xnei(:npq,k2d)=0.0
-      cour(1,k2d)=0.0
-    endif
-  enddo
-  !----
-  !  compute Legendre moments of the flux.
-  !----
-  flux(:ielem,:nsct,:nfloor,:nreg2d)=0.0
+  translation=(ncode(1) == 4 .or. ncode(2) == 4)
+  if (translation .and. (ncode(1) /= 4 .or. ncode(2) /= 4)) &
+    call XABORT('SPOT1P: TRANSLATION BOUNDARIES MUST BE PAIRED.')
+  if (.not.translation) then
+    if (.not.(ncode(1) == 1 .or. ncode(1) == 2 .or. ncode(1) == 7)) &
+      call XABORT('SPOT1P: UNSUPPORTED LEFT BOUNDARY CONDITION.')
+    if (.not.(ncode(2) == 1 .or. ncode(2) == 2 .or. ncode(2) == 7)) &
+      call XABORT('SPOT1P: UNSUPPORTED RIGHT BOUNDARY CONDITION.')
+  endif
+
+  allocate(weight(nreg2d),total_m(nmode,nmode,nfloor))
+  allocate(radial_m(nmode,nmode,nfloor))
+  allocate(scat_m(nmode,nmode,nsct,nfloor))
+  allocate(source_m(nsct,nfloor,nmode),mn(npq,nsct),dn(nsct,npq))
+  vtot=sum(real(vol2d,dp))
+  weight=real(vol2d,dp)/vtot
+  total_m=0.0d0
+  radial_m=0.0d0
+  scat_m=0.0d0
+  source_m=0.0d0
+
   do ifloor=1,nfloor
-    do k2d=1,nreg2d
-      cour(ifloor+1,k2d)=0.0
-      do ip=1,npq
-        if(w(ip).eq.0.0) cycle
-        do k=1,nsct
-          do iel=1,ielem
-            flux(iel,k,ifloor,k2d)=flux(iel,k,ifloor,k2d)+w(ip)*real(funk(iel,ifloor,ip,k2d))* &
-            & pl(k,ip)
+    isnap=mat1d(ifloor)
+    if (isnap < 1 .or. isnap > nsnap) &
+      call XABORT('SPOT1P: INVALID SNAPSHOT INDEX.')
+    do i=1,nreg2d
+      ibm=mat(ifloor,i)
+      if (ibm == 0) cycle
+      if (ibm < 0 .or. ibm > nmat) &
+        call XABORT('SPOT1P: MATERIAL INDEX OVERFLOW.')
+      wi=weight(i)
+      do a=1,nmode
+        do b=1,nmode
+          total_m(a,b,ifloor)=total_m(a,b,ifloor)+wi* &
+            real(basis(i,a),dp)*real(total(ibm),dp)*real(basis(i,b),dp)
+          radial_m(a,b,ifloor)=radial_m(a,b,ifloor)+wi* &
+            real(basis(i,a),dp)*real(radial2d(i,isnap),dp)* &
+            real(basis(i,b),dp)
+          do l=1,nsct
+            scat_m(a,b,l,ifloor)=scat_m(a,b,l,ifloor)+wi* &
+              real(basis(i,a),dp)*real(sgas(ibm,l),dp)*real(basis(i,b),dp)
           enddo
         enddo
-        cour(ifloor+1,k2d)=cour(ifloor+1,k2d)+w(ip)*real(afb(ip,ifloor+1,k2d))*pl(2,ip)
+        do l=1,nsct
+          source_m(l,ifloor,a)=source_m(l,ifloor,a)+wi* &
+            real(basis(i,a),dp)*real(qext(1,l,ifloor,i),dp)
+        enddo
       enddo
     enddo
   enddo
-  deallocate(lsing,shoot,funk,BB,AA,afb)
-  return
-  contains
-  subroutine swap(nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,lfixup,mat1d,vol1d,mat,keyflx, &
-    & total,sgas,qext,du,w,pl,db2,afb,funk)
-    ! perform swapping over the domain for many angles
-    !----
-    !  subroutine arguments
-    !----
-    integer,intent(in) :: nreg2d,nfloor,ielem,nmat,nsnap,ischm,npq,nsct,mat1d(nfloor), &
-    & mat(nfloor,nreg2d),keyflx(nfloor,nreg2d)
-    real,intent(in) :: vol1d(nfloor),total(0:nmat),sgas(0:nmat,nsct),qext(ielem,nsct,nfloor,nreg2d), &
-    & du(npq),w(npq),pl(nsct,npq)
-    logical,intent(in) :: lfixup
-    double precision,intent(in) :: db2(nsnap,nreg2d)
-    double precision,intent(inout) :: afb(npq,nfloor+1,nreg2d)
-    double precision,intent(out) :: funk(ielem,nfloor,npq,nreg2d)
-    !----
-    !  local variables and allocatable arrays
-    !----
-    parameter(rlog=1.0e-8)
-    double precision ssss,sig(4,4),qqq(4)
-    double precision, allocatable, dimension(:) :: q
-    double precision, allocatable, dimension(:,:) :: sigt_m
-    !
-    if(ischm.eq.2) call XABORT('swap: DG not implemented.')
-    iepq=ielem*npq
-    allocate(q(ielem),sigt_m(iepq,iepq+1))
-    !----
-    !  parallel SPOT flux solution over radial positions.
-    !----
-    !$omp parallel do private(ifloor,isnap,ip,jnd1,ibm,volume,il,i,j,q,sig,qqq,ie1,ie2,ier,ssign)
-    do k2d=1,nreg2d
-      if(lsing(k2d)) then
-        ! deactivated region (non-physical L2D): zero sweep, no solve
-        funk(:ielem,:nfloor,:npq,k2d)=0.0d0
-        afb(:npq,2:nfloor+1,k2d)=0.0d0
-        cycle
-      endif
-      do ifloor=1,nfloor
-        sigt_m(:iepq,:iepq+1)=0.0d0
-        isnap=mat1d(ifloor)
-        volume=vol1d(ifloor)
-        jnd1=keyflx(ifloor,k2d)
-        ibm=mat(ifloor,k2d)
-        if(ibm.eq.0) cycle
-        do ip=1,npq
-          if(w(ip).eq.0.0) cycle
-          do ie1=1,ielem
-            q(ie1)=0.0
-            do il=0,nsct-1
-              q(ie1)=q(ie1)+qext(ie1,il+1,ifloor,k2d)*pl(il+1,ip)/2.0
-            enddo
-          enddo
-          if(ielem.eq.1) then
-            sig(1,1)=total(ibm)*volume+2.d0*du(ip)
-            qqq(1)=q(1)*volume+2.d0*du(ip)*afb(ip,ifloor,k2d)
-          else if(ielem.eq.2) then
-            sig(1,1)=total(ibm)*volume
-            sig(1,2)=2.d0*sqrt(3.d0)*du(ip)
-            qqq(1)=q(1)*volume
-            sig(2,1)=sig(1,2)
-            sig(2,2)=-total(ibm)*volume-6.d0*du(ip)
-            qqq(2)=-q(2)*volume+2.d0*sqrt(3.d0)*du(ip)*afb(ip,ifloor,k2d)
-          else if(ielem.eq.3) then
-            sig(1,1)=total(ibm)*volume+2.d0*du(ip)
-            sig(1,2)=0.d0
-            sig(1,3)=2.d0*sqrt(5.d0)*du(ip)
-            qqq(1)=q(1)*volume+2.d0*du(ip)*afb(ip,ifloor,k2d)
-            sig(2,1)=sig(1,2)
-            sig(2,2)=-total(ibm)*volume
-            sig(2,3)=-2.d0*sqrt(15.d0)*du(ip)
-            qqq(2)=-q(2)*volume
-            sig(3,1)=sig(1,3)
-            sig(3,2)=sig(2,3)
-            sig(3,3)=total(ibm)*volume+10.d0*du(ip)
-            qqq(3)=q(3)*volume+2.d0*sqrt(5.d0)*du(ip)*afb(ip,ifloor,k2d)
-          endif
-          do ie1=1,ielem
-            ssign=1.0
-            if(mod(ie1,2).eq.0) ssign=-1.0
-            i=(ip-1)*ielem+ie1
-            do ie2=1,ielem
-              j=(ip-1)*ielem+ie2
-              sigt_m(i,j)=sig(ie1,ie2)
-            enddo
-            do jp=1,npq
-              ssss=ssign*w(jp)*volume/2.0
-              j=(ip-1)*ielem+ie1
-              do il=0,nsct-1
-                sigt_m(i,j)=sigt_m(i,j)-ssss*real(2*il+1)*sgas(ibm,il+1)*pl(il+1,jp)
-              enddo
-              sigt_m(i,j)=sigt_m(i,j)+ssss*db2(isnap,k2d)*pl(1,jp)
-            enddo ! jp
-            sigt_m(i,iepq+1)=qqq(ie1)
-          enddo
-        enddo ! ip
-        !----
-        !  flux calculation on axial floor with scattering reduction.
-        !----
-        call ALSBD(iepq,1,sigt_m,ier,iepq)
-        if(ier.ne.0) then
-          ! Degenerate floor system: treat this (floor, region) as
-          ! perfectly absorbing and continue. See guard note above.
-          !$omp critical(spot1p_sing)
-          nsing_total=nsing_total+1
-          if(nsing_total.le.10.or.mod(nsing_total,100000).eq.0) then
-            write(6,'(a,i7,a,i5,a,i12,a)') ' SPOT1P-swap: singular matrix in region', &
-            & k2d,' floor',ifloor,' (occurrence',nsing_total,'); flux zeroed.'
-          endif
-          !$omp end critical(spot1p_sing)
-          do ip=1,npq
-            funk(:ielem,ifloor,ip,k2d)=0.0
-            afb(ip,ifloor+1,k2d)=0.0d0
-          enddo
-          cycle
+
+  do n=1,npq
+    do l=1,nsct
+      mn(n,l)=0.5d0*real(2*l-1,dp)*real(pl(l,n),dp)
+      dn(l,n)=real(w(n),dp)*real(pl(l,n),dp)
+    enddo
+  enddo
+
+  nstate=nmode*npq
+  allocate(face(npq,nmode,nfloor+1),cell(npq,nmode,nfloor))
+  allocate(modal_flux(nsct,nfloor,nmode),modal_cour(nfloor+1,nmode))
+
+  if (translation) then
+    albedo_left=real(zcode(1),dp)
+    albedo_right=real(zcode(2),dp)
+  else
+    albedo_left=merge(1.0d0,real(zcode(1),dp),ncode(1) == 2)
+    albedo_right=merge(1.0d0,real(zcode(2),dp),ncode(2) == 2)
+    if (ncode(1) == 7) albedo_left=0.0d0
+    if (ncode(2) == 7) albedo_right=0.0d0
+  endif
+
+  if (.not.translation) then
+    ! Solve the two-point boundary-value problem directly.  The block
+    ! tridiagonal system is algebraically identical to diamond differencing
+    ! but remains stable when the axial mesh is refined.
+    call boundary_solve(face,cell,albedo_left,albedo_right)
+  else
+    ! Translation boundaries couple the two end faces.  Retain the compact
+    ! shooting construction for this uncommon cyclic case.
+    allocate(aa(nstate),bb(nstate,nstate),shoot(nstate,nstate+1))
+    face=0.0d0
+    call sweep(face,cell)
+    do a=1,nmode
+      do n=1,npq
+        aa(index_of(a,n))=face(n,a,nfloor+1)
+      enddo
+    enddo
+
+    do ico=1,nstate
+      face=0.0d0
+      a=(ico-1)/npq+1
+      n=mod(ico-1,npq)+1
+      face(n,a,1)=1.0d0
+      call sweep(face,cell)
+      do b=1,nmode
+        do m=1,npq
+          row=index_of(b,m)
+          bb(row,ico)=face(m,b,nfloor+1)-aa(row)
+        enddo
+      enddo
+    enddo
+
+    shoot=0.0d0
+    do a=1,nmode
+      do n=1,npq
+        row=index_of(a,n)
+        opp=opposite(n)
+        if (du(n) > 0.0) then
+          shoot(row,:nstate)=-albedo_left*bb(row,:)
+          shoot(row,row)=shoot(row,row)+1.0d0
+          shoot(row,nstate+1)=albedo_left*aa(row)
+        else
+          shoot(row,:nstate)=bb(row,:)
+          shoot(row,row)=shoot(row,row)-albedo_right
+          shoot(row,nstate+1)=-aa(row)
         endif
-        !
-        do ip=1,npq
-          funk(:ielem,ifloor,ip,k2d)=0.0
-          if(w(ip).eq.0.0) cycle
-          do ie1=1,ielem
-            i=(ip-1)*ielem+ie1
-            funk(ie1,ifloor,ip,k2d)=sigt_m(i,iepq+1)
-          enddo
-          if(ielem.eq.1) then
-            if(lfixup.and.(funk(1,ifloor,ip,k2d).le.rlog)) funk(1,ifloor,ip,k2d)=0.0
-            afb(ip,ifloor+1,k2d)=2.d0*funk(1,ifloor,ip,k2d)-afb(ip,ifloor,k2d)
-          else if(ielem.eq.2) then
-            afb(ip,ifloor+1,k2d)=afb(ip,ifloor,k2d)+2.d0*sqrt(3.d0)*funk(2,ifloor,ip,k2d)
-          else if(ielem.eq.3) then
-            afb(ip,ifloor+1,k2d)=2.d0*funk(1,ifloor,ip,k2d)+2.d0*sqrt(5.d0)*funk(3,ifloor,ip,k2d)-afb(ip,ifloor,k2d)
+      enddo
+    enddo
+
+    call ALSBD(nstate,1,shoot,ier,nstate)
+    if (ier /= 0) call XABORT('SPOT1P: SINGULAR MODAL BOUNDARY SYSTEM.')
+    face=0.0d0
+    do a=1,nmode
+      do n=1,npq
+        face(n,a,1)=shoot(index_of(a,n),nstate+1)
+      enddo
+    enddo
+    call sweep(face,cell)
+  endif
+
+  modal_flux=0.0d0
+  do a=1,nmode
+    do ifloor=1,nfloor
+      do l=1,nsct
+        do n=1,npq
+          modal_flux(l,ifloor,a)=modal_flux(l,ifloor,a)+dn(l,n)*cell(n,a,ifloor)
+        enddo
+      enddo
+    enddo
+  enddo
+  modal_cour=0.0d0
+  do a=1,nmode
+    do iface=1,nfloor+1
+      do n=1,npq
+        modal_cour(iface,a)=modal_cour(iface,a)+real(w(n),dp)* &
+          real(du(n),dp)*face(n,a,iface)
+      enddo
+    enddo
+  enddo
+
+  flux=0.0
+  cour=0.0
+  xnei=0.0
+  do i=1,nreg2d
+    do a=1,nmode
+      do ifloor=1,nfloor
+        do l=1,nsct
+          flux(1,l,ifloor,i)=flux(1,l,ifloor,i)+ &
+            basis(i,a)*real(modal_flux(l,ifloor,a))
+        enddo
+      enddo
+      do iface=1,nfloor+1
+        cour(iface,i)=cour(iface,i)+basis(i,a)*real(modal_cour(iface,a))
+      enddo
+      do n=1,npq
+        xnei(n,i)=xnei(n,i)+basis(i,a)*real(face(n,a,1))
+      enddo
+    enddo
+  enddo
+  if (any(.not.ieee_is_finite(flux)) .or. &
+      any(.not.ieee_is_finite(cour)) .or. &
+      any(.not.ieee_is_finite(xnei))) &
+    call XABORT('SPOT1P: NON-FINITE RECONSTRUCTED SOLUTION.')
+
+  if (allocated(shoot)) deallocate(shoot,bb,aa)
+  deallocate(opposite,modal_cour,modal_flux,cell,face)
+  deallocate(dn,mn,source_m,scat_m,radial_m,total_m,weight)
+  return
+
+contains
+
+  integer function index_of(imode,idir)
+    integer, intent(in) :: imode,idir
+    index_of=(imode-1)*npq+idir
+  end function index_of
+
+  subroutine boundary_solve(face_flux,cell_flux,left_albedo,right_albedo)
+    double precision, intent(out) :: face_flux(npq,nmode,nfloor+1)
+    double precision, intent(out) :: cell_flux(npq,nmode,nfloor)
+    double precision, intent(in) :: left_albedo,right_albedo
+    double precision, allocatable :: lower(:,:,:),diagonal(:,:,:)
+    double precision, allocatable :: upper(:,:,:),right_hand(:,:)
+    double precision, allocatable :: cprime(:,:,:),dprime(:,:)
+    double precision, allocatable :: solution(:,:),augmented(:,:)
+    double precision :: h,kvalue,svalue
+    integer :: block,iz,ia,ib,in,jn,il,ir,ic,info
+
+    allocate(lower(nstate,nstate,nfloor+1))
+    allocate(diagonal(nstate,nstate,nfloor+1))
+    allocate(upper(nstate,nstate,nfloor+1))
+    allocate(right_hand(nstate,nfloor+1))
+    allocate(cprime(nstate,nstate,nfloor+1))
+    allocate(dprime(nstate,nfloor+1),solution(nstate,nfloor+1))
+    allocate(augmented(nstate,2*nstate+1))
+    lower=0.0d0
+    diagonal=0.0d0
+    upper=0.0d0
+    right_hand=0.0d0
+
+    do block=0,nfloor
+      do ia=1,nmode
+        do in=1,npq
+          ir=index_of(ia,in)
+          if (du(in) > 0.0) then
+            if (block == 0) then
+              diagonal(ir,ir,1)=1.0d0
+              diagonal(ir,index_of(ia,opposite(in)),1)=-left_albedo
+              cycle
+            endif
+            iz=block
+          else
+            if (block == nfloor) then
+              diagonal(ir,ir,nfloor+1)=1.0d0
+              diagonal(ir,index_of(ia,opposite(in)),nfloor+1)= &
+                -right_albedo
+              cycle
+            endif
+            iz=block+1
           endif
-          if(lfixup.and.(afb(ip,ifloor+1,k2d).le.rlog)) afb(ip,ifloor+1,k2d)=0.d0
-        enddo ! ip
-      enddo ! ifloor
-    enddo ! k2d
-    !$omp end parallel do
-    deallocate(sigt_m,q)
-  end subroutine swap
+
+          h=real(vol1d(iz),dp)
+          svalue=0.0d0
+          do il=1,nsct
+            svalue=svalue+mn(in,il)*source_m(il,iz,ia)
+          enddo
+          right_hand(ir,block+1)=h*svalue
+
+          do ib=1,nmode
+            do jn=1,npq
+              ic=index_of(ib,jn)
+              kvalue=0.0d0
+              if (in == jn) kvalue=kvalue+total_m(ia,ib,iz)
+              do il=1,nsct
+                kvalue=kvalue-mn(in,il)*scat_m(ia,ib,il,iz)*dn(il,jn)
+              enddo
+              kvalue=kvalue+mn(in,1)*radial_m(ia,ib,iz)*dn(1,jn)
+              if (du(in) > 0.0) then
+                lower(ir,ic,block+1)=0.5d0*h*kvalue
+                diagonal(ir,ic,block+1)=0.5d0*h*kvalue
+              else
+                diagonal(ir,ic,block+1)=0.5d0*h*kvalue
+                upper(ir,ic,block+1)=0.5d0*h*kvalue
+              endif
+            enddo
+          enddo
+          if (du(in) > 0.0) then
+            lower(ir,ir,block+1)=lower(ir,ir,block+1)-real(du(in),dp)
+            diagonal(ir,ir,block+1)=diagonal(ir,ir,block+1)+real(du(in),dp)
+          else
+            diagonal(ir,ir,block+1)=diagonal(ir,ir,block+1)-real(du(in),dp)
+            upper(ir,ir,block+1)=upper(ir,ir,block+1)+real(du(in),dp)
+          endif
+        enddo
+      enddo
+    enddo
+
+    augmented=0.0d0
+    augmented(:,:nstate)=diagonal(:,:,1)
+    augmented(:,nstate+1:2*nstate)=upper(:,:,1)
+    augmented(:,2*nstate+1)=right_hand(:,1)
+    call ALSBD(nstate,nstate+1,augmented,info,nstate)
+    if (info /= 0) call XABORT('SPOT1P: SINGULAR FIRST AXIAL BLOCK.')
+    cprime(:,:,1)=augmented(:,nstate+1:2*nstate)
+    dprime(:,1)=augmented(:,2*nstate+1)
+
+    do block=2,nfloor+1
+      augmented=0.0d0
+      augmented(:,:nstate)=diagonal(:,:,block)- &
+        matmul(lower(:,:,block),cprime(:,:,block-1))
+      augmented(:,nstate+1:2*nstate)=upper(:,:,block)
+      augmented(:,2*nstate+1)=right_hand(:,block)- &
+        matmul(lower(:,:,block),dprime(:,block-1))
+      call ALSBD(nstate,nstate+1,augmented,info,nstate)
+      if (info /= 0) call XABORT('SPOT1P: SINGULAR AXIAL SCHUR BLOCK.')
+      cprime(:,:,block)=augmented(:,nstate+1:2*nstate)
+      dprime(:,block)=augmented(:,2*nstate+1)
+    enddo
+
+    solution(:,nfloor+1)=dprime(:,nfloor+1)
+    do block=nfloor,1,-1
+      solution(:,block)=dprime(:,block)- &
+        matmul(cprime(:,:,block),solution(:,block+1))
+    enddo
+    do block=1,nfloor+1
+      do ia=1,nmode
+        do in=1,npq
+          face_flux(in,ia,block)=solution(index_of(ia,in),block)
+        enddo
+      enddo
+    enddo
+    do iz=1,nfloor
+      cell_flux(:,:,iz)=0.5d0*(face_flux(:,:,iz)+face_flux(:,:,iz+1))
+    enddo
+
+    deallocate(augmented,solution,dprime,cprime,right_hand)
+    deallocate(upper,diagonal,lower)
+  end subroutine boundary_solve
+
+  subroutine sweep(face_flux,cell_flux)
+    double precision, intent(inout) :: face_flux(npq,nmode,nfloor+1)
+    double precision, intent(out) :: cell_flux(npq,nmode,nfloor)
+    double precision, allocatable :: amat(:,:)
+    double precision :: h,rhs
+    integer :: iz,ia,ib,in,jn,il,ir,ic,info
+
+    allocate(amat(nstate,nstate+1))
+    cell_flux=0.0d0
+    do iz=1,nfloor
+      h=real(vol1d(iz),dp)
+      amat=0.0d0
+      do ia=1,nmode
+        do in=1,npq
+          ir=index_of(ia,in)
+          do ib=1,nmode
+            do jn=1,npq
+              ic=index_of(ib,jn)
+              if (in == jn) amat(ir,ic)=amat(ir,ic)+h*total_m(ia,ib,iz)
+              do il=1,nsct
+                amat(ir,ic)=amat(ir,ic)-h*mn(in,il)* &
+                  scat_m(ia,ib,il,iz)*dn(il,jn)
+              enddo
+              amat(ir,ic)=amat(ir,ic)+h*mn(in,1)* &
+                radial_m(ia,ib,iz)*dn(1,jn)
+            enddo
+          enddo
+          amat(ir,ir)=amat(ir,ir)+2.0d0*real(du(in),dp)
+          rhs=2.0d0*real(du(in),dp)*face_flux(in,ia,iz)
+          do il=1,nsct
+            rhs=rhs+h*mn(in,il)*source_m(il,iz,ia)
+          enddo
+          amat(ir,nstate+1)=rhs
+        enddo
+      enddo
+      call ALSBD(nstate,1,amat,info,nstate)
+      if (info /= 0) call XABORT('SPOT1P: SINGULAR LOCAL MODAL SYSTEM.')
+      do ia=1,nmode
+        do in=1,npq
+          ir=index_of(ia,in)
+          cell_flux(in,ia,iz)=amat(ir,nstate+1)
+          face_flux(in,ia,iz+1)=2.0d0*cell_flux(in,ia,iz)- &
+            face_flux(in,ia,iz)
+        enddo
+      enddo
+    enddo
+    deallocate(amat)
+  end subroutine sweep
+
 end subroutine SPOT1P

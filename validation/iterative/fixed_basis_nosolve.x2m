@@ -1,0 +1,29 @@
+****************************************************************
+* Stage 0B runtime: fixed POD basis, identical live response.   *
+* No radial or axial transport solve is performed.              *
+****************************************************************
+
+XSM_FILE SNAP_SEED :: FILE './initial_snapshots.xsm' ;
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE BASIS_REF :: FILE './basis_reference.xsm' ;
+XSM_FILE FIXED_SYS :: FILE './fixed_system.xsm' ;
+
+LINKED_LIST SNAP ;
+MODULE RECOVER: ASM: END: ;
+
+SNAP := RECOVER: SNAP_SEED :: ITEM 1 ;
+
+* Build the offline rank-one trial space once.
+BASIS_REF := ASM: MACROLIB3 TRACK_AX SNAP ::
+  EDIT 1 SPOD 1 ;
+ECHO "ITERATIVE-FIXB-BASIS-BUILT" ;
+
+* Rebuild the current physical response while reusing exactly that basis.
+FIXED_SYS := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
+  EDIT 1 SPOD 1 FIXB ;
+ECHO "ITERATIVE-FIXB-SYSTEM-BUILT" ;
+
+ECHO "ITERATIVE-FIXB-NOSOLVE-COMPLETE" ;
+END: ;
+QUIT "LIST" .

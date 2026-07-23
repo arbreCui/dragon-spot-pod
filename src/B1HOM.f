@@ -47,7 +47,7 @@
 * INORM   type of leakage model:
 *         =1: Diffon; =2: Ecco; =3: Tibere.
 * B2      original direction dependant buckling.
-* LEAK1D  DB2 leakage with SPOT method. Otherwise set to zero.
+* LEAK1D  optional prescribed axial leakage; zero when unused.
 *
 *Parameters: output
 * DHOM    homogeneous leakage coefficients.

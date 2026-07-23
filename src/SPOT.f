@@ -4,7 +4,7 @@
 *-----------------------------------------------------------------------
 *
 *Purpose:
-* Synthesis Polytechnique Tracking (SPOT) operator.
+* Synthesis Proper Orthogonal Decomposition (SPOT) operator.
 *
 *Copyright:
 * Copyright (C) 2024 Ecole Polytechnique de Montreal
@@ -32,6 +32,7 @@
 *-----------------------------------------------------------------------
 *
       USE GANLIB
+      USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_IS_FINITE
 *----
 *  SUBROUTINE ARGUMENTS
 *----
@@ -56,10 +57,11 @@
 *----
       INTEGER, ALLOCATABLE, DIMENSION(:) :: MAT1D,IDL1D,IDL2D,MAT,IDL,
      1 ISPLX,ISPLY,ISPLZ,IL,IM
+      INTEGER, ALLOCATABLE, DIMENSION(:) :: AREA_BITS,VOL_BITS
       INTEGER, ALLOCATABLE, DIMENSION(:,:) :: MAT2D
       INTEGER, ALLOCATABLE, DIMENSION(:,:,:) :: KEYANI
-      REAL, ALLOCATABLE, DIMENSION(:) :: VOL1D,VOL2D,VOL,XXX,YYY,ZZZ,
-     1 UU,WW,PL,WX,WE,CST,MN,DN
+      REAL, ALLOCATABLE, DIMENSION(:) :: VOL1D,VOL2D,AREA2D,VOL,XXX,
+     1 YYY,ZZZ,UU,WW,PL,WX,WE,CST,MN,DN
 *----
 *  PARAMETER VALIDATION
 *----
@@ -120,8 +122,8 @@
      1      //'. SPOT EXPECTED.')
          ENDIF
          CALL LCMGET(IPTRK,'STATE-VECTOR',IGP)
-         NREG2D=IGP(5)
-         NFLOOR=IGP(6)
+         NREG2D=IGP(6)
+         NFLOOR=IGP(7)
          LBIHET=IGP(40).GT.0
          IF(LBIHET) THEN
             CALL LCMSIX(IPTRK,'BIHET',1)
@@ -145,7 +147,6 @@
       NLF=0
       ISCAT=0
       FRTM=0.05
-      SVDEPS=1.0E-5
       LFIXUP=.FALSE.
       IGLK=0
    15 CALL REDGET(INDIC,NITMA,FLOTT,TEXT4,DFLOTT)
@@ -179,9 +180,6 @@
          CALL REDGET(INDIC,ISCAT,FLOTT,TEXT4,DFLOTT)
          IF(INDIC.NE.1) CALL XABORT('SPOT: INTEGER DATA EXPECTED(6).')
          ISCAT=MIN(ISCAT,NLF)
-      ELSE IF(TEXT4.EQ.'SVDE') THEN
-         CALL REDGET(INDIC,NITMA,SVDEPS,TEXT4,DFLOTT)
-         IF(INDIC.NE.2) CALL XABORT('SPOT: REAL DATA EXPECTED(1).')
       ELSE IF(TEXT4.EQ.'NFIX') THEN
          LFIXUP=.TRUE.
          CALL REDGET(INDIC,ICL1,FLOTT,TEXT4,DFLOTT)
@@ -260,12 +258,12 @@
       JPSNAP=LCMGID(IPSNAP,'TRACK')
       NREG2D=0
       NUNK2D=0
-      NMIX=0
+      NMIX2D=0
       IBIHET=0
       DO ISNAP=1,NSNAP
         KPSNAP=LCMGIL(JPSNAP,ISNAP)
         CALL LCMGET(KPSNAP,'STATE-VECTOR',ISTATE)
-        NMIX=MAX(NMIX,ISTATE(4))
+        NMIX2D=MAX(NMIX2D,ISTATE(4))
         IF(ISNAP.EQ.1) THEN
           NREG2D=ISTATE(1)
           NUNK2D=ISTATE(2)
@@ -280,6 +278,31 @@
           ENDIF
         ENDIF
       ENDDO
+*     The first snapshot VOLUME record is the authoritative radial area.
+*     All snapshots must carry the identical stored binary32 geometry.
+      ALLOCATE(AREA2D(NREG2D),VOL2D(NREG2D))
+      ALLOCATE(AREA_BITS(NREG2D),VOL_BITS(NREG2D))
+      DO ISNAP=1,NSNAP
+        KPSNAP=LCMGIL(JPSNAP,ISNAP)
+        CALL LCMLEN(KPSNAP,'VOLUME',ILONG,ITYLCM)
+        IF((ILONG.NE.NREG2D).OR.(ITYLCM.NE.2)) CALL XABORT(
+     1    'SPOT: INVALID SNAPSHOT VOLUME RECORD.')
+        CALL LCMGET(KPSNAP,'VOLUME',VOL2D)
+        IF(ISNAP.EQ.1) THEN
+          AREA2D=VOL2D
+          AREA_BITS=TRANSFER(AREA2D,0,NREG2D)
+        ELSE
+          VOL_BITS=TRANSFER(VOL2D,0,NREG2D)
+          IF(ANY(VOL_BITS.NE.AREA_BITS)) CALL XABORT(
+     1      'SPOT: SNAPSHOT AREA2D STORED BITS DIFFER.')
+        ENDIF
+      ENDDO
+      IF(ANY(.NOT.IEEE_IS_FINITE(AREA2D)).OR.
+     1   ANY(AREA2D.LE.0.0)) CALL XABORT(
+     2   'SPOT: NON-FINITE OR NONPOSITIVE AREA2D.')
+*     Give each snapshot its own material block.  Reusing mixture numbers
+*     across snapshots silently mixes temperature-dependent cross sections.
+      NMIX=NMIX2D*NSNAP
 *----
 *  CONSTRUCT 3D GEOMETRY
 *----
@@ -287,7 +310,7 @@
       NUNKN=NREG2D*(ISCAT*IELEM*NFLOOR+(NFLOOR+1)+NLF)
       LL4=NREG2D*ISCAT*IELEM*NFLOOR
       LL5=NREG2D*(NFLOOR+1)
-      ALLOCATE(MAT2D(NREG,NSNAP),IDL2D(NREG),VOL2D(NREG))
+      ALLOCATE(MAT2D(NREG,NSNAP),IDL2D(NREG))
       ALLOCATE(MAT(NREG),IDL(NREG),VOL(NREG))
       MAT2D(:NREG,:NSNAP)=0
       JPSNAP=LCMGID(IPSNAP,'TRACK')
@@ -303,22 +326,27 @@
         ENDIF
         KPSNAP=LCMGIL(JPSNAP,ISNAP)        
         CALL LCMGET(KPSNAP,'KEYFLX',IDL2D)
-        CALL LCMGET(KPSNAP,'VOLUME',VOL2D)
         DO J=1,NREG2D
           IOF=(J-1)*NFLOOR+IFLOOR
-          VOL(IOF)=VOL2D(J)*(XXX(IFLOOR+1)-XXX(IFLOOR))
-          MAT(IOF)=MAT2D(J,ISNAP)
+          VOL(IOF)=AREA2D(J)*VOL1D(IFLOOR)
+          IF(MAT2D(J,ISNAP).EQ.0) THEN
+            MAT(IOF)=0
+          ELSE
+            MAT(IOF)=MAT2D(J,ISNAP)+(ISNAP-1)*NMIX2D
+          ENDIF
           IDL(IOF)=(IOF-1)*ISCAT*IELEM+1
         ENDDO
       ENDDO
       CALL LCMPUT(IPTRK,'MATCOD',NREG,1,MAT)
       CALL LCMPUT(IPTRK,'KEYFLX',NREG,1,IDL)
       CALL LCMPUT(IPTRK,'VOLUME',NREG,2,VOL)
+      CALL LCMPUT(IPTRK,'AREA2D',NREG2D,2,AREA2D)
       CALL LCMPUT(IPTRK,'NCODE',2,1,NCODE)
       CALL LCMPUT(IPTRK,'ICODE',2,1,ICODE)
       CALL LCMPUT(IPTRK,'ZCODE',2,2,ZCODE)
       DEALLOCATE(VOL,MAT)
-      DEALLOCATE(VOL2D,IDL2D,MAT2D,VOL1D)
+      DEALLOCATE(VOL_BITS,AREA_BITS,AREA2D,VOL2D)
+      DEALLOCATE(IDL2D,MAT2D,VOL1D)
       DEALLOCATE(IDL1D,MAT1D,XXX)
 *----
 *  PROCESS DOUBLE HETEROGENEITY (BIHET) DATA (IF AVAILABLE)
@@ -351,10 +379,6 @@
       IGP(37)=IGLK
       CALL LCMPUT(IPTRK,'STATE-VECTOR',NSTATE,1,IGP)
       CALL LCMPTC(IPTRK,'LINK.GEOM',12,TEXT12)
-*     EPSI was implicit-typed and never assigned, writing garbage to LCM
-*     for downstream consumers. The intended value is the user-supplied
-*     SVD tolerance. (Fix: review 2026-05-05.)
-      CALL LCMPUT(IPTRK,'EPSI',1,2,SVDEPS)
       IF(IMPX.GT.1) THEN
          CALL LCMGET(IPTRK,'STATE-VECTOR',IGP)
          WRITE(IOUT,110) IGP(:12),IGP(15:16),IGP(18),IGP(27),IGP(37),

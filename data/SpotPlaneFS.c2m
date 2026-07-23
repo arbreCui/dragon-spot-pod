@@ -1,0 +1,33 @@
+****************************************************************
+* SpotPlaneFS.c2m -- one global-k frozen-fission radial step    *
+*                                                              *
+* SYSTEM FLUX := SpotPlaneFS SNAP MICROLIB2 TRACK TRACK_f       *
+*                 FLUX_OLD :: isnap keff flu_eps ;              *
+****************************************************************
+PARAMETER SYSTEM FLUX SNAP MICROLIB2 TRACK TRACK_f FLUX_OLD ::
+  ::: LINKED_LIST SYSTEM FLUX SNAP MICROLIB2 TRACK FLUX_OLD ;
+  ::: SEQ_BINARY TRACK_f ; ;
+
+LINKED_LIST MACRO0 FSOURCE ;
+MODULE SPOFSRC: ASM: FLU: SPOFCHK: DELETE: END: ;
+
+INTEGER isnap ;
+REAL keff flu_eps ;
+:: >>isnap<< >>keff<< >>flu_eps<< ;
+
+* Freeze F phi_old / keff and remove live fission from this one solve.
+MACRO0 FSOURCE := SPOFSRC: MICROLIB2 TRACK FLUX_OLD ::
+  KEFF <<keff>> ;
+
+SYSTEM := ASM: MACRO0 TRACK TRACK_f SNAP ::
+  EDIT 0 ARM LK1D <<isnap>> ;
+
+* MAXOUT is only a safety cap; all three residual gates control success.
+FLUX := FLU: MACRO0 TRACK TRACK_f SYSTEM FSOURCE ::
+  EDIT 0 TYPE S EXTE 500 <<flu_eps>>
+  UNKT <<flu_eps>> THER <<flu_eps>> ;
+
+FLUX := SPOFCHK: FLUX FLUX_OLD TRACK SYSTEM FSOURCE :: ;
+MACRO0 FSOURCE := DELETE: MACRO0 FSOURCE ;
+
+END: ;

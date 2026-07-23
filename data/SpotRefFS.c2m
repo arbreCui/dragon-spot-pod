@@ -1,0 +1,41 @@
+****************************************************************
+* SpotRefFS.c2m -- frozen-fission update of every plane         *
+*                                                              *
+* SNAP := SpotRefFS SNAP TRACK TRACK_f :: keff flu_eps ;        *
+****************************************************************
+PARAMETER SNAP TRACK TRACK_f ::
+  ::: LINKED_LIST SNAP TRACK ;
+  ::: SEQ_BINARY TRACK_f ; ;
+
+LINKED_LIST MICROLIB2 SYSTEM FLUX FLUX_OLD ;
+MODULE BACKUP: RECOVER: DELETE: GREP: END: ;
+PROCEDURE SpotPlaneFS ;
+
+REAL keff flu_eps fs_l2 fs_rbal ;
+:: >>keff<< >>flu_eps<< ;
+
+INTEGER isnap nsnap ;
+GREP: SNAP :: GETVAL 'LISTDIM' 1 >>nsnap<< ;
+
+EVALUATE isnap := 0 ;
+WHILE isnap nsnap < DO
+  EVALUATE isnap := isnap 1 + ;
+  ECHO "SPOT-REFRESH-FS-PLANE" isnap "OF" nsnap ;
+
+  MICROLIB2 := RECOVER: SNAP :: ITEM <<isnap>> ;
+  FLUX := RECOVER: SNAP :: ITEM <<isnap>> ;
+  FLUX_OLD := FLUX ;
+  FLUX := DELETE: FLUX ;
+  SYSTEM FLUX := SpotPlaneFS SNAP MICROLIB2 TRACK TRACK_f FLUX_OLD ::
+    <<isnap>> <<keff>> <<flu_eps>> ;
+  GREP: FLUX :: GETVAL 'SPOT-FS-L2' 1 >>fs_l2<< ;
+  GREP: FLUX :: GETVAL 'SPOT-FS-RBAL' 1 >>fs_rbal<< ;
+  ECHO "SPOT-REFRESH-FS-RESULT" isnap fs_l2 fs_rbal ;
+
+  SNAP := BACKUP: SNAP SYSTEM :: ITEM <<isnap>> ;
+  SNAP := BACKUP: SNAP FLUX :: ITEM <<isnap>> ;
+  MICROLIB2 SYSTEM FLUX FLUX_OLD := DELETE:
+    MICROLIB2 SYSTEM FLUX FLUX_OLD ;
+ENDWHILE ;
+
+END: ;

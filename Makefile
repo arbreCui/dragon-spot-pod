@@ -29,6 +29,12 @@ else
 endif
 all :
 	$(MAKE) -C src
+spot-fast :
+	sh validation/run_fast.sh
+spot-stage0 :
+	@test -n "$(DRAGON_BIN)" || \
+	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)
+	DRAGON_BIN="$(DRAGON_BIN)" sh validation/iterative/run_stage0_runtime.sh
 clean :
 	$(MAKE) clean -C src
 tests :
@@ -38,7 +44,7 @@ tests :
 	./rdragon -c $(fcompilerSuite) -p $(nomp) -q tmacro.x2m
 	./rdragon -c $(fcompilerSuite) -p $(nomp) -q VanDerGucht.x2m
 	./rdragon -c $(fcompilerSuite) -p $(nomp) -q VanDerGucht-295.x2m
-	./rdragon -c $(fcompilerSuite) -p $(nomp) -q uo2_295_kec1_openMP.x2m 
+	./rdragon -c $(fcompilerSuite) -p $(nomp) -q uo2_295_kec1_openMP.x2m
 	./rdragon -c $(fcompilerSuite) -p $(nomp) -q tdraglib.x2m
 	./rdragon -c $(fcompilerSuite) -p $(nomp) -q twimsE.x2m
 	./rdragon -c $(fcompilerSuite) -p $(nomp) -q twlup.x2m

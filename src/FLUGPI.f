@@ -80,7 +80,7 @@
 *         = 2 initialization from DSA flux read on LCM.
 * NMERG   number of leakage zones.
 * IMERG   leakage zone index in each material mixture zone.
-* IPICK   = SPOT LEAK1D accuracy recovery (0/1: no/yes).
+* IPICK   optional diagnostic recovery (0/1: no/yes).
 *
 *-----------------------------------------------------------------------
 *

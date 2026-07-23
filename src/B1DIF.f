@@ -26,7 +26,7 @@
 * ST      macroscopic total cross sections.
 * SFNU    nu*macroscopic fission cross sections.
 * XHI     fission spectrum normalized to one.
-* LEAK1D  axial DB2 leakage for the spot method.
+* LEAK1D  optional prescribed axial leakage.
 * IJJ0    most thermal group in band for P0 scattering.
 * NJJ0    number of groups in band for P0 scattering.
 * IJJ1    most thermal group in band for P1 scattering.

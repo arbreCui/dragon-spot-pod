@@ -6,6 +6,40 @@
 *.a
 *.dSYM/
 
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
+
+# Locally built executables (the repository publishes source only)
+/src/Dragon
+/Ganlib/src/Ganlib
+/Trivac/src/Trivac
+
+# Superseded local validation sources kept only as an unpublished archive
+/validation/level3/
+/validation/level4/
+/validation/level5/
+/validation/level5_independent/
+/SPOT_doc/oneshot_baseline.md
+/SPOT_doc/oneshot_validation_plan.md
+
+# Superseded SPOT experiments retained locally but not published
+/src/MGXEXP.f90
+/src/SPOCOMP.f90
+/src/SPOCONV.f90
+/src/SPOFDEV.f90
+/src/SPOLEQA.f90
+/src/SPOLIB.f90
+/src/SPOMESH.f90
+/src/SPOPHYS.f90
+/src/SPORATE.f90
+/data/SpotLibrary.c2m
+/data/SpotPlane.c2m
+/data/SpotRefresh.c2m
+/data/SpotSnapBld.c2m
+/data/SpotSolve.c2m
+/validation/check_symlink_manifest.py
+
 # Compiled libraries / binaries from any sub-tree
 **/lib/Darwin_*/
 **/lib/Linux_*/

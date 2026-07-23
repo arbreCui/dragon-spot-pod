@@ -133,12 +133,16 @@
       TYPE(C_PTR) IPREB,J1,JPSOU,JPFLUX,JPMACR,KPMACR,JPSYS,KPSYS,IPSTR,
      1 JPSTR,KPSTR,JPFLUP1,JPFLUP2,JPSOUR
       INTEGER JPAR(NSTATE),KEYSPN(NREG)
+*     Terminal convergence state used by the fail-closed success gate.
+*     IINR_STATE=1/2/3 denotes strict/near/inner-cap termination.
+*     IUNK_EVAL=1 only when the outer-flux residual was evaluated.
+      INTEGER IINR_STATE,IUNK_EVAL,IGDEB_LAST,ITERF_LAST
       CHARACTER CAN(0:19)*2,MESSIN*8,MESSOU*5,HTYPE(0:5)*4
       INTEGER INDD(3)
       DOUBLE PRECISION AKEEP(8),FISOUR,OLDBIL,AKEFF,AKEFFO,AFLNOR,
      1 BFLNOR,DDELN1,DDELD1,PROD,FLXIN
       LOGICAL LSCAL,LEXAC,REBFLG
-      REAL ALBEDO(6),FLUXC(NREG),B2(4)
+      REAL ALBEDO(6),FLUXC(NREG),B2(4),EINR_LAST,EUNK_LAST
 *
 ************************************************************************
 *                                                                      *
@@ -247,11 +251,6 @@
          IELEM=JPAR(9)
          NANIS_TRK=ABS(JPAR(32))
          IF(IELEM.NE.1) CALL XABORT('FLU2DR: ONLY IELEM=1 AVAILABLE.')
-      ENDIF
-      ISPOT=0
-      IF(C_ASSOCIATED(IPSYS)) THEN
-        CALL LCMGET(IPSYS,'STATE-VECTOR',JPAR)
-        ISPOT=JPAR(14)
       ENDIF
 *----
 *  SELECT THE CALCULATION DOORS FOR WHICH A GROUP-BY-GROUP SCALAR
@@ -544,9 +543,17 @@
       IGDEB=1
       CFLI=.FALSE.
       CEXE=.FALSE.
+      EINR_LAST=0.0
+      EUNK_LAST=0.0
+      IGDEB_LAST=0
+      ITERF_LAST=0
+      IINR_STATE=0
+      IUNK_EVAL=0
       DO 400 IT=1,MAXOUT
       CALL KDRCPU(CPU1)
       MESSIN='     '
+      IINR_STATE=0
+      IUNK_EVAL=0
 *----
 *  FISSION SOURCE CALCULATION IN FLUX(:,:,4)
 *----
@@ -1038,6 +1045,9 @@
   260 CONTINUE
 *
       ITERF=JT
+      EINR_LAST=EINN
+      IGDEB_LAST=IGDEB
+      ITERF_LAST=ITERF
       IF(IPRT.GT.0) WRITE(6,1080) JT,EINN,EPSINR,IGDEB,ZMU
       IF((IPRT.GT.0).AND.(IGDEB.GT.1).AND.(IGDEB.LE.NGRP)) THEN
          WRITE(6,1082) ERRDEB1 
@@ -1045,13 +1055,19 @@
       IF(EINN.LT.EPSINR) THEN
 *        thermal convergence is reached
          CFLI=CEXE
+         IINR_STATE=1
          GOTO 280
       ENDIF
 *     near convergence (eps < 10.0 criterion) a new outer iteration
 *     is started
-      IF((IGDEB.GT.1).AND.(EINN.LT.10.*EPSINR)) GOTO 281
+      IF((IGDEB.GT.1).AND.(EINN.LT.10.*EPSINR)) THEN
+         IINR_STATE=2
+         GOTO 281
+      ENDIF
   270 CONTINUE
+      IINR_STATE=3
       MESSIN='*NOT*'
+      GOTO 280
 ****  END OF INNER LOOP  ******************************************
 *
   281 MESSIN='*NEARLY*'
@@ -1184,13 +1200,6 @@
             IF(NMERG.NE.1) CALL XABORT('FLU2DR: ONE LEAKAGE ZONE EXPEC'
      1      //'TED.(2)')
             LEAK1D(:NGRP)=0.0
-            IF(ISPOT.GT.0) THEN
-              CALL LCMLEN(IPFLUX,'SPOT-LEAK1D',ILONG,ITYLCM)
-              IF(ILONG.GT.0) THEN
-                IF(ILONG.NE.NGRP) CALL XABORT('FLU2DR: INVALID NGRP.')
-                CALL LCMGET(IPFLUX,'SPOT-LEAK1D',LEAK1D)
-              ENDIF
-            ENDIF
             CALL B1HOM(IPMACR,LEAKSW,NUNKNO,OPTION,HTYPE(ITYPEC),NGRP,
      1      NREG,NMAT,NIFIS,VOL,MATCOD,KEYFLX(1,1,1),FLUX(1,1,3),
      2      REFKEF,IPRT,DIFHET(1,1),GAMMA,AKEFF,INORM,B2,LEAK1D)
@@ -1233,6 +1242,8 @@
       ENDIF
 *
       EINN=0.0
+      EUNK_LAST=0.0
+      IUNK_EVAL=0
       IF(IPRT.GT.0) WRITE(6,1090) IT,EEXT,EPSOUT,AKEFF,B2(4)
       IF(EEXT.LT.EPSOUT) THEN
 *        COMPARE FLUX FOR OUTER ITERATIONS
@@ -1250,6 +1261,8 @@
          GINN=GINN/FINN
          EINN=MAX(EINN,GINN)
   370    CONTINUE
+         EUNK_LAST=EINN
+         IUNK_EVAL=1
          IF(IPRT.GT.0) WRITE(6,1100) IT,EINN,EPSUNK,AFLNOR,ZMU
          CEXE=.TRUE.
       ELSE
@@ -1266,8 +1279,24 @@
 *  UPDATE KEFF
 *----
       AKEFFO=AKEFF
-      IF((EEXT.LT.EPSOUT).AND.(EINN.LT.EPSUNK).AND.(IT.GE.2)) GO TO 410
+*     Accept only when every user-supplied residual tolerance is met.
+*     The legacy near-inner branch may schedule another outer iteration,
+*     but it is not a convergence condition.
+      IF((EEXT.LT.EPSOUT).AND.(EINN.LT.EPSUNK).AND.
+     1   (EINR_LAST.LT.EPSINR).AND.(IINR_STATE.EQ.1).AND.
+     2   (IT.GE.2)) THEN
+*        Passive success audit; no iteration state is modified here.
+         WRITE(6,1180) IEXTF,MAXOUT,AKEFF,EEXT,EPSOUT,EUNK_LAST,
+     1   EPSUNK,IUNK_EVAL
+         WRITE(6,1190) ITERF_LAST,MAXINR,EINR_LAST,EPSINR,
+     1   IGDEB_LAST,IINR_STATE,NGRP
+         GO TO 410
+      ENDIF
   400 CONTINUE
+      WRITE(6,1160) IEXTF,MAXOUT,AKEFF,EEXT,EPSOUT,EUNK_LAST,
+     1 EPSUNK,IUNK_EVAL
+      WRITE(6,1170) ITERF_LAST,MAXINR,EINR_LAST,EPSINR,
+     1 IGDEB_LAST,IINR_STATE,NGRP
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
@@ -1457,4 +1486,16 @@
  1140 FORMAT (49H FLU2DR: SPECTRAL RADIUS FOR FOURIER ANALYSIS IS ,
      1 E13.6)
  1150 FORMAT(/18H FLU2DR: BUCKLING=,1P,E13.5,15H K-EFFECTIVE  =,E13.5)
+ 1160 FORMAT(' FLU2DR-DIAG OUTER IEXTF=',I6,' MAXOUT=',I6,
+     1 ' KEFF=',1P,E24.16,' EEXT=',E16.8,' EPSOUT=',E16.8,
+     2 ' EUNK=',E16.8,' EPSUNK=',E16.8,' EUNK-VALID=',0P,I1)
+ 1170 FORMAT(' FLU2DR-DIAG INNER ITERF=',I6,' MAXINR=',I6,
+     1 ' EINR=',1P,E16.8,' EPSINR=',E16.8,' IGDEB=',0P,I6,
+     2 ' STATE=',I1,' NGRP=',I6)
+ 1180 FORMAT(' FLU2DR-TERM OUTER-GATE=PASS IEXTF=',I6,' MAXOUT=',I6,
+     1 ' KEFF=',1P,E24.16,' EEXT=',E16.8,' EPSOUT=',E16.8,
+     2 ' EUNK=',E16.8,' EPSUNK=',E16.8,' EUNK-VALID=',0P,I1)
+ 1190 FORMAT(' FLU2DR-TERM INNER-TERMINAL ITERF=',I6,' MAXINR=',I6,
+     1 ' EINR=',1P,E16.8,' EPSINR=',E16.8,' IGDEB=',0P,I6,
+     2 ' STATE=',I1,' NGRP=',I6)
       END
