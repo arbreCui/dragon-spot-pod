@@ -1,10 +1,10 @@
 # Self-consistent Galerkin–SPOD
 
-This document defines the target SPOT method: a parameter-free, iterative
-2D/1D coupling in a fixed POD radial trial space. Two-dimensional transport
-is recomputed online, its radial response is returned to the axial problem,
-and the axial leakage is returned to the radial problems until the same
-physical state reproduces itself.
+This document defines the target SPOT method: an iterative 2D/1D coupling,
+free of fitted or empirical coupling parameters, in a fixed POD radial trial
+space. Two-dimensional transport is recomputed online, its radial response is
+returned to the axial problem, and the axial leakage is returned to the
+radial problems until the same physical state reproduces itself.
 
 The concise name is **self-consistent Galerkin–SPOD with a fixed offline POD
 space and online radial response**.
@@ -215,7 +215,14 @@ R_L=
 \tag{15}
 \]
 
-with an exact all-zero branch, and
+with an exact all-zero branch. Its stored dimensional companion is
+
+\[
+D_L=\lVert L^+-L\rVert_\infty.
+\]
+
+\(D_L\) is a diagnostic, not a fourth dimensionless convergence criterion.
+Finally,
 
 \[
 R_a=
@@ -278,6 +285,15 @@ combines it with final off-group scattering, and `SPOASM` builds the radial
 operator from that same equation.
 
 The fixed-basis assembly, canonical state, binary32 restriction identity and
-raw residual plumbing have passed no-transport runtime tests. The next
-transport calculation is one corrected map \(x_1=G(x_0)\); a long trajectory
-and any convergence claim remain pending.
+raw residual plumbing have passed no-transport runtime tests. One corrected
+map \(x_1=G(x_0)\) has also been evaluated twice from the same frozen input.
+The five scientific XSM outputs are byte identical between runs. An
+independent Ganlib-only checker verified bitwise preservation of the POD
+package, a live change in the radial response operator, and a bit-exact
+recomputation of the three outer residuals \(R_\rho,R_L,R_a\) and the
+accompanying \(D_L\) diagnostic.
+
+This establishes a deterministic evaluation of \(G\) at one point. It does
+not establish contraction or outer convergence. Inner-tolerance sensitivity,
+the direct Picard trajectory, discretization qualification and independent
+3D validation remain in that order.

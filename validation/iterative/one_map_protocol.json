@@ -1,0 +1,21 @@
+{
+  "schema": "spot-one-map-v1",
+  "method": "fixed-space Galerkin-SPOD raw Picard map",
+  "groups": 370,
+  "planes": 3,
+  "rank": 1,
+  "solver_eps_f32_bits": "0x350637bd",
+  "maxout": 500,
+  "maxinr": 740,
+  "radial_solves": 3,
+  "axial_solves": 2,
+  "outer_updates": 1,
+  "relaxation": null,
+  "outer_convergence": "not_evaluated",
+  "acceptance_basis": [
+    "bitwise equality for frozen discrete state",
+    "FLU terminal residuals not greater than their declared solver tolerance",
+    "strict physical positivity or nonnegativity without a fitted floor",
+    "raw outer defect reported component by component without a threshold"
+  ]
+}

@@ -35,6 +35,10 @@ spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)
 	DRAGON_BIN="$(DRAGON_BIN)" sh validation/iterative/run_stage0_runtime.sh
+spot-one-map :
+	@test -n "$(DRAGON_BIN)" || \
+	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)
+	DRAGON_BIN="$(DRAGON_BIN)" sh validation/iterative/run_one_map_runtime.sh
 clean :
 	$(MAKE) clean -C src
 tests :

@@ -133,16 +133,37 @@ binary32 plane restriction used in production, removes one global
 finite-precision off-space content cannot become a hidden state variable.
 
 The no-transport runtime fixture passes, including an independent Ganlib-only
-bitwise comparison over all 370 groups. The corrected one-map deck is frozen
-but has not yet been run. Therefore no convergence claim is accepted; the
-next numerical milestone is exactly one
-deterministic evaluation \(x_1=G(x_0)\), not a long trajectory.
+bitwise comparison over all 370 groups. One corrected map
+\(x_1=G(x_0)\) has now been run twice from the same frozen input. Both runs
+completed two axial and three radial solves, and their five scientific XSM
+outputs are byte identical. A second Ganlib-only checker independently
+verified that the POD package stayed fixed, the live radial operator changed,
+and the three outer residuals plus the dimensional leakage-change diagnostic
+are bit-exact recomputations.
+
+This qualifies one deterministic map evaluation, not outer convergence. The
+measured defect is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(1.28115\times10^{-6},\,7.92285\times10^{-4},\,
+1.16165\times10^{-6},\,9.22826\times10^{-7}).
+\]
+
+Here \(D_L=\|L^+-L\|_\infty\) accompanies the dimensionless relative leakage
+residual \(R_L\); it is a recorded diagnostic, not a fourth convergence
+criterion.
+
+The next numerical gate is the predeclared inner-tolerance sensitivity from
+the same \(x_0\), not a long trajectory. The complete receipt is in
+[validation/iterative/one_map_result.md](validation/iterative/one_map_result.md).
 
 ## Validation route
 
 1. freeze the fixed-space state, source identity and raw map residual;
 2. unit-test POD projection, radial closure and leakage signs;
-3. replay one complete map twice and require identical scientific records;
+3. replay one complete map twice and require identical scientific records
+   (passed for the first corrected map);
 4. compare one production map with one tighter-tolerance map from the same
    input;
 5. only then study direct Picard convergence;
@@ -166,7 +187,7 @@ src/SPOXCONV.f90                      complete raw state difference
 src/SPOT1P.f90                        axial modal transport solve
 validation/iterative/                 active iterative contracts and fixtures
 validation/level1/                    POD algebra tests
-validation/level2/                    fixed-operator modal tests
+validation/level2/                    fixed-operator algebra unit tests
 ```
 
 Run the existing fast algebra tests with
@@ -176,5 +197,18 @@ sh validation/run_fast.sh
 ```
 
 These tests plus `validation/iterative/run_stage0_runtime.sh` qualify the
-zero/short-compute implementation plumbing only. They do not yet qualify one
-transport map or outer convergence.
+zero/short-compute implementation plumbing. The bounded transport runner
+
+```sh
+DRAGON_BIN=/absolute/path/to/Dragon \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+SEED_DIR=/absolute/path/to/iterative-seed \
+VERIFY_REFERENCE=1 \
+  sh validation/iterative/run_one_map_runtime.sh
+```
+
+`VERIFY_REFERENCE=1` requires the five outputs to match the published
+same-input replay hashes. An in-tree build may omit the two `GANLIB_*`
+overrides. This runner verifies one raw map when its independent runtime and
+XSM checks pass. It does not qualify outer convergence.

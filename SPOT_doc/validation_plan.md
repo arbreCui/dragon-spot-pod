@@ -70,10 +70,13 @@ The physical state records must contain, or deterministically reconstruct:
   controls, executable and source hashes.
 
 `SPOSTATE/SPOXCONV` now close the physical variables \(a,\rho,L\), use the
-production binary32 restriction, and reject any stored basis-bit change. The
-full restart/replay manifest for geometry, materials, tracks, controls and
-implementation hashes is still pending and is required before this formal
-stage is complete.
+production binary32 restriction, and reject any stored basis-bit change. For
+the first corrected-map fixture, the runner now binds the executable, deck,
+actual procedure copies consumed in the work directory, checkers, protocol
+and complete input archives; those archive hashes bind the geometry,
+materials and tracks used by the calculation. The 258 MB seed itself remains
+an external/local artifact rather than Git content, so a clean clone must be
+supplied that hash-verified seed before it can replay the fixture.
 
 For the same input \(x\), a fresh map replay must produce identical scientific
 records. The checker independently recomputes
@@ -88,6 +91,12 @@ R_L=
 {\max(\|L^+\|_\infty,\|L\|_\infty)},
 \]
 
+with the accompanying dimensional diagnostic
+
+\[
+D_L=\|L^+-L\|_\infty,
+\]
+
 and
 
 \[
@@ -97,6 +106,13 @@ R_a=\frac{\|B(a^+-a)\|_V}{\|Ba^+\|_V}.
 The all-zero leakage case is an exact branch. Formal state records are already
 stored at the declared \(\nu\)-fission-production normalization, so the map
 defect performs no additional scale fit.
+
+For the first corrected map, a fresh same-input replay produced byte-identical
+basis, initial state, returned system, returned state and returned radial
+archive. A Ganlib-only checker independently recomputed the three outer
+residuals and the accompanying \(D_L\) diagnostic bit for bit. The runner
+binds the executable, deck, actual work-directory procedure copies, checkers
+and frozen input archives in its input manifest.
 
 ## Stage 3 — one corrected map evaluation
 
@@ -125,6 +141,16 @@ Require for every inner solve:
 
 This stage validates one map evaluation. It does not claim outer convergence.
 
+The first bounded evaluation now satisfies this execution subgate. The
+complete deck's initializer plus map contain two axial and three radial
+solves; all five reached their declared FLU terminal state. The map \(G_h\)
+itself contains the latter one axial and three radial solves. Flux positivity
+and finite balance diagnostics were retained, the POD package remained bit
+identical, the radial response changed, and the same-input replay was
+identical. Its raw defect is recorded in
+`validation/iterative/one_map_result.md`. No conclusion about Picard
+contraction is drawn from this single point.
+
 ## Stage 4 — inner-tolerance sensitivity
 
 From exactly the same frozen input \(x_0\), evaluate
@@ -134,24 +160,35 @@ x1_h   = G_h(x0)
 x1_h2  = G_h2(x0)
 ```
 
-where \(h/2\) is the predeclared systematic tolerance refinement. Report
+where \(h/2\) is the predeclared systematic tolerance refinement. For any
+ordered state pair, let
 
 \[
-D_{\rm out}=d(x_{1,h},x_0)
+\mathcal D(y,z)=(R_\rho,R_L,D_L,R_a)(y,z)
+\]
+
+denote the four separately reported quantities defined above; it is a vector,
+not a weighted scalar score. Report
+
+\[
+\mathcal D_{\rm out}=\mathcal D(x_{1,h},x_0)
 \]
 
 as the outer map defect and
 
 \[
-D_{\rm in}=d(x_{1,h/2},x_{1,h})
+\mathcal D_{\rm in}=\mathcal D(x_{1,h/2},x_{1,h})
 \]
 
 as inner-solver sensitivity.
 
-`D_in` is neither an outer residual nor a rigorous error bound. It is not
-subtracted from `D_out`, fitted into a correction, or used to choose a
-relaxation factor. If the two scales cannot be separated, the result is
-`UNRESOLVED`.
+Each component of \(\mathcal D_{\rm in}\) is reported beside its corresponding
+component of \(\mathcal D_{\rm out}\); no cross-component weighting or scalar
+aggregation is allowed. \(\mathcal D_{\rm in}\) is neither an outer residual
+nor a rigorous error bound. It is not subtracted from
+\(\mathcal D_{\rm out}\), fitted into a correction, or used to choose a
+relaxation factor. If the corresponding component scales cannot be separated,
+the result is `UNRESOLVED`.
 
 ## Stage 5 — direct Picard convergence
 

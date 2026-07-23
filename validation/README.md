@@ -8,7 +8,7 @@ The published validation tree is intentionally small:
 | Directory | Purpose |
 |---|---|
 | `level1/` | weighted POD algebra |
-| `level2/` | radial fixed-operator and source closure |
+| `level2/` | fixed-operator algebra and radial source closure unit tests |
 | `iterative/` | fixed-basis state, source, replay, and one-map contracts |
 
 The new validation order is:
@@ -40,9 +40,11 @@ then reused bit for bit while the live response changes. The canonical state
 uses the production binary32 restriction, and explicit `SPOPROJ FIXB`
 reconstructs the feedback as \(Ba\).
 
-The independent no-transport fixture passes. The next unresolved gate is one
-complete corrected transport map \(x_1=G(x_0)\); no new iterative convergence
-claim exists yet.
+The independent no-transport fixture passes. One corrected transport map
+\(x_1=G(x_0)\) and one fresh replay also pass their runtime and Ganlib-only
+state checks; the five scientific XSM outputs are byte identical. The next
+unresolved gate is inner-tolerance sensitivity from the same \(x_0\). No
+iterative convergence claim exists yet.
 
 ## Commands that remain valid
 
@@ -60,10 +62,24 @@ DRAGON_BIN=/absolute/path/to/Dragon \
   sh validation/iterative/run_stage0_runtime.sh
 ```
 
-The runtime fixture also requires the six local seed files listed in
+Run exactly one bounded transport map with
+
+```sh
+DRAGON_BIN=/absolute/path/to/Dragon \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+SEED_DIR=/absolute/path/to/iterative-seed \
+VERIFY_REFERENCE=1 \
+  sh validation/iterative/run_one_map_runtime.sh
+```
+
+The command above includes the frozen same-input replay gate. With an in-tree
+build, the two `GANLIB_*` overrides may be omitted.
+
+The runtime fixtures require the local seed files listed in
 `validation/iterative/seed.sha256`. They are deliberately excluded from Git
 because they total about 258 MB; set `SEED_DIR` if they are stored elsewhere.
 
 The full active protocol is
-`SPOT_doc/validation_plan.md`. These commands qualify implementation plumbing
-only. They do not qualify one transport map or iterative convergence.
+`SPOT_doc/validation_plan.md`. These commands do not qualify iterative
+convergence.

@@ -83,7 +83,7 @@ byte-copies before adding state records. The two stored axial fields exercise
 only the residual plumbing; their difference is not claimed to be a
 fixed-space map defect.
 
-## Next gate: one corrected map
+## One corrected map
 
 `one_corrected_map.x2m` freezes exactly one initializer and one evaluation
 
@@ -94,12 +94,46 @@ x_1=G(x_0).
 The evaluated map contains three online radial fixed-source solves, one axial
 eigenvalue solve, direct leakage feedback, fixed-basis response assembly and
 the raw defect at \(x_0\). It contains no loop or relaxation. Its static
-contract is
+contract is below. The complete deck additionally performs the one archived
+initializer axial solve, so the bounded runner executes two axial plus three
+radial solves in total.
 
 ```sh
 python3 validation/iterative/check_one_map_contract.py
 ```
 
-The deck is prepared but has not been run. The full restart/replay manifest
-and one-map transport evidence remain pending; no long trajectory or outer
-convergence claim is authorized.
+The bounded runtime gate is
+
+```sh
+DRAGON_BIN=/absolute/path/to/Dragon \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+SEED_DIR=/absolute/path/to/iterative-seed \
+VERIFY_REFERENCE=1 \
+  sh validation/iterative/run_one_map_runtime.sh
+```
+
+`VERIFY_REFERENCE=1` requires the five scientific XSM files to match
+`one_map_scientific.sha256`. With an in-tree build, the two `GANLIB_*`
+overrides may be omitted.
+
+It verifies the frozen input hashes, runs one initializer plus exactly one
+map, checks all five terminal records in that complete deck, and invokes two
+independent postprocessors:
+
+- `check_one_map_runtime.py` checks execution structure and declared solver
+  termination without assigning an outer threshold;
+- `check_one_map_xsm.f90` links only Ganlib, checks the fixed POD package,
+  requires a live radial-operator change, and independently recomputes the
+  three outer residuals plus \(D_L=\|L^+-L\|_\infty\) bit for bit. It also
+  verifies the three-plane restart leakage time ordering.
+
+The first calculation and one fresh replay pass. Their five scientific XSM
+containers are byte identical. The frozen controls and evidence boundary are
+in `one_map_protocol.json`; exact values and hashes are in
+`one_map_result.md`.
+
+This is one deterministic point evaluation of \(G\), not a convergence
+claim. The next gate is the systematic inner-tolerance sensitivity from the
+same \(x_0\). A second outer return and any long Picard trajectory remain
+unauthorized as qualification evidence until that gate is resolved.

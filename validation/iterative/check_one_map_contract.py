@@ -3,13 +3,33 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import re
 
 
 root = Path(__file__).resolve().parents[2]
 deck_path = root / "validation/iterative/one_corrected_map.x2m"
+runtime_path = root / "validation/iterative/check_one_map_runtime.py"
+xsm_checker_path = root / "validation/iterative/check_one_map_xsm.f90"
+runner_path = root / "validation/iterative/run_one_map_runtime.sh"
+protocol_path = root / "validation/iterative/one_map_protocol.json"
+for path in (
+    deck_path,
+    runtime_path,
+    xsm_checker_path,
+    runner_path,
+    protocol_path,
+):
+    if not path.is_file():
+        raise SystemExit(
+            f"ONE-MAP CONTRACT FAIL: missing {path.relative_to(root)}"
+        )
 deck = deck_path.read_text(errors="strict")
+runtime = runtime_path.read_text(errors="strict")
+xsm_checker = xsm_checker_path.read_text(errors="strict")
+runner = runner_path.read_text(errors="strict")
+protocol = json.loads(protocol_path.read_text(errors="strict"))
 violations: list[str] = []
 
 
@@ -76,6 +96,56 @@ if re.search(
     re.I,
 ):
     violations.append("deck contains iteration, relaxation, or empirical stabilization")
+
+expected_protocol = {
+    "schema": "spot-one-map-v1",
+    "method": "fixed-space Galerkin-SPOD raw Picard map",
+    "groups": 370,
+    "planes": 3,
+    "rank": 1,
+    "solver_eps_f32_bits": "0x350637bd",
+    "maxout": 500,
+    "maxinr": 740,
+    "radial_solves": 3,
+    "axial_solves": 2,
+    "outer_updates": 1,
+    "relaxation": None,
+    "outer_convergence": "not_evaluated",
+    "acceptance_basis": [
+        "bitwise equality for frozen discrete state",
+        "FLU terminal residuals not greater than their declared solver tolerance",
+        "strict physical positivity or nonnegativity without a fitted floor",
+        "raw outer defect reported component by component without a threshold",
+    ],
+}
+if protocol != expected_protocol:
+    violations.append("protocol content or key set differs from frozen contract")
+
+for name in (
+    "check_one_map_runtime.py",
+    "check_one_map_xsm.f90",
+    "one_map_protocol.json",
+    "one_map_scientific.sha256",
+    "seed.sha256",
+):
+    if name not in runner:
+        violations.append(f"runtime runner does not bind {name}")
+if "OUTER CONVERGENCE NOT EVALUATED" not in runtime:
+    violations.append("runtime checker does not preserve the convergence boundary")
+if re.search(r"\bisclose\b|\brel_tol\b|\babs_tol\b", runtime, re.I):
+    violations.append("runtime checker contains an unfrozen closeness test")
+if re.search(
+    r"\b(?:LCMPUT|LCMPTC|LCMPPD|LCMLID|LCMLIL|LCMEQU|LCMDEL)\b",
+    xsm_checker,
+    re.I,
+):
+    violations.append("Ganlib-only checker contains an LCM mutation")
+if re.search(
+    r"\buse\s+(?:SPOT|SPO)|\bcall\s+(?:SPO|FLU)",
+    xsm_checker,
+    re.I,
+):
+    violations.append("Ganlib-only checker calls a production solver routine")
 
 declared = re.findall(
     r"^\s*(?:INTEGER|REAL|DOUBLE|LINKED_LIST|XSM_FILE|SEQ_BINARY)\s+"
