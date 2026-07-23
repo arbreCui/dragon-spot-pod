@@ -40,10 +40,9 @@ R_TRACK := TRACK ;
 
 MICROLIB2 FLUX SNAP := DELETE: MICROLIB2 FLUX SNAP ;
 
-* Extract only the forensic plane-1 cap state and its actual radial system.
-SNAP := RECOVER: CAP_ARCH :: ITEM 1 ;
-SYSTEM := RECOVER: SNAP :: ITEM 1 ;
-FLUX := RECOVER: SNAP :: ITEM 1 ;
+* CAP_ARCH is already the root L_ARCHIVE; extract its plane-1 lists directly.
+SYSTEM := RECOVER: CAP_ARCH :: ITEM 1 ;
+FLUX := RECOVER: CAP_ARCH :: ITEM 1 ;
 R_SYSTEM := SYSTEM ;
 R_CAP := FLUX ;
 

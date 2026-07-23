@@ -278,11 +278,15 @@ for token in (
     "XSM_FILE R_SYSTEM ::",
     "XSM_FILE R_TRACK ::",
     "XSM_FILE R_CAP ::",
+    "SYSTEM := RECOVER: CAP_ARCH :: ITEM 1 ;",
+    "FLUX := RECOVER: CAP_ARCH :: ITEM 1 ;",
 ):
     if token not in prepare:
         violations.append(f"prepare deck does not bind {token}")
 if re.search(r":=\s*FLU:", prepare, re.IGNORECASE):
     violations.append("prepare deck performs an unauthorized transport solve")
+if "SNAP := RECOVER: CAP_ARCH" in prepare:
+    violations.append("prepare deck incorrectly nests the cap root archive")
 for deck_name, deck_text in (
     ("prepare", prepare),
     ("arm", arm),
