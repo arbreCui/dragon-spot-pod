@@ -273,11 +273,31 @@ for token in (
     "restart_system.xsm",
     "restart_track.xsm",
     "restart_cap.xsm",
+    "XSM_FILE R_MACRO ::",
+    "XSM_FILE R_SOURCE ::",
+    "XSM_FILE R_SYSTEM ::",
+    "XSM_FILE R_TRACK ::",
+    "XSM_FILE R_CAP ::",
 ):
     if token not in prepare:
         violations.append(f"prepare deck does not bind {token}")
 if re.search(r":=\s*FLU:", prepare, re.IGNORECASE):
     violations.append("prepare deck performs an unauthorized transport solve")
+for deck_name, deck_text in (
+    ("prepare", prepare),
+    ("arm", arm),
+    ("probe", probe),
+):
+    for object_name in re.findall(
+        r"^XSM_FILE[ \t]+([A-Za-z][A-Za-z0-9_]*)[ \t]+::",
+        deck_text,
+        re.MULTILINE,
+    ):
+        if len(object_name) > 12:
+            violations.append(
+                f"{deck_name} deck XSM object exceeds 12 characters: "
+                f"{object_name}"
+            )
 
 
 def require_template(
