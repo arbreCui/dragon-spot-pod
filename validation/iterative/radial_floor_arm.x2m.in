@@ -19,20 +19,20 @@ MODULE FLU: END: ;
 INTEGER outer_cap := 6 ;
 INTEGER inner_cap := 740 ;
 INTEGER free_steps := @FREE@ ;
-INTEGER accelerated_steps := @ACCEL@ ;
+INTEGER acc_steps := @ACCEL@ ;
 REAL solver_eps := 2.5E-7 ;
 
 ECHO "RADIAL-FLOOR-ARM-BEGIN" "@ARM@" ;
 ECHO "RADIAL-FLOOR-ARM-HISTORY" "RESET" ;
 ECHO "RADIAL-FLOOR-ARM-CONTROLS"
-  outer_cap inner_cap solver_eps free_steps accelerated_steps ;
+  outer_cap inner_cap solver_eps free_steps acc_steps ;
 
 FLUX := FLU: FLUX MACRO0 TRACK TRACK_f SYSTEM FSOURCE ::
   EDIT 1 TYPE S INIT ON REBA ON
   EXTE <<outer_cap>> <<solver_eps>>
   UNKT <<solver_eps>>
   THER <<inner_cap>> <<solver_eps>>
-  ACCE <<free_steps>> <<accelerated_steps>> ;
+  ACCE <<free_steps>> <<acc_steps>> ;
 
 ECHO "RADIAL-FLOOR-ARM-COMPLETE" "@ARM@" ;
 END: ;

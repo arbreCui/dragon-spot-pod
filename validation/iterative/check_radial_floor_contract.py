@@ -301,13 +301,14 @@ for deck_name, deck_text in (
     ("probe", probe),
 ):
     for object_name in re.findall(
-        r"^XSM_FILE[ \t]+([A-Za-z][A-Za-z0-9_]*)[ \t]+::",
+        r"^(?:XSM_FILE|SEQ_BINARY|INTEGER|REAL)[ \t]+"
+        r"([A-Za-z][A-Za-z0-9_]*)\b",
         deck_text,
         re.MULTILINE,
     ):
         if len(object_name) > 12:
             violations.append(
-                f"{deck_name} deck XSM object exceeds 12 characters: "
+                f"{deck_name} deck CLE declaration exceeds 12 characters: "
                 f"{object_name}"
             )
 
@@ -338,7 +339,7 @@ def require_template(
         "EXTE <<outer_cap>> <<solver_eps>>",
         "UNKT <<solver_eps>>",
         "THER <<inner_cap>> <<solver_eps>>",
-        "ACCE <<free_steps>> <<accelerated_steps>>",
+        "ACCE <<free_steps>> <<acc_steps>>",
     ):
         if token not in text:
             violations.append(f"{role} template does not bind {token}")
@@ -366,7 +367,7 @@ require_template(
 )
 for token in (
     "INTEGER free_steps := @FREE@ ;",
-    "INTEGER accelerated_steps := @ACCEL@ ;",
+    "INTEGER acc_steps := @ACCEL@ ;",
 ):
     if token not in arm:
         violations.append(f"arm template does not bind {token}")
@@ -378,7 +379,7 @@ require_template(
 )
 for token in (
     "INTEGER free_steps := 1 ;",
-    "INTEGER accelerated_steps := 0 ;",
+    "INTEGER acc_steps := 0 ;",
 ):
     if token not in probe:
         violations.append(f"probe template does not bind {token}")
