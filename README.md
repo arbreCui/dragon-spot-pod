@@ -165,18 +165,27 @@ Stage 5 is not authorized.
 The failure is numerical, not evidence that the physical SPOT fixed point
 diverges. The active FLU tests are binary32 successive-iterate changes, not
 an independent equation residual. Simply increasing `MAXOUT` has no measured
-contraction basis. The next gate is instead a predeclared, single-plane
-bounded diagnostic of the native `ACCE 3 3` solver against a
-`FLU2AC`-off `ACCE 1 0` arm. Each arm uses the normal strict early exit and
-at most six outer updates. One stationary production-map probe from each
-terminal state is then compared by an independent Ganlib-only binary64
-fixed-point-defect checker. This is not a full \(A\phi-q\) backward
-residual. The exact controls are machine-frozen in
-[radial_floor_protocol.json](validation/iterative/radial_floor_protocol.json)
-and executed by
-[run_radial_floor_diagnostic.sh](validation/iterative/run_radial_floor_diagnostic.sh).
-The failure receipt and evidence boundaries are in
-[inner_sensitivity_result.md](validation/iterative/inner_sensitivity_result.md).
+contraction basis.
+
+The frozen single-plane diagnostic has now completed. Both the native
+`ACCE 3 3` and stationary `ACCE 1 0` arms reached the six-update cap without
+strict termination (`BOTH-CAP`). Fresh one-step stationary probes gave
+
+\[
+\begin{array}{c|cc}
+ & D_{V,2} & D_{\max}\\ \hline
+\text{NATIVE} & 2.76799\times10^{-7} & 4.14162\times10^{-7}\\
+\text{STATIONARY} & 3.42986\times10^{-7} & 4.83189\times10^{-7}
+\end{array}
+\]
+
+These are production-map post-minus-pre defects, not \(A\phi-q\) residuals,
+error bounds, or convergence proof. No result threshold was introduced, so
+Stage 4 remains `INVALID` and Stage 5 remains `NOT-AUTHORIZED`. Exact values,
+interpretation boundaries and evidence receipts are in
+[radial_floor_result.md](validation/iterative/radial_floor_result.md); the
+predeclared controls remain in
+[radial_floor_protocol.json](validation/iterative/radial_floor_protocol.json).
 The forensic cap flux carries the later returned-axial \(L_1\) metadata
 written by `SPOLEAK`; the cap solve itself used the archived system's
 \(L_0\). The checker therefore excludes only that stale cap metadata and
@@ -190,9 +199,12 @@ leakage bit for bit.
 3. replay one complete map twice and require identical scientific records
    (passed for the first corrected map);
 4. compare one production map with one tighter-tolerance map from the same
-   input (currently blocked by strict radial inner nonconvergence);
-5. only then study direct Picard convergence;
-6. after convergence, repeat rank/mesh/angle refinement and independent 3D
+   input (attempted; invalid because the radial inner solves did not
+   terminate strictly);
+5. use the completed bounded diagnostic to choose a solver-independent
+   inner-accuracy gate or resolvable arithmetic, without post-fit tuning;
+6. only after that gate passes study direct Picard convergence;
+7. after convergence, repeat rank/mesh/angle refinement and independent 3D
    comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
@@ -253,5 +265,6 @@ KEEP_WORK=1 \
 
 The current frozen solver returns `STAGE4 INVALID` because its three radial
 solves do not meet \(h/2\). Do not use the written `state1` files or launch a
-longer `MAXOUT` continuation. The short numerical-floor diagnostic described
-in the result receipt must be frozen first.
+longer `MAXOUT` continuation. The bounded numerical-floor diagnostic is
+complete; see
+[radial_floor_result.md](validation/iterative/radial_floor_result.md).

@@ -115,3 +115,23 @@ therefore uses the system record without modification. Its independent
 checker excludes only the stale cap leakage metadata, while requiring
 source/\(k\) identity for the cap and bitwise system-leakage identity for
 every newly solved arm/probe flux.
+
+## Bounded-diagnostic outcome
+
+The diagnostic subsequently completed from commit `de4297c`. Both main arms
+reached the frozen six-update cap without strict termination
+(`BOTH-CAP`). The independent one-step probe defects were
+
+\[
+\begin{array}{c|cc}
+ & D_{V,2} & D_{\max}\\ \hline
+\mathrm{NATIVE} & 2.7679927\times10^{-7} & 4.1416214\times10^{-7}\\
+\mathrm{STATIONARY} & 3.4298569\times10^{-7} & 4.8318913\times10^{-7}.
+\end{array}
+\]
+
+These values do not retroactively create a threshold and do not select an
+acceleration scheme. The full interpretation and compact-artifact receipt
+are in [radial_floor_result.md](radial_floor_result.md). The original
+classification is unchanged: Stage 4 is `INVALID`, and Stage 5 is
+`NOT-AUTHORIZED`.

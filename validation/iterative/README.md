@@ -198,11 +198,10 @@ STAGE5 NOT-AUTHORIZED
 OUTER-CONVERGENCE NOT-EVALUATED
 ```
 
-The exact receipt and next short diagnostic are in
+The exact failure receipt and bounded-diagnostic rationale are in
 [inner_sensitivity_result.md](inner_sensitivity_result.md). Do not increase
-`MAXOUT` or rerun the three-plane capture: the next step is to run the
-frozen at-most-six-step, single-plane production-map diagnostic described
-there.
+`MAXOUT` or rerun the three-plane capture. The frozen at-most-six-step,
+single-plane production-map diagnostic has now been completed.
 Its machine-readable controls are
 [radial_floor_protocol.json](radial_floor_protocol.json), and the runner is
 [run_radial_floor_diagnostic.sh](run_radial_floor_diagnostic.sh).
@@ -212,3 +211,12 @@ returned-axial \(L_1\) metadata written after its radial solve, whereas that
 solve used the unchanged system \(L_0\). Thus only CAP leakage metadata is
 excluded. The final audit still requires every newly produced arm/probe flux
 to carry system \(L_0\) bit for bit before it reports either one-step defect.
+
+Both main arms reached the six-update cap. The NATIVE terminal probe gave
+\(D_{V,2}=2.7679927\times10^{-7}\) and
+\(D_{\max}=4.1416214\times10^{-7}\); the STATIONARY terminal probe gave
+\(3.4298569\times10^{-7}\) and \(4.8318913\times10^{-7}\), respectively.
+There is no acceptance threshold or acceleration-choice claim. Stage 4
+remains `INVALID` and Stage 5 remains `NOT-AUTHORIZED`. See
+[radial_floor_result.md](radial_floor_result.md) and its tracked checksum
+receipt for the exact result and evidence boundary.

@@ -274,6 +274,24 @@ used `SYSTEM/SPOT-LEAK1D` \(=L_0\). Accordingly, cap leakage metadata is
 excluded from bitwise equality, while all newly produced arm/probe fluxes
 must carry the unchanged system leakage exactly.
 
+The diagnostic completed from frozen commit `de4297c`. Both arms reached
+their six-update cap without strict termination. The fresh stationary
+probes reported
+
+\[
+\begin{array}{c|cc}
+ & D_{V,2} & D_{\max}\\ \hline
+\mathrm{NATIVE} & 2.7679927\times10^{-7} & 4.1416214\times10^{-7}\\
+\mathrm{STATIONARY} & 3.4298569\times10^{-7} & 4.8318913\times10^{-7}
+\end{array}
+\]
+
+This is `BOTH-CAP` with no acceptance threshold. It neither chooses an
+acceleration scheme nor repairs the failed \(h/2\) map. The complete
+classification and replay boundary are in
+[radial_floor_result.md](../validation/iterative/radial_floor_result.md).
+Stage 4 therefore remains `INVALID`.
+
 ## Stage 5 — direct Picard convergence
 
 Only after Stages 0--4 pass may the direct update

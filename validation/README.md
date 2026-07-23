@@ -103,9 +103,11 @@ KEEP_WORK=1 \
 
 It kept the initializer at \(h\) and applied \(h/2\) only to the four solves
 in the map, but strict radial termination failed before sensitivity could be
-classified. Do not raise `MAXOUT` or use its returned state. The next
-authorized work is the bounded single-plane production-map diagnostic frozen
-by
+classified. Do not raise `MAXOUT` or use its returned state. The authorized
+bounded single-plane diagnostic has now completed. Both arms
+reached the six-update cap; the result remains diagnostic-only and does not
+qualify Stage 4 or authorize Stage 5. See
+[iterative/radial_floor_result.md](iterative/radial_floor_result.md) for the
+exact probe defects and replay receipt, and
 [iterative/radial_floor_protocol.json](iterative/radial_floor_protocol.json)
-and described in
-[iterative/inner_sensitivity_result.md](iterative/inner_sensitivity_result.md).
+for the predeclared controls.
