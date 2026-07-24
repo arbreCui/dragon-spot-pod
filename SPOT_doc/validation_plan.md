@@ -340,12 +340,40 @@ an \(A\phi-q\) residual, error bound, acceptance test, binary32 attribution or
 arm comparison. The result and complete replay boundary are in
 [raw_moc_capture_result.md](../validation/iterative/raw_moc_capture_result.md).
 
-Before any REAL64 transport experiment, the next bounded step is an offline
-ULP bridge audit over the retained scalar tuples. Each binary64 RAW value is
-rounded once to binary32 and compared with EVAL in exact adjacent
-representable steps. The audit reports unchanged/up/down counts and maxima
-without a threshold, new solve or causal attribution. Only after that evidence
-is frozen may a default-off REAL64 radial working-iteration lane be scoped.
+The offline ULP bridge audit over the retained scalar tuples is now complete.
+It used no new Dragon process, transport solve or operator application. For
+each of the 2960 positive finite scalar coordinates in each arm,
+`RAW-BRIDGE` is the signed adjacent-binary32-key difference between one
+binary64-to-binary32 round-to-nearest-even projection of RAW and EVAL.
+`PRODUCTION-STEP` is the corresponding signed key difference from PRE to
+OFF. The exact census is
+
+\[
+\begin{array}{c|c|rrrrr}
+\text{arm} & \text{ledger} & \text{unchanged} & \text{up} & \text{down}
+& \text{adjacent} & \max |{\rm steps}|\\ \hline
+\text{NATIVE} & \text{RAW-BRIDGE} & 135 & 977 & 1848 & 248 & 877\\
+\text{NATIVE} & \text{PRODUCTION-STEP} & 288 & 136 & 2536 & 265 & 17\\
+\text{STATIONARY} & \text{RAW-BRIDGE} & 133 & 975 & 1852 & 251 & 878\\
+\text{STATIONARY} & \text{PRODUCTION-STEP} & 272 & 88 & 2600 & 220 & 12 .
+\end{array}
+\]
+
+No acceptance threshold or empirical parameter was introduced. The two
+ledgers describe different algorithmic endpoints and must not be subtracted.
+No part of the production step is attributed to binary32 rounding, GMRES,
+ACA, SCR, rebalancing or acceleration. The census is not an \(A\phi-q\)
+residual, error bound, NATIVE/STATIONARY ranking, convergence test or
+Stage-4/Stage-5 qualification. The frozen definition and exact evidence
+boundary are in
+[raw_moc_ulp_bridge_protocol.json](../validation/iterative/raw_moc_ulp_bridge_protocol.json)
+and
+[raw_moc_ulp_bridge_result.md](../validation/iterative/raw_moc_ulp_bridge_result.md).
+
+The result supports only the next design step: scope and freeze a minimal,
+default-off REAL64 radial working-iteration experiment that retains the same
+physical equation and solver controls. It neither authorizes a long
+trajectory nor predicts convergence.
 
 ## Stage 5 — direct Picard convergence
 

@@ -225,6 +225,35 @@ error, convergence gate or arm ranking. See
 [radial_precision_result.md](validation/iterative/radial_precision_result.md)
 and [raw_moc_capture_result.md](validation/iterative/raw_moc_capture_result.md).
 
+The subsequent ULP bridge census is also complete and required no new Dragon
+process, transport solve or operator application. For each of the 2960
+positive finite scalar coordinates in each arm, `RAW-BRIDGE` compares one
+IEEE binary64-to-binary32 round-to-nearest-even projection of the captured
+RAW response with EVAL, while `PRODUCTION-STEP` compares the stored PRE and
+OFF states:
+
+\[
+\begin{array}{c|c|rrrrr}
+\text{arm} & \text{ledger} & \text{unchanged} & \text{up} & \text{down}
+& \text{adjacent} & \max |{\rm steps}|\\ \hline
+\text{NATIVE} & \text{RAW-BRIDGE} & 135 & 977 & 1848 & 248 & 877\\
+\text{NATIVE} & \text{PRODUCTION-STEP} & 288 & 136 & 2536 & 265 & 17\\
+\text{STATIONARY} & \text{RAW-BRIDGE} & 133 & 975 & 1852 & 251 & 878\\
+\text{STATIONARY} & \text{PRODUCTION-STEP} & 272 & 88 & 2600 & 220 & 12
+\end{array}
+\]
+
+There is no acceptance threshold or empirical parameter. The two ledgers
+have different endpoints and must not be subtracted. No part of the
+production step is attributed to binary32 rounding, GMRES, ACA, SCR,
+rebalancing or acceleration; the census does not rank the two arms or
+establish a residual, error bound, convergence or Stage-4/Stage-5
+qualification. Its exact counts and evidence boundary are in
+[raw_moc_ulp_bridge_result.md](validation/iterative/raw_moc_ulp_bridge_result.md).
+It motivates only planning a minimal, default-off REAL64 radial
+working-iteration experiment with the physical equation and frozen controls
+unchanged; it does not predict that experiment will converge.
+
 ## Validation route
 
 1. freeze the fixed-space state, source identity and raw map residual;
@@ -240,9 +269,11 @@ and [raw_moc_capture_result.md](validation/iterative/raw_moc_capture_result.md).
    before ACA/SCR, with zero operator applications added by instrumentation
    and no acceptance threshold (completed and independently replayed);
 7. round the retained RAW scalar tuples once to binary32 and publish an exact
-   ULP bridge census without a new transport solve or attribution claim;
-8. only if that audit supports it, freeze a default-off REAL64
-   working-iteration experiment retaining the same physical equation;
+   ULP bridge census without a new transport solve or attribution claim
+   (completed);
+8. next, freeze the design of a default-off REAL64 radial working-iteration
+   experiment retaining the same physical equation; the ULP census alone
+   does not authorize a trajectory;
 9. only after a predeclared inner gate passes study direct Picard
    convergence;
 10. after convergence, repeat rank/mesh/angle refinement and independent 3D
@@ -276,6 +307,12 @@ validation/iterative/run_raw_moc_capture_production.sh
 validation/iterative/raw_moc_capture_result.md
                                       captured ledger result and limits
 validation/iterative/check_raw_moc_capture_result.py
+                                      public plus local-artifact replay
+validation/iterative/raw_moc_ulp_bridge_protocol.json
+                                      frozen offline ULP census definition
+validation/iterative/raw_moc_ulp_bridge_result.md
+                                      exact census and interpretation limits
+validation/iterative/check_raw_moc_ulp_bridge_result.py
                                       public plus local-artifact replay
 validation/level1/                    POD algebra tests
 validation/level2/                    fixed-operator algebra unit tests
@@ -343,3 +380,15 @@ python3 validation/iterative/check_raw_moc_capture_result.py
 
 This `CAPTURE-VALID` result does not change the outer-convergence or Stage-4
 status.
+
+The published offline ULP census can be checked without the ignored local
+artifact and without Dragon:
+
+```sh
+python3 validation/iterative/check_raw_moc_ulp_bridge_contract.py
+python3 validation/iterative/check_raw_moc_ulp_bridge_result.py --public-only
+```
+
+Passing these checks certifies the declared census and its tracked evidence,
+not causal attribution, arm ranking, convergence or Stage-4/Stage-5
+qualification.

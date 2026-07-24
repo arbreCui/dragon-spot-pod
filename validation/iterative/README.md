@@ -247,21 +247,22 @@ rebalancing and FLU acceleration. Nor can `SYSTEM` provide a true archived
 \(A\phi-q\): its matrices are ACA corrective/preconditioning data, and the
 saved source precedes later flux transformations.
 
-The next design was frozen before implementation in
+The capture design was frozen before implementation in
 [raw_moc_residual_protocol.json](raw_moc_residual_protocol.json). It defines
 a default-off `TYPE S + MCCG` diagnostic for the evaluated state, same-call
 `QFR`, source-element vector and raw MOC response from only the first primary
 GMRES evaluation, after STIS/volume normalization but before ACA/SCR. The
 instrumentation adds zero operator applications and introduces no acceptance
 threshold. The audit is published only in the fresh writable `L_FLUX` output
-after all 370 group tuples are complete. Only after this additional observable
-is captured will a REAL64 radial working-iteration lane be scoped.
+after all 370 group tuples are complete. The corrected bounded replay has
+since captured and independently verified this observable; that completion
+authorized only the offline ULP bridge audit below.
 
-## Raw primary-MOC capture implementation
+## Raw primary-MOC capture
 
-The capture path is now implemented but has not been used to launch either
-production probe. It is explicitly enabled by `MOCA 1` for NATIVE or
-`MOCA 2` for STATIONARY; absence of `MOCA` is the unchanged default-off
+The capture path is implemented and was enabled only for the bounded
+corrected replay. It is explicitly enabled by `MOCA 1` for NATIVE or
+`MOCA 2` for STATIONARY; absence of `MOCA` remains the unchanged default-off
 path. The legacy `SPOT`/`IPICK` parser branch is unchanged.
 
 The implementation accepts only the frozen one-step branch:
@@ -327,6 +328,52 @@ negative `ICODE` is legal, and `MCGFCS` selects the boundary albedo through
 `-NZON`, not the boundary-unknown ordinal. The checker and its fixtures now
 cover negative `ICODE`, absent group albedos, non-identity `NZON`, boundary
 source tampering and positive physical-albedo overflow.
-A corrected replay is still pending. No NATIVE/STATIONARY raw-MOC result has
-been published, outer convergence is not evaluated, and Stage 4 remains
-unauthorized.
+
+The corrected replay completed from frozen commit `a011fd9`. Independent
+OFF/ON log comparisons and two deterministic Ganlib-only XSM replays passed
+for both arms. The scalar RAW-minus-EVAL diagnostics are
+\(D_{V,2}=5.7461264\times10^{-7}\) and
+\(D_{\max,\mathrm{input}}=2.1306357\times10^{-6}\) for NATIVE, and
+\(5.7815536\times10^{-7}\) and \(2.1902923\times10^{-6}\) for STATIONARY.
+They classify the capture ledger only; they are not a transport residual,
+error bound, acceptance gate or arm comparison. Exact evidence is in
+[raw_moc_capture_result.md](raw_moc_capture_result.md).
+
+## Offline RAW-MOC ULP bridge census
+
+The retained capture was then audited offline under the frozen
+[raw_moc_ulp_bridge_protocol.json](raw_moc_ulp_bridge_protocol.json), with
+zero Dragon processes, transport solves and operator applications. For every
+positive finite scalar coordinate, `RAW-BRIDGE` compares one IEEE
+binary64-to-binary32 round-to-nearest-even projection of RAW with EVAL.
+`PRODUCTION-STEP` separately compares PRE with OFF.
+
+| arm | ledger | unchanged | upward | downward | adjacent | maximum absolute steps |
+|---|---|---:|---:|---:|---:|---:|
+| NATIVE | RAW-BRIDGE | 135 | 977 | 1848 | 248 | 877 |
+| NATIVE | PRODUCTION-STEP | 288 | 136 | 2536 | 265 | 17 |
+| STATIONARY | RAW-BRIDGE | 133 | 975 | 1852 | 251 | 878 |
+| STATIONARY | PRODUCTION-STEP | 272 | 88 | 2600 | 220 | 12 |
+
+Each ledger has 2960 rows. The direct projection is nonidentical to EVAL at
+2825 NATIVE and 2827 STATIONARY coordinates. There is no result threshold or
+empirical parameter. Because the ledgers have different endpoints, they must
+not be subtracted. No part of the production step is attributed to binary32
+rounding, GMRES, ACA, SCR, rebalancing or acceleration.
+
+This descriptive census is not an \(A\phi-q\) residual, backward-error or
+transport-error bound, NATIVE/STATIONARY ranking, convergence test, or
+Stage-4/Stage-5 authorization. Exact counts, maximum ties, the complete
+interpretation boundary and the local-artifact manifest identity are in
+[raw_moc_ulp_bridge_result.md](raw_moc_ulp_bridge_result.md). Check the
+tracked evidence without Dragon or the ignored local artifact with
+
+```sh
+python3 validation/iterative/check_raw_moc_ulp_bridge_contract.py
+python3 validation/iterative/check_raw_moc_ulp_bridge_result.py --public-only
+```
+
+The next step is only to scope and freeze a minimal, default-off REAL64
+radial working-iteration experiment with the physical equation and all
+solver controls unchanged. This census does not authorize a long trajectory
+or predict convergence.

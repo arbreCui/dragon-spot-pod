@@ -28,5 +28,9 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_radial_floor_result.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_radial_precision_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/check_raw_moc_ulp_bridge_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/check_raw_moc_ulp_bridge_result.py" --public-only
 sh "$ROOT/validation/level1/run_level1.sh"
 sh "$ROOT/validation/level2/run_level2.sh"
