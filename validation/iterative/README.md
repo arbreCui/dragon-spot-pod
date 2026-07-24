@@ -220,3 +220,41 @@ There is no acceptance threshold or acceleration-choice claim. Stage 4
 remains `INVALID` and Stage 5 remains `NOT-AUTHORIZED`. See
 [radial_floor_result.md](radial_floor_result.md) and its tracked checksum
 receipt for the exact result and evidence boundary.
+
+## Read-only working-precision audit
+
+The retained probes can be audited without another Dragon run:
+
+```sh
+validation/iterative/run_radial_precision_audit.sh
+```
+
+The runner first replays the complete radial-floor Ganlib checker, hashes the
+five input XSM objects before and after, compiles a solver-free checker with
+strict floating-point controls, runs its IEEE self-test, and requires two
+byte-identical 5920-row ledgers.
+
+For each positive retained scalar flux, the signed difference between the
+two binary32 encodings is the exact number of adjacent representable values
+crossed. NATIVE has 288 unchanged values and a maximum absolute step of 17;
+STATIONARY has 272 unchanged values and a maximum of 12. Full histograms and
+interpretation limits are in
+[radial_precision_result.md](radial_precision_result.md).
+
+This does not establish a unique binary32 floor. The active chain also
+contains the MCCG `EPSI 1E-5` control, an ACA `1E-7` cutoff, binary32
+rebalancing and FLU acceleration. Nor can `SYSTEM` provide a true archived
+\(A\phi-q\): its matrices are ACA corrective/preconditioning data, and the
+saved source precedes later flux transformations.
+
+The next step is frozen before implementation in
+[raw_moc_residual_protocol.json](raw_moc_residual_protocol.json). A
+default-off `TYPE S + MCCG` diagnostic will capture the evaluated state,
+same-call `QFR`, source-element vector and raw MOC response for only the
+first primary GMRES evaluation, after STIS/volume normalization but before
+ACA/SCR. One bounded production-map update is repeated from each terminal;
+the instrumentation adds zero operator applications and introduces no
+acceptance threshold. The audit is published only in the fresh writable
+`L_FLUX` output after all 370 group tuples are complete. Only after this
+additional observable is captured will a REAL64 radial working-iteration
+lane be scoped.

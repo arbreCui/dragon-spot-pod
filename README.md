@@ -192,6 +192,26 @@ written by `SPOLEAK`; the cap solve itself used the archived system's
 requires every newly solved pre/post flux to reproduce the actual system
 leakage bit for bit.
 
+A subsequent read-only arithmetic audit counted the exact binary32 encoding
+steps at all \(370\times8\) retained scalar-flux values. NATIVE moved by at
+most 17 representable levels and STATIONARY by at most 12; neither map was
+bitwise fixed. This makes stored-state resolution relevant, but does not
+prove one unique binary32 floor. The path also contains an independent MCCG
+`EPSI 1E-5`, an ACA `1E-7` cutoff, rebalancing and acceleration.
+
+The archived MCCG `SYSTEM` contains ACA corrective/preconditioning matrices,
+not the complete MOC transport operator, and its final `SOUR`/`FLUX` records
+are not a same-stage pair. An \(A\phi-q\) checker cannot be constructed from
+those records without misidentifying the preconditioner as physics. The next
+protocol is therefore a default-off, same-sweep capture of the evaluated
+state, `QFR`, source-element vector and raw MOC response from the first
+primary GMRES evaluation before ACA/SCR. It writes only to the fresh
+`L_FLUX` audit directory; the instrumentation adds zero extra operator
+applications and has no acceptance threshold. See
+[radial_precision_result.md](validation/iterative/radial_precision_result.md)
+and
+[raw_moc_residual_protocol.json](validation/iterative/raw_moc_residual_protocol.json).
+
 ## Validation route
 
 1. freeze the fixed-space state, source identity and raw map residual;
@@ -201,10 +221,17 @@ leakage bit for bit.
 4. compare one production map with one tighter-tolerance map from the same
    input (attempted; invalid because the radial inner solves did not
    terminate strictly);
-5. use the completed bounded diagnostic to choose a solver-independent
-   inner-accuracy gate or resolvable arithmetic, without post-fit tuning;
-6. only after that gate passes study direct Picard convergence;
-7. after convergence, repeat rank/mesh/angle refinement and independent 3D
+5. audit the completed probes in exact binary32 representable steps and
+   reject an invalid ACA-matrix surrogate for \(A\phi-q\) (completed);
+6. capture the first primary GMRES raw-sweep difference per frozen terminal,
+   before ACA/SCR, with zero operator applications added by instrumentation
+   and no acceptance threshold;
+7. use that additional observable to scope a default-off REAL64
+   working-iteration lane,
+   retaining the same physical equation and direct Picard map;
+8. only after a predeclared inner gate passes study direct Picard
+   convergence;
+9. after convergence, repeat rank/mesh/angle refinement and independent 3D
    comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
@@ -223,6 +250,10 @@ src/SPOSTATE.f90                      canonical fixed-space state
 src/SPOXCONV.f90                      complete raw state difference
 src/SPOT1P.f90                        axial modal transport solve
 validation/iterative/                 active iterative contracts and fixtures
+validation/iterative/check_radial_precision_xsm.f90
+                                      exact stored binary32-step audit
+validation/iterative/raw_moc_residual_protocol.json
+                                      next same-sweep diagnostic freeze
 validation/level1/                    POD algebra tests
 validation/level2/                    fixed-operator algebra unit tests
 ```
@@ -267,4 +298,7 @@ The current frozen solver returns `STAGE4 INVALID` because its three radial
 solves do not meet \(h/2\). Do not use the written `state1` files or launch a
 longer `MAXOUT` continuation. The bounded numerical-floor diagnostic is
 complete; see
-[radial_floor_result.md](validation/iterative/radial_floor_result.md).
+[radial_floor_result.md](validation/iterative/radial_floor_result.md). Its
+read-only binary32-step follow-up is
+[radial_precision_result.md](validation/iterative/radial_precision_result.md);
+it does not change the Stage-4 status.

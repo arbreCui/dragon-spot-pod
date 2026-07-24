@@ -292,6 +292,37 @@ classification and replay boundary are in
 [radial_floor_result.md](../validation/iterative/radial_floor_result.md).
 Stage 4 therefore remains `INVALID`.
 
+The completed probes were then inspected without another transport solve.
+For every retained positive scalar flux, the signed difference of the two
+IEEE binary32 encodings gives the exact number of adjacent representable
+values crossed. The NATIVE probe has 288 unchanged values and a maximum
+absolute step of 17; STATIONARY has 272 unchanged values and a maximum of
+12. The full census and interpretation boundary are in
+[radial_precision_result.md](../validation/iterative/radial_precision_result.md).
+
+This does not prove a unique binary32 floor. The same path includes the
+independent MCCG `EPSI 1E-5` control, an ACA `1E-7` cutoff, rebalancing and
+FLU acceleration. The archived `SYSTEM` matrices are ACA
+corrective/preconditioning matrices rather than the full MOC transport
+operator. In addition, the saved `SOUR` precedes transformations that may
+alter the saved `FLUX`. Therefore an archived \(A\phi-q\) residual cannot be
+obtained by substituting those matrices without changing the mathematical
+meaning.
+
+Before any REAL64 iteration prototype or longer trajectory, one bounded
+same-sweep capture is frozen in
+[raw_moc_residual_protocol.json](../validation/iterative/raw_moc_residual_protocol.json).
+For each frozen terminal it records the evaluated state, same-call `QFR`,
+post-`MCGFCS` source-element vector and raw MOC response from only the first
+primary GMRES evaluation, after STIS/volume normalization but before
+ACA/SCR. Affine-RHS, Krylov-basis and later primary calls cannot overwrite
+the tuple. The diagnostic is default-off, writes only below an
+`INCOMPLETE`/`COMPLETE` directory in the fresh writable `L_FLUX`; its
+instrumentation adds zero extra operator applications, stores the source and
+raw response in binary64, and has no acceptance threshold. It adds one
+raw-sweep observable but does not decompose later numerical transformations
+or qualify Stage 4 by itself.
+
 ## Stage 5 — direct Picard convergence
 
 Only after Stages 0--4 pass may the direct update

@@ -1,0 +1,243 @@
+{
+  "name": "SPOT bounded raw-MOC fixed-point map-defect capture",
+  "status": "FROZEN-BEFORE-IMPLEMENTATION",
+  "purpose": "Piggyback a raw primary MOC fixed-point evaluation on each of two declared one-step probe updates; the instrumentation itself adds zero operator applications.",
+  "scope": {
+    "transport_mode": "TYPE S",
+    "door": "MCCG",
+    "radial_plane": 1,
+    "groups": 370,
+    "active_regions": 8,
+    "unknowns_per_group": 14,
+    "terminal_inputs": [
+      "NATIVE",
+      "STATIONARY"
+    ],
+    "production_map_updates_per_terminal": 1,
+    "operator_applications_added_by_instrumentation": 0,
+    "diagnostic_default": "OFF",
+    "locked_solver_path": {
+      "KRYL": 10,
+      "STIS": 1,
+      "IAAC": 80,
+      "ISCR": 0,
+      "IDIFC": 0,
+      "PACA": 4,
+      "IDIR": 0
+    }
+  },
+  "frozen_input": {
+    "parent_result": "validation/iterative/radial_floor_result.md",
+    "parent_receipt": "validation/iterative/radial_floor_result_receipt.sha256",
+    "terminal_choice": "BOTH",
+    "reason": "The two captures are parallel diagnostics and do not select or rank an acceleration scheme."
+  },
+  "capture_point": {
+    "routine": "MCGFL1",
+    "caller": "MCGMRE",
+    "role": "PRIMARY-FIXED-POINT-EVALUATION",
+    "epoch": 1,
+    "flu_outer_iteration": 1,
+    "flu_thermal_iteration": 1,
+    "doorfv_serial": 1,
+    "mccgf_serial": 1,
+    "gmres_global_iteration": 1,
+    "required_active_set": {
+      "NGEFF": 370,
+      "NGIND": "1..370 in order",
+      "NCONV": "all true"
+    },
+    "write_policy": "WRITE-ONCE",
+    "after": [
+      "MCGFCF or the selected raw MOC sweep",
+      "STIS correction or ordinary volume normalization"
+    ],
+    "before": [
+      "ACA",
+      "SCR",
+      "FLUBAL",
+      "FLU2AC",
+      "binary32 FLUX and SOUR archival"
+    ],
+    "excluded_calls": [
+      "the zero-state affine RHS evaluation",
+      "every Krylov-basis operator evaluation",
+      "every later primary evaluation"
+    ]
+  },
+  "audit_sink": {
+    "owner": "fresh writable L_FLUX output",
+    "directory": "SPOT-MOC-AUD",
+    "initial_status": "INCOMPLETE",
+    "published_status": "COMPLETE",
+    "publication_rule": "MCGMRE may publish COMPLETE only after the first primary call returns and every one of the 370 group tuples is present in the same epoch.",
+    "state_vector_codes": {
+      "schema-version": 1,
+      "status": {
+        "INCOMPLETE": 0,
+        "COMPLETE": 1
+      },
+      "arm": {
+        "NATIVE": 1,
+        "STATIONARY": 2
+      },
+      "role": {
+        "PRIMARY-FIXED-POINT-EVALUATION": 1
+      },
+      "phase": {
+        "POST-STIS-OR-VOLUME-NORMALIZATION-PRE-ACA-SCR": 1
+      }
+    },
+    "root_records": [
+      {
+        "name": "STATE-VECTOR",
+        "lcm_type": 1,
+        "length": 24,
+        "fields": [
+          "schema-version",
+          "status",
+          "arm",
+          "plane",
+          "epoch",
+          "FLU-IT",
+          "FLU-JT",
+          "DOORFV-serial",
+          "MCCGF-serial",
+          "MCGMRE-iteration",
+          "role",
+          "phase",
+          "KRYL",
+          "STIS",
+          "IAAC",
+          "ISCR",
+          "IDIFC",
+          "PACA",
+          "IDIR",
+          "NGEFF",
+          "NGROUP",
+          "NUN",
+          "NREG",
+          "active-count"
+        ]
+      },
+      {
+        "name": "NGIND",
+        "lcm_type": 1,
+        "length": 370,
+        "meaning": "The active group identifiers in call order."
+      },
+      {
+        "name": "GROUP",
+        "lcm_type": 10,
+        "length": 370,
+        "meaning": "One audit directory per energy group."
+      }
+    ]
+  },
+  "records_per_audit_group": [
+    {
+      "name": "SPOT-M-QFR",
+      "lcm_type": 4,
+      "length": 14,
+      "meaning": "The same-call binary32 QFR input promoted exactly to binary64."
+    },
+    {
+      "name": "SPOT-M-EVAL",
+      "lcm_type": 4,
+      "length": 14,
+      "meaning": "The evaluated binary32 iteration state promoted exactly to binary64."
+    },
+    {
+      "name": "SPOT-M-SRC",
+      "lcm_type": 4,
+      "length": 14,
+      "meaning": "The post-MCGFCS source-element vector S. Its production binary32 inputs and arithmetic are preserved by assignment to binary64; it includes within-group scattering and boundary-current source terms."
+    },
+    {
+      "name": "SPOT-M-RAW",
+      "lcm_type": 4,
+      "length": 14,
+      "meaning": "The binary64 raw MOC response before ACA or SCR."
+    },
+    {
+      "name": "SPOT-M-STEP",
+      "lcm_type": 1,
+      "length": 1,
+      "meaning": "The locked GMRES global iteration index; it must equal one."
+    },
+    {
+            "name": "SPOT-M-ROLE",
+            "lcm_type": 1,
+            "length": 1,
+            "meaning": "The locked role code 1 for the primary fixed-point evaluation; it equals STATE-VECTOR role."
+    },
+    {
+      "name": "SPOT-M-GROUP",
+      "lcm_type": 1,
+      "length": 1,
+      "meaning": "The physical group identifier for this tuple."
+    }
+  ],
+  "required_implementation_properties": [
+    "The diagnostic switch fails closed outside TYPE S plus MCCG.",
+    "The diagnostic writes only below SPOT-MOC-AUD in the fresh writable L_FLUX output; SYSTEM remains a read-only RHS object.",
+    "The audit directory is absent before the update and is created with status INCOMPLETE.",
+    "All pre-existing SYSTEM records remain bitwise unchanged.",
+    "Diagnostic OFF reproduces the baseline solver state, standard scientific records, and normalized scientific log bit for bit; executable bytes are not compared.",
+    "Diagnostic ON reproduces every non-audit scientific record from OFF and the frozen probe_post object bit for bit.",
+    "MCGMRE passes an explicit call role and iteration; only the first primary fixed-point evaluation may write.",
+    "The seven per-group records form one same-call tuple and may not be overwritten by the affine-RHS, Krylov-basis, or later-primary calls.",
+    "The diagnostic ON and OFF paths have identical MCGFL1 and raw-sweep call counts; the capture block contains no transport call.",
+    "The audit status changes from INCOMPLETE to COMPLETE only after the locked 370-group active set is fully written.",
+    "No record is read back into the solver.",
+    "No relaxation, fitted coefficient, clipping, flux floor, or model term is introduced."
+  ],
+  "independent_checker": {
+    "implementation": "Ganlib-only, read-only",
+    "arithmetic_contract": {
+      "ledger_order": "group 1..370 outer, unknown 1..14 inner",
+      "scalar_indices": "KEYFLX$ANIS(1..8) in region order",
+      "weights": "TRACK VOLUME(1..8), each binary32 value promoted exactly to binary64",
+      "scalar_reduction_order": "group 1..370 outer, region 1..8 inner, left-to-right accumulation",
+      "relative_two_norm": "sqrt(sum(((V * delta) * delta)) / sum(((V * eval) * eval)))",
+      "input_normalized_global_max": "max(abs(delta)) / max(abs(eval)); retain every exact binary64 numerator tie",
+      "floating_point": "IEEE binary64 for subtraction, products, sums, maxima, division and square root; no contraction or reassociation"
+    },
+    "required_checks": [
+      "frozen parent receipt and fresh-copy identity",
+      "audit-directory pre-run absence and post-run COMPLETE publication",
+      "370-group record census, ordered NGIND and exact type/length",
+      "write-once epoch=1, role=primary, FLU IT=1, JT=1, serial=1 and MCGMRE step=1 identity",
+      "all 14 unknowns finite and the eight retained scalar fluxes positive",
+      "bitwise preservation of all non-diagnostic SYSTEM records",
+      "bitwise preservation of every non-audit L_FLUX record against OFF and frozen probe_post",
+      "binary64 recomputation of raw_minus_eval in group-major unknown-minor order",
+      "independent binary32 replay of MCGFCS from QFR, EVAL and frozen TRACK/SYSTEM inputs",
+      "source, active-set, role, epoch, phase, branch-control and capture-step identity",
+      "identical ON/OFF MCGFL1 and raw-sweep call counts",
+      "absence of Dragon, FLU, MCCG, SPOT solver symbols"
+    ],
+    "reported_quantities": [
+      "full 14-unknown raw_minus_eval ledger with scalar-flux or surface-current category",
+      "eight-scalar-flux-only volume-weighted relative two-norm",
+      "eight-scalar-flux-only input-normalized global maximum and all exact ties",
+      "six surface-current differences reported componentwise without a mixed flux-current norm"
+    ]
+  },
+  "classification": {
+    "valid": "CAPTURE-VALID",
+    "invalid": "CAPTURE-INVALID",
+    "acceptance_threshold": null,
+    "stage4_authorization": false,
+    "stage5_authorization": false,
+    "outer_convergence_evaluated": false
+  },
+  "interpretation_limits": [
+    "The captured difference is the raw-sweep map defect of the first primary evaluation at the frozen terminal input.",
+    "It is not an independently assembled matrix residual or a transport-error bound.",
+    "It does not by itself identify a unique floating-point floor.",
+    "It cannot rank the NATIVE and STATIONARY acceleration arms.",
+    "Comparing this raw-primary defect with the terminal production-map defect does not decompose or attribute ACA, GMRES, FLUBAL, FLU2AC, or rounding effects.",
+    "A REAL64 working-iteration lane is scoped only after this additional raw-sweep observable is captured."
+  ]
+}
