@@ -1,0 +1,468 @@
+{
+  "name": "SPOT bounded GMRES correction-activity census",
+  "version": 1,
+  "status": "FROZEN-BEFORE-IMPLEMENTATION",
+  "frozen_parent_commit": "4d7abb23ac7975d4146beaa3b0049e36cdad8776",
+  "purpose": [
+    "Determine whether the frozen one-map production path actually reaches any nonzero-K MCGMRE correction update before defining a precision A/B at that update.",
+    "Count the existing primary, affine-RHS and Krylov operator roles and record every per-group KMAX vector without changing any floating-point arithmetic.",
+    "Use an exact structural result, not a numerical threshold, to choose the next smallest precision experiment."
+  ],
+  "scientific_scope": {
+    "kind": "PASSIVE-CONTROL-FLOW-CENSUS",
+    "production_routine": "MCGMRE",
+    "observed_control_points": [
+      "entry of each MCGMRE call and its matching normal exit",
+      "immediately before each existing primary, affine-RHS or Krylov MCGFL1 call",
+      "after KMAX is reset and before the existing affine-RHS and Krylov block, where the block-entry active-group mask is copied",
+      "after KMAX is complete and immediately before each existing PHIIN correction-update block"
+    ],
+    "floating_point_values_added_to_solver": 0,
+    "floating_point_operations_added_to_solver": 0,
+    "operator_applications_added": 0,
+    "model_terms_added": 0,
+    "numeric_parameters_added": 0,
+    "solver_state_feedback": false,
+    "physical_equation_change": false,
+    "precision_change": false
+  },
+  "parent_evidence": {
+    "raw_moc_ulp_bridge_result_receipt": {
+      "path": "validation/iterative/raw_moc_ulp_bridge_result_receipt.sha256",
+      "sha256": "20dc353133c6251021fb87f0196061fb0b1be969d8e73890b7a9b1b073e60935"
+    },
+    "raw_moc_capture_result_receipt": {
+      "path": "validation/iterative/raw_moc_capture_result_receipt.sha256",
+      "sha256": "485baab029387aeb8212647768be96b6eba438119e7d6ddcf013ccaf5e3359b5"
+    },
+    "raw_moc_capture_artifact_manifest_sha256": "1c2c6bbae0a81a3978b09bc158ac0ca7a408c7d6495e734fea2f8e44f48b48a4",
+    "legacy_source_hashes_at_frozen_parent": {
+      "src/.dragon_deps.mk": "5d837ab375527373e6d40cae413b83672661fb458ebe7670c42bb0819e784ae3",
+      "src/FLUGPI.f": "0155090fc67f38184c4602b0d330cf241a0eeba7f82c203fc25529267b5401ac",
+      "src/FLU.f": "f9391eb48be9ab1f8d9c3250a23409de2dcfb6111d22db283d1c29d030d26fd0",
+      "src/FLUDRV.f": "6bfd74d6cb473619bcf6130fc723502d348b6a3e76da86e5d03934207b3e4934",
+      "src/MCGMRE.f": "61f71a4873a744608d429eaccc61807d76b5b50a3d2c10213734bb5b26bf1379",
+      "src/SPOMOC.f90": "23a1927a133c19a86ffef9c3e0f4e619a899752cae0e7c2f0baa1bfc226502bc"
+    },
+    "facts_not_available_from_parent_evidence": [
+      "number of MCGMRE correction blocks",
+      "number of groups with KMAX greater than zero",
+      "sum or histogram of KMAX",
+      "number of affine-RHS and Krylov MCGFL1 calls"
+    ]
+  },
+  "activation": {
+    "new_keyword": "GMRA",
+    "syntax": "standalone GMRA keyword in FLU input",
+    "default": "OFF",
+    "numeric_argument": null,
+    "duplicate_use": "FAIL-CLOSED",
+    "required_existing_capture": "MOCA 2",
+    "GMRA_without_MOCA_2": "FAIL-CLOSED",
+    "invalid_or_unlocked_path": "FAIL-CLOSED",
+    "same_executable_for_OFF_and_ON": true,
+    "new_audit_directory": "SPOT-GMR-AUD",
+    "existing_SPOT_MOC_AUD_contract": "UNCHANGED"
+  },
+  "locked_production_input": {
+    "choice": "STATIONARY PRE",
+    "reason": [
+      "It is the exact parent input of the released STATIONARY RAW/EVAL/PRE/OFF capture.",
+      "The existing MOCA 2 tuple supplies the same-call primary RAW and source evidence without modifying its frozen schema.",
+      "ACCE 1 0 removes inner and outer FLU2AC accelerated steps from this first activity census.",
+      "The choice is fixed before observing GMRES activity and is not selected by a numerical result."
+    ],
+    "files": {
+      "PRE": {
+        "path": "validation/artifacts/raw-moc-capture/stationary/pre.xsm",
+        "sha256": "6e297fe92b03609ddbac84128623a14ac8638d5d86147ca6a8ee1298f71f3b3e"
+      },
+      "LEGACY_OFF_XSM": {
+        "path": "validation/artifacts/raw-moc-capture/stationary/off.xsm",
+        "sha256": "c27ec11a833e0435dce5390e1c1ffbe81c931c21108d036b5af5fbd10a4f3789"
+      },
+      "LEGACY_ON_XSM": {
+        "path": "validation/artifacts/raw-moc-capture/stationary/on.xsm",
+        "sha256": "de27778fb23f035aafab0e6ca877faf0f64a0662d255fa485b8174fea81f87ae"
+      },
+      "LEGACY_OFF_LOG": {
+        "path": "validation/artifacts/raw-moc-capture/stationary_off/probe.log",
+        "sha256": "b15a3c9e0ad3bdc54ed3e50bba9e9cbb22a885bb68f712fb83ea02ef1e109234"
+      },
+      "LEGACY_ON_LOG": {
+        "path": "validation/artifacts/raw-moc-capture/stationary_on/probe.log",
+        "sha256": "03f802bea77875419e126ec51282924b2717bed7b987c8171febc2738a2bfe25"
+      },
+      "MACRO0": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_macro0.xsm",
+        "sha256": "6eb2920473f4cb8d27b6377bcb59b42833c8ebf9a0fc57925341d12ccac0a617"
+      },
+      "SOURCE": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_source.xsm",
+        "sha256": "6942f61ba2cc7ab0d5cf9a4104959809a388fab441da82730cf64de74a48769f"
+      },
+      "SYSTEM": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_system.xsm",
+        "sha256": "a8797a7d42fdab574eb183bc2ecf0e2b53c992fdd2dd4c61d40c72a53746e599"
+      },
+      "TRACK": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_track.xsm",
+        "sha256": "2d868b87e2003c10c09da1ec8f8e6fd97f2a2629a680a46d7f898e2e5e1ed598"
+      },
+      "TRACK_BINARY": {
+        "path": "validation/artifacts/raw-moc-capture/common/initial_radial_track.bin",
+        "sha256": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8"
+      }
+    }
+  },
+  "locked_solver_path": {
+    "calculation_type": "S",
+    "door": "MCCG",
+    "plane": 1,
+    "groups": 370,
+    "regions": 8,
+    "unknowns": 14,
+    "FLU_controls": {
+      "MAXOUT": 1,
+      "MAXINR": 740,
+      "EPSOUT": {
+        "decimal_input": "2.5E-7",
+        "binary32_bits": "348637BD"
+      },
+      "EPSUNK": {
+        "decimal_input": "2.5E-7",
+        "binary32_bits": "348637BD"
+      },
+      "EPSINR": {
+        "decimal_input": "2.5E-7",
+        "binary32_bits": "348637BD"
+      },
+      "IFRITR": 1,
+      "IACITR": 0,
+      "INITFL": 1,
+      "LFORW": true,
+      "ILEAK": 0,
+      "rebalancing": true,
+      "execution_path": "direct vector DOORFV"
+    },
+    "MCGMRE_controls": {
+      "source": "frozen TRACK MCCG-STATE(13), MCCG-STATE(3) and REAL-PARAM(1), also checked on the actual MCGMRE arguments",
+      "MAXI": 20,
+      "ERRTOL_EPSI": {
+        "decimal_input": "1.0E-5",
+        "stored_decimal": "9.99999974737875164E-6",
+        "binary32_bits": "3727C5AC"
+      },
+      "NSTART_KRYL": 10,
+      "MAXIT_definition": "MAXI-1",
+      "MAXIT": 19
+    },
+    "MCCG_controls": {
+      "KRYL": 10,
+      "STIS": 1,
+      "IAAC": 80,
+      "ISCR": 0,
+      "IDIFC": 0,
+      "PACA": 4,
+      "IDIR": 0
+    }
+  },
+  "counter_semantics": {
+    "roles": {
+      "1": "PRIMARY",
+      "2": "AFFINE-RHS",
+      "3": "KRYLOV"
+    },
+    "role_event": "one raw row and one 370-group 0/1 NCONV mask copied immediately before one existing MCGFL1 call; the row contains its MCGMRE call index, event index, role, global ITER, correction-block index and active-group count",
+    "role_block_index": "PRIMARY uses 0; AFFINE-RHS and KRYLOV use the current correction-block index created at block entry",
+    "role_call_count": "increment once immediately before the corresponding existing MCGFL1 call",
+    "role_active_group_count": "add COUNT(NCONV) at that same call site",
+    "correction_block": "one visit to the existing KMAX-complete point immediately before the PHIIN update loop",
+    "group_block": "one physical group in one correction block",
+    "block_entry_active_mask": "the exact NCONV mask copied after KMAX is reset and before the existing affine-RHS and Krylov block",
+    "block_active_group_count": "the exact integer sum of the corresponding block-entry active mask",
+    "nonzero_K_group_block": "a group-block whose stored KMAX is greater than zero",
+    "sum_K": "exact integer sum of every stored KMAX over every group-block",
+    "K_histogram": "eleven exact integer bins for KMAX=0..10 over every stored group-block",
+    "inactive_group_rule": "a block-entry inactive group has active-mask 0 and KMAX 0; an active group may retain KMAX 0 only when the existing iteration limit prevents every Krylov call in that block",
+    "role_event_order": "MCGMRE call order, then role-event order within the call",
+    "block_event_order": "MCGMRE call order, then correction-block order within the call, then physical group 1..370"
+  },
+  "audit_record_contract": {
+    "owner": "fresh writable L_FLUX output",
+    "directory": "SPOT-GMR-AUD",
+    "initial_status": "INCOMPLETE",
+    "published_status": "COMPLETE",
+    "status_encoding": {
+      "INCOMPLETE": 0,
+      "COMPLETE": 1
+    },
+    "records": [
+      {
+        "name": "STATE-VECTOR",
+        "lcm_type": 1,
+        "length": 24,
+        "fields": [
+          "schema-version",
+          "status",
+          "MOCA-arm",
+          "plane",
+          "NGRP",
+          "NUN",
+          "NGEFF",
+          "KRYL",
+          "MCGMRE-entry-count",
+          "MCGMRE-exit-count",
+          "primary-call-count",
+          "affine-RHS-call-count",
+          "Krylov-call-count",
+          "primary-active-group-sum",
+          "affine-RHS-active-group-sum",
+          "Krylov-active-group-sum",
+          "correction-block-count",
+          "nonzero-K-group-block-count",
+          "sum-K",
+          "max-K",
+          "MCGMRE-MAXI",
+          "MCGMRE-ERRTOL-binary32-bits",
+          "operator-applications-added",
+          "reserved-zero"
+        ]
+      },
+      {
+        "name": "NGIND",
+        "lcm_type": 1,
+        "length": 370,
+        "meaning": "physical group identifier in storage order; exactly 1..370"
+      },
+      {
+        "name": "CALL-META",
+        "lcm_type": 1,
+        "length": "5 * MCGMRE-entry-count",
+        "row_fields": [
+          "MCGMRE-call-index",
+          "normal-exit-flag",
+          "role-event-count",
+          "correction-block-count",
+          "last-global-ITER"
+        ]
+      },
+      {
+        "name": "ROLE-CALLS",
+        "lcm_type": 1,
+        "length": 3,
+        "meaning": "PRIMARY, AFFINE-RHS and KRYLOV MCGFL1 call counts"
+      },
+      {
+        "name": "ROLE-GROUPS",
+        "lcm_type": 1,
+        "length": 3,
+        "meaning": "sum of active groups at the same three role call sites"
+      },
+      {
+        "name": "ROLE-EVENTS",
+        "lcm_type": 1,
+        "length": "6 * total-role-call-count",
+        "row_fields": [
+          "MCGMRE-call-index",
+          "event-index-within-call",
+          "role",
+          "global-ITER-at-call",
+          "correction-block-index-or-zero",
+          "active-group-count"
+        ]
+      },
+      {
+        "name": "ROLE-ACTIVE",
+        "lcm_type": 1,
+        "length": "370 * total-role-call-count",
+        "meaning": "0/1 NCONV mask at the corresponding role call site in event-major then physical-group order"
+      },
+      {
+        "name": "K-HISTOGRAM",
+        "lcm_type": 1,
+        "length": 11,
+        "meaning": "exact bins KMAX=0..10 over all stored group-block rows"
+      },
+      {
+        "name": "BLOCK-META",
+        "lcm_type": 1,
+        "length": "4 * correction-block-count",
+        "row_fields": [
+          "MCGMRE-call-index",
+          "block-index-within-call",
+          "global-ITER-at-update",
+          "block-entry-active-group-count"
+        ]
+      },
+      {
+        "name": "BLOCK-ACTIVE",
+        "lcm_type": 1,
+        "length": "370 * correction-block-count",
+        "meaning": "0/1 block-entry active mask in block-major then physical-group order"
+      },
+      {
+        "name": "BLOCK-KMAX",
+        "lcm_type": 1,
+        "length": "370 * correction-block-count",
+        "meaning": "KMAX in block-major then physical-group order"
+      }
+    ],
+    "zero_call_encoding": "CALL-META is absent if and only if MCGMRE-entry-count is zero; a valid frozen production census instead requires exactly one row with normal-exit-flag 1",
+    "zero_role_event_encoding": "ROLE-EVENTS and ROLE-ACTIVE are both absent if and only if total-role-call-count is zero; otherwise both are present at their exact declared lengths",
+    "zero_block_encoding": "BLOCK-META, BLOCK-ACTIVE and BLOCK-KMAX are all absent if and only if correction-block-count is zero; otherwise all three are present at their exact declared lengths",
+    "exact_closure": [
+      "ROLE-EVENTS active-group-count equals the sum of its 370 ROLE-ACTIVE values, from which ROLE-CALLS and ROLE-GROUPS are independently recomputed",
+      "CALL-META independently closes MCGMRE entry-count, exit-count, per-call role-event counts, per-call correction-block counts and every raw event or block call index",
+      "call indexes and within-call event and block indexes are contiguous from 1; every normal-exit flag is 1; every role is in 1..3; every active-group count is in 0..370; and global ITER is positive and nondecreasing within each call",
+      "BLOCK-META row count equals correction-block-count and each active-group-count equals the sum of its 370 BLOCK-ACTIVE values",
+      "each BLOCK-ACTIVE value is 0 or 1, each BLOCK-KMAX value is in 0..10, and active-mask 0 implies KMAX 0",
+      "for each block and physical group, BLOCK-KMAX equals the exact count of active values in that block's KRYLOV ROLE-ACTIVE masks",
+      "within each block the first KRYLOV ROLE-ACTIVE mask equals BLOCK-ACTIVE and later KRYLOV masks can change only from 1 to 0, never from 0 to 1",
+      "Krylov ROLE-GROUPS equals sum-K and Krylov ROLE-CALLS equals the sum over blocks of the block maximum KMAX",
+      "if a block maximum KMAX is positive then every block-entry active group has KMAX at least 1; if the block maximum is zero then every KMAX in that block is zero",
+      "K-HISTOGRAM sums to group-block-row-count and independently determines nonzero-K-group-block-count, sum-K and max-K",
+      "max-K is exactly zero when no positive KMAX row exists",
+      "STATE-VECTOR fields 9..20 exactly repeat the independently closed counts, fields 21..22 exactly record MCGMRE MAXI=20 and ERRTOL binary32 bits 3727C5AC, and fields 23..24 are zero"
+    ],
+    "write_policy": "create only STATE-VECTOR with INCOMPLETE status at begin; retain events in integer memory; after normal FLU return write every final ledger record once and publish COMPLETE as the last write; never read any audit value back into the solver"
+  },
+  "implementation_strategy": {
+    "tracked_production_src": "UNCHANGED",
+    "instrumented_source_tree": "a fresh clean Git archive of frozen_parent_commit plus one tracked validation-only overlay",
+    "overlay_scope": [
+      "add one independent GMRES integer-counter and Ganlib-sink module",
+      "add GMRA parsing and propagation without changing the existing MOCA semantics",
+      "insert read-only entry, role, block and exit counter calls around existing MCGMRE statements",
+      "add only the build dependency required by the new validation-only module"
+    ],
+    "forbidden_overlay_changes": [
+      "SPOMOC.f90 or the SPOT-MOC-AUD schema",
+      "any floating-point declaration, expression, assignment or comparison in the solver",
+      "any existing branch condition, iteration bound, stopping rule or operator call",
+      "any production XSM record outside SPOT-GMR-AUD"
+    ],
+    "required_freeze": [
+      "clean parent archive SHA256",
+      "overlay manifest and every overlay source SHA256",
+      "one implementation manifest covering this protocol checker, overlay, clean-archive builder, module state tests, fixture writer, Ganlib checker, log normalizer, preflight runner and contract checker",
+      "compiler identity and complete flags",
+      "instrumented executable SHA256 and symbol census"
+    ],
+    "live_workspace_check": "all tracked src files equal frozen_parent_commit before and after every build and run"
+  },
+  "required_implementation_properties": [
+    "The legacy SPOMOC_AUDIT source and SPOT-MOC-AUD schema remain byte-for-byte unchanged.",
+    "GMRA is default off and fails closed unless MOCA 2 and the complete locked solver path, including MCGMRE MAXI=20, ERRTOL bits 3727C5AC and NSTART=10, are active.",
+    "OFF executes the original MCGMRE floating-point statements in their original order and reproduces the released OFF output and normalized scientific log exactly.",
+    "ON adds only integer counter updates and writes only below SPOT-GMR-AUD; it adds no floating-point expression, solver branch, stopping test or operator call.",
+    "Counter procedures receive solver arrays as read-only intent(in) data and return no value used by production code.",
+    "The valid frozen path permits exactly one MCGMRE entry and one matching normal exit; a second entry fails closed; role counts equal the instrumented call-site census, every block-entry mask is copied before the existing affine-RHS and Krylov block, and every completed KMAX vector is recorded before the unchanged update loop.",
+    "Publication occurs only after MCGMRE and FLU return normally and the exact record identities close.",
+    "No relaxation, clipping, fitted factor, flux floor, model term or empirical parameter is introduced."
+  ],
+  "required_no_transport_tests": [
+    "default-off state-machine identity and zero mutation",
+    "duplicate GMRA, GMRA without MOCA 2 and every unlocked context fails closed",
+    "hand-constructed zero-role-event, zero-block, mixed-role, mixed-KMAX and multiple-block fixtures",
+    "independent recomputation from CALL-META, ROLE-ACTIVE and block rows of entry/exit, role counts, active-group sums, nonzero group-blocks, sum-K, max-K and every histogram bin",
+    "per-block per-group KMAX reconstruction from KRYLOV ROLE-ACTIVE, first-mask identity and monotone 1-to-0 tamper rejection",
+    "inactive group with nonzero KMAX, active group with out-of-range KMAX, missing exit and mismatched entry-exit rejection",
+    "missing required-present, unexpected zero-case, duplicate, reordered, extra, wrong-type and wrong-length audit record rejection",
+    "multi-block and physical-group sentinels prove block-major group order",
+    "two synthetic executions and two independent checker executions are byte identical",
+    "reader source and object have no LCM mutation outside a test-only fixture and no Dragon, FLU, MOC or solver dependency"
+  ],
+  "bounded_production_run": {
+    "authorization": "NOT-AUTHORIZED-BY-THIS-PROTOCOL-FREEZE",
+    "required_before_execution": "a separately committed and hash-frozen run, checking, atomic-publication and result-receipt protocol",
+    "default": "PREFLIGHT-ONLY",
+    "explicit_execution_gate": "RUN_GMRES_ACTIVITY=1",
+    "execution_gate_values": {
+      "absent": "PREFLIGHT-ONLY",
+      "1": "RUN",
+      "any_other": "FAIL-CLOSED"
+    },
+    "processes": [
+      {
+        "mode": "OFF",
+        "MOCA": "ABSENT",
+        "GMRA": "ABSENT",
+        "repetitions": 1
+      },
+      {
+        "mode": "ON",
+        "MOCA": 2,
+        "GMRA": "PRESENT",
+        "repetitions": 2
+      }
+    ],
+    "FLU_outer_updates_per_process": 1,
+    "wall_timeout_seconds_per_process": 30,
+    "termination_scope": "exact spawned process group only",
+    "valid_runtime_identity": {
+      "outer_iterations": 1,
+      "thermal_iterations": 1,
+      "DOORFV_calls": 1,
+      "MCCGF_calls": 1,
+      "MCGMRE_entries": 1,
+      "MCGMRE_normal_exits": 1,
+      "second_MCGMRE_entry": "FAIL-CLOSED"
+    },
+    "ON_log_difference_whitelist": {
+      "CPU_telemetry": "the already frozen normalization only",
+      "deck_listing": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;' on source line 0028",
+      "execution_echo": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;' on echoed source line 0028",
+      "additional_lines": 0
+    },
+    "long_trajectory": false,
+    "rerun_six_step_arm": false,
+    "precision_A_B_run": false
+  },
+  "future_publication_requirements": [
+    "RUN_GMRES_ACTIVITY=1 remains unauthorized until the separate run and publication protocol and complete implementation manifest are committed and hash frozen",
+    "publish into a new no-overwrite artifact path through a same-filesystem temporary directory and atomic rename only after all checks pass",
+    "reject symlinks, special files, missing or extra payloads and any manifest mismatch before publication",
+    "bind the run protocol, complete implementation manifest, immutable inputs, executable identity, raw ledgers, checker outputs, classification and interpretation limits in the final result receipt"
+  ],
+  "required_production_checks": [
+    "All immutable input hashes are identical before and after every process.",
+    "Every process starts from a distinct regular byte-identical copy of the same frozen PRE.",
+    "Fresh OFF reproduces LEGACY_OFF_XSM byte for byte and its scientific log reproduces LEGACY_OFF_LOG after only the already frozen CPU telemetry normalization.",
+    "Each fresh ON reproduces LEGACY_ON_XSM outside SPOT-GMR-AUD; after the frozen CPU normalization and exactly the two declared source-line GMRA token removals, its full log equals LEGACY_ON_LOG byte for byte with no added activity line.",
+    "The two ON outputs, logs and complete activity ledgers reproduce one another exactly.",
+    "The existing SPOT-MOC-AUD tuple and all non-audit scientific records are unchanged.",
+    "The full log and CALL-META jointly prove exactly one outer iteration, thermal iteration, DOORFV call, MCCGF call, MCGMRE entry, matching normal exit and at least one PRIMARY role event on each valid ON run.",
+    "A Ganlib-only read-only checker independently recomputes every aggregate from CALL-META, ROLE-EVENTS, ROLE-ACTIVE, BLOCK-META, BLOCK-ACTIVE and BLOCK-KMAX.",
+    "The checker proves ROLE-CALLS, ROLE-GROUPS, STATE-VECTOR, K-HISTOGRAM and the exact Krylov-to-KMAX cross identities and retains every raw event, mask and block row.",
+    "Source and binary audits prove zero added operator application, no solver feedback and no production dependency in the independent checker."
+  ],
+  "classification": {
+    "threshold": null,
+    "invalid": "INVALID",
+    "valid_zero": "VALID-GMRES-UPDATE-INACTIVE",
+    "valid_nonzero": "VALID-GMRES-UPDATE-ACTIVE",
+    "zero_definition": "all contracts pass and nonzero-K-group-block-count equals exactly zero",
+    "nonzero_definition": "all contracts pass and nonzero-K-group-block-count is an exact positive integer",
+    "zero_is_a_valid_activity_result": true,
+    "valid_classes_are_mutually_exclusive_and_exhaustive": true,
+    "preference_or_improvement_ranking": false
+  },
+  "interpretation_limits": {
+    "activity_is_a_residual_or_error_measure": false,
+    "K_or_call_count_is_an_acceptance_tolerance": false,
+    "zero_K_means_the_MOC_primary_evaluation_was_not_used": false,
+    "nonzero_K_means_binary32_caused_prior_nontermination": false,
+    "raw_MOC_ACA_SCR_rebalancing_or_FLU2AC_contribution_is_inferred": false,
+    "inner_or_outer_convergence_is_claimed": false,
+    "Stage4_or_Stage5_is_authorized": false,
+    "relaxation_clipping_fitted_factor_flux_floor_or_empirical_parameter_is_allowed": false
+  },
+  "next_decision": {
+    "INVALID": "stop; repair only the evidence or implementation contract and rerun the same bounded census",
+    "VALID-GMRES-UPDATE-ACTIVE": "freeze, but do not yet run, the default-off GMRES correction-accumulation precision A/B",
+    "VALID-GMRES-UPDATE-INACTIVE": "do not implement the inactive GMRES update experiment; next freeze an always-executed MCGFCS source-arithmetic precision A/B",
+    "automatic_next_run": false,
+    "long_trajectory_authorized": false
+  }
+}
