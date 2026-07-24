@@ -198,6 +198,45 @@ require(
 )
 require(scope["diagnostic_default"] == "OFF", "diagnostic is not default-off")
 require(
+    scope["activation"]
+    == {
+        "keyword": "MOCA",
+        "syntax": "MOCA <arm-code>",
+        "default_arm_code": 0,
+        "arm_codes": {"1": "NATIVE", "2": "STATIONARY"},
+        "legacy_SPOT_IPICK": "UNCHANGED",
+        "invalid_or_out_of_scope_use": "FAIL-CLOSED",
+    },
+    "raw-MOC activation contract changed",
+)
+require(
+    scope["locked_flu_update_path"]
+    == {
+        "MAXOUT": 1,
+        "MAXINR": 740,
+        "EPSOUT": {
+            "decimal_input": "2.5E-7",
+            "binary32_bits": "348637BD",
+        },
+        "EPSUNK": {
+            "decimal_input": "2.5E-7",
+            "binary32_bits": "348637BD",
+        },
+        "EPSINR": {
+            "decimal_input": "2.5E-7",
+            "binary32_bits": "348637BD",
+        },
+        "IFRITR": 1,
+        "IACITR": 0,
+        "INITFL": 1,
+        "LFORW": True,
+        "ILEAK": 0,
+        "LREBAL": True,
+        "execution_path": "direct vector DOORFV",
+    },
+    "locked FLU one-step branch changed",
+)
+require(
     scope["locked_solver_path"]
     == {
         "KRYL": 10,

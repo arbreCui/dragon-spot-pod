@@ -16,6 +16,40 @@
     "production_map_updates_per_terminal": 1,
     "operator_applications_added_by_instrumentation": 0,
     "diagnostic_default": "OFF",
+    "activation": {
+      "keyword": "MOCA",
+      "syntax": "MOCA <arm-code>",
+      "default_arm_code": 0,
+      "arm_codes": {
+        "1": "NATIVE",
+        "2": "STATIONARY"
+      },
+      "legacy_SPOT_IPICK": "UNCHANGED",
+      "invalid_or_out_of_scope_use": "FAIL-CLOSED"
+    },
+    "locked_flu_update_path": {
+      "MAXOUT": 1,
+      "MAXINR": 740,
+      "EPSOUT": {
+        "decimal_input": "2.5E-7",
+        "binary32_bits": "348637BD"
+      },
+      "EPSUNK": {
+        "decimal_input": "2.5E-7",
+        "binary32_bits": "348637BD"
+      },
+      "EPSINR": {
+        "decimal_input": "2.5E-7",
+        "binary32_bits": "348637BD"
+      },
+      "IFRITR": 1,
+      "IACITR": 0,
+      "INITFL": 1,
+      "LFORW": true,
+      "ILEAK": 0,
+      "LREBAL": true,
+      "execution_path": "direct vector DOORFV"
+    },
     "locked_solver_path": {
       "KRYL": 10,
       "STIS": 1,
@@ -166,10 +200,10 @@
       "meaning": "The locked GMRES global iteration index; it must equal one."
     },
     {
-            "name": "SPOT-M-ROLE",
-            "lcm_type": 1,
-            "length": 1,
-            "meaning": "The locked role code 1 for the primary fixed-point evaluation; it equals STATE-VECTOR role."
+      "name": "SPOT-M-ROLE",
+      "lcm_type": 1,
+      "length": 1,
+      "meaning": "The locked role code 1 for the primary fixed-point evaluation; it equals STATE-VECTOR role."
     },
     {
       "name": "SPOT-M-GROUP",
