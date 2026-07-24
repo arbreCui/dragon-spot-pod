@@ -242,7 +242,7 @@ mkdir -p "$WORK/tools" "$WORK/render"
   -fcheck=all -ffp-contract=off -fno-fast-math -I "$GANLIB_MOD" \
   "$XSM_SOURCE" "$GANLIB_LIB" "$UTILIB_LIB" -lstdc++ \
   -o "$WORK/tools/check_capture"
-nm -u "$WORK/tools/check_capture" > "$WORK/tools/check_capture.nm"
+nm "$WORK/tools/check_capture" > "$WORK/tools/check_capture.nm"
 if grep -Ei \
   'SPOMOC|DOORFV|MCCGF|MCGFLX|MCGMRE|MCGFL1|MCGFCS|MCGSIG|MCGFCF|MOCFCF' \
   "$WORK/tools/check_capture.nm" >/dev/null

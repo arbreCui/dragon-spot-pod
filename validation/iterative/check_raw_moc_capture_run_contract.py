@@ -321,6 +321,12 @@ require(
     "independent checker replay count differs",
 )
 require(
+    'nm "$WORK/tools/check_capture" > "$WORK/tools/check_capture.nm"'
+    in runner
+    and 'nm -u "$WORK/tools/check_capture"' not in runner,
+    "independent checker audit does not inspect its linked symbol table",
+)
+require(
     runner.count("verify_run_implementation") == 3,
     "run implementation is not verified before and after production",
 )
