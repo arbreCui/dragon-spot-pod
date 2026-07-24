@@ -46,8 +46,8 @@ for path in (PROTOCOL, REFERENCE):
 
 protocol = json.loads(PROTOCOL.read_text(encoding="utf-8"))
 require(
-    protocol["status"] == "FROZEN-BEFORE-PRODUCTION-RUN",
-    "run protocol is not frozen before execution",
+    protocol["status"] == "FROZEN-BEFORE-CORRECTED-REPLAY",
+    "run protocol is not frozen before corrected replay",
 )
 require(
     protocol["source_commit"]
@@ -62,6 +62,29 @@ require(
         "other_values": "FAIL-CLOSED",
     },
     "activation gate changed",
+)
+require(
+    protocol["prior_attempt"]
+    == {
+        "runner_commit": "8fa0a371170121af84735a6f0b915ea5e0e34556",
+        "normal_process_exits": 5,
+        "preparation_processes": 1,
+        "production_probe_processes": 4,
+        "checker_rejection": "ICODE exceeds group ALBEDO",
+        "rejection_phase": (
+            "SYSTEM layout validation before PRE, FROZEN, OFF or ON "
+            "was opened"
+        ),
+        "artifact_published": False,
+        "retained_runtime_evidence": False,
+        "scientific_classification": "NONE-CHECKER-CONTRACT-INVALID",
+        "correction": (
+            "Permit geometric negative ICODE, preserve the NALBP guard "
+            "used by MCGSIG, and select each boundary albedo through "
+            "-NZON exactly as MCGFCS does."
+        ),
+    },
+    "prior checker-invalid attempt record changed",
 )
 require(
     protocol["executable"]["sha256"]
@@ -178,13 +201,13 @@ reference = {label: digest for digest, label in reference_rows}
 expected_reference = {
     "Dragon": "b57cb801aeec62e7306897e10f84bca1ad6b011055a651ff37aa1718e6b2b1e5",
     "clean_git_archive.tar": "358fdd0f4b694e6717bbb21aa07e365276437df09fec14d62d3fb710c71cd4e2",
-    "raw_moc_capture_implementation.sha256": "35c61aed647f3be452f04226830e726c4dca439e0549b05fbbd3ee40c4c64913",
+    "raw_moc_capture_implementation.sha256": "6986e5dd00c42dc384b66460984b0d42fd7b55052f19000f51822c2e32a183a0",
     "radial_floor_result_receipt.sha256": "8b440f48e4fb7293d72ee4051dd17ff2c897b5dcce9dc14417fab68ffc0a4d1f",
     "minimal_manifest.sha256": "f096043e06d68b7cc2fe8b5d246a815d2ab4ca8be2275e00a0d6b485901e5c6c",
     "full_artifact_manifest.sha256": "b5ada48abade897f115e68fa227a6ac256a5c92441bad66fc8fc8444030dfad3",
     "prepared_manifest.sha256": "a96d6535028870f0271c6e73478e1548d60b8ed501202ed28b95aea922144905",
     "radial_floor_prepare.x2m": "75ffc586d51c7015daa979ec381f32fb7a7475de0aa81dbc5d7735b681574c2f",
-    "check_raw_moc_capture_xsm.f90": "1a50431a8279bb98745d9416be81e3848586be2c53ccdb800c561a631792c66a",
+    "check_raw_moc_capture_xsm.f90": "ea4bd6d9e326331b58ee95a62bf3b44ae956211da28c23e1c2e1979d58adeaf9",
     "restart_macro0.xsm": "6eb2920473f4cb8d27b6377bcb59b42833c8ebf9a0fc57925341d12ccac0a617",
     "restart_source.xsm": "6942f61ba2cc7ab0d5cf9a4104959809a388fab441da82730cf64de74a48769f",
     "restart_system.xsm": "a8797a7d42fdab574eb183bc2ecf0e2b53c992fdd2dd4c61d40c72a53746e599",

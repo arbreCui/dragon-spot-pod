@@ -311,12 +311,22 @@ receipt; without an independent transport truth the checker does not
 pretend otherwise.
 
 `arm` and `plane` are protocol labels, not quantities inferable from the
-captured flux. A future production runner must therefore bind each label to
-the declared terminal input and plane through frozen input hashes.
+captured flux. The production runner therefore binds each label to the
+declared terminal input and plane through frozen input hashes.
 `COMPLETE` certifies only that the write-once record structure is complete;
 scientific acceptance additionally requires the independent checker to pass.
 
-These tests validate instrumentation and arithmetic only. No new Dragon
-transport run has been made, no NATIVE/STATIONARY raw-MOC result has been
-published, outer convergence is not evaluated, and Stage 4 remains
+The first bounded production attempt completed its one no-transport
+preparation process and four one-step probes with normal process exits. The
+independent checker then rejected `ICODE exceeds group ALBEDO` before opening
+PRE, FROZEN, OFF or ON, so fail-closed publication produced no artifact and
+no scientific classification.
+
+That rejection was a checker-contract error, not a transport result: geometric
+negative `ICODE` is legal, and `MCGFCS` selects the boundary albedo through
+`-NZON`, not the boundary-unknown ordinal. The checker and its fixtures now
+cover negative `ICODE`, absent group albedos, non-identity `NZON`, boundary
+source tampering and positive physical-albedo overflow.
+A corrected replay is still pending. No NATIVE/STATIONARY raw-MOC result has
+been published, outer convergence is not evaluated, and Stage 4 remains
 unauthorized.

@@ -267,13 +267,21 @@ require(
     and "sum32 = qfr32(key) + product32" in checker,
     "checker no longer stages MCGFCS binary32 arithmetic",
 )
+require(
+    "albedo_slot = -layout%nzon(nr + surface)" in checker
+    and "if (system%nalbedo > 0) then" in checker
+    and "layout%icode(albedo_slot)" in checker,
+    "checker no longer replays the MCGSIG/MCGFCS boundary path",
+)
 require("Dragon" not in checker_runner, "checker test invokes Dragon")
 for token in (
-    "status extra non-audit eval source raw",
+    "status extra non-audit eval source boundary surface-map icode raw",
+    '"$WORK/make_fixture" "$WORK/track" 1 track',
     "RAW one-bit change did not alter the scientific receipt",
     "inputs_before.sha256",
     "inputs_after.sha256",
     "checker object references production solver symbols",
+    "positive ICODE exceeds group ALBEDO",
 ):
     require(token in checker_runner, f"checker runner lost {token}")
 require(
@@ -283,7 +291,8 @@ require(
 for token in (
     "`arm` and `plane` are protocol labels",
     "`COMPLETE` certifies only that the write-once record structure is complete",
-    "No new Dragon",
+    "checker-contract error",
+    "corrected replay is still pending",
     "Stage 4 remains",
 ):
     require(token in readme, f"README lost evidence boundary: {token}")

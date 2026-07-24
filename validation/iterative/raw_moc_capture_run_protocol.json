@@ -1,12 +1,24 @@
 {
   "name": "SPOT raw primary-MOC bounded production capture",
-  "status": "FROZEN-BEFORE-PRODUCTION-RUN",
+  "status": "FROZEN-BEFORE-CORRECTED-REPLAY",
   "source_commit": "d97a70225b118b2369c94e664b8e9028a1e4a704",
   "purpose": "Evaluate the already frozen NATIVE and STATIONARY plane-1 terminal inputs once with capture OFF and once with capture ON, without rerunning either six-step arm.",
   "activation": {
     "default": "PREFLIGHT-ONLY",
     "production_environment": "RUN_CAPTURE=1",
     "other_values": "FAIL-CLOSED"
+  },
+  "prior_attempt": {
+    "runner_commit": "8fa0a371170121af84735a6f0b915ea5e0e34556",
+    "normal_process_exits": 5,
+    "preparation_processes": 1,
+    "production_probe_processes": 4,
+    "checker_rejection": "ICODE exceeds group ALBEDO",
+    "rejection_phase": "SYSTEM layout validation before PRE, FROZEN, OFF or ON was opened",
+    "artifact_published": false,
+    "retained_runtime_evidence": false,
+    "scientific_classification": "NONE-CHECKER-CONTRACT-INVALID",
+    "correction": "Permit geometric negative ICODE, preserve the NALBP guard used by MCGSIG, and select each boundary albedo through -NZON exactly as MCGFCS does."
   },
   "executable": {
     "sha256": "b57cb801aeec62e7306897e10f84bca1ad6b011055a651ff37aa1718e6b2b1e5",
@@ -146,6 +158,7 @@
     "stage5_authorization": false
   },
   "interpretation_limits": [
+    "The prior attempt was rejected by an incorrect independent-checker contract before the capture objects were opened; it provides no scientific classification.",
     "CAPTURE-VALID certifies the declared execution identity, write-once tuple structure, source replay and raw-minus-input ledger; it is not an independently recomputed transport solution.",
     "A finite RAW payload has no independent transport truth in this experiment and therefore cannot become a transport-error bound.",
     "The two arms are parallel diagnostics and may not be ranked from this capture.",

@@ -60,13 +60,14 @@ run_checker()
     "$arm" >"$output"
 }
 
-for case_name in native_a native_b stationary
+for case_name in native_a native_b stationary track
 do
   mkdir -p "$WORK/$case_name"
 done
 "$WORK/make_fixture" "$WORK/native_a" 1 valid
 "$WORK/make_fixture" "$WORK/native_b" 1 valid
 "$WORK/make_fixture" "$WORK/stationary" 2 valid
+"$WORK/make_fixture" "$WORK/track" 1 track
 
 shasum -a 256 "$WORK/native_a"/*.xsm | sort >"$WORK/inputs_before.sha256"
 run_checker "$WORK/native_a" 1 "$WORK/native_a.log"
@@ -74,6 +75,7 @@ shasum -a 256 "$WORK/native_a"/*.xsm | sort >"$WORK/inputs_after.sha256"
 cmp "$WORK/inputs_before.sha256" "$WORK/inputs_after.sha256"
 run_checker "$WORK/native_b" 1 "$WORK/native_b.log"
 run_checker "$WORK/stationary" 2 "$WORK/stationary.log"
+run_checker "$WORK/track" 1 "$WORK/track.log"
 cmp "$WORK/native_a.log" "$WORK/native_b.log"
 
 test "$(grep -c '^RAW-MOC-XSM LEDGER ' "$WORK/native_a.log")" -eq 5180
@@ -81,6 +83,7 @@ test "$(grep -c '^RAW-MOC-XSM CURRENT ' "$WORK/native_a.log")" -eq 2220
 test "$(grep -c '^RAW-MOC-XSM MAX-TIE ' "$WORK/native_a.log")" -eq 1
 grep -q '^RAW-MOC-XSM ARM NATIVE$' "$WORK/native_a.log"
 grep -q '^RAW-MOC-XSM ARM STATIONARY$' "$WORK/stationary.log"
+grep -q '^RAW-MOC-XSM CAPTURE-VALID$' "$WORK/track.log"
 grep -q '^RAW-MOC-XSM SCALAR-RELATIVE-TWO-NORM  1.21236465988585977E-007 3E8045A73B866381$' \
   "$WORK/native_a.log"
 grep -q '^RAW-MOC-XSM SCALAR-INPUT-NORMALIZED-MAX  1.48067988559094138E-007 3E83DF93CD0CD482$' \
@@ -91,13 +94,13 @@ grep -q '^RAW-MOC-XSM OUTER-CONVERGENCE NOT-EVALUATED$' \
 grep -q '^RAW-MOC-XSM STAGE4 NOT-AUTHORIZED$' "$WORK/native_a.log"
 grep -q '^RAW-MOC-XSM COMPLETE$' "$WORK/native_a.log"
 
-for mode in status extra non-audit eval source raw
+for mode in status extra non-audit eval source boundary surface-map icode raw
 do
   mkdir -p "$WORK/$mode"
   "$WORK/make_fixture" "$WORK/$mode" 1 "$mode"
 done
 
-for mode in status extra non-audit eval source
+for mode in status extra non-audit eval source boundary surface-map icode
 do
   if run_checker "$WORK/$mode" 1 "$WORK/$mode.log" \
        2>"$WORK/$mode.err"
@@ -111,6 +114,9 @@ grep -Eq 'AUDIT ROOT (census|names) differs' "$WORK/extra.err"
 grep -q 'non-audit primitive value differs' "$WORK/non-audit.err"
 grep -q 'EVAL differs from frozen PRE input' "$WORK/eval.err"
 grep -q 'volume source replay differs' "$WORK/source.err"
+grep -q 'boundary source replay differs' "$WORK/boundary.err"
+grep -q 'boundary source replay differs' "$WORK/surface-map.err"
+grep -q 'positive ICODE exceeds group ALBEDO' "$WORK/icode.err"
 
 run_checker "$WORK/raw" 1 "$WORK/raw.log"
 grep -q '^RAW-MOC-XSM CAPTURE-VALID$' "$WORK/raw.log"

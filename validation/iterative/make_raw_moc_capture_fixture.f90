@@ -18,7 +18,7 @@ program make_raw_moc_capture_fixture
   integer :: arm, ios, group, unknown, region, surface, key, coupled, mix
   integer :: ngind(ng), keyflux(nr), keycur(ns), ibc(ns), nzon(nu)
   integer :: icode(ns)
-  logical :: nconv(ng)
+  logical :: nconv(ng), with_group_albedo
   real(real32) :: volume(nr), track_albedo(ns)
   real(real32) :: s0(0:nmix, ng), group_albedo(nalbedo, ng)
   real(real32) :: qfr(nu, ng), evaluated(nu, ng), captured_eval(nu, ng)
@@ -50,8 +50,13 @@ program make_raw_moc_capture_fixture
   keycur = [14, 9, 13, 10, 12, 11]
   ibc = [2, 1, 4, 3, 6, 5]
   nzon(1:nr) = [1, 2, 3, 4, 1, 2, 3, 4]
-  nzon(nr+1:nu) = [-1, -2, -3, -4, -5, -6]
-  icode = [1, 0, 2, 0, 1, 2]
+  nzon(nr+1:nu) = [-3, -1, -6, -2, -5, -4]
+  icode = [1, -2, 2, 0, -1, 2]
+  with_group_albedo = .true.
+  if (trim(mode) == 'track') then
+    icode = [-1, -2, -3, -4, -5, -6]
+    with_group_albedo = .false.
+  end if
   volume = [1.25_real32, 2.5_real32, 3.75_real32, 5.0_real32, &
        6.25_real32, 7.5_real32, 8.75_real32, 10.0_real32]
   track_albedo = [0.125_real32, 0.25_real32, 0.375_real32, &
@@ -90,9 +95,12 @@ program make_raw_moc_capture_fixture
     do surface = 1, ns
       key = keycur(surface)
       coupled = keycur(ibc(surface))
-      effective_albedo = track_albedo(surface)
-      if (icode(surface) > 0) &
-           effective_albedo = group_albedo(icode(surface), group)
+      mix = -nzon(nr + surface)
+      effective_albedo = track_albedo(mix)
+      if (with_group_albedo) then
+        if (icode(mix) > 0) &
+             effective_albedo = group_albedo(icode(mix), group)
+      end if
       product32 = effective_albedo * evaluated(coupled, group)
       source(key, group) = real(product32, real64)
     end do
@@ -107,7 +115,8 @@ program make_raw_moc_capture_fixture
 
   captured_eval = evaluated
   select case (trim(mode))
-  case ('valid', 'status', 'extra', 'non-audit', 'raw')
+  case ('valid', 'track', 'status', 'extra', 'non-audit', 'raw', &
+       'boundary', 'surface-map', 'icode')
     continue
   case ('eval')
     captured_eval(1, 1) = nearest(captured_eval(1, 1), 1.0_real32)
@@ -117,10 +126,25 @@ program make_raw_moc_capture_fixture
     error stop 'unknown fixture mode'
   end select
   if (trim(mode) == 'raw') raw(1, 1) = nearest(raw(1, 1), 1.0_real64)
+  if (trim(mode) == 'boundary') then
+    key = keycur(1)
+    source(key, 1) = nearest(source(key, 1), 1.0_real64)
+  else if (trim(mode) == 'surface-map') then
+    key = keycur(1)
+    coupled = keycur(ibc(1))
+    effective_albedo = track_albedo(1)
+    if (icode(1) > 0) &
+         effective_albedo = group_albedo(icode(1), 1)
+    product32 = effective_albedo * evaluated(coupled, 1)
+    source(key, 1) = real(product32, real64)
+  else if (trim(mode) == 'icode') then
+    icode(1) = nalbedo + 1
+  end if
 
   call write_track(trim(track_path), keyflux, keycur, ibc, nzon, &
        volume, icode, track_albedo)
-  call write_system(trim(system_path), s0, group_albedo)
+  call write_system(trim(system_path), s0, group_albedo, &
+       with_group_albedo)
   call write_flux(trim(pre_path), evaluated)
   call write_flux(trim(frozen_path), post)
   call write_flux(trim(off_path), post)
@@ -178,10 +202,11 @@ contains
   end subroutine write_track
 
 
-  subroutine write_system(path, s0, albedo)
+  subroutine write_system(path, s0, albedo, write_albedo)
     character(len=*), intent(in) :: path
     real(real32), intent(in) :: s0(0:nmix, ng)
     real(real32), intent(in) :: albedo(nalbedo, ng)
+    logical, intent(in) :: write_albedo
     type(c_ptr) :: root, groups, group_dir
     real(real32) :: tx(0:nmix)
     character(len=12) :: text
@@ -198,7 +223,8 @@ contains
       end do
       call LCMPUT(group_dir, 'DRAGON-S0XSC', nmix + 1, 2, s0(:, group))
       call LCMPUT(group_dir, 'DRAGON-TXSC', nmix + 1, 2, tx)
-      call LCMPUT(group_dir, 'ALBEDO', nalbedo, 2, albedo(:, group))
+      if (write_albedo) &
+           call LCMPUT(group_dir, 'ALBEDO', nalbedo, 2, albedo(:, group))
     end do
     call LCMCL(root, 1)
   end subroutine write_system
@@ -248,7 +274,8 @@ contains
     integer :: state(24), extra(1), base_int(3)
 
     select case (trim(mode))
-    case ('valid', 'eval', 'source', 'raw')
+    case ('valid', 'track', 'eval', 'source', 'raw', 'boundary', &
+         'surface-map', 'icode')
       return
     case ('status')
       audit = LCMDID(root, 'SPOT-MOC-AUD')

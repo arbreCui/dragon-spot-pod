@@ -169,9 +169,10 @@ contains
     call LCMLEN(group_dir, 'ALBEDO', data%nalbedo, itype)
     if ((data%nalbedo > 0) .and. (itype /= 2)) &
          call fail('invalid group ALBEDO')
-    if (any(layout%icode < 0) .or. &
-         any(layout%icode > data%nalbedo)) &
-         call fail('ICODE exceeds group ALBEDO')
+    if (data%nalbedo > 0) then
+      if (any(layout%icode > data%nalbedo)) &
+           call fail('positive ICODE exceeds group ALBEDO')
+    end if
     allocate(data%s0(0:data%nmix, ng))
     allocate(data%group_albedo(data%nalbedo, ng))
     allocate(tx(0:data%nmix))
@@ -211,7 +212,7 @@ contains
     real(real64), intent(out) :: relative_norm, relative_max
     type(c_ptr) :: audit, groups, group_dir, pre_groups
     integer :: state(24), expected(24), ordered(ng)
-    integer :: group, unknown, region, surface, key, coupled
+    integer :: group, unknown, region, surface, key, coupled, albedo_slot
     integer :: step(1), role(1), group_id(1), mix
     real(real64) :: qfr(nu), source(nu), raw(nu), pre64(nu)
     real(real32) :: qfr32(nu), eval32(nu), pre32(nu)
@@ -295,10 +296,13 @@ contains
       do surface = 1, ns
         key = layout%keycur(surface)
         coupled = layout%keycur(layout%ibc(surface))
-        albedo32 = layout%albedo(surface)
-        if (layout%icode(surface) > 0) &
-             albedo32 = system%group_albedo( &
-             layout%icode(surface), group)
+        albedo_slot = -layout%nzon(nr + surface)
+        albedo32 = layout%albedo(albedo_slot)
+        if (system%nalbedo > 0) then
+          if (layout%icode(albedo_slot) > 0) &
+               albedo32 = system%group_albedo( &
+               layout%icode(albedo_slot), group)
+        end if
         product32 = albedo32 * eval32(coupled)
         expected_source = real(product32, real64)
         if (transfer(source(key), 0_int64) /= &

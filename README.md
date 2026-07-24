@@ -209,8 +209,12 @@ evaluated state, `QFR`, source-element vector and raw MOC response from the
 first primary GMRES evaluation before ACA/SCR. It writes only to the fresh
 `L_FLUX` audit directory; the instrumentation adds zero operator applications
 and has no acceptance threshold. A bounded NATIVE/STATIONARY × OFF/ON runner
-and independent log/XSM replay are frozen, but the production probes have not
-yet been launched. See
+and independent log/XSM replay are frozen. Its first bounded attempt completed
+all five processes normally, but the checker rejected a legal negative
+geometric `ICODE` before opening the capture objects. Publication therefore
+failed closed with no artifact or scientific result. The checker has been
+corrected against the actual `MCGSIG`/`MCGFCS` boundary path; a corrected
+replay is pending. See
 [radial_precision_result.md](validation/iterative/radial_precision_result.md)
 and
 [raw_moc_residual_protocol.json](validation/iterative/raw_moc_residual_protocol.json).
@@ -229,7 +233,7 @@ and
 6. capture the first primary GMRES raw-sweep difference per frozen terminal,
    before ACA/SCR, with zero operator applications added by instrumentation
    and no acceptance threshold (implementation and bounded runner frozen;
-   production capture pending);
+   corrected production replay pending);
 7. use that additional observable to scope a default-off REAL64
    working-iteration lane,
    retaining the same physical equation and direct Picard map;
@@ -320,6 +324,7 @@ sh validation/iterative/run_raw_moc_capture_production.sh
 
 That command performs identity, contract, unit-test, compiler and deck-render
 preflight only. An explicit `RUN_CAPTURE=1` is required to launch the one
-no-transport preparation process and four bounded one-step probes. Until that
-explicit run passes both independent replays, there is no published
-NATIVE/STATIONARY raw-MOC result and no new convergence or Stage-4 claim.
+no-transport preparation process and four bounded one-step probes. Until a
+corrected explicit replay passes both independent checks, there is no
+published NATIVE/STATIONARY raw-MOC result and no new convergence or Stage-4
+claim.
