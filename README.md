@@ -250,9 +250,14 @@ rebalancing or acceleration; the census does not rank the two arms or
 establish a residual, error bound, convergence or Stage-4/Stage-5
 qualification. Its exact counts and evidence boundary are in
 [raw_moc_ulp_bridge_result.md](validation/iterative/raw_moc_ulp_bridge_result.md).
-It motivates only planning a minimal, default-off REAL64 radial
-working-iteration experiment with the physical equation and frozen controls
-unchanged; it does not predict that experiment will converge.
+Before any precision experiment, the next gate asks whether the frozen
+one-map MCCG path actually executes a nonzero-\(K\) GMRES correction. Its
+default-off overlay observes only integer call roles, active-group masks and
+completed `KMAX`; it adds no transport application, residual threshold,
+relaxation or model term. The implementation and synthetic preflight are
+complete, but the census itself has not been run and requires a separate
+committed run/publication protocol. See
+[gmres_activity.md](validation/iterative/gmres_activity.md).
 
 ## Validation route
 
@@ -271,13 +276,16 @@ unchanged; it does not predict that experiment will converge.
 7. round the retained RAW scalar tuples once to binary32 and publish an exact
    ULP bridge census without a new transport solve or attribution claim
    (completed);
-8. next, freeze the design of a default-off REAL64 radial working-iteration
-   experiment retaining the same physical equation; the ULP census alone
-   does not authorize a trajectory;
-9. only after a predeclared inner gate passes study direct Picard
-   convergence;
-10. after convergence, repeat rank/mesh/angle refinement and independent 3D
-   comparison for the iterative solution.
+8. freeze and preflight a passive GMRES activity census using only integer
+   ledger state (completed without running Dragon);
+9. under a separate bounded run/publication protocol, determine exactly
+   whether any per-group GMRES correction has nonzero \(K\);
+10. only if that gate shows an executed update, design a default-off precision
+    A/B with the physical equation and controls unchanged; otherwise examine
+    the always-executed source arithmetic instead;
+11. only after a predeclared inner gate passes study direct Picard convergence;
+12. after convergence, repeat rank/mesh/angle refinement and independent 3D
+    comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
 predeclared gates and evidence boundaries.
@@ -314,6 +322,12 @@ validation/iterative/raw_moc_ulp_bridge_result.md
                                       exact census and interpretation limits
 validation/iterative/check_raw_moc_ulp_bridge_result.py
                                       public plus local-artifact replay
+validation/iterative/gmres_activity_protocol.json
+                                      passive integer-ledger freeze
+validation/iterative/gmres_activity_overlay.patch
+                                      default-off validation-only overlay
+validation/iterative/run_gmres_activity_preflight.sh
+                                      no-transport implementation preflight
 validation/level1/                    POD algebra tests
 validation/level2/                    fixed-operator algebra unit tests
 ```
