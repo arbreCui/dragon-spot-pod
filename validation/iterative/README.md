@@ -247,14 +247,76 @@ rebalancing and FLU acceleration. Nor can `SYSTEM` provide a true archived
 \(A\phi-q\): its matrices are ACA corrective/preconditioning data, and the
 saved source precedes later flux transformations.
 
-The next step is frozen before implementation in
-[raw_moc_residual_protocol.json](raw_moc_residual_protocol.json). A
-default-off `TYPE S + MCCG` diagnostic will capture the evaluated state,
-same-call `QFR`, source-element vector and raw MOC response for only the
-first primary GMRES evaluation, after STIS/volume normalization but before
-ACA/SCR. One bounded production-map update is repeated from each terminal;
-the instrumentation adds zero operator applications and introduces no
-acceptance threshold. The audit is published only in the fresh writable
-`L_FLUX` output after all 370 group tuples are complete. Only after this
-additional observable is captured will a REAL64 radial working-iteration
-lane be scoped.
+The next design was frozen before implementation in
+[raw_moc_residual_protocol.json](raw_moc_residual_protocol.json). It defines
+a default-off `TYPE S + MCCG` diagnostic for the evaluated state, same-call
+`QFR`, source-element vector and raw MOC response from only the first primary
+GMRES evaluation, after STIS/volume normalization but before ACA/SCR. The
+instrumentation adds zero operator applications and introduces no acceptance
+threshold. The audit is published only in the fresh writable `L_FLUX` output
+after all 370 group tuples are complete. Only after this additional observable
+is captured will a REAL64 radial working-iteration lane be scoped.
+
+## Raw primary-MOC capture implementation
+
+The capture path is now implemented but has not been used to launch either
+production probe. It is explicitly enabled by `MOCA 1` for NATIVE or
+`MOCA 2` for STATIONARY; absence of `MOCA` is the unchanged default-off
+path. The legacy `SPOT`/`IPICK` parser branch is unchanged.
+
+The implementation accepts only the frozen one-step branch:
+
+```text
+TYPE S, MCCG, 370 groups, 8 regions, 14 unknowns
+EXTE 1 2.5E-7
+UNKT 2.5E-7
+THER 740 2.5E-7
+ACCE 1 0
+INIT ON, direct solve, rebalancing on, ILEAK=0
+KRYL=10, STIS=1, IAAC=80, ISCR=0, IDIFC=0, PACA=4, IDIR=0
+```
+
+Only the first primary GMRES evaluation may write. `MCGFL1` copies the
+same-call `QFR`, evaluated binary32 state, binary64 source vector and
+binary64 raw MOC response after STIS/volume normalization and before
+ACA/SCR. The affine-RHS call, every Krylov-basis call and every later
+primary call are excluded. The helper contains no transport call, and no
+audit record is read into a solver array.
+
+Run the short, no-Dragon state-machine gate with
+
+```sh
+validation/iterative/run_raw_moc_capture_state_test.sh
+```
+
+It checks default-off absence, the complete 370-by-14 schema, first-primary
+write-once behavior and fail-closed duplicate, wrong-path, wrong-step,
+partial-publication and overwrite cases.
+
+Run the independent read-only checker gate with
+
+```sh
+validation/iterative/run_raw_moc_capture_checker_test.sh
+python3 validation/iterative/check_raw_moc_capture_contract.py
+```
+
+The checker links only Ganlib. It recursively compares FROZEN with OFF and
+OFF with ON while allowing only `SPOT-MOC-AUD`, verifies `EVAL` against the
+frozen pre-update flux, independently replays the binary32 `MCGFCS` volume
+and boundary source arithmetic, then reports the full 14-unknown ledger,
+the scalar-only volume-weighted relative norm, the input-normalized scalar
+maximum with exact ties, and six currents componentwise. A finite RAW
+one-bit change remains structurally valid but changes the scientific
+receipt; without an independent transport truth the checker does not
+pretend otherwise.
+
+`arm` and `plane` are protocol labels, not quantities inferable from the
+captured flux. A future production runner must therefore bind each label to
+the declared terminal input and plane through frozen input hashes.
+`COMPLETE` certifies only that the write-once record structure is complete;
+scientific acceptance additionally requires the independent checker to pass.
+
+These tests validate instrumentation and arithmetic only. No new Dragon
+transport run has been made, no NATIVE/STATIONARY raw-MOC result has been
+published, outer convergence is not evaluated, and Stage 4 remains
+unauthorized.

@@ -93,6 +93,7 @@
 *-----------------------------------------------------------------------
 *
       USE GANLIB
+      USE SPOMOC_AUDIT, ONLY: SPOMOC_CAPTURE
 *---
 * SUBROUTINES ARGUMENTS
 *---
@@ -291,6 +292,7 @@
          ENDIF
          ENDDO
       ENDIF
+      CALL SPOMOC_CAPTURE(NGEFF,NGIND,KPN,QFR,PHIIN,S,PHIOUT,NCONV)
       CALL KDRCPU(T2)
 *----
 *  PRECONDITIONING TECHNIQUES

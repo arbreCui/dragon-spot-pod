@@ -3,7 +3,7 @@
      >                  EPSUNK,EPSINR,IREBAL,IFRITR,IACITR,COPTIO,
      >                  ILEAK,B2,NGROUP,NREGIO,NMAT,NIFISS,LEAKSW,
      >                  REFKEF,ITPIJ,IPRINT,REC,INITFL,NMERG,IMERG,
-     >                  IPICK)
+     >                  IPICK,IMCAUD)
 *
 *-----------------------------------------------------------------------
 *
@@ -81,6 +81,7 @@
 * NMERG   number of leakage zones.
 * IMERG   leakage zone index in each material mixture zone.
 * IPICK   optional diagnostic recovery (0/1: no/yes).
+* IMCAUD  raw-MOC audit arm (=0: off; =1: native; =2: stationary).
 *
 *-----------------------------------------------------------------------
 *
@@ -91,7 +92,7 @@
       TYPE(C_PTR) IPFLUX,IPMACR
       INTEGER     ITYPEC,MAXOUT,MAXINR,IREBAL,IFRITR,IACITR,ILEAK,
      >            NGROUP,NREGIO,NMAT,NIFISS,ITPIJ,IPRINT,INITFL,NMERG,
-     >            IMERG(NMAT),IPICK
+     >            IMERG(NMAT),IPICK,IMCAUD
       REAL        EPSOUT,EPSUNK,EPSINR,B2(4)
       CHARACTER   COPTIO*4
       LOGICAL     LEAKSW,REC
@@ -125,6 +126,7 @@
  10   CONTINUE
       REFKEF=1.0D0
       IPRINT=1
+      IMCAUD=0
       IF(REC) THEN
          CALL LCMGET(IPFLUX,'STATE-VECTOR',ISTATE)
          ITYPEC=ISTATE(6)
@@ -185,6 +187,13 @@
       ELSE IF(CARLIR.EQ.'SPOT') THEN
          IPICK=1
          GO TO 140
+      ELSE IF(CARLIR.EQ.'MOCA') THEN
+        IF(IMCAUD.NE.0)
+     >    CALL XABORT('FLUGPI: DUPLICATE MOCA KEYWORD.')
+        CALL REDGET(ITYPLU,INTLIR,REALIR,CARLIR,DBLINP)
+        IF((ITYPLU.NE.1).OR.(INTLIR.LT.1).OR.(INTLIR.GT.2))
+     >    CALL XABORT('FLUGPI: MOCA ARM 1 OR 2 EXPECTED.')
+        IMCAUD=INTLIR
       ELSE IF(CARLIR.EQ.'EDIT') THEN
         CALL REDGET(ITYPLU,IPRINT,REALIR,CARLIR,DBLINP)
         IF(ITYPLU.NE.1) CALL XABORT('FLUGPI: READ ERROR - INTEGER VA'

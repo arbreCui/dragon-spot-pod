@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import re
 import struct
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -192,8 +193,9 @@ for token, owner in (
     if token not in locations[owner]:
         violations.append(f"protocol no longer binds {owner}: {token}")
 
-# Freeze the current production implementation.  The diagnostic may call it
-# but may not patch it to expose or alter an iteration.
+# Freeze the historical production implementation used by the completed
+# diagnostic.  Later default-off instrumentation may evolve the working tree;
+# it must not rewrite the source bytes identified by the archived commit.
 expected_source_hashes = {
     "FLU2DR": "9c82fbecbfcbd5637ab3cd2d38ccfd5bbb6a3a575ebfb8089a9ae99f66ec6841",
     "FLU2AC": "3d8817087d106062eed6c155bca11b10171df322eb8fe15d83398e8cf717895a",
@@ -205,9 +207,30 @@ expected_source_hashes = {
         "69a2931c817d298a3af36f5e1f55760c58dd55229c73002b4b01d3a4797e27b5"
     ),
 }
+historical_commit = "de4297cc4d1aeca63307191df70c6eeaef4b1e2a"
+historical_paths = {
+    "FLU2DR": "src/FLU2DR.f",
+    "FLU2AC": "src/FLU2AC.f",
+    "FLUGPI": "src/FLUGPI.f",
+    "FLU": "src/FLU.f",
+    "SPOFSRC": "src/SPOFSRC.f90",
+    "SPOPROJ": "src/SPOPROJ.f90",
+    "plane procedure": "data/SpotPlaneFS.c2m",
+}
 for name, expected in expected_source_hashes.items():
-    if sha256(PATHS[name]) != expected:
-        violations.append(f"{name} differs from the frozen production source")
+    completed = subprocess.run(
+        ["git", "show", f"{historical_commit}:{historical_paths[name]}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+    )
+    if (
+        completed.returncode != 0
+        or hashlib.sha256(completed.stdout).hexdigest() != expected
+    ):
+        violations.append(
+            f"{name} differs in the archived radial-floor source commit"
+        )
 expected_reference = {
     "Dragon": "e4c61fa45ba0fe62be3a15e21785c5e27b9a3c10d727a02754d43d7c79ef2759",
     "FLU2DR.f": expected_source_hashes["FLU2DR"],
