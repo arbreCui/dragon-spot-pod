@@ -208,16 +208,22 @@ The default-off same-sweep capture is now implemented. It records the
 evaluated state, `QFR`, source-element vector and raw MOC response from the
 first primary GMRES evaluation before ACA/SCR. It writes only to the fresh
 `L_FLUX` audit directory; the instrumentation adds zero operator applications
-and has no acceptance threshold. A bounded NATIVE/STATIONARY × OFF/ON runner
-and independent log/XSM replay are frozen. Its first bounded attempt completed
-all five processes normally, but the checker rejected a legal negative
-geometric `ICODE` before opening the capture objects. Publication therefore
-failed closed with no artifact or scientific result. The checker has been
-corrected against the actual `MCGSIG`/`MCGFCS` boundary path; a corrected
-replay is pending. See
+and has no acceptance threshold. A bounded NATIVE/STATIONARY × OFF/ON replay
+has now passed its independent log and Ganlib-only XSM checks. The scalar RAW
+minus EVAL diagnostics are
+
+\[
+\begin{array}{c|cc}
+ & D_{V,2} & D_{\max,\mathrm{input}}\\ \hline
+\mathrm{NATIVE} & 5.7461264\times10^{-7} & 2.1306357\times10^{-6}\\
+\mathrm{STATIONARY} & 5.7815536\times10^{-7} & 2.1902923\times10^{-6}
+\end{array}
+\]
+
+These values classify the capture ledger, not an equation residual, transport
+error, convergence gate or arm ranking. See
 [radial_precision_result.md](validation/iterative/radial_precision_result.md)
-and
-[raw_moc_residual_protocol.json](validation/iterative/raw_moc_residual_protocol.json).
+and [raw_moc_capture_result.md](validation/iterative/raw_moc_capture_result.md).
 
 ## Validation route
 
@@ -232,14 +238,14 @@ and
    reject an invalid ACA-matrix surrogate for \(A\phi-q\) (completed);
 6. capture the first primary GMRES raw-sweep difference per frozen terminal,
    before ACA/SCR, with zero operator applications added by instrumentation
-   and no acceptance threshold (implementation and bounded runner frozen;
-   corrected production replay pending);
-7. use that additional observable to scope a default-off REAL64
-   working-iteration lane,
-   retaining the same physical equation and direct Picard map;
-8. only after a predeclared inner gate passes study direct Picard
+   and no acceptance threshold (completed and independently replayed);
+7. round the retained RAW scalar tuples once to binary32 and publish an exact
+   ULP bridge census without a new transport solve or attribution claim;
+8. only if that audit supports it, freeze a default-off REAL64
+   working-iteration experiment retaining the same physical equation;
+9. only after a predeclared inner gate passes study direct Picard
    convergence;
-9. after convergence, repeat rank/mesh/angle refinement and independent 3D
+10. after convergence, repeat rank/mesh/angle refinement and independent 3D
    comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
@@ -267,6 +273,10 @@ validation/iterative/raw_moc_capture_run_protocol.json
                                       frozen four-probe production protocol
 validation/iterative/run_raw_moc_capture_production.sh
                                       preflight and bounded production runner
+validation/iterative/raw_moc_capture_result.md
+                                      captured ledger result and limits
+validation/iterative/check_raw_moc_capture_result.py
+                                      public plus local-artifact replay
 validation/level1/                    POD algebra tests
 validation/level2/                    fixed-operator algebra unit tests
 ```
@@ -323,8 +333,13 @@ sh validation/iterative/run_raw_moc_capture_production.sh
 ```
 
 That command performs identity, contract, unit-test, compiler and deck-render
-preflight only. An explicit `RUN_CAPTURE=1` is required to launch the one
-no-transport preparation process and four bounded one-step probes. Until a
-corrected explicit replay passes both independent checks, there is no
-published NATIVE/STATIONARY raw-MOC result and no new convergence or Stage-4
-claim.
+preflight only. An explicit `RUN_CAPTURE=1` launches the one no-transport
+preparation process and four bounded one-step probes. The corrected replay is
+complete; verify its retained evidence with
+
+```sh
+python3 validation/iterative/check_raw_moc_capture_result.py
+```
+
+This `CAPTURE-VALID` result does not change the outer-convergence or Stage-4
+status.

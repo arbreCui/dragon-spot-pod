@@ -323,6 +323,30 @@ raw response in binary64, and has no acceptance threshold. It adds one
 raw-sweep observable but does not decompose later numerical transformations
 or qualify Stage 4 by itself.
 
+The corrected bounded replay has now completed from commit `a011fd9`. Both
+arms passed independent OFF/ON scientific-log comparison and two deterministic
+Ganlib-only XSM replays. The captured scalar diagnostics are
+
+\[
+\begin{array}{c|cc}
+ & D_{V,2} & D_{\max,\mathrm{input}}\\ \hline
+\mathrm{NATIVE} & 5.7461264\times10^{-7} & 2.1306357\times10^{-6}\\
+\mathrm{STATIONARY} & 5.7815536\times10^{-7} & 2.1902923\times10^{-6}.
+\end{array}
+\]
+
+They certify the same-sweep capture and exact source ledger only. They are not
+an \(A\phi-q\) residual, error bound, acceptance test, binary32 attribution or
+arm comparison. The result and complete replay boundary are in
+[raw_moc_capture_result.md](../validation/iterative/raw_moc_capture_result.md).
+
+Before any REAL64 transport experiment, the next bounded step is an offline
+ULP bridge audit over the retained scalar tuples. Each binary64 RAW value is
+rounded once to binary32 and compared with EVAL in exact adjacent
+representable steps. The audit reports unchanged/up/down counts and maxima
+without a threshold, new solve or causal attribution. Only after that evidence
+is frozen may a default-off REAL64 radial working-iteration lane be scoped.
+
 ## Stage 5 — direct Picard convergence
 
 Only after Stages 0--4 pass may the direct update
