@@ -1,0 +1,456 @@
+{
+  "name": "SPOT passive GMRES activity bounded run and publication",
+  "version": 1,
+  "status": "FROZEN-BEFORE-RUNNER-IMPLEMENTATION",
+  "protocol_freeze_authorizes_execution": false,
+  "source_implementation_commit": "5816c8aad4fbb43542514d5bd571ebccecdb6d72",
+  "scientific_question": "Does the frozen STATIONARY one-map MCCG path contain at least one physical group and correction block with KMAX greater than zero?",
+  "scope": {
+    "observed_quantity": "existing integer GMRES control-flow activity",
+    "one_map_Dragon_processes": 3,
+    "DOORFV_calls_per_process": 1,
+    "instrumentation_added_operator_applications": 0,
+    "floating_point_values_added_to_solver": 0,
+    "floating_point_operations_added_to_solver": 0,
+    "solver_feedback": false,
+    "precision_change": false,
+    "physical_equation_change": false,
+    "outer_convergence_evaluated": false,
+    "long_trajectory": false,
+    "rank_comparison": false
+  },
+  "frozen_dependencies": {
+    "method_protocol": {
+      "path": "validation/iterative/gmres_activity_protocol.json",
+      "sha256": "27093c87b7321f4ecfd22307c7fac0ecc6d99a2eb5b2019509d2bf11c663cc85"
+    },
+    "method_protocol_checker": {
+      "path": "validation/iterative/check_gmres_activity_protocol.py",
+      "sha256": "675ce5191e8fabcdcc4e2884c6868df69f9fd123503bc7567e30f642a74b7726"
+    },
+    "implementation_manifest": {
+      "path": "validation/iterative/gmres_activity_implementation.sha256",
+      "sha256": "8bed8f3726cc4a903024fbbfe32f1ff79bce51bdbeac01054528bfeca1d56f26"
+    },
+    "implementation_checker": {
+      "path": "validation/iterative/check_gmres_activity_implementation.py",
+      "sha256": "47283f44d5555ea89ecaeddb1878f8c005a2ae30a71e3d8e698fddf4357a0964"
+    },
+    "overlay_manifest": {
+      "path": "validation/iterative/gmres_activity_overlay_manifest.json",
+      "sha256": "b117cea97cfb54b4b043bc923c435a736d01b54fbb8fcfd5fdcb1472c39283a3"
+    },
+    "overlay_patch": {
+      "path": "validation/iterative/gmres_activity_overlay.patch",
+      "sha256": "ebdc1eee70422e0c881901802602d053b61079ad942ec1dbdf16fbe88fc8f942"
+    },
+    "preflight": {
+      "path": "validation/iterative/run_gmres_activity_preflight.sh",
+      "sha256": "f880a3d668e34d180011fac51ad58df13cace0c06588d77815f6eca4273389bb"
+    },
+    "independent_ledger_reader": {
+      "path": "validation/iterative/check_gmres_activity_xsm.f90",
+      "sha256": "9c5ccb762dbb1f9947a7d6c587612862bfd6bdf1e7240172d3b25f316386bf99"
+    },
+    "log_normalizer": {
+      "path": "validation/iterative/normalize_gmres_activity_log.py",
+      "sha256": "94d244d089c18b2b6371d0910e5979cf9c64881ea663ec3cd3e285edf55b6b1d"
+    },
+    "parent_result_receipts": {
+      "validation/iterative/raw_moc_capture_result_receipt.sha256": "485baab029387aeb8212647768be96b6eba438119e7d6ddcf013ccaf5e3359b5",
+      "validation/iterative/raw_moc_ulp_bridge_result_receipt.sha256": "20dc353133c6251021fb87f0196061fb0b1be969d8e73890b7a9b1b073e60935"
+    }
+  },
+  "clean_build": {
+    "frozen_parent_commit": "4d7abb23ac7975d4146beaa3b0049e36cdad8776",
+    "parent_git_archive_sha256": "a1ee2a7ef3fb128afe4b1fe14c7021a1cff1b1d80adb18548fb22840969e23aa",
+    "construction": "clean parent Git archive plus the frozen validation-only overlay",
+    "tracked_live_src": "UNCHANGED",
+    "compiler_path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+    "compiler_version_line": "GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0",
+    "compiler_sha256": "0784ca5eb133cde6a2112eddb4000eb36c9d60eae1b18df1c1ba52fe97737492",
+    "platform": "Darwin arm64",
+    "build_command": "env -i LC_ALL=C PATH=/opt/homebrew/Cellar/gcc/15.2.0_1/bin:/Library/Developer/CommandLineTools/usr/bin:/usr/bin:/bin /Library/Developer/CommandLineTools/usr/bin/make -j4 -C CLEAN_OVERLAY/src Dragon",
+    "compile_and_link_flags_from_makefile": "-O2 -march=native -ffp-contract=off -g; Darwin arm64 PIC defaults; OpenMP off",
+    "build_toolchain": {
+      "/Library/Developer/CommandLineTools/usr/bin/make": "8c221cc6f9e80bd3d48149b5523f932eec8c0656cf98f47655f7bb3064fbc8e4",
+      "/Library/Developer/CommandLineTools/usr/bin/ar": "7020135f5004b53ddf787cb025dc983654463eab07237ec200d539c451d91acf",
+      "/Library/Developer/CommandLineTools/usr/bin/as": "06770364632b454317238e79d670c094e27301c7322c3a488323bd42e4d0bcbc",
+      "/Library/Developer/CommandLineTools/usr/bin/cpp": "c45eaf986e9081c117ad8561ddfad827f0d8ce41d2b4ade56409d15b69c2d3ab",
+      "/Library/Developer/CommandLineTools/usr/bin/gcc": "f79e77ba3fbdac494bdca6082a891bbd3203b70a29021d1368a943acbc89a882",
+      "/Library/Developer/CommandLineTools/usr/bin/ld": "765e5fa4e30980ddf2803c8a973b20fcc63e403098d2dd9b6cefa38e0cde3c2e",
+      "/Library/Developer/CommandLineTools/usr/bin/python3": "4b42b1a117605cafc8607b67b0892a609c2cd125012dd56288abeed8c89cdfb1"
+    },
+    "build_toolchain_versions": {
+      "make": "GNU Make 3.81",
+      "cpp_and_gcc": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+      "ld": "@(#)PROGRAM:ld PROJECT:ld-1267",
+      "python3": "Python 3.9.6"
+    },
+    "selected_developer_directory": "/Library/Developer/CommandLineTools",
+    "sdk_path": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+    "host_os": "macOS 26.5.1 build 25F80",
+    "toolchain_resolution": "the frozen paths are the actual Command Line Tools executables, not the common /usr/bin xcrun launcher shim; final library and executable hashes in the run reference remain authoritative",
+    "linked_library_outputs_required_in_run_reference": [
+      "Ganlib/lib/Darwin_arm64/libGanlib.a",
+      "Utilib/lib/Darwin_arm64/libUtilib.a",
+      "Trivac/lib/Darwin_arm64/libTrivac.a",
+      "lib/Darwin_arm64/libDragon.a",
+      "bin/Darwin_arm64/Dragon"
+    ],
+    "same_executable_for_all_processes": true,
+    "required_before_RUN": [
+      "the clean patched source census and every source hash pass",
+      "the linked Dragon executable is a regular non-symlink executable",
+      "the executable and linked-library SHA256 values plus required SPOMGMR symbols and nm/otool receipts are frozen in the committed run reference",
+      "the executable and complete run implementation manifest are rechecked before the first process and after the last process",
+      "all run implementation files are tracked and byte-identical to HEAD"
+    ]
+  },
+  "immutable_inputs": {
+    "selection": "STATIONARY PRE",
+    "files": {
+      "PRE": {
+        "path": "validation/artifacts/raw-moc-capture/stationary/pre.xsm",
+        "sha256": "6e297fe92b03609ddbac84128623a14ac8638d5d86147ca6a8ee1298f71f3b3e"
+      },
+      "LEGACY_OFF_XSM": {
+        "path": "validation/artifacts/raw-moc-capture/stationary/off.xsm",
+        "sha256": "c27ec11a833e0435dce5390e1c1ffbe81c931c21108d036b5af5fbd10a4f3789"
+      },
+      "LEGACY_ON_XSM": {
+        "path": "validation/artifacts/raw-moc-capture/stationary/on.xsm",
+        "sha256": "de27778fb23f035aafab0e6ca877faf0f64a0662d255fa485b8174fea81f87ae"
+      },
+      "LEGACY_OFF_LOG": {
+        "path": "validation/artifacts/raw-moc-capture/stationary_off/probe.log",
+        "sha256": "b15a3c9e0ad3bdc54ed3e50bba9e9cbb22a885bb68f712fb83ea02ef1e109234"
+      },
+      "LEGACY_ON_LOG": {
+        "path": "validation/artifacts/raw-moc-capture/stationary_on/probe.log",
+        "sha256": "03f802bea77875419e126ec51282924b2717bed7b987c8171febc2738a2bfe25"
+      },
+      "MACRO0": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_macro0.xsm",
+        "sha256": "6eb2920473f4cb8d27b6377bcb59b42833c8ebf9a0fc57925341d12ccac0a617"
+      },
+      "SOURCE": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_source.xsm",
+        "sha256": "6942f61ba2cc7ab0d5cf9a4104959809a388fab441da82730cf64de74a48769f"
+      },
+      "SYSTEM": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_system.xsm",
+        "sha256": "a8797a7d42fdab574eb183bc2ecf0e2b53c992fdd2dd4c61d40c72a53746e599"
+      },
+      "TRACK": {
+        "path": "validation/artifacts/raw-moc-capture/common/restart_track.xsm",
+        "sha256": "2d868b87e2003c10c09da1ec8f8e6fd97f2a2629a680a46d7f898e2e5e1ed598"
+      },
+      "TRACK_BINARY": {
+        "path": "validation/artifacts/raw-moc-capture/common/initial_radial_track.bin",
+        "sha256": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8"
+      }
+    },
+    "copy_policy": "each process receives distinct regular non-symlink copies of every common input and one PRE-initialized writable result.xsm, all with distinct inodes",
+    "immutability_check": "common inputs and read-only references are unchanged before and after every process; result.xsm must equal PRE before execution and is the only permitted writable XSM during that process"
+  },
+  "activation": {
+    "runner_environment": "RUN_GMRES_ACTIVITY",
+    "absent": "PREFLIGHT-ONLY",
+    "value_1": "RUN only after every required committed implementation and executable gate passes",
+    "any_other_value_including_empty": "FAIL-CLOSED",
+    "preflight_must_not_invoke_Dragon": true,
+    "production_preflight_invocation": "env -u RUN_GMRES_ACTIVITY -u FC run_gmres_activity_preflight.sh",
+    "frozen_preflight_rejection_is_not_modified": true
+  },
+  "process_execution": {
+    "executable": "one frozen absolute non-overridable Dragon path created by the clean build",
+    "argv": [
+      "absolute frozen Dragon executable"
+    ],
+    "stdin": "the exact rendered regular non-symlink deck for that case",
+    "cwd": "the fresh isolated case directory",
+    "stdout_and_stderr": "one merged run.log created with exclusive-create semantics",
+    "shell": false,
+    "start_new_session": true,
+    "environment": {
+      "inherit_parent_environment": false,
+      "LC_ALL": "C",
+      "PATH": "/usr/bin:/bin",
+      "TMPDIR": "fresh case-local tmp directory"
+    },
+    "shell_runner_direct_Dragon_calls": 0,
+    "bounded_wrapper_Dragon_call_sites": 1,
+    "strict_process_order": [
+      "OFF",
+      "ON-A",
+      "ON-B"
+    ],
+    "retries": 0,
+    "overrides_for_executable_compiler_path_artifact_or_inputs": "FORBIDDEN"
+  },
+  "run_matrix": [
+    {
+      "name": "OFF",
+      "MOCA": "ABSENT",
+      "GMRA": "ABSENT",
+      "repetitions": 1
+    },
+    {
+      "name": "ON-A",
+      "MOCA": 2,
+      "GMRA": "PRESENT",
+      "repetitions": 1
+    },
+    {
+      "name": "ON-B",
+      "MOCA": 2,
+      "GMRA": "PRESENT",
+      "repetitions": 1
+    }
+  ],
+  "solver_controls": {
+    "TYPE": "S",
+    "door": "MCCG",
+    "plane": 1,
+    "INITFL": "ON",
+    "rebalancing": "ON",
+    "MAXOUT": 1,
+    "MAXINR": 740,
+    "EPSOUT_decimal": "2.5E-7",
+    "EPSUNK_decimal": "2.5E-7",
+    "EPSINR_decimal": "2.5E-7",
+    "epsilon_binary32_bits": "348637BD",
+    "free_steps": 1,
+    "accelerated_steps": 0,
+    "ILEAK": 0,
+    "direct_vector_DOORFV": true,
+    "MCGMRE_MAXI": 20,
+    "MCGMRE_MAXIT": 19,
+    "MCGMRE_KRYL": 10,
+    "MCGMRE_ERRTOL_binary32_bits": "3727C5AC"
+  },
+  "execution_budget": {
+    "Dragon_processes": 3,
+    "FLU_outer_updates_per_process": 1,
+    "wall_timeout_seconds_per_process": 30,
+    "termination_grace_seconds_after_timeout": 5,
+    "timeout_role": "operational process bound only; never a scientific acceptance threshold",
+    "timeout_result": "INVALID-NO-SCIENTIFIC-RESULT",
+    "termination_scope": "only the exact spawned process group; never killall",
+    "preparation_Dragon_processes": 0,
+    "six_step_arm_reruns": 0,
+    "automatic_follow_on_processes": 0
+  },
+  "runtime_identity": {
+    "normal_Dragon_end_count_per_process": 1,
+    "outer_iterations_per_process": 1,
+    "thermal_iterations_per_process": 1,
+    "DOORFV_calls_per_process": 1,
+    "MCCGF_calls_per_process": 1,
+    "ON_MCGMRE_entries": 1,
+    "ON_MCGMRE_normal_exits": 1,
+    "ON_primary_role_events_minimum_exact_integer": 1,
+    "second_ON_MCGMRE_entry": "INVALID",
+    "abnormal_text": [
+      "XABORT",
+      "segmentation fault",
+      "floating invalid",
+      "NaN",
+      "Infinity"
+    ]
+  },
+  "reproducibility_and_closure": [
+    "fresh OFF output is byte-identical to LEGACY_OFF_XSM",
+    "fresh OFF normalized full log is byte-identical to normalized LEGACY_OFF_LOG",
+    "each ON output is identical to LEGACY_ON_XSM in every record outside the single added SPOT-GMR-AUD directory",
+    "each ON retains the existing SPOT-MOC-AUD directory unchanged",
+    "each ON normalized full log is byte-identical to normalized LEGACY_ON_LOG after exactly the frozen CPU telemetry removal and the two declared GMRA token removals",
+    "ON-A and ON-B output XSM files are byte-identical",
+    "ON-A and ON-B normalized logs are byte-identical",
+    "the independent Ganlib-only reader produces byte-identical complete raw ledgers for ON-A and ON-B and on a second read of each output",
+    "the reader independently closes every event, active mask, block, KMAX, histogram, aggregate and exact classification identity",
+    "all immutable inputs, executable bytes, source manifests and implementation manifests are unchanged after the three processes"
+  ],
+  "independence": {
+    "writer": "validation-only SPOMGMR overlay module",
+    "ledger_reader": "independent read-only Ganlib-only executable built from check_gmres_activity_xsm.f90",
+    "non_audit_comparator": "a separate read-only Ganlib-only comparator that recursively checks all XSM records except SPOT-GMR-AUD",
+    "log_checker": "independent text parser with no Ganlib or solver import",
+    "artifact_checker": "independent Python parser that does not execute Dragon, import the writer, import the Fortran reader, or execute the production runner",
+    "artifact_checker_scientific_reconstruction_input": "only the raw ROLE, ROLE-ACTIVE, BLOCK and BLOCK-GROUP rows in the two independently read ledgers",
+    "artifact_checker_validity_inputs": "the complete required payload, including hashes, receipts, original and normalized logs, XSM identity evidence, reader replays and publication manifests",
+    "artifact_checker_reconstruction": "reconstruct every per-block per-group KMAX from raw Krylov active masks, compare it with raw BLOCK-GROUP KMAX, then derive the histogram, nonzero count, sum, maximum and classification",
+    "artifact_checker_stdout": {
+      "valid_active": "VALID-GMRES-UPDATE-ACTIVE",
+      "valid_inactive": "VALID-GMRES-UPDATE-INACTIVE",
+      "invalid": "INVALID"
+    },
+    "invalid_artifact_checker_behavior": "nonzero exit; create neither result.txt nor a final artifact",
+    "forbidden_trusted_derived_rows": [
+      "STATE",
+      "ROLE-SUM",
+      "K-HISTOGRAM",
+      "NONZERO-K-GROUP-BLOCKS",
+      "SUM-K",
+      "MAX-K",
+      "CLASSIFICATION"
+    ],
+    "forbidden_reader_symbols": [
+      "Dragon",
+      "FLU",
+      "DOORFV",
+      "MCCGF",
+      "MCGFLX",
+      "MCGFL1",
+      "MCGMRE",
+      "SPOMGMR",
+      "SPOMOC"
+    ]
+  },
+  "classification": {
+    "threshold": null,
+    "INVALID": "any identity, hash, process, log, XSM, ledger, reproducibility, publication or receipt check fails",
+    "VALID-GMRES-UPDATE-INACTIVE": "all checks pass and the exact nonzero-K group-block count is zero",
+    "VALID-GMRES-UPDATE-ACTIVE": "all checks pass and the exact nonzero-K group-block count is a positive integer",
+    "valid_classes_are_mutually_exclusive_and_exhaustive": true,
+    "zero_is_a_valid_scientific_result": true
+  },
+  "artifact": {
+    "path": "validation/artifacts/gmres-activity-census",
+    "existing_path_policy": "FAIL-CLOSED-NO-OVERWRITE",
+    "publication_lock": "exclusive sibling mkdir acquired before the first Dragon process and released only after final artifact verification",
+    "staging": "a fresh sibling directory on the same filesystem",
+    "publication": "single atomic rename only after every check passes",
+    "publication_sequence": "verify WORK payload, copy to same-filesystem PUBLISH, verify PUBLISH completely, atomically rename once, then verify the final artifact completely",
+    "symlinks_and_special_files": "FORBIDDEN",
+    "case_directory_census": "exact declared common inputs, PRE-initialized result, deck, exclusive run log and case-local tmp only; reject every undeclared path or type",
+    "required_payload": [
+      "gmres_activity_run_protocol.json",
+      "gmres_activity_run_implementation.sha256",
+      "run_receipt.tsv",
+      "run_commit.txt",
+      "source_identity.tsv",
+      "build_receipt.tsv",
+      "toolchain.sha256",
+      "symbol_audit.txt",
+      "instrumented_source_manifest.sha256",
+      "implementation_replay.log",
+      "inputs_before.sha256",
+      "inputs_after.sha256",
+      "executable.sha256",
+      "preflight.log",
+      "postflight.log",
+      "track.xsm",
+      "off/deck.x2m",
+      "off/run.log",
+      "off/normalized.log",
+      "off/result.xsm",
+      "on_a/deck.x2m",
+      "on_a/run.log",
+      "on_a/normalized.log",
+      "on_a/result.xsm",
+      "on_a/ledger.txt",
+      "on_a/ledger_repeat.txt",
+      "on_a/non_audit_identity.txt",
+      "on_b/deck.x2m",
+      "on_b/run.log",
+      "on_b/normalized.log",
+      "on_b/result.xsm",
+      "on_b/ledger.txt",
+      "on_b/ledger_repeat.txt",
+      "on_b/non_audit_identity.txt",
+      "log_identity.txt",
+      "reader_replay.sha256",
+      "artifact_check_a.log",
+      "artifact_check_b.log",
+      "result.txt",
+      "artifact_manifest.sha256"
+    ],
+    "result_format": [
+      "GMRES-ACTIVITY RESULT 1",
+      "PROCESSES OFF=1 ON=2",
+      "CORRECTION-BLOCKS <exact integer>",
+      "GROUP-BLOCKS <370 times correction-blocks>",
+      "K-HISTOGRAM 0 <exact integer> through K-HISTOGRAM 10 <exact integer>",
+      "NONZERO-K-GROUP-BLOCKS <exact integer>",
+      "SUM-K <exact integer>",
+      "MAX-K <exact integer>",
+      "THRESHOLD NONE",
+      "CLASSIFICATION <one frozen valid class>",
+      "COMPLETE"
+    ],
+    "run_receipt_tsv_rows_in_order": [
+      "schema\t1",
+      "run_commit\t<40 lowercase hexadecimal Git commit>",
+      "source_implementation_commit\t5816c8aad4fbb43542514d5bd571ebccecdb6d72",
+      "method_protocol_sha256\t27093c87b7321f4ecfd22307c7fac0ecc6d99a2eb5b2019509d2bf11c663cc85",
+      "run_protocol_sha256\t<SHA256 of frozen run protocol bytes>",
+      "method_implementation_manifest_sha256\t8bed8f3726cc4a903024fbbfe32f1ff79bce51bdbeac01054528bfeca1d56f26",
+      "run_implementation_manifest_sha256\t<SHA256 of frozen run implementation manifest bytes>",
+      "executable_sha256\t<SHA256 of the frozen linked Dragon>",
+      "process_matrix\tOFF=1,ON=2",
+      "classification\t<one frozen valid class>"
+    ],
+    "scientific_decision_field": "only CLASSIFICATION answers the frozen scientific question; histogram, nonzero count, sum and maximum are exact closure evidence",
+    "manifest_rule": "sorted SHA256 rows for every regular payload except artifact_manifest.sha256 itself",
+    "post_publish_check": "reopen the final path and independently verify its exact census, hashes, ledgers and result"
+  },
+  "run_implementation_freeze": {
+    "required_new_files": [
+      "validation/iterative/gmres_activity_run_reference.sha256",
+      "validation/iterative/gmres_activity_probe.x2m.in",
+      "validation/iterative/run_bounded_gmres_activity.py",
+      "validation/iterative/test_bounded_gmres_activity.py",
+      "validation/iterative/check_gmres_activity_run_logs.py",
+      "validation/iterative/test_gmres_activity_run_logs.py",
+      "validation/iterative/check_gmres_activity_pair_xsm.f90",
+      "validation/iterative/check_gmres_activity_artifact.py",
+      "validation/iterative/test_gmres_activity_artifact.py",
+      "validation/iterative/run_gmres_activity_production.sh",
+      "validation/iterative/gmres_activity_run_implementation.sha256"
+    ],
+    "required_frozen_inputs_to_future_runner": [
+      "validation/iterative/gmres_activity_run_protocol.json",
+      "validation/iterative/check_gmres_activity_run_protocol.py",
+      "validation/iterative/gmres_activity_implementation.sha256",
+      "validation/iterative/build_gmres_activity_overlay.sh",
+      "validation/iterative/check_gmres_activity_implementation.py",
+      "validation/iterative/check_gmres_activity_xsm.f90",
+      "validation/iterative/normalize_gmres_activity_log.py",
+      "validation/iterative/run_gmres_activity_preflight.sh"
+    ],
+    "required_artifact_checker_tests": [
+      "valid raw ACTIVE fixture",
+      "valid raw INACTIVE fixture",
+      "tampered derived summary with unchanged raw rows is rejected rather than changing classification",
+      "tampered raw active mask is rejected",
+      "tampered raw BLOCK-GROUP KMAX is rejected",
+      "missing log, XSM identity, receipt or manifest evidence is rejected",
+      "invalid input creates neither result.txt nor a final artifact"
+    ],
+    "before_execution": "all required files, the linked executable SHA256 and its exact source construction are covered by the committed run implementation freeze and pass synthetic tests",
+    "current_state": "NOT-IMPLEMENTED; RUN_GMRES_ACTIVITY=1 REMAINS UNAUTHORIZED"
+  },
+  "failure_and_retention": {
+    "any_failure": "INVALID-NO-SCIENTIFIC-RESULT",
+    "partial_scientific_classification": false,
+    "partial_artifact_publication": false,
+    "failed_work_directory": "deleted unless an explicit diagnostic-only keep flag was set before execution",
+    "diagnostic_retention_never_becomes_a_result": true,
+    "automatic_retry": false
+  },
+  "interpretation_limits": [
+    "KMAX is an iteration-activity count, not a residual, error, convergence tolerance or model coefficient.",
+    "A positive K proves only that the existing GMRES correction path executed.",
+    "Zero K does not mean that the primary MOC evaluation was unused.",
+    "Neither valid class explains prior nontermination or attributes it to binary32, GMRES, ACA, SCR, rebalancing or acceleration.",
+    "No result authorizes Stage 4, Stage 5, a long Picard trajectory or an automatic precision experiment.",
+    "No mismatch may be repaired with a tolerance, fit, relaxation, clipping, flux floor or empirical coefficient."
+  ],
+  "next_step_by_class": {
+    "INVALID": "repair only the evidence or run implementation and repeat the same bounded census",
+    "VALID-GMRES-UPDATE-ACTIVE": "separately freeze, but do not automatically run, a GMRES correction-accumulation precision A/B",
+    "VALID-GMRES-UPDATE-INACTIVE": "abandon the inactive GMRES update experiment and separately freeze an always-executed MCGFCS source-arithmetic precision A/B"
+  }
+}
