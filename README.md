@@ -202,12 +202,15 @@ prove one unique binary32 floor. The path also contains an independent MCCG
 The archived MCCG `SYSTEM` contains ACA corrective/preconditioning matrices,
 not the complete MOC transport operator, and its final `SOUR`/`FLUX` records
 are not a same-stage pair. An \(A\phi-q\) checker cannot be constructed from
-those records without misidentifying the preconditioner as physics. The next
-protocol is therefore a default-off, same-sweep capture of the evaluated
-state, `QFR`, source-element vector and raw MOC response from the first
-primary GMRES evaluation before ACA/SCR. It writes only to the fresh
-`L_FLUX` audit directory; the instrumentation adds zero extra operator
-applications and has no acceptance threshold. See
+those records without misidentifying the preconditioner as physics.
+
+The default-off same-sweep capture is now implemented. It records the
+evaluated state, `QFR`, source-element vector and raw MOC response from the
+first primary GMRES evaluation before ACA/SCR. It writes only to the fresh
+`L_FLUX` audit directory; the instrumentation adds zero operator applications
+and has no acceptance threshold. A bounded NATIVE/STATIONARY × OFF/ON runner
+and independent log/XSM replay are frozen, but the production probes have not
+yet been launched. See
 [radial_precision_result.md](validation/iterative/radial_precision_result.md)
 and
 [raw_moc_residual_protocol.json](validation/iterative/raw_moc_residual_protocol.json).
@@ -225,7 +228,8 @@ and
    reject an invalid ACA-matrix surrogate for \(A\phi-q\) (completed);
 6. capture the first primary GMRES raw-sweep difference per frozen terminal,
    before ACA/SCR, with zero operator applications added by instrumentation
-   and no acceptance threshold;
+   and no acceptance threshold (implementation and bounded runner frozen;
+   production capture pending);
 7. use that additional observable to scope a default-off REAL64
    working-iteration lane,
    retaining the same physical equation and direct Picard map;
@@ -249,11 +253,16 @@ src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
 src/SPOXCONV.f90                      complete raw state difference
 src/SPOT1P.f90                        axial modal transport solve
+src/SPOMOC.f90                        default-off raw primary-MOC capture
 validation/iterative/                 active iterative contracts and fixtures
 validation/iterative/check_radial_precision_xsm.f90
                                       exact stored binary32-step audit
 validation/iterative/raw_moc_residual_protocol.json
-                                      next same-sweep diagnostic freeze
+                                      same-sweep diagnostic definition
+validation/iterative/raw_moc_capture_run_protocol.json
+                                      frozen four-probe production protocol
+validation/iterative/run_raw_moc_capture_production.sh
+                                      preflight and bounded production runner
 validation/level1/                    POD algebra tests
 validation/level2/                    fixed-operator algebra unit tests
 ```
@@ -302,3 +311,15 @@ complete; see
 read-only binary32-step follow-up is
 [radial_precision_result.md](validation/iterative/radial_precision_result.md);
 it does not change the Stage-4 status.
+
+The raw-MOC production runner is deliberately inactive by default:
+
+```sh
+sh validation/iterative/run_raw_moc_capture_production.sh
+```
+
+That command performs identity, contract, unit-test, compiler and deck-render
+preflight only. An explicit `RUN_CAPTURE=1` is required to launch the one
+no-transport preparation process and four bounded one-step probes. Until that
+explicit run passes both independent replays, there is no published
+NATIVE/STATIONARY raw-MOC result and no new convergence or Stage-4 claim.

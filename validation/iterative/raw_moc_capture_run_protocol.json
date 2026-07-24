@@ -1,0 +1,154 @@
+{
+  "name": "SPOT raw primary-MOC bounded production capture",
+  "status": "FROZEN-BEFORE-PRODUCTION-RUN",
+  "source_commit": "d97a70225b118b2369c94e664b8e9028a1e4a704",
+  "purpose": "Evaluate the already frozen NATIVE and STATIONARY plane-1 terminal inputs once with capture OFF and once with capture ON, without rerunning either six-step arm.",
+  "activation": {
+    "default": "PREFLIGHT-ONLY",
+    "production_environment": "RUN_CAPTURE=1",
+    "other_values": "FAIL-CLOSED"
+  },
+  "executable": {
+    "sha256": "b57cb801aeec62e7306897e10f84bca1ad6b011055a651ff37aa1718e6b2b1e5",
+    "clean_git_archive_sha256": "358fdd0f4b694e6717bbb21aa07e365276437df09fec14d62d3fb710c71cd4e2",
+    "build_command": "make -j4 -C src Dragon",
+    "compiler": "GNU Fortran 15.2.0",
+    "required_symbols": [
+      "spomoc_begin",
+      "spomoc_capture",
+      "spomoc_publish",
+      "spomoc_finish"
+    ]
+  },
+  "parent_evidence": {
+    "result_receipt": "validation/iterative/radial_floor_result_receipt.sha256",
+    "result_receipt_sha256": "8b440f48e4fb7293d72ee4051dd17ff2c897b5dcce9dc14417fab68ffc0a4d1f",
+    "compact_artifact": "validation/artifacts/iterative-radial-floor",
+    "compact_minimal_manifest_sha256": "f096043e06d68b7cc2fe8b5d246a815d2ab4ca8be2275e00a0d6b485901e5c6c",
+    "compact_full_manifest_sha256": "b5ada48abade897f115e68fa227a6ac256a5c92441bad66fc8fc8444030dfad3",
+    "failure_artifact": "validation/artifacts/iterative-sensitivity-h2-failed",
+    "plane": 1
+  },
+  "frozen_inputs": {
+    "common": {
+      "restart_macro0.xsm": "6eb2920473f4cb8d27b6377bcb59b42833c8ebf9a0fc57925341d12ccac0a617",
+      "restart_source.xsm": "6942f61ba2cc7ab0d5cf9a4104959809a388fab441da82730cf64de74a48769f",
+      "restart_system.xsm": "a8797a7d42fdab574eb183bc2ecf0e2b53c992fdd2dd4c61d40c72a53746e599",
+      "restart_track.xsm": "2d868b87e2003c10c09da1ec8f8e6fd97f2a2629a680a46d7f898e2e5e1ed598",
+      "initial_radial_track.bin": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8"
+    },
+    "arms": [
+      {
+        "name": "NATIVE",
+        "arm_code": 1,
+        "pre_sha256": "663a8257b1ecafa2dde9c36d7cff8ccd8201a08fe2b117cdccad46c305e5bea9",
+        "frozen_sha256": "df24abbfe1f15e91948e5b930229e09aa13410e1b8985a61a74c8d28db08e208"
+      },
+      {
+        "name": "STATIONARY",
+        "arm_code": 2,
+        "pre_sha256": "6e297fe92b03609ddbac84128623a14ac8638d5d86147ca6a8ee1298f71f3b3e",
+        "frozen_sha256": "c27ec11a833e0435dce5390e1c1ffbe81c931c21108d036b5af5fbd10a4f3789"
+      }
+    ]
+  },
+  "preparation": {
+    "dragon_invocations": 1,
+    "transport_solves": 0,
+    "deck": "validation/iterative/radial_floor_prepare.x2m",
+    "prepared_manifest_sha256": "a96d6535028870f0271c6e73478e1548d60b8ed501202ed28b95aea922144905",
+    "rule": "Reconstruct the missing MACRO0, then require every retained prepared object and the reconstructed MACRO0 to match its frozen hash."
+  },
+  "probe_controls": {
+    "TYPE": "S",
+    "door": "MCCG",
+    "INITFL": "ON",
+    "rebalancing": "ON",
+    "MAXOUT": 1,
+    "MAXINR": 740,
+    "EPSOUT_decimal": "2.5E-7",
+    "EPSUNK_decimal": "2.5E-7",
+    "EPSINR_decimal": "2.5E-7",
+    "epsilon_binary32_bits": "348637BD",
+    "free_steps": 1,
+    "accelerated_steps": 0,
+    "direct": true,
+    "ILEAK": 0
+  },
+  "run_matrix": [
+    {
+      "arm": "NATIVE",
+      "mode": "OFF",
+      "MOCA": "ABSENT"
+    },
+    {
+      "arm": "NATIVE",
+      "mode": "ON",
+      "MOCA": 1
+    },
+    {
+      "arm": "STATIONARY",
+      "mode": "OFF",
+      "MOCA": "ABSENT"
+    },
+    {
+      "arm": "STATIONARY",
+      "mode": "ON",
+      "MOCA": 2
+    }
+  ],
+  "execution_budget": {
+    "production_probe_processes": 4,
+    "updates_per_process": 1,
+    "wall_timeout_seconds_per_dragon_process": 30,
+    "timeout_classification": "INVALID-NO-SCIENTIFIC-RESULT",
+    "termination_scope": "exact spawned process group; never killall"
+  },
+  "identity_and_immutability": [
+    "Each arm's PRE, FROZEN, OFF and ON XSM object is a distinct regular file with a distinct inode.",
+    "Each OFF and ON result starts as a byte-identical fresh copy of the same frozen PRE.",
+    "NATIVE is bound only to arm code 1 and the declared NATIVE PRE/FROZEN hashes.",
+    "STATIONARY is bound only to arm code 2 and the declared STATIONARY PRE/FROZEN hashes.",
+    "Every common input is copied separately into each process directory and is hashed before and after the run.",
+    "The fresh OFF output must equal the older FROZEN output bit for bit.",
+    "The ON output must equal OFF bit for bit outside the single root SPOT-MOC-AUD directory."
+  ],
+  "runtime_log_contract": {
+    "normal_end_count": 1,
+    "tracking_called": 1,
+    "flux_calculations": 370,
+    "off_moca_count": 0,
+    "on_moca_count": 1,
+    "off_on_scientific_section": "BITWISE-IDENTICAL-AFTER-REMOVING-ONLY-CPU-TELEMETRY"
+  },
+  "independent_checker": {
+    "implementation": "validation/iterative/check_raw_moc_capture_xsm.f90",
+    "links": "Ganlib and Utilib only",
+    "working_directory": "short isolated /tmp path",
+    "native_arguments": "TRACK SYSTEM PRE FROZEN OFF ON 1",
+    "stationary_arguments": "TRACK SYSTEM PRE FROZEN OFF ON 2",
+    "repetitions": 2,
+    "required_replay": "byte-identical stdout"
+  },
+  "publication": {
+    "artifact_default": "validation/artifacts/raw-moc-capture",
+    "existing_artifact_policy": "FAIL-CLOSED-NO-OVERWRITE",
+    "symlinks": "FORBIDDEN",
+    "manifest": "all regular artifact files except the manifest replay itself",
+    "atomicity": "publish only after every checker and input replay passes"
+  },
+  "classification": {
+    "valid": "CAPTURE-VALID",
+    "invalid": "CAPTURE-INVALID",
+    "acceptance_threshold": null,
+    "outer_convergence_evaluated": false,
+    "stage4_authorization": false,
+    "stage5_authorization": false
+  },
+  "interpretation_limits": [
+    "CAPTURE-VALID certifies the declared execution identity, write-once tuple structure, source replay and raw-minus-input ledger; it is not an independently recomputed transport solution.",
+    "A finite RAW payload has no independent transport truth in this experiment and therefore cannot become a transport-error bound.",
+    "The two arms are parallel diagnostics and may not be ranked from this capture.",
+    "No mismatch may be repaired by a tolerance, fitted factor, relaxation, clipping or empirical coefficient."
+  ]
+}
