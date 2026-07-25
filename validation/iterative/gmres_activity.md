@@ -88,11 +88,44 @@ source field: each ` MOCA 2 GMRA ;` token is replaced by
 ` MOCA 2 ;     `. The five restored spaces are formatting closure, not a
 scientific normalization.
 
+## Version-2 evidence amendment
+
+The first authorized attempt at commit
+`eb891486e466a3ad30be46f70a97384272ca84ab` ran only OFF. Its full-log
+comparison stopped at character 9668 on line 126, before either ON process
+or any GMRES ledger was observed. The failed work tree, lock and candidate
+artifact were deleted as required. No raw failed-run bytes or hash were
+retained, so that attempt remains `INVALID-NO-SCIENTIFIC-RESULT` and cannot
+be reused or reclassified.
+
+The differing field belongs to the pre-existing `KDRDRV` module-completion
+receipt. `KDRDRV` samples `KDRCPU` and `KDRMEM` around `FLU` and only prints
+the differences after `FLU` returns; they do not enter the transport state
+or a convergence test. The top-level `cle2000_c` timer is likewise printed
+after procedure execution. Version 2 therefore normalizes only these exact
+runtime fields, in addition to the two already declared `FLU2DR` CPU
+fields:
+
+- exactly one ordered `-->>MODULE FLU:` receipt, with a nonnegative
+  13-column `F13.3` time field and a nonnegative 10-column `1P,E10.3`
+  memory field, replaced by the equal-width markers `<MODULE-TIME>` and
+  `<MEM-TELE>`;
+- exactly one ordered `cle2000_c: cpu time= <nonnegative %.2f> second`
+  receipt, with only its numeric field replaced by `<CLE-CPU>`.
+
+The raw logs remain unmodified. Missing, duplicate, reordered, malformed or
+forged telemetry records fail closed, and every other log byte remains part
+of the exact comparison. This amendment changes neither an equation nor a
+solver parameter and introduces no tolerance. It also does not authorize an
+automatic retry.
+
 The protocol is frozen in
 [gmres_activity_protocol.json](gmres_activity_protocol.json), and its
 fail-closed static checker is
 [check_gmres_activity_protocol.py](check_gmres_activity_protocol.py).
 
-This freeze authorizes only implementation and no-transport synthetic
-tests. A separate committed run/publication protocol is required before
-`RUN_GMRES_ACTIVITY=1`; no Dragon process has been run for this census.
+This method freeze authorizes only implementation and no-transport
+synthetic tests. The version-1 attempt executed only OFF and remains
+invalid. No additional Dragon process has been run under the version-2
+amendment; a retry requires a new committed version-2 run/publication
+freeze and renewed explicit authorization before `RUN_GMRES_ACTIVITY=1`.

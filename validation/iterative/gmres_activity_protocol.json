@@ -1,7 +1,30 @@
 {
   "name": "SPOT bounded GMRES correction-activity census",
-  "version": 1,
-  "status": "FROZEN-BEFORE-IMPLEMENTATION",
+  "version": 2,
+  "status": "AMENDED-AFTER-INVALID-ATTEMPT-BEFORE-RETRY",
+  "amendment": {
+    "kind": "POST-INVALID-ATTEMPT-EVIDENCE-CONTRACT-REVISION",
+    "prior_protocol_version": 1,
+    "attempt_commit": "eb891486e466a3ad30be46f70a97384272ca84ab",
+    "processes_started": {
+      "OFF": 1,
+      "ON-A": 0,
+      "ON-B": 0
+    },
+    "failure_point": "fresh OFF normalized full-log comparison; cmp first reported character 9668 on line 126",
+    "failed_run_bytes_retained": false,
+    "scientific_result": "NONE; INVALID-NO-SCIENTIFIC-RESULT",
+    "change": "declare exact runtime-only normalization for the unique KDRDRV FLU module receipt and unique top-level CLE-2000 CPU receipt before any retry",
+    "basis": [
+      "The pre-existing KDRDRV path samples KDRCPU and KDRMEM around FLU and uses their differences only in the module-completion WRITE.",
+      "The four frozen parent logs already contain different KDRDRV memory values before this amendment.",
+      "The pre-existing top-level cle2000_c path prints its timer only after procedure execution.",
+      "No ON process, GMRES ledger or KMAX result was observed before this amendment."
+    ],
+    "scientific_question_changed": false,
+    "solver_or_model_changed": false,
+    "automatic_retry": false
+  },
   "frozen_parent_commit": "4d7abb23ac7975d4146beaa3b0049e36cdad8776",
   "purpose": [
     "Determine whether the frozen one-map production path actually reaches any nonzero-K MCGMRE correction update before defining a precision A/B at that update.",
@@ -410,7 +433,9 @@
       "second_MCGMRE_entry": "FAIL-CLOSED"
     },
     "ON_log_difference_whitelist": {
-      "CPU_telemetry": "the already frozen normalization only",
+      "FLU2DR_CPU_telemetry": "replace exactly the two numeric CPU TIME fields already frozen in the internal and external FLU2DR convergence receipts",
+      "KDRDRV_FLU_module_telemetry": "require exactly one ordered '-->>MODULE FLU:        : TIME SPENT=' receipt; replace only its exact nonnegative F13.3 time field with '<MODULE-TIME>' and exact nonnegative 1P,E10.3 memory field with '<MEM-TELE>'",
+      "CLE2000_CPU_telemetry": "require exactly one ordered 'cle2000_c: cpu time= <nonnegative %.2f> second' receipt and replace only its numeric field with '<CLE-CPU>'",
       "deck_listing": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;     ' on source line 0028, restoring the five fixed-width CLE-2000 padding columns",
       "execution_echo": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;     ' on echoed source line 0028, restoring the five fixed-width CLE-2000 padding columns",
       "additional_lines": 0
@@ -428,8 +453,8 @@
   "required_production_checks": [
     "All immutable input hashes are identical before and after every process.",
     "Every process starts from a distinct regular byte-identical copy of the same frozen PRE.",
-    "Fresh OFF reproduces LEGACY_OFF_XSM byte for byte and its scientific log reproduces LEGACY_OFF_LOG after only the already frozen CPU telemetry normalization.",
-    "Each fresh ON reproduces LEGACY_ON_XSM outside SPOT-GMR-AUD; after the frozen CPU normalization and exactly the two declared source-line GMRA token removals, its full log equals LEGACY_ON_LOG byte for byte with no added activity line.",
+    "Fresh OFF reproduces LEGACY_OFF_XSM byte for byte and its full log reproduces LEGACY_OFF_LOG after exactly two FLU2DR CPU fields, one KDRDRV FLU time/memory receipt and one top-level CLE-2000 CPU field are normalized.",
+    "Each fresh ON reproduces LEGACY_ON_XSM outside SPOT-GMR-AUD; after the same exact runtime-telemetry normalization and exactly the two declared fixed-width GMRA token removals, its full log equals LEGACY_ON_LOG byte for byte with no added activity line.",
     "The two ON outputs, logs and complete activity ledgers reproduce one another exactly.",
     "The existing SPOT-MOC-AUD tuple and all non-audit scientific records are unchanged.",
     "The full log and CALL-META jointly prove exactly one outer iteration, thermal iteration, DOORFV call, MCCGF call, MCGMRE entry, matching normal exit and at least one PRIMARY role event on each valid ON run.",

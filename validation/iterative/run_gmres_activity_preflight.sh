@@ -12,7 +12,7 @@ NORMALIZER="$ITERATIVE/normalize_gmres_activity_log.py"
 LEGACY_LOG="$ROOT/validation/artifacts/raw-moc-capture/stationary_on/probe.log"
 PARENT=4d7abb23ac7975d4146beaa3b0049e36cdad8776
 FROZEN_FC=/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15
-NORMALIZED_SHA256=647785d00ed45d721860c6f4c8dbb84633526cbe2e042be42cb36ea85d9b39d9
+NORMALIZED_SHA256=ff07ead583c85e5fc983e64d6a1d26cada7c1bb8836db11f1185fc637fc4ba39
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/spot-gmres-activity-preflight.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT HUP INT TERM
 
@@ -75,6 +75,52 @@ python3 "$NORMALIZER" --mode gmra "$WORK/gmra.synthetic.log" \
 cmp "$WORK/legacy.normalized.log" "$WORK/gmra.normalized.log"
 test "$(shasum -a 256 "$WORK/legacy.normalized.log" | awk '{print $1}')" \
   = "$NORMALIZED_SHA256" || fail "normalized legacy log hash differs"
+test "$(grep -c '<MODULE-TIME>' "$WORK/legacy.normalized.log")" -eq 1 ||
+  fail "normalized module-time marker census differs"
+test "$(grep -c '<MEM-TELE>' "$WORK/legacy.normalized.log")" -eq 1 ||
+  fail "normalized module-memory marker census differs"
+test "$(grep -c '<CLE-CPU>' "$WORK/legacy.normalized.log")" -eq 1 ||
+  fail "normalized CLE CPU marker census differs"
+
+sed '/^-->>MODULE FLU:/d' "$LEGACY_LOG" >"$WORK/missing-module.log"
+if python3 "$NORMALIZER" --mode legacy "$WORK/missing-module.log" \
+     >"$WORK/missing-module.normalized" 2>"$WORK/missing-module.err"
+then
+  fail "normalizer accepted a missing FLU module receipt"
+fi
+grep -q 'module receipt census differs' "$WORK/missing-module.err"
+
+awk '
+  { print }
+  /^-->>MODULE FLU:/ {
+    print "-->>MODULE ASM:        : TIME SPENT=" \
+      "        0.000 MEMORY USAGE= 1.000E+06"
+  }
+' "$LEGACY_LOG" >"$WORK/extra-module.log"
+if python3 "$NORMALIZER" --mode legacy "$WORK/extra-module.log" \
+     >"$WORK/extra-module.normalized" 2>"$WORK/extra-module.err"
+then
+  fail "normalizer accepted an extra module receipt"
+fi
+grep -q 'module receipt census differs' "$WORK/extra-module.err"
+
+sed 's/MEMORY USAGE= 2.268E+07/MEMORY USAGE=-2.268E+07/' \
+  "$LEGACY_LOG" >"$WORK/bad-memory.log"
+if python3 "$NORMALIZER" --mode legacy "$WORK/bad-memory.log" \
+     >"$WORK/bad-memory.normalized" 2>"$WORK/bad-memory.err"
+then
+  fail "normalizer accepted malformed module memory telemetry"
+fi
+grep -q 'module memory telemetry grammar differs' "$WORK/bad-memory.err"
+
+sed 's/cle2000_c: cpu time= 0.00 second/cle2000_c: cpu time= -0.00 second/' \
+  "$LEGACY_LOG" >"$WORK/bad-cle-cpu.log"
+if python3 "$NORMALIZER" --mode legacy "$WORK/bad-cle-cpu.log" \
+     >"$WORK/bad-cle-cpu.normalized" 2>"$WORK/bad-cle-cpu.err"
+then
+  fail "normalizer accepted malformed CLE CPU telemetry"
+fi
+grep -q 'CLE CPU telemetry census differs' "$WORK/bad-cle-cpu.err"
 
 if python3 "$NORMALIZER" --mode legacy "$WORK/gmra.synthetic.log" \
      >"$WORK/wrong-legacy.log" 2>"$WORK/wrong-legacy.err"

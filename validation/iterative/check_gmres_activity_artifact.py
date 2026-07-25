@@ -15,14 +15,14 @@ import sys
 NGROUP = 370
 MAX_K = 10
 RUN_PROTOCOL_SHA256 = (
-    "9d22c63b2678e78867fd4bea0b801388ebc943d81b1f5eaa3a80fda052c9e23f"
+    "feee3d0a4989718137145d8136c246afc4ffebbb9dea9a0d105181be4a7be5d1"
 )
 SOURCE_IMPLEMENTATION_COMMIT = "5816c8aad4fbb43542514d5bd571ebccecdb6d72"
 METHOD_PROTOCOL_SHA256 = (
-    "7fedbdf3fd5ae26a709dc1785d9d2bebf4648599d4aa1ccd999c6fbc93c9cac1"
+    "8f1e1165e7d30b0e5b693e65a842a10581ec9ecb83b3d6bc3bc52ee8eb130bb9"
 )
 METHOD_IMPLEMENTATION_MANIFEST_SHA256 = (
-    "19098f8f4bc4c75dc94c829472b44d4553de6992b03dc965b9f726b2018ee736"
+    "22ff5770263a5f100382f4fd9f9d9e91babe51e51f6b32bb51f394ad3c67178b"
 )
 TRACK_SHA256 = (
     "2d868b87e2003c10c09da1ec8f8e6fd97f2a2629a680a46d7f898e2e5e1ed598"
@@ -40,10 +40,10 @@ LEGACY_ON_DECK_SHA256 = (
     "22b3460f6b1c51af795129459f8c2fe05b19cde264ad4f90c849d33cfccab8ec"
 )
 NORMALIZED_OFF_SHA256 = (
-    "116bdce825f75d15e7c2de27c495d520163281cd2d9caf433642c2275ff9d3b7"
+    "46bb92f9bddcf793b036e1dfbe3aa31e6e7f42cc43e2e5e70fffb65bf9bb2604"
 )
 NORMALIZED_ON_SHA256 = (
-    "647785d00ed45d721860c6f4c8dbb84633526cbe2e042be42cb36ea85d9b39d9"
+    "ff07ead583c85e5fc983e64d6a1d26cada7c1bb8836db11f1185fc637fc4ba39"
 )
 COMPILER_SHA256 = (
     "0784ca5eb133cde6a2112eddb4000eb36c9d60eae1b18df1c1ba52fe97737492"
@@ -165,6 +165,24 @@ CPU_TIME_RE = re.compile(
     r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[EeDd][+-]?\d+)?"
     r"(?=\.[ \t]+(?:INTERNAL|EXTERNAL))"
 )
+MODULE_RECEIPT_RE = re.compile(
+    r"^(?P<prefix>-->>MODULE FLU:        : TIME SPENT=)"
+    r"(?P<time>.{13})"
+    r"(?P<middle> MEMORY USAGE=)"
+    r"(?P<memory>.{10})$",
+    re.MULTILINE,
+)
+MODULE_TIME_RE = re.compile(r" *(?:0|[1-9][0-9]*)\.[0-9]{3}")
+MODULE_MEMORY_RE = re.compile(r" [0-9]\.[0-9]{3}E[+-][0-9]{2}")
+MODULE_TIME_MARKER = "<MODULE-TIME>"
+MODULE_MEMORY_MARKER = "<MEM-TELE>"
+CLE_CPU_RE = re.compile(
+    r"^(?P<prefix>cle2000_c: cpu time= )"
+    r"(?P<value>(?:0|[1-9][0-9]*)\.[0-9]{2})"
+    r"(?P<suffix> second)$",
+    re.MULTILINE,
+)
+CLE_CPU_MARKER = "<CLE-CPU>"
 SOURCE_GMRA_RE = re.compile(
     r"^ACCE[^\n]* MOCA 2 GMRA ;[ \t]+0028[ \t]*$",
     re.MULTILINE,
@@ -744,6 +762,53 @@ def normalize_log(raw: bytes, mode: str) -> bytes:
     text, substitutions = CPU_TIME_RE.subn(r"\1<CPU-TELEMETRY>", text)
     require(substitutions == 2, "CPU telemetry census")
     require(text.count("<CPU-TELEMETRY>") == 2, "normalized CPU marker census")
+    require(
+        MODULE_TIME_MARKER not in text and MODULE_MEMORY_MARKER not in text,
+        "forged module telemetry marker",
+    )
+    require(
+        len(re.findall(r"^-->>MODULE ", text, re.MULTILINE)) == 1,
+        "module receipt census",
+    )
+    module_matches = list(MODULE_RECEIPT_RE.finditer(text))
+    require(len(module_matches) == 1, "FLU module telemetry census")
+    module = module_matches[0]
+    require(
+        MODULE_TIME_RE.fullmatch(module.group("time")) is not None,
+        "FLU module time telemetry grammar",
+    )
+    require(
+        MODULE_MEMORY_RE.fullmatch(module.group("memory")) is not None,
+        "FLU module memory telemetry grammar",
+    )
+    module_replacement = (
+        module.group("prefix")
+        + MODULE_TIME_MARKER
+        + module.group("middle")
+        + MODULE_MEMORY_MARKER
+    )
+    require(
+        len(module_replacement) == len(module.group(0)),
+        "FLU module telemetry width",
+    )
+    text = text[:module.start()] + module_replacement + text[module.end():]
+    require(
+        text.count(MODULE_TIME_MARKER) == 1
+        and text.count(MODULE_MEMORY_MARKER) == 1,
+        "normalized module telemetry marker census",
+    )
+    require(CLE_CPU_MARKER not in text, "forged CLE CPU marker")
+    cle_matches = list(CLE_CPU_RE.finditer(text))
+    require(len(cle_matches) == 1, "CLE CPU telemetry census")
+    cle = cle_matches[0]
+    text = (
+        text[:cle.start()]
+        + cle.group("prefix")
+        + CLE_CPU_MARKER
+        + cle.group("suffix")
+        + text[cle.end():]
+    )
+    require(text.count(CLE_CPU_MARKER) == 1, "normalized CLE CPU marker census")
     return text.encode("ascii")
 
 

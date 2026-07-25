@@ -17,29 +17,29 @@ ROOT = Path(__file__).resolve().parents[2]
 ITER = ROOT / "validation" / "iterative"
 PROTOCOL = ITER / "gmres_activity_run_protocol.json"
 EXPECTED_PROTOCOL_SHA256 = (
-    "9d22c63b2678e78867fd4bea0b801388ebc943d81b1f5eaa3a80fda052c9e23f"
+    "feee3d0a4989718137145d8136c246afc4ffebbb9dea9a0d105181be4a7be5d1"
 )
 SOURCE_IMPLEMENTATION_COMMIT = "5816c8aad4fbb43542514d5bd571ebccecdb6d72"
 
 EXPECTED_DEPENDENCIES = {
     "validation/iterative/gmres_activity_protocol.json":
-        "7fedbdf3fd5ae26a709dc1785d9d2bebf4648599d4aa1ccd999c6fbc93c9cac1",
+        "8f1e1165e7d30b0e5b693e65a842a10581ec9ecb83b3d6bc3bc52ee8eb130bb9",
     "validation/iterative/check_gmres_activity_protocol.py":
-        "1084f38ad14c2fb5f0e2b52786a248e29f3461c084145fb55aaae9d6dda2202c",
+        "c62201fd6efefb6ffd69f48bbd4cddc3b8dcbbb5525523dfd3d98056acff59d9",
     "validation/iterative/gmres_activity_implementation.sha256":
-        "19098f8f4bc4c75dc94c829472b44d4553de6992b03dc965b9f726b2018ee736",
+        "22ff5770263a5f100382f4fd9f9d9e91babe51e51f6b32bb51f394ad3c67178b",
     "validation/iterative/check_gmres_activity_implementation.py":
-        "a7433a637a1d602a69cac7f9caf2e5213a8ea35370957297e64fa8b4e0d7ea2f",
+        "9bf598cbbabdc18b81bbf870ce3de1c9b6edd21d3618f5a6f56adf25532e9696",
     "validation/iterative/gmres_activity_overlay_manifest.json":
         "b117cea97cfb54b4b043bc923c435a736d01b54fbb8fcfd5fdcb1472c39283a3",
     "validation/iterative/gmres_activity_overlay.patch":
         "ebdc1eee70422e0c881901802602d053b61079ad942ec1dbdf16fbe88fc8f942",
     "validation/iterative/run_gmres_activity_preflight.sh":
-        "af860c19ccb905ca0e140a4f81ed26d134bce791f24fffa44637a7cd7b89b947",
+        "39edac13937d15e8760ee1f2818fb2e7dd67a1b3ae2a6e6d14196295394e4a3a",
     "validation/iterative/check_gmres_activity_xsm.f90":
         "9c5ccb762dbb1f9947a7d6c587612862bfd6bdf1e7240172d3b25f316386bf99",
     "validation/iterative/normalize_gmres_activity_log.py":
-        "8fa63908d3a0f2c025bee44a3f5f967f591d48a90f2de4c36b33cc163dfa3ff9",
+        "2794adddcde51352090688996bcae2456d28aa2ccb034c8978c8840857027917",
     "validation/iterative/raw_moc_capture_result_receipt.sha256":
         "485baab029387aeb8212647768be96b6eba438119e7d6ddcf013ccaf5e3359b5",
     "validation/iterative/raw_moc_ulp_bridge_result_receipt.sha256":
@@ -252,6 +252,7 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             "version",
             "status",
             "protocol_freeze_authorizes_execution",
+            "amendment",
             "source_implementation_commit",
             "scientific_question",
             "scope",
@@ -264,6 +265,7 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             "solver_controls",
             "execution_budget",
             "runtime_identity",
+            "log_normalization_contract",
             "reproducibility_and_closure",
             "independence",
             "classification",
@@ -275,11 +277,36 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
         },
         "top-level protocol census differs",
     )
-    require(data["version"] == 1, "protocol version differs")
+    require(data["version"] == 2, "protocol version differs")
     require(
-        data["status"] == "FROZEN-BEFORE-RUNNER-IMPLEMENTATION"
+        data["status"] == "AMENDED-AFTER-INVALID-ATTEMPT-BEFORE-RETRY"
         and data["protocol_freeze_authorizes_execution"] is False,
         "protocol freeze authorizes execution",
+    )
+    require(
+        data["amendment"]
+        == {
+            "kind": "POST-INVALID-ATTEMPT-EVIDENCE-CONTRACT-REVISION",
+            "prior_run_protocol_version": 1,
+            "method_protocol_version": 2,
+            "attempt_commit": "eb891486e466a3ad30be46f70a97384272ca84ab",
+            "processes_started": {
+                "OFF": 1,
+                "ON-A": 0,
+                "ON-B": 0,
+            },
+            "failure_point": (
+                "fresh OFF normalized full-log comparison; cmp first "
+                "reported character 9668 on line 126"
+            ),
+            "failed_run_bytes_retained": False,
+            "scientific_result": "NONE; INVALID-NO-SCIENTIFIC-RESULT",
+            "scientific_question_or_process_matrix_changed": False,
+            "solver_or_model_changed": False,
+            "retry_authorized_by_amendment": False,
+            "automatic_retry": False,
+        },
+        "post-invalid-attempt amendment differs",
     )
     require(
         data["source_implementation_commit"] == SOURCE_IMPLEMENTATION_COMMIT,
@@ -556,6 +583,69 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
         and identity["second_ON_MCGMRE_entry"] == "INVALID",
         "runtime identity differs",
     )
+    require(
+        data["log_normalization_contract"]
+        == {
+            "raw_logs_modified": False,
+            "full_log_comparison_after_normalization": True,
+            "common_runtime_records": [
+                {
+                    "owner": "FLU2DR",
+                    "count": 2,
+                    "grammar": (
+                        "the numeric CPU TIME field in the existing internal "
+                        "and external convergence receipts"
+                    ),
+                    "replacement": "<CPU-TELEMETRY>",
+                },
+                {
+                    "owner": "KDRDRV FLU module completion",
+                    "count": 1,
+                    "ordering": (
+                        "after the unique FLU module end and before the "
+                        "unique capture COMPLETE execution marker"
+                    ),
+                    "grammar": (
+                        "exact module name, spacing and labels; nonnegative "
+                        "F13.3 time field of width 13; nonnegative 1P,E10.3 "
+                        "memory field of width 10"
+                    ),
+                    "time_replacement": "<MODULE-TIME>",
+                    "memory_replacement": "<MEM-TELE>",
+                    "replacement_preserves_line_width": True,
+                },
+                {
+                    "owner": "top-level cle2000_c",
+                    "count": 1,
+                    "ordering": (
+                        "after the unique capture COMPLETE execution marker "
+                        "and before normal Dragon termination"
+                    ),
+                    "grammar": (
+                        "exact 'cle2000_c: cpu time= ' prefix, nonnegative "
+                        "fixed-two-decimal numeric field and exact ' second' "
+                        "suffix"
+                    ),
+                    "replacement": "<CLE-CPU>",
+                },
+            ],
+            "ON_only_fixed_width_control_edits": [
+                (
+                    "one source-line ' MOCA 2 GMRA ;' to "
+                    "' MOCA 2 ;     ' replacement"
+                ),
+                (
+                    "one execution-echo ' MOCA 2 GMRA ;' to "
+                    "' MOCA 2 ;     ' replacement"
+                ),
+            ],
+            "forged_marker_policy": "INVALID",
+            "missing_duplicate_reordered_malformed_or_extra_module_policy":
+                "INVALID",
+            "every_other_byte_difference": "INVALID",
+        },
+        "log normalization contract differs",
+    )
     closure = data["reproducibility_and_closure"]
     require(
         len(closure) == 10
@@ -564,6 +654,9 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
                 for row in closure)
         and any("ON-A and ON-B output XSM files are byte-identical" in row
                 for row in closure)
+        and any("one KDRDRV FLU time/memory receipt" in row
+                for row in closure)
+        and any("normalized LEGACY_OFF_LOG" in row for row in closure)
         and any("independently closes every event" in row for row in closure),
         "reproducibility closure differs",
     )
@@ -701,12 +794,12 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             ),
             (
                 "method_protocol_sha256\t"
-                "7fedbdf3fd5ae26a709dc1785d9d2bebf4648599d4aa1ccd999c6fbc93c9cac1"
+                "8f1e1165e7d30b0e5b693e65a842a10581ec9ecb83b3d6bc3bc52ee8eb130bb9"
             ),
             "run_protocol_sha256\t<SHA256 of frozen run protocol bytes>",
             (
                 "method_implementation_manifest_sha256\t"
-                "19098f8f4bc4c75dc94c829472b44d4553de6992b03dc965b9f726b2018ee736"
+                "22ff5770263a5f100382f4fd9f9d9e91babe51e51f6b32bb51f394ad3c67178b"
             ),
             (
                 "run_implementation_manifest_sha256\t"
@@ -734,7 +827,10 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             "validation/iterative/run_gmres_activity_preflight.sh",
         ]
         and freeze["state_at_protocol_freeze"]
-        == "NOT-IMPLEMENTED; RUN_GMRES_ACTIVITY=1 REMAINS UNAUTHORIZED",
+        == (
+            "AMENDED; RUN_GMRES_ACTIVITY=1 REMAINS UNAUTHORIZED UNTIL A NEW "
+            "VERSION-2 RUN IMPLEMENTATION FREEZE"
+        ),
         "future run implementation freeze differs",
     )
     require(
@@ -748,6 +844,10 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             ),
             "tampered raw active mask is rejected",
             "tampered raw BLOCK-GROUP KMAX is rejected",
+            (
+                "missing, duplicate, malformed, reordered or forged runtime "
+                "telemetry is rejected"
+            ),
             "missing log, XSM identity, receipt or manifest evidence is rejected",
             "invalid input creates neither result.txt nor a final artifact",
         ],
@@ -798,7 +898,8 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             (ITER / "gmres_activity_protocol.json").read_text(encoding="utf-8")
         )
         require(
-            method["bounded_production_run"]["processes"]
+            method["version"] == 2
+            and method["bounded_production_run"]["processes"]
             == [
                 {
                     "mode": "OFF",

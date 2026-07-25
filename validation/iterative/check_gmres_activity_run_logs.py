@@ -22,6 +22,24 @@ CPU_TIME_RE = re.compile(
     r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[EeDd][+-]?\d+)?"
     r"(?=\.[ \t]+(?:INTERNAL|EXTERNAL))"
 )
+MODULE_RECEIPT_RE = re.compile(
+    r"^(?P<prefix>-->>MODULE FLU:        : TIME SPENT=)"
+    r"(?P<time>.{13})"
+    r"(?P<middle> MEMORY USAGE=)"
+    r"(?P<memory>.{10})$",
+    re.MULTILINE,
+)
+MODULE_TIME_RE = re.compile(r" *(?:0|[1-9][0-9]*)\.[0-9]{3}")
+MODULE_MEMORY_RE = re.compile(r" [0-9]\.[0-9]{3}E[+-][0-9]{2}")
+MODULE_TIME_MARKER = "<MODULE-TIME>"
+MODULE_MEMORY_MARKER = "<MEM-TELE>"
+CLE_CPU_RE = re.compile(
+    r"^(?P<prefix>cle2000_c: cpu time= )"
+    r"(?P<value>(?:0|[1-9][0-9]*)\.[0-9]{2})"
+    r"(?P<suffix> second)$",
+    re.MULTILINE,
+)
+CLE_CPU_MARKER = "<CLE-CPU>"
 SOURCE_LEGACY_MOCA_RE = re.compile(
     r"^ACCE <<free_steps>> <<acc_steps>> MOCA 2 ; +0028$",
     re.MULTILINE,
@@ -101,6 +119,42 @@ def load_log(path: Path, description: str) -> LoadedLog:
     )
 
 
+def require_module_receipt(
+    text: str,
+    description: str,
+) -> re.Match[str]:
+    if (
+        MODULE_TIME_MARKER in text
+        or MODULE_MEMORY_MARKER in text
+    ):
+        fail(f"{description} contains a forged module telemetry marker")
+    if len(re.findall(r"^-->>MODULE ", text, re.MULTILINE)) != 1:
+        fail(f"{description} module receipt census differs")
+    receipt = require_one(
+        MODULE_RECEIPT_RE,
+        text,
+        description + " FLU module telemetry",
+    )
+    if MODULE_TIME_RE.fullmatch(receipt.group("time")) is None:
+        fail(f"{description} FLU module time telemetry grammar differs")
+    if MODULE_MEMORY_RE.fullmatch(receipt.group("memory")) is None:
+        fail(f"{description} FLU module memory telemetry grammar differs")
+    return receipt
+
+
+def require_cle_cpu_receipt(
+    text: str,
+    description: str,
+) -> re.Match[str]:
+    if CLE_CPU_MARKER in text:
+        fail(f"{description} contains a forged CLE CPU marker")
+    return require_one(
+        CLE_CPU_RE,
+        text,
+        description + " CLE-2000 CPU telemetry",
+    )
+
+
 def validate_envelope(
     text: str,
     description: str,
@@ -113,11 +167,7 @@ def validate_envelope(
     )
     if text.count("normal end of execution for dragon") != 1:
         fail(f"{description} normal Dragon termination census differs")
-    require_one(
-        r"^cle2000_c:[ \t]*cpu time=[^\n]*$",
-        text,
-        description + " CLE-2000 CPU receipt",
-    )
+    cle_cpu = require_cle_cpu_receipt(text, description)
 
     for pattern, label in (
         (r"\bXABORT\b", "XABORT"),
@@ -137,6 +187,7 @@ def validate_envelope(
     if "<CPU-TELEMETRY>" in text:
         fail(f"{description} contains a forged normalized CPU marker")
 
+    marker_matches: dict[str, re.Match[str]] = {}
     for marker in ("BEGIN", "COMPLETE"):
         require_one(
             rf'^ECHO "RAW-MOC-CAPTURE-{marker}" '
@@ -144,7 +195,7 @@ def validate_envelope(
             text,
             f"{description} source {marker} marker",
         )
-        require_one(
+        marker_matches[marker] = require_one(
             rf"^>\|RAW-MOC-CAPTURE-{marker} STATIONARY {mode}[ \t]*"
             rf"\|>[0-9]{{4}}$",
             text,
@@ -197,6 +248,12 @@ def validate_envelope(
         text,
         description + " flux-calculation count",
     )
+    module_end = require_one(
+        r"^->@END MODULE   : FLU:[ \t]*$",
+        text,
+        description + " FLU module end",
+    )
+    module_receipt = require_module_receipt(text, description)
     positions = (
         science.start(),
         inner.start(),
@@ -205,6 +262,10 @@ def validate_envelope(
         inner_diagnostic.start(),
         tracking.start(),
         flux_count.start(),
+        module_end.start(),
+        module_receipt.start(),
+        marker_matches["COMPLETE"].start(),
+        cle_cpu.start(),
         normal_end.start(),
     )
     if tuple(sorted(positions)) != positions:
@@ -343,6 +404,35 @@ def normalize(text: str, description: str, gmra: bool) -> str:
         fail(f"{description} CPU telemetry census differs")
     if normalized.count("<CPU-TELEMETRY>") != 2:
         fail(f"{description} normalized CPU marker census differs")
+    receipt = require_module_receipt(normalized, description)
+    replacement = (
+        receipt.group("prefix")
+        + MODULE_TIME_MARKER
+        + receipt.group("middle")
+        + MODULE_MEMORY_MARKER
+    )
+    if len(replacement) != len(receipt.group(0)):
+        fail(f"{description} module telemetry normalization changed line width")
+    normalized = (
+        normalized[: receipt.start()]
+        + replacement
+        + normalized[receipt.end() :]
+    )
+    if (
+        normalized.count(MODULE_TIME_MARKER) != 1
+        or normalized.count(MODULE_MEMORY_MARKER) != 1
+    ):
+        fail(f"{description} normalized module telemetry marker census differs")
+    cle_cpu = require_cle_cpu_receipt(normalized, description)
+    normalized = (
+        normalized[: cle_cpu.start()]
+        + cle_cpu.group("prefix")
+        + CLE_CPU_MARKER
+        + cle_cpu.group("suffix")
+        + normalized[cle_cpu.end() :]
+    )
+    if normalized.count(CLE_CPU_MARKER) != 1:
+        fail(f"{description} normalized CLE CPU marker census differs")
     return normalized
 
 

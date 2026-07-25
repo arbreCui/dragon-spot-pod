@@ -35,6 +35,9 @@ def probe_log(
     gmra: bool,
     internal_cpu: str = "0",
     external_cpu: str = "0",
+    module_time: str = "0.000",
+    module_memory: str = "2.243E+07",
+    cle_cpu: str = "0.00",
 ) -> str:
     if mode not in {"OFF", "ON"}:
         raise ValueError(mode)
@@ -94,8 +97,12 @@ def probe_log(
         " ++ TRACKING CALLED=   1 TIMES PRECISION= 0.00E+00",
         " ++ TOTAL NUMBER OF FLUX CALCULATIONS=       370",
         "->@END MODULE   : FLU:",
+        (
+            "-->>MODULE FLU:        : TIME SPENT="
+            f"{module_time:>13} MEMORY USAGE={module_memory:>10}"
+        ),
         f">|RAW-MOC-CAPTURE-COMPLETE STATIONARY {mode}|>0029",
-        "cle2000_c: cpu time= 0.00 second",
+        f"cle2000_c: cpu time= {cle_cpu} second",
         "",
         NORMAL_END,
         " check for warning in listing",
@@ -106,11 +113,51 @@ def probe_log(
 
 def valid_logs() -> list[str]:
     return [
-        probe_log("OFF", gmra=False, internal_cpu="0", external_cpu="0"),
-        probe_log("ON", gmra=False, internal_cpu="0", external_cpu="0"),
-        probe_log("OFF", gmra=False, internal_cpu="1.25", external_cpu="2.5"),
-        probe_log("ON", gmra=True, internal_cpu="3.75", external_cpu="4.0"),
-        probe_log("ON", gmra=True, internal_cpu="8.5", external_cpu="9.25"),
+        probe_log(
+            "OFF",
+            gmra=False,
+            internal_cpu="0",
+            external_cpu="0",
+            module_time="0.000",
+            module_memory="2.243E+07",
+            cle_cpu="0.00",
+        ),
+        probe_log(
+            "ON",
+            gmra=False,
+            internal_cpu="0",
+            external_cpu="0",
+            module_time="0.000",
+            module_memory="2.268E+07",
+            cle_cpu="0.00",
+        ),
+        probe_log(
+            "OFF",
+            gmra=False,
+            internal_cpu="1.25",
+            external_cpu="2.5",
+            module_time="1.125",
+            module_memory="3.111E+07",
+            cle_cpu="1.25",
+        ),
+        probe_log(
+            "ON",
+            gmra=True,
+            internal_cpu="3.75",
+            external_cpu="4.0",
+            module_time="2.250",
+            module_memory="3.222E+07",
+            cle_cpu="2.50",
+        ),
+        probe_log(
+            "ON",
+            gmra=True,
+            internal_cpu="8.5",
+            external_cpu="9.25",
+            module_time="3.375",
+            module_memory="3.333E+07",
+            cle_cpu="3.75",
+        ),
     ]
 
 
@@ -191,8 +238,10 @@ class GmresActivityRunLogTests(unittest.TestCase):
         on = valid_logs()[3].splitlines()
         source = next(line for line in on if line.startswith("ACCE "))
         trace = next(line for line in on if line.startswith("<|ACCE "))
+        module = next(line for line in on if line.startswith("-->>MODULE FLU:"))
         self.assertEqual(len(source), 127)
         self.assertEqual(len(trace), 128)
+        self.assertEqual(len(module), 73)
 
     def test_probe_template_is_exact_raw_template_reuse(self) -> None:
         self.assertEqual(TEMPLATE.read_bytes(), RAW_TEMPLATE.read_bytes())
@@ -383,6 +432,147 @@ class GmresActivityRunLogTests(unittest.TestCase):
                 logs = valid_logs()
                 logs[3] = mutation(logs[3])
                 self.assert_fails(logs, expected)
+
+    def test_module_telemetry_tampering_fails_closed(self) -> None:
+        receipt = (
+            "-->>MODULE FLU:        : TIME SPENT="
+            "        2.250 MEMORY USAGE= 3.222E+07"
+        )
+        cases = {
+            "missing": (
+                lambda text: text.replace(receipt + "\n", "", 1),
+                "module receipt census",
+            ),
+            "duplicate": (
+                lambda text: text.replace(receipt, receipt + "\n" + receipt, 1),
+                "module receipt census",
+            ),
+            "wrong module": (
+                lambda text: text.replace("-->>MODULE FLU:", "-->>MODULE ASM:", 1),
+                "FLU module telemetry",
+            ),
+            "wrong static label": (
+                lambda text: text.replace("TIME SPENT=", "TIME-SPENT=", 1),
+                "FLU module telemetry",
+            ),
+            "time two decimals": (
+                lambda text: text.replace("        2.250", "         2.25", 1),
+                "time telemetry grammar",
+            ),
+            "negative time": (
+                lambda text: text.replace("        2.250", "       -2.250", 1),
+                "time telemetry grammar",
+            ),
+            "time tab": (
+                lambda text: text.replace("        2.250", "\t       2.250", 1),
+                "time telemetry grammar",
+            ),
+            "memory lowercase exponent": (
+                lambda text: text.replace(" 3.222E+07", " 3.222e+07", 1),
+                "memory telemetry grammar",
+            ),
+            "memory negative": (
+                lambda text: text.replace(" 3.222E+07", "-3.222E+07", 1),
+                "memory telemetry grammar",
+            ),
+            "memory short exponent": (
+                lambda text: text.replace(" 3.222E+07", "  3.222E+7", 1),
+                "memory telemetry grammar",
+            ),
+            "forged marker": (
+                lambda text: text.replace(
+                    NORMAL_END,
+                    "<MODULE-TIME>\n" + NORMAL_END,
+                    1,
+                ),
+                "forged module telemetry marker",
+            ),
+            "forged memory marker": (
+                lambda text: text.replace(
+                    NORMAL_END,
+                    "<MEM-TELE>\n" + NORMAL_END,
+                    1,
+                ),
+                "forged module telemetry marker",
+            ),
+            "unrelated module receipt": (
+                lambda text: text.replace(
+                    receipt,
+                    receipt
+                    + "\n-->>MODULE ASM:        : TIME SPENT="
+                    + "        0.000 MEMORY USAGE= 1.000E+06",
+                    1,
+                ),
+                "module receipt census",
+            ),
+        }
+        for name, (mutation, expected) in cases.items():
+            with self.subTest(name=name):
+                logs = valid_logs()
+                logs[3] = mutation(logs[3])
+                self.assert_fails(logs, expected)
+
+    def test_module_telemetry_order_is_locked(self) -> None:
+        logs = valid_logs()
+        receipt = next(
+            line
+            for line in logs[3].splitlines()
+            if line.startswith("-->>MODULE FLU:")
+        )
+        logs[3] = logs[3].replace(receipt + "\n", "", 1)
+        logs[3] = logs[3].replace(
+            "->@END MODULE   : FLU:\n",
+            receipt + "\n->@END MODULE   : FLU:\n",
+            1,
+        )
+        self.assert_fails(logs, "one-step records are reordered")
+
+    def test_cle_cpu_telemetry_tampering_fails_closed(self) -> None:
+        receipt = "cle2000_c: cpu time= 2.50 second"
+        cases = {
+            "missing": (
+                lambda text: text.replace(receipt + "\n", "", 1),
+                "CLE-2000 CPU telemetry",
+            ),
+            "duplicate": (
+                lambda text: text.replace(receipt, receipt + "\n" + receipt, 1),
+                "CLE-2000 CPU telemetry",
+            ),
+            "negative": (
+                lambda text: text.replace(" 2.50 second", " -2.50 second", 1),
+                "CLE-2000 CPU telemetry",
+            ),
+            "one decimal": (
+                lambda text: text.replace(" 2.50 second", " 2.5 second", 1),
+                "CLE-2000 CPU telemetry",
+            ),
+            "wrong unit": (
+                lambda text: text.replace(" second", " seconds", 1),
+                "CLE-2000 CPU telemetry",
+            ),
+            "forged marker": (
+                lambda text: text.replace(
+                    NORMAL_END,
+                    "<CLE-CPU>\n" + NORMAL_END,
+                    1,
+                ),
+                "forged CLE CPU marker",
+            ),
+        }
+        for name, (mutation, expected) in cases.items():
+            with self.subTest(name=name):
+                logs = valid_logs()
+                logs[3] = mutation(logs[3])
+                self.assert_fails(logs, expected)
+
+        logs = valid_logs()
+        logs[3] = logs[3].replace(receipt + "\n", "", 1)
+        logs[3] = logs[3].replace(
+            ">|RAW-MOC-CAPTURE-COMPLETE STATIONARY ON",
+            receipt + "\n>|RAW-MOC-CAPTURE-COMPLETE STATIONARY ON",
+            1,
+        )
+        self.assert_fails(logs, "one-step records are reordered")
 
     def test_nontelemetry_full_log_difference_is_rejected(self) -> None:
         cases = {

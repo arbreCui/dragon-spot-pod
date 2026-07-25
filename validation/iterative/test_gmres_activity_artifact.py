@@ -40,6 +40,21 @@ CPU_RE = re.compile(
     r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[EeDd][+-]?\d+)?"
     r"(?=\.[ \t]+(?:INTERNAL|EXTERNAL))"
 )
+MODULE_RE = re.compile(
+    r"^(?P<prefix>-->>MODULE FLU:        : TIME SPENT=)"
+    r"(?P<time>.{13})"
+    r"(?P<middle> MEMORY USAGE=)"
+    r"(?P<memory>.{10})$",
+    re.MULTILINE,
+)
+MODULE_TIME_RE = re.compile(r" *(?:0|[1-9][0-9]*)\.[0-9]{3}")
+MODULE_MEMORY_RE = re.compile(r" [0-9]\.[0-9]{3}E[+-][0-9]{2}")
+CLE_RE = re.compile(
+    r"^(?P<prefix>cle2000_c: cpu time= )"
+    r"(?P<value>(?:0|[1-9][0-9]*)\.[0-9]{2})"
+    r"(?P<suffix> second)$",
+    re.MULTILINE,
+)
 
 
 def digest(raw: bytes) -> str:
@@ -56,6 +71,34 @@ def normalized_legacy(raw: str) -> str:
     result, substitutions = CPU_RE.subn(r"\1<CPU-TELEMETRY>", raw)
     if substitutions != 2:
         raise AssertionError("fixture CPU telemetry census")
+    modules = list(MODULE_RE.finditer(result))
+    if len(modules) != 1:
+        raise AssertionError("fixture module telemetry census")
+    module = modules[0]
+    if (
+        MODULE_TIME_RE.fullmatch(module.group("time")) is None
+        or MODULE_MEMORY_RE.fullmatch(module.group("memory")) is None
+    ):
+        raise AssertionError("fixture module telemetry grammar")
+    result = (
+        result[:module.start()]
+        + module.group("prefix")
+        + "<MODULE-TIME>"
+        + module.group("middle")
+        + "<MEM-TELE>"
+        + result[module.end():]
+    )
+    cle_matches = list(CLE_RE.finditer(result))
+    if len(cle_matches) != 1:
+        raise AssertionError("fixture CLE CPU telemetry census")
+    cle = cle_matches[0]
+    result = (
+        result[:cle.start()]
+        + cle.group("prefix")
+        + "<CLE-CPU>"
+        + cle.group("suffix")
+        + result[cle.end():]
+    )
     return result
 
 
@@ -462,6 +505,45 @@ class ArtifactCheckerTest(unittest.TestCase):
                     if relative != "artifact_manifest.sha256":
                         refresh_manifest(artifact)
                     self.assert_invalid(artifact)
+
+    def test_runtime_telemetry_grammar_tamper_is_rejected(self) -> None:
+        cases = {
+            "module time": (
+                "on_a/run.log",
+                "TIME SPENT=        0.000",
+                "TIME SPENT=       -0.000",
+                "time telemetry grammar",
+            ),
+            "module memory": (
+                "on_a/run.log",
+                " MEMORY USAGE= 2.268E+07",
+                " MEMORY USAGE=-2.268E+07",
+                "memory telemetry grammar",
+            ),
+            "CLE CPU": (
+                "on_a/run.log",
+                "cle2000_c: cpu time= 0.00 second",
+                "cle2000_c: cpu time= -0.00 second",
+                "CLE CPU telemetry census",
+            ),
+            "normalized marker": (
+                "on_a/normalized.log",
+                "<MODULE-TIME>",
+                "<MODULE-TAMP>",
+                "ON normalized log differs",
+            ),
+        }
+        for name, (relative, old, new, expected) in cases.items():
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as temporary:
+                    artifact = build_artifact(Path(temporary), active=True)
+                    path = artifact / relative
+                    text = path.read_text(encoding="ascii")
+                    self.assertEqual(text.count(old), 1)
+                    write_text(path, text.replace(old, new, 1))
+                    refresh_manifest(artifact)
+                    result = self.assert_invalid(artifact)
+                    self.assertIn(expected, result.stderr)
 
     def test_invalid_input_creates_no_result_or_final_artifact(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

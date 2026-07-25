@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply the two frozen, non-scientific GMRA log normalizations."""
+"""Apply the frozen, non-scientific GMRES-activity log normalizations."""
 
 from __future__ import annotations
 
@@ -14,6 +14,24 @@ CPU_TIME_RE = re.compile(
     r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[EeDd][+-]?\d+)?"
     r"(?=\.[ \t]+(?:INTERNAL|EXTERNAL))"
 )
+MODULE_RECEIPT_RE = re.compile(
+    r"^(?P<prefix>-->>MODULE FLU:        : TIME SPENT=)"
+    r"(?P<time>.{13})"
+    r"(?P<middle> MEMORY USAGE=)"
+    r"(?P<memory>.{10})$",
+    re.MULTILINE,
+)
+MODULE_TIME_RE = re.compile(r" *(?:0|[1-9][0-9]*)\.[0-9]{3}")
+MODULE_MEMORY_RE = re.compile(r" [0-9]\.[0-9]{3}E[+-][0-9]{2}")
+MODULE_TIME_MARKER = "<MODULE-TIME>"
+MODULE_MEMORY_MARKER = "<MEM-TELE>"
+CLE_CPU_RE = re.compile(
+    r"^(?P<prefix>cle2000_c: cpu time= )"
+    r"(?P<value>(?:0|[1-9][0-9]*)\.[0-9]{2})"
+    r"(?P<suffix> second)$",
+    re.MULTILINE,
+)
+CLE_CPU_MARKER = "<CLE-CPU>"
 SOURCE_GMRA_RE = re.compile(
     r"^ACCE[^\n]* MOCA 2 GMRA ;[ \t]+0028[ \t]*$",
     re.MULTILINE,
@@ -59,6 +77,66 @@ def replace_exact_gmra_line(
     return text[: match.start()] + normalized + text[match.end() :]
 
 
+def replace_exact_module_receipt(text: str) -> str:
+    require(
+        MODULE_TIME_MARKER not in text and MODULE_MEMORY_MARKER not in text,
+        "log contains a forged module telemetry marker",
+    )
+    require(
+        len(re.findall(r"^-->>MODULE ", text, re.MULTILINE)) == 1,
+        "module receipt census differs",
+    )
+    matches = list(MODULE_RECEIPT_RE.finditer(text))
+    require(len(matches) == 1, "FLU module telemetry census differs")
+    match = matches[0]
+    time_field = match.group("time")
+    memory_field = match.group("memory")
+    require(
+        MODULE_TIME_RE.fullmatch(time_field) is not None,
+        "FLU module time telemetry grammar differs",
+    )
+    require(
+        MODULE_MEMORY_RE.fullmatch(memory_field) is not None,
+        "FLU module memory telemetry grammar differs",
+    )
+    replacement = (
+        match.group("prefix")
+        + MODULE_TIME_MARKER
+        + match.group("middle")
+        + MODULE_MEMORY_MARKER
+    )
+    require(
+        len(replacement) == len(match.group(0)),
+        "FLU module telemetry normalization changed line width",
+    )
+    normalized = text[: match.start()] + replacement + text[match.end() :]
+    require(
+        normalized.count(MODULE_TIME_MARKER) == 1
+        and normalized.count(MODULE_MEMORY_MARKER) == 1,
+        "normalized module telemetry marker census differs",
+    )
+    return normalized
+
+
+def replace_exact_cle_cpu_receipt(text: str) -> str:
+    require(CLE_CPU_MARKER not in text, "log contains a forged CLE CPU marker")
+    matches = list(CLE_CPU_RE.finditer(text))
+    require(len(matches) == 1, "CLE CPU telemetry census differs")
+    match = matches[0]
+    normalized = (
+        text[: match.start()]
+        + match.group("prefix")
+        + CLE_CPU_MARKER
+        + match.group("suffix")
+        + text[match.end() :]
+    )
+    require(
+        normalized.count(CLE_CPU_MARKER) == 1,
+        "normalized CLE CPU marker census differs",
+    )
+    return normalized
+
+
 def normalize(text: str, mode: str) -> str:
     require("\r" not in text, "carriage return is not canonical")
     require(text.endswith("\n"), "log lacks final newline")
@@ -87,7 +165,8 @@ def normalize(text: str, mode: str) -> str:
         normalized.count("<CPU-TELEMETRY>") == 2,
         "normalized CPU marker census differs",
     )
-    return normalized
+    normalized = replace_exact_module_receipt(normalized)
+    return replace_exact_cle_cpu_receipt(normalized)
 
 
 def main() -> None:

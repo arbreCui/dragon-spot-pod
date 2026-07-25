@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ITERATIVE = ROOT / "validation" / "iterative"
 PROTOCOL = ITERATIVE / "gmres_activity_protocol.json"
 EXPECTED_PROTOCOL_SHA256 = (
-    "7fedbdf3fd5ae26a709dc1785d9d2bebf4648599d4aa1ccd999c6fbc93c9cac1"
+    "8f1e1165e7d30b0e5b693e65a842a10581ec9ecb83b3d6bc3bc52ee8eb130bb9"
 )
 FROZEN_PARENT = "4d7abb23ac7975d4146beaa3b0049e36cdad8776"
 ARTIFACT_ROOT = ROOT / "validation" / "artifacts" / "raw-moc-capture"
@@ -25,6 +25,7 @@ TOP_LEVEL_KEYS = [
     "name",
     "version",
     "status",
+    "amendment",
     "frozen_parent_commit",
     "purpose",
     "scientific_scope",
@@ -344,9 +345,57 @@ def verify_parent_evidence(protocol: dict[str, Any]) -> None:
 def verify_scope_and_activation(protocol: dict[str, Any]) -> None:
     require(
         protocol["name"] == "SPOT bounded GMRES correction-activity census"
-        and protocol["version"] == 1
-        and protocol["status"] == "FROZEN-BEFORE-IMPLEMENTATION",
+        and protocol["version"] == 2
+        and protocol["status"]
+        == "AMENDED-AFTER-INVALID-ATTEMPT-BEFORE-RETRY",
         "protocol identity differs",
+    )
+    require(
+        protocol["amendment"]
+        == {
+            "kind": "POST-INVALID-ATTEMPT-EVIDENCE-CONTRACT-REVISION",
+            "prior_protocol_version": 1,
+            "attempt_commit": "eb891486e466a3ad30be46f70a97384272ca84ab",
+            "processes_started": {
+                "OFF": 1,
+                "ON-A": 0,
+                "ON-B": 0,
+            },
+            "failure_point": (
+                "fresh OFF normalized full-log comparison; cmp first "
+                "reported character 9668 on line 126"
+            ),
+            "failed_run_bytes_retained": False,
+            "scientific_result": "NONE; INVALID-NO-SCIENTIFIC-RESULT",
+            "change": (
+                "declare exact runtime-only normalization for the unique "
+                "KDRDRV FLU module receipt and unique top-level CLE-2000 "
+                "CPU receipt before any retry"
+            ),
+            "basis": [
+                (
+                    "The pre-existing KDRDRV path samples KDRCPU and KDRMEM "
+                    "around FLU and uses their differences only in the "
+                    "module-completion WRITE."
+                ),
+                (
+                    "The four frozen parent logs already contain different "
+                    "KDRDRV memory values before this amendment."
+                ),
+                (
+                    "The pre-existing top-level cle2000_c path prints its "
+                    "timer only after procedure execution."
+                ),
+                (
+                    "No ON process, GMRES ledger or KMAX result was observed "
+                    "before this amendment."
+                ),
+            ],
+            "scientific_question_changed": False,
+            "solver_or_model_changed": False,
+            "automatic_retry": False,
+        },
+        "post-invalid-attempt amendment differs",
     )
     require(
         protocol["purpose"]
@@ -823,7 +872,22 @@ def verify_run_and_classification(protocol: dict[str, Any]) -> None:
                 "second_MCGMRE_entry": "FAIL-CLOSED",
             },
             "ON_log_difference_whitelist": {
-                "CPU_telemetry": "the already frozen normalization only",
+                "FLU2DR_CPU_telemetry": (
+                    "replace exactly the two numeric CPU TIME fields already "
+                    "frozen in the internal and external FLU2DR convergence "
+                    "receipts"
+                ),
+                "KDRDRV_FLU_module_telemetry": (
+                    "require exactly one ordered '-->>MODULE FLU:        : "
+                    "TIME SPENT=' receipt; replace only its exact nonnegative "
+                    "F13.3 time field with '<MODULE-TIME>' and exact "
+                    "nonnegative 1P,E10.3 memory field with '<MEM-TELE>'"
+                ),
+                "CLE2000_CPU_telemetry": (
+                    "require exactly one ordered 'cle2000_c: cpu time= "
+                    "<nonnegative %.2f> second' receipt and replace only its "
+                    "numeric field with '<CLE-CPU>'"
+                ),
                 "deck_listing": (
                     "replace exactly one ' MOCA 2 GMRA ;' with "
                     "' MOCA 2 ;     ' on source line 0028, restoring the "
