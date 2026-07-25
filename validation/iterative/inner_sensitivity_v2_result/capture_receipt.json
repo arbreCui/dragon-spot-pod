@@ -1,0 +1,20 @@
+{
+  "schema": "spot-inner-sensitivity-v2-capture-receipt-1",
+  "protocol_sha256": "8a870a85ffe7fd4eb53d9494bcf28acea2025f8f3d022579312cd34a22a1d88c",
+  "implementation_receipt_sha256": "d2551f87049d096ac50780e4fb51862b013239323e5a7a6dfd4f38cb8dd7b692",
+  "scientific_manifest_sha256": "605cdbc0e635a49dff69b0f19386e70a1c36b1d51f74e2cd9648cb28c9fa0a0f",
+  "evidence_sha256": {
+    "authorization.json": "253e1598465b53631e5ed27711cc49a675c457dc346111ec30e7ce98a9411ea6",
+    "balance_xsm_check.log": "90e510454e930e44391e38d0ac3bf95c1eadb6761281aeb9e72877e7e6391e3e",
+    "coarse_xsm_check.log": "0db7dac519f882a1d6102ba00adf8fd102dc00c68aaea346c9dd8067e8715f02",
+    "dragon.log": "81e9ef0d97562d3048480d9ee96c9e7efdc43f5a59198b6f7d57f4c55595f608",
+    "input_manifest.sha256": "63039a4bdf79832ff77c3682f175ae457591a2bfe70ec1f5c4de9ba69de2ac3e",
+    "pair_xsm_check.log": "54178b32e9288559ff95b8f11ee387fc475740f83a77869221394f4106d2eb7c",
+    "process_check.log": "d989990660244b900fd7faff00f5729f4f09a205c47fee7c2bc0ab9ec2a80e72",
+    "raw_log_check.log": "b4295f2ee62e7af5f6e8a63905ac2d941765529ca53452e5088a192d60dc0b16",
+    "result.json": "94ad2505c975e95fadc5c47b6ec4fbe48e9e73e61cf492c322e70340512110f1",
+    "scientific_manifest.sha256": "605cdbc0e635a49dff69b0f19386e70a1c36b1d51f74e2cd9648cb28c9fa0a0f"
+  },
+  "classification": "UNRESOLVED",
+  "dragon_processes": 1
+}

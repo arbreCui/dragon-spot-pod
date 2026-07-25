@@ -1,0 +1,54 @@
+{
+  "schema": "spot-inner-sensitivity-v2-result-1",
+  "protocol_sha256": "8a870a85ffe7fd4eb53d9494bcf28acea2025f8f3d022579312cd34a22a1d88c",
+  "tolerance_f32_bits": {
+    "coarse_2h": "0x358637bd",
+    "fine_h": "0x350637bd"
+  },
+  "scientific_manifest_sha256": "605cdbc0e635a49dff69b0f19386e70a1c36b1d51f74e2cd9648cb28c9fa0a0f",
+  "components": [
+    {
+      "name": "R_rho",
+      "d_out_h_f64_bits": "0x3eb57e84a0a80000",
+      "d_out_2h_f64_bits": "0x3eb46b6483600000",
+      "d_in_f64_bits": "0x3e713201d4800000",
+      "coarse_outer_case": "POSITIVE",
+      "relation": "LESS",
+      "status": "RESOLVED"
+    },
+    {
+      "name": "R_L",
+      "d_out_h_f64_bits": "0x3f49f62bc29a3832",
+      "d_out_2h_f64_bits": "0x3f4dffe1af318494",
+      "d_in_f64_bits": "0x3f40e47d83a50c87",
+      "coarse_outer_case": "POSITIVE",
+      "relation": "LESS",
+      "status": "RESOLVED"
+    },
+    {
+      "name": "D_L",
+      "d_out_h_f64_bits": "0x3eb37d4000000000",
+      "d_out_2h_f64_bits": "0x3eb6854000000000",
+      "d_in_f64_bits": "0x3ea95cc000000000",
+      "coarse_outer_case": "POSITIVE",
+      "relation": "LESS",
+      "status": "RESOLVED"
+    },
+    {
+      "name": "R_a",
+      "d_out_h_f64_bits": "0x3eaef702eb99d736",
+      "d_out_2h_f64_bits": "0x3ef7a721405afaaf",
+      "d_in_f64_bits": "0x3ef7fb7522398b1f",
+      "coarse_outer_case": "POSITIVE",
+      "relation": "GREATER",
+      "status": "UNRESOLVED"
+    }
+  ],
+  "replay": {
+    "status": "NOT-RUN",
+    "scientific_manifest_sha256": null
+  },
+  "classification": "UNRESOLVED",
+  "outer_convergence": "NOT-EVALUATED",
+  "next_step": "STOP-NO-TOLERANCE-SEARCH"
+}
