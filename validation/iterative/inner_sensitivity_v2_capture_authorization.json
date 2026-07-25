@@ -1,0 +1,10 @@
+{
+  "schema": "spot-inner-sensitivity-v2-run-authorization-1",
+  "protocol_sha256": "8a870a85ffe7fd4eb53d9494bcf28acea2025f8f3d022579312cd34a22a1d88c",
+  "implementation_commit": "898ffc782c027fa6e024a55b441fedcc6f9abee7",
+  "ledger_relative_path": "validation/artifacts/inner-sensitivity-v2-execution-ledger",
+  "mode": "capture",
+  "maximum_dragon_processes": 1,
+  "wall_clock_limit_seconds": 120,
+  "automatic_replay": false
+}
