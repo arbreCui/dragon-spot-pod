@@ -254,6 +254,30 @@ It motivates only planning a minimal, default-off REAL64 radial
 working-iteration experiment with the physical equation and frozen controls
 unchanged; it does not predict that experiment will converge.
 
+A subsequent passive control-flow census has now resolved where that
+experiment must not be placed. In one frozen STATIONARY map, `MCGMRE`
+entered and returned normally, and its PRIMARY MOC evaluation ran once for
+all 370 active groups. The residual test immediately after the completed
+PRIMARY evaluation then removed every group before the affine-RHS, Krylov
+and correction sections:
+
+```text
+PRIMARY calls / active groups     1 / 370
+AFFINE-RHS calls                  0
+KRYLOV calls                      0
+correction blocks / group-blocks 0 / 0
+classification                   VALID-GMRES-UPDATE-INACTIVE
+```
+
+There are no per-group `KMAX` rows; in particular, this is not a census of
+370 zero values. OFF reproduced the legacy XSM, the two ON runs reproduced
+one another byte for byte, and the independent reader and artifact checker
+closed all hashes and raw ledger identities. This proves only that a GMRES
+correction-accumulation precision A/B would be empty for this locked path.
+It neither explains the earlier nontermination nor establishes convergence.
+The exact evidence and interpretation limits are in
+[gmres_activity_result.md](validation/iterative/gmres_activity_result.md).
+
 ## Validation route
 
 1. freeze the fixed-space state, source identity and raw map residual;
@@ -271,12 +295,14 @@ unchanged; it does not predict that experiment will converge.
 7. round the retained RAW scalar tuples once to binary32 and publish an exact
    ULP bridge census without a new transport solve or attribution claim
    (completed);
-8. next, freeze the design of a default-off REAL64 radial working-iteration
-   experiment retaining the same physical equation; the ULP census alone
-   does not authorize a trajectory;
-9. only after a predeclared inner gate passes study direct Picard
+8. passively census the existing GMRES control flow and reject an empty
+   correction-accumulation precision experiment (completed);
+9. next, replay the reached `MCGFCS` source arithmetic offline with the same
+   stored inputs and formula in binary32 and binary64; only a nonempty
+   bit-level difference can justify freezing one short runtime A/B;
+10. only after a predeclared inner gate passes study direct Picard
    convergence;
-10. after convergence, repeat rank/mesh/angle refinement and independent 3D
+11. after convergence, repeat rank/mesh/angle refinement and independent 3D
    comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
@@ -313,6 +339,10 @@ validation/iterative/raw_moc_ulp_bridge_protocol.json
 validation/iterative/raw_moc_ulp_bridge_result.md
                                       exact census and interpretation limits
 validation/iterative/check_raw_moc_ulp_bridge_result.py
+                                      public plus local-artifact replay
+validation/iterative/gmres_activity_result.md
+                                      exact passive activity result and limits
+validation/iterative/check_gmres_activity_result.py
                                       public plus local-artifact replay
 validation/level1/                    POD algebra tests
 validation/level2/                    fixed-operator algebra unit tests

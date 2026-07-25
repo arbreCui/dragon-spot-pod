@@ -370,10 +370,29 @@ boundary are in
 and
 [raw_moc_ulp_bridge_result.md](../validation/iterative/raw_moc_ulp_bridge_result.md).
 
-The result supports only the next design step: scope and freeze a minimal,
-default-off REAL64 radial working-iteration experiment that retains the same
-physical equation and solver controls. It neither authorizes a long
-trajectory nor predicts convergence.
+The next passive census has now completed. In the frozen STATIONARY one-map
+path, `MCGMRE` entered and exited normally and the PRIMARY MOC call covered
+all 370 active groups. No affine-RHS call, Krylov call, correction block or
+group-block `KMAX` row was produced. The exact classification is
+`VALID-GMRES-UPDATE-INACTIVE`.
+
+This result rules out only a GMRES correction-accumulation precision A/B for
+this locked path: that experiment would execute no treatment. It does not
+say that PRIMARY MOC was unused, does not generalize to another restart or
+later thermal iteration, and does not explain nontermination or establish
+convergence. The evidence is published in
+[gmres_activity_result.md](../validation/iterative/gmres_activity_result.md).
+
+The next gate is zero-transport: replay the `MCGFCS` source arithmetic
+reached on this PRIMARY path from the same frozen inputs, once with the
+existing binary32 arithmetic and once with exact input promotion followed by
+the same formula in binary64. The decision is only whether the retained
+source vector changes at any element; there is no improvement threshold,
+fit, relaxation, clipping or new tolerance. `EMPTY` means that every retained
+source element has the same bit pattern in both arms; `NONEMPTY` means that
+at least one differs. These classes are not an accuracy ranking. A nonempty
+result may motivate a separately frozen short runtime A/B. It does not
+authorize one automatically and does not authorize a long trajectory.
 
 ## Stage 5 — direct Picard convergence
 

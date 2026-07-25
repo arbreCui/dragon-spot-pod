@@ -31,6 +31,12 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_raw_moc_ulp_bridge_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_raw_moc_ulp_bridge_result.py" --public-only
+  "$ROOT/validation/iterative/check_raw_moc_ulp_bridge_result_history.py" --public-only
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/check_gmres_activity_protocol.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/check_gmres_activity_run_protocol.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/check_gmres_activity_result.py" --public-only
 sh "$ROOT/validation/level1/run_level1.sh"
 sh "$ROOT/validation/level2/run_level2.sh"

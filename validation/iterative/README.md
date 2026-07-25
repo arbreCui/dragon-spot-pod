@@ -373,7 +373,44 @@ python3 validation/iterative/check_raw_moc_ulp_bridge_contract.py
 python3 validation/iterative/check_raw_moc_ulp_bridge_result.py --public-only
 ```
 
-The next step is only to scope and freeze a minimal, default-off REAL64
-radial working-iteration experiment with the physical equation and all
-solver controls unchanged. This census does not authorize a long trajectory
-or predict convergence.
+## Passive GMRES activity result
+
+The separately frozen version-2 runner was explicitly authorized for one
+OFF and two independent ON processes. All three ended normally. OFF
+reproduced the legacy OFF XSM byte for byte; ON-A and ON-B reproduced one
+another in their XSM, normalized log and complete raw ledger.
+
+The independently reconstructed control flow is:
+
+```text
+MCGMRE entries / normal exits     1 / 1
+PRIMARY calls / active groups     1 / 370
+AFFINE-RHS calls                  0
+KRYLOV calls                      0
+correction blocks / group-blocks 0 / 0
+classification                   VALID-GMRES-UPDATE-INACTIVE
+```
+
+No correction block means no per-group `KMAX` row exists; all histogram
+bins, including `K=0`, therefore contain zero group-block rows. The result
+does not say that the PRIMARY MOC evaluation was unused. It is limited to
+this frozen restart and one map, does not explain earlier nontermination,
+and does not establish inner or outer convergence.
+
+For this locked restart and one-map execution, the absent GMRES correction
+update is not a meaningful precision A/B target. The next evidence step is
+an offline nonemptiness replay of the `MCGFCS` source arithmetic reached by
+the locked PRIMARY path: current binary32 arithmetic versus the same formula
+on exactly promoted binary64 inputs. It has no improvement threshold or
+empirical parameter. A Dragon A/B will be considered only if at least one
+retained source element changes, and will require a separate freeze and
+authorization.
+
+Exact counts, evidence hashes and interpretation limits are in
+[gmres_activity_result.md](gmres_activity_result.md). Verify the tracked
+result without Dragon, or include the ignored local artifact, with
+
+```sh
+python3 validation/iterative/check_gmres_activity_result.py --public-only
+python3 validation/iterative/check_gmres_activity_result.py
+```
