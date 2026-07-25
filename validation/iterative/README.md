@@ -398,19 +398,64 @@ this frozen restart and one map, does not explain earlier nontermination,
 and does not establish inner or outer convergence.
 
 For this locked restart and one-map execution, the absent GMRES correction
-update is not a meaningful precision A/B target. The next evidence step is
-an offline nonemptiness replay of the `MCGFCS` source arithmetic reached by
-the locked PRIMARY path: current binary32 arithmetic versus the same formula
-on exactly promoted binary64 inputs. It has no improvement threshold or
-empirical parameter. A Dragon A/B will be considered only if at least one
-retained source element changes, and will require a separate freeze and
-authorization.
+update is not a meaningful precision A/B target. The `MCGFCS` binary32/64
+replay is now only an optional implementation unit test, not a scientific
+gate: a nonempty local source difference would not establish a smaller
+fixed-source defect or strict FLU termination.
+
+The existing RAW-MOC capture is already a same-point primary-MOC defect at
+the plane-1 six-update arm terminals derived from the cap-500 restart. A new
+terminal sweep there would repeat that observable. The failed \(h/2\)
+condition is evaluated from the binary32 `FLU2DR` working state, so a
+continuous REAL64 treatment would have to propagate through the entire
+radial solver. A partial promotion at `MCGFCS`, `MCGMRE` or `MCGFLX` is not
+a valid test of that failure, and a full Dragon precision fork is not part
+of the simple SPOD route.
 
 Exact counts, evidence hashes and interpretation limits are in
 [gmres_activity_result.md](gmres_activity_result.md). Verify the tracked
 result without Dragon, or include the ignored local artifact, with
 
 ```sh
-python3 validation/iterative/check_gmres_activity_result.py --public-only
-python3 validation/iterative/check_gmres_activity_result.py
+python3 validation/iterative/check_gmres_activity_result_history.py \
+  --public-only
+python3 validation/iterative/check_gmres_activity_result_history.py
 ```
+
+## Stage-4 v2 attainable tolerance freeze
+
+The original \(h\)-to-\(h/2\) capture remains
+`INVALID-INNER-NONCONVERGENCE`. Stage-4 v2 instead freezes exactly one
+coarse-to-fine pair before any coarse result exists:
+
+```text
+coarse 2h = 0x358637bd = 1.0E-6 input
+fine    h = 0x350637bd = 5.0E-7 input
+```
+
+The binary32 factor-two relation is exact. The released \(G_h(x_0)\) is
+reused only with its exact executable, basis, state and scientific hashes.
+The future coarse deck must consume the archived \(x_0\) and fixed basis
+directly, so it adds no initializer solve. It may perform only the three
+radial and one returned axial solves in \(G_{2h}\), under a process-group
+wall-clock bound.
+
+The four components of
+\(\mathcal D(x_{1,h},x_{1,2h})\) are compared separately with the
+corresponding coarse outer-map components. There is no weighted score,
+fitting or relaxation. Strict solve termination and the existing physical
+contracts remain mandatory, and a fresh exact replay is required before
+qualification.
+
+This can establish only `QUALIFIED-ON-2H-TO-H-SCALE`, meaning stability over
+\([h,2h]\). It cannot establish a convergence order, error bound, REAL64
+equivalence or \(h/2\) qualification. The protocol is frozen in
+[inner_sensitivity_v2_protocol.json](inner_sensitivity_v2_protocol.json);
+verify it without transport with
+
+```sh
+python3 validation/iterative/check_inner_sensitivity_v2_protocol.py \
+  --public-only
+```
+
+No Dragon process is authorized by the freeze.

@@ -278,6 +278,26 @@ It neither explains the earlier nontermination nor establishes convergence.
 The exact evidence and interpretation limits are in
 [gmres_activity_result.md](validation/iterative/gmres_activity_result.md).
 
+That census closes the local floating-point forensics. The existing RAW-MOC
+capture is already a same-point primary-MOC defect at the plane-1
+six-update arm terminals derived from the cap-500 restart, so another
+terminal sweep there would repeat the same observable. A continuous
+REAL64 experiment capable of addressing the failed \(h/2\) condition would
+have to begin at the binary32 `FLU2DR` state and propagate through the full
+radial solver; changing only `MCGFCS`, `MCGMRE` or `MCGFLX` would not test
+that boundary.
+
+Stage 4 has therefore been amended without changing its failed history. The
+released \(h=\mathtt{0x350637bd}\) map is retained as the strictly terminated
+fine lane, and exactly one new coarse
+\(2h=\mathtt{0x358637bd}\) map is predeclared. The factor two is exact in
+binary32. The new result, when run, may establish stability only over
+\([h,2h]\); it cannot establish an error bound, convergence order, REAL64
+equivalence or \(h/2\) qualification. The method is frozen in
+[inner_sensitivity_v2.md](validation/iterative/inner_sensitivity_v2.md) and
+[inner_sensitivity_v2_protocol.json](validation/iterative/inner_sensitivity_v2_protocol.json).
+No Dragon process is authorized by that freeze.
+
 ## Validation route
 
 1. freeze the fixed-space state, source identity and raw map residual;
@@ -297,12 +317,15 @@ The exact evidence and interpretation limits are in
    (completed);
 8. passively census the existing GMRES control flow and reject an empty
    correction-accumulation precision experiment (completed);
-9. next, replay the reached `MCGFCS` source arithmetic offline with the same
-   stored inputs and formula in binary32 and binary64; only a nonempty
-   bit-level difference can justify freezing one short runtime A/B;
-10. only after a predeclared inner gate passes study direct Picard
+9. retain the `MCGFCS` precision replay only as an optional implementation
+   unit test, not a scientific gate; reject a partial REAL64 solver fork and
+   freeze the unique attainable \(2h\)-to-\(h\) Stage-4 comparison
+   (completed without transport);
+10. evaluate and independently replay that one coarse map under a strict
+   process time bound;
+11. only after the amended inner gate passes study direct Picard
    convergence;
-11. after convergence, repeat rank/mesh/angle refinement and independent 3D
+12. after convergence, repeat rank/mesh/angle refinement and independent 3D
    comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the

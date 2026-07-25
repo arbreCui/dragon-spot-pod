@@ -383,16 +383,64 @@ later thermal iteration, and does not explain nontermination or establish
 convergence. The evidence is published in
 [gmres_activity_result.md](../validation/iterative/gmres_activity_result.md).
 
-The next gate is zero-transport: replay the `MCGFCS` source arithmetic
-reached on this PRIMARY path from the same frozen inputs, once with the
-existing binary32 arithmetic and once with exact input promotion followed by
-the same formula in binary64. The decision is only whether the retained
-source vector changes at any element; there is no improvement threshold,
-fit, relaxation, clipping or new tolerance. `EMPTY` means that every retained
-source element has the same bit pattern in both arms; `NONEMPTY` means that
-at least one differs. These classes are not an accuracy ranking. A nonempty
-result may motivate a separately frozen short runtime A/B. It does not
-authorize one automatically and does not authorize a long trajectory.
+The passive census ends the subroutine-by-subroutine precision search.
+The released RAW-MOC tuple is already a same-point primary-MOC defect at the
+plane-1 six-update arm terminals derived from the cap-500 restart. Repeating
+that sweep there would add no independent observable.
+Moreover, the failed \(h/2\) quantities are formed from the binary32
+`FLU2DR` state. A continuous REAL64 experiment would have to begin there and
+propagate through source construction, balance, acceleration, `DOORFV` and
+the complete MCCG chain. A local `MCGFCS`, `MCGMRE` or `MCGFLX` promotion is
+therefore not a valid experiment for this failure, and the large full-solver
+precision fork is outside the simple SPOD validation route.
+
+### Stage-4 v2 amendment — attainable tolerance sensitivity
+
+The original \(h\)-to-\(h/2\) result remains
+`INVALID-INNER-NONCONVERGENCE`. No returned \(h/2\) state is reused. Before
+observing any new result, a single replacement pair is frozen:
+
+\[
+x_{1,2h}=G_{2h}(x_0),\qquad x_{1,h}=G_h(x_0),
+\]
+
+where
+
+\[
+2h=\mathtt{0x358637bd},\qquad
+h=\mathtt{0x350637bd},\qquad
+\tfrac12(2h)=h
+\]
+
+exactly in binary32. The existing strictly terminated and replayed \(h\) map
+is the fine lane. Only \(G_{2h}(x_0)\) is new.
+
+Let
+
+\[
+\mathcal D_{\rm in}=\mathcal D(x_{1,h},x_{1,2h}).
+\]
+
+For each component \(i\), independently,
+
+```text
+D_out,2h,i > 0 and D_in,i < D_out,2h,i -> RESOLVED
+D_out,2h,i = 0 and D_in,i = 0          -> RESOLVED at stored precision
+otherwise                               -> UNRESOLVED
+```
+
+There is no cross-component aggregation, fitted factor, relaxation or
+post-result tolerance choice. Every coarse radial solve and the returned
+axial solve must terminate strictly and pass the existing source, positivity,
+balance, Galerkin and identity contracts. A first valid capture is
+`PENDING-REPLAY`; only a fresh byte-identical replay can become
+`QUALIFIED-ON-2H-TO-H-SCALE`.
+
+This qualification means stability only over the tested attainable interval
+\([h,2h]\). It is not an asymptotic order, solver-error bound, REAL64
+equivalence or \(h/2\) qualification. The complete freeze is
+[inner_sensitivity_v2_protocol.json](../validation/iterative/inner_sensitivity_v2_protocol.json).
+It authorizes no transport process or long trajectory.
 
 ## Stage 5 — direct Picard convergence
 
