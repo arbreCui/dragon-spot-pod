@@ -63,10 +63,13 @@ sh "$LEDGER_RUNNER"
 
 python3 "$NORMALIZER" --mode legacy "$LEGACY_LOG" \
   >"$WORK/legacy.normalized.log"
-sed 's/ MOCA 2 ;/ MOCA 2 GMRA ;/' "$LEGACY_LOG" \
+sed 's/ MOCA 2 ;     / MOCA 2 GMRA ;/' "$LEGACY_LOG" \
   >"$WORK/gmra.synthetic.log"
 test "$(grep -c 'GMRA' "$WORK/gmra.synthetic.log")" -eq 2 ||
   fail "synthetic GMRA token census differs"
+test "$(awk 'index($0,"GMRA") { print length($0) }' \
+  "$WORK/gmra.synthetic.log" | sort -u | tr '\n' ' ')" = "127 128 " ||
+  fail "synthetic fixed-width GMRA line lengths differ"
 python3 "$NORMALIZER" --mode gmra "$WORK/gmra.synthetic.log" \
   >"$WORK/gmra.normalized.log"
 cmp "$WORK/legacy.normalized.log" "$WORK/gmra.normalized.log"

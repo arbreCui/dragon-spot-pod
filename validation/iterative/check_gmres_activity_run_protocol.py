@@ -17,29 +17,29 @@ ROOT = Path(__file__).resolve().parents[2]
 ITER = ROOT / "validation" / "iterative"
 PROTOCOL = ITER / "gmres_activity_run_protocol.json"
 EXPECTED_PROTOCOL_SHA256 = (
-    "879194d5bd7c7fb6ef2538158d91095ff3026eebc329c126e122a526f566e3ee"
+    "9d22c63b2678e78867fd4bea0b801388ebc943d81b1f5eaa3a80fda052c9e23f"
 )
 SOURCE_IMPLEMENTATION_COMMIT = "5816c8aad4fbb43542514d5bd571ebccecdb6d72"
 
 EXPECTED_DEPENDENCIES = {
     "validation/iterative/gmres_activity_protocol.json":
-        "27093c87b7321f4ecfd22307c7fac0ecc6d99a2eb5b2019509d2bf11c663cc85",
+        "7fedbdf3fd5ae26a709dc1785d9d2bebf4648599d4aa1ccd999c6fbc93c9cac1",
     "validation/iterative/check_gmres_activity_protocol.py":
-        "675ce5191e8fabcdcc4e2884c6868df69f9fd123503bc7567e30f642a74b7726",
+        "1084f38ad14c2fb5f0e2b52786a248e29f3461c084145fb55aaae9d6dda2202c",
     "validation/iterative/gmres_activity_implementation.sha256":
-        "8bed8f3726cc4a903024fbbfe32f1ff79bce51bdbeac01054528bfeca1d56f26",
+        "19098f8f4bc4c75dc94c829472b44d4553de6992b03dc965b9f726b2018ee736",
     "validation/iterative/check_gmres_activity_implementation.py":
-        "47283f44d5555ea89ecaeddb1878f8c005a2ae30a71e3d8e698fddf4357a0964",
+        "a7433a637a1d602a69cac7f9caf2e5213a8ea35370957297e64fa8b4e0d7ea2f",
     "validation/iterative/gmres_activity_overlay_manifest.json":
         "b117cea97cfb54b4b043bc923c435a736d01b54fbb8fcfd5fdcb1472c39283a3",
     "validation/iterative/gmres_activity_overlay.patch":
         "ebdc1eee70422e0c881901802602d053b61079ad942ec1dbdf16fbe88fc8f942",
     "validation/iterative/run_gmres_activity_preflight.sh":
-        "f880a3d668e34d180011fac51ad58df13cace0c06588d77815f6eca4273389bb",
+        "af860c19ccb905ca0e140a4f81ed26d134bce791f24fffa44637a7cd7b89b947",
     "validation/iterative/check_gmres_activity_xsm.f90":
         "9c5ccb762dbb1f9947a7d6c587612862bfd6bdf1e7240172d3b25f316386bf99",
     "validation/iterative/normalize_gmres_activity_log.py":
-        "94d244d089c18b2b6371d0910e5979cf9c64881ea663ec3cd3e285edf55b6b1d",
+        "8fa63908d3a0f2c025bee44a3f5f967f591d48a90f2de4c36b33cc163dfa3ff9",
     "validation/iterative/raw_moc_capture_result_receipt.sha256":
         "485baab029387aeb8212647768be96b6eba438119e7d6ddcf013ccaf5e3359b5",
     "validation/iterative/raw_moc_ulp_bridge_result_receipt.sha256":
@@ -425,6 +425,11 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
                 "RUN only after every required committed implementation "
                 "and executable gate passes"
             ),
+            "stage_b_execution_authority": (
+                "only the committed, tracked, byte-exact complete run "
+                "implementation freeze plus explicit RUN_GMRES_ACTIVITY=1; "
+                "the protocol freeze alone is insufficient"
+            ),
             "any_other_value_including_empty": "FAIL-CLOSED",
             "preflight_must_not_invoke_Dragon": True,
             "production_preflight_invocation": (
@@ -526,6 +531,11 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             "timeout_result": "INVALID-NO-SCIENTIFIC-RESULT",
             "termination_scope": (
                 "only the exact spawned process group; never killall"
+            ),
+            "managed_outer_signals": ["SIGHUP", "SIGINT", "SIGTERM"],
+            "outer_signal_result": (
+                "terminate the exact spawned process group, then "
+                "INVALID-NO-SCIENTIFIC-RESULT"
             ),
             "preparation_Dragon_processes": 0,
             "six_step_arm_reruns": 0,
@@ -691,12 +701,12 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             ),
             (
                 "method_protocol_sha256\t"
-                "27093c87b7321f4ecfd22307c7fac0ecc6d99a2eb5b2019509d2bf11c663cc85"
+                "7fedbdf3fd5ae26a709dc1785d9d2bebf4648599d4aa1ccd999c6fbc93c9cac1"
             ),
             "run_protocol_sha256\t<SHA256 of frozen run protocol bytes>",
             (
                 "method_implementation_manifest_sha256\t"
-                "8bed8f3726cc4a903024fbbfe32f1ff79bce51bdbeac01054528bfeca1d56f26"
+                "19098f8f4bc4c75dc94c829472b44d4553de6992b03dc965b9f726b2018ee736"
             ),
             (
                 "run_implementation_manifest_sha256\t"
@@ -723,7 +733,7 @@ def validate_payload(data: dict[str, Any], verify_files: bool) -> None:
             "validation/iterative/normalize_gmres_activity_log.py",
             "validation/iterative/run_gmres_activity_preflight.sh",
         ]
-        and freeze["current_state"]
+        and freeze["state_at_protocol_freeze"]
         == "NOT-IMPLEMENTED; RUN_GMRES_ACTIVITY=1 REMAINS UNAUTHORIZED",
         "future run implementation freeze differs",
     )

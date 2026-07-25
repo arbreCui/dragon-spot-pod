@@ -411,8 +411,8 @@
     },
     "ON_log_difference_whitelist": {
       "CPU_telemetry": "the already frozen normalization only",
-      "deck_listing": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;' on source line 0028",
-      "execution_echo": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;' on echoed source line 0028",
+      "deck_listing": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;     ' on source line 0028, restoring the five fixed-width CLE-2000 padding columns",
+      "execution_echo": "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;     ' on echoed source line 0028, restoring the five fixed-width CLE-2000 padding columns",
       "additional_lines": 0
     },
     "long_trajectory": false,

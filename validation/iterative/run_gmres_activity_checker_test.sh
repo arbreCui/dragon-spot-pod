@@ -46,30 +46,30 @@ FC_FLAGS="-std=f2008 -O0 -Wall -Wextra -Werror
 "$FC" "$WORK/fixture.o" "$GANLIB_LIB" -lstdc++ \
   -o "$WORK/fixture"
 
-if rg -i \
-  '\b(LCMPUT|LCMPTC|LCMPPD|LCMDID|LCMDIL|LCMLID|LCMLIL|LCMDEL|LCMEQU|LCMSIX)\b' \
+if grep -Ei \
+  '(LCMPUT|LCMPTC|LCMPPD|LCMDID|LCMDIL|LCMLID|LCMLIL|LCMDEL|LCMEQU|LCMSIX)' \
   "$READER" >/dev/null
 then
   echo "GMRES-ACTIVITY TEST FAIL: reader source contains LCM mutation" >&2
   exit 1
 fi
-if rg -i \
-  '\b(use[[:space:]]+(SPOMOC|FLU|MCG|MOC)|call[[:space:]]+(DOORFV|FLU2DR|FLU2AC|FLUBAL|MCCGF|MCGFLX|MCGFL1|MCGMRE|MCGFCS|SPOMOC))\b' \
+if grep -Ei \
+  '(use[[:space:]]+(SPOMOC|FLU|MCG|MOC)|call[[:space:]]+(DOORFV|FLU2DR|FLU2AC|FLUBAL|MCCGF|MCGFLX|MCGFL1|MCGMRE|MCGFCS|SPOMOC))' \
   "$READER" >/dev/null
 then
   echo "GMRES-ACTIVITY TEST FAIL: reader source references solver code" >&2
   exit 1
 fi
 nm -u "$WORK/reader.o" >"$WORK/reader.object.nm"
-if rg -i \
+if grep -Ei \
   'LCMPUT|LCMPTC|LCMPPD|LCMDID|LCMDIL|LCMLID|LCMLIL|LCMDEL|LCMEQU|LCMSIX|DOORFV|FLU2DR|FLU2AC|FLUBAL|MCCGF|MCGFLX|MCGFL1|MCGMRE|MCGFCS|SPOMOC' \
   "$WORK/reader.object.nm" >/dev/null
 then
   echo "GMRES-ACTIVITY TEST FAIL: reader object has forbidden symbol" >&2
   exit 1
 fi
-rg -i 'lcmop' "$WORK/reader.object.nm" >/dev/null
-rg -i 'lcmget' "$WORK/reader.object.nm" >/dev/null
+grep -i 'lcmop' "$WORK/reader.object.nm" >/dev/null
+grep -i 'lcmget' "$WORK/reader.object.nm" >/dev/null
 
 make_case()
 {

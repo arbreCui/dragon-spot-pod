@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ITERATIVE = ROOT / "validation" / "iterative"
 PROTOCOL = ITERATIVE / "gmres_activity_protocol.json"
 EXPECTED_PROTOCOL_SHA256 = (
-    "27093c87b7321f4ecfd22307c7fac0ecc6d99a2eb5b2019509d2bf11c663cc85"
+    "7fedbdf3fd5ae26a709dc1785d9d2bebf4648599d4aa1ccd999c6fbc93c9cac1"
 )
 FROZEN_PARENT = "4d7abb23ac7975d4146beaa3b0049e36cdad8776"
 ARTIFACT_ROOT = ROOT / "validation" / "artifacts" / "raw-moc-capture"
@@ -825,12 +825,14 @@ def verify_run_and_classification(protocol: dict[str, Any]) -> None:
             "ON_log_difference_whitelist": {
                 "CPU_telemetry": "the already frozen normalization only",
                 "deck_listing": (
-                    "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;' "
-                    "on source line 0028"
+                    "replace exactly one ' MOCA 2 GMRA ;' with "
+                    "' MOCA 2 ;     ' on source line 0028, restoring the "
+                    "five fixed-width CLE-2000 padding columns"
                 ),
                 "execution_echo": (
-                    "replace exactly one ' MOCA 2 GMRA ;' with ' MOCA 2 ;' "
-                    "on echoed source line 0028"
+                    "replace exactly one ' MOCA 2 GMRA ;' with "
+                    "' MOCA 2 ;     ' on echoed source line 0028, restoring "
+                    "the five fixed-width CLE-2000 padding columns"
                 ),
                 "additional_lines": 0,
             },

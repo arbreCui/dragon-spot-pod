@@ -23,7 +23,10 @@ TRACE_GMRA_RE = re.compile(
     re.MULTILINE,
 )
 GMRA_REPLACEMENT_FROM = " MOCA 2 GMRA ;"
-GMRA_REPLACEMENT_TO = " MOCA 2 ;"
+# CLE-2000 prints source and execution lines in a fixed 120-column field.
+# Removing the five GMRA characters must therefore restore the five padding
+# columns so that a normalized real run can equal the frozen legacy log.
+GMRA_REPLACEMENT_TO = " MOCA 2 ;     "
 
 
 def fail(message: str) -> None:

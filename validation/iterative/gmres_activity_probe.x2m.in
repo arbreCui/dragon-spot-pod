@@ -1,0 +1,38 @@
+****************************************************************
+* One frozen plane-1 production-map evaluation.                *
+*                                                              *
+* The runner renders arm, mode and one optional audit control. *
+* MAXOUT=1 bounds this deck to exactly one outer update.        *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+
+XSM_FILE MACRO0 :: FILE './restart_macro0.xsm' ;
+XSM_FILE FSOURCE :: FILE './restart_source.xsm' ;
+XSM_FILE SYSTEM :: FILE './restart_system.xsm' ;
+XSM_FILE TRACK :: FILE './restart_track.xsm' ;
+XSM_FILE FLUX :: FILE './result.xsm' ;
+
+MODULE FLU: END: ;
+
+INTEGER outer_cap := 1 ;
+INTEGER inner_cap := 740 ;
+INTEGER free_steps := 1 ;
+INTEGER acc_steps := 0 ;
+REAL solver_eps := 2.5E-7 ;
+
+ECHO "RAW-MOC-CAPTURE-BEGIN" "@ARM@" "@MODE@" ;
+ECHO "RAW-MOC-CAPTURE-PLANE" 1 ;
+ECHO "RAW-MOC-CAPTURE-CONTROLS"
+  outer_cap inner_cap solver_eps free_steps acc_steps ;
+
+FLUX := FLU: FLUX MACRO0 TRACK TRACK_f SYSTEM FSOURCE ::
+  EDIT 1 TYPE S INIT ON REBA
+  EXTE <<outer_cap>> <<solver_eps>>
+  UNKT <<solver_eps>>
+  THER <<inner_cap>> <<solver_eps>>
+  ACCE <<free_steps>> <<acc_steps>> @AUDIT_CONTROL@ ;
+
+ECHO "RAW-MOC-CAPTURE-COMPLETE" "@ARM@" "@MODE@" ;
+END: ;
+QUIT "LIST" .

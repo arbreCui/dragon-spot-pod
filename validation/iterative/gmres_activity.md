@@ -83,6 +83,11 @@ standalone `GMRA` keyword will be default off and valid only together with
 `MOCA 2`; it writes a sibling `SPOT-GMR-AUD` directory and leaves the
 frozen `SPOMOC.f90` and `SPOT-MOC-AUD` contract unchanged.
 
+The two allowed `GMRA` log edits preserve CLE-2000's fixed 120-column
+source field: each ` MOCA 2 GMRA ;` token is replaced by
+` MOCA 2 ;     `. The five restored spaces are formatting closure, not a
+scientific normalization.
+
 The protocol is frozen in
 [gmres_activity_protocol.json](gmres_activity_protocol.json), and its
 fail-closed static checker is
