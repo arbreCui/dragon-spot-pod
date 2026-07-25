@@ -107,6 +107,7 @@ program check_one_map_xsm
 
   write(6,'(A)') 'ONE-MAP-XSM POD-PACKAGE BITWISE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RADIAL-OP LIVE-CHANGE PASS'
+  write(6,'(A)') 'ONE-MAP-XSM RAW-RADIAL-POSITIVITY PASS'
   write(6,'(A)') 'ONE-MAP-XSM CANONICAL-LAYOUT BITWISE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RAW-DEFECT BITWISE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RESTART-ARCHIVE BITWISE PASS'
@@ -537,11 +538,15 @@ contains
   subroutine check_restart_archive(path,previous,current)
     character(len=*), intent(in) :: path
     type(canonical_state), intent(in) :: previous,current
-    type(c_ptr) :: root,fluxes,systems,flux_ptr,system_ptr
-    integer :: listdim,isnap,ngrp,fs_equation
+    type(c_ptr) :: root,tracks,fluxes,systems,track_ptr,flux_ptr,system_ptr
+    type(c_ptr) :: radial_fluxes
+    integer :: listdim,isnap,ngrp,fs_equation,g,r
+    integer :: radial_state(nstate),radial_nreg,radial_nunk
     real(real32) :: l1_error,fs_keff,fs_min,fs_qsum,fs_rbal
     real(real64) :: iter_keff
     real(real32), allocatable :: flux_leak(:),system_leak(:)
+    real(real32), allocatable :: radial_flux(:)
+    integer, allocatable :: radial_key(:)
     character(len=12) :: signature
     character(len=80) :: owner
 
@@ -572,6 +577,7 @@ contains
          real32_bits(real(current%saved_defect(3),real32)))) &
       call fail('RESTART ARCHIVE LEAKAGE ERROR CHANGED.')
 
+    tracks=LCMGID(root,'TRACK')
     fluxes=LCMGID(root,'FLUX')
     systems=LCMGID(root,'SYSTEM')
     allocate(flux_leak(ngrp),system_leak(ngrp))
@@ -579,8 +585,21 @@ contains
       write(owner,'(A,I0)') 'RESTART PLANE ',isnap
       call require_directory_item(fluxes,isnap,trim(owner)//' FLUX')
       call require_directory_item(systems,isnap,trim(owner)//' SYSTEM')
+      call require_directory_item(tracks,isnap,trim(owner)//' TRACK')
+      track_ptr=LCMGIL(tracks,isnap)
       flux_ptr=LCMGIL(fluxes,isnap)
       system_ptr=LCMGIL(systems,isnap)
+      call require_record(track_ptr,'STATE-VECTOR',nstate,1,owner)
+      call LCMGET(track_ptr,'STATE-VECTOR',radial_state)
+      radial_nreg=radial_state(1)
+      radial_nunk=radial_state(2)
+      if ((radial_nreg <= 0).or.(radial_nunk <= 0)) &
+        call fail(trim(owner)//' INVALID RADIAL DIMENSIONS.')
+      call require_record(track_ptr,'KEYFLX$ANIS',radial_nreg,1,owner)
+      allocate(radial_key(radial_nreg),radial_flux(radial_nunk))
+      call LCMGET(track_ptr,'KEYFLX$ANIS',radial_key)
+      if (any(radial_key < 1).or.any(radial_key > radial_nunk)) &
+        call fail(trim(owner)//' INVALID RADIAL FLUX KEYS.')
       call require_record(flux_ptr,'SIGNATURE',3,3,owner)
       call require_record(system_ptr,'SIGNATURE',3,3,owner)
       call LCMGTC(flux_ptr,'SIGNATURE',12,signature)
@@ -589,6 +608,18 @@ contains
       call LCMGTC(system_ptr,'SIGNATURE',12,signature)
       if (signature /= 'L_PIJ') &
         call fail(trim(owner)//' L_PIJ SIGNATURE EXPECTED.')
+      call require_record(flux_ptr,'FLUX',ngrp,10,owner)
+      radial_fluxes=LCMGID(flux_ptr,'FLUX')
+      do g=1,ngrp
+        call require_list_item(radial_fluxes,g,radial_nunk,2,owner)
+        call LCMGDL(radial_fluxes,g,radial_flux)
+        if (any(.not.ieee_is_finite(radial_flux))) &
+          call fail(trim(owner)//' NON-FINITE RAW RADIAL FLUX.')
+        do r=1,radial_nreg
+          if (radial_flux(radial_key(r)) <= 0.0_real32) &
+            call fail(trim(owner)//' NONPOSITIVE RAW RADIAL SCALAR FLUX.')
+        enddo
+      enddo
 
       call require_record(flux_ptr,'SPOT-LEAK1D',ngrp,2,owner)
       call require_record(system_ptr,'SPOT-LEAK1D',ngrp,2,owner)
@@ -620,6 +651,7 @@ contains
           (.not.ieee_is_finite(fs_qsum)).or.(fs_qsum <= 0.0_real32).or. &
           (.not.ieee_is_finite(fs_rbal)).or.(fs_rbal < 0.0_real32)) &
         call fail(trim(owner)//' INVALID FIXED-SOURCE CONTRACT.')
+      deallocate(radial_flux,radial_key)
     enddo
     deallocate(system_leak,flux_leak)
     call LCMCL(root,1)
@@ -723,6 +755,20 @@ contains
     if ((length_found /= -1).or.(type_found /= 0)) &
       call fail(trim(owner)//' LIST ITEM IS NOT A DIRECTORY.')
   end subroutine require_directory_item
+
+
+  subroutine require_list_item(list_ptr,index0,length_expected, &
+      type_expected,owner)
+    type(c_ptr), intent(in) :: list_ptr
+    integer, intent(in) :: index0,length_expected,type_expected
+    character(len=*), intent(in) :: owner
+    integer :: length_found,type_found
+
+    call LCMLEL(list_ptr,index0,length_found,type_found)
+    if ((length_found /= length_expected).or. &
+        (type_found /= type_expected)) &
+      call fail(trim(owner)//' LIST ITEM CONTRACT FAILED.')
+  end subroutine require_list_item
 
 
   pure elemental integer(int32) function real32_bits(value)

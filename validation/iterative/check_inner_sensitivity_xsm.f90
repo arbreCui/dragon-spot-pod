@@ -2,7 +2,8 @@ program check_inner_sensitivity_xsm
   ! Independent, read-only Ganlib audit of the Stage-4 inner-tolerance pair.
   !
   ! Arguments:
-  !   x0_h x1_h x0_h2 x1_h2 snap1_h snap1_h2
+  !   legacy: x0_h x1_h x0_h2 x1_h2 snap1_h snap1_h2
+  !   v2:     x0_h x1_h x0_2h x1_2h snap1_h snap1_2h V2-2H
   !
   ! The program does not solve transport and does not assign a numerical
   ! acceptance threshold.  It verifies the common discrete state, recomputes
@@ -58,15 +59,23 @@ program check_inner_sensitivity_xsm
   end type restart_inputs
 
   character(len=1024) :: paths(6)
+  character(len=12) :: mode
   character(len=5), parameter :: component_name(4) = &
     [character(len=5) :: 'RRHO','RLEAK','DLEAK','RA']
   type(canonical_state) :: x0_h,x1_h,x0_h2,x1_h2
   type(restart_inputs) :: restart_h,restart_h2
   real(real64) :: dout_h(4),dout_h2(4),dout_h2_shared_x0(4),din(4)
-  integer :: i
+  integer :: i,nargs
+  logical :: v2
 
-  if (command_argument_count() /= 6) call fail( &
-    'SIX ARGUMENTS EXPECTED: X0_H X1_H X0_H2 X1_H2 SNAP1_H SNAP1_H2.')
+  nargs=command_argument_count()
+  if ((nargs /= 6).and.(nargs /= 7)) call fail( &
+    'SIX LEGACY ARGUMENTS OR SIX ARGUMENTS PLUS V2-2H EXPECTED.')
+  v2=nargs == 7
+  if (v2) then
+    call get_command_argument(7,mode)
+    if (trim(mode) /= 'V2-2H') call fail('INVALID OPTIONAL MODE.')
+  endif
   do i=1,6
     call get_command_argument(i,paths(i))
     if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
@@ -78,48 +87,116 @@ program check_inner_sensitivity_xsm
     x0_h,'X0 H')
   call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
     x1_h,'X1 H')
-  call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
-    x0_h2,'X0 H2')
-  call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
-    x1_h2,'X1 H2')
+  if (v2) then
+    call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
+      x0_h2,'X0 2H')
+    call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
+      x1_h2,'X1 2H')
+  else
+    call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
+      x0_h2,'X0 H2')
+    call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
+      x1_h2,'X1 H2')
+  endif
 
   call compare_complete_x0(x0_h,x0_h2)
   call compare_trial_space(x0_h,x1_h,'X1 H')
-  call compare_trial_space(x0_h,x1_h2,'X1 H2')
+  if (v2) then
+    call compare_trial_space(x0_h,x1_h2,'X1 2H')
+  else
+    call compare_trial_space(x0_h,x1_h2,'X1 H2')
+  endif
 
   call recompute_defect(x0_h,x1_h,dout_h)
   if (any(real64_bits(dout_h) /= real64_bits(x1_h%saved_defect))) &
     call fail('DOUT H DIFFERS FROM ITS SAVED DEFECT BITS.')
   call recompute_defect(x0_h2,x1_h2,dout_h2)
-  if (any(real64_bits(dout_h2) /= real64_bits(x1_h2%saved_defect))) &
-    call fail('DOUT H2 DIFFERS FROM ITS SAVED DEFECT BITS.')
+  if (any(real64_bits(dout_h2) /= real64_bits(x1_h2%saved_defect))) then
+    if (v2) then
+      call fail('DOUT 2H DIFFERS FROM ITS SAVED DEFECT BITS.')
+    else
+      call fail('DOUT H2 DIFFERS FROM ITS SAVED DEFECT BITS.')
+    endif
+  endif
   call recompute_defect(x0_h,x1_h2,dout_h2_shared_x0)
-  if (any(real64_bits(dout_h2_shared_x0) /= real64_bits(dout_h2))) &
-    call fail('DOUT H2 DEPENDS ON WHICH IDENTICAL X0 OBJECT IS USED.')
-  call recompute_defect(x1_h,x1_h2,din)
+  if (any(real64_bits(dout_h2_shared_x0) /= real64_bits(dout_h2))) then
+    if (v2) then
+      call fail('DOUT 2H DEPENDS ON WHICH IDENTICAL X0 OBJECT IS USED.')
+    else
+      call fail('DOUT H2 DEPENDS ON WHICH IDENTICAL X0 OBJECT IS USED.')
+    endif
+  endif
+  if (v2) then
+    ! D(current,previous) uses the current state in the R_a denominator.
+    ! The frozen v2 definition is D(x1_h,x1_2h), not the reverse.
+    call recompute_defect(x1_h2,x1_h,din)
+  else
+    call recompute_defect(x1_h,x1_h2,din)
+  endif
 
   call load_restart_inputs(trim(paths(5)),restart_h,'SNAP1 H')
-  call load_restart_inputs(trim(paths(6)),restart_h2,'SNAP1 H2')
+  if (v2) then
+    call load_restart_inputs(trim(paths(6)),restart_h2,'SNAP1 2H')
+  else
+    call load_restart_inputs(trim(paths(6)),restart_h2,'SNAP1 H2')
+  endif
   call link_restart_to_x0(restart_h,x0_h,'SNAP1 H')
-  call link_restart_to_x0(restart_h2,x0_h2,'SNAP1 H2')
+  if (v2) then
+    call link_restart_to_x0(restart_h2,x0_h2,'SNAP1 2H')
+  else
+    call link_restart_to_x0(restart_h2,x0_h2,'SNAP1 H2')
+  endif
   call compare_restart_inputs(restart_h,restart_h2)
 
-  write(6,'(A)') 'INNER-SENSITIVITY X0 CANONICAL BITWISE IDENTICAL'
-  write(6,'(A)') 'INNER-SENSITIVITY TRIAL-SPACE BITWISE IDENTICAL'
-  write(6,'(A)') 'INNER-SENSITIVITY RADIAL-INPUTS BITWISE IDENTICAL'
-  write(6,'(A)') 'INNER-SENSITIVITY ORDER RRHO RLEAK DLEAK RA'
-  write(6,'(A,4(1X,ES25.17E3))') 'INNER-SENSITIVITY DOUT-H',dout_h
-  write(6,'(A,4(1X,ES25.17E3))') 'INNER-SENSITIVITY DOUT-H2',dout_h2
-  write(6,'(A,4(1X,ES25.17E3))') 'INNER-SENSITIVITY DIN',din
-  do i=1,4
-    write(6,'(A,1X,A,1X,A,1X,A,1X,A,1X,A)') &
-      'INNER-SENSITIVITY COMPONENT',trim(component_name(i)), &
-      'DIN-VS-DOUT-H',trim(relation(din(i),dout_h(i))), &
-      'DIN-VS-DOUT-H2',trim(relation(din(i),dout_h2(i)))
-  enddo
-  write(6,'(A)') 'INNER-SENSITIVITY COMPLETE'
+  if (v2) then
+    write(6,'(A)') &
+      'INNER-SENSITIVITY-V2 X0 CANONICAL BITWISE IDENTICAL'
+    write(6,'(A)') &
+      'INNER-SENSITIVITY-V2 TRIAL-SPACE BITWISE IDENTICAL'
+    write(6,'(A)') &
+      'INNER-SENSITIVITY-V2 RADIAL-INPUTS BITWISE IDENTICAL'
+    write(6,'(A)') 'INNER-SENSITIVITY-V2 ORDER RRHO RLEAK DLEAK RA'
+    call write_bits('INNER-SENSITIVITY-V2 DOUT-H-BITS',dout_h)
+    call write_bits('INNER-SENSITIVITY-V2 DOUT-2H-BITS',dout_h2)
+    call write_bits('INNER-SENSITIVITY-V2 DIN-BITS',din)
+    do i=1,4
+      write(6,'(A,1X,A,1X,A,1X,A)') &
+        'INNER-SENSITIVITY-V2 COMPONENT',trim(component_name(i)), &
+        'DIN-VS-DOUT-2H',trim(relation(din(i),dout_h2(i)))
+    enddo
+    write(6,'(A)') 'INNER-SENSITIVITY-V2 COMPLETE'
+  else
+    write(6,'(A)') 'INNER-SENSITIVITY X0 CANONICAL BITWISE IDENTICAL'
+    write(6,'(A)') 'INNER-SENSITIVITY TRIAL-SPACE BITWISE IDENTICAL'
+    write(6,'(A)') 'INNER-SENSITIVITY RADIAL-INPUTS BITWISE IDENTICAL'
+    write(6,'(A)') 'INNER-SENSITIVITY ORDER RRHO RLEAK DLEAK RA'
+    write(6,'(A,4(1X,ES25.17E3))') 'INNER-SENSITIVITY DOUT-H',dout_h
+    write(6,'(A,4(1X,ES25.17E3))') 'INNER-SENSITIVITY DOUT-H2',dout_h2
+    write(6,'(A,4(1X,ES25.17E3))') 'INNER-SENSITIVITY DIN',din
+    do i=1,4
+      write(6,'(A,1X,A,1X,A,1X,A,1X,A,1X,A)') &
+        'INNER-SENSITIVITY COMPONENT',trim(component_name(i)), &
+        'DIN-VS-DOUT-H',trim(relation(din(i),dout_h(i))), &
+        'DIN-VS-DOUT-H2',trim(relation(din(i),dout_h2(i)))
+    enddo
+    write(6,'(A)') 'INNER-SENSITIVITY COMPLETE'
+  endif
 
 contains
+
+  subroutine write_bits(label,values)
+    character(len=*), intent(in) :: label
+    real(real64), intent(in) :: values(4)
+    character(len=16) :: hexadecimal
+    character(len=18) :: fields(4)
+    integer :: index
+
+    do index=1,4
+      write(hexadecimal,'(Z16.16)') real64_bits(values(index))
+      fields(index)='0x'//hexadecimal
+    enddo
+    write(6,'(A,4(1X,A))') trim(label),fields
+  end subroutine write_bits
 
   subroutine load_canonical_state(path,expected_fixb,expected_type, &
       expect_saved_defect,data,owner)
