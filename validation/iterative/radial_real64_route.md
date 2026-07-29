@@ -167,6 +167,36 @@ REAL64 radial lane or a convergence result.  The exact boundary is in
 [`real64_phase_a2/README.md`](real64_phase_a2/README.md) and
 [`real64_phase_a2/precision_manifest.json`](real64_phase_a2/precision_manifest.json).
 
+Phase-A3 is a compile-only checked legacy-ABI seam for the exact frozen
+`MCGFCF`-through-`MCGFST` path:
+
+```sh
+make spot-real64-phase-a3
+```
+
+It encodes the ordered call
+`MCGFCF(MCGFFIR,MCGFFAR,MCGFFAL,MCGSCA,...)->MCGFST` with the actual
+legacy data kinds, ranks, procedure identities, and call boundaries.
+A deliberate unresolved link symbol is part of the contract, so the gate
+performs zero Phase-A3 links, creates no Phase-A3 executable, executes
+zero Phase-A3 calls, and runs zero transport solves and zero Dragon
+processes.  This is static ABI evidence only: it is disconnected from
+production and does not validate MOC behavior or convergence.
+
+Phase-A3 also records that the frozen legacy `MCGFL1` caller forms
+`XSIXYZ(1,IDIR)` with `IDIR=0`.  That is a nonconforming actual designator.
+The validation seam uses a legal caller-owned `XSI` vector to make its own
+interface conforming; it does not claim to repair or validate the
+production caller.  The exact boundary is in
+[`real64_phase_a3/README.md`](real64_phase_a3/README.md) and
+[`real64_phase_a3/precision_manifest.json`](real64_phase_a3/precision_manifest.json).
+
+The next static step is context/host closure from the Phase-A2 façade into
+this checked seam while preserving the unresolved link barrier.  Until that
+closure and all later gates are separately passed, ACA, rebalancing,
+acceleration, the wider mutable radial state, terminal norms, the real MOC
+operation, and all solver/Picard convergence claims remain open.
+
 ### B. Plane-1 feasibility
 
 This gate is frozen but not authorized.  A later explicit authorization may

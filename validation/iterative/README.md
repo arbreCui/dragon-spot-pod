@@ -520,11 +520,34 @@ complete finite active output, failure atomicity, and compile-time
 wrong-kind rejection.  It does not execute the real MOC sequence or read a
 tracking file.
 
-Both subgates are outside `src/`, unconnected to the production call graph,
-and perform no transport solve.  The actual `MCGFCF`-through-`MCGFST`
-adapter, ACA, rebalancing, acceleration, wider mutable radial state, and
+The third isolated subgate is under
+[`real64_phase_a3/`](real64_phase_a3/README.md).  It is a compile-only,
+checked legacy-ABI seam for the frozen `MCGFCF`-through-`MCGFST` path:
+
+```sh
+make spot-real64-phase-a3
+```
+
+Phase-A3 encodes the ordered call
+`MCGFCF(MCGFFIR,MCGFFAR,MCGFFAL,MCGSCA,...)->MCGFST` with the real legacy
+data and procedure interfaces.  Its unresolved link barrier is mandatory:
+the gate creates no Phase-A3 executable, performs zero Phase-A3 links,
+executes zero Phase-A3 calls, and runs zero transport solves and zero
+Dragon processes.  It is not connected to the production call graph and
+does not validate MOC behavior.
+
+The seam also makes one legacy limitation explicit.  The frozen
+`MCGFL1` call forms `XSIXYZ(1,IDIR)` with `IDIR=0`, a nonconforming actual
+designator.  Phase-A3 supplies a legal caller-owned `XSI` vector solely to
+type-check the seam; it does not claim that the production caller is fixed
+or validated.
+
+All three subgates remain outside `src/` and perform no transport solve.
+ACA, rebalancing, acceleration, the wider mutable radial state, and
 terminal norms remain open.  This is not a continuous REAL64 lane and is
-not evidence of iteration convergence.
+not evidence of MOC, solver, or Picard convergence.  The next authorized
+work is static context/host closure from Phase-A2 into the Phase-A3 seam,
+with the link barrier retained and no execution.
 
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own

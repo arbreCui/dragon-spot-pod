@@ -338,16 +338,40 @@ atomically, and compile-time rejects REAL32 mutable state:
 make spot-real64-phase-a2
 ```
 
-The callback is a signed-permutation test oracle, not a transport model.
-No real `MCGFCF`, `MCGFFIR`, `MCGSCA`, `MCGFST`, tracking file, or ACA
-operation is executed.  The production route remains untouched; the actual
-MOC adapter, ACA, rebalancing, acceleration, full mutable radial state, and
-terminal norms remain open.  The combined result is therefore still a
-partial static slice, not a continuous REAL64 lane and not a solver- or
-Picard-convergence result.  See
+The Phase-A2 callback is a signed-permutation test oracle, not a transport
+model.  It executes no real `MCGFCF`, `MCGFFIR`, `MCGSCA`, `MCGFST`,
+tracking-file, or ACA operation.
+
+Phase-A3 now adds a compile-only checked legacy-ABI seam for the exact
+frozen branch.  It encodes
+`MCGFCF(MCGFFIR,MCGFFAR,MCGFFAL,MCGSCA,...)->MCGFST` with the real legacy
+argument kinds, ranks, procedure identities, and call order:
+
+```sh
+make spot-real64-phase-a3
+```
+
+A deliberate unresolved link barrier keeps the Phase-A3 objects
+non-linkable and non-executable.  Its gate therefore performs zero
+Phase-A3 links, zero Phase-A3 executions, zero transport solves, and zero
+Dragon runs.
+It also records an existing legacy defect: `MCGFL1` passes
+`XSIXYZ(1,IDIR)` with the frozen `IDIR=0`, which is a nonconforming actual
+designator.  The validation seam uses a legal caller-owned `XSI` vector;
+this does not repair or validate the production path.
+
+All three subgates remain outside the production call graph.  Phase-A3
+does not validate MOC behavior, ACA, rebalancing, acceleration, the full
+mutable radial state, terminal norms, solver convergence, or Picard
+convergence.  The next permitted step is static context/host closure from
+Phase-A2 into the checked seam while preserving the link barrier and
+performing no transport.  The combined result is still a partial static
+slice, not a continuous REAL64 lane.  See
 [real64_phase_a1/README.md](validation/iterative/real64_phase_a1/README.md)
 and
-[real64_phase_a2/README.md](validation/iterative/real64_phase_a2/README.md).
+[real64_phase_a2/README.md](validation/iterative/real64_phase_a2/README.md)
+and
+[real64_phase_a3/README.md](validation/iterative/real64_phase_a3/README.md).
 
 A possible three-return legacy-binary32 Picard diagnostic was then examined
 as a smaller alternative.  It is not currently executable: three returns are
