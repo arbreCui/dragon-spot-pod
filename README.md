@@ -374,14 +374,12 @@ does link and execute the already-frozen Phase-A1 and Phase-A2 synthetic
 programs once each; neither is a tracking or MOC calculation.  The whole
 gate performs zero transport solves and zero Dragon runs.
 
-All four subgates remain outside the production call graph.  Phase-A4 does
+The first four subgates remain outside the production call graph.  Phase-A4 does
 not validate MOC behavior, ACA, rebalancing, acceleration, the full mutable
 radial state, terminal norms, physical accuracy, solver convergence, or
-Picard convergence.  The next permitted step is a compile-only Phase-A5
-contract that binds real-host context population and provenance while
-preserving the unresolved link barrier and performing no transport.  The
-combined result is still a partial static slice, not a continuous REAL64
-lane.  See
+Picard convergence.  Phase-A5 below adds only a static, host-shaped private
+population path while preserving the unresolved link barrier and performing
+no transport.  See
 [real64_phase_a1/README.md](validation/iterative/real64_phase_a1/README.md)
 and
 [real64_phase_a2/README.md](validation/iterative/real64_phase_a2/README.md)
@@ -389,6 +387,29 @@ and
 [real64_phase_a3/README.md](validation/iterative/real64_phase_a3/README.md)
 and
 [real64_phase_a4/README.md](validation/iterative/real64_phase_a4/README.md).
+
+Phase-A5 now encodes the validation-only private population path for the
+locked 2D isotropic host shape:
+
+```sh
+make spot-real64-phase-a5
+```
+
+It copies only the live host inputs and immediately consumes a local
+Phase-A4 context.  `CAZ0`, `CPO`, and `XSI` receive canonical zero storage
+only because the locked branch does not read those formal arguments;
+`ISGNR` and `PJJIND` use their exact single-mode isotropic definitions.
+None is a fitted or empirical coefficient.
+
+Phase-A5 is still object-only and outside `src/`.  It does not prove the
+tracking unit position, `KPSYS/PJJ$MCCG` contents or lifetime, `/EXP1/`
+initialization, cross-object material/geometry identity, a production
+REAL64 host state, or any solver convergence.  No A5 object is linked or
+executed, and the Phase-A3 barrier remains unresolved.  See
+[real64_phase_a5/README.md](validation/iterative/real64_phase_a5/README.md).
+
+The five Phase-A gates remain a partial static slice, not a continuous
+REAL64 radial lane.
 
 A possible three-return legacy-binary32 Picard diagnostic was then examined
 as a smaller alternative.  It is not currently executable: three returns are
