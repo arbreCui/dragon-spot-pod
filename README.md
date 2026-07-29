@@ -181,7 +181,8 @@ strict termination (`BOTH-CAP`). Fresh one-step stationary probes gave
 
 These are production-map post-minus-pre defects, not \(A\phi-q\) residuals,
 error bounds, or convergence proof. No result threshold was introduced, so
-Stage 4 remains `INVALID` and Stage 5 remains `NOT-AUTHORIZED`. Exact values,
+the original \(h\)-to-\(h/2\) Stage 4 remains `INVALID` and Stage 5 remains
+`NOT-AUTHORIZED`. Exact values,
 interpretation boundaries and evidence receipts are in
 [radial_floor_result.md](validation/iterative/radial_floor_result.md); the
 predeclared controls remain in
@@ -287,16 +288,35 @@ have to begin at the binary32 `FLU2DR` state and propagate through the full
 radial solver; changing only `MCGFCS`, `MCGMRE` or `MCGFLX` would not test
 that boundary.
 
-Stage 4 has therefore been amended without changing its failed history. The
-released \(h=\mathtt{0x350637bd}\) map is retained as the strictly terminated
-fine lane, and exactly one new coarse
-\(2h=\mathtt{0x358637bd}\) map is predeclared. The factor two is exact in
-binary32. The new result, when run, may establish stability only over
-\([h,2h]\); it cannot establish an error bound, convergence order, REAL64
-equivalence or \(h/2\) qualification. The method is frozen in
-[inner_sensitivity_v2.md](validation/iterative/inner_sensitivity_v2.md) and
-[inner_sensitivity_v2_protocol.json](validation/iterative/inner_sensitivity_v2_protocol.json).
-No Dragon process is authorized by that freeze.
+Stage 4 was therefore amended without changing its failed history.  The
+single authorized \(2h\)-to-\(h\) capture subsequently completed with strict
+termination in all three radial solves and the returned axial solve.
+\(R_\rho\), \(R_L\), and \(D_L\) were resolved, but \(R_a\) was not:
+
+\[
+D_{\mathrm{in},a}=2.2871261661792861\times10^{-5}
+>
+D_{\mathrm{out},2h,a}=2.2557116628569681\times10^{-5}.
+\]
+
+The result is permanently `UNRESOLVED`; replay and Picard remain
+unauthorized.  The offline Gram-metric decomposition then showed that the
+tolerance-induced axial change is almost antiparallel to the coarse update,
+so the small fine-map update is a cancellation of two larger vectors.  This
+explains the failed gate but does not identify a plane/group cause or
+invalidate the SPOD equations.  See
+[inner_sensitivity_v2_result.md](validation/iterative/inner_sensitivity_v2_result.md)
+and
+[inner_sensitivity_v2_ra_geometry_result.md](validation/iterative/inner_sensitivity_v2_ra_geometry_result.md).
+
+The next route is now frozen as a default-off, continuous REAL64 radial
+working lane for the exact `TYPE S + MCCG` branch.  The current freeze
+authorizes only implementation, compilation, static precision closure, and
+synthetic tests—no Dragon process.  A later single-plane feasibility
+experiment must be separately authorized before any full Stage-4 restart.
+The route and its no-empirical-parameter boundary are in
+[radial_real64_route.md](validation/iterative/radial_real64_route.md) and
+[radial_real64_route_protocol.json](validation/iterative/radial_real64_route_protocol.json).
 
 ## Validation route
 
@@ -321,12 +341,19 @@ No Dragon process is authorized by that freeze.
    unit test, not a scientific gate; reject a partial REAL64 solver fork and
    freeze the unique attainable \(2h\)-to-\(h\) Stage-4 comparison
    (completed without transport);
-10. evaluate and independently replay that one coarse map under a strict
-   process time bound;
-11. only after the amended inner gate passes study direct Picard
-   convergence;
-12. after convergence, repeat rank/mesh/angle refinement and independent 3D
-   comparison for the iterative solution.
+10. evaluate the one coarse map under a strict process time bound
+    (completed; `UNRESOLVED` in \(R_a\), so replay was forbidden);
+11. decompose the frozen \(R_a\) geometry offline without changing the
+    classification (completed);
+12. freeze and statically close a default-off continuous REAL64 radial
+    working lane, including ACA, rebalancing, acceleration, and terminal
+    norms (protocol frozen; implementation is next);
+13. only after a separately authorized single-plane REAL64 feasibility pass
+    and replay, restart Stage 4 with both \(h\) and \(h/2\) maps recomputed in
+    the same lane;
+14. only after Stage 4 passes study direct Picard convergence;
+15. after convergence, repeat rank/mesh/angle refinement and independent 3D
+    comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
 predeclared gates and evidence boundaries.
@@ -349,6 +376,8 @@ validation/iterative/check_radial_precision_xsm.f90
                                       exact stored binary32-step audit
 validation/iterative/raw_moc_residual_protocol.json
                                       same-sweep diagnostic definition
+validation/iterative/radial_real64_route_protocol.json
+                                      static-only full working-lane contract
 validation/iterative/raw_moc_capture_run_protocol.json
                                       frozen four-probe production protocol
 validation/iterative/run_raw_moc_capture_production.sh
@@ -407,10 +436,10 @@ KEEP_WORK=1 \
   sh validation/iterative/run_inner_sensitivity.sh
 ```
 
-The current frozen solver returns `STAGE4 INVALID` because its three radial
-solves do not meet \(h/2\). Do not use the written `state1` files or launch a
-longer `MAXOUT` continuation. The bounded numerical-floor diagnostic is
-complete; see
+The original \(h\)-to-\(h/2\) capture returned `STAGE4 INVALID` because its
+three radial solves did not meet \(h/2\). Do not use those written `state1`
+files or launch a longer `MAXOUT` continuation. The bounded numerical-floor
+diagnostic is complete; see
 [radial_floor_result.md](validation/iterative/radial_floor_result.md). Its
 read-only binary32-step follow-up is
 [radial_precision_result.md](validation/iterative/radial_precision_result.md);
@@ -445,3 +474,13 @@ python3 validation/iterative/check_raw_moc_ulp_bridge_result.py --public-only
 Passing these checks certifies the declared census and its tracked evidence,
 not causal attribution, arm ranking, convergence or Stage-4/Stage-5
 qualification.
+
+The current next-step contract is checked without Dragon by
+
+```sh
+sh validation/iterative/run_radial_real64_route_tests.sh
+```
+
+It rejects an incomplete precision path, any new empirical parameter, any
+claim that archived ACA/PJJ data form the transport operator, and any
+premature run authorization.

@@ -216,8 +216,9 @@ Both main arms reached the six-update cap. The NATIVE terminal probe gave
 \(D_{V,2}=2.7679927\times10^{-7}\) and
 \(D_{\max}=4.1416214\times10^{-7}\); the STATIONARY terminal probe gave
 \(3.4298569\times10^{-7}\) and \(4.8318913\times10^{-7}\), respectively.
-There is no acceptance threshold or acceleration-choice claim. Stage 4
-remains `INVALID` and Stage 5 remains `NOT-AUTHORIZED`. See
+There is no acceptance threshold or acceleration-choice claim. The original
+\(h\)-to-\(h/2\) Stage 4 remains `INVALID` and Stage 5 remains
+`NOT-AUTHORIZED`. See
 [radial_floor_result.md](radial_floor_result.md) and its tracked checksum
 receipt for the exact result and evidence boundary.
 
@@ -409,8 +410,10 @@ terminal sweep there would repeat that observable. The failed \(h/2\)
 condition is evaluated from the binary32 `FLU2DR` working state, so a
 continuous REAL64 treatment would have to propagate through the entire
 radial solver. A partial promotion at `MCGFCS`, `MCGMRE` or `MCGFLX` is not
-a valid test of that failure, and a full Dragon precision fork is not part
-of the simple SPOD route.
+a valid test of that failure. At that point a full precision lane was
+outside the simple Stage-4 v2 amendment. After v2 itself returned
+`UNRESOLVED`, the project froze the separate solver-validation overlay
+described below; it does not add mathematics to SPOD.
 
 Exact counts, evidence hashes and interpretation limits are in
 [gmres_activity_result.md](gmres_activity_result.md). Verify the tracked
@@ -459,3 +462,41 @@ python3 validation/iterative/check_inner_sensitivity_v2_protocol.py \
 ```
 
 No Dragon process is authorized by the freeze.
+
+## Stage-4 v2 outcome and REAL64 route
+
+The single authorized coarse capture has now completed.  All four transport
+solves terminated strictly, but the axial-state component remained
+unresolved:
+
+```text
+R_a D_out,2h  2.2557116628569681E-5
+R_a D_in      2.2871261661792861E-5
+relation      GREATER
+classification UNRESOLVED
+```
+
+Replay and Picard are therefore not authorized.  The subsequent offline
+Gram/height decomposition showed that the \(2h\)-to-\(h\) axial change is
+almost antiparallel to the coarse update.  It localizes the returned-state
+manifestation but does not identify a radial-plane cause, choose a group,
+or change the result.
+
+The next route is
+[radial_real64_route.md](radial_real64_route.md).  A read-only archived
+\(A\phi-q\) checker is rejected because the XSM archive does not contain the
+complete MOC operator and its `SOUR/FLUX` records are not guaranteed to be a
+same-point equation pair.  The chosen route is instead a default-off
+continuous REAL64 radial working lane, limited to the frozen
+`TYPE S + MCCG` branch.
+
+The current protocol authorizes static implementation and tests only:
+
+```sh
+sh validation/iterative/run_radial_real64_route_tests.sh
+```
+
+It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
+full REAL64 Stage 4, replay, and Picard trajectory each require their own
+gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier
+or ULP/angle threshold is introduced.

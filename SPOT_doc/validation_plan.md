@@ -383,7 +383,8 @@ later thermal iteration, and does not explain nontermination or establish
 convergence. The evidence is published in
 [gmres_activity_result.md](../validation/iterative/gmres_activity_result.md).
 
-The passive census ends the subroutine-by-subroutine precision search.
+The passive census ends the subroutine-by-subroutine precision search
+inside the original Stage-4 amendment.
 The released RAW-MOC tuple is already a same-point primary-MOC defect at the
 plane-1 six-update arm terminals derived from the cap-500 restart. Repeating
 that sweep there would add no independent observable.
@@ -391,8 +392,11 @@ Moreover, the failed \(h/2\) quantities are formed from the binary32
 `FLU2DR` state. A continuous REAL64 experiment would have to begin there and
 propagate through source construction, balance, acceleration, `DOORFV` and
 the complete MCCG chain. A local `MCGFCS`, `MCGMRE` or `MCGFLX` promotion is
-therefore not a valid experiment for this failure, and the large full-solver
-precision fork is outside the simple SPOD validation route.
+therefore not a valid experiment for this failure.  At that point a
+full-solver precision fork was outside the scope of the simple Stage-4 v2
+amendment; after v2 itself returned `UNRESOLVED`, the project froze the
+separate solver-validation overlay described below.  It is not an addition
+to the SPOD mathematics.
 
 ### Stage-4 v2 amendment — attainable tolerance sensitivity
 
@@ -441,6 +445,59 @@ This qualification means stability only over the tested attainable interval
 equivalence or \(h/2\) qualification. The complete freeze is
 [inner_sensitivity_v2_protocol.json](../validation/iterative/inner_sensitivity_v2_protocol.json).
 It authorizes no transport process or long trajectory.
+
+### Stage-4 v2 result and new radial-solver route
+
+The one authorized \(2h\)-to-\(h\) capture completed normally and every
+radial/axial solve met its strict terminal condition.  Three components were
+resolved, but
+
+\[
+D_{\mathrm{in},a}
+=2.2871261661792861\times10^{-5}
+>
+D_{\mathrm{out},2h,a}
+=2.2557116628569681\times10^{-5},
+\]
+
+so the result is `UNRESOLVED`.  Its protocol forbids replay after any
+component fails.  The subsequent read-only Gram decomposition found that
+the tolerance-induced axial-state change is almost equal and opposite to
+the coarse update.  This is a geometric explanation of the exact failed
+gate, not a causal attribution or a new threshold.
+
+An archived independent \(A\phi-q\) gate is not available: `SYSTEM`
+contains ACA/preconditioner and self-collision data, not the complete MOC
+operator, and archived `SOUR/FLUX` need not be a same-point equation pair.
+Reusing the production sweep would be solver-consistent rather than
+implementation-independent and would not give a state-error bound without
+an inverse-operator estimate.
+
+The separately frozen route is therefore a continuous REAL64 radial
+working lane for the exact existing `TYPE S + MCCG` branch.  It changes no
+physical equation or SPOD coupling term.  Mutable state must remain
+binary64 through source construction, MCCG/GMRES/ACA, `FLUBAL`, `FLU2AC`,
+and the terminal norms; a type-2 compatibility copy is allowed only once
+after strict termination.  The inherited ACA `1E-7` cutoff is not tuned.
+For every live guard derived from it, a diagnostic counterfactual evaluates
+the same finite operands with `EPSMAX=0`; any Boolean difference increments
+`cutoff_active` and makes the feasibility result
+`INCONCLUSIVE-INHERITED-CUTOFF`.  The counterfactual never changes the
+production path.
+
+The current authorization is static only.  After interface/kind closure and
+synthetic tests, a separately authorized plane-1 feasibility capture may
+test the existing strict \(h/2\) terminal gate under the unchanged caps and
+controls.  Only an exact replayed `REAL64-RADIAL-FEASIBLE` result can lead
+to a new Stage-4 protocol, which must recompute both \(G_h^{64}(x_0)\) and
+\(G_{h/2}^{64}(x_0)\).  It may not mix a new REAL64 refined map with the
+archived binary32 baseline.  See
+[radial_real64_route.md](../validation/iterative/radial_real64_route.md)
+and
+[radial_real64_route_protocol.json](../validation/iterative/radial_real64_route_protocol.json).
+This feasibility label means only reproducible attainment of the existing
+FLU stopping rule; it is not a residual, error bound, conservation-accuracy
+proof, or physical-solution accuracy claim.
 
 ## Stage 5 — direct Picard convergence
 
