@@ -505,11 +505,26 @@ boundaries:
 make spot-real64-phase-a1
 ```
 
-Its status is `IMPLEMENTED-PARTIAL-SLICE-ONLY`.  It is outside `src/`,
-unconnected to the production call graph, and performs no transport solve.
-The full `MCGFL1`/MOC/ACA/rebalancing/acceleration/terminal-norm path
-remains open, so this is not a continuous REAL64 lane and is not evidence
-of iteration convergence.
+The second isolated subgate is under
+[`real64_phase_a2/`](real64_phase_a2/README.md).  It adds a typed REAL64
+full-matrix active-mask façade from the Phase-A1 source to the
+post-`MCGFST`, pre-`MCGFCA` raw-response boundary:
+
+```sh
+make spot-real64-phase-a2
+```
+
+Phase-A2 uses only a synthetic signed-permutation callback.  It validates
+all 31 nonempty masks over its five-column fixture, exact inactive `+0`,
+complete finite active output, failure atomicity, and compile-time
+wrong-kind rejection.  It does not execute the real MOC sequence or read a
+tracking file.
+
+Both subgates are outside `src/`, unconnected to the production call graph,
+and perform no transport solve.  The actual `MCGFCF`-through-`MCGFST`
+adapter, ACA, rebalancing, acceleration, wider mutable radial state, and
+terminal norms remain open.  This is not a continuous REAL64 lane and is
+not evidence of iteration convergence.
 
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own

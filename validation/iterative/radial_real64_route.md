@@ -148,6 +148,25 @@ its exact limitations are recorded in
 [`real64_phase_a1/README.md`](real64_phase_a1/README.md) and
 [`real64_phase_a1/precision_manifest.json`](real64_phase_a1/precision_manifest.json).
 
+Phase-A2 is also implemented only inside the validation tree.  It adds one
+typed, full-matrix active-mask callback between the Phase-A1 source and the
+post-`MCGFST`, pre-`MCGFCA` raw-response boundary:
+
+```sh
+make spot-real64-phase-a2
+```
+
+The short gate enumerates all 31 nonempty masks over its five gathered
+columns, checks exact inactive `+0`, complete finite active output and
+failure atomicity, rejects REAL32 mutable arguments and callbacks at
+compile time, and proves link isolation.  Its signed-permutation callback
+is only an algebraic oracle.  Phase-A2 does not call `MCGFCF`, `MCGFFIR`,
+`MCGSCA`, `MCGFST` or ACA and does not read a tracking file.  Thus
+`IMPLEMENTED-PARTIAL-SOURCE-TO-RAW-FACADE-ONLY` is still not a continuous
+REAL64 radial lane or a convergence result.  The exact boundary is in
+[`real64_phase_a2/README.md`](real64_phase_a2/README.md) and
+[`real64_phase_a2/precision_manifest.json`](real64_phase_a2/precision_manifest.json).
+
 ### B. Plane-1 feasibility
 
 This gate is frozen but not authorized.  A later explicit authorization may

@@ -328,12 +328,26 @@ and manifest mutation suite pass with zero Dragon runs:
 make spot-real64-phase-a1
 ```
 
-The production route is still untouched.  `MCGFL1`, the primary MOC
-response, ACA, rebalancing, acceleration, the full mutable radial state,
-and terminal norms remain open.  Consequently this is
-`IMPLEMENTED-PARTIAL-SLICE-ONLY`, not a continuous REAL64 lane and not a
-solver- or Picard-convergence result.  See
-[real64_phase_a1/README.md](validation/iterative/real64_phase_a1/README.md).
+Phase-A2 now adds an isolated full-matrix active-mask façade from the
+Phase-A1 source to the exact post-STIS/pre-ACA raw-response boundary.  It
+uses one typed REAL64 callback, enumerates all 31 nonempty masks over its
+five-column synthetic fixture, rejects incomplete/nonfinite/illegal writes
+atomically, and compile-time rejects REAL32 mutable state:
+
+```sh
+make spot-real64-phase-a2
+```
+
+The callback is a signed-permutation test oracle, not a transport model.
+No real `MCGFCF`, `MCGFFIR`, `MCGSCA`, `MCGFST`, tracking file, or ACA
+operation is executed.  The production route remains untouched; the actual
+MOC adapter, ACA, rebalancing, acceleration, full mutable radial state, and
+terminal norms remain open.  The combined result is therefore still a
+partial static slice, not a continuous REAL64 lane and not a solver- or
+Picard-convergence result.  See
+[real64_phase_a1/README.md](validation/iterative/real64_phase_a1/README.md)
+and
+[real64_phase_a2/README.md](validation/iterative/real64_phase_a2/README.md).
 
 A possible three-return legacy-binary32 Picard diagnostic was then examined
 as a smaller alternative.  It is not currently executable: three returns are
@@ -372,7 +386,8 @@ design has been frozen, with `Dragon processes = 0`, in
     classification (completed);
 12. freeze and statically close a default-off continuous REAL64 radial
     working lane, including ACA, rebalancing, acceleration, and terminal
-    norms (protocol frozen; Phase-A1 source slice implemented, full static
+    norms (protocol frozen; Phase-A1 source arithmetic and the Phase-A2
+    typed post-STIS/pre-ACA façade implemented, actual MOC and full static
     closure incomplete);
 13. examine a fixed three-return legacy32 descriptive diagnostic as a
     smaller alternative (design frozen, but execution is `NO-GO` under the
