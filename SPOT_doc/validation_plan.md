@@ -499,6 +499,43 @@ This feasibility label means only reproducible attainment of the existing
 FLU stopping rule; it is not a residual, error bound, conservation-accuracy
 proof, or physical-solution accuracy claim.
 
+### Three-return descriptive design — protocol only
+
+A fixed three-return legacy-binary32 diagnostic was considered as a smaller
+alternative to the REAL64 implementation:
+
+\[
+x^{m+1}:=G_h^{32}(x^m),\qquad m=0,1,2.
+\]
+
+It would contain nine online radial solves and three returned axial solves.
+Three returns are only the minimum needed to form two adjacent comparisons
+of three separate update magnitudes \(D_\rho,D_L,D_a\).  The heterogeneous
+state \(x=(a,\rho,L)\) has no declared unified norm, so the three components
+may not be combined into a weighted score.
+
+The design does not authorize execution.  The Stage-4 v2 `UNRESOLVED`
+branch explicitly forbids Picard, and \(x^0\to x^1\to x^2\to x^3\) is a
+Picard trajectory even if it is labeled descriptive.  The frozen status is
+therefore:
+
+```text
+classification       FROZEN-PROTOCOL-ONLY
+governance           NO-GO-UNDER-CURRENT-STAGE4
+Dragon processes     0
+outer convergence    NOT-EVALUATED
+Stage 5              NOT-AUTHORIZED
+```
+
+Any future execution would require an explicit governance amendment that
+changes the old no-Picard action boundary without changing the historical
+`UNRESOLVED` result, followed by a separate implementation freeze and a
+one-process authorization.  Even a complete future diagnostic could report
+only the exact finite relations for each component; it could not claim
+convergence, divergence, contractivity or stability.  See
+[picard_three_return.md](../validation/iterative/picard_three_return.md) and
+[picard_three_return_protocol.json](../validation/iterative/picard_three_return_protocol.json).
+
 ## Stage 5 — direct Picard convergence
 
 Only after Stages 0--4 pass may the direct update

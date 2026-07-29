@@ -500,3 +500,33 @@ It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier
 or ULP/angle threshold is introduced.
+
+## Fixed three-return design
+
+A three-return online legacy32 diagnostic was examined as a smaller
+alternative:
+
+\[
+x^0\longrightarrow x^1\longrightarrow x^2\longrightarrow x^3.
+\]
+
+It is frozen only as a design in
+[picard_three_return.md](picard_three_return.md) and
+[picard_three_return_protocol.json](picard_three_return_protocol.json).
+Execution is `NO-GO` under the current Stage-4 v2 result because three
+returns are a Picard trajectory and `UNRESOLVED` forbids Picard.
+
+The design has no full-state aggregate score, relaxation parameter or trend
+threshold.  A possible future run would report \(D_\rho,D_L,D_a\)
+separately and could not claim convergence even if all three decreased.
+It would require nine radial and three returned axial transport solves, so
+it is not represented as a short synthetic test.
+
+Check only the no-run design contract with
+
+```sh
+sh validation/iterative/run_picard_three_return_protocol_tests.sh
+```
+
+The expected terminal status is
+`PROTOCOL-ONLY; EXECUTION=NO-GO; DRAGON-RUNS=0`.

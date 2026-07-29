@@ -318,6 +318,14 @@ The route and its no-empirical-parameter boundary are in
 [radial_real64_route.md](validation/iterative/radial_real64_route.md) and
 [radial_real64_route_protocol.json](validation/iterative/radial_real64_route_protocol.json).
 
+A possible three-return legacy-binary32 Picard diagnostic was then examined
+as a smaller alternative.  It is not currently executable: three returns are
+a Picard trajectory regardless of whether they are called a census, and the
+frozen `UNRESOLVED` branch forbids that trajectory.  Only its mathematical
+design has been frozen, with `Dragon processes = 0`, in
+[picard_three_return.md](validation/iterative/picard_three_return.md) and
+[picard_three_return_protocol.json](validation/iterative/picard_three_return_protocol.json).
+
 ## Validation route
 
 1. freeze the fixed-space state, source identity and raw map residual;
@@ -347,12 +355,15 @@ The route and its no-empirical-parameter boundary are in
     classification (completed);
 12. freeze and statically close a default-off continuous REAL64 radial
     working lane, including ACA, rebalancing, acceleration, and terminal
-    norms (protocol frozen; implementation is next);
-13. only after a separately authorized single-plane REAL64 feasibility pass
+    norms (protocol frozen; implementation has not started);
+13. examine a fixed three-return legacy32 descriptive diagnostic as a
+    smaller alternative (design frozen, but execution is `NO-GO` under the
+    current Stage-4 result);
+14. only after a separately authorized single-plane REAL64 feasibility pass
     and replay, restart Stage 4 with both \(h\) and \(h/2\) maps recomputed in
     the same lane;
-14. only after Stage 4 passes study direct Picard convergence;
-15. after convergence, repeat rank/mesh/angle refinement and independent 3D
+15. only after Stage 4 passes study direct Picard convergence;
+16. after convergence, repeat rank/mesh/angle refinement and independent 3D
     comparison for the iterative solution.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
@@ -378,6 +389,8 @@ validation/iterative/raw_moc_residual_protocol.json
                                       same-sweep diagnostic definition
 validation/iterative/radial_real64_route_protocol.json
                                       static-only full working-lane contract
+validation/iterative/picard_three_return_protocol.json
+                                      no-run three-return design contract
 validation/iterative/raw_moc_capture_run_protocol.json
                                       frozen four-probe production protocol
 validation/iterative/run_raw_moc_capture_production.sh
@@ -484,3 +497,12 @@ sh validation/iterative/run_radial_real64_route_tests.sh
 It rejects an incomplete precision path, any new empirical parameter, any
 claim that archived ACA/PJJ data form the transport operator, and any
 premature run authorization.
+
+The alternative three-return design is also checked without Dragon:
+
+```sh
+sh validation/iterative/run_picard_three_return_protocol_tests.sh
+```
+
+Passing this checker means only that the design remains protocol-only and
+execution remains `NO-GO`; it is not a Picard result.
