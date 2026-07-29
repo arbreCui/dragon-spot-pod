@@ -1,0 +1,196 @@
+{
+  "schema": "spot-radial-real64-phase-a1-source-slice-v1",
+  "title": "Isolated REAL64 locked-source implementation slice",
+  "status": {
+    "classification": "IMPLEMENTED-PARTIAL-SLICE-ONLY",
+    "phase_a_static_closure": false,
+    "continuous_real64_lane": false,
+    "production_route_connected": false,
+    "default_runtime_route_changed": false,
+    "transport_execution_authorized": false,
+    "dragon_processes_authorized": 0,
+    "transport_solves": 0,
+    "stage4_qualified": false,
+    "stage5_authorized": false,
+    "outer_convergence": "NOT-EVALUATED"
+  },
+  "baseline": {
+    "commit": "feb6c6faa61c1cf87f2b39f4b7273a2840a69f52",
+    "route_protocol": "validation/iterative/radial_real64_route_protocol.json",
+    "route_protocol_sha256": "d89e7f13e61dfc994d14ca5c9b68439a9665022653b65520c8f566a659fdf472",
+    "legacy_source_sha256": {
+      "src/MCGFCS.f": "14661cff68e916e0fdc962320c434d5eb7aba247bce138a696cc809aaac78ec6",
+      "src/MCGFL1.f": "6701db8972bd92e339d99879787a126f1ce38b72936852ba331259877894df9f",
+      "src/Makefile": "7099dbec67c1ff9cc82deb5a2142ba3256dc7c7712257b96d38ddc4ef6429767"
+    }
+  },
+  "implementation": {
+    "location": "validation/iterative/real64_phase_a1/SPOR64_A1.f90",
+    "module": "SPOR64_A1",
+    "procedures": [
+      "SPOR64_PROMOTE_MUTABLE",
+      "MCGFCS64_LOCKED",
+      "SPOR64_TERMINAL_COPY"
+    ],
+    "sha256": "13f341a99fa99c21ff34821339d0347565489134379193a1bfcf58dfa65726da",
+    "validation_tree_only": true,
+    "included_by_src_wildcard_build": false,
+    "scientific_use": "NONE"
+  },
+  "locked_branch": {
+    "NDIM": 2,
+    "NANI": 1,
+    "NLIN": 1,
+    "NFUNL": 1,
+    "STIS": 1,
+    "radial_solver": "TYPE S + MCCG",
+    "unsupported_metadata": "RETURN-NONZERO-WITHOUT-MUTATING-S"
+  },
+  "kind_contract": {
+    "mutable_entry_binary32": [
+      "QN32",
+      "FI32"
+    ],
+    "mutable_working_binary64": [
+      "QN",
+      "FI",
+      "S"
+    ],
+    "immutable_binary32_operator_inputs": [
+      "SC",
+      "SIGAL"
+    ],
+    "index_inputs": [
+      "NZON",
+      "KEYFLX",
+      "KEYCUR",
+      "IBC"
+    ],
+    "entry_promotion": "SPOR64_PROMOTE_MUTABLE converts QN32 and FI32 exactly once to binary64.",
+    "operator_promotion": "MCGFCS64_LOCKED promotes each referenced frozen SC or SIGAL binary32 value directly into its binary64 multiply.",
+    "terminal_downcast": "SPOR64_TERMINAL_COPY performs one binary64-to-binary32 copy only when terminal_accepted is true.",
+    "preterminal_downcast": "FORBIDDEN",
+    "binary32_mutable_actual_at_kernel": "COMPILE-TIME-REJECTED",
+    "global_default_real_8": "FORBIDDEN"
+  },
+  "locked_source_equations": {
+    "volume": "S(KEYFLX(r,1,1)) = QN(key) + real64(SC(NZON(r),1))*FI(key)",
+    "surface": "S(KEYCUR(s)) = real64(SIGAL(NZON(NREG+s)))*FI(KEYCUR(IBC(s)))",
+    "operation_order": "MULTIPLY-THEN-ADD",
+    "unmapped_entries": "PRESERVE-CALLER-BIT-PATTERN",
+    "input_mutation": "FORBIDDEN"
+  },
+  "allowed_conversion_sites": [
+    {
+      "procedure": "SPOR64_PROMOTE_MUTABLE",
+      "direction": "binary32-to-binary64",
+      "expressions": [
+        "real(qn32, real64)",
+        "real(fi32, real64)"
+      ]
+    },
+    {
+      "procedure": "MCGFCS64_LOCKED",
+      "direction": "immutable-binary32-to-binary64",
+      "expressions": [
+        "real(sigal(ibm), real64)",
+        "real(sc(ibm, 1), real64)"
+      ]
+    },
+    {
+      "procedure": "SPOR64_TERMINAL_COPY",
+      "direction": "terminal-binary64-to-binary32",
+      "guard": "terminal_accepted",
+      "expressions": [
+        "real(state64, real32)"
+      ]
+    }
+  ],
+  "forbidden_implementation_tokens": [
+    "SNGL",
+    "DBLE",
+    "DOUBLE PRECISION",
+    "LCMGET",
+    "LCMPUT",
+    "LCMGDL",
+    "LCMPDL",
+    "DOORFV",
+    "MCCGF",
+    "MCGFLX",
+    "MCGMRE",
+    "FLU2AC",
+    "CALL MCGFCS"
+  ],
+  "legacy_route_identity": {
+    "legacy_mcgfcs_direct_call_count": 1,
+    "new_kernel_call_count_in_src": 0,
+    "new_module_use_count_in_src": 0,
+    "default_route": "LEGACY-REAL32",
+    "new_route": "UNCONNECTED"
+  },
+  "synthetic_tests": {
+    "source": "validation/iterative/real64_phase_a1/test_spor64_a1.f90",
+    "source_sha256": "8f185cdce55da68a3b1bb9179cafd5db4ad14692a97db373d7bd35ee92997e39",
+    "compile_fail_source": "validation/iterative/real64_phase_a1/compile_fail_real32_actual.f90",
+    "compile_fail_source_sha256": "dbaeda4eeb8acf366084972e5d790790012fb0127c854f254dd7bee796c7ec95",
+    "required_checks": [
+      "exact entry promotion",
+      "sub-binary32-ULP mutable-state preservation",
+      "independent sub-binary32-ULP QN preservation",
+      "exact promotion of an arbitrary stored binary32 SC bit pattern",
+      "permuted volume and surface key maps",
+      "zero-surface layout supported without touching unmapped entries",
+      "unmapped source entries retain their bit patterns",
+      "all inputs retain their bit patterns",
+      "unsupported metadata fails before source mutation",
+      "invalid layout fails before source mutation",
+      "preterminal downcast is rejected without output mutation",
+      "terminal downcast occurs exactly once",
+      "binary32 mutable actual arguments fail compilation",
+      "linked test has no unresolved transport symbol"
+    ],
+    "fortran_compilation": "ISOLATED-EXPLICIT-SOURCE-LIST",
+    "dragon_runs": 0
+  },
+  "build_contract": {
+    "top_level_target": "spot-real64-phase-a1",
+    "added_to_default_all": false,
+    "added_to_tests": false,
+    "added_to_spot_fast": false,
+    "temporary_build_directory": true,
+    "forbidden_flag": "-fdefault-real-8",
+    "required_flags": [
+      "-std=f2008",
+      "-Werror",
+      "-Wimplicit-interface",
+      "-Wimplicit-procedure",
+      "-Wconversion-extra",
+      "-fimplicit-none",
+      "-fcheck=all",
+      "-ffp-contract=off",
+      "-fno-fast-math"
+    ]
+  },
+  "remaining_open_path": [
+    "FLU and FLUDRV default-off route",
+    "FLU2DR eight-slice mutable state and terminal norms",
+    "DOORFV gather and scatter",
+    "MCCGF active-group routing",
+    "MCGFLX state and convergence quantities",
+    "MCGMRE PHIIN, QFR, RHS, GAR and correction accumulation",
+    "MCGFL1 real64 caller and arbitrary NCONV subset",
+    "primary MOC response interface",
+    "MCGFCA, MCGFCR and live ACA correction",
+    "MCGABG cutoff instrumentation",
+    "FLUBAL and ALSBD rebalancing",
+    "FLU2AC update and acceleration scalar",
+    "type-4 authoritative archive and terminal type-2 adapter"
+  ],
+  "next_step": "Extend upward to an isolated MCGFL1 real64 caller and primary-response façade while keeping production routing disconnected.",
+  "interpretation": [
+    "This slice proves only the declared source arithmetic and conversion boundaries under synthetic inputs.",
+    "It is not a continuous REAL64 radial lane.",
+    "It is not a transport result, solver-convergence result, Stage-4 result or Picard result.",
+    "No empirical coefficient, relaxation, clipping, fitted closure or new numerical threshold is introduced."
+  ]
+}

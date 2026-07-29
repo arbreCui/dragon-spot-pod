@@ -130,6 +130,24 @@ This is the only currently authorized work:
 Passing this gate is implementation evidence only.  It says nothing about
 transport or SPOD convergence.
 
+The first subgate, Phase-A1, is now implemented only as an isolated
+validation-tree slice.  It closes the locked `MCGFCS` source arithmetic,
+the explicit binary32-entry to binary64-working conversion, and a
+terminal-only binary32 adapter.  Its compile-fail, sub-binary32-ULP,
+fail-closed, link-isolation, and manifest-mutation tests run with
+
+```sh
+make spot-real64-phase-a1
+```
+
+Phase-A1 is `IMPLEMENTED-PARTIAL-SLICE-ONLY`: it is not connected to
+production and does not close the `MCGFL1` caller, primary MOC response,
+the wider radial state, or any terminal norm.  It therefore does not pass
+the complete static-closure gate above.  The implementation boundary and
+its exact limitations are recorded in
+[`real64_phase_a1/README.md`](real64_phase_a1/README.md) and
+[`real64_phase_a1/precision_manifest.json`](real64_phase_a1/precision_manifest.json).
+
 ### B. Plane-1 feasibility
 
 This gate is frozen but not authorized.  A later explicit authorization may

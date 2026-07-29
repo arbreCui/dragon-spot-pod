@@ -496,6 +496,21 @@ The current protocol authorizes static implementation and tests only:
 sh validation/iterative/run_radial_real64_route_tests.sh
 ```
 
+The first isolated implementation subgate is now present under
+[`real64_phase_a1/`](real64_phase_a1/README.md).  It implements and tests
+only the locked REAL64 source arithmetic and explicit conversion
+boundaries:
+
+```sh
+make spot-real64-phase-a1
+```
+
+Its status is `IMPLEMENTED-PARTIAL-SLICE-ONLY`.  It is outside `src/`,
+unconnected to the production call graph, and performs no transport solve.
+The full `MCGFL1`/MOC/ACA/rebalancing/acceleration/terminal-norm path
+remains open, so this is not a continuous REAL64 lane and is not evidence
+of iteration convergence.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

@@ -318,6 +318,23 @@ The route and its no-empirical-parameter boundary are in
 [radial_real64_route.md](validation/iterative/radial_real64_route.md) and
 [radial_real64_route_protocol.json](validation/iterative/radial_real64_route_protocol.json).
 
+Phase-A1 of that route is now implemented as an isolated validation-tree
+slice.  It closes only the locked `MCGFCS` REAL64 source arithmetic and its
+explicit entry/terminal conversion boundaries.  A strict compile,
+sub-binary32-ULP probe, wrong-kind compile-fail test, link-isolation check,
+and manifest mutation suite pass with zero Dragon runs:
+
+```sh
+make spot-real64-phase-a1
+```
+
+The production route is still untouched.  `MCGFL1`, the primary MOC
+response, ACA, rebalancing, acceleration, the full mutable radial state,
+and terminal norms remain open.  Consequently this is
+`IMPLEMENTED-PARTIAL-SLICE-ONLY`, not a continuous REAL64 lane and not a
+solver- or Picard-convergence result.  See
+[real64_phase_a1/README.md](validation/iterative/real64_phase_a1/README.md).
+
 A possible three-return legacy-binary32 Picard diagnostic was then examined
 as a smaller alternative.  It is not currently executable: three returns are
 a Picard trajectory regardless of whether they are called a census, and the
@@ -355,7 +372,8 @@ design has been frozen, with `Dragon processes = 0`, in
     classification (completed);
 12. freeze and statically close a default-off continuous REAL64 radial
     working lane, including ACA, rebalancing, acceleration, and terminal
-    norms (protocol frozen; implementation has not started);
+    norms (protocol frozen; Phase-A1 source slice implemented, full static
+    closure incomplete);
 13. examine a fixed three-return legacy32 descriptive diagnostic as a
     smaller alternative (design frozen, but execution is `NO-GO` under the
     current Stage-4 result);
