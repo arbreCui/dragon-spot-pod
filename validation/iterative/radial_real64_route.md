@@ -191,11 +191,29 @@ production caller.  The exact boundary is in
 [`real64_phase_a3/README.md`](real64_phase_a3/README.md) and
 [`real64_phase_a3/precision_manifest.json`](real64_phase_a3/precision_manifest.json).
 
-The next static step is context/host closure from the Phase-A2 façade into
-this checked seam while preserving the unresolved link barrier.  Until that
-closure and all later gates are separately passed, ACA, rebalancing,
-acceleration, the wider mutable radial state, terminal norms, the real MOC
-operation, and all solver/Picard convergence claims remain open.
+Phase-A4 is the validation-only, compile-only host closure from the
+Phase-A2 façade into the Phase-A3 seam:
+
+```sh
+make spot-real64-phase-a4
+```
+
+Its caller-owned context storage schema is closed.  Population from the real
+`MCGFL1` host and the provenance of tracking, `KPSYS/PJJ`, geometry,
+material, group-order, and `/EXP1/` identities remain unbound.  Phase-A4
+objects are linked zero times and executed zero times.  Its recursive short
+gate links and executes the frozen Phase-A1 and Phase-A2 synthetic programs
+once each, but performs zero tracking reads, zero transport solves, and zero
+Dragon processes.  The exact boundary is in
+[`real64_phase_a4/README.md`](real64_phase_a4/README.md) and
+[`real64_phase_a4/precision_manifest.json`](real64_phase_a4/precision_manifest.json).
+
+The next static step is a compile-only Phase-A5 real-host population and
+provenance contract, with the unresolved link barrier preserved and no
+transport execution.  Until that and all later gates are separately passed,
+ACA, rebalancing, acceleration, the wider mutable radial state, terminal
+norms, real MOC operation, physical accuracy, and all solver/Picard
+convergence claims remain open.
 
 ### B. Plane-1 feasibility
 

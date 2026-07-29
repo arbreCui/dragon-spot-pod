@@ -542,12 +542,28 @@ designator.  Phase-A3 supplies a legal caller-owned `XSI` vector solely to
 type-check the seam; it does not claim that the production caller is fixed
 or validated.
 
-All three subgates remain outside `src/` and perform no transport solve.
-ACA, rebalancing, acceleration, the wider mutable radial state, and
-terminal norms remain open.  This is not a continuous REAL64 lane and is
-not evidence of MOC, solver, or Picard convergence.  The next authorized
-work is static context/host closure from Phase-A2 into the Phase-A3 seam,
-with the link barrier retained and no execution.
+The fourth isolated subgate is under
+[`real64_phase_a4/`](real64_phase_a4/README.md).  It closes the
+validation-only, compile-only host call shape from the Phase-A2 façade into
+the Phase-A3 seam:
+
+```sh
+make spot-real64-phase-a4
+```
+
+Its caller-owned context storage schema is closed, but real-host population
+and cross-object provenance remain unbound.  No Phase-A4 object is linked
+or executed.  The recursive short gate links and executes the already-frozen
+Phase-A1 and Phase-A2 synthetic programs once each; neither is a tracking
+or MOC calculation.  The complete gate performs zero transport solves and
+zero Dragon processes.
+
+All four subgates remain outside `src/`.  ACA, rebalancing, acceleration,
+the wider mutable radial state, terminal norms, real MOC operation, and
+physical accuracy remain open.  This is not a continuous REAL64 lane and
+is not evidence of MOC, solver, or Picard convergence.  The next authorized
+work is a compile-only Phase-A5 contract for real-host context population
+and provenance, with the unresolved link barrier retained and no execution.
 
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own

@@ -360,18 +360,35 @@ It also records an existing legacy defect: `MCGFL1` passes
 designator.  The validation seam uses a legal caller-owned `XSI` vector;
 this does not repair or validate the production path.
 
-All three subgates remain outside the production call graph.  Phase-A3
-does not validate MOC behavior, ACA, rebalancing, acceleration, the full
-mutable radial state, terminal norms, solver convergence, or Picard
-convergence.  The next permitted step is static context/host closure from
-Phase-A2 into the checked seam while preserving the link barrier and
-performing no transport.  The combined result is still a partial static
-slice, not a continuous REAL64 lane.  See
+Phase-A4 now closes that validation-only, compile-only host call shape from
+the Phase-A2 façade into the Phase-A3 seam:
+
+```sh
+make spot-real64-phase-a4
+```
+
+Its caller-owned context storage schema is closed, but population from the
+real host and cross-object provenance remain unbound.  The Phase-A4 objects
+are linked zero times and executed zero times.  The recursive short gate
+does link and execute the already-frozen Phase-A1 and Phase-A2 synthetic
+programs once each; neither is a tracking or MOC calculation.  The whole
+gate performs zero transport solves and zero Dragon runs.
+
+All four subgates remain outside the production call graph.  Phase-A4 does
+not validate MOC behavior, ACA, rebalancing, acceleration, the full mutable
+radial state, terminal norms, physical accuracy, solver convergence, or
+Picard convergence.  The next permitted step is a compile-only Phase-A5
+contract that binds real-host context population and provenance while
+preserving the unresolved link barrier and performing no transport.  The
+combined result is still a partial static slice, not a continuous REAL64
+lane.  See
 [real64_phase_a1/README.md](validation/iterative/real64_phase_a1/README.md)
 and
 [real64_phase_a2/README.md](validation/iterative/real64_phase_a2/README.md)
 and
-[real64_phase_a3/README.md](validation/iterative/real64_phase_a3/README.md).
+[real64_phase_a3/README.md](validation/iterative/real64_phase_a3/README.md)
+and
+[real64_phase_a4/README.md](validation/iterative/real64_phase_a4/README.md).
 
 A possible three-return legacy-binary32 Picard diagnostic was then examined
 as a smaller alternative.  It is not currently executable: three returns are
@@ -411,8 +428,9 @@ design has been frozen, with `Dragon processes = 0`, in
 12. freeze and statically close a default-off continuous REAL64 radial
     working lane, including ACA, rebalancing, acceleration, and terminal
     norms (protocol frozen; Phase-A1 source arithmetic and the Phase-A2
-    typed post-STIS/pre-ACA façade implemented, actual MOC and full static
-    closure incomplete);
+    typed post-STIS/pre-ACA façade implemented; Phase-A3 legacy-ABI seam and
+    Phase-A4 compile-only A2-to-A3 host closure implemented; real-host
+    population/provenance, actual MOC, and full static closure incomplete);
 13. examine a fixed three-return legacy32 descriptive diagnostic as a
     smaller alternative (design frozen, but execution is `NO-GO` under the
     current Stage-4 result);

@@ -40,6 +40,9 @@ spot-real64-phase-a2 :
 .PHONY: spot-real64-phase-a3
 spot-real64-phase-a3 :
 	sh validation/iterative/real64_phase_a3/run_phase_a3.sh
+.PHONY: spot-real64-phase-a4
+spot-real64-phase-a4 :
+	sh validation/iterative/real64_phase_a4/run_phase_a4.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)
