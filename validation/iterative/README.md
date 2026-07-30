@@ -561,9 +561,31 @@ zero Dragon processes.
 All four subgates remain outside `src/`.  ACA, rebalancing, acceleration,
 the wider mutable radial state, terminal norms, real MOC operation, and
 physical accuracy remain open.  This is not a continuous REAL64 lane and
-is not evidence of MOC, solver, or Picard convergence.  The next authorized
-work is a compile-only Phase-A5 contract for real-host context population
-and provenance, with the unresolved link barrier retained and no execution.
+is not evidence of MOC, solver, or Picard convergence.
+
+The fifth isolated subgate is under
+[`real64_phase_a5/`](real64_phase_a5/README.md). It privately populates the
+locked host-shaped context and consumes it synchronously:
+
+```sh
+make spot-real64-phase-a5
+```
+
+It remains compile-only and does not bind runtime provenance.
+
+The sixth isolated subgate is under
+[`real64_phase_a6/`](real64_phase_a6/README.md). It freezes the unique
+future `MCGFL1` response rendezvous and a default-off host adapter:
+
+```sh
+make spot-real64-phase-a6
+```
+
+Production admission remains false. Current `MCGFL1` stores `QFR/PHIIN`
+in REAL32 and has no complete ordered `SC(0:M,1,NGEFF)` host bundle.
+Phase-A6 rejects both shortcuts instead of inserting a precision conversion
+or a second LCM gather. Its ON arm must replace, never accompany, the
+legacy `MCGFCF`-through-`MCGFST` visit.
 
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own

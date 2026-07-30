@@ -1,0 +1,368 @@
+{
+  "schema": "spot-radial-real64-phase-a6-compile-only-host-rendezvous-readiness-v1",
+  "title": "Compile-only REAL64 host-rendezvous readiness with blocked production admission",
+  "status": {
+    "classification": "FROZEN-IMPLEMENTED-COMPILE-ONLY-HOST-RENDEZVOUS-READINESS",
+    "host_rendezvous_contract_frozen": true,
+    "host_rendezvous_readiness_implemented": true,
+    "phase_a_static_closure": false,
+    "compile_only": true,
+    "link_authorized": false,
+    "execution_authorized": false,
+    "production_admission": false,
+    "production_admission_reason": [
+      "CURRENT-MCGFL1-QFR-PHIIN-ARE-REAL32",
+      "NO-COMPLETE-ORDERED-SC-BUNDLE-EXISTS-AT-RENDEZVOUS"
+    ],
+    "runtime_preflight_implemented": false,
+    "runtime_object_provenance_validated": false,
+    "tracking_position_validated": false,
+    "real_KPSYS_PJJ_directories_bound": false,
+    "EXP1_identity_bound": false,
+    "continuous_real64_lane": false,
+    "production_route_connected": false,
+    "default_runtime_route_changed": false,
+    "actual_moc_response_validated": false,
+    "transport_solves": 0,
+    "dragon_processes_authorized": 0,
+    "outer_convergence": "NOT-EVALUATED"
+  },
+  "baseline": {
+    "commit": "2974832ff26914f15f3b26ddef99e6ca73b4f90e",
+    "source_sha256": {
+      "validation/iterative/real64_phase_a1/SPOR64_A1.f90": "13f341a99fa99c21ff34821339d0347565489134379193a1bfcf58dfa65726da",
+      "validation/iterative/real64_phase_a2/SPOR64_A2.f90": "9c0d209d29d99a910559e3b207d98ec466be751a8d7aa56e040fb382989579c2",
+      "validation/iterative/real64_phase_a3/SPOR64_A3.f90": "3d8d9ebb2417f0c2139b88ecee157bcf16fa189e6f87e5dd6e76df8058f05ccc",
+      "validation/iterative/real64_phase_a4/SPOR64_A4.f90": "a656aac0b3a11a5610c4724ab67b3e66c1cdd0f0a0b7043fdec324b577c27fe8",
+      "validation/iterative/real64_phase_a5/SPOR64_A5.f90": "bcd8d6f59da4f7ea5f2be2c631ca31efe7b0cf2e70b8717c2d0a683d83ff42e7"
+    },
+    "prerequisite_receipt_sha256": {
+      "validation/iterative/real64_phase_a5/phase_a5_implementation_receipt.sha256": "61a757384df26104b677a698fcc577869050325af86fca50a587f9f44b3fb67d"
+    },
+    "legacy_source_sha256": {
+      "src/MCGFL1.f": "6701db8972bd92e339d99879787a126f1ce38b72936852ba331259877894df9f",
+      "src/MCGFLX.f": "89f03dca19474663460736359ff1acf0b3648086d2780286033b85824333344f",
+      "src/MCCGF.f": "621fba6d02d1b1efae2d6d6db8e61d1463a3a24bcf4d0efe3579bfba97c55546",
+      "src/MOCIK3.f": "5193a5a8a4922f4c20b34fae19f1d1278722c31c33dae143bf970b7e2595e007",
+      "src/MCGFCF.f": "60c841dbd2a0a2de2023de8a424b0162bc9898c5c5b877cc4d59f5b892b0deb9",
+      "src/MCGFCS.f": "14661cff68e916e0fdc962320c434d5eb7aba247bce138a696cc809aaac78ec6",
+      "src/MCGFST.f": "bda4ec2376d91e5cf12427288c6bc1c565980cf916639937dca21ad7ad62b5e3",
+      "src/MCGSCA.f": "fb16fe47c842d3a8c6e8726efb05195ce47ec88c6fdf6c00c65a91a3573a0159",
+      "src/MCGPJJ.f": "b695949d91921778a7fbe9e1a377057e87d821b8d2cd8027de9413ccfcc36de2",
+      "src/DOORFV.f": "630f84ba8c738e520e471f63f67e2a9813bc9723d3e7ec30db59e478579b0a8d",
+      "src/FLU.f": "f9391eb48be9ab1f8d9c3250a23409de2dcfb6111d22db283d1c29d030d26fd0",
+      "src/XDRTA2.f": "625f5738da3ecc62b82ef29217111c2e789bd853e392ae6ecbe7c2c64e456fff"
+    }
+  },
+  "implementation": {
+    "location": "validation/iterative/real64_phase_a6/SPOR64_A6.f90",
+    "module": "SPOR64_A6",
+    "procedure": "MCGFL1R64_DEFAULT_OFF_HOST_ADAPTER_COMPILE_ONLY_LOCKED",
+    "sha256": "49aebc5bc8c3a3eb370219c1b3f00c4ea64f98a5b83765c86bfb655276bd3bcf",
+    "validation_tree_only": true,
+    "included_by_src_wildcard_build": false,
+    "scientific_use": "NONE",
+    "production_callers": 0,
+    "runtime_calls": 0
+  },
+  "host_rendezvous": {
+    "host": "MCGFL1",
+    "location": "AFTER-SOURCE-CONSTRUCTION-AND-MOCIK3-BEFORE-REGULAR-NONCYCLIC-MCGFCF",
+    "unique_future_seam": true,
+    "default_enabled": false,
+    "off_arm": "UNCHANGED-LEGACY-MCGFCF-THEN-MCGFST-RESPONSE-REGION",
+    "on_arm": "PHASE-A5-PATH-WHICH-ALREADY-COVERS-MCGFCF-THEN-MCGFST",
+    "rejoin_location": "AFTER-EXISTING-MCGFST-RESPONSE-REGION",
+    "arms_mutually_exclusive": true,
+    "host_legacy_response_and_A5_permitted_in_same_visit": false,
+    "host_MCGFST_after_A5_permitted": false,
+    "tracking_stream_double_consumption_prevented_by_contract": true,
+    "STIS_double_application_prevented_by_contract": true,
+    "disabled_state_action": "UNCHANGED-OFF-ARM",
+    "enabled_route_selected_before_admission_checks": true,
+    "enabled_invalid_state_action": "FAIL-CLOSED-WITHOUT-LEGACY-FALLBACK",
+    "production_insertion_present": false,
+    "production_admission_satisfied": false
+  },
+  "locked_branch": {
+    "calculation_type": "S",
+    "door": "MCCG",
+    "ISCH": 11,
+    "scheme": "NON-CYCLIC-STIS-1-STEP-CHARACTERISTICS-TABULATED-EXPONENTIALS",
+    "NDIM": 2,
+    "K": 14,
+    "KPN": 14,
+    "NLONG": 14,
+    "NREG": 8,
+    "NSOUT": 6,
+    "groups": 370,
+    "NANI": 1,
+    "NLIN": 1,
+    "NFUNL": 1,
+    "STIS": 1,
+    "NPJJM": 1,
+    "IDIR": 0,
+    "CYCLIC": false,
+    "LPRISM": false,
+    "NGIND": "STRICTLY-CONSECUTIVE-TAIL-ENDING-AT-370",
+    "initial_full_tail_allowed": true,
+    "later_shorter_tail_allowed": true,
+    "NGEFF_forced_to_370": false,
+    "NCONV_true_meaning": "ACTIVE-NOT-CONVERGED",
+    "active_subset": "NONEMPTY-ARBITRARY-NONCONTIGUOUS-MASK"
+  },
+  "direct_host_map": {
+    "n": {
+      "host": "NLONG",
+      "state": "DIRECT"
+    },
+    "ndim": {
+      "host": "NDIM",
+      "state": "DIRECT"
+    },
+    "nzon": {
+      "host": "NZON",
+      "state": "BORROWED-CONFORMING-VIEW"
+    },
+    "qn": {
+      "host": "QFR",
+      "state": "BLOCKED-HOST-REAL32-A5-REQUIRES-REAL64"
+    },
+    "fi": {
+      "host": "PHIIN",
+      "state": "BLOCKED-HOST-REAL32-A5-REQUIRES-REAL64"
+    },
+    "m": {
+      "host": "M",
+      "state": "DIRECT"
+    },
+    "nani_nlin_nfunl": {
+      "host": "NANI-NLIN-NFUNL",
+      "state": "DIRECT"
+    },
+    "sc": {
+      "host": "COMPLETE-ORDERED-DRAGON-S0XSC-BUNDLE",
+      "state": "BLOCKED-ONLY-ONE-BORROWED-GROUP-POINTER-EXISTS-AT-A-TIME"
+    },
+    "source": {
+      "host": "S",
+      "state": "DIRECT-REAL64"
+    },
+    "raw_response": {
+      "host": "PHIOUT",
+      "state": "DIRECT-REAL64"
+    },
+    "kpn_nreg": {
+      "host": "KPN-NREG",
+      "state": "DIRECT"
+    },
+    "keyflx_keycur": {
+      "host": "KEYFLX-KEYCUR",
+      "state": "BORROWED-CONFORMING-VIEWS"
+    },
+    "ibc": {
+      "host": "IBC-FROM-BC-REFL+TRAN",
+      "state": "BORROWED-CONFORMING-VIEW"
+    },
+    "sigal": {
+      "host": "SIGAL",
+      "state": "DIRECT-REAL32-OPERATOR-DATA"
+    },
+    "branch_controls": {
+      "host": "STIS-CYCLIC-LPRISM-IDIR",
+      "state": "DIRECT-EXACTLY-GUARDED"
+    },
+    "group_state": {
+      "host": "NG-NGEFF-NGIND-NCONV",
+      "state": "DIRECT-TAIL-AND-ACTIVE-MASK-GUARDED"
+    },
+    "iftrak": {
+      "host": "IFTRAK",
+      "state": "BORROWED-SEQUENTIAL-UNIT-NUMBER"
+    },
+    "nbtr": {
+      "host": "NBTR",
+      "state": "DIRECT-AFTER-TRACKING-HEADER-READ"
+    },
+    "n2max": {
+      "host": "N2MAX",
+      "state": "DIRECT-WHEN-LPRISM-FALSE"
+    },
+    "nbatch": {
+      "host": "NBATCH",
+      "state": "DIRECT"
+    },
+    "kpsys": {
+      "host": "KPSYS",
+      "state": "BORROWED-C_PTR-HANDLE-ARRAY"
+    },
+    "caz1_caz2": {
+      "host": "CAZ1-CAZ2",
+      "state": "DIRECT-REAL64"
+    },
+    "zmu_wzmu": {
+      "host": "ZMU-WZMU",
+      "state": "BORROWED-REAL32-TRACKING-VIEWS"
+    },
+    "volume": {
+      "host": "V",
+      "state": "BORROWED-REAL32-TRACKING-VIEW"
+    }
+  },
+  "production_admission_blockers": {
+    "mutable_state": {
+      "current_QFR_kind": "DEFAULT-REAL-REAL32",
+      "current_PHIIN_kind": "DEFAULT-REAL-REAL32",
+      "required_QN_kind": "REAL64",
+      "required_FI_kind": "REAL64",
+      "rendezvous_conversion_allowed": false,
+      "reason": "PROMOTION-AFTER-REAL32-ROUNDING-DOES-NOT-CREATE-A-CONTINUOUS-REAL64-LANE"
+    },
+    "sc_bundle": {
+      "required_shape": "SC(0:M,1,NGEFF)",
+      "required_order": "CURRENT-STRICTLY-CONSECUTIVE-GATHERED-TAIL",
+      "current_availability": "ONE-DRAGON-S0XSC-POINTER-PER-ACTIVE-GROUP-LOOP-VISIT",
+      "complete_bundle_available": false,
+      "rendezvous_gather_allowed": false,
+      "rendezvous_LCM_read_allowed": false,
+      "last_group_pointer_reuse_allowed": false
+    }
+  },
+  "static_lifetime_contract": {
+    "scope": "LEXICAL-FORTRAN-SOURCE-ORDER-ONLY",
+    "IFTRAK_header_read_before_seam": true,
+    "IFTRAK_expected_track_record_position_lexically_before_seam": true,
+    "NBTR_established_before_seam": true,
+    "NMAX_equals_N2MAX_for_locked_branch": true,
+    "source_matrix_S_live_during_synchronous_call": true,
+    "raw_response_matrix_PHIOUT_live_during_synchronous_call": true,
+    "ISGNR_allocated_and_initialized_by_MOCIK3_before_seam": true,
+    "ISGNR_deallocated_only_after_legacy_response_and_acceleration_region": true,
+    "KPSYS_pointees_borrowed": true,
+    "tracking_and_LCM_ownership_transferred": false,
+    "A5_context_local_to_synchronous_call": true,
+    "borrowed_resources_retained_after_return": false,
+    "one_group_XSSC_is_complete_bundle": false,
+    "runtime_lifetime_validated": false
+  },
+  "provenance_boundary": {
+    "lexical_host_source_map_closed": true,
+    "real_context_provenance_bound": false,
+    "IFTRAK_open_identity_bound": false,
+    "IFTRAK_first_track_position_bound": false,
+    "IFTRAK_IPTRK_pair_identity_bound": false,
+    "KPSYS_pointee_lifetime_bound": false,
+    "KPSYS_group_order_bound": false,
+    "KPSYS_PJJ_record_identity_bound": false,
+    "SC_bundle_identity_bound": false,
+    "SC_SIGAL_KPSYS_NZON_VOLUME_geometry_material_identity_bound": false,
+    "EXP1_same_image_epoch_bound": false,
+    "production_QFR_PHIIN_REAL64": false,
+    "production_host_callsite_bound": false,
+    "tracking_stream_runtime_position_validated": false,
+    "actual_transport_path_observed": false
+  },
+  "forbidden_actions": {
+    "mutable_state_kind_conversion": true,
+    "SC_gather_or_reconstruction": true,
+    "file_IO": true,
+    "LCM_IO": true,
+    "tracking_read": true,
+    "transport_application": true,
+    "object_link": true,
+    "object_execution": true,
+    "Dragon_execution": true,
+    "default_on_switch": true,
+    "host_legacy_response_and_A5_double_visit": true,
+    "host_MCGFST_after_A5": true,
+    "empirical_parameter": true,
+    "relaxation_or_acceleration": true,
+    "threshold_or_tolerance": true,
+    "interpolation_fit_clip_or_model_change": true
+  },
+  "call_boundary": {
+    "only_allowed_future_downstream_call": "PHASE-A5-HOST-SHAPED-POPULATION-WRAPPER",
+    "direct_A4_calls": 0,
+    "direct_A3_calls": 0,
+    "direct_legacy_calls": 0,
+    "link_barrier_owner": "PHASE-A3",
+    "link_barrier_count": 1,
+    "A6_link_barriers": 0,
+    "production_callers": 0
+  },
+  "compile_tests": {
+    "positive_anchor": "validation/iterative/real64_phase_a6/compile_spor64_a6_host_callsite.f90",
+    "positive_anchor_sha256": "6a0232dcbfa6eb5dffeb08521a112da5a1ba0676ea4efe93863d4b37bf1fb27a",
+    "positive_anchor_has_program": false,
+    "negative_sources": {
+      "validation/iterative/real64_phase_a6/compile_fail_nonlogical_enable.f90": "0f898ce65f3f41d16518f15c69f1f7bdd5adb1122f7061e258b01daf5951b68d",
+      "validation/iterative/real64_phase_a6/compile_fail_legacy_real32_host_state.f90": "98f94bf788458ee645b54e28224d737f6d6b7376e4b2fd95591ac9dbc3a19617",
+      "validation/iterative/real64_phase_a6/compile_fail_single_group_xssc.f90": "c99dd261c219bc1f6a0ee026ce7bc0949ef4778218910c3c9a09a42d76bffa0b"
+    },
+    "unresolved_symbol_counts": {
+      "A3_poison_sentinel_object": 8,
+      "A6": 2,
+      "host_callsite": 5
+    },
+    "phase_a6_fortran_objects_linked": 0,
+    "phase_a6_fortran_executables_built": 0,
+    "phase_a6_fortran_objects_executed": 0,
+    "prerequisite_runners_executed": 0,
+    "synthetic_executions": 0,
+    "host_rendezvous_executions": 0,
+    "tracking_reads": 0,
+    "transport_solves": 0,
+    "dragon_runs": 0
+  },
+  "build_contract": {
+    "top_level_target": "spot-real64-phase-a6",
+    "added_to_default_all": false,
+    "added_to_tests": false,
+    "added_to_spot_fast": false,
+    "temporary_build_directory": true,
+    "all_fortran_commands_compile_only": true,
+    "runner_sha256": "2324e9e168d0700ca518def77d2cdf0182d55da0d778e040f5ddf56db7f42a6f",
+    "validated_platform": "Darwin-arm64",
+    "validated_compiler_banner": "GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0",
+    "validated_locale": "C",
+    "cross_toolchain_portability_claim": "NONE-SEPARATE-RECEIPT-REQUIRED",
+    "top_level_makefile_delta": "PHASE-A5-BASELINE-PLUS-EXACT-ISOLATED-PHASE-A6-BLOCK",
+    "unresolved_symbol_policy": "A3-POISON-SENTINEL-PLUS-A6-AND-HOST-CALLSITE-EXACT-ALLOWLISTS",
+    "link_commands_allowed": [],
+    "forbidden_flag": "-fdefault-real-8",
+    "required_checked_flags": [
+      "-std=f2008",
+      "-pedantic-errors",
+      "-Werror",
+      "-Wimplicit-interface",
+      "-Wimplicit-procedure",
+      "-Wconversion-extra",
+      "-Warray-temporaries",
+      "-fimplicit-none",
+      "-fcheck=all",
+      "-ffp-contract=off",
+      "-fno-fast-math"
+    ]
+  },
+  "remaining_unproved": [
+    "runtime IFTRAK open identity and exact first-track positioning",
+    "live KPSYS lifetime group ordering and PJJ$MCCG identity",
+    "IFTRAK IPTRK KPSYS cross-object identity",
+    "complete ordered SC bundle provenance and lifetime",
+    "EXP1 initialization epoch in the same process image",
+    "continuous REAL64 QFR PHIIN source and terminal-state lane",
+    "separately authorized removal of the Phase-A3 link barrier",
+    "one bounded primary-response execution and independent replay",
+    "ACA SCR GMRES BiCGSTAB rebalancing and acceleration state",
+    "terminal norms and authoritative type-4 archive boundary",
+    "physical MOC accuracy radial convergence and outer Picard convergence"
+  ],
+  "next_step": "First close the upstream continuous REAL64 QFR/PHIIN state and one complete ordered lifetime-bounded SC bundle; do not add a production callsite or execute transport before those blockers are closed.",
+  "interpretation": [
+    "Phase-A6 freezes only the compile-time location, direct map, lifetime scope, and fail-closed admission contract for one future MCGFL1 rendezvous.",
+    "The only future ON arm is a mutually exclusive replacement for the existing regular non-cyclic MCGFCF-through-MCGFST response region, never an additional traversal or a precursor to a second MCGFST.",
+    "Current production admission is false because QFR and PHIIN are REAL32 and no complete ordered SC bundle exists at the rendezvous.",
+    "No conversion, gathering, LCM or file I/O, object execution, tracking read, transport solve, Dragon process, or empirical parameter is introduced.",
+    "No runtime provenance, physical response, numerical accuracy, radial convergence, or Picard convergence is established."
+  ]
+}

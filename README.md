@@ -408,8 +408,29 @@ REAL64 host state, or any solver convergence.  No A5 object is linked or
 executed, and the Phase-A3 barrier remains unresolved.  See
 [real64_phase_a5/README.md](validation/iterative/real64_phase_a5/README.md).
 
-The five Phase-A gates remain a partial static slice, not a continuous
-REAL64 radial lane.
+Phase-A6 now freezes the only admissible future `MCGFL1` rendezvous and a
+default-off, validation-only host adapter:
+
+```sh
+make spot-real64-phase-a6
+```
+
+The ON arm is defined as a mutually exclusive replacement for the existing
+`MCGFCF`-through-`MCGFST` response visit; it can never be an additional
+tracking traversal.  Once selected, a failed admission cannot fall back to
+the legacy arm.  This prevents both a second consumption of the sequential
+tracking stream and a second STIS application.
+
+The static host audit also records two current production blockers:
+`MCGFL1` still owns REAL32 `QFR/PHIIN`, and it has only a transient
+one-group `DRAGON-S0XSC` view rather than the complete ordered
+`SC(0:M,1,NGEFF)` bundle required by A5.  Phase-A6 deliberately performs
+neither a kind conversion nor an LCM gather, and it does not modify `src/`.
+See
+[real64_phase_a6/README.md](validation/iterative/real64_phase_a6/README.md).
+
+The six Phase-A gates remain a partial static slice, not a continuous
+REAL64 radial lane or a convergence result.
 
 A possible three-return legacy-binary32 Picard diagnostic was then examined
 as a smaller alternative.  It is not currently executable: three returns are
