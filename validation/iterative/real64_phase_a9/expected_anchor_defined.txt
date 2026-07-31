@@ -1,0 +1,3 @@
+T _compile_spor64_a9_anchor_
+T _spor64_a9_anchor_legacy_callback_
+T _spor64_a9_anchor_real64_callback_

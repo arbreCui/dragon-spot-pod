@@ -1,0 +1,226 @@
+{
+  "schema": "spot-real64-phase-a9a-v1",
+  "phase": "A9a",
+  "title": "Outer REAL64 mathematical compile-only closure",
+  "status": {
+    "classification": "FROZEN-IMPLEMENTED-COMPILE-ONLY-OUTER-CLOSURE",
+    "outer_mathematics_implemented": true,
+    "validation_owned_state": true,
+    "compile_only": true,
+    "link_authorized": false,
+    "execution_authorized": false,
+    "production_source_changes": 0,
+    "production_route_connected": false,
+    "default_runtime_route_changed": false,
+    "host_ingress_implemented": false,
+    "archive_implemented": false,
+    "runtime_provenance_validated": false,
+    "actual_transport_response_validated": false,
+    "continuous_real64_lane": false,
+    "radial_convergence": "NOT-EVALUATED",
+    "outer_picard_convergence": "NOT-EVALUATED",
+    "object_links": 0,
+    "object_executions": 0,
+    "tracking_reads": 0,
+    "transport_solves": 0,
+    "dragon_runs": 0
+  },
+  "split": {
+    "reason": "A validation-only mathematical owner cannot prove production parser, runtime-object or archive lifetimes.",
+    "A9a": "REAL64 eight-slice owner, fixed/off-group source construction, A8 call, rebalancing, acceleration, norms and strict terminal Boolean.",
+    "A9b": "Production one-pass default-off selector, ingress, XDRTA2 epoch, SPOMOC_CAPTURE64 implementation, type-4 authority, type-2 mirror and layered publication.",
+    "complete_A9_claim_allowed": false
+  },
+  "a7_wording_correction": {
+    "status": "A9a addendum; frozen A7 artifact is not rewritten",
+    "incorrect_A7_label": "Integrated inner-source accumulator",
+    "correct_role": "XCSOU64 is the volume integral of outer source slice 4 before the inner loop",
+    "legacy_evidence": "src/FLU2DR.f lines 629-635",
+    "terminal_source_distinction": "terminal SOUR is final slice 8 copied to slice 4"
+  },
+  "authority": {
+    "parent_phase": "A8",
+    "parent_commit": "9a284ef0b97cfd4b1700ff4e3ace0a694a24fa07",
+    "parent_receipt": "validation/iterative/real64_phase_a8/phase_a8_implementation_receipt.sha256",
+    "parent_receipt_sha256": "5c5d0b118269d111360536d8dc6bdead23ad56b22220cc8ace3e4282ee8377fa",
+    "implementation": "validation/iterative/real64_phase_a9/SPOR64_A9.f90",
+    "selector_seam": "validation/iterative/real64_phase_a9/SPOR64_A9_HOST.f90",
+    "scope": "validation-only; no file under src/ or Utilib/src/ is edited"
+  },
+  "locked_branch": {
+    "NGRP": 370,
+    "NREG": 8,
+    "NSOUT": 6,
+    "NUNKNO": 14,
+    "NMAT": 8,
+    "NSLICE": 8,
+    "MAXOUT": 500,
+    "MAXINR": 740,
+    "NCTOT": 6,
+    "NCPTM": 3,
+    "ITYPEC": 0,
+    "ITPIJ": 1,
+    "IPHASE": 1,
+    "ILEAK": 0,
+    "NLIN": 1,
+    "NANI": 1,
+    "NFUNL": 1,
+    "LREBAL": true,
+    "LFORW": true,
+    "NUSIGF": "finite numerical zero admitted by A9b before entry",
+    "tolerance_binary32_bits": "0x348637bd",
+    "tolerance_real64_exact_promotion": "2.4999999936881070e-7"
+  },
+  "precision_contract": {
+    "state_shape": "FLUX64(NUNKNO,NGRP,NSLICE)",
+    "mutable_state": "real(real64), unique local owner",
+    "fixed_and_terminal_sources": "real(real64)",
+    "control_norms_balance_and_acceleration": "real(real64)",
+    "cutoff_counter": "integer(int64), additive diagnostic only",
+    "operator_storage": "VOL/XSTRC/XSDIA0/ALBEDO/SURFAC/SCAT_OFF are real(real32), read-only",
+    "operator_use": "exact real(real32)-to-real(real64) promotion at each use",
+    "mutable_real64_to_real32_allowed": false,
+    "default_real_assumed": false,
+    "toolchain_guard": "kind(1.0)==real32 and kind(0.0d0)==real64"
+  },
+  "state_slices": {
+    "1": "old outer flux",
+    "2": "present outer flux",
+    "3": "new outer flux",
+    "4": "current outer source; fixed source on entry and final inner sweep source on return",
+    "5": "old inner flux",
+    "6": "present inner flux",
+    "7": "new inner flux",
+    "8": "current inner sweep source"
+  },
+  "outer_iteration": {
+    "order": [
+      "slice 4 = FIXED_SOURCE64",
+      "XCSOU64(g) = sum_r slice4(KEYFLX(r),g)*real(VOL32(r),real64)",
+      "slice 6 = slice 2",
+      "inner loop",
+      "slice 3 = slice 7",
+      "slice 4 = slice 8",
+      "EEXT64 = 0 for TYPE S",
+      "scheduled FLU2AC64 on slices 1:3",
+      "outer scalar-key norm",
+      "slice 1 = slice 2; slice 2 = slice 3",
+      "strict terminal Boolean"
+    ],
+    "xcsou_role": "integrated slice-4 outer fixed source, never the inner source",
+    "initial_flux": "slice 2 receives INITIAL_FLUX64; the owner initializes all storage to defined positive zero and later live copies define every other slice before use",
+    "akeep_initial": "all zero, then AKEEP64(5:7)=1; each outer iteration assigns AKEEP64(3)=1 before any scheduled outer acceleration and then shifts 1=2, 2=3"
+  },
+  "runtime_handle_precondition": {
+    "A9a_formal": "JPSYS_GROUP",
+    "required_identity": "the admitted L_PIJ/GROUP list consumed by A8 DOORFV64, not the root L_PIJ object",
+    "IPTRK_and_IFTRAK": "borrowed at the exact A8 tracking epoch",
+    "validated_in_A9a": false,
+    "owner": "A9b production ingress and lifecycle gate"
+  },
+  "inner_iteration": {
+    "order": [
+      "slice 7 = slice 6",
+      "slice 8 = slice 4",
+      "off-group source accumulation",
+      "DOORFV64(slice 8, slice 7)",
+      "FLUBAL64(slice 7)",
+      "scheduled FLU2AC64(slices 5:7)",
+      "inner scalar-key norm",
+      "slice 5 = slice 6; slice 6 = slice 7"
+    ],
+    "active_groups": "NPSYS(1:IGDEB-1)=0 and NPSYS(IGDEB:NGRP)=group identity",
+    "strict_convergence": "EINR64 < EPSINR64",
+    "near_schedule": "IGDEB>1 and EINR64<10*EPSINR64 starts a new outer iteration but never accepts",
+    "cap_state": "state 3; normal non-accepted return"
+  },
+  "offgroup_contract": {
+    "bundle": "NJJ_OFF(NMAT,NGRP), IJJ_OFF(NMAT,NGRP), IPOS_OFF(NMAT,NGRP), NSCAT_OFF(NGRP), SCAT_OFF32(NMAT*NGRP,NGRP)",
+    "coefficient_index": "IPOS_OFF(m,g)+IJJ_OFF(m,g)-j",
+    "loop_order": "g ascending, region ascending, packed source group descending",
+    "source_rule": "add real(SCAT_OFF32(p,g),real64)*slice7(KEYFLX(r),j) only when j/=g",
+    "self_scatter_addition": false,
+    "second_LCM_gather": false,
+    "reuse": "the same admitted bundle is used by source construction and FLUBAL64"
+  },
+  "rebalancing": {
+    "routine": "FLUBAL64",
+    "matrix_and_rhs": "real(real64)",
+    "solver": "ALSBD",
+    "solver_call": "ALSBD(NGREB,1,REBAL64,IER,NGRP)",
+    "rhs": "XCSOU64 plus converged-group off-group scattering",
+    "diagonal": "surface current balance plus (XSTRC-XSDIA0) volume reaction",
+    "offdiagonal": "negative nonconverged-group off-group scattering",
+    "success_update": "multiply all NUNKNO unknowns in each active group by its factor",
+    "solver_failure": "structural fail-closed; no fallback and no publication"
+  },
+  "acceleration": {
+    "routine": "FLU2AC64",
+    "r1": "present-old",
+    "r2": "new-present",
+    "numerator": "sum r1*(r2-r1)",
+    "denominator": "sum (r2-r1)^2",
+    "mu": "-numerator/denominator",
+    "application": "only finite mu>0 updates present, new and AKEEP64",
+    "zero_denominator": "no division and no acceleration; ZMU64=1",
+    "schedule": "MOD(iter-1,6)>=3",
+    "relaxation_or_new_threshold": false
+  },
+  "norms": {
+    "support": "only the eight KEYFLX scalar-region components",
+    "group_formula": "max_r abs(present-new) / max_r abs(new)",
+    "zero_denominator": "structural fail-closed; no flux floor or replacement threshold",
+    "inner": "EINR64=max over groups beginning at the entry IGDEB",
+    "outer": "EUNK64=max over all groups",
+    "all_real64": true
+  },
+  "terminal": {
+    "exact_boolean": "EEXT64<EPSOUT64 .and. EUNK64<EPSUNK64 .and. EINR_LAST64<EPSINR64 .and. IINR_STATE==1 .and. IT>=2",
+    "eext_type_s": "+0.0_real64",
+    "accepted_outputs": "slice 3 terminal flux and slice 4 terminal source",
+    "maxout": "OK=true and ACCEPTED=false; no publication"
+  },
+  "selector_seam": {
+    "scope": "validation-only abstract dispatch proof, not production host wiring",
+    "default_real64_route": false,
+    "legacy_arm": "selected exactly once only when requested=false",
+    "real64_arm": "selected exactly once only when requested=true",
+    "fallback_after_real64_selection": false,
+    "orthogonal_to_MOCA": true
+  },
+  "legacy_source_hashes": {
+    "src/FLU2DR.f": "edd308054f2977999591a1e9df173212da1a7cb4a6519042295a96fd2c8bbc39",
+    "src/FLUBAL.f": "005495631cc8234feb1caf0bfccd8c14634dd847091a63ed6a9cae3c1129c6cc",
+    "src/FLU2AC.f": "3d8817087d106062eed6c155bca11b10171df322eb8fe15d83398e8cf717895a",
+    "Utilib/src/ALSBD.f": "b0544742d85154b426f4aa5d6f762b5e2e4d9599988f57929dfe11e51c90d5f5"
+  },
+  "compile_gate": {
+    "target": "spot-real64-phase-a9a",
+    "platform": "Darwin-arm64",
+    "compiler": "GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0",
+    "objects_linked": 0,
+    "executables_built": 0,
+    "objects_executed": 0,
+    "prerequisite_runners_executed": 0,
+    "negative_contract_count": 7,
+    "default_real8_must_fail": true,
+    "exact_nm_allowlists": true,
+    "main_symbol_allowed": false
+  },
+  "forbidden": [
+    "production source edit or production route connection",
+    "linking or executing an A9a object",
+    "runtime tracking read or transport solve",
+    "GANLIB ingress or archive write",
+    "type-2 compatibility mirror or type-4 authority write",
+    "XDRTA2 lifecycle claim",
+    "fission, CHI, leakage, buckling, adjoint, Fourier or GPT branch",
+    "second off-group gather",
+    "mutable-state REAL64-to-REAL32 conversion",
+    "SAVE, COMMON, EQUIVALENCE or mutable module state",
+    "fallback after REAL64 selection",
+    "relaxation, fitted coefficient, clipping, flux floor, tuned cutoff or new tolerance",
+    "SPOD or online Picard feedback",
+    "radial, Picard, Stage-4 or physical-accuracy claim"
+  ]
+}

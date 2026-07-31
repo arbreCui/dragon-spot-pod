@@ -644,6 +644,28 @@ the `FLU2DR64` outer owner, rebalancing, acceleration, terminal norms,
 archives, production dispatch and all convergence claims remain A9-or-later
 work.
 
+The ninth phase is split after independent source, host and gate audits. The
+first subgate is under
+[`real64_phase_a9/`](real64_phase_a9/README.md):
+
+```sh
+make spot-real64-phase-a9a
+```
+
+Phase-A9a implements only the validation-owned outer mathematics: one unique
+eight-slice `REAL64` state, fixed and off-group source construction, the A8
+inner call, `REAL64` rebalancing through `ALSBD`, inherited one-factor
+acceleration, scalar-region norms and the strict terminal Boolean. `XCSOU`
+is locked as the integrated outer slice-4 source; terminal `SOUR` is the
+last slice-8 sweep input. No new coefficient, threshold or model term is
+introduced.
+
+The production one-pass `R64` parser, default-off no-fallback dispatch,
+runtime object admission, `XDRTA2` epoch, capture implementation and accepted
+type-4/type-2 archive sequence remain Phase-A9b. Until that later gate passes,
+`CONTINUOUS-REAL64-LANE=false` and radial/Picard convergence remain
+`NOT-EVALUATED`.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

@@ -545,6 +545,8 @@ validation/iterative/radial_real64_route_protocol.json
                                       static-only full working-lane contract
 validation/iterative/real64_phase_a8/
                                       compile-only inner REAL64 closure
+validation/iterative/real64_phase_a9/
+                                      compile-only outer REAL64 math closure
 validation/iterative/picard_three_return_protocol.json
                                       no-run three-return design contract
 validation/iterative/raw_moc_capture_run_protocol.json
@@ -663,6 +665,21 @@ make spot-real64-phase-a8
 It compiles relocatable objects and checks exact symbol inventories and
 negative ABI fixtures. It does not link or execute those objects, read a
 tracking file, solve transport, run Dragon, or establish convergence.
+
+The next outer step is intentionally split. Its first, mathematical subgate
+is short and compile-only:
+
+```sh
+make spot-real64-phase-a9a
+```
+
+Phase-A9a owns the eight-slice `REAL64` state and implements frozen-source
+construction, the A8 `DOORFV64` call, `FLUBAL64`/`ALSBD`, `FLU2AC64`, the
+inner and outer norms, and the strict terminal Boolean. It adds no relaxation,
+fit, clipping, floor or tolerance. It does not yet connect the production
+parser or GANLIB archive, and therefore cannot establish a continuous
+production lane or radial convergence. Those host and archive lifetimes are
+reserved for Phase-A9b.
 
 The alternative three-return design is also checked without Dragon:
 
