@@ -1,0 +1,4 @@
+___spor64_a8_MOD_doorfv64
+__gfortran_ieee_procedure_entry
+__gfortran_ieee_procedure_exit
+__gfortran_runtime_error_at

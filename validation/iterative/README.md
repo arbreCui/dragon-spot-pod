@@ -622,6 +622,28 @@ closure; A9 is reserved for the outer owner, rebalancing, acceleration,
 terminal norms and archive boundary. Runtime provenance, transport and
 convergence remain unevaluated.
 
+The eighth isolated gate is now implemented under
+[`real64_phase_a8/`](real64_phase_a8/README.md):
+
+```sh
+make spot-real64-phase-a8
+```
+
+It closes the validation-owned inner chain from `DOORFV64` through the
+REAL64 restarted GMRES and the frozen PACA=4 ACA correction. The source,
+iterate, residual, Krylov basis, correction, norms and control values stay
+REAL64; stored tracking, cross-section and ACA operators remain the exact
+frozen REAL32 inputs and are promoted only inside REAL64 expressions. The
+legacy binary32 `1.0e-7` ACA cutoff value is retained by exact promotion,
+with a count-only zero-cutoff counterfactual that cannot feed the solver.
+
+Phase-A8 is still compile-only and outside `src/`. Its checked
+`SPOMOC_CAPTURE64` call remains unresolved, and it neither links nor
+executes an A8 object. Runtime pointer/file provenance, actual MOC response,
+the `FLU2DR64` outer owner, rebalancing, acceleration, terminal norms,
+archives, production dispatch and all convergence claims remain A9-or-later
+work.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

@@ -506,8 +506,10 @@ design has been frozen, with `Dragon processes = 0`, in
     working lane, including ACA, rebalancing, acceleration, and terminal
     norms (protocol frozen; Phase-A1 source arithmetic and the Phase-A2
     typed post-STIS/pre-ACA façade implemented; Phase-A3 legacy-ABI seam and
-    Phase-A4 compile-only A2-to-A3 host closure implemented; real-host
-    population/provenance, actual MOC, and full static closure incomplete);
+    Phase-A4 compile-only A2-to-A3 host closure implemented; Phase-A5-A7
+    host context, rendezvous and ownership contracts frozen; Phase-A8 inner
+    suffixed REAL64 closure implemented and compile-checked; the outer
+    owner, production route, runtime provenance and actual MOC remain open);
 13. examine a fixed three-return legacy32 descriptive diagnostic as a
     smaller alternative (design frozen, but execution is `NO-GO` under the
     current Stage-4 result);
@@ -541,6 +543,8 @@ validation/iterative/raw_moc_residual_protocol.json
                                       same-sweep diagnostic definition
 validation/iterative/radial_real64_route_protocol.json
                                       static-only full working-lane contract
+validation/iterative/real64_phase_a8/
+                                      compile-only inner REAL64 closure
 validation/iterative/picard_three_return_protocol.json
                                       no-run three-return design contract
 validation/iterative/raw_moc_capture_run_protocol.json
@@ -649,6 +653,16 @@ sh validation/iterative/run_radial_real64_route_tests.sh
 It rejects an incomplete precision path, any new empirical parameter, any
 claim that archived ACA/PJJ data form the transport operator, and any
 premature run authorization.
+
+The implemented inner suffixed closure has its own isolated short gate:
+
+```sh
+make spot-real64-phase-a8
+```
+
+It compiles relocatable objects and checks exact symbol inventories and
+negative ABI fixtures. It does not link or execute those objects, read a
+tracking file, solve transport, run Dragon, or establish convergence.
 
 The alternative three-return design is also checked without Dragon:
 
