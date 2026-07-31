@@ -422,15 +422,50 @@ the legacy arm.  This prevents both a second consumption of the sequential
 tracking stream and a second STIS application.
 
 The static host audit also records two current production blockers:
-`MCGFL1` still owns REAL32 `QFR/PHIIN`, and it has only a transient
-one-group `DRAGON-S0XSC` view rather than the complete ordered
+`MCGFL1` still receives borrowed REAL32 `QFR/PHIIN`, and it has only a
+transient one-group `DRAGON-S0XSC` view rather than the complete ordered
 `SC(0:M,1,NGEFF)` bundle required by A5.  Phase-A6 deliberately performs
 neither a kind conversion nor an LCM gather, and it does not modify `src/`.
 See
 [real64_phase_a6/README.md](validation/iterative/real64_phase_a6/README.md).
 
-The six Phase-A gates remain a partial static slice, not a continuous
-REAL64 radial lane or a convergence result.
+Phase-A7 freezes the complete ownership and checked-interface blueprint:
+
+```sh
+make spot-real64-phase-a7
+```
+
+The unique mutable-state owner is the future `FLU2DR64` eight-slice
+REAL64 array.  `QFR/PHIIN` are views or exact REAL64 tail copies of that
+state, not new owners.  A separate future `MCCGF64` owns one complete,
+ordered, read-only REAL32 `DRAGON-S0XSC` bundle.  The blueprint permits one
+entry promotion, no mutable-state REAL32 round trip, and one type-2
+compatibility mirror only after the strict terminal decision.
+An independent local `R64` keyword, parsed once and defaulting OFF,
+selects the lane without coupling it to `MOCA`.  The first lane admits
+only the frozen `FSOURCE/DSOUR` source with finite zero `NUSIGF`, so it
+does not read `CHI` or invent a fission term.  `FLU2DR64` also owns one
+validated immutable `OFFGROUP32` bundle shared with `FLUBAL64`, and calls
+the unchanged `XDRTA2` initialization exactly once.
+It also freezes explicit `KEYFLX/PJJIND` ranks, active `CF(LC)`,
+`IM(NLONG+1)` in `MCGPRA64`, REAL64-only diagnostics through `PRINDM`,
+and a no-downcast `SPOMOC_CAPTURE64` audit interface.  Publication and
+host writes use layered child/driver/host success gates; no listed record
+changes before strict acceptance, and no rollback claim is made after
+accepted writes begin.  Before the first accepted write, a machine-only
+preflight requires finite type-4 values and compatibility values within
+the finite REAL32 range; it adds no convergence threshold.
+
+Phase-A7 contains no production Fortran and performs no Fortran
+compilation, tracking read, transport application, or Dragon run.  It
+separates the next implementation into an inner compile-only A8 closure
+and an outer-owner A9 closure; neither runtime provenance nor convergence
+has been evaluated.  See
+[real64_phase_a7/README.md](validation/iterative/real64_phase_a7/README.md).
+
+The implemented Phase-A1 through A6 gates and the A7 design gate remain
+static evidence, not a continuous REAL64 radial lane or a convergence
+result.
 
 A possible three-return legacy-binary32 Picard diagnostic was then examined
 as a smaller alternative.  It is not currently executable: three returns are

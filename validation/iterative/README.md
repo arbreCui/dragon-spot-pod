@@ -581,11 +581,46 @@ future `MCGFL1` response rendezvous and a default-off host adapter:
 make spot-real64-phase-a6
 ```
 
-Production admission remains false. Current `MCGFL1` stores `QFR/PHIIN`
-in REAL32 and has no complete ordered `SC(0:M,1,NGEFF)` host bundle.
+Production admission remains false. Current `MCGFL1` receives borrowed
+REAL32 `QFR/PHIIN` and has no complete ordered
+`SC(0:M,1,NGEFF)` host bundle.
 Phase-A6 rejects both shortcuts instead of inserting a precision conversion
 or a second LCM gather. Its ON arm must replace, never accompany, the
 legacy `MCGFCF`-through-`MCGFST` visit.
+
+The seventh isolated gate is under
+[`real64_phase_a7/`](real64_phase_a7/README.md). It freezes the complete
+suffixed-lane ownership and ABI blueprint:
+
+```sh
+make spot-real64-phase-a7
+```
+
+The future `FLU2DR64` is the unique owner of the eight-slice mutable
+REAL64 state. `DOORFV64` owns only its contiguous active-tail staging, and
+`MCCGF64` separately owns the complete ordered read-only REAL32 SC bundle.
+The design allows one entry promotion and one terminal type-2
+compatibility mirror, with no mutable-state REAL32 return in between.
+An independent, local, default-false `R64` selector comes from the common
+one-pass parser and remains orthogonal to `MOCA`. The first lane admits
+only frozen `FSOURCE/DSOUR` with finite zero `NUSIGF`; it omits the dead
+`CHI/XSCHI/XSNUF` path. `FLU2DR64` owns one exact immutable
+`OFFGROUP32` bundle that both source construction and `FLUBAL64` reuse,
+and the unchanged `XDRTA2` operator initialization occurs exactly once.
+Its checked ABI also fixes the exact `KEYFLX/PJJIND` ranks, active
+`CF(LC)`, `MCGPRA64 IM(NLONG+1)`, REAL64 diagnostic printing, and the
+four-REAL64-array `SPOMOC_CAPTURE64` audit boundary. Accepted publication,
+driver metadata, and final host-link writes use separate layered success
+gates; no rollback is claimed after accepted writes begin.
+Before the first accepted write, finite authority values and compatibility
+values within the finite REAL32 range are required by a
+machine-representation preflight that does not alter convergence.
+
+Phase-A7 is a static design gate: it compiles no Fortran and changes no
+production route. A8 is reserved for the inner suffixed compile-only
+closure; A9 is reserved for the outer owner, rebalancing, acceleration,
+terminal norms and archive boundary. Runtime provenance, transport and
+convergence remain unevaluated.
 
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
