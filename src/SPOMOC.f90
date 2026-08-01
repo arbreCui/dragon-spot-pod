@@ -33,6 +33,7 @@ module SPOMOC_AUDIT
   public :: SPOMOC_MCCGF_BEGIN
   public :: SPOMOC_SET_ROLE
   public :: SPOMOC_CAPTURE
+  public :: SPOMOC_CAPTURE64
   public :: SPOMOC_PUBLISH
   public :: SPOMOC_FINISH
 
@@ -269,6 +270,63 @@ contains
     state_vector(24) = required_groups
     call put_state()
   end subroutine SPOMOC_CAPTURE
+
+
+  subroutine SPOMOC_CAPTURE64(ngeff, ngind, nun, qfr, eval, source, raw, &
+       nconv)
+    integer, intent(in) :: ngeff, ngind(ngeff), nun
+    real(real64), intent(in) :: qfr(nun, ngeff), eval(nun, ngeff)
+    real(real64), intent(in) :: source(nun, ngeff), raw(nun, ngeff)
+    logical, intent(in) :: nconv(ngeff)
+    type(c_ptr) :: group_dir
+    integer :: i, ig, marker(1)
+
+    if (.not. SPOMOC_ACTIVE()) return
+    if (.not. mccgf_seen) call fail('MCCGF context missing')
+    if (current_role /= 1) return
+    if (tuple_written) call fail('primary tuple overwrite attempted')
+    if (current_iteration /= 1) call fail('first primary step required')
+    if (ngeff /= required_groups) call fail('capture NGEFF differs')
+    if (nun /= required_unknowns) call fail('capture NUN differs')
+    if (.not. all(nconv)) call fail('all groups must remain active')
+    if (.not. c_associated(audit_groups)) call fail('GROUP list missing')
+
+    do i = 1, required_groups
+      ig = ngind(i)
+      if (ig /= i) call fail('capture NGIND differs')
+      if (.not. all(ieee_is_finite(qfr(:, i)))) &
+           call fail('nonfinite QFR')
+      if (.not. all(ieee_is_finite(eval(:, i)))) &
+           call fail('nonfinite EVAL')
+      if (.not. all(ieee_is_finite(source(:, i)))) &
+           call fail('nonfinite SRC')
+      if (.not. all(ieee_is_finite(raw(:, i)))) &
+           call fail('nonfinite RAW')
+      group_dir = LCMDIL(audit_groups, i)
+      if (.not. c_associated(group_dir)) call fail('group create failed')
+      call LCMPUT(group_dir, 'SPOT-M-QFR', required_unknowns, 4, &
+           qfr(:, i))
+      call LCMPUT(group_dir, 'SPOT-M-EVAL', required_unknowns, 4, &
+           eval(:, i))
+      call LCMPUT(group_dir, 'SPOT-M-SRC', required_unknowns, 4, &
+           source(:, i))
+      call LCMPUT(group_dir, 'SPOT-M-RAW', required_unknowns, 4, &
+           raw(:, i))
+      marker(1) = current_iteration
+      call LCMPUT(group_dir, 'SPOT-M-STEP', 1, 1, marker)
+      marker(1) = current_role
+      call LCMPUT(group_dir, 'SPOT-M-ROLE', 1, 1, marker)
+      marker(1) = ig
+      call LCMPUT(group_dir, 'SPOT-M-GROUP', 1, 1, marker)
+    end do
+
+    tuple_written = .true.
+    state_vector(10) = current_iteration
+    state_vector(11) = current_role
+    state_vector(12) = 1
+    state_vector(24) = required_groups
+    call put_state()
+  end subroutine SPOMOC_CAPTURE64
 
 
   subroutine SPOMOC_PUBLISH()

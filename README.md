@@ -698,6 +698,24 @@ existing host routine, performs no archive write and does not link or execute
 the objects. The default route is therefore still unchanged. Host selection,
 read-only admission and accepted-only publication form the next A9b subgate.
 
+The next short subgate closes only the four promoted A8 calls into SPOMOC:
+
+```sh
+make spot-real64-phase-a9b-spomoc-abi
+```
+
+It adds four ordinary-external forwarding symbols and a direct
+`REAL(real64)` `SPOMOC_CAPTURE64` diagnostic body. The legacy capture is
+unchanged, and the bridge routines themselves have no arithmetic, solver
+control or direct GANLIB access.
+This is `A8-SPOMOC-EXTERNAL-SYMBOLS-DEFINED-COMPILE-ONLY`: it still does not
+expose `R64`, implement `SPOMOC_BEGIN64`, connect a production route, link or
+execute the objects. `PRODUCTION-ROUTE-CONNECTED=false`,
+`CONTINUOUS-REAL64-LANE=false`, `RADIAL-CONVERGENCE=NOT-EVALUATED`, and
+`OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain authoritative. The selector
+must wait until all public writes that currently precede admission have been
+deferred.
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh

@@ -1,0 +1,109 @@
+{
+  "schema": "spot-real64-phase-a9b-spomoc-abi-v1",
+  "phase": "A9b-B2-ABI",
+  "title": "Production SPOMOC ordinary-external ABI closure",
+  "status": {
+    "classification": "PRODUCTION-COMPILE-ONLY-SPOMOC-ABI-CLOSURE",
+    "permitted_claim": "A8-SPOMOC-EXTERNAL-SYMBOLS-DEFINED-COMPILE-ONLY",
+    "spomoc_capture64_body_compiled": true,
+    "a8_external_seams_defined": true,
+    "legacy_capture_changed": false,
+    "compile_only": true,
+    "link_authorized": false,
+    "execution_authorized": false,
+    "production_route_connected": false,
+    "default_runtime_route_changed": false,
+    "r64_parser_implemented": false,
+    "spomoc_begin64_implemented": false,
+    "host_ingress_implemented": false,
+    "xdrta2_epoch_validated": false,
+    "archive_implemented": false,
+    "continuous_real64_lane": false,
+    "runtime_provenance_validated": false,
+    "actual_transport_response_validated": false,
+    "radial_convergence": "NOT-EVALUATED",
+    "outer_picard_convergence": "NOT-EVALUATED",
+    "object_links": 0,
+    "object_executions": 0,
+    "tracking_reads": 0,
+    "transport_solves": 0,
+    "dragon_runs": 0
+  },
+  "authority": {
+    "parent_phase": "A9b-B1 promotion",
+    "parent_commit": "4832b9916b93b109903208751f75928f0e60df4e",
+    "parent_receipt": "validation/iterative/real64_phase_a9b_promotion/phase_a9b_promotion_receipt.sha256",
+    "parent_receipt_sha256": "cddf3cf36c7f1f180b441b785c0efcacd4d4bbfb2709ebb804f5da0933be3c18",
+    "production_module": "src/SPOMOC.f90",
+    "ordinary_external_bridge": "src/SPOMOC_R64_BRIDGE.f90"
+  },
+  "external_seams": [
+    "SPOMOC_MCCGF_BEGIN",
+    "SPOMOC_SET_ROLE",
+    "SPOMOC_PUBLISH",
+    "SPOMOC_CAPTURE64"
+  ],
+  "capture64_contract": {
+    "signature": "SPOMOC_CAPTURE64(NGEFF,NGIND,NUN,QFR64,EVAL64,SOURCE64,RAW64,NCONV)",
+    "payload_kinds": "QFR64, EVAL64, SOURCE64 and RAW64 are REAL(real64)",
+    "payload_records": [
+      "SPOT-M-QFR type 4",
+      "SPOT-M-EVAL type 4",
+      "SPOT-M-SRC type 4",
+      "SPOT-M-RAW type 4"
+    ],
+    "downcast_or_repromotion": false,
+    "solver_feedback": false,
+    "inactive_behavior": "When the existing SPOMOC audit is not armed, every bridge call is a no-op through the existing module procedures.",
+    "admission": "The REAL64 capture preserves the legacy role, iteration, group, finite-value and tuple-identity checks."
+  },
+  "bridge_contract": {
+    "form": "four global ordinary external subroutines with explicit-shape dummies",
+    "action": "each bridge performs exactly one call to the corresponding SPOMOC_AUDIT module procedure",
+    "arithmetic": false,
+    "io": false,
+    "ganlib_access": false,
+    "mutable_state": false
+  },
+  "compile_gate": {
+    "platform": "Darwin-arm64",
+    "compiler": "GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0",
+    "compiler_path": "/opt/homebrew/bin/gfortran",
+    "ganlib_interface_bootstrap": "Seven frozen GANLIB module sources are copied and compiled inside the temporary directory; no ignored or prebuilt .mod file is trusted.",
+    "compile_working_directory": "the freshly created temporary directory",
+    "production_sources_compiled_from_temporary_copies": true,
+    "negative_compiles": 8,
+    "exact_nm_allowlists": true,
+    "links": 0,
+    "executions": 0
+  },
+  "scope": {
+    "edited_existing_production_source": [
+      "src/SPOMOC.f90",
+      "src/.dragon_deps.mk"
+    ],
+    "new_production_source": [
+      "src/SPOMOC_R64_BRIDGE.f90"
+    ],
+    "host_sources_unchanged": [
+      "src/FLUGPI.f",
+      "src/FLU.f",
+      "src/FLUDRV.f",
+      "src/FLU2DR.f",
+      "src/XDRTA2.f"
+    ]
+  },
+  "next_subgates": [
+    "B2a: one-pass default-OFF selector plus deferral of every pre-admission public write",
+    "B2b: live read-only ingress, runtime lifetime checks, exact zero-argument XDRTA2 and core rendezvous without publication",
+    "B2c: accepted-only type-4 authority, one type-2 mirror and layered host publication"
+  ],
+  "forbidden_claims": [
+    "R64 is selectable",
+    "SPOMOC_BEGIN64 exists",
+    "the production REAL64 route is connected",
+    "runtime GANLIB or tracking provenance is validated",
+    "a transport solve or iteration was executed",
+    "radial or Picard convergence was evaluated"
+  ]
+}

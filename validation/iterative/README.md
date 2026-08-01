@@ -683,6 +683,24 @@ policy, complete read-only admission and strict accepted-only type-4/type-2
 publication; that call count alone cannot prove `IPTRK`/`/EXP1/` epoch
 identity.
 
+Before changing that host, a second mechanical subgate closes the four
+ordinary-external SPOMOC symbols required by A8:
+
+```sh
+make spot-real64-phase-a9b-spomoc-abi
+```
+
+[`real64_phase_a9b_spomoc_abi/`](real64_phase_a9b_spomoc_abi/README.md)
+adds a forwarding-only bridge and a direct four-array `REAL(real64)` capture
+body while freezing the legacy capture unchanged. It compiles objects and
+checks exact symbols, but performs no link, execution, tracking read,
+transport or Dragon run. Its result is only
+`A8-SPOMOC-EXTERNAL-SYMBOLS-DEFINED-COMPILE-ONLY`; the production selector,
+`SPOMOC_BEGIN64`, ingress, archive and iteration remain absent.
+`PRODUCTION-ROUTE-CONNECTED=false`, `CONTINUOUS-REAL64-LANE=false`,
+`RADIAL-CONVERGENCE=NOT-EVALUATED`, and
+`OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain in force.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

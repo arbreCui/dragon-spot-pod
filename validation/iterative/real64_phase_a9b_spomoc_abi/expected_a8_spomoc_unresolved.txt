@@ -1,0 +1,4 @@
+_spomoc_capture64_
+_spomoc_mccgf_begin_
+_spomoc_publish_
+_spomoc_set_role_

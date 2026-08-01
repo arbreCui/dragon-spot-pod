@@ -1,0 +1,17 @@
+___lcmaux_MOD_lcmdid
+___lcmaux_MOD_lcmdil
+___lcmaux_MOD_lcmgil
+___lcmaux_MOD_lcmlel
+___lcmaux_MOD_lcmlen
+___lcmaux_MOD_lcmlid
+___lcmmod_MOD_lcmput_d1
+___lcmmod_MOD_lcmput_i1
+__gfortran_compare_string
+__gfortran_concat_string
+__gfortran_os_error_at
+__gfortran_runtime_error_at
+__gfortran_string_trim
+_free
+_malloc
+_memcpy
+_xabort_
