@@ -722,6 +722,33 @@ run. `PRODUCTION-ROUTE-CONNECTED=false`,
 `CONTINUOUS-REAL64-LANE=false`, `RADIAL-CONVERGENCE=NOT-EVALUATED`, and
 `OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain authoritative until B2b/B2c.
 
+The next host subgate is
+[`real64_phase_a9b_b2b_ingress/`](real64_phase_a9b_b2b_ingress/README.md):
+
+```sh
+make spot-real64-phase-a9b-b2b-ingress
+```
+
+B2b connects the selected source route at the parser boundary, not inside the
+legacy `FLUDRV`.  It strictly admits the one frozen six-entry topology,
+assembles every A9 outer-core input through checked read-only GANLIB access,
+performs the unique binary32-to-binary64 entry promotion, calls zero-argument
+`XDRTA2` once and then calls `FLU2DR64_CORE`.  The selected visit always
+returns without entering legacy metadata or numerical code.
+
+Terminal arrays are private and no B2b status represents published success;
+strict acceptance is reported only as `ACCEPTED_UNPUBLISHED`.  The gate is
+compile/static/synthetic only and never executes the real core.  Therefore it
+establishes `PRODUCTION-R64-SOURCE-ROUTE-CONNECTED=true` but not runtime
+provenance, transport execution, a continuous published REAL64 lane, radial
+convergence or Picard convergence.  B2c remains responsible for the
+accepted-only type-4/type-2 archive and deferred host metadata.
+
+The ABI result is deliberately local: `FLU`, `SPOR64_B2B` and the production
+zero-argument `XDRTA2` declaration agree.  The pre-existing
+`src/ASM.f:101` extra-actual call is not changed here, so
+`GLOBAL-XDRTA2-ABI-CLEAN=false` remains explicit.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

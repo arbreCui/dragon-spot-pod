@@ -508,8 +508,10 @@ design has been frozen, with `Dragon processes = 0`, in
     typed post-STIS/pre-ACA façade implemented; Phase-A3 legacy-ABI seam and
     Phase-A4 compile-only A2-to-A3 host closure implemented; Phase-A5-A7
     host context, rendezvous and ownership contracts frozen; Phase-A8 inner
-    suffixed REAL64 closure implemented and compile-checked; the outer
-    owner, production route, runtime provenance and actual MOC remain open);
+    suffixed REAL64 closure implemented and compile-checked; Phase-A9a owns
+    the outer REAL64 core and B2b connects its default-off source route
+    compile-only; accepted publication, runtime provenance and actual MOC
+    remain open);
 13. examine a fixed three-return legacy32 descriptive diagnostic as a
     smaller alternative (design frozen, but execution is `NO-GO` under the
     current Stage-4 result);
@@ -738,6 +740,41 @@ It does not connect the REAL64 route or execute a solver. Therefore
 `OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain authoritative. B2b is the next
 step: strict read-only live-topology admission, one exact zero-argument
 `XDRTA2` epoch, and a no-publication rendezvous with the REAL64 core.
+
+B2b now implements that source-level rendezvous behind the same default-OFF
+`R64` selector:
+
+```sh
+make spot-real64-phase-a9b-b2b-ingress
+```
+
+The selected arm admits only the frozen six-entry topology: `FLUX`, `MACRO0`,
+`TRACK`, `TRACK_f`, `SYSTEM` and `FSOURCE`.  Every LCM payload used by the ingress is
+preceded by an exact length/type check; initial flux and frozen source are
+promoted once from their stored binary32 values; geometry, material, source
+and off-group identities are checked without fitting or correction.  Only
+after this read-only admission does the arm initialize the unchanged
+tabulated-exponential operator with one zero-argument `XDRTA2` call and meet
+the production `FLU2DR64_CORE`.  It can never return to `FLUDRV` or the legacy
+REAL32 route.
+
+B2b deliberately has no scientific publication.  The terminal REAL64 arrays
+remain private to the ingress, and even a strictly accepted core return ends
+as `ACCEPTED_UNPUBLISHED`.  The short gate compiles the production connection
+and exercises only synthetic dispatch/ABI checks; it does not call the real
+core, read tracking, solve transport or run Dragon.  Thus
+`PRODUCTION-R64-SOURCE-ROUTE-CONNECTED=true`, while
+`CONTINUOUS-REAL64-LANE=false`, `RADIAL-CONVERGENCE=NOT-EVALUATED`, and
+`OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain authoritative.  The shipped
+`SpotPlaneFS` procedure still contains no `R64` opt-in and creates a new flux
+object, so its default scientific path is unchanged.  Accepted-only archive
+and host publication belong to B2c.
+
+This is a local B2b ABI claim, not a repository-wide `XDRTA2` cleanup:
+`FLU`, `SPOR64_B2B` and the zero-argument procedure declaration agree, while
+the pre-existing `src/ASM.f:101` actual-argument call remains explicitly
+outside this subgate.  Consequently `GLOBAL-XDRTA2-ABI-CLEAN=false` is part of
+the frozen receipt rather than being hidden by the compile-only result.
 
 The alternative three-return design is also checked without Dragon:
 
