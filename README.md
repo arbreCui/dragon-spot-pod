@@ -547,6 +547,8 @@ validation/iterative/real64_phase_a8/
                                       compile-only inner REAL64 closure
 validation/iterative/real64_phase_a9/
                                       compile-only outer REAL64 math closure
+validation/iterative/real64_phase_a9b_promotion/
+                                      byte-identical production promotion
 validation/iterative/picard_three_return_protocol.json
                                       no-run three-return design contract
 validation/iterative/raw_moc_capture_run_protocol.json
@@ -680,6 +682,21 @@ fit, clipping, floor or tolerance. It does not yet connect the production
 parser or GANLIB archive, and therefore cannot establish a continuous
 production lane or radial convergence. Those host and archive lifetimes are
 reserved for Phase-A9b.
+
+Before the host is allowed to select that lane, the frozen numerical modules
+are promoted byte-for-byte into `src/` under a separate short gate:
+
+```sh
+make spot-real64-phase-a9b-promotion
+```
+
+This gate establishes only that the same A8/A9 module sources are available
+to the production build and compile with the expected dependency and symbol
+boundaries. It does not edit `FLUGPI`, `FLU`, `FLUDRV`, `FLU2DR`, `SPOMOC`,
+`XDRTA2` or `src/Makefile`; it adds no selector or dispatch call site to any
+existing host routine, performs no archive write and does not link or execute
+the objects. The default route is therefore still unchanged. Host selection,
+read-only admission and accepted-only publication form the next A9b subgate.
 
 The alternative three-return design is also checked without Dragon:
 

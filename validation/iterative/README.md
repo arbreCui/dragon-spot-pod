@@ -666,6 +666,23 @@ type-4/type-2 archive sequence remain Phase-A9b. Until that later gate passes,
 `CONTINUOUS-REAL64-LANE=false` and radial/Picard convergence remain
 `NOT-EVALUATED`.
 
+The first A9b subgate is deliberately mechanical and lives under
+[`real64_phase_a9b_promotion/`](real64_phase_a9b_promotion/README.md):
+
+```sh
+make spot-real64-phase-a9b-promotion
+```
+
+It promotes the frozen A8 ACA owner, A8 inner owner, checked rank adapter and
+A9a outer owner byte-for-byte into `src/`, then compiles only relocatable
+objects and checks exact module dependencies and symbols. Existing production
+host files remain unchanged, so this proves production object availability,
+not route connection. The following host subgate must separately prove the
+one-pass default-off selector, the exact single zero-argument `XDRTA2` call
+policy, complete read-only admission and strict accepted-only type-4/type-2
+publication; that call count alone cannot prove `IPTRK`/`/EXP1/` epoch
+identity.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

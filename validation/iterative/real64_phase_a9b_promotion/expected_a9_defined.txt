@@ -1,0 +1,7 @@
+T ___spor64_a9_MOD_flu2ac64
+T ___spor64_a9_MOD_flu2dr64_core
+T ___spor64_a9_MOD_flubal64
+T ___spor64_a9_MOD_spor64_a9_counter_probe
+T ___spor64_a9_MOD_spor64_a9_operator_probe
+T ___spor64_a9_MOD_spor64_a9_state_probe
+T ___spor64_a9_MOD_spor64_a9_terminal64
