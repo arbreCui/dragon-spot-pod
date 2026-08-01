@@ -64,6 +64,9 @@ spot-real64-phase-a9b-promotion :
 .PHONY: spot-real64-phase-a9b-spomoc-abi
 spot-real64-phase-a9b-spomoc-abi :
 	sh validation/iterative/real64_phase_a9b_spomoc_abi/run_phase_a9b_spomoc_abi.sh
+.PHONY: spot-real64-phase-a9b-b2a-selector
+spot-real64-phase-a9b-b2a-selector :
+	sh validation/iterative/real64_phase_a9b_b2a_selector/run_phase_a9b_b2a_selector.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

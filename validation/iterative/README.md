@@ -701,6 +701,27 @@ transport or Dragon run. Its result is only
 `RADIAL-CONVERGENCE=NOT-EVALUATED`, and
 `OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain in force.
 
+The next host-only subgate is
+[`real64_phase_a9b_b2a_selector/`](real64_phase_a9b_b2a_selector/README.md):
+
+```sh
+make spot-real64-phase-a9b-b2a-selector
+```
+
+B2a moves the pre-admission `SIGNATURE`, `LINK.*` and `IMERGE-LEAK` writes
+behind a single common parser decision. The bare `R64` keyword is local,
+default false, duplicate-rejected and orthogonal to `MOCA`; selecting it stops
+before all `IPFLUX` record writes and before `XDRTA2`, `FLUGPT` or `FLUDRV`,
+with no legacy fallback. An explicit logical `LIMERG` tells `FLU` whether the
+successful OFF parse has a final `IMERGE-LEAK` mapping to commit, so `FLUGPI`
+itself has no write API.
+
+The gate uses one short synthetic parser executable and compile-only
+production objects. It performs no tracking read, transport solve or Dragon
+run. `PRODUCTION-ROUTE-CONNECTED=false`,
+`CONTINUOUS-REAL64-LANE=false`, `RADIAL-CONVERGENCE=NOT-EVALUATED`, and
+`OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain authoritative until B2b/B2c.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

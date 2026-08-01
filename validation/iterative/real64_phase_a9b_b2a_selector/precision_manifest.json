@@ -1,0 +1,103 @@
+{
+  "schema": "spot-real64-phase-a9b-b2a-selector-v1",
+  "phase": "A9b-B2a",
+  "classification": "PRODUCTION-SELECTOR-AND-PRE-ADMISSION-WRITE-DEFERRAL",
+  "authority": {
+    "parent_commit": "0cc8d9083047c026b867dba2530e79c60bb14e2d",
+    "parent_receipt": "validation/iterative/real64_phase_a9b_spomoc_abi/phase_a9b_spomoc_abi_receipt.sha256",
+    "parent_receipt_sha256": "eaa570a765afe5be29a71e554edade2ab515b1094d64d43bcfdcbb01f2082ef9"
+  },
+  "status": {
+    "r64_keyword_recognized": true,
+    "r64_default": false,
+    "r64_duplicate_rejected": true,
+    "r64_route_executable": false,
+    "default_runtime_route_changed": false,
+    "production_route_connected": false,
+    "spomoc_begin64_implemented": false,
+    "host_ingress_implemented": false,
+    "xdrta2_epoch_validated": false,
+    "archive_implemented": false,
+    "continuous_real64_lane": false,
+    "runtime_provenance_validated": false,
+    "actual_transport_response_validated": false,
+    "radial_convergence": "NOT-EVALUATED",
+    "outer_picard_convergence": "NOT-EVALUATED"
+  },
+  "selector_contract": {
+    "keyword": "R64",
+    "parameter_count": 0,
+    "parse_passes": 1,
+    "default_each_flugpi_call": false,
+    "duplicate_action": "XABORT-AND-RETURN",
+    "orthogonal_to_moca": true,
+    "storage": "two scalar LOGICAL outputs local to one FLU call; no SAVE, COMMON, environment or LCM selector record",
+    "selected_action": "FLU fails closed immediately after FLUGPI and returns before every IPFLUX record write, XDRTA2, FLUGPT and FLUDRV",
+    "fallback_after_selection": false
+  },
+  "host_abi": {
+    "flu_public_arguments": 5,
+    "flugpi_arguments": 30,
+    "flugpi_tail": [
+      "LIMERG",
+      "LR64"
+    ],
+    "fludrv_arguments": 45,
+    "fludrv_tail": [
+      "LR64"
+    ],
+    "flu2dr_abi_changed": false,
+    "xdrta2_abi_changed": false
+  },
+  "write_deferral": {
+    "flugpi_output_record_writes": 0,
+    "selected_flu_flugpi_ipflux_record_writes": 0,
+    "off_commit_order": [
+      "SIGNATURE",
+      "LINK.MACRO",
+      "LINK.TRACK",
+      "LINK.SYSTEM",
+      "IMERGE-LEAK when LIMERG is true"
+    ],
+    "limerg_default": ".NOT.REC",
+    "limerg_hete_rule": "set true only after all NMAT mapping integers are read",
+    "successful_off_final_record_identity": true,
+    "legacy_numerical_call_order_unchanged": true,
+    "legacy_floating_point_statement_order_unchanged": true,
+    "metadata_mutation_trace_identity_claimed": false,
+    "rationale": "Repeated pre-parse IMERGE-LEAK overwrites have no physical meaning; B2a preserves the final name, type, length, payload and first-insertion class order without adding an event journal."
+  },
+  "legacy_call_graph": {
+    "flu": "FLUGPI -> XDRTA2(IPTRK) -> FLUGPT or FLUDRV",
+    "fludrv": "SPOMOC_BEGIN -> FLU2DR -> SPOMOC_FINISH",
+    "xdrta2_extra_actual_corrected_here": false
+  },
+  "scope_boundaries": {
+    "l_library_cursor_navigation_before_selection_possible": true,
+    "complete_a7_admission_before_lcmsix_claimed": false,
+    "existing_flugpt_flu2dr_abi_debt_fixed_here": false,
+    "model_completion": false,
+    "relaxation_or_damping": false,
+    "empirical_parameter": false,
+    "solver_tolerance_changed": false,
+    "tracking_reads": 0,
+    "transport_solves": 0,
+    "dragon_runs": 0
+  },
+  "short_gate": {
+    "production_objects_compiled": [
+      "SPOMOC.o",
+      "FLUGPI.o",
+      "FLUDRV.o",
+      "FLU.o"
+    ],
+    "production_object_links": 0,
+    "synthetic_parser_links": 1,
+    "synthetic_parser_cases": 12,
+    "negative_compiles": 4,
+    "compiler": "GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0",
+    "compiler_path": "/opt/homebrew/bin/gfortran",
+    "platform": "Darwin-arm64"
+  },
+  "next_subgate": "B2b: admit the frozen live topology read-only, prove the XDRTA2 epoch with exactly one zero-argument call, and rendezvous with the REAL64 core without scientific publication."
+}

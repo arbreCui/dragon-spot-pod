@@ -716,6 +716,29 @@ execute the objects. `PRODUCTION-ROUTE-CONNECTED=false`,
 must wait until all public writes that currently precede admission have been
 deferred.
 
+That first host subgate is now implemented as B2a:
+
+```sh
+make spot-real64-phase-a9b-b2a-selector
+```
+
+It adds a bare, one-pass `R64` keyword that defaults false on every `FLUGPI`
+call and is independent of `MOCA`. `FLUGPI` is now record-write-free and
+returns an explicit logical `LIMERG` staging flag; `FLU` publishes the legacy
+`SIGNATURE`, `LINK.*` and final `IMERGE-LEAK` records only after it knows the
+legacy OFF route was selected. An R64-selected visit instead aborts and
+returns before any output-record write, `XDRTA2`, `FLUGPT` or `FLUDRV`, and
+`FLUDRV` has the same defensive no-fallback entry guard.
+
+The short gate compiles the production host objects without linking them and
+runs the real production parser against a synthetic read-only GANLIB surface.
+It does not connect the REAL64 route or execute a solver. Therefore
+`PRODUCTION-ROUTE-CONNECTED=false`, `CONTINUOUS-REAL64-LANE=false`,
+`RADIAL-CONVERGENCE=NOT-EVALUATED`, and
+`OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` remain authoritative. B2b is the next
+step: strict read-only live-topology admission, one exact zero-argument
+`XDRTA2` epoch, and a no-publication rendezvous with the REAL64 core.
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh

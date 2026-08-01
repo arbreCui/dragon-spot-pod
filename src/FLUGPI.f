@@ -3,7 +3,7 @@
      >                  EPSUNK,EPSINR,IREBAL,IFRITR,IACITR,COPTIO,
      >                  ILEAK,B2,NGROUP,NREGIO,NMAT,NIFISS,LEAKSW,
      >                  REFKEF,ITPIJ,IPRINT,REC,INITFL,NMERG,IMERG,
-     >                  IPICK,IMCAUD)
+     >                  IPICK,IMCAUD,LIMERG,LR64)
 *
 *-----------------------------------------------------------------------
 *
@@ -82,6 +82,8 @@
 * IMERG   leakage zone index in each material mixture zone.
 * IPICK   optional diagnostic recovery (0/1: no/yes).
 * IMCAUD  raw-MOC audit arm (=0: off; =1: native; =2: stationary).
+* LIMERG  flag set when IMERGE-LEAK must be committed by the caller.
+* LR64    REAL64 route selector (default .false.; set by R64 keyword).
 *
 *-----------------------------------------------------------------------
 *
@@ -95,7 +97,7 @@
      >            IMERG(NMAT),IPICK,IMCAUD
       REAL        EPSOUT,EPSUNK,EPSINR,B2(4)
       CHARACTER   COPTIO*4
-      LOGICAL     LEAKSW,REC
+      LOGICAL     LEAKSW,REC,LIMERG,LR64
       DOUBLE PRECISION REFKEF
 *----
 *  LOCAL VARIABLES
@@ -127,6 +129,8 @@
       REFKEF=1.0D0
       IPRINT=1
       IMCAUD=0
+      LIMERG=.NOT.REC
+      LR64=.FALSE.
       IF(REC) THEN
          CALL LCMGET(IPFLUX,'STATE-VECTOR',ISTATE)
          ITYPEC=ISTATE(6)
@@ -166,7 +170,6 @@
          INITFL=0
          NMERG=1
          IMERG(:NMAT)=1
-         CALL LCMPUT(IPFLUX,'IMERGE-LEAK',NMAT,1,IMERG)
       ENDIF
       IF(NGROUP.EQ.1) MAXINR=1
       IF(MOD(ITPIJ,2).EQ.0) THEN
@@ -194,6 +197,12 @@
         IF((ITYPLU.NE.1).OR.(INTLIR.LT.1).OR.(INTLIR.GT.2))
      >    CALL XABORT('FLUGPI: MOCA ARM 1 OR 2 EXPECTED.')
         IMCAUD=INTLIR
+      ELSE IF(CARLIR.EQ.'R64 ') THEN
+        IF(LR64) THEN
+          CALL XABORT('FLUGPI: DUPLICATE R64 KEYWORD.')
+          RETURN
+        ENDIF
+        LR64=.TRUE.
       ELSE IF(CARLIR.EQ.'EDIT') THEN
         CALL REDGET(ITYPLU,IPRINT,REALIR,CARLIR,DBLINP)
         IF(ITYPLU.NE.1) CALL XABORT('FLUGPI: READ ERROR - INTEGER VA'
@@ -257,7 +266,7 @@
                   IMERG(IBM)=INTLIR
                   NMERG=MAX(NMERG,IMERG(IBM))
                 ENDDO
-                CALL LCMPUT(IPFLUX,'IMERGE-LEAK',NMAT,1,IMERG)
+                LIMERG=.TRUE.
               ELSE IF(ILEAK.EQ.7) THEN
                 CALL REDGET(ITYPLU,INTLIR,REALIR,CARLIR,DBLINP)
                 IF(ITYPLU.NE.3) CALL XABORT('FLUGPI: READ ERROR - '

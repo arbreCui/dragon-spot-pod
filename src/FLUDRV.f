@@ -3,7 +3,7 @@
      1 IPHASE,ITPIJ,CXDOOR,ITRANC,TITLE,B2,INITFL,LFORW,LEAKSW,IREBAL,
      2 NGRP,NMAT,NIFIS,NANIS,NLF,NLIN,NFUNL,OPTION,NUN,MAXINR,EPSINR,
      3 MAXOUT,EPSUNK,EPSOUT,IFRITR,IACITR,ITYPEC,ILEAK,NREG,NSOUT,
-     4 MATCOD,KEYFLX,VOL,REFKEF,NMERG,IMERG,IMCAUD)
+     4 MATCOD,KEYFLX,VOL,REFKEF,NMERG,IMERG,IMCAUD,LR64)
 *
 *-----------------------------------------------------------------------
 *
@@ -91,6 +91,7 @@
 * NMERG   number of leakage zones.
 * IMERG   leakage zone index in each material mixture zone.
 * IMCAUD  raw-MOC audit arm (=0: off; =1: native; =2: stationary).
+* LR64    REAL64 route selector; this legacy driver accepts only .false.
 *
 *-----------------------------------------------------------------------
 *
@@ -106,7 +107,7 @@
      >            IFRITR,IACITR,ITYPEC,ILEAK,NREG,NSOUT,MATCOD(NREG),
      >            KEYFLX(NREG,NLIN,NFUNL),NMERG,IMERG(NMAT),IMCAUD
       REAL        EPSUNK,EPSINR,B2(4),VOL(NREG)
-      LOGICAL     LFORW,LEAKSW
+      LOGICAL     LFORW,LEAKSW,LR64
       DOUBLE PRECISION REFKEF
 *----
 *  LOCAL VARIABLES
@@ -132,6 +133,10 @@
 *----
 *  SCRATCH STORAGE ALLOCATION
 *----
+      IF(LR64) THEN
+        CALL XABORT('FLUDRV: R64 REQUIRES THE B2B INGRESS.')
+        RETURN
+      ENDIF
       ALLOCATE(FLUXO(NUN,NGRP),XSTRC(0:NMAT,NGRP),
      > XSDIA(0:NMAT,0:NANIS,NGRP),XSCHI(0:NMAT,NIFIS,NGRP),
      > XSNUF(0:NMAT,NIFIS,NGRP),XSTK(NMAT,NIFIS))

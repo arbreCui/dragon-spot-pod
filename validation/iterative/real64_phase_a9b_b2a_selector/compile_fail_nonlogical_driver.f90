@@ -1,0 +1,12 @@
+module COMPILE_FAIL_NONLOGICAL_DRIVER
+  use B2A_SELECTOR_ABI, only : FLUDRV_SELECTOR_TAIL
+  implicit none
+
+contains
+
+  subroutine FAIL_NONLOGICAL_DRIVER()
+    integer :: lr64
+    call FLUDRV_SELECTOR_TAIL(lr64)
+  end subroutine FAIL_NONLOGICAL_DRIVER
+
+end module COMPILE_FAIL_NONLOGICAL_DRIVER
