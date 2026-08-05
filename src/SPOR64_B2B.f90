@@ -5,6 +5,7 @@ module SPOR64_B2B
   use GANLIB
   use SPOMOC_AUDIT, only : SPOMOC_ACTIVE
   use SPOR64_A9, only : FLU2DR64_CORE
+  use SPOR64_B2C, only : SPOR64_B2C_PUBLISH
   implicit none
   private
 
@@ -37,7 +38,7 @@ contains
 
   subroutine SPOR64_B2B_INGRESS(nentry,hentry,ientry,jentry,kentry, &
       itypec,maxout,maxinr,epsout32,epsunk32,epsinr32,irebal,ifritr, &
-      iacitr,ileak,initfl,nmerg,imerg,iprint,rec,imcaud,limerg, &
+      iacitr,coptio,ileak,initfl,nmerg,imerg,iprint,rec,imcaud,limerg, &
       ngrp_host,nreg_host,nmat_host,nifis_host,itpij_host,itranc_host, &
       iphase_host,leaksw_host,lforw_host,status,cutoff_visit64)
     integer, intent(in) :: nentry
@@ -48,6 +49,7 @@ contains
     integer, intent(in) :: iacitr, ileak, initfl, nmerg, imerg(:)
     integer, intent(in) :: iprint, imcaud
     real(real32), intent(in) :: epsout32, epsunk32, epsinr32
+    character(len=4), intent(in) :: coptio
     logical, intent(in) :: rec, limerg
     integer, intent(in) :: ngrp_host, nreg_host, nmat_host, nifis_host
     integer, intent(in) :: itpij_host, itranc_host, iphase_host
@@ -127,6 +129,7 @@ contains
     if (.not. rec .or. limerg) return
     if (itypec /= 0 .or. maxout /= 500 .or. maxinr /= 740) return
     if (irebal /= 1 .or. ifritr /= 3 .or. iacitr /= 3) return
+    if (coptio /= 'B0  ') return
     if (ileak /= 0 .or. initfl /= 1 .or. nmerg /= 1) return
     if (any(imerg /= 1)) return
     if (transfer(epsout32,0_int32) /= FROZEN_TOL_BITS) return
@@ -151,12 +154,26 @@ contains
 
     if (.not. ABSENT_RECORD(ipflux,'B2  HETE')) return
     if (.not. ABSENT_RECORD(ipflux,'B2  B1HOM')) return
+    if (.not. ABSENT_RECORD(ipflux,'SPOT-R64')) return
+    if (.not. ABSENT_RECORD(ipflux,'SOUR')) return
+    if (.not. ABSENT_RECORD(ipflux,'AFLUX')) return
+    if (.not. ABSENT_RECORD(ipflux,'DFLUX')) return
+    if (.not. ABSENT_RECORD(ipflux,'ADFLUX')) return
+    if (.not. ABSENT_OR_MATCHES(ipflux,'KEYFLX',NREG,1)) return
+    if (.not. ABSENT_OR_MATCHES(ipflux,'OPTION',1,3)) return
+    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.MACRO',3,3)) return
+    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.TRACK',3,3)) return
+    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.SYSTEM',3,3)) return
+    if (.not. ABSENT_OR_MATCHES(ipflux,'SPOT-LEAK1D',NGRP,2)) return
     if (.not. RECORD_MATCHES(ipflux,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipflux,'STATE-VECTOR',flux_state)
     if (flux_state(1) /= NGRP .or. flux_state(2) /= NUNKNO) return
+    if (flux_state(3) /= 1) return
+    if (flux_state(4) /= 0 .or. flux_state(5) /= 0) return
     if (flux_state(6) /= 0 .or. flux_state(7) /= 0) return
     if (flux_state(8) /= 3 .or. flux_state(9) /= 3) return
     if (flux_state(10) /= 1 .or. flux_state(17) /= NMAT) return
+    if (flux_state(11) /= 740 .or. flux_state(12) /= 500) return
     if (flux_state(18) /= 1) return
     if (.not. RECORD_MATCHES(ipflux,'EPS-CONVERGE',5,2)) return
     call LCMGET(ipflux,'EPS-CONVERGE',eps_stage32)
@@ -415,6 +432,10 @@ contains
       status = SPOR64_B2B_NOT_ACCEPTED
     else
       status = SPOR64_B2B_ACCEPTED_UNPUBLISHED
+      call SPOR64_B2C_PUBLISH(ipflux,SPOR64_B2B_ACCEPTED_UNPUBLISHED, &
+          terminal_flux64,terminal_source64,keyflx_base1, &
+          leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
+          hentry(2),hentry(3),hentry(5),status)
     end if
   end subroutine SPOR64_B2B_INGRESS
 
@@ -451,6 +472,23 @@ contains
     call LCMLEN(iplist,name,actual_length,actual_type)
     ABSENT_RECORD = actual_length == 0 .and. actual_type == 99
   end function ABSENT_RECORD
+
+
+  logical function ABSENT_OR_MATCHES(iplist,name,expected_length, &
+      expected_type)
+    type(c_ptr), intent(in) :: iplist
+    character(len=*), intent(in) :: name
+    integer, intent(in) :: expected_length, expected_type
+    integer :: actual_length, actual_type
+
+    ABSENT_OR_MATCHES = .false.
+    if (.not. c_associated(iplist)) return
+    call LCMLEN(iplist,name,actual_length,actual_type)
+    ABSENT_OR_MATCHES = &
+        (actual_length == 0 .and. actual_type == 99) .or. &
+        (actual_length == expected_length .and. &
+         actual_type == expected_type)
+  end function ABSENT_OR_MATCHES
 
 
   logical function CHARACTER_RECORD_MATCHES(iplist,name,expected_words, &

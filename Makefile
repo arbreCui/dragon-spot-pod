@@ -70,6 +70,9 @@ spot-real64-phase-a9b-b2a-selector :
 .PHONY: spot-real64-phase-a9b-b2b-ingress
 spot-real64-phase-a9b-b2b-ingress :
 	sh validation/iterative/real64_phase_a9b_b2b_ingress/run_phase_a9b_b2b_ingress.sh
+.PHONY: spot-real64-phase-a9b-b2c-publication
+spot-real64-phase-a9b-b2c-publication :
+	sh validation/iterative/real64_phase_a9b_b2c_publication/run_phase_a9b_b2c_publication.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

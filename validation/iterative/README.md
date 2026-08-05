@@ -749,6 +749,28 @@ zero-argument `XDRTA2` declaration agree.  The pre-existing
 `src/ASM.f:101` extra-actual call is not changed here, so
 `GLOBAL-XDRTA2-ABI-CLEAN=false` remains explicit.
 
+The accepted-only publication subgate is
+[`real64_phase_a9b_b2c_publication/`](real64_phase_a9b_b2c_publication/README.md):
+
+```sh
+make spot-real64-phase-a9b-b2c-publication
+```
+
+B2c keeps the accepted terminal arrays inside their synchronous ingress
+lifetime and performs a complete representation/collision preflight before
+the first GANLIB mutation. It then commits, in order, the type-4
+`SPOT-R64/FLUX,SOUR` authority, one type-2 compatibility mirror, the exact
+TYPE-S driver metadata, and finally `LINK.*` plus the cached `SPOT-LEAK1D`.
+Only `HOST_COMMITTED` is a normal selected-route return; every earlier status
+is fail-closed and cannot enter legacy `FLUDRV`.
+
+This is a single-epoch publisher. Existing scientific authority, legacy
+`SOUR`, or adjoint/GPT result lists are rejected before any write, and no new
+completion marker or implicit overwrite policy is introduced. The gate does
+not execute the core or transport, consume tracking, or run Dragon. It proves
+the source-level publication structure, not runtime provenance, radial
+convergence or outer Picard convergence.
+
 It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier

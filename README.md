@@ -776,6 +776,44 @@ the pre-existing `src/ASM.f:101` actual-argument call remains explicitly
 outside this subgate.  Consequently `GLOBAL-XDRTA2-ABI-CLEAN=false` is part of
 the frozen receipt rather than being hidden by the compile-only result.
 
+B2c closes the accepted-result publication boundary without changing the
+solver equations or terminal Boolean:
+
+```sh
+make spot-real64-phase-a9b-b2c-publication
+```
+
+The accepted terminal arrays are published during the same synchronous B2b
+ingress call in which they are owned. A complete no-write preflight first
+checks the exact acceptance token, IEEE finiteness, binary32 representability,
+the frozen `B0` option and the single-epoch collision policy. Publication is
+then ordered as three status phases: the child-payload phase writes type-4
+`SPOT-R64/FLUX,SOUR` scientific authority followed by one write-only binary32
+staging pass into the legacy type-2 `FLUX,SOUR` compatibility mirror
+(`status=6`); the driver-metadata phase commits `status=7`; and the host
+links/cache phase commits `status=8`. Only the final `HOST_COMMITTED` status
+may return normally from the selected arm.
+There is no relaxation, clipping, fitted coefficient, fallback to `FLUDRV`,
+completion marker or rollback claim.
+
+This first publisher is intentionally single-epoch: an existing `SPOT-R64`,
+root `SOUR`, `AFLUX`, `DFLUX` or `ADFLUX` causes a zero-write failure instead
+of silently overwriting another result. On the integrated route, B2B rejects a
+pre-existing collision as admission `status=1` before the core; B2C repeats
+the no-write preflight at publication time. Any failure there returns
+`status=5`, including a last-moment collision/schema drift, invalid terminal
+representation or staging-allocation failure. A future online Picard route
+that wants to reuse one object must define an explicit epoch protocol; B2c
+does not guess that policy.
+
+The B2c gate is seconds-scale and uses compile/static, mutation and synthetic
+publication checks only. It does not run the production core, read tracking,
+solve transport or run Dragon. Therefore B2c establishes the source-level
+accepted publication path, but runtime provenance and the continuously
+executed REAL64 lane remain unvalidated; radial convergence and outer Picard
+convergence remain `NOT-EVALUATED`. The shipped `SpotPlaneFS` procedure still
+does not opt into `R64`.
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh
