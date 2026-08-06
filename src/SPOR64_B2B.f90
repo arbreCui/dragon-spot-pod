@@ -13,6 +13,8 @@ module SPOR64_B2B
   integer, parameter, public :: SPOR64_B2B_CORE_FAILED = 2
   integer, parameter, public :: SPOR64_B2B_NOT_ACCEPTED = 3
   integer, parameter, public :: SPOR64_B2B_ACCEPTED_UNPUBLISHED = 4
+  integer, parameter, public :: SPOR64_B2B_BOOT = 1
+  integer, parameter, public :: SPOR64_B2B_CONT = 2
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
@@ -42,14 +44,14 @@ contains
       itypec,maxout,maxinr,epsout32,epsunk32,epsinr32,irebal,ifritr, &
       iacitr,coptio,ileak,initfl,nmerg,imerg,iprint,rec,imcaud,limerg, &
       ngrp_host,nreg_host,nmat_host,nifis_host,itpij_host,itranc_host, &
-      iphase_host,leaksw_host,lforw_host,status,cutoff_visit64)
+      iphase_host,leaksw_host,lforw_host,r64_mode,status,cutoff_visit64)
     integer, intent(in) :: nentry
     character(len=12), intent(in) :: hentry(:)
     integer, intent(in) :: ientry(:), jentry(:)
     type(c_ptr), intent(in) :: kentry(:)
     integer, intent(in) :: itypec, maxout, maxinr, irebal, ifritr
     integer, intent(in) :: iacitr, ileak, initfl, nmerg, imerg(:)
-    integer, intent(in) :: iprint, imcaud
+    integer, intent(in) :: iprint, imcaud, r64_mode
     real(real32), intent(in) :: epsout32, epsunk32, epsinr32
     character(len=4), intent(in) :: coptio
     logical, intent(in) :: rec, limerg
@@ -94,6 +96,7 @@ contains
     real(real64) :: terminal_source64(NUNKNO,NGRP)
     real(real64) :: xcsou1
     type(c_ptr) :: ipflux, ipseed, ipmacr, iptrk, ipsys, ipsou
+    type(c_ptr) :: seed_authority, source_authority
     type(c_ptr) :: jpflux, jpmacr, jpsys, jpsource, kpsource
     type(c_ptr) :: kpmacr, kpsys
 
@@ -101,6 +104,8 @@ contains
     cutoff_visit64 = 0_int64
     admission_complete = .false.
 
+    if (r64_mode /= SPOR64_B2B_BOOT .and. &
+        r64_mode /= SPOR64_B2B_CONT) return
     if (nentry /= 7) return
     if (size(hentry) /= nentry .or. size(ientry) /= nentry) return
     if (size(jentry) /= nentry .or. size(kentry) /= nentry) return
@@ -168,7 +173,13 @@ contains
 
     if (.not. ABSENT_RECORD(ipseed,'B2  HETE')) return
     if (.not. ABSENT_RECORD(ipseed,'B2  B1HOM')) return
-    if (.not. ABSENT_RECORD(ipseed,'SPOT-R64')) return
+    if (r64_mode == SPOR64_B2B_BOOT) then
+      if (.not. ABSENT_RECORD(ipseed,'SPOT-R64')) return
+      if (.not. ABSENT_RECORD(ipsou,'SPOT-R64')) return
+    else
+      if (.not. RECORD_MATCHES(ipseed,'SPOT-R64',-1,0)) return
+      if (.not. RECORD_MATCHES(ipsou,'SPOT-R64',-1,0)) return
+    end if
     if (.not. ABSENT_RECORD(ipseed,'AFLUX')) return
     if (.not. ABSENT_RECORD(ipseed,'DFLUX')) return
     if (.not. ABSENT_RECORD(ipseed,'ADFLUX')) return
@@ -332,34 +343,63 @@ contains
     call LCMGET(ipsou,'SPOT-QINT',qint32)
     if (.not. all(ieee_is_finite(qint32))) return
 
-    if (.not. RECORD_MATCHES(ipseed,'FLUX',NGRP,10)) return
-    jpflux = LCMGID(ipseed,'FLUX')
-    if (.not. c_associated(jpflux)) return
     initial_flux64 = +0.0_real64
-    do ig = 1, NGRP
-      call LCMLEL(jpflux,ig,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 2) return
-      call LCMGDL(jpflux,ig,flux_stage32)
-      if (.not. all(ieee_is_finite(flux_stage32))) return
-      initial_flux64(:,ig) = real(flux_stage32,real64)
-    end do
-
-    if (.not. RECORD_MATCHES(ipsou,'DSOUR',1,10)) return
-    jpsource = LCMGID(ipsou,'DSOUR')
-    if (.not. c_associated(jpsource)) return
-    call LCMLEL(jpsource,1,ilong,itylcm)
-    if (ilong /= NGRP .or. itylcm /= 10) return
-    kpsource = LCMGIL(jpsource,1)
-    if (.not. c_associated(kpsource)) return
     fixed_source64 = +0.0_real64
-    do ig = 1, NGRP
-      call LCMLEL(kpsource,ig,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 2) return
-      call LCMGDL(kpsource,ig,source_stage32)
-      if (.not. all(ieee_is_finite(source_stage32))) return
-      if (any(source_stage32 < 0.0_real32)) return
-      fixed_source64(:,ig) = real(source_stage32,real64)
-    end do
+    ! BOOT performs the sole legacy promotion.  CONT has no root-payload
+    ! fallback: both iterative state and frozen fission source are type 4.
+    if (r64_mode == SPOR64_B2B_BOOT) then
+      if (.not. RECORD_MATCHES(ipseed,'FLUX',NGRP,10)) return
+      jpflux = LCMGID(ipseed,'FLUX')
+      if (.not. c_associated(jpflux)) return
+      do ig = 1, NGRP
+        call LCMLEL(jpflux,ig,ilong,itylcm)
+        if (ilong /= NUNKNO .or. itylcm /= 2) return
+        call LCMGDL(jpflux,ig,flux_stage32)
+        if (.not. all(ieee_is_finite(flux_stage32))) return
+        initial_flux64(:,ig) = real(flux_stage32,real64)
+      end do
+
+      if (.not. RECORD_MATCHES(ipsou,'DSOUR',1,10)) return
+      jpsource = LCMGID(ipsou,'DSOUR')
+      if (.not. c_associated(jpsource)) return
+      call LCMLEL(jpsource,1,ilong,itylcm)
+      if (ilong /= NGRP .or. itylcm /= 10) return
+      kpsource = LCMGIL(jpsource,1)
+      if (.not. c_associated(kpsource)) return
+      do ig = 1, NGRP
+        call LCMLEL(kpsource,ig,ilong,itylcm)
+        if (ilong /= NUNKNO .or. itylcm /= 2) return
+        call LCMGDL(kpsource,ig,source_stage32)
+        if (.not. all(ieee_is_finite(source_stage32))) return
+        if (any(source_stage32 < 0.0_real32)) return
+        fixed_source64(:,ig) = real(source_stage32,real64)
+      end do
+    else
+      seed_authority = LCMGID(ipseed,'SPOT-R64')
+      if (.not. c_associated(seed_authority)) return
+      if (.not. RECORD_MATCHES(seed_authority,'FLUX',NGRP,10)) return
+      jpflux = LCMGID(seed_authority,'FLUX')
+      if (.not. c_associated(jpflux)) return
+      do ig = 1, NGRP
+        call LCMLEL(jpflux,ig,ilong,itylcm)
+        if (ilong /= NUNKNO .or. itylcm /= 4) return
+        call LCMGDL(jpflux,ig,initial_flux64(:,ig))
+        if (.not. all(ieee_is_finite(initial_flux64(:,ig)))) return
+      end do
+
+      source_authority = LCMGID(ipsou,'SPOT-R64')
+      if (.not. c_associated(source_authority)) return
+      if (.not. RECORD_MATCHES(source_authority,'QFISS',NGRP,10)) return
+      jpsource = LCMGID(source_authority,'QFISS')
+      if (.not. c_associated(jpsource)) return
+      do ig = 1, NGRP
+        call LCMLEL(jpsource,ig,ilong,itylcm)
+        if (ilong /= NUNKNO .or. itylcm /= 4) return
+        call LCMGDL(jpsource,ig,fixed_source64(:,ig))
+        if (.not. all(ieee_is_finite(fixed_source64(:,ig)))) return
+        if (any(fixed_source64(:,ig) < 0.0_real64)) return
+      end do
+    end if
 
     xcsou1 = +0.0_real64
     do ir = 1, NREG

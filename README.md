@@ -686,13 +686,15 @@ is short and compile-only:
 make spot-real64-phase-a9a
 ```
 
-Phase-A9a owns the eight-slice `REAL64` state and implements frozen-source
-construction, the A8 `DOORFV64` call, `FLUBAL64`/`ALSBD`, `FLU2AC64`, the
-inner and outer norms, and the strict terminal Boolean. It adds no relaxation,
-fit, clipping, floor or tolerance. It does not yet connect the production
-parser or GANLIB archive, and therefore cannot establish a continuous
-production lane or radial convergence. Those host and archive lifetimes are
-reserved for Phase-A9b.
+Phase-A9a owns the eight-slice `REAL64` state, consumes an already admitted
+fixed fission source, forms each inner-sweep source as that fixed contribution
+plus off-group scattering, and implements the A8 `DOORFV64` call,
+`FLUBAL64`/`ALSBD`, `FLU2AC64`, the inner and outer norms, and the strict
+terminal Boolean. It does not construct the outer `F phi/k` source. It adds no
+relaxation, fit, clipping, floor or tolerance. It does not yet connect the
+production parser or GANLIB archive, and therefore cannot establish a
+continuous production lane or radial convergence. Those host and archive
+lifetimes are reserved for Phase-A9b.
 
 Before the host is allowed to select that lane, the frozen numerical modules
 are promoted byte-for-byte into `src/` under a separate short gate:
@@ -733,8 +735,10 @@ That first host subgate is now implemented as B2a:
 make spot-real64-phase-a9b-b2a-selector
 ```
 
-It adds a bare, one-pass `R64` keyword that defaults false on every `FLUGPI`
-call and is independent of `MOCA`. `FLUGPI` is now record-write-free and
+It originally added a one-pass `R64` selector that defaulted false on every
+`FLUGPI` call and was independent of `MOCA`; B2g below later tightened that
+selector to require an explicit `BOOT` or `CONT` mode. `FLUGPI` is
+record-write-free and
 returns an explicit logical `LIMERG` staging flag; `FLU` publishes the legacy
 `SIGNATURE`, `LINK.*` and final `IMERGE-LEAK` records only after it knows the
 legacy OFF route was selected. An R64-selected visit instead aborts and
@@ -887,6 +891,50 @@ assign explicit ownership to the previous type-4 state before any bounded
 production plane execution. Radial and outer Picard convergence remain
 `NOT-EVALUATED`. See
 [real64_phase_a9b_b2f_fresh_host/README.md](validation/iterative/real64_phase_a9b_b2f_fresh_host/README.md).
+
+B2g makes the previously implicit epoch choice explicit. `FLUGPI` now accepts
+only `R64 BOOT` or `R64 CONT`; a bare `R64`, an unknown mode, a duplicate
+selector, or a mode token without `R64` fails closed. The mode is reset to
+OFF on every parser call and is never inferred from LCM contents. The shipped
+`SpotPlaneR64` procedure says `R64 BOOT` explicitly and remains unselected by
+all shipped top-level decks.
+
+The seven-entry ownership split is unchanged. In `BOOT`, B2B accepts only a
+legacy seed without `SPOT-R64` and performs the one documented binary32 to
+binary64 promotion. In `CONT`, B2B refuses both compatibility payloads as
+iteration inputs: it reads the initial iterate only from
+`FLUX_OLD/SPOT-R64/FLUX` type 4 and the fixed fission source only from
+`FSOURCE/SPOT-R64/QFISS` type 4. Missing, malformed or mixed-mode authority
+fails before `XDRTA2` or the solver core; there is no presence-based mode
+selection and no fallback to root `FLUX` or `DSOUR`.
+
+`QFISS` and the published `FLUX/SPOT-R64/SOUR` have distinct ownership and
+meaning. `QFISS` is the fixed fission contribution admitted at the start of a
+radial solve; `SOUR` is the core's terminal inner-sweep total source, which
+also contains off-group scattering. B2g verifies that B2C publishes a
+synthetic terminal `SOUR` distinct from `QFISS` and never republishes `QFISS`
+inside the output-flux authority.
+
+The seconds-scale gate exercises the production parser and real B2B/B2C host
+against deterministic stubs and real read-only XSM metadata. It proves that
+10,360 deliberately added REAL64 low-bit witnesses survive the CONT ingress
+while poisoned root type-2 mirrors are ignored:
+
+```sh
+sh validation/iterative/real64_phase_a9b_b2g_explicit_continuation/run_phase_a9b_b2g_explicit_continuation.sh
+```
+
+This is deliberately a host contract, not yet a continuous Picard result.
+The present `SPOFSRC` still computes `F phi/k` through its legacy binary32
+path and therefore cannot construct the required type-4 `QFISS`. No shipped
+procedure selects `CONT`; the next short gate must implement and independently
+verify that REAL64 source builder before a bounded production continuation is
+authorized. A later suffixed REAL64 checker/lifecycle gate is also required:
+the legacy `SPOFCHK` reads type-2 compatibility records and cannot serve as
+REAL64 convergence evidence. Radial and outer Picard convergence remain
+`NOT-EVALUATED`.
+See
+[real64_phase_a9b_b2g_explicit_continuation/README.md](validation/iterative/real64_phase_a9b_b2g_explicit_continuation/README.md).
 
 The alternative three-return design is also checked without Dragon:
 

@@ -1,8 +1,9 @@
 ****************************************************************
-* SpotPlaneR64.c2m -- explicit REAL64 frozen-fission plane step *
+* SpotPlaneR64.c2m -- explicit REAL64 bootstrap plane step       *
 *                                                              *
 * This suffixed procedure is not selected by SpotRefFS.         *
 * Fresh FLUX is the sole target; FLUX_OLD is read-only.         *
+* BOOT is mandatory: this procedure is not a continuation host. *
 ****************************************************************
 PARAMETER SYSTEM FLUX SNAP MICROLIB2 TRACK TRACK_f FLUX_OLD ::
   ::: LINKED_LIST SYSTEM FLUX SNAP MICROLIB2 TRACK FLUX_OLD ;
@@ -25,7 +26,7 @@ FLUX := FLU: MACRO0 TRACK TRACK_f SYSTEM FSOURCE FLUX_OLD ::
   EDIT 0 TYPE S INIT ON REBA
   EXTE 500 <<flu_eps>>
   UNKT <<flu_eps>> THER 740 <<flu_eps>>
-  ACCE 3 3 R64 ;
+  ACCE 3 3 R64 BOOT ;
 
 FLUX := SPOFCHK: FLUX FLUX_OLD TRACK SYSTEM FSOURCE :: ;
 MACRO0 FSOURCE := DELETE: MACRO0 FSOURCE ;

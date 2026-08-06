@@ -1,7 +1,8 @@
 ****************************************************************
-* SpotRefR64.c2m -- explicit REAL64 refresh of every plane      *
+* SpotRefR64.c2m -- explicit REAL64 bootstrap of every plane    *
 *                                                              *
 * No shipped top-level deck selects this suffixed procedure.    *
+* Every plane calls the BOOT-only SpotPlaneR64 procedure.       *
 ****************************************************************
 PARAMETER SNAP TRACK TRACK_f ::
   ::: LINKED_LIST SNAP TRACK ;

@@ -3,7 +3,7 @@
      >                  EPSUNK,EPSINR,IREBAL,IFRITR,IACITR,COPTIO,
      >                  ILEAK,B2,NGROUP,NREGIO,NMAT,NIFISS,LEAKSW,
      >                  REFKEF,ITPIJ,IPRINT,REC,INITFL,NMERG,IMERG,
-     >                  IPICK,IMCAUD,LIMERG,LR64)
+     >                  IPICK,IMCAUD,LIMERG,IR64MD)
 *
 *-----------------------------------------------------------------------
 *
@@ -83,7 +83,7 @@
 * IPICK   optional diagnostic recovery (0/1: no/yes).
 * IMCAUD  raw-MOC audit arm (=0: off; =1: native; =2: stationary).
 * LIMERG  flag set when IMERGE-LEAK must be committed by the caller.
-* LR64    REAL64 route selector (default .false.; set by R64 keyword).
+* IR64MD  REAL64 route mode (=0: off; =1: bootstrap; =2: continue).
 *
 *-----------------------------------------------------------------------
 *
@@ -94,10 +94,10 @@
       TYPE(C_PTR) IPFLUX,IPMACR
       INTEGER     ITYPEC,MAXOUT,MAXINR,IREBAL,IFRITR,IACITR,ILEAK,
      >            NGROUP,NREGIO,NMAT,NIFISS,ITPIJ,IPRINT,INITFL,NMERG,
-     >            IMERG(NMAT),IPICK,IMCAUD
+     >            IMERG(NMAT),IPICK,IMCAUD,IR64MD
       REAL        EPSOUT,EPSUNK,EPSINR,B2(4)
       CHARACTER   COPTIO*4
-      LOGICAL     LEAKSW,REC,LIMERG,LR64
+      LOGICAL     LEAKSW,REC,LIMERG
       DOUBLE PRECISION REFKEF
 *----
 *  LOCAL VARIABLES
@@ -130,7 +130,7 @@
       IPRINT=1
       IMCAUD=0
       LIMERG=.NOT.REC
-      LR64=.FALSE.
+      IR64MD=0
       IF(REC) THEN
          CALL LCMLEN(IPFLUX,'STATE-VECTOR',ILCML1,ITYLCM)
          IF((ILCML1.NE.NSTATE).OR.(ITYLCM.NE.1)) THEN
@@ -225,11 +225,23 @@
      >    CALL XABORT('FLUGPI: MOCA ARM 1 OR 2 EXPECTED.')
         IMCAUD=INTLIR
       ELSE IF(CARLIR.EQ.'R64 ') THEN
-        IF(LR64) THEN
+        IF(IR64MD.NE.0) THEN
           CALL XABORT('FLUGPI: DUPLICATE R64 KEYWORD.')
           RETURN
         ENDIF
-        LR64=.TRUE.
+        CALL REDGET(ITYPLU,INTLIR,REALIR,CARLIR,DBLINP)
+        IF(ITYPLU.NE.3) THEN
+          CALL XABORT('FLUGPI: R64 BOOT OR CONT EXPECTED.')
+          RETURN
+        ENDIF
+        IF(CARLIR.EQ.'BOOT') THEN
+          IR64MD=1
+        ELSE IF(CARLIR.EQ.'CONT') THEN
+          IR64MD=2
+        ELSE
+          CALL XABORT('FLUGPI: R64 BOOT OR CONT EXPECTED.')
+          RETURN
+        ENDIF
       ELSE IF(CARLIR.EQ.'EDIT') THEN
         CALL REDGET(ITYPLU,IPRINT,REALIR,CARLIR,DBLINP)
         IF(ITYPLU.NE.1) CALL XABORT('FLUGPI: READ ERROR - INTEGER VA'
