@@ -1,0 +1,81 @@
+{
+  "phase": "A9b-B2i",
+  "claim": "archive-wide REAL64 bootstrap lifecycle seal validated without host connection",
+  "parent_commit": "b3a24a7b94c715a81b4f03a8dd12963d3765834a",
+  "parent_receipt_sha256": "2c5d7bb317a419c0ba920ed0ed457b8e8f10f5ebeed07fee144738acf80eb2b9",
+  "input_contract": {
+    "ax": "one unsealed SPOSTATE-owned L_FLUX canonical bundle",
+    "axial_track": "one read-only SPOT L_TRACK supplying derived geometry identities",
+    "archive": "one unsealed three-plane L_ARCHIVE with four complete same-index lists",
+    "plane_authority": "exact directory inventory {FLUX,SOUR}; both 370 x 14 GANLIB type 4",
+    "plane_lifecycle_before_seal": "RHO, STATE, EPOCH and QFISS absent",
+    "historical_raw_archive_is_sufficient": false,
+    "b2c_real64_candidate_required": true
+  },
+  "identity_checks": {
+    "rho": "bit-exact 1/real(K-EFFECTIVE,real64)",
+    "iter_keff": "bit-exact real(K-EFFECTIVE,real64)",
+    "pod_layout": "rank and B/A/GRAM offsets from the same AX root",
+    "gram": "replayed in frozen SPOSTATE loop order and compared bitwise",
+    "gram_error": "replayed from GRAM diagonal/off-diagonal deviation and compared bitwise",
+    "height": "replayed from MAT1D/VOL1D and compared bitwise",
+    "geometry_scope": "derived identities only; not an axial-track content hash",
+    "plane_volume": "bit-exact plane VOLUME versus axial AREA2D",
+    "plane_index": "SYSTEM/SPOT-L1-SNAP equals the common list index",
+    "system_leakage": "finite prior radial-input leakage; deliberately not equated to returned current FLUX leakage",
+    "plane_rho_semantics": "completed outer-state lifecycle label; not the rho used by the preceding radial equation",
+    "legacy_spot_fs_k": "pass-through diagnostic; deliberately not compared with current AX K",
+    "leakage": "canonical REAL64 L equals exact promotion of returned plane REAL32 leakage",
+    "compatibility_mirror": "every root FLUX/SOUR value is the exact authority downcast",
+    "empirical_tolerance": false
+  },
+  "output_contract": {
+    "storage": "fresh in-memory LCM pair",
+    "plane_state": "SOLVED",
+    "plane_epoch": 0,
+    "plane_rho": "canonical GANLIB type 4 bits",
+    "ax_state": "CLOSED",
+    "ax_epoch": 0,
+    "archive_state": "CLOSED",
+    "archive_epoch": "0 and final LCM mutation",
+    "archive_nplane": 3,
+    "global_commit": "archive SPOT-R64/EPOCH",
+    "legacy_transition_diagnostics_copied": false
+  },
+  "failure_semantics": {
+    "admission_rejection": "fresh targets remain empty; no new writes occur",
+    "freshness_collision": "pre-existing target contents remain unchanged and the other target remains empty",
+    "post_write_ganlib_failure": "abort and discard incomplete fresh pair; no rollback claim",
+    "consumer_rule": "require both AX and archive CLOSED/EPOCH markers",
+    "epoch_zero_global_uniqueness": false,
+    "direct_xsm_output": false
+  },
+  "semantic_boundary": {
+    "coordinates_consumed": false,
+    "B_times_A_evaluated": false,
+    "next_projection_owner": "SPOR64_B2H",
+    "qfiss_built": false,
+    "transport_solved": false,
+    "host_connected": false,
+    "radial_convergence": "NOT-EVALUATED",
+    "outer_picard_convergence": "NOT-EVALUATED"
+  },
+  "validation": {
+    "static_contract_tests": 30,
+    "mutation_regression_cases": 29,
+    "real_xsm_inputs": 3,
+    "production_b2c_publish_calls": 3,
+    "seal_calls": 13,
+    "commits": 1,
+    "preflight_rejections": 12,
+    "authority_real64_bit_checks": 31080,
+    "mirror_real32_bit_checks": 31080,
+    "four_list_deep_copy_checks": 12,
+    "root_history_exclusions": 3,
+    "dragon_executions": 0,
+    "transport_solves": 0,
+    "sequential_tracking_reads": 0,
+    "long_calculations": 0
+  },
+  "receipt": "phase_a9b_b2i_bootstrap_lifecycle_receipt.sha256"
+}

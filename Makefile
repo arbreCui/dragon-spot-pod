@@ -76,6 +76,9 @@ spot-real64-phase-a9b-b2c-publication :
 .PHONY: spot-real64-phase-a9b-b2h-projection
 spot-real64-phase-a9b-b2h-projection :
 	sh validation/iterative/real64_phase_a9b_b2h_projection_authority/run_phase_a9b_b2h_projection_authority.sh
+.PHONY: spot-real64-phase-a9b-b2i-bootstrap
+spot-real64-phase-a9b-b2i-bootstrap :
+	sh validation/iterative/real64_phase_a9b_b2i_bootstrap_lifecycle/run_phase_a9b_b2i_bootstrap_lifecycle.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

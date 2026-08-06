@@ -969,6 +969,37 @@ does not execute `CONT` and does not establish radial or outer Picard
 convergence. See
 [real64_phase_a9b_b2h_projection_authority/README.md](validation/iterative/real64_phase_a9b_b2h_projection_authority/README.md).
 
+B2i now establishes the missing archive-wide bootstrap lifecycle boundary:
+
+```sh
+make spot-real64-phase-a9b-b2i-bootstrap
+```
+
+`SPOR64_B2I` accepts one unsealed canonical `SPOSTATE` AX root, its axial
+track, and a complete three-plane archive whose plane fluxes already contain
+the exact B2C type-4 `{FLUX,SOUR}` authority. It derives `RHO` only from that
+AX root, checks `RHO`, `K`, `L`, `H`, `GRAM`, `GERR`, plane volumes, list
+indices and binary32 compatibility mirrors by exact identities, and copies
+the complete four-list plane tuples into a fresh in-memory archive. No loose
+basis, coefficient, epoch, plane pointer or empirical control enters the API.
+
+Every copied plane is sealed `SOLVED/EPOCH=0` with the canonical type-4
+`RHO`; the AX root and archive root are sealed `CLOSED/EPOCH=0`, and the
+archive epoch is the final LCM mutation. Historical root transition
+diagnostics are deliberately excluded from this new lifecycle schema because
+they describe the preceding legacy transition. Admission rejection is
+zero-write; an allocation/copy failure after publication begins is fail-closed
+but not a rollback, so any pair without the final archive commit must be
+discarded.
+
+This phase checks structural closure only. It does not evaluate `B*A`, build
+`QFISS`, call B2h, execute `CONT`, or solve transport; the B2h boundary remains
+the sole owner of projection semantics. It also remains disconnected from all
+shipped procedures, and epoch zero is a controlled data-flow label rather than
+a globally unique persisted-state ID. Radial and outer Picard convergence are
+still `NOT-EVALUATED`. See
+[real64_phase_a9b_b2i_bootstrap_lifecycle/README.md](validation/iterative/real64_phase_a9b_b2i_bootstrap_lifecycle/README.md).
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh
