@@ -509,9 +509,10 @@ design has been frozen, with `Dragon processes = 0`, in
     Phase-A4 compile-only A2-to-A3 host closure implemented; Phase-A5-A7
     host context, rendezvous and ownership contracts frozen; Phase-A8 inner
     suffixed REAL64 closure implemented and compile-checked; Phase-A9a owns
-    the outer REAL64 core and B2b connects its default-off source route
-    compile-only; accepted publication, runtime provenance and actual MOC
-    remain open);
+    the outer REAL64 core, B2b connects its default-off source route,
+    B2c closes accepted-only publication, B2d closes the production link,
+    and B2e proves the current fresh-output host is still blocked before the
+    solver; runtime provenance and actual MOC remain open);
 13. examine a fixed three-return legacy32 descriptive diagnostic as a
     smaller alternative (design frozen, but execution is `NO-GO` under the
     current Stage-4 result);
@@ -551,6 +552,10 @@ validation/iterative/real64_phase_a9/
                                       compile-only outer REAL64 math closure
 validation/iterative/real64_phase_a9b_promotion/
                                       byte-identical production promotion
+validation/iterative/real64_phase_a9b_b2d_link/
+                                      production-link closure, no Dragon run
+validation/iterative/real64_phase_a9b_b2e_plane1_admission/
+                                      real-input admission census, zero solve
 validation/iterative/picard_three_return_protocol.json
                                       no-run three-return design contract
 validation/iterative/raw_moc_capture_run_protocol.json
@@ -813,6 +818,39 @@ accepted publication path, but runtime provenance and the continuously
 executed REAL64 lane remain unvalidated; radial convergence and outer Picard
 convergence remain `NOT-EVALUATED`. The shipped `SpotPlaneFS` procedure still
 does not opt into `R64`.
+
+B2d then closes the narrow GANLIB ABI seam required to link the complete
+production Dragon executable. The gate links Dragon once but never executes
+it, and it performs no tracking read or transport solve. Its exact boundary
+is recorded in
+[real64_phase_a9b_b2d_link/README.md](validation/iterative/real64_phase_a9b_b2d_link/README.md).
+
+B2e is the current stop point. A read-only census of the frozen plane-1
+objects and three direct calls to the real B2b ingress establish that the
+current host cannot yet enter the REAL64 solver. The exact recovered flux is
+first rejected by its legacy root `SOUR` list. After deleting only that list
+from a temporary clone, the next incompatible guard is
+`MACRO0/STATE-VECTOR(3)=3`, while B2b currently requires one stored Legendre
+component. The real MCCG track nevertheless activates only one flux Legendre
+component, so the legacy solve uses only order zero; the stored P1/P2 arrays
+are finite and nonzero and are not discarded or reinterpreted.
+
+The shipped plane procedure also creates a fresh `FLUX`, implying
+`REC=false, LIMERG=true`, but B2b currently requires a recovered object and
+reads its initial state from that same output. The validation-only candidate
+therefore uses a fresh publication target plus a distinct, read-only
+`FLUX_OLD` seed. It has not been registered or executed. The B2e gate takes
+seconds and executes no Dragon, `XDRTA2`, production core, publisher,
+tracking record or transport solve:
+
+```sh
+sh validation/iterative/real64_phase_a9b_b2e_plane1_admission/run_phase_a9b_b2e_plane1_admission.sh
+```
+
+The next code gate is to implement this seven-entry ownership split and
+validate active-order equivalence, again stopping before transport. Radial
+and outer Picard convergence remain `NOT-EVALUATED`. See
+[real64_phase_a9b_b2e_plane1_admission/README.md](validation/iterative/real64_phase_a9b_b2e_plane1_admission/README.md).
 
 The alternative three-return design is also checked without Dragon:
 
