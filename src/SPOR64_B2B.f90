@@ -21,6 +21,8 @@ module SPOR64_B2B
   integer, parameter :: NIFIS = 32
   integer, parameter :: NUNKNO = 14
   integer, parameter :: NSOUT = 6
+  integer, parameter :: MACRO_STORED_COMPONENTS = 3
+  integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
   integer, parameter :: MAX_SCAT = NMAT*NGRP
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
@@ -57,11 +59,13 @@ contains
     integer, intent(out) :: status
     integer(int64), intent(out) :: cutoff_visit64
 
-    character(len=72) :: title
+    character(len=72) :: title, output_file
+    character(len=12) :: output_name
     integer :: flux_state(NSTATE), macro_state(NSTATE)
     integer :: system_state(NSTATE), track_state(NSTATE)
     integer :: mccg_state(NSTATE), source_state(NSTATE)
     integer :: imerge_stage(NMAT), matcod(NREG), keyflx_base1(NREG)
+    integer :: seed_keyflx(NREG)
     integer :: keycur(NSOUT), nzon(NUNKNO), matalb_surface(NSOUT)
     integer :: njj_stage(NMAT), ijj_stage(NMAT), ipos_stage(NMAT)
     integer :: njj_off(NMAT,NGRP), ijj_off(NMAT,NGRP)
@@ -71,12 +75,13 @@ contains
     integer :: last_position
     integer(int32) :: volume_bits, track_volume_bits
     logical :: admission_complete, accepted, core_ok
+    logical :: output_empty, output_lcm
     logical :: seen_unknown(NUNKNO)
     real(real32) :: eps_stage32(5), real_param32(4)
     real(real32) :: macro_keff32, source_keff32
     real(real32) :: vol32(NREG), volume_track32(NUNKNO)
     real(real32) :: albedo32(NSOUT), surfac32(NSOUT)
-    real(real32) :: leak1d_input32(NGRP), qint32(NGRP)
+    real(real32) :: leak1d_input32(NGRP), seed_leak1d32(NGRP), qint32(NGRP)
     real(real32) :: flux_stage32(NUNKNO), source_stage32(NUNKNO)
     real(real32) :: nusigf_stage32(NMAT*NIFIS)
     real(real32) :: xstrc32(0:NMAT,NGRP)
@@ -88,7 +93,7 @@ contains
     real(real64) :: terminal_flux64(NUNKNO,NGRP)
     real(real64) :: terminal_source64(NUNKNO,NGRP)
     real(real64) :: xcsou1
-    type(c_ptr) :: ipflux, ipmacr, iptrk, ipsys, ipsou
+    type(c_ptr) :: ipflux, ipseed, ipmacr, iptrk, ipsys, ipsou
     type(c_ptr) :: jpflux, jpmacr, jpsys, jpsource, kpsource
     type(c_ptr) :: kpmacr, kpsys
 
@@ -96,7 +101,7 @@ contains
     cutoff_visit64 = 0_int64
     admission_complete = .false.
 
-    if (nentry /= 6) return
+    if (nentry /= 7) return
     if (size(hentry) /= nentry .or. size(ientry) /= nentry) return
     if (size(jentry) /= nentry .or. size(kentry) /= nentry) return
     if (size(imerg) /= NMAT) return
@@ -106,15 +111,17 @@ contains
     if (hentry(4) /= 'TRACK_f') return
     if (hentry(5) /= 'SYSTEM') return
     if (hentry(6) /= 'FSOURCE') return
-    if (.not. LCM_ENTRY_KIND(ientry(1))) return
+    if (hentry(7) /= 'FLUX_OLD') return
+    if (ientry(1) /= 1) return
     if (.not. LCM_ENTRY_KIND(ientry(2))) return
     if (.not. LCM_ENTRY_KIND(ientry(3))) return
     if (ientry(4) /= 3) return
     if (.not. LCM_ENTRY_KIND(ientry(5))) return
     if (.not. LCM_ENTRY_KIND(ientry(6))) return
-    if (jentry(1) /= 1) return
-    if (any(jentry(2:6) /= 2)) return
-    do ir = 1, 6
+    if (.not. LCM_ENTRY_KIND(ientry(7))) return
+    if (jentry(1) /= 0) return
+    if (any(jentry(2:7) /= 2)) return
+    do ir = 1, 7
       if (.not. c_associated(kentry(ir))) return
     end do
 
@@ -123,10 +130,17 @@ contains
     iptrk = kentry(3)
     ipsys = kentry(5)
     ipsou = kentry(6)
+    ipseed = kentry(7)
+    do ir = 2, 7
+      if (c_associated(ipflux,kentry(ir))) return
+    end do
     iftrak = FILUNIT(kentry(4))
     if (iftrak <= 0) return
 
-    if (.not. rec .or. limerg) return
+    call LCMINF(ipflux,output_file,output_name,output_empty,ilong,output_lcm)
+    if (.not. output_lcm .or. ilong /= -1 .or. .not. output_empty) return
+    if (trim(output_name) /= '/') return
+    if (rec .or. .not. limerg) return
     if (itypec /= 0 .or. maxout /= 500 .or. maxinr /= 740) return
     if (irebal /= 1 .or. ifritr /= 3 .or. iacitr /= 3) return
     if (coptio /= 'B0  ') return
@@ -141,7 +155,7 @@ contains
     if (itpij_host /= 1 .or. itranc_host /= 2) return
     if (iphase_host /= 1 .or. leaksw_host .or. .not. lforw_host) return
 
-    if (.not. CHARACTER_RECORD_MATCHES(ipflux,'SIGNATURE',3,12, &
+    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'SIGNATURE',3,12, &
         'L_FLUX')) return
     if (.not. CHARACTER_RECORD_MATCHES(ipmacr,'SIGNATURE',3,12, &
         'L_MACROLIB')) return
@@ -152,21 +166,26 @@ contains
     if (.not. CHARACTER_RECORD_MATCHES(ipsou,'SIGNATURE',3,12, &
         'L_SOURCE')) return
 
-    if (.not. ABSENT_RECORD(ipflux,'B2  HETE')) return
-    if (.not. ABSENT_RECORD(ipflux,'B2  B1HOM')) return
-    if (.not. ABSENT_RECORD(ipflux,'SPOT-R64')) return
-    if (.not. ABSENT_RECORD(ipflux,'SOUR')) return
-    if (.not. ABSENT_RECORD(ipflux,'AFLUX')) return
-    if (.not. ABSENT_RECORD(ipflux,'DFLUX')) return
-    if (.not. ABSENT_RECORD(ipflux,'ADFLUX')) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'KEYFLX',NREG,1)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'OPTION',1,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.MACRO',3,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.TRACK',3,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.SYSTEM',3,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'SPOT-LEAK1D',NGRP,2)) return
-    if (.not. RECORD_MATCHES(ipflux,'STATE-VECTOR',NSTATE,1)) return
-    call LCMGET(ipflux,'STATE-VECTOR',flux_state)
+    if (.not. ABSENT_RECORD(ipseed,'B2  HETE')) return
+    if (.not. ABSENT_RECORD(ipseed,'B2  B1HOM')) return
+    if (.not. ABSENT_RECORD(ipseed,'SPOT-R64')) return
+    if (.not. ABSENT_RECORD(ipseed,'AFLUX')) return
+    if (.not. ABSENT_RECORD(ipseed,'DFLUX')) return
+    if (.not. ABSENT_RECORD(ipseed,'ADFLUX')) return
+    if (.not. RECORD_MATCHES(ipseed,'KEYFLX',NREG,1)) return
+    call LCMGET(ipseed,'KEYFLX',seed_keyflx)
+    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'OPTION',1,4,'B0  ')) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
+        'MACRO0')) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.TRACK',3,12, &
+        'TRACK')) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.SYSTEM',3,12, &
+        'SYSTEM')) return
+    if (.not. RECORD_MATCHES(ipseed,'SPOT-LEAK1D',NGRP,2)) return
+    call LCMGET(ipseed,'SPOT-LEAK1D',seed_leak1d32)
+    if (.not. all(ieee_is_finite(seed_leak1d32))) return
+    if (.not. RECORD_MATCHES(ipseed,'STATE-VECTOR',NSTATE,1)) return
+    call LCMGET(ipseed,'STATE-VECTOR',flux_state)
     if (flux_state(1) /= NGRP .or. flux_state(2) /= NUNKNO) return
     if (flux_state(3) /= 1) return
     if (flux_state(4) /= 0 .or. flux_state(5) /= 0) return
@@ -175,22 +194,23 @@ contains
     if (flux_state(10) /= 1 .or. flux_state(17) /= NMAT) return
     if (flux_state(11) /= 740 .or. flux_state(12) /= 500) return
     if (flux_state(18) /= 1) return
-    if (.not. RECORD_MATCHES(ipflux,'EPS-CONVERGE',5,2)) return
-    call LCMGET(ipflux,'EPS-CONVERGE',eps_stage32)
+    if (.not. RECORD_MATCHES(ipseed,'EPS-CONVERGE',5,2)) return
+    call LCMGET(ipseed,'EPS-CONVERGE',eps_stage32)
     if (.not. all(ieee_is_finite(eps_stage32))) return
     if (transfer(eps_stage32(1),0_int32) /= FROZEN_TOL_BITS) return
     if (transfer(eps_stage32(2),0_int32) /= FROZEN_TOL_BITS) return
     if (transfer(eps_stage32(3),0_int32) /= FROZEN_TOL_BITS) return
     if (abs(eps_stage32(4)) > 0.0_real32) return
     if (abs(eps_stage32(5)) > 0.0_real32) return
-    if (.not. RECORD_MATCHES(ipflux,'IMERGE-LEAK',NMAT,1)) return
-    call LCMGET(ipflux,'IMERGE-LEAK',imerge_stage)
+    if (.not. RECORD_MATCHES(ipseed,'IMERGE-LEAK',NMAT,1)) return
+    call LCMGET(ipseed,'IMERGE-LEAK',imerge_stage)
     if (any(imerge_stage /= 1)) return
 
     if (.not. RECORD_MATCHES(ipmacr,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipmacr,'STATE-VECTOR',macro_state)
     if (macro_state(1) /= NGRP .or. macro_state(2) /= NMAT) return
-    if (macro_state(3) /= 1 .or. macro_state(4) /= NIFIS) return
+    if (macro_state(3) /= MACRO_STORED_COMPONENTS .or. &
+        macro_state(4) /= NIFIS) return
     if (macro_state(6) /= 2 .or. macro_state(13) /= 0) return
     if (.not. RECORD_MATCHES(ipmacr,'SPOT-FROZEN',1,1)) return
     call LCMGET(ipmacr,'SPOT-FROZEN',frozen_flag)
@@ -224,7 +244,8 @@ contains
     call LCMGET(iptrk,'STATE-VECTOR',track_state)
     if (track_state(1) /= NREG .or. track_state(2) /= NUNKNO) return
     if (track_state(3) /= 1 .or. track_state(4) /= NMAT) return
-    if (track_state(5) /= NSOUT .or. track_state(6) /= 1) return
+    if (track_state(5) /= NSOUT .or. &
+        track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
     if (track_state(9) /= 0 .or. track_state(14) /= 4) return
     if (track_state(16) /= 2 .or. track_state(22) /= 1) return
     if (track_state(27) /= 0 .or. track_state(39) /= 0) return
@@ -251,6 +272,7 @@ contains
     call LCMGET(iptrk,'VOLUME',vol32)
     if (.not. RECORD_MATCHES(iptrk,'KEYFLX$ANIS',NREG,1)) return
     call LCMGET(iptrk,'KEYFLX$ANIS',keyflx_base1)
+    if (any(seed_keyflx /= keyflx_base1)) return
     if (.not. RECORD_MATCHES(iptrk,'KEYCUR$MCCG',NSOUT,1)) return
     call LCMGET(iptrk,'KEYCUR$MCCG',keycur)
     if (.not. RECORD_MATCHES(iptrk,'NZON$MCCG',NUNKNO,1)) return
@@ -310,8 +332,8 @@ contains
     call LCMGET(ipsou,'SPOT-QINT',qint32)
     if (.not. all(ieee_is_finite(qint32))) return
 
-    if (.not. RECORD_MATCHES(ipflux,'FLUX',NGRP,10)) return
-    jpflux = LCMGID(ipflux,'FLUX')
+    if (.not. RECORD_MATCHES(ipseed,'FLUX',NGRP,10)) return
+    jpflux = LCMGID(ipseed,'FLUX')
     if (.not. c_associated(jpflux)) return
     initial_flux64 = +0.0_real64
     do ig = 1, NGRP
@@ -359,6 +381,8 @@ contains
     do ig = 1, NGRP
       kpmacr = LCMGIL(jpmacr,ig)
       if (.not. c_associated(kpmacr)) return
+      if (.not. RECORD_MATCHES(kpmacr,'NJJS01',NMAT,1)) return
+      if (.not. RECORD_MATCHES(kpmacr,'NJJS02',NMAT,1)) return
       if (.not. RECORD_MATCHES(kpmacr,'NUSIGF',NMAT*NIFIS,2)) return
       call LCMGET(kpmacr,'NUSIGF',nusigf_stage32)
       if (.not. all(ieee_is_finite(nusigf_stage32))) return
@@ -433,7 +457,7 @@ contains
     else
       status = SPOR64_B2B_ACCEPTED_UNPUBLISHED
       call SPOR64_B2C_PUBLISH(ipflux,SPOR64_B2B_ACCEPTED_UNPUBLISHED, &
-          terminal_flux64,terminal_source64,keyflx_base1, &
+          terminal_flux64,terminal_source64,keyflx_base1,nmerg,imerg, &
           leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
           hentry(2),hentry(3),hentry(5),status)
     end if
@@ -472,24 +496,6 @@ contains
     call LCMLEN(iplist,name,actual_length,actual_type)
     ABSENT_RECORD = actual_length == 0 .and. actual_type == 99
   end function ABSENT_RECORD
-
-
-  logical function ABSENT_OR_MATCHES(iplist,name,expected_length, &
-      expected_type)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
-
-    ABSENT_OR_MATCHES = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    ABSENT_OR_MATCHES = &
-        (actual_length == 0 .and. actual_type == 99) .or. &
-        (actual_length == expected_length .and. &
-         actual_type == expected_type)
-  end function ABSENT_OR_MATCHES
-
 
   logical function CHARACTER_RECORD_MATCHES(iplist,name,expected_words, &
       character_count,expected_value)

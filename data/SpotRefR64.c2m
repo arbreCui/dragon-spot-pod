@@ -1,0 +1,41 @@
+****************************************************************
+* SpotRefR64.c2m -- explicit REAL64 refresh of every plane      *
+*                                                              *
+* No shipped top-level deck selects this suffixed procedure.    *
+****************************************************************
+PARAMETER SNAP TRACK TRACK_f ::
+  ::: LINKED_LIST SNAP TRACK ;
+  ::: SEQ_BINARY TRACK_f ; ;
+
+LINKED_LIST MICROLIB2 SYSTEM FLUX FLUX_OLD ;
+MODULE BACKUP: RECOVER: DELETE: GREP: END: ;
+PROCEDURE SpotPlaneR64 ;
+
+REAL keff flu_eps fs_l2 fs_rbal ;
+:: >>keff<< >>flu_eps<< ;
+
+INTEGER isnap nsnap ;
+GREP: SNAP :: GETVAL 'LISTDIM' 1 >>nsnap<< ;
+
+EVALUATE isnap := 0 ;
+WHILE isnap nsnap < DO
+  EVALUATE isnap := isnap 1 + ;
+  ECHO "SPOT-REFRESH-R64-PLANE" isnap "OF" nsnap ;
+
+  MICROLIB2 := RECOVER: SNAP :: ITEM <<isnap>> ;
+  FLUX := RECOVER: SNAP :: ITEM <<isnap>> ;
+  FLUX_OLD := FLUX ;
+  FLUX := DELETE: FLUX ;
+  SYSTEM FLUX := SpotPlaneR64 SNAP MICROLIB2 TRACK TRACK_f FLUX_OLD ::
+    <<isnap>> <<keff>> <<flu_eps>> ;
+  GREP: FLUX :: GETVAL 'SPOT-FS-L2' 1 >>fs_l2<< ;
+  GREP: FLUX :: GETVAL 'SPOT-FS-RBAL' 1 >>fs_rbal<< ;
+  ECHO "SPOT-REFRESH-R64-RESULT" isnap fs_l2 fs_rbal ;
+
+  SNAP := BACKUP: SNAP SYSTEM :: ITEM <<isnap>> ;
+  SNAP := BACKUP: SNAP FLUX :: ITEM <<isnap>> ;
+  MICROLIB2 SYSTEM FLUX FLUX_OLD := DELETE:
+    MICROLIB2 SYSTEM FLUX FLUX_OLD ;
+ENDWHILE ;
+
+END: ;

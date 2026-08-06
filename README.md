@@ -511,8 +511,10 @@ design has been frozen, with `Dragon processes = 0`, in
     suffixed REAL64 closure implemented and compile-checked; Phase-A9a owns
     the outer REAL64 core, B2b connects its default-off source route,
     B2c closes accepted-only publication, B2d closes the production link,
-    and B2e proves the current fresh-output host is still blocked before the
-    solver; runtime provenance and actual MOC remain open);
+    B2e identifies the two real-input ownership blockers, and B2f closes the
+    default-off fresh-output/read-only-seed bootstrap with real XSM inputs
+    and a deterministic test core; runtime provenance, REAL64 continuation
+    and actual MOC remain open);
 13. examine a fixed three-return legacy32 descriptive diagnostic as a
     smaller alternative (design frozen, but execution is `NO-GO` under the
     current Stage-4 result);
@@ -556,6 +558,8 @@ validation/iterative/real64_phase_a9b_b2d_link/
                                       production-link closure, no Dragon run
 validation/iterative/real64_phase_a9b_b2e_plane1_admission/
                                       real-input admission census, zero solve
+validation/iterative/real64_phase_a9b_b2f_fresh_host/
+                                      fresh-output bootstrap host, zero solve
 validation/iterative/picard_three_return_protocol.json
                                       no-run three-return design contract
 validation/iterative/raw_moc_capture_run_protocol.json
@@ -825,18 +829,18 @@ it, and it performs no tracking read or transport solve. Its exact boundary
 is recorded in
 [real64_phase_a9b_b2d_link/README.md](validation/iterative/real64_phase_a9b_b2d_link/README.md).
 
-B2e is the current stop point. A read-only census of the frozen plane-1
+B2e was the last blocked-input census. A read-only census of the frozen plane-1
 objects and three direct calls to the real B2b ingress establish that the
-current host cannot yet enter the REAL64 solver. The exact recovered flux is
+then-current host could not enter the REAL64 solver. The exact recovered flux is
 first rejected by its legacy root `SOUR` list. After deleting only that list
 from a temporary clone, the next incompatible guard is
-`MACRO0/STATE-VECTOR(3)=3`, while B2b currently requires one stored Legendre
+`MACRO0/STATE-VECTOR(3)=3`, while B2b then required one stored Legendre
 component. The real MCCG track nevertheless activates only one flux Legendre
 component, so the legacy solve uses only order zero; the stored P1/P2 arrays
 are finite and nonzero and are not discarded or reinterpreted.
 
 The shipped plane procedure also creates a fresh `FLUX`, implying
-`REC=false, LIMERG=true`, but B2b currently requires a recovered object and
+`REC=false, LIMERG=true`, but B2b then required a recovered object and
 reads its initial state from that same output. The validation-only candidate
 therefore uses a fresh publication target plus a distinct, read-only
 `FLUX_OLD` seed. It has not been registered or executed. The B2e gate takes
@@ -847,10 +851,42 @@ tracking record or transport solve:
 sh validation/iterative/real64_phase_a9b_b2e_plane1_admission/run_phase_a9b_b2e_plane1_admission.sh
 ```
 
-The next code gate is to implement this seven-entry ownership split and
-validate active-order equivalence, again stopping before transport. Radial
-and outer Picard convergence remain `NOT-EVALUATED`. See
+That result defines the B2f ownership split. See
 [real64_phase_a9b_b2e_plane1_admission/README.md](validation/iterative/real64_phase_a9b_b2e_plane1_admission/README.md).
+
+B2f now implements and validates the explicit seven-entry bootstrap:
+`FLUX` is a fresh, empty, write-only target; `FLUX_OLD` is the distinct
+read-only initial-flux seed; and `MACRO0`, `TRACK`, `TRACK_f`, `SYSTEM` and
+`FSOURCE` retain their existing read-only roles. The suffixed procedures
+`SpotPlaneR64` and `SpotRefR64` expose this path, while the unchanged
+`SpotPlaneFS`/`SpotRefFS` path remains the default and no shipped top-level
+deck selects `SpotRefR64`.
+
+The real macrolib stores P0, P1 and P2, but the real track activates only P0.
+B2f therefore verifies the stored P1/P2 shapes and loads only the same P0
+records used by the active legacy solve; it deletes, zeros and models none of
+the inactive data. Initial flux is promoted only from `FLUX_OLD/FLUX`, and
+the fixed source only from `FSOURCE/DSOUR`. The fresh publisher writes the
+complete type-4 authority, type-2 compatibility mirror and `L_FLUX` metadata.
+
+The seconds-scale gate links the real B2B ingress and B2C publisher to a
+deterministic copy oracle. It opens five frozen XSM objects read-only, covers
+one successful publication, six blocked ingress cases and seven publisher
+preflight rejections (including empty daughter-table targets), and performs
+no Dragon run, production `XDRTA2`, real
+core call, sequential tracking-record read or transport solve:
+
+```sh
+sh validation/iterative/real64_phase_a9b_b2f_fresh_host/run_phase_a9b_b2f_fresh_host.sh
+```
+
+This proves the first fresh-output REAL64 bootstrap contract only. A seed
+already carrying `SPOT-R64` is rejected deliberately, so no hidden
+REAL64-to-REAL32-to-REAL64 Picard continuation is claimed. The next gate must
+assign explicit ownership to the previous type-4 state before any bounded
+production plane execution. Radial and outer Picard convergence remain
+`NOT-EVALUATED`. See
+[real64_phase_a9b_b2f_fresh_host/README.md](validation/iterative/real64_phase_a9b_b2f_fresh_host/README.md).
 
 The alternative three-return design is also checked without Dragon:
 

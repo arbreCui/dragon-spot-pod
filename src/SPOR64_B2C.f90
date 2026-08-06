@@ -27,12 +27,14 @@ module SPOR64_B2C
 contains
 
   subroutine SPOR64_B2C_PUBLISH(ipflux,accepted_token,terminal_flux64, &
-      terminal_source64,keyflx_base1,leak1d_input32,epsout32, &
+      terminal_source64,keyflx_base1,nmerg_input,imerge_input, &
+      leak1d_input32,epsout32, &
       epsunk32,epsinr32,coptio,macro_name,track_name,system_name,status)
     type(c_ptr), intent(in) :: ipflux
     integer, intent(in) :: accepted_token
     real(real64), intent(in) :: terminal_flux64(:,:), terminal_source64(:,:)
     integer, intent(in) :: keyflx_base1(:)
+    integer, intent(in) :: nmerg_input, imerge_input(:)
     real(real32), intent(in) :: leak1d_input32(:)
     real(real32), intent(in) :: epsout32, epsunk32, epsinr32
     character(len=4), intent(in) :: coptio
@@ -40,12 +42,13 @@ contains
     integer, intent(out) :: status
 
     integer :: state_vector(NSTATE)
-    integer :: ig, ir, ilong, itylcm, allocation_status
+    integer :: ig, ir, allocation_status
     logical :: seen_unknown(NUNKNO)
     real(real32) :: eps_converge(5)
     real(real32), allocatable :: flux_stage32(:,:), source_stage32(:,:)
     type(c_ptr) :: authority, authority_flux, authority_source
     type(c_ptr) :: legacy_flux, legacy_source
+    character(len=12) :: signature
 
     status = SPOR64_B2C_PREFLIGHT_FAILED
 
@@ -57,6 +60,8 @@ contains
     if (size(terminal_source64,1) /= NUNKNO .or. &
         size(terminal_source64,2) /= NGRP) return
     if (size(keyflx_base1) /= NREG) return
+    if (nmerg_input /= 1 .or. size(imerge_input) /= NMAT) return
+    if (any(imerge_input /= 1)) return
     if (size(leak1d_input32) /= NGRP) return
     if (.not. all(ieee_is_finite(terminal_flux64))) return
     if (.not. all(ieee_is_finite(terminal_source64))) return
@@ -78,26 +83,7 @@ contains
       seen_unknown(keyflx_base1(ir)) = .true.
     end do
 
-    if (.not. ABSENT_RECORD(ipflux,'SPOT-R64')) return
-    if (.not. ABSENT_RECORD(ipflux,'SOUR')) return
-    if (.not. ABSENT_RECORD(ipflux,'AFLUX')) return
-    if (.not. ABSENT_RECORD(ipflux,'DFLUX')) return
-    if (.not. ABSENT_RECORD(ipflux,'ADFLUX')) return
-    if (.not. RECORD_MATCHES(ipflux,'FLUX',NGRP,10)) return
-    if (.not. RECORD_MATCHES(ipflux,'STATE-VECTOR',NSTATE,1)) return
-    if (.not. RECORD_MATCHES(ipflux,'EPS-CONVERGE',5,2)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'KEYFLX',NREG,1)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'OPTION',1,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.MACRO',3,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.TRACK',3,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'LINK.SYSTEM',3,3)) return
-    if (.not. ABSENT_OR_MATCHES(ipflux,'SPOT-LEAK1D',NGRP,2)) return
-    legacy_flux = LCMGID(ipflux,'FLUX')
-    if (.not. c_associated(legacy_flux)) return
-    do ig = 1, NGRP
-      call LCMLEL(legacy_flux,ig,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 2) return
-    end do
+    if (.not. EMPTY_LCM_ROOT(ipflux)) return
 
     allocate(flux_stage32(NUNKNO,NGRP), &
         source_stage32(NUNKNO,NGRP),stat=allocation_status)
@@ -106,6 +92,8 @@ contains
       if (allocated(source_stage32)) deallocate(source_stage32)
       return
     end if
+    flux_stage32 = real(terminal_flux64,real32)
+    source_stage32 = real(terminal_source64,real32)
 
     ! Authoritative REAL64 child publication precedes every compatibility write.
     authority = LCMDID(ipflux,'SPOT-R64')
@@ -124,9 +112,11 @@ contains
       call LCMPDL(authority_source,ig,NUNKNO,4,terminal_source64(:,ig))
     end do
 
-    ! Exactly one write-only REAL32 staging pass follows type-4 authority.
-    flux_stage32 = real(terminal_flux64,real32)
-    source_stage32 = real(terminal_source64,real32)
+    ! Compatibility publication follows type-4 authority; its REAL32 arrays
+    ! were fully staged during the no-write preflight above.
+    legacy_flux = LCMLID(ipflux,'FLUX',NGRP)
+    if (.not. c_associated(legacy_flux)) &
+        call XABORT('SPOR64_B2C: TYPE-2 FLUX LIST CREATION FAILED.')
     do ig = 1, NGRP
       call LCMPDL(legacy_flux,ig,NUNKNO,2,flux_stage32(:,ig))
     end do
@@ -150,11 +140,14 @@ contains
     state_vector(11) = 740
     state_vector(12) = 500
     state_vector(17) = NMAT
-    state_vector(18) = 1
+    state_vector(18) = nmerg_input
     eps_converge = [epsinr32,epsunk32,epsout32, &
         0.0_real32,0.0_real32]
+    signature = 'L_FLUX'
+    call LCMPTC(ipflux,'SIGNATURE',12,signature)
     call LCMPUT(ipflux,'STATE-VECTOR',NSTATE,1,state_vector)
     call LCMPUT(ipflux,'EPS-CONVERGE',5,2,eps_converge)
+    call LCMPUT(ipflux,'IMERGE-LEAK',NMAT,1,imerge_input)
     call LCMPUT(ipflux,'KEYFLX',NREG,1,keyflx_base1)
     call LCMPTC(ipflux,'OPTION',4,coptio)
     status = SPOR64_B2C_DRIVER_COMMITTED
@@ -169,47 +162,18 @@ contains
   end subroutine SPOR64_B2C_PUBLISH
 
 
-  logical function RECORD_MATCHES(iplist,name,expected_length, &
-      expected_type)
+  logical function EMPTY_LCM_ROOT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
+    character(len=72) :: object_file
+    character(len=12) :: object_name
+    integer :: object_length
+    logical :: empty, is_lcm
 
-    RECORD_MATCHES = .false.
+    EMPTY_LCM_ROOT = .false.
     if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    RECORD_MATCHES = actual_length == expected_length .and. &
-        actual_type == expected_type
-  end function RECORD_MATCHES
-
-
-  logical function ABSENT_RECORD(iplist,name)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer :: actual_length, actual_type
-
-    ABSENT_RECORD = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    ABSENT_RECORD = actual_length == 0 .and. actual_type == 99
-  end function ABSENT_RECORD
-
-
-  logical function ABSENT_OR_MATCHES(iplist,name,expected_length, &
-      expected_type)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
-
-    ABSENT_OR_MATCHES = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    ABSENT_OR_MATCHES = &
-        (actual_length == 0 .and. actual_type == 99) .or. &
-        (actual_length == expected_length .and. &
-         actual_type == expected_type)
-  end function ABSENT_OR_MATCHES
+    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
+    EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
+        trim(object_name) == '/'
+  end function EMPTY_LCM_ROOT
 
 end module SPOR64_B2C
