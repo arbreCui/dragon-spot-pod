@@ -536,6 +536,7 @@ src/SPOPOD.f90                        weighted snapshot POD
 src/SPOASM.f                          projected-system assembly
 src/SPOPROJ.f90                       axial-to-radial restriction
 src/SPOFSRC.f90                       frozen radial fission source
+src/SPOR64_B2H.f90                    fresh REAL64 projected-state boundary
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
 src/SPOXCONV.f90                      complete raw state difference
@@ -927,14 +928,46 @@ sh validation/iterative/real64_phase_a9b_b2g_explicit_continuation/run_phase_a9b
 This is deliberately a host contract, not yet a continuous Picard result.
 The present `SPOFSRC` still computes `F phi/k` through its legacy binary32
 path and therefore cannot construct the required type-4 `QFISS`. No shipped
-procedure selects `CONT`; the next short gate must implement and independently
-verify that REAL64 source builder before a bounded production continuation is
-authorized. A later suffixed REAL64 checker/lifecycle gate is also required:
+procedure selects `CONT`. A later suffixed REAL64 checker/lifecycle gate is
+also required:
 the legacy `SPOFCHK` reads type-2 compatibility records and cannot serve as
 REAL64 convergence evidence. Radial and outer Picard convergence remain
 `NOT-EVALUATED`.
 See
 [real64_phase_a9b_b2g_explicit_continuation/README.md](validation/iterative/real64_phase_a9b_b2g_explicit_continuation/README.md).
+
+The post-B2g lifecycle audit found that source construction cannot safely be
+the immediate next connection. Legacy `SPOPROJ` writes a new root type-2
+plane `FLUX` but leaves the preceding radial result in
+`SPOT-R64/FLUX`. A direct `CONT` would therefore ignore the current global
+projection and use the stale type-4 radial state. Numerical correctness of
+`F phi/k` would not repair that wrong Picard map.
+
+B2h first closes the smaller projection-authority boundary:
+
+```sh
+make spot-real64-phase-a9b-b2h-projection
+```
+
+The new host-disconnected `SPOR64_B2H` module preserves the existing
+fixed-space contraction order in REAL64 and publishes a fresh plane object
+with explicit `SPOT-R64/STATE=PROJECTED`, caller-supplied positive finite
+type-4 `RHO`, type-4 `FLUX`, and an incremented `EPOCH`. Region unknowns come
+from the new REAL64 projection; non-region unknowns are retained only from the
+preceding type-4 `SOLVED` state. The root type-2 flux is a compatibility
+downcast written after the authority, while `SOUR`, `QFISS` and old
+fixed-source diagnostics are not carried into the fresh object.
+
+This module has no production caller. Current B2C does not yet publish
+`SOLVED/EPOCH/RHO`, current `SPOPROJ` remains unchanged, and a per-plane helper
+does not establish one atomic epoch across all planes. It also does not prove
+that the supplied `RHO` and projected coordinates came from the same canonical
+`SPOSTATE` object. The next lifecycle gate must bind that provenance and
+connect the states archive-wide; only then may the REAL64 fission-source
+builder consume `PROJECTED` and publish an epoch-matched `QFISS`. B2h therefore
+does not execute `CONT` and does not establish radial or outer Picard
+convergence. See
+[real64_phase_a9b_b2h_projection_authority/README.md](validation/iterative/real64_phase_a9b_b2h_projection_authority/README.md).
 
 The alternative three-return design is also checked without Dragon:
 

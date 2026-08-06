@@ -73,6 +73,9 @@ spot-real64-phase-a9b-b2b-ingress :
 .PHONY: spot-real64-phase-a9b-b2c-publication
 spot-real64-phase-a9b-b2c-publication :
 	sh validation/iterative/real64_phase_a9b_b2c_publication/run_phase_a9b_b2c_publication.sh
+.PHONY: spot-real64-phase-a9b-b2h-projection
+spot-real64-phase-a9b-b2h-projection :
+	sh validation/iterative/real64_phase_a9b_b2h_projection_authority/run_phase_a9b_b2h_projection_authority.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)
