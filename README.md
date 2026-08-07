@@ -1145,6 +1145,36 @@ not establish response-matrix numerical accuracy, a radial flux solution,
 radial convergence, outer Picard convergence, or benchmark accuracy.  See
 [real64_phase_a9b_b2m_three_plane_real_asm_commit/README.md](validation/iterative/real64_phase_a9b_b2m_three_plane_real_asm_commit/README.md).
 
+B2n closes the next prerequisite without prematurely running `FLU`:
+
+```sh
+make spot-real64-phase-a9b-b2n-real64-frozen-qfiss
+RUN_B2N=1 make spot-real64-phase-a9b-b2n-real64-frozen-qfiss
+```
+
+B2m's projected plane already carries type-4 `SPOT-R64/FLUX`, so it cannot
+legitimately return through `R64 BOOT`.  The continuation route instead
+requires a type-4 frozen `QFISS`, which the legacy binary32 `SPOFSRC` does not
+provide.  B2n fills only that missing representation and lifecycle boundary.
+It evaluates the unchanged frozen-fission formula in ordered binary64 from
+plane 1's projected authority, creates a zero-live-fission `MACRO0`, and
+publishes a same-plane, same-`RHO`, same-epoch
+`FSOURCE/SPOT-R64/QFISS` authority plus a write-only compatibility mirror.
+
+The default path performs no real source build.  Explicit activation uses a
+standalone bounded builder and a twice-repeated GANLIB-only posterior; it
+executes zero Dragon, ASM, FLU, transport, CONT, or Picard processes.  B2n
+therefore proves only the REAL64 frozen-source bits and zero-live-fission
+macrolib preparation.  A later gate must bind `RHO/STATE/EPOCH` at the
+`R64 CONT` ingress and expose the inherited cutoff census before one real
+radial solve is scientifically auditable.  See
+[real64_phase_a9b_b2n_real64_frozen_qfiss/README.md](validation/iterative/real64_phase_a9b_b2n_real64_frozen_qfiss/README.md).
+
+The accepted short activation used one materializer, one source builder, and
+two byte-identical read-only posteriors.  It checked all 5,180 REAL64 source
+values and all 94,720 zeroed fission values; `MACRO0` and `FSOURCE` were
+9,878,532 and 625,560 bytes.  No radial solve or convergence test occurred.
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh

@@ -849,6 +849,33 @@ three-plane assembly/commit boundary only.  No radial `FLU` solve, QFISS,
 `CONT`, Picard map, empirical control, numerical response benchmark, or
 convergence claim is present.
 
+B2n then constructs the missing REAL64 frozen-fission authority:
+
+```sh
+make spot-real64-phase-a9b-b2n-real64-frozen-qfiss
+RUN_B2N=1 make spot-real64-phase-a9b-b2n-real64-frozen-qfiss
+```
+
+[`real64_phase_a9b_b2n_real64_frozen_qfiss/`](real64_phase_a9b_b2n_real64_frozen_qfiss/README.md)
+does not run Dragon or `FLU`.  It reads only plane 1's type-4 projected flux
+and the same-index physical library/tracking, evaluates
+`QFISS=rho*chi*nuSigmaF*phi_old` in a frozen REAL64 loop order, copies the
+macrolib while replacing only live `NUSIGF` by positive zero, and publishes
+the type-4 source plus its one-time binary32 compatibility mirror.  An
+independent checker recomputes every source bit and recursively audits the
+macrolib copy without linking the producer or any transport solver.
+
+This source-preparation gate adds no physical model, relaxation, clipping,
+normalization, fitted coefficient, or feedback.  It does not establish a
+radial solution or convergence.  The next boundary is strict continuation
+state binding and cutoff observability, followed only then by one bounded
+real `FLU`.
+
+The accepted short activation used one materializer, one source builder, and
+two byte-identical read-only posteriors.  It verified 5,180 REAL64 source
+bits and 94,720 positive-zero fission values while executing no Dragon, ASM,
+FLU, CONT, or Picard process.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

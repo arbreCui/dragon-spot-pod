@@ -1,0 +1,92 @@
+{
+  "phase": "A9b-B2n",
+  "claim": "plane-1 same-epoch REAL64 frozen-fission QFISS and zero-live-fission MACRO0",
+  "parent": "A9b-B2m",
+  "input_state": "PROJECTED",
+  "input_epoch": 1,
+  "plane": 1,
+  "dimensions": {
+    "groups": 370,
+    "regions": 8,
+    "unknowns": 14,
+    "materials": 8,
+    "fissile_components": 32
+  },
+  "formula": {
+    "fission_rate": "f[r,j]=sum_h NUSIGF[m(r),j,h]*phi_old[r,h]",
+    "qfiss": "q[r,g]=sum_j((CHI[m(r),j,g]*f[r,j])*rho)",
+    "loop_order": ["region", "fissile_component", "old_group", "destination_group"],
+    "arithmetic": "binary64 ordered multiply-add steps",
+    "fp_contraction": false,
+    "fast_math": false,
+    "empirical_tolerance": false,
+    "relaxation_or_damping": false,
+    "clipping_or_floor": false,
+    "normalization": false,
+    "model_completion": false
+  },
+  "authority": {
+    "old_flux": "PROJECTED/FLUX[1]/SPOT-R64/FLUX",
+    "source": "FSOURCE/SPOT-R64/QFISS",
+    "state": "FROZEN-QFIS",
+    "rho_source": "PROJECTED/FLUX[1]/SPOT-R64/RHO",
+    "epoch": 1,
+    "root_binary32_source_role": "write-only compatibility mirror"
+  },
+  "macro0": {
+    "source": "PROJECTED/MICROLIB2[1]/MACROLIB",
+    "recursive_copy": true,
+    "only_physical_payload_change": "NUSIGF replaced with positive zero",
+    "nusigf_positive_zero_values": 94720
+  },
+  "posterior_contract": {
+    "qfiss_binary64_bit_checks": 5180,
+    "dsour_binary32_projection_checks": 5180,
+    "qint_binary32_projection_checks": 370,
+    "positive_region_flux_checks": 2960,
+    "nonregion_positive_zero_checks": 2220,
+    "independent_solver_free_checker": true,
+    "posterior_repetitions": 2,
+    "posterior_outputs_byte_identical": true
+  },
+  "execution_policy": {
+    "runtime_default_off": true,
+    "dragon_executions": 0,
+    "asm_executions": 0,
+    "spor64k_executions": 0,
+    "flu_executions": 0,
+    "transport_solves": 0,
+    "picard_maps": 0,
+    "automatic_retries": 0
+  },
+  "accepted_runtime": {
+    "utc": "2026-08-07T05:05:44Z",
+    "platform": "Darwin arm64",
+    "compiler": "GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0",
+    "materializer_executions": 1,
+    "source_builder_executions": 1,
+    "posterior_executions": 2,
+    "prepare_wall_seconds": 1.186,
+    "build_wall_seconds": 0.695,
+    "posterior_a_wall_seconds": 0.654,
+    "posterior_b_wall_seconds": 0.167,
+    "projected_sha256": "c010c0a860884a4e4d3842dffe45ffb4898f2aaca99557e0411ee8c66d60b90c",
+    "projected_bytes": 225315452,
+    "macro0_sha256": "6430b5e43b03125f8bd94c350bae2d8fc97978f86b3a5bb25f2026fd10914ada",
+    "macro0_bytes": 9878532,
+    "fsource_sha256": "37a3499742125db65fb51e505797e2890f6ae29461af9640bf14352aad898f2d",
+    "fsource_bytes": 625560
+  },
+  "semantic_boundary": {
+    "same_epoch_real64_qfiss_intended": true,
+    "zero_live_fission_macro_intended": true,
+    "real_execution_evaluated": true,
+    "radial_flux_solved": false,
+    "radial_convergence_evaluated": false,
+    "outer_picard_map_executed": false,
+    "outer_picard_convergence_evaluated": false,
+    "balance_residual_evaluated": false,
+    "response_accuracy_evaluated": false,
+    "spod_accuracy_evaluated": false
+  }
+}

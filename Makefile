@@ -91,6 +91,9 @@ spot-real64-phase-a9b-b2l-one-plane-real-asm :
 .PHONY: spot-real64-phase-a9b-b2m-three-plane-real-asm-commit
 spot-real64-phase-a9b-b2m-three-plane-real-asm-commit :
 	sh validation/iterative/real64_phase_a9b_b2m_three_plane_real_asm_commit/run_phase_a9b_b2m_three_plane_real_asm_commit.sh
+.PHONY: spot-real64-phase-a9b-b2n-real64-frozen-qfiss
+spot-real64-phase-a9b-b2n-real64-frozen-qfiss :
+	sh validation/iterative/real64_phase_a9b_b2n_real64_frozen_qfiss/run_phase_a9b_b2n_real64_frozen_qfiss.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)
