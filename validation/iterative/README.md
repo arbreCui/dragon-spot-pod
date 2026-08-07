@@ -980,6 +980,28 @@ derivation of detached objects; the latter requires an immediate integrated
 host path or a future sealed tuple receipt. `CLOSED/1`, `rho_1`, the axial
 update, and convergence remain unimplemented and unevaluated.
 
+B2s implements the immediate same-call custody boundary without enabling a
+production call site:
+
+```sh
+make spot-real64-phase-a9b-b2s-immediate-host-bridge
+```
+
+[`real64_phase_a9b_b2s_immediate_host_bridge/`](real64_phase_a9b_b2s_immediate_host_bridge/README.md)
+defines an optional, default-false host bridge. The OFF path returns before
+any object access or scratch creation. The enabled path seals all three B2O
+pairs first, requires the sealed label set `{1,2,3}`, executes B2B CONT in
+canonical plane order, accepts only three `HOST_COMMITTED` publications, and
+then immediately gives those private still-live SOLVED objects to one B2R
+call. No external SOLVED, loose physical label, tolerance, or relaxation
+enters the public API.
+
+The short linked gate replaces only the radial core and `XDRTA2` with
+deterministic witnesses, so it proves orchestration and same-call object
+custody rather than a physical transport solve or convergence. Current
+schemas still do not independently prove historical derivation of detached
+`MACRO0` from archived `MICROLIB2`, or file identity of the shared `TRACK_f`.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

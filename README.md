@@ -542,6 +542,8 @@ src/SPOR64_B2J.f90                    archive-wide REAL64 projection commit
 src/SPOR64_B2K.f90                    fresh radial SYSTEM archive commit
 src/SPOR64_B2N.f90                    REAL64 frozen-fission source builder
 src/SPOR64_B2O.f90                    source-selected same-index CONT sealer
+src/SPOR64_B2R.f90                    label-bound RETURNED archive collector
+src/SPOR64_B2S.f90                    default-off immediate three-plane bridge
 data/SpotAsmR64.c2m                   default-off three-plane ASM host
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
@@ -1320,11 +1322,34 @@ substituted for `QFISS`.
 This proves exact binding of the listed fields and recursive same-index
 copying of the supplied committed objects. Because detached `SOLVED`
 presently carries no sealed SYSTEM/QFISS lineage digest, B2r alone does not
-prove their historical causal pairing;
-that stronger statement remains restricted to a future immediate
-`B2O -> B2B -> B2R` host path. The short gate runs no ASM, SPOASM, FLU,
+prove their historical causal pairing; that stronger same-call statement is
+the separate B2s `B2O -> B2B -> B2R` host boundary below. The short B2r gate
+runs no ASM, SPOASM, FLU,
 Dragon, transport, axial solve, or Picard map. See
 [real64_phase_a9b_b2r_returned_archive/README.md](validation/iterative/real64_phase_a9b_b2r_returned_archive/README.md).
+
+B2s closes that immediate in-process custody gap while remaining default-off:
+
+```sh
+make spot-real64-phase-a9b-b2s-immediate-host-bridge
+```
+
+Production `SPOR64_B2S` accepts no caller-produced `SOLVED`, plane, `RHO`,
+eigenvalue, epoch, tolerance, or relaxation input. Unless its optional enable
+flag is explicitly true, it returns before inspecting any object or creating
+scratch storage. When enabled, it first seals all three source-selected B2O
+pairs and requires the exact label set `{1,2,3}`. It then calls the existing
+B2B CONT boundary in canonical plane order and accepts only three
+`HOST_COMMITTED` results before immediately passing those still-live private
+outputs to one B2R collection.
+
+The short gate links the production B2O/B2B/B2C/B2R/B2S boundaries but
+replaces only the radial core and `XDRTA2` with deterministic witnesses. It
+therefore verifies the same-call control/data lifecycle, not a physical radial
+transport execution or convergence. Detached `MACRO0` and `TRACK_f` history
+also remains outside the object schema: B2s proves use of the supplied tuple,
+not historical derivation of `MACRO0` from the archived `MICROLIB2` or file
+identity of `TRACK_f`. No production call site is enabled by this phase.
 
 The alternative three-return design is also checked without Dragon:
 

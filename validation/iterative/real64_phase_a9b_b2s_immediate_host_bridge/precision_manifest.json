@@ -1,0 +1,118 @@
+{
+  "phase": "A9b-B2s",
+  "purpose": "provide one explicitly enabled immediate in-process B2O-to-B2B-to-B2R bridge while leaving the production route default-off",
+  "parent_phase": "A9b-B2r",
+  "parent_commit": "7d40c0ef71e136a6c424a29b67dd58011b10f3f7",
+  "parent_receipt_sha256": "8970a7c383259a6f71cda2489ce64a7983ae867c5fc56ddc8a2abd01d58eb394",
+  "contract_version": 1,
+  "production_source_changes": [
+    "src/SPOR64_B2S.f90"
+  ],
+  "api": {
+    "module": "SPOR64_B2S",
+    "procedure": "SPOR64_B2S_HOST_BRIDGE",
+    "arguments": [
+      "ipout",
+      "ipassembled",
+      "ipmacros(3)",
+      "ipsources(3)",
+      "iptrack_file",
+      "status",
+      "cutoff_by_plane(3)",
+      "enable(optional)"
+    ],
+    "disabled_status": 0,
+    "failed_status": 1,
+    "returned_status": 2,
+    "caller_solved_objects": false,
+    "caller_plane": false,
+    "caller_rho": false,
+    "caller_k": false,
+    "caller_epoch": false,
+    "caller_tolerance": false,
+    "caller_relaxation": false
+  },
+  "default_off": {
+    "enable_is_optional": true,
+    "absent_enable_returns_disabled": true,
+    "false_enable_returns_disabled": true,
+    "object_accesses_before_return": 0,
+    "lcm_operations_before_return": 0,
+    "scratch_objects_before_return": 0,
+    "production_subcalls_before_return": 0,
+    "cutoff_output_when_disabled": [0, 0, 0]
+  },
+  "enabled_input_contract": {
+    "assembled": "one committed ASSEMBLED/1 archive",
+    "macro0": "three caller-supplied detached MACRO0 objects carried in the same argument slots as the three sources; read-only sharing between MACRO0 slots is permitted",
+    "qsource": "three distinct detached FROZEN-QFIS/1 objects whose source-owned labels form exactly {1,2,3}",
+    "track_file": "one shared TRACK_f handle used by all three canonical plane calls",
+    "same_slot_macro_source_pairing": true,
+    "source_plane_labels": [1, 2, 3],
+    "output_must_be_fresh": true,
+    "all_caller_objects_immutable": true
+  },
+  "causal_chain": {
+    "b2o_calls": 3,
+    "all_b2o_calls_before_first_b2b": true,
+    "sealed_plane_set": [1, 2, 3],
+    "sealed_plane_duplicates_or_omissions_rejected": true,
+    "b2b_calls": 3,
+    "b2b_mode": "CONT",
+    "b2b_order": [1, 2, 3],
+    "b2b_only_success_status": "SPOR64_B2C_HOST_COMMITTED",
+    "solved_objects_are_private_immediate_b2b_outputs": true,
+    "b2r_calls": 1,
+    "b2r_after_all_three_host_commits": true,
+    "output_generation": "RETURNED/1"
+  },
+  "numerical_controls": {
+    "preexisting_b2b_controls_are_frozen_in_bridge": true,
+    "new_empirical_parameters": 0,
+    "relaxation_added": false,
+    "damping_added": false,
+    "clipping_added": false,
+    "fitted_coefficient_added": false,
+    "model_completion_added": false
+  },
+  "cutoff_diagnostic": {
+    "kind": "INT64",
+    "shape": 3,
+    "index_owner": "canonical plane label",
+    "initialized_to_zero": true,
+    "aggregated": false,
+    "feeds_acceptance": false,
+    "feeds_solver": false,
+    "written_into_returned_archive": false
+  },
+  "provenance_scope": {
+    "proved": "same-call causal custody from each B2O-sealed pair through the matching accepted B2B CONT result into the single B2R collection",
+    "macro0_and_source_follow_same_argument_slot": true,
+    "macro0_historically_derived_from_archive_microlib2": false,
+    "macro0_and_source_historical_sibling_lineage": false,
+    "track_file_historically_matches_archive_track": false,
+    "metadata_alone_is_physical_proof": false
+  },
+  "short_gate_design": {
+    "static_mutation_tests": 45,
+    "production_b2o_b2b_b2r_path": true,
+    "production_a9_implementation_linked": false,
+    "stub_core_is_a_publication_witness_only": true,
+    "true_transport_solves": 0,
+    "dragon_processes": 0,
+    "axial_solves": 0,
+    "picard_maps": 0,
+    "long_calculations": 0
+  },
+  "not_claimed": [
+    "historical MACRO0 derivation from the same-index ASSEMBLED/MICROLIB2 payload",
+    "historical sibling lineage of detached MACRO0 and FROZEN-QFIS objects",
+    "historical identity of the shared TRACK_f handle and archived TRACK objects",
+    "a true radial transport execution in the short gate",
+    "radial convergence",
+    "outer Picard convergence",
+    "benchmark accuracy",
+    "an enabled production host call site",
+    "a CLOSED/1 archive"
+  ]
+}
