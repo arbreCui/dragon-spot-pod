@@ -1002,6 +1002,31 @@ custody rather than a physical transport solve or convergence. Current
 schemas still do not independently prove historical derivation of detached
 `MACRO0` from archived `MICROLIB2`, or file identity of the shared `TRACK_f`.
 
+B2t removes the detached source-pair boundary while keeping execution
+default-off:
+
+```sh
+make spot-real64-phase-a9b-b2t-owned-source-host-step
+```
+
+[`real64_phase_a9b_b2t_owned_source_host_step/`](real64_phase_a9b_b2t_owned_source_host_step/README.md)
+starts from one authoritative `PROJECTED/1` parent. The enabled path creates
+one private B2K `ASSEMBLED/1` result and three canonical private B2N
+`MACRO0/FROZEN-QFIS` pairs, then passes those still-live objects directly to
+B2s. The public ABI has no ASSEMBLED, source, macro, SOLVED, plane, RHO,
+eigenvalue, tolerance, or relaxation input.
+
+The short gate proves same-call ownership, pre-publication fail-closed
+behavior, and cleanup after recoverable failures, not real radial transport or
+convergence. Its content branch executes production B2N for all three planes
+and independently checks the frozen QFISS/DSOUR/QINT construction twice; B2K
+and B2S remain capture stubs there. It does not prove that the candidate SYSTEM
+objects came from same-call ASM, nor that the supplied `TRACK_f` is the
+historical file behind the archived TRACK objects. Those claims require a
+later outer host guarded before ASM and a provenance receipt that binds TRACK
+construction to the exact read-only file; a before/after file hash alone only
+proves that the tested bytes did not change.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

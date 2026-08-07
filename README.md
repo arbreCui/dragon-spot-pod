@@ -544,6 +544,7 @@ src/SPOR64_B2N.f90                    REAL64 frozen-fission source builder
 src/SPOR64_B2O.f90                    source-selected same-index CONT sealer
 src/SPOR64_B2R.f90                    label-bound RETURNED archive collector
 src/SPOR64_B2S.f90                    default-off immediate three-plane bridge
+src/SPOR64_B2T.f90                    owned PROJECTED-to-RETURNED host step
 data/SpotAsmR64.c2m                   default-off three-plane ASM host
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
@@ -1350,6 +1351,37 @@ transport execution or convergence. Detached `MACRO0` and `TRACK_f` history
 also remains outside the object schema: B2s proves use of the supplied tuple,
 not historical derivation of `MACRO0` from the archived `MICROLIB2` or file
 identity of `TRACK_f`. No production call site is enabled by this phase.
+
+B2t removes the remaining caller-supplied source pair from that immediate
+path:
+
+```sh
+make spot-real64-phase-a9b-b2t-owned-source-host-step
+```
+
+Production `SPOR64_B2T` accepts one `PROJECTED/1` parent, three candidate
+SYSTEM objects, and one shared `TRACK_f` handle. Unless explicitly enabled it
+returns before any object access or subcall. When enabled, it privately calls
+B2K once to create `ASSEMBLED/1`, calls B2N in canonical order to create all
+three still-live `MACRO0/FROZEN-QFIS` pairs from the same PROJECTED parent,
+and only then enters B2s. The caller can no longer substitute detached
+ASSEMBLED, MACRO0, source, or SOLVED objects.
+
+This is an ownership and lineage boundary, not a new equation or convergence
+rule. It adds no empirical coefficient, relaxation, damping, clipping, or
+retry. Candidate-SYSTEM history and the binary identity of `TRACK_f` remain
+outside this low-level API; a later outer host must be default-off before its
+three ASM calls, retain one read-only tracking-file handle through B2t, and
+cryptographically bind that file to construction of the archived TRACK
+objects. A before/after file hash proves unchanged tested bytes, not historical
+identity on its own.
+
+The B2t short gate runs the complete production ABI as a strict compile-only
+check and executes production B2N for all three planes. An independent
+GANLIB-only posterior checks the REAL64 QFISS construction and its exact
+REAL32 projections twice. B2K/B2S are capture stubs in that content branch;
+there is still no ASM, transport solve, Picard step, or enabled production host
+call site.
 
 The alternative three-return design is also checked without Dragon:
 
