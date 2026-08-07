@@ -902,6 +902,35 @@ than a global lineage ID, and B2C still does not publish lifecycle metadata;
 this is one sealed predicate-satisfying ingress, not a repeated CONT chain or
 a convergence result.
 
+B2p then publishes the accepted continuation state without changing the
+radial mathematics:
+
+```sh
+make spot-real64-phase-a9b-b2p-solved-lifecycle
+```
+
+[`real64_phase_a9b_b2p_solved_lifecycle/`](real64_phase_a9b_b2p_solved_lifecycle/README.md)
+keeps the legacy B2C ABI and BOOT route unchanged and adds a distinct CONT
+publisher. After B2B accepts the unchanged A9 result, B2C copies the sealed
+seed's binary64 `RHO`, local `PLANE`, and local `EPOCH` into the exact
+`SOLVED` authority and writes `EPOCH` last. Existing B2H alone advances the
+per-plane authority from `SOLVED(n)` to `PROJECTED(n+1)`.
+
+The few-second gate uses one accepted stub core, not a production radial
+solve. It exercises the real B2O/B2B/B2C/B2H control path, checks 31,080
+terminal/projected authoritative or compatibility values, enforces 16
+metadata rejections, one alias rejection, one nonaccepted-token rejection,
+two core-result rejections, and 35 mutation tests, and performs five full
+sealed-seed immutability sweeps. A
+caller compiled against the B2o parent module also links and runs against the
+current legacy B2C wrapper. All fixtures remain byte-identical. No new
+empirical parameter, production FLU, Dragon, transport solve, or Picard map
+is involved.
+The B2H call proves schema consumption and epoch mechanics only; its synthetic
+output is not a B2J/SPOD projection or canonical next Picard state. The second
+CONT call remains closed because the subsequent PLANE/schema, multi-generation,
+and three-plane archive boundaries are not yet complete.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

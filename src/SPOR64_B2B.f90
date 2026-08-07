@@ -5,7 +5,7 @@ module SPOR64_B2B
   use GANLIB
   use SPOMOC_AUDIT, only : SPOMOC_ACTIVE
   use SPOR64_A9, only : FLU2DR64_CORE
-  use SPOR64_B2C, only : SPOR64_B2C_PUBLISH
+  use SPOR64_B2C, only : SPOR64_B2C_PUBLISH, SPOR64_B2C_PUBLISH_CONT
   implicit none
   private
 
@@ -506,10 +506,18 @@ contains
       status = SPOR64_B2B_NOT_ACCEPTED
     else
       status = SPOR64_B2B_ACCEPTED_UNPUBLISHED
-      call SPOR64_B2C_PUBLISH(ipflux,SPOR64_B2B_ACCEPTED_UNPUBLISHED, &
-          terminal_flux64,terminal_source64,keyflx_base1,nmerg,imerg, &
-          leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
-          hentry(2),hentry(3),hentry(5),status)
+      if (r64_mode == SPOR64_B2B_CONT) then
+        call SPOR64_B2C_PUBLISH_CONT(ipflux,ipseed, &
+            SPOR64_B2B_ACCEPTED_UNPUBLISHED,terminal_flux64, &
+            terminal_source64,keyflx_base1,nmerg,imerg,leak1d_input32, &
+            epsout32,epsunk32,epsinr32,coptio,hentry(2),hentry(3), &
+            hentry(5),status)
+      else
+        call SPOR64_B2C_PUBLISH(ipflux,SPOR64_B2B_ACCEPTED_UNPUBLISHED, &
+            terminal_flux64,terminal_source64,keyflx_base1,nmerg,imerg, &
+            leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
+            hentry(2),hentry(3),hentry(5),status)
+      end if
     end if
   end subroutine SPOR64_B2B_INGRESS
 

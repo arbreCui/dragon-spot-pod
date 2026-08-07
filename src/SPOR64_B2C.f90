@@ -23,6 +23,7 @@ module SPOR64_B2C
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
 
   public :: SPOR64_B2C_PUBLISH
+  public :: SPOR64_B2C_PUBLISH_CONT
 
 contains
 
@@ -41,16 +42,65 @@ contains
     character(len=12), intent(in) :: macro_name, track_name, system_name
     integer, intent(out) :: status
 
+    call SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token,terminal_flux64, &
+        terminal_source64,keyflx_base1,nmerg_input,imerge_input, &
+        leak1d_input32,epsout32,epsunk32,epsinr32,coptio,macro_name, &
+        track_name,system_name,status)
+  end subroutine SPOR64_B2C_PUBLISH
+
+
+  subroutine SPOR64_B2C_PUBLISH_CONT(ipflux,ipseed_lifecycle, &
+      accepted_token,terminal_flux64,terminal_source64,keyflx_base1, &
+      nmerg_input,imerge_input,leak1d_input32,epsout32,epsunk32, &
+      epsinr32,coptio,macro_name,track_name,system_name,status)
+    type(c_ptr), intent(in) :: ipflux, ipseed_lifecycle
+    integer, intent(in) :: accepted_token
+    real(real64), intent(in) :: terminal_flux64(:,:), terminal_source64(:,:)
+    integer, intent(in) :: keyflx_base1(:)
+    integer, intent(in) :: nmerg_input, imerge_input(:)
+    real(real32), intent(in) :: leak1d_input32(:)
+    real(real32), intent(in) :: epsout32, epsunk32, epsinr32
+    character(len=4), intent(in) :: coptio
+    character(len=12), intent(in) :: macro_name, track_name, system_name
+    integer, intent(out) :: status
+
+    call SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token,terminal_flux64, &
+        terminal_source64,keyflx_base1,nmerg_input,imerge_input, &
+        leak1d_input32,epsout32,epsunk32,epsinr32,coptio,macro_name, &
+        track_name,system_name,status,ipseed_lifecycle)
+  end subroutine SPOR64_B2C_PUBLISH_CONT
+
+
+  subroutine SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token, &
+      terminal_flux64,terminal_source64,keyflx_base1,nmerg_input, &
+      imerge_input,leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
+      macro_name,track_name,system_name,status,ipseed_lifecycle)
+    type(c_ptr), intent(in) :: ipflux
+    integer, intent(in) :: accepted_token
+    real(real64), intent(in) :: terminal_flux64(:,:), terminal_source64(:,:)
+    integer, intent(in) :: keyflx_base1(:)
+    integer, intent(in) :: nmerg_input, imerge_input(:)
+    real(real32), intent(in) :: leak1d_input32(:)
+    real(real32), intent(in) :: epsout32, epsunk32, epsinr32
+    character(len=4), intent(in) :: coptio
+    character(len=12), intent(in) :: macro_name, track_name, system_name
+    integer, intent(out) :: status
+    type(c_ptr), intent(in), optional :: ipseed_lifecycle
+
     integer :: state_vector(NSTATE)
     integer :: ig, ir, allocation_status
-    logical :: seen_unknown(NUNKNO)
+    integer :: lifecycle_plane, lifecycle_epoch
+    logical :: seen_unknown(NUNKNO), publish_solved
     real(real32) :: eps_converge(5)
+    real(real64) :: lifecycle_rho64
     real(real32), allocatable :: flux_stage32(:,:), source_stage32(:,:)
     type(c_ptr) :: authority, authority_flux, authority_source
+    type(c_ptr) :: lifecycle_authority
     type(c_ptr) :: legacy_flux, legacy_source
-    character(len=12) :: signature
+    character(len=12) :: signature, authority_state
 
     status = SPOR64_B2C_PREFLIGHT_FAILED
+    publish_solved = present(ipseed_lifecycle)
 
     ! The complete no-write preflight is deliberately ahead of LCMDID/LCMLID.
     if (accepted_token /= ACCEPTED_UNPUBLISHED) return
@@ -76,6 +126,33 @@ contains
     if (track_name /= 'TRACK') return
     if (system_name /= 'SYSTEM') return
 
+    ! CONT alone may publish a lifecycle-bearing SOLVED state.  Its identity
+    ! is inherited from the already sealed PROJECTED seed object, never from
+    ! independent caller scalars.  All reads remain in the no-write preflight.
+    if (publish_solved) then
+      if (.not. c_associated(ipseed_lifecycle)) return
+      if (c_associated(ipflux,ipseed_lifecycle)) return
+      if (.not. RECORD_MATCHES(ipseed_lifecycle,'SPOT-R64',-1,0)) return
+      lifecycle_authority = LCMGID(ipseed_lifecycle,'SPOT-R64')
+      if (.not. c_associated(lifecycle_authority)) return
+      if (.not. PROJECTED_AUTHORITY_IS_EXACT(lifecycle_authority)) return
+      if (.not. RECORD_MATCHES(lifecycle_authority,'RHO',1,4)) return
+      if (.not. RECORD_MATCHES(lifecycle_authority,'PLANE',1,1)) return
+      if (.not. RECORD_MATCHES(lifecycle_authority,'FLUX',NGRP,10)) return
+      if (.not. REAL64_FLUX_IS_VALID(lifecycle_authority)) return
+      if (.not. CHARACTER_RECORD_MATCHES(lifecycle_authority,'STATE',3, &
+          12,'PROJECTED')) return
+      if (.not. RECORD_MATCHES(lifecycle_authority,'EPOCH',1,1)) return
+      call LCMGET(lifecycle_authority,'RHO',lifecycle_rho64)
+      call LCMGET(lifecycle_authority,'PLANE',lifecycle_plane)
+      call LCMGET(lifecycle_authority,'EPOCH',lifecycle_epoch)
+      if (.not. ieee_is_finite(lifecycle_rho64)) return
+      if (lifecycle_rho64 <= +0.0_real64) return
+      if (lifecycle_plane < 1 .or. lifecycle_plane > 3) return
+      if (lifecycle_epoch < 0 .or. &
+          lifecycle_epoch == huge(lifecycle_epoch)) return
+    end if
+
     seen_unknown = .false.
     do ir = 1, NREG
       if (keyflx_base1(ir) < 1 .or. keyflx_base1(ir) > NUNKNO) return
@@ -94,11 +171,17 @@ contains
     end if
     flux_stage32 = real(terminal_flux64,real32)
     source_stage32 = real(terminal_source64,real32)
+    ! Repeat freshness immediately before the first caller-visible mutation.
+    if (.not. EMPTY_LCM_ROOT(ipflux)) return
 
     ! Authoritative REAL64 child publication precedes every compatibility write.
     authority = LCMDID(ipflux,'SPOT-R64')
     if (.not. c_associated(authority)) &
         call XABORT('SPOR64_B2C: SPOT-R64 DIRECTORY CREATION FAILED.')
+    if (publish_solved) then
+      call LCMPUT(authority,'RHO',1,4,lifecycle_rho64)
+      call LCMPUT(authority,'PLANE',1,1,lifecycle_plane)
+    end if
     authority_flux = LCMLID(authority,'FLUX',NGRP)
     if (.not. c_associated(authority_flux)) &
         call XABORT('SPOR64_B2C: TYPE-4 FLUX LIST CREATION FAILED.')
@@ -156,10 +239,16 @@ contains
     call LCMPTC(ipflux,'LINK.TRACK',12,track_name)
     call LCMPTC(ipflux,'LINK.SYSTEM',12,system_name)
     call LCMPUT(ipflux,'SPOT-LEAK1D',NGRP,2,leak1d_input32)
+    if (publish_solved) then
+      authority_state = 'SOLVED'
+      call LCMPTC(authority,'STATE',12,authority_state)
+      ! EPOCH is the final mutation and commits this accepted local state.
+      call LCMPUT(authority,'EPOCH',1,1,lifecycle_epoch)
+    end if
     status = SPOR64_B2C_HOST_COMMITTED
 
     deallocate(flux_stage32,source_stage32)
-  end subroutine SPOR64_B2C_PUBLISH
+  end subroutine SPOR64_B2C_PUBLISH_IMPL
 
 
   logical function EMPTY_LCM_ROOT(iplist)
@@ -175,5 +264,98 @@ contains
     EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
         trim(object_name) == '/'
   end function EMPTY_LCM_ROOT
+
+
+  logical function RECORD_MATCHES(iplist,name,expected_length,expected_type)
+    type(c_ptr), intent(in) :: iplist
+    character(len=*), intent(in) :: name
+    integer, intent(in) :: expected_length, expected_type
+    integer :: actual_length, actual_type
+
+    RECORD_MATCHES = .false.
+    if (.not. c_associated(iplist)) return
+    call LCMLEN(iplist,name,actual_length,actual_type)
+    RECORD_MATCHES = actual_length == expected_length .and. &
+        actual_type == expected_type
+  end function RECORD_MATCHES
+
+
+  logical function CHARACTER_RECORD_MATCHES(iplist,name,expected_words, &
+      character_count,expected_value)
+    type(c_ptr), intent(in) :: iplist
+    character(len=*), intent(in) :: name, expected_value
+    integer, intent(in) :: expected_words, character_count
+    character(len=72) :: value
+
+    CHARACTER_RECORD_MATCHES = .false.
+    if (character_count < 1 .or. character_count > len(value)) return
+    if (.not. RECORD_MATCHES(iplist,name,expected_words,3)) return
+    value = ' '
+    call LCMGTC(iplist,name,character_count,value)
+    CHARACTER_RECORD_MATCHES = value(1:character_count) == expected_value
+  end function CHARACTER_RECORD_MATCHES
+
+
+  logical function PROJECTED_AUTHORITY_IS_EXACT(iplist)
+    type(c_ptr), intent(in) :: iplist
+    character(len=12), parameter :: names(5) = &
+        ['RHO         ','PLANE       ','FLUX        ','STATE       ', &
+         'EPOCH       ']
+
+    PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+  end function PROJECTED_AUTHORITY_IS_EXACT
+
+
+  logical function REAL64_FLUX_IS_VALID(ipauthority)
+    type(c_ptr), intent(in) :: ipauthority
+    integer :: ig, actual_length, actual_type
+    real(real64) :: stage64(NUNKNO)
+    type(c_ptr) :: ipflux
+
+    REAL64_FLUX_IS_VALID = .false.
+    if (.not. c_associated(ipauthority)) return
+    ipflux = LCMGID(ipauthority,'FLUX')
+    if (.not. c_associated(ipflux)) return
+    do ig = 1, NGRP
+      call LCMLEL(ipflux,ig,actual_length,actual_type)
+      if (actual_length /= NUNKNO .or. actual_type /= 4) return
+      call LCMGDL(ipflux,ig,stage64)
+      if (.not. all(ieee_is_finite(stage64))) return
+    end do
+    REAL64_FLUX_IS_VALID = .true.
+  end function REAL64_FLUX_IS_VALID
+
+
+  logical function EXACT_INVENTORY(iplist,expected_names)
+    type(c_ptr), intent(in) :: iplist
+    character(len=12), intent(in) :: expected_names(:)
+    character(len=12) :: first_name, item_name
+    integer :: count, i, allocation_status
+    logical, allocatable :: found(:)
+
+    EXACT_INVENTORY = .false.
+    if (.not. c_associated(iplist)) return
+    allocate(found(size(expected_names)),stat=allocation_status)
+    if (allocation_status /= 0) return
+    found = .false.
+    item_name = ' '
+    call LCMNXT(iplist,item_name)
+    if (item_name == ' ') return
+    first_name = item_name
+    count = 0
+    do
+      count = count+1
+      if (count > size(expected_names)) return
+      do i = 1, size(expected_names)
+        if (item_name == expected_names(i)) exit
+      end do
+      if (i > size(expected_names)) return
+      if (found(i)) return
+      found(i) = .true.
+      call LCMNXT(iplist,item_name)
+      if (item_name == first_name) exit
+    end do
+    EXACT_INVENTORY = count == size(expected_names) .and. all(found)
+  end function EXACT_INVENTORY
 
 end module SPOR64_B2C

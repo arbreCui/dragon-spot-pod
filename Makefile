@@ -97,6 +97,9 @@ spot-real64-phase-a9b-b2n-real64-frozen-qfiss :
 .PHONY: spot-real64-phase-a9b-b2o-cont-binding-cutoff
 spot-real64-phase-a9b-b2o-cont-binding-cutoff :
 	sh validation/iterative/real64_phase_a9b_b2o_cont_binding_cutoff/run_phase_a9b_b2o_cont_binding_cutoff.sh
+.PHONY: spot-real64-phase-a9b-b2p-solved-lifecycle
+spot-real64-phase-a9b-b2p-solved-lifecycle :
+	sh validation/iterative/real64_phase_a9b_b2p_solved_lifecycle/run_phase_a9b_b2p_solved_lifecycle.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

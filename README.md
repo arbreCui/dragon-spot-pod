@@ -1210,6 +1210,38 @@ proves one sealed same-index, predicate-satisfying CONT ingress—not repeated
 CONT or convergence.  See
 [real64_phase_a9b_b2o_cont_binding_cutoff/README.md](validation/iterative/real64_phase_a9b_b2o_cont_binding_cutoff/README.md).
 
+B2p closes the accepted-CONT publication boundary without running a real
+transport solve:
+
+```sh
+make spot-real64-phase-a9b-b2p-solved-lifecycle
+```
+
+After the existing B2B joint admission and an accepted A9 return, production
+B2C now publishes the exact authority
+`{RHO,PLANE,FLUX,SOUR,STATE=SOLVED,EPOCH}`. `RHO`, `PLANE`, and `EPOCH` are
+copied from the sealed PROJECTED seed; B2C neither recomputes an eigenvalue nor
+increments the generation. `EPOCH` is the last mutation. The existing B2H
+per-plane authority boundary alone advances `SOLVED(n)` to `PROJECTED(n+1)`.
+The old 16-argument B2C publisher and the BOOT route remain unchanged.
+
+The short gate runs three real B2B control calls around configurable capture
+stubs, including one accepted result and two rejected core results. It adds 16
+fail-closed metadata cases, one alias rejection, one nonaccepted-token
+rejection, 35 mutation tests, five full sealed-seed immutability sweeps, and a
+caller compiled against the parent B2C module then linked against the current
+wrapper. It checks all terminal and
+projected type-4 values plus their compatibility mirrors and links no
+production FLU, Dragon, or transport solver. Thus it proves the real
+B2B-path publication `sealed PROJECTED(1) -> accepted SOLVED(1)` and separately
+proves that existing B2H can consume the schema and perform its `1 -> 2`
+mechanics. The synthetic B2H output is not a B2J/SPOD projection or canonical
+next Picard state. There is no physical radial solve, second CONT call, or
+outer Picard convergence result. B2H still drops `PLANE`, B2J's SOLVED schema
+does not yet accept it, and the next closed three-plane archive remains future
+work. See
+[real64_phase_a9b_b2p_solved_lifecycle/README.md](validation/iterative/real64_phase_a9b_b2p_solved_lifecycle/README.md).
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh
