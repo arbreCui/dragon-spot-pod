@@ -802,6 +802,29 @@ harness uses synthetic fresh SYSTEM candidates and runs no ASM, tracking
 read, Dragon, transport or CONT; real ASM execution and both convergence
 questions remain `NOT-EVALUATED`.
 
+B2l supplies the bounded real plane-1 execution that B2k left open:
+
+```sh
+make spot-real64-phase-a9b-b2l-one-plane-real-asm
+RUN_B2L=1 make spot-real64-phase-a9b-b2l-one-plane-real-asm
+```
+
+[`real64_phase_a9b_b2l_one_plane_real_asm/`](real64_phase_a9b_b2l_one_plane_real_asm/README.md)
+keeps runtime activation default-off.  The default path nevertheless runs a
+bounded, no-Dragon B2J XSM lifecycle harness: one exact persisted commit and
+five persisted rejections, including a tombstone and late plane-2/3 cleanup,
+are each verified after close/reopen.  The active path builds a complete
+three-plane `PROJECTED/1` XSM through production B2C/B2I/B2J, then executes
+one production `ASM: ... ARM LK1D 1`; it contains no FLU, QFISS, SPOR64K,
+CONT, loop, Picard map, or automatic retry.
+
+The accepted run completed in under one second of ASM time.  Its independent
+GANLIB-only posterior recursively checked 69,021 full-copy records, 59,940
+finite response values, and 3,330 ordered binary32 identities in each of
+`TX`, `S0phys`, and `S0used`.  This establishes a real plane-1 operator
+assembly and B2k posterior compatibility, not response numerical accuracy,
+planes 2/3, a radial flux solve, or either convergence question.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

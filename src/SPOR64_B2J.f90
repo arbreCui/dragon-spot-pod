@@ -447,12 +447,17 @@ contains
     character(len=72) :: object_file
     character(len=12) :: object_name
     integer :: object_length
-    logical :: empty, is_lcm
+    logical :: empty, memory_backed
 
     EMPTY_LCM_ROOT = .false.
     if (.not. c_associated(iplist)) return
-    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
-    EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
+    call LCMINF(iplist,object_file,object_name,empty,object_length, &
+        memory_backed)
+    ! LCMINF uses the final logical only to report the storage medium:
+    ! true is an in-memory LCM table and false is an XSM file.  B2j uses
+    ! the same GANLIB root operations for both, so freshness is defined by
+    ! the active root itself rather than by its storage medium.
+    EMPTY_LCM_ROOT = empty .and. object_length == -1 .and. &
         trim(object_name) == '/'
   end function EMPTY_LCM_ROOT
 

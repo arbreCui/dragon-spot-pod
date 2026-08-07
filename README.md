@@ -1078,8 +1078,42 @@ transaction with independent synthetic SYSTEM candidates and frozen XSM
 cross sections.  It deliberately does not run Dragon, ASM, the sequential
 tracking file, transport or CONT.  Consequently real ASM execution, radial
 convergence and outer Picard convergence remain `NOT-EVALUATED`; a separately
-bounded real-ASM smoke test is still required.  See
+bounded real-ASM smoke test was still required at the B2k boundary and is now
+provided by B2l below.  See
 [real64_phase_a9b_b2k_system_assembly/README.md](validation/iterative/real64_phase_a9b_b2k_system_assembly/README.md).
+
+B2l now executes the separately bounded real-ASM smoke required by B2k:
+
+```sh
+make spot-real64-phase-a9b-b2l-one-plane-real-asm
+RUN_B2L=1 make spot-real64-phase-a9b-b2l-one-plane-real-asm
+```
+
+The first command is the default no-Dragon compile/contract gate.  It also
+runs a bounded production-B2J lifecycle harness: six persistent XSM targets
+are closed and reopened, with one exact `PROJECTED/1` commit and five strict
+zero-commit rejections including a tombstone and plane-2/3 late failures.
+This is storage/lifecycle evidence and runs no ASM or transport solve.  The
+explicit activation materializes the complete real three-plane
+`PROJECTED/1` archive, then runs exactly one production
+`ASM: ... ARM LK1D 1` for plane 1.  B2J now admits either a fresh memory root
+or a fresh persistent XSM root under the same empty-table contract, allowing
+it to remain the final content-mutating owner instead of copying an archive
+after its epoch commit.
+
+The accepted run completed one ASM in 0.937 s.  An independent GANLIB-only
+posterior recursively compared 69,021 copied records, required all 59,940
+response values to be finite, and reproduced 3,330 binary32 values in each of
+`TX`, `S0phys`, and `S0used` bit for bit.  It found 35,518 nonzero response
+values.  There was no `FLU`, `SPOR64K`, `QFISS`, `CONT`, Picard map, empirical
+coefficient, relaxation, damping, clipping, or model completion.
+
+This proves only `REAL-ASM-PLANE1-EXECUTED` plus compatibility with the B2k
+plane-1 formula/schema contract.  It does not validate response numerical
+accuracy, planes 2/3, the three-plane commit, radial convergence, or outer
+Picard convergence.  The XSM epoch is a logical completion marker, not an
+ACID/crash-safe transaction.  Exact evidence and scope are in
+[real64_phase_a9b_b2l_one_plane_real_asm/README.md](validation/iterative/real64_phase_a9b_b2l_one_plane_real_asm/README.md).
 
 The alternative three-return design is also checked without Dragon:
 

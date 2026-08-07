@@ -85,6 +85,9 @@ spot-real64-phase-a9b-b2j-projection :
 .PHONY: spot-real64-phase-a9b-b2k-system-assembly
 spot-real64-phase-a9b-b2k-system-assembly :
 	sh validation/iterative/real64_phase_a9b_b2k_system_assembly/run_phase_a9b_b2k_system_assembly.sh
+.PHONY: spot-real64-phase-a9b-b2l-one-plane-real-asm
+spot-real64-phase-a9b-b2l-one-plane-real-asm :
+	sh validation/iterative/real64_phase_a9b_b2l_one_plane_real_asm/run_phase_a9b_b2l_one_plane_real_asm.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

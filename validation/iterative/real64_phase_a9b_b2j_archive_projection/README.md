@@ -43,6 +43,13 @@ B2i-to-B2j direct in-memory lifecycle is part of the present contract.
 Epoch zero is not a globally unique identifier, so arbitrarily combining
 persisted `CLOSED/0` files is not admitted by this phase claim.
 
+B2l later extends only the fresh **output** medium: production B2J may commit
+directly to a new XSM root under the same empty-root and final-epoch rules.
+The original B2j receipt remains the direct in-memory qualification and does
+not claim persisted `CLOSED/0` input mixing.  B2l dynamically qualifies the
+new output boundary with six close/reopen cases, including nonempty and
+tombstoned targets plus early and late zero-write rejection paths.
+
 Before any caller-visible write, B2j requires:
 
 - exact `CLOSED/0`, `SOLVED/0`, `RHO`, `K`, and authority inventories;

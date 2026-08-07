@@ -1,0 +1,131 @@
+{
+  "phase": "A9b-B2l",
+  "claim": "one bounded production plane-1 ASM execution with an independent B2k-compatible posterior",
+  "input_state": "PROJECTED",
+  "input_epoch": 1,
+  "executed_plane": 1,
+  "dimensions": {
+    "groups": 370,
+    "planes_in_projected_archive": 3,
+    "planes_executed": 1,
+    "materials": 8,
+    "system_material_slots": 9,
+    "plane_unknowns": 14
+  },
+  "precision": {
+    "historical_flux_and_source": "binary32",
+    "b2c_authoritative_flux_and_source": "exact binary32-to-binary64 promotion",
+    "projected_region_flux": "binary64",
+    "projected_compatibility_flux": "binary32 downcast",
+    "asm_cross_sections_and_leakage": "binary32",
+    "asm_response_records": "binary32",
+    "rho": "binary64",
+    "ulp_perturbation": false
+  },
+  "formula": {
+    "txsc": "TXSC[0]=+0; TXSC[m]=NTOT0[m]-TRANC[m]",
+    "s0phys": "S0PHYS[0]=+0; S0PHYS[m]=SIGW00[m]-TRANC[m]",
+    "s0used": "S0USED[0]=+0-LEAK1D; S0USED[m]=S0PHYS[m]-LEAK1D",
+    "ordered_binary32_steps": true,
+    "reassociation_forbidden": true,
+    "empirical_tolerance": false,
+    "relaxation_or_damping": false,
+    "clipping_or_floor": false,
+    "model_completion": false
+  },
+  "projected_materialization": {
+    "production_b2c_calls": 3,
+    "production_b2i_calls": 1,
+    "production_b2j_calls": 1,
+    "full_track_library_system_copies": 9,
+    "b2j_direct_persistent_xsm_target": true,
+    "output_path_must_not_preexist": true,
+    "post_b2j_content_mutations": 0,
+    "projected_system_present": false,
+    "logical_completion_marker": "PROJECTED/EPOCH=1",
+    "acid_or_crash_safe_transaction": false
+  },
+  "default_preflight": {
+    "contract_and_resource_tests": 46,
+    "bounded_xsm_lifecycle": {
+      "production_b2j_calls": 6,
+      "commits": 1,
+      "rejections": 5,
+      "close_reopen_checks": 6,
+      "projected_exact_root_entries": 7,
+      "projected_exact_authority_entries": 4,
+      "system_absences": 1,
+      "sentinel_only_rejections": 1,
+      "tombstoned_rejections": 1,
+      "fresh_empty_reopens": 3,
+      "late_b2h_rejections": 2,
+      "deep_copy_checks": 6,
+      "mirror_binary32_bit_checks": 15540,
+      "dragon_executions": 0,
+      "asm_executions": 0,
+      "transport_solves": 0,
+      "empirical_controls": 0,
+      "bounded_profile": "prepare"
+    }
+  },
+  "accepted_runtime": {
+    "utc": "2026-08-07T02:20:20Z",
+    "dragon_executions": 1,
+    "asm_executions": 1,
+    "xdrta2_calls": 1,
+    "radial_operator_assemblies": 1,
+    "flu_flux_solves": 0,
+    "picard_maps": 0,
+    "automatic_retries": 0,
+    "asm_wall_seconds": 0.937,
+    "preparer_wall_seconds": 1.172,
+    "projected_sha256": "c010c0a860884a4e4d3842dffe45ffb4898f2aaca99557e0411ee8c66d60b90c",
+    "projected_bytes": 225315452,
+    "system1_sha256": "5c7c532ebd8f15dd6f1e7f8dd1622029ebd907ae9484b3ddad1d1390585b80a1",
+    "system1_bytes": 840124
+  },
+  "posterior": {
+    "linked_solver_or_lifecycle_modules": 0,
+    "full_copy_records": 69021,
+    "full_copy_32bit_words": 54429912,
+    "system_root_entries": 7,
+    "system_group_records_per_group": 15,
+    "response_finite_values": 59940,
+    "response_nonzero_values": 35518,
+    "txsc_binary32_bit_checks": 3330,
+    "s0phys_binary32_bit_checks": 3330,
+    "s0used_binary32_bit_checks": 3330,
+    "posterior_repetitions": 2,
+    "posterior_outputs_byte_identical": true
+  },
+  "resource_caps": {
+    "preparer_wall_seconds": 30,
+    "preparer_cpu_seconds": 20,
+    "preparer_rss_bytes": 2147483648,
+    "preparer_file_bytes": 536870912,
+    "asm_wall_seconds": 15,
+    "asm_cpu_seconds": 10,
+    "asm_rss_bytes": 1073741824,
+    "asm_file_bytes": 67108864,
+    "single_thread_environment": true,
+    "fresh_process_group": true
+  },
+  "semantic_boundary": {
+    "real_asm_plane1_executed": true,
+    "complete_finite_response_schema_validated": true,
+    "b2k_plane1_formula_compatible": true,
+    "response_numerical_accuracy_evaluated": false,
+    "planes_2_and_3_evaluated": false,
+    "three_plane_spor64k_commit_evaluated": false,
+    "qfiss_built": false,
+    "cont_executed": false,
+    "radial_flux_solved": false,
+    "radial_convergence_evaluated": false,
+    "outer_picard_convergence_evaluated": false
+  },
+  "development_history": {
+    "prior_invalid_activations": 3,
+    "prior_actual_asm_executions": 1,
+    "invalid_runs_used_as_scientific_evidence": 0
+  }
+}

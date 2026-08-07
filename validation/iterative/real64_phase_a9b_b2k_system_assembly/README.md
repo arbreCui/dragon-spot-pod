@@ -94,3 +94,8 @@ blocker but does not constitute an execution of that route; therefore
 `C2M-EXECUTION=NOT-EVALUATED`, `REAL-ASM-EXECUTION=NOT-EVALUATED`,
 `RADIAL-CONVERGENCE=NOT-EVALUATED`, and
 `OUTER-PICARD-CONVERGENCE=NOT-EVALUATED` are the only valid execution claims.
+
+The later B2l gate now supplies the missing real plane-1 ASM execution.  It
+confirms the complete finite response schema and the ordered B2k formulas for
+plane 1 only; response numerical accuracy, planes 2/3, the three-plane commit,
+and both convergence questions remain unevaluated.
