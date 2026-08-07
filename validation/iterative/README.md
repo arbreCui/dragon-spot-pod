@@ -928,8 +928,36 @@ empirical parameter, production FLU, Dragon, transport solve, or Picard map
 is involved.
 The B2H call proves schema consumption and epoch mechanics only; its synthetic
 output is not a B2J/SPOD projection or canonical next Picard state. The second
-CONT call remains closed because the subsequent PLANE/schema, multi-generation,
-and three-plane archive boundaries are not yet complete.
+CONT call remains closed because the returned three-plane archive and
+subsequent axial closure boundaries are not yet complete. B2q below clarifies
+that the archive/detached `PLANE` distinction is intentional, not a blocker.
+
+B2q freezes the lifecycle and `RHO` meanings before implementing that next
+archive boundary:
+
+```sh
+make spot-real64-phase-a9b-b2q-lifecycle-rho-contract
+```
+
+[`real64_phase_a9b_b2q_lifecycle_rho_contract/`](real64_phase_a9b_b2q_lifecycle_rho_contract/README.md)
+distinguishes the canonical `CLOSED(n)` root value \(\rho_n\) from the
+plane-local radial-equation input carried bit for bit by
+`PROJECTED/ASSEMBLED/FROZEN-QFIS/SOLVED(n+1)`. A future `CLOSED(n+1)` may
+therefore contain root `RHO=rho_(n+1)` and plane-member
+`SOLVED.RHO=rho_n`; no tolerance is allowed to identify them. `PLANE` remains
+owned by the archive index for contained members and by explicit metadata for
+detached objects.
+
+The short gate changes no production source and executes no production FLU,
+ASM, Dragon, transport, or Picard map. It freezes the eight-module data flow,
+tests the existing distinct seed/caller-RHO projection boundary, and leaves
+the new `CLOSED/1` archive unimplemented. A returned-archive collector must
+first bind three detached SOLVED returns with exact `PLANE={1,2,3}` to their
+same-index SYSTEM, TRACK, MICROLIB2, and frozen QFISS/K provenance; terminal
+`SOUR` is not a replacement for `QFISS`. It emits an unclosed archive for
+`SPOASM FIXB` and neither sees `AX_NEXT` nor commits `CLOSED/1`. After the
+axial solve, `SPOSTATE`, and `SPOLEAK`, a separate close gate performs that
+final binding and commit.
 
 ## Fixed three-return design
 

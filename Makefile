@@ -100,6 +100,9 @@ spot-real64-phase-a9b-b2o-cont-binding-cutoff :
 .PHONY: spot-real64-phase-a9b-b2p-solved-lifecycle
 spot-real64-phase-a9b-b2p-solved-lifecycle :
 	sh validation/iterative/real64_phase_a9b_b2p_solved_lifecycle/run_phase_a9b_b2p_solved_lifecycle.sh
+.PHONY: spot-real64-phase-a9b-b2q-lifecycle-rho-contract
+spot-real64-phase-a9b-b2q-lifecycle-rho-contract :
+	sh validation/iterative/real64_phase_a9b_b2q_lifecycle_rho_contract/run_phase_a9b_b2q_lifecycle_rho_contract.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

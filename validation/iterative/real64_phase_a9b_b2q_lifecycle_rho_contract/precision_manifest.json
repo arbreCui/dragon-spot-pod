@@ -1,0 +1,132 @@
+{
+  "phase": "A9b-B2q",
+  "purpose": "freeze the implemented lifecycle, epoch, and binary64 RHO semantics without changing production code",
+  "parent_commit": "e9af085dfb73f1a69df4cbc3eacf989d3382e105",
+  "parent_receipt_sha256": "147d0c1ff95502344eb33234af4804be0e879bc3befae10699ddf8e9d3c642cc",
+  "production_source_changes": false,
+  "contract_version": 1,
+  "generation_convention": {
+    "closed_n": "sole boundary permitted to introduce rho_n from its accepted axial eigenvalue",
+    "projected_n_plus_1": "carries rho_n bit-exactly",
+    "assembled_n_plus_1": "carries rho_n bit-exactly",
+    "frozen_qfis_n_plus_1": "uses and carries rho_n bit-exactly",
+    "solved_n_plus_1": "inherits rho_n and the work epoch without recomputation"
+  },
+  "implemented_generation": {
+    "states": [
+      "CLOSED/0",
+      "PROJECTED/1",
+      "ASSEMBLED/1",
+      "FROZEN-QFIS/1",
+      "SOLVED/1"
+    ],
+    "rho_owner": "CLOSED/0",
+    "rho_bits": "identical through every generation-1 authority",
+    "bootstrap_reciprocal": "1.0_real64/real(K-EFFECTIVE_binary32,real64)",
+    "new_rho_after_solved": false
+  },
+  "b2h_boundary": {
+    "seed_rho": "finite positive completeness witness",
+    "output_rho": "explicit caller binary64 value",
+    "direct_output_is_canonical": false,
+    "canonical_owner": "B2J or a future archive-level provenance gate"
+  },
+  "b2j_boundary": {
+    "plane_root_rho_equality_scope": "bootstrap CLOSED/0 archive projection only",
+    "general_closed_n_child_rho_equality_claimed": false
+  },
+  "plane_identity_contract": {
+    "archive_member_owner": "one-based archive list index",
+    "archive_member_has_plane_record": false,
+    "detached_projected_has_plane_record": true,
+    "detached_solved_has_plane_record": true,
+    "detached_frozen_qfis_has_plane_record": true,
+    "system_owner": "SPOT-L1-SNAP",
+    "collector_required_plane_set": [1, 2, 3],
+    "collector_rejects_duplicates": true,
+    "collector_omits_redundant_child_plane": true
+  },
+  "future_closed_1": {
+    "root_rho": "rho_1 may differ from child SOLVED/1 rho_0",
+    "child_rho": "rho_0 labels the equations that produced each child",
+    "different_root_and_child_rho_is_valid": true,
+    "collector_required_bindings": [
+      "three accepted SOLVED children",
+      "same-index SYSTEM",
+      "same-index TRACK",
+      "same-index MICROLIB2",
+      "same-index QFISS",
+      "same-index K"
+    ],
+    "collector_binds_ax_next": false,
+    "collector_commits_closed_1": false,
+    "collector_output": "unclosed returned archive for SPOASM",
+    "axial_update_sequence": "SPOASM->axial FLU->SPOSTATE->SPOLEAK",
+    "close_gate_required_bindings": [
+      "returned archive",
+      "AX_NEXT"
+    ],
+    "close_gate_commit": "CLOSED/1",
+    "matching_epoch_or_rho_alone_is_sufficient": false
+  },
+  "epoch_contract": {
+    "meaning": "local generation and logical-commit label",
+    "global_identifier": false,
+    "solver_iteration_counter": false,
+    "convergence_certificate": false,
+    "generation_1_shared_states": [
+      "PROJECTED",
+      "ASSEMBLED",
+      "FROZEN-QFIS",
+      "SOLVED"
+    ],
+    "b2c_increments_epoch": false,
+    "b2h_local_transition": "SOLVED(n)->PROJECTED(n+1)"
+  },
+  "source_freeze_sha256": {
+    "src/SPOR64_B2B.f90": "cc6a29151be38a55aadc30d32bc174b9473584f8160cf3b56256f44985cb94e1",
+    "src/SPOR64_B2C.f90": "4f8628335b23670b007648bca3ce563605de2d8ec599f0122a4ad4ac17d7f5aa",
+    "src/SPOR64_B2H.f90": "3ce30d8e5a3f42b2d407c6abec4d95725b8f8eb1b6c04fed8fac5b543cb35994",
+    "src/SPOR64_B2I.f90": "3c54d50d21795c5907917fc35b09c8f93a3c7a40c001dcaa85dda82e95a79446",
+    "src/SPOR64_B2J.f90": "3efe5f83579f0e59e6a486c5857ea3ab3b517fe5c47e4da0ccab4e8de2c8aaaa",
+    "src/SPOR64_B2K.f90": "5cd0f757b5169526e5f2c47255df1c92085f9973c69365c488def65204937d0d",
+    "src/SPOR64_B2N.f90": "a8247eda3e2ed30126c0c92be6e69f49be48c91008881abab9fec990d8a453de",
+    "src/SPOR64_B2O.f90": "28005f6d971055552d450cc798a91cbeb6ca7e6f33db6f6824c88de28552983a"
+  },
+  "evidence_sha256": {
+    "validation/iterative/real64_phase_a9b_b2h_projection_authority/test_b2h_projection_authority.f90": "ff42c80f52b59c7defabbb5a1be9227c39f0e9dadab2789c65255c530aab703b",
+    "validation/iterative/real64_phase_a9b_b2j_archive_projection/b2j_fixture_support.f90": "89761b0e4eddfea872c9c5356d1601500bbfe79265c654e6f34506960bca4e88",
+    "validation/iterative/real64_phase_a9b_b2j_archive_projection/test_b2j_archive_projection.f90": "4b44c3cca779caaa2c3eafa9b4b51eaed3da90c0b1e519e3c50384a4a98cd7b7",
+    "validation/iterative/real64_phase_a9b_b2p_solved_lifecycle/b2p_capture_stubs.f90": "1971d993b27a85f410450bb1302717344fca91bd52462483bb192777467c72d4",
+    "validation/iterative/real64_phase_a9b_b2p_solved_lifecycle/test_b2p_solved_lifecycle.f90": "131c55b1eebca10c674b8497b91480b90e0bf85e9d6799d2f030f236b1a61dba",
+    "validation/iterative/real64_phase_a9b_b2p_solved_lifecycle/legacy_b2c_abi_caller.f90": "bb9d0409acab058ac256859a6740cb6287d255e7df0d87228d0348d37e16f4e9",
+    "validation/artifacts/iterative-radial-floor/restart_cap.xsm": "7291d8d88b5be07cd570131ea45ce5f283d55a37e3577197626001c59d9b8c89",
+    "validation/artifacts/raw-moc-capture/common/restart_track.xsm": "2d868b87e2003c10c09da1ec8f8e6fd97f2a2629a680a46d7f898e2e5e1ed598",
+    "validation/artifacts/raw-moc-capture/common/restart_macro0.xsm": "6eb2920473f4cb8d27b6377bcb59b42833c8ebf9a0fc57925341d12ccac0a617",
+    "validation/artifacts/raw-moc-capture/common/restart_system.xsm": "a8797a7d42fdab574eb183bc2ecf0e2b53c992fdd2dd4c61d40c72a53746e599",
+    "validation/artifacts/raw-moc-capture/common/restart_source.xsm": "6942f61ba2cc7ab0d5cf9a4104959809a388fab441da82730cf64de74a48769f",
+    "validation/artifacts/iterative-map1/state1_axial.xsm": "2323a256002f1e6f75f5af72c31479b0f6a7bff561d401cee363dcf9fc6ff484",
+    "validation/artifacts/iterative-map1/state1_snapshots.xsm": "1b5a0c98aba0f5b4f366b64a8157f4a104df0f89f4cdeafc60eb6ce7811018e1",
+    "validation/artifacts/iterative-seed/initial_axial_track.xsm": "101ba0ad64c91723fdeb002e62c6226347fcfaeff188e125d699d70e113febc7"
+  },
+  "dynamic_evidence": {
+    "b2h": "distinct seed and caller RHO witnesses; direct output remains noncanonical",
+    "b2j": "hash-pinned prior evidence: bootstrap CLOSED/0 to three-plane PROJECTED/1 with canonical RHO binding",
+    "b2p": "hash-pinned prior evidence: sealed PROJECTED/1 to accepted SOLVED/1 with inherited RHO",
+    "executed_harnesses": [
+      "B2H"
+    ],
+    "production_solver_executions": 0,
+    "dragon_executions": 0,
+    "asm_executions": 0
+  },
+  "not_claimed": [
+    "a new CLOSED/1 producer",
+    "a rho_1 value",
+    "a second production CONT call",
+    "radial convergence",
+    "outer Picard convergence",
+    "benchmark accuracy"
+  ],
+  "empirical_controls_added": false
+}

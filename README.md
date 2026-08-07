@@ -1237,10 +1237,62 @@ B2B-path publication `sealed PROJECTED(1) -> accepted SOLVED(1)` and separately
 proves that existing B2H can consume the schema and perform its `1 -> 2`
 mechanics. The synthetic B2H output is not a B2J/SPOD projection or canonical
 next Picard state. There is no physical radial solve, second CONT call, or
-outer Picard convergence result. B2H still drops `PLANE`, B2J's SOLVED schema
-does not yet accept it, and the next closed three-plane archive remains future
-work. See
+outer Picard convergence result. B2q below establishes that B2H's omission of
+`PLANE` and B2J's archive-member schema are intentional single-owner choices,
+not blockers. The returned three-plane archive and subsequent axial closure
+remain future work. See
 [real64_phase_a9b_b2p_solved_lifecycle/README.md](validation/iterative/real64_phase_a9b_b2p_solved_lifecycle/README.md).
+
+B2q freezes the lifecycle meaning of `RHO` before another return is wired:
+
+```sh
+make spot-real64-phase-a9b-b2q-lifecycle-rho-contract
+```
+
+For a canonical `CLOSED(n)` state, the root/AX `RHO` is
+\(\rho_n=1/k_n\). The complete radial work generation produced from it carries
+those same bits without recomputation:
+
+```text
+CLOSED(n), rho_n
+  -> PROJECTED(n+1), rho_n
+  -> ASSEMBLED(n+1), rho_n
+  -> FROZEN-QFIS(n+1), rho_n
+  -> SOLVED(n+1), rho_n.
+```
+
+The subsequent axial eigenproblem, not the radial solver, may produce a new
+\(\rho_{n+1}\). A future `CLOSED(n+1)` root may therefore own
+`RHO=rho_(n+1)` while its archived `SOLVED(n+1)` plane members retain the
+radial-equation input `RHO=rho_n`. These are different scoped quantities;
+the implementation must not force them equal with a tolerance, relaxation,
+or empirical rule. Bootstrap `SOLVED/0` is the explicit initialization
+exception: it is aligned with `CLOSED/0` and makes no claim about the unknown
+historical radial-equation input.
+
+This also resolves the apparent `PLANE` mismatch. An archive list index is
+the sole plane identity for an archive-contained member; a detached
+PROJECTED seed, SOLVED result, or FROZEN-QFIS source carries `PLANE` so its
+index can be recovered, while a radial SYSTEM uses `SPOT-L1-SNAP`. There is
+no physical reason to propagate a duplicate `PLANE` record through every
+archive member.
+
+The short B2q gate changes no production source and runs no production FLU,
+ASM, Dragon, transport solve, or Picard map. It audits the current bitwise
+`RHO` flow and executes the existing B2h distinction in which seed and caller
+`RHO` deliberately differ. Direct B2h output is only a local projection
+stage; canonical provenance requires B2j or a future archive-level gate.
+
+The next implementation boundary is now precise. First, a returned-archive
+collector accepts the three detached `SOLVED/1` results with the exact
+`PLANE` set `{1,2,3}`, rejects duplicates, and binds each one to the
+same-index `SYSTEM`, `TRACK`, `MICROLIB2`, and frozen `QFISS/K` provenance.
+Terminal `SOUR` must not be substituted for `QFISS`. This collector does not
+see `AX_NEXT` and does not commit `CLOSED/1`; it emits an unclosed archive for
+`SPOASM FIXB`. Only after the axial eigenvalue solve, `SPOSTATE`, and
+`SPOLEAK` may a separate close gate bind that archive to `AX_NEXT` and commit
+`CLOSED/1`. See
+[real64_phase_a9b_b2q_lifecycle_rho_contract/README.md](validation/iterative/real64_phase_a9b_b2q_lifecycle_rho_contract/README.md).
 
 The alternative three-return design is also checked without Dragon:
 
