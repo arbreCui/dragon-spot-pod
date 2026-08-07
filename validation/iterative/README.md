@@ -959,6 +959,27 @@ same-index SYSTEM, TRACK, MICROLIB2, and frozen QFISS/K provenance; terminal
 axial solve, `SPOSTATE`, and `SPOLEAK`, a separate close gate performs that
 final binding and commit.
 
+B2r implements only the first of those two boundaries:
+
+```sh
+make spot-real64-phase-a9b-b2r-returned-archive
+```
+
+[`real64_phase_a9b_b2r_returned_archive/`](real64_phase_a9b_b2r_returned_archive/README.md)
+collects one `ASSEMBLED/1` archive, three detached `SOLVED/1` returns, and
+three detached `FROZEN-QFIS/1` sources. Both detached triples are reordered
+by their exact `PLANE={1,2,3}` labels and bound to the same-index
+TRACK/MICROLIB2/SYSTEM. The returned children preserve type-4 FLUX, terminal
+SOUR, and frozen QFISS, omit redundant PLANE, and add the existing SPOASM
+fixed-source mirrors. The returned root deliberately has no RHO or
+SPOT-ITER-K and is explicitly `RETURNED`, not `CLOSED`.
+
+The seconds-scale gate is synthetic and executes no solver. It proves exact
+binding of the listed fields plus recursive same-index copies, not historical
+derivation of detached objects; the latter requires an immediate integrated
+host path or a future sealed tuple receipt. `CLOSED/1`, `rho_1`, the axial
+update, and convergence remain unimplemented and unevaluated.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

@@ -1294,6 +1294,38 @@ see `AX_NEXT` and does not commit `CLOSED/1`; it emits an unclosed archive for
 `CLOSED/1`. See
 [real64_phase_a9b_b2q_lifecycle_rho_contract/README.md](validation/iterative/real64_phase_a9b_b2q_lifecycle_rho_contract/README.md).
 
+B2r implements that returned-archive collector without executing a solver:
+
+```sh
+make spot-real64-phase-a9b-b2r-returned-archive
+```
+
+It accepts one committed `ASSEMBLED/1` archive plus three detached
+`SOLVED/1` and three detached `FROZEN-QFIS/1` objects. The two detached
+triples must each carry the exact label set `PLANE={1,2,3}`; B2r binds by
+those labels rather than argument order and rejects every duplicate,
+omission, alias, schema mismatch, RHO/epoch mismatch, SYSTEM index/leakage
+mismatch, key-map mismatch, K mismatch, or QFISS-mirror mismatch before its
+first output write.
+
+The output is `RETURNED/1`, not `CLOSED/1`. Its archive root has neither
+`RHO` nor `SPOT-ITER-K`: the outer-state `rho_0/k_0` used by the radial
+equations remain scoped to the children, and only a later axial solve plus
+`SPOLEAK` may provide root `k_1`. Each archive-contained child retains
+authoritative type-4 `FLUX`, terminal
+`SOUR`, and frozen `QFISS`, drops detached `PLANE`, and receives only the
+fixed-source compatibility records required by `SPOASM`. `SOUR` is never
+substituted for `QFISS`.
+
+This proves exact binding of the listed fields and recursive same-index
+copying of the supplied committed objects. Because detached `SOLVED`
+presently carries no sealed SYSTEM/QFISS lineage digest, B2r alone does not
+prove their historical causal pairing;
+that stronger statement remains restricted to a future immediate
+`B2O -> B2B -> B2R` host path. The short gate runs no ASM, SPOASM, FLU,
+Dragon, transport, axial solve, or Picard map. See
+[real64_phase_a9b_b2r_returned_archive/README.md](validation/iterative/real64_phase_a9b_b2r_returned_archive/README.md).
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh

@@ -103,6 +103,9 @@ spot-real64-phase-a9b-b2p-solved-lifecycle :
 .PHONY: spot-real64-phase-a9b-b2q-lifecycle-rho-contract
 spot-real64-phase-a9b-b2q-lifecycle-rho-contract :
 	sh validation/iterative/real64_phase_a9b_b2q_lifecycle_rho_contract/run_phase_a9b_b2q_lifecycle_rho_contract.sh
+.PHONY: spot-real64-phase-a9b-b2r-returned-archive
+spot-real64-phase-a9b-b2r-returned-archive :
+	sh validation/iterative/real64_phase_a9b_b2r_returned_archive/run_phase_a9b_b2r_returned_archive.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

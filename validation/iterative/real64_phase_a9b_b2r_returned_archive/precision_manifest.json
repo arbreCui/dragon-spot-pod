@@ -1,0 +1,152 @@
+{
+  "phase": "A9b-B2r",
+  "purpose": "collect three supplied committed detached SOLVED/1 radial-state objects into one unclosed RETURNED/1 archive containing the complete SPOASM payload",
+  "parent_commit": "69adf38dba7b67698ac0f83f6286f729695d72d1",
+  "parent_receipt_sha256": "85dba806828efd557869b78b248feabaa5c11828d8e4afdd3f3a2cb8df739287",
+  "contract_version": 1,
+  "production_source_changes": [
+    "src/SPOR64_B2R.f90"
+  ],
+  "api": {
+    "module": "SPOR64_B2R",
+    "procedure": "SPOR64_B2R_COLLECT",
+    "arguments": [
+      "ipout",
+      "ipassembled",
+      "ipsolved(3)",
+      "ipsources(3)",
+      "status"
+    ],
+    "preflight_status": 1,
+    "returned_status": 2,
+    "loose_plane_rho_k_epoch_arguments": false
+  },
+  "input_contract": {
+    "assembled": "one committed ASSEMBLED/1 archive with exact root and authority inventories, validated same-index fields, and recursively copied TRACK, MICROLIB2 and SYSTEM payloads",
+    "solved": "three distinct exact detached SOLVED/1 roots",
+    "qsource": "three distinct exact detached FROZEN-QFIS/1 roots",
+    "solved_plane_labels": [1, 2, 3],
+    "qsource_plane_labels": [1, 2, 3],
+    "bind_by_label_not_argument_order": true,
+    "reject_duplicates": true,
+    "reject_omissions": true,
+    "output_must_be_fresh": true,
+    "all_inputs_immutable": true
+  },
+  "same_index_binding": {
+    "system_plane_owner": "SYSTEM/SPOT-L1-SNAP",
+    "archive_plane_owner": "one-based archive list index",
+    "solved_detached_plane_owner": "SOLVED/SPOT-R64/PLANE",
+    "qsource_detached_plane_owner": "FROZEN-QFIS/SPOT-R64/PLANE",
+    "rho": "ASSEMBLED root, SYSTEM, SOLVED and QFISS-source RHO are finite positive and binary64 bit-identical",
+    "epoch": "ASSEMBLED root, SYSTEM, SOLVED and QFISS-source EPOCH are exactly 1",
+    "leakage": "SOLVED/SPOT-LEAK1D and same-index SYSTEM/SPOT-LEAK1D are binary32 bit-identical",
+    "keyflx": "SOLVED/KEYFLX, same-index TRACK/KEYFLX and TRACK/KEYFLX$ANIS are integer-identical",
+    "k": "source SPOT-KEFF is binary32 bit-identical to real(ASSEMBLED/SPOT-ITER-K,real32)",
+    "qfiss": "source SPOT-R64/QFISS is the binary64 authority and source DSOUR is its one-time binary32 mirror",
+    "track_microlib_system_copy": "recursive exact copy from the single ASSEMBLED archive"
+  },
+  "output_contract": {
+    "root_inventory": [
+      "SIGNATURE",
+      "LISTDIM",
+      "TRACK",
+      "MICROLIB2",
+      "SYSTEM",
+      "FLUX",
+      "SPOT-R64"
+    ],
+    "root_signature": "L_ARCHIVE",
+    "root_listdim": 3,
+    "root_authority_inventory": [
+      "NPLANE",
+      "STATE",
+      "EPOCH"
+    ],
+    "root_state": "RETURNED",
+    "root_epoch": 1,
+    "root_has_rho": false,
+    "root_has_spot_iter_k": false,
+    "child_root_inventory": [
+      "SPOT-R64",
+      "FLUX",
+      "SOUR",
+      "SIGNATURE",
+      "STATE-VECTOR",
+      "EPS-CONVERGE",
+      "IMERGE-LEAK",
+      "KEYFLX",
+      "OPTION",
+      "LINK.MACRO",
+      "LINK.TRACK",
+      "LINK.SYSTEM",
+      "SPOT-LEAK1D",
+      "SPOT-FS-EQN",
+      "SPOT-FS-K",
+      "SPOT-QFISS"
+    ],
+    "child_authority_inventory": [
+      "RHO",
+      "FLUX",
+      "SOUR",
+      "QFISS",
+      "STATE",
+      "EPOCH"
+    ],
+    "child_state": "SOLVED",
+    "child_epoch": 1,
+    "child_has_plane": false,
+    "fixed_source_marker": 1,
+    "legacy_qfiss_shape": "SPOT-QFISS outer list length 1 containing 370 binary32 group vectors of length 14",
+    "authoritative_qfiss_shape": "SPOT-R64/QFISS list length 370 containing binary64 group vectors of length 14",
+    "child_epoch_is_final_child_mutation": true,
+    "root_epoch_is_final_output_mutation": true
+  },
+  "source_roles": {
+    "QFISS": "the frozen fission contribution F*phi_n/k_n admitted by the radial equation",
+    "SOUR": "the accepted terminal total radial right-hand side returned by the solver",
+    "SOUR_may_replace_QFISS": false,
+    "numerical_inequality_is_required": false,
+    "reason": "SPOASM fixed-source mode adds final off-group scattering to QFISS and uses SOUR only as the terminal lag witness"
+  },
+  "lifecycle": {
+    "input_generation": "ASSEMBLED/1 + FROZEN-QFIS/1 + SOLVED/1",
+    "output_generation": "RETURNED/1",
+    "output_is_closed": false,
+    "binds_ax_next": false,
+    "publishes_rho_1": false,
+    "publishes_k_1": false,
+    "next_consumer": "SPOASM",
+    "future_sequence": "SPOASM->axial FLU->SPOSTATE->SPOLEAK->separate close gate"
+  },
+  "provenance_scope": {
+    "proved": "exact label/index binding for listed fields, bitwise binding for admitted numerical fields, and recursive same-index copying of TRACK, MICROLIB2 and SYSTEM",
+    "historical_derivation_proved_from_detached_bits_alone": false,
+    "strong_physical_claim_scope": "immediate integrated B2O->B2B->B2R host path or a future sealed tuple receipt",
+    "matching_plane_rho_epoch_alone_is_sufficient": false
+  },
+  "execution_scope": {
+    "transport_solves": 0,
+    "dragon_processes": 0,
+    "asm_calls": 0,
+    "spod_calls": 0,
+    "axial_flu_calls": 0,
+    "picard_maps": 0,
+    "long_calculations": 0
+  },
+  "not_claimed": [
+    "historical QFISS or SYSTEM derivation from detached bits alone",
+    "an integrated B2O->B2B->B2R host path",
+    "a new radial solve",
+    "a new QFISS calculation",
+    "SPOASM execution",
+    "an axial solve",
+    "a CLOSED/1 archive",
+    "rho_1",
+    "k_1",
+    "radial convergence",
+    "outer Picard convergence",
+    "benchmark accuracy"
+  ],
+  "empirical_controls_added": false
+}
