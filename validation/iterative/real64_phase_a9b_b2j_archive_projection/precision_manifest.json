@@ -1,0 +1,86 @@
+{
+  "phase": "A9b-B2j",
+  "claim": "fresh archive-wide fixed-space projection from the controlled B2i bootstrap pair",
+  "parent_commit": "891e67c2cc84aa69e87a9047cf1b230b10c9a48e",
+  "parent_receipt_sha256": "a985deea1344733a8f004cfa1124e8724d188e4ec3d67d11e579305eee6b541f",
+  "input_epoch": 0,
+  "output_epoch": 1,
+  "dimensions": {
+    "groups": 370,
+    "planes": 3,
+    "radial_regions": 8,
+    "plane_unknowns": 14,
+    "maximum_rank": 3
+  },
+  "precision": {
+    "stored_basis": "binary32",
+    "canonical_coordinates": "binary64",
+    "contraction_accumulator": "binary64",
+    "projected_authority": "binary64",
+    "compatibility_mirror": "binary32",
+    "rho": "binary64",
+    "canonical_leakage": "binary64",
+    "plane_leakage": "binary32 promoted exactly for comparison"
+  },
+  "formula": {
+    "definition": "phi_hat[g,p,i] = sum_a real(B[g,i,a],binary64) * A[g,p,a]",
+    "basis_index": "BOFF[g] + (a-1)*8 + i",
+    "coordinate_index": "OFF[g] + (p-1)*rank[g] + a",
+    "extra_normalization": false,
+    "empirical_tolerance": false,
+    "clipping_or_floor": false
+  },
+  "input_contract": {
+    "ax_state": "CLOSED/0",
+    "archive_state": "CLOSED/0",
+    "plane_state": "SOLVED/0",
+    "producer": "controlled direct in-memory B2i lifecycle",
+    "arbitrary_persisted_pair_supported": false,
+    "root_inventory_exact": true,
+    "plane_authority_inventory_exact": true,
+    "rho_bit_identity": true,
+    "canonical_leakage_bit_identity": true,
+    "same_index_system_snapshot_checked": true,
+    "track_key_and_volume_identity_checked": true
+  },
+  "output_contract": {
+    "archive_state": "PROJECTED/1",
+    "plane_state": "PROJECTED/1",
+    "lists": [
+      "TRACK",
+      "MICROLIB2",
+      "FLUX"
+    ],
+    "system_present": false,
+    "system_reason": "the CLOSED input SYSTEM contains lagged radial leakage and must be rebuilt from projected FLUX",
+    "source_present": false,
+    "qfiss_present": false,
+    "root_epoch_final_mutation": true,
+    "private_stages_closed_before_root_commit": true
+  },
+  "semantic_boundary": {
+    "B_times_A_evaluated": true,
+    "radial_system_rebuilt": false,
+    "qfiss_built": false,
+    "cont_executed": false,
+    "transport_solved": false,
+    "radial_convergence_evaluated": false,
+    "outer_picard_convergence_evaluated": false,
+    "host_connected": false
+  },
+  "validation": {
+    "real_xsm_inputs": 3,
+    "production_b2c_calls": 3,
+    "production_b2i_calls": 1,
+    "production_b2h_planes": 3,
+    "reconstruction_slices": 1110,
+    "region_binary64_bit_checks": 8880,
+    "nonregion_binary64_bit_checks": 6660,
+    "binary32_mirror_bit_checks": 15540,
+    "static_contract_tests": 35,
+    "mutation_regression_cases": 34,
+    "dragon_executions": 0,
+    "transport_solves": 0,
+    "long_calculations": 0
+  }
+}

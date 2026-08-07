@@ -537,6 +537,8 @@ src/SPOASM.f                          projected-system assembly
 src/SPOPROJ.f90                       axial-to-radial restriction
 src/SPOFSRC.f90                       frozen radial fission source
 src/SPOR64_B2H.f90                    fresh REAL64 projected-state boundary
+src/SPOR64_B2I.f90                    archive-wide bootstrap lifecycle seal
+src/SPOR64_B2J.f90                    archive-wide REAL64 projection commit
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
 src/SPOXCONV.f90                      complete raw state difference
@@ -999,6 +1001,42 @@ shipped procedures, and epoch zero is a controlled data-flow label rather than
 a globally unique persisted-state ID. Radial and outer Picard convergence are
 still `NOT-EVALUATED`. See
 [real64_phase_a9b_b2i_bootstrap_lifecycle/README.md](validation/iterative/real64_phase_a9b_b2i_bootstrap_lifecycle/README.md).
+
+B2j now closes the next, strictly smaller transition:
+
+```sh
+make spot-real64-phase-a9b-b2j-projection
+```
+
+`SPOR64_B2J` consumes the controlled in-memory B2i pair
+`AX CLOSED/0 + archive CLOSED/0 + planes SOLVED/0`.  It recovers `B`, `A`,
+`RHO` and `L` only from the sealed AX root, evaluates all three planes with
+the fixed binary64 contraction
+
+```text
+phi_hat[g,p,i] = sum_a real(B[g,i,a],binary64) * A[g,p,a],
+```
+
+and uses the real B2h publisher on three private roots.  Only after all three
+planes pass does it create a fresh archive and commit
+`PROJECTED/EPOCH=1`.  The AX object remains read-only `CLOSED/0`; projection
+does not create a new axial solution.  The projected `RHO` remains the exact
+parent `rho0`, not a prediction of `rho1`.
+
+The output intentionally contains only `TRACK`, `MICROLIB2` and the three
+fresh projected `FLUX` objects.  The old `SYSTEM` is lagged: it belongs to the
+radial equation that produced `SOLVED/0`.  Copying it would permit the next
+continuation solve to use the wrong leakage.  A subsequent lifecycle gate
+must therefore rebuild fresh SYSTEM objects from the projected canonical
+`SPOT-LEAK1D` before constructing QFISS or admitting `CONT`.  The retained
+plane `LINK.SYSTEM='SYSTEM'` is only the name of that future fresh object;
+there is deliberately no SYSTEM list in the B2j output.
+
+This phase remains host-disconnected and is limited to the direct B2i-to-B2j
+in-memory lifecycle; epoch zero is not a globally unique identifier for
+mixing persisted roots.  It performs no ASM, QFISS construction, CONT,
+transport solve or convergence test.  See
+[real64_phase_a9b_b2j_archive_projection/README.md](validation/iterative/real64_phase_a9b_b2j_archive_projection/README.md).
 
 The alternative three-return design is also checked without Dragon:
 
