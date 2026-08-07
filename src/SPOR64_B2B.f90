@@ -343,6 +343,16 @@ contains
     call LCMGET(ipsou,'SPOT-QINT',qint32)
     if (.not. all(ieee_is_finite(qint32))) return
 
+    ! CONT may cross the transport boundary only when its three committed
+    ! authorities satisfy one exact projected-source-system predicate set at
+    ! the required local stage label.  This is not a global lineage claim. The
+    ! comparison is exact: no tolerance, fitted coefficient, or repair path
+    ! is available.  BOOT deliberately retains its one-time legacy ingress.
+    if (r64_mode == SPOR64_B2B_CONT) then
+      if (.not. CONT_LIFECYCLE_IS_BOUND(ipseed,ipsou,ipsys, &
+          seed_leak1d32,leak1d_input32)) return
+    end if
+
     initial_flux64 = +0.0_real64
     fixed_source64 = +0.0_real64
     ! BOOT performs the sole legacy promotion.  CONT has no root-payload
@@ -504,6 +514,86 @@ contains
   end subroutine SPOR64_B2B_INGRESS
 
 
+  logical function CONT_LIFECYCLE_IS_BOUND(ipseed,ipsource,ipsystem, &
+      seed_leakage,system_leakage)
+    type(c_ptr), intent(in) :: ipseed, ipsource, ipsystem
+    real(real32), intent(in) :: seed_leakage(:), system_leakage(:)
+
+    integer, parameter :: CONT_EPOCH = 1
+    integer, parameter :: NPLANE = 3
+    integer :: seed_epoch, source_epoch, system_epoch
+    integer :: seed_plane, source_plane, system_plane
+    real(real64) :: seed_rho64, source_rho64, system_rho64
+    type(c_ptr) :: seed_authority, source_authority, system_authority
+
+    CONT_LIFECYCLE_IS_BOUND = .false.
+    if (.not. c_associated(ipseed)) return
+    if (.not. c_associated(ipsource)) return
+    if (.not. c_associated(ipsystem)) return
+    if (size(seed_leakage) /= NGRP) return
+    if (size(system_leakage) /= NGRP) return
+
+    if (.not. RECORD_MATCHES(ipseed,'SPOT-R64',-1,0)) return
+    if (.not. RECORD_MATCHES(ipsource,'SPOT-R64',-1,0)) return
+    if (.not. RECORD_MATCHES(ipsystem,'SPOT-R64',-1,0)) return
+    seed_authority = LCMGID(ipseed,'SPOT-R64')
+    source_authority = LCMGID(ipsource,'SPOT-R64')
+    system_authority = LCMGID(ipsystem,'SPOT-R64')
+    if (.not. c_associated(seed_authority)) return
+    if (.not. c_associated(source_authority)) return
+    if (.not. c_associated(system_authority)) return
+    if (.not. CONT_SEED_AUTHORITY_IS_EXACT(seed_authority)) return
+    if (.not. CONT_SOURCE_AUTHORITY_IS_EXACT(source_authority)) return
+    if (.not. CONT_SYSTEM_AUTHORITY_IS_EXACT(system_authority)) return
+
+    if (.not. RECORD_MATCHES(seed_authority,'RHO',1,4)) return
+    if (.not. RECORD_MATCHES(seed_authority,'PLANE',1,1)) return
+    if (.not. CHARACTER_RECORD_MATCHES(seed_authority,'STATE',3,12, &
+        'PROJECTED')) return
+    if (.not. RECORD_MATCHES(seed_authority,'EPOCH',1,1)) return
+    if (.not. RECORD_MATCHES(source_authority,'RHO',1,4)) return
+    if (.not. RECORD_MATCHES(source_authority,'PLANE',1,1)) return
+    if (.not. CHARACTER_RECORD_MATCHES(source_authority,'STATE',3,12, &
+        'FROZEN-QFIS')) return
+    if (.not. RECORD_MATCHES(source_authority,'EPOCH',1,1)) return
+    if (.not. RECORD_MATCHES(system_authority,'RHO',1,4)) return
+    if (.not. CHARACTER_RECORD_MATCHES(system_authority,'STATE',3,12, &
+        'ASSEMBLED')) return
+    if (.not. RECORD_MATCHES(system_authority,'EPOCH',1,1)) return
+    if (.not. RECORD_MATCHES(ipsystem,'SPOT-L1-SNAP',1,1)) return
+
+    call LCMGET(seed_authority,'RHO',seed_rho64)
+    call LCMGET(seed_authority,'PLANE',seed_plane)
+    call LCMGET(seed_authority,'EPOCH',seed_epoch)
+    call LCMGET(source_authority,'RHO',source_rho64)
+    call LCMGET(source_authority,'PLANE',source_plane)
+    call LCMGET(source_authority,'EPOCH',source_epoch)
+    call LCMGET(system_authority,'RHO',system_rho64)
+    call LCMGET(system_authority,'EPOCH',system_epoch)
+    call LCMGET(ipsystem,'SPOT-L1-SNAP',system_plane)
+
+    if (.not. ieee_is_finite(seed_rho64)) return
+    if (.not. ieee_is_finite(source_rho64)) return
+    if (.not. ieee_is_finite(system_rho64)) return
+    if (seed_rho64 <= +0.0_real64) return
+    if (source_rho64 <= +0.0_real64) return
+    if (system_rho64 <= +0.0_real64) return
+    if (transfer(seed_rho64,0_int64) /= &
+        transfer(source_rho64,0_int64)) return
+    if (transfer(seed_rho64,0_int64) /= &
+        transfer(system_rho64,0_int64)) return
+    if (seed_epoch /= CONT_EPOCH) return
+    if (source_epoch /= CONT_EPOCH) return
+    if (system_epoch /= CONT_EPOCH) return
+    if (source_plane < 1 .or. source_plane > NPLANE) return
+    if (seed_plane /= source_plane) return
+    if (system_plane /= source_plane) return
+    if (.not. SAME_REAL32_BITS(seed_leakage,system_leakage)) return
+
+    CONT_LIFECYCLE_IS_BOUND = .true.
+  end function CONT_LIFECYCLE_IS_BOUND
+
+
   logical function LCM_ENTRY_KIND(kind_value)
     integer, intent(in) :: kind_value
 
@@ -551,5 +641,77 @@ contains
     call LCMGTC(iplist,name,character_count,value)
     CHARACTER_RECORD_MATCHES = value(1:character_count) == expected_value
   end function CHARACTER_RECORD_MATCHES
+
+
+  logical function CONT_SEED_AUTHORITY_IS_EXACT(iplist)
+    type(c_ptr), intent(in) :: iplist
+    character(len=12), parameter :: names(5) = &
+        ['RHO         ','PLANE       ','FLUX        ','STATE       ', &
+         'EPOCH       ']
+
+    CONT_SEED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+  end function CONT_SEED_AUTHORITY_IS_EXACT
+
+
+  logical function CONT_SOURCE_AUTHORITY_IS_EXACT(iplist)
+    type(c_ptr), intent(in) :: iplist
+    character(len=12), parameter :: names(5) = &
+        ['RHO         ','PLANE       ','STATE       ','QFISS       ', &
+         'EPOCH       ']
+
+    CONT_SOURCE_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+  end function CONT_SOURCE_AUTHORITY_IS_EXACT
+
+
+  logical function CONT_SYSTEM_AUTHORITY_IS_EXACT(iplist)
+    type(c_ptr), intent(in) :: iplist
+    character(len=12), parameter :: names(3) = &
+        ['RHO         ','STATE       ','EPOCH       ']
+
+    CONT_SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+  end function CONT_SYSTEM_AUTHORITY_IS_EXACT
+
+
+  logical function SAME_REAL32_BITS(left,right)
+    real(real32), intent(in) :: left(:), right(:)
+
+    SAME_REAL32_BITS = size(left) == size(right)
+    if (SAME_REAL32_BITS) SAME_REAL32_BITS = all( &
+        transfer(left,0_int32,size(left)) == &
+        transfer(right,0_int32,size(right)))
+  end function SAME_REAL32_BITS
+
+
+  logical function EXACT_INVENTORY(iplist,expected_names)
+    type(c_ptr), intent(in) :: iplist
+    character(len=12), intent(in) :: expected_names(:)
+    character(len=12) :: first_name, item_name
+    integer :: count, i, allocation_status
+    logical, allocatable :: found(:)
+
+    EXACT_INVENTORY = .false.
+    if (.not. c_associated(iplist)) return
+    allocate(found(size(expected_names)),stat=allocation_status)
+    if (allocation_status /= 0) return
+    found = .false.
+    item_name = ' '
+    call LCMNXT(iplist,item_name)
+    if (item_name == ' ') return
+    first_name = item_name
+    count = 0
+    do
+      count = count+1
+      if (count > size(expected_names)) return
+      do i = 1, size(expected_names)
+        if (item_name == expected_names(i)) exit
+      end do
+      if (i > size(expected_names)) return
+      if (found(i)) return
+      found(i) = .true.
+      call LCMNXT(iplist,item_name)
+      if (item_name == first_name) exit
+    end do
+    EXACT_INVENTORY = count == size(expected_names) .and. all(found)
+  end function EXACT_INVENTORY
 
 end module SPOR64_B2B

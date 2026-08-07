@@ -540,6 +540,8 @@ src/SPOR64_B2H.f90                    fresh REAL64 projected-state boundary
 src/SPOR64_B2I.f90                    archive-wide bootstrap lifecycle seal
 src/SPOR64_B2J.f90                    archive-wide REAL64 projection commit
 src/SPOR64_B2K.f90                    fresh radial SYSTEM archive commit
+src/SPOR64_B2N.f90                    REAL64 frozen-fission source builder
+src/SPOR64_B2O.f90                    source-selected same-index CONT sealer
 data/SpotAsmR64.c2m                   default-off three-plane ASM host
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
@@ -1174,6 +1176,39 @@ The accepted short activation used one materializer, one source builder, and
 two byte-identical read-only posteriors.  It checked all 5,180 REAL64 source
 values and all 94,720 zeroed fission values; `MACRO0` and `FSOURCE` were
 9,878,532 and 625,560 bytes.  No radial solve or convergence test occurred.
+
+B2o now closes the next read-only audit boundary:
+
+```sh
+make spot-real64-phase-a9b-b2o-cont-binding-cutoff
+```
+
+For `R64 CONT`, production B2B requires exact `PROJECTED/1`,
+`FROZEN-QFIS/1`, and `ASSEMBLED/1` authorities before `XDRTA2` or the REAL64
+core can be called.  Their positive binary64 `RHO` values must be bitwise
+identical, their local epoch stage labels must all be 1, sealed seed/source
+plane must equal the SYSTEM snapshot, and seed/SYSTEM leakage must match in
+all 370 binary32 bit patterns.  Production `SPOR64_B2O` derives the plane from
+the source and selects seed plus SYSTEM from the same ASSEMBLED archive index;
+it accepts no independent caller plane or `RHO` scalar.  The public B2B ABI and BOOT numerical and
+admission route are unchanged, although BOOT also gains the audit line.
+
+The inherited ACA `1e-7` diagnostic is also exposed once by `FLU` as an
+`INT64` count of reached local live-cutoff predicates that differ from their
+exact-zero-cutoff counterfactuals.  It is neither a count of all guard
+evaluations nor a full zero-cutoff rerun.  It does not enter physical,
+acceptance, or convergence criteria; only fail-closed integer integrity checks
+remain in A9.  The default B2o gate runs 25 mutation tests, 7 direct production
+sealer calls (2 positives and 5 pre-publication rejections), and a short
+stub-core harness with 32 pre-core rejections and an above-32-bit sentinel;
+it executes no production `FLU`,
+Dragon, transport, or Picard map.
+
+`EPOCH=1` remains a local pipeline label, not a globally unique lineage ID,
+and the B2C terminal authority still has no lifecycle metadata.  B2o therefore
+proves one sealed same-index, predicate-satisfying CONT ingress—not repeated
+CONT or convergence.  See
+[real64_phase_a9b_b2o_cont_binding_cutoff/README.md](validation/iterative/real64_phase_a9b_b2o_cont_binding_cutoff/README.md).
 
 The alternative three-return design is also checked without Dragon:
 

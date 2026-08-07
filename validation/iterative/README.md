@@ -876,6 +876,32 @@ two byte-identical read-only posteriors.  It verified 5,180 REAL64 source
 bits and 94,720 positive-zero fission values while executing no Dragon, ASM,
 FLU, CONT, or Picard process.
 
+B2o then executes one CONT-mode B2B boundary against a stub core, without a
+production transport solve:
+
+```sh
+make spot-real64-phase-a9b-b2o-cont-binding-cutoff
+```
+
+[`real64_phase_a9b_b2o_cont_binding_cutoff/`](real64_phase_a9b_b2o_cont_binding_cutoff/README.md)
+requires exact seed/source/SYSTEM lifecycle inventories, bit-identical
+positive binary64 `RHO`, a common local epoch stage label, sealed
+seed/source-to-SYSTEM plane identity, and 370 bit-identical seed/SYSTEM
+leakage values before the core boundary.  Production `SPOR64_B2O` derives the
+plane from the source and selects seed plus SYSTEM from one ASSEMBLED archive
+index.  It also makes the existing `INT64` count of reached local ACA
+cutoff-versus-zero predicate differences visible in the `FLU` log without
+letting that count enter physical, acceptance, or convergence criteria.
+
+The short gate uses a stub core only: 7 production-sealer calls (2 positives
+and 5 pre-publication rejections), 1 sealed B2B positive, 32 pre-core
+rejections, 25 mutation tests, 10,360 REAL64-only low-bit witnesses,
+and an `INT64` sentinel above the 32-bit range.  It executes zero production
+FLU, Dragon, transport, or Picard maps.  Epoch remains a local label rather
+than a global lineage ID, and B2C still does not publish lifecycle metadata;
+this is one sealed predicate-satisfying ingress, not a repeated CONT chain or
+a convergence result.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

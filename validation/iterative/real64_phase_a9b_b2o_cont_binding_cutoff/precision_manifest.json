@@ -1,0 +1,61 @@
+{
+  "phase": "A9b-B2o",
+  "parent_phase": "A9b-B2n",
+  "parent_commit": "aa7906e3bcb0e3405c41c55ac0e0e2e54c3211c3",
+  "purpose": "one sealed same-index REAL64 CONT ingress and host-visible ACA cutoff local counterfactual predicate-difference count",
+  "production_changes": [
+    "SPOR64_B2B CONT-only read-only joint lifecycle admission",
+    "SPOR64_B2O source-selected same-archive-index seed and SYSTEM sealer",
+    "FLU unconditional INT64 audit-line observation before status dispatch"
+  ],
+  "cont_authorities": {
+    "seed": "RHO,PLANE,FLUX,STATE=PROJECTED,EPOCH=1",
+    "source": "RHO,PLANE,STATE=FROZEN-QFIS,QFISS,EPOCH=1",
+    "system": "RHO,STATE=ASSEMBLED,EPOCH=1",
+    "rho_comparison": "binary64 bit identity",
+    "epoch_comparison": "integer equality at local pipeline stage label 1",
+    "plane_comparison": "sealed seed PLANE equals source PLANE and SYSTEM SPOT-L1-SNAP in 1:3",
+    "leakage_comparison": "370 binary32 bit identities"
+  },
+  "sealed_pair": {
+    "inputs": "one ASSEMBLED archive and one FROZEN-QFIS source",
+    "plane_owner": "source authority only",
+    "caller_plane_or_rho_scalar": false,
+    "selection": "FLUX and SYSTEM from the same archive list index",
+    "global_lineage_identifier": false
+  },
+  "cutoff_observation": {
+    "kind": "INT64",
+    "meaning": "along-live-trajectory count of inherited-1e-7 versus exact-zero-cutoff local predicate differences",
+    "total_guard_visits": false,
+    "feeds_solver": false,
+    "feeds_acceptance": false,
+    "written_to_lcm_or_xsm": false,
+    "synthetic_sentinel": 4294967311
+  },
+  "empirical_parameters_added": 0,
+  "relaxation_added": false,
+  "clipping_added": false,
+  "fallback_added": false,
+  "default_gate": {
+    "real_b2b_calls": 33,
+    "sealer_calls": 7,
+    "sealer_positive_calls": 2,
+    "sealer_rejections_before_publication": 5,
+    "sealed_b2b_ingress_positive_calls": 1,
+    "sealed_seed_payload_check": "all 5180 type-4 FLUX values for positive planes 1 and 2 against plane-specific exact-ULP witnesses",
+    "rejections_before_core": 32,
+    "stub_core_calls": 1,
+    "stub_xdrta2_calls": 1,
+    "mutation_tests": 25,
+    "production_flu_executions": 0,
+    "dragon_executions": 0,
+    "transport_solves": 0,
+    "picard_maps": 0
+  },
+  "limitations": [
+    "EPOCH is a local pipeline stage label, not a globally unique lineage identifier",
+    "B2C terminal authority lacks RHO,PLANE,STATE,EPOCH and cannot directly seed a second strict CONT call",
+    "radial and outer convergence are not evaluated"
+  ]
+}
