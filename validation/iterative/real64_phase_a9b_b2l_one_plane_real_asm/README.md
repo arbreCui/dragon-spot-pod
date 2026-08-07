@@ -91,7 +91,8 @@ solver, or any SPOR64 lifecycle module.  It reopens both XSM outputs and:
 
 The accepted run found 69,021 full-copy records containing 54,429,912
 32-bit words.  All 59,940 response values were finite and 35,518 were
-nonzero.  The evidence hashes and the transparent history of discarded
+numerically nonzero with both `+0` and `-0` excluded.  The evidence hashes and
+the transparent history of discarded and superseded
 development attempts are frozen in [runtime_result.txt](runtime_result.txt).
 
 These checks establish real ASM execution, complete finite response schema,
@@ -102,7 +103,7 @@ convergence.
 
 ## Run
 
-The default target performs strict compilation, symbol isolation, 46
+The default target performs strict compilation, symbol isolation, 47
 mutation/resource tests, and the bounded no-Dragon XSM lifecycle qualification:
 
 ```sh

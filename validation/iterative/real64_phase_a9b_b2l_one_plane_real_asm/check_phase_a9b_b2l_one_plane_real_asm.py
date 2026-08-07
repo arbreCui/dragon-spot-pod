@@ -134,6 +134,9 @@ def check_posterior(text: str) -> None:
         "EXPECTED_SUSED(IM)=EXPECTED_SPHYS(IM)-LEAKAGE(IG)",
         "EXPECTED_SUSED(0)=EXPECTED_SPHYS(0)-LEAKAGE(IG)",
         "IEEE_IS_FINITE(RESPONSE)",
+        "REAL32_MAGNITUDE_MASK=INT(Z'7FFFFFFF',INT32)",
+        "COUNT(IAND(TRANSFER(RESPONSE,0_INT32,SIZE(RESPONSE)),"
+        "REAL32_MAGNITUDE_MASK)/=0_INT32)",
         "RESPONSE_LENGTHS(12)=[32,14,32,14,8,8,8,8,8,8,8,14]",
     ):
         require(token in compact, f"posterior missing {token}")

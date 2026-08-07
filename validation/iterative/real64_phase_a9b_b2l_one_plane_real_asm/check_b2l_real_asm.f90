@@ -10,6 +10,8 @@ program CHECK_B2L_REAL_ASM
   integer, parameter :: NSNAP=3
   integer, parameter :: NUNKNO=14
   integer, parameter :: NMAT=8
+  integer(int32), parameter :: REAL32_MAGNITUDE_MASK = &
+      int(z'7fffffff',int32)
   character(len=12), parameter :: SYSTEM_ROOT_NAMES(7) = &
       [character(len=12) :: 'SIGNATURE','LINK.MACRO','LINK.TRACK', &
        'STATE-VECTOR', &
@@ -294,8 +296,11 @@ contains
         if (.not. all(ieee_is_finite(response))) &
             error stop 'real response payload is nonfinite'
         response_count=response_count+size(response)
-        nonzero_count=nonzero_count+count( &
-            transfer(response,0_int32,size(response)) /= 0_int32)
+        ! Clear the IEEE sign bit so +0 and -0 are both zero.  All other
+        ! finite binary32 values remain nonzero; no tolerance is used.
+        nonzero_count=nonzero_count+count(iand( &
+            transfer(response,0_int32,size(response)), &
+            REAL32_MAGNITUDE_MASK) /= 0_int32)
         deallocate(response)
       end do
     end do

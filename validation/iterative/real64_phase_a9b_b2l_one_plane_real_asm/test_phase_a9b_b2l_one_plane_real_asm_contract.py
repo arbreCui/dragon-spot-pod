@@ -220,6 +220,20 @@ class B2LContractMutationTest(unittest.TestCase):
             self.posterior.replace("implicit none", "implicit none\n  real :: tolerance"),
         )
 
+    def test_negative_zero_is_not_a_nonzero_response(self) -> None:
+        needle = (
+            "count(iand( &\n"
+            "            transfer(response,0_int32,size(response)), &\n"
+            "            REAL32_MAGNITUDE_MASK) /= 0_int32)"
+        )
+        self.assertEqual(self.posterior.count(needle),1)
+        changed = self.posterior.replace(
+            needle,
+            "count(transfer(response,0_int32,size(response)) /= 0_int32)",
+            1,
+        )
+        self.rejected(contract.check_posterior,changed)
+
     def test_wall_limit_change_rejected(self) -> None:
         self.rejected(contract.check_bounded,self.bounded.replace(
             '"wall_seconds": 15','"wall_seconds": 60'

@@ -820,7 +820,8 @@ CONT, loop, Picard map, or automatic retry.
 
 The accepted run completed in under one second of ASM time.  Its independent
 GANLIB-only posterior recursively checked 69,021 full-copy records, 59,940
-finite response values, and 3,330 ordered binary32 identities in each of
+finite response values, 35,518 genuinely nonzero values with both signed
+zeros excluded, and 3,330 ordered binary32 identities in each of
 `TX`, `S0phys`, and `S0used`.  This establishes a real plane-1 operator
 assembly and B2k posterior compatibility, not response numerical accuracy,
 planes 2/3, a radial flux solve, or either convergence question.

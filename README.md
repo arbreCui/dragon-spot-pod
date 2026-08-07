@@ -1101,11 +1101,12 @@ or a fresh persistent XSM root under the same empty-table contract, allowing
 it to remain the final content-mutating owner instead of copying an archive
 after its epoch commit.
 
-The accepted run completed one ASM in 0.937 s.  An independent GANLIB-only
+The corrected accepted run completed one ASM in 0.973 s.  An independent GANLIB-only
 posterior recursively compared 69,021 copied records, required all 59,940
 response values to be finite, and reproduced 3,330 binary32 values in each of
 `TX`, `S0phys`, and `S0used` bit for bit.  It found 35,518 nonzero response
-values.  There was no `FLU`, `SPOR64K`, `QFISS`, `CONT`, Picard map, empirical
+values after treating both signed zeros as zero.  There was no `FLU`,
+`SPOR64K`, `QFISS`, `CONT`, Picard map, empirical
 coefficient, relaxation, damping, clipping, or model completion.
 
 This proves only `REAL-ASM-PLANE1-EXECUTED` plus compatibility with the B2k

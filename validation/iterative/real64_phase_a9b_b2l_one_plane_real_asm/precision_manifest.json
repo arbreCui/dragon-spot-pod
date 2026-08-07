@@ -46,7 +46,7 @@
     "acid_or_crash_safe_transaction": false
   },
   "default_preflight": {
-    "contract_and_resource_tests": 46,
+    "contract_and_resource_tests": 47,
     "bounded_xsm_lifecycle": {
       "production_b2j_calls": 6,
       "commits": 1,
@@ -69,7 +69,7 @@
     }
   },
   "accepted_runtime": {
-    "utc": "2026-08-07T02:20:20Z",
+    "utc": "2026-08-07T03:00:55Z",
     "dragon_executions": 1,
     "asm_executions": 1,
     "xdrta2_calls": 1,
@@ -77,8 +77,8 @@
     "flu_flux_solves": 0,
     "picard_maps": 0,
     "automatic_retries": 0,
-    "asm_wall_seconds": 0.937,
-    "preparer_wall_seconds": 1.172,
+    "asm_wall_seconds": 0.973,
+    "preparer_wall_seconds": 1.193,
     "projected_sha256": "c010c0a860884a4e4d3842dffe45ffb4898f2aaca99557e0411ee8c66d60b90c",
     "projected_bytes": 225315452,
     "system1_sha256": "5c7c532ebd8f15dd6f1e7f8dd1622029ebd907ae9484b3ddad1d1390585b80a1",
@@ -92,6 +92,8 @@
     "system_group_records_per_group": 15,
     "response_finite_values": 59940,
     "response_nonzero_values": 35518,
+    "response_nonzero_definition": "finite binary32 magnitude bits are nonzero; both signed zeros are zero",
+    "negative_zero_counted_as_nonzero": false,
     "txsc_binary32_bit_checks": 3330,
     "s0phys_binary32_bit_checks": 3330,
     "s0used_binary32_bit_checks": 3330,
@@ -124,8 +126,10 @@
     "outer_picard_convergence_evaluated": false
   },
   "development_history": {
-    "prior_invalid_activations": 3,
-    "prior_actual_asm_executions": 1,
+    "prior_invalid_activations": 4,
+    "prior_actual_asm_executions": 2,
+    "prior_superseded_accepted_activations": 1,
+    "superseded_reason": "signed-zero bit patterns could satisfy the former nonzero gate",
     "invalid_runs_used_as_scientific_evidence": 0
   }
 }
