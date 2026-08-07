@@ -545,7 +545,9 @@ src/SPOR64_B2O.f90                    source-selected same-index CONT sealer
 src/SPOR64_B2R.f90                    label-bound RETURNED archive collector
 src/SPOR64_B2S.f90                    default-off immediate three-plane bridge
 src/SPOR64_B2T.f90                    owned PROJECTED-to-RETURNED host step
+src/SPOR64_B2U.f90                    CLE adapter from SPOR64T to B2T
 data/SpotAsmR64.c2m                   default-off three-plane ASM host
+data/SpotStepR64.c2m                  same-call ASM-to-B2T host procedure
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
 src/SPOXCONV.f90                      complete raw state difference
@@ -1382,6 +1384,33 @@ GANLIB-only posterior checks the REAL64 QFISS construction and its exact
 REAL32 projections twice. B2K/B2S are capture stubs in that content branch;
 there is still no ASM, transport solve, Picard step, or enabled production host
 call site.
+
+B2u implements that production host route without changing the frozen
+`SpotAsmR64` procedure:
+
+```sh
+make spot-real64-phase-a9b-b2u-same-call-asm-host
+```
+
+The new deployment-default-off `SpotStepR64` procedure owns three local ASM
+results in canonical `LK1D 1/2/3` order and keeps all three live until one
+`SPOR64T:` call. The thin `SPOR64T` adapter forwards exactly the same
+PROJECTED handle, the ordered local SYSTEM handles, and its current read-only
+`TRACK_f` file handle into B2t. CLE-2000 reopens that same symbolic file
+medium for each preceding ASM call; no cross-call pointer identity is claimed.
+It adds no equation, empirical coefficient, tolerance, relaxation, damping,
+clipping, fitted correction, or retry. A future enabled call inherits the
+already frozen downstream numerical controls without retuning them.
+
+“Default off” here means no shipped calculation deck selects
+`SpotStepR64`; once explicitly selected, its first ASM is intentional. The
+short B2u gate compiles the real CLE procedure, production adapter, complete
+B2t ABI chain, ASM ABI, and KDR dispatcher. Its only execution witness calls
+the production adapter against deterministic REDGET/B2t capture stubs. It
+therefore proves a compile-valid same-call route and exact adapter forwarding,
+not that production ASM or radial transport ran. Historical identity between
+the reopened `TRACK_f` bytes and archived TRACK objects, radial/Picard
+convergence, `CLOSED/1`, and accuracy remain unclaimed.
 
 The alternative three-return design is also checked without Dragon:
 

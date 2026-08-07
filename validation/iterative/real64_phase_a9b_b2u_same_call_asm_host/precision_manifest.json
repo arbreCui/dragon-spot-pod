@@ -1,0 +1,172 @@
+{
+  "phase": "A9b-B2u",
+  "purpose": "freeze the deployment-default-off CLE host route that creates three fresh ASM SYSTEM objects and gives them immediately to the B2t adapter",
+  "parent_phase": "A9b-B2t",
+  "parent_commit": "1251f3a5eff95384f83d98d460ca430288736db7",
+  "parent_receipt_sha256": "08d539c973a4881bbc3e431ddb4dace3da836a245fab9a7d19303c44a823e8af",
+  "contract_version": 1,
+  "production_scope": [
+    "data/SpotStepR64.c2m",
+    "src/SPOR64_B2U.f90",
+    "src/KDRDRV.F"
+  ],
+  "supporting_runtime_semantics": {
+    "production_dispatch": "src/dramod.f90",
+    "ganlib_mirror": "Ganlib/src/ganmod.f90"
+  },
+  "deployment_default_off": {
+    "procedure": "SpotStepR64",
+    "shipped_calculation_deck_selections": 0,
+    "explicit_procedure_selection_required": true,
+    "in_procedure_enable_parameter": false,
+    "meaning": "the suffixed procedure is inert because no shipped calculation deck selects it; once explicitly selected it executes its fixed route"
+  },
+  "host_contract": {
+    "formal_output": "RETURNED",
+    "formal_lcm_input": "PROJECTED",
+    "formal_sequential_binary_input": "TRACK_f",
+    "private_systems": [
+      "SYSTEM1",
+      "SYSTEM2",
+      "SYSTEM3"
+    ],
+    "asm_calls": 3,
+    "asm_lk1d_order": [
+      1,
+      2,
+      3
+    ],
+    "projected_symbol_for_every_asm": "PROJECTED",
+    "track_symbol_for_every_asm": "TRACK_f",
+    "spor64t_calls": 1,
+    "spor64t_arguments": [
+      "RETURNED",
+      "PROJECTED",
+      "SYSTEM1",
+      "SYSTEM2",
+      "SYSTEM3",
+      "TRACK_f"
+    ],
+    "systems_remain_live_until_spor64t_returns": true,
+    "systems_deleted_after_spor64t": true,
+    "caller_supplied_systems": false,
+    "loops": 0,
+    "automatic_retries": 0
+  },
+  "adapter_contract": {
+    "module_name": "SPOR64T:",
+    "fortran_procedure": "SPOR64T",
+    "nentry": 6,
+    "hentry": [
+      "RETURNED",
+      "PROJECTED",
+      "SYSTEM1",
+      "SYSTEM2",
+      "SYSTEM3",
+      "TRACK_f"
+    ],
+    "ientry": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      3
+    ],
+    "jentry": [
+      0,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "option_list": "exact empty semicolon",
+    "system_pointer_slice": "KENTRY(3:5)",
+    "track_pointer": "KENTRY(6)",
+    "b2t_enable": true,
+    "only_success_status": "SPOR64_B2T_RETURNED",
+    "cutoff_kind": "INT64",
+    "cutoff_shape": 3,
+    "cutoff_aggregated": false,
+    "cutoff_feeds_acceptance": false,
+    "direct_solver_calls": 0
+  },
+  "dispatcher_contract": {
+    "dispatcher": "KDRDRV",
+    "route": "SPOR64T:",
+    "callee": "SPOR64T",
+    "route_count": 1,
+    "position": "after SPOR64K: and before FLU:"
+  },
+  "tracking_lifecycle": {
+    "same_cle_symbol_across_asm_and_spor64t": true,
+    "intended_runtime_artifact_hash_pinned_by_gate": true,
+    "artifact_opened_by_b2u_gate": false,
+    "hash_pinned_artifact": "validation/artifacts/iterative-seed/initial_radial_track.bin",
+    "hash_pinned_sha256": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8",
+    "hash_pinned_bytes": 2275636,
+    "dramod_opens_and_closes_sequential_file_per_module_dispatch": true,
+    "same_live_pointer_across_asm1_asm2_asm3_and_spor64t": false,
+    "same_live_pointer_inside_spor64t_b2t_b2s_b2b3": true,
+    "historical_identity_with_archived_track_proved": false,
+    "hash_alone_is_historical_identity_proof": false
+  },
+  "numerical_controls": {
+    "new_empirical_parameters": 0,
+    "relaxation_added": false,
+    "damping_added": false,
+    "clipping_added": false,
+    "fitted_coefficient_added": false,
+    "model_completion_added": false,
+    "convergence_threshold_added": false,
+    "inherits_frozen_downstream_controls_without_retuning": true
+  },
+  "short_validation": {
+    "static_targeted_mutations": 39,
+    "static_baseline_tests": 1,
+    "c2m_compiles": 3,
+    "production_chain_compile_only": [
+      "SPOR64_B2C",
+      "SPOR64_B2B",
+      "SPOR64_B2O",
+      "SPOR64_B2R",
+      "SPOR64_B2S",
+      "SPOR64_B2K",
+      "SPOR64_B2N",
+      "SPOR64_B2T",
+      "SPOR64_B2U"
+    ],
+    "asm_compile_only": 1,
+    "kdrdrv_compile_only": 1,
+    "production_spor64t_adapter_executions": 7,
+    "adapter_preflight_rejections": 5,
+    "adapter_b2t_stub_failure_rejections": 1,
+    "adapter_successes_against_b2t_stub": 1,
+    "b2t_capture_stub_calls": 2,
+    "dragon_processes": 0,
+    "production_asm_runtime_executions": 0,
+    "production_b2t_chain_runtime_executions": 0,
+    "radial_transport_solves": 0,
+    "picard_maps": 0,
+    "long_calculations": 0
+  },
+  "proved": [
+    "exact static ASM plane order 1,2,3",
+    "one common PROJECTED symbol and one common TRACK_f symbol in every ASM call",
+    "three local SYSTEM symbols remain in scope until the immediate SPOR64T call",
+    "exact SPOR64T adapter ABI and KDRDRV route",
+    "production SPOR64T preflight and exact pointer forwarding against a deterministic B2t capture stub",
+    "deployment default-off because no shipped calculation deck selects SpotStepR64",
+    "DRAGON dramod per-dispatch sequential-file reopen and close semantics",
+    "no empirical or convergence control added"
+  ],
+  "not_proved": [
+    "runtime execution of ASM or the true production B2t/B2s/B2B chain",
+    "one live c_ptr shared across the three separate ASM module dispatches and SPOR64T",
+    "historical identity of the archived TRACK objects and the hash-pinned binary file",
+    "radial transport completion or convergence",
+    "an outer Picard map or convergence",
+    "response, eigenvalue, power, SPOD truncation, or benchmark accuracy"
+  ]
+}

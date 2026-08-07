@@ -1,0 +1,15 @@
+****************************************************************
+* Stub-only B2u ON witness: no production solver is linked.    *
+****************************************************************
+LINKED_LIST PROJECTED RETURNED ;
+SEQ_BINARY TRACK_f :: FILE './track.bin' ;
+PROCEDURE SpotStepR64 ;
+MODULE B2UFIX: END: ;
+INTEGER ENABLE := 1 ;
+
+IF ENABLE 1 = THEN
+  PROJECTED := B2UFIX: :: ;
+  RETURNED := SpotStepR64 PROJECTED TRACK_f :: ;
+ENDIF ;
+
+END: ;

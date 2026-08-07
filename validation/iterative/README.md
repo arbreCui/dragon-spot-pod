@@ -1027,6 +1027,32 @@ later outer host guarded before ASM and a provenance receipt that binds TRACK
 construction to the exact read-only file; a before/after file hash alone only
 proves that the tested bytes did not change.
 
+B2u supplies the missing outer route while leaving the frozen B2m host intact:
+
+```sh
+make spot-real64-phase-a9b-b2u-same-call-asm-host
+```
+
+[`real64_phase_a9b_b2u_same_call_asm_host/`](real64_phase_a9b_b2u_same_call_asm_host/README.md)
+adds the unselected `SpotStepR64` CLE procedure. It creates three local SYSTEM
+objects through exact `ASM: ... EDIT 0 ARM LK1D 1/2/3` calls, keeps all three
+live, and passes them once through the thin `SPOR64T` adapter into B2t. The
+same PROJECTED object and `TRACK_f` symbolic medium cross all four calls.
+CLE-2000 reopens the sequential file read-only around each module call, so
+only the B2t/B2s/B2B chain inside the SPOR64T call shares one live file handle;
+no pointer identity with the three earlier ASM calls is asserted.
+
+This is deployment-default-off: no shipped calculation selects the procedure,
+and the short gate never runs production ASM, B2t transport, Dragon, or a
+Picard map. The gate establishes source structure, real C2M compilation,
+adapter/dispatcher ABI, and stub-only pointer custody. Its executable witness
+calls the production SPOR64T adapter only against deterministic REDGET/B2t
+capture stubs; the complete production chain is compile-only, and the pinned
+tracking artifact is hashed but never opened by this gate. It does not yet
+prove the historical identity of the tracking file, a true radial return, or
+any convergence or accuracy claim. A later explicitly authorized run must use
+fixed before/after file evidence and a hard execution bound.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller
