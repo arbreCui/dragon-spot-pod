@@ -1116,6 +1116,35 @@ Picard convergence.  The XSM epoch is a logical completion marker, not an
 ACID/crash-safe transaction.  Exact evidence and scope are in
 [real64_phase_a9b_b2l_one_plane_real_asm/README.md](validation/iterative/real64_phase_a9b_b2l_one_plane_real_asm/README.md).
 
+B2m closes the remaining three-plane operator-assembly boundary:
+
+```sh
+make spot-real64-phase-a9b-b2m-three-plane-real-asm-commit
+RUN_B2M=1 make spot-real64-phase-a9b-b2m-three-plane-real-asm-commit
+```
+
+The default command runs 57 static, mutation, loader, and resource tests and
+executes no Dragon process.  The explicit bounded activation copies the exact
+`PROJECTED/1` XSM to an in-memory root, invokes the compiled `SpotAsmR64`
+procedure once, performs production `ASM` for `LK1D 1/2/3`, and makes one
+production `SPOR64K` in-memory `ASSEMBLED/1` logical commit.  Only after that
+commit returns is the complete object copied once to a persistent XSM evidence
+file; this is not claimed to be a direct-XSM or ACID transaction.
+
+The accepted run used one Dragon process and completed the three ASM calls plus
+the commit in 2.325 s.  A GANLIB-only posterior, repeated byte-identically,
+validated all 179,820 finite response values, found 35,518 genuinely nonzero
+values in each plane, checked 1,110 same-index leakage values, and reproduced
+9,990 values in each of `TX`, `S0phys`, and `S0used` bit for bit.  There was no `FLU`, QFISS,
+`CONT`, Picard map, empirical coefficient, relaxation, damping, clipping, or
+model completion.
+
+This establishes `REAL-ASM-PLANES1-3-EXECUTED`, the `SPOR64K`
+`ASSEMBLED/1` logical commit, and B2k posterior compatibility.  It still does
+not establish response-matrix numerical accuracy, a radial flux solution,
+radial convergence, outer Picard convergence, or benchmark accuracy.  See
+[real64_phase_a9b_b2m_three_plane_real_asm_commit/README.md](validation/iterative/real64_phase_a9b_b2m_three_plane_real_asm_commit/README.md).
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh

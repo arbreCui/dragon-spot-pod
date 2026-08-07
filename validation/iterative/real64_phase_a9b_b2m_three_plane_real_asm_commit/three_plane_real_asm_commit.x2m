@@ -1,0 +1,25 @@
+****************************************************************
+* B2m: select the compiled three-plane assembly procedure once. *
+*                                                              *
+* SpotAsmR64 owns three host ASM calls and one SPOR64K commit.   *
+* The committed memory archive is then copied whole to XSM.     *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+XSM_FILE PROJ_XSM :: FILE './projected.xsm' ;
+XSM_FILE ASSM_XSM :: FILE './assembled.xsm' ;
+
+LINKED_LIST PROJECTED ASSEMBLED ;
+MODULE DELETE: END: ;
+PROCEDURE SpotAsmR64 ;
+
+ECHO "B2M-THREE-PLANE-REAL-ASM-BEGIN" ;
+
+PROJECTED := PROJ_XSM ;
+ASSEMBLED := SpotAsmR64 PROJECTED TRACK_f :: ;
+ASSM_XSM := ASSEMBLED ;
+PROJECTED ASSEMBLED := DELETE: PROJECTED ASSEMBLED ;
+
+ECHO "B2M-THREE-PLANE-REAL-ASM-COMPLETE" ;
+END: ;
+QUIT "LIST" .

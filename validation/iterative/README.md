@@ -826,6 +826,29 @@ zeros excluded, and 3,330 ordered binary32 identities in each of
 assembly and B2k posterior compatibility, not response numerical accuracy,
 planes 2/3, a radial flux solve, or either convergence question.
 
+B2m extends that real execution to all three planes and commits them once:
+
+```sh
+make spot-real64-phase-a9b-b2m-three-plane-real-asm-commit
+RUN_B2M=1 make spot-real64-phase-a9b-b2m-three-plane-real-asm-commit
+```
+
+[`real64_phase_a9b_b2m_three_plane_real_asm_commit/`](real64_phase_a9b_b2m_three_plane_real_asm_commit/README.md)
+keeps activation default-off and runs 57 no-Dragon tests by default.  The
+bounded path invokes the compiled `SpotAsmR64` procedure once, executes
+production `ASM` for `LK1D 1/2/3`, and calls production `SPOR64K` once.  The
+commit target is a fresh in-memory root; the resulting `ASSEMBLED/1` object is
+then copied whole to XSM as persistent evidence.
+
+The accepted Dragon process completed in 2.325 s.  The independent posterior
+was run twice with byte-identical output; it checked 179,820 finite response
+values, 35,518 genuinely nonzero values per plane, 1,110 same-index leakage
+values, and 9,990 ordered binary32 identities in each of `TX`, `S0phys`, and
+`S0used`.  This closes the real
+three-plane assembly/commit boundary only.  No radial `FLU` solve, QFISS,
+`CONT`, Picard map, empirical control, numerical response benchmark, or
+convergence claim is present.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller
