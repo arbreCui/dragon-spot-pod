@@ -744,10 +744,10 @@ provenance, transport execution, a continuous published REAL64 lane, radial
 convergence or Picard convergence.  B2c remains responsible for the
 accepted-only type-4/type-2 archive and deferred host metadata.
 
-The ABI result is deliberately local: `FLU`, `SPOR64_B2B` and the production
-zero-argument `XDRTA2` declaration agree.  The pre-existing
-`src/ASM.f:101` extra-actual call is not changed here, so
-`GLOBAL-XDRTA2-ABI-CLEAN=false` remains explicit.
+The ABI result was deliberately local at B2b: `FLU`, `SPOR64_B2B` and the
+production zero-argument `XDRTA2` declaration agreed, while the then-existing
+extra actual argument in `ASM` remained outside that gate.  B2k below removes
+that final mismatch before exposing its default-off ASM host.
 
 The accepted-only publication subgate is
 [`real64_phase_a9b_b2c_publication/`](real64_phase_a9b_b2c_publication/README.md):
@@ -775,6 +775,32 @@ It authorizes zero Dragon processes.  A later plane-1 feasibility capture,
 full REAL64 Stage 4, replay, and Picard trajectory each require their own
 gate.  No relaxation, fitted coefficient, cutoff tuning, residual multiplier
 or ULP/angle threshold is introduced.
+
+The later B2h, B2i and B2j gates establish, in order, a fresh per-plane
+projection authority, one atomic `CLOSED/0` bootstrap archive, and the
+archive-wide transition to three `PROJECTED/1` fluxes.  Their detailed
+contracts are frozen under
+[`real64_phase_a9b_b2h_projection_authority/`](real64_phase_a9b_b2h_projection_authority/README.md),
+[`real64_phase_a9b_b2i_bootstrap_lifecycle/`](real64_phase_a9b_b2i_bootstrap_lifecycle/README.md),
+and
+[`real64_phase_a9b_b2j_archive_projection/`](real64_phase_a9b_b2j_archive_projection/README.md).
+B2j deliberately drops the lagged SYSTEM list.
+
+B2k then commits three fresh radial SYSTEM objects:
+
+```sh
+make spot-real64-phase-a9b-b2k-system-assembly
+```
+
+[`real64_phase_a9b_b2k_system_assembly/`](real64_phase_a9b_b2k_system_assembly/README.md)
+checks the exact frozen MCCG/ASM schema and the ordered binary32 identities
+`TX=NTOT0-TRANC`, `S0phys=SIGW00-TRANC`, and
+`S0used=S0phys-SPOT-LEAK1D`.  The public `SPOR64K:` path is registered but no
+shipped deck calls its three-plane `SpotAsmR64` host by default.  The same
+gate fixes and checks the global zero-argument `XDRTA2` ABI.  Its dynamic
+harness uses synthetic fresh SYSTEM candidates and runs no ASM, tracking
+read, Dragon, transport or CONT; real ASM execution and both convergence
+questions remain `NOT-EVALUATED`.
 
 ## Fixed three-return design
 

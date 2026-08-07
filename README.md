@@ -539,6 +539,8 @@ src/SPOFSRC.f90                       frozen radial fission source
 src/SPOR64_B2H.f90                    fresh REAL64 projected-state boundary
 src/SPOR64_B2I.f90                    archive-wide bootstrap lifecycle seal
 src/SPOR64_B2J.f90                    archive-wide REAL64 projection commit
+src/SPOR64_B2K.f90                    fresh radial SYSTEM archive commit
+data/SpotAsmR64.c2m                   default-off three-plane ASM host
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
 src/SPOXCONV.f90                      complete raw state difference
@@ -1037,6 +1039,47 @@ in-memory lifecycle; epoch zero is not a globally unique identifier for
 mixing persisted roots.  It performs no ASM, QFISS construction, CONT,
 transport solve or convergence test.  See
 [real64_phase_a9b_b2j_archive_projection/README.md](validation/iterative/real64_phase_a9b_b2j_archive_projection/README.md).
+
+B2k closes the fresh radial-system boundary without advancing the nonlinear
+iteration:
+
+```sh
+make spot-real64-phase-a9b-b2k-system-assembly
+```
+
+The default-off `SpotAsmR64` host recovers each projected plane's library and
+track, exposes the library locally as `MACRO0`, and calls the public production
+operator exactly three times with `ASM: ... ARM LK1D 1/2/3`.  It does not call
+`FLU`, `SPOFSRC` or `CONT`.  `SPOR64K:` is registered as the suffixed commit
+operator, but no shipped calculation deck selects this candidate host.
+
+`SPOR64_B2K` accepts only the exact `PROJECTED/1` root/lifecycle, the required
+TRACK/MICROLIB structure with frozen TRACK/MCCG/MACROLIB state vectors, and
+the exact projected-FLUX schema.  The host supplies three fresh ASM results;
+the commit boundary requires three distinct, authority-free ASM-shaped SYSTEM
+objects.  For every plane, group and material, it checks the actual binary32
+evaluation order
+
+```text
+TX       = NTOT0 - TRANC
+S0phys   = SIGW00 - TRANC
+S0used   = S0phys - SPOT-LEAK1D
+```
+
+including the mixture-zero slot, and admits the exact frozen MCCG response
+schema rather than constructing a reduced surrogate.  All three complete
+SYSTEM objects are deep-copied to private stages before publication.  The
+plane fluxes remain `PROJECTED/1`; the SYSTEM and archive authorities become
+`ASSEMBLED/1`, with the archive epoch written last.  No relaxation, damping,
+clipping, fitted coefficient or model completion is introduced.
+
+The seconds-scale gate compiles the production path and validates its archive
+transaction with independent synthetic SYSTEM candidates and frozen XSM
+cross sections.  It deliberately does not run Dragon, ASM, the sequential
+tracking file, transport or CONT.  Consequently real ASM execution, radial
+convergence and outer Picard convergence remain `NOT-EVALUATED`; a separately
+bounded real-ASM smoke test is still required.  See
+[real64_phase_a9b_b2k_system_assembly/README.md](validation/iterative/real64_phase_a9b_b2k_system_assembly/README.md).
 
 The alternative three-return design is also checked without Dragon:
 
