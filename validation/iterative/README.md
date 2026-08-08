@@ -1053,6 +1053,38 @@ prove the historical identity of the tracking file, a true radial return, or
 any convergence or accuracy claim. A later explicitly authorized run must use
 fixed before/after file evidence and a hard execution bound.
 
+B2v supplies and freezes that one bounded real activation:
+
+```sh
+make spot-real64-phase-a9b-b2v-one-real-continuation
+```
+
+[`real64_phase_a9b_b2v_one_real_continuation/`](real64_phase_a9b_b2v_one_real_continuation/README.md)
+keeps the Make target default-off, builds a private Dragon, and allows at most
+one explicitly enabled process under 60 s wall, 55 s CPU, 2 GiB RSS, 512 MiB
+file, and 64 MiB live-log caps. The frozen activation returned in 16.332 s:
+ASM executed three times, and the production B2T/B2S/B2B/A9/B2R internal
+acceptance-and-publication path returned all three planes without retry.
+
+The validation-only SPOR64T observer differed from production SPOR64_B2U by
+one unconditional status/cutoff write; production SPOR64T itself therefore
+executed zero times. The observer preserved the per-plane accumulated local
+predicate-difference counts `59,138,126` separately and never used them for
+physics or acceptance. These values are not a zero-cutoff rerun or a
+solution-sensitivity measure.
+
+Two identical independent GANLIB-only posterior reports verified RETURNED/1,
+recursive TRACK/MICROLIB2 copies, the SYSTEM response/source formula, exact
+REAL64-to-REAL32 FLUX/SOUR/QFISS mirrors, and all 15,540 QFISS values against
+an independent frozen-loop recomputation. The returned XSM hash is
+`dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054`
+(231,572,260 bytes).
+
+B2v is one real three-plane radial return, not an outer 2D/1D Picard map. It
+does not run an axial solve, publish a new eigenvalue, commit `CLOSED/1`, or
+independently evaluate the A9 norms/transport residual, reproducibility, or
+accuracy.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

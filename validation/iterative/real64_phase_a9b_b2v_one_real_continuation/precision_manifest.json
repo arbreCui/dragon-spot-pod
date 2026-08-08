@@ -1,0 +1,120 @@
+{
+  "phase": "A9b-B2v",
+  "objective": "one real three-plane radial continuation return",
+  "deployment_default": "off",
+  "activation_count": {
+    "dragon_maximum": 1,
+    "automatic_retries": 0,
+    "outer_picard_maps": 0
+  },
+  "runtime_route": [
+    "PROJECTED/1",
+    "ASM-LK1D-1",
+    "ASM-LK1D-2",
+    "ASM-LK1D-3",
+    "validation-observer-SPOR64T",
+    "production-B2T",
+    "production-B2S",
+    "production-B2B-CONT-1",
+    "production-B2B-CONT-2",
+    "production-B2B-CONT-3",
+    "production-B2R",
+    "RETURNED/1"
+  ],
+  "adapter_disclosure": {
+    "production_spor64t_executions": 0,
+    "validation_observer_spor64t_executions": 1,
+    "allowed_observer_difference": "one unconditional ordered INT64 status/cutoff write"
+  },
+  "frozen_inner_rule": {
+    "tolerance_binary32_bits_hex": "348637bd",
+    "maxout": 500,
+    "maxinr": 740,
+    "strict_inner_required": true,
+    "minimum_outer_visit": 2,
+    "type_s_eext": "assigned exact zero, not an independent exterior residual",
+    "near_branch": "10*eps may schedule another outer visit but cannot accept",
+    "independent_residual_or_norm_validation": false
+  },
+  "cutoff_observation": {
+    "meaning": "reached local Boolean outcomes differing between inherited 1e-7 and exact-zero counterfactual",
+    "guard_evaluation_count": false,
+    "zero_cutoff_rerun": false,
+    "per_plane_values_accumulate_along_live_trajectory": true,
+    "cross_plane_aggregated": false,
+    "used_for_acceptance": false,
+    "solution_or_convergence_sensitivity_claim": false
+  },
+  "resource_caps": {
+    "wall_seconds": 60,
+    "cpu_seconds": 55,
+    "leader_rss_bytes": 2147483648,
+    "file_bytes": 536870912,
+    "log_bytes": 67108864,
+    "threads": 1,
+    "core_bytes": 0
+  },
+  "frozen_inputs": {
+    "projected": {
+      "sha256": "c010c0a860884a4e4d3842dffe45ffb4898f2aaca99557e0411ee8c66d60b90c",
+      "bytes": 225315452
+    },
+    "radial_track": {
+      "sha256": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8",
+      "bytes": 2275636
+    }
+  },
+  "posterior": {
+    "executions": 2,
+    "links": ["GANLIB", "UTILIB"],
+    "production_solver_symbols": 0,
+    "qfiss_recomputed_values": 15540,
+    "reports_must_match": true,
+    "terminal_norms_recomputed": false,
+    "transport_equation_residual_evaluated": false
+  },
+  "added_controls": {
+    "empirical_coefficients": 0,
+    "relaxation": 0,
+    "damping": 0,
+    "clipping": 0,
+    "model_completion": 0,
+    "retry": 0
+  },
+  "not_evaluated": [
+    "outer Picard convergence",
+    "axial feedback",
+    "CLOSED/1",
+    "eigenvalue or power accuracy",
+    "independent residual bound",
+    "SPOD rank accuracy",
+    "mesh angle or energy convergence",
+    "cross-code agreement",
+    "reproducibility",
+    "TRACK historical identity"
+  ],
+  "runtime_result": {
+    "classification": "ONE-REAL-THREE-PLANE-CONTINUATION-RETURNED",
+    "authorized_activations": 1,
+    "dragon_executions": 1,
+    "dragon_elapsed_seconds": 16.332,
+    "asm_executions": 3,
+    "production_cont_internal_accept_publish_returns": 3,
+    "automatic_retries": 0,
+    "cutoff_by_plane": [59, 138, 126],
+    "cutoff_class": "INHERITED-ACA-CUTOFF-LOCAL-PREDICATE-DIFFERENCE-OBSERVED",
+    "projected_sha256": "c010c0a860884a4e4d3842dffe45ffb4898f2aaca99557e0411ee8c66d60b90c",
+    "track_sha256": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8",
+    "returned_sha256": "dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054",
+    "returned_bytes": 231572260,
+    "private_dragon_sha256": "cda682f5ee2579acbf901b394d06ed6e37fd815077e233e358da22c76eb9bb1f",
+    "deck_sha256": "7c19c9e96fbc27ac24cea74251497de9db098f4873450441c413e242fd23dfbf",
+    "posterior_executions": 2,
+    "posterior_reports_identical": true,
+    "runtime_transcript_kind": "36-line bounded harness result transcript, not the raw Dragon log",
+    "runtime_transcript_sha256": "ace0bdcf25837c92e26ffd00bd71927ae4294633e71a3822bbc4ad7e32d7c57e",
+    "runtime_transcript_lines": 36,
+    "runtime_transcript_bytes": 2316
+  },
+  "result": "one real three-plane continuation returned; outer Picard not evaluated"
+}

@@ -1,0 +1,24 @@
+****************************************************************
+* B2v: one bounded real three-plane radial continuation return. *
+*                                                              *
+* There is no loop, retry, axial solve, feedback, or close gate. *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+XSM_FILE PROJ_XSM :: FILE './projected.xsm' ;
+XSM_FILE RET_XSM :: FILE './returned.xsm' ;
+
+LINKED_LIST PROJECTED RETURNED ;
+MODULE DELETE: END: ;
+PROCEDURE SpotStepR64 ;
+
+PROJECTED := PROJ_XSM ;
+ECHO "B2V-REAL-CONTINUATION-BEGIN" ;
+
+RETURNED := SpotStepR64 PROJECTED TRACK_f :: ;
+RET_XSM := RETURNED ;
+
+ECHO "B2V-REAL-CONTINUATION-COMPLETE" ;
+PROJECTED RETURNED := DELETE: PROJECTED RETURNED ;
+END: ;
+QUIT "LIST" .

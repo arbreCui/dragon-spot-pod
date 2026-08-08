@@ -1412,6 +1412,41 @@ not that production ASM or radial transport ran. Historical identity between
 the reopened `TRACK_f` bytes and archived TRACK objects, radial/Picard
 convergence, `CLOSED/1`, and accuracy remain unclaimed.
 
+## One real bounded radial continuation return (B2v)
+
+B2v performs the first explicitly authorized real activation of the B2u
+same-call route, still without an outer Picard loop:
+
+```sh
+make spot-real64-phase-a9b-b2v-one-real-continuation
+```
+
+The Make target remains compile-only and default-off. The separately frozen
+one-time activation materialized the exact B2l PROJECTED state, executed three
+real `ASM ... LK1D 1/2/3` calls, and then entered production
+`B2T -> B2S -> B2B CONT(1,2,3) -> A9 -> B2R`. Dragon returned normally in
+16.332 s under a 60 s wall / 55 s CPU hard bound, with no retry or parameter
+change. A validation-only SPOR64T observer, mechanically identical to the
+production adapter except for one unconditional diagnostic write, reported
+the ordered per-plane inherited ACA local-predicate-difference counts
+`59, 138, 126`; it did not aggregate them across planes or use them for
+acceptance.
+
+An independent GANLIB/UTILIB-only posterior ran twice with identical output.
+It verified the exact RETURNED/1 lifecycle, recursive TRACK/MICROLIB2 copies,
+three SYSTEM response/formula contracts, all REAL64/REAL32 FLUX and SOUR
+mirrors, and independently recomputed all 15,540 three-plane QFISS values.
+The frozen returned XSM had SHA-256
+`dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054`
+and 231,572,260 bytes.
+
+This establishes one three-plane production radial CONT internal
+acceptance-and-publication return. It is not an independent transport
+residual check and does not establish axial feedback, `CLOSED/1`, outer
+2D/1D Picard convergence, reproducibility, SPOD rank accuracy, or eigenvalue
+and power accuracy. The full result and exact nonclaims are in
+[`real64_phase_a9b_b2v_one_real_continuation/`](validation/iterative/real64_phase_a9b_b2v_one_real_continuation/README.md).
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh
