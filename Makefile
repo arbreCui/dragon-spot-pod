@@ -118,6 +118,9 @@ spot-real64-phase-a9b-b2u-same-call-asm-host :
 .PHONY: spot-real64-phase-a9b-b2v-one-real-continuation
 spot-real64-phase-a9b-b2v-one-real-continuation :
 	sh validation/iterative/real64_phase_a9b_b2v_one_real_continuation/run_phase_a9b_b2v_one_real_continuation.sh
+.PHONY: spot-real64-phase-a9b-b2w-returned-close
+spot-real64-phase-a9b-b2w-returned-close :
+	sh validation/iterative/real64_phase_a9b_b2w_returned_close/run_phase_a9b_b2w_returned_close.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

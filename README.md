@@ -1447,6 +1447,49 @@ residual check and does not establish axial feedback, `CLOSED/1`, outer
 and power accuracy. The full result and exact nonclaims are in
 [`real64_phase_a9b_b2v_one_real_continuation/`](validation/iterative/real64_phase_a9b_b2v_one_real_continuation/README.md).
 
+## Returned-feedback close gate (B2w)
+
+B2w adds the separate fail-closed boundary required after
+`SPOSTATE -> SPOLEAK`:
+
+```sh
+make spot-real64-phase-a9b-b2w-returned-close
+```
+
+`SPOR64_B2W_CLOSE` accepts no loose plane, eigenvalue, `RHO`, epoch,
+tolerance, relaxation, or correction scalar. It admits one unsealed
+SPOSTATE-owned axial state and one `RETURNED/1` archive already updated by
+SPOLEAK, binds \(k_1\), \(\rho_1=1/k_1\), and all
+\(3\times370\) leakage values bit for bit, and publishes only to two fresh
+targets. The archive-root epoch is its final mutation and sole logical
+commit.
+
+The closed root owns \(\rho_1\), while each radial `SOLVED/1` child
+correctly retains \(\rho_0\), the coefficient of the equation that produced
+that child. Likewise the copied radial `SYSTEM` retains \(L_0\), whereas
+the copied flux object carries the directly integrated \(L_1\).
+`QFISS` is preserved as equation provenance. No tolerance is used to force
+either generation to agree with the other, and the transient absolute
+leakage-change diagnostic is recomputed bit for bit as
+`maxval(abs(L1-L0))` but is neither used as a threshold nor promoted into
+the closed state.
+
+The short B2w gate is synthetic. Its harness calls the real `SPOLEAK` once on
+a small constructed axial field, but executes no ASM, FLU, Dragon, transport
+solve, or Picard iteration. It proves the listed detached content and
+logical-commit contract, not that the supplied AX object was historically
+produced from the supplied RETURNED object in one call. The next boundary is
+therefore a default-off immediate wrapper that owns
+`ASM FIXB -> FLU TYPE K -> SPOSTATE -> SPOLEAK -> B2w`; it must be
+compiled and tested separately before any further real activation.
+
+The frozen seconds-scale gate passes one close, 25 zero-write rejections, a
+17-test static suite (one baseline plus 16 directed mutations), and two
+identical independent GANLIB-only posterior runs. The posterior checks 1,110
+leakage promotions and 46,620 values in each REAL64 authority and REAL32
+mirror set. All generated XSM files remain temporary and are removed by the
+runner.
+
 The alternative three-return design is also checked without Dragon:
 
 ```sh

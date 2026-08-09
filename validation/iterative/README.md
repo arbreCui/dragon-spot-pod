@@ -1085,6 +1085,34 @@ does not run an axial solve, publish a new eigenvalue, commit `CLOSED/1`, or
 independently evaluate the A9 norms/transport residual, reproducibility, or
 accuracy.
 
+B2w implements the separate returned-feedback close gate:
+
+```sh
+make spot-real64-phase-a9b-b2w-returned-close
+```
+
+[`real64_phase_a9b_b2w_returned_close/`](real64_phase_a9b_b2w_returned_close/README.md)
+validates an unsealed SPOSTATE axial state together with a SPOLEAK-updated
+`RETURNED/1` archive and publishes a fresh AX/archive `CLOSED/1` pair.
+The new closed pair owns \(k_1,\rho_1,L_1\); each contained radial result remains
+`SOLVED/1` with the exact \(\rho_0\) and frozen `QFISS` that label its
+equation, while its archived radial SYSTEM continues to contain \(L_0\).
+No equality, tolerance, mixing, or correction is imposed between the two
+generations. The transient `SPOT-L1-ERR` is accepted only when it is the
+exact REAL32 value `maxval(abs(L1-L0))`; it is an identity check, not an
+acceptance threshold, and is omitted from the closed output.
+
+The B2w validation is seconds-scale and synthetic. It proves exact schemas,
+REAL64/REAL32 bindings, input immutability, fresh-target publication, and
+the final root-epoch commit. It does not execute ASM, FLU, Dragon, transport,
+or a Picard map, and detached artifacts do not prove that the axial state was
+historically produced from that exact returned archive. A later default-off
+same-call wrapper must establish that causal path before a real axial
+activation is considered. The frozen gate contains one accepted close, 25
+zero-write rejections, 17 static tests (one baseline plus 16 directed
+mutations), one real SPOLEAK call on synthetic data, and two identical
+GANLIB-only posterior runs.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

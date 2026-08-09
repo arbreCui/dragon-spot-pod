@@ -165,6 +165,16 @@ L_{s,g}^+
 This is an integrated neutron-balance identity. It contains no tunable
 coefficient.
 
+The two generations must remain distinguishable in stored evidence. A
+radial result produced while evaluating \(G(x^{(m)})\) keeps the equation
+inputs \(\rho^{(m)}\) and \(L^{(m)}\) that actually produced it. After the
+axial update, the enclosing closed state owns the new
+\((\rho^{(m+1)},L^{(m+1)})\). Thus a closed archive may correctly contain
+new root data together with radial children labelled by the preceding
+equation inputs. Relabelling those children with \(\rho^{(m+1)}\), or
+overwriting the archived radial system with \(L^{(m+1)}\), would erase
+provenance rather than improve consistency.
+
 ## 5. Fixed-point equation
 
 Equations (4)--(10) define one deterministic map
