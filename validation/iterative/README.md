@@ -1106,12 +1106,46 @@ The B2w validation is seconds-scale and synthetic. It proves exact schemas,
 REAL64/REAL32 bindings, input immutability, fresh-target publication, and
 the final root-epoch commit. It does not execute ASM, FLU, Dragon, transport,
 or a Picard map, and detached artifacts do not prove that the axial state was
-historically produced from that exact returned archive. A later default-off
-same-call wrapper must establish that causal path before a real axial
-activation is considered. The frozen gate contains one accepted close, 25
+historically produced from that exact returned archive. B2x supplies the
+separate default-off same-call custody route before any real axial activation
+is considered. The frozen gate contains one accepted close, 25
 zero-write rejections, 17 static tests (one baseline plus 16 directed
 mutations), one real SPOLEAK call on synthetic data, and two identical
 GANLIB-only posterior runs.
+
+B2x freezes that same-call returned-to-closed route:
+
+```sh
+make spot-real64-phase-a9b-b2x-same-call-returned-close
+```
+
+[`real64_phase_a9b_b2x_same_call_returned_close/`](real64_phase_a9b_b2x_same_call_returned_close/README.md)
+checks the new `SpotCloseR64` procedure and thin `SPOR64V`/`SPOR64X`
+adapters. When selected, the procedure is specified to deep-copy caller
+`RETURNED/1` into one private `FEEDBACK`; immediately before ASM, `SPOR64V`
+admits its exact seven-record schema and verifies every child L0 against the
+same-index SYSTEM L0 bit for bit. The fixed route then builds one local
+rank-one SYSTEM, obtains one local axial FLUX, constructs the canonical
+state, updates the private archive with undamped leakage, and gives both
+still-live local inputs directly to B2w. Only B2w may publish the two fresh
+`CLOSED/1` outputs. This paragraph specifies the compiled route; the gate
+does not execute that full procedure.
+
+The fixed rank is a predeclared trial-space dimension; its accuracy is not
+claimed. The fixed `2.5E-7` thresholds and 500-iteration cap are numerical
+inner-solver controls, never coupling acceptance or empirical correction
+parameters. The strict FLU success predicate is unchanged. If a SPOT TYPE-K
+solve exhausts the cap without satisfying it, `FLU2DR` now aborts before the
+common save path, so no SPOSTATE, SPOLEAK, B2w, or CLOSED publication can
+follow. There is no retuning or retry.
+
+The gate is static/synthetic and seconds-scale: production ASM, FLU,
+SPOSTATE, SPOLEAK and dispatcher sources are strictly compiled, while real
+ASM/FLU/SPOSTATE/Dragon/transport/Picard execution remains zero. Synthetic
+execution proves both the read-only admission boundary—including deliberate
+child/SYSTEM L0 mismatch rejection—and the final B2w content boundary. It
+does not prove a real axial map, B2v-to-B2x runtime continuity, convergence,
+rank-one adequacy, or eigenvalue/power accuracy.
 
 ## Fixed three-return design
 

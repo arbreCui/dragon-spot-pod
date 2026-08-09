@@ -1,0 +1,16 @@
+****************************************************************
+* Stub-only B2x ON witness: compilation executes no module.    *
+****************************************************************
+LINKED_LIST RETURNED TRACK_AX MACROLIB3 BASIS_REF
+            AX_CLOSED ARCH_CLOSED ;
+PROCEDURE SpotCloseR64 ;
+MODULE B2XFIX: END: ;
+INTEGER ENABLE := 1 ;
+
+IF ENABLE 1 = THEN
+  RETURNED TRACK_AX MACROLIB3 BASIS_REF := B2XFIX: :: ;
+  AX_CLOSED ARCH_CLOSED := SpotCloseR64
+    RETURNED TRACK_AX MACROLIB3 BASIS_REF :: ;
+ENDIF ;
+
+END: ;

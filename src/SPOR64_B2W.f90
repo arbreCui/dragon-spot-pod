@@ -8,6 +8,7 @@ module SPOR64_B2W
 
   integer, parameter, public :: SPOR64_B2W_PREFLIGHT_FAILED = 1
   integer, parameter, public :: SPOR64_B2W_CLOSED = 2
+  integer, parameter, public :: SPOR64_B2W_RETURNED_ADMITTED = 3
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NSNAP = 3
@@ -21,9 +22,100 @@ module SPOR64_B2W
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
 
-  public :: SPOR64_B2W_CLOSE
+  public :: SPOR64_B2W_ADMIT_RETURNED, SPOR64_B2W_CLOSE
 
 contains
+
+  subroutine SPOR64_B2W_ADMIT_RETURNED(ipfeedback,status)
+    type(c_ptr), intent(in) :: ipfeedback
+    integer, intent(out) :: status
+
+    integer :: ip, ig, archive_planes, root_planes, root_epoch
+    integer :: child_epoch(NSNAP), fs_marker(NSNAP)
+    integer(int32) :: found32, expected32
+    integer(int64) :: found64, expected64
+    real(real32) :: fs_keff32(NSNAP)
+    real(real32) :: child_leakage32(NGRP,NSNAP)
+    real(real32) :: system_leakage32(NGRP,NSNAP)
+    real(real64) :: child_rho64(NSNAP)
+    type(c_ptr) :: root_authority
+    type(c_ptr) :: tracks, libraries, systems, fluxes
+    type(c_ptr) :: input_system, input_flux
+
+    status = SPOR64_B2W_PREFLIGHT_FAILED
+    if (.not. c_associated(ipfeedback)) return
+
+    ! Admit the exact object returned by B2R before any fresh axial work.
+    ! This routine is read-only: no LCM mutation is possible on either path.
+    if (.not. RETURNED_FEEDBACK_ROOT_IS_EXACT(ipfeedback)) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipfeedback,'SIGNATURE',3,12, &
+        'L_ARCHIVE')) return
+    if (.not. RECORD_MATCHES(ipfeedback,'LISTDIM',1,1)) return
+    if (.not. RECORD_MATCHES(ipfeedback,'SPOT-R64',-1,0)) return
+    call LCMGET(ipfeedback,'LISTDIM',archive_planes)
+    if (archive_planes /= NSNAP) return
+
+    root_authority = LCMGID(ipfeedback,'SPOT-R64')
+    if (.not. c_associated(root_authority)) return
+    if (.not. RETURNED_ROOT_AUTHORITY_IS_EXACT(root_authority)) return
+    if (.not. RECORD_MATCHES(root_authority,'NPLANE',1,1)) return
+    if (.not. CHARACTER_RECORD_MATCHES(root_authority,'STATE',3,12, &
+        'RETURNED')) return
+    if (.not. RECORD_MATCHES(root_authority,'EPOCH',1,1)) return
+    if (.not. ABSENT_RECORD(root_authority,'RHO')) return
+    call LCMGET(root_authority,'NPLANE',root_planes)
+    call LCMGET(root_authority,'EPOCH',root_epoch)
+    if (root_planes /= NSNAP .or. root_epoch /= CLOSE_EPOCH) return
+
+    if (.not. RECORD_MATCHES(ipfeedback,'TRACK',NSNAP,10)) return
+    if (.not. RECORD_MATCHES(ipfeedback,'MICROLIB2',NSNAP,10)) return
+    if (.not. RECORD_MATCHES(ipfeedback,'SYSTEM',NSNAP,10)) return
+    if (.not. RECORD_MATCHES(ipfeedback,'FLUX',NSNAP,10)) return
+    tracks = LCMGID(ipfeedback,'TRACK')
+    libraries = LCMGID(ipfeedback,'MICROLIB2')
+    systems = LCMGID(ipfeedback,'SYSTEM')
+    fluxes = LCMGID(ipfeedback,'FLUX')
+    if (.not. c_associated(tracks)) return
+    if (.not. c_associated(libraries)) return
+    if (.not. c_associated(systems)) return
+    if (.not. c_associated(fluxes)) return
+
+    do ip = 1, NSNAP
+      if (.not. LIST_ITEM_IS_DIRECTORY(tracks,ip)) return
+      if (.not. LIST_ITEM_IS_DIRECTORY(libraries,ip)) return
+      if (.not. LIST_ITEM_IS_DIRECTORY(systems,ip)) return
+      if (.not. LIST_ITEM_IS_DIRECTORY(fluxes,ip)) return
+      input_system = LCMGIL(systems,ip)
+      input_flux = LCMGIL(fluxes,ip)
+      if (.not. c_associated(input_system)) return
+      if (.not. c_associated(input_flux)) return
+      if (.not. RETURNED_CHILD_IS_VALID(input_flux,child_rho64(ip), &
+          fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
+          child_leakage32(:,ip))) return
+      if (.not. RETURNED_SYSTEM_IS_VALID(input_system,ip, &
+          child_rho64(ip),child_epoch(ip),system_leakage32(:,ip))) return
+
+      ! ASM consumes child L0.  Bind it element by element to the L0 retained
+      ! by the same-index SYSTEM; a scalar norm cannot prove this identity.
+      do ig = 1, NGRP
+        found32 = transfer(child_leakage32(ig,ip),0_int32)
+        expected32 = transfer(system_leakage32(ig,ip),0_int32)
+        if (found32 /= expected32) return
+      end do
+    end do
+
+    ! All three children solve the same frozen radial equation generation.
+    do ip = 2, NSNAP
+      found64 = transfer(child_rho64(ip),0_int64)
+      expected64 = transfer(child_rho64(1),0_int64)
+      if (found64 /= expected64) return
+      found32 = transfer(fs_keff32(ip),0_int32)
+      expected32 = transfer(fs_keff32(1),0_int32)
+      if (found32 /= expected32) return
+    end do
+
+    status = SPOR64_B2W_RETURNED_ADMITTED
+  end subroutine SPOR64_B2W_ADMIT_RETURNED
 
   subroutine SPOR64_B2W_CLOSE(ipaxout,iparchiveout,ipax,ipfeedback,status)
     type(c_ptr), intent(in) :: ipaxout, iparchiveout, ipax, ipfeedback
@@ -649,6 +741,16 @@ contains
 
     FEEDBACK_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
   end function FEEDBACK_ROOT_IS_EXACT
+
+
+  logical function RETURNED_FEEDBACK_ROOT_IS_EXACT(iplist)
+    type(c_ptr), intent(in) :: iplist
+    character(len=12), parameter :: names(7) = &
+        ['SIGNATURE   ','LISTDIM     ','TRACK       ','MICROLIB2   ', &
+         'SYSTEM      ','FLUX        ','SPOT-R64    ']
+
+    RETURNED_FEEDBACK_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+  end function RETURNED_FEEDBACK_ROOT_IS_EXACT
 
 
   logical function RETURNED_ROOT_AUTHORITY_IS_EXACT(iplist)

@@ -546,8 +546,11 @@ src/SPOR64_B2R.f90                    label-bound RETURNED archive collector
 src/SPOR64_B2S.f90                    default-off immediate three-plane bridge
 src/SPOR64_B2T.f90                    owned PROJECTED-to-RETURNED host step
 src/SPOR64_B2U.f90                    CLE adapter from SPOR64T to B2T
+src/SPOR64_B2W.f90                    RETURNED admission and CLOSED/1 gates
+src/SPOR64_B2X.f90                    CLE adapters from SPOR64V/SPOR64X to B2W
 data/SpotAsmR64.c2m                   default-off three-plane ASM host
 data/SpotStepR64.c2m                  same-call ASM-to-B2T host procedure
+data/SpotCloseR64.c2m                 same-call returned-to-closed procedure
 src/SPOLEAK.f90                       axial leakage integration
 src/SPOSTATE.f90                      canonical fixed-space state
 src/SPOXCONV.f90                      complete raw state difference
@@ -1478,10 +1481,9 @@ The short B2w gate is synthetic. Its harness calls the real `SPOLEAK` once on
 a small constructed axial field, but executes no ASM, FLU, Dragon, transport
 solve, or Picard iteration. It proves the listed detached content and
 logical-commit contract, not that the supplied AX object was historically
-produced from the supplied RETURNED object in one call. The next boundary is
-therefore a default-off immediate wrapper that owns
-`ASM FIXB -> FLU TYPE K -> SPOSTATE -> SPOLEAK -> B2w`; it must be
-compiled and tested separately before any further real activation.
+produced from the supplied RETURNED object in one call. B2x below implements
+and statically freezes that separate default-off custody boundary; it still
+does not execute B2v-to-B2x runtime continuity.
 
 The frozen seconds-scale gate passes one close, 25 zero-write rejections, a
 17-test static suite (one baseline plus 16 directed mutations), and two
@@ -1489,6 +1491,60 @@ identical independent GANLIB-only posterior runs. The posterior checks 1,110
 leakage promotions and 46,620 values in each REAL64 authority and REAL32
 mirror set. All generated XSM files remain temporary and are removed by the
 runner.
+
+## Same-call returned-to-closed host (B2x)
+
+B2x freezes the deployment-default-off host route from one accepted radial
+return to the next complete closed state:
+
+```sh
+make spot-real64-phase-a9b-b2x-same-call-returned-close
+```
+
+The external procedure has no rank, eigenvalue, `RHO`, leakage, tolerance,
+relaxation, correction, or retry argument:
+
+```text
+AX_CLOSED ARCH_CLOSED :=
+  SpotCloseR64 RETURNED TRACK_AX MACROLIB3 BASIS_REF :: ;
+```
+
+Inside the procedure, `RETURNED` is deep-copied once to a private `FEEDBACK`
+object. Immediately before ASM, the read-only `SPOR64V` gate admits its exact
+seven-record RETURNED schema and verifies all 1,110 child-L0 values against
+the same-index archived SYSTEM L0 values bit for bit. Thus the L0 consumed by
+ASM is bound to the retained equation provenance before SPOLEAK can overwrite
+the child record; a later scalar maximum cannot stand in for this identity.
+The same private object is then read by fresh `ASM SPOD 1 FIXB`, updated
+directly by `SPOLEAK`, and finally passed to B2w. The fresh axial SYSTEM and
+AX objects also remain local and live throughout the fixed route:
+
+```text
+RETURNED/1 -> private FEEDBACK(L0) -> exact read-only L0 admission
+  -> ASM SPOD 1 FIXB -> FLU TYPE K B1 SIGS
+  -> SPOSTATE -> SPOLEAK(FEEDBACK,L1) -> B2w -> CLOSED/1
+```
+
+Rank one is the predeclared reduced-space dimension, not a fitted physical
+coefficient; `SPOASM` requires every fixed-basis group to carry exactly that
+mode count. Its adequacy remains a later rank-refinement question. Likewise
+`2.5E-7` and 500 are frozen binary32 inner-solver termination controls, not
+outer coupling criteria. They cannot be changed after a failure and there is
+no retry. The existing strict FLU predicate remains unchanged. `FLU2DR` now
+fails closed for SPOT TYPE-K if the outer cap is exhausted, before its common
+solution-publication path, so an unterminated AX cannot reach `SPOSTATE`,
+`SPOLEAK`, or B2w. Strict success on the final allowed iteration remains
+valid.
+
+The B2x short gate compiles the real production procedure, both adapters,
+dispatcher and solver sources, but executes no real ASM, FLU, SPOSTATE,
+Dragon, transport solve, or Picard iteration. Its dynamic witnesses cover the
+read-only admission adapter, including a deliberately mismatched child/SYSTEM
+L0 rejection, the terminal adapter, and the already validated synthetic
+`SPOLEAK -> B2w` close. It therefore establishes a compile-valid
+same-procedure custody route and fail-closed content/terminal controls, not a
+real axial-map evaluation, convergence, rank sufficiency, or eigenvalue/power
+accuracy. A real activation remains a separate bounded experiment.
 
 The alternative three-return design is also checked without Dragon:
 

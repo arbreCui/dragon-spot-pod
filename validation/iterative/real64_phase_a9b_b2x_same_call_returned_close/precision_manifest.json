@@ -1,0 +1,67 @@
+{
+  "phase": "A9b-B2x",
+  "name": "same-call-returned-close",
+  "receipt": "frozen",
+  "deployment_default": "off",
+  "production_route": [
+    "RETURNED immutable input",
+    "private FEEDBACK exact copy",
+    "SPOR64V returned-generation admission",
+    "ASM SPOD rank-1 FIXB",
+    "FLU TYPE K",
+    "SPOSTATE",
+    "SPOLEAK direct L1",
+    "SPOR64X",
+    "SPOR64_B2W_CLOSE"
+  ],
+  "fixed_controls": {
+    "spod_rank": 1,
+    "maxout": 500,
+    "epsout": "2.5E-7 binary32 parser literal",
+    "epsunk": "2.5E-7 binary32 parser literal",
+    "epsinr": "2.5E-7 binary32 parser literal"
+  },
+  "runtime": {
+    "dragon": 0,
+    "asm": 0,
+    "flu": 0,
+    "spostate": 0,
+    "spoleak": 1,
+    "spor64v": 9,
+    "spor64x": 10,
+    "real_b2w_close": 2,
+    "transport": 0,
+    "picard": 0,
+    "posterior_runs": 2
+  },
+  "dynamic_boundaries": {
+    "adapter_capture": "production SPOR64V and SPOR64X with capture-stub B2W",
+    "content_close": "real SPOLEAK plus real SPOR64X plus real B2W",
+    "returned_admission": "real SPOR64V/B2W admission, no downstream solver"
+  },
+  "static_tests": {
+    "baseline": 1,
+    "directed_mutations": 33,
+    "total": 34
+  },
+  "arithmetic": {
+    "fast_math": false,
+    "fp_contract": false,
+    "relaxation": false,
+    "damping": false,
+    "clipping": false,
+    "fitting": false,
+    "retry": false
+  },
+  "not_claimed": [
+    "production ASM execution",
+    "production FLU execution",
+    "production SPOSTATE execution",
+    "real axial solve",
+    "complete real online Picard map",
+    "outer convergence",
+    "transport accuracy",
+    "SPOD truncation accuracy",
+    "eigenvalue or power accuracy"
+  ]
+}

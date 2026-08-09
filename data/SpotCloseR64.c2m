@@ -1,0 +1,48 @@
+****************************************************************
+* SpotCloseR64.c2m -- one returned-to-closed axial step         *
+*                                                              *
+* This procedure is not selected by a shipped calculation.     *
+* It owns every mutable intermediate from the RETURNED copy     *
+* through the final B2W CLOSED/1 commit.                        *
+****************************************************************
+PARAMETER AX_CLOSED ARCH_CLOSED RETURNED TRACK_AX MACROLIB3 BASIS_REF ::
+  ::: LINKED_LIST AX_CLOSED ARCH_CLOSED RETURNED TRACK_AX
+                  MACROLIB3 BASIS_REF ; ;
+
+LINKED_LIST FEEDBACK SYSTEM_NEXT AX_NEXT ;
+MODULE SPOR64V: ASM: FLU: SPOSTATE: SPOLEAK: SPOR64X: DELETE: END: ;
+
+REAL leak_change ;
+
+* Preserve the caller's RETURNED/1 object.  FEEDBACK is the sole mutable
+* archive seen by this procedure and stays local until B2W consumes it.
+FEEDBACK := RETURNED ;
+
+* Re-admit the detached RETURNED content under this procedure's custody.
+* The read-only gate proves child L0 == same-index SYSTEM L0 bit for bit;
+* no scalar norm or numerical tolerance substitutes for that identity.
+SPOR64V: FEEDBACK :: ;
+
+* Rank one is the frozen reduced-space dimension.  FIXB reuses the supplied
+* offline basis and rebuilds only the current radial response.
+SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX FEEDBACK BASIS_REF ::
+  EDIT 0 SPOD 1 FIXB ;
+
+* These are the already frozen binary32 axial inner-solver termination
+* controls.  They are neither outer acceptance criteria nor mixing factors.
+AX_NEXT := FLU: MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+  EDIT -3 TYPE K B1 SIGS EXTE 500 2.5E-7
+  UNKT 2.5E-7 THER 2.5E-7 ;
+
+AX_NEXT := SPOSTATE:
+  AX_NEXT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+
+* SPOLEAK writes the fresh undamped L1 only into the private feedback copy.
+FEEDBACK := SPOLEAK: FEEDBACK AX_NEXT TRACK_AX :: >>leak_change<< ;
+
+AX_CLOSED ARCH_CLOSED := SPOR64X: AX_NEXT FEEDBACK :: ;
+
+FEEDBACK SYSTEM_NEXT AX_NEXT := DELETE:
+  FEEDBACK SYSTEM_NEXT AX_NEXT ;
+
+END: ;

@@ -175,6 +175,27 @@ equation inputs. Relabelling those children with \(\rho^{(m+1)}\), or
 overwriting the archived radial system with \(L^{(m+1)}\), would erase
 provenance rather than improve consistency.
 
+At the online handoff, this provenance is an elementwise identity, not a
+norm test. Immediately before the axial assembly reads the returned radial
+children, every stored child value \(L^{(m)}_{s,g}\) must be bitwise equal to
+the same-index value retained in its radial SYSTEM. The returned object then
+remains under one procedure's custody until the direct leakage update. A
+scalar such as \(\max|L^{(m+1)}-L^{(m)}|\) cannot establish this binding,
+because distinct old fields can have the same maximum distance from the new
+field.
+
+As a requirement of the target method, an inner iteration cap is not a
+physical solution and cannot define \(G(x^{(m)})\). Each radial or axial solve
+must satisfy its predeclared strict terminal predicate before its field is
+admitted to the next map operation. The present B2x implementation enforces
+this fail-closed rule specifically on the SPOT TYPE-K axial `FLU2DR` path;
+other solver paths require their own qualification.
+Reaching the cap without satisfying that same predicate is a fail-closed
+condition: it cannot be repaired by accepting the last iterate, changing a
+tolerance, damping the update, or retrying with another control. This rule
+adds no equation or empirical coefficient; it only separates a computed
+iterate from an accepted solution of the stated discrete problem.
+
 ## 5. Fixed-point equation
 
 Equations (4)--(10) define one deterministic map

@@ -1305,6 +1305,15 @@
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
+*     A SPOT TYPE-K state is an input to the coupled 2D/1D map.  Never let
+*     an outer-cap iterate fall through to the common solution-publication
+*     path.  This branch adds no new test: reaching it means the strict
+*     predicate above was false for every allowed outer iteration.
+      IF((CXDOOR.EQ.'SPOT').AND.(ITYPEC.GE.2).AND.
+     1   (ITYPEC.LE.3)) THEN
+         CALL XABORT('FLU2DR: SPOT TYPE-K STRICT TERMINATION REQUIRED.')
+         RETURN
+      ENDIF
       MESSOU='*NOT*'
 *
 ****  CONVERGENCE REACHED  ******************************************
