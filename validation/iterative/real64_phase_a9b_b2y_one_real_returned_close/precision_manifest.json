@@ -1,0 +1,173 @@
+{
+  "phase": "A9b-B2y",
+  "name": "one-real-supplied-returned-close",
+  "objective": "exactly one bounded production SpotCloseR64 axial half-step from the accepted B2v RETURNED object",
+  "receipt": "pending",
+  "deployment_default": "off",
+  "runtime_result": {
+    "status": "NOT-EVALUATED",
+    "dragon_executions": 0,
+    "scientific_classification": "NOT-EVALUATED"
+  },
+  "preflight_result": {
+    "status": "PASS",
+    "directed_mutation_tests": 48,
+    "production_close_route": "strictly compiled and privately linked",
+    "clepil_objpil_compilations": 2,
+    "independent_posterior": "strictly compiled and linked with GANLIB/UTILIB only",
+    "dragon_executions": 0
+  },
+  "activation_count": {
+    "dragon_maximum": 1,
+    "spotcloser64_calls_maximum": 1,
+    "automatic_retries": 0,
+    "radial_recomputations": 0,
+    "outer_picard_maps": 0
+  },
+  "frozen_inputs": {
+    "supplied_b2v_returned": {
+      "availability": "external prerequisite",
+      "sha256": "dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054",
+      "bytes": 231572260,
+      "parent_receipt_sha256": "af2b47504adcefc7d1e9fd2ae2ecf4517298e7b5b1be1cd75633ca0fa5482bcb"
+    },
+    "axial_track": {
+      "path": "validation/artifacts/iterative-seed/initial_axial_track.xsm",
+      "sha256": "101ba0ad64c91723fdeb002e62c6226347fcfaeff188e125d699d70e113febc7",
+      "bytes": 13248
+    },
+    "axial_macrolib": {
+      "path": "validation/artifacts/iterative-seed/initial_axial_macrolib.xsm",
+      "sha256": "2e01e806683ce25b5771af055112dc86dcf147245abc5a5c3dceac4d9939373a",
+      "bytes": 27957124
+    },
+    "basis_reference": {
+      "path": "validation/artifacts/iterative-map1/basis_reference.xsm",
+      "sha256": "dc65467731947901393f9fb7114b7cd2e956a9992bb97db18e665b47e7446504",
+      "bytes": 800220
+    }
+  },
+  "missing_input_policy": {
+    "dragon_executions": 0,
+    "automatic_b2v_reexecution": false,
+    "spotstepr64_execution": false,
+    "radial_transport_execution": false,
+    "substitute_or_unmanifested_input": false,
+    "classification": "INVALID-NO-SCIENTIFIC-RESULT"
+  },
+  "same_process_scope": {
+    "true": "private FEEDBACK through SPOR64V, ASM, FLU, SPOSTATE, SPOLEAK, SPOR64X and B2w within one SpotCloseR64 call and one Dragon process",
+    "false": "the earlier B2v radial activation and B2y axial activation occurred in the same process or one continuous host call"
+  },
+  "production_route": [
+    "supplied accepted RETURNED/1",
+    "private FEEDBACK deep copy",
+    "SPOR64V returned-generation admission",
+    "ASM SPOD rank-1 FIXB",
+    "FLU TYPE K B1 SIGS",
+    "SPOSTATE canonical a1/rho1/L1",
+    "SPOLEAK direct undamped L1",
+    "SPOR64X",
+    "SPOR64_B2W_CLOSE",
+    "AX CLOSED/1 and ARCHIVE CLOSED/1"
+  ],
+  "generation_contract": {
+    "input_child": "SOLVED/1 with rho0, k0, QFISS0 and L0",
+    "input_system": "ASSEMBLED/1 with same-index L0 bitwise equal to child L0 before ASM",
+    "closed_axial_root": "CLOSED/1 with a1, k1, rho1=1/k1 and L1",
+    "closed_archive_child": "SOLVED/1 retains rho0, k0 and QFISS0 while child leakage is direct L1",
+    "closed_archive_system": "retains lagged radial-equation L0",
+    "qfiss_recomputed_with_rho1": false,
+    "rho1_must_equal_rho0": false,
+    "l1_must_equal_l0": false,
+    "leakage_change_used_for_acceptance": false
+  },
+  "fixed_numerical_controls": {
+    "spod_rank_per_group": 1,
+    "fixed_basis": true,
+    "epsout_binary32_bits_hex": "348637bd",
+    "epsunk_binary32_bits_hex": "348637bd",
+    "epsinr_binary32_bits_hex": "348637bd",
+    "maxout": 500,
+    "maxinr_expected_from_frozen_axial_configuration": 740,
+    "minimum_outer_visit": 2,
+    "strict_inner_state": 1,
+    "success_at_final_allowed_iteration_permitted": true,
+    "retry_or_retune_after_failure": false
+  },
+  "resource_caps": {
+    "wall_seconds": 80,
+    "cpu_seconds": 75,
+    "leader_rss_bytes": 2147483648,
+    "file_bytes": 536870912,
+    "log_bytes": 67108864,
+    "threads": 1,
+    "core_bytes": 0,
+    "meaning": "execution safety only; not a physical or convergence criterion"
+  },
+  "required_runtime_census": {
+    "spotcloser64_calls": 1,
+    "spor64v": 1,
+    "asm": 1,
+    "flu": 1,
+    "spostate": 1,
+    "spoleak": 1,
+    "spor64x": 1,
+    "radial_cont": 0,
+    "paired_flu2dr_strict_terminal_records": 1,
+    "normal_dragon_termination": true,
+    "ordered_and_noninterleaved": true
+  },
+  "required_independent_posterior": {
+    "executions": 2,
+    "reports_must_match": true,
+    "links": [
+      "GANLIB",
+      "UTILIB"
+    ],
+    "production_solver_symbols": 0,
+    "input_hashes_unchanged": true,
+    "fresh_closed_outputs": true,
+    "rank_one_groups": 370,
+    "leakage_copy_and_promotion_identities_checked": 1110,
+    "canonical_coordinates_and_normalization_recomputed": false,
+    "basis_compared_bitwise_to_reference": false,
+    "rho1_reciprocal_compared_bitwise": true,
+    "rho0_k0_qfiss0_preserved_bitwise": true,
+    "axial_equation_residual_recomputed": false,
+    "global_neutron_balance_recomputed": false
+  },
+  "failure_classification": {
+    "missing_changed_or_rejected_input_or_nonfresh_output": "INVALID-NO-SCIENTIFIC-RESULT",
+    "wall_cpu_rss_file_or_log_cap": "INVALID-RUNTIME-BUDGET-NO-CLOSED-RESULT",
+    "nonzero_abnormal_xabort_strict_flu_failure_or_no_closed_pair": "FAILED-NO-CLOSED",
+    "normal_end_with_bad_runtime_census": "INVALID-RUNTIME-EVIDENCE",
+    "normal_evidenced_route_with_bad_closed_posterior": "INVALID-CLOSED-EVIDENCE",
+    "all_conditions_pass": "ONE-REAL-SUPPLIED-RETURNED-TO-CLOSED-AXIAL-HALF-STEP"
+  },
+  "added_controls": {
+    "empirical_coupling_coefficients": 0,
+    "model_completion_coefficients": 0,
+    "relaxation": 0,
+    "damping": 0,
+    "clipping": 0,
+    "fitting": 0,
+    "acceptance_score": 0,
+    "retry": 0
+  },
+  "not_claimed": [
+    "same-process continuity with the B2v radial activation",
+    "complete production Picard map",
+    "outer Picard convergence or contraction",
+    "fixed-point existence or stability",
+    "rank-one adequacy",
+    "independent axial equation residual",
+    "independent global neutron balance",
+    "eigenvalue flux leakage reaction-rate or power accuracy",
+    "mesh angle energy-group axial-floor or tolerance convergence",
+    "benchmark or cross-code agreement",
+    "full-core validity",
+    "repeated-run or cross-platform reproducibility",
+    "absence of all inherited legacy numerical settings"
+  ]
+}

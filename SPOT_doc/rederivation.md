@@ -196,6 +196,14 @@ tolerance, damping the update, or retrying with another control. This rule
 adds no equation or empirical coefficient; it only separates a computed
 iterate from an accepted solution of the stated discrete problem.
 
+The B2y validation boundary is the first prepared real test of this axial
+half-step. It accepts only the exact B2v `RETURNED/1` artifact, then permits
+one `SpotCloseR64` call with one fresh axial solve and no retry. Its default
+path is compile/link-only, and the accepted B2v file was intentionally not
+retained in the repository, so the present B2y runtime status is
+`NOT-EVALUATED`. This boundary must not be described as one continuous
+B2v-to-B2y process, a complete evaluation of \(G\), or Picard convergence.
+
 ## 5. Fixed-point equation
 
 Equations (4)--(10) define one deterministic map
@@ -309,22 +317,26 @@ iterative method.
 ## Current status
 
 The project is qualifying equations (1)--(17) from a clean evidence boundary;
-previous one-shot and dynamic-basis trajectories are not used to establish
-this method. The active source tree has an explicit online branch:
-`SPOT-QFISS` preserves the frozen fission source, `SPOQFS`
-combines it with final off-group scattering, and `SPOASM` builds the radial
-operator from that same equation.
+previous one-shot and dynamic-basis trajectories are not evidence for the
+present strict route. The active source tree has an explicit online branch:
+`SPOT-QFISS` preserves the frozen fission source, `SPOQFS` combines it with
+final off-group scattering, and `SPOASM` builds the radial operator from that
+same equation.
 
-The fixed-basis assembly, canonical state, binary32 restriction identity and
-raw residual plumbing have passed no-transport runtime tests. One corrected
-map \(x_1=G(x_0)\) has also been evaluated twice from the same frozen input.
-The five scientific XSM outputs are byte identical between runs. An
-independent Ganlib-only checker verified bitwise preservation of the POD
-package, a live change in the radial response operator, and a bit-exact
-recomputation of the three outer residuals \(R_\rho,R_L,R_a\) and the
-accompanying \(D_L\) diagnostic.
+B2v has executed one bounded real three-plane radial continuation and returned
+one accepted `RETURNED/1` object. It did not execute the axial half-step or
+close a state. B2x has compiled and synthetically checked the single-procedure
+`RETURNED -> ASM -> FLU -> SPOSTATE -> SPOLEAK -> CLOSED` custody route, but
+did not execute its real ASM or FLU calls. B2y now passes the default-off
+static, compilation and private-link preflight for one real supplied-returned
+axial close. The exact B2v XSM file was not retained, so B2y has executed zero
+Dragon processes and its runtime status remains `NOT-EVALUATED`.
 
-This establishes a deterministic evaluation of \(G\) at one point. It does
-not establish contraction or outer convergence. Inner-tolerance sensitivity,
-the direct Picard trajectory, discretization qualification and independent
-3D validation remain in that order.
+Consequently, the current strict evidence does not yet establish even one
+complete evaluation of \(G\), repeated-map determinism, contraction, or outer
+convergence. A separately authorized B2y activation requires the exact frozen
+B2v bytes and may attempt the axial half-step once, without retry or parameter
+change. Only after that content is independently accepted can a complete raw
+map and then direct Picard iteration be considered. Rank refinement,
+discretization qualification, independent balance/residual checks and 3D
+validation remain later stages.

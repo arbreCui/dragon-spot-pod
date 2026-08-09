@@ -1147,6 +1147,32 @@ child/SYSTEM L0 mismatch rejection—and the final B2w content boundary. It
 does not prove a real axial map, B2v-to-B2x runtime continuity, convergence,
 rank-one adequacy, or eigenvalue/power accuracy.
 
+B2y prepares one real supplied-returned axial close:
+
+```sh
+make spot-real64-phase-a9b-b2y-one-real-returned-close
+```
+
+[`real64_phase_a9b_b2y_one_real_returned_close/`](real64_phase_a9b_b2y_one_real_returned_close/README.md)
+is default-off and currently passes a roughly five-second zero-Dragon
+preflight: 48 directed static tests, strict production compilation, real
+CLEPIL/OBJPIL procedure/deck compilation, a private Dragon link, and
+GANLIB/UTILIB-only posterior compilation. It neither modifies the shared
+Dragon installation nor executes ASM, FLU, transport, or Picard.
+
+The only accepted runtime input is the exact 231,572,260-byte B2v RETURNED
+object with SHA-256
+`dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054`.
+B2v did not retain that large temporary file, so it is not in this repository.
+B2y never regenerates or substitutes it. With an explicitly supplied exact
+file, the gate allows one Dragon and one `SpotCloseR64` call under 80 s wall
+and 75 s CPU bounds, with no retry or parameter change. Runtime success would
+still mean only one supplied-RETURNED axial half-step; same-process B2v
+continuity, a complete Picard map, convergence, rank sufficiency, independent
+axial residual/global-balance validation, and accuracy remain unclaimed. The
+current runtime classification is `NOT-EVALUATED` and `CLOSED/1` is not yet
+published as real evidence.
+
 ## Fixed three-return design
 
 A three-return online legacy32 diagnostic was examined as a smaller

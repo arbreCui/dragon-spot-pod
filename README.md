@@ -132,40 +132,28 @@ binary32 plane restriction used in production, removes one global
 `SPOPROJ FIXB` reconstructs the next radial feedback as \(Ba\), so discarded
 finite-precision off-space content cannot become a hidden state variable.
 
-The no-transport runtime fixture passes, including an independent Ganlib-only
-bitwise comparison over all 370 groups. One corrected map
-\(x_1=G(x_0)\) has now been run twice from the same frozen input. Both runs
-completed two axial and three radial solves, and their five scientific XSM
-outputs are byte identical. A second Ganlib-only checker independently
-verified that the POD package stayed fixed, the live radial operator changed,
-and the three outer residuals plus the dimensional leakage-change diagnostic
-are bit-exact recomputations.
+The no-transport fixtures pass structural and bitwise checks, but they are not
+transport evidence. In the present strict route, B2v has completed one real
+three-plane radial continuation and returned one accepted `RETURNED/1`
+generation. B2x has compiled and synthetically checked the same-procedure
+returned-to-closed custody route. B2y now passes its default-off static,
+mutation, production compilation, CLEPIL/OBJPIL and private-link preflight.
 
-This qualifies one deterministic map evaluation, not outer convergence. The
-measured defect is
+The exact 231,572,260-byte B2v RETURNED file was intentionally deleted with
+its temporary directory. It is therefore not available to B2y in the
+repository, and B2y has executed zero Dragon processes. The present strict
+evidence does not establish one complete \(G(x_0)\), repeated-map
+determinism, contraction, or outer convergence. It would be incorrect to
+promote earlier `one_corrected_map` results into this route because they
+predate the current REAL64 authority, lifecycle, same-call custody and
+fail-closed terminal contracts.
 
-\[
-(R_\rho,R_L,D_L,R_a)=
-(1.28115\times10^{-6},\,7.92285\times10^{-4},\,
-1.16165\times10^{-6},\,9.22826\times10^{-7}).
-\]
+### Historical diagnostics outside the current strict route
 
-Here \(D_L=\|L^+-L\|_\infty\) accompanies the dimensionless relative leakage
-residual \(R_L\); it is a recorded diagnostic, not a fourth convergence
-criterion.
-
-The Stage-4 controls were frozen and pushed before evaluating \(h/2\). The
-initializer reproduced the same basis and \(x_0\), but all three radial
-fixed-source solves exhausted `MAXOUT=500` without satisfying
-\(h/2=\mathtt{0x348637bd}\). The initializer and returned axial solves passed.
-Therefore the capture is `INVALID-INNER-NONCONVERGENCE`: its returned
-`state1` is not \(G_{h/2}(x_0)\), no inner-sensitivity vector is formed, and
-Stage 5 is not authorized.
-
-The failure is numerical, not evidence that the physical SPOT fixed point
-diverges. The active FLU tests are binary32 successive-iterate changes, not
-an independent equation residual. Simply increasing `MAXOUT` has no measured
-contraction basis.
+Earlier legacy-binary32 experiments and precision censuses remain archived
+for forensic context only. Their defect values, repeated files and Stage-4
+classifications are not acceptance evidence for the present method and do
+not authorize Picard iteration.
 
 The frozen single-plane diagnostic has now completed. Both the native
 `ACCE 3 3` and stationary `ACCE 1 0` arms reached the six-update cap without
@@ -477,53 +465,29 @@ design has been frozen, with `Dragon processes = 0`, in
 
 ## Validation route
 
-1. freeze the fixed-space state, source identity and raw map residual;
-2. unit-test POD projection, radial closure and leakage signs;
-3. replay one complete map twice and require identical scientific records
-   (passed for the first corrected map);
-4. compare one production map with one tighter-tolerance map from the same
-   input (attempted; invalid because the radial inner solves did not
-   terminate strictly);
-5. audit the completed probes in exact binary32 representable steps and
-   reject an invalid ACA-matrix surrogate for \(A\phi-q\) (completed);
-6. capture the first primary GMRES raw-sweep difference per frozen terminal,
-   before ACA/SCR, with zero operator applications added by instrumentation
-   and no acceptance threshold (completed and independently replayed);
-7. round the retained RAW scalar tuples once to binary32 and publish an exact
-   ULP bridge census without a new transport solve or attribution claim
-   (completed);
-8. passively census the existing GMRES control flow and reject an empty
-   correction-accumulation precision experiment (completed);
-9. retain the `MCGFCS` precision replay only as an optional implementation
-   unit test, not a scientific gate; reject a partial REAL64 solver fork and
-   freeze the unique attainable \(2h\)-to-\(h\) Stage-4 comparison
-   (completed without transport);
-10. evaluate the one coarse map under a strict process time bound
-    (completed; `UNRESOLVED` in \(R_a\), so replay was forbidden);
-11. decompose the frozen \(R_a\) geometry offline without changing the
-    classification (completed);
-12. freeze and statically close a default-off continuous REAL64 radial
-    working lane, including ACA, rebalancing, acceleration, and terminal
-    norms (protocol frozen; Phase-A1 source arithmetic and the Phase-A2
-    typed post-STIS/pre-ACA façade implemented; Phase-A3 legacy-ABI seam and
-    Phase-A4 compile-only A2-to-A3 host closure implemented; Phase-A5-A7
-    host context, rendezvous and ownership contracts frozen; Phase-A8 inner
-    suffixed REAL64 closure implemented and compile-checked; Phase-A9a owns
-    the outer REAL64 core, B2b connects its default-off source route,
-    B2c closes accepted-only publication, B2d closes the production link,
-    B2e identifies the two real-input ownership blockers, and B2f closes the
-    default-off fresh-output/read-only-seed bootstrap with real XSM inputs
-    and a deterministic test core; runtime provenance, REAL64 continuation
-    and actual MOC remain open);
-13. examine a fixed three-return legacy32 descriptive diagnostic as a
-    smaller alternative (design frozen, but execution is `NO-GO` under the
-    current Stage-4 result);
-14. only after a separately authorized single-plane REAL64 feasibility pass
-    and replay, restart Stage 4 with both \(h\) and \(h/2\) maps recomputed in
-    the same lane;
-15. only after Stage 4 passes study direct Picard convergence;
-16. after convergence, repeat rank/mesh/angle refinement and independent 3D
-    comparison for the iterative solution.
+1. freeze the fixed-basis equations, source identity, REAL64 authority and
+   generation lifecycle (completed);
+2. unit-test projection, assembly, leakage signs, publication and rejection
+   boundaries without transport (completed);
+3. execute one bounded real three-plane radial continuation and independently
+   accept its `RETURNED/1` content (B2v completed);
+4. freeze the single-procedure `RETURNED -> CLOSED` custody and fail-closed
+   axial terminal route (B2w/B2x completed statically and synthetically);
+5. execute one bounded real supplied-returned axial half-step and independently
+   accept the closed pair (B2y preflight passed; real activation pending the
+   exact retained B2v bytes);
+6. only after step 5 passes, assemble evidence for one complete raw
+   \(x_1=G(x_0)\) and independently check its axial equation and balance;
+7. repeat the exact raw map only to test determinism, without calling that
+   repetition convergence;
+8. qualify rank, inner tolerance, mesh, angle and energy-group refinement;
+9. only then run direct undamped Picard substitution and test the three
+   declared outer residuals separately;
+10. after convergence and refinement, perform independent 3D and cross-code
+    comparisons for eigenvalue, flux, reaction rates and power.
+
+The archived legacy32 precision experiments are historical diagnostics, not
+completed items in this active validation route.
 
 See [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md) for the
 predeclared gates and evidence boundaries.
@@ -1545,6 +1509,53 @@ L0 rejection, the terminal adapter, and the already validated synthetic
 same-procedure custody route and fail-closed content/terminal controls, not a
 real axial-map evaluation, convergence, rank sufficiency, or eigenvalue/power
 accuracy. A real activation remains a separate bounded experiment.
+
+## One real supplied-returned axial close (B2y)
+
+B2y prepares that separate real experiment without silently repeating the
+radial stage:
+
+```sh
+make spot-real64-phase-a9b-b2y-one-real-returned-close
+```
+
+The target is deployment-default-off. Its normal path performs the complete
+static, mutation, strict-compilation, real CLEPIL/OBJPIL and private-Dragon
+link gate in about five seconds, while executing zero Dragon, ASM, FLU,
+transport or Picard calls. The shared Dragon libraries and executables are
+never modified.
+
+An opt-in activation requires an external regular XSM file whose SHA-256 is
+exactly
+`dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054`
+and whose size is 231,572,260 bytes:
+
+```sh
+RUN_B2Y=1 \
+  B2Y_RETURNED_XSM=/absolute/path/to/returned.xsm \
+  make spot-real64-phase-a9b-b2y-one-real-returned-close
+```
+
+That file was produced and accepted by B2v but intentionally removed with
+its temporary directory; it is not present in the repository. B2y therefore
+does not search for a substitute, reconstruct it, invoke `SpotStepR64`, or
+automatically repeat B2v. Missing or changed input stops before Dragon.
+
+If armed with the exact file, the gate permits one fresh-process-group Dragon
+and one `SpotCloseR64` call under 80 s wall / 75 s CPU, 2 GiB leader RSS,
+512 MiB per-file and 64 MiB log caps, with no retry or retuning. Two identical
+GANLIB/UTILIB-only posteriors must then verify the closed lifecycle,
+REAL64/REAL32 authorities, preserved \(\rho_0,k_0,QFISS_0,L_0\), fresh
+\(\rho_1=1/k_1,L_1\), and all exact copy/promotion identities. The current
+status is `NOT-EVALUATED`: the compile/link preflight passes, but no B2y
+Dragon activation has occurred and no `CLOSED/1` result is claimed.
+
+Even a future pass would establish only one real supplied-RETURNED axial
+half-step. It would not prove same-process continuity with the historical
+B2v radial run, a complete Picard map, outer convergence, rank-one adequacy,
+an independently recomputed axial residual/global balance, or benchmark
+accuracy. The exact contract is in
+[`real64_phase_a9b_b2y_one_real_returned_close/`](validation/iterative/real64_phase_a9b_b2y_one_real_returned_close/README.md).
 
 The alternative three-return design is also checked without Dragon:
 
