@@ -183,8 +183,11 @@ inner-convergence classification. A separate 30 s trace, changing only the
 temporary FLU print level, confirmed that FLU was active: 27 outer iterations
 were completed, but the printed inner and outer residuals fluctuated around
 and above the target and never satisfied both strict gates together. This is
-not an asymptotic convergence result. Exact values and local-log hashes are
-recorded in
+not an asymptotic convergence result. A matched 30 s trace with all FLU2AC
+calls disabled also showed residual rebound and never met the target. Thus
+variational acceleration is not the sole cause; the fixed-time comparison
+does not rank the two schemes asymptotically. Exact values and local-log
+hashes are recorded in
 [map3_current_result.md](map3_current_result.md).
 
 ## Inner-tolerance sensitivity

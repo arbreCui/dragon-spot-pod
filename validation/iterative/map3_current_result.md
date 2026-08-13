@@ -169,13 +169,32 @@ SHA-256
 `45e8d191cdc7a76da8a84f88cb9842407466054f21f9c6383db0b00c20934a3b`
 and is retained as `trace_30s.log` in the same local directory.
 
+A matched 30 s trace then disabled variational acceleration with the standard
+FLU control `ACCE 3 0`; with zero accelerated iterations, neither the inner
+nor outer `FLU2AC` branch is entered. No physical input, tolerance,
+rebalancing rule or termination gate changed. This trace completed 25 outer
+iterations. Its printed outer residual also rebounded, with a best observed
+value of (5.17\times10^{-7}) and a final value of
+\(1.82\times10^{-6}\), both above the target. The corresponding accelerated
+trace completed 27 iterations, reached a best value of
+\(2.49\times10^{-7}\), and ended at \(1.35\times10^{-6}\).
+
+Therefore disabling `FLU2AC` did not remove the observed rebound and does not
+support blaming variational acceleration as its sole cause. The fixed-time
+traces contain different iteration counts, so they do not establish that
+either iteration scheme is asymptotically better. The no-acceleration log has
+SHA-256
+`594ab1bced1c401b6f315c36479f78128fe1f0fa6dbaab2384356e6cfc9b0a5e`
+and is retained as `trace_noacc_30s.log` in the same local directory.
+
 This outcome is `TIMEOUT / NO SCIENTIFIC RESULT`. Because the process did not
 reach even the first inner-solver terminal record, it is not evidence that
 the \(h/2\) equations converge or fail to converge. It adds no information
 about the cause of the stored update reversal and does not prove asymptotic
-stagnation, but it rules out an inactive/hung first-plane calculation. It
-does not change the outer-convergence classification. No further attempt was
-made.
+stagnation, but it rules out an inactive/hung first-plane calculation and
+variational acceleration as the unique explanation for the observed
+rebound. It does not change the outer-convergence classification. No further
+attempt was made.
 
 The global balance norm was \(3.443536\times10^{-9}\). The separately
 reported maximum Galerkin diagnostic was \(5.84892\times10^{-7}\); it is not

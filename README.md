@@ -179,7 +179,9 @@ solve was not started and no scientific state was produced. These attempts
 do not classify inner convergence or explain the update reversal. A short
 print-only trace confirmed that the first-plane FLU solve was active, but its
 inner and outer residuals fluctuated around and above the target through 27
-outer iterations instead of satisfying both strict gates together.
+outer iterations instead of satisfying both strict gates together. A matched
+trace with FLU variational acceleration disabled still rebounded and did not
+reach the target, so acceleration is not the sole cause.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
