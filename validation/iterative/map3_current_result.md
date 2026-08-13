@@ -187,14 +187,37 @@ SHA-256
 `594ab1bced1c401b6f315c36479f78128fe1f0fa6dbaab2384356e6cfc9b0a5e`
 and is retained as `trace_noacc_30s.log` in the same local directory.
 
-This outcome is `TIMEOUT / NO SCIENTIFIC RESULT`. Because the process did not
-reach even the first inner-solver terminal record, it is not evidence that
-the \(h/2\) equations converge or fail to converge. It adds no information
-about the cause of the stored update reversal and does not prove asymptotic
-stagnation, but it rules out an inactive/hung first-plane calculation and
-variational acceleration as the unique explanation for the observed
-rebound. It does not change the outer-convergence classification. No further
-attempt was made.
+After the legacy-`FLU2DR` SPOT path was changed to bypass the `10*EPSINR`
+`NEARLY` shortcut, one matched 30 s trace was run with the same frozen
+\(x_2\), \(h/2=2.5\times10^{-7}\), default `ACCE 3 3`, physical inputs and
+`EDIT 1` diagnostic output. It contained no `NEARLY` record. At the first
+near-eligible point, `IN(8)` had `EINN=5.80e-7` and `IGDEB=69`; instead of
+returning to the outer iteration as before, the same inner loop continued
+through `IN(17)` and reached `EINN=1.81e-7 < EPSINR`. The next two outer
+iterations likewise reached strict inner residuals of `1.84e-7` and
+`1.43e-7`. In total the trace contains 48 inner records, three strict inner
+terminations and zero `NEARLY`, `NOT`, `FLU2DR-TERM`, `FLU2DR-DIAG` or
+XABORT records. Its SHA-256 is
+`43a4f20ffadb45ca9d19aa81b434b448ddc63596a98f6f99ddb705d537d82589`
+and it is retained locally as `trace_strict_inner_30s.log`.
+
+This proves only that the intended strict-inner branch executed and that the
+first three inner solves met the declared tolerance. The first-plane FLU
+solve had not terminated when the single 30 s bound expired, so no radial or
+axial scientific state exists and no claim about full-map or Picard
+convergence follows. There was no retry.
+
+All bounded \(h/2\) attempts remain `TIMEOUT / NO SCIENTIFIC RESULT`. The
+earlier legacy attempts did not reach a strict solver terminal record; the
+new trace reached three strict inner terminals but not the first-plane FLU
+terminal. They are therefore not evidence that the complete \(h/2\)
+equations converge or fail to converge. Apart from proving the new branch,
+the traces add no information about the cause of the stored update reversal
+and do not prove asymptotic stagnation. Together they rule out an
+inactive/hung first-plane calculation and variational acceleration as the
+unique explanation for the observed rebound. They do not change the
+outer-convergence classification. No further attempt was made after the
+strict-inner trace.
 
 The global balance norm was \(3.443536\times10^{-9}\). The separately
 reported maximum Galerkin diagnostic was \(5.84892\times10^{-7}\); it is not

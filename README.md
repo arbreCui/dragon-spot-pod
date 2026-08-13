@@ -189,8 +189,13 @@ return that solve to the outer loop as `NEARLY`; it must reach the declared
 `EPSINR` or the existing iteration cap. No tolerance, relaxation coefficient,
 or fitted parameter was added, and all unrelated FLU paths retain their legacy
 behavior. The seconds-scale static/compile gate passes; no new transport run
-has yet tested whether this change establishes convergence. The optional
-REAL64 solver lane is outside this change and remains disabled by default.
+has established convergence. One matched 30-second first-plane trace did
+confirm the intended runtime behavior: the old near-eligible `IN(8)` point
+continued to `IN(17)` and strict inner convergence, and all three completed
+outer iterations reached the declared inner tolerance with zero `NEARLY`
+records. The first plane itself did not finish before the bound, so this is
+branch evidence only and produced no scientific state. The optional REAL64
+solver lane is outside this change and remains disabled by default.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
