@@ -11,6 +11,9 @@ FC=${FC:-gfortran}
 PYTHONDONTWRITEBYTECODE=1 python3 "$ROOT/validation/check_method_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
+sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
+  python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 
 "$CC" -std=c11 -pedantic -Wall -Wextra -Werror \
   -I "$ROOT/Ganlib/src" -c "$ROOT/validation/compile_c2m.c" \
@@ -18,12 +21,19 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 "$FC" "$BUILD_DIR/compile_c2m.o" \
   "$ROOT/Ganlib/lib/Darwin_arm64/libGanlib.a" \
   -o "$BUILD_DIR/compile_c2m"
-(
-  cd "$BUILD_DIR"
-  ./compile_c2m "$ROOT/data/SpotPicard.c2m" SpotPicard.o2m \
-    >SpotPicard.compile.log 2>&1
-)
-test -s "$BUILD_DIR/SpotPicard.o2m"
+for source in \
+  "$ROOT/data/SpotPicard.c2m" \
+  "$ROOT/validation/iterative/one_map_radial.x2m" \
+  "$ROOT/validation/iterative/one_map_axial.x2m"
+do
+  stem=$(basename "$source")
+  stem=${stem%.*}
+  (
+    cd "$BUILD_DIR"
+    ./compile_c2m "$source" "$stem.o2m" >"$stem.compile.log" 2>&1
+  )
+  test -s "$BUILD_DIR/$stem.o2m"
+done
 
 "$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
   -fimplicit-none -fcheck=all -ffp-contract=off -fno-fast-math \

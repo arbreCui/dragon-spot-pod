@@ -131,11 +131,24 @@ make spot-fast
 
 It completes in a few seconds and launches no Dragon transport calculation.
 
+A current real map from one hash-locked input also passes. It used three
+online radial solves and one returned axial solve, with each process bounded
+by a 75-second solve timeout and a five-second termination grace, with no
+parameter change or automatic retry:
+
+\[
+(R_\rho,R_L,R_a)=
+(1.2812\times10^{-6},\,7.9229\times10^{-4},\,9.2283\times10^{-7}).
+\]
+
+The independent checker reproduced the fixed POD package, canonical state,
+raw defect and restart physics. Details are in
+[one_map_current_result.md](validation/iterative/one_map_current_result.md).
+
 Physical outer convergence has **not yet been claimed**. The next numerical
-work is one bounded real map from a frozen input, followed—only if all inner
-solves terminate strictly—by a short repeated-map census. Rank, mesh, angle,
-inner-tolerance, and reference-solution studies remain separate validation
-questions.
+work is a short, predeclared repeated-map census beginning from this returned
+state. Rank, mesh, angle, inner-tolerance, and reference-solution studies
+remain separate validation questions.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).

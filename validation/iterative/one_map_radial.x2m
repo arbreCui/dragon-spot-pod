@@ -1,0 +1,58 @@
+****************************************************************
+* One bounded map, radial half: x0 -> current radial response. *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+
+XSM_FILE SNAP_SEED :: FILE './initial_snapshots.xsm' ;
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE BASIS_REF :: FILE './basis_reference.xsm' ;
+XSM_FILE AX0_ARCH :: FILE './state0_axial.xsm' ;
+
+XSM_FILE SYSTEM_OUT :: FILE './state1_system.xsm' ;
+XSM_FILE RADIAL_OUT :: FILE './state1_radial.xsm' ;
+
+LINKED_LIST SNAP TRACK SYSTEM_NEXT ;
+MODULE RECOVER: ASM: SPOPROJ: SPOLEAK: GREP: END: ;
+PROCEDURE SpotRefFS ;
+
+INTEGER spod_rank := 1 ;
+REAL solver_eps := 5.0E-7 ;
+REAL k0 leak0_change ;
+INTEGER fixed_marker fs_count ;
+DOUBLE rbal source_l2 source_max ;
+
+ECHO "ONE-MAP-RADIAL-BEGIN" ;
+ECHO "ONE-MAP-RADIAL-TOLERANCE" solver_eps ;
+
+SNAP := RECOVER: SNAP_SEED :: ITEM 1 ;
+TRACK := RECOVER: SNAP :: ITEM 3 ;
+GREP: AX0_ARCH :: GETVAL 'K-EFFECTIVE' 1 >>k0<< ;
+
+* Restore L0 and reconstruct exactly B*a0.
+SNAP := SPOLEAK: SNAP AX0_ARCH TRACK_AX :: >>leak0_change<< ;
+SNAP := SPOPROJ: SNAP AX0_ARCH TRACK_AX :: FIXB ;
+
+* Three online frozen-fission radial solves.
+SNAP := SpotRefFS SNAP TRACK TRACK_f ::
+  <<k0>> <<solver_eps>> ;
+
+* Reuse the frozen basis and rebuild only the current radial response.
+SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
+  EDIT 0 SPOD <<spod_rank>> FIXB ;
+GREP: SYSTEM_NEXT ::
+  GETVAL 'SPOT-FIXB' 1 >>fixed_marker<<
+  GETVAL 'SPOT-FS-N' 1 >>fs_count<<
+  GETVAL 'SPOT-RBAL' 1 >>rbal<<
+  GETVAL 'SPOT-Q-L2' 1 >>source_l2<<
+  GETVAL 'SPOT-Q-MAX' 1 >>source_max<< ;
+ECHO "ONE-MAP-RADIAL-CONTRACT"
+  fixed_marker fs_count rbal source_l2 source_max ;
+
+SYSTEM_OUT := SYSTEM_NEXT ;
+RADIAL_OUT := SNAP ;
+
+ECHO "ONE-MAP-RADIAL-COMPLETE" ;
+END: ;
+QUIT "LIST" .
