@@ -1,7 +1,7 @@
 {
   "phase": "A9b-B2y",
   "name": "one-real-supplied-returned-close",
-  "objective": "exactly one bounded production SpotCloseR64 axial half-step from the accepted B2v RETURNED object",
+  "objective": "exactly one bounded production SpotCloseR64 axial half-step from the B2z-staged RETURNED whose content is byte-identical to the RETURNED accepted and recorded by B2v",
   "receipt": "pending",
   "deployment_default": "off",
   "runtime_result": {
@@ -11,7 +11,7 @@
   },
   "preflight_result": {
     "status": "PASS",
-    "directed_mutation_tests": 48,
+    "directed_mutation_tests": 73,
     "production_close_route": "strictly compiled and privately linked",
     "clepil_objpil_compilations": 2,
     "independent_posterior": "strictly compiled and linked with GANLIB/UTILIB only",
@@ -25,11 +25,21 @@
     "outer_picard_maps": 0
   },
   "frozen_inputs": {
-    "supplied_b2v_returned": {
-      "availability": "external prerequisite",
+    "supplied_b2z_staged_b2v_byte_identical_returned": {
+      "availability": "canonical local prerequisite",
+      "path": "validation/artifacts/iterative-b2z/returned.xsm",
       "sha256": "dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054",
       "bytes": 231572260,
-      "parent_receipt_sha256": "af2b47504adcefc7d1e9fd2ae2ecf4517298e7b5b1be1cd75633ca0fa5482bcb"
+      "direct_parent_stage": "B2z",
+      "b2z_receipt_sha256": "2f003d175a2ff7eea2feb73cc87e46d83c1c11e1e09f97ebe228472f7d741844",
+      "b2z_tracked_runtime_result_sha256": "6627924e8bed19e23537ede946c3c7c2cc7dcf2f53b84055a4b8e047fe444850",
+      "b2z_artifact_runtime_result_sha256": "6627924e8bed19e23537ede946c3c7c2cc7dcf2f53b84055a4b8e047fe444850",
+      "runtime_result_bytes": 1735,
+      "b2z_artifact_manifest_sha256": "22949de59c8662c43ca7f7ec3293e27287571ae85b58ecddf24fc2148a67ca0f",
+      "artifact_manifest_bytes": 483,
+      "artifact_inventory_regular_files": 7,
+      "historical_b2v_receipt_sha256": "af2b47504adcefc7d1e9fd2ae2ecf4517298e7b5b1be1cd75633ca0fa5482bcb",
+      "admission": "exact canonical path, non-symlink regular-file inventory, B2z receipt -c, artifact manifest -c, tracked/artifact runtime-result cmp, hash, and byte gates"
     },
     "axial_track": {
       "path": "validation/artifacts/iterative-seed/initial_axial_track.xsm",
@@ -53,11 +63,35 @@
     "spotstepr64_execution": false,
     "radial_transport_execution": false,
     "substitute_or_unmanifested_input": false,
+    "same_content_alternate_path": false,
     "classification": "INVALID-NO-SCIENTIFIC-RESULT"
+  },
+  "success_evidence_publication": {
+    "path": "validation/artifacts/real64-phase-a9b-b2y",
+    "tracked_by_git": false,
+    "fresh_target_required": true,
+    "activation_lock_before_dragon": true,
+    "atomic_no_replace": "Darwin renameatx_np RENAME_EXCL",
+    "published_only_after_all_runtime_posterior_lineage_and_repeated_b2z_evidence_checks": true,
+    "payloads": [
+      "ax_closed.xsm",
+      "archive_closed.xsm",
+      "dragon.log",
+      "posterior_a.log",
+      "posterior_b.log",
+      "runtime_result.txt",
+      "artifact_manifest.sha256"
+    ]
+  },
+  "durable_attempt_guard": {
+    "path": "validation/artifacts/.real64-phase-a9b-b2y-attempted",
+    "created_atomically_immediately_before_the_only_dragon": true,
+    "removed_after_failure": false,
+    "meaning": "the explicit one-real authorization is consumed even if the process later fails; a second Dragon is mechanically refused"
   },
   "same_process_scope": {
     "true": "private FEEDBACK through SPOR64V, ASM, FLU, SPOSTATE, SPOLEAK, SPOR64X and B2w within one SpotCloseR64 call and one Dragon process",
-    "false": "the earlier B2v radial activation and B2y axial activation occurred in the same process or one continuous host call"
+    "false": "either the earlier B2v reference activation or the B2z staging activation and B2y axial activation occurred in the same process or one continuous host call"
   },
   "production_route": [
     "supplied accepted RETURNED/1",
@@ -103,7 +137,7 @@
     "log_bytes": 67108864,
     "threads": 1,
     "core_bytes": 0,
-    "meaning": "execution safety only; not a physical or convergence criterion"
+    "meaning": "execution safety only; not a physical or convergence criterion; the absolute 80 s close deadline and every earlier failure or managed interruption send immediate SIGKILL to the fresh process group without a grace interval"
   },
   "required_runtime_census": {
     "spotcloser64_calls": 1,
@@ -156,7 +190,7 @@
     "retry": 0
   },
   "not_claimed": [
-    "same-process continuity with the B2v radial activation",
+    "same-process continuity with either the B2v reference activation or B2z staging activation",
     "complete production Picard map",
     "outer Picard convergence or contraction",
     "fixed-point existence or stability",

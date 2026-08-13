@@ -1,0 +1,24 @@
+****************************************************************
+* B2z: one bounded production radial return for local staging. *
+*                                                              *
+* There is no loop, retry, axial solve, feedback, or close gate. *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+XSM_FILE PROJ_XSM :: FILE './projected.xsm' ;
+XSM_FILE RET_XSM :: FILE './returned.xsm' ;
+
+LINKED_LIST PROJECTED RETURNED ;
+MODULE DELETE: END: ;
+PROCEDURE SpotStepR64 ;
+
+PROJECTED := PROJ_XSM ;
+ECHO "B2Z-REAL-PRODUCTION-STAGING-BEGIN" ;
+
+RETURNED := SpotStepR64 PROJECTED TRACK_f :: ;
+RET_XSM := RETURNED ;
+
+ECHO "B2Z-REAL-PRODUCTION-STAGING-COMPLETE" ;
+PROJECTED RETURNED := DELETE: PROJECTED RETURNED ;
+END: ;
+QUIT "LIST" .

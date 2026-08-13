@@ -1,27 +1,41 @@
 # Phase-A9b B2y: one bounded real returned-to-closed axial half-step
 
-B2y freezes one deliberately narrow real experiment: given the exact
-`RETURNED/1` object already accepted by B2v, can the production
+B2y freezes one deliberately narrow real experiment: given the B2z-staged
+`RETURNED/1` file whose content is byte-identical to the RETURNED accepted
+and recorded by B2v, can the production
 `SpotCloseR64` procedure execute once and publish one valid `CLOSED/1`
 axial/archive pair?
 
 The experiment is deployment-default-off and its receipt is pending.  No
 B2y Dragon activation has yet been made.  Until the runtime and independent
 posterior evidence below both pass, the result remains `NOT-EVALUATED`.
-The default-off preflight currently passes 48 directed mutation tests, strict
+The default-off preflight currently passes 73 directed mutation tests, strict
 production compilation, real CLEPIL/OBJPIL compilation, private Dragon
 linking and independent-posterior compilation in about five seconds, with
 Dragon execution fixed at zero.
 
 ## Supplied input, never regenerated here
 
-The radial result is an external prerequisite, not work authorized for B2y:
+The radial result is the canonical B2z prerequisite, not work authorized for
+B2y:
 
 ```text
-RETURNED SHA-256 dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054
-RETURNED bytes   231572260
-B2v receipt      af2b47504adcefc7d1e9fd2ae2ecf4517298e7b5b1be1cd75633ca0fa5482bcb
+path                   validation/artifacts/iterative-b2z/returned.xsm
+RETURNED SHA-256        dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054
+RETURNED bytes          231572260
+B2z receipt             2f003d175a2ff7eea2feb73cc87e46d83c1c11e1e09f97ebe228472f7d741844
+B2z runtime result      6627924e8bed19e23537ede946c3c7c2cc7dcf2f53b84055a4b8e047fe444850
+B2z artifact manifest   22949de59c8662c43ca7f7ec3293e27287571ae85b58ecddf24fc2148a67ca0f
+B2v historical receipt  af2b47504adcefc7d1e9fd2ae2ecf4517298e7b5b1be1cd75633ca0fa5482bcb
 ```
+
+B2z is the direct input parent. B2x remains the frozen close-contract lineage,
+and B2v is only the historical content reference. B2y verifies the B2z receipt
+from the repository root, verifies the B2z artifact manifest inside its own
+directory, requires the tracked and artifact runtime summaries to be
+byte-identical, and requires all seven artifact entries to be regular,
+non-symlink files. These gates run before the durable B2y attempt sentinel is
+created and again after the posterior checks.
 
 The axial inputs are likewise hash-pinned:
 
@@ -31,9 +45,10 @@ MACROLIB3 2e01e806683ce25b5771af055112dc86dcf147245abc5a5c3dceac4d9939373a
 BASIS_REF dc65467731947901393f9fb7114b7cd2e956a9992bb97db18e665b47e7446504
 ```
 
-If the supplied RETURNED file is absent, has a different byte count or hash,
-or fails its frozen B2v/GANLIB-only admission evidence, B2y stops before
-Dragon with `INVALID-NO-SCIENTIFIC-RESULT`.  It must not run `SpotStepR64`,
+If `B2Y_RETURNED_XSM` is not exactly the canonical B2z path—even if another
+file has the same hash—or if any B2z receipt, summary, manifest, inventory,
+byte count, or content gate fails, B2y stops before Dragon with
+`INVALID-NO-SCIENTIFIC-RESULT`. It must not run `SpotStepR64`,
 repeat B2v, reconstruct a substitute RETURNED object, search for an
 unmanifested replacement, or launch any radial solve.  The same rule applies
 to a missing or changed axial input.  Input and procedure hashes are checked
@@ -59,13 +74,28 @@ supplied accepted RETURNED/1
 Within that one procedure call, the private FEEDBACK, assembled SYSTEM and
 axial FLUX remain live in the same Dragon process until B2w either rejects
 them or performs the final logical commit.  This is the permitted same-
-process claim.  Because the supplied B2v RETURNED object was produced by an
-earlier activation and is loaded from a file, B2y must not claim that the
-B2v radial solve and the B2y axial close occurred in the same process or in
-one continuous `SpotStepR64 -> SpotCloseR64` host call.
+process claim. Because the supplied file is a B2z rematerialization loaded
+from disk, B2y must not claim that the B2v or B2z radial activation and the
+B2y axial close occurred in the same process or in one continuous
+`SpotStepR64 -> SpotCloseR64` host call.
 
 There is no retry, restart, tolerance change, fallback, alternate rank,
 second Dragon launch, or reuse of a partial output after any failure.
+
+The only authorized activation form is:
+
+```sh
+RUN_B2Y=1 \
+  B2Y_RETURNED_XSM="$(pwd)/validation/artifacts/iterative-b2z/returned.xsm" \
+  make spot-real64-phase-a9b-b2y-one-real-returned-close
+```
+
+Immediately before the only Dragon launch, B2y atomically creates the local
+ignored sentinel
+`validation/artifacts/.real64-phase-a9b-b2y-attempted`. Success and failure
+cleanup never remove it. Therefore any attempted close—including a timeout,
+signal, strict failure or later evidence/publication failure—consumes the
+one-real authorization and a second Dragon is mechanically refused.
 
 ## Frozen physical generation
 
@@ -149,11 +179,27 @@ fixed basis, axial equation residual, or global balance. Those claims require
 a separate read-only oracle with the frozen axial track, macrolib and basis as
 explicit inputs.
 
+On success, the two CLOSED XSM files, raw Dragon log, both posterior logs,
+the bounded runtime summary and a content manifest are published together
+to the local Git-ignored directory
+\`validation/artifacts/real64-phase-a9b-b2y\`.  The final directory must be
+fresh.  An activation lock is acquired before Dragon, and publication occurs
+only after every runtime, posterior, lineage and frozen-input check.  A
+same-filesystem Darwin \`renameatx_np(..., RENAME_EXCL)\` publishes the whole
+bundle atomically without replacement.  Failure rolls back only a staging,
+lock or final inode owned by that invocation; it never overwrites pre-existing
+evidence.  This preserves the exact CLOSED state for later independent
+residual and global-balance checks without another axial activation.
+
 ## Resource and failure contract
 
 The sole opt-in Dragon process has hard safety limits of 80 s wall time,
 75 s CPU, 2 GiB leader RSS, 512 MiB per file and 64 MiB log, with one thread
-and core dumps disabled.  A timeout terminates only its fresh process group.
+and core dumps disabled. At the absolute 80 s close deadline the wrapper
+sends SIGKILL to only its fresh process group; there is no grace interval
+after that deadline. Every earlier resource-census failure, managed wrapper
+signal, or exception uses the same immediate group kill. Thus no cleanup path
+adds a child-computation grace interval beyond the absolute wall deadline.
 These are execution-safety limits, not physical coefficients or convergence
 criteria.
 

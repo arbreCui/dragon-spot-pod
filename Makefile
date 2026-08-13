@@ -127,6 +127,9 @@ spot-real64-phase-a9b-b2x-same-call-returned-close :
 .PHONY: spot-real64-phase-a9b-b2y-one-real-returned-close
 spot-real64-phase-a9b-b2y-one-real-returned-close :
 	sh validation/iterative/real64_phase_a9b_b2y_one_real_returned_close/run_phase_a9b_b2y_one_real_returned_close.sh
+.PHONY: spot-real64-phase-a9b-b2z-one-real-returned-staging
+spot-real64-phase-a9b-b2z-one-real-returned-staging :
+	sh validation/iterative/real64_phase_a9b_b2z_one_real_returned_staging/run_phase_a9b_b2z_one_real_returned_staging.sh
 spot-stage0 :
 	@test -n "$(DRAGON_BIN)" || \
 	  (echo "set DRAGON_BIN to a current SPOT executable" >&2; exit 2)

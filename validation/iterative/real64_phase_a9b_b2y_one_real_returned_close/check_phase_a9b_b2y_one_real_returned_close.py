@@ -13,6 +13,7 @@ ROOT = HERE.parents[2]
 DECK = HERE / "one_real_returned_close.x2m"
 RUNNER = HERE / "run_phase_a9b_b2y_one_real_returned_close.sh"
 BOUNDED = HERE / "run_bounded_b2y.py"
+PUBLISHER = HERE / "publish_b2y_artifact.py"
 HOST = ROOT / "data/SpotCloseR64.c2m"
 FLU2DR = ROOT / "src/FLU2DR.f"
 
@@ -34,6 +35,15 @@ A9_MODULE_SHA256 = (
 )
 SPOMOC_MODULE_SHA256 = (
     "7e3754b1ae85c7d18ea123a387c4ecf80ce1439281ccebf315b215faa6609948"
+)
+B2Z_RECEIPT_SHA256 = (
+    "2f003d175a2ff7eea2feb73cc87e46d83c1c11e1e09f97ebe228472f7d741844"
+)
+B2Z_RUNTIME_SHA256 = (
+    "6627924e8bed19e23537ede946c3c7c2cc7dcf2f53b84055a4b8e047fe444850"
+)
+B2Z_ARTIFACT_MANIFEST_SHA256 = (
+    "22949de59c8662c43ca7f7ec3293e27287571ae85b58ecddf24fc2148a67ca0f"
 )
 
 
@@ -185,6 +195,11 @@ def check_runner(text: str) -> None:
         f"EXPECTED_BASIS_REF_HASH={BASIS_REF_SHA256}",
         f"EXPECTED_A9_MODULE_HASH={A9_MODULE_SHA256}",
         f"EXPECTED_SPOMOC_MODULE_HASH={SPOMOC_MODULE_SHA256}",
+        f"EXPECTED_B2Z_RECEIPT_HASH={B2Z_RECEIPT_SHA256}",
+        f"EXPECTED_B2Z_RUNTIME_HASH={B2Z_RUNTIME_SHA256}",
+        "EXPECTED_B2Z_RUNTIME_BYTES=1735",
+        f"EXPECTED_B2Z_ARTIFACT_MANIFEST_HASH={B2Z_ARTIFACT_MANIFEST_SHA256}",
+        "EXPECTED_B2Z_ARTIFACT_MANIFEST_BYTES=483",
     )
     for assignment in required_assignments:
         require(packed(assignment) in code,
@@ -207,6 +222,7 @@ def check_runner(text: str) -> None:
 
     external_checks = (
         '[ -n "$B2Y_RETURNED_XSM" ]',
+        '[ "$B2Y_RETURNED_XSM" = "$B2Z_RETURNED" ]',
         '[ -f "$B2Y_RETURNED_XSM" ]',
         '[ ! -L "$B2Y_RETURNED_XSM" ]',
         'require_hash "$B2Y_RETURNED_XSM" "$EXPECTED_RETURNED_HASH"',
@@ -234,6 +250,77 @@ def check_runner(text: str) -> None:
         ) is not None,
         "B2y private RETURNED byte-count guard is missing",
     )
+
+    b2z_evidence_fragments = (
+        'B2Z_DIR="$ROOT/validation/iterative/'
+        'real64_phase_a9b_b2z_one_real_returned_staging"',
+        'B2Z_RECEIPT="$B2Z_DIR/'
+        'phase_a9b_b2z_one_real_returned_staging_receipt.sha256"',
+        'B2Z_RUNTIME_RESULT="$B2Z_DIR/runtime_result.txt"',
+        'B2Z_ARTIFACT_DIR="$ARTIFACT_PARENT/iterative-b2z"',
+        'B2Z_RETURNED="$B2Z_ARTIFACT_DIR/returned.xsm"',
+        'B2Z_ARTIFACT_RUNTIME_RESULT="$B2Z_ARTIFACT_DIR/runtime_result.txt"',
+        'B2Z_ARTIFACT_MANIFEST="$B2Z_ARTIFACT_DIR/artifact_manifest.sha256"',
+        'B2Z_ATTEMPT_DIR="$ARTIFACT_PARENT/.iterative-b2z-attempted"',
+        '[ -d "$B2Z_ARTIFACT_DIR" ]',
+        '[ ! -L "$B2Z_ARTIFACT_DIR" ]',
+        '[ -d "$B2Z_ATTEMPT_DIR" ]',
+        '[ ! -L "$B2Z_ATTEMPT_DIR" ]',
+        '[ -f "$path" ]',
+        '[ ! -L "$path" ]',
+        '[ -f "$B2Z_ARTIFACT_DIR/$file" ]',
+        '[ ! -L "$B2Z_ARTIFACT_DIR/$file" ]',
+        'find "$B2Z_ARTIFACT_DIR" -mindepth 1 -maxdepth 1',
+        'require_hash "$B2Z_RECEIPT" "$EXPECTED_B2Z_RECEIPT_HASH"',
+        'shasum -a 256 -c "$B2Z_RECEIPT"',
+        'require_hash "$B2Z_RUNTIME_RESULT" "$EXPECTED_B2Z_RUNTIME_HASH"',
+        'require_bytes "$B2Z_RUNTIME_RESULT" "$EXPECTED_B2Z_RUNTIME_BYTES"',
+        'require_hash "$B2Z_ARTIFACT_RUNTIME_RESULT" '
+        '"$EXPECTED_B2Z_RUNTIME_HASH"',
+        'require_bytes "$B2Z_ARTIFACT_RUNTIME_RESULT" '
+        '"$EXPECTED_B2Z_RUNTIME_BYTES"',
+        'cmp "$B2Z_RUNTIME_RESULT" "$B2Z_ARTIFACT_RUNTIME_RESULT"',
+        'require_hash "$B2Z_ARTIFACT_MANIFEST" '
+        '"$EXPECTED_B2Z_ARTIFACT_MANIFEST_HASH"',
+        'require_bytes "$B2Z_ARTIFACT_MANIFEST" '
+        '"$EXPECTED_B2Z_ARTIFACT_MANIFEST_BYTES"',
+        'shasum -a 256 -c artifact_manifest.sha256',
+        'require_hash "$B2Z_RETURNED" "$EXPECTED_RETURNED_HASH"',
+        'require_bytes "$B2Z_RETURNED" "$EXPECTED_RETURNED_BYTES"',
+        '[ "$B2Y_RETURNED_XSM" = "$B2Z_RETURNED" ]',
+    )
+    for fragment in b2z_evidence_fragments:
+        require(packed(fragment) in code,
+                f"B2y B2z evidence gate missing: {fragment}")
+    b2z_evidence = clean[
+        clean.index("verify_b2z_frozen_evidence()"):
+        clean.index("verify_b2z_staged_input()")
+    ]
+    for fragment in (
+        '[ ! -L "$B2Z_ARTIFACT_DIR" ]',
+        '[ ! -L "$B2Z_ATTEMPT_DIR" ]',
+        'shasum -a 256 -c "$B2Z_RECEIPT"',
+        'cmp "$B2Z_RUNTIME_RESULT" "$B2Z_ARTIFACT_RUNTIME_RESULT"',
+        'cd "$B2Z_ARTIFACT_DIR"',
+        'shasum -a 256 -c artifact_manifest.sha256',
+        'require_hash "$B2Z_RETURNED" "$EXPECTED_RETURNED_HASH"',
+    ):
+        require(packed(fragment) in packed(b2z_evidence),
+                f"B2y frozen B2z evidence function missing: {fragment}")
+    b2z_staged = clean[
+        clean.index("verify_b2z_staged_input()"):
+        clean.index("verify_receipt()")
+    ]
+    require(packed('[ "$B2Y_RETURNED_XSM" = "$B2Z_RETURNED" ]') in
+            packed(b2z_staged),
+            "B2y canonical B2z path equality is outside the staged gate")
+    require(packed("verify_b2z_frozen_evidence") in packed(b2z_staged),
+            "B2y staged gate does not invoke frozen B2z evidence")
+    staged_calls = list(re.finditer(
+        r"(?m)^verify_b2z_staged_input\s*$", clean
+    ))
+    require(len(staged_calls) == 2,
+            "B2y must verify canonical B2z staged input exactly twice")
 
     close_calls = re.findall(
         r'(?m)^\s*(?:if\s+!\s+)?python3\s+"?\$BOUNDED"?\s+close\b',
@@ -386,6 +473,106 @@ def check_runner(text: str) -> None:
     require(re.search(r"(?im)^\s*(while|until)\b", clean) is None,
             "B2y shell runner contains a retry-capable loop")
 
+    persistence_fragments = (
+        'ARTIFACT_DIR="$ARTIFACT_PARENT/real64-phase-a9b-b2y"',
+        'LOCK_DIR="$ARTIFACT_PARENT/.real64-phase-a9b-b2y.lock"',
+        'ATTEMPT_DIR="$ARTIFACT_PARENT/.real64-phase-a9b-b2y-attempted"',
+        'if ! mkdir "$ATTEMPT_DIR"',
+        '[ ! -e "$ARTIFACT_DIR" ]',
+        '[ ! -L "$ARTIFACT_DIR" ]',
+        'if ! mkdir "$LOCK_DIR"',
+        'LOCK_ID=$(stat -f \'%d:%i\' "$LOCK_DIR")',
+        'ATTEMPT_ID=$(stat -f \'%d:%i\' "$ATTEMPT_DIR")',
+        'PUBLISH_STAGE=$(mktemp -d '
+        '"$ARTIFACT_PARENT/.real64-phase-a9b-b2y-publish.XXXXXX")',
+        'PUBLISH_STAGE_ID=$(stat -f \'%d:%i\' "$PUBLISH_STAGE")',
+        'copy_exact "$CASE_DIR/ax_closed.xsm" '
+        '"$PUBLISH_STAGE/ax_closed.xsm"',
+        'copy_exact "$CASE_DIR/archive_closed.xsm" '
+        '"$PUBLISH_STAGE/archive_closed.xsm"',
+        'copy_exact "$CASE_DIR/dragon.log" "$PUBLISH_STAGE/dragon.log"',
+        'copy_exact "$CASE_DIR/posterior_a.log" '
+        '"$PUBLISH_STAGE/posterior_a.log"',
+        'copy_exact "$CASE_DIR/posterior_b.log" '
+        '"$PUBLISH_STAGE/posterior_b.log"',
+        'artifact_manifest.sha256',
+        'FINAL_OWNED_ID=$(stat -f \'%d:%i\' "$ARTIFACT_DIR")',
+        'cmp "$CASE_DIR/ax_closed.xsm" "$ARTIFACT_DIR/ax_closed.xsm"',
+        'cmp "$CASE_DIR/archive_closed.xsm" '
+        '"$ARTIFACT_DIR/archive_closed.xsm"',
+        "owned_final_id=$PUBLISH_STAGE_ID",
+        '[ "$(stat -f \'%d:%i\' "$ARTIFACT_DIR")" = "$owned_final_id" ]',
+        "RETRY-AFTER-ANY-ATTEMPT=DISABLED",
+    )
+    for fragment in persistence_fragments:
+        require(packed(fragment) in code,
+                f"B2y persistence contract missing: {fragment}")
+    publisher_call = (
+        'python3 "$PUBLISHER" "$PUBLISH_STAGE" "$ARTIFACT_DIR"'
+    )
+    require(clean.count(publisher_call) == 1,
+            "B2y publisher invocation count differs")
+    off_position = clean.index('if [ "$RUN_B2Y" = 0 ]')
+    lock_position = clean.index('if ! mkdir "$LOCK_DIR"')
+    attempt_position = clean.index('if ! mkdir "$ATTEMPT_DIR"')
+    close_position = clean.index('python3 "$BOUNDED" close ')
+    posterior_b = clean.index(
+        '"$CASE_DIR/posterior_b.log" returned.xsm ax_closed.xsm '
+        'archive_closed.xsm'
+    )
+    final_lineage = clean.rfind("verify_frozen_build_inputs")
+    stage_position = clean.index("PUBLISH_STAGE=$(mktemp -d")
+    publish_position = clean.index(publisher_call)
+    final_compare = clean.index(
+        'cmp "$CASE_DIR/ax_closed.xsm" "$ARTIFACT_DIR/ax_closed.xsm"'
+    )
+    summary_position = clean.index(
+        'sed -n \'1,80p\' "$ARTIFACT_DIR/runtime_result.txt"'
+    )
+    require(
+        off_position < lock_position < staged_calls[0].start() < attempt_position <
+        close_position < posterior_b < final_lineage < staged_calls[1].start() <
+        stage_position < publish_position < final_compare < summary_position,
+        "B2y persistence lifecycle order differs",
+    )
+    cleanup = clean[clean.index("cleanup()"):clean.index("LC_ALL=C")]
+    for fragment in (
+        'stat -f \'%d:%i\' "$ARTIFACT_DIR"',
+        'stat -f \'%d:%i\' "$PUBLISH_STAGE"',
+        'stat -f \'%d:%i\' "$LOCK_DIR"',
+    ):
+        require(fragment in cleanup,
+                f"B2y owned rollback guard missing: {fragment}")
+    preserve = cleanup.index("PRESERVE_B2Y_FAILURE")
+    require(cleanup.index("FINAL_OWNED_ID") < preserve and
+            cleanup.index("PUBLISH_STAGE_ID") < preserve and
+            cleanup.index("LOCK_ID") < preserve,
+            "B2y rollback must precede failure preservation")
+    require('rm -rf "$ATTEMPT_DIR"' not in clean and
+            'rmdir "$ATTEMPT_DIR"' not in clean,
+            "B2y durable attempt sentinel must never be rolled back")
+
+
+def check_publisher(text: str) -> None:
+    required = (
+        "renameatx_np",
+        "RENAME_EXCL = 0x00000004",
+        "AT_FDCWD = -2",
+        "source.parent != target.parent",
+        'lstat_absent(target, "publication target")',
+        "stat.S_ISDIR(status.st_mode)",
+        "stat.S_ISLNK(status.st_mode)",
+        "source_status.st_dev != parent_status.st_dev",
+        "published directory identity differs",
+    )
+    for fragment in required:
+        require(fragment in text, f"B2y publisher missing {fragment}")
+    for forbidden in ("os.replace(", "os.rename(", "shutil.move("):
+        require(forbidden not in text,
+                f"B2y publisher has overwrite fallback {forbidden}")
+    require(text.count("result = rename(") == 1,
+            "B2y publisher rename count differs")
+
 
 def integer_value(node: ast.AST) -> int:
     if isinstance(node, ast.Constant) and isinstance(node.value, int):
@@ -487,8 +674,13 @@ def check_bounded(text: str) -> None:
         "RESOURCE.SETRLIMIT(RESOURCE.RLIMIT_FSIZE",
         "RESOURCE.SETRLIMIT(RESOURCE.RLIMIT_CORE",
         "PROCESS_RSS_BYTES(PROCESS.PID)",
-        "OS.KILLPG(PROCESS.PID,SIGNAL.SIGTERM)",
         "OS.KILLPG(PROCESS.PID,SIGNAL.SIGKILL)",
+        "DEFKILL_GROUP_AT_HARD_DEADLINE(",
+        'HARD_DEADLINE=START+PROFILE["WALL_SECONDS"]',
+        "REMAINING=HARD_DEADLINE-TIME.MONOTONIC()",
+        "IFREMAINING<=0:",
+        "KILL_GROUP_AT_HARD_DEADLINE(PROCESS)",
+        "TIME.SLEEP(MIN(0.05,REMAINING))",
         '"OMP_NUM_THREADS":"1"',
         '"OPENBLAS_NUM_THREADS":"1"',
         '"VECLIB_MAXIMUM_THREADS":"1"',
@@ -505,6 +697,42 @@ def check_bounded(text: str) -> None:
     for fragment in required_fragments:
         require(packed(fragment) in code,
                 f"bounded B2y helper missing {fragment}")
+    hard_start = text.index("def kill_group_at_hard_deadline(")
+    hard_stop = text.index("\n\nclass ProcTaskInfo", hard_start)
+    hard_kill = packed(text[hard_start:hard_stop])
+    require("TERMINATE_GROUP(PROCESS)" in hard_kill,
+            "B2y hard deadline does not use immediate group termination")
+    require("SIGNAL.SIGTERM" not in hard_kill and
+            "TERM_GRACE_SECONDS" not in hard_kill,
+            "B2y hard deadline includes a grace interval")
+    terminate_start = text.index("def terminate_group(")
+    terminate_stop = text.index("\n\ndef kill_group_at_hard_deadline", terminate_start)
+    terminate = packed(text[terminate_start:terminate_stop])
+    require("SIGNAL.SIGKILL" in terminate,
+            "B2y failure cleanup does not immediately kill its process group")
+    require("SIGNAL.SIGTERM" not in terminate and
+            "TERM_GRACE_SECONDS" not in terminate and
+            "TIME.SLEEP" not in terminate,
+            "B2y failure cleanup contains a post-failure grace interval")
+    require(text.count("terminate_group(process)") == 7,
+            "B2y immediate group-termination call inventory differs")
+    require("process.wait(timeout=" not in text and
+            "EXIT_CENSUS_GRACE_SECONDS" not in text,
+            "B2y failure path waits before immediate group termination")
+    timeout = packed(
+        "if remaining <= 0:\n"
+        "    kill_group_at_hard_deadline(process)\n"
+        "    fail(f\"wall timeout; {resource_class}\")"
+    )
+    require(timeout in code,
+            "B2y wall timeout is not an immediate process-group kill")
+    require(len(re.findall(
+        r'(?m)^\s*hard_deadline\s*=\s*start\s*\+\s*'
+        r'profile\["wall_seconds"\]\s*$',
+        text,
+    )) == 1 and len(re.findall(
+        r'(?m)^\s*hard_deadline\s*=', text
+    )) == 1, "B2y absolute hard-deadline assignment differs")
 
 
 def check_production_host(text: str) -> None:
@@ -572,6 +800,7 @@ def main() -> None:
     check_deck(read_required(DECK))
     check_runner(read_required(RUNNER))
     check_bounded(read_required(BOUNDED))
+    check_publisher(read_required(PUBLISHER))
     check_production_host(read_required(HOST))
     check_flu2dr(read_required(FLU2DR))
     print("B2Y STATIC ONE-REAL-RETURNED-CLOSE PASS")

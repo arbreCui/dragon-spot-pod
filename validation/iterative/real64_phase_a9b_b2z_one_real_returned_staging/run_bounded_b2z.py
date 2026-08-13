@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run one B2y child in a fresh process group with frozen resource caps."""
+"""Run one B2z child in a fresh process group with frozen resource caps."""
 
 from __future__ import annotations
 
@@ -15,9 +15,16 @@ import time
 
 
 PROFILES = {
-    "close": {
-        "wall_seconds": 80,
-        "cpu_seconds": 75,
+    "prepare": {
+        "wall_seconds": 30,
+        "cpu_seconds": 20,
+        "rss_bytes": 2 * 1024**3,
+        "file_bytes": 512 * 1024**2,
+        "log_bytes": 16 * 1024**2,
+    },
+    "dragon": {
+        "wall_seconds": 60,
+        "cpu_seconds": 55,
         "rss_bytes": 2 * 1024**3,
         "file_bytes": 512 * 1024**2,
         "log_bytes": 64 * 1024**2,
@@ -31,13 +38,19 @@ PROFILES = {
     },
 }
 RESOURCE_CLASS = {
-    "close": "INVALID-RUNTIME-BUDGET-NO-CLOSED-RESULT",
-    "posterior": "INVALID-CLOSED-EVIDENCE",
+    "prepare": "INVALID-NO-SCIENTIFIC-RESULT",
+    "dragon": "INVALID-RUNTIME-BUDGET-NO-STAGED-RETURNED",
+    "posterior": "INVALID-RETURNED-EVIDENCE",
 }
 EXIT_CLASS = {
-    "close": "FAILED-NO-CLOSED",
-    "posterior": "INVALID-CLOSED-EVIDENCE",
+    "prepare": "INVALID-NO-SCIENTIFIC-RESULT",
+    "dragon": "FAILED-NO-RETURN",
+    "posterior": "INVALID-RETURNED-EVIDENCE",
 }
+TERM_GRACE_SECONDS = 5
+EXIT_CENSUS_GRACE_SECONDS = 0.1
+
+
 class ManagedInterruption(Exception):
     """A wrapper signal that requires terminating the owned process group."""
 
@@ -47,7 +60,7 @@ class ManagedInterruption(Exception):
 
 
 def fail(message: str) -> None:
-    raise SystemExit(f"B2Y BOUNDED PROCESS FAILURE: {message}")
+    raise SystemExit(f"B2Z BOUNDED PROCESS FAILURE: {message}")
 
 
 def require_regular(path: Path, executable: bool = False) -> Path:
@@ -72,23 +85,25 @@ def set_limits(profile: dict[str, int]) -> None:
 
 
 def terminate_group(process: subprocess.Popen[bytes]) -> None:
-    """Immediately stop the owned group on every failure or interruption."""
     try:
-        os.killpg(process.pid, signal.SIGKILL)
+        os.killpg(process.pid, signal.SIGTERM)
     except ProcessLookupError:
         process.wait()
         return
+    deadline = time.monotonic() + TERM_GRACE_SECONDS
+    while process.poll() is None and time.monotonic() < deadline:
+        time.sleep(0.05)
+    if process.poll() is None:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
     process.wait()
     try:
         os.killpg(process.pid, 0)
     except ProcessLookupError:
         return
     fail("managed process group remains after termination")
-
-
-def kill_group_at_hard_deadline(process: subprocess.Popen[bytes]) -> None:
-    """Stop computation immediately when the absolute wall deadline arrives."""
-    terminate_group(process)
 
 
 class ProcTaskInfo(ctypes.Structure):
@@ -138,8 +153,8 @@ def wait_bounded(
     profile: dict[str, int],
     log_path: Path,
     resource_class: str,
-    hard_deadline: float,
 ) -> int:
+    deadline = time.monotonic() + profile["wall_seconds"]
     while True:
         return_code = process.poll()
         if return_code is not None:
@@ -150,6 +165,10 @@ def wait_bounded(
             return_code = process.poll()
             if return_code is not None:
                 return return_code
+            try:
+                return process.wait(timeout=EXIT_CENSUS_GRACE_SECONDS)
+            except subprocess.TimeoutExpired:
+                pass
             terminate_group(process)
             fail(f"RSS census failed; {resource_class}")
         if rss_bytes > profile["rss_bytes"]:
@@ -163,11 +182,10 @@ def wait_bounded(
         if log_bytes > profile["log_bytes"]:
             terminate_group(process)
             fail(f"log cap exceeded; {resource_class}")
-        remaining = hard_deadline - time.monotonic()
-        if remaining <= 0:
-            kill_group_at_hard_deadline(process)
+        if time.monotonic() >= deadline:
+            terminate_group(process)
             fail(f"wall timeout; {resource_class}")
-        time.sleep(min(0.05, remaining))
+        time.sleep(0.05)
 
 
 def run(
@@ -196,7 +214,6 @@ def run(
     )
     command = [str(executable), *arguments]
     start = time.monotonic()
-    hard_deadline = start + profile["wall_seconds"]
     managed_signals = (signal.SIGHUP, signal.SIGINT, signal.SIGTERM)
     previous_handlers = {
         signal_number: signal.getsignal(signal_number)
@@ -230,8 +247,7 @@ def run(
                 preexec_fn=lambda: set_limits(profile),
             )
             return_code = wait_bounded(
-                process, profile, log_path, RESOURCE_CLASS[profile_name],
-                hard_deadline,
+                process, profile, log_path, RESOURCE_CLASS[profile_name]
             )
     except ManagedInterruption as interruption:
         for signal_number in managed_signals:
@@ -284,10 +300,12 @@ def main() -> None:
     log_path = Path(sys.argv[4])
     elapsed = run(profile_name, executable, input_path, log_path, sys.argv[5:])
     print(
-        f"B2Y BOUNDED PROCESS PASS PROFILE={profile_name} "
+        f"B2Z BOUNDED PROCESS PASS PROFILE={profile_name} "
         f"ELAPSED={elapsed:.3f}s"
     )
 
 
 if __name__ == "__main__":
     main()
+
+

@@ -4,6 +4,9 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
+import subprocess
+import tempfile
 import unittest
 
 import check_phase_a9b_b2y_one_real_returned_close as contract
@@ -23,6 +26,7 @@ class B2YContractMutations(unittest.TestCase):
         cls.deck = contract.DECK.read_text(encoding="utf-8")
         cls.runner = contract.RUNNER.read_text(encoding="utf-8")
         cls.bounded = contract.BOUNDED.read_text(encoding="utf-8")
+        cls.publisher = contract.PUBLISHER.read_text(encoding="utf-8")
         cls.host = contract.HOST.read_text(encoding="utf-8")
         cls.flu2dr = contract.FLU2DR.read_text(encoding="utf-8")
 
@@ -38,6 +42,10 @@ class B2YContractMutations(unittest.TestCase):
         with self.assertRaises(contract.GateError):
             contract.check_bounded(mutated)
 
+    def reject_publisher(self, mutated: str) -> None:
+        with self.assertRaises(contract.GateError):
+            contract.check_publisher(mutated)
+
     def reject_host(self, mutated: str) -> None:
         with self.assertRaises(contract.GateError):
             contract.check_production_host(mutated)
@@ -50,6 +58,7 @@ class B2YContractMutations(unittest.TestCase):
         contract.check_deck(self.deck)
         contract.check_runner(self.runner)
         contract.check_bounded(self.bounded)
+        contract.check_publisher(self.publisher)
         contract.check_production_host(self.host)
         contract.check_flu2dr(self.flu2dr)
 
@@ -98,8 +107,8 @@ class B2YContractMutations(unittest.TestCase):
         self.reject_deck(self.deck + "\nREAL EXTE := 1.0E-4 ;\n")
 
     # The shell gate is off unless explicitly armed.  Its one input is an
-    # externally supplied immutable B2v artifact; it cannot manufacture or
-    # search for a replacement, and it has one close-profile launch site.
+    # canonical immutable B2z artifact; it cannot accept a same-hash copy at
+    # another path, manufacture a replacement, or add a close launch site.
     def test_09_runner_rejects_default_on(self) -> None:
         self.reject_runner(replace_once(
             self.runner, "RUN_B2Y=${RUN_B2Y:-0}", "RUN_B2Y=${RUN_B2Y:-1}"
@@ -175,11 +184,16 @@ class B2YContractMutations(unittest.TestCase):
         ))
 
     def test_23_bounded_rejects_missing_sigkill(self) -> None:
-        self.reject_bounded(replace_once(
-            self.bounded,
-            "os.killpg(process.pid, signal.SIGKILL)",
-            "os.killpg(process.pid, signal.SIGTERM)",
-        ))
+        start = self.bounded.index("def terminate_group(")
+        stop = self.bounded.index("\n\ndef kill_group_at_hard_deadline", start)
+        block = self.bounded[start:stop]
+        self.assertEqual(block.count("signal.SIGKILL"), 1)
+        changed = (
+            self.bounded[:start]
+            + block.replace("signal.SIGKILL", "signal.SIGTERM", 1)
+            + self.bounded[stop:]
+        )
+        self.reject_bounded(changed)
 
     # Re-freeze the production method, not merely the wrapper spelling.
     def test_24_host_rejects_rank_change(self) -> None:
@@ -328,6 +342,231 @@ class B2YContractMutations(unittest.TestCase):
         self.reject_runner(replace_once(
             self.runner, contract.SPOMOC_MODULE_SHA256, "2" * 64
         ))
+
+    def test_48_publisher_rejects_nonexclusive_rename(self) -> None:
+        self.reject_publisher(replace_once(
+            self.publisher,
+            "RENAME_EXCL = 0x00000004",
+            "RENAME_EXCL = 0x00000000",
+        ))
+
+    def test_49_publisher_rejects_overwrite_fallback(self) -> None:
+        self.reject_publisher(
+            self.publisher + "\nos.replace(source, target)\n"
+        )
+
+    def test_50_runner_rejects_artifact_path_drift(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            'ARTIFACT_DIR="$ARTIFACT_PARENT/real64-phase-a9b-b2y"',
+            'ARTIFACT_DIR="$ARTIFACT_PARENT/b2y-overwrite"',
+        ))
+
+    def test_51_runner_rejects_missing_activation_lock(self) -> None:
+        block = (
+            'if ! mkdir "$LOCK_DIR"; then\n'
+            '  fail "B2y activation lock is already held"\n'
+            'fi'
+        )
+        self.reject_runner(replace_once(self.runner, block, ":"))
+
+    def test_52_runner_rejects_cross_filesystem_stage(self) -> None:
+        old = (
+            'PUBLISH_STAGE=$(mktemp -d '
+            '"$ARTIFACT_PARENT/.real64-phase-a9b-b2y-publish.XXXXXX")'
+        )
+        new = (
+            'PUBLISH_STAGE=$(mktemp -d "$' +
+            '{TMPDIR:-/tmp}/real64-phase-a9b-b2y-publish.XXXXXX")'
+        )
+        self.reject_runner(replace_once(self.runner, old, new))
+
+    def test_53_runner_rejects_second_publication(self) -> None:
+        call = 'python3 "$PUBLISHER" "$PUBLISH_STAGE" "$ARTIFACT_DIR"'
+        self.reject_runner(replace_once(
+            self.runner, call, call + "\n" + call
+        ))
+
+    def test_54_runner_rejects_missing_closed_archive_copy(self) -> None:
+        copy = (
+            'copy_exact "$CASE_DIR/archive_closed.xsm" '
+            '"$PUBLISH_STAGE/archive_closed.xsm"'
+        )
+        self.reject_runner(replace_once(self.runner, copy, ":"))
+
+    def test_55_runner_rejects_early_staging(self) -> None:
+        stage = (
+            'PUBLISH_STAGE=$(mktemp -d '
+            '"$ARTIFACT_PARENT/.real64-phase-a9b-b2y-publish.XXXXXX")'
+        )
+        without = replace_once(self.runner, stage, "")
+        anchor = "verify_lineage\nverify_receipt\nverify_frozen_build_inputs"
+        position = without.rfind(anchor)
+        self.assertGreater(position, 0)
+        changed = without[:position] + stage + "\n" + without[position:]
+        self.reject_runner(changed)
+
+    def test_56_runner_rejects_unowned_final_cleanup(self) -> None:
+        guard = (
+            '[ "$(stat -f \'%d:%i\' "$ARTIFACT_DIR")" = '
+            '"$owned_final_id" ]'
+        )
+        self.reject_runner(replace_once(
+            self.runner, guard, '[ -d "$ARTIFACT_DIR" ]'
+        ))
+
+    def test_57_publisher_dynamic_no_replace(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="spot-b2y-publish-") as directory:
+            parent = Path(directory)
+            source = parent / "stage"
+            target = parent / "final"
+            source.mkdir()
+            (source / "evidence").write_text("closed")
+            before = source.stat()
+            result = subprocess.run(
+                ["python3", str(contract.PUBLISHER), str(source), str(target)],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            after = target.stat()
+            self.assertEqual(
+                (before.st_dev, before.st_ino),
+                (after.st_dev, after.st_ino),
+            )
+            source2 = parent / "stage2"
+            source2.mkdir()
+            (source2 / "other").write_text("other")
+            rejected = subprocess.run(
+                ["python3", str(contract.PUBLISHER), str(source2), str(target)],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertEqual((target / "evidence").read_text(), "closed")
+            self.assertEqual((source2 / "other").read_text(), "other")
+
+    def test_58_runner_rejects_missing_durable_attempt(self) -> None:
+        block = (
+            'if ! mkdir "$ATTEMPT_DIR"; then\n'
+            '  fail "B2y one-real activation authorization could not be consumed"\n'
+            'fi'
+        )
+        self.reject_runner(replace_once(self.runner, block, ":"))
+
+    def test_59_runner_rejects_signal_window_rollback_gap(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            "owned_final_id=$PUBLISH_STAGE_ID",
+            "owned_final_id=",
+        ))
+
+    def test_60_runner_rejects_noncanonical_b2z_path(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            '[ "$B2Y_RETURNED_XSM" = "$B2Z_RETURNED" ]',
+            '[ -n "$B2Y_RETURNED_XSM" ]',
+        ))
+
+    def test_61_runner_rejects_changed_b2z_receipt_hash(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner, contract.B2Z_RECEIPT_SHA256, "3" * 64
+        ))
+
+    def test_62_runner_rejects_missing_b2z_receipt_check(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            'shasum -a 256 -c "$B2Z_RECEIPT" >/dev/null',
+            ':',
+        ))
+
+    def test_63_runner_rejects_changed_b2z_manifest_hash(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner, contract.B2Z_ARTIFACT_MANIFEST_SHA256, "4" * 64
+        ))
+
+    def test_64_runner_rejects_missing_b2z_manifest_check(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            'cd "$B2Z_ARTIFACT_DIR"\n'
+            '    shasum -a 256 -c artifact_manifest.sha256 >/dev/null',
+            'cd "$B2Z_ARTIFACT_DIR"\n    :',
+        ))
+
+    def test_65_runner_rejects_missing_b2z_runtime_cmp(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            'cmp "$B2Z_RUNTIME_RESULT" "$B2Z_ARTIFACT_RUNTIME_RESULT"',
+            ':',
+        ))
+
+    def test_66_runner_rejects_b2z_check_after_attempt(self) -> None:
+        call = "verify_b2z_staged_input"
+        first = self.runner.index("\n" + call + "\n") + 1
+        without = self.runner[:first] + self.runner[first + len(call) + 1:]
+        anchor = 'ATTEMPT_ID=$(stat -f \'%d:%i\' "$ATTEMPT_DIR")\n'
+        self.assertEqual(without.count(anchor), 1)
+        changed = without.replace(anchor, anchor + call + "\n", 1)
+        self.reject_runner(changed)
+
+    def test_67_runner_rejects_missing_second_b2z_check(self) -> None:
+        call = "\nverify_b2z_staged_input\n"
+        last = self.runner.rfind(call)
+        self.assertGreater(last, 0)
+        changed = self.runner[:last] + "\n:\n" + self.runner[last + len(call):]
+        self.reject_runner(changed)
+
+    def test_68_runner_rejects_symlinked_b2z_artifact_dir(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            '[ ! -L "$B2Z_ARTIFACT_DIR" ]',
+            '[ -d "$B2Z_ARTIFACT_DIR" ]',
+        ))
+
+    def test_69_bounded_rejects_grace_after_hard_deadline(self) -> None:
+        self.reject_bounded(replace_once(
+            self.bounded,
+            "kill_group_at_hard_deadline(process)\n"
+            "            fail(f\"wall timeout; {resource_class}\")",
+            "terminate_group(process)\n"
+            "            fail(f\"wall timeout; {resource_class}\")",
+        ))
+
+    def test_70_bounded_rejects_late_absolute_deadline(self) -> None:
+        self.reject_bounded(replace_once(
+            self.bounded,
+            'hard_deadline = start + profile["wall_seconds"]',
+            'hard_deadline = start + profile["wall_seconds"] + 5',
+        ))
+
+    def test_71_bounded_rejects_failure_cleanup_grace(self) -> None:
+        start = self.bounded.index("def terminate_group(")
+        stop = self.bounded.index("\n\ndef kill_group_at_hard_deadline", start)
+        block = self.bounded[start:stop]
+        changed_block = block.replace(
+            "os.killpg(process.pid, signal.SIGKILL)",
+            "os.killpg(process.pid, signal.SIGTERM)\n"
+            "        time.sleep(5)\n"
+            "        os.killpg(process.pid, signal.SIGKILL)",
+            1,
+        )
+        self.reject_bounded(
+            self.bounded[:start] + changed_block + self.bounded[stop:]
+        )
+
+    def test_72_bounded_rejects_census_wait_before_kill(self) -> None:
+        anchor = (
+            "            terminate_group(process)\n"
+            "            fail(f\"RSS census failed; {resource_class}\")"
+        )
+        replacement = (
+            "            process.wait(timeout=0.1)\n"
+            "            terminate_group(process)\n"
+            "            fail(f\"RSS census failed; {resource_class}\")"
+        )
+        self.reject_bounded(replace_once(self.bounded, anchor, replacement))
 
 
 if __name__ == "__main__":

@@ -3,8 +3,11 @@ set -eu
 
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT=$(CDPATH= cd -- "$HERE/../../.." && pwd)
+B2Z_DIR="$ROOT/validation/iterative/real64_phase_a9b_b2z_one_real_returned_staging"
 B2V_DIR="$ROOT/validation/iterative/real64_phase_a9b_b2v_one_real_continuation"
 B2X_DIR="$ROOT/validation/iterative/real64_phase_a9b_b2x_same_call_returned_close"
+B2Z_RECEIPT="$B2Z_DIR/phase_a9b_b2z_one_real_returned_staging_receipt.sha256"
+B2Z_RUNTIME_RESULT="$B2Z_DIR/runtime_result.txt"
 B2V_RECEIPT="$B2V_DIR/phase_a9b_b2v_one_real_continuation_receipt.sha256"
 PARENT_RECEIPT="$B2X_DIR/phase_a9b_b2x_same_call_returned_close_receipt.sha256"
 RECEIPT="$HERE/phase_a9b_b2y_one_real_returned_close_receipt.sha256"
@@ -13,6 +16,11 @@ EXPECTED_B2V_COMMIT=607eccf472dfb95fa24b0775f950e4e50eda5efa
 EXPECTED_B2V_RECEIPT_HASH=af2b47504adcefc7d1e9fd2ae2ecf4517298e7b5b1be1cd75633ca0fa5482bcb
 EXPECTED_PARENT_COMMIT=18a2e69a11867d71bdb22a7964e48422cd9d75f8
 EXPECTED_PARENT_HASH=fae78e682c72a68e2acf10edebf065a69471722e64c971c9f0c840b39ff20f2c
+EXPECTED_B2Z_RECEIPT_HASH=2f003d175a2ff7eea2feb73cc87e46d83c1c11e1e09f97ebe228472f7d741844
+EXPECTED_B2Z_RUNTIME_HASH=6627924e8bed19e23537ede946c3c7c2cc7dcf2f53b84055a4b8e047fe444850
+EXPECTED_B2Z_RUNTIME_BYTES=1735
+EXPECTED_B2Z_ARTIFACT_MANIFEST_HASH=22949de59c8662c43ca7f7ec3293e27287571ae85b58ecddf24fc2148a67ca0f
+EXPECTED_B2Z_ARTIFACT_MANIFEST_BYTES=483
 EXPECTED_RETURNED_HASH=dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054
 EXPECTED_RETURNED_BYTES=231572260
 EXPECTED_TRACK_AX_HASH=101ba0ad64c91723fdeb002e62c6226347fcfaeff188e125d699d70e113febc7
@@ -50,10 +58,24 @@ POSTERIOR="$HERE/check_b2y_real_close.f90"
 DECK="$HERE/one_real_returned_close.x2m"
 HOST_SOURCE="$ROOT/data/SpotCloseR64.c2m"
 C2M_HELPER="$ROOT/validation/iterative/real64_phase_a9b_b2k_system_assembly/compile_c2m.c"
+PUBLISHER="$HERE/publish_b2y_artifact.py"
 
 TRACK_AX_ARTIFACT="$ROOT/validation/artifacts/iterative-seed/initial_axial_track.xsm"
 MACROLIB3_ARTIFACT="$ROOT/validation/artifacts/iterative-seed/initial_axial_macrolib.xsm"
 BASIS_REF_ARTIFACT="$ROOT/validation/artifacts/iterative-map1/basis_reference.xsm"
+ARTIFACT_PARENT="$ROOT/validation/artifacts"
+B2Z_ARTIFACT_DIR="$ARTIFACT_PARENT/iterative-b2z"
+B2Z_RETURNED="$B2Z_ARTIFACT_DIR/returned.xsm"
+B2Z_ARTIFACT_RUNTIME_RESULT="$B2Z_ARTIFACT_DIR/runtime_result.txt"
+B2Z_ARTIFACT_MANIFEST="$B2Z_ARTIFACT_DIR/artifact_manifest.sha256"
+B2Z_ATTEMPT_DIR="$ARTIFACT_PARENT/.iterative-b2z-attempted"
+ARTIFACT_DIR="$ARTIFACT_PARENT/real64-phase-a9b-b2y"
+LOCK_DIR="$ARTIFACT_PARENT/.real64-phase-a9b-b2y.lock"
+ATTEMPT_DIR="$ARTIFACT_PARENT/.real64-phase-a9b-b2y-attempted"
+PUBLISH_STAGE=
+PUBLISH_STAGE_ID=
+LOCK_ID=
+FINAL_OWNED_ID=
 
 BUILD_DIR=$(mktemp -d "${TMPDIR:-/tmp}/spot-real64-a9b-b2y.XXXXXX")
 SOURCE_DIR="$BUILD_DIR/source"
@@ -66,6 +88,24 @@ cleanup()
 {
   status=$?
   trap - EXIT HUP INT TERM
+  owned_final_id=$FINAL_OWNED_ID
+  if [ -z "$owned_final_id" ]; then
+    owned_final_id=$PUBLISH_STAGE_ID
+  fi
+  if [ -n "$owned_final_id" ] && [ -d "$ARTIFACT_DIR" ] && \
+     [ ! -L "$ARTIFACT_DIR" ] && \
+     [ "$(stat -f '%d:%i' "$ARTIFACT_DIR")" = "$owned_final_id" ]; then
+    rm -rf "$ARTIFACT_DIR"
+  fi
+  if [ -n "$PUBLISH_STAGE_ID" ] && [ -d "$PUBLISH_STAGE" ] && \
+     [ ! -L "$PUBLISH_STAGE" ] && \
+     [ "$(stat -f '%d:%i' "$PUBLISH_STAGE")" = "$PUBLISH_STAGE_ID" ]; then
+    rm -rf "$PUBLISH_STAGE"
+  fi
+  if [ -n "$LOCK_ID" ] && [ -d "$LOCK_DIR" ] && [ ! -L "$LOCK_DIR" ] && \
+     [ "$(stat -f '%d:%i' "$LOCK_DIR")" = "$LOCK_ID" ]; then
+    rmdir "$LOCK_DIR"
+  fi
   if [ "$status" -ne 0 ] && [ -d "$CASE_DIR" ]; then
     for log in dragon.log posterior_a.log posterior_b.log
     do
@@ -84,7 +124,10 @@ cleanup()
   rm -rf "$BUILD_DIR"
   exit "$status"
 }
-trap cleanup EXIT HUP INT TERM
+trap cleanup EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 LC_ALL=C
 export LC_ALL
@@ -182,6 +225,58 @@ verify_lineage()
     fail "B2x parent commit is not an ancestor"
 }
 
+verify_b2z_frozen_evidence()
+{
+  [ -d "$B2Z_ARTIFACT_DIR" ] && [ ! -L "$B2Z_ARTIFACT_DIR" ] || \
+    fail "canonical B2z artifact directory differs"
+  [ -d "$B2Z_ATTEMPT_DIR" ] && [ ! -L "$B2Z_ATTEMPT_DIR" ] || \
+    fail "B2z durable attempt evidence differs"
+  for path in "$B2Z_RECEIPT" "$B2Z_RUNTIME_RESULT" \
+    "$B2Z_ARTIFACT_MANIFEST" "$B2Z_ARTIFACT_RUNTIME_RESULT" "$B2Z_RETURNED"
+  do
+    [ -f "$path" ] && [ ! -L "$path" ] || \
+      fail "B2z frozen evidence file differs: $path"
+  done
+  for file in returned.xsm prepare.log dragon.log posterior_a.log \
+    posterior_b.log runtime_result.txt artifact_manifest.sha256
+  do
+    [ -f "$B2Z_ARTIFACT_DIR/$file" ] && \
+      [ ! -L "$B2Z_ARTIFACT_DIR/$file" ] || \
+      fail "B2z artifact inventory entry differs: $file"
+  done
+  [ "$(find "$B2Z_ARTIFACT_DIR" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')" -eq 7 ] || \
+    fail "B2z artifact inventory differs"
+  require_hash "$B2Z_RECEIPT" "$EXPECTED_B2Z_RECEIPT_HASH"
+  (
+    cd "$ROOT"
+    shasum -a 256 -c "$B2Z_RECEIPT" >/dev/null
+  ) || fail "B2z frozen receipt verification failed"
+  require_hash "$B2Z_RUNTIME_RESULT" "$EXPECTED_B2Z_RUNTIME_HASH"
+  require_bytes "$B2Z_RUNTIME_RESULT" "$EXPECTED_B2Z_RUNTIME_BYTES"
+  require_hash "$B2Z_ARTIFACT_RUNTIME_RESULT" "$EXPECTED_B2Z_RUNTIME_HASH"
+  require_bytes "$B2Z_ARTIFACT_RUNTIME_RESULT" "$EXPECTED_B2Z_RUNTIME_BYTES"
+  cmp "$B2Z_RUNTIME_RESULT" "$B2Z_ARTIFACT_RUNTIME_RESULT" || \
+    fail "B2z tracked and artifact runtime results differ"
+  require_hash "$B2Z_ARTIFACT_MANIFEST" \
+    "$EXPECTED_B2Z_ARTIFACT_MANIFEST_HASH"
+  require_bytes "$B2Z_ARTIFACT_MANIFEST" \
+    "$EXPECTED_B2Z_ARTIFACT_MANIFEST_BYTES"
+  (
+    cd "$B2Z_ARTIFACT_DIR"
+    shasum -a 256 -c artifact_manifest.sha256 >/dev/null
+  ) || fail "B2z artifact manifest verification failed"
+  require_hash "$B2Z_RETURNED" "$EXPECTED_RETURNED_HASH"
+  require_bytes "$B2Z_RETURNED" "$EXPECTED_RETURNED_BYTES"
+}
+
+verify_b2z_staged_input()
+{
+  [ -n "$B2Y_RETURNED_XSM" ] || fail "B2Y_RETURNED_XSM is required"
+  [ "$B2Y_RETURNED_XSM" = "$B2Z_RETURNED" ] || \
+    fail "B2Y_RETURNED_XSM must be the canonical B2z staged RETURNED"
+  verify_b2z_frozen_evidence
+}
+
 verify_receipt()
 {
   if [ -f "$RECEIPT" ]; then
@@ -253,11 +348,15 @@ esac
 [ -x "$AR" ] || fail "host archive tool missing"
 [ "$($FC --version | sed -n '1p')" = "$EXPECTED_FC_BANNER" ] || \
   fail "unaudited compiler"
+[ -d "$ARTIFACT_PARENT" ] && [ ! -L "$ARTIFACT_PARENT" ] || \
+  fail "artifact parent is not a non-symlink directory"
 
 for path in "$STATIC_CHECKER" "$HERE/$MUTATION_TEST.py" "$BOUNDED" \
-  "$POSTERIOR" "$DECK" "$HOST_SOURCE" "$C2M_HELPER" \
+  "$PUBLISHER" "$POSTERIOR" "$DECK" "$HOST_SOURCE" "$C2M_HELPER" \
   "$TRACK_AX_ARTIFACT" "$MACROLIB3_ARTIFACT" "$BASIS_REF_ARTIFACT" \
   "$HERE/README.md" "$HERE/precision_manifest.json" \
+  "$B2Z_RECEIPT" "$B2Z_RUNTIME_RESULT" "$B2Z_ARTIFACT_MANIFEST" \
+  "$B2Z_ARTIFACT_RUNTIME_RESULT" "$B2Z_RETURNED" \
   "$ROOT/lib/Darwin_arm64/libDragon.a"
 do
   [ -f "$path" ] || fail "required input missing: $path"
@@ -276,6 +375,7 @@ done
 verify_lineage
 verify_receipt
 verify_frozen_build_inputs
+verify_b2z_frozen_evidence
 require_hash "$TRACK_AX_ARTIFACT" "$EXPECTED_TRACK_AX_HASH"
 require_bytes "$TRACK_AX_ARTIFACT" "$EXPECTED_TRACK_AX_BYTES"
 require_hash "$MACROLIB3_ARTIFACT" "$EXPECTED_MACROLIB3_HASH"
@@ -304,7 +404,7 @@ then
   sed -n '1,300p' "$BUILD_DIR/mutations.log" >&2
   fail "B2y mutation suite rejected"
 fi
-count_exact 1 '^Ran 48 tests in [0-9.]+s$' "$BUILD_DIR/mutations.log"
+count_exact 1 '^Ran 73 tests in [0-9.]+s$' "$BUILD_DIR/mutations.log"
 count_exact 1 '^OK$' "$BUILD_DIR/mutations.log"
 
 for source in SPOR64_B2C SPOR64_B2B SPOR64_B2K SPOR64_B2N \
@@ -471,16 +571,32 @@ done
 if [ "$RUN_B2Y" = 0 ]; then
   printf '%s\n' 'SPOR64 PHASE-A9b-B2y PREFLIGHT PASS'
   printf '%s\n' \
-    'ACTIVATION=DEFAULT-OFF; SET RUN_B2Y=1 AND B2Y_RETURNED_XSM TO THE FROZEN B2v FILE'
+    'ACTIVATION=DEFAULT-OFF; SET RUN_B2Y=1 AND B2Y_RETURNED_XSM TO THE B2Z-STAGED B2V-BYTE-IDENTICAL FILE'
   printf '%s\n' \
     'DRAGON=0 SPOTCLOSE=0 ASM=0 FLU=0 AXIAL-SOLVE=0 PICARD=0'
   printf '%s\n' \
     'PRODUCTION-CLOSE=COMPILE/LINK-ONLY POSTERIOR=GANLIB/UTILIB-ONLY-COMPILE'
   printf '%s\n' 'ONE-REAL-SUPPLIED-RETURNED-CLOSE=NOT-EVALUATED'
-  printf '%s\n' "RECEIPT=$RECEIPT_STATE PARENT=B2x"
+  printf '%s\n' \
+    "RECEIPT=$RECEIPT_STATE INPUT-PARENT=B2z CLOSE-CONTRACT-LINEAGE=B2x"
   exit 0
 fi
 
+[ ! -e "$ARTIFACT_DIR" ] && [ ! -L "$ARTIFACT_DIR" ] || \
+  fail "canonical B2y artifact target is not fresh"
+[ ! -e "$ATTEMPT_DIR" ] && [ ! -L "$ATTEMPT_DIR" ] || \
+  fail "B2y one-real activation authorization was already consumed"
+if ! mkdir "$LOCK_DIR"; then
+  fail "B2y activation lock is already held"
+fi
+LOCK_ID=$(stat -f '%d:%i' "$LOCK_DIR")
+[ -d "$LOCK_DIR" ] && [ ! -L "$LOCK_DIR" ] || fail "B2y lock differs"
+[ ! -e "$ARTIFACT_DIR" ] && [ ! -L "$ARTIFACT_DIR" ] || \
+  fail "canonical B2y artifact target appeared after locking"
+[ ! -e "$ATTEMPT_DIR" ] && [ ! -L "$ATTEMPT_DIR" ] || \
+  fail "B2y activation attempt appeared after locking"
+
+verify_b2z_staged_input
 [ -n "$B2Y_RETURNED_XSM" ] || \
   fail "B2Y_RETURNED_XSM is required"
 [ -f "$B2Y_RETURNED_XSM" ] || \
@@ -515,6 +631,12 @@ DRAGON_HASH=$(hash_of "$BUILD_DIR/Dragon.b2y")
 DECK_HASH=$(hash_of "$CASE_DIR/one_real_returned_close.x2m")
 
 # The only close-profile launch site. Failure never reaches a second launch.
+if ! mkdir "$ATTEMPT_DIR"; then
+  fail "B2y one-real activation authorization could not be consumed"
+fi
+[ -d "$ATTEMPT_DIR" ] && [ ! -L "$ATTEMPT_DIR" ] || \
+  fail "B2y durable attempt sentinel differs"
+ATTEMPT_ID=$(stat -f '%d:%i' "$ATTEMPT_DIR")
 DRAGON_STARTED=1
 if ! python3 "$BOUNDED" close "$BUILD_DIR/Dragon.b2y" \
   "$CASE_DIR/one_real_returned_close.x2m" "$CASE_DIR/dragon.log"
@@ -668,28 +790,99 @@ require_hash "$BASIS_REF_ARTIFACT" "$EXPECTED_BASIS_REF_HASH"
 verify_lineage
 verify_receipt
 verify_frozen_build_inputs
+verify_b2z_staged_input
 
 if [ ! -f "$RECEIPT" ]; then
   RECEIPT_STATE=PENDING-RUNTIME-FREEZE
 fi
 
-printf '%s\n' 'SPOR64 PHASE-A9b-B2y ONE-REAL-RETURNED-CLOSE PASS'
-printf '%s\n' \
-  'CLASSIFICATION=ONE-REAL-SUPPLIED-RETURNED-TO-CLOSED-AXIAL-HALF-STEP'
-printf '%s\n' \
-  'DRAGON-EXECUTIONS=1 SPOTCLOSE-CALLS=1 ASM=1 FLU=1 RETRIES=0 PICARD-LOOPS=0'
-printf '%s\n' \
-  'SPOR64V=1 SPOSTATE=1 SPOLEAK=1 SPOR64X=1 CLOSED-PAIRS=1'
-printf '%s\n' \
-  "FLU-STRICT-PASS IEXTF=$IEXTF/$MAXOUT ITERF=$ITERF/$MAXINR STATE=$INNER_STATE IGDEB=$IGDEB NGRP=$NGRP"
-printf '%s\n' "RETURNED-SHA256=$RETURNED_BEFORE BYTES=$EXPECTED_RETURNED_BYTES"
-printf '%s\n' "AX-CLOSED-SHA256=$AX_HASH BYTES=$AX_BYTES"
-printf '%s\n' "ARCH-CLOSED-SHA256=$ARCH_HASH BYTES=$ARCH_BYTES"
-printf '%s\n' "DRAGON-SHA256=$DRAGON_HASH DECK-SHA256=$DECK_HASH"
-printf '%s\n' \
-  'EMPIRICAL-COEFFICIENTS-ADDED=0 RELAXATION=0 DAMPING=0 CLIPPING=0 FITTING=0'
-printf '%s\n' \
-  'B2v-SAME-PROCESS=NOT-CLAIMED OUTER-PICARD-CONVERGENCE=NOT-EVALUATED'
-printf '%s\n' \
-  'INDEPENDENT-AXIAL-RESIDUAL/GLOBAL-BALANCE/RANK-ADEQUACY=NOT-EVALUATED'
-printf '%s\n' "RECEIPT=$RECEIPT_STATE PARENT=B2x INPUT-PROVENANCE=B2v"
+[ ! -e "$ARTIFACT_DIR" ] && [ ! -L "$ARTIFACT_DIR" ] || \
+  fail "canonical artifact appeared before publication"
+PUBLISH_STAGE=$(mktemp -d "$ARTIFACT_PARENT/.real64-phase-a9b-b2y-publish.XXXXXX")
+PUBLISH_STAGE_ID=$(stat -f '%d:%i' "$PUBLISH_STAGE")
+[ -d "$PUBLISH_STAGE" ] && [ ! -L "$PUBLISH_STAGE" ] || \
+  fail "publication stage differs"
+copy_exact "$CASE_DIR/ax_closed.xsm" "$PUBLISH_STAGE/ax_closed.xsm"
+copy_exact "$CASE_DIR/archive_closed.xsm" "$PUBLISH_STAGE/archive_closed.xsm"
+copy_exact "$CASE_DIR/dragon.log" "$PUBLISH_STAGE/dragon.log"
+copy_exact "$CASE_DIR/posterior_a.log" "$PUBLISH_STAGE/posterior_a.log"
+copy_exact "$CASE_DIR/posterior_b.log" "$PUBLISH_STAGE/posterior_b.log"
+
+DRAGON_LOG_HASH=$(hash_of "$CASE_DIR/dragon.log")
+POSTERIOR_HASH=$(hash_of "$CASE_DIR/posterior_a.log")
+{
+  printf '%s\n' 'SPOR64 PHASE-A9b-B2y ONE-REAL-RETURNED-CLOSE PASS'
+  printf '%s\n' 'CLASSIFICATION=ONE-REAL-SUPPLIED-RETURNED-TO-CLOSED-AXIAL-HALF-STEP'
+  printf '%s\n' 'DRAGON-EXECUTIONS=1 SPOTCLOSE-CALLS=1 ASM=1 FLU=1 RETRIES=0 PICARD-LOOPS=0'
+  printf '%s\n' 'SPOR64V=1 SPOSTATE=1 SPOLEAK=1 SPOR64X=1 CLOSED-PAIRS=1'
+  printf '%s\n' "FLU-STRICT-PASS IEXTF=$IEXTF/$MAXOUT ITERF=$ITERF/$MAXINR STATE=$INNER_STATE IGDEB=$IGDEB NGRP=$NGRP"
+  printf '%s\n' "RETURNED-SHA256=$RETURNED_BEFORE BYTES=$EXPECTED_RETURNED_BYTES"
+  printf '%s\n' "AX-CLOSED-SHA256=$AX_HASH BYTES=$AX_BYTES"
+  printf '%s\n' "ARCH-CLOSED-SHA256=$ARCH_HASH BYTES=$ARCH_BYTES"
+  printf '%s\n' "DRAGON-SHA256=$DRAGON_HASH DECK-SHA256=$DECK_HASH"
+  printf '%s\n' "DRAGON-LOG-SHA256=$DRAGON_LOG_HASH"
+  printf '%s\n' "POSTERIOR-LOG-SHA256=$POSTERIOR_HASH REPORTS-IDENTICAL=YES"
+  printf '%s\n' 'ATOMIC-PUBLISH=RENAMEATX_NP-RENAME_EXCL TARGET=validation/artifacts/real64-phase-a9b-b2y'
+  printf '%s\n' "DURABLE-ATTEMPT-SENTINEL=$ATTEMPT_ID RETRY-AFTER-ANY-ATTEMPT=DISABLED"
+  printf '%s\n' 'EMPIRICAL-COEFFICIENTS-ADDED=0 RELAXATION=0 DAMPING=0 CLIPPING=0 FITTING=0'
+  printf '%s\n' 'B2v-SAME-PROCESS=NOT-CLAIMED OUTER-PICARD-CONVERGENCE=NOT-EVALUATED'
+  printf '%s\n' 'INDEPENDENT-AXIAL-RESIDUAL/GLOBAL-BALANCE/RANK-ADEQUACY=NOT-EVALUATED'
+  printf '%s\n' \
+    "RECEIPT=$RECEIPT_STATE PARENT=B2z CLOSE-CONTRACT-LINEAGE=B2x HISTORICAL-CONTENT-REFERENCE=B2v"
+} >"$PUBLISH_STAGE/runtime_result.txt"
+
+(
+  cd "$PUBLISH_STAGE"
+  shasum -a 256 ax_closed.xsm archive_closed.xsm dragon.log posterior_a.log \
+    posterior_b.log runtime_result.txt >artifact_manifest.sha256
+  shasum -a 256 -c artifact_manifest.sha256 >/dev/null
+)
+for file in ax_closed.xsm archive_closed.xsm dragon.log posterior_a.log \
+  posterior_b.log runtime_result.txt artifact_manifest.sha256
+do
+  [ -f "$PUBLISH_STAGE/$file" ] && [ ! -L "$PUBLISH_STAGE/$file" ] || \
+    fail "staged evidence file differs: $file"
+  chmod 444 "$PUBLISH_STAGE/$file"
+done
+[ "$(find "$PUBLISH_STAGE" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')" -eq 7 ] || \
+  fail "publication stage inventory differs"
+require_hash "$PUBLISH_STAGE/ax_closed.xsm" "$AX_HASH"
+require_hash "$PUBLISH_STAGE/archive_closed.xsm" "$ARCH_HASH"
+[ "$(stat -f '%z' "$PUBLISH_STAGE/ax_closed.xsm")" -eq "$AX_BYTES" ] || \
+  fail "staged AX_CLOSED byte count differs"
+[ "$(stat -f '%z' "$PUBLISH_STAGE/archive_closed.xsm")" -eq "$ARCH_BYTES" ] || \
+  fail "staged ARCH_CLOSED byte count differs"
+
+if ! python3 "$PUBLISHER" "$PUBLISH_STAGE" "$ARTIFACT_DIR"; then
+  if [ -d "$ARTIFACT_DIR" ] && [ ! -L "$ARTIFACT_DIR" ] && \
+     [ "$(stat -f '%d:%i' "$ARTIFACT_DIR")" = "$PUBLISH_STAGE_ID" ]; then
+    FINAL_OWNED_ID=$PUBLISH_STAGE_ID
+  fi
+  fail "INVALID-ARTIFACT-PUBLICATION NO-RETRY"
+fi
+FINAL_OWNED_ID=$(stat -f '%d:%i' "$ARTIFACT_DIR")
+[ "$FINAL_OWNED_ID" = "$PUBLISH_STAGE_ID" ] || \
+  fail "published directory identity differs"
+[ "$(find "$ARTIFACT_DIR" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')" -eq 7 ] || \
+  fail "published artifact inventory differs"
+(
+  cd "$ARTIFACT_DIR"
+  shasum -a 256 -c artifact_manifest.sha256 >/dev/null
+)
+cmp "$CASE_DIR/ax_closed.xsm" "$ARTIFACT_DIR/ax_closed.xsm" || \
+  fail "published AX_CLOSED differs"
+cmp "$CASE_DIR/archive_closed.xsm" "$ARTIFACT_DIR/archive_closed.xsm" || \
+  fail "published ARCH_CLOSED differs"
+cmp "$CASE_DIR/dragon.log" "$ARTIFACT_DIR/dragon.log" || \
+  fail "published Dragon log differs"
+cmp "$CASE_DIR/posterior_a.log" "$ARTIFACT_DIR/posterior_a.log" || \
+  fail "published posterior differs"
+require_hash "$ARTIFACT_DIR/ax_closed.xsm" "$AX_HASH"
+require_hash "$ARTIFACT_DIR/archive_closed.xsm" "$ARCH_HASH"
+
+rmdir "$LOCK_DIR"
+LOCK_ID=
+FINAL_OWNED_ID=
+PUBLISH_STAGE_ID=
+sed -n '1,80p' "$ARTIFACT_DIR/runtime_result.txt"
+printf '%s\n' "ARTIFACT=$ARTIFACT_DIR"
