@@ -227,6 +227,37 @@ state was returned. The log SHA-256 is
 and it is retained locally as `trace_strict_inner_production_30s.log`. There
 was no retry.
 
+The next separately authorized radial-only process used the unchanged
+production deck (`EDIT 0`), frozen \(x_2\), default acceleration, fixed rank
+one basis and \(h=5\times10^{-7}\). It completed all three planes within its
+75 s wall bound and ended normally; the listing reported 65 s of CPU time.
+The strict terminal residuals were
+
+| plane | outer iterations | `EUNK` | final inner iterations | `EINR` |
+|---:|---:|---:|---:|---:|
+| 1 | 5 | `4.31115978e-7` | 4 | `2.75581868e-7` |
+| 2 | 3 | `4.57398869e-7` | 3 | `4.53212692e-7` |
+| 3 | 6 | `3.65322109e-7` | 4 | `1.56248547e-7` |
+
+Every plane has `EUNK-VALID=1`, `IGDEB=371`, `STATE=1` and both residuals
+strictly below the binary32 threshold `4.99999999e-7`. The event sequence is
+`OUTER -> INNER -> SPOFCHK` three times, followed by
+`MAP3-RADIAL-COMPLETE` and normal Dragon end. No axial module was executed.
+The new radial candidate differs bitwise from the legacy \(x_3\) radial
+objects and therefore must be paired with a fresh axial solve, not the old
+axial output. Its local evidence is
+
+```text
+42b9a65fd54726df76bf6b587a7a4157bb8e61c09bb9604c2bc4aab1d452d93d  radial.log
+0ed25fe626af26e5e4425c45c7593aaa480b08300aea511b4ffc742c92f6e3dc  state3_system.xsm
+12fcf8d406a72b2b20d98f0d372ff2c4ed1e4e9ae60be18fcbc932def837a77c  state3_radial.xsm
+```
+
+under `validation/artifacts/iterative-map3-strict-radial/`. This establishes
+the complete online radial half of the strict map only. It does not yet
+produce a new canonical \(x_3\), a Picard defect, or an outer-coupling
+convergence result.
+
 All bounded \(h/2\) attempts remain `TIMEOUT / NO SCIENTIFIC RESULT`. The
 earlier legacy attempts did not reach a strict solver terminal record; the
 new trace reached three strict inner terminals but not the first-plane FLU

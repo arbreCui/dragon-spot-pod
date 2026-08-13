@@ -200,7 +200,12 @@ single 30-second trace at the production tolerance `5e-7` then completed the
 first plane strictly in five outer iterations (`EUNK=4.3112e-7`,
 `EINR=2.7558e-7`, `STATE=1`, `NEARLY=0`) and entered plane two. The complete
 three-plane radial solve still did not return before the bound, so no new
-Picard state or convergence claim exists.
+Picard state or convergence claim exists. A following radial-only run with
+the unchanged production deck completed all three planes within its single
+75-second bound. Each plane passed the strict outer and inner FLU gates and
+the radial checks, and Dragon ended normally. This establishes a fresh
+strict radial response from \(x_2\), but not yet a new \(x_3\): its required
+axial solve and independent complete-map check have not been run.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
