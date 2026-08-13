@@ -1305,10 +1305,22 @@
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
-*     A SPOT TYPE-K state is an input to the coupled 2D/1D map.  Never let
-*     an outer-cap iterate fall through to the common solution-publication
-*     path.  This branch adds no new test: reaching it means the strict
-*     predicate above was false for every allowed outer iteration.
+*     A frozen-source SPOT radial state enters through the MCCG door.  Its
+*     SYSTEM leakage and frozen-source marker distinguish it from unrelated
+*     MCCG fixed-source calculations.  Never publish its cap iterate.
+      IF((CXDOOR.EQ.'MCCG').AND.(ITYPEC.EQ.0).AND.
+     1   C_ASSOCIATED(IPSYS).AND.C_ASSOCIATED(IPSOU)) THEN
+         CALL LCMLEN(IPSYS,'SPOT-LEAK1D',ILONG,ITYLCM)
+         IF((ILONG.EQ.NGRP).AND.(ITYLCM.EQ.2)) THEN
+            CALL LCMLEN(IPSOU,'SPOT-FROZEN',ILEN,ITYLCM)
+            IF((ILEN.EQ.1).AND.(ITYLCM.EQ.1)) THEN
+               CALL XABORT(
+     1         'FLU2DR: SPOT TYPE-S STRICT TERMINATION REQUIRED.')
+               RETURN
+            ENDIF
+         ENDIF
+      ENDIF
+*     The same fail-closed rule applies to the reduced axial eigenproblem.
       IF((CXDOOR.EQ.'SPOT').AND.(ITYPEC.GE.2).AND.
      1   (ITYPEC.LE.3)) THEN
          CALL XABORT('FLU2DR: SPOT TYPE-K STRICT TERMINATION REQUIRED.')

@@ -10,10 +10,11 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 
 required_tokens = {
-    "validation/iterative/one_corrected_map.x2m": (
+    "data/SpotPicard.c2m": (
         "SPOPROJ:",
         "FIXB",
         "SpotRefFS",
+        "SPOSTATE:",
         "SPOXCONV:",
         "SPOLEAK:",
     ),
@@ -45,6 +46,13 @@ required_tokens = {
         "SPOT-X-RLEAK",
         "SPOT-X-RA",
     ),
+    "src/FLU2DR.f": (
+        "CXDOOR.EQ.'MCCG'",
+        "SPOT-LEAK1D",
+        "SPOT-FROZEN",
+        "SPOT TYPE-S STRICT TERMINATION REQUIRED",
+        "SPOT TYPE-K STRICT TERMINATION REQUIRED",
+    ),
 }
 
 violations: list[str] = []
@@ -60,16 +68,25 @@ for relative, tokens in required_tokens.items():
         if token not in text:
             violations.append(f"{relative}: missing {token!r}")
 
-map_text = texts.get("validation/iterative/one_corrected_map.x2m", "")
+map_text = texts.get("data/SpotPicard.c2m", "")
 if map_text.count("SpotRefFS SNAP TRACK TRACK_f") != 1:
-    violations.append("one_corrected_map.x2m: expected one radial refresh")
-if map_text.count("SPOPROJ: SNAP AX_PREVIOUS TRACK_AX :: FIXB") != 1:
-    violations.append("one_corrected_map.x2m: feedback is not explicitly B*a")
-if re.search(r"\b(?:WHILE|REPEAT)\b", map_text, re.IGNORECASE):
-    violations.append("one_corrected_map.x2m: one-map fixture contains a loop")
+    violations.append("SpotPicard.c2m: expected one radial refresh per iteration")
+if map_text.count("SPOPROJ: SNAP AX TRACK_AX :: FIXB") != 1:
+    violations.append("SpotPicard.c2m: feedback is not explicitly B*a")
+if len(re.findall(r"\bREPEAT\b", map_text, re.IGNORECASE)) != 1:
+    violations.append("SpotPicard.c2m: expected one direct Picard loop")
+if "AX := AX_NEXT" not in map_text:
+    violations.append("SpotPicard.c2m: missing direct state substitution")
+if not re.search(
+    r"rrho\s+outer_eps\s+<=\s+rleak\s+outer_eps\s+<=\s+\*\s+"
+    r"ra\s+outer_eps\s+<=\s+\*",
+    map_text,
+    re.IGNORECASE,
+):
+    violations.append("SpotPicard.c2m: three residuals are not joined by AND")
 
 formal_inputs = (
-    "validation/iterative/one_corrected_map.x2m",
+    "data/SpotPicard.c2m",
     "data/SpotPlaneFS.c2m",
     "data/SpotRefFS.c2m",
 )
@@ -89,7 +106,7 @@ if violations:
     raise SystemExit("METHOD CONTRACT FAIL:\n" + "\n".join(violations))
 
 print(
-    "METHOD CONTRACT PASS: one fixed-space Galerkin-SPOD map has online "
-    "radial fixed-source solves, direct leakage feedback, a complete raw "
-    "state defect, and no empirical stabilization parameter."
+    "METHOD CONTRACT PASS: direct fixed-space Galerkin-SPOD Picard has "
+    "online radial solves, strict inner termination, three separate raw "
+    "defects, and no empirical stabilization parameter."
 )

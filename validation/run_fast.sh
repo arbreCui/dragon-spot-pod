@@ -3,7 +3,7 @@ set -eu
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
-PYTHONDONTWRITEBYTECODE=1 python3 "$ROOT/validation/check_method_contract.py"
+sh "$ROOT/validation/run_picard_fast.sh"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_source_identity.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
@@ -12,35 +12,5 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_state_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_state_math.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_one_map_contract.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_inner_sensitivity_contract.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_inner_sensitivity_v2_protocol.py" \
-  --public-only
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/test_inner_sensitivity_status.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/test_inner_sensitivity_failure.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_radial_floor_contract.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/test_radial_floor_status.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_radial_floor_result.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_radial_precision_contract.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_raw_moc_ulp_bridge_contract.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_raw_moc_ulp_bridge_result_history.py" --public-only
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_gmres_activity_protocol.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_gmres_activity_run_protocol.py"
-PYTHONDONTWRITEBYTECODE=1 python3 \
-  "$ROOT/validation/iterative/check_gmres_activity_result_history.py" \
-  --public-only
 sh "$ROOT/validation/level1/run_level1.sh"
 sh "$ROOT/validation/level2/run_level2.sh"

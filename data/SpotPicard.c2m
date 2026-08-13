@@ -1,0 +1,87 @@
+****************************************************************
+* SpotPicard.c2m -- direct fixed-space Galerkin-SPOD iteration *
+*                                                              *
+* AX SNAP := SpotPicard AX SNAP TRACK TRACK_f TRACK_AX          *
+*                         MACROLIB3 BASIS_REF ::                *
+*   rank inner_eps outer_eps max_outer ;                        *
+*                                                              *
+* The update is x(m+1)=G(x(m)).  There is no relaxation, fit,   *
+* clipping, or empirical coupling parameter.                   *
+****************************************************************
+PARAMETER AX SNAP TRACK TRACK_f TRACK_AX MACROLIB3 BASIS_REF ::
+  ::: LINKED_LIST AX SNAP TRACK TRACK_AX MACROLIB3 BASIS_REF ;
+  ::: SEQ_BINARY TRACK_f ; ;
+
+LINKED_LIST SYSTEM_NEXT AX_NEXT ;
+MODULE ASM: FLU: SPOSTATE: SPOXCONV: SPOPROJ: SPOLEAK:
+       GREP: DELETE: ABORT: END: ;
+PROCEDURE SpotRefFS ;
+
+INTEGER rank max_outer iteration ;
+REAL inner_eps keff leak_change ;
+DOUBLE outer_eps rrho rleak ra ;
+LOGICAL converged ;
+:: >>rank<< >>inner_eps<< >>outer_eps<< >>max_outer<< ;
+
+IF rank 0 <= THEN
+  ECHO "SPOT-PICARD: rank must be positive." ;
+  ABORT: ;
+ENDIF ;
+IF inner_eps 0.0 <= THEN
+  ECHO "SPOT-PICARD: inner_eps must be positive." ;
+  ABORT: ;
+ENDIF ;
+IF outer_eps 0.0D0 < THEN
+  ECHO "SPOT-PICARD: outer_eps must be nonnegative." ;
+  ABORT: ;
+ENDIF ;
+IF max_outer 0 <= THEN
+  ECHO "SPOT-PICARD: max_outer must be positive." ;
+  ABORT: ;
+ENDIF ;
+
+EVALUATE iteration := 0 ;
+EVALUATE converged := $False_L ;
+
+REPEAT
+  EVALUATE iteration := iteration 1 + ;
+  GREP: AX :: GETVAL 'K-EFFECTIVE' 1 >>keff<< ;
+
+  * Reconstruct B*a(m), then solve every 2D frozen-fission problem.
+  SNAP := SPOPROJ: SNAP AX TRACK_AX :: FIXB ;
+  SNAP := SpotRefFS SNAP TRACK TRACK_f :: <<keff>> <<inner_eps>> ;
+
+  * Rebuild the radial response in the same frozen POD space and solve 1D.
+  SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
+    EDIT 0 SPOD <<rank>> FIXB ;
+  AX_NEXT := FLU: MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+    EDIT -3 TYPE K B1 SIGS EXTE 500 <<inner_eps>>
+    UNKT <<inner_eps>> THER <<inner_eps>> ;
+  AX_NEXT := SPOSTATE:
+    AX_NEXT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+
+  * These are the three separate defects of the raw map G.
+  AX_NEXT := SPOXCONV: AX_NEXT AX :: ;
+  GREP: AX_NEXT ::
+    GETVAL 'SPOT-X-RRHO' 1 >>rrho<<
+    GETVAL 'SPOT-X-RLEAK' 1 >>rleak<<
+    GETVAL 'SPOT-X-RA' 1 >>ra<< ;
+  ECHO "SPOT-PICARD" iteration "RRHO/RLEAK/RA" rrho rleak ra ;
+
+  * Direct, undamped leakage feedback and direct state substitution.
+  SNAP := SPOLEAK: SNAP AX_NEXT TRACK_AX :: >>leak_change<< ;
+  EVALUATE converged := rrho outer_eps <=
+                        rleak outer_eps <= *
+                        ra outer_eps <= * ;
+  AX := DELETE: AX ;
+  AX := AX_NEXT ;
+  AX_NEXT SYSTEM_NEXT := DELETE: AX_NEXT SYSTEM_NEXT ;
+
+UNTIL converged iteration max_outer >= + ;
+
+IF converged NOT THEN
+  ECHO "SPOT-PICARD: maximum outer iterations reached." ;
+  ABORT: ;
+ENDIF ;
+
+END: ;

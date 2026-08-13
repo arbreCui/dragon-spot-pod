@@ -1,342 +1,181 @@
-# Self-consistent Galerkin–SPOD
+# Concise derivation of fixed-space Galerkin–SPOD
 
-This document defines the target SPOT method: an iterative 2D/1D coupling,
-free of fitted or empirical coupling parameters, in a fixed POD radial trial
-space. Two-dimensional transport is recomputed online, its radial response is
-returned to the axial problem, and the axial leakage is returned to the
-radial problems until the same physical state reproduces itself.
+This document defines the SPOT equations used by the implementation. It keeps
+the mathematics deliberately small: one fixed POD space, one online radial
+fixed-source problem, one reduced axial problem, and direct Picard iteration.
 
-The concise name is **self-consistent Galerkin–SPOD with a fixed offline POD
-space and online radial response**.
+## 1. Fixed radial space
 
-The POD rank and ordinary solver tolerances are numerical choices. There is
-no fitted closure, empirical relaxation coefficient, flux clipping, CMFD
-correction, or reference-data calibration.
-
-## 1. Build one radial trial space
-
-For energy group \(g\), let \(p_g^{(s)}\) be normalized offline radial
-snapshots on a common geometry and let
+For energy group $g$, collect normalized offline radial snapshots in $P_g$.
+With radial volume matrix $W=\operatorname{diag}(w_i)$, compute
 
 \[
-W=\operatorname{diag}(w_i),\qquad
-\langle u,v\rangle_W=u^TWv .
-\]
-
-Compute
-
-\[
-W^{1/2}P_g=U_g\Sigma_g Z_g^T,\qquad
-B_g=W^{-1/2}U_{g,1:r_g},\qquad B_g^TWB_g=I .
+W^{1/2}P_g=U_g\Sigma_gZ_g^T,
+\qquad
+B_g=W^{-1/2}U_{g,1:r_g}.
 \tag{1}
 \]
 
-The basis \(B_g\) is fixed during the outer iteration. This separates two
-questions that must not be mixed:
-
-1. whether rank \(r_g\) resolves the radial trial space;
-2. whether the radial and axial equations are self-consistent.
-
-`rank = 0` retains the full numerical snapshot rank during offline basis
-construction. Online fixed-basis iteration uses an explicit positive rank.
-Rank is a reduced discretization order, not a fitted parameter.
-
-## 2. Define the coupled state
-
-Let \(\mathcal R_s\) be the volume restriction from the axial mesh to radial
-plane \(s\). With scalar axial flux \(\Phi_g\), define
+Thus $B_g^TWB_g=I$ in exact arithmetic. Stored finite-precision bases need
+not be exactly orthonormal, so the implementation retains the Gram matrix
 
 \[
-a_{s,g}=B_g^TW\mathcal R_s\Phi_g,\qquad
-p_{s,g}=B_ga_{s,g}.
+M_g=B_g^TWB_g.
 \tag{2}
 \]
 
-Use inverse eigenvalue \(\rho=1/k\) and the plane-wise axial leakage
-coefficient \(L_{s,g}\). After fixing one global
-\(\nu\)-fission-production normalization, the outer state is
+The rank $r_g$ is a spatial discretization order. The basis and rank remain
+fixed during one convergence study.
+
+## 2. Coupled state
+
+Let $\mathcal R_s$ volume-restrict the axial scalar flux to radial plane $s$.
+The POD coordinates satisfy
 
 \[
-\boxed{x=(a,\rho,L)} .
+M_g a_{s,g}=B_g^TW\mathcal R_s\Phi_g,
+\qquad p_{s,g}=B_ga_{s,g}.
 \tag{3}
 \]
 
-There is one global eigenvector normalization. No plane-wise or group-wise
-rescaling is allowed.
-
-In stored arithmetic \(B_g\) is binary32 and is not assumed to remain exactly
-orthonormal. The implementation therefore solves
+After one global fission-production normalization, define
 
 \[
-(B_g^TWB_g)a_{s,g}=B_g^TW\mathcal R_s\Phi_g.
-\]
-
-The production restriction is first evaluated in the same binary32 operation
-order used by the radial feedback path. The online source then explicitly
-reconstructs \(p=B_ga\). Consequently any reported off-space roundoff is a
-diagnostic, not an unrecorded input to the next map.
-
-## 3. One online radial update
-
-Given \(x=(a,\rho,L)\), solve every radial plane synchronously. Fission is a
-fixed source formed from the restricted axial field \(p\):
-
-\[
-\left[\mathcal A_{\perp,s}(L_s)-\mathcal S_{\perp,s}\right]u_s^+
-=\rho\,\mathcal F_s p_s .
+x=(a,\rho,L),\qquad \rho=1/k.
 \tag{4}
 \]
 
-Here \(\mathcal A_{\perp,s}(L_s)\) contains radial transport, collision and
-the signed axial-leakage removal. Multigroup scattering is converged inside
-the fixed-source solve; fission is not evaluated a second time.
+$L_{s,g}$ is the signed axial leakage coefficient for plane $s$ and group
+$g$. No group-wise, plane-wise, or region-wise rescaling is allowed.
 
-For the converged radial scalar flux, the source belonging to exactly the
-same equation is
+## 3. Online radial problem
+
+Given $x$, reconstruct $p=Ba$. For every radial plane, solve
 
 \[
-q_{s,g,i}^+
-=\sum_{h\ne g}\Sigma_{s0,h\rightarrow g,i}u_{s,h,i}^+
- +\rho\left(\mathcal F_s p_s\right)_{g,i}.
+[\mathcal A_{\perp,s}(L_s)-\mathcal S_{\perp,s}]u_s^+
+=\rho\,\mathcal F_s p_s.
 \tag{5}
 \]
 
-The radial current-divergence coefficient is then reconstructed from that
-same fixed-source balance:
+The right-hand-side fission term is frozen during this solve. Multigroup
+scattering is converged, but fission is not reevaluated from $u_s^+$.
+
+The source associated with the final radial field is
 
 \[
-d_{\perp,s,g,i}^+
-=-\Sigma_{t,s,g,i}
- +\Sigma_{s0,g\rightarrow g,i}
- +\frac{q_{s,g,i}^+}{u_{s,g,i}^+}
- -L_{s,g}.
+q_{s,g}^+
+=\sum_{h\ne g}\Sigma_{s0,h\to g}u_{s,h}^+
+ +\rho(\mathcal F_s p_s)_g.
 \tag{6}
 \]
 
-Equation (6) must use the frozen fission source from (4), not a newly
-evaluated \(F u_s^+\). This source identity is part of the method, not merely
-a diagnostic. At finite inner tolerance its balance residual is measured
-and reported.
-
-## 4. One reduced axial update
-
-Project the updated radial response into the fixed trial space:
+The radial response used by the axial equations is then
 
 \[
-D_{s,g,ab}^+
-=\left\langle B_{g,a},
-d_{\perp,s,g}^+B_{g,b}\right\rangle_W .
+d_{\perp,s,g}^+
+=-\Sigma_{t,s,g}+\Sigma_{s0,g\to g}
+ +\frac{q_{s,g}^+}{u_{s,g}^+}-L_{s,g}.
 \tag{7}
 \]
 
-All material and source terms use the same Galerkin test space. The angular
-flux approximation is
+Equations (5)–(7) use the same frozen fission source. Replacing it with
+$\mathcal F_su_s^+$ would define a different nonlinear map.
+
+## 4. Reduced axial problem
+
+Project the radial response into the fixed space:
 
 \[
-\psi_{g,i}(z,\mu_n)
-\approx \sum_{b=1}^{r_g}B_{g,ib}A_{g,b,n}(z).
+D_{s,g,ab}^+
+=\langle B_{g,a},d_{\perp,s,g}^+B_{g,b}\rangle_W.
 \tag{8}
 \]
 
-The projected multigroup axial eigenproblem is solved once with \(D^+\),
-yielding \(A^+\), \(\Phi^+\), and \(\rho^+=1/k^+\). The new restricted
-coordinates are
-
-\[
-a_{s,g}^+=B_g^TW\mathcal R_s\Phi_g^+ .
-\tag{9}
-\]
-
-From the reconstructed axial face currents,
+Use $D^+$ in the reduced 1D axial eigenproblem. Its solution gives
+$\Phi^+$, $k^+$, and new coordinates through (3). The returned leakage is
+the integrated axial current balance
 
 \[
 L_{s,g}^+
 =
-\frac{
-\displaystyle
-\sum_{f\in s}\sum_i A_i^\perp
-\left(J_{g,i,f+1/2}^z-J_{g,i,f-1/2}^z\right)}
+\frac{\displaystyle
+ \sum_{f\mapsto s}\sum_i A_i^\perp
+ (J^z_{g,i,f+1/2}-J^z_{g,i,f-1/2})}
 {\displaystyle
-\sum_{f\in s}\sum_i A_i^\perp\Delta z_f\,
-\Phi_{g,i,f}^+}.
-\tag{10}
+ \sum_{f\mapsto s}\sum_i A_i^\perp\Delta z_f\Phi^+_{g,i,f}}.
+\tag{9}
 \]
 
-This is an integrated neutron-balance identity. It contains no tunable
-coefficient.
-
-The two generations must remain distinguishable in stored evidence. A
-radial result produced while evaluating \(G(x^{(m)})\) keeps the equation
-inputs \(\rho^{(m)}\) and \(L^{(m)}\) that actually produced it. After the
-axial update, the enclosing closed state owns the new
-\((\rho^{(m+1)},L^{(m+1)})\). Thus a closed archive may correctly contain
-new root data together with radial children labelled by the preceding
-equation inputs. Relabelling those children with \(\rho^{(m+1)}\), or
-overwriting the archived radial system with \(L^{(m+1)}\), would erase
-provenance rather than improve consistency.
-
-At the online handoff, this provenance is an elementwise identity, not a
-norm test. Immediately before the axial assembly reads the returned radial
-children, every stored child value \(L^{(m)}_{s,g}\) must be bitwise equal to
-the same-index value retained in its radial SYSTEM. The returned object then
-remains under one procedure's custody until the direct leakage update. A
-scalar such as \(\max|L^{(m+1)}-L^{(m)}|\) cannot establish this binding,
-because distinct old fields can have the same maximum distance from the new
-field.
-
-As a requirement of the target method, an inner iteration cap is not a
-physical solution and cannot define \(G(x^{(m)})\). Each radial or axial solve
-must satisfy its predeclared strict terminal predicate before its field is
-admitted to the next map operation. The present B2x implementation enforces
-this fail-closed rule specifically on the SPOT TYPE-K axial `FLU2DR` path;
-other solver paths require their own qualification.
-Reaching the cap without satisfying that same predicate is a fail-closed
-condition: it cannot be repaired by accepting the last iterate, changing a
-tolerance, damping the update, or retrying with another control. This rule
-adds no equation or empirical coefficient; it only separates a computed
-iterate from an accepted solution of the stated discrete problem.
-
-The B2y validation boundary is the first prepared real test of this axial
-half-step. It accepts only the exact B2v `RETURNED/1` artifact, then permits
-one `SpotCloseR64` call with one fresh axial solve and no retry. Its default
-path is compile/link-only, and the accepted B2v file was intentionally not
-retained in the repository, so the present B2y runtime status is
-`NOT-EVALUATED`. This boundary must not be described as one continuous
-B2v-to-B2y process, a complete evaluation of \(G\), or Picard convergence.
+This is a neutron-balance identity, not a closure coefficient.
 
 ## 5. Fixed-point equation
 
-Equations (4)--(10) define one deterministic map
+Equations (3)–(9) define
 
 \[
-G:(a,\rho,L)\longmapsto(a^+,\rho^+,L^+).
+G:(a,\rho,L)\mapsto(a^+,\rho^+,L^+).
+\tag{10}
+\]
+
+The coupled solution satisfies
+
+\[
+G(x)-x=0.
 \tag{11}
 \]
 
-The coupled SPOT solution is not a prescribed number of returns. It is the
-solution of
+The initial nonlinear method is direct Picard substitution:
 
 \[
-\boxed{F(x)=G(x)-x=0}.
+x^{m+1}=G(x^m).
 \tag{12}
 \]
 
-The first solver is direct Picard substitution,
+No relaxation factor appears. If direct Picard is later shown not to
+converge, another nonlinear solver may be studied against the same raw map;
+it must not alter equations (5)–(10).
 
-\[
-x^{(m+1)}=G(x^{(m)}).
-\tag{13}
-\]
+## 6. Three separate defects
 
-There is no user-facing \(\alpha\). Writing (13) as
-\(x^{(m+1)}=x^{(m)}+\alpha F(x^{(m)})\) merely gives \(\alpha=1\); it is an
-identity, not a physical or empirical parameter.
-
-If direct Picard is shown not to converge after the map itself is verified,
-the next mathematical problem remains (12). A residual-based nonlinear
-solver may then be introduced and validated separately. It must finally be
-checked with the unmodified raw map defect \(G(x)-x\), never with a mixed or
-fitted surrogate residual.
-
-## 6. Convergence quantities
-
-For one evaluated map \(x^+=G(x)\), report separately
+For $x^+=G(x)$, use
 
 \[
 R_\rho=|\rho^+-\rho|,
-\tag{14}
+\tag{13}
 \]
 
 \[
 R_L=
-\frac{\lVert L^+-L\rVert_\infty}
-{\max(\lVert L^+\rVert_\infty,\lVert L\rVert_\infty)},
+\frac{\|L^+-L\|_\infty}
+{\max(\|L^+\|_\infty,\|L\|_\infty)},
+\tag{14}
+\]
+
+with an exact all-zero leakage branch, and
+
+\[
+R_a^2=
+\frac{\displaystyle
+ \sum_{s,g}H_s\Delta a_{s,g}^TM_g\Delta a_{s,g}}
+{\displaystyle
+ \sum_{s,g}H_s(a_{s,g}^+)^TM_ga_{s,g}^+}.
 \tag{15}
 \]
 
-with an exact all-zero branch. Its stored dimensional companion is
+The three defects are checked independently. They are not fitted, weighted
+together, or used to rescale the state.
 
-\[
-D_L=\lVert L^+-L\rVert_\infty.
-\]
+## 7. Numerical versus physical choices
 
-\(D_L\) is a diagnostic, not a fourth dimensionless convergence criterion.
-Finally,
+Fixed physical/discretization inputs are geometry, materials, tracks,
+snapshot set, POD basis, and rank. Updated physical state is $(a,\rho,L)$,
+the radial solution, and the radial response.
 
-\[
-R_a=
-\frac{\left\|B(a^+-a)\right\|_V}
-{\left\|Ba^+\right\|_V}.
-\tag{16}
-\]
+Inner and outer tolerances define when the discrete equations and fixed point
+are considered numerically resolved. An iteration cap is only a safety bound.
+If a radial or axial inner solve reaches its cap without satisfying the
+declared strict predicate, $G(x)$ has not been evaluated and the program
+fails closed.
 
-For stored binary32 bases, the implementation does not assume exact
-orthonormality. With \(M_g=B_g^TWB_g\) and
-\(H_s=\sum_{f\mapsto s}\Delta z_f\), it evaluates
-
-\[
-\|\Delta a\|_V^2
-=\sum_{s,g}H_s\,\Delta a_{s,g}^TM_g\Delta a_{s,g}.
-\tag{17}
-\]
-
-Formal state records already use the declared single global normalization,
-so no least-squares scale is fitted during convergence checking. No group,
-plane or region may be rescaled independently.
-
-The three outer defects are not combined into an empirical weighted score.
-They also do not replace:
-
-- strict convergence of every radial and axial inner solve;
-- radial fixed-source equation balance;
-- the axial Galerkin equation residual;
-- global neutron balance and flux positivity;
-- rank, mesh, angle and solver-tolerance refinement.
-
-## 7. What is frozen and what is updated
-
-```text
-offline and fixed:
-  geometry, material data, snapshot set, POD basis, rank
-
-updated every outer map:
-  restricted axial field, fixed fission source, radial transport solution,
-  radial response operator, axial eigenpair, axial leakage
-```
-
-Freezing \(B\) does not remove radial feedback: the full 2D fixed-source
-problems and their response are still recomputed online. It keeps the method
-mathematically identifiable by preventing basis rotations and changing trial
-spaces from being confused with physical convergence.
-
-A dynamic-POD variant may be studied later. It is a different discretization
-and must compare weighted projectors, handle singular-value crossings, and
-repeat the rank study. It is not silently mixed into the first formal
-iterative method.
-
-## Current status
-
-The project is qualifying equations (1)--(17) from a clean evidence boundary;
-previous one-shot and dynamic-basis trajectories are not evidence for the
-present strict route. The active source tree has an explicit online branch:
-`SPOT-QFISS` preserves the frozen fission source, `SPOQFS` combines it with
-final off-group scattering, and `SPOASM` builds the radial operator from that
-same equation.
-
-B2v has executed one bounded real three-plane radial continuation and returned
-one accepted `RETURNED/1` object. It did not execute the axial half-step or
-close a state. B2x has compiled and synthetically checked the single-procedure
-`RETURNED -> ASM -> FLU -> SPOSTATE -> SPOLEAK -> CLOSED` custody route, but
-did not execute its real ASM or FLU calls. B2y now passes the default-off
-static, compilation and private-link preflight for one real supplied-returned
-axial close. The exact B2v XSM file was not retained, so B2y has executed zero
-Dragon processes and its runtime status remains `NOT-EVALUATED`.
-
-Consequently, the current strict evidence does not yet establish even one
-complete evaluation of \(G\), repeated-map determinism, contraction, or outer
-convergence. A separately authorized B2y activation requires the exact frozen
-B2v bytes and may attempt the axial half-step once, without retry or parameter
-change. Only after that content is independently accepted can a complete raw
-map and then direct Picard iteration be considered. Rank refinement,
-discretization qualification, independent balance/residual checks and 3D
-validation remain later stages.
+The implementation is [data/SpotPicard.c2m](../data/SpotPicard.c2m).
