@@ -183,6 +183,15 @@ outer iterations instead of satisfying both strict gates together. A matched
 trace with FLU variational acceleration disabled still rebounded and did not
 reach the target, so acceleration is not the sole cause.
 
+The follow-up removes one legacy numerical shortcut only from the current
+legacy-`FLU2DR` online SPOT radial path: `EINN < 10*EPSINR` can no longer
+return that solve to the outer loop as `NEARLY`; it must reach the declared
+`EPSINR` or the existing iteration cap. No tolerance, relaxation coefficient,
+or fitted parameter was added, and all unrelated FLU paths retain their legacy
+behavior. The seconds-scale static/compile gate passes; no new transport run
+has yet tested whether this change establishes convergence. The optional
+REAL64 solver lane is outside this change and remains disabled by default.
+
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
 

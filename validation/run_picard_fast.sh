@@ -10,6 +10,8 @@ FC=${FC:-gfortran}
 
 PYTHONDONTWRITEBYTECODE=1 python3 "$ROOT/validation/check_method_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_spot_strict_inner.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
 sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
 sh -n "$ROOT/validation/iterative/run_map2_short.sh"

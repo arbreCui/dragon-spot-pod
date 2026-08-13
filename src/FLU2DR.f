@@ -138,12 +138,12 @@
 *     Terminal convergence state used by the fail-closed success gate.
 *     IINR_STATE=1/2/3 denotes strict/near/inner-cap termination.
 *     IUNK_EVAL=1 only when the outer-flux residual was evaluated.
-      INTEGER IINR_STATE,IUNK_EVAL,IGDEB_LAST,ITERF_LAST
+      INTEGER IINR_STATE,IUNK_EVAL,IGDEB_LAST,ITERF_LAST,IFROZEN
       CHARACTER CAN(0:19)*2,MESSIN*8,MESSOU*5,HTYPE(0:5)*4
       INTEGER INDD(3)
       DOUBLE PRECISION AKEEP(8),FISOUR,OLDBIL,AKEFF,AKEFFO,AFLNOR,
      1 BFLNOR,DDELN1,DDELD1,PROD,FLXIN
-      LOGICAL LSCAL,LEXAC,REBFLG
+      LOGICAL LSCAL,LEXAC,REBFLG,LSPOTFS
       REAL ALBEDO(6),FLUXC(NREG),B2(4),EINR_LAST,EUNK_LAST
 *
 ************************************************************************
@@ -200,6 +200,24 @@
       AKEEP(:8)=0.0D0
       ICHAR=0
       ICTOT=0
+*     Identify the frozen-source SPOT radial solve once from its existing
+*     SYSTEM and SOURCE records.  No new steering parameter is introduced.
+      LSPOTFS=.FALSE.
+      IF((CXDOOR.EQ.'MCCG').AND.(ITYPEC.EQ.0).AND.
+     1   C_ASSOCIATED(IPSYS).AND.C_ASSOCIATED(IPSOU)) THEN
+         CALL LCMLEN(IPSYS,'SPOT-LEAK1D',ILONG,ITYLCM)
+         IF(ILONG.NE.0) THEN
+            IF((ILONG.NE.NGRP).OR.(ITYLCM.NE.2)) CALL XABORT(
+     1      'FLU2DR: INVALID SPOT-LEAK1D RECORD.')
+            CALL LCMLEN(IPSOU,'SPOT-FROZEN',ILEN,ITYLCM)
+            IF((ILEN.NE.1).OR.(ITYLCM.NE.1)) CALL XABORT(
+     1      'FLU2DR: INVALID SPOT-FROZEN RECORD.')
+            CALL LCMGET(IPSOU,'SPOT-FROZEN',IFROZEN)
+            IF(IFROZEN.NE.1) CALL XABORT(
+     1      'FLU2DR: INVALID SPOT-FROZEN VALUE.')
+            LSPOTFS=.TRUE.
+         ENDIF
+      ENDIF
 *----
 *  RECOVER INDEX FOR THE CURRENTS IN FLUX, NUMERICAL SURFACES,
 *  ALBEDO IF NEEDED BY THE REBALANCING.
@@ -1063,9 +1081,11 @@
          IINR_STATE=1
          GOTO 280
       ENDIF
-*     near convergence (eps < 10.0 criterion) a new outer iteration
-*     is started
-      IF((IGDEB.GT.1).AND.(EINN.LT.10.*EPSINR)) THEN
+*     For legacy paths, near convergence (eps < 10.0 criterion) starts a
+*     new outer iteration.  Frozen-source SPOT radial solves continue until
+*     the actual EPSINR threshold or the declared iteration cap.
+      IF((.NOT.LSPOTFS).AND.(IGDEB.GT.1).AND.
+     1   (EINN.LT.10.*EPSINR)) THEN
          IINR_STATE=2
          GOTO 281
       ENDIF
@@ -1305,20 +1325,11 @@
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
       WRITE(6,*) '*** FLU2DR: CONVERGENCE NOT REACHED ***'
-*     A frozen-source SPOT radial state enters through the MCCG door.  Its
-*     SYSTEM leakage and frozen-source marker distinguish it from unrelated
-*     MCCG fixed-source calculations.  Never publish its cap iterate.
-      IF((CXDOOR.EQ.'MCCG').AND.(ITYPEC.EQ.0).AND.
-     1   C_ASSOCIATED(IPSYS).AND.C_ASSOCIATED(IPSOU)) THEN
-         CALL LCMLEN(IPSYS,'SPOT-LEAK1D',ILONG,ITYLCM)
-         IF((ILONG.EQ.NGRP).AND.(ITYLCM.EQ.2)) THEN
-            CALL LCMLEN(IPSOU,'SPOT-FROZEN',ILEN,ITYLCM)
-            IF((ILEN.EQ.1).AND.(ITYLCM.EQ.1)) THEN
-               CALL XABORT(
-     1         'FLU2DR: SPOT TYPE-S STRICT TERMINATION REQUIRED.')
-               RETURN
-            ENDIF
-         ENDIF
+*     Never publish the cap iterate of a frozen-source SPOT radial solve.
+      IF(LSPOTFS) THEN
+         CALL XABORT(
+     1   'FLU2DR: SPOT TYPE-S STRICT TERMINATION REQUIRED.')
+         RETURN
       ENDIF
 *     The same fail-closed rule applies to the reduced axial eigenproblem.
       IF((CXDOOR.EQ.'SPOT').AND.(ITYPEC.GE.2).AND.
