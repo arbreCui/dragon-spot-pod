@@ -107,8 +107,11 @@ The eigenvalue and modal components pass the declared
 \(5\times10^{-7}\) outer gate; leakage fails it by about a factor of 865.
 Stage 3 is therefore complete with `OUTER-CONVERGENCE NOT-ESTABLISHED`, and
 the replacement \(x_3\) is not accepted as a fixed point. No \(x_4\) was
-run. The previous signed-direction result belongs only to the archived
-legacy \(x_3\) and cannot classify the replacement map.
+run. A read-only check of the replacement three-state sequence finds that the
+modal update is acute and smaller, whereas the leakage update has a negative
+height-weighted \(L_2\) cosine and a smaller aggregate norm but a 1.0932-times
+larger infinity diagnostic. This does not establish a whole-state oscillation
+or distinguish physical-map behavior from inner-solver state error.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

@@ -191,6 +191,19 @@ now passes, so the old signed modal-direction result is not transferable to
 the replacement \(x_3\). No \(x_4\) was run. See
 [map3_strict_result.md](map3_strict_result.md).
 
+The same Ganlib-only direction checker was then applied to the strict
+three-state sequence. The modal cosine and update-norm ratio are `+0.4969`
+and `0.4478`. The separate height-weighted leakage \(L_2\) values are
+`-0.1551` and `0.7312`, while the dimensional infinity-change ratio is
+`1.0932`. Thus neither a simple whole-state reversal nor contraction in the
+production leakage quantity is observed. Reproduce the read-only check with
+
+```sh
+X3_DIR="$PWD/validation/artifacts/iterative-map3-strict-current" \
+LOCK="$PWD/validation/iterative/picard_strict_direction_scientific.sha256" \
+  sh validation/iterative/run_picard_direction_check.sh
+```
+
 Two separately authorized radial attempts toward \(G_{h/2}(x_2)\), bounded
 at 75 s and 120 s, ended at the same logged point immediately after the
 first-plane `ASM` step and before any FLU terminal record. No axial process

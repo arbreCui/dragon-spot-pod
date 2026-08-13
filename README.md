@@ -171,8 +171,13 @@ Physical outer convergence is therefore **not established**: \(R_\rho\) and
 The dimensional \(D_L=6.3417247\times10^{-7}\) is diagnostic only and is not
 a fourth stop component. The complete result and immutable local hashes are
 in [map3_strict_result.md](validation/iterative/map3_strict_result.md).
-The old signed-direction result belongs only to the archived legacy \(x_3\)
-and is not used to classify this replacement map.
+The replacement three-state direction check finds a smaller, acute modal
+increment (cosine `+0.4969`, norm ratio `0.4478`).  The leakage increment is
+obtuse in a non-production height-weighted \(L_2\) diagnostic (cosine
+`-0.1551`, norm ratio `0.7312`), while the production dimensional infinity
+change grows by the factor `1.0932`.  This is not a simple whole-state reverse
+oscillation and does not distinguish physical-map behavior from numerical
+state error.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

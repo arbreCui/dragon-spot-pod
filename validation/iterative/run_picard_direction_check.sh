@@ -8,7 +8,7 @@ X3_DIR=${X3_DIR:-"$ROOT/validation/artifacts/iterative-map3-current"}
 GANLIB_LIB=${GANLIB_LIB:-"$ROOT/Ganlib/src/libGanlib.a"}
 GANLIB_MOD=${GANLIB_MOD:-"$ROOT/Ganlib/src"}
 FC=${FC:-gfortran}
-LOCK="$ROOT/validation/iterative/picard_direction_scientific.sha256"
+LOCK=${LOCK:-"$ROOT/validation/iterative/picard_direction_scientific.sha256"}
 
 test -f "$GANLIB_LIB"
 test -f "$GANLIB_MOD/ganlib.mod"
