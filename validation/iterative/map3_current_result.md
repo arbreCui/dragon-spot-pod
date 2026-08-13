@@ -207,6 +207,26 @@ solve had not terminated when the single 30 s bound expired, so no radial or
 axial scientific state exists and no claim about full-map or Picard
 convergence follows. There was no retry.
 
+One final 30 s trace then restored the production tolerance
+\(h=5\times10^{-7}\), with the same frozen \(x_2\), default acceleration and
+strict-inner binary. The first plane completed strictly after five outer
+iterations and about 21 reported CPU seconds. Its terminal records were
+
+```text
+EUNK=4.31115978e-7 < EPSUNK=4.99999999e-7
+EINR=2.75581868e-7 < EPSINR=4.99999999e-7, STATE=1
+```
+
+All five inner solves ended strictly and `NEARLY=0`. The outer residual was
+nonmonotone (`1.00`, `9.85e-7`, `5.04e-7`, `8.62e-7`, `4.31e-7`) but met the
+declared gate at the fifth iteration. `SPOFCHK` then accepted that plane and
+the process began plane two. The 30 s bound expired during its first outer
+iteration, so neither the complete three-plane radial response nor an axial
+state was returned. The log SHA-256 is
+`b6899413b3462e9ab335ca2aff2d836f5d1f3dc647b99fde6d8504b4e1f330bb`
+and it is retained locally as `trace_strict_inner_production_30s.log`. There
+was no retry.
+
 All bounded \(h/2\) attempts remain `TIMEOUT / NO SCIENTIFIC RESULT`. The
 earlier legacy attempts did not reach a strict solver terminal record; the
 new trace reached three strict inner terminals but not the first-plane FLU
@@ -217,7 +237,8 @@ and do not prove asymptotic stagnation. Together they rule out an
 inactive/hung first-plane calculation and variational acceleration as the
 unique explanation for the observed rebound. They do not change the
 outer-convergence classification. No further attempt was made after the
-strict-inner trace.
+strict-inner \(h/2\) trace. The production-tolerance trace likewise returned
+no complete radial state and does not change that classification.
 
 The global balance norm was \(3.443536\times10^{-9}\). The separately
 reported maximum Galerkin diagnostic was \(5.84892\times10^{-7}\); it is not

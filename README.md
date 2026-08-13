@@ -195,7 +195,12 @@ continued to `IN(17)` and strict inner convergence, and all three completed
 outer iterations reached the declared inner tolerance with zero `NEARLY`
 records. The first plane itself did not finish before the bound, so this is
 branch evidence only and produced no scientific state. The optional REAL64
-solver lane is outside this change and remains disabled by default.
+solver lane is outside this change and remains disabled by default. A second
+single 30-second trace at the production tolerance `5e-7` then completed the
+first plane strictly in five outer iterations (`EUNK=4.3112e-7`,
+`EINR=2.7558e-7`, `STATE=1`, `NEARLY=0`) and entered plane two. The complete
+three-plane radial solve still did not return before the bound, so no new
+Picard state or convergence claim exists.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
