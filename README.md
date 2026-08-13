@@ -167,11 +167,16 @@ A read-only, no-Dragon check of the frozen \(x_1,x_2,x_3\) states adds signed
 information: the consecutive modal increments are obtuse in the fixed
 Gram-height metric (cosine \(-0.8888508843\)) and the latter modal increment
 has \(3.212598682\) times the norm of the former. This does not identify the
-cause: the inner
-stopping gate is not a state-error bound, so physical map behavior and
-numerical contamination remain unresolved. Exact definitions and the
-separate leakage result are in
+cause: the inner stopping gate is not a state-error bound, so physical map
+behavior and numerical contamination remain unresolved. Exact definitions
+and the separate leakage result are in
 [map3_current_result.md](validation/iterative/map3_current_result.md).
+
+A single follow-up attempt at half the inner tolerance timed out immediately
+after the first-plane `ASM` step, before any solver terminal record. The
+axial solve was not started and no scientific state was produced. It was not
+retried, so the attempt does not classify inner convergence or explain the
+update reversal.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).

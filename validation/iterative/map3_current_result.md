@@ -130,6 +130,28 @@ The current evidence therefore remains
 sh validation/iterative/run_picard_direction_check.sh
 ```
 
+## One refined attempt from x2
+
+One authorized attempt to evaluate \(G_{h/2}(x_2)\), with
+\(h/2=2.5\times10^{-7}\), was made from the unchanged hash-locked \(x_2\).
+Relative to the accepted map-3 decks, only the common radial and axial solver
+tolerance was halved; the basis, rank, physical inputs, iteration caps and
+direct update were unchanged. There was no relaxation and no retry.
+
+The single radial Dragon process reached its 75 s process timeout. Its raw
+log ended immediately after the first-plane `ASM` step, before any
+`FLU2DR-TERM` record; it has no normal-end marker and no returned scientific
+XSM state. The axial process was therefore not started. The raw log has SHA-256
+`c79e5fc514df1fb4f06bfc8b35fa380687ab8240d34e24b88c1ad523e3a6c1dd`
+and is retained locally under
+`validation/artifacts/x2-half-once-timeout/radial.log`.
+
+This outcome is `TIMEOUT / NO SCIENTIFIC RESULT`. Because the process did not
+reach even the first inner-solver terminal record, it is not evidence that
+the \(h/2\) equations converge or fail to converge. It adds no information
+about the cause of the stored update reversal, and it does not change the
+outer-convergence classification. No automatic or manual retry was made.
+
 The global balance norm was \(3.443536\times10^{-9}\). The separately
 reported maximum Galerkin diagnostic was \(5.84892\times10^{-7}\); it is not
 used as an empirical acceptance factor.
