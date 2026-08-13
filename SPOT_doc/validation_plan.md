@@ -90,10 +90,12 @@ process had a 75 s process timeout with a 5 s termination grace, all four inner
 solves reached strict termination, and an independent Ganlib-only checker
 reproduced the physical state and raw defect.
 
-One direct Stage-3 continuation, \(x_2=G(x_1)\), also passes the same strict
-inner and independent-state checks. Its three dimensionless defects are all
-smaller than those of the first map. This is only a two-step trajectory;
-Stage 3 is not complete and no outer-convergence claim is made.
+The predeclared short Stage-3 census continued through \(x_3=G(x_2)\). Both
+continuations pass the same strict inner and independent-state checks. The
+second update reduced all three dimensionless defects, but the third
+increased the leakage and modal defects. The observed direct trajectory is
+nonmonotone; Stage 3 is complete with `OUTER-CONVERGENCE NOT-ESTABLISHED`,
+and \(x_3\) is not accepted as a fixed point.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

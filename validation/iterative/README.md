@@ -151,6 +151,12 @@ stored binary32 precision. This is a decreasing two-step observation, not a
 convergence claim. Exact values, controls, hashes and the development-run
 boundary are in [map2_current_result.md](map2_current_result.md).
 
+The final predeclared census update, \(x_3=G(x_2)\), also passes every inner
+and independent-state check, but its leakage and modal defects increase from
+the second update. The direct three-update trajectory is therefore
+nonmonotone and no fixed point is accepted. No \(x_4\) evaluation was run.
+See [map3_current_result.md](map3_current_result.md).
+
 ## Inner-tolerance sensitivity
 
 `inner_sensitivity_map.x2m` preserves the Stage-3 initializer tolerance

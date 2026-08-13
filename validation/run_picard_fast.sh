@@ -13,6 +13,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
 sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
 sh -n "$ROOT/validation/iterative/run_map2_short.sh"
+sh -n "$ROOT/validation/iterative/run_map3_short.sh"
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 
@@ -27,7 +28,9 @@ for source in \
   "$ROOT/validation/iterative/one_map_radial.x2m" \
   "$ROOT/validation/iterative/one_map_axial.x2m" \
   "$ROOT/validation/iterative/map2_radial.x2m" \
-  "$ROOT/validation/iterative/map2_axial.x2m"
+  "$ROOT/validation/iterative/map2_axial.x2m" \
+  "$ROOT/validation/iterative/map3_radial.x2m" \
+  "$ROOT/validation/iterative/map3_axial.x2m"
 do
   stem=$(basename "$source")
   stem=${stem%.*}

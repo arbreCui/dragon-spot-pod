@@ -147,17 +147,21 @@ One direct continuation from that returned state also passes:
 |---|---:|---:|---:|
 | \(x_0\to x_1\) | \(1.2812\times10^{-6}\) | \(7.9229\times10^{-4}\) | \(9.2283\times10^{-7}\) |
 | \(x_1\to x_2\) | \(0\) | \(3.9565\times10^{-4}\) | \(7.2378\times10^{-7}\) |
+| \(x_2\to x_3\) | \(0\) | \(4.3249\times10^{-4}\) | \(2.3252\times10^{-6}\) |
 
 The independent checker reproduced the fixed POD package, canonical states,
 raw defects and restart physics. Details are in
 [one_map_current_result.md](validation/iterative/one_map_current_result.md)
 and
-[map2_current_result.md](validation/iterative/map2_current_result.md).
+[map2_current_result.md](validation/iterative/map2_current_result.md). The
+completed short-census result is in
+[map3_current_result.md](validation/iterative/map3_current_result.md).
 
-Physical outer convergence has **not yet been claimed**. Both observed steps
-decrease component by component, but two steps cannot establish asymptotic
-contraction or exclude later oscillation. Rank, mesh, angle, inner-tolerance,
-and reference-solution studies remain separate validation questions.
+Physical outer convergence is **not established**. The second update
+decreased all three defects, but the third increased both the leakage and
+modal defects. The direct trajectory is therefore nonmonotone and \(x_3\) is
+not accepted as a fixed point. Rank, mesh, angle, inner-tolerance, and
+reference-solution studies remain separate validation questions.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
