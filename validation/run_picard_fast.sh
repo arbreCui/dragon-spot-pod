@@ -12,6 +12,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 "$ROOT/validation/check_method_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
 sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
+sh -n "$ROOT/validation/iterative/run_map2_short.sh"
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 
@@ -24,7 +25,9 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
 for source in \
   "$ROOT/data/SpotPicard.c2m" \
   "$ROOT/validation/iterative/one_map_radial.x2m" \
-  "$ROOT/validation/iterative/one_map_axial.x2m"
+  "$ROOT/validation/iterative/one_map_axial.x2m" \
+  "$ROOT/validation/iterative/map2_radial.x2m" \
+  "$ROOT/validation/iterative/map2_axial.x2m"
 do
   stem=$(basename "$source")
   stem=${stem%.*}
@@ -34,6 +37,13 @@ do
   )
   test -s "$BUILD_DIR/$stem.o2m"
 done
+
+"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
+  -Wno-compare-reals -ffp-contract=off -fno-fast-math \
+  -I "$ROOT/Ganlib/src" \
+  "$ROOT/validation/iterative/check_one_map_xsm.f90" \
+  "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
+  -o "$BUILD_DIR/check_one_map_xsm"
 
 "$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
   -fimplicit-none -fcheck=all -ffp-contract=off -fno-fast-math \

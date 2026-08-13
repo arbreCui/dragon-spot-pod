@@ -24,7 +24,7 @@ convergence.
 - relaxation, fitting, clipping and empirical coupling parameters: absent.
 
 The calculation was split only at the physical 2D/1D interface so each
-process had a 75 s solve timeout followed, only on timeout, by at most 5 s of
+process had a 75 s process timeout followed, only on timeout, by at most 5 s of
 TERM grace before KILL:
 
 - three online radial fixed-source solves: 57 CPU s;

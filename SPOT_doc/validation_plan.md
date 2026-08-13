@@ -86,11 +86,14 @@ iteration) separate from validation differences (model versus reference).
 
 Stages 1 and 2 pass. The current one-map calculation used a hash-locked
 initial state, three online radial solves and one returned axial solve. Each
-process had a 75 s solve timeout with a 5 s termination grace, all four inner
+process had a 75 s process timeout with a 5 s termination grace, all four inner
 solves reached strict termination, and an independent Ganlib-only checker
 reproduced the physical state and raw defect.
 
-Stage 3 has not been run. No outer-convergence claim is made.
+One direct Stage-3 continuation, \(x_2=G(x_1)\), also passes the same strict
+inner and independent-state checks. Its three dimensionless defects are all
+smaller than those of the first map. This is only a two-step trajectory;
+Stage 3 is not complete and no outer-convergence claim is made.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

@@ -8,8 +8,8 @@ X0_DIR=${X0_DIR:-"$ROOT/validation/artifacts/iterative-map1"}
 GANLIB_LIB=${GANLIB_LIB:-"$ROOT/Ganlib/src/libGanlib.a"}
 GANLIB_MOD=${GANLIB_MOD:-"$ROOT/Ganlib/src"}
 FC=${FC:-gfortran}
-# The process helper waits at most 75 seconds for the solve, then allows up to
-# five seconds for TERM before sending KILL.  This is not advertised as a
+# The process helper waits at most 75 seconds for the Dragon process, then
+# allows up to five seconds for TERM before sending KILL.  This is not a
 # mathematically strict 80-second total wall-clock deadline.
 TIMEOUT_SECONDS=75
 
@@ -72,7 +72,7 @@ run_bounded() {
     "$DRAGON_BIN" "$1" "$2" "$TIMEOUT_SECONDS"
 }
 
-echo "ONE-MAP-SHORT RADIAL START: 75 s solve timeout + 5 s TERM grace, no retry"
+echo "ONE-MAP-SHORT RADIAL START: 75 s process timeout + 5 s TERM grace, no retry"
 run_bounded "$RADIAL_WORK/radial.x2m" "$RADIAL_WORK/radial.log"
 echo "ONE-MAP-SHORT RADIAL END"
 
@@ -83,7 +83,7 @@ do
   cp "$RADIAL_WORK/$name" "$AXIAL_WORK/$name"
 done
 
-echo "ONE-MAP-SHORT AXIAL START: 75 s solve timeout + 5 s TERM grace, no retry"
+echo "ONE-MAP-SHORT AXIAL START: 75 s process timeout + 5 s TERM grace, no retry"
 run_bounded "$AXIAL_WORK/axial.x2m" "$AXIAL_WORK/axial.log"
 echo "ONE-MAP-SHORT AXIAL END"
 

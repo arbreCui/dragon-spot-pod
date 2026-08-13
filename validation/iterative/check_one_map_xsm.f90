@@ -3,6 +3,9 @@ program check_one_map_xsm
   !
   !   check_one_map_xsm basis_reference.xsm state1_system.xsm \
   !     state0_axial.xsm state1_axial.xsm state1_snapshots.xsm
+  !   check_one_map_xsm --continued basis_reference.xsm \
+  !     state2_system.xsm state1_axial.xsm state2_axial.xsm \
+  !     state2_snapshots.xsm
   !
   ! No Dragon, SPOT, assembly, transport, or production convergence routine
   ! is linked or called.  The checker reads the five archived XSM objects,
@@ -77,14 +80,25 @@ program check_one_map_xsm
   end type canonical_state
 
   character(len=1024) :: paths(5)
+  character(len=32) :: mode
   type(system_data) :: reference_system,current_system
   type(canonical_state) :: previous_state,current_state
-  integer :: i
+  integer :: i,argument_offset
+  logical :: continued
 
-  if (command_argument_count() /= 5) call fail( &
-    'FIVE ARGUMENTS EXPECTED: BASIS, SYSTEM1, STATE0, STATE1, SNAP1.')
+  continued=.false.
+  argument_offset=0
+  if (command_argument_count() == 6) then
+    call get_command_argument(1,mode)
+    if (trim(mode) /= '--continued') call fail( &
+      'ONLY --continued IS ACCEPTED IN SIX-ARGUMENT MODE.')
+    continued=.true.
+    argument_offset=1
+  else if (command_argument_count() /= 5) then
+    call fail('EXPECTED [--continued] BASIS, SYSTEM, PREVIOUS, CURRENT, SNAP.')
+  endif
   do i=1,5
-    call get_command_argument(i,paths(i))
+    call get_command_argument(i+argument_offset,paths(i))
     if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
     if (len_trim(paths(i)) > max_xsm_path) &
       call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
@@ -96,13 +110,20 @@ program check_one_map_xsm
     current_system,'CURRENT SYSTEM')
   call compare_systems(reference_system,current_system)
 
-  call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
-    previous_state,'STATE ZERO')
+  if (continued) then
+    call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.true., &
+      previous_state,'PREVIOUS CONTINUED STATE')
+  else
+    call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
+      previous_state,'STATE ZERO')
+  endif
   call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
-    current_state,'STATE ONE')
-  call compare_state_to_system(previous_state,reference_system,'STATE ZERO')
-  call compare_state_to_system(current_state,current_system,'STATE ONE')
-  call compare_states_and_defects(previous_state,current_state)
+    current_state,'CURRENT FIXED-BASIS STATE')
+  call compare_state_to_system(previous_state,reference_system, &
+    'PREVIOUS STATE')
+  call compare_state_to_system(current_state,current_system, &
+    'CURRENT STATE')
+  call compare_states_and_defects(previous_state,current_state,continued)
   call check_restart_archive(trim(paths(5)),previous_state,current_state)
 
   write(6,'(A)') 'ONE-MAP-XSM POD-PACKAGE BITWISE PASS'
@@ -495,8 +516,9 @@ contains
   end subroutine compare_state_to_system
 
 
-  subroutine compare_states_and_defects(previous,current)
+  subroutine compare_states_and_defects(previous,current,continued_mode)
     type(canonical_state), intent(in) :: previous,current
+    logical, intent(in) :: continued_mode
     real(real64) :: recomputed(4)
 
     if ((previous%signature /= 'L_FLUX').or. &
@@ -521,10 +543,20 @@ contains
     if ((previous%norm_id /= current%norm_id).or. &
         (current%norm_id /= 'NUFISS-UNIT')) &
       call fail('CANONICAL NORMALIZATION IDS DIFFER.')
-    if ((previous%fixb /= 0).or.(current%fixb /= 1).or. &
-        (previous%basis_type /= 'POD-BUILT').or. &
+    if (continued_mode) then
+      if ((previous%fixb /= 1).or. &
+          (previous%basis_type /= 'POD-FIXED').or. &
+          (.not.previous%has_saved_defect)) &
+        call fail('PREVIOUS CONTINUED-STATE MARKERS ARE INVALID.')
+    else
+      if ((previous%fixb /= 0).or. &
+          (previous%basis_type /= 'POD-BUILT').or. &
+          previous%has_saved_defect) &
+        call fail('INITIAL PREVIOUS-STATE MARKERS ARE INVALID.')
+    endif
+    if ((current%fixb /= 1).or. &
         (current%basis_type /= 'POD-FIXED')) &
-      call fail('CANONICAL FIXED-BASIS MARKERS ARE INVALID.')
+      call fail('CURRENT FIXED-BASIS MARKERS ARE INVALID.')
     if (.not.current%has_saved_defect) &
       call fail('STATE ONE HAS NO SAVED MAP DEFECT.')
 

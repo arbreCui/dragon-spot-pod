@@ -135,8 +135,21 @@ in `one_map_protocol.json`; exact values and hashes are in
 
 This is one deterministic point evaluation of \(G\), not a convergence
 claim. The systematic inner-tolerance sensitivity from the same \(x_0\) was
-attempted next and failed its strict radial inner-solver gate. A second outer
-return and any long Picard trajectory remain unauthorized.
+attempted next and failed its strict radial inner-solver gate.
+
+## Current direct continuation
+
+`map2_radial.x2m` and `map2_axial.x2m` evaluate exactly one further direct
+update, \(x_2=G(x_1)\), in two bounded processes. They reuse the same fixed
+basis, rank and \(5\times10^{-7}\) inner tolerance and introduce no relaxation
+or empirical parameter. The Ganlib-only checker has an explicit
+`--continued` mode in which both states are fixed-basis canonical states.
+
+The continuation passes. Its leakage defect is about half the first-map
+value and its modal defect is smaller; the eigenvalue is unchanged at the
+stored binary32 precision. This is a decreasing two-step observation, not a
+convergence claim. Exact values, controls, hashes and the development-run
+boundary are in [map2_current_result.md](map2_current_result.md).
 
 ## Inner-tolerance sensitivity
 
