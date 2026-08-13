@@ -2,7 +2,7 @@
   "phase": "A9b-B2y",
   "name": "one-real-supplied-returned-close",
   "objective": "exactly one bounded production SpotCloseR64 axial half-step from the B2z-staged RETURNED whose content is byte-identical to the RETURNED accepted and recorded by B2v",
-  "receipt": "pending",
+  "receipt": "frozen",
   "receipt_scope": "invalid-attempt-freeze-not-success",
   "deployment_default": "off",
   "runtime_result": {
@@ -46,7 +46,7 @@
   },
   "post_attempt_freeze_validation": {
     "status": "PASS",
-    "directed_mutation_tests": 81,
+    "directed_mutation_tests": 91,
     "default_off_compile_and_link": "PASS",
     "dragon_executions": 0,
     "spotcloser64_executions": 0,
@@ -56,6 +56,7 @@
   "postmortem_wrapper_repair": {
     "status": "PASS",
     "scope": "future-validation-harness-only-not-used-by-unique-b2y-attempt",
+    "repair_commit": "daac8a88f3f027ed3794cff7bfe26d5a2e45e338",
     "wrapper_sha256": "898b94fe1d546b5b9ac682a1ea91baa75bf627f1ace9f5bc4599d055c79f640a",
     "absolute_wall_deadline_extended": false,
     "esrch_exit_reconciliation": "process.wait timeout equals only the remaining original hard-deadline budget",

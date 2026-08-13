@@ -287,19 +287,15 @@ verify_b2z_staged_input()
 
 verify_receipt()
 {
-  if [ -f "$RECEIPT" ]; then
-    grep -q '"receipt": "frozen"' "$HERE/precision_manifest.json" || \
-      fail "receipt exists but manifest is not frozen"
-    (
-      cd "$ROOT"
-      shasum -a 256 -c "$RECEIPT" >/dev/null
-    ) || fail "B2y invalid-attempt freeze receipt verification failed"
-    RECEIPT_STATE=FROZEN
-  else
-    grep -q '"receipt": "pending"' "$HERE/precision_manifest.json" || \
-      fail "missing receipt without pending manifest"
-    RECEIPT_STATE=PENDING-ATTEMPT-FREEZE
-  fi
+  [ -f "$RECEIPT" ] && [ ! -L "$RECEIPT" ] || \
+    fail "B2y invalid-attempt freeze receipt missing"
+  grep -q '"receipt": "frozen"' "$HERE/precision_manifest.json" || \
+    fail "B2y manifest is not frozen"
+  (
+    cd "$ROOT"
+    shasum -a 256 -c "$RECEIPT" >/dev/null
+  ) || fail "B2y invalid-attempt freeze receipt verification failed"
+  RECEIPT_STATE=FROZEN
 }
 
 verify_execution_snapshot()
@@ -827,10 +823,6 @@ verify_lineage
 verify_receipt
 verify_frozen_build_inputs
 verify_b2z_staged_input
-
-if [ ! -f "$RECEIPT" ]; then
-  RECEIPT_STATE=PENDING-RUNTIME-FREEZE
-fi
 
 [ ! -e "$ARTIFACT_DIR" ] && [ ! -L "$ARTIFACT_DIR" ] || \
   fail "canonical artifact appeared before publication"

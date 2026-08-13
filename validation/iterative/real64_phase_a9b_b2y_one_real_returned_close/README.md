@@ -149,6 +149,8 @@ unverified and cannot overwrite the primary failure.
 
 The repaired wrapper has SHA-256
 `898b94fe1d546b5b9ac682a1ea91baa75bf627f1ace9f5bc4599d055c79f640a`.
+Its postmortem repair commit is
+`daac8a88f3f027ed3794cff7bfe26d5a2e45e338`.
 Static checks, 91 directed/synthetic tests—including one real millisecond-
 scale non-Dragon child—and the default-off compile/link gate pass with
 Dragon, `SpotCloseR64`, ASM, FLU, axial solve and Picard execution all zero.

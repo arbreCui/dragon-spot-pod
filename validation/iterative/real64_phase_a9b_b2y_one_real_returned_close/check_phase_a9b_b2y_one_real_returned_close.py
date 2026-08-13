@@ -197,7 +197,7 @@ def check_manifest(text: str) -> None:
         data = json.loads(text)
     except json.JSONDecodeError as error:
         raise GateError(f"B2y manifest JSON is invalid: {error}") from error
-    require(data.get("receipt") in {"pending", "frozen"},
+    require(data.get("receipt") == "frozen",
             "B2y invalid-attempt receipt state differs")
     require(data.get("receipt_scope") ==
             "invalid-attempt-freeze-not-success",
@@ -229,7 +229,7 @@ def check_manifest(text: str) -> None:
             "B2y historical preflight scope differs")
     require(data.get("post_attempt_freeze_validation") == {
         "status": "PASS",
-        "directed_mutation_tests": 81,
+        "directed_mutation_tests": 91,
         "default_off_compile_and_link": "PASS",
         "dragon_executions": 0,
         "spotcloser64_executions": 0,
@@ -241,6 +241,7 @@ def check_manifest(text: str) -> None:
         "scope": (
             "future-validation-harness-only-not-used-by-unique-b2y-attempt"
         ),
+        "repair_commit": "daac8a88f3f027ed3794cff7bfe26d5a2e45e338",
         "wrapper_sha256": (
             "898b94fe1d546b5b9ac682a1ea91baa75bf627f1ace9f5bc4599d055c79f640a"
         ),
@@ -428,6 +429,7 @@ def check_runner(text: str) -> None:
         require(packed(fragment) in packed(off_text),
                 f"B2y default-OFF attempt summary differs: {fragment}")
     for stale in ("SET RUN_B2Y=1", "PENDING-REAL-ACTIVATION",
+                  "PENDING-RUNTIME-FREEZE",
                   "ONE-REAL-SUPPLIED-RETURNED-CLOSE=NOT-EVALUATED"):
         require(stale not in text,
                 f"B2y runner retains stale activation state: {stale}")
@@ -441,7 +443,10 @@ def check_runner(text: str) -> None:
         '"$EXECUTION_SNAPSHOT_COMMIT" HEAD',
         'git -C "$ROOT" show "$EXECUTION_SNAPSHOT_COMMIT:$path"',
         'verify_execution_snapshot',
-        'RECEIPT_STATE=PENDING-ATTEMPT-FREEZE',
+        'RECEIPT_STATE=FROZEN',
+        '[ -f "$RECEIPT" ]',
+        '[ ! -L "$RECEIPT" ]',
+        'shasum -a 256 -c "$RECEIPT"',
         "count_exact 1 '^Ran 91 tests in [0-9.]+s$'",
     )
     for fragment in snapshot_fragments:
