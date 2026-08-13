@@ -172,11 +172,11 @@ behavior and numerical contamination remain unresolved. Exact definitions
 and the separate leakage result are in
 [map3_current_result.md](validation/iterative/map3_current_result.md).
 
-A single follow-up attempt at half the inner tolerance timed out immediately
-after the first-plane `ASM` step, before any solver terminal record. The
-axial solve was not started and no scientific state was produced. It was not
-retried, so the attempt does not classify inner convergence or explain the
-update reversal.
+Two separately authorized radial attempts at half the inner tolerance, with
+75 s and 120 s bounds, timed out at the same logged point immediately after
+the first-plane `ASM` step and before any solver terminal record. The axial
+solve was not started and no scientific state was produced. These attempts
+do not classify inner convergence or explain the update reversal.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).

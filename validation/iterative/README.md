@@ -175,12 +175,12 @@ inner stopping gate supplies no state-error bound, they do not distinguish a
 physical map component from numerical contamination and do not establish
 outer convergence.
 
-One subsequent attempt to compute \(G_{h/2}(x_2)\) was stopped by its 75 s
-radial-process bound. Its log ended immediately after the first-plane `ASM`
-step, before any FLU terminal record. No axial process ran and no scientific
-state was returned. It is a
-timeout, not an inner-convergence classification, and it was not retried.
-The exact boundary and local-log hash are recorded in
+Two separately authorized radial attempts toward \(G_{h/2}(x_2)\), bounded
+at 75 s and 120 s, ended at the same logged point immediately after the
+first-plane `ASM` step and before any FLU terminal record. No axial process
+ran and no scientific state was returned. These are timeouts, not an
+inner-convergence classification. The exact boundaries and local-log hashes
+are recorded in
 [map3_current_result.md](map3_current_result.md).
 
 ## Inner-tolerance sensitivity
