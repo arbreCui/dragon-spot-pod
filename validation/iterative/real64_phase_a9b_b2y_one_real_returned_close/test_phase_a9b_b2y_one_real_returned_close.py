@@ -23,6 +23,8 @@ def replace_once(text: str, old: str, new: str) -> str:
 class B2YContractMutations(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        cls.attempt_result = contract.ATTEMPT_RESULT.read_text(encoding="utf-8")
+        cls.manifest = contract.MANIFEST.read_text(encoding="utf-8")
         cls.deck = contract.DECK.read_text(encoding="utf-8")
         cls.runner = contract.RUNNER.read_text(encoding="utf-8")
         cls.bounded = contract.BOUNDED.read_text(encoding="utf-8")
@@ -33,6 +35,14 @@ class B2YContractMutations(unittest.TestCase):
     def reject_deck(self, mutated: str) -> None:
         with self.assertRaises(contract.GateError):
             contract.check_deck(mutated)
+
+    def reject_attempt_result(self, mutated: str) -> None:
+        with self.assertRaises(contract.GateError):
+            contract.check_attempt_result(mutated)
+
+    def reject_manifest(self, mutated: str) -> None:
+        with self.assertRaises(contract.GateError):
+            contract.check_manifest(mutated)
 
     def reject_runner(self, mutated: str) -> None:
         with self.assertRaises(contract.GateError):
@@ -55,6 +65,8 @@ class B2YContractMutations(unittest.TestCase):
             contract.check_flu2dr(mutated)
 
     def test_00_positive_baseline(self) -> None:
+        contract.check_attempt_result(self.attempt_result)
+        contract.check_manifest(self.manifest)
         contract.check_deck(self.deck)
         contract.check_runner(self.runner)
         contract.check_bounded(self.bounded)
@@ -567,6 +579,60 @@ class B2YContractMutations(unittest.TestCase):
             "            fail(f\"RSS census failed; {resource_class}\")"
         )
         self.reject_bounded(replace_once(self.bounded, anchor, replacement))
+
+    def test_73_attempt_rejects_success_classification(self) -> None:
+        self.reject_attempt_result(replace_once(
+            self.attempt_result,
+            "SCIENTIFIC-CLASSIFICATION=INVALID-RUNTIME-EVIDENCE",
+            "SCIENTIFIC-CLASSIFICATION=ONE-REAL-SUPPLIED-RETURNED-CLOSE",
+        ))
+
+    def test_74_attempt_rejects_retry(self) -> None:
+        self.reject_attempt_result(replace_once(
+            self.attempt_result,
+            "AUTHORIZATION=CONSUMED ATTEMPTS=1 RETRIES=0",
+            "AUTHORIZATION=CONSUMED ATTEMPTS=1 RETRIES=1",
+        ))
+
+    def test_75_attempt_rejects_snapshot_drift(self) -> None:
+        self.reject_attempt_result(replace_once(
+            self.attempt_result,
+            contract.EXECUTION_SNAPSHOT_COMMIT,
+            "0" * 40,
+        ))
+
+    def test_76_attempt_rejects_wrapper_pass(self) -> None:
+        self.reject_attempt_result(replace_once(
+            self.attempt_result,
+            "DRAGON-LAUNCHES=1 BOUNDED-WRAPPER-PASS=NO",
+            "DRAGON-LAUNCHES=1 BOUNDED-WRAPPER-PASS=YES",
+        ))
+
+    def test_77_manifest_rejects_not_evaluated_runtime(self) -> None:
+        self.reject_manifest(replace_once(
+            self.manifest, '"status": "INVALID"',
+            '"status": "NOT-EVALUATED"',
+        ))
+
+    def test_78_manifest_rejects_zero_historical_dragon(self) -> None:
+        self.reject_manifest(replace_once(
+            self.manifest, '"dragon_executions": 1',
+            '"dragon_executions": 0',
+        ))
+
+    def test_79_manifest_rejects_accepted_closed(self) -> None:
+        self.reject_manifest(replace_once(
+            self.manifest, '"accepted_closed_result": false',
+            '"accepted_closed_result": true',
+        ))
+
+    def test_80_runner_rejects_reactivation(self) -> None:
+        self.reject_runner(replace_once(
+            self.runner,
+            '1) fail "B2y authorization was consumed; '
+            'future B2y activation is forbidden" ;;',
+            '1) ;;',
+        ))
 
 
 if __name__ == "__main__":

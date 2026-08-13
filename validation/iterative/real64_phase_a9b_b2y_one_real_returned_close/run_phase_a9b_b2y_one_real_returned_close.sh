@@ -10,7 +10,14 @@ B2Z_RECEIPT="$B2Z_DIR/phase_a9b_b2z_one_real_returned_staging_receipt.sha256"
 B2Z_RUNTIME_RESULT="$B2Z_DIR/runtime_result.txt"
 B2V_RECEIPT="$B2V_DIR/phase_a9b_b2v_one_real_continuation_receipt.sha256"
 PARENT_RECEIPT="$B2X_DIR/phase_a9b_b2x_same_call_returned_close_receipt.sha256"
-RECEIPT="$HERE/phase_a9b_b2y_one_real_returned_close_receipt.sha256"
+RECEIPT="$HERE/phase_a9b_b2y_invalid_attempt_freeze_receipt.sha256"
+
+EXECUTION_SNAPSHOT_COMMIT=5713f2eba8d267cb7eaaa36155b2888e07f19a32
+EXECUTED_WRAPPER_HASH=c8e7905aac3d4e24e41602b6809d5a8e066690f9b523416bf77df0eefa4ad7b1
+EXECUTED_RUNNER_HASH=148ee567be1ec3bedf4af5bf930595fa7f15ca72802f2ab1a40d4f964092b24c
+EXECUTED_DECK_HASH=2e6755f87767f0c0bc357713d410dad280d5d66bd7a87264fa4dbb427d3e6b10
+EXECUTED_SPOTCLOSE_HASH=9e7ffc250fa3eccb89edca7d0ece2caeb647ea8c1822fdb2415298540e62914c
+EXECUTED_FLU2DR_HASH=26bc6dcaa464cc25d7f6c56c449f3dab004bb237494a9b5120618501b8c48188
 
 EXPECTED_B2V_COMMIT=607eccf472dfb95fa24b0775f950e4e50eda5efa
 EXPECTED_B2V_RECEIPT_HASH=af2b47504adcefc7d1e9fd2ae2ecf4517298e7b5b1be1cd75633ca0fa5482bcb
@@ -59,6 +66,7 @@ DECK="$HERE/one_real_returned_close.x2m"
 HOST_SOURCE="$ROOT/data/SpotCloseR64.c2m"
 C2M_HELPER="$ROOT/validation/iterative/real64_phase_a9b_b2k_system_assembly/compile_c2m.c"
 PUBLISHER="$HERE/publish_b2y_artifact.py"
+ATTEMPT_RESULT="$HERE/attempt_result.txt"
 
 TRACK_AX_ARTIFACT="$ROOT/validation/artifacts/iterative-seed/initial_axial_track.xsm"
 MACROLIB3_ARTIFACT="$ROOT/validation/artifacts/iterative-seed/initial_axial_macrolib.xsm"
@@ -285,13 +293,33 @@ verify_receipt()
     (
       cd "$ROOT"
       shasum -a 256 -c "$RECEIPT" >/dev/null
-    ) || fail "B2y receipt verification failed"
+    ) || fail "B2y invalid-attempt freeze receipt verification failed"
     RECEIPT_STATE=FROZEN
   else
     grep -q '"receipt": "pending"' "$HERE/precision_manifest.json" || \
       fail "missing receipt without pending manifest"
-    RECEIPT_STATE=PENDING-REAL-ACTIVATION
+    RECEIPT_STATE=PENDING-ATTEMPT-FREEZE
   fi
+}
+
+verify_execution_snapshot()
+{
+  git -C "$ROOT" merge-base --is-ancestor "$EXECUTION_SNAPSHOT_COMMIT" HEAD || \
+    fail "B2y execution snapshot is not an ancestor"
+  for item in \
+    "validation/iterative/real64_phase_a9b_b2y_one_real_returned_close/run_bounded_b2y.py:$EXECUTED_WRAPPER_HASH" \
+    "validation/iterative/real64_phase_a9b_b2y_one_real_returned_close/run_phase_a9b_b2y_one_real_returned_close.sh:$EXECUTED_RUNNER_HASH" \
+    "validation/iterative/real64_phase_a9b_b2y_one_real_returned_close/one_real_returned_close.x2m:$EXECUTED_DECK_HASH" \
+    "data/SpotCloseR64.c2m:$EXECUTED_SPOTCLOSE_HASH" \
+    "src/FLU2DR.f:$EXECUTED_FLU2DR_HASH"
+  do
+    path=${item%:*}
+    expected=${item##*:}
+    actual=$(git -C "$ROOT" show "$EXECUTION_SNAPSHOT_COMMIT:$path" | \
+      shasum -a 256 | sed -n '1s/[[:space:]].*//p')
+    [ "$actual" = "$expected" ] || \
+      fail "B2y execution snapshot blob differs: $path"
+  done
 }
 
 verify_frozen_build_inputs()
@@ -332,7 +360,8 @@ line_of()
 }
 
 case "$RUN_B2Y" in
-  0|1) ;;
+  0) ;;
+  1) fail "B2y authorization was consumed; future B2y activation is forbidden" ;;
   *) fail "RUN_B2Y must be exactly 0 or 1" ;;
 esac
 case "$PRESERVE_B2Y_FAILURE" in
@@ -353,6 +382,7 @@ esac
 
 for path in "$STATIC_CHECKER" "$HERE/$MUTATION_TEST.py" "$BOUNDED" \
   "$PUBLISHER" "$POSTERIOR" "$DECK" "$HOST_SOURCE" "$C2M_HELPER" \
+  "$ATTEMPT_RESULT" \
   "$TRACK_AX_ARTIFACT" "$MACROLIB3_ARTIFACT" "$BASIS_REF_ARTIFACT" \
   "$HERE/README.md" "$HERE/precision_manifest.json" \
   "$B2Z_RECEIPT" "$B2Z_RUNTIME_RESULT" "$B2Z_ARTIFACT_MANIFEST" \
@@ -374,6 +404,7 @@ done
 
 verify_lineage
 verify_receipt
+verify_execution_snapshot
 verify_frozen_build_inputs
 verify_b2z_frozen_evidence
 require_hash "$TRACK_AX_ARTIFACT" "$EXPECTED_TRACK_AX_HASH"
@@ -404,7 +435,7 @@ then
   sed -n '1,300p' "$BUILD_DIR/mutations.log" >&2
   fail "B2y mutation suite rejected"
 fi
-count_exact 1 '^Ran 73 tests in [0-9.]+s$' "$BUILD_DIR/mutations.log"
+count_exact 1 '^Ran 81 tests in [0-9.]+s$' "$BUILD_DIR/mutations.log"
 count_exact 1 '^OK$' "$BUILD_DIR/mutations.log"
 
 for source in SPOR64_B2C SPOR64_B2B SPOR64_B2K SPOR64_B2N \
@@ -571,14 +602,19 @@ done
 if [ "$RUN_B2Y" = 0 ]; then
   printf '%s\n' 'SPOR64 PHASE-A9b-B2y PREFLIGHT PASS'
   printf '%s\n' \
-    'ACTIVATION=DEFAULT-OFF; SET RUN_B2Y=1 AND B2Y_RETURNED_XSM TO THE B2Z-STAGED B2V-BYTE-IDENTICAL FILE'
+    'ACTIVATION=CONSUMED; FUTURE-B2Y-ACTIVATION=FORBIDDEN'
   printf '%s\n' \
-    'DRAGON=0 SPOTCLOSE=0 ASM=0 FLU=0 AXIAL-SOLVE=0 PICARD=0'
+    'CURRENT-DEFAULT-OFF-CHECK DRAGON=0 SPOTCLOSE=0 ASM=0 FLU=0 AXIAL-SOLVE=0 PICARD=0'
   printf '%s\n' \
-    'PRODUCTION-CLOSE=COMPILE/LINK-ONLY POSTERIOR=GANLIB/UTILIB-ONLY-COMPILE'
-  printf '%s\n' 'ONE-REAL-SUPPLIED-RETURNED-CLOSE=NOT-EVALUATED'
+    'CURRENT-CHECK PRODUCTION-CLOSE=COMPILE/LINK-ONLY POSTERIOR=GANLIB/UTILIB-ONLY-COMPILE'
   printf '%s\n' \
-    "RECEIPT=$RECEIPT_STATE INPUT-PARENT=B2z CLOSE-CONTRACT-LINEAGE=B2x"
+    'HISTORICAL-B2Y-ATTEMPT DRAGON=1 ATTEMPTS=1 RETRIES=0 BOUNDED-WRAPPER-PASS=NO'
+  printf '%s\n' \
+    'SCIENTIFIC-CLASSIFICATION=INVALID-RUNTIME-EVIDENCE SCIENTIFIC-RESULT=NONE'
+  printf '%s\n' \
+    'SHELL-RUNTIME-CENSUS=NOT-REACHED POSTERIOR-EXECUTIONS=0 ARTIFACT-PUBLICATIONS=0 ACCEPTED-CLOSED=NO'
+  printf '%s\n' \
+    "ATTEMPT-FREEZE-RECEIPT=$RECEIPT_STATE INPUT-PARENT=B2z CLOSE-CONTRACT-LINEAGE=B2x"
   exit 0
 fi
 

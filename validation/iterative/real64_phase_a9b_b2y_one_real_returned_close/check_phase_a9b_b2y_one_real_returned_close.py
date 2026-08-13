@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import ast
+import json
 from pathlib import Path
 import re
 
@@ -14,8 +15,18 @@ DECK = HERE / "one_real_returned_close.x2m"
 RUNNER = HERE / "run_phase_a9b_b2y_one_real_returned_close.sh"
 BOUNDED = HERE / "run_bounded_b2y.py"
 PUBLISHER = HERE / "publish_b2y_artifact.py"
+ATTEMPT_RESULT = HERE / "attempt_result.txt"
+MANIFEST = HERE / "precision_manifest.json"
 HOST = ROOT / "data/SpotCloseR64.c2m"
 FLU2DR = ROOT / "src/FLU2DR.f"
+
+EXECUTION_SNAPSHOT_COMMIT = "5713f2eba8d267cb7eaaa36155b2888e07f19a32"
+EXECUTED_WRAPPER_SHA256 = (
+    "c8e7905aac3d4e24e41602b6809d5a8e066690f9b523416bf77df0eefa4ad7b1"
+)
+EXECUTED_RUNNER_SHA256 = (
+    "148ee567be1ec3bedf4af5bf930595fa7f15ca72802f2ab1a40d4f964092b24c"
+)
 
 RETURNED_SHA256 = (
     "dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054"
@@ -115,6 +126,149 @@ def xsm_symbol_by_path(text: str) -> dict[str, str]:
     return result
 
 
+def check_attempt_result(text: str) -> None:
+    lines = [line for line in text.splitlines() if line]
+    require(lines and lines[0] ==
+            "SPOR64 PHASE-A9b-B2y UNIQUE ATTEMPT INVALID",
+            "B2y attempt-result header differs")
+    fields: dict[str, str] = {}
+    for line in lines[1:]:
+        require("=" in line, f"B2y attempt-result line lacks '=': {line}")
+        key, value = line.split("=", 1)
+        require(key and key not in fields,
+                f"B2y attempt-result duplicate/empty key: {key}")
+        fields[key] = value
+    required = {
+        "RECORD-KIND": "POST-HOC-STRUCTURED-FREEZE",
+        "SCIENTIFIC-CLASSIFICATION": "INVALID-RUNTIME-EVIDENCE",
+        "SCIENTIFIC-RESULT": "NONE",
+        "CLASSIFICATION-BASIS": (
+            "BOUNDED-WRAPPER-PASS-NO; "
+            "SHELL-RUNTIME-CENSUS-NOT-REACHED"
+        ),
+        "POSTMORTEM-DESCRIPTION": "VALIDATION-HARNESS-FAILURE",
+        "POSTMORTEM-CAUSE": (
+            "POST-EXIT-PROCESS-OBSERVATION/CLEANUP-RACE"
+        ),
+        "ACCEPTED-CLOSED-RESULT": "NO",
+        "AUTHORIZATION": (
+            "CONSUMED ATTEMPTS=1 RETRIES=0 "
+            "FUTURE-B2Y-ACTIVATION=FORBIDDEN"
+        ),
+        "DRAGON-LAUNCHES": (
+            "1 BOUNDED-WRAPPER-PASS=NO BOUNDED-PASS-MARKERS=0"
+        ),
+        "SHELL-RUNTIME-CENSUS": (
+            "NOT-REACHED POSTERIOR-EXECUTIONS=0"
+        ),
+        "SUCCESS-ARTIFACT-PUBLICATIONS": (
+            "0 SUCCESS-ARTIFACT=ABSENT-AT-FREEZE"
+        ),
+        "VALID-CLOSED-PAIR": (
+            "NOT-ESTABLISHED CLOSED-CONTENT=NOT-EVALUATED"
+        ),
+        "EXECUTION-SNAPSHOT-COMMIT": EXECUTION_SNAPSHOT_COMMIT,
+        "EXECUTED-WRAPPER-SHA256": EXECUTED_WRAPPER_SHA256,
+        "EXECUTED-RUNNER-SHA256": EXECUTED_RUNNER_SHA256,
+        "RAW-DRAGON-LOG": "NOT-RETAINED",
+        "CANDIDATE-AX-CLOSED": "NOT-RETAINED",
+        "CANDIDATE-ARCHIVE-CLOSED": "NOT-RETAINED",
+        "POSTERIOR-REPORTS": "NOT-PRODUCED",
+        "ARTIFACT-MANIFEST": "NOT-PRODUCED",
+        "ATOMIC-PUBLICATION": "NOT-PERFORMED",
+    }
+    for key, value in required.items():
+        require(fields.get(key) == value,
+                f"B2y attempt-result field differs: {key}")
+    for index in range(1, 8):
+        key = f"CONSOLE-TAIL-OBSERVATION-{index:02d}"
+        require(key in fields, f"B2y attempt-result lacks {key}")
+    require(fields.get("CONSOLE-TAIL-EVIDENTIARY-STATUS") == (
+        "TRANSCRIBED-CONSOLE-ONLY; RAW-LOG-NOT-RETAINED; "
+        "NOT-INDEPENDENTLY-VERIFIABLE; NOT-ACCEPTED-CLOSED-EVIDENCE"
+    ), "B2y console-only evidentiary boundary differs")
+    for index in range(1, 7):
+        key = f"NOT-CLAIMED-{index:02d}"
+        require(key in fields, f"B2y attempt-result lacks {key}")
+
+
+def check_manifest(text: str) -> None:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as error:
+        raise GateError(f"B2y manifest JSON is invalid: {error}") from error
+    require(data.get("receipt") in {"pending", "frozen"},
+            "B2y invalid-attempt receipt state differs")
+    require(data.get("receipt_scope") ==
+            "invalid-attempt-freeze-not-success",
+            "B2y receipt scope differs")
+    require("success_receipt" not in data and
+            "attempt_freeze_receipt" not in data,
+            "B2y manifest has conflicting receipt states")
+    runtime = data.get("runtime_result", {})
+    expected_runtime = {
+        "status": "INVALID",
+        "dragon_executions": 1,
+        "scientific_classification": "INVALID-RUNTIME-EVIDENCE",
+        "scientific_result": "NONE",
+        "postmortem_description": "VALIDATION-HARNESS-FAILURE",
+        "postmortem_cause": (
+            "POST-EXIT-PROCESS-OBSERVATION/CLEANUP-RACE"
+        ),
+        "bounded_wrapper_pass": False,
+        "shell_runtime_census_reached": False,
+        "posterior_executions": 0,
+        "success_artifact_publications": 0,
+        "accepted_closed_result": False,
+        "outer_picard_convergence": "NOT-EVALUATED",
+    }
+    require(runtime == expected_runtime,
+            "B2y manifest actual runtime result differs")
+    require(data.get("preflight_result", {}).get("scope") ==
+            "execution-era-preflight-before-unique-attempt",
+            "B2y historical preflight scope differs")
+    require(data.get("post_attempt_freeze_validation") == {
+        "status": "PASS",
+        "directed_mutation_tests": 81,
+        "default_off_compile_and_link": "PASS",
+        "dragon_executions": 0,
+        "spotcloser64_executions": 0,
+        "axial_solves": 0,
+        "outer_picard_maps": 0,
+    }, "B2y post-attempt freeze validation differs")
+    attempt = data.get("attempt_freeze", {})
+    required_attempt = {
+        "authorization": "consumed",
+        "attempts": 1,
+        "retries": 0,
+        "future_b2y_activation": False,
+        "execution_snapshot_commit": EXECUTION_SNAPSHOT_COMMIT,
+        "executed_wrapper_sha256": EXECUTED_WRAPPER_SHA256,
+        "executed_runner_sha256": EXECUTED_RUNNER_SHA256,
+        "raw_dragon_log_retained": False,
+        "candidate_closed_files_retained": False,
+        "artifact_manifest_produced": False,
+        "solver_source_changed_for_attempt": False,
+        "unique_attempt_used_pre_repair_wrapper": True,
+        "postmortem_wrapper_repair_executed_in_b2y": False,
+    }
+    for key, value in required_attempt.items():
+        require(attempt.get(key) == value,
+                f"B2y manifest attempt field differs: {key}")
+    require(data.get("required_runtime_census", {}).get("scope") ==
+            "success-requirement-not-actual-execution",
+            "B2y runtime census requirement scope differs")
+    require(data.get("required_independent_posterior", {}).get("scope") ==
+            "success-requirement-not-actual-execution",
+            "B2y posterior requirement scope differs")
+    classes = data.get("failure_classification", {})
+    require(classes.get(
+        "normal_end_with_bad_runtime_census_or_"
+        "wrapper_process_observation_failure"
+    ) == "INVALID-RUNTIME-EVIDENCE",
+            "B2y wrapper-race classification differs")
+
+
 def check_deck(text: str) -> None:
     clean = strip_deck_comments(text)
     code = packed(clean)
@@ -200,6 +354,9 @@ def check_runner(text: str) -> None:
         "EXPECTED_B2Z_RUNTIME_BYTES=1735",
         f"EXPECTED_B2Z_ARTIFACT_MANIFEST_HASH={B2Z_ARTIFACT_MANIFEST_SHA256}",
         "EXPECTED_B2Z_ARTIFACT_MANIFEST_BYTES=483",
+        f"EXECUTION_SNAPSHOT_COMMIT={EXECUTION_SNAPSHOT_COMMIT}",
+        f"EXECUTED_WRAPPER_HASH={EXECUTED_WRAPPER_SHA256}",
+        f"EXECUTED_RUNNER_HASH={EXECUTED_RUNNER_SHA256}",
     )
     for assignment in required_assignments:
         require(packed(assignment) in code,
@@ -211,14 +368,56 @@ def check_runner(text: str) -> None:
 
     require(re.search(r'case\s+"?\$RUN_B2Y"?\s+in', clean) is not None,
             "B2y runner does not validate RUN_B2Y")
-    require(re.search(r'0\|1\)', clean) is not None,
-            "B2y runner RUN_B2Y domain is not exactly 0/1")
+    activation_case = re.search(
+        r'(?ms)case\s+"?\$RUN_B2Y"?\s+in\s*'
+        r'0\)\s*;;\s*'
+        r'1\)\s*fail\s+"B2y authorization was consumed; '
+        r'future B2y activation is forbidden"\s*;;\s*'
+        r'\*\)\s*fail\s+"RUN_B2Y must be exactly 0 or 1"\s*;;\s*esac',
+        clean,
+    )
+    require(activation_case is not None,
+            "B2y runner does not permanently reject reactivation")
     off = re.search(
         r'(?is)if\s+\[\s*"\$RUN_B2Y"\s*=\s*0\s*\]\s*;\s*then'
         r'.*?\bexit\s+0\b.*?\bfi\b',
         clean,
     )
     require(off is not None, "B2y default-OFF branch is missing")
+    off_text = off.group(0)
+    required_off = (
+        "ACTIVATION=CONSUMED; FUTURE-B2Y-ACTIVATION=FORBIDDEN",
+        "CURRENT-DEFAULT-OFF-CHECK DRAGON=0 SPOTCLOSE=0 ASM=0 "
+        "FLU=0 AXIAL-SOLVE=0 PICARD=0",
+        "HISTORICAL-B2Y-ATTEMPT DRAGON=1 ATTEMPTS=1 RETRIES=0 "
+        "BOUNDED-WRAPPER-PASS=NO",
+        "SCIENTIFIC-CLASSIFICATION=INVALID-RUNTIME-EVIDENCE "
+        "SCIENTIFIC-RESULT=NONE",
+        "SHELL-RUNTIME-CENSUS=NOT-REACHED POSTERIOR-EXECUTIONS=0 "
+        "ARTIFACT-PUBLICATIONS=0 ACCEPTED-CLOSED=NO",
+    )
+    for fragment in required_off:
+        require(packed(fragment) in packed(off_text),
+                f"B2y default-OFF attempt summary differs: {fragment}")
+    for stale in ("SET RUN_B2Y=1", "PENDING-REAL-ACTIVATION",
+                  "ONE-REAL-SUPPLIED-RETURNED-CLOSE=NOT-EVALUATED"):
+        require(stale not in text,
+                f"B2y runner retains stale activation state: {stale}")
+    require(activation_case.end() < off.start(),
+            "B2y tracked reactivation rejection is not preflight-early")
+
+    snapshot_fragments = (
+        'RECEIPT="$HERE/phase_a9b_b2y_invalid_attempt_freeze_receipt.sha256"',
+        'ATTEMPT_RESULT="$HERE/attempt_result.txt"',
+        'git -C "$ROOT" merge-base --is-ancestor '
+        '"$EXECUTION_SNAPSHOT_COMMIT" HEAD',
+        'git -C "$ROOT" show "$EXECUTION_SNAPSHOT_COMMIT:$path"',
+        'verify_execution_snapshot',
+        'RECEIPT_STATE=PENDING-ATTEMPT-FREEZE',
+    )
+    for fragment in snapshot_fragments:
+        require(packed(fragment) in code,
+                f"B2y execution-snapshot gate missing: {fragment}")
 
     external_checks = (
         '[ -n "$B2Y_RETURNED_XSM" ]',
@@ -797,6 +996,8 @@ def check_flu2dr(text: str) -> None:
 
 
 def main() -> None:
+    check_attempt_result(read_required(ATTEMPT_RESULT))
+    check_manifest(read_required(MANIFEST))
     check_deck(read_required(DECK))
     check_runner(read_required(RUNNER))
     check_bounded(read_required(BOUNDED))
@@ -806,6 +1007,7 @@ def main() -> None:
     print("B2Y STATIC ONE-REAL-RETURNED-CLOSE PASS")
     print("B2Y DECK=EXTERNAL-RETURNED->SPOTCLOSER64x1")
     print("B2Y ACTIVATION=DEFAULT-OFF CLOSE-PROFILE-POPEN=1 RETRY=0")
+    print("B2Y HISTORICAL-ATTEMPT=CONSUMED CLASS=INVALID-RUNTIME-EVIDENCE")
     print("B2Y STRICT-FLU=FAIL-CLOSED EMPIRICAL-CONTROLS-ADDED=0")
 
 

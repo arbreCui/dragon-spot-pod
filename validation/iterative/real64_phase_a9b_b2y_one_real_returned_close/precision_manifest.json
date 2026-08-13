@@ -3,19 +3,55 @@
   "name": "one-real-supplied-returned-close",
   "objective": "exactly one bounded production SpotCloseR64 axial half-step from the B2z-staged RETURNED whose content is byte-identical to the RETURNED accepted and recorded by B2v",
   "receipt": "pending",
+  "receipt_scope": "invalid-attempt-freeze-not-success",
   "deployment_default": "off",
   "runtime_result": {
-    "status": "NOT-EVALUATED",
-    "dragon_executions": 0,
-    "scientific_classification": "NOT-EVALUATED"
+    "status": "INVALID",
+    "dragon_executions": 1,
+    "scientific_classification": "INVALID-RUNTIME-EVIDENCE",
+    "scientific_result": "NONE",
+    "postmortem_description": "VALIDATION-HARNESS-FAILURE",
+    "postmortem_cause": "POST-EXIT-PROCESS-OBSERVATION/CLEANUP-RACE",
+    "bounded_wrapper_pass": false,
+    "shell_runtime_census_reached": false,
+    "posterior_executions": 0,
+    "success_artifact_publications": 0,
+    "accepted_closed_result": false,
+    "outer_picard_convergence": "NOT-EVALUATED"
+  },
+  "attempt_freeze": {
+    "authorization": "consumed",
+    "attempts": 1,
+    "retries": 0,
+    "future_b2y_activation": false,
+    "execution_snapshot_commit": "5713f2eba8d267cb7eaaa36155b2888e07f19a32",
+    "executed_wrapper_sha256": "c8e7905aac3d4e24e41602b6809d5a8e066690f9b523416bf77df0eefa4ad7b1",
+    "executed_runner_sha256": "148ee567be1ec3bedf4af5bf930595fa7f15ca72802f2ab1a40d4f964092b24c",
+    "attempt_result": "attempt_result.txt",
+    "raw_dragon_log_retained": false,
+    "candidate_closed_files_retained": false,
+    "artifact_manifest_produced": false,
+    "solver_source_changed_for_attempt": false,
+    "unique_attempt_used_pre_repair_wrapper": true,
+    "postmortem_wrapper_repair_executed_in_b2y": false
   },
   "preflight_result": {
+    "scope": "execution-era-preflight-before-unique-attempt",
     "status": "PASS",
     "directed_mutation_tests": 73,
     "production_close_route": "strictly compiled and privately linked",
     "clepil_objpil_compilations": 2,
     "independent_posterior": "strictly compiled and linked with GANLIB/UTILIB only",
     "dragon_executions": 0
+  },
+  "post_attempt_freeze_validation": {
+    "status": "PASS",
+    "directed_mutation_tests": 81,
+    "default_off_compile_and_link": "PASS",
+    "dragon_executions": 0,
+    "spotcloser64_executions": 0,
+    "axial_solves": 0,
+    "outer_picard_maps": 0
   },
   "activation_count": {
     "dragon_maximum": 1,
@@ -87,7 +123,10 @@
     "path": "validation/artifacts/.real64-phase-a9b-b2y-attempted",
     "created_atomically_immediately_before_the_only_dragon": true,
     "removed_after_failure": false,
-    "meaning": "the explicit one-real authorization is consumed even if the process later fails; a second Dragon is mechanically refused"
+    "observed_device_inode": "16777230:32675175",
+    "observed_timestamp": "2026-08-13T01:18:32-0700",
+    "status": "present-authorization-consumed",
+    "meaning": "the explicit one-real authorization was consumed by the unique invalid attempt; a second B2y Dragon is mechanically refused and scientifically forbidden"
   },
   "same_process_scope": {
     "true": "private FEEDBACK through SPOR64V, ASM, FLU, SPOSTATE, SPOLEAK, SPOR64X and B2w within one SpotCloseR64 call and one Dragon process",
@@ -140,6 +179,7 @@
     "meaning": "execution safety only; not a physical or convergence criterion; the absolute 80 s close deadline and every earlier failure or managed interruption send immediate SIGKILL to the fresh process group without a grace interval"
   },
   "required_runtime_census": {
+    "scope": "success-requirement-not-actual-execution",
     "spotcloser64_calls": 1,
     "spor64v": 1,
     "asm": 1,
@@ -153,6 +193,7 @@
     "ordered_and_noninterleaved": true
   },
   "required_independent_posterior": {
+    "scope": "success-requirement-not-actual-execution",
     "executions": 2,
     "reports_must_match": true,
     "links": [
@@ -174,9 +215,9 @@
   "failure_classification": {
     "missing_changed_or_rejected_input_or_nonfresh_output": "INVALID-NO-SCIENTIFIC-RESULT",
     "wall_cpu_rss_file_or_log_cap": "INVALID-RUNTIME-BUDGET-NO-CLOSED-RESULT",
-    "nonzero_abnormal_xabort_strict_flu_failure_or_no_closed_pair": "FAILED-NO-CLOSED",
-    "normal_end_with_bad_runtime_census": "INVALID-RUNTIME-EVIDENCE",
-    "normal_evidenced_route_with_bad_closed_posterior": "INVALID-CLOSED-EVIDENCE",
+    "nonzero_abnormal_xabort_strict_flu_failure_or_solver_no_candidate_closed_pair": "FAILED-NO-CLOSED",
+    "normal_end_with_bad_runtime_census_or_wrapper_process_observation_failure": "INVALID-RUNTIME-EVIDENCE",
+    "normal_evidenced_route_with_missing_mutable_posterior_rejected_or_unpublished_closed_output": "INVALID-CLOSED-EVIDENCE",
     "all_conditions_pass": "ONE-REAL-SUPPLIED-RETURNED-TO-CLOSED-AXIAL-HALF-STEP"
   },
   "added_controls": {

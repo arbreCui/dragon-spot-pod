@@ -133,16 +133,21 @@ binary32 plane restriction used in production, removes one global
 finite-precision off-space content cannot become a hidden state variable.
 
 The no-transport fixtures pass structural and bitwise checks, but they are not
-transport evidence. In the present strict route, B2v has completed one real
+transport evidence. In the present strict route, B2v completed one real
 three-plane radial continuation and returned one accepted `RETURNED/1`
-generation. B2x has compiled and synthetically checked the same-procedure
-returned-to-closed custody route. B2y now passes its default-off static,
-mutation, production compilation, CLEPIL/OBJPIL and private-link preflight.
+generation. B2z then staged its exact 231,572,260-byte content as the
+canonical retained input. B2x compiled and synthetically checked the same-
+procedure returned-to-closed custody route. B2y passed its preflight and used
+its sole real activation, but its bounded wrapper hit a post-exit ESRCH/EPERM
+observation/cleanup race after the console showed normal Dragon completion
+and strict FLU termination.
 
-The exact 231,572,260-byte B2v RETURNED file was intentionally deleted with
-its temporary directory. It is therefore not available to B2y in the
-repository, and B2y has executed zero Dragon processes. The present strict
-evidence does not establish one complete \(G(x_0)\), repeated-map
+Because the raw log and candidate CLOSED files were cleaned before the shell
+census, no posterior ran and no artifact was published. B2y is therefore
+`INVALID-RUNTIME-EVIDENCE`, `SCIENTIFIC-RESULT=NONE`; it is neither a valid
+closed result nor evidence of physical nonconvergence. Its durable sentinel
+forbids another B2y activation. The present strict evidence does not establish
+one complete \(G(x_0)\), repeated-map
 determinism, contraction, or outer convergence. It would be incorrect to
 promote earlier `one_corrected_map` results into this route because they
 predate the current REAL64 authority, lifecycle, same-call custody and
@@ -474,9 +479,10 @@ design has been frozen, with `Dragon processes = 0`, in
 4. freeze the single-procedure `RETURNED -> CLOSED` custody and fail-closed
    axial terminal route (B2w/B2x completed statically and synthetically);
 5. execute one bounded real supplied-returned axial half-step and independently
-   accept the closed pair (B2y preflight passed; real activation pending the
-   exact retained B2v bytes);
-6. only after step 5 passes, assemble evidence for one complete raw
+   accept the closed pair (B2y unique attempt consumed; invalid runtime
+   evidence; no accepted closed pair);
+6. only after a separately authorized new stage succeeds—not by retrying
+   B2y—assemble evidence for one complete raw
    \(x_1=G(x_0)\) and independently check its axial equation and balance;
 7. repeat the exact raw map only to test determinism, without calling that
    repetition convergence;
@@ -1510,51 +1516,36 @@ same-procedure custody route and fail-closed content/terminal controls, not a
 real axial-map evaluation, convergence, rank sufficiency, or eigenvalue/power
 accuracy. A real activation remains a separate bounded experiment.
 
-## One real supplied-returned axial close (B2y)
+## Consumed real supplied-returned axial attempt (B2y)
 
-B2y prepares that separate real experiment without silently repeating the
-radial stage:
+B2y prepared that separate real experiment without silently repeating the
+radial stage. The target is now for default-off validation only:
 
 ```sh
 make spot-real64-phase-a9b-b2y-one-real-returned-close
 ```
 
-The target is deployment-default-off. Its normal path performs the complete
+Its default-off path performs the complete
 static, mutation, strict-compilation, real CLEPIL/OBJPIL and private-Dragon
 link gate in about five seconds, while executing zero Dragon, ASM, FLU,
 transport or Picard calls. The shared Dragon libraries and executables are
 never modified.
 
-An opt-in activation requires an external regular XSM file whose SHA-256 is
-exactly
+The consumed activation used the canonical B2z-staged regular XSM file whose
+SHA-256 is exactly
 `dd41a37d484b85612a495ff7b1f2233a53fbae1b462d89bd84db2a8809cef054`
-and whose size is 231,572,260 bytes:
+and whose size is 231,572,260 bytes. One private Dragon and one
+`SpotCloseR64` call ran under the frozen caps. The captured console tail
+showed the complete production route, strict FLU termination and normal end;
+the wrapper then failed to reconcile the exited child and emitted no PASS.
+The shell census, two GANLIB/UTILIB-only posteriors and atomic publication
+were never reached. Temporary logs and candidate outputs were cleaned.
 
-```sh
-RUN_B2Y=1 \
-  B2Y_RETURNED_XSM=/absolute/path/to/returned.xsm \
-  make spot-real64-phase-a9b-b2y-one-real-returned-close
-```
-
-That file was produced and accepted by B2v but intentionally removed with
-its temporary directory; it is not present in the repository. B2y therefore
-does not search for a substitute, reconstruct it, invoke `SpotStepR64`, or
-automatically repeat B2v. Missing or changed input stops before Dragon.
-
-If armed with the exact file, the gate permits one fresh-process-group Dragon
-and one `SpotCloseR64` call under 80 s wall / 75 s CPU, 2 GiB leader RSS,
-512 MiB per-file and 64 MiB log caps, with no retry or retuning. Two identical
-GANLIB/UTILIB-only posteriors must then verify the closed lifecycle,
-REAL64/REAL32 authorities, preserved \(\rho_0,k_0,QFISS_0,L_0\), fresh
-\(\rho_1=1/k_1,L_1\), and all exact copy/promotion identities. The current
-status is `NOT-EVALUATED`: the compile/link preflight passes, but no B2y
-Dragon activation has occurred and no `CLOSED/1` result is claimed.
-
-Even a future pass would establish only one real supplied-RETURNED axial
-half-step. It would not prove same-process continuity with the historical
-B2v radial run, a complete Picard map, outer convergence, rank-one adequacy,
-an independently recomputed axial residual/global balance, or benchmark
-accuracy. The exact contract is in
+The unique authorization is consumed and **must not be run again**. The
+formal result is `INVALID-RUNTIME-EVIDENCE`, with no accepted `CLOSED/1` and
+no complete Picard map. This does not prove axial physical divergence. The
+executed source bytes are frozen at commit
+`5713f2eba8d267cb7eaaa36155b2888e07f19a32`; the exact status and nonclaims are in
 [`real64_phase_a9b_b2y_one_real_returned_close/`](validation/iterative/real64_phase_a9b_b2y_one_real_returned_close/README.md).
 
 The alternative three-return design is also checked without Dragon:

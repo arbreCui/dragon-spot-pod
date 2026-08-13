@@ -1,18 +1,29 @@
-# Phase-A9b B2y: one bounded real returned-to-closed axial half-step
+# Phase-A9b B2y: consumed real returned-to-closed attempt
 
-B2y freezes one deliberately narrow real experiment: given the B2z-staged
+B2y froze one deliberately narrow real experiment: given the B2z-staged
 `RETURNED/1` file whose content is byte-identical to the RETURNED accepted
 and recorded by B2v, can the production
 `SpotCloseR64` procedure execute once and publish one valid `CLOSED/1`
 axial/archive pair?
 
-The experiment is deployment-default-off and its receipt is pending.  No
-B2y Dragon activation has yet been made.  Until the runtime and independent
-posterior evidence below both pass, the result remains `NOT-EVALUATED`.
-The default-off preflight currently passes 73 directed mutation tests, strict
-production compilation, real CLEPIL/OBJPIL compilation, private Dragon
-linking and independent-posterior compilation in about five seconds, with
-Dragon execution fixed at zero.
+The unique activation was made exactly once. Dragon was observed in the
+captured failure tail to end normally after the complete production route
+and a strict FLU termination, but the bounded wrapper then hit a child-exit
+observation/cleanup race (`proc_pidinfo` ESRCH followed by `killpg` EPERM).
+The shell runtime census, two independent posteriors and publication were
+therefore never reached. The strict classification is
+`INVALID-RUNTIME-EVIDENCE`, with `SCIENTIFIC-RESULT=NONE` and no accepted
+`CLOSED/1` result. This is a validation-harness failure, not evidence of
+physical nonconvergence.
+
+The durable sentinel consumed the authorization. B2y must never be activated
+again. Its default-off gate remains available only for short static,
+compilation and synthetic validation; any future real experiment would need
+a new stage and a new explicit authorization and cannot be called a retry.
+The exact execution-era bytes are frozen in Git commit
+`5713f2eba8d267cb7eaaa36155b2888e07f19a32`, and the post-hoc structured facts
+are in `attempt_result.txt`. The original Dragon log and candidate CLOSED
+files were cleaned and are not recoverable evidence.
 
 ## Supplied input, never regenerated here
 
@@ -56,8 +67,8 @@ again after every attempted activation.
 
 ## Exactly one production call
 
-An explicit opt-in may start at most one private Dragon process, in one fresh
-process group, and make exactly one call to `SpotCloseR64`:
+The frozen protocol authorized at most one private Dragon process, in one
+fresh process group, and exactly one call to `SpotCloseR64`:
 
 ```text
 supplied accepted RETURNED/1
@@ -80,9 +91,10 @@ B2y axial close occurred in the same process or in one continuous
 `SpotStepR64 -> SpotCloseR64` host call.
 
 There is no retry, restart, tolerance change, fallback, alternate rank,
-second Dragon launch, or reuse of a partial output after any failure.
+second Dragon launch, or reuse of a partial output after the failure.
 
-The only authorized activation form is:
+The historical activation command was executed once and is recorded only to
+identify the consumed protocol. **Do not run it again:**
 
 ```sh
 RUN_B2Y=1 \
@@ -95,7 +107,34 @@ ignored sentinel
 `validation/artifacts/.real64-phase-a9b-b2y-attempted`. Success and failure
 cleanup never remove it. Therefore any attempted close—including a timeout,
 signal, strict failure or later evidence/publication failure—consumes the
-one-real authorization and a second Dragon is mechanically refused.
+one-real authorization and a second Dragon is mechanically refused. The
+observed local sentinel identity is `16777230:32675175`, timestamped
+`2026-08-13T01:18:32-0700`; this inode is a local guard observation, not a
+portable cryptographic receipt.
+
+## Unique-attempt outcome
+
+The frozen sequence is:
+
+1. the 73-test preflight and all frozen-input gates passed;
+2. the durable sentinel was created and one private Dragon was launched;
+3. the captured console tail showed `SPOR64V -> ASM -> FLU -> SPOSTATE ->
+   SPOLEAK -> SPOR64X`, strict FLU termination and normal Dragon end;
+4. before the shell could census the retained raw log, the wrapper saw
+   `proc_pidinfo` ESRCH while `poll()` still returned no exit status;
+5. immediate cleanup then received EPERM from `killpg(SIGKILL)`, and the
+   wrapper emitted no PASS marker;
+6. the shell stopped with `NO-RETRY`; posterior executions and publication
+   both remained zero, and temporary logs and candidate outputs were cleaned.
+
+The console tail printed `IEXTF=199/500`,
+`EEXT=6.09538031E-10`, `EUNK=2.49115857E-7`, `ITERF=1/740`,
+`EINR=2.49115857E-7`, `STATE=1`, `IGDEB=371`, and `NGRP=370`.
+These are transcribed console-only observations. They support the limited
+statement that the axial FLU solve was observed to satisfy the frozen strict
+predicate and the production close route was observed to complete. They do
+not substitute for the deleted raw log, retained CLOSED objects or posterior
+evidence, and cannot certify B2y success.
 
 ## Frozen physical generation
 
@@ -150,10 +189,11 @@ D_L = max(abs(L1-L0)),
 which is a dimensional transition diagnostic only. It is not an acceptance
 threshold, damping trigger, fitted score, or convergence result.
 
-## Required evidence for the success classification
+## Evidence that would have been required for success
 
-A normal Dragon exit or a completion marker alone is insufficient.  A
-successful future activation must provide all of the following:
+A normal Dragon exit or a completion marker alone is insufficient. The
+consumed attempt would have needed all of the following, but did not retain
+or complete them:
 
 - exactly one caller marker pair around exactly one `SpotCloseR64` call;
 - exactly one ordered begin/end pair for `SPOR64V`, `ASM`, `FLU`,
@@ -179,7 +219,7 @@ fixed basis, axial equation residual, or global balance. Those claims require
 a separate read-only oracle with the frozen axial track, macrolib and basis as
 explicit inputs.
 
-On success, the two CLOSED XSM files, raw Dragon log, both posterior logs,
+On a valid success, the two CLOSED XSM files, raw Dragon log, both posterior logs,
 the bounded runtime summary and a content manifest are published together
 to the local Git-ignored directory
 \`validation/artifacts/real64-phase-a9b-b2y\`.  The final directory must be
@@ -210,18 +250,23 @@ The mutually exclusive classifications are:
   `INVALID-NO-SCIENTIFIC-RESULT`;
 - wall, CPU, RSS, file or log cap after the sole activation begins:
   `INVALID-RUNTIME-BUDGET-NO-CLOSED-RESULT`;
-- nonzero/abnormal Dragon end, XABORT, strict FLU failure, or any failure to
-  publish both closed objects:
+- nonzero/abnormal Dragon end, XABORT, strict FLU failure, or solver failure
+  to produce a candidate closed pair:
   `FAILED-NO-CLOSED`;
 - normal end but missing, repeated, interleaved or incorrectly ordered route
-  and terminal records:
+  and terminal records, including failure of the wrapper to adjudicate the
+  exited child:
   `INVALID-RUNTIME-EVIDENCE`;
-- normal evidenced route but missing, mutable or posterior-rejected output:
+- normal evidenced route but missing, mutable, posterior-rejected or
+  unpublished output:
   `INVALID-CLOSED-EVIDENCE`;
 - every input, runtime and independent posterior condition satisfied:
   `ONE-REAL-SUPPLIED-RETURNED-TO-CLOSED-AXIAL-HALF-STEP`.
 
-Any file left by a failed or invalid run has no scientific status.  Failure
+This attempt is in the `INVALID-RUNTIME-EVIDENCE` class because the wrapper
+failed before the formal runtime census. The later cleanup of candidate
+outputs does not reclassify it as a solver failure. Any file left by a failed
+or invalid run has no scientific status. Failure
 does not prove physical divergence, nonexistence of a coupled solution, or
 failure of the 2D/1D method.
 
@@ -235,8 +280,9 @@ are disclosed numerical/discretization choices; they are not fitted feedback
 coefficients.  This wording does not claim that the complete legacy solver
 contains no fixed numerical settings or acceleration machinery.
 
-Even after the success classification, B2y proves only one real supplied-
-RETURNED axial half-step and its closed-state content.  It does not prove:
+No success classification was reached. Even a hypothetical valid B2y pass
+would prove only one real supplied-RETURNED axial half-step and its
+closed-state content. It would not prove:
 
 - same-process continuity with the earlier B2v radial activation;
 - a complete production Picard map or any second outer update;
