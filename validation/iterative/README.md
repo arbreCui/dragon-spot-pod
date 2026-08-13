@@ -1178,7 +1178,9 @@ sentinel forbids another B2y activation. Same-process B2v continuity, a
 complete Picard map, convergence, rank sufficiency, independent axial
 residual/global-balance validation, accepted CLOSED content and accuracy all
 remain unclaimed. Exact execution-era source bytes are at commit
-`5713f2eba8d267cb7eaaa36155b2888e07f19a32`.
+`5713f2eba8d267cb7eaaa36155b2888e07f19a32`. The later wrapper repair passes
+91 no-Dragon directed/synthetic tests and the default-off compile/link gate;
+it is future-harness maintenance only and cannot reclassify or retry B2y.
 
 ## Fixed three-return design
 

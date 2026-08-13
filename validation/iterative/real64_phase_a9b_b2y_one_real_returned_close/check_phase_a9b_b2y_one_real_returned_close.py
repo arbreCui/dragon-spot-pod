@@ -236,6 +236,34 @@ def check_manifest(text: str) -> None:
         "axial_solves": 0,
         "outer_picard_maps": 0,
     }, "B2y post-attempt freeze validation differs")
+    require(data.get("postmortem_wrapper_repair") == {
+        "status": "PASS",
+        "scope": (
+            "future-validation-harness-only-not-used-by-unique-b2y-attempt"
+        ),
+        "wrapper_sha256": (
+            "898b94fe1d546b5b9ac682a1ea91baa75bf627f1ace9f5bc4599d055c79f640a"
+        ),
+        "absolute_wall_deadline_extended": False,
+        "esrch_exit_reconciliation": (
+            "process.wait timeout equals only the remaining original "
+            "hard-deadline budget"
+        ),
+        "cleanup": (
+            "immediate SIGKILL, idempotent, non-masking, conservative "
+            "EPERM classification"
+        ),
+        "directed_and_synthetic_tests": 91,
+        "real_short_non_dragon_children": 1,
+        "default_off_compile_and_link": "PASS",
+        "independent_code_audit": "PASS",
+        "dragon_executions": 0,
+        "spotcloser64_executions": 0,
+        "axial_solves": 0,
+        "outer_picard_maps": 0,
+        "empirical_or_model_parameters_added": 0,
+        "scientific_reclassification_of_unique_attempt": False,
+    }, "B2y postmortem wrapper repair record differs")
     attempt = data.get("attempt_freeze", {})
     required_attempt = {
         "authorization": "consumed",
@@ -414,6 +442,7 @@ def check_runner(text: str) -> None:
         'git -C "$ROOT" show "$EXECUTION_SNAPSHOT_COMMIT:$path"',
         'verify_execution_snapshot',
         'RECEIPT_STATE=PENDING-ATTEMPT-FREEZE',
+        "count_exact 1 '^Ran 91 tests in [0-9.]+s$'",
     )
     for fragment in snapshot_fragments:
         require(packed(fragment) in code,
@@ -869,16 +898,24 @@ def check_bounded(text: str) -> None:
 
     code = packed(text)
     required_fragments = (
+        "IMPORTERRNO",
         "RESOURCE.SETRLIMIT(RESOURCE.RLIMIT_CPU",
         "RESOURCE.SETRLIMIT(RESOURCE.RLIMIT_FSIZE",
         "RESOURCE.SETRLIMIT(RESOURCE.RLIMIT_CORE",
         "PROCESS_RSS_BYTES(PROCESS.PID)",
         "OS.KILLPG(PROCESS.PID,SIGNAL.SIGKILL)",
+        "OS.KILL(PROCESS.PID,SIGNAL.SIGKILL)",
+        "CLASSCLEANUPSTATE:",
+        "DEFGROUP_CENSUS(",
+        "DEFFAIL_AFTER_CLEANUP(",
         "DEFKILL_GROUP_AT_HARD_DEADLINE(",
+        "DEFREAP_ESRCH_EXIT(",
         'HARD_DEADLINE=START+PROFILE["WALL_SECONDS"]',
         "REMAINING=HARD_DEADLINE-TIME.MONOTONIC()",
         "IFREMAINING<=0:",
-        "KILL_GROUP_AT_HARD_DEADLINE(PROCESS)",
+        "PROCESS.WAIT(TIMEOUT=REMAINING)",
+        "CENSUS_ERROR.ERRNO==ERRNO.ESRCH",
+        "KILL_GROUP_AT_HARD_DEADLINE(PROCESS,CLEANUP_STATE)",
         "TIME.SLEEP(MIN(0.05,REMAINING))",
         '"OMP_NUM_THREADS":"1"',
         '"OPENBLAS_NUM_THREADS":"1"',
@@ -888,8 +925,9 @@ def check_bounded(text: str) -> None:
         '"POSTERIOR":"INVALID-CLOSED-EVIDENCE"',
         "MANAGED_SIGNALS=(SIGNAL.SIGHUP,SIGNAL.SIGINT,SIGNAL.SIGTERM)",
         "EXCEPTMANAGEDINTERRUPTIONASINTERRUPTION:",
-        "EXCEPTBASEEXCEPTION:",
-        "TERMINATE_GROUP(PROCESS)",
+        "EXCEPTBASEEXCEPTIONASPRIMARY_ERROR:",
+        "TERMINATE_GROUP(PROCESS,CLEANUP_STATE)",
+        "PRIMARY_ERROR.ADD_NOTE(",
         "SIGNAL.SIGNAL(SIGNAL_NUMBER,SIGNAL.SIG_IGN)",
         "FINALLY:",
     )
@@ -899,32 +937,64 @@ def check_bounded(text: str) -> None:
     hard_start = text.index("def kill_group_at_hard_deadline(")
     hard_stop = text.index("\n\nclass ProcTaskInfo", hard_start)
     hard_kill = packed(text[hard_start:hard_stop])
-    require("TERMINATE_GROUP(PROCESS)" in hard_kill,
+    require("TERMINATE_GROUP(PROCESS,STATE)" in hard_kill,
             "B2y hard deadline does not use immediate group termination")
     require("SIGNAL.SIGTERM" not in hard_kill and
+            "TIME.SLEEP" not in hard_kill and
             "TERM_GRACE_SECONDS" not in hard_kill,
             "B2y hard deadline includes a grace interval")
     terminate_start = text.index("def terminate_group(")
-    terminate_stop = text.index("\n\ndef kill_group_at_hard_deadline", terminate_start)
+    terminate_stop = text.index("\n\ndef fail_after_cleanup", terminate_start)
     terminate = packed(text[terminate_start:terminate_stop])
     require("SIGNAL.SIGKILL" in terminate,
             "B2y failure cleanup does not immediately kill its process group")
-    require("SIGNAL.SIGTERM" not in terminate and
+    require("IFSTATE.ATTEMPTED:" in terminate and
+            "RETURNSTATE.OUTCOME" in terminate,
+            "B2y failure cleanup is not idempotent")
+    require(terminate.index("STATE.ATTEMPTED=TRUE") <
+            terminate.index("OS.KILLPG(PROCESS.PID,SIGNAL.SIGKILL)"),
+            "B2y cleanup state is not fixed before its first signal")
+    require("EXCEPTPROCESSLOOKUPERROR:" in terminate and
+            "EXCEPTPERMISSIONERROR:" in terminate and
+            "OS.KILL(PROCESS.PID,SIGNAL.SIGKILL)" in terminate,
+            "B2y cleanup does not classify ESRCH/EPERM safely")
+    require("FAIL(" not in terminate and
+            "RAISE" not in terminate and
+            "SIGNAL.SIGTERM" not in terminate and
             "TERM_GRACE_SECONDS" not in terminate and
             "TIME.SLEEP" not in terminate,
-            "B2y failure cleanup contains a post-failure grace interval")
-    require(text.count("terminate_group(process)") == 7,
-            "B2y immediate group-termination call inventory differs")
-    require("process.wait(timeout=" not in text and
-            "EXIT_CENSUS_GRACE_SECONDS" not in text,
-            "B2y failure path waits before immediate group termination")
-    timeout = packed(
-        "if remaining <= 0:\n"
-        "    kill_group_at_hard_deadline(process)\n"
-        "    fail(f\"wall timeout; {resource_class}\")"
-    )
-    require(timeout in code,
-            "B2y wall timeout is not an immediate process-group kill")
+            "B2y cleanup can throw or contains a computation grace interval")
+    reap_start = text.index("def reap_esrch_exit(")
+    reap_stop = text.index("\n\ndef wait_bounded", reap_start)
+    reap = packed(text[reap_start:reap_stop])
+    require("REMAINING=HARD_DEADLINE-TIME.MONOTONIC()" in reap and
+            "IFREMAINING<=0:RETURNNONE" in reap and
+            "PROCESS.WAIT(TIMEOUT=REMAINING)" in reap and
+            "EXCEPTSUBPROCESS.TIMEOUTEXPIRED:RETURNNONE" in reap,
+            "B2y ESRCH exit reconciliation exceeds its exact contract")
+    wait_timeout_calls = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+            continue
+        if node.func.attr != "wait":
+            continue
+        timeout_keywords = [keyword for keyword in node.keywords
+                            if keyword.arg == "timeout"]
+        if timeout_keywords:
+            wait_timeout_calls.append(timeout_keywords[0].value)
+    require(len(wait_timeout_calls) == 1 and
+            isinstance(wait_timeout_calls[0], ast.Name) and
+            wait_timeout_calls[0].id == "remaining",
+            "B2y exit reconciliation timeout is not the deadline remainder")
+    require("EXIT_CENSUS_GRACE_SECONDS" not in text and
+            "remaining +" not in text and "remaining+" not in text,
+            "B2y wrapper adds an exit grace beyond the absolute deadline")
+    base_start = text.index("except BaseException as primary_error:")
+    base_stop = text.index("\n    finally:", base_start)
+    base = packed(text[base_start:base_stop])
+    require("TERMINATE_GROUP(PROCESS,CLEANUP_STATE)" in base and
+            "PRIMARY_ERROR.ADD_NOTE(" in base and base.endswith("RAISE"),
+            "B2y BaseException cleanup can mask the primary failure")
     require(len(re.findall(
         r'(?m)^\s*hard_deadline\s*=\s*start\s*\+\s*'
         r'profile\["wall_seconds"\]\s*$',

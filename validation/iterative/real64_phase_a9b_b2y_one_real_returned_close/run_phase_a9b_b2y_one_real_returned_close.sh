@@ -435,7 +435,7 @@ then
   sed -n '1,300p' "$BUILD_DIR/mutations.log" >&2
   fail "B2y mutation suite rejected"
 fi
-count_exact 1 '^Ran 81 tests in [0-9.]+s$' "$BUILD_DIR/mutations.log"
+count_exact 1 '^Ran 91 tests in [0-9.]+s$' "$BUILD_DIR/mutations.log"
 count_exact 1 '^OK$' "$BUILD_DIR/mutations.log"
 
 for source in SPOR64_B2C SPOR64_B2B SPOR64_B2K SPOR64_B2N \

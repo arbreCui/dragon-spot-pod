@@ -3,13 +3,51 @@
 
 from __future__ import annotations
 
+import errno
+import importlib.util
 import re
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 import check_phase_a9b_b2y_one_real_returned_close as contract
+
+
+BOUNDED_SPEC = importlib.util.spec_from_file_location(
+    "spot_b2y_bounded_runtime", contract.BOUNDED
+)
+if BOUNDED_SPEC is None or BOUNDED_SPEC.loader is None:
+    raise RuntimeError("cannot load bounded B2y helper")
+bounded_runtime = importlib.util.module_from_spec(BOUNDED_SPEC)
+BOUNDED_SPEC.loader.exec_module(bounded_runtime)
+
+
+class FakeProcess:
+    def __init__(
+        self,
+        polls: list[int | None],
+        wait_result: int = 0,
+        wait_error: BaseException | None = None,
+    ) -> None:
+        self.pid = 424242
+        self.polls = list(polls)
+        self.last_poll = self.polls[-1] if self.polls else None
+        self.wait_result = wait_result
+        self.wait_error = wait_error
+        self.wait_calls: list[float | None] = []
+
+    def poll(self) -> int | None:
+        if self.polls:
+            self.last_poll = self.polls.pop(0)
+        return self.last_poll
+
+    def wait(self, timeout: float | None = None) -> int:
+        self.wait_calls.append(timeout)
+        if self.wait_error is not None:
+            raise self.wait_error
+        return self.wait_result
 
 
 def replace_once(text: str, old: str, new: str) -> str:
@@ -197,12 +235,13 @@ class B2YContractMutations(unittest.TestCase):
 
     def test_23_bounded_rejects_missing_sigkill(self) -> None:
         start = self.bounded.index("def terminate_group(")
-        stop = self.bounded.index("\n\ndef kill_group_at_hard_deadline", start)
+        stop = self.bounded.index("\n\ndef fail_after_cleanup", start)
         block = self.bounded[start:stop]
-        self.assertEqual(block.count("signal.SIGKILL"), 1)
+        anchor = "os.killpg(process.pid, signal.SIGKILL)"
+        self.assertEqual(block.count(anchor), 1)
         changed = (
             self.bounded[:start]
-            + block.replace("signal.SIGKILL", "signal.SIGTERM", 1)
+            + block.replace(anchor, "os.killpg(process.pid, signal.SIGTERM)", 1)
             + self.bounded[stop:]
         )
         self.reject_bounded(changed)
@@ -342,7 +381,9 @@ class B2YContractMutations(unittest.TestCase):
 
     def test_45_bounded_rejects_missing_exception_cleanup(self) -> None:
         self.reject_bounded(replace_once(
-            self.bounded, "except BaseException:", "except RuntimeError:"
+            self.bounded,
+            "except BaseException as primary_error:",
+            "except RuntimeError as primary_error:",
         ))
 
     def test_46_runner_rejects_changed_a9_module_hash(self) -> None:
@@ -540,10 +581,8 @@ class B2YContractMutations(unittest.TestCase):
     def test_69_bounded_rejects_grace_after_hard_deadline(self) -> None:
         self.reject_bounded(replace_once(
             self.bounded,
-            "kill_group_at_hard_deadline(process)\n"
-            "            fail(f\"wall timeout; {resource_class}\")",
-            "terminate_group(process)\n"
-            "            fail(f\"wall timeout; {resource_class}\")",
+            "return terminate_group(process, state)",
+            "time.sleep(0.1)\n    return terminate_group(process, state)",
         ))
 
     def test_70_bounded_rejects_late_absolute_deadline(self) -> None:
@@ -555,7 +594,7 @@ class B2YContractMutations(unittest.TestCase):
 
     def test_71_bounded_rejects_failure_cleanup_grace(self) -> None:
         start = self.bounded.index("def terminate_group(")
-        stop = self.bounded.index("\n\ndef kill_group_at_hard_deadline", start)
+        stop = self.bounded.index("\n\ndef fail_after_cleanup", start)
         block = self.bounded[start:stop]
         changed_block = block.replace(
             "os.killpg(process.pid, signal.SIGKILL)",
@@ -568,17 +607,12 @@ class B2YContractMutations(unittest.TestCase):
             self.bounded[:start] + changed_block + self.bounded[stop:]
         )
 
-    def test_72_bounded_rejects_census_wait_before_kill(self) -> None:
-        anchor = (
-            "            terminate_group(process)\n"
-            "            fail(f\"RSS census failed; {resource_class}\")"
-        )
-        replacement = (
-            "            process.wait(timeout=0.1)\n"
-            "            terminate_group(process)\n"
-            "            fail(f\"RSS census failed; {resource_class}\")"
-        )
-        self.reject_bounded(replace_once(self.bounded, anchor, replacement))
+    def test_72_bounded_rejects_exit_wait_beyond_deadline(self) -> None:
+        self.reject_bounded(replace_once(
+            self.bounded,
+            "return process.wait(timeout=remaining)",
+            "return process.wait(timeout=remaining + 0.1)",
+        ))
 
     def test_73_attempt_rejects_success_classification(self) -> None:
         self.reject_attempt_result(replace_once(
@@ -633,6 +667,158 @@ class B2YContractMutations(unittest.TestCase):
             'future B2y activation is forbidden" ;;',
             '1) ;;',
         ))
+
+    def test_81_bounded_rejects_non_esrch_exit_reconciliation(self) -> None:
+        self.reject_bounded(replace_once(
+            self.bounded,
+            "census_error.errno == errno.ESRCH",
+            "census_error.errno == errno.EPERM",
+        ))
+
+    def test_82_bounded_rejects_missing_eperm_cleanup(self) -> None:
+        self.reject_bounded(replace_once(
+            self.bounded,
+            "except PermissionError:\n        try:\n            os.kill(",
+            "except RuntimeError:\n        try:\n            os.kill(",
+        ))
+
+    def test_83_bounded_rejects_nonidempotent_cleanup(self) -> None:
+        self.reject_bounded(replace_once(
+            self.bounded,
+            "if state.attempted:\n        return state.outcome",
+            "if False:\n        return state.outcome",
+        ))
+
+    def test_84_esrch_exit_race_reaps_without_kill(self) -> None:
+        process = FakeProcess([None, None], wait_result=0)
+        state = bounded_runtime.CleanupState()
+        profile = {"rss_bytes": 1024, "log_bytes": 1024}
+        with mock.patch.object(
+            bounded_runtime, "process_rss_bytes",
+            side_effect=ProcessLookupError(errno.ESRCH, "gone"),
+        ), mock.patch.object(
+            bounded_runtime.time, "monotonic", return_value=10.0,
+        ), mock.patch.object(bounded_runtime.os, "killpg") as killpg:
+            result = bounded_runtime.wait_bounded(
+                process, profile, Path("unused.log"), "RESOURCE", 20.0, state
+            )
+        self.assertEqual(result, 0)
+        self.assertEqual(process.wait_calls, [10.0])
+        self.assertFalse(state.attempted)
+        killpg.assert_not_called()
+
+    def test_85_deadline_kills_without_exit_wait(self) -> None:
+        process = FakeProcess([None], wait_result=-9)
+        state = bounded_runtime.CleanupState()
+        profile = {"rss_bytes": 1024, "log_bytes": 1024}
+        with mock.patch.object(
+            bounded_runtime.time, "monotonic", return_value=20.0,
+        ), mock.patch.object(
+            bounded_runtime, "group_census", return_value="GROUP-ABSENT",
+        ), mock.patch.object(bounded_runtime.os, "killpg") as killpg:
+            with self.assertRaises(SystemExit) as raised:
+                bounded_runtime.wait_bounded(
+                    process, profile, Path("unused.log"),
+                    "RESOURCE", 20.0, state,
+                )
+        self.assertIn("wall timeout", str(raised.exception))
+        self.assertEqual(process.wait_calls, [None])
+        killpg.assert_called_once_with(process.pid, bounded_runtime.signal.SIGKILL)
+
+    def test_86_non_esrch_census_error_does_not_exit_wait(self) -> None:
+        process = FakeProcess([None, None], wait_result=-9)
+        state = bounded_runtime.CleanupState()
+        profile = {"rss_bytes": 1024, "log_bytes": 1024}
+        with mock.patch.object(
+            bounded_runtime, "process_rss_bytes",
+            side_effect=OSError(errno.EIO, "census"),
+        ), mock.patch.object(
+            bounded_runtime.time, "monotonic", return_value=10.0,
+        ), mock.patch.object(
+            bounded_runtime, "group_census", return_value="GROUP-ABSENT",
+        ), mock.patch.object(bounded_runtime.os, "killpg"):
+            with self.assertRaises(SystemExit) as raised:
+                bounded_runtime.wait_bounded(
+                    process, profile, Path("unused.log"),
+                    "RESOURCE", 20.0, state,
+                )
+        self.assertIn("RSS census failed", str(raised.exception))
+        self.assertEqual(process.wait_calls, [None])
+
+    def test_87_esrch_cleanup_is_idempotent(self) -> None:
+        process = FakeProcess([None], wait_result=0)
+        state = bounded_runtime.CleanupState()
+        with mock.patch.object(
+            bounded_runtime.os, "killpg",
+            side_effect=ProcessLookupError(errno.ESRCH, "gone"),
+        ) as killpg:
+            first = bounded_runtime.terminate_group(process, state)
+            second = bounded_runtime.terminate_group(process, state)
+        self.assertEqual(first, "GROUP-ABSENT")
+        self.assertEqual(second, first)
+        self.assertEqual(killpg.call_count, 1)
+
+    def test_88_eperm_cleanup_is_unverified_and_idempotent(self) -> None:
+        process = FakeProcess([None], wait_result=0)
+        state = bounded_runtime.CleanupState()
+        permission = PermissionError(errno.EPERM, "not permitted")
+        with mock.patch.object(
+            bounded_runtime.os, "killpg",
+            side_effect=[permission, permission],
+        ) as killpg, mock.patch.object(
+            bounded_runtime.os, "kill", side_effect=permission,
+        ) as kill_leader:
+            first = bounded_runtime.terminate_group(process, state)
+            second = bounded_runtime.terminate_group(process, state)
+        self.assertEqual(first, "CLEANUP-UNVERIFIED-EPERM")
+        self.assertEqual(second, first)
+        self.assertEqual(killpg.call_count, 2)
+        self.assertEqual(kill_leader.call_count, 1)
+        self.assertEqual(process.wait_calls, [])
+
+    def test_89_real_short_child_exits_without_cleanup(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="spot-b2y-short-child-") as raw:
+            directory = Path(raw)
+            executable = directory / "quick_exit.sh"
+            executable.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            executable.chmod(0o755)
+            log = directory / "quick_exit.log"
+            elapsed = bounded_runtime.run(
+                "posterior", executable, None, log, []
+            )
+            self.assertGreaterEqual(elapsed, 0.0)
+            self.assertEqual(log.read_bytes(), b"")
+
+    def test_90_esrch_wait_timeout_reaches_same_hard_deadline(self) -> None:
+        process = mock.Mock()
+        process.pid = 424242
+        process.poll.side_effect = [None, None]
+        process.wait.side_effect = [
+            subprocess.TimeoutExpired("child", 10.0),
+            -bounded_runtime.signal.SIGKILL,
+        ]
+        state = bounded_runtime.CleanupState()
+        profile = {"rss_bytes": 1024, "log_bytes": 1024}
+        with mock.patch.object(
+            bounded_runtime, "process_rss_bytes",
+            side_effect=ProcessLookupError(errno.ESRCH, "gone"),
+        ), mock.patch.object(
+            bounded_runtime.time, "monotonic",
+            side_effect=[10.0, 10.0, 20.0],
+        ), mock.patch.object(
+            bounded_runtime, "group_census", return_value="GROUP-ABSENT",
+        ), mock.patch.object(bounded_runtime.os, "killpg") as killpg:
+            with self.assertRaises(SystemExit) as raised:
+                bounded_runtime.wait_bounded(
+                    process, profile, Path("unused.log"),
+                    "RESOURCE", 20.0, state,
+                )
+        self.assertIn("wall timeout", str(raised.exception))
+        self.assertEqual(
+            process.wait.call_args_list,
+            [mock.call(timeout=10.0), mock.call()],
+        )
+        killpg.assert_called_once_with(process.pid, bounded_runtime.signal.SIGKILL)
 
 
 if __name__ == "__main__":

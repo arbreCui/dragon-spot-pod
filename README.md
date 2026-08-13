@@ -1545,7 +1545,9 @@ The unique authorization is consumed and **must not be run again**. The
 formal result is `INVALID-RUNTIME-EVIDENCE`, with no accepted `CLOSED/1` and
 no complete Picard map. This does not prove axial physical divergence. The
 executed source bytes are frozen at commit
-`5713f2eba8d267cb7eaaa36155b2888e07f19a32`; the exact status and nonclaims are in
+`5713f2eba8d267cb7eaaa36155b2888e07f19a32`. A postmortem-only wrapper repair
+passes 91 no-Dragon directed/synthetic tests and the default-off compile/link
+gate, but it neither reclassifies nor authorizes a retry. The exact status and nonclaims are in
 [`real64_phase_a9b_b2y_one_real_returned_close/`](validation/iterative/real64_phase_a9b_b2y_one_real_returned_close/README.md).
 
 The alternative three-return design is also checked without Dragon:

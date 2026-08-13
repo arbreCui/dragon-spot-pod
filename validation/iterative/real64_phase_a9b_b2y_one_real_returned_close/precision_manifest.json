@@ -53,6 +53,24 @@
     "axial_solves": 0,
     "outer_picard_maps": 0
   },
+  "postmortem_wrapper_repair": {
+    "status": "PASS",
+    "scope": "future-validation-harness-only-not-used-by-unique-b2y-attempt",
+    "wrapper_sha256": "898b94fe1d546b5b9ac682a1ea91baa75bf627f1ace9f5bc4599d055c79f640a",
+    "absolute_wall_deadline_extended": false,
+    "esrch_exit_reconciliation": "process.wait timeout equals only the remaining original hard-deadline budget",
+    "cleanup": "immediate SIGKILL, idempotent, non-masking, conservative EPERM classification",
+    "directed_and_synthetic_tests": 91,
+    "real_short_non_dragon_children": 1,
+    "default_off_compile_and_link": "PASS",
+    "independent_code_audit": "PASS",
+    "dragon_executions": 0,
+    "spotcloser64_executions": 0,
+    "axial_solves": 0,
+    "outer_picard_maps": 0,
+    "empirical_or_model_parameters_added": 0,
+    "scientific_reclassification_of_unique_attempt": false
+  },
   "activation_count": {
     "dragon_maximum": 1,
     "spotcloser64_calls_maximum": 1,
@@ -176,7 +194,7 @@
     "log_bytes": 67108864,
     "threads": 1,
     "core_bytes": 0,
-    "meaning": "execution safety only; not a physical or convergence criterion; the absolute 80 s close deadline and every earlier failure or managed interruption send immediate SIGKILL to the fresh process group without a grace interval"
+    "meaning": "execution safety only; not a physical or convergence criterion; the absolute 80 s close deadline and every earlier genuine failure or managed interruption send immediate SIGKILL to the fresh process group without a computation grace; proc_pidinfo ESRCH is reconciled only by waiting for the same child within the remaining original deadline"
   },
   "required_runtime_census": {
     "scope": "success-requirement-not-actual-execution",

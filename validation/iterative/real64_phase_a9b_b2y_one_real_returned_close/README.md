@@ -136,6 +136,26 @@ predicate and the production close route was observed to complete. They do
 not substitute for the deleted raw log, retained CLOSED objects or posterior
 evidence, and cannot certify B2y success.
 
+## Postmortem wrapper repair
+
+Only after the execution-era snapshot and invalid-attempt record were frozen,
+the wrapper was repaired for future validation work. On `proc_pidinfo` ESRCH
+it now reconciles the same child with `process.wait(timeout=remaining)`, where
+`remaining` is derived only from the original absolute deadline. It adds no
+exit grace and no new empirical or model parameter. At the deadline, or on
+any other genuine failure, it still immediately sends SIGKILL to the owned
+fresh process group. Cleanup is idempotent; EPERM remains explicitly
+unverified and cannot overwrite the primary failure.
+
+The repaired wrapper has SHA-256
+`898b94fe1d546b5b9ac682a1ea91baa75bf627f1ace9f5bc4599d055c79f640a`.
+Static checks, 91 directed/synthetic tests—including one real millisecond-
+scale non-Dragon child—and the default-off compile/link gate pass with
+Dragon, `SpotCloseR64`, ASM, FLU, axial solve and Picard execution all zero.
+An independent code audit also passed. This repair was not used by the unique
+B2y attempt, does not recover its deleted evidence, does not change its
+classification and does not authorize another activation.
+
 ## Frozen physical generation
 
 The input represents the completed radial work generation.  Before ASM,
