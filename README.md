@@ -177,7 +177,10 @@ obtuse in a non-production height-weighted \(L_2\) diagnostic (cosine
 `-0.1551`, norm ratio `0.7312`), while the production dimensional infinity
 change grows by the factor `1.0932`.  This is not a simple whole-state reverse
 oscillation and does not distinguish physical-map behavior from numerical
-state error.
+state error. Both infinity maxima occur uniquely at plane-list index 1,
+energy-group index 326: the local update changes from
+`+5.8010e-7` to `-6.3417e-7`. This is a localized rebound, not proof of a
+two-cycle.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

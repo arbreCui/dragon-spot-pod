@@ -13,7 +13,8 @@ program check_one_map_xsm
   ! is linked or called.  The one-map modes read five archived XSM objects,
   ! verify the fixed POD package bit for bit, require a live RADIAL-OP change,
   ! and independently recompute the canonical defects.  Direction mode reads
-  ! three frozen canonical states and describes their two stored increments.
+  ! three frozen canonical states, describes their two stored increments,
+  ! and locates the infinity-norm leakage hotspots.
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -788,6 +789,7 @@ contains
   subroutine report_update_directions(x1,x2,x3)
     type(canonical_state), intent(in) :: x1,x2,x3
     integer :: igr,isnap,a,b,nmode,index_a,index_b,index_g,index_l
+    integer :: l_hot_index(2),l_hot_ties(2)
     real(real64) :: a_state_sq(3),a_update_sq(2),a_dot
     real(real64) :: a_delta12_a,a_delta12_b,a_delta23_a,a_delta23_b
     real(real64) :: l_update_sq(2),l_dot,l_delta12,l_delta23
@@ -873,6 +875,22 @@ contains
         (real64_bits(l_infinity(2)) /= &
          real64_bits(x3%saved_defect(3)))) &
       call fail('LEAKAGE INFINITY DEFECT DIFFERS BITWISE.')
+    l_hot_index=0
+    l_hot_ties=0
+    do index_l=1,size(x1%leakage)
+      l_delta12=x2%leakage(index_l)-x1%leakage(index_l)
+      l_delta23=x3%leakage(index_l)-x2%leakage(index_l)
+      if (abs(l_delta12) == l_infinity(1)) then
+        l_hot_ties(1)=l_hot_ties(1)+1
+        if (l_hot_index(1) == 0) l_hot_index(1)=index_l
+      endif
+      if (abs(l_delta23) == l_infinity(2)) then
+        l_hot_ties(2)=l_hot_ties(2)+1
+        if (l_hot_index(2) == 0) l_hot_index(2)=index_l
+      endif
+    enddo
+    if (any(l_hot_index == 0).or.any(l_hot_ties == 0)) &
+      call fail('LEAKAGE INFINITY HOTSPOT NOT FOUND.')
     rho_delta=(/x2%rho-x1%rho,x3%rho-x2%rho/)
 
     write(6,'(A)') 'PICARD-DIRECTION FIXED-SPACE BITWISE PASS'
@@ -928,6 +946,18 @@ contains
       l_infinity(2))
     call write_real64_metric('PICARD-DIRECTION LEAKAGE D_L-RATIO 23/12', &
       l_infinity(2)/l_infinity(1))
+    call report_leakage_hotspot('12',l_hot_index(1),l_hot_ties(1), &
+      x1,x2,x3)
+    call report_leakage_hotspot('23',l_hot_index(2),l_hot_ties(2), &
+      x1,x2,x3)
+    if (any(l_hot_ties > 1)) then
+      write(6,'(A)') &
+        'PICARD-DIRECTION LEAKAGE HOTSPOT LOCATION-NOT-UNIQUE'
+    else if (l_hot_index(1) == l_hot_index(2)) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT SAME-LOCATION'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT MOVED'
+    endif
 
     call write_real64_metric('PICARD-DIRECTION RHO DELTA 12',rho_delta(1))
     call write_real64_metric('PICARD-DIRECTION RHO DELTA 23',rho_delta(2))
@@ -948,6 +978,42 @@ contains
     write(6,'(A)') &
       'PICARD-DIRECTION OUTER-CONVERGENCE NOT-ESTABLISHED'
   end subroutine report_update_directions
+
+
+  subroutine report_leakage_hotspot(label,index_l,ties,x1,x2,x3)
+    character(len=*), intent(in) :: label
+    integer, intent(in) :: index_l,ties
+    type(canonical_state), intent(in) :: x1,x2,x3
+    integer :: igr,isnap
+    real(real64) :: delta12,delta23
+
+    igr=mod(index_l-1,x1%dims(2))+1
+    isnap=(index_l-1)/x1%dims(2)+1
+    delta12=x2%leakage(index_l)-x1%leakage(index_l)
+    delta23=x3%leakage(index_l)-x2%leakage(index_l)
+    write(6,'(A,3(1X,I0))') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' FIRST-PLANE/GROUP/TIES',isnap,igr,ties
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' L1',x1%leakage(index_l))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' L2',x2%leakage(index_l))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' L3',x3%leakage(index_l))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' DELTA12',delta12)
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' DELTA23',delta23)
+    if ((delta12 == 0.0_real64).or.(delta23 == 0.0_real64)) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+        trim(label)//' SIGN ZERO-INVOLVED'
+    else if ((delta12 > 0.0_real64).eqv.(delta23 > 0.0_real64)) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+        trim(label)//' SIGN SAME'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+        trim(label)//' SIGN OPPOSITE'
+    endif
+  end subroutine report_leakage_hotspot
 
 
   subroutine write_real64_metric(label,value)

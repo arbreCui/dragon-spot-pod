@@ -111,7 +111,11 @@ run. A read-only check of the replacement three-state sequence finds that the
 modal update is acute and smaller, whereas the leakage update has a negative
 height-weighted \(L_2\) cosine and a smaller aggregate norm but a 1.0932-times
 larger infinity diagnostic. This does not establish a whole-state oscillation
-or distinguish physical-map behavior from inner-solver state error.
+or distinguish physical-map behavior from inner-solver state error. The two
+infinity maxima are unique at the same coordinate (plane-list index 1,
+energy-group index 326), where the signed update changes from
+`+5.8010e-7` to `-6.3417e-7`. This is a local rebound, not evidence of a
+two-cycle.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

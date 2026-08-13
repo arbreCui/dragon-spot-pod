@@ -129,6 +129,28 @@ defined; both stored \(\rho\) increments are zero.  These three-state
 geometries prove neither convergence nor divergence and cannot separate
 behavior of the physical map from inner-solver state error.
 
+The infinity hotspot is unique in both updates and does not move.  It is at
+plane-list index 1 and energy-group index 326.  At that same coordinate,
+
+\[
+L_1=3.3699741471\times10^{-4},\quad
+L_2=3.3757751225\times10^{-4},\quad
+L_3=3.3694333979\times10^{-4},
+\]
+
+so
+
+\[
+\Delta L_{12}=+5.8009754866\times10^{-7},\qquad
+\Delta L_{23}=-6.3417246565\times10^{-7}.
+\]
+
+The largest coordinate therefore reverses sign and grows in magnitude by
+9.32%.  This is one observed local rebound, not proof of a two-cycle.  Plane 1
+is reported only as the stored list index.  In the frozen axial MACROLIB grid,
+group 326 spans approximately `[1.02101195, 1.03499305] eV`; no physical cause
+is inferred from that energy interval.
+
 The strict read-only reproduction is
 
 ```sh
@@ -158,5 +180,5 @@ The ignored local evidence is split between
 4b543cfd5d2b60727b0358adafe9057bb5859833744a3d58ad2f2d03d6feaf61  state3_axial.xsm
 6d1ac081f17237bdc87e78d1d806c4f6127425e6f453f06a48451b278c1ab921  state3_snapshots.xsm
 0db7dac519f882a1d6102ba00adf8fd102dc00c68aaea346c9dd8067e8715f02  independent_check.log
-ae374a9721eac9e429f6ebfdf45e6235606f39ac5fb3e98c0888387b1607faa2  direction.log
+d1bf1a4462f3097fca7d44e49aa5cbda69e09b46999de0dbebc40d1b615c980d  direction.log
 ```

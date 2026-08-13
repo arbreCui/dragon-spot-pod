@@ -196,7 +196,9 @@ three-state sequence. The modal cosine and update-norm ratio are `+0.4969`
 and `0.4478`. The separate height-weighted leakage \(L_2\) values are
 `-0.1551` and `0.7312`, while the dimensional infinity-change ratio is
 `1.0932`. Thus neither a simple whole-state reversal nor contraction in the
-production leakage quantity is observed. Reproduce the read-only check with
+production leakage quantity is observed. Both infinity maxima are unique at
+plane-list index 1, energy-group index 326; its local update reverses from
+`+5.8010e-7` to `-6.3417e-7`. Reproduce the read-only check with
 
 ```sh
 X3_DIR="$PWD/validation/artifacts/iterative-map3-strict-current" \
