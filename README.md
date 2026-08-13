@@ -176,7 +176,10 @@ Two separately authorized radial attempts at half the inner tolerance, with
 75 s and 120 s bounds, timed out at the same logged point immediately after
 the first-plane `ASM` step and before any solver terminal record. The axial
 solve was not started and no scientific state was produced. These attempts
-do not classify inner convergence or explain the update reversal.
+do not classify inner convergence or explain the update reversal. A short
+print-only trace confirmed that the first-plane FLU solve was active, but its
+inner and outer residuals fluctuated around and above the target through 27
+outer iterations instead of satisfying both strict gates together.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).

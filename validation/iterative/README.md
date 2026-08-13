@@ -179,8 +179,12 @@ Two separately authorized radial attempts toward \(G_{h/2}(x_2)\), bounded
 at 75 s and 120 s, ended at the same logged point immediately after the
 first-plane `ASM` step and before any FLU terminal record. No axial process
 ran and no scientific state was returned. These are timeouts, not an
-inner-convergence classification. The exact boundaries and local-log hashes
-are recorded in
+inner-convergence classification. A separate 30 s trace, changing only the
+temporary FLU print level, confirmed that FLU was active: 27 outer iterations
+were completed, but the printed inner and outer residuals fluctuated around
+and above the target and never satisfied both strict gates together. This is
+not an asymptotic convergence result. Exact values and local-log hashes are
+recorded in
 [map3_current_result.md](map3_current_result.md).
 
 ## Inner-tolerance sensitivity

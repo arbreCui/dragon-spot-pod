@@ -142,8 +142,10 @@ The first radial process reached its 75 s bound. A later, explicitly
 authorized process used the identical deck and inputs with a 120 s bound.
 Both raw logs ended immediately after the first-plane `ASM` step, before any
 `FLU2DR-TERM` record; neither has a normal-end marker or returned scientific
-XSM state. The axial process was never started. The raw-log SHA-256 values
-are
+XSM state. A later verbose trace established that this logged endpoint did
+not mean the process remained in `ASM`: the first-plane FLU solve was active
+but its normal `EDIT 0` mode emitted no progress records. The axial process
+was never started. The raw-log SHA-256 values are
 
 ```text
 c79e5fc514df1fb4f06bfc8b35fa380687ab8240d34e24b88c1ad523e3a6c1dd  radial.log
@@ -153,11 +155,27 @@ c79e5fc514df1fb4f06bfc8b35fa380687ab8240d34e24b88c1ad523e3a6c1dd  radial.log
 They are retained locally under
 `validation/artifacts/x2-half-timeouts/`.
 
+The one 30 s diagnostic trace changed only the temporary FLU print level from
+`EDIT 0` to `EDIT 1` and enabled unbuffered output. It recorded 27 completed
+outer iterations and 35 inner-iteration records in the first plane. The
+printed outer flux residual did not decrease monotonically: it reached
+\(2.49\times10^{-7}\) at outer iteration 23, just below the printed
+\(2.50\times10^{-7}\) target, while the corresponding inner flux residual
+was \(3.46\times10^{-7}\) and its first unconverged group was
+\(2.62\times10^{-7}\). The outer residual then rose again and was
+\(1.35\times10^{-6}\) at iteration 27. Thus the strict inner and outer gates
+were never simultaneously satisfied in the observed interval. The trace has
+SHA-256
+`45e8d191cdc7a76da8a84f88cb9842407466054f21f9c6383db0b00c20934a3b`
+and is retained as `trace_30s.log` in the same local directory.
+
 This outcome is `TIMEOUT / NO SCIENTIFIC RESULT`. Because the process did not
 reach even the first inner-solver terminal record, it is not evidence that
 the \(h/2\) equations converge or fail to converge. It adds no information
-about the cause of the stored update reversal, and it does not change the
-outer-convergence classification. No further attempt was made.
+about the cause of the stored update reversal and does not prove asymptotic
+stagnation, but it rules out an inactive/hung first-plane calculation. It
+does not change the outer-convergence classification. No further attempt was
+made.
 
 The global balance norm was \(3.443536\times10^{-9}\). The separately
 reported maximum Galerkin diagnostic was \(5.84892\times10^{-7}\); it is not
