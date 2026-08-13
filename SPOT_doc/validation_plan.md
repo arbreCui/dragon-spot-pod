@@ -53,9 +53,11 @@ x_{m+1}=G(x_m)
 \]
 
 without relaxation or parameter changes. Report all three defects at every
-step. Classify the observed trajectory as decreasing, stationary,
-oscillatory, or increasing component by component. Do not fit a contraction
-factor and do not retry a failed inner solve.
+step. Classify the defect magnitudes as decreasing, stationary, increasing,
+or nonmonotone component by component. A claim about oscillatory direction
+requires consecutive signed updates under a predeclared physical inner
+product; defect magnitudes alone cannot establish it. Do not fit a
+contraction factor and do not retry a failed inner solve.
 
 If all three defects reach the predeclared outer tolerance, independently
 recompute one final raw map $G(x)-x$. Otherwise report `NOT CONVERGED`; the
@@ -96,6 +98,11 @@ second update reduced all three dimensionless defects, but the third
 increased the leakage and modal defects. The observed direct trajectory is
 nonmonotone; Stage 3 is complete with `OUTER-CONVERGENCE NOT-ESTABLISHED`,
 and \(x_3\) is not accepted as a fixed point.
+
+The frozen consecutive modal increments are obtuse under the fixed
+Gram-height inner product, but this is only stored-update geometry. The inner
+termination record supplies no state-error bound, so the available data do
+not distinguish physical map behavior from numerical contamination.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

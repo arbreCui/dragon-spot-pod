@@ -14,6 +14,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
 sh -n "$ROOT/validation/iterative/run_map2_short.sh"
 sh -n "$ROOT/validation/iterative/run_map3_short.sh"
+sh -n "$ROOT/validation/iterative/run_picard_direction_check.sh"
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 

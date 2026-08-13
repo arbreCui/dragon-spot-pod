@@ -57,10 +57,78 @@ eigenvalue defect remained zero at the stored binary32 eigenvalue precision.
 
 Therefore the observed direct-Picard trajectory is not monotonically
 decreasing. These three updates do not establish whether the rise is caused
-by a noncontractive/oscillatory map component or by the inexact-inner-solve
-floor. The magnitudes of \(D_L\) and the inner stopping tolerance are similar,
-but they are different quantities, so that observation is not an error bound.
+by the map itself or by the inexact-inner-solve floor. In particular,
+\(D_L\) is a dimensional leakage difference, whereas
+the inner stopping tolerance is a normalized successive-iterate gate. They
+cannot be compared numerically, and the inner gate is not a state-error bound.
 No contraction factor is fitted and no convergence claim is made.
+
+## Frozen update-direction diagnostic
+
+After the census, a Ganlib-only checker read the hash-locked \(x_1,x_2,x_3\)
+states without calling Dragon or evaluating another map. It first confirmed
+the fixed canonical layout, basis, Gram matrices and plane heights bit for
+bit, then independently reproduced the saved \(x_1\to x_2\) and
+\(x_2\to x_3\) defects bit for bit.
+
+For the modal increments
+
+\[
+d_{12}^a=a_2-a_1,\qquad d_{23}^a=a_3-a_2,
+\]
+
+the checker used the already-defined fixed-space metric
+
+\[
+\langle u,v\rangle_{HG}
+=\sum_{g,s}H_s u_{s,g}^{T}M_gv_{s,g}.
+\]
+
+It obtained
+
+\[
+\cos_{HG}(d_{12}^a,d_{23}^a)=-0.888850884278291,
+\qquad
+\frac{\|d_{23}^a\|_{HG}}{\|d_{12}^a\|_{HG}}
+=3.212598682168675.
+\]
+
+Thus the two stored modal increments form an obtuse angle and the second is
+larger in the production modal norm. This is a signed geometric observation
+about the frozen canonical states; it does not prove a two-cycle, divergence,
+or a physical oscillatory mode.
+
+For leakage, the production diagnostic remains
+\(D_L=\|\Delta L\|_\infty\), whose successive ratio is
+\(1.093116596427855\). A separate height-weighted \(L_2\) diagnostic used
+
+\[
+\langle u,v\rangle_H=\sum_{s,g}H_su_{s,g}v_{s,g}
+\]
+
+and gave
+
+\[
+\cos_H(d_{12}^L,d_{23}^L)=-0.154123132217496,
+\qquad
+\frac{\|d_{23}^L\|_H}{\|d_{12}^L\|_H}
+=0.735710432283278.
+\]
+
+This leakage angle is explicitly non-production: it supplies signed geometry
+but does not replace \(D_L\). The two \(\rho\) increments are both exactly
+zero at the stored precision, so their direction is undefined. No combined
+angle is formed from \((a,\rho,L)\), whose components have different units
+and metrics.
+
+The current evidence therefore remains
+`INNER-ERROR-BOUND NOT-AVAILABLE`,
+`PHYSICAL-VS-NUMERICAL-CAUSE UNRESOLVED`, and
+`OUTER-CONVERGENCE NOT-ESTABLISHED`. The short read-only reproduction is
+
+```sh
+sh validation/iterative/run_picard_direction_check.sh
+```
 
 The global balance norm was \(3.443536\times10^{-9}\). The separately
 reported maximum Galerkin diagnostic was \(5.84892\times10^{-7}\); it is not

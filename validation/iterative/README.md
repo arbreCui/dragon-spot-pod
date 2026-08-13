@@ -157,6 +157,24 @@ the second update. The direct three-update trajectory is therefore
 nonmonotone and no fixed point is accepted. No \(x_4\) evaluation was run.
 See [map3_current_result.md](map3_current_result.md).
 
+A subsequent no-Dragon check reads only the frozen \(x_1,x_2,x_3\) canonical
+states. It closes both saved defects bit for bit and finds that the two modal
+increments are obtuse in the fixed Gram-height metric, with cosine
+\(-0.8888508843\) and norm ratio \(3.212598682\). The leakage increments are
+also obtuse in a separately labelled, non-production height-weighted
+\(L_2\) diagnostic, with cosine \(-0.1541231322\); the production leakage
+quantity remains \(D_L=\|\Delta L\|_\infty\). The eigenvalue increments are
+both exactly zero at stored precision, so their direction is undefined.
+
+```sh
+sh validation/iterative/run_picard_direction_check.sh
+```
+
+These signed directions describe the stored increments only. Because the
+inner stopping gate supplies no state-error bound, they do not distinguish a
+physical map component from numerical contamination and do not establish
+outer convergence.
+
 ## Inner-tolerance sensitivity
 
 `inner_sensitivity_map.x2m` preserves the Stage-3 initializer tolerance

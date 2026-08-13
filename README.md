@@ -141,7 +141,7 @@ parameter change or automatic retry:
 (1.2812\times10^{-6},\,7.9229\times10^{-4},\,9.2283\times10^{-7}).
 \]
 
-One direct continuation from that returned state also passes:
+Two direct continuations from that returned state also pass:
 
 | map | \(R_\rho\) | \(R_L\) | \(R_a\) |
 |---|---:|---:|---:|
@@ -162,6 +162,16 @@ decreased all three defects, but the third increased both the leakage and
 modal defects. The direct trajectory is therefore nonmonotone and \(x_3\) is
 not accepted as a fixed point. Rank, mesh, angle, inner-tolerance, and
 reference-solution studies remain separate validation questions.
+
+A read-only, no-Dragon check of the frozen \(x_1,x_2,x_3\) states adds signed
+information: the consecutive modal increments are obtuse in the fixed
+Gram-height metric (cosine \(-0.8888508843\)) and the latter modal increment
+has \(3.212598682\) times the norm of the former. This does not identify the
+cause: the inner
+stopping gate is not a state-error bound, so physical map behavior and
+numerical contamination remain unresolved. Exact definitions and the
+separate leakage result are in
+[map3_current_result.md](validation/iterative/map3_current_result.md).
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
