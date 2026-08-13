@@ -1,4 +1,9 @@
-# Three-update direct Picard census
+# Archived legacy-path three-update census
+
+> This file preserves the earlier result obtained before strict-inner return
+> was enforced on the online SPOT radial path.  The current replacement map
+> from the same frozen \(x_2\), including its fresh axial solve and independent
+> check, is recorded in [map3_strict_result.md](map3_strict_result.md).
 
 This records the final predeclared short-census update
 
@@ -253,10 +258,11 @@ axial output. Its local evidence is
 12fcf8d406a72b2b20d98f0d372ff2c4ed1e4e9ae60be18fcbc932def837a77c  state3_radial.xsm
 ```
 
-under `validation/artifacts/iterative-map3-strict-radial/`. This establishes
-the complete online radial half of the strict map only. It does not yet
-produce a new canonical \(x_3\), a Picard defect, or an outer-coupling
-convergence result.
+under `validation/artifacts/iterative-map3-strict-radial/`. At that stage this
+established only the online radial half of the strict map; it did not itself
+produce a new canonical \(x_3\), a Picard defect, or an outer-coupling result.
+The later fresh axial completion is recorded separately in
+[map3_strict_result.md](map3_strict_result.md).
 
 All bounded \(h/2\) attempts remain `TIMEOUT / NO SCIENTIFIC RESULT`. The
 earlier legacy attempts did not reach a strict solver terminal record; the
@@ -294,8 +300,9 @@ d7567e86430436e3008d92bb1c97cc4ee3b610cb89b313a2dd9b62ea010fc0d6  state3_system.
 83bf149a153ad0a463f0af519e72b8043a8f0edfd0dfe672bab3faac4819f888  state3_snapshots.xsm
 ```
 
-## Boundary
+## Boundary of this archived census
 
-The three-update census is complete. A valid \(x_3\) exists, but it is not
-accepted as a fixed point. Blind continuation to \(x_4\) is not justified by
-this census.
+This legacy-path census is complete. Its stored \(x_3\) is not the current
+strict-inner result and must not be reused as such. The replacement strict map
+also fails the leakage component of the outer gate; blind continuation to
+\(x_4\) remains unjustified.

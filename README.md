@@ -131,10 +131,8 @@ make spot-fast
 
 It completes in a few seconds and launches no Dragon transport calculation.
 
-A current real map from one hash-locked input also passes. It used three
-online radial solves and one returned axial solve, with each process bounded
-by a 75-second process timeout and a five-second termination grace, with no
-parameter change or automatic retry:
+An earlier legacy-inner-path census produced three hash-locked updates. It is
+retained as historical evidence:
 
 \[
 (R_\rho,R_L,R_a)=
@@ -150,27 +148,34 @@ Two direct continuations from that returned state also pass:
 | \(x_2\to x_3\) | \(0\) | \(4.3249\times10^{-4}\) | \(2.3252\times10^{-6}\) |
 
 The independent checker reproduced the fixed POD package, canonical states,
-raw defects and restart physics. Details are in
+raw defects and restart physics for those archived objects. Details are in
 [one_map_current_result.md](validation/iterative/one_map_current_result.md)
 and
 [map2_current_result.md](validation/iterative/map2_current_result.md). The
 completed short-census result is in
 [map3_current_result.md](validation/iterative/map3_current_result.md).
 
-Physical outer convergence is **not established**. The second update
-decreased all three defects, but the third increased both the leakage and
-modal defects. The direct trajectory is therefore nonmonotone and \(x_3\) is
-not accepted as a fixed point. Rank, mesh, angle, inner-tolerance, and
-reference-solution studies remain separate validation questions.
+The current replacement evaluation enforces strict inner termination in all
+three online radial plane solves and then performs one fresh axial solve. All
+four numerical solves passed their declared \(5\times10^{-7}\) gates and the
+Ganlib-only independent checker passed. The resulting complete map from the
+same frozen \(x_2\) has
 
-A read-only, no-Dragon check of the frozen \(x_1,x_2,x_3\) states adds signed
-information: the consecutive modal increments are obtuse in the fixed
-Gram-height metric (cosine \(-0.8888508843\)) and the latter modal increment
-has \(3.212598682\) times the norm of the former. This does not identify the
-cause: the inner stopping gate is not a state-error bound, so physical map
-behavior and numerical contamination remain unresolved. Exact definitions
-and the separate leakage result are in
-[map3_current_result.md](validation/iterative/map3_current_result.md).
+\[
+(R_\rho,R_L,R_a)=
+(0,\,4.3252643\times10^{-4},\,3.2409694\times10^{-7}).
+\]
+
+Physical outer convergence is therefore **not established**: \(R_\rho\) and
+\(R_a\) pass, but \(R_L\) is about 865 times the declared outer tolerance.
+The dimensional \(D_L=6.3417247\times10^{-7}\) is diagnostic only and is not
+a fourth stop component. The complete result and immutable local hashes are
+in [map3_strict_result.md](validation/iterative/map3_strict_result.md).
+The old signed-direction result belongs only to the archived legacy \(x_3\)
+and is not used to classify this replacement map.
+
+Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
+separate validation questions.
 
 Two separately authorized radial attempts at half the inner tolerance, with
 75 s and 120 s bounds, timed out at the same logged point immediately after
@@ -183,29 +188,18 @@ outer iterations instead of satisfying both strict gates together. A matched
 trace with FLU variational acceleration disabled still rebounded and did not
 reach the target, so acceleration is not the sole cause.
 
-The follow-up removes one legacy numerical shortcut only from the current
+The follow-up removes one legacy numerical shortcut only from the
 legacy-`FLU2DR` online SPOT radial path: `EINN < 10*EPSINR` can no longer
-return that solve to the outer loop as `NEARLY`; it must reach the declared
-`EPSINR` or the existing iteration cap. No tolerance, relaxation coefficient,
-or fitted parameter was added, and all unrelated FLU paths retain their legacy
-behavior. The seconds-scale static/compile gate passes; no new transport run
-has established convergence. One matched 30-second first-plane trace did
-confirm the intended runtime behavior: the old near-eligible `IN(8)` point
-continued to `IN(17)` and strict inner convergence, and all three completed
-outer iterations reached the declared inner tolerance with zero `NEARLY`
-records. The first plane itself did not finish before the bound, so this is
-branch evidence only and produced no scientific state. The optional REAL64
-solver lane is outside this change and remains disabled by default. A second
-single 30-second trace at the production tolerance `5e-7` then completed the
-first plane strictly in five outer iterations (`EUNK=4.3112e-7`,
-`EINR=2.7558e-7`, `STATE=1`, `NEARLY=0`) and entered plane two. The complete
-three-plane radial solve still did not return before the bound, so no new
-Picard state or convergence claim exists. A following radial-only run with
-the unchanged production deck completed all three planes within its single
-75-second bound. Each plane passed the strict outer and inner FLU gates and
-the radial checks, and Dragon ended normally. This establishes a fresh
-strict radial response from \(x_2\), but not yet a new \(x_3\): its required
-axial solve and independent complete-map check have not been run.
+return the current SPOT solve as `NEARLY`; it must reach the declared
+`EPSINR` or the existing iteration cap. No tolerance, relaxation coefficient
+or fitted parameter was added, and unrelated FLU paths retain their legacy
+behavior. The seconds-scale static/compile gate passes. One bounded radial
+process subsequently completed all three planes strictly, and one bounded
+axial process completed the corresponding fresh map; both ended normally and
+the independent complete-map check passed. This establishes a trustworthy
+raw \(x_3=G_h(x_2)\), but not a Picard fixed point because its leakage defect
+fails the outer gate. The optional REAL64 solver lane remains disabled by
+default.
 
 The validation order is in
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).

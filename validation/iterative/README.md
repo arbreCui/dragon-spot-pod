@@ -151,13 +151,13 @@ stored binary32 precision. This is a decreasing two-step observation, not a
 convergence claim. Exact values, controls, hashes and the development-run
 boundary are in [map2_current_result.md](map2_current_result.md).
 
-The final predeclared census update, \(x_3=G(x_2)\), also passes every inner
-and independent-state check, but its leakage and modal defects increase from
-the second update. The direct three-update trajectory is therefore
-nonmonotone and no fixed point is accepted. No \(x_4\) evaluation was run.
-See [map3_current_result.md](map3_current_result.md).
+The archived final census update, \(x_3=G(x_2)\), used the earlier legacy
+inner-return behavior. Its leakage and modal defects increased from the
+second update. It is preserved in
+[map3_current_result.md](map3_current_result.md), not used as the current
+strict-inner state.
 
-A subsequent no-Dragon check reads only the frozen \(x_1,x_2,x_3\) canonical
+A subsequent no-Dragon check reads only those archived \(x_1,x_2,x_3\) canonical
 states. It closes both saved defects bit for bit and finds that the two modal
 increments are obtuse in the fixed Gram-height metric, with cosine
 \(-0.8888508843\) and norm ratio \(3.212598682\). The leakage increments are
@@ -170,10 +170,26 @@ both exactly zero at stored precision, so their direction is undefined.
 sh validation/iterative/run_picard_direction_check.sh
 ```
 
-These signed directions describe the stored increments only. Because the
+These signed directions describe the archived increments only. Because the
 inner stopping gate supplies no state-error bound, they do not distinguish a
 physical map component from numerical contamination and do not establish
 outer convergence.
+
+The replacement third update enforced strict inner termination in all three
+online radial solves and used their output in one fresh axial solve. All four
+numerical solves reached the declared \(5\times10^{-7}\) gate and ended
+normally. The independent Ganlib-only checker passed, giving
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\,4.3252643\times10^{-4},\,3.2409694\times10^{-7}).
+\]
+
+This is a complete strict raw map, but not a fixed point: the leakage defect
+fails the three-component AND gate by about a factor of 865. The modal defect
+now passes, so the old signed modal-direction result is not transferable to
+the replacement \(x_3\). No \(x_4\) was run. See
+[map3_strict_result.md](map3_strict_result.md).
 
 Two separately authorized radial attempts toward \(G_{h/2}(x_2)\), bounded
 at 75 s and 120 s, ended at the same logged point immediately after the

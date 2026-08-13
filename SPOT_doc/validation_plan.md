@@ -92,17 +92,23 @@ process had a 75 s process timeout with a 5 s termination grace, all four inner
 solves reached strict termination, and an independent Ganlib-only checker
 reproduced the physical state and raw defect.
 
-The predeclared short Stage-3 census continued through \(x_3=G(x_2)\). Both
-continuations pass the same strict inner and independent-state checks. The
-second update reduced all three dimensionless defects, but the third
-increased the leakage and modal defects. The observed direct trajectory is
-nonmonotone; Stage 3 is complete with `OUTER-CONVERGENCE NOT-ESTABLISHED`,
-and \(x_3\) is not accepted as a fixed point.
+The predeclared short Stage-3 census continued through \(x_3=G(x_2)\). The
+earlier third update was archived after its legacy radial inner-return path
+was tightened. Its replacement used three strictly terminated online radial
+solves, one fresh strictly terminated axial solve, and an independent
+Ganlib-only check. The current third defect is
 
-The frozen consecutive modal increments are obtuse under the fixed
-Gram-height inner product, but this is only stored-update geometry. The inner
-termination record supplies no state-error bound, so the available data do
-not distinguish physical map behavior from numerical contamination.
+\[
+(R_\rho,R_L,R_a)=
+(0,\,4.3252643\times10^{-4},\,3.2409694\times10^{-7}).
+\]
+
+The eigenvalue and modal components pass the declared
+\(5\times10^{-7}\) outer gate; leakage fails it by about a factor of 865.
+Stage 3 is therefore complete with `OUTER-CONVERGENCE NOT-ESTABLISHED`, and
+the replacement \(x_3\) is not accepted as a fixed point. No \(x_4\) was
+run. The previous signed-direction result belongs only to the archived
+legacy \(x_3\) and cannot classify the replacement map.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the
