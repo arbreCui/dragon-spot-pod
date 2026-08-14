@@ -214,9 +214,11 @@ direct-Picard contract. The runtime entry is default-off and exits before any
 Dragon or artifact access unless `RUN_MAP4=1` is supplied. One authorized
 activation reached the 75 s radial bound after plane 1 had terminated strictly
 and plane 2 had begun. The wrapper killed the process group; the axial deck was
-not started and no complete radial state or \(x_4\) exists. The scientific stop
-point above is therefore unchanged. Any new activation requires separate
-authorization and is not an automatic retry.
+not started. A separately authorized radial-only run with the identical deck
+and inputs then completed all three planes within a 120 s safety bound; every
+inner and outer terminal passed the unchanged \(5\times10^{-7}\) threshold.
+No axial run has started, so this is a valid radial candidate but not \(x_4\),
+and the scientific stop point above is unchanged.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

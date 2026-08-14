@@ -110,8 +110,10 @@ the replacement \(x_3\) is not accepted as a fixed point. The two map-4 decks
 are prepared from the hash-frozen strict \(x_3\) and separately compile-checked.
 One authorized activation reached its 75 s radial bound after a strictly
 terminated plane 1 and the start of plane 2. Process-group cleanup completed,
-the axial deck was not started, and no complete radial state or \(x_4\) exists.
-This timeout is not a convergence result and there is no automatic retry. A
+and the axial deck was not started. A separately authorized radial-only run
+then used the identical deck and inputs with a 120 s safety bound. All three
+radial planes terminated strictly, producing a valid radial candidate. No
+axial run has started, so no \(x_4\) or Picard convergence result exists. A
 read-only check of the replacement three-state sequence finds that the
 modal update is acute and smaller, whereas the leakage update has a negative
 height-weighted \(L_2\) cosine and a smaller aggregate norm but a 1.0932-times

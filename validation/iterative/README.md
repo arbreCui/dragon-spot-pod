@@ -200,7 +200,27 @@ or \(x_4\) was returned. The partial log SHA-256 is
 `0ff35e7f9e94a63d65b0dd25f63aa1228219449e4f1fd2475d9aa27765d0b229`;
 it is retained locally under `validation/artifacts/iterative-map4-timeout/`.
 This is `INVALID-NO-SCIENTIFIC-RESULT`, not a Picard convergence observation,
-and there is no automatic retry. See
+and there was no automatic retry.
+
+A separately authorized radial-only process then used the same staged hashes
+and deck with a 120 s safety bound. The three `(EUNK,EINR)` pairs were
+`(4.69250011e-7,2.36194211e-7)`,
+`(3.10363447e-7,3.10404261e-7)`, and
+`(3.80275026e-7,4.47654315e-7)`. Thus all six strict terminals passed the
+unchanged `4.99999999e-7` threshold. The listing contains three source and
+balance records, one `MAP4-RADIAL-COMPLETE`, one normal Dragon end, and no
+abnormal marker. Its hashes are
+
+```text
+48c025b8ef68b9000afa6a39d80c5e8a3fbbf17a56701e102b43eea77df6742f  radial.log
+7306e41e812fc6ab9b1bd22753d09878ad92c4b2af1df338ca6fdda15f2d0059  state4_system.xsm
+7a8462328cf356288fe04c8f84175ef1f22ee91122ebf9acb6062937aac34196  state4_radial.xsm
+```
+
+The candidate is retained locally under
+`validation/artifacts/iterative-map4-radial-120s/`. No axial process has
+started, so this is not a complete \(x_4\) and says nothing yet about Picard
+convergence. See
 [map3_strict_result.md](map3_strict_result.md).
 
 The same Ganlib-only direction checker was then applied to the strict
