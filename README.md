@@ -87,10 +87,10 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current result
 
-The fixed rank-1 trajectory has been evaluated through $x_6=G(x_5)$. Each
-accepted map passed the independent fixed-basis, state, source, balance, raw
-defect, and restart checks. The earlier legacy $x_3$ was superseded by the
-strict-inner result shown here.
+The fixed rank-1 trajectory has been evaluated through $x_7=G(x_6)$. Each
+valid map evaluation passed the independent fixed-basis, state, source, raw
+defect and restart checks; balance diagnostics are reported separately. The
+earlier legacy $x_3$ was superseded by the strict-inner result shown here.
 
 | map | $R_\rho$ | $R_L$ | $D_L\;[\mathrm{cm}^{-1}]$ | $R_a$ |
 |---|---:|---:|---:|---:|
@@ -100,10 +100,13 @@ strict-inner result shown here.
 | $x_3\to x_4$ | $0$ | $5.6855251\times10^{-4}$ | $8.3361374\times10^{-7}$ | $1.4817206\times10^{-6}$ |
 | $x_4\to x_5$ | $6.4057635\times10^{-8}$ | $3.1253506\times10^{-4}$ | $4.5823981\times10^{-7}$ | $2.3143260\times10^{-7}$ |
 | $x_5\to x_6$ | $0$ | $2.0941536\times10^{-4}$ | $3.0704541\times10^{-7}$ | $7.5835882\times10^{-7}$ |
+| $x_6\to x_7$ | $6.4057635\times10^{-8}$ | $3.0515094\times10^{-4}$ | $4.4741319\times10^{-7}$ | $1.5063945\times10^{-7}$ |
 
-At the unchanged $5\times10^{-7}$ outer gate, $x_6$ is not converged:
-$R_L$ fails by a factor of 418.83 and $R_a$ fails by a factor of 1.52.
-The components do not show one stable contraction.
+At the unchanged $5\times10^{-7}$ outer gate, x7 is
+`VALID_NOT_MET`: $R_\rho$ and $R_a$ pass, but $R_L$ fails by a factor
+of 610.30. Relative to the preceding $x_5\to x_6$ map defect, $R_L$
+increased by 45.7% while $R_a$ decreased by 80.1%. The components do not
+show one stable contraction.
 
 One leakage-driven Anderson(1) candidate was also passed through the real
 nonlinear map once. Its returned defects were
@@ -140,13 +143,12 @@ The validation plan is
 
 ## Next scientific step
 
-The generic continuation host is implemented and default-off. Its six parent
-objects are role- and hash-locked, and its decision rule is frozen in
+The valid x7 publication is independently checked and hash-receipted. The
+generic continuation host remains default-off; its six x7 parent objects are
+role- and hash-locked, and its decision rule is frozen in
 [validation/iterative/continuation_policy.md](validation/iterative/continuation_policy.md).
-The next action is to authorize exactly one unchanged
-$x_7=G(x_6)$, with no retry, relaxation or parameter change.
 
-That result is classified only as `INVALID_MAP`, `TOLERANCE_MET` or
-`VALID_NOT_MET`. It adds one datum and cannot by itself prove convergence
-or divergence. No $x_8$ starts automatically. Rank, mesh and reference
-studies come only after a reproducible fixed point exists.
+Stop now. A separately authorized $x_8=G(x_7)$ would use the identical map,
+rank, basis and tolerances once, with no retry or parameter change. It would
+end the direct rank-1 census; there is no automatic x9. Rank, mesh and
+reference studies come only after a reproducible fixed point exists.

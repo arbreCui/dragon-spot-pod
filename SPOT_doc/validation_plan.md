@@ -30,9 +30,9 @@ For one frozen input, evaluate $x^+=G(x)$. Require:
 - independently recomputed defects;
 - consistent restart leakage ordering.
 
-Status: PASS for the accepted real-map records through $x_6$. The generic
-continuation host preserves this contract for the next separately authorized
-map.
+Status: PASS for the accepted real-map records through x7. The x7
+classification is `VALID_NOT_MET`; its independent checker and publication
+receipt both pass.
 
 ## 3. Fixed-point iteration
 
@@ -47,11 +47,13 @@ defects. If any inner solve fails its strict terminal, $G(x_m)$ was not
 evaluated and the run fails closed. If all three outer defects do not pass,
 the last state is not a converged solution.
 
-Status: NOT CONVERGED through $x_6$. The current result is
+Status: NOT CONVERGED through x7. The current result is
 
 $$
 (R_\rho,R_L,R_a)=
-(0,\,2.0941536\times10^{-4},\,7.5835882\times10^{-7})
+(6.4057635\times10^{-8},\,
+3.0515094\times10^{-4},\,
+1.5063945\times10^{-7})
 $$
 
 at an outer tolerance of $5\times10^{-7}$.
@@ -60,10 +62,9 @@ A single real leakage-Anderson candidate worsened the leakage and modal
 defects relative to direct $x_6$; it is rejected. No empirical damping or
 untested second Anderson candidate is authorized.
 
-Next: the generic default-off host and its three-way decision rule are frozen.
-Authorize exactly one unchanged $x_7=G(x_6)$, with fixed bounds and no
-retry. This one datum cannot by itself prove convergence or divergence. Do
-not add copied map-specific runners or start $x_8$ automatically.
+Next: stop. If separately authorized, evaluate exactly one unchanged
+$x_8=G(x_7)$, with fixed bounds and no retry. That run ends the direct
+rank-1 census; do not add copied map-specific runners or start x9.
 
 ## 4. Numerical qualification
 

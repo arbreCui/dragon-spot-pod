@@ -24,15 +24,25 @@ superseded by the strict-inner $x_3$.
 | $x_3\to x_4$ | 0 | 5.6855251297e-4 | 8.3361373981e-7 | 1.4817206328e-6 | `b411143` |
 | $x_4\to x_5$ | 6.4057634863e-8 | 3.1253505970e-4 | 4.5823981054e-7 | 2.3143260254e-7 | `ed9e399` |
 | $x_5\to x_6$ | 0 | 2.0941536233e-4 | 3.0704541132e-7 | 7.5835881646e-7 | `46a1209` |
+| $x_6\to x_7$ | 6.4057634863e-8 | 3.0515093508e-4 | 4.4741318561e-7 | 1.5063944615e-7 | `afd9617` |
 
-At $x_6$, $R_L$ fails the outer gate by 418.83 and $R_a$ fails by
-1.52. Therefore the fixed point has not been reached. The zero stored
-$R_\rho$ values mean that the binary32 `K-EFFECTIVE` value did not change;
-they are not exact-arithmetic claims.
+The predeclared x7 classification is `VALID_NOT_MET`. $R_\rho$ and
+$R_a$ pass at 0.128115 and 0.301279 times the tolerance, respectively, but
+$R_L$ fails by a factor of 610.301870. Therefore the fixed point has not
+been reached. Earlier zero $R_\rho$ entries mean only that the stored
+binary32 `K-EFFECTIVE` did not change; they are not exact-arithmetic claims.
 
 The leakage and modal components are nonmonotone and do not share a stable
 observed contraction. This trajectory alone proves neither divergence nor a
-two-cycle.
+two-cycle. Relative to the preceding $x_5\to x_6$ map defect, x7 $R_L$
+and $D_L$ increased by 45.7156% while $R_a$ decreased by 80.1361%; these
+trends do not enter the stopping rule.
+
+The x7 global balance diagnostic is $2.98066\times10^{-9}$. The worst
+relative group diagnostic is $3.23071\times10^{-3}$ at group weight
+$1.58742\times10^{-11}$, and the Galerkin maximum is
+$5.66649\times10^{-7}$. These are reported transparently but are not part
+of the frozen Picard stopping criterion.
 
 ## One Anderson trial
 
@@ -60,10 +70,11 @@ iterate. This single result does not reject Anderson methods in general.
 
 ## Evidence boundary
 
-The fixed-basis package, live radial response, physical source and balance,
-canonical states, raw defects and restart ordering passed their independent
-checks for the accepted maps. This establishes trustworthy evaluations of the
-discrete map $G$; it does not establish:
+The fixed-basis package, live radial response, physical source, canonical
+states, raw defects and restart ordering passed their independent checks for
+the valid map evaluations; balance diagnostics were recorded separately.
+This establishes trustworthy evaluations of the discrete map $G$; it does
+not establish:
 
 - a fixed point;
 - rank-1 adequacy;
@@ -71,15 +82,17 @@ discrete map $G$; it does not establish:
 - accuracy against MPACT, DeCART, nTRACER or a 3D reference.
 
 Full pre-cleanup files and receipts are preserved by Git tag
-`archive-pre-lean-20260814`. The six local objects needed to continue from
-$x_6$ are frozen by role and hash in
+`archive-pre-lean-20260814`. The x7 publication receipt hashes are tracked
+in [x7_result.sha256](x7_result.sha256). Its 443 MB artifact directory
+remains local and Git-ignored. The six local objects needed for a separately
+authorized continuation from x7 are frozen by role and hash in
 [current_parent.tsv](current_parent.tsv).
 
 ## Next decision
 
-The generic continuation host and
-[three-way decision rule](continuation_policy.md) are implemented and
-default-off. The next action is to authorize one unchanged
-$x_7=G(x_6)$, once, with no retry. This adds one datum and cannot alone
-prove convergence or divergence. The host does not start $x_8$ or modify
-the frozen parent.
+Stop after x7. No further map starts automatically. If separately authorized,
+run exactly one unchanged $x_8=G(x_7)$ with the same map, rank, basis,
+tolerances and no retry. That x8 ends the direct rank-1 census; there is no
+automatic x9. If x8 is also `VALID_NOT_MET`, report that the frozen direct
+Picard census did not reach its discrete gate, without inventing a trend
+criterion or tuning a parameter.

@@ -38,6 +38,9 @@ continuation are in
 [iterative/current_parent.tsv](iterative/current_parent.tsv). The predeclared
 three-way decision is in
 [iterative/continuation_policy.md](iterative/continuation_policy.md).
+The valid but unconverged x7 publication hashes are tracked in
+[iterative/x7_result.sha256](iterative/x7_result.sha256); the full artifact
+remains local and Git-ignored, and no x8 is automatic.
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active

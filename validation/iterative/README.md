@@ -20,7 +20,8 @@ generic, default-off continuation host.
 - `current_parent.tsv`: the six role- and hash-locked parent objects.
 - `continuation_policy.md`, `test_continuation_contract.py`: frozen
   decision and static host contract.
-- `current_result.md`: concise current boundary.
+- `current_result.md`, `x7_result.sha256`: concise current boundary and
+  the x7 publication receipt.
 
 ## Fast gate
 
@@ -49,24 +50,28 @@ starts the next map.
 
 ## Current boundary
 
-Direct rank-1 Picard has valid maps through $x_6$, but has not converged.
-The current defects are
+Direct rank-1 Picard has valid maps through x7, but has not converged. The
+current defects are
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(0,\,2.0941536233\times10^{-4},\,
-3.0704541132\times10^{-7}\ \mathrm{cm}^{-1},\,
-7.5835881646\times10^{-7}).
+(6.4057634863\times10^{-8},\,
+3.0515093508\times10^{-4},\,
+4.4741318561\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.5063944615\times10^{-7}).
 $$
+
+The predeclared result is `VALID_NOT_MET`: only $R_L$ fails, at
+610.301870 times the outer tolerance. The x7 publication receipt hashes are
+tracked in [x7_result.sha256](x7_result.sha256); the full artifact remains
+local and Git-ignored.
 
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
-The continuation host and its three-way decision rule are now frozen. The
-next scientific action is a separately authorized, unchanged
-$x_7=G(x_6)$, bounded and without retry. That one datum cannot alone prove
-convergence or divergence. No further numbered deck should be added and no
-$x_8$ is automatic.
+Stop after x7. A separately authorized, unchanged $x_8=G(x_7)$ may be run
+once, bounded and without retry. It ends the direct rank-1 census; no x9 is
+automatic and no trend or tuned parameter is introduced.
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.
