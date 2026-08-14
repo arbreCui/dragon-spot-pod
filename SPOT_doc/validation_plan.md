@@ -112,8 +112,12 @@ One authorized activation reached its 75 s radial bound after a strictly
 terminated plane 1 and the start of plane 2. Process-group cleanup completed,
 and the axial deck was not started. A separately authorized radial-only run
 then used the identical deck and inputs with a 120 s safety bound. All three
-radial planes terminated strictly, producing a valid radial candidate. No
-axial run has started, so no \(x_4\) or Picard convergence result exists. A
+radial planes terminated strictly. A separately authorized axial-only process
+then terminated strictly within 80 s. The independent Ganlib-only checker
+reproduced the complete raw map and defects
+\((R_\rho,R_L,R_a)=(0,5.6855251\times10^{-4},1.4817206\times10^{-6})\).
+Leakage and modal defects fail the unchanged \(5\times10^{-7}\) AND gate, so
+\(x_4\) is not a fixed point. No \(x_5\) has been run. A
 read-only check of the replacement three-state sequence finds that the
 modal update is acute and smaller, whereas the leakage update has a negative
 height-weighted \(L_2\) cosine and a smaller aggregate norm but a 1.0932-times

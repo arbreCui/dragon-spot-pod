@@ -218,9 +218,34 @@ abnormal marker. Its hashes are
 ```
 
 The candidate is retained locally under
-`validation/artifacts/iterative-map4-radial-120s/`. No axial process has
-started, so this is not a complete \(x_4\) and says nothing yet about Picard
-convergence. See
+`validation/artifacts/iterative-map4-radial-120s/`. A separately authorized
+axial-only process then consumed exactly those two radial hashes. Its strict
+terminal was `EUNK=4.40262085e-7`, `EINR=4.40262085e-7`; the listing has one
+balance record, one `MAP4-AXIAL-COMPLETE`, one normal Dragon end, and no
+abnormal marker. The Ganlib-only checker passed POD identity, live radial
+operator change, radial positivity, canonical layout, raw-defect bitwise
+reproduction, and restart ordering. The complete direct map gives
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,5.685525129712410\times10^{-4},\,
+8.336137398146093\times10^{-7}\ {\rm cm}^{-1},\,
+1.481720632843467\times10^{-6}).
+\]
+
+Thus \(R_\rho\) passes, while \(R_L\) and \(R_a\) fail the unchanged
+\(5\times10^{-7}\) gate by factors `1137.1050` and `2.96344`. The axial
+artifacts are retained locally under
+`validation/artifacts/iterative-map4-axial-80s/` with hashes
+
+```text
+ed4c08ebb310e6defe32e534396ca3ac74f39899bf88966dfdf3e0493a9185f9  axial.log
+d2ae9a369fe1e08bcfd0b36cbe3a595670d6e7e11eb8d0b9c0a30292bb6ffb9c  state4_axial.xsm
+c7c90e0475f6653908e7292fadf433f906739af512afc88b0a72564794f2c2d4  state4_snapshots.xsm
+```
+
+This is a complete strict \(x_4=G(x_3)\), but not a fixed point. No \(x_5\)
+has been run. See
 [map3_strict_result.md](map3_strict_result.md).
 
 The same Ganlib-only direction checker was then applied to the strict

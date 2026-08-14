@@ -217,8 +217,17 @@ and plane 2 had begun. The wrapper killed the process group; the axial deck was
 not started. A separately authorized radial-only run with the identical deck
 and inputs then completed all three planes within a 120 s safety bound; every
 inner and outer terminal passed the unchanged \(5\times10^{-7}\) threshold.
-No axial run has started, so this is a valid radial candidate but not \(x_4\),
-and the scientific stop point above is unchanged.
+A separately authorized axial-only process then terminated strictly within its
+80 s bound, and the independent Ganlib-only checker reproduced the complete
+map bitwise. The raw \(x_4=G(x_3)\) defects are
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\,5.6855251\times10^{-4},\,1.4817206\times10^{-6}).
+\]
+
+Leakage and modal defects fail the same three-component AND gate, so \(x_4\)
+is not a fixed point. No \(x_5\) has been run.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.
