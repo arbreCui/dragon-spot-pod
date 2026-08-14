@@ -183,9 +183,13 @@ energy-group index 326: the local update changes from
 two-cycle. A focused raw-XSM balance audit reproduces all 1110 leakage values
 bit for bit. A separate binary64 endpoint decomposition assigns `98.695%` and
 `98.323%` of the hotspot numerator changes to the high-\(z\) face. The
-production denominator's relative change is about 50 times smaller than the
+production denominator's relative change is about 45–50 times smaller than the
 numerator's and has the opposing ratio effect. This locates the contribution
-within the archived balance but does not yet identify a physical cause.
+within the archived balance but does not yet identify a physical cause. The
+high-face split closes bit for bit across the eight track radial indices: all
+eight reverse sign together, while the unique largest index contributes only
+about `51.08%` of the L1 sum. It is therefore an exact multi-region change,
+not a single-region anomaly.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

@@ -210,9 +210,13 @@ The focused follow-up reads the raw axial unknowns and independently closes
 all 1110 canonical leakage values bit for bit. At the common plane-1/group-326
 hotspot, a separate binary64 endpoint decomposition assigns `98.695%` and
 `98.323%` of the two leakage-numerator changes to the high-\(z\) face. The
-production denominator's relative change is about 50 times smaller than the
+production denominator's relative change is about 45–50 times smaller than the
 numerator's and has the opposing ratio effect. This is balance-term
-localization, not a physical-cause or convergence claim.
+localization, not a physical-cause or convergence claim. The high-face radial
+split also closes bit for bit: all eight track regions are exactly nonzero and
+change with one common sign in each update, reversing sign together between
+updates. The unique largest region contributes about `51.08%`; this is an
+exact multi-region, nonuniform change.
 
 ```sh
 SEED_DIR=/absolute/path/to/iterative-seed \

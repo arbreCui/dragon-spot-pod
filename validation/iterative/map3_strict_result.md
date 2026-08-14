@@ -200,6 +200,47 @@ opposes the leakage change rather than drives it.  The directly observable
 binary64 ratio \((|C_{\rm low}|+|C_{\rm high}|)/|N|\) stays between `1.544`
 and `1.549`.
 
+### Radial support of the high-z face change
+
+The same read-only pass further decomposed only the dominant high-\(z\) term,
+
+\[
+H_r=A_rJ_{{\rm high},r},\qquad
+\Delta H_r=H_r^{\rm new}-H_r^{\rm old},\qquad
+\sum_{r=1}^{8}\Delta H_r=\Delta C_{\rm high}.
+\]
+
+The last identity closes bit for bit when accumulated explicitly in track
+radial-index order.  No magnitude threshold is used.
+In the frozen track, plane 1 is floors 1–20 with \(\Delta z=2.5\) cm, so
+this high-\(z\) surface is axial face index 21, 50 cm above the lower boundary.
+
+| track radial index | \(A_r\) (\(\mathrm{cm}^2\)) | \(\Delta H_{r,12}\) | L1 share 12 | \(\Delta H_{r,23}\) | L1 share 23 |
+|---:|---:|---:|---:|---:|---:|
+| 1 | `2.5253135e-1` | `+1.2166366e-18` | `51.0813%` | `-1.3278525e-18` | `51.0810%` |
+| 2 | `1.4451326e-1` | `+7.5787071e-19` | `31.8197%` | `-8.2716100e-19` | `31.8199%` |
+| 3 | `3.3673946e-2` | `+1.4926947e-19` | `6.2672%` | `-1.6291591e-19` | `6.2672%` |
+| 4 | `2.6138989e-2` | `+4.3083503e-20` | `1.8089%` | `-4.7022451e-20` | `1.8089%` |
+| 5 | `7.8417093e-2` | `+3.7227377e-20` | `1.5630%` | `-4.0630460e-20` | `1.5630%` |
+| 6 | `1.5683433e-1` | `+5.5355409e-20` | `2.3241%` | `-6.0416967e-20` | `2.3242%` |
+| 7 | `2.6139024e-1` | `+9.2490687e-20` | `3.8833%` | `-1.0094736e-19` | `3.8833%` |
+| 8 | `3.8013272e-2` | `+2.9830898e-20` | `1.2525%` | `-3.2558211e-20` | `1.2525%` |
+
+All eight contributions are exactly nonzero.  They are all positive for
+\(x_1\to x_2\) and all negative for \(x_2\to x_3\).  Radial index 1 is the
+unique largest contributor in both updates, but it carries only about
+`51.08%` of the L1 sum; indices 1 and 2 together carry about `82.90%`.
+Moreover, \(|\Delta H_{r,23}/\Delta H_{r,12}|\) lies in the narrow reported
+range `1.091413`–`1.091437` for every index.
+
+The strict classification is therefore `EXACT-MULTI-REGION`: the high-face
+pattern reverses coherently across all eight track radial indices and grows
+slightly in magnitude.  It is concentrated in indices 1 and 2 but is not a
+single-region or uniform change.  The track record supplies index and area,
+not a pin/ring/material label, so no stronger geometric name is inferred.
+Here `EXACT-MULTI-REGION` means only that the exact nonzero support has more
+than one index; it is not a magnitude threshold or fitted physical class.
+
 This identifies which archived balance term carries the hotspot change, not
 its physical cause.  It does not establish a two-cycle or outer convergence
 and introduces no model, fitted factor, relaxation coefficient, or fourth
@@ -233,9 +274,10 @@ LOCK="$PWD/validation/iterative/picard_strict_direction_scientific.sha256" \
 It compiles one Ganlib-only checker, verifies all three hashes before and
 after the read, and launches no Dragon process.
 
-The next scientifically valid action is therefore not a blind \(x_4\).  Any
-further run should first be justified by a predeclared test of the leakage
-coupling; no empirical coefficient should be introduced.
+The next scientifically valid action is therefore not a blind \(x_4\).  If
+the cause is pursued further, the smallest no-solve test is the adjacent-floor
+scalar field and signed-current relation at this same high-\(z\) interface;
+no empirical coefficient should be introduced.
 
 ## Hash-frozen local evidence
 
@@ -252,5 +294,5 @@ The ignored local evidence is split between
 6d1ac081f17237bdc87e78d1d806c4f6127425e6f453f06a48451b278c1ab921  state3_snapshots.xsm
 0db7dac519f882a1d6102ba00adf8fd102dc00c68aaea346c9dd8067e8715f02  independent_check.log
 d1bf1a4462f3097fca7d44e49aa5cbda69e09b46999de0dbebc40d1b615c980d  direction.log
-409fae9ddbc5e45341bfce8bd8469b93f22b2ad367de9928c802fe80a1e593bd  leakage_faces.log
+56bd286cf7946a54154401f5755ad55809b798250219d6c7567b81e03fd1acf6  leakage_faces.log
 ```

@@ -118,9 +118,12 @@ energy-group index 326), where the signed update changes from
 two-cycle. A subsequent no-Dragon reconstruction closes all canonical
 leakages bit for bit; a separate binary64 endpoint decomposition traces
 `98.695%` and `98.323%` of the hotspot numerator changes to its high-\(z\)
-face. The production denominator's relative change is about 50 times smaller
+face. The production denominator's relative change is about 45–50 times smaller
 than the numerator's and has the opposing ratio effect. This is provenance of
-the observed rebound, not a physical-cause claim.
+the observed rebound, not a physical-cause claim. A further exact radial split
+finds all eight high-face region contributions nonzero and reversing sign
+together; the unique largest index carries about `51.08%`, so the change is
+multi-region rather than a single-region anomaly.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

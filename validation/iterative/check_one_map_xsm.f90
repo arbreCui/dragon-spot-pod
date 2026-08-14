@@ -16,7 +16,9 @@ program check_one_map_xsm
   ! verify the fixed POD package bit for bit, require a live RADIAL-OP change,
   ! and independently recompute the canonical defects.  Direction mode reads
   ! three frozen canonical states, describes their two stored increments,
-  ! and locates the infinity-norm leakage hotspots.
+  ! and locates the infinity-norm leakage hotspots.  Leakage-face mode also
+  ! rebuilds raw leakage and reports the exact radial support of the dominant
+  ! axial-face change.
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -1070,8 +1072,9 @@ contains
     integer :: i,index0,hot_index(2),hot_ties(2),hot_s,hot_g
     integer, allocatable :: keyflx(:),mat1d(:)
     real(real32), allocatable :: dz(:),area(:)
+    real(real64), allocatable :: high_region(:,:)
     real(real64) :: delta(2),maximum(2)
-    real(real64) :: delta_low,delta_high
+    real(real64) :: delta_low,delta_high,high_total(3)
 
     state_name(1)=x1_name
     state_name(2)=x2_name
@@ -1130,6 +1133,7 @@ contains
     enddo
 
     allocate(keyflx(nreg),mat1d(nfloor),dz(nfloor),area(nreg2d))
+    allocate(high_region(nreg2d,3))
     call require_record(track,'KEYFLX',nreg,1,'LEAKAGE FACE TRACK')
     call require_record(track,'MAT1D',nfloor,1,'LEAKAGE FACE TRACK')
     call require_record(track,'VOL1D',nfloor,2,'LEAKAGE FACE TRACK')
@@ -1152,7 +1156,7 @@ contains
     do i=1,3
       call verify_raw_leakage_and_faces(trim(state_name(i)),states(i), &
         ngrp,nunk,nreg2d,nfloor,nsnap,ll4,keyflx,mat1d,dz,area, &
-        hot_s,hot_g,face(i))
+        hot_s,hot_g,face(i),high_region(:,i))
     enddo
 
     write(6,'(A,3(1X,I0))') &
@@ -1173,20 +1177,23 @@ contains
     delta_high=face(3)%high-face(2)%high
     call write_leakage_face_delta('23',face(2),face(3))
     call write_face_dominance('23',delta_low,delta_high)
+    high_total=(/face(1)%high,face(2)%high,face(3)%high/)
+    call write_high_face_regions(area,high_region,high_total)
     write(6,'(A)') 'LEAKAGE-FACES COMPLETE'
 
-    deallocate(area,dz,mat1d,keyflx)
+    deallocate(high_region,area,dz,mat1d,keyflx)
   end subroutine report_leakage_faces
 
 
   subroutine verify_raw_leakage_and_faces(path,canonical,ng,nun,nr,nz, &
-      ns,l4,key,map,height,area,target_s,target_g,result)
+      ns,l4,key,map,height,area,target_s,target_g,result,high_region)
     character(len=*), intent(in) :: path
     type(canonical_state), intent(in) :: canonical
     integer, intent(in) :: ng,nun,nr,nz,ns,l4,target_s,target_g
     integer, intent(in) :: key(nr*nz),map(nz)
     real(real32), intent(in) :: height(nz),area(nr)
     type(leakage_face_state), intent(out) :: result
+    real(real64), intent(out) :: high_region(nr)
     type(c_ptr) :: root,fluxes
     character(len=12) :: signature
     integer :: state(nstate)
@@ -1194,6 +1201,7 @@ contains
     integer :: first,last,run_s
     real(real32), allocatable :: unknown(:),numerator(:),denominator(:)
     real(real32) :: scalar,difference,term,leakage
+    real(real64) :: face_term
     logical :: target_found
 
     result%low=0.0_real64
@@ -1202,6 +1210,7 @@ contains
     result%numerator=0.0_real32
     result%denominator=0.0_real32
     result%leakage=0.0_real32
+    high_region=0.0_real64
     target_found=.false.
 
     call LCMOP(root,path,2,2,0)
@@ -1281,8 +1290,11 @@ contains
               right_index=l4+(r-1)*(nz+1)+last+1
               result%low=result%low-real(area(r),real64)* &
                 real(unknown(left_index),real64)
-              result%high=result%high+real(area(r),real64)* &
+              face_term=real(area(r),real64)* &
                 real(unknown(right_index),real64)
+              result%high=result%high+face_term
+              ! Retain the same common +z contribution by track radial row.
+              high_region(r)=high_region(r)+face_term
             endif
             first=last+1
           enddo
@@ -1347,6 +1359,84 @@ contains
         ' EQUAL-FACE-MAGNITUDE'
     endif
   end subroutine write_face_dominance
+
+
+  subroutine write_high_face_regions(area,value,high_total)
+    real(real32), intent(in) :: area(:)
+    real(real64), intent(in) :: value(:,:)
+    real(real64), intent(in) :: high_total(3)
+    integer :: r,j,max_r(2),ties(2),nonzero(2),positive(2),negative(2)
+    real(real64) :: delta(size(value,1),2),max_abs(2),sum_abs(2)
+    real(real64) :: signed_sum(2),expected_sum(2)
+
+    if ((size(value,2) /= 3).or.(size(area) /= size(value,1))) &
+      call fail('LEAKAGE HIGH-FACE REGION DIMENSIONS ARE INVALID.')
+    delta(:,1)=value(:,2)-value(:,1)
+    delta(:,2)=value(:,3)-value(:,2)
+    if (any(.not.ieee_is_finite(delta))) &
+      call fail('LEAKAGE HIGH-FACE REGION DELTA IS NON-FINITE.')
+    max_abs=0.0_real64
+    max_r=0
+    ties=0
+    nonzero=0
+    positive=0
+    negative=0
+    sum_abs=0.0_real64
+    signed_sum=0.0_real64
+    expected_sum=(/high_total(2)-high_total(1), &
+      high_total(3)-high_total(2)/)
+    do j=1,2
+      do r=1,size(value,1)
+        signed_sum(j)=signed_sum(j)+delta(r,j)
+        sum_abs(j)=sum_abs(j)+abs(delta(r,j))
+        if (abs(delta(r,j)) > max_abs(j)) max_abs(j)=abs(delta(r,j))
+        if (delta(r,j) /= 0.0_real64) nonzero(j)=nonzero(j)+1
+        if (delta(r,j) > 0.0_real64) positive(j)=positive(j)+1
+        if (delta(r,j) < 0.0_real64) negative(j)=negative(j)+1
+      enddo
+      if (sum_abs(j) <= 0.0_real64) &
+        call fail('LEAKAGE HIGH-FACE REGION UPDATE IS ZERO.')
+      if (real64_bits(signed_sum(j)) /= real64_bits(expected_sum(j))) &
+        call fail('LEAKAGE HIGH-FACE REGION SUM DOES NOT CLOSE BITWISE.')
+      do r=1,size(value,1)
+        if (real64_bits(abs(delta(r,j))) == real64_bits(max_abs(j))) then
+          ties(j)=ties(j)+1
+          if (max_r(j) == 0) max_r(j)=r
+        endif
+      enddo
+    enddo
+
+    write(6,'(A)') &
+      'LEAKAGE-FACES HIGH-Z REGION AREA/DELTA12/DELTA23'
+    do r=1,size(value,1)
+      write(6,'(A,1X,I0,3(1X,ES24.16E3))') &
+        'LEAKAGE-FACES HIGH-Z REGION',r,real(area(r),real64), &
+        delta(r,1),delta(r,2)
+    enddo
+    write(6,'(A,4(1X,I0))') &
+      'LEAKAGE-FACES HIGH-Z MAX-REGION/TIES 12/23', &
+      max_r(1),ties(1),max_r(2),ties(2)
+    write(6,'(A,2(1X,I0))') &
+      'LEAKAGE-FACES HIGH-Z EXACT-NONZERO-REGIONS 12/23',nonzero
+    write(6,'(A,6(1X,I0))') &
+      'LEAKAGE-FACES HIGH-Z POS/NEG/ZERO 12/23', &
+      positive(1),negative(1),size(value,1)-nonzero(1), &
+      positive(2),negative(2),size(value,1)-nonzero(2)
+    write(6,'(A)') 'LEAKAGE-FACES HIGH-Z REGION-SUM BITWISE PASS'
+    if (nonzero(1) == 1) then
+      write(6,'(A)') 'LEAKAGE-FACES HIGH-Z DELTA12 EXACT-SINGLE-REGION'
+    else
+      write(6,'(A)') 'LEAKAGE-FACES HIGH-Z DELTA12 EXACT-MULTI-REGION'
+    endif
+    if (nonzero(2) == 1) then
+      write(6,'(A)') 'LEAKAGE-FACES HIGH-Z DELTA23 EXACT-SINGLE-REGION'
+    else
+      write(6,'(A)') 'LEAKAGE-FACES HIGH-Z DELTA23 EXACT-MULTI-REGION'
+    endif
+    write(6,'(A,2(1X,ES24.16E3))') &
+      'LEAKAGE-FACES HIGH-Z MAX-ABS/L1-SHARE 12/23', &
+      max_abs(1)/sum_abs(1),max_abs(2)/sum_abs(2)
+  end subroutine write_high_face_regions
 
 
   subroutine write_real64_metric(label,value)

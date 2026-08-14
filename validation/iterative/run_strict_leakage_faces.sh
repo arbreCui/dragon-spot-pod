@@ -70,6 +70,18 @@ grep -Fq 'LEAKAGE-FACES DELTA12 HIGH-Z-FACE-DOMINANT' \
   "$WORK/leakage_faces.log"
 grep -Fq 'LEAKAGE-FACES DELTA23 HIGH-Z-FACE-DOMINANT' \
   "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES HIGH-Z MAX-REGION/TIES 12/23 1 1 1 1' \
+  "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES HIGH-Z EXACT-NONZERO-REGIONS 12/23 8 8' \
+  "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES HIGH-Z POS/NEG/ZERO 12/23 8 0 0 0 8 0' \
+  "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES HIGH-Z REGION-SUM BITWISE PASS' \
+  "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES HIGH-Z DELTA12 EXACT-MULTI-REGION' \
+  "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES HIGH-Z DELTA23 EXACT-MULTI-REGION' \
+  "$WORK/leakage_faces.log"
 grep -Fq 'LEAKAGE-FACES COMPLETE' "$WORK/leakage_faces.log"
 
 verify_all
