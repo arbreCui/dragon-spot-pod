@@ -275,12 +275,23 @@ the reconstructed radial feedback field are strictly positive. This is an
 offline modal candidate with no fitted relaxation coefficient, not a new
 accepted complete state, a physical map evaluation, or evidence of
 convergence.
+
 Applying that same coefficient to the separate \((a,\rho,L)\) affine pair
 keeps \(R_\rho\) and \(R_a\) below `5e-7`, although \(R_\rho\) is
 reintroduced from the stored zero residual. Leakage increases by `1.10%` in
 height-weighted \(L_2\) and \(R_L\) rises from `2.0941536e-4` to
 `2.1899623e-4`. The cross-component screen therefore rejects this
 coefficient; no state is written and no Dragon run is justified.
+
+One predeclared leakage-driven Anderson(1) alternative then gives
+`gamma=0.3898692835`. Its separate affine defects are
+`(R_rho,R_L,R_a)=(2.4974104e-8,1.4300849e-4,3.9438538e-7)`;
+height-weighted leakage falls to `0.6329023` and production \(R_L\) to
+`0.6828940` of their current values. All three unchanged screens pass and
+the reconstructed field remains strictly positive. This selects one
+candidate for a future bounded map, although \(R_L\) remains about 286 times
+the gate; it is not convergence and no state or Dragon run has yet been
+produced.
 See `validation/iterative/anderson1_modal_result.md`.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain

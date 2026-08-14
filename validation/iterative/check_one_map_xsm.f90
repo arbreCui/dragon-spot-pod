@@ -859,6 +859,7 @@ contains
     real(real64) :: normal_dot,normal_cosine,min_reconstructed
     real(real64) :: rho_input,rho_candidate,leak_scale
     real(real64) :: leak_h2_current,leak_h2_affine
+    real(real64) :: leak_f4,leak_f5,leak_delta
     real(real64) :: affine_defect(4)
     integer :: reconstructed_count,min_group,min_snapshot,min_region
     integer :: g,s,index_l
@@ -1081,6 +1082,128 @@ contains
       write(6,'(A)') 'ANDERSON1 AFFINE CANONICAL SCREEN PASS'
     else
       write(6,'(A)') 'ANDERSON1 AFFINE CANONICAL SCREEN REJECT'
+    endif
+
+    ! One predeclared alternative: determine the same single coefficient
+    ! from the height-weighted leakage residual, the remaining bottleneck.
+    denominator=0.0_real64
+    numerator=0.0_real64
+    do s=1,x4%dims(3)
+      do g=1,x4%dims(2)
+        index_l=(s-1)*x4%dims(2)+g
+        leak_f4=x5%leakage(index_l)-x4%leakage(index_l)
+        leak_f5=x6%leakage(index_l)-x5%leakage(index_l)
+        leak_delta=leak_f5-leak_f4
+        denominator=denominator+x4%height(s)*leak_delta**2
+        numerator=numerator+x4%height(s)*leak_delta*leak_f5
+      enddo
+    enddo
+    if ((.not.ieee_is_finite(denominator)).or. &
+        (denominator <= 0.0_real64).or. &
+        (.not.ieee_is_finite(numerator))) &
+      call fail('ANDERSON1 LEAKAGE LEAST-SQUARES SYSTEM IS INVALID.')
+    gamma=numerator/denominator
+    weight6=1.0_real64-gamma
+
+    affine_input=gamma*x4%coordinates+weight6*x5%coordinates
+    candidate=gamma*x5%coordinates+weight6*x6%coordinates
+    affine_modal_residual=candidate-affine_input
+    norm_candidate=sqrt(modal_inner_product(x4,candidate,candidate))
+    norm_affine_modal=sqrt(max(0.0_real64, &
+      modal_inner_product(x4,affine_modal_residual,affine_modal_residual)))
+    call check_anderson_modal_positivity(x4,candidate,min_reconstructed, &
+      reconstructed_count,min_group,min_snapshot,min_region)
+
+    rho_input=gamma*x4%rho+weight6*x5%rho
+    rho_candidate=gamma*x5%rho+weight6*x6%rho
+    leak_input=gamma*x4%leakage+weight6*x5%leakage
+    leak_candidate=gamma*x5%leakage+weight6*x6%leakage
+    leak_residual=leak_candidate-leak_input
+    if ((.not.ieee_is_finite(gamma)).or. &
+        (.not.ieee_is_finite(rho_input)).or.(rho_input <= 0.0_real64).or. &
+        (.not.ieee_is_finite(rho_candidate)).or. &
+        (rho_candidate <= 0.0_real64).or. &
+        any(.not.ieee_is_finite(candidate)).or. &
+        any(.not.ieee_is_finite(leak_residual))) &
+      call fail('ANDERSON1 LEAKAGE-DRIVEN CANDIDATE IS INVALID.')
+    affine_defect(1)=abs(rho_candidate-rho_input)
+    affine_defect(3)=maxval(abs(leak_residual))
+    leak_scale=max(maxval(abs(leak_input)),maxval(abs(leak_candidate)))
+    if (leak_scale == 0.0_real64) then
+      if (affine_defect(3) /= 0.0_real64) &
+        call fail('ANDERSON1 LEAKAGE-DRIVEN ZERO-SCALE FAILURE.')
+      affine_defect(2)=0.0_real64
+    else
+      affine_defect(2)=affine_defect(3)/leak_scale
+    endif
+    affine_defect(4)=norm_affine_modal/norm_candidate
+    leak_h2_affine=0.0_real64
+    do s=1,x4%dims(3)
+      do g=1,x4%dims(2)
+        index_l=(s-1)*x4%dims(2)+g
+        leak_h2_affine=leak_h2_affine+x4%height(s)* &
+          leak_residual(index_l)**2
+      enddo
+    enddo
+    leak_h2_affine=sqrt(max(0.0_real64,leak_h2_affine))
+    if (any(.not.ieee_is_finite(affine_defect)).or. &
+        any(affine_defect < 0.0_real64).or. &
+        (.not.ieee_is_finite(leak_h2_affine))) &
+      call fail('ANDERSON1 LEAKAGE-DRIVEN DEFECT IS INVALID.')
+    if (x6%saved_defect(1) < outer_gate) then
+      rho_screen=affine_defect(1) < outer_gate
+    else
+      rho_screen=affine_defect(1) < x6%saved_defect(1)
+    endif
+    if (x6%saved_defect(2) < outer_gate) then
+      leak_screen=affine_defect(2) < outer_gate
+    else
+      leak_screen=affine_defect(2) < x6%saved_defect(2)
+    endif
+    if (x6%saved_defect(4) < outer_gate) then
+      modal_screen=affine_defect(4) < outer_gate
+    else
+      modal_screen=affine_defect(4) < x6%saved_defect(4)
+    endif
+
+    write(6,'(A)') 'ANDERSON1-LEAKAGE METRIC HEIGHT-L2'
+    write(6,'(A)') &
+      'ANDERSON1-LEAKAGE COEFFICIENT LEAST-SQUARES UNCLIPPED'
+    call write_real64_metric('ANDERSON1-LEAKAGE GAMMA WEIGHT-X5',gamma)
+    call write_real64_metric('ANDERSON1-LEAKAGE WEIGHT-X6',weight6)
+    call write_real64_metric('ANDERSON1-LEAKAGE AFFINE R_RHO', &
+      affine_defect(1))
+    call write_real64_metric('ANDERSON1-LEAKAGE AFFINE R_L', &
+      affine_defect(2))
+    call write_real64_metric('ANDERSON1-LEAKAGE AFFINE D_L', &
+      affine_defect(3))
+    call write_real64_metric('ANDERSON1-LEAKAGE AFFINE R_A', &
+      affine_defect(4))
+    call write_real64_metric('ANDERSON1-LEAKAGE H-L2/CURRENT', &
+      leak_h2_affine/leak_h2_current)
+    call write_real64_metric('ANDERSON1-LEAKAGE R_L/CURRENT', &
+      affine_defect(2)/x6%saved_defect(2))
+    call write_real64_metric('ANDERSON1-LEAKAGE RECONSTRUCTED MIN', &
+      min_reconstructed)
+    if (rho_screen) then
+      write(6,'(A)') 'ANDERSON1-LEAKAGE R_RHO SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1-LEAKAGE R_RHO SCREEN FAIL'
+    endif
+    if (leak_screen) then
+      write(6,'(A)') 'ANDERSON1-LEAKAGE R_L SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1-LEAKAGE R_L SCREEN FAIL'
+    endif
+    if (modal_screen) then
+      write(6,'(A)') 'ANDERSON1-LEAKAGE R_A SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1-LEAKAGE R_A SCREEN FAIL'
+    endif
+    if (rho_screen.and.leak_screen.and.modal_screen) then
+      write(6,'(A)') 'ANDERSON1-LEAKAGE CANONICAL SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1-LEAKAGE CANONICAL SCREEN REJECT'
     endif
     write(6,'(A)') 'ANDERSON1 NO CANDIDATE STATE WRITTEN'
     write(6,'(A)') 'ANDERSON1 NO PHYSICAL MAP EVALUATION'

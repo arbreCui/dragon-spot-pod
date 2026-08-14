@@ -403,6 +403,24 @@ unchanged-gate cross-component screen therefore rejects this modal-optimal
 coefficient as a complete trial state. No state is written and no physical
 map is run; this does not establish that Anderson acceleration is generally
 invalid.
+
+The single predeclared follow-up lets the remaining bottleneck determine the
+coefficient through the leakage height-\(L_2\) inner product. It gives
+\(\gamma_L=0.3898692835066931\), without search or clipping, and
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(2.4974104\times10^{-8},\,1.4300849\times10^{-4},\,
+2.0967947\times10^{-7}\ {\rm cm}^{-1},\,3.9438538\times10^{-7}).
+\]
+
+Leakage height-\(L_2\) and production \(R_L\) fall to `0.6329023` and
+`0.6828940` of their current values; all three unchanged screens pass and
+the radial-feedback reconstruction stays strictly positive. This is one
+eligible candidate for a separately authorized bounded map, not a converged
+state or an evaluation of the nonlinear map. No XSM state is written and no
+Dragon process is started by this check.
+
 Full results are in `anderson1_modal_result.md`. Reproduce them with
 
 ```sh

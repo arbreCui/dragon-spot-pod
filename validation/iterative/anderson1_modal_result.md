@@ -1,4 +1,4 @@
-# Offline modal-residual Anderson(1) check
+# Offline Anderson(1) component screens
 
 This check reads the frozen strict \(x_4,x_5,x_6\) states and does not call
 Dragon or write a candidate state. With fixed-basis modal coordinates
@@ -71,6 +71,40 @@ This remains a secant-model diagnostic. It does not evaluate
 \(G(x_A)-x_A\), establish axial balance, or establish convergence. It also
 does not show that Anderson acceleration is generally invalid; it rejects
 only this modal-selected coefficient on these frozen states.
+
+## Single leakage-driven alternative
+
+Because leakage is the only persistent failing component, one predeclared
+alternative determines the coefficient from its height-weighted residual:
+
+\[
+\gamma_L=
+\frac{\langle f_5^L-f_4^L,f_5^L\rangle_H}
+     {\lVert f_5^L-f_4^L\rVert_H^2}
+=0.3898692835066931.
+\]
+
+No coefficient search, clipping, or added tolerance is used. Applying this
+same coefficient to the complete canonical affine pair gives
+
+```text
+R_rho                         2.4974104229e-8
+R_L                           1.4300849401e-4
+D_L                           2.0967946848e-7 cm^-1
+R_a                           3.9438537826e-7
+leakage height-L2/current     0.6329022855
+R_L/current                   0.6828939979
+minimum reconstructed B*a     1.7500053319e-15
+```
+
+All three unchanged component screens pass and the reconstructed field is
+strictly positive. The small positive minimum is not a numerical robustness
+margin and does not establish positivity of the complete axial unknown
+vector. The leakage defect improves but remains far above the
+\(5\times10^{-7}\) convergence gate, by a factor of about 286. This makes
+the coefficient eligible for one separately authorized bounded physical-map
+evaluation; it is not a converged state or evidence that the true nonlinear
+map will improve.
 
 Reproduce the read-only check with
 

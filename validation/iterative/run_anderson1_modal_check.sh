@@ -59,6 +59,14 @@ printf '%s\n' "$RESULT" | grep -Fqx \
   'ANDERSON1 AFFINE R_A SCREEN PASS'
 printf '%s\n' "$RESULT" | grep -Fqx \
   'ANDERSON1 AFFINE CANONICAL SCREEN REJECT'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1-LEAKAGE R_RHO SCREEN PASS'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1-LEAKAGE R_L SCREEN PASS'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1-LEAKAGE R_A SCREEN PASS'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1-LEAKAGE CANONICAL SCREEN PASS'
 
 verify_locked "$X4_DIR" "$X4_NAME"
 verify_locked "$X5_DIR" "$X5_NAME"
