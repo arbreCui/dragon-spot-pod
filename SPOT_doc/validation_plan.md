@@ -96,6 +96,13 @@ Only after a reproducible fixed point exists, vary one choice at a time:
 Rank is accepted only when the self-consistent state and declared observables
 are stable under rank increase. It is never calibrated to a desired answer.
 
+Prequalification diagnostic: the frozen three-snapshot spectra have been
+read without transport. The worst optimal within-group reconstruction error
+is 1.5004% at rank 1 and 0.03408% at rank 2; all groups have numerical rank
+3. This does not qualify rank 2 or identify the cause of Picard failure. It
+only establishes that a later rank-increase study is scientifically
+motivated.
+
 ## 5. Reference validation
 
 Compare the numerically qualified SPOT fixed point with an independent

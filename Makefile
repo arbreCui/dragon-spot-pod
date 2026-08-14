@@ -29,9 +29,11 @@ else
 endif
 all :
 	$(MAKE) -C src
-.PHONY: spot-fast
+.PHONY: spot-fast spot-rank-census
 spot-fast :
 	sh validation/run_fast.sh
+spot-rank-census :
+	sh validation/iterative/run_rank_census.sh
 clean :
 	$(MAKE) clean -C src
 tests :

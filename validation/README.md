@@ -47,6 +47,10 @@ The solver-independent proposal/acceptance boundary and its exact-arithmetic
 manufactured tests are in
 [iterative/nonlinear_solver_contract.md](iterative/nonlinear_solver_contract.md).
 They do not implement or run a real SPOT nonlinear solver.
+The hash-locked real snapshot rank census is in
+[iterative/rank_census_result.md](iterative/rank_census_result.md). It is an
+offline representation diagnostic, not a rank qualification or transport
+calculation.
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active

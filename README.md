@@ -173,3 +173,12 @@ direction yields quotients $0$, $1$ and $4/3$ across three binary32-scale
 perturbations. This establishes a publication-resolution obstruction, not a
 general failure of JFNK. Rank, mesh and reference studies remain downstream
 of a reproducible fixed point.
+
+The frozen real snapshot spectra have also been censused without transport.
+The worst optimal within-group reconstruction error falls from 1.5004% at
+rank 1 to 0.03408% at rank 2, while all 370 groups retain numerical rank 3.
+This is an offline representation diagnostic only: it does not explain the
+Picard result, qualify rank 2 or alter the active basis. Reproduce it with
+`make spot-rank-census` when the local hash-locked basis artifact is present;
+details are in
+[validation/iterative/rank_census_result.md](validation/iterative/rank_census_result.md).

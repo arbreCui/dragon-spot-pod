@@ -19,6 +19,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_continuation_contract.py"
 sh -n "$ROOT/validation/iterative/run_continuation_short.sh"
 sh -n "$ROOT/validation/iterative/run_residual_direction_audit.sh"
+sh -n "$ROOT/validation/iterative/run_rank_census.sh"
 continuation_default=$(RUN_CONTINUATION=0 \
   DRAGON_BIN="$BUILD_DIR/must-not-run" \
   PARENT_MANIFEST="$BUILD_DIR/must-not-read-parent" \
@@ -68,6 +69,12 @@ done
   "$ROOT/validation/iterative/check_one_map_xsm.f90" \
   "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
   -o "$BUILD_DIR/check_one_map_xsm"
+"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
+  -ffp-contract=off -fno-fast-math \
+  -I "$ROOT/Ganlib/src" \
+  "$ROOT/validation/iterative/check_rank_census_xsm.f90" \
+  "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
+  -o "$BUILD_DIR/check_rank_census_xsm"
 "$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
   -fimplicit-none -fcheck=all -ffp-contract=off -fno-fast-math \
   -I "$ROOT/Ganlib/lib/Darwin_arm64/modules" -J "$BUILD_DIR" \

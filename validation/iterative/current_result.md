@@ -144,3 +144,18 @@ binary32-scale perturbations return directional quotients $0$, $1$ and
 $4/3$. This does not prove JFNK impossible; it shows that a production
 finite-difference action needs a new, justified publication-aware secant
 policy before Krylov code or real map calls are meaningful.
+
+## Offline rank diagnostic
+
+The frozen basis reference retains the full three-value singular spectrum in
+every energy group. Its Ganlib-only census gives maximum optimal snapshot-set
+errors of $1.5003974\times10^{-2}$ at rank 1 and
+$3.4084830\times10^{-4}$ at rank 2; all 370 groups have numerical snapshot
+rank 3. Full descriptive results and the input hash are in
+[rank_census_result.md](rank_census_result.md).
+
+This is `DIAGNOSTIC_ONLY`. It shows that rank 1 is not uniformly exact for
+its own offline snapshots and that a second mode greatly reduces their
+spectral tail. It neither explains the failed Picard trajectory nor proves
+that rank 2 will converge or be accurate. No active basis, map or state was
+changed.

@@ -14,6 +14,8 @@ generic, default-off continuation host.
 - `test_picard_control.py`: direct substitution and three-component AND stop.
 - `nonlinear_solver_contract.md`, `test_nonlinear_solver_contract.py`:
   solver-independent acceptance and an exact-Newton synthetic reference.
+- `check_rank_census_xsm.f90`, `run_rank_census.sh`,
+  `rank_census_result.md`: hash-locked real snapshot-spectrum census.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -96,6 +98,14 @@ JFNK implementation and no new transport run are authorized. The minimal
 finite-difference probe now gives quotients $0$, $1$ and $4/3$ for the same
 linear direction under three binary32-scale perturbations. This is a local
 publication-resolution counterexample, not a general rejection of JFNK.
+
+The no-transport rank census is also complete. The frozen basis reference
+retains all three singular values in every group, so rank-1/rank-2 optimal
+snapshot errors were computed without reading the raw 218 MiB snapshots.
+Rank 1 has worst within-group error 1.5004%, while rank 2 has worst error
+0.03408%; all 370 groups have numerical rank 3. This is `DIAGNOSTIC_ONLY` and
+does not attribute Picard failure to rank or authorize a rank change. See
+[rank_census_result.md](rank_census_result.md).
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.
