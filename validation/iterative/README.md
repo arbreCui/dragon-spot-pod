@@ -429,6 +429,15 @@ back to canonical binary64. The largest leakage round-trip change is
 `(2.4974104e-8,1.4301089e-4,2.0968299e-7 cm^-1,3.9438538e-7)`.
 All three outer screens remain passed; no candidate file is written.
 
+The next no-Dragon gate constructs that one candidate only as a temporary
+`TRIAL` pair. It writes the published \((A,\rho,L)\), marks the inherited axial
+`FLUX` as an `X6-RAW-FLUX` carrier, removes the old map defects,
+`SPOT-X-PERP`, and `SPOT-L1-ERR`, and leaves the lagged snapshot `SYSTEM`
+leakage records unchanged. A separate Ganlib checker verifies the fixed POD bundle,
+candidate fields, carrier fluxes, and canonical/snapshot leakage bit for
+bit. The pair is then deleted; no physical map is evaluated. Run it with
+`sh validation/iterative/run_anderson1_trial_check.sh`.
+
 Full results are in `anderson1_modal_result.md`. Reproduce them with
 
 ```sh

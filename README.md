@@ -290,14 +290,23 @@ height-weighted leakage falls to `0.6329023` and production \(R_L\) to
 `0.6828940` of their current values. All three unchanged screens pass and
 the reconstructed field remains strictly positive. This selects one
 candidate for a future bounded map, although \(R_L\) remains about 286 times
-the gate; it is not convergence and no state or Dragon run has yet been
-produced. A subsequent read-only publication audit preserves the common
-binary32 `K-EFFECTIVE`, derives canonical \(\rho\) bit exactly, and rounds
-candidate leakage once through the required binary32 restart representation.
+the gate; it is not convergence, and the selection produced no physical-map
+state or Dragon run. A subsequent read-only publication audit preserves
+the common binary32 `K-EFFECTIVE`, derives canonical \(\rho\) bit exactly,
+and rounds candidate leakage once through the required binary32 restart
+representation.
 The maximum leakage round-trip change is `5.7180464e-11 cm^-1`; the published
 defects are `(R_rho,R_L,R_a)=(2.4974104e-8,1.4301089e-4,3.9438538e-7)`, so
 the same three screens remain passed. This still writes no state and performs
 no physical-map evaluation.
+
+The selected candidate is now also constructible as a temporary, explicitly
+marked `TRIAL` AX/snapshot pair. Its \((A,\rho,L)\) and fixed POD package
+pass an independent bitwise Ganlib audit; copied raw `FLUX` is labelled only
+as an \(x_6\) carrier, old candidate-level defects are absent, and lagged
+`SYSTEM` leakage records remain unchanged. The temporary files are deleted
+after the check, and no Dragon or physical map is run.
+
 See `validation/iterative/anderson1_modal_result.md`.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain

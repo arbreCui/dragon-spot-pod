@@ -133,3 +133,41 @@ sh validation/iterative/run_anderson1_modal_check.sh
 ```
 
 The input hashes are frozen in `anderson1_modal_scientific.sha256`.
+
+## Temporary trial construction
+
+The published candidate can be represented without inventing an axial
+transport solution. A Ganlib-only builder copies the locked \(x_6\) objects,
+then changes only the complete fixed-map inputs:
+
+- axial `SPOT-X-A` is the REAL64 affine candidate;
+- axial `K-EFFECTIVE` and `SPOT-X-RHO` retain their common \(x_5/x_6\)
+  bit patterns;
+- axial `SPOT-X-L` and each snapshot `FLUX/SPOT-LEAK1D` share the exact
+  promoted-binary32 publication;
+- `SPOT-X-STATE=TRIAL` and `SPOT-X-CARR=X6-RAW-FLUX` state explicitly that
+  the copied raw axial `FLUX` and its raw-solution diagnostics are only a
+  carrier, not a newly solved axial field.
+
+The four old map-defect records, old canonical `SPOT-X-PERP`, and old
+snapshot `SPOT-L1-ERR` are removed. The snapshot `SYSTEM/SPOT-LEAK1D`
+records are deliberately preserved: they describe the lagged equations that
+produced the carrier and are rebuilt before any new radial solve. Relabelling
+them as candidate systems would be false.
+
+An independent read-only checker recomputes \(\gamma_L\), checks the fixed POD
+bundle and \((A,\rho,L)\) bit for bit, verifies that the axial and radial raw
+`FLUX` carriers did not change, verifies the canonical/snapshot leakage
+identity, and requires every stale candidate-level diagnostic to be absent.
+The temporary pair is deleted after the check. No Dragon module, assembly,
+transport solve, or physical map is called, so this establishes only a valid
+trial input representation—not \(G(x_A)\), acceptance, or convergence.
+
+Reproduce the seconds-scale construction and audit with
+
+```sh
+sh validation/iterative/run_anderson1_trial_check.sh
+```
+
+Its four immutable inputs are frozen in
+`anderson1_trial_scientific.sha256`.

@@ -19,6 +19,7 @@ sh -n "$ROOT/validation/iterative/run_map3_short.sh"
 sh -n "$ROOT/validation/iterative/run_map4_short.sh"
 sh -n "$ROOT/validation/iterative/run_picard_direction_check.sh"
 sh -n "$ROOT/validation/iterative/run_anderson1_modal_check.sh"
+sh -n "$ROOT/validation/iterative/run_anderson1_trial_check.sh"
 sh -n "$ROOT/validation/iterative/run_strict_leakage_faces.sh"
 map4_default=$(RUN_MAP4=0 \
   DRAGON_BIN="$BUILD_DIR/must-not-run" \
@@ -77,6 +78,16 @@ done
   "$ROOT/validation/iterative/check_one_map_xsm.f90" \
   "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
   -o "$BUILD_DIR/check_one_map_xsm"
+"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
+  -Wno-compare-reals -ffp-contract=off -fno-fast-math \
+  -I "$ROOT/Ganlib/src" -J "$BUILD_DIR" \
+  -c "$ROOT/validation/iterative/prepare_anderson1_trial.f90" \
+  -o "$BUILD_DIR/prepare_anderson1_trial.o"
+"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
+  -Wno-compare-reals -ffp-contract=off -fno-fast-math \
+  -I "$ROOT/Ganlib/src" -J "$BUILD_DIR" \
+  -c "$ROOT/validation/iterative/check_anderson1_trial_xsm.f90" \
+  -o "$BUILD_DIR/check_anderson1_trial_xsm.o"
 
 "$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
   -fimplicit-none -fcheck=all -ffp-contract=off -fno-fast-math \
