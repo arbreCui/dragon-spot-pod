@@ -1,0 +1,77 @@
+****************************************************************
+* One rank-2 sensitivity map, radial half: raw x7 -> response.  *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+
+XSM_FILE PARENT_SNAP :: FILE './parent_snapshots.xsm' ;
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE BASIS_REF :: FILE './basis_reference.xsm' ;
+XSM_FILE PARENT_AX :: FILE './parent_axial.xsm' ;
+XSM_FILE PARENT_R2 :: FILE './rank2_parent_axial.xsm' ;
+
+XSM_FILE SYSTEM_OUT :: FILE './candidate_system.xsm' ;
+XSM_FILE RADIAL_OUT :: FILE './candidate_radial.xsm' ;
+
+LINKED_LIST SNAP TRACK SYSTEM_NEXT ;
+MODULE RECOVER: ASM: SPOPROJ: SPOSTATE: UTL: GREP: END: ;
+PROCEDURE SpotRefFS ;
+
+INTEGER spod_rank := 2 ;
+REAL solver_eps := 5.0E-7 ;
+REAL k_parent ;
+INTEGER fixed_marker fs_count parent_fixb ;
+DOUBLE rbal source_l2 source_max ;
+
+ECHO "CONT-RADIAL-BEGIN" ;
+ECHO "CONT-RADIAL-TOLERANCE" solver_eps ;
+
+* Canonicalize the same raw x7 axial solution in the rank-2 space before
+* any online solve.  The four inherited rank-1 defects are not properties
+* of this re-encoded parent and are removed before it is consumed.
+PARENT_R2 := PARENT_AX ;
+PARENT_R2 := SPOSTATE:
+  PARENT_R2 TRACK_AX BASIS_REF MACROLIB3 :: ;
+PARENT_R2 := UTL: PARENT_R2 ::
+  EDIT 0
+  DEL 'SPOT-X-RRHO'
+  DEL 'SPOT-X-RLEAK'
+  DEL 'SPOT-X-DLEAK'
+  DEL 'SPOT-X-RA' ;
+
+* The parent snapshot archive already contains its returned leakage.
+SNAP := PARENT_SNAP ;
+TRACK := RECOVER: SNAP :: ITEM 3 ;
+GREP: PARENT_R2 :: GETVAL 'K-EFFECTIVE' 1 >>k_parent<< ;
+
+* Reconstruct B_2*a_parent and solve the three frozen-fission equations.
+SNAP := SPOPROJ: SNAP PARENT_R2 TRACK_AX :: FIXB ;
+SNAP := SpotRefFS SNAP TRACK TRACK_f ::
+  <<k_parent>> <<solver_eps>> ;
+
+* Keep the frozen rank-2 package; rebuild only the live radial response.
+SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
+  EDIT 0 SPOD <<spod_rank>> FIXB ;
+GREP: SYSTEM_NEXT ::
+  GETVAL 'SPOT-FIXB' 1 >>fixed_marker<<
+  GETVAL 'SPOT-FS-N' 1 >>fs_count<<
+  GETVAL 'SPOT-RBAL' 1 >>rbal<<
+  GETVAL 'SPOT-Q-L2' 1 >>source_l2<<
+  GETVAL 'SPOT-Q-MAX' 1 >>source_max<< ;
+ECHO "CONT-RADIAL-CONTRACT"
+  fixed_marker fs_count rbal source_l2 source_max ;
+
+* Recompute the same raw parent with the assembled fixed system so both
+* states supplied to SPOXCONV carry exactly the same rank-2 layout.
+PARENT_R2 := SPOSTATE:
+  PARENT_R2 TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+GREP: PARENT_R2 :: GETVAL 'SPOT-X-FIXB' 1 >>parent_fixb<< ;
+ECHO "RANK2-PARENT-CONTRACT" parent_fixb ;
+
+SYSTEM_OUT := SYSTEM_NEXT ;
+RADIAL_OUT := SNAP ;
+
+ECHO "CONT-RADIAL-COMPLETE" ;
+END: ;
+QUIT "LIST" .

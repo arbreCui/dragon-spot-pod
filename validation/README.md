@@ -52,6 +52,14 @@ The hash-locked real snapshot rank census is in
 offline representation diagnostic, not a rank qualification or transport
 calculation.
 
+The default-off rank-2 sensitivity host is frozen and compiles under the fast
+gate.  Its first bounded run completed the radial half.  The host wrapper
+reported a timeout, while the durable axial log establishes only entry into
+`FLU` without a strict terminal or candidate state.  It is `INVALID_MAP`
+(reported reason `TIMEOUT_BEFORE_TERMINAL`), not a convergence or physics
+result; see
+[iterative/rank2_map_attempt_result.md](iterative/rank2_map_attempt_result.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active
 gate. They remain recoverable from Git tag `archive-pre-lean-20260814`.

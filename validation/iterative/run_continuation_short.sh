@@ -22,6 +22,11 @@ fail() {
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 DRAGON_BIN=${DRAGON_BIN:-"$ROOT/bin/Darwin_arm64/Dragon"}
 PARENT_MANIFEST_SOURCE=${PARENT_MANIFEST:-"$ROOT/validation/iterative/current_parent.tsv"}
+POLICY_SOURCE=${CONTINUATION_POLICY_SOURCE:-"$ROOT/validation/iterative/continuation_policy.md"}
+RADIAL_DECK_SOURCE=${RADIAL_DECK_SOURCE:-"$ROOT/validation/iterative/continuation_radial.x2m"}
+AXIAL_DECK_SOURCE=${AXIAL_DECK_SOURCE:-"$ROOT/validation/iterative/continuation_axial.x2m"}
+MAP_PARENT_FILE=${MAP_PARENT_FILE:-parent_axial.xsm}
+CHECKER_MODE=${CHECKER_MODE:-continued}
 GANLIB_LIB=${GANLIB_LIB:-"$ROOT/Ganlib/src/libGanlib.a"}
 GANLIB_MOD=${GANLIB_MOD:-"$ROOT/Ganlib/src"}
 FC=${FC:-gfortran}
@@ -47,6 +52,18 @@ test -f "$GANLIB_LIB" || fail "Ganlib library is missing."
 test -f "$GANLIB_MOD/ganlib.mod" || fail "Ganlib modules are missing."
 test -f "$PARENT_MANIFEST_SOURCE" && test ! -L "$PARENT_MANIFEST_SOURCE" ||
   fail "parent manifest must be a regular non-symlink file."
+for source_file in "$POLICY_SOURCE" "$RADIAL_DECK_SOURCE" "$AXIAL_DECK_SOURCE"
+do
+  test -f "$source_file" && test ! -L "$source_file" ||
+    fail "selected policy and decks must be regular non-symlink files."
+done
+printf '%s\n' "$MAP_PARENT_FILE" |
+  rg -q '^[A-Za-z0-9][A-Za-z0-9._-]*$' ||
+  fail "MAP_PARENT_FILE must be a safe basename."
+case "$CHECKER_MODE" in
+  initial|continued|reencoded) ;;
+  *) fail "CHECKER_MODE must be initial, continued or reencoded." ;;
+esac
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/spot-continuation.XXXXXX")
 HOST_WORK="$WORK/host"
@@ -99,10 +116,12 @@ fi
 LOCK_HELD=1
 
 cp "$PARENT_MANIFEST_SOURCE" "$HOST_WORK/current_parent.tsv"
-cp "$ROOT/validation/iterative/continuation_policy.md" \
-  "$ROOT/validation/iterative/continuation_radial.x2m" \
-  "$ROOT/validation/iterative/continuation_axial.x2m" \
-  "$ROOT/validation/iterative/check_one_map_xsm.f90" \
+cp "$POLICY_SOURCE" "$HOST_WORK/continuation_policy.md"
+cp "$RADIAL_DECK_SOURCE" "$HOST_WORK/continuation_radial.x2m"
+cp "$AXIAL_DECK_SOURCE" "$HOST_WORK/continuation_axial.x2m"
+printf 'checker_mode\t%s\nmap_parent_file\t%s\n' \
+  "$CHECKER_MODE" "$MAP_PARENT_FILE" >"$HOST_WORK/map_configuration.tsv"
+cp "$ROOT/validation/iterative/check_one_map_xsm.f90" \
   "$ROOT/validation/iterative/run_bounded_dragon.py" \
   "$ROOT/validation/iterative/run_continuation_short.sh" \
   "$ROOT/data/SpotRefFS.c2m" "$ROOT/data/SpotPlaneFS.c2m" \
@@ -239,6 +258,11 @@ for file in candidate_system.xsm candidate_radial.xsm
 do
   test -s "$RADIAL_WORK/$file" && test ! -L "$RADIAL_WORK/$file"
 done
+test -s "$RADIAL_WORK/$MAP_PARENT_FILE" &&
+  test ! -L "$RADIAL_WORK/$MAP_PARENT_FILE" ||
+  fail "map parent was not materialized as a regular non-symlink file."
+MAP_PARENT_HASH=$(hash_file "$RADIAL_WORK/$MAP_PARENT_FILE") ||
+  fail "cannot hash the materialized map parent."
 
 for file in initial_axial_track.xsm initial_axial_macrolib.xsm \
   basis_reference.xsm parent_axial.xsm candidate_system.xsm \
@@ -246,6 +270,11 @@ for file in initial_axial_track.xsm initial_axial_macrolib.xsm \
 do
   cp "$RADIAL_WORK/$file" "$AXIAL_WORK/$file"
 done
+if [ "$MAP_PARENT_FILE" != parent_axial.xsm ]; then
+  cp "$RADIAL_WORK/$MAP_PARENT_FILE" "$AXIAL_WORK/$MAP_PARENT_FILE"
+fi
+test "$(hash_file "$AXIAL_WORK/$MAP_PARENT_FILE")" = "$MAP_PARENT_HASH" ||
+  fail "map parent changed while staging the axial half."
 
 echo "SPOT-CONTINUATION AXIAL START: 80 s bound, no retry"
 run_bounded "$AXIAL_WORK/axial.x2m" "$AXIAL_WORK/axial.log" \
@@ -267,12 +296,28 @@ done
 
 (
   cd "$AXIAL_WORK"
-  ./check_one_map_xsm --continued basis_reference.xsm \
-    candidate_system.xsm parent_axial.xsm candidate_axial.xsm \
-    candidate_snapshots.xsm >independent_check.log
+  case "$CHECKER_MODE" in
+    initial)
+      ./check_one_map_xsm basis_reference.xsm candidate_system.xsm \
+        "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+    continued)
+      ./check_one_map_xsm --continued basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+    reencoded)
+      ./check_one_map_xsm --reencoded basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+  esac
 )
 expect_count '^ONE-MAP-XSM COMPLETE$' 1 \
   "$AXIAL_WORK/independent_check.log"
+test "$(hash_file "$AXIAL_WORK/$MAP_PARENT_FILE")" = "$MAP_PARENT_HASH" ||
+  fail "map parent changed during axial solve or independent audit."
 
 verify_hash axial_track "$RADIAL_WORK/initial_axial_track.xsm"
 verify_hash axial_macrolib "$RADIAL_WORK/initial_axial_macrolib.xsm"
@@ -368,8 +413,12 @@ cp "$HOST_WORK/current_parent.tsv" \
   "$HOST_WORK/check_one_map_xsm.f90" \
   "$HOST_WORK/run_bounded_dragon.py" \
   "$HOST_WORK/run_continuation_short.sh" \
+  "$HOST_WORK/map_configuration.tsv" \
   "$PUBLISH_DIR/"
 cp "$WORK/classification.txt" "$PUBLISH_DIR/classification.txt"
+if [ "$MAP_PARENT_FILE" != parent_axial.xsm ]; then
+  cp "$AXIAL_WORK/$MAP_PARENT_FILE" "$PUBLISH_DIR/$MAP_PARENT_FILE"
+fi
 printf '%s  Dragon\n' "$DRAGON_HASH_BEFORE" >"$PUBLISH_DIR/dragon.sha256"
 printf '%s  libGanlib.a\n' "$GANLIB_LIB_HASH_BEFORE" \
   >"$PUBLISH_DIR/ganlib.sha256"
@@ -383,9 +432,12 @@ printf '%s  ganlib.mod\n' "$GANLIB_MOD_HASH_BEFORE" \
     current_parent.tsv continuation_policy.md continuation_radial.x2m \
     continuation_axial.x2m SpotRefFS.c2m SpotPlaneFS.c2m \
     check_one_map_xsm.f90 run_bounded_dragon.py \
-    run_continuation_short.sh classification.txt dragon.sha256 \
+    run_continuation_short.sh map_configuration.tsv classification.txt dragon.sha256 \
     ganlib.sha256 \
     >result.sha256
+  if [ "$MAP_PARENT_FILE" != parent_axial.xsm ]; then
+    shasum -a 256 "$MAP_PARENT_FILE" >>result.sha256
+  fi
   shasum -a 256 -c result.sha256
 )
 test ! -e "$RESULT_DIR" && test ! -L "$RESULT_DIR"

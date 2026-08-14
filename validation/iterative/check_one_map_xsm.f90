@@ -6,6 +6,9 @@ program check_one_map_xsm
   !   check_one_map_xsm --continued basis_reference.xsm \
   !     state2_system.xsm state1_axial.xsm state2_axial.xsm \
   !     state2_snapshots.xsm
+  !   check_one_map_xsm --reencoded basis_reference.xsm \
+  !     state1_system.xsm reencoded_parent.xsm state1_axial.xsm \
+  !     state1_snapshots.xsm
   !   check_one_map_xsm --directions state6_axial.xsm \
   !     state7_axial.xsm state8_axial.xsm
   !
@@ -88,9 +91,10 @@ program check_one_map_xsm
   type(canonical_state) :: previous_state,current_state
   type(canonical_state) :: direction_state(3)
   integer :: i,argument_offset
-  logical :: continued,direction_mode
+  logical :: continued,reencoded,direction_mode
 
   continued=.false.
+  reencoded=.false.
   direction_mode=.false.
   argument_offset=0
   if (command_argument_count() == 4) then
@@ -106,12 +110,18 @@ program check_one_map_xsm
     enddo
   else if (command_argument_count() == 6) then
     call get_command_argument(1,mode)
-    if (trim(mode) /= '--continued') call fail( &
-      'ONLY --continued IS ACCEPTED IN SIX-ARGUMENT MODE.')
-    continued=.true.
+    if (trim(mode) == '--continued') then
+      continued=.true.
+    else if (trim(mode) == '--reencoded') then
+      reencoded=.true.
+    else
+      call fail('ONLY --continued OR --reencoded IS ACCEPTED IN '// &
+        'SIX-ARGUMENT MODE.')
+    endif
     argument_offset=1
   else if (command_argument_count() /= 5) then
-    call fail('EXPECTED [--continued] BASIS, SYSTEM, PREVIOUS, CURRENT, SNAP.')
+    call fail('EXPECTED [--continued|--reencoded] BASIS, SYSTEM, '// &
+      'PREVIOUS, CURRENT, SNAP.')
   endif
   if (.not.direction_mode) then
     do i=1,5
@@ -130,10 +140,10 @@ program check_one_map_xsm
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.true., &
       direction_state(3),'DIRECTION STATE X3')
     call compare_states_and_defects(direction_state(1), &
-      direction_state(2),.true.)
+      direction_state(2),.true.,.false.)
     write(6,'(A)') 'PICARD-DIRECTION MAP12 RAW-DEFECT BITWISE PASS'
     call compare_states_and_defects(direction_state(2), &
-      direction_state(3),.true.)
+      direction_state(3),.true.,.false.)
     write(6,'(A)') 'PICARD-DIRECTION MAP23 RAW-DEFECT BITWISE PASS'
     call report_update_directions(direction_state(1),direction_state(2), &
       direction_state(3))
@@ -150,6 +160,9 @@ program check_one_map_xsm
   if (continued) then
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.true., &
       previous_state,'PREVIOUS CONTINUED STATE')
+  else if (reencoded) then
+    call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
+      previous_state,'REENCODED PARENT STATE')
   else
     call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
       previous_state,'STATE ZERO')
@@ -160,9 +173,12 @@ program check_one_map_xsm
     'PREVIOUS STATE')
   call compare_state_to_system(current_state,current_system, &
     'CURRENT STATE')
-  call compare_states_and_defects(previous_state,current_state,continued)
+  call compare_states_and_defects(previous_state,current_state,continued, &
+    reencoded)
   call check_restart_archive(trim(paths(5)),previous_state,current_state)
 
+  if (reencoded) &
+    write(6,'(A)') 'ONE-MAP-XSM REENCODED-PARENT NO-STALE-DEFECT PASS'
   write(6,'(A)') 'ONE-MAP-XSM POD-PACKAGE BITWISE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RADIAL-OP LIVE-CHANGE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RAW-RADIAL-POSITIVITY PASS'
@@ -264,7 +280,8 @@ contains
       call LCMGET(group_ptr,'NREG2D',nreg0)
       call LCMGET(group_ptr,'NSNAP',nsnap0)
       call LCMGET(group_ptr,'POD-NMODE',nmode0)
-      if ((nreg0 /= 8).or.(nsnap0 /= 3).or.(nmode0 /= 1).or. &
+      if ((nreg0 /= 8).or.(nsnap0 /= 3).or.(nmode0 <= 0).or. &
+          (nmode0 > nsnap0).or. &
           (data%rank_root(g) /= nmode0)) &
         call fail(trim(label)//' INVALID POD DIMENSIONS.')
       if (g == 1) then
@@ -402,7 +419,7 @@ contains
     logical, intent(in) :: expect_saved_defect
     type(canonical_state), intent(out) :: data
     type(c_ptr) :: root
-    integer :: g,ngrp,nsnap,ncoef,total_basis,total_gram
+    integer :: g,ngrp,nsnap,ncoef,expected_ncoef,total_basis,total_gram
 
     call LCMOP(root,path,2,2,0)
     call require_record(root,'SIGNATURE',3,3,owner)
@@ -418,7 +435,7 @@ contains
     nsnap=data%dims(3)
     ncoef=data%dims(4)
     if ((data%dims(1) /= 1).or.(ngrp /= 370).or. &
-        (nsnap /= 3).or.(ncoef /= 1110).or.(data%state(1) /= ngrp)) &
+        (nsnap /= 3).or.(data%state(1) /= ngrp)) &
       call fail(trim(owner)//' INVALID CANONICAL DIMENSIONS.')
 
     allocate(data%rank(ngrp))
@@ -433,7 +450,10 @@ contains
     call LCMGET(root,'SPOT-X-OFF',data%offset)
     call LCMGET(root,'SPOT-X-GOFF',data%gram_offset)
     call LCMGET(root,'SPOT-X-BOFF',data%basis_offset)
-    if (any(data%rank <= 0).or.(data%offset(1) /= 0).or. &
+    if (any(data%rank <= 0).or.any(data%rank > nsnap)) &
+      call fail(trim(owner)//' INVALID CANONICAL LAYOUT.')
+    expected_ncoef=nsnap*sum(data%rank)
+    if ((ncoef /= expected_ncoef).or.(data%offset(1) /= 0).or. &
         (data%gram_offset(1) /= 0).or.(data%basis_offset(1) /= 0).or. &
         (data%offset(ngrp+1) /= ncoef)) &
       call fail(trim(owner)//' INVALID CANONICAL LAYOUT.')
@@ -553,9 +573,10 @@ contains
   end subroutine compare_state_to_system
 
 
-  subroutine compare_states_and_defects(previous,current,continued_mode)
+  subroutine compare_states_and_defects(previous,current,continued_mode, &
+      reencoded_mode)
     type(canonical_state), intent(in) :: previous,current
-    logical, intent(in) :: continued_mode
+    logical, intent(in) :: continued_mode,reencoded_mode
     real(real64) :: recomputed(4)
 
     if ((previous%signature /= 'L_FLUX').or. &
@@ -580,11 +601,18 @@ contains
     if ((previous%norm_id /= current%norm_id).or. &
         (current%norm_id /= 'NUFISS-UNIT')) &
       call fail('CANONICAL NORMALIZATION IDS DIFFER.')
+    if (continued_mode.and.reencoded_mode) &
+      call fail('PREVIOUS STATE MODE IS AMBIGUOUS.')
     if (continued_mode) then
       if ((previous%fixb /= 1).or. &
           (previous%basis_type /= 'POD-FIXED').or. &
           (.not.previous%has_saved_defect)) &
         call fail('PREVIOUS CONTINUED-STATE MARKERS ARE INVALID.')
+    else if (reencoded_mode) then
+      if ((previous%fixb /= 1).or. &
+          (previous%basis_type /= 'POD-FIXED').or. &
+          previous%has_saved_defect) &
+        call fail('REENCODED PARENT-STATE MARKERS ARE INVALID.')
     else
       if ((previous%fixb /= 0).or. &
           (previous%basis_type /= 'POD-BUILT').or. &

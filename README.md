@@ -193,3 +193,14 @@ Git-ignored, inactive basis package: Dragon, assembly, transport and Picard
 were not run, so no convergence or physical-accuracy conclusion follows.
 Reproduce it with `make spot-rank2-basis`; details are in
 [validation/iterative/rank2_basis_result.md](validation/iterative/rank2_basis_result.md).
+
+One separately declared rank-2 sensitivity map was then attempted from the
+same raw x7 axial solution.  The radial half completed with all three strict
+fixed-source terminals.  The host wrapper reported an 80-second timeout; the
+durable axial log establishes only that execution entered `FLU` and produced
+no terminal or normal end.  No axial candidate, raw defects, independent map
+audit or result publication exists, so the classification is `INVALID_MAP`
+(reported reason `TIMEOUT_BEFORE_TERMINAL`), not physical nonconvergence.  The
+successful radial staging is retained locally under a hash receipt; no run is
+retried or continued automatically.  See
+[validation/iterative/rank2_map_attempt_result.md](validation/iterative/rank2_map_attempt_result.md).

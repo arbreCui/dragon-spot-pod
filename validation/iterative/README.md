@@ -19,6 +19,11 @@ generic, default-off continuation host.
 - `build_rank2_basis_xsm.f90`, `check_rank2_basis_xsm.f90`,
   `run_rank2_basis.sh`, `rank2_basis_result.md`: production-convention,
   no-transport rank-2 reconstruction and independent audit.
+- `continuation_rank2_radial.x2m`, `continuation_rank2_axial.x2m`,
+  `run_rank2_map.sh`, `rank2_parent.tsv`, `rank2_map_policy.md`,
+  `test_rank2_map_contract.py`: default-off single rank-sensitivity map.
+- `rank2_map_attempt_result.md`: first bounded attempt and its strict
+  `INVALID_MAP` evidence boundary.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -57,6 +62,29 @@ The runner validates the six parent hashes, launches each half once, validates
 the independent checker, then publishes a candidate and receipt. It has no
 retry, does not overwrite a result, does not update the parent and never
 starts the next map.
+
+## Rank-2 sensitivity map
+
+The rank-2 host is also default-off:
+
+```sh
+RUN_RANK2_MAP=1 \
+DRAGON_BIN=/absolute/path/to/Dragon \
+RESULT_DIR=/absolute/path/to/new-result \
+  sh validation/iterative/run_rank2_map.sh
+```
+
+It canonicalizes the same raw x7 axial field in the rank-2 basis before the
+map.  It does not zero-fill a coefficient or rerun the rank-1 reference.
+
+The first attempt completed and retained the radial staging, but the axial
+host reported an 80-second timeout before any strict terminal record.  It is
+therefore `INVALID_MAP` (reported reason `TIMEOUT_BEFORE_TERMINAL`): no rank-2
+defects, convergence result or accuracy claim exist, and no result directory
+was published.  The timeout line is a labelled host-output transcription;
+the durable axial log independently establishes only the missing terminal and
+normal end.  See
+[rank2_map_attempt_result.md](rank2_map_attempt_result.md).
 
 ## Current boundary
 
@@ -115,8 +143,10 @@ has been rebuilt from those same original snapshots with production
 `SPOPOD`/`ALSVDF`. A fresh rank-1 control, the rank-2 mode-1 prefix, stored
 diagnostics and duplicate rank-2 files all agree bitwise under their declared
 checks. The local rank-2 package remains inactive and Git-ignored. This is
-`OFFLINE_RECONSTRUCTION_ONLY`; no rank-2 transport map or convergence claim
-exists. See [rank2_basis_result.md](rank2_basis_result.md).
+`OFFLINE_RECONSTRUCTION_ONLY`; the later single-map attempt did not complete
+the axial half and therefore does not promote this basis to a validated
+rank-2 map. See [rank2_basis_result.md](rank2_basis_result.md) and
+[rank2_map_attempt_result.md](rank2_map_attempt_result.md).
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.
