@@ -171,3 +171,25 @@ sh validation/iterative/run_anderson1_trial_check.sh
 
 Its four immutable inputs are frozen in
 `anderson1_trial_scientific.sha256`.
+
+## Subsequent nonlinear point evaluation
+
+The selected leakage candidate was subsequently evaluated once through the
+real online radial-plus-axial map, without changing rank, solver tolerance, or
+the map definition. The independently reproduced returned defect is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.405763486316829\times10^{-8},
+2.445892032823307\times10^{-4},
+3.586173988878727\times10^{-7}\ {\rm cm}^{-1},
+1.129218064658488\times10^{-6}).
+\]
+
+Only the eigenvalue component passes `5e-7`. The leakage and modal defects
+are respectively `16.7962%` and `48.9029%` larger than for the direct
+\(x_6=G(x_5)\) result, so the affine screen did not transfer through this
+nonlinear map evaluation. This rejects this one candidate as an improving
+accepted iterate; it is not a general rejection of Anderson acceleration.
+No retry or further map was run. Full runtime evidence is in
+`anderson1_returned_result.md`.

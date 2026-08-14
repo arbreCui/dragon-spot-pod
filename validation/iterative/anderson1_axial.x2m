@@ -1,0 +1,56 @@
+****************************************************************
+* One Anderson(1) trial map, axial half: radial response -> G(x_A). *
+****************************************************************
+
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE AX_TRIAL :: FILE './trial_axial.xsm' ;
+XSM_FILE RADIAL_IN :: FILE './returned_radial.xsm' ;
+XSM_FILE SYSTEM_NEXT :: FILE './returned_system.xsm' ;
+
+XSM_FILE AX_RETURNED :: FILE './returned_axial.xsm' ;
+XSM_FILE SN_RETURNED :: FILE './returned_snapshots.xsm' ;
+
+LINKED_LIST SNAP AX_CURRENT ;
+MODULE FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK:
+       GREP: END: ;
+
+REAL solver_eps := 5.0E-7 ;
+REAL k_returned leak_change gbal gbal_group ;
+DOUBLE rrho rleak dleak ra ;
+
+ECHO "ANDERSON1-AXIAL-BEGIN" ;
+ECHO "ANDERSON1-AXIAL-TOLERANCE" solver_eps ;
+
+SNAP := RADIAL_IN ;
+AX_CURRENT := FLU: MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+  EDIT -3 TYPE K B1 SIGS EXTE 500 <<solver_eps>>
+  UNKT <<solver_eps>> THER <<solver_eps>> ;
+AX_CURRENT := SPOGBAL:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+GREP: AX_CURRENT ::
+  GETVAL 'K-EFFECTIVE' 1 >>k_returned<<
+  GETVAL 'SPOT-GBAL' 1 >>gbal<<
+  GETVAL 'SPOT-GBAL-MAX' 1 >>gbal_group<< ;
+AX_CURRENT := SPOSTATE:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+
+* Raw, unmixed defect of the single returned state G(x_A).
+AX_CURRENT := SPOXCONV: AX_CURRENT AX_TRIAL :: ;
+GREP: AX_CURRENT ::
+  GETVAL 'SPOT-X-RRHO' 1 >>rrho<<
+  GETVAL 'SPOT-X-RLEAK' 1 >>rleak<<
+  GETVAL 'SPOT-X-DLEAK' 1 >>dleak<<
+  GETVAL 'SPOT-X-RA' 1 >>ra<< ;
+ECHO "ANDERSON1-RAW-DEFECT" rrho rleak dleak ra ;
+ECHO "ANDERSON1-RETURNED" k_returned gbal gbal_group ;
+
+SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak_change<< ;
+ECHO "ANDERSON1-LEAKAGE" leak_change ;
+
+AX_RETURNED := AX_CURRENT ;
+SN_RETURNED := SNAP ;
+
+ECHO "ANDERSON1-AXIAL-COMPLETE" ;
+END: ;
+QUIT "LIST" .

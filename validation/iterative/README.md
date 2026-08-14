@@ -438,6 +438,30 @@ candidate fields, carrier fluxes, and canonical/snapshot leakage bit for
 bit. The pair is then deleted; no physical map is evaluated. Run it with
 `sh validation/iterative/run_anderson1_trial_check.sh`.
 
+One separately authorized bounded evaluation subsequently formed a fresh
+temporary `TRIAL` and computed the real returned state
+\(x_R=G(x_A)\). The three online radial fixed-source solves and the axial
+solve all reached their unchanged strict `5e-7` terminals; both Dragon
+processes ended normally. The extended Ganlib-only checker independently
+recomputed the fixed bundle, returned state, archive physics, raw radial
+positivity, and defects:
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.405763486316829\times10^{-8},
+2.445892032823307\times10^{-4},
+3.586173988878727\times10^{-7}\ {\rm cm}^{-1},
+1.129218064658488\times10^{-6}).
+\]
+
+Only \(R_\rho\) passes. Relative to the direct \(x_6\) map, leakage grows by
+`16.7962%` and the modal defect by `48.9029%`; therefore the affine screen
+did not predict the true nonlinear-map reduction. This rejects this one
+candidate as an improving accepted iterate, not Anderson methods in general.
+No retry, second coefficient, or \(x_7\) was run. The exact scope and hashes
+are in `anderson1_returned_result.md` and
+`anderson1_returned_scientific.sha256`.
+
 Full results are in `anderson1_modal_result.md`. Reproduce them with
 
 ```sh

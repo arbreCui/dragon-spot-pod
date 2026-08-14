@@ -20,6 +20,7 @@ sh -n "$ROOT/validation/iterative/run_map4_short.sh"
 sh -n "$ROOT/validation/iterative/run_picard_direction_check.sh"
 sh -n "$ROOT/validation/iterative/run_anderson1_modal_check.sh"
 sh -n "$ROOT/validation/iterative/run_anderson1_trial_check.sh"
+sh -n "$ROOT/validation/iterative/run_anderson1_map_once.sh"
 sh -n "$ROOT/validation/iterative/run_strict_leakage_faces.sh"
 map4_default=$(RUN_MAP4=0 \
   DRAGON_BIN="$BUILD_DIR/must-not-run" \
@@ -39,6 +40,25 @@ then
   exit 1
 fi
 test "$map4_invalid" = 'MAP4-SHORT ERROR: RUN_MAP4 must be 0 or 1.'
+anderson_map_default=$(RUN_ANDERSON1_MAP=0 \
+  DRAGON_BIN="$BUILD_DIR/must-not-run" \
+  ARTIFACTS="$BUILD_DIR/must-not-read-artifacts" \
+  GANLIB_LIB="$BUILD_DIR/must-not-read-ganlib" \
+  GANLIB_MOD="$BUILD_DIR/must-not-read-modules" \
+  TMPDIR="$BUILD_DIR/must-not-use-tmp" \
+  sh "$ROOT/validation/iterative/run_anderson1_map_once.sh")
+test "$anderson_map_default" = \
+  'ANDERSON1-MAP DEFAULT-OFF: no Dragon process started.'
+if anderson_map_invalid=$(RUN_ANDERSON1_MAP=2 \
+    DRAGON_BIN="$BUILD_DIR/must-not-run" \
+    sh "$ROOT/validation/iterative/run_anderson1_map_once.sh" 2>&1)
+then
+  printf '%s\n' \
+    'ANDERSON1-MAP invalid activation unexpectedly passed.' >&2
+  exit 1
+fi
+test "$anderson_map_invalid" = \
+  'ANDERSON1-MAP ERROR: RUN_ANDERSON1_MAP must be 0 or 1.'
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 
@@ -61,7 +81,9 @@ for source in \
   "$ROOT/validation/iterative/map5_radial.x2m" \
   "$ROOT/validation/iterative/map5_axial.x2m" \
   "$ROOT/validation/iterative/map6_radial.x2m" \
-  "$ROOT/validation/iterative/map6_axial.x2m"
+  "$ROOT/validation/iterative/map6_axial.x2m" \
+  "$ROOT/validation/iterative/anderson1_radial.x2m" \
+  "$ROOT/validation/iterative/anderson1_axial.x2m"
 do
   stem=$(basename "$source")
   stem=${stem%.*}

@@ -307,7 +307,25 @@ as an \(x_6\) carrier, old candidate-level defects are absent, and lagged
 `SYSTEM` leakage records remain unchanged. The temporary files are deleted
 after the check, and no Dragon or physical map is run.
 
-See `validation/iterative/anderson1_modal_result.md`.
+That candidate has now been evaluated exactly once through the real online
+radial-plus-axial map. All three radial solves and the axial solve terminated
+strictly, both Dragon processes ended normally, and the independent returned
+state/archive audit passed. The actual result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4057635\times10^{-8},\,2.4458920\times10^{-4},\,
+3.5861740\times10^{-7}\ {\rm cm}^{-1},\,1.1292181\times10^{-6}).
+\]
+
+Only \(R_\rho\) passes the unchanged `5e-7` outer gate. Compared with the
+direct \(x_6\) result, \(R_L\) grows by `16.7962%` and \(R_a\) by `48.9029%`.
+Thus the affine residual reduction did not survive the actual nonlinear map;
+this one Anderson candidate is not an improving accepted iterate and is not
+converged. No retry, second coefficient, or \(x_7\) was run.
+
+See `validation/iterative/anderson1_modal_result.md` and
+`validation/iterative/anderson1_returned_result.md`.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.
