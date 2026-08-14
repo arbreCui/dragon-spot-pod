@@ -37,10 +37,40 @@ The coefficient is a convex combination. Direct reconstruction of
 points, without a floor or tolerance. The minimum is
 \(1.750004465980173\times10^{-15}\) at group 370, plane 3, radial region 2.
 
-This establishes only a strictly positive fixed-space radial-feedback
-candidate and a reduction of the affine modal residual model. It does not
-evaluate \(G(x_A)-x_A\), construct the complete state
-\((a_A,\rho_A,L_A)\), establish axial balance, or establish convergence.
+The same coefficient was then applied to the other canonical components,
+without combining their units. The affine pair
+
+\[
+x_I=\gamma x_4+(1-\gamma)x_5,\qquad
+x_A=\gamma x_5+(1-\gamma)x_6
+\]
+
+was evaluated with the unchanged separate production-defect definitions:
+
+```text
+                         affine pair          current x6
+R_rho                    5.0404951102e-8       0
+R_L                      2.1899622579e-4       2.0941536233e-4
+D_L                      3.2109290110e-7       3.0704541132e-7 cm^-1
+R_a                      1.1076207468e-7       7.5835881646e-7
+leakage height-L2        6.3541473470e-6       6.2849962241e-6
+```
+
+The screening rule introduces no new tolerance: a component already below
+the declared \(5\times10^{-7}\) gate must remain below it, while a failing
+component must strictly improve. The eigenvalue component is reintroduced
+from its current stored zero residual to \(5.04\times10^{-8}\), so it is
+relatively worse but remains below the gate. The modal component improves.
+The stored zero comes from identical binary32 `K-EFFECTIVE` values and is
+not evidence that the underlying continuous eigenvalues are exactly equal.
+Leakage grows by 1.10% in the non-production height-\(L_2\) diagnostic and
+by 4.58% in the production \(R_L/D_L\) metrics, so leakage fails. The
+complete affine canonical candidate is rejected and no XSM state is written.
+
+This remains a secant-model diagnostic. It does not evaluate
+\(G(x_A)-x_A\), establish axial balance, or establish convergence. It also
+does not show that Anderson acceleration is generally invalid; it rejects
+only this modal-selected coefficient on these frozen states.
 
 Reproduce the read-only check with
 

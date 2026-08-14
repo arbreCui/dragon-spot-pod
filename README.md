@@ -273,7 +273,14 @@ on \(x_5\) and `0.2131312495` on \(x_6\). The affine modal-residual norm is
 `0.1460549765` times the current \(x_5\to x_6\) norm, and all 8,880 values of
 the reconstructed radial feedback field are strictly positive. This is an
 offline modal candidate with no fitted relaxation coefficient, not a new
-complete state, a physical map evaluation, or evidence of convergence.
+accepted complete state, a physical map evaluation, or evidence of
+convergence.
+Applying that same coefficient to the separate \((a,\rho,L)\) affine pair
+keeps \(R_\rho\) and \(R_a\) below `5e-7`, although \(R_\rho\) is
+reintroduced from the stored zero residual. Leakage increases by `1.10%` in
+height-weighted \(L_2\) and \(R_L\) rises from `2.0941536e-4` to
+`2.1899623e-4`. The cross-component screen therefore rejects this
+coefficient; no state is written and no Dragon run is justified.
 See `validation/iterative/anderson1_modal_result.md`.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain

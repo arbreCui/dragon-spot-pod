@@ -42,10 +42,23 @@ cp "$X6_DIR/$X6_NAME" "$WORK/x6.xsm"
   "$ROOT/validation/iterative/check_one_map_xsm.f90" \
   "$GANLIB_LIB" -lstdc++ -o "$WORK/check_one_map_xsm"
 
-(
+RESULT=$(
   cd "$WORK"
   ./check_one_map_xsm --anderson1 x4.xsm x5.xsm x6.xsm
 )
+printf '%s\n' "$RESULT"
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1 AFFINE R_RHO SCREEN PASS'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1 R_RHO RELATIVE-CURRENT WORSENED'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1 LEAKAGE H-L2 RELATIVE-CURRENT WORSENED'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1 AFFINE R_L SCREEN FAIL'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1 AFFINE R_A SCREEN PASS'
+printf '%s\n' "$RESULT" | grep -Fqx \
+  'ANDERSON1 AFFINE CANONICAL SCREEN REJECT'
 
 verify_locked "$X4_DIR" "$X4_NAME"
 verify_locked "$X5_DIR" "$X5_NAME"

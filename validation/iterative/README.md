@@ -382,8 +382,27 @@ Thus \(a_A=\gamma a_5+(1-\gamma)a_6\) is a convex fixed-space candidate.
 Its affine modal-residual norm is `7.3937238630e-8`, or `0.1460549765` of
 \(\lVert f_5\rVert_{HG}\). Direct \(B a_A\) reconstruction is strictly
 positive at all 8,880 group/plane/radial points without clipping, a floor,
-or a positivity tolerance. This is not the actual defect
-\(G(x_A)-x_A\), a complete \((a,\rho,L)\) state, or a convergence claim.
+or a positivity tolerance. This first modal check is not the actual defect
+\(G(x_A)-x_A\) and does not establish an accepted complete state or
+convergence.
+
+The same coefficient was also checked on the complete canonical affine pair
+using the unchanged separate defect definitions. It gives
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(5.0404951\times10^{-8},\,2.1899623\times10^{-4},\,
+3.2109290\times10^{-7}\ {\rm cm}^{-1},\,1.1076207\times10^{-7}).
+\]
+
+The eigenvalue and modal components pass the existing gate, but leakage is
+1.10% larger in height-weighted \(L_2\) and about 4.58% larger in the
+production \(R_L/D_L\) metrics. The eigenvalue residual is also reintroduced
+from stored zero to `5.0404951e-8`, although it remains below the gate. The
+unchanged-gate cross-component screen therefore rejects this modal-optimal
+coefficient as a complete trial state. No state is written and no physical
+map is run; this does not establish that Anderson acceleration is generally
+invalid.
 Full results are in `anderson1_modal_result.md`. Reproduce them with
 
 ```sh

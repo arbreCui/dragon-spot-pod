@@ -847,17 +847,32 @@ contains
 
   subroutine report_anderson1(x4,x5,x6)
     type(canonical_state), intent(in) :: x4,x5,x6
+    real(real64), parameter :: outer_gate=5.0e-7_real64
     real(real64), allocatable :: f4(:),f5(:),delta_f(:),candidate(:)
-    real(real64), allocatable :: linearized_residual(:)
+    real(real64), allocatable :: linearized_residual(:),affine_input(:)
+    real(real64), allocatable :: affine_modal_residual(:)
+    real(real64), allocatable :: leak_input(:)
+    real(real64), allocatable :: leak_candidate(:),leak_residual(:)
     real(real64) :: denominator,numerator,gamma,weight6
     real(real64) :: norm_f4,norm_f5,norm_linearized,norm_candidate
+    real(real64) :: norm_affine_modal
     real(real64) :: normal_dot,normal_cosine,min_reconstructed
+    real(real64) :: rho_input,rho_candidate,leak_scale
+    real(real64) :: leak_h2_current,leak_h2_affine
+    real(real64) :: affine_defect(4)
     integer :: reconstructed_count,min_group,min_snapshot,min_region
+    integer :: g,s,index_l
+    logical :: rho_screen,leak_screen,modal_screen
 
     allocate(f4(size(x4%coordinates)),f5(size(x4%coordinates)))
     allocate(delta_f(size(x4%coordinates)))
     allocate(candidate(size(x4%coordinates)))
     allocate(linearized_residual(size(x4%coordinates)))
+    allocate(affine_input(size(x4%coordinates)))
+    allocate(affine_modal_residual(size(x4%coordinates)))
+    allocate(leak_input(size(x4%leakage)))
+    allocate(leak_candidate(size(x4%leakage)))
+    allocate(leak_residual(size(x4%leakage)))
     f4=x5%coordinates-x4%coordinates
     f5=x6%coordinates-x5%coordinates
     delta_f=f5-f4
@@ -872,11 +887,14 @@ contains
     !   gamma = argmin ||f5 - gamma (f5-f4)||_HG.
     gamma=numerator/denominator
     weight6=1.0_real64-gamma
+    affine_input=gamma*x4%coordinates+weight6*x5%coordinates
     candidate=gamma*x5%coordinates+weight6*x6%coordinates
     linearized_residual=gamma*f4+weight6*f5
+    affine_modal_residual=candidate-affine_input
     if ((.not.ieee_is_finite(gamma)).or. &
         any(.not.ieee_is_finite(candidate)).or. &
-        any(.not.ieee_is_finite(linearized_residual))) &
+        any(.not.ieee_is_finite(linearized_residual)).or. &
+        any(.not.ieee_is_finite(affine_modal_residual))) &
       call fail('ANDERSON1 CANDIDATE IS NON-FINITE.')
 
     norm_f4=sqrt(modal_inner_product(x4,f4,f4))
@@ -884,6 +902,8 @@ contains
     norm_linearized=sqrt(max(0.0_real64, &
       modal_inner_product(x4,linearized_residual,linearized_residual)))
     norm_candidate=sqrt(modal_inner_product(x4,candidate,candidate))
+    norm_affine_modal=sqrt(max(0.0_real64, &
+      modal_inner_product(x4,affine_modal_residual,affine_modal_residual)))
     normal_dot=modal_inner_product(x4,delta_f,linearized_residual)
     if ((norm_f4 <= 0.0_real64).or.(norm_f5 <= 0.0_real64).or. &
         (norm_candidate <= 0.0_real64).or. &
@@ -900,6 +920,67 @@ contains
 
     call check_anderson_modal_positivity(x4,candidate,min_reconstructed, &
       reconstructed_count,min_group,min_snapshot,min_region)
+
+    ! Apply the same coefficient to every canonical-state component, but
+    ! retain the three production defects as separate, unmixed quantities.
+    rho_input=gamma*x4%rho+weight6*x5%rho
+    rho_candidate=gamma*x5%rho+weight6*x6%rho
+    leak_input=gamma*x4%leakage+weight6*x5%leakage
+    leak_candidate=gamma*x5%leakage+weight6*x6%leakage
+    leak_residual=leak_candidate-leak_input
+    if ((.not.ieee_is_finite(rho_input)).or.(rho_input <= 0.0_real64).or. &
+        (.not.ieee_is_finite(rho_candidate)).or. &
+        (rho_candidate <= 0.0_real64).or. &
+        any(.not.ieee_is_finite(leak_input)).or. &
+        any(.not.ieee_is_finite(leak_candidate)).or. &
+        any(.not.ieee_is_finite(leak_residual))) &
+      call fail('ANDERSON1 AFFINE CANONICAL STATE IS INVALID.')
+    affine_defect(1)=abs(rho_candidate-rho_input)
+    affine_defect(3)=maxval(abs(leak_residual))
+    leak_scale=max(maxval(abs(leak_input)),maxval(abs(leak_candidate)))
+    if (leak_scale == 0.0_real64) then
+      if (affine_defect(3) /= 0.0_real64) &
+        call fail('ANDERSON1 INVALID ZERO-LEAKAGE BRANCH.')
+      affine_defect(2)=0.0_real64
+    else
+      affine_defect(2)=affine_defect(3)/leak_scale
+    endif
+    leak_h2_current=0.0_real64
+    leak_h2_affine=0.0_real64
+    do s=1,x4%dims(3)
+      do g=1,x4%dims(2)
+        index_l=(s-1)*x4%dims(2)+g
+        leak_h2_current=leak_h2_current+x4%height(s)* &
+          (x6%leakage(index_l)-x5%leakage(index_l))**2
+        leak_h2_affine=leak_h2_affine+x4%height(s)* &
+          leak_residual(index_l)**2
+      enddo
+    enddo
+    leak_h2_current=sqrt(max(0.0_real64,leak_h2_current))
+    leak_h2_affine=sqrt(max(0.0_real64,leak_h2_affine))
+    if ((.not.ieee_is_finite(leak_h2_current)).or. &
+        (leak_h2_current <= 0.0_real64).or. &
+        (.not.ieee_is_finite(leak_h2_affine))) &
+      call fail('ANDERSON1 LEAKAGE HEIGHT-L2 METRIC IS INVALID.')
+    affine_defect(4)=norm_affine_modal/norm_candidate
+    if (any(.not.ieee_is_finite(affine_defect)).or. &
+        any(affine_defect < 0.0_real64)) &
+      call fail('ANDERSON1 AFFINE DEFECT IS INVALID.')
+    if (x6%saved_defect(1) < outer_gate) then
+      rho_screen=affine_defect(1) < outer_gate
+    else
+      rho_screen=affine_defect(1) < x6%saved_defect(1)
+    endif
+    if (x6%saved_defect(2) < outer_gate) then
+      leak_screen=affine_defect(2) < outer_gate
+    else
+      leak_screen=affine_defect(2) < x6%saved_defect(2)
+    endif
+    if (x6%saved_defect(4) < outer_gate) then
+      modal_screen=affine_defect(4) < outer_gate
+    else
+      modal_screen=affine_defect(4) < x6%saved_defect(4)
+    endif
 
     write(6,'(A)') 'ANDERSON1 DEPTH ONE'
     write(6,'(A)') 'ANDERSON1 MODAL METRIC GRAM-HEIGHT'
@@ -932,11 +1013,82 @@ contains
       min_group,min_snapshot,min_region
     write(6,'(A)') 'ANDERSON1 RECONSTRUCTED POSITIVITY PASS'
     write(6,'(A)') 'ANDERSON1 MODAL CANDIDATE FIXED-SPACE PASS'
+    write(6,'(A)') &
+      'ANDERSON1 AFFINE-PAIR INPUT=GAMMA*X4+W6*X5 OUTPUT=GAMMA*X5+W6*X6'
+    write(6,'(A)') 'ANDERSON1 CROSS-COMPONENT METRICS SEPARATE-UNITS'
+    call write_real64_metric('ANDERSON1 UNCHANGED OUTER-GATE',outer_gate)
+    call write_real64_metric('ANDERSON1 AFFINE R_RHO',affine_defect(1))
+    call write_real64_metric('ANDERSON1 AFFINE R_L',affine_defect(2))
+    call write_real64_metric('ANDERSON1 AFFINE D_L',affine_defect(3))
+    call write_real64_metric('ANDERSON1 AFFINE R_A',affine_defect(4))
+    call write_real64_metric('ANDERSON1 CURRENT X6 R_RHO', &
+      x6%saved_defect(1))
+    call write_real64_metric('ANDERSON1 CURRENT X6 R_L', &
+      x6%saved_defect(2))
+    call write_real64_metric('ANDERSON1 CURRENT X6 D_L', &
+      x6%saved_defect(3))
+    call write_real64_metric('ANDERSON1 CURRENT X6 R_A', &
+      x6%saved_defect(4))
+    write(6,'(A)') &
+      'ANDERSON1 LEAKAGE-HEIGHT-L2 NON-PRODUCTION-DIAGNOSTIC'
+    call write_real64_metric('ANDERSON1 CURRENT LEAKAGE H-L2', &
+      leak_h2_current)
+    call write_real64_metric('ANDERSON1 AFFINE LEAKAGE H-L2', &
+      leak_h2_affine)
+    call write_real64_metric('ANDERSON1 AFFINE/CURRENT LEAKAGE H-L2', &
+      leak_h2_affine/leak_h2_current)
+    call write_real64_metric('ANDERSON1 AFFINE/CURRENT R_L', &
+      affine_defect(2)/x6%saved_defect(2))
+    call write_real64_metric('ANDERSON1 AFFINE/CURRENT D_L', &
+      affine_defect(3)/x6%saved_defect(3))
+    if (leak_h2_affine > leak_h2_current) then
+      write(6,'(A)') 'ANDERSON1 LEAKAGE H-L2 RELATIVE-CURRENT WORSENED'
+    else if (leak_h2_affine < leak_h2_current) then
+      write(6,'(A)') 'ANDERSON1 LEAKAGE H-L2 RELATIVE-CURRENT IMPROVED'
+    else
+      write(6,'(A)') 'ANDERSON1 LEAKAGE H-L2 RELATIVE-CURRENT UNCHANGED'
+    endif
+    if (affine_defect(1) > x6%saved_defect(1)) then
+      write(6,'(A)') 'ANDERSON1 R_RHO RELATIVE-CURRENT WORSENED'
+    else if (affine_defect(1) < x6%saved_defect(1)) then
+      write(6,'(A)') 'ANDERSON1 R_RHO RELATIVE-CURRENT IMPROVED'
+    else
+      write(6,'(A)') 'ANDERSON1 R_RHO RELATIVE-CURRENT UNCHANGED'
+    endif
+    if (affine_defect(4) < x6%saved_defect(4)) then
+      write(6,'(A)') 'ANDERSON1 R_A RELATIVE-CURRENT IMPROVED'
+    else if (affine_defect(4) > x6%saved_defect(4)) then
+      write(6,'(A)') 'ANDERSON1 R_A RELATIVE-CURRENT WORSENED'
+    else
+      write(6,'(A)') 'ANDERSON1 R_A RELATIVE-CURRENT UNCHANGED'
+    endif
+    if (rho_screen) then
+      write(6,'(A)') 'ANDERSON1 AFFINE R_RHO SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1 AFFINE R_RHO SCREEN FAIL'
+    endif
+    if (leak_screen) then
+      write(6,'(A)') 'ANDERSON1 AFFINE R_L SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1 AFFINE R_L SCREEN FAIL'
+    endif
+    if (modal_screen) then
+      write(6,'(A)') 'ANDERSON1 AFFINE R_A SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1 AFFINE R_A SCREEN FAIL'
+    endif
+    if (rho_screen.and.leak_screen.and.modal_screen) then
+      write(6,'(A)') 'ANDERSON1 AFFINE CANONICAL SCREEN PASS'
+    else
+      write(6,'(A)') 'ANDERSON1 AFFINE CANONICAL SCREEN REJECT'
+    endif
     write(6,'(A)') 'ANDERSON1 NO CANDIDATE STATE WRITTEN'
     write(6,'(A)') 'ANDERSON1 NO PHYSICAL MAP EVALUATION'
     write(6,'(A)') 'ANDERSON1 OUTER-CONVERGENCE NOT-ESTABLISHED'
     write(6,'(A)') 'ANDERSON1 COMPLETE'
 
+    deallocate(leak_residual,leak_candidate,leak_input)
+    deallocate(affine_modal_residual,affine_input)
     deallocate(linearized_residual,candidate,delta_f,f5,f4)
   end subroutine report_anderson1
 
