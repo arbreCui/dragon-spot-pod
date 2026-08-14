@@ -45,6 +45,39 @@ $4.82940\times10^{-12}$, and the Galerkin maximum is
 $5.56322\times10^{-7}$. These are reported transparently but are not part
 of the frozen Picard stopping criterion.
 
+## Last-two-residual geometry
+
+The hash-locked, no-Dragon audit defines only the two actual map residuals
+
+$$
+f_6=x_7-x_6,\qquad f_7=x_8-x_7,
+$$
+
+and keeps the state blocks separate. In the physical modal $H_sM_g$ metric,
+their norms are $1.0055666009\times10^{-7}$ and
+$1.7843996820\times10^{-7}$, their inner product is
+$-5.6496911499\times10^{-15}$, and their cosine is $-0.3148630729$.
+
+For leakage, the frozen-height $L_2$ quantity is explicitly an auxiliary,
+non-production direction diagnostic. Its two norms are
+$8.9898197018\times10^{-6}$ and $1.0047159318\times10^{-5}$, with inner
+product $-8.7580759569\times10^{-11}$ and cosine $-0.9696487385$. The
+production infinity changes remain
+$D_L=4.4741318561\times10^{-7}$ and
+$5.5495183915\times10^{-7}\ \mathrm{cm}^{-1}$. Both have one unique hotspot
+at plane 3, group 325; its signed update reverses from
+$-4.4741318561\times10^{-7}$ to $+5.5495183915\times10^{-7}$ and grows by
+24.035647% in magnitude. The stored $\rho$ increments likewise reverse from
+$-6.4057634863\times10^{-8}$ to $+6.4057634863\times10^{-8}$, subject to the
+binary32 `K-EFFECTIVE` quantization.
+
+Thus the latest leakage residuals are strongly opposed and the second is not
+smaller; the modal residuals are also obtuse. No mixed-unit whole-state angle,
+fitted coefficient or new stopping rule is defined. Two residuals do not
+establish a cycle, divergence, a Jacobian spectrum, rank adequacy, a physical
+cause or an inner-error bound. The reproducible details are in
+[residual_direction_result.md](residual_direction_result.md).
+
 ## One Anderson trial
 
 The leakage-residual least-squares screen gave the unique unclipped
@@ -95,8 +128,9 @@ authorization for x9.
 
 Stop after x8. The frozen direct rank-1 Picard census did not reach its
 discrete gate, and no x9 is defined. This result does not by itself establish
-divergence, a cycle, rank adequacy or physical accuracy. The immediate next
-step, if authorized, is a transport-free audit of the stored x6--x8 residual
-directions, with no fitted coefficient or new acceptance score. Only after
-that evidence may one nonlinear solver be declared for the unchanged residual
-$F(x)=G(x)-x$; it must not alter the physical map.
+divergence, a cycle, rank adequacy or physical accuracy. The transport-free
+direction audit is complete and supplies motivation, but not a method. The
+next phase, if authorized, is to freeze one nonlinear-solver contract for the
+unchanged residual $F(x)=G(x)-x$ and validate it first without transport. It
+must preserve the physical map and cannot turn the auxiliary leakage $L_2$
+diagnostic into a fitted objective or acceptance gate.

@@ -6,11 +6,14 @@ program check_one_map_xsm
   !   check_one_map_xsm --continued basis_reference.xsm \
   !     state2_system.xsm state1_axial.xsm state2_axial.xsm \
   !     state2_snapshots.xsm
+  !   check_one_map_xsm --directions state6_axial.xsm \
+  !     state7_axial.xsm state8_axial.xsm
   !
   ! No Dragon, SPOT, assembly, transport, or production convergence routine
-  ! is linked or called. The checker reads five archived XSM objects,
-  ! verifies the fixed POD package bit for bit, requires a live RADIAL-OP
-  ! change, and independently recomputes the canonical defects.
+  ! is linked or called. The one-map modes read five archived XSM objects,
+  ! verify the fixed POD package bit for bit, require a live RADIAL-OP change,
+  ! and independently recompute the canonical defects. Direction mode reads
+  ! three frozen canonical states and describes their two stored increments.
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -83,12 +86,25 @@ program check_one_map_xsm
   character(len=32) :: mode
   type(system_data) :: reference_system,current_system
   type(canonical_state) :: previous_state,current_state
+  type(canonical_state) :: direction_state(3)
   integer :: i,argument_offset
-  logical :: continued
+  logical :: continued,direction_mode
 
   continued=.false.
+  direction_mode=.false.
   argument_offset=0
-  if (command_argument_count() == 6) then
+  if (command_argument_count() == 4) then
+    call get_command_argument(1,mode)
+    if (trim(mode) /= '--directions') call fail( &
+      'ONLY --directions IS ACCEPTED IN FOUR-ARGUMENT MODE.')
+    direction_mode=.true.
+    do i=1,3
+      call get_command_argument(i+1,paths(i))
+      if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
+      if (len_trim(paths(i)) > max_xsm_path) &
+        call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+    enddo
+  else if (command_argument_count() == 6) then
     call get_command_argument(1,mode)
     if (trim(mode) /= '--continued') call fail( &
       'ONLY --continued IS ACCEPTED IN SIX-ARGUMENT MODE.')
@@ -97,12 +113,33 @@ program check_one_map_xsm
   else if (command_argument_count() /= 5) then
     call fail('EXPECTED [--continued] BASIS, SYSTEM, PREVIOUS, CURRENT, SNAP.')
   endif
-  do i=1,5
-    call get_command_argument(i+argument_offset,paths(i))
-    if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
-    if (len_trim(paths(i)) > max_xsm_path) &
-      call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
-  enddo
+  if (.not.direction_mode) then
+    do i=1,5
+      call get_command_argument(i+argument_offset,paths(i))
+      if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
+      if (len_trim(paths(i)) > max_xsm_path) &
+        call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+    enddo
+  endif
+
+  if (direction_mode) then
+    call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.true., &
+      direction_state(1),'DIRECTION STATE X1')
+    call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
+      direction_state(2),'DIRECTION STATE X2')
+    call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.true., &
+      direction_state(3),'DIRECTION STATE X3')
+    call compare_states_and_defects(direction_state(1), &
+      direction_state(2),.true.)
+    write(6,'(A)') 'PICARD-DIRECTION MAP12 RAW-DEFECT BITWISE PASS'
+    call compare_states_and_defects(direction_state(2), &
+      direction_state(3),.true.)
+    write(6,'(A)') 'PICARD-DIRECTION MAP23 RAW-DEFECT BITWISE PASS'
+    call report_update_directions(direction_state(1),direction_state(2), &
+      direction_state(3))
+    write(6,'(A)') 'PICARD-DIRECTION COMPLETE'
+    stop
+  endif
 
   call load_system(trim(paths(1)),0,0,'POD-BUILT',.false., &
     reference_system,'BASIS REFERENCE')
@@ -748,6 +785,245 @@ contains
       call fail('NON-FINITE RECOMPUTED MAP DEFECT.')
     defect=(/r_rho,r_leak,d_leak,r_a/)
   end subroutine recompute_map_defect
+
+
+  subroutine report_update_directions(x1,x2,x3)
+    type(canonical_state), intent(in) :: x1,x2,x3
+    integer :: igr,isnap,a,b,nmode,index_a,index_b,index_g,index_l
+    integer :: l_hot_index(2),l_hot_ties(2)
+    real(real64) :: a_state_sq(3),a_update_sq(2),a_dot
+    real(real64) :: a_delta12_a,a_delta12_b,a_delta23_a,a_delta23_b
+    real(real64) :: l_update_sq(2),l_dot,l_delta12,l_delta23
+    real(real64) :: a_cosine,a_ratio,l_cosine,l_ratio
+    real(real64) :: l_infinity(2),rho_delta(2)
+
+    a_state_sq=0.0_real64
+    a_update_sq=0.0_real64
+    a_dot=0.0_real64
+    do igr=1,x1%dims(2)
+      nmode=x1%rank(igr)
+      do isnap=1,x1%dims(3)
+        do a=1,nmode
+          index_a=x1%offset(igr)+(isnap-1)*nmode+a
+          a_delta12_a=x2%coordinates(index_a)-x1%coordinates(index_a)
+          a_delta23_a=x3%coordinates(index_a)-x2%coordinates(index_a)
+          do b=1,nmode
+            index_b=x1%offset(igr)+(isnap-1)*nmode+b
+            index_g=x1%gram_offset(igr)+(b-1)*nmode+a
+            a_delta12_b=x2%coordinates(index_b)-x1%coordinates(index_b)
+            a_delta23_b=x3%coordinates(index_b)-x2%coordinates(index_b)
+            a_state_sq(1)=a_state_sq(1)+x1%height(isnap)* &
+              x1%coordinates(index_a)*x1%gram(index_g)* &
+              x1%coordinates(index_b)
+            a_state_sq(2)=a_state_sq(2)+x1%height(isnap)* &
+              x2%coordinates(index_a)*x1%gram(index_g)* &
+              x2%coordinates(index_b)
+            a_state_sq(3)=a_state_sq(3)+x1%height(isnap)* &
+              x3%coordinates(index_a)*x1%gram(index_g)* &
+              x3%coordinates(index_b)
+            a_update_sq(1)=a_update_sq(1)+x1%height(isnap)* &
+              a_delta12_a*x1%gram(index_g)*a_delta12_b
+            a_update_sq(2)=a_update_sq(2)+x1%height(isnap)* &
+              a_delta23_a*x1%gram(index_g)*a_delta23_b
+            a_dot=a_dot+x1%height(isnap)*a_delta12_a* &
+              x1%gram(index_g)*a_delta23_b
+          enddo
+        enddo
+      enddo
+    enddo
+    if (any(.not.ieee_is_finite(a_state_sq)).or. &
+        any(a_state_sq <= 0.0_real64).or. &
+        any(.not.ieee_is_finite(a_update_sq)).or. &
+        any(a_update_sq <= 0.0_real64).or. &
+        (.not.ieee_is_finite(a_dot))) &
+      call fail('INVALID MODAL UPDATE GEOMETRY.')
+    a_cosine=a_dot/sqrt(a_update_sq(1)*a_update_sq(2))
+    a_ratio=sqrt(a_update_sq(2)/a_update_sq(1))
+    if ((.not.ieee_is_finite(a_cosine)).or. &
+        (abs(a_cosine) > 1.0_real64).or. &
+        (.not.ieee_is_finite(a_ratio))) &
+      call fail('INVALID MODAL DIRECTION METRIC.')
+
+    l_update_sq=0.0_real64
+    l_dot=0.0_real64
+    do isnap=1,x1%dims(3)
+      do igr=1,x1%dims(2)
+        index_l=(isnap-1)*x1%dims(2)+igr
+        l_delta12=x2%leakage(index_l)-x1%leakage(index_l)
+        l_delta23=x3%leakage(index_l)-x2%leakage(index_l)
+        l_update_sq(1)=l_update_sq(1)+x1%height(isnap)* &
+          l_delta12*l_delta12
+        l_update_sq(2)=l_update_sq(2)+x1%height(isnap)* &
+          l_delta23*l_delta23
+        l_dot=l_dot+x1%height(isnap)*l_delta12*l_delta23
+      enddo
+    enddo
+    if (any(.not.ieee_is_finite(l_update_sq)).or. &
+        any(l_update_sq <= 0.0_real64).or. &
+        (.not.ieee_is_finite(l_dot))) &
+      call fail('INVALID LEAKAGE UPDATE GEOMETRY.')
+    l_cosine=l_dot/sqrt(l_update_sq(1)*l_update_sq(2))
+    l_ratio=sqrt(l_update_sq(2)/l_update_sq(1))
+    if ((.not.ieee_is_finite(l_cosine)).or. &
+        (abs(l_cosine) > 1.0_real64).or. &
+        (.not.ieee_is_finite(l_ratio))) &
+      call fail('INVALID LEAKAGE DIRECTION METRIC.')
+
+    l_infinity(1)=maxval(abs(x2%leakage-x1%leakage))
+    l_infinity(2)=maxval(abs(x3%leakage-x2%leakage))
+    if ((real64_bits(l_infinity(1)) /= &
+         real64_bits(x2%saved_defect(3))).or. &
+        (real64_bits(l_infinity(2)) /= &
+         real64_bits(x3%saved_defect(3)))) &
+      call fail('LEAKAGE INFINITY DEFECT DIFFERS BITWISE.')
+    l_hot_index=0
+    l_hot_ties=0
+    do index_l=1,size(x1%leakage)
+      l_delta12=x2%leakage(index_l)-x1%leakage(index_l)
+      l_delta23=x3%leakage(index_l)-x2%leakage(index_l)
+      if (abs(l_delta12) == l_infinity(1)) then
+        l_hot_ties(1)=l_hot_ties(1)+1
+        if (l_hot_index(1) == 0) l_hot_index(1)=index_l
+      endif
+      if (abs(l_delta23) == l_infinity(2)) then
+        l_hot_ties(2)=l_hot_ties(2)+1
+        if (l_hot_index(2) == 0) l_hot_index(2)=index_l
+      endif
+    enddo
+    if (any(l_hot_index == 0).or.any(l_hot_ties == 0)) &
+      call fail('LEAKAGE INFINITY HOTSPOT NOT FOUND.')
+    rho_delta=(/x2%rho-x1%rho,x3%rho-x2%rho/)
+
+    write(6,'(A)') 'PICARD-DIRECTION FIXED-SPACE BITWISE PASS'
+    write(6,'(A)') 'PICARD-DIRECTION MODAL METRIC GRAM-HEIGHT'
+    call write_real64_metric('PICARD-DIRECTION MODAL STATE-NORM X1', &
+      sqrt(a_state_sq(1)))
+    call write_real64_metric('PICARD-DIRECTION MODAL STATE-NORM X2', &
+      sqrt(a_state_sq(2)))
+    call write_real64_metric('PICARD-DIRECTION MODAL STATE-NORM X3', &
+      sqrt(a_state_sq(3)))
+    call write_real64_metric('PICARD-DIRECTION MODAL UPDATE-NORM 12', &
+      sqrt(a_update_sq(1)))
+    call write_real64_metric('PICARD-DIRECTION MODAL UPDATE-NORM 23', &
+      sqrt(a_update_sq(2)))
+    call write_real64_metric('PICARD-DIRECTION MODAL DOT 12-23',a_dot)
+    call write_real64_metric('PICARD-DIRECTION MODAL COSINE 12-23',a_cosine)
+    call write_real64_metric('PICARD-DIRECTION MODAL NORM-RATIO 23/12', &
+      a_ratio)
+    call write_real64_metric('PICARD-DIRECTION MODAL SAVED-R_A 12', &
+      x2%saved_defect(4))
+    call write_real64_metric('PICARD-DIRECTION MODAL SAVED-R_A 23', &
+      x3%saved_defect(4))
+    if (a_dot < 0.0_real64) then
+      write(6,'(A)') 'PICARD-DIRECTION MODAL GEOMETRY OBTUSE'
+    else if (a_dot > 0.0_real64) then
+      write(6,'(A)') 'PICARD-DIRECTION MODAL GEOMETRY ACUTE'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION MODAL GEOMETRY ORTHOGONAL'
+    endif
+
+    write(6,'(A)') &
+      'PICARD-DIRECTION LEAKAGE-HEIGHT-L2 NON-PRODUCTION-DIAGNOSTIC'
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE UPDATE-NORM 12', &
+      sqrt(l_update_sq(1)))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE UPDATE-NORM 23', &
+      sqrt(l_update_sq(2)))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE DOT 12-23',l_dot)
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE COSINE 12-23', &
+      l_cosine)
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE NORM-RATIO 23/12', &
+      l_ratio)
+    if (l_dot < 0.0_real64) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE GEOMETRY OBTUSE'
+    else if (l_dot > 0.0_real64) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE GEOMETRY ACUTE'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE GEOMETRY ORTHOGONAL'
+    endif
+    write(6,'(A)') 'PICARD-DIRECTION LEAKAGE-INF PRODUCTION-DIAGNOSTIC'
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE D_L 12', &
+      l_infinity(1))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE D_L 23', &
+      l_infinity(2))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE D_L-RATIO 23/12', &
+      l_infinity(2)/l_infinity(1))
+    call report_leakage_hotspot('12',l_hot_index(1),l_hot_ties(1), &
+      x1,x2,x3)
+    call report_leakage_hotspot('23',l_hot_index(2),l_hot_ties(2), &
+      x1,x2,x3)
+    if (any(l_hot_ties > 1)) then
+      write(6,'(A)') &
+        'PICARD-DIRECTION LEAKAGE HOTSPOT LOCATION-NOT-UNIQUE'
+    else if (l_hot_index(1) == l_hot_index(2)) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT SAME-LOCATION'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT MOVED'
+    endif
+
+    call write_real64_metric('PICARD-DIRECTION RHO DELTA 12',rho_delta(1))
+    call write_real64_metric('PICARD-DIRECTION RHO DELTA 23',rho_delta(2))
+    if ((rho_delta(1) == 0.0_real64).or. &
+        (rho_delta(2) == 0.0_real64)) then
+      write(6,'(A)') 'PICARD-DIRECTION RHO GEOMETRY UNDEFINED-ZERO-UPDATE'
+    else if ((rho_delta(1) > 0.0_real64).eqv. &
+             (rho_delta(2) > 0.0_real64)) then
+      write(6,'(A)') 'PICARD-DIRECTION RHO GEOMETRY SAME-SIGN'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION RHO GEOMETRY OPPOSITE-SIGN'
+    endif
+    write(6,'(A)') &
+      'PICARD-DIRECTION COMBINED-STATE ANGLE-NOT-DEFINED-MIXED-UNITS'
+    write(6,'(A)') 'PICARD-DIRECTION INNER-ERROR-BOUND NOT-AVAILABLE'
+    write(6,'(A)') &
+      'PICARD-DIRECTION PHYSICAL-VS-NUMERICAL-CAUSE UNRESOLVED'
+    write(6,'(A)') &
+      'PICARD-DIRECTION OUTER-CONVERGENCE NOT-ESTABLISHED'
+  end subroutine report_update_directions
+
+
+  subroutine report_leakage_hotspot(label,index_l,ties,x1,x2,x3)
+    character(len=*), intent(in) :: label
+    integer, intent(in) :: index_l,ties
+    type(canonical_state), intent(in) :: x1,x2,x3
+    integer :: igr,isnap
+    real(real64) :: delta12,delta23
+
+    igr=mod(index_l-1,x1%dims(2))+1
+    isnap=(index_l-1)/x1%dims(2)+1
+    delta12=x2%leakage(index_l)-x1%leakage(index_l)
+    delta23=x3%leakage(index_l)-x2%leakage(index_l)
+    write(6,'(A,3(1X,I0))') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' FIRST-PLANE/GROUP/TIES',isnap,igr,ties
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' L1',x1%leakage(index_l))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' L2',x2%leakage(index_l))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' L3',x3%leakage(index_l))
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' DELTA12',delta12)
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+      trim(label)//' DELTA23',delta23)
+    if ((delta12 == 0.0_real64).or.(delta23 == 0.0_real64)) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+        trim(label)//' SIGN ZERO-INVOLVED'
+    else if ((delta12 > 0.0_real64).eqv.(delta23 > 0.0_real64)) then
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+        trim(label)//' SIGN SAME'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
+        trim(label)//' SIGN OPPOSITE'
+    endif
+  end subroutine report_leakage_hotspot
+
+
+  subroutine write_real64_metric(label,value)
+    character(len=*), intent(in) :: label
+    real(real64), intent(in) :: value
+
+    write(6,'(A,1X,ES25.17E3,1X,A,Z16.16)') &
+      trim(label),value,'BITS=0x',real64_bits(value)
+  end subroutine write_real64_metric
 
 
 

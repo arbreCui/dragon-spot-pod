@@ -63,10 +63,13 @@ defects relative to direct $x_6$; it is rejected. No empirical damping or
 untested second Anderson candidate is authorized.
 
 Next: stop direct Picard. The predeclared x8 endpoint was evaluated once and
-no x9 is defined. First inspect the stored x6--x8 residual directions offline,
-without transport or fitted coefficients. Any later nonlinear-solver study
-must be declared separately for the same $F(x)=G(x)-x$ and may not alter the
-physical map.
+no x9 is defined. The no-transport x6--x8 direction audit is complete: the
+latest leakage residuals are nearly opposite in a separately labelled
+height-$L_2$ diagnostic, and their unique production infinity hotspot stays
+at plane 3/group 325 while reversing sign and growing. This motivates but
+does not select a solver or prove a cycle. Any nonlinear-solver study must be
+declared separately for the same $F(x)=G(x)-x$ and may not alter the physical
+map.
 
 ## 4. Numerical qualification
 

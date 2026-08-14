@@ -16,7 +16,10 @@ generic, default-off continuation host.
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
   `run_continuation_short.sh`: one unchanged direct continuation.
-- `check_one_map_xsm.f90`: Ganlib-only one-map and continued-map checker.
+- `check_one_map_xsm.f90`: Ganlib-only one-map, continued-map and three-state
+  residual-direction checker.
+- `run_residual_direction_audit.sh`, `residual_direction_inputs.tsv`,
+  `residual_direction_result.md`: hash-locked x6--x8 read-only audit.
 - `current_parent.tsv`: the six role- and hash-locked parent objects.
 - `continuation_policy.md`, `test_continuation_contract.py`: frozen
   decision and static host contract.
@@ -71,10 +74,15 @@ rejected. See [current_result.md](current_result.md).
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map
-instruction. A later nonlinear-solver study must use the same raw map and
-must be declared separately. The immediate next check is only an offline
-x6--x8 residual-direction audit; it launches no transport and fits no
-coefficient.
+instruction.
+
+The offline x6--x8 direction audit is complete. The leakage updates are nearly
+opposite in an explicitly non-production height-$L_2$ diagnostic
+($c_L=-0.969649$); the production $D_L$ hotspot is uniquely plane 3/group 325
+in both updates and reverses sign. The modal Gram-height cosine is
+$c_a=-0.314863$. This motivates a separately declared nonlinear-solver study
+but neither selects a solver nor establishes a cycle or divergence. See
+[residual_direction_result.md](residual_direction_result.md).
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.

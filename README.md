@@ -152,10 +152,17 @@ direct rank-1 Picard census is complete, and no x9 is defined. The retained
 x7 parent manifest is the frozen provenance for reproducing x8, not an
 authorization to continue the sequence.
 
-The immediate next task is a short, transport-free audit of the stored
-x6--x8 residual directions. It fits no coefficient and defines no new
-acceptance score. Only if that audit supports a clear formulation should one
-nonlinear solver be declared for the same residual $F(x)=G(x)-x$. Such a
-solver must preserve the map, basis, rank, tolerances and three-component
-gate, without an empirical coefficient or new physical closure. Rank, mesh
-and reference studies remain downstream of a reproducible fixed point.
+The transport-free x6--x8 residual-direction audit is complete. The last two
+leakage updates have auxiliary height-$L_2$ cosine $-0.969649$, and their
+unique production $D_L$ hotspot stays at plane 3, group 325 while reversing
+sign and increasing in magnitude. The modal $H_sM_g$ cosine is $-0.314863$.
+These are local observations, not a new acceptance score or proof of a cycle.
+Full values and input hashes are in
+[validation/iterative/residual_direction_result.md](validation/iterative/residual_direction_result.md).
+
+The next task is to declare one nonlinear-solver contract for the unchanged
+residual $F(x)=G(x)-x$, first in no-transport tests. It must preserve the map,
+basis, rank, tolerances and three-component gate, without an empirical
+coefficient or new physical closure. The direction audit motivates that
+study but does not select or authorize a solver. Rank, mesh and reference
+studies remain downstream of a reproducible fixed point.

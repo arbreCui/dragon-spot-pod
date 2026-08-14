@@ -16,6 +16,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_continuation_contract.py"
 sh -n "$ROOT/validation/iterative/run_continuation_short.sh"
+sh -n "$ROOT/validation/iterative/run_residual_direction_audit.sh"
 continuation_default=$(RUN_CONTINUATION=0 \
   DRAGON_BIN="$BUILD_DIR/must-not-run" \
   PARENT_MANIFEST="$BUILD_DIR/must-not-read-parent" \
