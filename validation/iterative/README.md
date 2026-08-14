@@ -193,8 +193,10 @@ now prepared as a direct, unmixed continuation from the hash-frozen strict
 `state3_axial.xsm` and `state3_snapshots.xsm`. They pass static CLE-2000
 compilation. `run_map4_short.sh` is default-off and its tested closed path
 touches neither Dragon nor the large artifacts; it has not been activated and
-there is no map-4 result. Its active path remains unauthorized until the
-bounded wrapper's interrupted-process cleanup is separately qualified. See
+there is no map-4 result. After child startup, the bounded wrapper maps
+`SIGHUP`, `SIGINT`, and `SIGTERM` to one process-group cleanup path, verified
+with a no-Dragon fake child. The real active path still requires explicit
+authorization. See
 [map3_strict_result.md](map3_strict_result.md).
 
 The same Ganlib-only direction checker was then applied to the strict

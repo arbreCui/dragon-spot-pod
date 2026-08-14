@@ -213,8 +213,9 @@ basis, or add mixing. Both decks pass the seconds-scale compiler and static
 direct-Picard contract. The runtime entry is default-off and exits before any
 Dragon or artifact access unless `RUN_MAP4=1` is supplied; only its closed and
 invalid-activation paths have been tested. No map-4 calculation has started,
-so the scientific stop point above is unchanged. Activation remains
-unauthorized until interrupted-process cleanup is separately qualified.
+so the scientific stop point above is unchanged. Post-start interrupted-process
+cleanup is separately qualified with a no-Dragon fake child; the real active
+path still requires explicit authorization.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

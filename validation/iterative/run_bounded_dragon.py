@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run one Dragon deck with a process-group wall-clock bound."""
+"""Run one Dragon deck with bounded process-group cleanup."""
 
 from __future__ import annotations
 
@@ -28,17 +28,30 @@ def require_regular(path: Path, executable: bool = False) -> Path:
     return resolved
 
 
-def terminate_group(process: subprocess.Popen[bytes]) -> None:
+def process_group_exists(pgid: int) -> bool:
     try:
-        os.killpg(process.pid, signal.SIGTERM)
+        os.killpg(pgid, 0)
     except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def terminate_group(process: subprocess.Popen[bytes]) -> None:
+    pgid = process.pid
+    try:
+        os.killpg(pgid, signal.SIGTERM)
+    except ProcessLookupError:
+        process.wait()
         return
     deadline = time.monotonic() + TERM_GRACE_SECONDS
-    while process.poll() is None and time.monotonic() < deadline:
+    while process_group_exists(pgid) and time.monotonic() < deadline:
+        process.poll()
         time.sleep(0.05)
-    if process.poll() is None:
+    if process_group_exists(pgid):
         try:
-            os.killpg(process.pid, signal.SIGKILL)
+            os.killpg(pgid, signal.SIGKILL)
         except ProcessLookupError:
             pass
     process.wait()
@@ -60,23 +73,35 @@ def run(
     if not log_parent.is_dir():
         fail("log parent is not a directory")
 
-    with deck.open("rb") as deck_stream, log_path.open("xb") as log_stream:
-        process = subprocess.Popen(
-            [str(dragon)],
-            cwd=str(deck.parent),
-            stdin=deck_stream,
-            stdout=log_stream,
-            stderr=subprocess.STDOUT,
-            start_new_session=True,
-        )
-        try:
-            return_code = process.wait(timeout=timeout_seconds)
-        except subprocess.TimeoutExpired:
-            terminate_group(process)
-            fail(
-                f"timeout after {timeout_seconds:g} seconds; "
-                "no scientific result"
+    handled_signals = (signal.SIGHUP, signal.SIGINT, signal.SIGTERM)
+    previous_handlers = {
+        item: signal.signal(item, signal.default_int_handler)
+        for item in handled_signals
+    }
+    try:
+        with deck.open("rb") as deck_stream, log_path.open("xb") as log_stream:
+            process = subprocess.Popen(
+                [str(dragon)],
+                cwd=str(deck.parent),
+                stdin=deck_stream,
+                stdout=log_stream,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
             )
+            try:
+                return_code = process.wait(timeout=timeout_seconds)
+            except subprocess.TimeoutExpired:
+                terminate_group(process)
+                fail(
+                    f"timeout after {timeout_seconds:g} seconds; "
+                    "no scientific result"
+                )
+            except BaseException:
+                terminate_group(process)
+                raise
+    finally:
+        for item, handler in previous_handlers.items():
+            signal.signal(item, handler)
     if return_code != 0:
         fail(f"Dragon exit status {return_code}; no scientific result")
     return return_code
