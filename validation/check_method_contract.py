@@ -14,6 +14,7 @@ required_tokens = {
         "SPOPROJ:",
         "FIXB",
         "SpotRefFS",
+        "SPOGBAL:",
         "SPOSTATE:",
         "SPOXCONV:",
         "SPOLEAK:",

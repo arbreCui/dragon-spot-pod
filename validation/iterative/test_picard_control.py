@@ -127,6 +127,7 @@ class PicardControlTests(unittest.TestCase):
             "SPOTREFFS SNAP TRACK TRACK_F",
             "SPOD <<RANK>> FIXB",
             "AX_NEXT := SPOSTATE:",
+            "AX_NEXT := SPOGBAL: AX_NEXT TRACK_AX SYSTEM_NEXT MACROLIB3 ::",
             "AX_NEXT := SPOXCONV: AX_NEXT AX",
             "SNAP := SPOLEAK: SNAP AX_NEXT TRACK_AX",
             "AX := AX_NEXT",
@@ -138,6 +139,15 @@ class PicardControlTests(unittest.TestCase):
         )
         self.assertEqual(compact.count("REPEAT"), 1)
         self.assertEqual(compact.count("UNTIL"), 1)
+        self.assertEqual(compact.count("AX_NEXT := SPOGBAL:"), 1)
+        self.assertLess(
+            compact.index("AX_NEXT := FLU:"),
+            compact.index("AX_NEXT := SPOGBAL:"),
+        )
+        self.assertLess(
+            compact.index("AX_NEXT := SPOGBAL:"),
+            compact.index("AX_NEXT := SPOSTATE:"),
+        )
         for forbidden in (" RELA ", " ALPHA ", " ANDERSON ", " CMFD ", " CLIP "):
             self.assertNotIn(forbidden, compact)
 
