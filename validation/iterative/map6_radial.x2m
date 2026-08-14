@@ -1,0 +1,55 @@
+****************************************************************
+* One direct continuation, radial half: x5 -> radial response. *
+****************************************************************
+
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+
+XSM_FILE SNAP5_ARCH :: FILE './state5_snapshots.xsm' ;
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE BASIS_REF :: FILE './basis_reference.xsm' ;
+XSM_FILE AX5_ARCH :: FILE './state5_axial.xsm' ;
+
+XSM_FILE SYSTEM_OUT :: FILE './state6_system.xsm' ;
+XSM_FILE RADIAL_OUT :: FILE './state6_radial.xsm' ;
+
+LINKED_LIST SNAP TRACK SYSTEM_NEXT ;
+MODULE RECOVER: ASM: SPOPROJ: GREP: END: ;
+PROCEDURE SpotRefFS ;
+
+INTEGER spod_rank := 1 ;
+REAL solver_eps := 5.0E-7 ;
+REAL k5 ;
+INTEGER fixed_marker fs_count ;
+DOUBLE rbal source_l2 source_max ;
+
+ECHO "MAP6-RADIAL-BEGIN" ;
+ECHO "MAP6-RADIAL-TOLERANCE" solver_eps ;
+
+* SNAP5_ARCH contains the frozen strict x5 leakage return.
+SNAP := SNAP5_ARCH ;
+TRACK := RECOVER: SNAP :: ITEM 3 ;
+GREP: AX5_ARCH :: GETVAL 'K-EFFECTIVE' 1 >>k5<< ;
+
+* Reconstruct B*a5 and solve all three frozen-fission radial equations.
+SNAP := SPOPROJ: SNAP AX5_ARCH TRACK_AX :: FIXB ;
+SNAP := SpotRefFS SNAP TRACK TRACK_f ::
+  <<k5>> <<solver_eps>> ;
+
+SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
+  EDIT 0 SPOD <<spod_rank>> FIXB ;
+GREP: SYSTEM_NEXT ::
+  GETVAL 'SPOT-FIXB' 1 >>fixed_marker<<
+  GETVAL 'SPOT-FS-N' 1 >>fs_count<<
+  GETVAL 'SPOT-RBAL' 1 >>rbal<<
+  GETVAL 'SPOT-Q-L2' 1 >>source_l2<<
+  GETVAL 'SPOT-Q-MAX' 1 >>source_max<< ;
+ECHO "MAP6-RADIAL-CONTRACT"
+  fixed_marker fs_count rbal source_l2 source_max ;
+
+SYSTEM_OUT := SYSTEM_NEXT ;
+RADIAL_OUT := SNAP ;
+
+ECHO "MAP6-RADIAL-COMPLETE" ;
+END: ;
+QUIT "LIST" .

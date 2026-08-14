@@ -57,7 +57,9 @@ for source in \
   "$ROOT/validation/iterative/map4_radial.x2m" \
   "$ROOT/validation/iterative/map4_axial.x2m" \
   "$ROOT/validation/iterative/map5_radial.x2m" \
-  "$ROOT/validation/iterative/map5_axial.x2m"
+  "$ROOT/validation/iterative/map5_axial.x2m" \
+  "$ROOT/validation/iterative/map6_radial.x2m" \
+  "$ROOT/validation/iterative/map6_axial.x2m"
 do
   stem=$(basename "$source")
   stem=${stem%.*}
