@@ -18,7 +18,8 @@ program check_one_map_xsm
   ! three frozen canonical states, describes their two stored increments,
   ! and locates the infinity-norm leakage hotspots.  Leakage-face mode also
   ! rebuilds raw leakage and reports the exact radial support of the dominant
-  ! axial-face change.
+  ! axial-face change and its minimal normalization-invariant adjacent-floor
+  ! scalar/current ratios.
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -1070,9 +1071,11 @@ contains
     integer :: track_state(nstate)
     integer :: ngrp,nunk,nreg,nreg2d,nfloor,nsnap,ll4,ll5
     integer :: i,index0,hot_index(2),hot_ties(2),hot_s,hot_g
+    integer :: first,last,run_count,interface_z
     integer, allocatable :: keyflx(:),mat1d(:)
     real(real32), allocatable :: dz(:),area(:)
-    real(real64), allocatable :: high_region(:,:)
+    real(real64), allocatable :: high_region(:,:),phi_below(:,:)
+    real(real64), allocatable :: phi_above(:,:),interface_current(:,:)
     real(real64) :: delta(2),maximum(2)
     real(real64) :: delta_low,delta_high,high_total(3)
 
@@ -1151,12 +1154,33 @@ contains
       if (count(mat1d == i) == 0) &
         call fail('LEAKAGE FACE TRACK HAS AN EMPTY PLANE SET.')
     enddo
+    first=1
+    run_count=0
+    interface_z=0
+    do while(first <= nfloor)
+      last=first
+      do
+        if (last >= nfloor) exit
+        if (mat1d(last+1) /= mat1d(first)) exit
+        last=last+1
+      enddo
+      if (mat1d(first) == hot_s) then
+        run_count=run_count+1
+        interface_z=last
+      endif
+      first=last+1
+    enddo
+    if ((run_count /= 1).or.(interface_z >= nfloor)) &
+      call fail('LEAKAGE FACE INTERFACE IS NOT ONE INTERIOR HIGH-Z FACE.')
     call LCMCL(track,1)
 
+    allocate(phi_below(nreg2d,3),phi_above(nreg2d,3))
+    allocate(interface_current(nreg2d,3))
     do i=1,3
       call verify_raw_leakage_and_faces(trim(state_name(i)),states(i), &
         ngrp,nunk,nreg2d,nfloor,nsnap,ll4,keyflx,mat1d,dz,area, &
-        hot_s,hot_g,face(i),high_region(:,i))
+        hot_s,hot_g,interface_z,face(i),high_region(:,i), &
+        phi_below(:,i),phi_above(:,i),interface_current(:,i))
     enddo
 
     write(6,'(A,3(1X,I0))') &
@@ -1179,21 +1203,27 @@ contains
     call write_face_dominance('23',delta_low,delta_high)
     high_total=(/face(1)%high,face(2)%high,face(3)%high/)
     call write_high_face_regions(area,high_region,high_total)
+    call write_interface_ratios(interface_z,phi_below,phi_above, &
+      interface_current)
     write(6,'(A)') 'LEAKAGE-FACES COMPLETE'
 
+    deallocate(interface_current,phi_above,phi_below)
     deallocate(high_region,area,dz,mat1d,keyflx)
   end subroutine report_leakage_faces
 
 
   subroutine verify_raw_leakage_and_faces(path,canonical,ng,nun,nr,nz, &
-      ns,l4,key,map,height,area,target_s,target_g,result,high_region)
+      ns,l4,key,map,height,area,target_s,target_g,interface_z,result, &
+      high_region,phi_below,phi_above,interface_current)
     character(len=*), intent(in) :: path
     type(canonical_state), intent(in) :: canonical
-    integer, intent(in) :: ng,nun,nr,nz,ns,l4,target_s,target_g
+    integer, intent(in) :: ng,nun,nr,nz,ns,l4,target_s,target_g,interface_z
     integer, intent(in) :: key(nr*nz),map(nz)
     real(real32), intent(in) :: height(nz),area(nr)
     type(leakage_face_state), intent(out) :: result
     real(real64), intent(out) :: high_region(nr)
+    real(real64), intent(out) :: phi_below(nr),phi_above(nr)
+    real(real64), intent(out) :: interface_current(nr)
     type(c_ptr) :: root,fluxes
     character(len=12) :: signature
     integer :: state(nstate)
@@ -1211,6 +1241,9 @@ contains
     result%denominator=0.0_real32
     result%leakage=0.0_real32
     high_region=0.0_real64
+    phi_below=0.0_real64
+    phi_above=0.0_real64
+    interface_current=0.0_real64
     target_found=.false.
 
     call LCMOP(root,path,2,2,0)
@@ -1275,6 +1308,15 @@ contains
       enddo
 
       if (g == target_g) then
+        do r=1,nr
+          reg=(r-1)*nz+interface_z
+          if ((key(reg) <= 0).or.(key(reg+1) <= 0)) &
+            call fail('LEAKAGE FACE ADJACENT SCALAR UNKNOWN IS ABSENT.')
+          phi_below(r)=real(unknown(key(reg)),real64)
+          phi_above(r)=real(unknown(key(reg+1)),real64)
+          right_index=l4+(r-1)*(nz+1)+interface_z+1
+          interface_current(r)=real(unknown(right_index),real64)
+        enddo
         do r=1,nr
           first=1
           do while(first <= nz)
@@ -1437,6 +1479,88 @@ contains
       'LEAKAGE-FACES HIGH-Z MAX-ABS/L1-SHARE 12/23', &
       max_abs(1)/sum_abs(1),max_abs(2)/sum_abs(2)
   end subroutine write_high_face_regions
+
+
+  subroutine write_interface_ratios(interface_z,phi_below,phi_above, &
+      face_current)
+    integer, intent(in) :: interface_z
+    real(real64), intent(in) :: phi_below(:,:),phi_above(:,:)
+    real(real64), intent(in) :: face_current(:,:)
+    integer :: r,j,nr
+    integer :: ratio_positive(2),ratio_negative(2)
+    integer :: current_positive(2),current_negative(2)
+    integer :: face_positive,face_negative
+    real(real64) :: phi_ratio(size(phi_below,1),3)
+    real(real64) :: current_ratio(size(phi_below,1),3)
+    real(real64) :: ratio_delta(size(phi_below,1),2)
+    real(real64) :: current_delta(size(phi_below,1),2)
+
+    nr=size(phi_below,1)
+    if ((size(phi_below,2) /= 3).or. &
+        any(shape(phi_above) /= shape(phi_below)).or. &
+        any(shape(face_current) /= shape(phi_below))) &
+      call fail('LEAKAGE FACE INTERFACE DIMENSIONS ARE INVALID.')
+    if (any(.not.ieee_is_finite(phi_below)).or. &
+        any(.not.ieee_is_finite(phi_above)).or. &
+        any(.not.ieee_is_finite(face_current)).or. &
+        any(phi_below <= 0.0_real64).or.any(phi_above <= 0.0_real64)) &
+      call fail('LEAKAGE FACE INTERFACE VALUES ARE INVALID.')
+
+    phi_ratio=phi_above/phi_below
+    current_ratio=2.0_real64*face_current/(phi_below+phi_above)
+    ratio_delta(:,1)=phi_ratio(:,2)-phi_ratio(:,1)
+    ratio_delta(:,2)=phi_ratio(:,3)-phi_ratio(:,2)
+    current_delta(:,1)=current_ratio(:,2)-current_ratio(:,1)
+    current_delta(:,2)=current_ratio(:,3)-current_ratio(:,2)
+    if (any(.not.ieee_is_finite(phi_ratio)).or. &
+        any(.not.ieee_is_finite(current_ratio)).or. &
+        any(.not.ieee_is_finite(ratio_delta)).or. &
+        any(.not.ieee_is_finite(current_delta))) &
+      call fail('LEAKAGE FACE INTERFACE RATIO IS NON-FINITE.')
+
+    face_positive=count(face_current > 0.0_real64)
+    face_negative=count(face_current < 0.0_real64)
+
+    do j=1,2
+      ratio_positive(j)=count(ratio_delta(:,j) > 0.0_real64)
+      ratio_negative(j)=count(ratio_delta(:,j) < 0.0_real64)
+      current_positive(j)=count(current_delta(:,j) > 0.0_real64)
+      current_negative(j)=count(current_delta(:,j) < 0.0_real64)
+    enddo
+
+    write(6,'(A,3(1X,I0))') &
+      'LEAKAGE-FACES INTERFACE FLOOR-BELOW/ABOVE/FACE', &
+      interface_z,interface_z+1,interface_z+1
+    write(6,'(A)') &
+      'LEAKAGE-FACES INTERFACE NORMALIZATION-INVARIANT'
+    write(6,'(A)') &
+      'LEAKAGE-FACES INTERFACE R_PHI=PHI_ABOVE/PHI_BELOW'
+    write(6,'(A)') &
+      'LEAKAGE-FACES INTERFACE Q_J=2*J_FACE/(PHI_BELOW+PHI_ABOVE)'
+    write(6,'(A)') &
+      'LEAKAGE-FACES INTERFACE REGION R_PHI-X1/X2/X3 Q_J-X1/X2/X3'
+    do r=1,nr
+      write(6,'(A,1X,I0,6(1X,ES24.16E3))') &
+        'LEAKAGE-FACES INTERFACE REGION',r,phi_ratio(r,:), &
+        current_ratio(r,:)
+    enddo
+    write(6,'(A,6(1X,I0))') &
+      'LEAKAGE-FACES INTERFACE R_PHI POS/NEG/ZERO 12/23', &
+      ratio_positive(1),ratio_negative(1), &
+      nr-ratio_positive(1)-ratio_negative(1), &
+      ratio_positive(2),ratio_negative(2), &
+      nr-ratio_positive(2)-ratio_negative(2)
+    write(6,'(A,6(1X,I0))') &
+      'LEAKAGE-FACES INTERFACE Q_J POS/NEG/ZERO 12/23', &
+      current_positive(1),current_negative(1), &
+      nr-current_positive(1)-current_negative(1), &
+      current_positive(2),current_negative(2), &
+      nr-current_positive(2)-current_negative(2)
+    write(6,'(A,3(1X,I0))') &
+      'LEAKAGE-FACES INTERFACE J_FACE POS/NEG/ZERO ALL-STATES', &
+      face_positive,face_negative,3*nr-face_positive-face_negative
+    write(6,'(A)') 'LEAKAGE-FACES INTERFACE NO-FICK-INFERENCE'
+  end subroutine write_interface_ratios
 
 
   subroutine write_real64_metric(label,value)

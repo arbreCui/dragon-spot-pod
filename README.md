@@ -189,7 +189,22 @@ within the archived balance but does not yet identify a physical cause. The
 high-face split closes bit for bit across the eight track radial indices: all
 eight reverse sign together, while the unique largest index contributes only
 about `51.08%` of the L1 sum. It is therefore an exact multi-region change,
-not a single-region anomaly.
+not a single-region anomaly. At that same face, the adjacent-floor audit uses
+only the normalization-invariant pair
+
+\[
+R_\phi=\phi_{21}/\phi_{20},\qquad
+q_J=2J_{21}/(\phi_{20}+\phi_{21}).
+\]
+
+All eight rows have \(\Delta R_{\phi,12}<0\),
+\(\Delta R_{\phi,23}>0\), \(\Delta q_{J,12}>0\), and
+\(\Delta q_{J,23}<0\). All 24 face currents remain negative in the common
+\(+z\) convention: the update reverses, not the current direction. Therefore
+the high-face rebound cannot be explained solely by an arbitrary common flux
+normalization. These are adjacent cell-average fluxes and one signed face
+current; no Fick coefficient, physical cause, two-cycle, or convergence claim
+is inferred.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

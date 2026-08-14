@@ -82,6 +82,21 @@ grep -Fq 'LEAKAGE-FACES HIGH-Z DELTA12 EXACT-MULTI-REGION' \
   "$WORK/leakage_faces.log"
 grep -Fq 'LEAKAGE-FACES HIGH-Z DELTA23 EXACT-MULTI-REGION' \
   "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES INTERFACE FLOOR-BELOW/ABOVE/FACE 20 21 21' \
+  "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES INTERFACE NORMALIZATION-INVARIANT' \
+  "$WORK/leakage_faces.log"
+grep -Fq \
+  'LEAKAGE-FACES INTERFACE R_PHI POS/NEG/ZERO 12/23 0 8 0 8 0 0' \
+  "$WORK/leakage_faces.log"
+grep -Fq \
+  'LEAKAGE-FACES INTERFACE Q_J POS/NEG/ZERO 12/23 8 0 0 0 8 0' \
+  "$WORK/leakage_faces.log"
+grep -Fq \
+  'LEAKAGE-FACES INTERFACE J_FACE POS/NEG/ZERO ALL-STATES 0 24 0' \
+  "$WORK/leakage_faces.log"
+grep -Fq 'LEAKAGE-FACES INTERFACE NO-FICK-INFERENCE' \
+  "$WORK/leakage_faces.log"
 grep -Fq 'LEAKAGE-FACES COMPLETE' "$WORK/leakage_faces.log"
 
 verify_all

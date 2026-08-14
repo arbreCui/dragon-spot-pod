@@ -123,7 +123,12 @@ than the numerator's and has the opposing ratio effect. This is provenance of
 the observed rebound, not a physical-cause claim. A further exact radial split
 finds all eight high-face region contributions nonzero and reversing sign
 together; the unique largest index carries about `51.08%`, so the change is
-multi-region rather than a single-region anomaly.
+multi-region rather than a single-region anomaly. At the same interface, both
+the adjacent scalar-flux ratio and the signed current divided by the adjacent
+mean flux reverse their update sign in all eight rows. These two dimensionless
+ratios are invariant to a common state normalization; all face currents
+themselves retain the same negative direction. No Fick coefficient or causal
+model is inferred.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

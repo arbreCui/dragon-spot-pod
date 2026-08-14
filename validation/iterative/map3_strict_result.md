@@ -241,6 +241,45 @@ not a pin/ring/material label, so no stronger geometric name is inferred.
 Here `EXACT-MULTI-REGION` means only that the exact nonzero support has more
 than one index; it is not a magnitude threshold or fitted physical class.
 
+### Normalization-invariant adjacent-floor relation
+
+The final no-solve check reads, at the same group and face, the floor-20 and
+floor-21 cell-average scalar fluxes and the common signed face-21 current.
+The three same-scale quantities contain two degrees of freedom after removal
+of an arbitrary common state normalization.  The check therefore reports only
+the minimal pair
+
+\[
+R_{\phi,r}=\frac{\phi_{21,r}}{\phi_{20,r}},\qquad
+q_{J,r}=\frac{2J_{21,r}}{\phi_{20,r}+\phi_{21,r}}.
+\]
+
+Here the factor two only writes the current relative to the local arithmetic
+mean scalar flux; it is not a fitted or empirical coefficient.  Both ratios
+are dimensionless and unchanged by a common nonzero normalization of one
+state.  The reader requires every adjacent scalar value to be finite and
+strictly positive; it applies no floor, clipping, threshold, or fit.
+
+| state | range of $R_\phi$, radial indices 1–8 | range of $q_J$, radial indices 1–8 |
+|---|---:|---:|
+| $x_1$ | `[1.0277273282, 1.0277275185]` | `[-2.6889540743e-3, -2.6889534766e-3]` |
+| $x_2$ | `[1.0276808800, 1.0276810074]` | `[-2.6719403523e-3, -2.6719398969e-3]` |
+| $x_3$ | `[1.0277326531, 1.0277328717]` | `[-2.6905163584e-3, -2.6905160075e-3]` |
+
+The exact positive/negative/zero counts are `0/8/0` then `8/0/0` for
+\(\Delta R_\phi\), and `8/0/0` then `0/8/0` for \(\Delta q_J\).  Thus both
+normalization-invariant quantities reverse update sign at every radial index.
+All 24 underlying face currents are negative in the common \(+z\) convention;
+the current direction itself does not reverse.  The raw high-face rebound
+therefore cannot be explained solely by arbitrary eigenvector normalization.
+
+The two scalar values are adjacent cell averages, not an interface scalar
+flux, and \(q_J\) is only a signed current-to-local-flux ratio.  It is not a
+Fick coefficient or a fitted closure.  The eight radial-index rows of this
+same rank-one field are also not eight independent physical experiments.  This
+result identifies a coherent local shape-and-current update rebound, but
+supplies no physical cause, two-cycle proof, or outer-convergence conclusion.
+
 This identifies which archived balance term carries the hotspot change, not
 its physical cause.  It does not establish a two-cycle or outer convergence
 and introduces no model, fitted factor, relaxation coefficient, or fourth
@@ -274,10 +313,10 @@ LOCK="$PWD/validation/iterative/picard_strict_direction_scientific.sha256" \
 It compiles one Ganlib-only checker, verifies all three hashes before and
 after the read, and launches no Dragon process.
 
-The next scientifically valid action is therefore not a blind \(x_4\).  If
-the cause is pursued further, the smallest no-solve test is the adjacent-floor
-scalar field and signed-current relation at this same high-\(z\) interface;
-no empirical coefficient should be introduced.
+This completes the defensible no-solve localization available from the frozen
+three-state sequence.  Further convergence evidence requires a separately
+authorized new map or outer-solver study; the present diagnostic does not
+select or tune such a method.
 
 ## Hash-frozen local evidence
 
@@ -294,5 +333,5 @@ The ignored local evidence is split between
 6d1ac081f17237bdc87e78d1d806c4f6127425e6f453f06a48451b278c1ab921  state3_snapshots.xsm
 0db7dac519f882a1d6102ba00adf8fd102dc00c68aaea346c9dd8067e8715f02  independent_check.log
 d1bf1a4462f3097fca7d44e49aa5cbda69e09b46999de0dbebc40d1b615c980d  direction.log
-56bd286cf7946a54154401f5755ad55809b798250219d6c7567b81e03fd1acf6  leakage_faces.log
+82058122fb471d1eaeba006c5132955f500c0bbd8298de66c62b9d325010e43d  leakage_faces.log
 ```

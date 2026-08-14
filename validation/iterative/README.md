@@ -216,7 +216,19 @@ localization, not a physical-cause or convergence claim. The high-face radial
 split also closes bit for bit: all eight track regions are exactly nonzero and
 change with one common sign in each update, reversing sign together between
 updates. The unique largest region contributes about `51.08%`; this is an
-exact multi-region, nonuniform change.
+exact multi-region, nonuniform change. A final no-solve check at the same
+floor-20/floor-21 interface removes the arbitrary common normalization with
+
+\[
+R_\phi=\phi_{21}/\phi_{20},\qquad
+q_J=2J_{21}/(\phi_{20}+\phi_{21}).
+\]
+
+For all eight track radial indices, \(R_\phi\) decreases and then increases,
+while \(q_J\) increases and then decreases. All 24 raw face currents are
+negative, so the current direction does not reverse. This establishes a
+normalization-invariant local update rebound, not Fick behavior, a physical
+cause, a two-cycle, or convergence.
 
 ```sh
 SEED_DIR=/absolute/path/to/iterative-seed \
