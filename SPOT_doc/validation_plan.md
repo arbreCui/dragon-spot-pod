@@ -77,6 +77,12 @@ only as a parameter-free algebraic reference. Real SPOT has no validated
 exact Jacobian, so no Newton/JFNK production path or new transport run is
 authorized by this result.
 
+A no-transport finite-difference entry probe also passes. It shows that the
+same linear manufactured direction can be hidden or distorted by binary32
+state publication. This is a local counterexample to assuming a smooth
+binary64 $Jv$, not a proof that JFNK is impossible; Krylov implementation
+remains out of scope.
+
 ## 4. Numerical qualification
 
 Only after a reproducible fixed point exists, vary one choice at a time:

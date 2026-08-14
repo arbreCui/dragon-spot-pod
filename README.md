@@ -167,5 +167,9 @@ It preserves the map, basis, rank, tolerances and three-component gate, and
 requires a fresh strict $G$ evaluation for every proposed state. Full exact
 Newton is tested only as a parameter-free manufactured-problem oracle. The
 current real map has no validated exact Jacobian, so this result does not
-authorize production Newton/JFNK or another transport run. Rank, mesh and
-reference studies remain downstream of a reproducible fixed point.
+authorize production Newton/JFNK or another transport run. A minimal
+finite-difference probe additionally shows that the same linear manufactured
+direction yields quotients $0$, $1$ and $4/3$ across three binary32-scale
+perturbations. This establishes a publication-resolution obstruction, not a
+general failure of JFNK. Rank, mesh and reference studies remain downstream
+of a reproducible fixed point.

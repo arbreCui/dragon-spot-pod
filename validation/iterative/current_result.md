@@ -138,3 +138,9 @@ a small exact-arithmetic reference: the current real map has no validated
 exact Jacobian, and its binary32 publication steps exclude calling a finite
 difference an exact derivative. Therefore this phase authorizes neither a
 production Newton/JFNK implementation nor another transport evaluation.
+The subsequent no-transport publication probe confirms the immediate
+obstruction: for one linear manufactured residual, three format-derived
+binary32-scale perturbations return directional quotients $0$, $1$ and
+$4/3$. This does not prove JFNK impossible; it shows that a production
+finite-difference action needs a new, justified publication-aware secant
+policy before Krylov code or real map calls are meaningful.

@@ -85,9 +85,55 @@ cannot be called the exact Jacobian. JFNK would additionally introduce a
 Krylov tolerance, restart and preconditioning choices, as well as many map
 evaluations. None is authorized here.
 
+## Finite-difference publication probe
+
+This probe stops before Krylov iteration. It is not a JFNK implementation or
+a production step-size rule. Let $Q$ denote materialization into the state
+actually consumed by the map and define
+
+$$
+F_Q(y)=G(Q(y))-Q(y).
+$$
+
+The finite directional secant examined here is
+
+$$
+D_hF_Q(x;v)=\frac{F_Q(x+hv)-F_Q(x)}{h}.
+$$
+
+The manufactured scalar case uses $G(y)=2y$, hence the underlying smooth
+residual is $F(y)=y$, with $x=v=1$. The perturbations are exactly
+representable binary fractions derived from the binary32 spacing at one;
+they are test fixtures, not tuned solver parameters.
+
+| $h$ | $Q_{32}(x+hv)-Q_{32}(x)$ | published quotient |
+|---:|---:|---:|
+| $2^{-25}$ | $0$ | $0$ |
+| $2^{-23}$ | $2^{-23}$ | $1$ |
+| $3\,2^{-24}$ | $2^{-22}$ | $4/3$ |
+
+The final row is a binary32 midpoint and uses IEEE round-to-nearest,
+ties-to-even; the test asserts that platform rule explicitly.
+
+Without publication, the same linear residual gives quotient one. Thus one
+determinate perturbation is hidden, another happens to reproduce the smooth
+direction, and another is distorted. This is the expected behavior of a
+finite secant across a quantized publication map. In the current real path,
+`SPOPROJ` converts reconstructed flux to default REAL, `K-EFFECTIVE` and
+`SPOT-LEAK1D` are stored as LCM type 2, and later REAL64 state construction
+cannot restore the discarded bits.
+
+The result is only a local publication-resolution counterexample. It does
+not prove that every finite-difference step fails, that JFNK is impossible,
+or that real SPOT cannot converge. It does prove that a smooth binary64
+finite-difference assumption is insufficient and that no GMRES/JFNK path is
+authorized without a separately justified publication-aware secant policy.
+
 ## Established by the synthetic test
 
-The seconds-scale exact-arithmetic test verifies:
+The seconds-scale synthetic test uses exact rational arithmetic for the
+Newton algebra and exactly representable binary fractions for the publication
+probe. It verifies:
 
 - one full Newton step solves a coupled affine root and the candidate is
   checked by a fresh map evaluation;
@@ -96,8 +142,8 @@ The seconds-scale exact-arithmetic test verifies:
   declared tolerance;
 - consistent leakage-unit scaling gives the same physical Newton step;
 - a failed map or singular Newton system fails closed;
-- distinct REAL64 perturbations can collapse to one binary32 published
-  value, so finite differences are outside this exact reference.
+- the same manufactured directional quotient is exact before publication
+  but can be hidden or distorted by binary32 materialization.
 
 The test proves only the algebra and control boundary. It does not show that
 real SPOT has an exact Jacobian, that Newton is practical, that it converges,

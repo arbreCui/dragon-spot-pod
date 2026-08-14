@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Exact-arithmetic tests for the no-transport nonlinear-solver contract."""
+"""Algebra and publication tests for the no-transport solver contract."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction
 import struct
+import sys
 import unittest
 
 
@@ -140,6 +141,12 @@ def evaluate_proposal(
 
 def f32(value: float) -> float:
     return struct.unpack(">f", struct.pack(">f", value))[0]
+
+
+def scalar_directional_quotient(residual, publish, x, direction, step):
+    base = publish(x)
+    perturbed = publish(x + step * direction)
+    return base, perturbed, (residual(perturbed) - residual(base)) / step
 
 
 class NonlinearSolverContractTests(unittest.TestCase):
@@ -299,11 +306,44 @@ class NonlinearSolverContractTests(unittest.TestCase):
             )
         self.assertEqual(candidate_calls, 1)
 
-    def test_binary32_publication_has_a_perturbation_plateau(self) -> None:
-        base = 1.0
-        perturbed = base + 2.0**-30
-        self.assertNotEqual(base, perturbed)
-        self.assertEqual(f32(base), f32(perturbed))
+    def test_fd_secant_depends_on_binary32_publication_step(self) -> None:
+        self.assertEqual(sys.float_info.radix, 2)
+        self.assertEqual(sys.float_info.mant_dig, 53)
+        self.assertEqual(sys.float_info.rounds, 1)
+        self.assertEqual(struct.calcsize(">f"), 4)
+
+        # F(x)=x corresponds to the smooth manufactured map G(x)=2x.
+        residual = lambda value: value
+        identity = lambda value: value
+        x = 1.0
+        direction = 1.0
+        hidden = 2.0**-25
+        one_ulp = 2.0**-23
+        tie_to_even = 3.0 * 2.0**-24
+
+        _, smooth, smooth_jv = scalar_directional_quotient(
+            residual, identity, x, direction, hidden
+        )
+        self.assertNotEqual(smooth, x)
+        self.assertEqual(smooth_jv, 1.0)
+
+        base, collapsed, zero_jv = scalar_directional_quotient(
+            residual, f32, x, direction, hidden
+        )
+        self.assertEqual(collapsed, base)
+        self.assertEqual(zero_jv, 0.0)
+        self.assertEqual(
+            scalar_directional_quotient(
+                residual, f32, x, direction, one_ulp
+            )[2],
+            1.0,
+        )
+        self.assertEqual(
+            scalar_directional_quotient(
+                residual, f32, x, direction, tie_to_even
+            )[2],
+            4.0 / 3.0,
+        )
 
 
 if __name__ == "__main__":

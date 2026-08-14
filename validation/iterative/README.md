@@ -92,7 +92,10 @@ state must be evaluated by the unchanged real map and pass the same three raw
 defects; no linear prediction or combined norm can accept it. Full exact
 Newton is tested only as a parameter-free manufactured-problem oracle. The
 real SPOT map has no validated exact Jacobian, so no production Newton or
-JFNK implementation and no new transport run are authorized.
+JFNK implementation and no new transport run are authorized. The minimal
+finite-difference probe now gives quotients $0$, $1$ and $4/3$ for the same
+linear direction under three binary32-scale perturbations. This is a local
+publication-resolution counterexample, not a general rejection of JFNK.
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.
