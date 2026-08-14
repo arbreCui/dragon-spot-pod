@@ -122,7 +122,14 @@ Leakage and modal defects fail the unchanged \(5\times10^{-7}\) AND gate, so
 `-0.7947401/4.571844` and height-weighted leakage cosine/norm ratio
 `-0.7744331/1.535402`; the production leakage-infinity ratio is `1.314491`.
 These are separate observed reversals with amplification, not proof of
-divergence, a two-cycle, or a physical cause. No \(x_5\) has been run. An
+divergence, a two-cycle, or a physical cause. One predeclared stop/go
+continuation then completed strict \(x_5=G(x_4)\), with
+\((R_\rho,R_L,R_a)=(6.4057635\times10^{-8},3.1253506\times10^{-4},
+2.3143260\times10^{-7})\). Only leakage fails. Relative to \(x_3\to x_4\),
+the \(x_4\to x_5\) modal norm ratio is `0.156192`, the height-weighted
+leakage ratio is `0.731416`, and the production infinity ratio is `0.549703`.
+Thus the repeated-amplification stop condition was not met, but convergence
+is not established. No \(x_6\) has been run. An
 earlier read-only check of the replacement \(x_1,x_2,x_3\) sequence finds
 that the modal update is acute and smaller, whereas the leakage update has a
 negative height-weighted \(L_2\) cosine and a smaller aggregate norm but a

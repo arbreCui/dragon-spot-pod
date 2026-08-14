@@ -244,8 +244,7 @@ d2ae9a369fe1e08bcfd0b36cbe3a595670d6e7e11eb8d0b9c0a30292bb6ffb9c  state4_axial.x
 c7c90e0475f6653908e7292fadf433f906739af512afc88b0a72564794f2c2d4  state4_snapshots.xsm
 ```
 
-This is a complete strict \(x_4=G(x_3)\), but not a fixed point. No \(x_5\)
-has been run. See
+This is a complete strict \(x_4=G(x_3)\), but not a fixed point. See
 [map3_strict_result.md](map3_strict_result.md).
 
 A no-Dragon invocation of the same Ganlib-only checker then compared the
@@ -271,6 +270,51 @@ X2_NAME=state3_axial.xsm \
 X3_DIR="$PWD/validation/artifacts/iterative-map4-axial-80s" \
 X3_NAME=state4_axial.xsm \
 LOCK="$PWD/validation/iterative/picard_map4_direction_scientific.sha256" \
+  sh validation/iterative/run_picard_direction_check.sh
+```
+
+One separately authorized stop/go experiment then evaluated the unchanged
+direct map \(x_5=G(x_4)\). The radial process completed all three strict
+fixed-source solves within 120 s; the axial process completed one strict solve
+within 80 s. The independent one-map checker passed all six bitwise and
+structural checks. The raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.405763486316829\times10^{-8},\,
+3.125350597046176\times10^{-4},\,
+4.582398105412722\times10^{-7}\ {\rm cm}^{-1},\,
+2.314326025446218\times10^{-7}).
+\]
+
+Thus \(R_\rho\) and \(R_a\) pass, while \(R_L\) remains `625.0701` times
+the unchanged gate. The saved artifacts have hashes
+
+```text
+8d56ca09dddac852cdaf29f57bde6fe35ecbb9c6dd7d86e65982dc8bd418f6bf  radial.log
+bb0bac80474a58b1d65c5f6a9dfa143da28ad43d054fe40e8f0a3ccbbdfcf5b3  axial.log
+2827044b17cec87da8f92b995041e8c1d698a9efc37466efdfaed9fc0fbf19c2  state5_axial.xsm
+fb07a491004bdc9d1c8c547dae6be691c35c0e5f4160fe11bb2d06796c6d51d4  state5_snapshots.xsm
+```
+
+The no-Dragon \(x_3,x_4,x_5\) direction check gives modal cosine/ratio
+`+0.6926657325/0.1561917930`, height-weighted leakage cosine/ratio
+`-0.2808949762/0.7314157875`, and production infinity ratio
+`0.5497028044`. The modal update is acute and much smaller; leakage remains
+obtuse but is smaller in both stated norms. Therefore the predeclared condition
+of another reverse amplification was not observed. This does not establish
+eventual convergence because \(R_L\) still fails. No \(x_6\) has been run.
+
+Reproduce the direction result with
+
+```sh
+X1_DIR="$PWD/validation/artifacts/iterative-map3-strict-current" \
+X1_NAME=state3_axial.xsm \
+X2_DIR="$PWD/validation/artifacts/iterative-map4-axial-80s" \
+X2_NAME=state4_axial.xsm \
+X3_DIR="$PWD/validation/artifacts/iterative-map5-axial-80s" \
+X3_NAME=state5_axial.xsm \
+LOCK="$PWD/validation/iterative/picard_map5_direction_scientific.sha256" \
   sh validation/iterative/run_picard_direction_check.sh
 ```
 

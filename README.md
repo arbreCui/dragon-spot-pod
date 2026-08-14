@@ -233,7 +233,24 @@ is not a fixed point. A subsequent no-Dragon check of the \(x_2\to x_3\) and
 `1.535402`. The production leakage-infinity ratio is `1.314491`. Thus both
 separately measured updates show an observed reversal with amplification, not
 contraction on this pair. This does not prove divergence or a two-cycle, and
-no mixed-unit whole-state angle is defined. No \(x_5\) has been run.
+no mixed-unit whole-state angle is defined.
+
+One predeclared stop/go continuation then completed strict
+\(x_5=G(x_4)\). Its raw defects are
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4057635\times10^{-8},\,3.1253506\times10^{-4},\,
+2.3143260\times10^{-7}).
+\]
+
+The eigenvalue and modal components pass, while leakage still fails by a
+factor of `625.07`. The \(x_4\to x_5\) modal update is acute and only
+`0.156192` times the preceding modal norm; the leakage update remains obtuse
+but falls to `0.731416` in height-weighted \(L_2\) and `0.549703` in the
+production infinity defect. Therefore the predeclared repeated-amplification
+stop condition was not met, but outer convergence is still not established.
+No \(x_6\) has been run.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.
