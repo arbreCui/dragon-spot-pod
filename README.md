@@ -291,7 +291,13 @@ height-weighted leakage falls to `0.6329023` and production \(R_L\) to
 the reconstructed field remains strictly positive. This selects one
 candidate for a future bounded map, although \(R_L\) remains about 286 times
 the gate; it is not convergence and no state or Dragon run has yet been
-produced.
+produced. A subsequent read-only publication audit preserves the common
+binary32 `K-EFFECTIVE`, derives canonical \(\rho\) bit exactly, and rounds
+candidate leakage once through the required binary32 restart representation.
+The maximum leakage round-trip change is `5.7180464e-11 cm^-1`; the published
+defects are `(R_rho,R_L,R_a)=(2.4974104e-8,1.4301089e-4,3.9438538e-7)`, so
+the same three screens remain passed. This still writes no state and performs
+no physical-map evaluation.
 See `validation/iterative/anderson1_modal_result.md`.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain

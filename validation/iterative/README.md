@@ -419,7 +419,15 @@ Leakage height-\(L_2\) and production \(R_L\) fall to `0.6329023` and
 the radial-feedback reconstruction stays strictly positive. This is one
 eligible candidate for a separately authorized bounded map, not a converged
 state or an evaluation of the nonlinear map. No XSM state is written and no
-Dragon process is started by this check.
+Dragon process is started by this check. The same checker then applies the
+required publication precision without adding a method parameter: it keeps
+the common binary32 `K-EFFECTIVE`, derives canonical \(\rho\) bit exactly,
+and rounds candidate leakage once to restart binary32 before promoting it
+back to canonical binary64. The largest leakage round-trip change is
+`5.7180464e-11 cm^-1`, and the published
+`(R_rho,R_L,D_L,R_a)` is
+`(2.4974104e-8,1.4301089e-4,2.0968299e-7 cm^-1,3.9438538e-7)`.
+All three outer screens remain passed; no candidate file is written.
 
 Full results are in `anderson1_modal_result.md`. Reproduce them with
 

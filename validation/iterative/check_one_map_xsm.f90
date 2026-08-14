@@ -853,6 +853,7 @@ contains
     real(real64), allocatable :: affine_modal_residual(:)
     real(real64), allocatable :: leak_input(:)
     real(real64), allocatable :: leak_candidate(:),leak_residual(:)
+    real(real64), allocatable :: published_leak_candidate(:)
     real(real64) :: denominator,numerator,gamma,weight6
     real(real64) :: norm_f4,norm_f5,norm_linearized,norm_candidate
     real(real64) :: norm_affine_modal
@@ -861,6 +862,7 @@ contains
     real(real64) :: leak_h2_current,leak_h2_affine
     real(real64) :: leak_f4,leak_f5,leak_delta
     real(real64) :: affine_defect(4)
+    real(real64) :: published_defect(4),leak_roundtrip_max
     integer :: reconstructed_count,min_group,min_snapshot,min_region
     integer :: g,s,index_l
     logical :: rho_screen,leak_screen,modal_screen
@@ -874,6 +876,7 @@ contains
     allocate(leak_input(size(x4%leakage)))
     allocate(leak_candidate(size(x4%leakage)))
     allocate(leak_residual(size(x4%leakage)))
+    allocate(published_leak_candidate(size(x4%leakage)))
     f4=x5%coordinates-x4%coordinates
     f5=x6%coordinates-x5%coordinates
     delta_f=f5-f4
@@ -1205,11 +1208,88 @@ contains
     else
       write(6,'(A)') 'ANDERSON1-LEAKAGE CANONICAL SCREEN REJECT'
     endif
+
+    ! Publication is not a new model operation.  It is the one unavoidable
+    ! precision projection imposed by the production state contract:
+    ! K-EFFECTIVE and each restart SPOT-LEAK1D are binary32, while canonical
+    ! rho and L are their exact binary64 evaluations/promotions.  Coordinates
+    ! remain binary64 and therefore need no publication projection here.
+    ! Only the output candidate is publishable; the affine input remains the
+    ! unchanged mathematical secant preimage used by the selection screen.
+    if ((transfer(x5%keff,0_int32) /= transfer(x6%keff,0_int32)).or. &
+        (transfer(x5%rho,0_int64) /= transfer(x6%rho,0_int64))) &
+      call fail('ANDERSON1-LEAKAGE X5/X6 RHO ENDPOINTS ARE NOT IDENTICAL.')
+    rho_candidate=1.0_real64/real(x6%keff,real64)
+    if (transfer(rho_candidate,0_int64) /= transfer(x6%rho,0_int64)) &
+      call fail('ANDERSON1-LEAKAGE KEFF/RHO PUBLICATION IDENTITY FAILED.')
+    if (any(real(real(x4%leakage,real32),real64) /= x4%leakage).or. &
+        any(real(real(x5%leakage,real32),real64) /= x5%leakage).or. &
+        any(real(real(x6%leakage,real32),real64) /= x6%leakage)) &
+      call fail('ANDERSON1-LEAKAGE INPUT L IS NOT PROMOTED BINARY32.')
+    published_leak_candidate=real(real(leak_candidate,real32),real64)
+    if (any(.not.ieee_is_finite(published_leak_candidate))) &
+      call fail('ANDERSON1-LEAKAGE PUBLISHED L IS NON-FINITE.')
+    leak_roundtrip_max=maxval(abs(published_leak_candidate-leak_candidate))
+    leak_residual=published_leak_candidate-leak_input
+    published_defect(1)=abs(rho_candidate-rho_input)
+    published_defect(3)=maxval(abs(leak_residual))
+    leak_scale=max(maxval(abs(leak_input)), &
+      maxval(abs(published_leak_candidate)))
+    if (leak_scale == 0.0_real64) then
+      if (published_defect(3) /= 0.0_real64) &
+        call fail('ANDERSON1-LEAKAGE PUBLISHED ZERO-SCALE FAILURE.')
+      published_defect(2)=0.0_real64
+    else
+      published_defect(2)=published_defect(3)/leak_scale
+    endif
+    published_defect(4)=affine_defect(4)
+    if (any(.not.ieee_is_finite(published_defect)).or. &
+        any(published_defect < 0.0_real64).or. &
+        (.not.ieee_is_finite(leak_roundtrip_max))) &
+      call fail('ANDERSON1-LEAKAGE PUBLISHED DEFECT IS INVALID.')
+    if (x6%saved_defect(1) < outer_gate) then
+      rho_screen=published_defect(1) < outer_gate
+    else
+      rho_screen=published_defect(1) < x6%saved_defect(1)
+    endif
+    if (x6%saved_defect(2) < outer_gate) then
+      leak_screen=published_defect(2) < outer_gate
+    else
+      leak_screen=published_defect(2) < x6%saved_defect(2)
+    endif
+    if (x6%saved_defect(4) < outer_gate) then
+      modal_screen=published_defect(4) < outer_gate
+    else
+      modal_screen=published_defect(4) < x6%saved_defect(4)
+    endif
+    write(6,'(A)') &
+      'ANDERSON1-LEAKAGE PUBLICATION K-EFFECTIVE/RHO BITWISE PASS'
+    write(6,'(A)') &
+      'ANDERSON1-LEAKAGE PUBLICATION L=BINARY64(BINARY32(L))'
+    call write_real64_metric( &
+      'ANDERSON1-LEAKAGE PUBLICATION L ROUNDTRIP-MAX', &
+      leak_roundtrip_max)
+    call write_real64_metric('ANDERSON1-LEAKAGE PUBLICATION R_RHO', &
+      published_defect(1))
+    call write_real64_metric('ANDERSON1-LEAKAGE PUBLICATION R_L', &
+      published_defect(2))
+    call write_real64_metric('ANDERSON1-LEAKAGE PUBLICATION D_L', &
+      published_defect(3))
+    call write_real64_metric('ANDERSON1-LEAKAGE PUBLICATION R_A', &
+      published_defect(4))
+    if (rho_screen.and.leak_screen.and.modal_screen) then
+      write(6,'(A)') &
+        'ANDERSON1-LEAKAGE PUBLICATION CANONICAL SCREEN PASS'
+    else
+      write(6,'(A)') &
+        'ANDERSON1-LEAKAGE PUBLICATION CANONICAL SCREEN REJECT'
+    endif
     write(6,'(A)') 'ANDERSON1 NO CANDIDATE STATE WRITTEN'
     write(6,'(A)') 'ANDERSON1 NO PHYSICAL MAP EVALUATION'
     write(6,'(A)') 'ANDERSON1 OUTER-CONVERGENCE NOT-ESTABLISHED'
     write(6,'(A)') 'ANDERSON1 COMPLETE'
 
+    deallocate(published_leak_candidate)
     deallocate(leak_residual,leak_candidate,leak_input)
     deallocate(affine_modal_residual,affine_input)
     deallocate(linearized_residual,candidate,delta_f,f5,f4)

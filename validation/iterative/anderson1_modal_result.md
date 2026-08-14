@@ -100,11 +100,31 @@ minimum reconstructed B*a     1.7500053319e-15
 All three unchanged component screens pass and the reconstructed field is
 strictly positive. The small positive minimum is not a numerical robustness
 margin and does not establish positivity of the complete axial unknown
-vector. The leakage defect improves but remains far above the
-\(5\times10^{-7}\) convergence gate, by a factor of about 286. This makes
+vector.
+
+Before any state is written, the candidate was also passed through the
+existing production storage contract. The common binary32 `K-EFFECTIVE` of
+\(x_5,x_6\) is retained and canonical \(\rho\) is recomputed exactly as
+`1/real(K-EFFECTIVE,real64)`. Candidate leakage is rounded once to binary32,
+as required by every restart `SPOT-LEAK1D`, and canonical \(L\) is the exact
+binary64 promotion of those stored values. Modal coordinates remain
+binary64. This is a storage projection, not damping or a model coefficient.
+
+~~~text
+maximum |published L - affine L|   5.7180464356e-11 cm^-1
+published R_rho                    2.4974104229e-8
+published R_L                      1.4301089466e-4
+published D_L                      2.0968298833e-7 cm^-1
+published R_a                      3.9438537826e-7
+~~~
+
+The bitwise `K-EFFECTIVE`/\(\rho\) identity and exact promoted-binary32
+leakage contract pass. All three unchanged component screens also remain
+passed after publication. The leakage defect nevertheless remains far above
+the \(5\times10^{-7}\) convergence gate, by a factor of about 286. This makes
 the coefficient eligible for one separately authorized bounded physical-map
 evaluation; it is not a converged state or evidence that the true nonlinear
-map will improve.
+map will improve. No XSM state is written by this audit.
 
 Reproduce the read-only check with
 
