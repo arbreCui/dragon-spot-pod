@@ -227,7 +227,13 @@ map bitwise. The raw \(x_4=G(x_3)\) defects are
 \]
 
 Leakage and modal defects fail the same three-component AND gate, so \(x_4\)
-is not a fixed point. No \(x_5\) has been run.
+is not a fixed point. A subsequent no-Dragon check of the \(x_2\to x_3\) and
+\(x_3\to x_4\) updates gives modal cosine `-0.7947401` with norm ratio
+`4.571844`, and height-weighted leakage cosine `-0.7744331` with norm ratio
+`1.535402`. The production leakage-infinity ratio is `1.314491`. Thus both
+separately measured updates show an observed reversal with amplification, not
+contraction on this pair. This does not prove divergence or a two-cycle, and
+no mixed-unit whole-state angle is defined. No \(x_5\) has been run.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

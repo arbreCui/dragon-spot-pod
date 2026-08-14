@@ -117,13 +117,18 @@ then terminated strictly within 80 s. The independent Ganlib-only checker
 reproduced the complete raw map and defects
 \((R_\rho,R_L,R_a)=(0,5.6855251\times10^{-4},1.4817206\times10^{-6})\).
 Leakage and modal defects fail the unchanged \(5\times10^{-7}\) AND gate, so
-\(x_4\) is not a fixed point. No \(x_5\) has been run. A
-read-only check of the replacement three-state sequence finds that the
-modal update is acute and smaller, whereas the leakage update has a negative
-height-weighted \(L_2\) cosine and a smaller aggregate norm but a 1.0932-times
-larger infinity diagnostic. This does not establish a whole-state oscillation
-or distinguish physical-map behavior from inner-solver state error. The two
-infinity maxima are unique at the same coordinate (plane-list index 1,
+\(x_4\) is not a fixed point. A no-Dragon check of the \(x_2\to x_3\) and
+\(x_3\to x_4\) updates finds modal cosine/norm ratio
+`-0.7947401/4.571844` and height-weighted leakage cosine/norm ratio
+`-0.7744331/1.535402`; the production leakage-infinity ratio is `1.314491`.
+These are separate observed reversals with amplification, not proof of
+divergence, a two-cycle, or a physical cause. No \(x_5\) has been run. An
+earlier read-only check of the replacement \(x_1,x_2,x_3\) sequence finds
+that the modal update is acute and smaller, whereas the leakage update has a
+negative height-weighted \(L_2\) cosine and a smaller aggregate norm but a
+1.0932-times larger infinity diagnostic. This does not establish a whole-state
+oscillation or distinguish physical-map behavior from inner-solver state
+error. The two infinity maxima are unique at the same coordinate (plane-list index 1,
 energy-group index 326), where the signed update changes from
 `+5.8010e-7` to `-6.3417e-7`. This is a local rebound, not evidence of a
 two-cycle. A subsequent no-Dragon reconstruction closes all canonical

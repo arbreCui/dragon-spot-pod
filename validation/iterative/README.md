@@ -248,8 +248,34 @@ This is a complete strict \(x_4=G(x_3)\), but not a fixed point. No \(x_5\)
 has been run. See
 [map3_strict_result.md](map3_strict_result.md).
 
-The same Ganlib-only direction checker was then applied to the strict
-three-state sequence. The modal cosine and update-norm ratio are `+0.4969`
+A no-Dragon invocation of the same Ganlib-only checker then compared the
+strict \(x_2\to x_3\) and \(x_3\to x_4\) updates. It first reproduced both
+saved raw defects and the fixed POD space bit for bit. The modal Gram-height
+cosine and update-norm ratio are `-0.7947400712` and `4.5718437435`.
+The separately labelled, non-production height-weighted leakage \(L_2\)
+cosine and ratio are `-0.7744330767` and `1.5354018776`; the production
+dimensional infinity-change ratio is `1.3144905920`. Thus both component
+updates are obtuse and the second update is larger in each stated norm. This
+is observed alternating amplification over one update pair, not proof of
+divergence or a two-cycle. The leakage infinity hotspot also moves from
+plane-list index 1 to 2 while remaining in group 326. Both stored \(\rho\)
+increments are zero, and no mixed-unit whole-state angle is defined.
+
+Reproduce this read-only result with
+
+```sh
+X1_DIR="$PWD/validation/artifacts/iterative-map2-current" \
+X1_NAME=state2_axial.xsm \
+X2_DIR="$PWD/validation/artifacts/iterative-map3-strict-current" \
+X2_NAME=state3_axial.xsm \
+X3_DIR="$PWD/validation/artifacts/iterative-map4-axial-80s" \
+X3_NAME=state4_axial.xsm \
+LOCK="$PWD/validation/iterative/picard_map4_direction_scientific.sha256" \
+  sh validation/iterative/run_picard_direction_check.sh
+```
+
+For comparison, the earlier checker application to the strict
+\(x_1,x_2,x_3\) sequence gave modal cosine and update-norm ratio `+0.4969`
 and `0.4478`. The separate height-weighted leakage \(L_2\) values are
 `-0.1551` and `0.7312`, while the dimensional infinity-change ratio is
 `1.0932`. Thus neither a simple whole-state reversal nor contraction in the

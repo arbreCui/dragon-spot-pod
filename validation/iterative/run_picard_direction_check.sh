@@ -5,6 +5,9 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 X1_DIR=${X1_DIR:-"$ROOT/validation/artifacts/iterative-map1"}
 X2_DIR=${X2_DIR:-"$ROOT/validation/artifacts/iterative-map2-current"}
 X3_DIR=${X3_DIR:-"$ROOT/validation/artifacts/iterative-map3-current"}
+X1_NAME=${X1_NAME:-state1_axial.xsm}
+X2_NAME=${X2_NAME:-state2_axial.xsm}
+X3_NAME=${X3_NAME:-state3_axial.xsm}
 GANLIB_LIB=${GANLIB_LIB:-"$ROOT/Ganlib/src/libGanlib.a"}
 GANLIB_MOD=${GANLIB_MOD:-"$ROOT/Ganlib/src"}
 FC=${FC:-gfortran}
@@ -26,13 +29,13 @@ verify_locked() {
   test "$actual" = "$expected"
 }
 
-verify_locked "$X1_DIR" state1_axial.xsm
-verify_locked "$X2_DIR" state2_axial.xsm
-verify_locked "$X3_DIR" state3_axial.xsm
+verify_locked "$X1_DIR" "$X1_NAME"
+verify_locked "$X2_DIR" "$X2_NAME"
+verify_locked "$X3_DIR" "$X3_NAME"
 
-cp "$X1_DIR/state1_axial.xsm" "$WORK/x1.xsm"
-cp "$X2_DIR/state2_axial.xsm" "$WORK/x2.xsm"
-cp "$X3_DIR/state3_axial.xsm" "$WORK/x3.xsm"
+cp "$X1_DIR/$X1_NAME" "$WORK/x1.xsm"
+cp "$X2_DIR/$X2_NAME" "$WORK/x2.xsm"
+cp "$X3_DIR/$X3_NAME" "$WORK/x3.xsm"
 
 "$FC" -std=f2008 -O0 -Wall -Wextra -Werror -Wno-compare-reals \
   -ffp-contract=off -fno-fast-math -I "$GANLIB_MOD" \
@@ -44,9 +47,9 @@ cp "$X3_DIR/state3_axial.xsm" "$WORK/x3.xsm"
   ./check_one_map_xsm --directions x1.xsm x2.xsm x3.xsm
 )
 
-verify_locked "$X1_DIR" state1_axial.xsm
-verify_locked "$X2_DIR" state2_axial.xsm
-verify_locked "$X3_DIR" state3_axial.xsm
+verify_locked "$X1_DIR" "$X1_NAME"
+verify_locked "$X2_DIR" "$X2_NAME"
+verify_locked "$X3_DIR" "$X3_NAME"
 
 printf '%s\n' \
   'PICARD-DIRECTION READ-ONLY HASH PASS' \
