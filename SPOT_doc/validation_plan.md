@@ -106,13 +106,12 @@ Ganlib-only check. The current third defect is
 The eigenvalue and modal components pass the declared
 \(5\times10^{-7}\) outer gate; leakage fails it by about a factor of 865.
 Stage 3 is therefore complete with `OUTER-CONVERGENCE NOT-ESTABLISHED`, and
-the replacement \(x_3\) is not accepted as a fixed point. No \(x_4\) was
-run. The two map-4 decks are prepared from the hash-frozen strict \(x_3\) and
-separately compile-checked. A default-off runtime entry exists, but only its
-no-Dragon closed and invalid-activation paths have been tested; no map-4
-result exists. Post-start interrupted-process cleanup is separately qualified
-with a fake child and no Dragon; the real active path still requires explicit
-authorization. A
+the replacement \(x_3\) is not accepted as a fixed point. The two map-4 decks
+are prepared from the hash-frozen strict \(x_3\) and separately compile-checked.
+One authorized activation reached its 75 s radial bound after a strictly
+terminated plane 1 and the start of plane 2. Process-group cleanup completed,
+the axial deck was not started, and no complete radial state or \(x_4\) exists.
+This timeout is not a convergence result and there is no automatic retry. A
 read-only check of the replacement three-state sequence finds that the
 modal update is acute and smaller, whereas the leakage update has a negative
 height-weighted \(L_2\) cosine and a smaller aggregate norm but a 1.0932-times

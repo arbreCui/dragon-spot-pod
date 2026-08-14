@@ -188,15 +188,19 @@ normally. The independent Ganlib-only checker passed, giving
 This is a complete strict raw map, but not a fixed point: the leakage defect
 fails the three-component AND gate by about a factor of 865. The modal defect
 now passes, so the old signed modal-direction result is not transferable to
-the replacement \(x_3\). No \(x_4\) was run. Its radial and axial decks are
-now prepared as a direct, unmixed continuation from the hash-frozen strict
+the replacement \(x_3\). The radial and axial map-4 decks are a direct,
+unmixed continuation from the hash-frozen strict
 `state3_axial.xsm` and `state3_snapshots.xsm`. They pass static CLE-2000
 compilation. `run_map4_short.sh` is default-off and its tested closed path
-touches neither Dragon nor the large artifacts; it has not been activated and
-there is no map-4 result. After child startup, the bounded wrapper maps
-`SIGHUP`, `SIGINT`, and `SIGTERM` to one process-group cleanup path, verified
-with a no-Dragon fake child. The real active path still requires explicit
-authorization. See
+touches neither Dragon nor the large artifacts. One authorized activation
+reached the 75 s radial bound after plane 1 passed both strict terminals
+(`EUNK=4.69250011e-7`, `EINR=2.36194211e-7`) and plane 2 began. The process
+group was removed, the axial deck did not start, and no complete radial state
+or \(x_4\) was returned. The partial log SHA-256 is
+`0ff35e7f9e94a63d65b0dd25f63aa1228219449e4f1fd2475d9aa27765d0b229`;
+it is retained locally under `validation/artifacts/iterative-map4-timeout/`.
+This is `INVALID-NO-SCIENTIFIC-RESULT`, not a Picard convergence observation,
+and there is no automatic retry. See
 [map3_strict_result.md](map3_strict_result.md).
 
 The same Ganlib-only direction checker was then applied to the strict

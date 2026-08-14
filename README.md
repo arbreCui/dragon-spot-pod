@@ -206,16 +206,17 @@ normalization. These are adjacent cell-average fluxes and one signed face
 current; no Fick coefficient, physical cause, two-cycle, or convergence claim
 is inferred.
 
-The next direct continuation, \(x_4=G(x_3)\), is now prepared only as two
-static CLE-2000 decks. Its parent hashes bind the strict `state3_axial.xsm`
+The next direct continuation, \(x_4=G(x_3)\), is defined by two
+CLE-2000 decks. Its parent hashes bind the strict `state3_axial.xsm`
 and `state3_snapshots.xsm`; it does not reuse `state3_system.xsm`, rebuild the
 basis, or add mixing. Both decks pass the seconds-scale compiler and static
 direct-Picard contract. The runtime entry is default-off and exits before any
-Dragon or artifact access unless `RUN_MAP4=1` is supplied; only its closed and
-invalid-activation paths have been tested. No map-4 calculation has started,
-so the scientific stop point above is unchanged. Post-start interrupted-process
-cleanup is separately qualified with a no-Dragon fake child; the real active
-path still requires explicit authorization.
+Dragon or artifact access unless `RUN_MAP4=1` is supplied. One authorized
+activation reached the 75 s radial bound after plane 1 had terminated strictly
+and plane 2 had begun. The wrapper killed the process group; the axial deck was
+not started and no complete radial state or \(x_4\) exists. The scientific stop
+point above is therefore unchanged. Any new activation requires separate
+authorization and is not an automatic retry.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.
