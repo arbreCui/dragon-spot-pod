@@ -206,6 +206,27 @@ LOCK="$PWD/validation/iterative/picard_strict_direction_scientific.sha256" \
   sh validation/iterative/run_picard_direction_check.sh
 ```
 
+The focused follow-up reads the raw axial unknowns and independently closes
+all 1110 canonical leakage values bit for bit. At the common plane-1/group-326
+hotspot, a separate binary64 endpoint decomposition assigns `98.695%` and
+`98.323%` of the two leakage-numerator changes to the high-\(z\) face. The
+production denominator's relative change is about 50 times smaller than the
+numerator's and has the opposing ratio effect. This is balance-term
+localization, not a physical-cause or convergence claim.
+
+```sh
+SEED_DIR=/absolute/path/to/iterative-seed \
+X1_DIR=/absolute/path/to/iterative-map1 \
+X2_DIR=/absolute/path/to/iterative-map2-current \
+X3_DIR=/absolute/path/to/iterative-map3-strict-current \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+  sh validation/iterative/run_strict_leakage_faces.sh
+```
+
+The local development defaults may be used when those hash-frozen artifact
+directories and the in-tree Ganlib build are present.
+
 Two separately authorized radial attempts toward \(G_{h/2}(x_2)\), bounded
 at 75 s and 120 s, ended at the same logged point immediately after the
 first-plane `ASM` step and before any FLU terminal record. No axial process

@@ -74,7 +74,7 @@ Thus \(R_L\) is about \(865.05\) times the declared outer tolerance.  The
 dimensional leakage change
 
 \[
-D_L=6.341724656522274\times10^{-7}
+D_L=6.341724656522274\times10^{-7}\ {\rm cm}^{-1}
 \]
 
 is retained only as a diagnostic.  It is not a fourth stop component and
@@ -151,6 +151,77 @@ is reported only as the stored list index.  In the frozen axial MACROLIB grid,
 group 326 spans approximately `[1.02101195, 1.03499305] eV`; no physical cause
 is inferred from that energy interval.
 
+## Hotspot face-current decomposition
+
+A second Ganlib-only mode then read the original axial unknowns.  It first
+reconstructed all \(3\times370=1110\) canonical leakage values with the
+production binary32 operation order and matched every promoted `SPOT-X-L`
+value bit for bit.  For the unique hotspot it also evaluated the unfitted
+balance
+
+\[
+L_s=\frac{N_s}{D_s},\qquad
+N_s=\sum_{i,f\in s}A_i(J_{f+1,i}-J_{f,i}),\qquad
+D_s=\sum_{i,f\in s}A_i\,\Delta z_f\,\phi_{f,i}.
+\]
+
+The stored face currents use one common signed \(+z\) convention.  Because
+plane 1 is one contiguous floor interval, its binary64 diagnostic
+decomposition is
+
+\[
+C_{\rm low}=-\sum_i A_iJ_{{\rm low},i},\qquad
+C_{\rm high}=+\sum_i A_iJ_{{\rm high},i},\qquad
+N=C_{\rm low}+C_{\rm high}.
+\]
+
+\(C\) and \(N\) are area-weighted face-current terms and \(D\) is a
+volume-weighted scalar-flux integral; each scales with the arbitrary flux
+normalization.  Their ratio \(L\), and hence \(\Delta L\), has unit
+`cm^-1`; the percentages below are dimensionless.
+
+| state | \(C_{\rm low}\) | \(C_{\rm high}\) | \(N\), face binary64 | \(N\), production binary32 | \(D\), production binary32 |
+|---|---:|---:|---:|---:|---:|
+| \(x_1\) | `1.7509067877e-15` | `-3.7699331665e-16` | `1.3739134711e-15` | `1.3739132750e-15` | `4.0769254292e-12` |
+| \(x_2\) | `1.7509382750e-15` | `-3.7461155200e-16` | `1.3763267230e-15` | `1.3763270012e-15` | `4.0770694112e-12` |
+| \(x_3\) | `1.7508939253e-15` | `-3.7721105683e-16` | `1.3736828684e-15` | `1.3736829879e-15` | `4.0768959389e-12` |
+
+| update | \(\Delta C_{\rm low}\) | \(\Delta C_{\rm high}\) | \(\Delta N\), face binary64 | \(|\Delta C_{\rm high}|/|\Delta N|\) |
+|---|---:|---:|---:|---:|
+| \(x_1\to x_2\) | `+3.14873e-20` | `+2.38176e-18` | `+2.41325e-18` | `98.695%` |
+| \(x_2\to x_3\) | `-4.43497e-20` | `-2.59950e-18` | `-2.64385e-18` | `98.323%` |
+
+Thus the rebound is localized more narrowly: in this binary64 endpoint
+decomposition, the **change in the plane-1 leakage numerator** is dominated in
+both updates by the high-\(z\) face.  The production binary32 denominator
+changes by only `+0.003532%` and `-0.004255%`, versus production binary32
+numerator changes of `+0.175683%` and `-0.192106%`; in both cases it slightly
+opposes the leakage change rather than drives it.  The directly observable
+binary64 ratio \((|C_{\rm low}|+|C_{\rm high}|)/|N|\) stays between `1.544`
+and `1.549`.
+
+This identifies which archived balance term carries the hotspot change, not
+its physical cause.  It does not establish a two-cycle or outer convergence
+and introduces no model, fitted factor, relaxation coefficient, or fourth
+Picard update.
+
+Reproduce this focused audit with
+
+```sh
+SEED_DIR=/absolute/path/to/iterative-seed \
+X1_DIR=/absolute/path/to/iterative-map1 \
+X2_DIR=/absolute/path/to/iterative-map2-current \
+X3_DIR=/absolute/path/to/iterative-map3-strict-current \
+GANLIB_LIB=/absolute/path/to/libGanlib.a \
+GANLIB_MOD=/absolute/path/to/ganlib/modules \
+  sh validation/iterative/run_strict_leakage_faces.sh
+```
+
+The runner hash-locks the track and all three axial states before and after
+the read, links only Ganlib, and launches no Dragon process.  With the local
+development artifacts and in-tree Ganlib build, these overrides may be
+omitted.
+
 The strict read-only reproduction is
 
 ```sh
@@ -181,4 +252,5 @@ The ignored local evidence is split between
 6d1ac081f17237bdc87e78d1d806c4f6127425e6f453f06a48451b278c1ab921  state3_snapshots.xsm
 0db7dac519f882a1d6102ba00adf8fd102dc00c68aaea346c9dd8067e8715f02  independent_check.log
 d1bf1a4462f3097fca7d44e49aa5cbda69e09b46999de0dbebc40d1b615c980d  direction.log
+409fae9ddbc5e45341bfce8bd8469b93f22b2ad367de9928c802fe80a1e593bd  leakage_faces.log
 ```

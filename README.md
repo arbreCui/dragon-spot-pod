@@ -180,7 +180,12 @@ oscillation and does not distinguish physical-map behavior from numerical
 state error. Both infinity maxima occur uniquely at plane-list index 1,
 energy-group index 326: the local update changes from
 `+5.8010e-7` to `-6.3417e-7`. This is a localized rebound, not proof of a
-two-cycle.
+two-cycle. A focused raw-XSM balance audit reproduces all 1110 leakage values
+bit for bit. A separate binary64 endpoint decomposition assigns `98.695%` and
+`98.323%` of the hotspot numerator changes to the high-\(z\) face. The
+production denominator's relative change is about 50 times smaller than the
+numerator's and has the opposing ratio effect. This locates the contribution
+within the archived balance but does not yet identify a physical cause.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.

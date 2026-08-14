@@ -115,7 +115,12 @@ or distinguish physical-map behavior from inner-solver state error. The two
 infinity maxima are unique at the same coordinate (plane-list index 1,
 energy-group index 326), where the signed update changes from
 `+5.8010e-7` to `-6.3417e-7`. This is a local rebound, not evidence of a
-two-cycle.
+two-cycle. A subsequent no-Dragon reconstruction closes all canonical
+leakages bit for bit; a separate binary64 endpoint decomposition traces
+`98.695%` and `98.323%` of the hotspot numerator changes to its high-\(z\)
+face. The production denominator's relative change is about 50 times smaller
+than the numerator's and has the opposing ratio effect. This is provenance of
+the observed rebound, not a physical-cause claim.
 
 Earlier one-shot, REAL64-forensics, and B2 lifecycle files are historical
 records only. They are not prerequisites of this plan and are not run by the

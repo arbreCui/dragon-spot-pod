@@ -8,6 +8,8 @@ program check_one_map_xsm
   !     state2_snapshots.xsm
   !   check_one_map_xsm --directions state1_axial.xsm \
   !     state2_axial.xsm state3_axial.xsm
+  !   check_one_map_xsm --leakage-faces axial_track.xsm \
+  !     state1_axial.xsm state2_axial.xsm state3_axial.xsm
   !
   ! No Dragon, SPOT, assembly, transport, or production convergence routine
   ! is linked or called.  The one-map modes read five archived XSM objects,
@@ -82,16 +84,27 @@ program check_one_map_xsm
     logical :: has_saved_defect=.false.
   end type canonical_state
 
+  type :: leakage_face_state
+    real(real64) :: low=0.0_real64
+    real(real64) :: high=0.0_real64
+    real(real64) :: net=0.0_real64
+    real(real32) :: numerator=0.0_real32
+    real(real32) :: denominator=0.0_real32
+    real(real32) :: leakage=0.0_real32
+  end type leakage_face_state
+
   character(len=1024) :: paths(5)
+  character(len=1024) :: track_path
   character(len=32) :: mode
   type(system_data) :: reference_system,current_system
   type(canonical_state) :: previous_state,current_state
   type(canonical_state) :: direction_state(3)
   integer :: i,argument_offset
-  logical :: continued,direction_mode
+  logical :: continued,direction_mode,face_mode
 
   continued=.false.
   direction_mode=.false.
+  face_mode=.false.
   argument_offset=0
   if (command_argument_count() == 4) then
     call get_command_argument(1,mode)
@@ -104,6 +117,22 @@ program check_one_map_xsm
       if (len_trim(paths(i)) > max_xsm_path) &
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
+  else if (command_argument_count() == 5) then
+    call get_command_argument(1,mode)
+    if (trim(mode) == '--leakage-faces') then
+      direction_mode=.true.
+      face_mode=.true.
+      call get_command_argument(2,track_path)
+      if (len_trim(track_path) == 0) call fail('EMPTY TRACK PATH ARGUMENT.')
+      if (len_trim(track_path) > max_xsm_path) &
+        call fail('TRACK PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+      do i=1,3
+        call get_command_argument(i+2,paths(i))
+        if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
+        if (len_trim(paths(i)) > max_xsm_path) &
+          call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+      enddo
+    endif
   else if (command_argument_count() == 6) then
     call get_command_argument(1,mode)
     if (trim(mode) /= '--continued') call fail( &
@@ -131,13 +160,26 @@ program check_one_map_xsm
       direction_state(3),'DIRECTION STATE X3')
     call compare_states_and_defects(direction_state(1), &
       direction_state(2),.true.)
-    write(6,'(A)') 'PICARD-DIRECTION MAP12 RAW-DEFECT BITWISE PASS'
+    if (face_mode) then
+      write(6,'(A)') 'LEAKAGE-FACES MAP12 RAW-DEFECT BITWISE PASS'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION MAP12 RAW-DEFECT BITWISE PASS'
+    endif
     call compare_states_and_defects(direction_state(2), &
       direction_state(3),.true.)
-    write(6,'(A)') 'PICARD-DIRECTION MAP23 RAW-DEFECT BITWISE PASS'
-    call report_update_directions(direction_state(1),direction_state(2), &
-      direction_state(3))
-    write(6,'(A)') 'PICARD-DIRECTION COMPLETE'
+    if (face_mode) then
+      write(6,'(A)') 'LEAKAGE-FACES MAP23 RAW-DEFECT BITWISE PASS'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION MAP23 RAW-DEFECT BITWISE PASS'
+    endif
+    if (face_mode) then
+      call report_leakage_faces(trim(track_path),trim(paths(1)), &
+        trim(paths(2)),trim(paths(3)),direction_state)
+    else
+      call report_update_directions(direction_state(1),direction_state(2), &
+        direction_state(3))
+      write(6,'(A)') 'PICARD-DIRECTION COMPLETE'
+    endif
   else
     call load_system(trim(paths(1)),0,0,'POD-BUILT',.false., &
       reference_system,'BASIS REFERENCE')
@@ -1014,6 +1056,297 @@ contains
         trim(label)//' SIGN OPPOSITE'
     endif
   end subroutine report_leakage_hotspot
+
+
+  subroutine report_leakage_faces(track_name,x1_name,x2_name,x3_name,states)
+    character(len=*), intent(in) :: track_name,x1_name,x2_name,x3_name
+    type(canonical_state), intent(in) :: states(3)
+    type(c_ptr) :: track
+    type(leakage_face_state) :: face(3)
+    character(len=1024) :: state_name(3)
+    character(len=12) :: signature,track_type
+    integer :: track_state(nstate)
+    integer :: ngrp,nunk,nreg,nreg2d,nfloor,nsnap,ll4,ll5
+    integer :: i,index0,hot_index(2),hot_ties(2),hot_s,hot_g
+    integer, allocatable :: keyflx(:),mat1d(:)
+    real(real32), allocatable :: dz(:),area(:)
+    real(real64) :: delta(2),maximum(2)
+    real(real64) :: delta_low,delta_high
+
+    state_name(1)=x1_name
+    state_name(2)=x2_name
+    state_name(3)=x3_name
+    maximum(1)=maxval(abs(states(2)%leakage-states(1)%leakage))
+    maximum(2)=maxval(abs(states(3)%leakage-states(2)%leakage))
+    hot_index=0
+    hot_ties=0
+    do index0=1,size(states(1)%leakage)
+      delta(1)=states(2)%leakage(index0)-states(1)%leakage(index0)
+      delta(2)=states(3)%leakage(index0)-states(2)%leakage(index0)
+      do i=1,2
+        if (real64_bits(abs(delta(i))) == real64_bits(maximum(i))) then
+          hot_ties(i)=hot_ties(i)+1
+          if (hot_index(i) == 0) hot_index(i)=index0
+        endif
+      enddo
+    enddo
+    if (any(hot_ties /= 1).or.(hot_index(1) /= hot_index(2))) &
+      call fail('LEAKAGE FACE AUDIT REQUIRES ONE COMMON UNIQUE HOTSPOT.')
+
+    ngrp=states(1)%dims(2)
+    nsnap=states(1)%dims(3)
+    hot_s=(hot_index(1)-1)/ngrp+1
+    hot_g=mod(hot_index(1)-1,ngrp)+1
+
+    call LCMOP(track,track_name,2,2,0)
+    call require_record(track,'SIGNATURE',3,3,'LEAKAGE FACE TRACK')
+    call require_record(track,'TRACK-TYPE',3,3,'LEAKAGE FACE TRACK')
+    call LCMGTC(track,'SIGNATURE',12,signature)
+    call LCMGTC(track,'TRACK-TYPE',12,track_type)
+    if ((signature /= 'L_TRACK').or.(track_type /= 'SPOT')) &
+      call fail('LEAKAGE FACE AUDIT REQUIRES A SPOT L_TRACK.')
+    call require_record(track,'STATE-VECTOR',nstate,1, &
+      'LEAKAGE FACE TRACK')
+    call LCMGET(track,'STATE-VECTOR',track_state)
+    nreg=track_state(1)
+    nunk=track_state(2)
+    nreg2d=track_state(6)
+    nfloor=track_state(7)
+    ll4=track_state(11)
+    ll5=track_state(12)
+    if ((nreg <= 0).or.(nunk <= 0).or.(nreg2d <= 0).or. &
+        (nfloor <= 0).or.(track_state(8) /= nsnap).or. &
+        (nreg /= nreg2d*nfloor).or.(ll4 < 0).or. &
+        (ll5 /= nreg2d*(nfloor+1)).or.(ll4+ll5 > nunk).or. &
+        (states(1)%state(1) /= ngrp).or. &
+        (states(1)%state(2) /= nunk)) &
+      call fail('LEAKAGE FACE TRACK DIMENSIONS CHANGED.')
+    do i=2,3
+      if ((states(i)%dims(2) /= ngrp).or. &
+          (states(i)%dims(3) /= nsnap).or. &
+          (states(i)%state(1) /= ngrp).or. &
+          (states(i)%state(2) /= nunk)) &
+        call fail('LEAKAGE FACE STATE DIMENSIONS DIFFER.')
+    enddo
+
+    allocate(keyflx(nreg),mat1d(nfloor),dz(nfloor),area(nreg2d))
+    call require_record(track,'KEYFLX',nreg,1,'LEAKAGE FACE TRACK')
+    call require_record(track,'MAT1D',nfloor,1,'LEAKAGE FACE TRACK')
+    call require_record(track,'VOL1D',nfloor,2,'LEAKAGE FACE TRACK')
+    call require_record(track,'AREA2D',nreg2d,2,'LEAKAGE FACE TRACK')
+    call LCMGET(track,'KEYFLX',keyflx)
+    call LCMGET(track,'MAT1D',mat1d)
+    call LCMGET(track,'VOL1D',dz)
+    call LCMGET(track,'AREA2D',area)
+    if (any(keyflx < 0).or.any(keyflx > nunk).or. &
+        any(mat1d < 1).or.any(mat1d > nsnap).or. &
+        any(.not.ieee_is_finite(dz)).or.any(dz <= 0.0_real32).or. &
+        any(.not.ieee_is_finite(area)).or.any(area <= 0.0_real32)) &
+      call fail('LEAKAGE FACE TRACK DATA ARE INVALID.')
+    do i=1,nsnap
+      if (count(mat1d == i) == 0) &
+        call fail('LEAKAGE FACE TRACK HAS AN EMPTY PLANE SET.')
+    enddo
+    call LCMCL(track,1)
+
+    do i=1,3
+      call verify_raw_leakage_and_faces(trim(state_name(i)),states(i), &
+        ngrp,nunk,nreg2d,nfloor,nsnap,ll4,keyflx,mat1d,dz,area, &
+        hot_s,hot_g,face(i))
+    enddo
+
+    write(6,'(A,3(1X,I0))') &
+      'LEAKAGE-FACES HOTSPOT PLANE/GROUP/TIES',hot_s,hot_g,hot_ties(1)
+    write(6,'(A)') 'LEAKAGE-FACES CANONICAL-SP32 BITWISE PASS'
+    write(6,'(A)') 'LEAKAGE-FACES CURRENT COMMON-SIGNED-PLUS-Z'
+    write(6,'(A)') &
+      'LEAKAGE-FACES FACE64 C_LOW=-SUM(A*J_LOW) C_HIGH=+SUM(A*J_HIGH)'
+    call write_leakage_face_state('X1',face(1))
+    call write_leakage_face_state('X2',face(2))
+    call write_leakage_face_state('X3',face(3))
+
+    delta_low=face(2)%low-face(1)%low
+    delta_high=face(2)%high-face(1)%high
+    call write_leakage_face_delta('12',face(1),face(2))
+    call write_face_dominance('12',delta_low,delta_high)
+    delta_low=face(3)%low-face(2)%low
+    delta_high=face(3)%high-face(2)%high
+    call write_leakage_face_delta('23',face(2),face(3))
+    call write_face_dominance('23',delta_low,delta_high)
+    write(6,'(A)') 'LEAKAGE-FACES COMPLETE'
+
+    deallocate(area,dz,mat1d,keyflx)
+  end subroutine report_leakage_faces
+
+
+  subroutine verify_raw_leakage_and_faces(path,canonical,ng,nun,nr,nz, &
+      ns,l4,key,map,height,area,target_s,target_g,result)
+    character(len=*), intent(in) :: path
+    type(canonical_state), intent(in) :: canonical
+    integer, intent(in) :: ng,nun,nr,nz,ns,l4,target_s,target_g
+    integer, intent(in) :: key(nr*nz),map(nz)
+    real(real32), intent(in) :: height(nz),area(nr)
+    type(leakage_face_state), intent(out) :: result
+    type(c_ptr) :: root,fluxes
+    character(len=12) :: signature
+    integer :: state(nstate)
+    integer :: g,s,r,z,reg,left_index,right_index,index0
+    integer :: first,last,run_s
+    real(real32), allocatable :: unknown(:),numerator(:),denominator(:)
+    real(real32) :: scalar,difference,term,leakage
+    logical :: target_found
+
+    result%low=0.0_real64
+    result%high=0.0_real64
+    result%net=0.0_real64
+    result%numerator=0.0_real32
+    result%denominator=0.0_real32
+    result%leakage=0.0_real32
+    target_found=.false.
+
+    call LCMOP(root,path,2,2,0)
+    call require_record(root,'SIGNATURE',3,3,'LEAKAGE FACE STATE')
+    call LCMGTC(root,'SIGNATURE',12,signature)
+    if (signature /= 'L_FLUX') &
+      call fail('LEAKAGE FACE STATE IS NOT L_FLUX.')
+    call require_record(root,'STATE-VECTOR',nstate,1,'LEAKAGE FACE STATE')
+    call LCMGET(root,'STATE-VECTOR',state)
+    if ((state(1) /= ng).or.(state(2) /= nun).or. &
+        any(state /= canonical%state)) &
+      call fail('LEAKAGE FACE STATE DIMENSIONS CHANGED.')
+    call require_record(root,'FLUX',ng,10,'LEAKAGE FACE STATE')
+    fluxes=LCMGID(root,'FLUX')
+
+    allocate(unknown(nun),numerator(ns),denominator(ns))
+    do g=1,ng
+      call require_list_item(fluxes,g,nun,2,'LEAKAGE FACE STATE FLUX')
+      call LCMGDL(fluxes,g,unknown)
+      if (any(.not.ieee_is_finite(unknown))) &
+        call fail('LEAKAGE FACE STATE HAS NON-FINITE UNKNOWNS.')
+
+      numerator=0.0_real32
+      denominator=0.0_real32
+      do z=1,nz
+        s=map(z)
+        do r=1,nr
+          reg=(r-1)*nz+z
+          if (key(reg) > 0) then
+            scalar=unknown(key(reg))
+          else
+            scalar=0.0_real32
+          endif
+          left_index=l4+(r-1)*(nz+1)+z
+          right_index=left_index+1
+          difference=unknown(right_index)-unknown(left_index)
+          term=area(r)*difference
+          numerator(s)=numerator(s)+term
+          term=area(r)*height(z)
+          term=term*scalar
+          denominator(s)=denominator(s)+term
+        enddo
+      enddo
+      do s=1,ns
+        if (denominator(s) > 0.0_real32) then
+          leakage=numerator(s)/denominator(s)
+        else if (denominator(s) == 0.0_real32) then
+          leakage=0.0_real32
+        else
+          call fail('LEAKAGE FACE STATE HAS A NEGATIVE FLUX INTEGRAL.')
+        endif
+        index0=(s-1)*ng+g
+        if (real64_bits(real(leakage,real64)) /= &
+            real64_bits(canonical%leakage(index0))) &
+          call fail('RAW LEAKAGE DIFFERS FROM THE CANONICAL STATE.')
+        if ((s == target_s).and.(g == target_g)) then
+          result%numerator=numerator(s)
+          result%denominator=denominator(s)
+          result%leakage=leakage
+          target_found=.true.
+        endif
+      enddo
+
+      if (g == target_g) then
+        do r=1,nr
+          first=1
+          do while(first <= nz)
+            run_s=map(first)
+            last=first
+            do
+              if (last >= nz) exit
+              if (map(last+1) /= run_s) exit
+              last=last+1
+            enddo
+            if (run_s == target_s) then
+              left_index=l4+(r-1)*(nz+1)+first
+              right_index=l4+(r-1)*(nz+1)+last+1
+              result%low=result%low-real(area(r),real64)* &
+                real(unknown(left_index),real64)
+              result%high=result%high+real(area(r),real64)* &
+                real(unknown(right_index),real64)
+            endif
+            first=last+1
+          enddo
+        enddo
+      endif
+    enddo
+    if (.not.target_found) call fail('LEAKAGE FACE HOTSPOT WAS NOT FOUND.')
+    result%net=result%low+result%high
+    if ((.not.ieee_is_finite(result%low)).or. &
+        (.not.ieee_is_finite(result%high)).or. &
+        (.not.ieee_is_finite(result%net)).or. &
+        (.not.ieee_is_finite(result%numerator)).or. &
+        (.not.ieee_is_finite(result%denominator)).or. &
+        (.not.ieee_is_finite(result%leakage))) &
+      call fail('LEAKAGE FACE RESULT IS NON-FINITE.')
+    deallocate(denominator,numerator,unknown)
+    call LCMCL(root,1)
+  end subroutine verify_raw_leakage_and_faces
+
+
+  subroutine write_leakage_face_state(label,state)
+    character(len=*), intent(in) :: label
+    type(leakage_face_state), intent(in) :: state
+
+    write(6,'(A,1X,A,3(1X,ES24.16E3))') &
+      'LEAKAGE-FACES STATE FACE64 LOW/HIGH/NET',trim(label), &
+      state%low,state%high,state%net
+    write(6,'(A,1X,A,3(1X,ES24.16E3))') &
+      'LEAKAGE-FACES STATE SP32 NUM/DEN/LEAK',trim(label), &
+      real(state%numerator,real64),real(state%denominator,real64), &
+      real(state%leakage,real64)
+  end subroutine write_leakage_face_state
+
+
+  subroutine write_leakage_face_delta(label,left,right)
+    character(len=*), intent(in) :: label
+    type(leakage_face_state), intent(in) :: left,right
+
+    write(6,'(A,1X,A,3(1X,ES24.16E3))') &
+      'LEAKAGE-FACES DELTA FACE64 LOW/HIGH/NET',trim(label), &
+      right%low-left%low,right%high-left%high,right%net-left%net
+    write(6,'(A,1X,A,3(1X,ES24.16E3))') &
+      'LEAKAGE-FACES DELTA SP32 NUM/DEN/LEAK',trim(label), &
+      real(right%numerator,real64)-real(left%numerator,real64), &
+      real(right%denominator,real64)-real(left%denominator,real64), &
+      real(right%leakage,real64)-real(left%leakage,real64)
+  end subroutine write_leakage_face_delta
+
+
+  subroutine write_face_dominance(label,delta_low,delta_high)
+    character(len=*), intent(in) :: label
+    real(real64), intent(in) :: delta_low,delta_high
+
+    if (abs(delta_high) > abs(delta_low)) then
+      write(6,'(A)') 'LEAKAGE-FACES DELTA'//trim(label)// &
+        ' HIGH-Z-FACE-DOMINANT'
+    else if (abs(delta_low) > abs(delta_high)) then
+      write(6,'(A)') 'LEAKAGE-FACES DELTA'//trim(label)// &
+        ' LOW-Z-FACE-DOMINANT'
+    else
+      write(6,'(A)') 'LEAKAGE-FACES DELTA'//trim(label)// &
+        ' EQUAL-FACE-MAGNITUDE'
+    endif
+  end subroutine write_face_dominance
 
 
   subroutine write_real64_metric(label,value)
