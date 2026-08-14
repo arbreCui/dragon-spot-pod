@@ -191,7 +191,10 @@ now passes, so the old signed modal-direction result is not transferable to
 the replacement \(x_3\). No \(x_4\) was run. Its radial and axial decks are
 now prepared as a direct, unmixed continuation from the hash-frozen strict
 `state3_axial.xsm` and `state3_snapshots.xsm`. They pass static CLE-2000
-compilation, but there is deliberately no map-4 runtime runner or result. See
+compilation. `run_map4_short.sh` is default-off and its tested closed path
+touches neither Dragon nor the large artifacts; it has not been activated and
+there is no map-4 result. Its active path remains unauthorized until the
+bounded wrapper's interrupted-process cleanup is separately qualified. See
 [map3_strict_result.md](map3_strict_result.md).
 
 The same Ganlib-only direction checker was then applied to the strict

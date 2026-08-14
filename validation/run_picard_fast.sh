@@ -16,8 +16,27 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
 sh -n "$ROOT/validation/iterative/run_map2_short.sh"
 sh -n "$ROOT/validation/iterative/run_map3_short.sh"
+sh -n "$ROOT/validation/iterative/run_map4_short.sh"
 sh -n "$ROOT/validation/iterative/run_picard_direction_check.sh"
 sh -n "$ROOT/validation/iterative/run_strict_leakage_faces.sh"
+map4_default=$(RUN_MAP4=0 \
+  DRAGON_BIN="$BUILD_DIR/must-not-run" \
+  SEED_DIR="$BUILD_DIR/must-not-read-seed" \
+  BASIS_DIR="$BUILD_DIR/must-not-read-basis" \
+  X3_DIR="$BUILD_DIR/must-not-read-x3" \
+  GANLIB_LIB="$BUILD_DIR/must-not-read-ganlib" \
+  GANLIB_MOD="$BUILD_DIR/must-not-read-modules" \
+  TMPDIR="$BUILD_DIR/must-not-use-tmp" \
+  sh "$ROOT/validation/iterative/run_map4_short.sh")
+test "$map4_default" = \
+  'MAP4-SHORT DEFAULT-OFF: no Dragon process started.'
+if map4_invalid=$(RUN_MAP4=2 DRAGON_BIN="$BUILD_DIR/must-not-run" \
+    sh "$ROOT/validation/iterative/run_map4_short.sh" 2>&1)
+then
+  printf '%s\n' 'MAP4-SHORT invalid activation unexpectedly passed.' >&2
+  exit 1
+fi
+test "$map4_invalid" = 'MAP4-SHORT ERROR: RUN_MAP4 must be 0 or 1.'
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 

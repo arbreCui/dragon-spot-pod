@@ -216,6 +216,43 @@ class PicardControlTests(unittest.TestCase):
             ],
         )
 
+    def test_map4_runner_is_closed_and_single_pass(self) -> None:
+        runner = (
+            ROOT / "validation/iterative/run_map4_short.sh"
+        ).read_text(encoding="utf-8")
+        self.assertLess(
+            runner.index("RUN_MAP4=${RUN_MAP4:-0}"), runner.index("ROOT=$(")
+        )
+        active = "\n".join(
+            line for line in runner.splitlines()
+            if not line.lstrip().startswith("#")
+        )
+        logical = re.sub(r"\s+", " ", re.sub(r"\\\n\s*", " ", active))
+        self.assertEqual(
+            logical.count(
+                'run_bounded "$RADIAL_WORK/radial.x2m" '
+                '"$RADIAL_WORK/radial.log"'
+            ),
+            1,
+        )
+        self.assertEqual(
+            logical.count(
+                'run_bounded "$AXIAL_WORK/axial.x2m" '
+                '"$AXIAL_WORK/axial.log"'
+            ),
+            1,
+        )
+        self.assertEqual(
+            logical.count(
+                "./check_one_map_xsm --continued basis_reference.xsm "
+                "state4_system.xsm state3_axial.xsm state4_axial.xsm "
+                "state4_snapshots.xsm"
+            ),
+            1,
+        )
+        self.assertNotIn("state3_system.xsm", active)
+        self.assertEqual(len(re.findall(r"^verify_inputs$", active, re.M)), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

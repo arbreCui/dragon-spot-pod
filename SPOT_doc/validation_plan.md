@@ -108,7 +108,10 @@ The eigenvalue and modal components pass the declared
 Stage 3 is therefore complete with `OUTER-CONVERGENCE NOT-ESTABLISHED`, and
 the replacement \(x_3\) is not accepted as a fixed point. No \(x_4\) was
 run. The two map-4 decks are prepared from the hash-frozen strict \(x_3\) and
-separately compile-checked, but no runtime entry or result exists. A
+separately compile-checked. A default-off runtime entry exists, but only its
+no-Dragon closed and invalid-activation paths have been tested; no map-4
+result exists. Activation remains unauthorized until interrupted-process
+cleanup is qualified. A
 read-only check of the replacement three-state sequence finds that the
 modal update is acute and smaller, whereas the leakage update has a negative
 height-weighted \(L_2\) cosine and a smaller aggregate norm but a 1.0932-times

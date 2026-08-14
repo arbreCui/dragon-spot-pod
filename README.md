@@ -210,8 +210,11 @@ The next direct continuation, \(x_4=G(x_3)\), is now prepared only as two
 static CLE-2000 decks. Its parent hashes bind the strict `state3_axial.xsm`
 and `state3_snapshots.xsm`; it does not reuse `state3_system.xsm`, rebuild the
 basis, or add mixing. Both decks pass the seconds-scale compiler and static
-direct-Picard contract. No map-4 runner or Dragon calculation has been
-started, so the scientific stop point above is unchanged.
+direct-Picard contract. The runtime entry is default-off and exits before any
+Dragon or artifact access unless `RUN_MAP4=1` is supplied; only its closed and
+invalid-activation paths have been tested. No map-4 calculation has started,
+so the scientific stop point above is unchanged. Activation remains
+unauthorized until interrupted-process cleanup is separately qualified.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.
