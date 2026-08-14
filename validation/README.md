@@ -43,6 +43,10 @@ retained as its parent evidence. The full artifacts remain local and
 Git-ignored. The direct rank-1 census is complete and no x9 is defined.
 The hash-locked, no-Dragon x6--x8 residual-direction result is in
 [iterative/residual_direction_result.md](iterative/residual_direction_result.md).
+The solver-independent proposal/acceptance boundary and its exact-arithmetic
+manufactured tests are in
+[iterative/nonlinear_solver_contract.md](iterative/nonlinear_solver_contract.md).
+They do not implement or run a real SPOT nonlinear solver.
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active

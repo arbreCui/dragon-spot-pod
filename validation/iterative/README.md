@@ -12,6 +12,8 @@ generic, default-off continuation host.
   $x=(a,1/k,L)$ state and the three raw defects.
 - `test_spot_strict_inner.py`: fail-closed radial and axial terminal rules.
 - `test_picard_control.py`: direct substitution and three-component AND stop.
+- `nonlinear_solver_contract.md`, `test_nonlinear_solver_contract.py`:
+  solver-independent acceptance and an exact-Newton synthetic reference.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -83,6 +85,14 @@ in both updates and reverses sign. The modal Gram-height cosine is
 $c_a=-0.314863$. This motivates a separately declared nonlinear-solver study
 but neither selects a solver nor establishes a cycle or divergence. See
 [residual_direction_result.md](residual_direction_result.md).
+
+The next solver boundary is now frozen in
+[nonlinear_solver_contract.md](nonlinear_solver_contract.md). Every proposed
+state must be evaluated by the unchanged real map and pass the same three raw
+defects; no linear prediction or combined norm can accept it. Full exact
+Newton is tested only as a parameter-free manufactured-problem oracle. The
+real SPOT map has no validated exact Jacobian, so no production Newton or
+JFNK implementation and no new transport run are authorized.
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.

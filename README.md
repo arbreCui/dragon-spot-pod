@@ -140,7 +140,8 @@ make spot-fast
 
 It compiles the production Picard procedure, the generic continuation decks
 and the independent Ganlib checker, and runs the algebra, source, state, rank,
-strict-inner and continuation-contract tests. It does not launch Dragon.
+strict-inner, continuation and nonlinear-solver contract tests. It does not
+launch Dragon.
 
 The validation plan is
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
@@ -160,9 +161,11 @@ These are local observations, not a new acceptance score or proof of a cycle.
 Full values and input hashes are in
 [validation/iterative/residual_direction_result.md](validation/iterative/residual_direction_result.md).
 
-The next task is to declare one nonlinear-solver contract for the unchanged
-residual $F(x)=G(x)-x$, first in no-transport tests. It must preserve the map,
-basis, rank, tolerances and three-component gate, without an empirical
-coefficient or new physical closure. The direction audit motivates that
-study but does not select or authorize a solver. Rank, mesh and reference
-studies remain downstream of a reproducible fixed point.
+The nonlinear-solver boundary is now declared in
+[validation/iterative/nonlinear_solver_contract.md](validation/iterative/nonlinear_solver_contract.md).
+It preserves the map, basis, rank, tolerances and three-component gate, and
+requires a fresh strict $G$ evaluation for every proposed state. Full exact
+Newton is tested only as a parameter-free manufactured-problem oracle. The
+current real map has no validated exact Jacobian, so this result does not
+authorize production Newton/JFNK or another transport run. Rank, mesh and
+reference studies remain downstream of a reproducible fixed point.

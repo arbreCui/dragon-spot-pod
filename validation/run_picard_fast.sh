@@ -14,6 +14,8 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_nonlinear_solver_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_continuation_contract.py"
 sh -n "$ROOT/validation/iterative/run_continuation_short.sh"
 sh -n "$ROOT/validation/iterative/run_residual_direction_audit.sh"

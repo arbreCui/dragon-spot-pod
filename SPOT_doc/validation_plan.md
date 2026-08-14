@@ -71,6 +71,12 @@ does not select a solver or prove a cycle. Any nonlinear-solver study must be
 declared separately for the same $F(x)=G(x)-x$ and may not alter the physical
 map.
 
+The solver-independent proposal and acceptance contract is now frozen and
+passes exact-arithmetic manufactured tests. A full exact-Newton step is used
+only as a parameter-free algebraic reference. Real SPOT has no validated
+exact Jacobian, so no Newton/JFNK production path or new transport run is
+authorized by this result.
+
 ## 4. Numerical qualification
 
 Only after a reproducible fixed point exists, vary one choice at a time:

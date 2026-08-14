@@ -128,9 +128,13 @@ authorization for x9.
 
 Stop after x8. The frozen direct rank-1 Picard census did not reach its
 discrete gate, and no x9 is defined. This result does not by itself establish
-divergence, a cycle, rank adequacy or physical accuracy. The transport-free
-direction audit is complete and supplies motivation, but not a method. The
-next phase, if authorized, is to freeze one nonlinear-solver contract for the
-unchanged residual $F(x)=G(x)-x$ and validate it first without transport. It
-must preserve the physical map and cannot turn the auxiliary leakage $L_2$
-diagnostic into a fitted objective or acceptance gate.
+divergence, a cycle, rank adequacy or physical accuracy.
+
+The no-transport nonlinear-solver boundary is now frozen in
+[nonlinear_solver_contract.md](nonlinear_solver_contract.md). It preserves
+$F(x)=G(x)-x$ and requires every proposed state to pass a fresh strict map and
+the unchanged three-component AND gate. Full exact Newton is retained only as
+a small exact-arithmetic reference: the current real map has no validated
+exact Jacobian, and its binary32 publication steps exclude calling a finite
+difference an exact derivative. Therefore this phase authorizes neither a
+production Newton/JFNK implementation nor another transport evaluation.
