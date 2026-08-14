@@ -363,6 +363,33 @@ LOCK="$PWD/validation/iterative/picard_map6_direction_scientific.sha256" \
   sh validation/iterative/run_picard_direction_check.sh
 ```
 
+The next step is a no-Dragon, read-only modal-residual Anderson(1) trial; it
+does not continue direct Picard to \(x_7\). For
+
+\[
+f_4=a_5-a_4,\qquad f_5=a_6-a_5,
+\]
+
+the fixed Gram-height metric uniquely gives the unclipped coefficient
+
+\[
+\gamma=\frac{\langle f_5-f_4,f_5\rangle_{HG}}
+              {\lVert f_5-f_4\rVert_{HG}^2}
+=0.7868687504961641.
+\]
+
+Thus \(a_A=\gamma a_5+(1-\gamma)a_6\) is a convex fixed-space candidate.
+Its affine modal-residual norm is `7.3937238630e-8`, or `0.1460549765` of
+\(\lVert f_5\rVert_{HG}\). Direct \(B a_A\) reconstruction is strictly
+positive at all 8,880 group/plane/radial points without clipping, a floor,
+or a positivity tolerance. This is not the actual defect
+\(G(x_A)-x_A\), a complete \((a,\rho,L)\) state, or a convergence claim.
+Full results are in `anderson1_modal_result.md`. Reproduce them with
+
+```sh
+sh validation/iterative/run_anderson1_modal_check.sh
+```
+
 For comparison, the earlier checker application to the strict
 \(x_1,x_2,x_3\) sequence gave modal cosine and update-norm ratio `+0.4969`
 and `0.4478`. The separate height-weighted leakage \(L_2\) values are

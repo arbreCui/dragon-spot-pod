@@ -266,6 +266,16 @@ the production infinity diagnostic. Thus the components do not exhibit a
 common stable contraction. Outer convergence remains unestablished, and no
 \(x_7\) has been run.
 
+A subsequent no-Dragon Anderson(1) diagnostic uses only the fixed-space
+modal residuals from \(x_4,x_5,x_6\). The unique unclipped Gram-height
+least-squares coefficient is `0.7868687505`, giving weights `0.7868687505`
+on \(x_5\) and `0.2131312495` on \(x_6\). The affine modal-residual norm is
+`0.1460549765` times the current \(x_5\to x_6\) norm, and all 8,880 values of
+the reconstructed radial feedback field are strictly positive. This is an
+offline modal candidate with no fitted relaxation coefficient, not a new
+complete state, a physical map evaluation, or evidence of convergence.
+See `validation/iterative/anderson1_modal_result.md`.
+
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.
 

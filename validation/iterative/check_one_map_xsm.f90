@@ -10,13 +10,17 @@ program check_one_map_xsm
   !     state2_axial.xsm state3_axial.xsm
   !   check_one_map_xsm --leakage-faces axial_track.xsm \
   !     state1_axial.xsm state2_axial.xsm state3_axial.xsm
+  !   check_one_map_xsm --anderson1 state4_axial.xsm \
+  !     state5_axial.xsm state6_axial.xsm
   !
   ! No Dragon, SPOT, assembly, transport, or production convergence routine
   ! is linked or called.  The one-map modes read five archived XSM objects,
   ! verify the fixed POD package bit for bit, require a live RADIAL-OP change,
   ! and independently recompute the canonical defects.  Direction mode reads
   ! three frozen canonical states, describes their two stored increments,
-  ! and locates the infinity-norm leakage hotspots.  Leakage-face mode also
+  ! and locates the infinity-norm leakage hotspots.  Anderson mode forms one
+  ! unclipped modal least-squares candidate and checks the reconstructed
+  ! fixed-space field without writing a state.  Leakage-face mode also
   ! rebuilds raw leakage and reports the exact radial support of the dominant
   ! axial-face change and its minimal normalization-invariant adjacent-floor
   ! scalar/current ratios.
@@ -103,17 +107,20 @@ program check_one_map_xsm
   type(canonical_state) :: previous_state,current_state
   type(canonical_state) :: direction_state(3)
   integer :: i,argument_offset
-  logical :: continued,direction_mode,face_mode
+  logical :: continued,direction_mode,face_mode,anderson_mode
 
   continued=.false.
   direction_mode=.false.
   face_mode=.false.
+  anderson_mode=.false.
   argument_offset=0
   if (command_argument_count() == 4) then
     call get_command_argument(1,mode)
-    if (trim(mode) /= '--directions') call fail( &
-      'ONLY --directions IS ACCEPTED IN FOUR-ARGUMENT MODE.')
+    if ((trim(mode) /= '--directions').and. &
+        (trim(mode) /= '--anderson1')) call fail( &
+      'ONLY --directions OR --anderson1 IS ACCEPTED IN FOUR-ARGUMENT MODE.')
     direction_mode=.true.
+    anderson_mode=trim(mode) == '--anderson1'
     do i=1,3
       call get_command_argument(i+1,paths(i))
       if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
@@ -165,6 +172,8 @@ program check_one_map_xsm
       direction_state(2),.true.)
     if (face_mode) then
       write(6,'(A)') 'LEAKAGE-FACES MAP12 RAW-DEFECT BITWISE PASS'
+    else if (anderson_mode) then
+      write(6,'(A)') 'ANDERSON1 MAP45 RAW-DEFECT BITWISE PASS'
     else
       write(6,'(A)') 'PICARD-DIRECTION MAP12 RAW-DEFECT BITWISE PASS'
     endif
@@ -172,12 +181,17 @@ program check_one_map_xsm
       direction_state(3),.true.)
     if (face_mode) then
       write(6,'(A)') 'LEAKAGE-FACES MAP23 RAW-DEFECT BITWISE PASS'
+    else if (anderson_mode) then
+      write(6,'(A)') 'ANDERSON1 MAP56 RAW-DEFECT BITWISE PASS'
     else
       write(6,'(A)') 'PICARD-DIRECTION MAP23 RAW-DEFECT BITWISE PASS'
     endif
     if (face_mode) then
       call report_leakage_faces(trim(track_path),trim(paths(1)), &
         trim(paths(2)),trim(paths(3)),direction_state)
+    else if (anderson_mode) then
+      call report_anderson1(direction_state(1),direction_state(2), &
+        direction_state(3))
     else
       call report_update_directions(direction_state(1),direction_state(2), &
         direction_state(3))
@@ -829,6 +843,181 @@ contains
       call fail('NON-FINITE RECOMPUTED MAP DEFECT.')
     defect=(/r_rho,r_leak,d_leak,r_a/)
   end subroutine recompute_map_defect
+
+
+  subroutine report_anderson1(x4,x5,x6)
+    type(canonical_state), intent(in) :: x4,x5,x6
+    real(real64), allocatable :: f4(:),f5(:),delta_f(:),candidate(:)
+    real(real64), allocatable :: linearized_residual(:)
+    real(real64) :: denominator,numerator,gamma,weight6
+    real(real64) :: norm_f4,norm_f5,norm_linearized,norm_candidate
+    real(real64) :: normal_dot,normal_cosine,min_reconstructed
+    integer :: reconstructed_count,min_group,min_snapshot,min_region
+
+    allocate(f4(size(x4%coordinates)),f5(size(x4%coordinates)))
+    allocate(delta_f(size(x4%coordinates)))
+    allocate(candidate(size(x4%coordinates)))
+    allocate(linearized_residual(size(x4%coordinates)))
+    f4=x5%coordinates-x4%coordinates
+    f5=x6%coordinates-x5%coordinates
+    delta_f=f5-f4
+    denominator=modal_inner_product(x4,delta_f,delta_f)
+    numerator=modal_inner_product(x4,delta_f,f5)
+    if ((.not.ieee_is_finite(denominator)).or. &
+        (denominator <= 0.0_real64).or. &
+        (.not.ieee_is_finite(numerator))) &
+      call fail('ANDERSON1 LEAST-SQUARES SYSTEM IS INVALID.')
+
+    ! Unique, unclipped depth-one Anderson coefficient:
+    !   gamma = argmin ||f5 - gamma (f5-f4)||_HG.
+    gamma=numerator/denominator
+    weight6=1.0_real64-gamma
+    candidate=gamma*x5%coordinates+weight6*x6%coordinates
+    linearized_residual=gamma*f4+weight6*f5
+    if ((.not.ieee_is_finite(gamma)).or. &
+        any(.not.ieee_is_finite(candidate)).or. &
+        any(.not.ieee_is_finite(linearized_residual))) &
+      call fail('ANDERSON1 CANDIDATE IS NON-FINITE.')
+
+    norm_f4=sqrt(modal_inner_product(x4,f4,f4))
+    norm_f5=sqrt(modal_inner_product(x4,f5,f5))
+    norm_linearized=sqrt(max(0.0_real64, &
+      modal_inner_product(x4,linearized_residual,linearized_residual)))
+    norm_candidate=sqrt(modal_inner_product(x4,candidate,candidate))
+    normal_dot=modal_inner_product(x4,delta_f,linearized_residual)
+    if ((norm_f4 <= 0.0_real64).or.(norm_f5 <= 0.0_real64).or. &
+        (norm_candidate <= 0.0_real64).or. &
+        (norm_linearized >= norm_f5)) &
+      call fail('ANDERSON1 DOES NOT STRICTLY REDUCE THE MODAL MODEL RESIDUAL.')
+    if (norm_linearized > 0.0_real64) then
+      normal_cosine=normal_dot/(sqrt(denominator)*norm_linearized)
+    else
+      normal_cosine=0.0_real64
+    endif
+    if ((.not.ieee_is_finite(normal_dot)).or. &
+        (.not.ieee_is_finite(normal_cosine))) &
+      call fail('ANDERSON1 NORMAL-EQUATION METRIC IS NON-FINITE.')
+
+    call check_anderson_modal_positivity(x4,candidate,min_reconstructed, &
+      reconstructed_count,min_group,min_snapshot,min_region)
+
+    write(6,'(A)') 'ANDERSON1 DEPTH ONE'
+    write(6,'(A)') 'ANDERSON1 MODAL METRIC GRAM-HEIGHT'
+    write(6,'(A)') 'ANDERSON1 COEFFICIENT LEAST-SQUARES UNCLIPPED'
+    call write_real64_metric('ANDERSON1 GAMMA WEIGHT-X5',gamma)
+    call write_real64_metric('ANDERSON1 WEIGHT-X6',weight6)
+    call write_real64_metric('ANDERSON1 MODAL RESIDUAL-NORM F4',norm_f4)
+    call write_real64_metric('ANDERSON1 MODAL RESIDUAL-NORM F5',norm_f5)
+    call write_real64_metric( &
+      'ANDERSON1 MODAL LINEARIZED-RESIDUAL-NORM',norm_linearized)
+    call write_real64_metric( &
+      'ANDERSON1 MODAL LINEARIZED-REDUCTION/F5',norm_linearized/norm_f5)
+    call write_real64_metric('ANDERSON1 MODAL CANDIDATE-NORM', &
+      norm_candidate)
+    call write_real64_metric('ANDERSON1 NORMAL-EQUATION DOT',normal_dot)
+    call write_real64_metric('ANDERSON1 NORMAL-EQUATION COSINE', &
+      normal_cosine)
+    if ((gamma >= 0.0_real64).and.(gamma <= 1.0_real64)) then
+      write(6,'(A)') 'ANDERSON1 COEFFICIENT GEOMETRY CONVEX'
+    else
+      write(6,'(A)') 'ANDERSON1 COEFFICIENT GEOMETRY EXTRAPOLATED'
+    endif
+    write(6,'(A)') 'ANDERSON1 RADIAL-FEEDBACK RECONSTRUCTION POD-BASIS'
+    call write_real64_metric('ANDERSON1 RECONSTRUCTED MIN-CANDIDATE', &
+      min_reconstructed)
+    write(6,'(A,1X,I0)') 'ANDERSON1 RECONSTRUCTED COUNT', &
+      reconstructed_count
+    write(6,'(A,3(1X,I0))') &
+      'ANDERSON1 RECONSTRUCTED MIN G/S/R', &
+      min_group,min_snapshot,min_region
+    write(6,'(A)') 'ANDERSON1 RECONSTRUCTED POSITIVITY PASS'
+    write(6,'(A)') 'ANDERSON1 MODAL CANDIDATE FIXED-SPACE PASS'
+    write(6,'(A)') 'ANDERSON1 NO CANDIDATE STATE WRITTEN'
+    write(6,'(A)') 'ANDERSON1 NO PHYSICAL MAP EVALUATION'
+    write(6,'(A)') 'ANDERSON1 OUTER-CONVERGENCE NOT-ESTABLISHED'
+    write(6,'(A)') 'ANDERSON1 COMPLETE'
+
+    deallocate(linearized_residual,candidate,delta_f,f5,f4)
+  end subroutine report_anderson1
+
+
+  real(real64) function modal_inner_product(metric,left,right)
+    type(canonical_state), intent(in) :: metric
+    real(real64), intent(in) :: left(:),right(:)
+    integer :: g,s,a,b,nmode,index_a,index_b,index_g
+
+    if ((size(left) /= metric%dims(4)).or. &
+        (size(right) /= metric%dims(4))) &
+      call fail('ANDERSON1 MODAL VECTOR EXTENT IS INVALID.')
+    modal_inner_product=0.0_real64
+    do g=1,metric%dims(2)
+      nmode=metric%rank(g)
+      do s=1,metric%dims(3)
+        do a=1,nmode
+          index_a=metric%offset(g)+(s-1)*nmode+a
+          do b=1,nmode
+            index_b=metric%offset(g)+(s-1)*nmode+b
+            index_g=metric%gram_offset(g)+(b-1)*nmode+a
+            modal_inner_product=modal_inner_product+metric%height(s)* &
+              left(index_a)*metric%gram(index_g)*right(index_b)
+          enddo
+        enddo
+      enddo
+    enddo
+    if (.not.ieee_is_finite(modal_inner_product)) &
+      call fail('ANDERSON1 MODAL INNER PRODUCT IS NON-FINITE.')
+  end function modal_inner_product
+
+
+  subroutine check_anderson_modal_positivity(metric,candidate, &
+      minimum,count0,min_group,min_snapshot,min_region)
+    type(canonical_state), intent(in) :: metric
+    real(real64), intent(in) :: candidate(:)
+    real(real64), intent(out) :: minimum
+    integer, intent(out) :: count0,min_group,min_snapshot,min_region
+    integer :: g,s,r,a,nmode,nreg,index_a,index_b
+    real(real64) :: reconstructed
+
+    if (size(candidate) /= metric%dims(4)) &
+      call fail('ANDERSON1 CANDIDATE EXTENT IS INVALID.')
+    minimum=huge(1.0_real64)
+    count0=0
+    min_group=0
+    min_snapshot=0
+    min_region=0
+    do g=1,metric%dims(2)
+      nmode=metric%rank(g)
+      nreg=(metric%basis_offset(g+1)-metric%basis_offset(g))/nmode
+      if ((nreg <= 0).or. &
+          (nreg*nmode /= &
+           metric%basis_offset(g+1)-metric%basis_offset(g))) &
+        call fail('ANDERSON1 POD BASIS LAYOUT IS INVALID.')
+      do s=1,metric%dims(3)
+        do r=1,nreg
+          reconstructed=0.0_real64
+          do a=1,nmode
+            index_a=metric%offset(g)+(s-1)*nmode+a
+            index_b=metric%basis_offset(g)+(a-1)*nreg+r
+            reconstructed=reconstructed+ &
+              real(metric%basis(index_b),real64)*candidate(index_a)
+          enddo
+          if ((.not.ieee_is_finite(reconstructed)).or. &
+              (reconstructed <= 0.0_real64)) &
+            call fail('ANDERSON1 RECONSTRUCTED FIELD IS NONPOSITIVE.')
+          count0=count0+1
+          if (reconstructed < minimum) then
+            minimum=reconstructed
+            min_group=g
+            min_snapshot=s
+            min_region=r
+          endif
+        enddo
+      enddo
+    enddo
+    if ((count0 <= 0).or.(.not.ieee_is_finite(minimum)).or. &
+        (min_group <= 0).or.(min_snapshot <= 0).or.(min_region <= 0)) &
+      call fail('ANDERSON1 RECONSTRUCTED FIELD IS EMPTY.')
+  end subroutine check_anderson_modal_positivity
 
 
   subroutine report_update_directions(x1,x2,x3)

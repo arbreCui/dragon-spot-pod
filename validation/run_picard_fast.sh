@@ -18,6 +18,7 @@ sh -n "$ROOT/validation/iterative/run_map2_short.sh"
 sh -n "$ROOT/validation/iterative/run_map3_short.sh"
 sh -n "$ROOT/validation/iterative/run_map4_short.sh"
 sh -n "$ROOT/validation/iterative/run_picard_direction_check.sh"
+sh -n "$ROOT/validation/iterative/run_anderson1_modal_check.sh"
 sh -n "$ROOT/validation/iterative/run_strict_leakage_faces.sh"
 map4_default=$(RUN_MAP4=0 \
   DRAGON_BIN="$BUILD_DIR/must-not-run" \
