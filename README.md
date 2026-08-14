@@ -87,7 +87,8 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current result
 
-The fixed rank-1 trajectory has been evaluated through $x_7=G(x_6)$. Each
+The fixed rank-1 trajectory has been evaluated through the predeclared final
+$x_8=G(x_7)$. Each
 valid map evaluation passed the independent fixed-basis, state, source, raw
 defect and restart checks; balance diagnostics are reported separately. The
 earlier legacy $x_3$ was superseded by the strict-inner result shown here.
@@ -101,12 +102,15 @@ earlier legacy $x_3$ was superseded by the strict-inner result shown here.
 | $x_4\to x_5$ | $6.4057635\times10^{-8}$ | $3.1253506\times10^{-4}$ | $4.5823981\times10^{-7}$ | $2.3143260\times10^{-7}$ |
 | $x_5\to x_6$ | $0$ | $2.0941536\times10^{-4}$ | $3.0704541\times10^{-7}$ | $7.5835882\times10^{-7}$ |
 | $x_6\to x_7$ | $6.4057635\times10^{-8}$ | $3.0515094\times10^{-4}$ | $4.4741319\times10^{-7}$ | $1.5063945\times10^{-7}$ |
+| $x_7\to x_8$ | $6.4057635\times10^{-8}$ | $3.7849612\times10^{-4}$ | $5.5495184\times10^{-7}$ | $2.6731298\times10^{-7}$ |
 
-At the unchanged $5\times10^{-7}$ outer gate, x7 is
-`VALID_NOT_MET`: $R_\rho$ and $R_a$ pass, but $R_L$ fails by a factor
-of 610.30. Relative to the preceding $x_5\to x_6$ map defect, $R_L$
-increased by 45.7% while $R_a$ decreased by 80.1%. The components do not
-show one stable contraction.
+At the unchanged $5\times10^{-7}$ outer gate, the final x8 is
+`VALID_NOT_MET`: $R_\rho$ and $R_a$ pass at 0.128115 and 0.534626 times
+the tolerance, but $R_L$ fails by a factor of 756.992233. Relative to x7,
+x8 $R_L$, $D_L$ and $R_a$ increased by 24.0357%, 24.0356% and 77.4522%,
+respectively. These changes do not establish divergence or a cycle; they do
+establish that the predeclared direct rank-1 census ended without satisfying
+the discrete fixed-point gate.
 
 One leakage-driven Anderson(1) candidate was also passed through the real
 nonlinear map once. Its returned defects were
@@ -143,12 +147,15 @@ The validation plan is
 
 ## Next scientific step
 
-The valid x7 publication is independently checked and hash-receipted. The
-generic continuation host remains default-off; its six x7 parent objects are
-role- and hash-locked, and its decision rule is frozen in
-[validation/iterative/continuation_policy.md](validation/iterative/continuation_policy.md).
+The valid x8 publication is independently checked and hash-receipted. The
+direct rank-1 Picard census is complete, and no x9 is defined. The retained
+x7 parent manifest is the frozen provenance for reproducing x8, not an
+authorization to continue the sequence.
 
-Stop now. A separately authorized $x_8=G(x_7)$ would use the identical map,
-rank, basis and tolerances once, with no retry or parameter change. It would
-end the direct rank-1 census; there is no automatic x9. Rank, mesh and
-reference studies come only after a reproducible fixed point exists.
+The immediate next task is a short, transport-free audit of the stored
+x6--x8 residual directions. It fits no coefficient and defines no new
+acceptance score. Only if that audit supports a clear formulation should one
+nonlinear solver be declared for the same residual $F(x)=G(x)-x$. Such a
+solver must preserve the map, basis, rank, tolerances and three-component
+gate, without an empirical coefficient or new physical closure. Rank, mesh
+and reference studies remain downstream of a reproducible fixed point.

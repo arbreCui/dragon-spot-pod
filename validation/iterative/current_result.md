@@ -25,23 +25,24 @@ superseded by the strict-inner $x_3$.
 | $x_4\to x_5$ | 6.4057634863e-8 | 3.1253505970e-4 | 4.5823981054e-7 | 2.3143260254e-7 | `ed9e399` |
 | $x_5\to x_6$ | 0 | 2.0941536233e-4 | 3.0704541132e-7 | 7.5835881646e-7 | `46a1209` |
 | $x_6\to x_7$ | 6.4057634863e-8 | 3.0515093508e-4 | 4.4741318561e-7 | 1.5063944615e-7 | `afd9617` |
+| $x_7\to x_8$ | 6.4057634863e-8 | 3.7849611670e-4 | 5.5495183915e-7 | 2.6731297644e-7 | `7273253` |
 
-The predeclared x7 classification is `VALID_NOT_MET`. $R_\rho$ and
-$R_a$ pass at 0.128115 and 0.301279 times the tolerance, respectively, but
-$R_L$ fails by a factor of 610.301870. Therefore the fixed point has not
+The predeclared final x8 classification is `VALID_NOT_MET`. $R_\rho$ and
+$R_a$ pass at 0.128115 and 0.534626 times the tolerance, respectively, but
+$R_L$ fails by a factor of 756.992233. Therefore the fixed point has not
 been reached. Earlier zero $R_\rho$ entries mean only that the stored
 binary32 `K-EFFECTIVE` did not change; they are not exact-arithmetic claims.
 
 The leakage and modal components are nonmonotone and do not share a stable
 observed contraction. This trajectory alone proves neither divergence nor a
-two-cycle. Relative to the preceding $x_5\to x_6$ map defect, x7 $R_L$
-and $D_L$ increased by 45.7156% while $R_a$ decreased by 80.1361%; these
-trends do not enter the stopping rule.
+two-cycle. Relative to x7, x8 $R_L$, $D_L$ and $R_a$ increased by
+24.035706%, 24.035647% and 77.452177%, respectively; these one-step changes
+do not enter the stopping rule.
 
-The x7 global balance diagnostic is $2.98066\times10^{-9}$. The worst
-relative group diagnostic is $3.23071\times10^{-3}$ at group weight
-$1.58742\times10^{-11}$, and the Galerkin maximum is
-$5.66649\times10^{-7}$. These are reported transparently but are not part
+The x8 global balance diagnostic is $3.301196\times10^{-9}$. The worst
+relative group diagnostic is $3.231639\times10^{-3}$ at group weight
+$4.82940\times10^{-12}$, and the Galerkin maximum is
+$5.56322\times10^{-7}$. These are reported transparently but are not part
 of the frozen Picard stopping criterion.
 
 ## One Anderson trial
@@ -82,17 +83,20 @@ not establish:
 - accuracy against MPACT, DeCART, nTRACER or a 3D reference.
 
 Full pre-cleanup files and receipts are preserved by Git tag
-`archive-pre-lean-20260814`. The x7 publication receipt hashes are tracked
-in [x7_result.sha256](x7_result.sha256). Its 443 MB artifact directory
-remains local and Git-ignored. The six local objects needed for a separately
-authorized continuation from x7 are frozen by role and hash in
-[current_parent.tsv](current_parent.tsv).
+`archive-pre-lean-20260814`. The final x8 publication receipt hashes are
+tracked in [x8_result.sha256](x8_result.sha256), with
+[x7_result.sha256](x7_result.sha256) retained as parent evidence. The 443 MB
+x8 artifact directory remains local and Git-ignored. The six objects frozen
+by role and hash in [current_parent.tsv](current_parent.tsv) are the exact x7
+inputs used to produce x8; the manifest is retained as provenance, not as
+authorization for x9.
 
 ## Next decision
 
-Stop after x7. No further map starts automatically. If separately authorized,
-run exactly one unchanged $x_8=G(x_7)$ with the same map, rank, basis,
-tolerances and no retry. That x8 ends the direct rank-1 census; there is no
-automatic x9. If x8 is also `VALID_NOT_MET`, report that the frozen direct
-Picard census did not reach its discrete gate, without inventing a trend
-criterion or tuning a parameter.
+Stop after x8. The frozen direct rank-1 Picard census did not reach its
+discrete gate, and no x9 is defined. This result does not by itself establish
+divergence, a cycle, rank adequacy or physical accuracy. The immediate next
+step, if authorized, is a transport-free audit of the stored x6--x8 residual
+directions, with no fitted coefficient or new acceptance score. Only after
+that evidence may one nonlinear solver be declared for the unchanged residual
+$F(x)=G(x)-x$; it must not alter the physical map.

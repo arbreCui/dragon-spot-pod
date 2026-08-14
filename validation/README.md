@@ -32,15 +32,15 @@ RESULT_DIR=/absolute/path/to/new-result \
 It runs the radial and axial halves once each, with fixed process bounds and
 no retry. It never updates the parent or starts another map automatically.
 
-Current scientific status and the minimum frozen inputs for the next
-continuation are in
+Current scientific status and the frozen x8 input provenance are in
 [iterative/current_result.md](iterative/current_result.md) and
 [iterative/current_parent.tsv](iterative/current_parent.tsv). The predeclared
 three-way decision is in
 [iterative/continuation_policy.md](iterative/continuation_policy.md).
-The valid but unconverged x7 publication hashes are tracked in
-[iterative/x7_result.sha256](iterative/x7_result.sha256); the full artifact
-remains local and Git-ignored, and no x8 is automatic.
+The valid but unconverged final x8 publication hashes are tracked in
+[iterative/x8_result.sha256](iterative/x8_result.sha256); the x7 receipt is
+retained as its parent evidence. The full artifacts remain local and
+Git-ignored. The direct rank-1 census is complete and no x9 is defined.
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active
