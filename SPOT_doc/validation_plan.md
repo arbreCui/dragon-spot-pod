@@ -129,7 +129,14 @@ continuation then completed strict \(x_5=G(x_4)\), with
 the \(x_4\to x_5\) modal norm ratio is `0.156192`, the height-weighted
 leakage ratio is `0.731416`, and the production infinity ratio is `0.549703`.
 Thus the repeated-amplification stop condition was not met, but convergence
-is not established. No \(x_6\) has been run. An
+was not established. One unchanged continuation then completed strict
+\(x_6=G(x_5)\), with
+\((R_\rho,R_L,R_a)=(0,2.0941536\times10^{-4},7.5835882\times10^{-7})\).
+Leakage decreases but still fails, and the modal defect fails again. The
+\(x_5\to x_6\) modal cosine/ratio is `-0.7987202/3.276802`; leakage remains
+obtuse but contracts by `0.731538` in height-weighted \(L_2\) and `0.670054`
+in the production infinity diagnostic. There is no common stable contraction,
+no outer convergence result, and no \(x_7\). An
 earlier read-only check of the replacement \(x_1,x_2,x_3\) sequence finds
 that the modal update is acute and smaller, whereas the leakage update has a
 negative height-weighted \(L_2\) cosine and a smaller aggregate norm but a

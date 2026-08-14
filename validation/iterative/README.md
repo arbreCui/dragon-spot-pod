@@ -318,6 +318,51 @@ LOCK="$PWD/validation/iterative/picard_map5_direction_scientific.sha256" \
   sh validation/iterative/run_picard_direction_check.sh
 ```
 
+One further separately authorized direct continuation evaluated strict
+\(x_6=G(x_5)\) with the same 120 s radial and 80 s axial safety bounds. All
+four transport solves passed their unchanged inner and outer gates, both
+processes ended normally, and the independent one-map checker passed. The raw
+defect is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,2.094153623298644\times10^{-4},\,
+3.070454113185406\times10^{-7}\ {\rm cm}^{-1},\,
+7.583588164556210\times10^{-7}).
+\]
+
+Thus \(R_\rho\) passes, while \(R_L\) and \(R_a\) fail by factors `418.8307`
+and `1.51672`. The saved hashes are
+
+```text
+8848f842576a0c6d57b72ec55c8e628b1da0d0fd847186a118e11db0eb790dce  radial.log
+40099a5c37ab7e408c1f68dc1532bf041d75a85c980a991af0224eb18b898d48  axial.log
+e54f48fc47e34679ba9ee671d0b96d377d0193b0303e770fd98c2fbe1889c01f  state6_axial.xsm
+5123620660c4cec14a0ec36c531855fe4f01418eb982b5b3bb950b60781fce15  state6_snapshots.xsm
+```
+
+The no-Dragon \(x_4,x_5,x_6\) check gives modal cosine/ratio
+`-0.7987201797/3.2768018406`, height-weighted leakage cosine/ratio
+`-0.3932214435/0.7315375180`, and production infinity ratio
+`0.6700539854`. The modal update therefore reverses and grows again, while
+leakage remains obtuse but shrinks in both stated norms. The leakage hotspot
+moves from plane-list index 3 to 1, remaining in group 326. These components
+do not show a common stable contraction; this is not a converged fixed point
+or proof of asymptotic divergence. No \(x_7\) has been run.
+
+Reproduce the direction result with
+
+```sh
+X1_DIR="$PWD/validation/artifacts/iterative-map4-axial-80s" \
+X1_NAME=state4_axial.xsm \
+X2_DIR="$PWD/validation/artifacts/iterative-map5-axial-80s" \
+X2_NAME=state5_axial.xsm \
+X3_DIR="$PWD/validation/artifacts/iterative-map6-axial-80s" \
+X3_NAME=state6_axial.xsm \
+LOCK="$PWD/validation/iterative/picard_map6_direction_scientific.sha256" \
+  sh validation/iterative/run_picard_direction_check.sh
+```
+
 For comparison, the earlier checker application to the strict
 \(x_1,x_2,x_3\) sequence gave modal cosine and update-norm ratio `+0.4969`
 and `0.4478`. The separate height-weighted leakage \(L_2\) values are

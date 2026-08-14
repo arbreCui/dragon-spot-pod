@@ -250,7 +250,21 @@ factor of `625.07`. The \(x_4\to x_5\) modal update is acute and only
 but falls to `0.731416` in height-weighted \(L_2\) and `0.549703` in the
 production infinity defect. Therefore the predeclared repeated-amplification
 stop condition was not met, but outer convergence is still not established.
-No \(x_6\) has been run.
+
+One further unchanged continuation completed strict \(x_6=G(x_5)\), giving
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\,2.0941536\times10^{-4},\,7.5835882\times10^{-7}).
+\]
+
+Leakage decreases again but still fails by a factor of `418.83`; the modal
+defect returns above the gate. Relative to \(x_4\to x_5\), the new modal
+update is obtuse and `3.276802` times larger. Leakage remains obtuse but is
+smaller by factors `0.731538` in height-weighted \(L_2\) and `0.670054` in
+the production infinity diagnostic. Thus the components do not exhibit a
+common stable contraction. Outer convergence remains unestablished, and no
+\(x_7\) has been run.
 
 Rank, mesh, angle, inner-tolerance, and reference-solution studies remain
 separate validation questions.
