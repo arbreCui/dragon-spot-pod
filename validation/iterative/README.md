@@ -16,6 +16,9 @@ generic, default-off continuation host.
   solver-independent acceptance and an exact-Newton synthetic reference.
 - `check_rank_census_xsm.f90`, `run_rank_census.sh`,
   `rank_census_result.md`: hash-locked real snapshot-spectrum census.
+- `build_rank2_basis_xsm.f90`, `check_rank2_basis_xsm.f90`,
+  `run_rank2_basis.sh`, `rank2_basis_result.md`: production-convention,
+  no-transport rank-2 reconstruction and independent audit.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -106,6 +109,14 @@ Rank 1 has worst within-group error 1.5004%, while rank 2 has worst error
 0.03408%; all 370 groups have numerical rank 3. This is `DIAGNOSTIC_ONLY` and
 does not attribute Picard failure to rank or authorize a rank change. See
 [rank_census_result.md](rank_census_result.md).
+
+The next representation-only step is also complete: the genuine second mode
+has been rebuilt from those same original snapshots with production
+`SPOPOD`/`ALSVDF`. A fresh rank-1 control, the rank-2 mode-1 prefix, stored
+diagnostics and duplicate rank-2 files all agree bitwise under their declared
+checks. The local rank-2 package remains inactive and Git-ignored. This is
+`OFFLINE_RECONSTRUCTION_ONLY`; no rank-2 transport map or convergence claim
+exists. See [rank2_basis_result.md](rank2_basis_result.md).
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.

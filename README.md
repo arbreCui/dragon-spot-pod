@@ -182,3 +182,14 @@ Picard result, qualify rank 2 or alter the active basis. Reproduce it with
 `make spot-rank-census` when the local hash-locked basis artifact is present;
 details are in
 [validation/iterative/rank_census_result.md](validation/iterative/rank_census_result.md).
+
+The genuine rank-2 trial space has now also been rebuilt from the same three
+original raw snapshots. A fresh rank-1 control reproduces the locked rank-1
+POD fields bitwise; the rank-2 first-mode prefix, all singular values and two
+repeated rank-2 builds are likewise bitwise consistent. An independent
+Ganlib-only checker recomputes the stored reconstruction and volume-Gram
+diagnostics without linking the SVD path. This creates only a local,
+Git-ignored, inactive basis package: Dragon, assembly, transport and Picard
+were not run, so no convergence or physical-accuracy conclusion follows.
+Reproduce it with `make spot-rank2-basis`; details are in
+[validation/iterative/rank2_basis_result.md](validation/iterative/rank2_basis_result.md).
