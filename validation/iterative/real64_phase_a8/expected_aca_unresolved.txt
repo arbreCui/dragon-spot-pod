@@ -1,9 +1,0 @@
-__gfortran_os_error_at
-__gfortran_runtime_error
-__gfortran_runtime_error_at
-_ddot_
-_free
-_malloc
-_memset
-_msrlus1_
-_realloc

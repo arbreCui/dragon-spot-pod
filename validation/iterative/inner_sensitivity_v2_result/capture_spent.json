@@ -1,7 +1,0 @@
-{
-  "schema": "spot-inner-sensitivity-v2-budget-1",
-  "mode": "capture",
-  "authorization_sha256": "253e1598465b53631e5ed27711cc49a675c457dc346111ec30e7ce98a9411ea6",
-  "dragon_processes": 1,
-  "status": "UNRESOLVED"
-}

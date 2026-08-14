@@ -1,3 +1,0 @@
-T _lcmgil_
-T _lcmgpd_
-T _lcmlen_

@@ -14,51 +14,24 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
 sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
-sh -n "$ROOT/validation/iterative/run_map2_short.sh"
-sh -n "$ROOT/validation/iterative/run_map3_short.sh"
-sh -n "$ROOT/validation/iterative/run_map4_short.sh"
-sh -n "$ROOT/validation/iterative/run_picard_direction_check.sh"
-sh -n "$ROOT/validation/iterative/run_anderson1_modal_check.sh"
-sh -n "$ROOT/validation/iterative/run_anderson1_trial_check.sh"
-sh -n "$ROOT/validation/iterative/run_anderson1_map_once.sh"
-sh -n "$ROOT/validation/iterative/run_strict_leakage_faces.sh"
-map4_default=$(RUN_MAP4=0 \
+one_map_default=$(RUN_ONE_MAP=0 \
   DRAGON_BIN="$BUILD_DIR/must-not-run" \
   SEED_DIR="$BUILD_DIR/must-not-read-seed" \
-  BASIS_DIR="$BUILD_DIR/must-not-read-basis" \
-  X3_DIR="$BUILD_DIR/must-not-read-x3" \
+  X0_DIR="$BUILD_DIR/must-not-read-x0" \
   GANLIB_LIB="$BUILD_DIR/must-not-read-ganlib" \
   GANLIB_MOD="$BUILD_DIR/must-not-read-modules" \
   TMPDIR="$BUILD_DIR/must-not-use-tmp" \
-  sh "$ROOT/validation/iterative/run_map4_short.sh")
-test "$map4_default" = \
-  'MAP4-SHORT DEFAULT-OFF: no Dragon process started.'
-if map4_invalid=$(RUN_MAP4=2 DRAGON_BIN="$BUILD_DIR/must-not-run" \
-    sh "$ROOT/validation/iterative/run_map4_short.sh" 2>&1)
+  sh "$ROOT/validation/iterative/run_one_map_short.sh")
+test "$one_map_default" = \
+  'ONE-MAP-SHORT DEFAULT-OFF: no Dragon process started.'
+if one_map_invalid=$(RUN_ONE_MAP=2 DRAGON_BIN="$BUILD_DIR/must-not-run" \
+    sh "$ROOT/validation/iterative/run_one_map_short.sh" 2>&1)
 then
-  printf '%s\n' 'MAP4-SHORT invalid activation unexpectedly passed.' >&2
+  printf '%s\n' 'ONE-MAP-SHORT invalid activation unexpectedly passed.' >&2
   exit 1
 fi
-test "$map4_invalid" = 'MAP4-SHORT ERROR: RUN_MAP4 must be 0 or 1.'
-anderson_map_default=$(RUN_ANDERSON1_MAP=0 \
-  DRAGON_BIN="$BUILD_DIR/must-not-run" \
-  ARTIFACTS="$BUILD_DIR/must-not-read-artifacts" \
-  GANLIB_LIB="$BUILD_DIR/must-not-read-ganlib" \
-  GANLIB_MOD="$BUILD_DIR/must-not-read-modules" \
-  TMPDIR="$BUILD_DIR/must-not-use-tmp" \
-  sh "$ROOT/validation/iterative/run_anderson1_map_once.sh")
-test "$anderson_map_default" = \
-  'ANDERSON1-MAP DEFAULT-OFF: no Dragon process started.'
-if anderson_map_invalid=$(RUN_ANDERSON1_MAP=2 \
-    DRAGON_BIN="$BUILD_DIR/must-not-run" \
-    sh "$ROOT/validation/iterative/run_anderson1_map_once.sh" 2>&1)
-then
-  printf '%s\n' \
-    'ANDERSON1-MAP invalid activation unexpectedly passed.' >&2
-  exit 1
-fi
-test "$anderson_map_invalid" = \
-  'ANDERSON1-MAP ERROR: RUN_ANDERSON1_MAP must be 0 or 1.'
+test "$one_map_invalid" = \
+  'ONE-MAP-SHORT ERROR: RUN_ONE_MAP must be 0 or 1.'
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 
@@ -71,19 +44,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
 for source in \
   "$ROOT/data/SpotPicard.c2m" \
   "$ROOT/validation/iterative/one_map_radial.x2m" \
-  "$ROOT/validation/iterative/one_map_axial.x2m" \
-  "$ROOT/validation/iterative/map2_radial.x2m" \
-  "$ROOT/validation/iterative/map2_axial.x2m" \
-  "$ROOT/validation/iterative/map3_radial.x2m" \
-  "$ROOT/validation/iterative/map3_axial.x2m" \
-  "$ROOT/validation/iterative/map4_radial.x2m" \
-  "$ROOT/validation/iterative/map4_axial.x2m" \
-  "$ROOT/validation/iterative/map5_radial.x2m" \
-  "$ROOT/validation/iterative/map5_axial.x2m" \
-  "$ROOT/validation/iterative/map6_radial.x2m" \
-  "$ROOT/validation/iterative/map6_axial.x2m" \
-  "$ROOT/validation/iterative/anderson1_radial.x2m" \
-  "$ROOT/validation/iterative/anderson1_axial.x2m"
+  "$ROOT/validation/iterative/one_map_axial.x2m"
 do
   stem=$(basename "$source")
   stem=${stem%.*}
@@ -100,17 +61,6 @@ done
   "$ROOT/validation/iterative/check_one_map_xsm.f90" \
   "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
   -o "$BUILD_DIR/check_one_map_xsm"
-"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
-  -Wno-compare-reals -ffp-contract=off -fno-fast-math \
-  -I "$ROOT/Ganlib/src" -J "$BUILD_DIR" \
-  -c "$ROOT/validation/iterative/prepare_anderson1_trial.f90" \
-  -o "$BUILD_DIR/prepare_anderson1_trial.o"
-"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
-  -Wno-compare-reals -ffp-contract=off -fno-fast-math \
-  -I "$ROOT/Ganlib/src" -J "$BUILD_DIR" \
-  -c "$ROOT/validation/iterative/check_anderson1_trial_xsm.f90" \
-  -o "$BUILD_DIR/check_anderson1_trial_xsm.o"
-
 "$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
   -fimplicit-none -fcheck=all -ffp-contract=off -fno-fast-math \
   -I "$ROOT/Ganlib/lib/Darwin_arm64/modules" -J "$BUILD_DIR" \

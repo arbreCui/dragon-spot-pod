@@ -1,6 +1,19 @@
 #!/bin/sh
 set -eu
 
+RUN_ONE_MAP=${RUN_ONE_MAP:-0}
+case "$RUN_ONE_MAP" in
+  0)
+    echo "ONE-MAP-SHORT DEFAULT-OFF: no Dragon process started."
+    exit 0
+    ;;
+  1) ;;
+  *)
+    echo "ONE-MAP-SHORT ERROR: RUN_ONE_MAP must be 0 or 1." >&2
+    exit 2
+    ;;
+esac
+
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 DRAGON_BIN=${DRAGON_BIN:-"$ROOT/bin/Darwin_arm64/Dragon"}
 SEED_DIR=${SEED_DIR:-"$ROOT/validation/artifacts/iterative-seed"}

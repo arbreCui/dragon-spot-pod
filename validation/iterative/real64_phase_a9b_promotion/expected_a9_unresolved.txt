@@ -1,9 +1,0 @@
-___spor64_a8_MOD_doorfv64
-__gfortran_os_error_at
-__gfortran_runtime_error
-__gfortran_runtime_error_at
-_alsbd_
-_free
-_malloc
-_memcpy
-_memset

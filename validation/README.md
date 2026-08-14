@@ -1,113 +1,42 @@
 # SPOT validation
 
-The active target is the self-consistent fixed-space Galerkin–SPOD method in
-`SPOT_doc/rederivation.md`.
+The active validation tree follows the dependencies of the method:
 
-The published validation tree is intentionally small:
-
-| Directory | Purpose |
+| path | purpose |
 |---|---|
-| `level1/` | weighted POD algebra |
-| `level2/` | fixed-operator algebra and radial source closure unit tests |
-| `iterative/` | fixed-basis state, source, replay, and one-map contracts |
+| `level1/` | volume-weighted POD algebra and rank behavior |
+| `level2/` | radial source, leakage sign, balance and final-source identities |
+| `iterative/` | fixed-basis state, strict inner termination and one-map contracts |
 
-The new validation order is:
-
-1. freeze the fixed-space equations and source identity;
-2. test radial source/closure algebra and leakage signs;
-3. define and independently replay the complete state
-   \(x=(a,1/k,L)\);
-4. validate one corrected map evaluation;
-5. compare production and tighter inner controls from the same input;
-6. qualify direct Picard convergence;
-7. repeat discretization studies;
-8. compare only the accepted iterative solution with an independent 3D
-   reference.
-
-No long continuation is authorized merely because an earlier trajectory
-ended at a prescribed iteration count.
-
-## Current stop point
-
-The online branch preserves
-
-\[
-q_{\rm FS}=F(Ba)/k+S_{\rm off}(u_\perp)
-\]
-
-and constructs `RADIAL-OP` from that same source. The offline POD package is
-then reused bit for bit while the live response changes. The canonical state
-uses the production binary32 restriction, and explicit `SPOPROJ FIXB`
-reconstructs the feedback as \(Ba\).
-
-The independent no-transport fixture passes. One corrected transport map
-\(x_1=G(x_0)\) and one fresh replay also pass their runtime and Ganlib-only
-state checks; the five scientific XSM outputs are byte identical.
-
-The subsequent same-\(x_0\), \(h/2\) capture is
-`INVALID-INNER-NONCONVERGENCE`: all three radial solves exhausted
-`MAXOUT=500`, while the initializer and returned axial solves passed. Its
-written `state1` files are not accepted scientific outputs, Stage 5 remains
-unauthorized, and no iterative-convergence claim exists. The exact receipt
-is [iterative/inner_sensitivity_result.md](iterative/inner_sensitivity_result.md).
-
-## Commands that remain valid
-
-Run the inherited and new short algebra/contracts with
+Run the complete no-transport gate with:
 
 ```sh
-sh validation/run_fast.sh
+make spot-fast
 ```
 
-Run the no-transport LCM fixture with a Dragon executable built from the
-current sources:
+The gate launches no Dragon process. It checks the production method,
+compiles the retained CLE-2000 and Fortran paths, and runs only seconds-scale
+tests.
+
+The only retained transport replay is the frozen $x_0\to x_1$ experiment.
+It is default-off and is not a generic continuation host:
 
 ```sh
+RUN_ONE_MAP=1 \
 DRAGON_BIN=/absolute/path/to/Dragon \
-  sh validation/iterative/run_stage0_runtime.sh
-```
-
-Run exactly one bounded transport map with
-
-```sh
-DRAGON_BIN=/absolute/path/to/Dragon \
-GANLIB_LIB=/absolute/path/to/libGanlib.a \
-GANLIB_MOD=/absolute/path/to/ganlib/modules \
 SEED_DIR=/absolute/path/to/iterative-seed \
-VERIFY_REFERENCE=1 \
-  sh validation/iterative/run_one_map_runtime.sh
+X0_DIR=/absolute/path/to/iterative-map1 \
+  sh validation/iterative/run_one_map_short.sh
 ```
 
-The command above includes the frozen same-input replay gate. With an in-tree
-build, the two `GANLIB_*` overrides may be omitted.
+It has a fixed process timeout, no retry, and requires hash-locked local
+artifacts. It proves one map evaluation, not outer convergence.
 
-The runtime fixtures require the local seed files listed in
-`validation/iterative/seed.sha256`. They are deliberately excluded from Git
-because they total about 258 MB; set `SEED_DIR` if they are stored elsewhere.
+Current scientific status and the minimum frozen inputs for the next
+continuation are in
+[iterative/current_result.md](iterative/current_result.md) and
+[iterative/current_parent.sha256](iterative/current_parent.sha256).
 
-The full active protocol is
-`SPOT_doc/validation_plan.md`. These commands do not qualify iterative
-convergence.
-
-The failed Stage-4 command is retained for provenance, not as the next run:
-
-```sh
-DRAGON_BIN=/absolute/path/to/Dragon \
-GANLIB_LIB=/absolute/path/to/libGanlib.a \
-GANLIB_MOD=/absolute/path/to/ganlib/modules \
-SEED_DIR=/absolute/path/to/iterative-seed \
-BASELINE_DIR=/absolute/path/to/iterative-map1 \
-KEEP_WORK=1 \
-  sh validation/iterative/run_inner_sensitivity.sh
-```
-
-It kept the initializer at \(h\) and applied \(h/2\) only to the four solves
-in the map, but strict radial termination failed before sensitivity could be
-classified. Do not raise `MAXOUT` or use its returned state. The authorized
-bounded single-plane diagnostic has now completed. Both arms
-reached the six-update cap; the result remains diagnostic-only and does not
-qualify Stage 4 or authorize Stage 5. See
-[iterative/radial_floor_result.md](iterative/radial_floor_result.md) for the
-exact probe defects and replay receipt, and
-[iterative/radial_floor_protocol.json](iterative/radial_floor_protocol.json)
-for the predeclared controls.
+Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
+numbered map continuations and Anderson scaffolding are not part of the active
+gate. They remain recoverable from Git tag `archive-pre-lean-20260814`.

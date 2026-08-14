@@ -8,7 +8,7 @@ import re
 root = Path(__file__).resolve().parents[2]
 balance = (root / "src/SPOGBAL.f90").read_text(errors="replace")
 solve = (
-    root / "validation/iterative/one_corrected_map.x2m"
+    root / "validation/iterative/one_map_axial.x2m"
 ).read_text(errors="replace")
 
 failures: list[str] = []
@@ -19,8 +19,8 @@ if len(
         solve,
         re.IGNORECASE | re.DOTALL,
     )
-) != 2:
-    failures.append("both one-map SPOGBAL calls must receive MACROLIB3")
+) != 1:
+    failures.append("the retained one-map SPOGBAL call must receive MACROLIB3")
 
 required = (
     "nentry /= 4",

@@ -1,5 +1,0 @@
-T ___spor64_a8_aca_MOD_mcgabg64
-T ___spor64_a8_aca_MOD_mcgfca64
-T ___spor64_a8_aca_MOD_mcgfcr64
-T ___spor64_a8_aca_MOD_mcgpra64
-T ___spor64_a8_aca_MOD_spor64_a8_aca_shape_probe
