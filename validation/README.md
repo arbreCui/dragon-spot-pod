@@ -18,24 +18,26 @@ The gate launches no Dragon process. It checks the production method,
 compiles the retained CLE-2000 and Fortran paths, and runs only seconds-scale
 tests.
 
-The only retained transport replay is the frozen $x_0\to x_1$ experiment.
-It is default-off and is not a generic continuation host:
+The generic continuation host is default-off. Enabling it evaluates one
+unchanged direct map from the hash-locked parent and requires a new result
+directory:
 
 ```sh
-RUN_ONE_MAP=1 \
+RUN_CONTINUATION=1 \
 DRAGON_BIN=/absolute/path/to/Dragon \
-SEED_DIR=/absolute/path/to/iterative-seed \
-X0_DIR=/absolute/path/to/iterative-map1 \
-  sh validation/iterative/run_one_map_short.sh
+RESULT_DIR=/absolute/path/to/new-result \
+  sh validation/iterative/run_continuation_short.sh
 ```
 
-It has a fixed process timeout, no retry, and requires hash-locked local
-artifacts. It proves one map evaluation, not outer convergence.
+It runs the radial and axial halves once each, with fixed process bounds and
+no retry. It never updates the parent or starts another map automatically.
 
 Current scientific status and the minimum frozen inputs for the next
 continuation are in
 [iterative/current_result.md](iterative/current_result.md) and
-[iterative/current_parent.sha256](iterative/current_parent.sha256).
+[iterative/current_parent.tsv](iterative/current_parent.tsv). The predeclared
+three-way decision is in
+[iterative/continuation_policy.md](iterative/continuation_policy.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active

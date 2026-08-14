@@ -30,8 +30,9 @@ For one frozen input, evaluate $x^+=G(x)$. Require:
 - independently recomputed defects;
 - consistent restart leakage ordering.
 
-Status: PASS for the retained $x_0\to x_1$ replay and for the accepted
-continuation records through $x_6$.
+Status: PASS for the accepted real-map records through $x_6$. The generic
+continuation host preserves this contract for the next separately authorized
+map.
 
 ## 3. Fixed-point iteration
 
@@ -59,10 +60,10 @@ A single real leakage-Anderson candidate worsened the leakage and modal
 defects relative to direct $x_6$; it is rejected. No empirical damping or
 untested second Anderson candidate is authorized.
 
-Next: implement one generic continuation host and evaluate exactly one
-unchanged $x_7=G(x_6)$, with a fixed bound and no retry. Freeze the
-continuation/stop criterion before the run; this one datum cannot by itself
-prove convergence or divergence. Do not add copied map-specific runners.
+Next: the generic default-off host and its three-way decision rule are frozen.
+Authorize exactly one unchanged $x_7=G(x_6)$, with fixed bounds and no
+retry. This one datum cannot by itself prove convergence or divergence. Do
+not add copied map-specific runners or start $x_8$ automatically.
 
 ## 4. Numerical qualification
 

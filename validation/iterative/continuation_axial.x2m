@@ -1,28 +1,27 @@
 ****************************************************************
-* One bounded map, axial half: radial response -> x1=G(x0).    *
+* Generic direct continuation, axial half: response -> candidate.*
 ****************************************************************
 
 XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
 XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
-XSM_FILE AX0_ARCH :: FILE './state0_axial.xsm' ;
-XSM_FILE RADIAL_IN :: FILE './state1_radial.xsm' ;
-XSM_FILE SYSTEM_NEXT :: FILE './state1_system.xsm' ;
+XSM_FILE PARENT_AX :: FILE './parent_axial.xsm' ;
+XSM_FILE RADIAL_IN :: FILE './candidate_radial.xsm' ;
+XSM_FILE SYSTEM_NEXT :: FILE './candidate_system.xsm' ;
 
-XSM_FILE AX1_ARCH :: FILE './state1_axial.xsm' ;
-XSM_FILE SNAP1_ARCH :: FILE './state1_snapshots.xsm' ;
+XSM_FILE CANDIDATE_AX :: FILE './candidate_axial.xsm' ;
+XSM_FILE CAND_SNAP :: FILE './candidate_snapshots.xsm' ;
 
 LINKED_LIST SNAP AX_CURRENT ;
 MODULE FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK:
        GREP: END: ;
 
 REAL solver_eps := 5.0E-7 ;
-REAL k1 leak1_change gbal gbal_group ;
+REAL k_candidate leak_change gbal gbal_group ;
 DOUBLE rrho rleak dleak ra ;
 
-ECHO "ONE-MAP-AXIAL-BEGIN" ;
-ECHO "ONE-MAP-AXIAL-TOLERANCE" solver_eps ;
+ECHO "CONT-AXIAL-BEGIN" ;
+ECHO "CONT-AXIAL-TOLERANCE" solver_eps ;
 
-* RADIAL_IN is the direct output of the preceding radial half.
 SNAP := RADIAL_IN ;
 AX_CURRENT := FLU: MACROLIB3 TRACK_AX SYSTEM_NEXT ::
   EDIT -3 TYPE K B1 SIGS EXTE 500 <<solver_eps>>
@@ -30,29 +29,29 @@ AX_CURRENT := FLU: MACROLIB3 TRACK_AX SYSTEM_NEXT ::
 AX_CURRENT := SPOGBAL:
   AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
 GREP: AX_CURRENT ::
-  GETVAL 'K-EFFECTIVE' 1 >>k1<<
+  GETVAL 'K-EFFECTIVE' 1 >>k_candidate<<
   GETVAL 'SPOT-GBAL' 1 >>gbal<<
   GETVAL 'SPOT-GBAL-MAX' 1 >>gbal_group<< ;
 AX_CURRENT := SPOSTATE:
   AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
 
-* The raw, unmixed defect of this one map.
-AX_CURRENT := SPOXCONV: AX_CURRENT AX0_ARCH :: ;
+* Raw, unmixed defect of candidate=G(parent).
+AX_CURRENT := SPOXCONV: AX_CURRENT PARENT_AX :: ;
 GREP: AX_CURRENT ::
   GETVAL 'SPOT-X-RRHO' 1 >>rrho<<
   GETVAL 'SPOT-X-RLEAK' 1 >>rleak<<
   GETVAL 'SPOT-X-DLEAK' 1 >>dleak<<
   GETVAL 'SPOT-X-RA' 1 >>ra<< ;
-ECHO "ONE-MAP-RAW-DEFECT" rrho rleak dleak ra ;
-ECHO "ONE-MAP-STATE1" k1 gbal gbal_group ;
+ECHO "CONT-RAW-DEFECT" rrho rleak dleak ra ;
+ECHO "CONT-CANDIDATE" k_candidate gbal gbal_group ;
 
-* Direct leakage return; no damping.
-SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak1_change<< ;
-ECHO "ONE-MAP-LEAKAGE1" leak1_change ;
+* Direct leakage return; no relaxation or mixing.
+SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak_change<< ;
+ECHO "CONT-LEAKAGE" leak_change ;
 
-AX1_ARCH := AX_CURRENT ;
-SNAP1_ARCH := SNAP ;
+CANDIDATE_AX := AX_CURRENT ;
+CAND_SNAP := SNAP ;
 
-ECHO "ONE-MAP-AXIAL-COMPLETE" ;
+ECHO "CONT-AXIAL-COMPLETE" ;
 END: ;
 QUIT "LIST" .

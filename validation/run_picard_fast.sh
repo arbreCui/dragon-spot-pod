@@ -13,25 +13,29 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_spot_strict_inner.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
-sh -n "$ROOT/validation/iterative/run_one_map_short.sh"
-one_map_default=$(RUN_ONE_MAP=0 \
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_continuation_contract.py"
+sh -n "$ROOT/validation/iterative/run_continuation_short.sh"
+continuation_default=$(RUN_CONTINUATION=0 \
   DRAGON_BIN="$BUILD_DIR/must-not-run" \
-  SEED_DIR="$BUILD_DIR/must-not-read-seed" \
-  X0_DIR="$BUILD_DIR/must-not-read-x0" \
+  PARENT_MANIFEST="$BUILD_DIR/must-not-read-parent" \
+  RESULT_DIR="$BUILD_DIR/must-not-create-result" \
   GANLIB_LIB="$BUILD_DIR/must-not-read-ganlib" \
   GANLIB_MOD="$BUILD_DIR/must-not-read-modules" \
   TMPDIR="$BUILD_DIR/must-not-use-tmp" \
-  sh "$ROOT/validation/iterative/run_one_map_short.sh")
-test "$one_map_default" = \
-  'ONE-MAP-SHORT DEFAULT-OFF: no Dragon process started.'
-if one_map_invalid=$(RUN_ONE_MAP=2 DRAGON_BIN="$BUILD_DIR/must-not-run" \
-    sh "$ROOT/validation/iterative/run_one_map_short.sh" 2>&1)
+  sh "$ROOT/validation/iterative/run_continuation_short.sh")
+test "$continuation_default" = \
+  'SPOT-CONTINUATION DEFAULT-OFF: no Dragon process started.'
+if continuation_invalid=$(RUN_CONTINUATION=2 \
+    DRAGON_BIN="$BUILD_DIR/must-not-run" \
+    sh "$ROOT/validation/iterative/run_continuation_short.sh" 2>&1)
 then
-  printf '%s\n' 'ONE-MAP-SHORT invalid activation unexpectedly passed.' >&2
+  printf '%s\n' \
+    'SPOT-CONTINUATION invalid activation unexpectedly passed.' >&2
   exit 1
 fi
-test "$one_map_invalid" = \
-  'ONE-MAP-SHORT ERROR: RUN_ONE_MAP must be 0 or 1.'
+test "$continuation_invalid" = \
+  'SPOT-CONTINUATION ERROR: RUN_CONTINUATION must be 0 or 1.'
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
 
@@ -43,8 +47,8 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   -o "$BUILD_DIR/compile_c2m"
 for source in \
   "$ROOT/data/SpotPicard.c2m" \
-  "$ROOT/validation/iterative/one_map_radial.x2m" \
-  "$ROOT/validation/iterative/one_map_axial.x2m"
+  "$ROOT/validation/iterative/continuation_radial.x2m" \
+  "$ROOT/validation/iterative/continuation_axial.x2m"
 do
   stem=$(basename "$source")
   stem=${stem%.*}

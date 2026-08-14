@@ -1,44 +1,42 @@
 ****************************************************************
-* One bounded map, radial half: x0 -> current radial response. *
+* Generic direct continuation, radial half: parent -> response. *
 ****************************************************************
 
 SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
 
-XSM_FILE SNAP_SEED :: FILE './initial_snapshots.xsm' ;
+XSM_FILE PARENT_SNAP :: FILE './parent_snapshots.xsm' ;
 XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
 XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
 XSM_FILE BASIS_REF :: FILE './basis_reference.xsm' ;
-XSM_FILE AX0_ARCH :: FILE './state0_axial.xsm' ;
+XSM_FILE PARENT_AX :: FILE './parent_axial.xsm' ;
 
-XSM_FILE SYSTEM_OUT :: FILE './state1_system.xsm' ;
-XSM_FILE RADIAL_OUT :: FILE './state1_radial.xsm' ;
+XSM_FILE SYSTEM_OUT :: FILE './candidate_system.xsm' ;
+XSM_FILE RADIAL_OUT :: FILE './candidate_radial.xsm' ;
 
 LINKED_LIST SNAP TRACK SYSTEM_NEXT ;
-MODULE RECOVER: ASM: SPOPROJ: SPOLEAK: GREP: END: ;
+MODULE RECOVER: ASM: SPOPROJ: GREP: END: ;
 PROCEDURE SpotRefFS ;
 
 INTEGER spod_rank := 1 ;
 REAL solver_eps := 5.0E-7 ;
-REAL k0 leak0_change ;
+REAL k_parent ;
 INTEGER fixed_marker fs_count ;
 DOUBLE rbal source_l2 source_max ;
 
-ECHO "ONE-MAP-RADIAL-BEGIN" ;
-ECHO "ONE-MAP-RADIAL-TOLERANCE" solver_eps ;
+ECHO "CONT-RADIAL-BEGIN" ;
+ECHO "CONT-RADIAL-TOLERANCE" solver_eps ;
 
-SNAP := RECOVER: SNAP_SEED :: ITEM 1 ;
+* The parent snapshot archive already contains its returned leakage.
+SNAP := PARENT_SNAP ;
 TRACK := RECOVER: SNAP :: ITEM 3 ;
-GREP: AX0_ARCH :: GETVAL 'K-EFFECTIVE' 1 >>k0<< ;
+GREP: PARENT_AX :: GETVAL 'K-EFFECTIVE' 1 >>k_parent<< ;
 
-* Restore L0 and reconstruct exactly B*a0.
-SNAP := SPOLEAK: SNAP AX0_ARCH TRACK_AX :: >>leak0_change<< ;
-SNAP := SPOPROJ: SNAP AX0_ARCH TRACK_AX :: FIXB ;
-
-* Three online frozen-fission radial solves.
+* Reconstruct B*a_parent and solve the three frozen-fission radial equations.
+SNAP := SPOPROJ: SNAP PARENT_AX TRACK_AX :: FIXB ;
 SNAP := SpotRefFS SNAP TRACK TRACK_f ::
-  <<k0>> <<solver_eps>> ;
+  <<k_parent>> <<solver_eps>> ;
 
-* Reuse the frozen basis and rebuild only the current radial response.
+* Keep the frozen POD package; rebuild only the live radial response.
 SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
   EDIT 0 SPOD <<spod_rank>> FIXB ;
 GREP: SYSTEM_NEXT ::
@@ -47,12 +45,12 @@ GREP: SYSTEM_NEXT ::
   GETVAL 'SPOT-RBAL' 1 >>rbal<<
   GETVAL 'SPOT-Q-L2' 1 >>source_l2<<
   GETVAL 'SPOT-Q-MAX' 1 >>source_max<< ;
-ECHO "ONE-MAP-RADIAL-CONTRACT"
+ECHO "CONT-RADIAL-CONTRACT"
   fixed_marker fs_count rbal source_l2 source_max ;
 
 SYSTEM_OUT := SYSTEM_NEXT ;
 RADIAL_OUT := SNAP ;
 
-ECHO "ONE-MAP-RADIAL-COMPLETE" ;
+ECHO "CONT-RADIAL-COMPLETE" ;
 END: ;
 QUIT "LIST" .

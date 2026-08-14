@@ -131,23 +131,22 @@ Run the active no-transport gate with:
 make spot-fast
 ```
 
-It compiles the production Picard procedure, the retained one-map decks and
-the independent Ganlib checker, and runs the algebra, source, state, rank and
-strict-inner tests. It does not launch Dragon.
+It compiles the production Picard procedure, the generic continuation decks
+and the independent Ganlib checker, and runs the algebra, source, state, rank,
+strict-inner and continuation-contract tests. It does not launch Dragon.
 
 The validation plan is
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
 
 ## Next scientific step
 
-Do not create `map7`, `map8`, and more copied runners. First replace the
-numbered continuation machinery with one generic, default-off continuation
-host that accepts a frozen parent state. Then authorize exactly one unchanged
-direct continuation $x_7=G(x_6)$, with no retry and no parameter changes.
+The generic continuation host is implemented and default-off. Its six parent
+objects are role- and hash-locked, and its decision rule is frozen in
+[validation/iterative/continuation_policy.md](validation/iterative/continuation_policy.md).
+The next action is to authorize exactly one unchanged
+$x_7=G(x_6)$, with no retry, relaxation or parameter change.
 
-Declare the continuation/stop criterion before that run. The $x_7$ result
-adds one new datum; it cannot by itself prove convergence or divergence. Use
-the declared criterion to decide whether direct Picard merits another short
-continuation or whether to study a mathematically defined nonlinear solver
-for the same unmodified physical map $G$. Rank, mesh and reference studies
-come only after a reproducible fixed point exists.
+That result is classified only as `INVALID_MAP`, `TOLERANCE_MET` or
+`VALID_NOT_MET`. It adds one datum and cannot by itself prove convergence
+or divergence. No $x_8$ starts automatically. Rank, mesh and reference
+studies come only after a reproducible fixed point exists.

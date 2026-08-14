@@ -1,7 +1,7 @@
 # Active iterative validation
 
-This directory now contains only the direct fixed-space SPOD/Picard contracts
-and one retained map replay.
+This directory contains the direct fixed-space SPOD/Picard contracts and one
+generic, default-off continuation host.
 
 ## Active files
 
@@ -14,11 +14,13 @@ and one retained map replay.
 - `test_picard_control.py`: direct substitution and three-component AND stop.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
-- `one_map_radial.x2m`, `one_map_axial.x2m`,
-  `run_one_map_short.sh`: frozen $x_0\to x_1$ replay.
+- `continuation_radial.x2m`, `continuation_axial.x2m`,
+  `run_continuation_short.sh`: one unchanged direct continuation.
 - `check_one_map_xsm.f90`: Ganlib-only one-map and continued-map checker.
-- `seed.sha256`, `one_map_scientific.sha256`: retained replay inputs.
-- `current_result.md`, `current_parent.sha256`: concise current boundary.
+- `current_parent.tsv`: the six role- and hash-locked parent objects.
+- `continuation_policy.md`, `test_continuation_contract.py`: frozen
+  decision and static host contract.
+- `current_result.md`: concise current boundary.
 
 ## Fast gate
 
@@ -28,21 +30,22 @@ make spot-fast
 
 This performs no transport calculation.
 
-## Retained real-map replay
+## Generic continuation
 
-The replay is default-off. It uses three online radial fixed-source solves,
-one axial solve, strict terminal checks, and an independent Ganlib-only audit.
+The host is default-off. It uses three online radial fixed-source solves, one
+axial solve, strict terminal checks, and an independent Ganlib-only audit.
 
 ```sh
-RUN_ONE_MAP=1 \
+RUN_CONTINUATION=1 \
 DRAGON_BIN=/absolute/path/to/Dragon \
-SEED_DIR=/absolute/path/to/iterative-seed \
-X0_DIR=/absolute/path/to/iterative-map1 \
-  sh validation/iterative/run_one_map_short.sh
+RESULT_DIR=/absolute/path/to/new-result \
+  sh validation/iterative/run_continuation_short.sh
 ```
 
-The runner has no retry and does not assess outer convergence. It is retained
-as a reproducible map fixture, not as the future iteration host.
+The runner validates the six parent hashes, launches each half once, validates
+the independent checker, then publishes a candidate and receipt. It has no
+retry, does not overwrite a result, does not update the parent and never
+starts the next map.
 
 ## Current boundary
 
@@ -59,10 +62,11 @@ $$
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
-The next implementation task is one generic continuation host. Freeze its
-continuation/stop criterion, then run one unchanged $x_7=G(x_6)$,
-default-off, bounded and without retry. That one datum cannot alone prove
-convergence or divergence. No further numbered deck should be added.
+The continuation host and its three-way decision rule are now frozen. The
+next scientific action is a separately authorized, unchanged
+$x_7=G(x_6)$, bounded and without retry. That one datum cannot alone prove
+convergence or divergence. No further numbered deck should be added and no
+$x_8$ is automatic.
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.

@@ -72,13 +72,14 @@ discrete map $G$; it does not establish:
 
 Full pre-cleanup files and receipts are preserved by Git tag
 `archive-pre-lean-20260814`. The six local objects needed to continue from
-$x_6$ are frozen in [current_parent.sha256](current_parent.sha256).
+$x_6$ are frozen by role and hash in
+[current_parent.tsv](current_parent.tsv).
 
 ## Next decision
 
-Implement one generic, default-off continuation host instead of copying more
-numbered decks. Freeze a continuation/stop criterion, then evaluate one
-unchanged $x_7=G(x_6)$, once, with no retry. This adds one datum and cannot
-alone prove convergence or divergence. Apply the declared criterion before
-choosing either a further short direct census or a defined nonlinear solver
-on the same unmodified $G$.
+The generic continuation host and
+[three-way decision rule](continuation_policy.md) are implemented and
+default-off. The next action is to authorize one unchanged
+$x_7=G(x_6)$, once, with no retry. This adds one datum and cannot alone
+prove convergence or divergence. The host does not start $x_8$ or modify
+the frozen parent.
