@@ -118,3 +118,7 @@ but it does not establish convergence. It authorizes neither automatic
 acceptance nor another map. Any subsequent solver step must be separately
 declared against the same physical map and the same three-component stopping
 gate.
+
+The separately scoped, no-Dragon next-history decision is documented in
+[rank2_modal_aa1_next_history_result.md](rank2_modal_aa1_next_history_result.md).
+It does not change this map's `VALID_NOT_MET` classification.

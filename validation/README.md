@@ -106,6 +106,14 @@ comparison; no asymptotic, rank or physical-accuracy conclusion follows. The
 stage ran once without retry and starts no next map; see
 [iterative/rank2_modal_aa1_map_result.md](iterative/rank2_modal_aa1_map_result.md).
 
+The two evaluated pairs have also been combined in one read-only next-history
+AA(1) check. It gives the unique convex weight `0.9302745506696768` on the
+latest output and passes the complete canonical publication preflight,
+including 8880/8880 strictly positive reconstructed values. Its status is
+`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`; no candidate or map was produced.
+See
+[iterative/rank2_modal_aa1_next_history_result.md](iterative/rank2_modal_aa1_next_history_result.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable
 from Git tag `archive-pre-lean-20260814`.

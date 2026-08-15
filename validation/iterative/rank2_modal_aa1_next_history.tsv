@@ -1,0 +1,5 @@
+# spot-rank2-modal-aa1-next-history-v1
+x1	5ec5a3576fab3662cd5fabc18226d98e56fd9b936deabe6bd70a09623f596f61	validation/artifacts/iterative-rank2-map-axial2/candidate_axial.xsm
+x2	bff9299595121b4b189f8b6d8e39c3b06bcefe0598d387f4aebf57861546ca02	validation/artifacts/iterative-rank2-picard2/candidate_axial.xsm
+y_pub	ae5f5b328fc6c5b181f40a4122b88771c857fd0200fc6e8351fc6b97d68d5c56	validation/artifacts/iterative-rank2-modal-aa1-candidate/proposal_axial.xsm
+z	a57feb6e83487561a153ae376874339c116192d0ece3d716cd10e2dac203376e	validation/artifacts/iterative-rank2-modal-aa1-map/candidate_axial.xsm

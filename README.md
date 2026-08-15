@@ -266,3 +266,12 @@ comparison is not a convergence factor or proof of Anderson superiority,
 rank adequacy or physical accuracy. No retry or subsequent map was started;
 see
 [validation/iterative/rank2_modal_aa1_map_result.md](validation/iterative/rank2_modal_aa1_map_result.md).
+
+The next AA(1) history update has now been checked offline from the two actual
+evaluated pairs $x_1\to x_2$ and $y_{\rm pub}\to z$. The unique weight on
+$z$ is `0.9302745506696768`, so the possible next proposal is
+$w=0.0697254493303232x_2+0.9302745506696768z$. Its REAL32 publication
+preflight keeps all 8880 reconstructed points strictly positive. The status
+is `ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: no candidate XSM, Dragon run or
+new convergence evidence exists. See
+[validation/iterative/rank2_modal_aa1_next_history_result.md](validation/iterative/rank2_modal_aa1_next_history_result.md).

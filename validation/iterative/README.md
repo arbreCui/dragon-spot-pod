@@ -50,6 +50,10 @@ generic, default-off continuation host.
   `run_rank2_modal_aa1_map.sh`, `test_rank2_modal_aa1_map_contract.py`,
   `rank2_modal_aa1_map_result.md`: one default-off fresh strict map from the
   proposal, with no retry or automatic successor.
+- `rank2_modal_aa1_next_history.tsv`,
+  `rank2_modal_aa1_next_history_result.md`: hash-locked read-only AA(1)
+  update from the two evaluated pairs, without candidate materialization or
+  another map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -212,6 +216,26 @@ RESULT_DIR=/absolute/path/to/new-result \
 
 The completed experiment does not authorize rerunning this target or starting
 a subsequent map.
+
+The next history decision is also complete without Dragon. It uses the
+correct residual pairs
+
+\[
+p=x_2-x_1,\qquad q=z-y_{\rm pub},
+\]
+
+and combines their corresponding map outputs, not their inputs:
+
+\[
+w=(1-\beta_z)x_2+\beta_z z,
+\qquad \beta_z=0.9302745506696768.
+\]
+
+The unique coefficient is naturally convex and the publication preflight has
+8880/8880 strictly positive `B2a` values. The classification is
+`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`; see
+[rank2_modal_aa1_next_history_result.md](rank2_modal_aa1_next_history_result.md).
+No proposal file or new map exists.
 
 ## Current boundary
 

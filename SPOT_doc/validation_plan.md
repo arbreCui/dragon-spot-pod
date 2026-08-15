@@ -110,6 +110,16 @@ rank qualification or physical-accuracy result. The run had no retry and
 defines no next map. See
 [../validation/iterative/rank2_modal_aa1_map_result.md](../validation/iterative/rank2_modal_aa1_map_result.md).
 
+The next depth-one history update has now been checked offline using the two
+actual evaluated pairs $x_1\to x_2$ and $y_{\rm pub}\to z$. The unique
+full-Gram modal coefficient gives weight `0.9302745506696768` to $z$, and the
+possible next raw affine state formula is
+$(1-\beta_z)x_2+\beta_z z$. Its canonical publication preflight is finite and
+all 8880 reconstructed points remain strictly positive. This is only
+`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: no candidate, fresh map or stopping
+defect has been generated. See
+[../validation/iterative/rank2_modal_aa1_next_history_result.md](../validation/iterative/rank2_modal_aa1_next_history_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated
