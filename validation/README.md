@@ -60,10 +60,12 @@ reported a timeout, while the durable axial log establishes only entry into
 result; see
 [iterative/rank2_map_attempt_result.md](iterative/rank2_map_attempt_result.md).
 
-The next default-off gate is a single axial-only operational attempt from the
-hash-locked radial staging. It contains no radial solve or retry and is
-currently `NOT_EVALUATED`; its 420-second host limit is not a physical or
-empirical parameter.
+A default-off gate was frozen for a single axial-only operational attempt from
+the hash-locked radial staging. It contains no radial solve or retry; the one
+authorized run completed, passed its independent audit and is
+`VALID_NOT_MET`. The valid map is rank-sensitivity evidence only. Its
+420-second host limit was not a physical or empirical model parameter; see
+[iterative/rank2_axial_only_result.md](iterative/rank2_axial_only_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active

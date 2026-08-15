@@ -205,8 +205,14 @@ successful radial staging is retained locally under a hash receipt; no run is
 retried or continued automatically.  See
 [validation/iterative/rank2_map_attempt_result.md](validation/iterative/rank2_map_attempt_result.md).
 
-A separate default-off axial-only host now consumes that exact radial staging
-without rerunning a radial equation.  It permits one unchanged axial solve
+A separate default-off axial-only host was frozen to consume that exact radial
+staging without rerunning a radial equation.  It permits one unchanged axial solve
 under a 420-second operational wall bound, followed by the same independent
-rank-2 audit.  This second operational attempt is not yet evaluated and does
-not change the first attempt's `INVALID_MAP` classification.
+rank-2 audit.  The separately authorized run completed normally and passed
+the independent checker. Its scientific classification is `VALID_NOT_MET`:
+the map is valid, but the stopping-rule defects $R_\rho$, $R_L$ and $R_a$
+all exceed `5.0e-7`. This
+establishes rank sensitivity at the frozen x7 parent, not rank adequacy,
+iteration convergence or physical accuracy. The first operational attempt
+remains `INVALID_MAP`; see
+[validation/iterative/rank2_axial_only_result.md](validation/iterative/rank2_axial_only_result.md).

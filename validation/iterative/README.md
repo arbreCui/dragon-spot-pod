@@ -27,6 +27,8 @@ generic, default-off continuation host.
 - `run_rank2_axial_only.sh`, `rank2_axial_only_parent.tsv`,
   `rank2_axial_only_policy.md`, `test_rank2_axial_only_contract.py`: one
   default-off second operational attempt that reuses the frozen radial half.
+- `rank2_axial_only_result.md`: valid rank-2 map, raw defects and the strict
+  `VALID_NOT_MET` interpretation boundary.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -101,7 +103,11 @@ RESULT_DIR=/absolute/path/to/new-result \
 It verifies and copies the frozen radial staging, runs no radial equation,
 starts the unchanged axial deck exactly once under a 420-second host bound,
 and requires the same independent `--reencoded` audit before publication.
-Its current state is `NOT_EVALUATED`; the first attempt remains `INVALID_MAP`.
+The one authorized run completed and passed every validity gate. Its
+classification is `VALID_NOT_MET`: all three stopping-rule defects exceed
+`5.0e-7`. The first operational attempt remains `INVALID_MAP`; see
+[rank2_axial_only_result.md](rank2_axial_only_result.md). The completed run
+does not authorize a rerun or the next Picard map.
 
 ## Current boundary
 

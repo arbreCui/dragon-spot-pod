@@ -81,3 +81,7 @@ this hash-locked radial staging and running only the axial half under a newly
 declared wall bound.  It cannot retroactively complete this attempt.  Changing
 that operational bound does not change the physical equations or solver
 tolerance.
+
+That separately authorized second operational attempt later completed and is
+reported in [rank2_axial_only_result.md](rank2_axial_only_result.md). Its valid
+map does not alter this first attempt's `INVALID_MAP` classification.
