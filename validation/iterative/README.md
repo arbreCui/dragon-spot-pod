@@ -24,6 +24,9 @@ generic, default-off continuation host.
   `test_rank2_map_contract.py`: default-off single rank-sensitivity map.
 - `rank2_map_attempt_result.md`: first bounded attempt and its strict
   `INVALID_MAP` evidence boundary.
+- `run_rank2_axial_only.sh`, `rank2_axial_only_parent.tsv`,
+  `rank2_axial_only_policy.md`, `test_rank2_axial_only_contract.py`: one
+  default-off second operational attempt that reuses the frozen radial half.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -85,6 +88,20 @@ was published.  The timeout line is a labelled host-output transcription;
 the durable axial log independently establishes only the missing terminal and
 normal end.  See
 [rank2_map_attempt_result.md](rank2_map_attempt_result.md).
+
+The separately authorized axial-only host is also default-off:
+
+```sh
+RUN_RANK2_AXIAL_ONLY=1 \
+DRAGON_BIN=/absolute/path/to/Dragon \
+RESULT_DIR=/absolute/path/to/new-result \
+  sh validation/iterative/run_rank2_axial_only.sh
+```
+
+It verifies and copies the frozen radial staging, runs no radial equation,
+starts the unchanged axial deck exactly once under a 420-second host bound,
+and requires the same independent `--reencoded` audit before publication.
+Its current state is `NOT_EVALUATED`; the first attempt remains `INVALID_MAP`.
 
 ## Current boundary
 

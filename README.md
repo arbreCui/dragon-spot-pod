@@ -204,3 +204,9 @@ audit or result publication exists, so the classification is `INVALID_MAP`
 successful radial staging is retained locally under a hash receipt; no run is
 retried or continued automatically.  See
 [validation/iterative/rank2_map_attempt_result.md](validation/iterative/rank2_map_attempt_result.md).
+
+A separate default-off axial-only host now consumes that exact radial staging
+without rerunning a radial equation.  It permits one unchanged axial solve
+under a 420-second operational wall bound, followed by the same independent
+rank-2 audit.  This second operational attempt is not yet evaluated and does
+not change the first attempt's `INVALID_MAP` classification.
