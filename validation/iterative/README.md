@@ -40,6 +40,12 @@ generic, default-off continuation host.
   the read-only two-update direction boundary.
 - `rank2_solver_decision.md`: no-Dragon selection and real-data coefficient
   for one modal-projected Anderson(1) proposal using the full Gram metric.
+- `rank2_modal_aa1_inputs.tsv`, `build_rank2_modal_aa1_candidate.f90`,
+  `check_rank2_modal_aa1_candidate.f90`,
+  `run_rank2_modal_aa1_candidate.sh`,
+  `test_rank2_modal_aa1_candidate_contract.py`,
+  `rank2_modal_aa1_candidate_result.md`: hash-locked offline publication and
+  independent audit of that one proposal.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -60,7 +66,8 @@ generic, default-off continuation host.
 make spot-fast
 ```
 
-This performs no transport calculation.
+This performs no transport calculation. It compiles and statically checks the
+proposal builder and checker, but does not materialize the real-data proposal.
 
 ## Generic continuation
 
@@ -158,10 +165,21 @@ No third direct map is defined. The next solver study instead freezes one
 modal-projected Anderson(1) coefficient in the full Gram-height metric from
 the two valid rank-2 updates. Its latest-state weight is
 `0.5388643265136009`; it is computed, unclipped and applied as one scalar to
-the complete state. No mixed-unit state norm, blockwise coefficients,
-candidate file or Dragon run is added. The affine modal screen is not an
-acceptance test; see
-[rank2_solver_decision.md](rank2_solver_decision.md).
+the complete state. No mixed-unit state norm or blockwise coefficient is
+introduced. The published AX proposal and x2 raw-flux snapshot carrier pass
+an independent Ganlib-only audit, including 8880/8880 strictly positive
+REAL32 reconstructions. Their classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; the affine screen is not an acceptance
+test and no Dragon run or new map exists. See
+[rank2_solver_decision.md](rank2_solver_decision.md) and
+[rank2_modal_aa1_candidate_result.md](rank2_modal_aa1_candidate_result.md).
+
+With the local hash-locked inputs present, materialize into a fresh artifact
+directory with:
+
+```sh
+make spot-rank2-modal-aa1-candidate
+```
 
 ## Current boundary
 

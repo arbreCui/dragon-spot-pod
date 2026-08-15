@@ -23,10 +23,13 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_axial_only_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_next_map_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_rank2_modal_aa1_candidate_contract.py"
 sh -n "$ROOT/validation/iterative/run_continuation_short.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_map.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_axial_only.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_next_map.sh"
+sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_candidate.sh"
 sh -n "$ROOT/validation/iterative/run_residual_direction_audit.sh"
 sh -n "$ROOT/validation/iterative/run_rank_census.sh"
 continuation_default=$(RUN_CONTINUATION=0 \
@@ -106,6 +109,18 @@ done
   "$ROOT/validation/iterative/check_rank_census_xsm.f90" \
   "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
   -o "$BUILD_DIR/check_rank_census_xsm"
+"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
+  -Wno-compare-reals -fcheck=all -ffp-contract=off -fno-fast-math \
+  -I "$ROOT/Ganlib/src" \
+  "$ROOT/validation/iterative/build_rank2_modal_aa1_candidate.f90" \
+  "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
+  -o "$BUILD_DIR/build_rank2_modal_aa1_candidate"
+"$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
+  -Wno-compare-reals -fcheck=all -ffp-contract=off -fno-fast-math \
+  -I "$ROOT/Ganlib/src" \
+  "$ROOT/validation/iterative/check_rank2_modal_aa1_candidate.f90" \
+  "$ROOT/Ganlib/src/libGanlib.a" -lstdc++ \
+  -o "$BUILD_DIR/check_rank2_modal_aa1_candidate"
 "$FC" -O0 -g -std=f2008 -pedantic -Wall -Wextra -Werror \
   -fimplicit-none -fcheck=all -ffp-contract=off -fno-fast-math \
   -I "$ROOT/Ganlib/lib/Darwin_arm64/modules" -J "$BUILD_DIR" \

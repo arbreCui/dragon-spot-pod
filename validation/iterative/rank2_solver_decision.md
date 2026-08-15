@@ -144,3 +144,7 @@ read-only and launches no Dragon process. `make spot-fast` separately checks
 the exact least-squares normal equation, metric-scale invariance,
 state-unit covariance and singular-denominator rejection on rational
 manufactured data.
+
+The separately scoped publication step has since materialized and independently
+checked this proposal without evaluating a map; see
+[`rank2_modal_aa1_candidate_result.md`](rank2_modal_aa1_candidate_result.md).

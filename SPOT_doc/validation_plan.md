@@ -83,9 +83,15 @@ proposal in the full Gram-height metric. The unique minimizer of that stated
 scalar least-squares problem gives latest-state weight
 `0.5388643265136009`. The same scalar would
 act on the complete state, but no mixed-unit whole-state norm is formed and
-no empirical relaxation factor is prescribed. No candidate XSM or map has
-yet been produced; see
-[../validation/iterative/rank2_solver_decision.md](../validation/iterative/rank2_solver_decision.md).
+no empirical relaxation factor is prescribed. The publication-aware proposal
+has now been materialized deterministically. Its independent Ganlib-only
+audit passes the fixed-basis, binary publication, x2 carrier and 8880-point
+strict-positivity checks. Its status is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no `G_2(y)` evaluation, residual or
+convergence result exists. See
+[../validation/iterative/rank2_solver_decision.md](../validation/iterative/rank2_solver_decision.md)
+and
+[../validation/iterative/rank2_modal_aa1_candidate_result.md](../validation/iterative/rank2_modal_aa1_candidate_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

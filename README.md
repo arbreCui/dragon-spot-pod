@@ -237,13 +237,20 @@ sharply. This does not prove a cycle, convergence or divergence, and no third
 rank-2 map is defined. See
 [validation/iterative/rank2_next_map_result.md](validation/iterative/rank2_next_map_result.md).
 
-The next solver study is now reduced to one formula, without transport or a
-new iterate. A modal-projected Anderson(1) screen in the full Gram-height
+The next solver study is reduced to one formula, without transport or a new
+iterate. A modal-projected Anderson(1) screen in the full Gram-height
 metric gives the unique least-squares weight `0.5388643265136009` on the
 latest rank-2 state and
 `0.4611356734863991` on the preceding state. The same scalar would act on
 the complete coupled state, while its coefficient is formed only in the
 physical POD modal metric, so no mixed-unit whole-state norm or empirical
-relaxation parameter is introduced. This is an offline proposal definition,
-not a candidate XSM, a map evaluation or convergence evidence. See
-[validation/iterative/rank2_solver_decision.md](validation/iterative/rank2_solver_decision.md).
+relaxation parameter is introduced. That state has now been deterministically
+published as a hash-locked AX proposal plus an explicitly labelled x2 raw-flux
+snapshot carrier. An independent Ganlib-only checker verifies the fixed basis,
+publication arithmetic, carrier identity and strict positivity at all 8880
+reconstructed points. Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: it is not a map evaluation or
+convergence evidence. See
+[validation/iterative/rank2_solver_decision.md](validation/iterative/rank2_solver_decision.md)
+and
+[validation/iterative/rank2_modal_aa1_candidate_result.md](validation/iterative/rank2_modal_aa1_candidate_result.md).
