@@ -148,3 +148,8 @@ manufactured data.
 The separately scoped publication step has since materialized and independently
 checked this proposal without evaluating a map; see
 [`rank2_modal_aa1_candidate_result.md`](rank2_modal_aa1_candidate_result.md).
+
+The separately scoped fresh map has now also been evaluated exactly once; see
+[`rank2_modal_aa1_map_result.md`](rank2_modal_aa1_map_result.md). It is a valid
+map with smaller local defects than the direct second rank-2 map, but it does
+not meet the stopping gate and does not establish asymptotic acceleration.

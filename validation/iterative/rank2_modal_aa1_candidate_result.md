@@ -86,3 +86,8 @@ convergence, rank adequacy or physical accuracy.  The next scientific step,
 if separately authorized, is one fresh strict rank-2 map evaluation from this
 published proposal.  It must retain the same physical map and introduce no
 relaxation, damping, clipping, fitted closure or empirical coefficient.
+
+That separate evaluation has since completed once and is documented in
+[rank2_modal_aa1_map_result.md](rank2_modal_aa1_map_result.md). The proposal
+artifact's own classification remains the correct historical classification
+for this no-transport publication stage.

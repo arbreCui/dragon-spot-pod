@@ -91,11 +91,20 @@ Anderson(1) proposal in the full Gram-height metric. Its scalar is computed
 from the two valid rank-2 modal residuals and is not a fitted relaxation
 parameter; the same scalar is applied to the complete state without forming
 a mixed-unit state norm. The proposal and its x2 raw-flux carrier have now
-been deterministically materialized and independently checked. The result is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no fresh map or convergence result has
-been produced. See
+been deterministically materialized and independently checked. That
+publication stage is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: by itself it
+produced no fresh map or convergence result. See
 [iterative/rank2_solver_decision.md](iterative/rank2_solver_decision.md) and
 [iterative/rank2_modal_aa1_candidate_result.md](iterative/rank2_modal_aa1_candidate_result.md).
+
+One separately authorized fresh map from that proposal has now completed.
+The unchanged three-radial/one-axial chain and independent Ganlib audit pass,
+but the classification is `VALID_NOT_MET`: the stopping defects are
+`6.57635e-5`, `2.26566e-3` and `4.66468e-4`, versus `5.0e-7`. They are
+smaller than the corresponding direct-second-map defects only for this local
+comparison; no asymptotic, rank or physical-accuracy conclusion follows. The
+stage ran once without retry and starts no next map; see
+[iterative/rank2_modal_aa1_map_result.md](iterative/rank2_modal_aa1_map_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable

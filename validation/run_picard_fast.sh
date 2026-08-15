@@ -25,11 +25,14 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_next_map_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_modal_aa1_candidate_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_rank2_modal_aa1_map_contract.py"
 sh -n "$ROOT/validation/iterative/run_continuation_short.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_map.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_axial_only.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_next_map.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_candidate.sh"
+sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_map.sh"
 sh -n "$ROOT/validation/iterative/run_residual_direction_audit.sh"
 sh -n "$ROOT/validation/iterative/run_rank_census.sh"
 continuation_default=$(RUN_CONTINUATION=0 \
@@ -61,6 +64,13 @@ rank2_next_default=$(RUN_RANK2_NEXT_MAP=0 \
   sh "$ROOT/validation/iterative/run_rank2_next_map.sh")
 test "$rank2_next_default" = \
   'SPOT-RANK2-NEXT-MAP DEFAULT-OFF: no Dragon process started.'
+rank2_aa1_map_default=$(RUN_RANK2_MODAL_AA1_MAP=0 \
+  DRAGON_BIN="$BUILD_DIR/must-not-run" \
+  RESULT_DIR="$BUILD_DIR/must-not-create-result" \
+  TMPDIR="$BUILD_DIR/must-not-use-tmp" \
+  sh "$ROOT/validation/iterative/run_rank2_modal_aa1_map.sh")
+test "$rank2_aa1_map_default" = \
+  'SPOT-RANK2-MODAL-AA1-MAP DEFAULT-OFF: no Dragon process started.'
 if continuation_invalid=$(RUN_CONTINUATION=2 \
     DRAGON_BIN="$BUILD_DIR/must-not-run" \
     sh "$ROOT/validation/iterative/run_continuation_short.sh" 2>&1)

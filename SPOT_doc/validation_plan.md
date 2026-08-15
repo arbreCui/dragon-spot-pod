@@ -86,12 +86,29 @@ act on the complete state, but no mixed-unit whole-state norm is formed and
 no empirical relaxation factor is prescribed. The publication-aware proposal
 has now been materialized deterministically. Its independent Ganlib-only
 audit passes the fixed-basis, binary publication, x2 carrier and 8880-point
-strict-positivity checks. Its status is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no `G_2(y)` evaluation, residual or
-convergence result exists. See
+strict-positivity checks. That publication stage remains correctly classified
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; it did not itself evaluate `G_2(y)`.
+See
 [../validation/iterative/rank2_solver_decision.md](../validation/iterative/rank2_solver_decision.md)
 and
 [../validation/iterative/rank2_modal_aa1_candidate_result.md](../validation/iterative/rank2_modal_aa1_candidate_result.md).
+
+The proposal has now been followed by one separately authorized fresh strict
+evaluation $z=G_2(y_{\rm pub})$. The physical chain and all independent
+validity checks pass, but the result is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.5763515\times10^{-5},\,2.2656585\times10^{-3},\,
+4.6646819\times10^{-4}),
+\]
+
+so every stopping component remains above $5\times10^{-7}$. Each is smaller
+than in the direct second rank-2 map for this one frozen comparison. That is
+useful local response evidence, not an asymptotic factor, solver ranking,
+rank qualification or physical-accuracy result. The run had no retry and
+defines no next map. See
+[../validation/iterative/rank2_modal_aa1_map_result.md](../validation/iterative/rank2_modal_aa1_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

@@ -61,8 +61,8 @@ printf '%s\n' "$MAP_PARENT_FILE" |
   rg -q '^[A-Za-z0-9][A-Za-z0-9._-]*$' ||
   fail "MAP_PARENT_FILE must be a safe basename."
 case "$CHECKER_MODE" in
-  initial|continued|reencoded) ;;
-  *) fail "CHECKER_MODE must be initial, continued or reencoded." ;;
+  initial|continued|reencoded|proposal) ;;
+  *) fail "CHECKER_MODE must be initial, continued, reencoded or proposal." ;;
 esac
 printf '%s\n' "$RADIAL_TIMEOUT_SECONDS" | rg -q '^[1-9][0-9]*$' ||
   fail "RADIAL_TIMEOUT_SECONDS must be a positive integer."
@@ -314,6 +314,11 @@ done
       ;;
     reencoded)
       ./check_one_map_xsm --reencoded basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+    proposal)
+      ./check_one_map_xsm --proposal basis_reference.xsm \
         candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
         candidate_snapshots.xsm >independent_check.log
       ;;

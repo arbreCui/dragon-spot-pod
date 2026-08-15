@@ -46,6 +46,10 @@ generic, default-off continuation host.
   `test_rank2_modal_aa1_candidate_contract.py`,
   `rank2_modal_aa1_candidate_result.md`: hash-locked offline publication and
   independent audit of that one proposal.
+- `rank2_modal_aa1_map_parent.tsv`, `rank2_modal_aa1_map_policy.md`,
+  `run_rank2_modal_aa1_map.sh`, `test_rank2_modal_aa1_map_contract.py`,
+  `rank2_modal_aa1_map_result.md`: one default-off fresh strict map from the
+  proposal, with no retry or automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -169,8 +173,9 @@ the complete state. No mixed-unit state norm or blockwise coefficient is
 introduced. The published AX proposal and x2 raw-flux snapshot carrier pass
 an independent Ganlib-only audit, including 8880/8880 strictly positive
 REAL32 reconstructions. Their classification is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; the affine screen is not an acceptance
-test and no Dragon run or new map exists. See
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; within that publication stage the
+affine screen is not an acceptance test and no Dragon run or new map exists.
+See
 [rank2_solver_decision.md](rank2_solver_decision.md) and
 [rank2_modal_aa1_candidate_result.md](rank2_modal_aa1_candidate_result.md).
 
@@ -180,6 +185,33 @@ directory with:
 ```sh
 make spot-rank2-modal-aa1-candidate
 ```
+
+The separately authorized fresh map from this proposal has also completed.
+It passed the three radial terminals, axial terminal, independent
+`--proposal` audit and receipt, but is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.5763515\times10^{-5},\,2.2656585\times10^{-3},\,
+4.6646819\times10^{-4}).
+\]
+
+All three exceed `5.0e-7`. They are locally smaller than the corresponding
+defects from the direct second rank-2 map, but this single cross-input
+comparison is not an asymptotic convergence or accuracy claim. See
+[rank2_modal_aa1_map_result.md](rank2_modal_aa1_map_result.md).
+
+The map host remains default-off and refuses to overwrite an existing result:
+
+```sh
+RUN_RANK2_MODAL_AA1_MAP=1 \
+DRAGON_BIN=/absolute/path/to/Dragon \
+RESULT_DIR=/absolute/path/to/new-result \
+  sh validation/iterative/run_rank2_modal_aa1_map.sh
+```
+
+The completed experiment does not authorize rerunning this target or starting
+a subsequent map.
 
 ## Current boundary
 

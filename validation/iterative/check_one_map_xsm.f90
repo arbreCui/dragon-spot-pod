@@ -9,6 +9,9 @@ program check_one_map_xsm
   !   check_one_map_xsm --reencoded basis_reference.xsm \
   !     state1_system.xsm reencoded_parent.xsm state1_axial.xsm \
   !     state1_snapshots.xsm
+  !   check_one_map_xsm --proposal basis_reference.xsm \
+  !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
+  !     returned_snapshots.xsm
   !   check_one_map_xsm --directions state6_axial.xsm \
   !     state7_axial.xsm state8_axial.xsm
   !   check_one_map_xsm --rank2-directions reencoded_parent.xsm \
@@ -99,11 +102,12 @@ program check_one_map_xsm
   type(canonical_state) :: rank1_parent_state
   type(canonical_state) :: direction_state(3)
   integer :: i,argument_offset
-  logical :: continued,reencoded,direction_mode,mode2_mode
+  logical :: continued,reencoded,proposal_mode,direction_mode,mode2_mode
   logical :: reencoded_first_direction
 
   continued=.false.
   reencoded=.false.
+  proposal_mode=.false.
   direction_mode=.false.
   mode2_mode=.false.
   reencoded_first_direction=.false.
@@ -129,6 +133,8 @@ program check_one_map_xsm
       continued=.true.
     else if (trim(mode) == '--reencoded') then
       reencoded=.true.
+    else if (trim(mode) == '--proposal') then
+      proposal_mode=.true.
     else if (trim(mode) == '--mode2') then
       mode2_mode=.true.
       do i=1,5
@@ -139,12 +145,13 @@ program check_one_map_xsm
           call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
       enddo
     else
-      call fail('ONLY --continued, --reencoded OR --mode2 IS ACCEPTED IN '// &
-        'SIX-ARGUMENT MODE.')
+      call fail('ONLY --continued, --reencoded, --proposal OR --mode2 '// &
+        'IS ACCEPTED IN SIX-ARGUMENT MODE.')
     endif
     if (.not.mode2_mode) argument_offset=1
   else if (command_argument_count() /= 5) then
-    call fail('EXPECTED [--continued|--reencoded] BASIS, SYSTEM, '// &
+    call fail('EXPECTED [--continued|--reencoded|--proposal] BASIS, '// &
+      'SYSTEM, '// &
       'PREVIOUS, CURRENT, SNAP.')
   endif
   if ((.not.direction_mode).and.(.not.mode2_mode)) then
@@ -221,6 +228,9 @@ program check_one_map_xsm
   else if (reencoded) then
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
       previous_state,'REENCODED PARENT STATE')
+  else if (proposal_mode) then
+    call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
+      previous_state,'MATERIALIZED PROPOSAL STATE',.true.)
   else
     call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
       previous_state,'STATE ZERO')
@@ -232,11 +242,13 @@ program check_one_map_xsm
   call compare_state_to_system(current_state,current_system, &
     'CURRENT STATE')
   call compare_states_and_defects(previous_state,current_state,continued, &
-    reencoded)
+    reencoded.or.proposal_mode)
   call check_restart_archive(trim(paths(5)),previous_state,current_state)
 
   if (reencoded) &
     write(6,'(A)') 'ONE-MAP-XSM REENCODED-PARENT NO-STALE-DEFECT PASS'
+  if (proposal_mode) &
+    write(6,'(A)') 'ONE-MAP-XSM MATERIALIZED-PROPOSAL INPUT PASS'
   write(6,'(A)') 'ONE-MAP-XSM POD-PACKAGE BITWISE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RADIAL-OP LIVE-CHANGE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RAW-RADIAL-POSITIVITY PASS'
@@ -471,13 +483,21 @@ contains
 
 
   subroutine load_canonical_state(path,expected_fixb,expected_type, &
-      expect_saved_defect,data,owner)
+      expect_saved_defect,data,owner,proposal_state)
     character(len=*), intent(in) :: path,expected_type,owner
     integer, intent(in) :: expected_fixb
     logical, intent(in) :: expect_saved_defect
+    logical, intent(in), optional :: proposal_state
     type(canonical_state), intent(out) :: data
     type(c_ptr) :: root
     integer :: g,ngrp,nsnap,ncoef,expected_ncoef,total_basis,total_gram
+    logical :: is_proposal
+    character(len=12) :: marker
+
+    is_proposal=.false.
+    if (present(proposal_state)) is_proposal=proposal_state
+    if (is_proposal.and.expect_saved_defect) &
+      call fail(trim(owner)//' PROPOSAL CANNOT CARRY A SAVED MAP DEFECT.')
 
     call LCMOP(root,path,2,2,0)
     call require_record(root,'SIGNATURE',3,3,owner)
@@ -532,7 +552,6 @@ contains
     allocate(data%leakage(ngrp*nsnap))
     allocate(data%height(nsnap))
     allocate(data%gram(total_gram))
-    allocate(data%offspace(ngrp*nsnap))
     call require_record(root,'SPOT-X-BASIS',total_basis,2,owner)
     call require_record(root,'SPOT-X-A',ncoef,4,owner)
     call require_record(root,'SPOT-X-L',ngrp*nsnap,4,owner)
@@ -541,7 +560,12 @@ contains
     call require_record(root,'K-EFFECTIVE',1,2,owner)
     call require_record(root,'SPOT-X-RHO',1,4,owner)
     call require_record(root,'SPOT-X-NORM',1,4,owner)
-    call require_record(root,'SPOT-X-PERP',ngrp*nsnap,4,owner)
+    if (is_proposal) then
+      call require_absent(root,'SPOT-X-PERP',owner)
+    else
+      allocate(data%offspace(ngrp*nsnap))
+      call require_record(root,'SPOT-X-PERP',ngrp*nsnap,4,owner)
+    endif
     call require_record(root,'SPOT-X-GERR',1,4,owner)
     call require_record(root,'SPOT-X-FIXB',1,1,owner)
     call require_record(root,'SPOT-X-NID',3,3,owner)
@@ -554,7 +578,7 @@ contains
     call LCMGET(root,'K-EFFECTIVE',data%keff)
     call LCMGET(root,'SPOT-X-RHO',data%rho)
     call LCMGET(root,'SPOT-X-NORM',data%norm)
-    call LCMGET(root,'SPOT-X-PERP',data%offspace)
+    if (.not.is_proposal) call LCMGET(root,'SPOT-X-PERP',data%offspace)
     call LCMGET(root,'SPOT-X-GERR',data%gram_error)
     call LCMGET(root,'SPOT-X-FIXB',data%fixb)
     call LCMGTC(root,'SPOT-X-NID',12,data%norm_id)
@@ -571,14 +595,17 @@ contains
         any(.not.ieee_is_finite(data%height)).or. &
         any(data%height <= 0.0_real64).or. &
         any(.not.ieee_is_finite(data%gram)).or. &
-        any(.not.ieee_is_finite(data%offspace)).or. &
-        any(data%offspace < 0.0_real64).or. &
         (.not.ieee_is_finite(data%keff)).or.(data%keff <= 0.0_real32).or. &
         (.not.ieee_is_finite(data%rho)).or.(data%rho <= 0.0_real64).or. &
         (.not.ieee_is_finite(data%norm)).or.(data%norm <= 0.0_real64).or. &
         (.not.ieee_is_finite(data%gram_error)).or. &
         (data%gram_error < 0.0_real64)) &
       call fail(trim(owner)//' NON-FINITE OR INVALID CANONICAL FIELD.')
+    if (.not.is_proposal) then
+      if (any(.not.ieee_is_finite(data%offspace)).or. &
+          any(data%offspace < 0.0_real64)) &
+        call fail(trim(owner)//' INVALID OFF-SPACE DIAGNOSTIC.')
+    endif
     if (real64_bits(data%rho) /= &
         real64_bits(1.0_real64/real(data%keff,real64))) &
       call fail(trim(owner)//' INVERSE-EIGENVALUE IDENTITY FAILED.')
@@ -601,6 +628,19 @@ contains
       call require_absent(root,'SPOT-X-RLEAK',owner)
       call require_absent(root,'SPOT-X-DLEAK',owner)
       call require_absent(root,'SPOT-X-RA',owner)
+    endif
+    if (is_proposal) then
+      call require_absent(root,'SPOT-X-EPOCH',owner)
+      call require_absent(root,'SPOT-GBAL',owner)
+      call require_absent(root,'SPOT-GBAL-MA',owner)
+      call require_record(root,'SPOT-X-STATE',3,3,owner)
+      call require_record(root,'SPOT-X-CARR',3,3,owner)
+      call LCMGTC(root,'SPOT-X-STATE',12,marker)
+      if (marker /= 'PROPOSAL') &
+        call fail(trim(owner)//' LIFECYCLE MARKER IS NOT PROPOSAL.')
+      call LCMGTC(root,'SPOT-X-CARR',12,marker)
+      if (marker /= 'X2-RAW-FLUX') &
+        call fail(trim(owner)//' RAW-FLUX CARRIER MARKER IS INVALID.')
     endif
     call LCMCL(root,1)
   end subroutine load_canonical_state

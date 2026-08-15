@@ -254,3 +254,15 @@ convergence evidence. See
 [validation/iterative/rank2_solver_decision.md](validation/iterative/rank2_solver_decision.md)
 and
 [validation/iterative/rank2_modal_aa1_candidate_result.md](validation/iterative/rank2_modal_aa1_candidate_result.md).
+
+That proposal has now been tested by exactly one fresh strict map
+$z=G_2(y_{\rm pub})$. All three radial terminals, the axial terminal, the
+independent fixed-basis/defect/restart audit and the full checksum receipt
+pass. The result is nevertheless `VALID_NOT_MET`:
+$R_\rho=6.57635\times10^{-5}$, $R_L=2.26566\times10^{-3}$ and
+$R_a=4.66468\times10^{-4}$, all above `5.0e-7`. The three components are
+locally smaller than for the direct second rank-2 map, but one cross-input
+comparison is not a convergence factor or proof of Anderson superiority,
+rank adequacy or physical accuracy. No retry or subsequent map was started;
+see
+[validation/iterative/rank2_modal_aa1_map_result.md](validation/iterative/rank2_modal_aa1_map_result.md).
