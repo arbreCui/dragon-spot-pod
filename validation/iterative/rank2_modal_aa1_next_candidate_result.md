@@ -102,3 +102,8 @@ The required host is now prepared and default-off. Its dedicated
 the historical `--proposal` behavior is unchanged. This preparation does not
 change the classification above and does not evaluate the map. See
 [`rank2_modal_aa1_next_map_policy.md`](rank2_modal_aa1_next_map_policy.md).
+
+The separately authorized one-map experiment subsequently evaluated
+\(v=G_2(w_{\rm pub})\) exactly once. It is a valid map but its three stopping
+defects exceed the tolerance, so its classification is `VALID_NOT_MET`; see
+[`rank2_modal_aa1_next_map_result.md`](rank2_modal_aa1_next_map_result.md).

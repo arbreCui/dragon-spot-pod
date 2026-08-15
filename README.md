@@ -281,9 +281,13 @@ evidence exists. See
 and
 [validation/iterative/rank2_modal_aa1_next_candidate_result.md](validation/iterative/rank2_modal_aa1_next_candidate_result.md).
 
-A minimal default-off host is now prepared for exactly one future
-$G_2(w_{\rm pub})$. It reuses the unchanged physical decks but introduces a
-strict `--proposal-z` gate: the new parent must carry `Z-RAW-FLUX`, while the
-historical `--proposal` path still accepts only `X2-RAW-FLUX`. A parent-only
-preflight runs before any Dragon launch. Its status is `PREPARED_NOT_RUN`; see
-[validation/iterative/rank2_modal_aa1_next_map_policy.md](validation/iterative/rank2_modal_aa1_next_map_policy.md).
+The separately authorized map \(v=G_2(w_{\rm pub})\) has now run exactly once.
+Its pre-Dragon `Z-RAW-FLUX` gate, three radial terminals, axial terminal,
+independent audit and 21-entry receipt all pass. The classification is
+`VALID_NOT_MET`:
+\(R_\rho=8.34905\times10^{-7}\),
+\(R_L=8.67273\times10^{-4}\), and
+\(R_a=4.44166\times10^{-5}\), all above `5.0e-7`. Every component is locally
+smaller than for the preceding proposal map, but this is not a convergence
+factor or an accuracy claim. No retry or subsequent map was started; see
+[validation/iterative/rank2_modal_aa1_next_map_result.md](validation/iterative/rank2_modal_aa1_next_map_result.md).

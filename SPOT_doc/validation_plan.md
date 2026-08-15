@@ -124,12 +124,13 @@ been generated. See
 and
 [../validation/iterative/rank2_modal_aa1_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_next_candidate_result.md).
 
-The smallest runtime continuation is now prepared as a default-off single-map
-host. It binds the new `Z-RAW-FLUX` proposal through a dedicated checker mode
-and rejects a mismatched carrier before Dragon launch. The decks, rank,
-tolerance and physics are unchanged. Its status remains `PREPARED_NOT_RUN`;
-see
-[../validation/iterative/rank2_modal_aa1_next_map_policy.md](../validation/iterative/rank2_modal_aa1_next_map_policy.md).
+The separately authorized single map from that `Z-RAW-FLUX` proposal has now
+completed without retry. The decks, rank, tolerance and physics remained
+unchanged; the carrier preflight, strict terminals, independent audit and
+receipt pass. Its classification is `VALID_NOT_MET`, with
+\((R_\rho,R_L,R_a)=(8.34905\times10^{-7},8.67273\times10^{-4},
+4.44166\times10^{-5})\). No subsequent map was started; see
+[../validation/iterative/rank2_modal_aa1_next_map_result.md](../validation/iterative/rank2_modal_aa1_next_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

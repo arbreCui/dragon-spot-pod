@@ -117,11 +117,12 @@ proposal is now hash-locked and independently verified with a
 and
 [iterative/rank2_modal_aa1_next_candidate_result.md](iterative/rank2_modal_aa1_next_candidate_result.md).
 
-The next-map host is now frozen but remains default-off. Its explicit
-`proposal-z` checker requires the `Z-RAW-FLUX` parent before Dragon can start;
-the old X2-carrier mode remains distinct. No map has been run and the status
-is `PREPARED_NOT_RUN`; see
-[iterative/rank2_modal_aa1_next_map_policy.md](iterative/rank2_modal_aa1_next_map_policy.md).
+The separately authorized next map \(v=G_2(w_{\rm pub})\) has completed once
+without retry. Its `proposal-z` parent gate, strict terminals, independent
+checker and 21-entry receipt pass. It remains `VALID_NOT_MET`: the stopping
+defects are `8.34905e-7`, `8.67273e-4` and `4.44166e-5`, all above `5.0e-7`.
+No subsequent map was started; see
+[iterative/rank2_modal_aa1_next_map_result.md](iterative/rank2_modal_aa1_next_map_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable

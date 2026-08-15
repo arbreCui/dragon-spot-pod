@@ -41,5 +41,8 @@ The dimensional leakage change and balance quantities remain diagnostics.
 One valid map cannot establish rank adequacy, physical accuracy, asymptotic
 convergence or Anderson superiority, and it starts no subsequent map.
 
-Current status: `PREPARED_NOT_RUN`. No Dragon process or new map is produced
-by freezing this policy and its default-off host.
+Status when this policy was frozen: `PREPARED_NOT_RUN`. Freezing the policy
+and its default-off host produced no map. The separately authorized single
+attempt subsequently completed as `VALID_NOT_MET`; the frozen runtime copy of
+this pre-run policy remains in the artifact receipt. See
+[rank2_modal_aa1_next_map_result.md](rank2_modal_aa1_next_map_result.md).

@@ -59,8 +59,9 @@ generic, default-off continuation host.
   publication and independent audit of that next proposal; no new map.
 - `rank2_modal_aa1_next_map_parent.tsv`,
   `rank2_modal_aa1_next_map_policy.md`,
-  `run_rank2_modal_aa1_next_map.sh`: prepared default-off single-map host with
-  a strict pre-Dragon `Z-RAW-FLUX` parent gate.
+  `run_rank2_modal_aa1_next_map.sh`,
+  `rank2_modal_aa1_next_map_result.md`: strict pre-Dragon `Z-RAW-FLUX` gate
+  and the one completed, no-retry map from the next proposal.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -247,7 +248,7 @@ payload, lagged SYSTEM and strict positivity. The classification is
 [rank2_modal_aa1_next_history_result.md](rank2_modal_aa1_next_history_result.md)
 and
 [rank2_modal_aa1_next_candidate_result.md](rank2_modal_aa1_next_candidate_result.md).
-No new map exists.
+The proposal publication itself contains no map.
 
 With the local hash-locked parents present, the no-Dragon materialization is:
 
@@ -257,16 +258,25 @@ make spot-rank2-modal-aa1-next-candidate
 
 The target refuses to overwrite the frozen local artifact.
 
-The corresponding one-map host is prepared but remains default-off:
+The corresponding one-map host remains default-off:
 
 ```sh
 make spot-rank2-modal-aa1-next-map
 ```
 
 It prints the default-off terminal without reading the repository or starting
-Dragon. A future activation would require a separate explicit decision, a new
-result directory and exactly one no-retry map. See
-[rank2_modal_aa1_next_map_policy.md](rank2_modal_aa1_next_map_policy.md).
+Dragon. Its separately authorized single attempt has completed with no retry.
+The map is valid, but
+
+\[
+(R_\rho,R_L,R_a)=
+(8.3490452\times10^{-7},\,8.6727309\times10^{-4},\,
+4.4416561\times10^{-5}),
+\]
+
+so all three stopping defects exceed `5.0e-7` and the classification is
+`VALID_NOT_MET`. No subsequent map was started or authorized. See
+[rank2_modal_aa1_next_map_result.md](rank2_modal_aa1_next_map_result.md).
 
 ## Current boundary
 
