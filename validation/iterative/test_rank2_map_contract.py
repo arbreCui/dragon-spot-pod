@@ -113,6 +113,14 @@ require("expected_ncoef=nsnap*sum(data%rank)" in checker.lower(),
         "checker does not derive coefficient count from rank")
 require("--reencoded" in checker,
         "checker has no explicit re-encoded-parent mode")
+for token in (
+    "--mode2",
+    "MODE2-DIAG RAW-PARENT RHO/NORM/LEAKAGE BITWISE PASS",
+    "MODE2-DIAG GRAM FROM VOLUME/BASIS BITWISE PASS",
+    "MODE2-DIAG R_A PRODUCTION-ORDER BITWISE PASS",
+    "MODE2-DIAG OFFLINE_MODE2_ANATOMY_ONLY",
+):
+    require(token in checker, f"offline mode-2 audit token missing: {token}")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(policy.count(label) == 1, f"policy category changed: {label}")

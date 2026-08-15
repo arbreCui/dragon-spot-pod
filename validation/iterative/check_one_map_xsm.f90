@@ -11,12 +11,17 @@ program check_one_map_xsm
   !     state1_snapshots.xsm
   !   check_one_map_xsm --directions state6_axial.xsm \
   !     state7_axial.xsm state8_axial.xsm
+  !   check_one_map_xsm --mode2 rank1_basis.xsm rank1_parent.xsm \
+  !     rank2_system.xsm rank2_parent.xsm rank2_current.xsm
   !
   ! No Dragon, SPOT, assembly, transport, or production convergence routine
-  ! is linked or called. The one-map modes read five archived XSM objects,
+  ! is linked or called. The standard one-map modes read five archived XSM
+  ! objects,
   ! verify the fixed POD package bit for bit, require a live RADIAL-OP change,
   ! and independently recompute the canonical defects. Direction mode reads
   ! three frozen canonical states and describes their two stored increments.
+  ! Mode-2 mode exactly partitions one archived rank-2 update in its stored
+  ! volume Gram metric; it does not evaluate another nonlinear map.
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -87,15 +92,17 @@ program check_one_map_xsm
 
   character(len=1024) :: paths(5)
   character(len=32) :: mode
-  type(system_data) :: reference_system,current_system
+  type(system_data) :: reference_system,current_system,rank1_system
   type(canonical_state) :: previous_state,current_state
+  type(canonical_state) :: rank1_parent_state
   type(canonical_state) :: direction_state(3)
   integer :: i,argument_offset
-  logical :: continued,reencoded,direction_mode
+  logical :: continued,reencoded,direction_mode,mode2_mode
 
   continued=.false.
   reencoded=.false.
   direction_mode=.false.
+  mode2_mode=.false.
   argument_offset=0
   if (command_argument_count() == 4) then
     call get_command_argument(1,mode)
@@ -114,22 +121,56 @@ program check_one_map_xsm
       continued=.true.
     else if (trim(mode) == '--reencoded') then
       reencoded=.true.
+    else if (trim(mode) == '--mode2') then
+      mode2_mode=.true.
+      do i=1,5
+        call get_command_argument(i+1,paths(i))
+        if (len_trim(paths(i)) == 0) &
+          call fail('EMPTY XSM PATH ARGUMENT.')
+        if (len_trim(paths(i)) > max_xsm_path) &
+          call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+      enddo
     else
-      call fail('ONLY --continued OR --reencoded IS ACCEPTED IN '// &
+      call fail('ONLY --continued, --reencoded OR --mode2 IS ACCEPTED IN '// &
         'SIX-ARGUMENT MODE.')
     endif
-    argument_offset=1
+    if (.not.mode2_mode) argument_offset=1
   else if (command_argument_count() /= 5) then
     call fail('EXPECTED [--continued|--reencoded] BASIS, SYSTEM, '// &
       'PREVIOUS, CURRENT, SNAP.')
   endif
-  if (.not.direction_mode) then
+  if ((.not.direction_mode).and.(.not.mode2_mode)) then
     do i=1,5
       call get_command_argument(i+argument_offset,paths(i))
       if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
       if (len_trim(paths(i)) > max_xsm_path) &
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
+  endif
+
+  if (mode2_mode) then
+    call load_system(trim(paths(1)),0,0,'POD-BUILT',.false., &
+      rank1_system,'RANK1 BASIS')
+    call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
+      rank1_parent_state,'RANK1 RAW PARENT')
+    call load_system(trim(paths(3)),1,3,'POD-FIXED',.true., &
+      current_system,'RANK2 SYSTEM')
+    call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.false., &
+      previous_state,'RANK2 PARENT')
+    call load_canonical_state(trim(paths(5)),1,'POD-FIXED',.true., &
+      current_state,'RANK2 CURRENT')
+    call compare_state_to_system(rank1_parent_state,rank1_system, &
+      'RANK1 RAW PARENT')
+    call compare_state_to_system(previous_state,current_system, &
+      'RANK2 PARENT')
+    call compare_state_to_system(current_state,current_system, &
+      'RANK2 CURRENT')
+    call compare_states_and_defects(previous_state,current_state,.false., &
+      .true.)
+    call report_rank2_mode_diagnostics(rank1_system,rank1_parent_state, &
+      current_system,previous_state,current_state)
+    write(6,'(A)') 'MODE2-DIAG COMPLETE'
+    stop
   endif
 
   if (direction_mode) then
@@ -813,6 +854,321 @@ contains
       call fail('NON-FINITE RECOMPUTED MAP DEFECT.')
     defect=(/r_rho,r_leak,d_leak,r_a/)
   end subroutine recompute_map_defect
+
+
+  subroutine report_rank2_mode_diagnostics(rank1_basis,rank1_parent, &
+      rank2_system,rank2_parent,rank2_current)
+    type(system_data), intent(in) :: rank1_basis,rank2_system
+    type(canonical_state), intent(in) :: rank1_parent,rank2_parent
+    type(canonical_state), intent(in) :: rank2_current
+    integer :: g,s,i,a,b,nreg,nsnap,ngrp,index_a,index_b,index_g
+    integer :: top_group,top_cell_group,top_cell_snap,hot_index,hot_ties
+    integer :: max_delta_group(2),max_delta_snap(2),nterms
+    real(real64) :: numerator,denominator,numerator_abs
+    real(real64) :: numerator_part(3),current_part(3),parent_part(3)
+    real(real64) :: term,delta_a,delta_b,weight_sum,weight
+    real(real64) :: component_sum,closure,closure_bound
+    real(real64) :: gamma_full,gamma_part,gamma_combine
+    real(real64) :: projection_delta,projection_norm,plane1,plane2
+    real(real64) :: gram_value,d_leak,leak_scale
+    real(real64) :: max_delta(2),delta_value
+    real(real64), allocatable :: group_num(:),snapshot_num(:),cell_num(:,:)
+
+    ngrp=rank2_current%dims(2)
+    nsnap=rank2_current%dims(3)
+    if ((rank1_basis%ngroup /= ngrp).or. &
+        (rank2_system%ngroup /= ngrp).or. &
+        (rank1_basis%nsnap /= nsnap).or. &
+        (rank2_system%nsnap /= nsnap)) &
+      call fail('MODE2-DIAG SYSTEM DIMENSIONS DIFFER.')
+    if (any(rank1_basis%rank_root /= 1).or. &
+        any(rank1_parent%rank /= 1).or. &
+        any(rank2_system%rank_root /= 2).or. &
+        any(rank2_parent%rank /= 2).or. &
+        any(rank2_current%rank /= 2)) &
+      call fail('MODE2-DIAG RANK CONTRACT FAILED.')
+
+    if ((real32_bits(rank1_parent%keff) /= &
+         real32_bits(rank2_parent%keff)).or. &
+        (real64_bits(rank1_parent%rho) /= &
+         real64_bits(rank2_parent%rho)).or. &
+        (real64_bits(rank1_parent%norm) /= &
+         real64_bits(rank2_parent%norm)).or. &
+        any(real64_bits(rank1_parent%height) /= &
+            real64_bits(rank2_parent%height)).or. &
+        any(real64_bits(rank1_parent%leakage) /= &
+            real64_bits(rank2_parent%leakage))) &
+      call fail('MODE2-DIAG RAW PARENT PHYSICAL STATE CHANGED.')
+    write(6,'(A)') 'MODE2-DIAG RAW-PARENT RHO/NORM/LEAKAGE BITWISE PASS'
+
+    do g=1,ngrp
+      nreg=rank2_system%group(g)%nreg
+      if ((rank1_basis%group(g)%nreg /= nreg).or. &
+          (rank1_basis%group(g)%nmode /= 1).or. &
+          (rank2_system%group(g)%nmode /= 2)) &
+        call fail('MODE2-DIAG POD GROUP DIMENSIONS DIFFER.')
+      if (any(real32_bits(rank1_basis%group(g)%volume) /= &
+              real32_bits(rank2_system%group(g)%volume))) &
+        call fail('MODE2-DIAG POD VOLUMES DIFFER.')
+      if (any(real32_bits(rank1_basis%group(g)%basis) /= &
+              real32_bits(rank2_system%group(g)%basis(1:nreg)))) &
+        call fail('MODE2-DIAG MODE1 BASIS PREFIX DIFFERS.')
+      do s=1,nsnap
+        if (real32_bits(rank1_basis%group(g)%coeff(s)) /= &
+            real32_bits(rank2_system%group(g)%coeff((s-1)*2+1))) &
+          call fail('MODE2-DIAG MODE1 COEFFICIENT PREFIX DIFFERS.')
+      enddo
+      if (any(real64_bits(rank1_basis%group(g)%sigma) /= &
+              real64_bits(rank2_system%group(g)%sigma))) &
+        call fail('MODE2-DIAG POD SINGULAR VALUES DIFFER.')
+
+      weight_sum=sum(real(rank2_system%group(g)%volume,real64))
+      do a=1,2
+        do b=1,2
+          gram_value=0.0_real64
+          do i=1,nreg
+            gram_value=gram_value+ &
+              real(rank2_system%group(g)%volume(i),real64)/weight_sum* &
+              real(rank2_system%group(g)%basis((a-1)*nreg+i),real64)* &
+              real(rank2_system%group(g)%basis((b-1)*nreg+i),real64)
+          enddo
+          index_g=rank2_current%gram_offset(g)+(b-1)*2+a
+          if (real64_bits(gram_value) /= &
+              real64_bits(rank2_current%gram(index_g))) &
+            call fail('MODE2-DIAG GRAM RECOMPUTE DIFFERS BITWISE.')
+        enddo
+      enddo
+    enddo
+    if (any(real64_bits(rank1_basis%sigma_root) /= &
+            real64_bits(rank2_system%sigma_root))) &
+      call fail('MODE2-DIAG ROOT SINGULAR VALUES DIFFER.')
+    write(6,'(A)') 'MODE2-DIAG MODE1 POD-PACKAGE PREFIX BITWISE PASS'
+    write(6,'(A)') 'MODE2-DIAG GRAM FROM VOLUME/BASIS BITWISE PASS'
+
+    projection_delta=0.0_real64
+    projection_norm=0.0_real64
+    do g=1,ngrp
+      nreg=rank2_system%group(g)%nreg
+      weight_sum=sum(real(rank2_system%group(g)%volume,real64))
+      do s=1,nsnap
+        index_a=rank1_parent%offset(g)+s
+        do i=1,nreg
+          weight=rank2_parent%height(s)* &
+            real(rank2_system%group(g)%volume(i),real64)/weight_sum
+          plane1=real(rank1_basis%group(g)%basis(i),real64)* &
+            rank1_parent%coordinates(index_a)
+          plane2=0.0_real64
+          do a=1,2
+            index_b=rank2_parent%offset(g)+(s-1)*2+a
+            plane2=plane2+ &
+              real(rank2_system%group(g)%basis((a-1)*nreg+i),real64)* &
+              rank2_parent%coordinates(index_b)
+          enddo
+          projection_delta=projection_delta+weight*(plane2-plane1)**2
+          projection_norm=projection_norm+weight*plane2**2
+        enddo
+      enddo
+    enddo
+    if ((.not.ieee_is_finite(projection_delta)).or. &
+        (projection_delta < 0.0_real64).or. &
+        (.not.ieee_is_finite(projection_norm)).or. &
+        (projection_norm <= 0.0_real64)) &
+      call fail('MODE2-DIAG INVALID PARENT PROJECTION NORM.')
+    call write_real64_metric('MODE2-DIAG PARENT PROJECTION-RELATIVE', &
+      sqrt(projection_delta/projection_norm))
+
+    allocate(group_num(ngrp),snapshot_num(nsnap),cell_num(ngrp,nsnap))
+    group_num=0.0_real64
+    snapshot_num=0.0_real64
+    cell_num=0.0_real64
+    numerator=0.0_real64
+    denominator=0.0_real64
+    numerator_abs=0.0_real64
+    numerator_part=0.0_real64
+    current_part=0.0_real64
+    parent_part=0.0_real64
+    max_delta=0.0_real64
+    max_delta_group=0
+    max_delta_snap=0
+    do g=1,ngrp
+      do s=1,nsnap
+        do a=1,2
+          index_a=rank2_current%offset(g)+(s-1)*2+a
+          delta_a=rank2_current%coordinates(index_a)- &
+            rank2_parent%coordinates(index_a)
+          if (abs(delta_a) > max_delta(a)) then
+            max_delta(a)=abs(delta_a)
+            max_delta_group(a)=g
+            max_delta_snap(a)=s
+          endif
+          do b=1,2
+            index_b=rank2_current%offset(g)+(s-1)*2+b
+            index_g=rank2_current%gram_offset(g)+(b-1)*2+a
+            delta_b=rank2_current%coordinates(index_b)- &
+              rank2_parent%coordinates(index_b)
+            term=rank2_current%height(s)*delta_a* &
+              rank2_current%gram(index_g)*delta_b
+            numerator=numerator+term
+            numerator_abs=numerator_abs+abs(term)
+            group_num(g)=group_num(g)+term
+            snapshot_num(s)=snapshot_num(s)+term
+            cell_num(g,s)=cell_num(g,s)+term
+            if ((a == 1).and.(b == 1)) then
+              numerator_part(1)=numerator_part(1)+term
+            else if ((a == 2).and.(b == 2)) then
+              numerator_part(2)=numerator_part(2)+term
+            else
+              numerator_part(3)=numerator_part(3)+term
+            endif
+
+            term=rank2_current%height(s)* &
+              rank2_current%coordinates(index_a)* &
+              rank2_current%gram(index_g)* &
+              rank2_current%coordinates(index_b)
+            denominator=denominator+term
+            if ((a == 1).and.(b == 1)) then
+              current_part(1)=current_part(1)+term
+            else if ((a == 2).and.(b == 2)) then
+              current_part(2)=current_part(2)+term
+            else
+              current_part(3)=current_part(3)+term
+            endif
+
+            term=rank2_parent%height(s)* &
+              rank2_parent%coordinates(index_a)* &
+              rank2_parent%gram(index_g)* &
+              rank2_parent%coordinates(index_b)
+            if ((a == 1).and.(b == 1)) then
+              parent_part(1)=parent_part(1)+term
+            else if ((a == 2).and.(b == 2)) then
+              parent_part(2)=parent_part(2)+term
+            else
+              parent_part(3)=parent_part(3)+term
+            endif
+          enddo
+        enddo
+      enddo
+    enddo
+    if ((.not.ieee_is_finite(numerator)).or.(numerator <= 0.0_real64).or. &
+        (.not.ieee_is_finite(denominator)).or. &
+        (denominator <= 0.0_real64).or. &
+        any(.not.ieee_is_finite(numerator_part)).or. &
+        any(.not.ieee_is_finite(current_part)).or. &
+        any(.not.ieee_is_finite(parent_part)).or. &
+        any(numerator_part(1:2) < 0.0_real64).or. &
+        any(current_part(1:2) < 0.0_real64).or. &
+        any(parent_part(1:2) < 0.0_real64)) &
+      call fail('MODE2-DIAG INVALID GRAM DECOMPOSITION.')
+    if (real64_bits(sqrt(numerator/denominator)) /= &
+        real64_bits(rank2_current%saved_defect(4))) &
+      call fail('MODE2-DIAG R_A REPLAY DIFFERS BITWISE.')
+
+    component_sum=sum(numerator_part)
+    closure=abs(component_sum-numerator)
+    nterms=4*ngrp*nsnap
+    gamma_full=real(nterms-1,real64)*epsilon(1.0_real64)/ &
+      (1.0_real64-real(nterms-1,real64)*epsilon(1.0_real64))
+    gamma_part=real(2*ngrp*nsnap-1,real64)*epsilon(1.0_real64)/ &
+      (1.0_real64-real(2*ngrp*nsnap-1,real64)*epsilon(1.0_real64))
+    gamma_combine=2.0_real64*epsilon(1.0_real64)/ &
+      (1.0_real64-2.0_real64*epsilon(1.0_real64))
+    closure_bound=((1.0_real64+gamma_full)* &
+      (1.0_real64+gamma_part)*(1.0_real64+gamma_combine)-1.0_real64)* &
+      numerator_abs
+    if (closure > closure_bound) &
+      call fail('MODE2-DIAG ADDITIVE CLOSURE EXCEEDS ROUNDOFF BOUND.')
+    write(6,'(A)') 'MODE2-DIAG R_A PRODUCTION-ORDER BITWISE PASS'
+    write(6,'(A)') 'MODE2-DIAG ADDITIVE-CLOSURE ROUNDOFF-BOUND PASS'
+    call write_real64_metric('MODE2-DIAG UPDATE NUMERATOR TOTAL',numerator)
+    call write_real64_metric('MODE2-DIAG UPDATE NUMERATOR MODE1-DIAGONAL', &
+      numerator_part(1))
+    call write_real64_metric('MODE2-DIAG UPDATE NUMERATOR MODE2-DIAGONAL', &
+      numerator_part(2))
+    call write_real64_metric('MODE2-DIAG UPDATE NUMERATOR SIGNED-COUPLING', &
+      numerator_part(3))
+    call write_real64_metric('MODE2-DIAG UPDATE FRACTION MODE1-DIAGONAL', &
+      numerator_part(1)/numerator)
+    call write_real64_metric('MODE2-DIAG UPDATE FRACTION MODE2-DIAGONAL', &
+      numerator_part(2)/numerator)
+    call write_real64_metric('MODE2-DIAG UPDATE FRACTION SIGNED-COUPLING', &
+      numerator_part(3)/numerator)
+    call write_real64_metric('MODE2-DIAG UPDATE CLOSURE-ABS',closure)
+    call write_real64_metric('MODE2-DIAG UPDATE CLOSURE-BOUND',closure_bound)
+    call write_real64_metric('MODE2-DIAG CURRENT NORM-SQUARED',denominator)
+    call write_real64_metric('MODE2-DIAG CURRENT FRACTION MODE2-DIAGONAL', &
+      current_part(2)/sum(current_part))
+    call write_real64_metric('MODE2-DIAG PARENT FRACTION MODE2-DIAGONAL', &
+      parent_part(2)/sum(parent_part))
+    call write_real64_metric('MODE2-DIAG R_A REPLAY', &
+      sqrt(numerator/denominator))
+    do s=1,nsnap
+      write(6,'(A,1X,I0)') 'MODE2-DIAG SNAPSHOT',s
+      call write_real64_metric('MODE2-DIAG SNAPSHOT UPDATE-FRACTION', &
+        snapshot_num(s)/numerator)
+    enddo
+
+    top_group=1
+    top_cell_group=1
+    top_cell_snap=1
+    do g=1,ngrp
+      if (group_num(g) > group_num(top_group)) top_group=g
+      do s=1,nsnap
+        if (cell_num(g,s) > cell_num(top_cell_group,top_cell_snap)) then
+          top_cell_group=g
+          top_cell_snap=s
+        endif
+      enddo
+    enddo
+    write(6,'(A,1X,I0)') 'MODE2-DIAG TOP UPDATE GROUP',top_group
+    call write_real64_metric('MODE2-DIAG TOP GROUP UPDATE-FRACTION', &
+      group_num(top_group)/numerator)
+    write(6,'(A,2(1X,I0))') 'MODE2-DIAG TOP UPDATE GROUP/SNAPSHOT', &
+      top_cell_group,top_cell_snap
+    call write_real64_metric('MODE2-DIAG TOP CELL UPDATE-FRACTION', &
+      cell_num(top_cell_group,top_cell_snap)/numerator)
+    do a=1,2
+      write(6,'(A,3(1X,I0))') 'MODE2-DIAG MAX-DELTA MODE/GROUP/SNAPSHOT', &
+        a,max_delta_group(a),max_delta_snap(a)
+      call write_real64_metric('MODE2-DIAG MAX-ABS COORDINATE-DELTA', &
+        max_delta(a))
+    enddo
+
+    d_leak=maxval(abs(rank2_current%leakage-rank2_parent%leakage))
+    leak_scale=max(maxval(abs(rank2_current%leakage)), &
+      maxval(abs(rank2_parent%leakage)))
+    if ((real64_bits(d_leak) /= &
+         real64_bits(rank2_current%saved_defect(3))).or. &
+        (real64_bits(d_leak/leak_scale) /= &
+         real64_bits(rank2_current%saved_defect(2)))) &
+      call fail('MODE2-DIAG LEAKAGE DEFECT REPLAY DIFFERS BITWISE.')
+    hot_index=0
+    hot_ties=0
+    do i=1,size(rank2_current%leakage)
+      delta_value=rank2_current%leakage(i)-rank2_parent%leakage(i)
+      if (abs(delta_value) == d_leak) then
+        hot_ties=hot_ties+1
+        if (hot_index == 0) hot_index=i
+      endif
+    enddo
+    if ((hot_index == 0).or.(hot_ties == 0)) &
+      call fail('MODE2-DIAG LEAKAGE HOTSPOT NOT FOUND.')
+    g=mod(hot_index-1,ngrp)+1
+    s=(hot_index-1)/ngrp+1
+    write(6,'(A,3(1X,I0))') &
+      'MODE2-DIAG LEAKAGE HOTSPOT GROUP/SNAPSHOT/TIES',g,s,hot_ties
+    call write_real64_metric('MODE2-DIAG LEAKAGE HOTSPOT PARENT', &
+      rank2_parent%leakage(hot_index))
+    call write_real64_metric('MODE2-DIAG LEAKAGE HOTSPOT CURRENT', &
+      rank2_current%leakage(hot_index))
+    call write_real64_metric('MODE2-DIAG LEAKAGE HOTSPOT DELTA', &
+      rank2_current%leakage(hot_index)-rank2_parent%leakage(hot_index))
+    call write_real64_metric('MODE2-DIAG RHO SIGNED-DELTA', &
+      rank2_current%rho-rank2_parent%rho)
+    call write_real64_metric('MODE2-DIAG LEAKAGE SCALE',leak_scale)
+    write(6,'(A)') 'MODE2-DIAG OFFLINE_MODE2_ANATOMY_ONLY'
+
+    deallocate(cell_num,snapshot_num,group_num)
+  end subroutine report_rank2_mode_diagnostics
 
 
   subroutine report_update_directions(x1,x2,x3)

@@ -67,6 +67,15 @@ authorized run completed, passed its independent audit and is
 420-second host limit was not a physical or empirical model parameter; see
 [iterative/rank2_axial_only_result.md](iterative/rank2_axial_only_result.md).
 
+That valid but tolerance-not-met map was then inspected offline, without
+transport or another iteration. Its exact Gram partition shows that the
+mode-2 diagonal term is
+`0.775258` of the update numerator although it is only `3.5820e-5` of the
+current state Gram-metric squared norm; the signed cross share is
+`2.3466e-9`. This basis-dependent partition diagnoses one frozen update only;
+see
+[iterative/rank2_mode2_anatomy_result.md](iterative/rank2_mode2_anatomy_result.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active
 gate. They remain recoverable from Git tag `archive-pre-lean-20260814`.

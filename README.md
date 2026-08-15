@@ -216,3 +216,11 @@ establishes rank sensitivity at the frozen x7 parent, not rank adequacy,
 iteration convergence or physical accuracy. The first operational attempt
 remains `INVALID_MAP`; see
 [validation/iterative/rank2_axial_only_result.md](validation/iterative/rank2_axial_only_result.md).
+
+A subsequent read-only Ganlib audit partitions that valid rank-2 update
+exactly in the stored Gram metric. The mode-2 diagonal term is `77.53%` of
+the update numerator while it is about `0.003582%` of the current state
+Gram-metric squared norm; the net signed cross share is `2.35e-9`. This
+basis-dependent partition locates the large modal response, but does not
+establish instability, rank adequacy or physical accuracy. See
+[validation/iterative/rank2_mode2_anatomy_result.md](validation/iterative/rank2_mode2_anatomy_result.md).

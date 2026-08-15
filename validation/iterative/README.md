@@ -29,12 +29,14 @@ generic, default-off continuation host.
   default-off second operational attempt that reuses the frozen radial half.
 - `rank2_axial_only_result.md`: valid rank-2 map, raw defects and the strict
   `VALID_NOT_MET` interpretation boundary.
+- `rank2_mode2_anatomy_result.md`: no-Dragon, exact Gram partition of the
+  archived rank-2 update into mode-1, mode-2 and signed coupling terms.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
   `run_continuation_short.sh`: one unchanged direct continuation.
-- `check_one_map_xsm.f90`: Ganlib-only one-map, continued-map and three-state
-  residual-direction checker.
+- `check_one_map_xsm.f90`: Ganlib-only one-map, continued-map, three-state
+  residual-direction and archived rank-2 modal checker.
 - `run_residual_direction_audit.sh`, `residual_direction_inputs.tsv`,
   `residual_direction_result.md`: hash-locked x6--x8 read-only audit.
 - `current_parent.tsv`: the six role- and hash-locked parent objects.
@@ -108,6 +110,14 @@ classification is `VALID_NOT_MET`: all three stopping-rule defects exceed
 `5.0e-7`. The first operational attempt remains `INVALID_MAP`; see
 [rank2_axial_only_result.md](rank2_axial_only_result.md). The completed run
 does not authorize a rerun or the next Picard map.
+
+The same valid map has now been decomposed offline in its stored Gram metric.
+The mode-2 diagonal term is only `3.5820e-5` of the current state Gram-metric
+squared norm but is `0.775258` of this update numerator; the signed Gram
+coupling share is only `2.3466e-9`. This is a basis-dependent exact anatomy
+of one frozen update, not evidence of instability, rank adequacy or physical
+accuracy. See
+[rank2_mode2_anatomy_result.md](rank2_mode2_anatomy_result.md).
 
 ## Current boundary
 
