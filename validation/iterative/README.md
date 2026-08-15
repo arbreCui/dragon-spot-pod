@@ -31,6 +31,11 @@ generic, default-off continuation host.
   `VALID_NOT_MET` interpretation boundary.
 - `rank2_mode2_anatomy_result.md`: no-Dragon, exact Gram partition of the
   archived rank-2 update into mode-1, mode-2 and signed coupling terms.
+- `continuation_rank2_continued_radial.x2m`, `run_rank2_next_map.sh`,
+  `rank2_next_parent.tsv`, `rank2_next_map_policy.md`,
+  `test_rank2_next_map_contract.py`: one default-off direct rank-2 continued
+  map from the valid but tolerance-not-met candidate, with no automatic third
+  map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -118,6 +123,23 @@ coupling share is only `2.3466e-9`. This is a basis-dependent exact anatomy
 of one frozen update, not evidence of instability, rank adequacy or physical
 accuracy. See
 [rank2_mode2_anatomy_result.md](rank2_mode2_anatomy_result.md).
+
+One next direct map is now frozen separately as
+$x^{(2)}_2=G_2(x^{(2)}_1)$. It consumes the valid rank-2 candidate without
+re-encoding it, reruns all three online radial equations, then uses the
+unchanged axial deck and the independent `--continued` checker. Its host is
+default-off and allows one 120-second radial launch and one 420-second axial
+launch, with no retry:
+
+```sh
+RUN_RANK2_NEXT_MAP=1 \
+DRAGON_BIN=/absolute/path/to/Dragon \
+RESULT_DIR=/absolute/path/to/new-result \
+  sh validation/iterative/run_rank2_next_map.sh
+```
+
+These are operational process limits, not physical or convergence
+parameters. The host never starts a third rank-2 map.
 
 ## Current boundary
 

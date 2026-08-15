@@ -31,8 +31,8 @@ GANLIB_LIB=${GANLIB_LIB:-"$ROOT/Ganlib/src/libGanlib.a"}
 GANLIB_MOD=${GANLIB_MOD:-"$ROOT/Ganlib/src"}
 FC=${FC:-gfortran}
 RESULT_DIR=${RESULT_DIR:-}
-RADIAL_TIMEOUT_SECONDS=120
-AXIAL_TIMEOUT_SECONDS=80
+RADIAL_TIMEOUT_SECONDS=${RADIAL_TIMEOUT_SECONDS:-120}
+AXIAL_TIMEOUT_SECONDS=${AXIAL_TIMEOUT_SECONDS:-80}
 
 test -n "$RESULT_DIR" || fail "RESULT_DIR is required when enabled."
 case "$RESULT_DIR" in
@@ -64,6 +64,10 @@ case "$CHECKER_MODE" in
   initial|continued|reencoded) ;;
   *) fail "CHECKER_MODE must be initial, continued or reencoded." ;;
 esac
+printf '%s\n' "$RADIAL_TIMEOUT_SECONDS" | rg -q '^[1-9][0-9]*$' ||
+  fail "RADIAL_TIMEOUT_SECONDS must be a positive integer."
+printf '%s\n' "$AXIAL_TIMEOUT_SECONDS" | rg -q '^[1-9][0-9]*$' ||
+  fail "AXIAL_TIMEOUT_SECONDS must be a positive integer."
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/spot-continuation.XXXXXX")
 HOST_WORK="$WORK/host"
@@ -119,8 +123,9 @@ cp "$PARENT_MANIFEST_SOURCE" "$HOST_WORK/current_parent.tsv"
 cp "$POLICY_SOURCE" "$HOST_WORK/continuation_policy.md"
 cp "$RADIAL_DECK_SOURCE" "$HOST_WORK/continuation_radial.x2m"
 cp "$AXIAL_DECK_SOURCE" "$HOST_WORK/continuation_axial.x2m"
-printf 'checker_mode\t%s\nmap_parent_file\t%s\n' \
-  "$CHECKER_MODE" "$MAP_PARENT_FILE" >"$HOST_WORK/map_configuration.tsv"
+printf 'checker_mode\t%s\nmap_parent_file\t%s\nradial_timeout_seconds\t%s\naxial_timeout_seconds\t%s\n' \
+  "$CHECKER_MODE" "$MAP_PARENT_FILE" "$RADIAL_TIMEOUT_SECONDS" \
+  "$AXIAL_TIMEOUT_SECONDS" >"$HOST_WORK/map_configuration.tsv"
 cp "$ROOT/validation/iterative/check_one_map_xsm.f90" \
   "$ROOT/validation/iterative/run_bounded_dragon.py" \
   "$ROOT/validation/iterative/run_continuation_short.sh" \
@@ -241,7 +246,7 @@ reject_abnormal_log() {
 }
 
 MAP_STARTED=1
-echo "SPOT-CONTINUATION RADIAL START: 120 s bound, no retry"
+echo "SPOT-CONTINUATION RADIAL START: $RADIAL_TIMEOUT_SECONDS s bound, no retry"
 run_bounded "$RADIAL_WORK/radial.x2m" "$RADIAL_WORK/radial.log" \
   "$RADIAL_TIMEOUT_SECONDS"
 echo "SPOT-CONTINUATION RADIAL END"
@@ -276,7 +281,7 @@ fi
 test "$(hash_file "$AXIAL_WORK/$MAP_PARENT_FILE")" = "$MAP_PARENT_HASH" ||
   fail "map parent changed while staging the axial half."
 
-echo "SPOT-CONTINUATION AXIAL START: 80 s bound, no retry"
+echo "SPOT-CONTINUATION AXIAL START: $AXIAL_TIMEOUT_SECONDS s bound, no retry"
 run_bounded "$AXIAL_WORK/axial.x2m" "$AXIAL_WORK/axial.log" \
   "$AXIAL_TIMEOUT_SECONDS"
 echo "SPOT-CONTINUATION AXIAL END"

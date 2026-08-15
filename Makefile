@@ -30,7 +30,7 @@ endif
 all :
 	$(MAKE) -C src
 .PHONY: spot-fast spot-rank-census spot-rank2-basis spot-rank2-map \
-	spot-rank2-axial-only
+	spot-rank2-axial-only spot-rank2-next-map
 spot-fast :
 	sh validation/run_fast.sh
 spot-rank-census :
@@ -41,6 +41,8 @@ spot-rank2-map :
 	sh validation/iterative/run_rank2_map.sh
 spot-rank2-axial-only :
 	sh validation/iterative/run_rank2_axial_only.sh
+spot-rank2-next-map :
+	sh validation/iterative/run_rank2_next_map.sh
 clean :
 	$(MAKE) clean -C src
 tests :

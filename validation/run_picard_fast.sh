@@ -21,9 +21,12 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_map_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_axial_only_contract.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_rank2_next_map_contract.py"
 sh -n "$ROOT/validation/iterative/run_continuation_short.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_map.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_axial_only.sh"
+sh -n "$ROOT/validation/iterative/run_rank2_next_map.sh"
 sh -n "$ROOT/validation/iterative/run_residual_direction_audit.sh"
 sh -n "$ROOT/validation/iterative/run_rank_census.sh"
 continuation_default=$(RUN_CONTINUATION=0 \
@@ -49,6 +52,12 @@ rank2_axial_default=$(RUN_RANK2_AXIAL_ONLY=0 \
   sh "$ROOT/validation/iterative/run_rank2_axial_only.sh")
 test "$rank2_axial_default" = \
   'SPOT-RANK2-AXIAL-ONLY DEFAULT-OFF: no Dragon process started.'
+rank2_next_default=$(RUN_RANK2_NEXT_MAP=0 \
+  DRAGON_BIN="$BUILD_DIR/must-not-run" \
+  RESULT_DIR="$BUILD_DIR/must-not-create-result" \
+  sh "$ROOT/validation/iterative/run_rank2_next_map.sh")
+test "$rank2_next_default" = \
+  'SPOT-RANK2-NEXT-MAP DEFAULT-OFF: no Dragon process started.'
 if continuation_invalid=$(RUN_CONTINUATION=2 \
     DRAGON_BIN="$BUILD_DIR/must-not-run" \
     sh "$ROOT/validation/iterative/run_continuation_short.sh" 2>&1)
@@ -73,7 +82,8 @@ for source in \
   "$ROOT/validation/iterative/continuation_radial.x2m" \
   "$ROOT/validation/iterative/continuation_axial.x2m" \
   "$ROOT/validation/iterative/continuation_rank2_radial.x2m" \
-  "$ROOT/validation/iterative/continuation_rank2_axial.x2m"
+  "$ROOT/validation/iterative/continuation_rank2_axial.x2m" \
+  "$ROOT/validation/iterative/continuation_rank2_continued_radial.x2m"
 do
   stem=$(basename "$source")
   stem=${stem%.*}

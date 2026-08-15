@@ -76,6 +76,12 @@ current state Gram-metric squared norm; the signed cross share is
 see
 [iterative/rank2_mode2_anatomy_result.md](iterative/rank2_mode2_anatomy_result.md).
 
+A single direct rank-2 continuation is now frozen as a separate default-off
+stage. It consumes the valid candidate without re-encoding, evaluates all
+radial and axial equations once, requires the independent `--continued`
+audit, and cannot start a third map. See
+[iterative/rank2_next_map_policy.md](iterative/rank2_next_map_policy.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active
 gate. They remain recoverable from Git tag `archive-pre-lean-20260814`.

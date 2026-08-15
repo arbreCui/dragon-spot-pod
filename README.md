@@ -224,3 +224,11 @@ Gram-metric squared norm; the net signed cross share is `2.35e-9`. This
 basis-dependent partition locates the large modal response, but does not
 establish instability, rank adequacy or physical accuracy. See
 [validation/iterative/rank2_mode2_anatomy_result.md](validation/iterative/rank2_mode2_anatomy_result.md).
+
+The next rank-2 experiment is therefore limited to one direct continued map,
+$x^{(2)}_2=G_2(x^{(2)}_1)$. The valid but tolerance-not-met candidate is
+consumed without re-encoding; the fixed rank-2 basis, equations, direct
+substitution and `5.0e-7` tolerance are unchanged. The default-off host has
+one radial and one axial launch, no retry and no automatic third map. Its
+frozen rule is in
+[validation/iterative/rank2_next_map_policy.md](validation/iterative/rank2_next_map_policy.md).

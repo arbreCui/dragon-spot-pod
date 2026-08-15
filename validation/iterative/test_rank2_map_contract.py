@@ -101,10 +101,10 @@ require(common_runner.count('run_bounded "$RADIAL_WORK/radial.x2m"') == 1,
         "common runner radial launch count changed")
 require(common_runner.count('run_bounded "$AXIAL_WORK/axial.x2m"') == 1,
         "common runner axial launch count changed")
-require("RADIAL_TIMEOUT_SECONDS=120" in common_runner,
-        "radial hard bound changed")
-require("AXIAL_TIMEOUT_SECONDS=80" in common_runner,
-        "axial hard bound changed")
+require("RADIAL_TIMEOUT_SECONDS=${RADIAL_TIMEOUT_SECONDS:-120}" in common_runner,
+        "default radial hard bound changed")
+require("AXIAL_TIMEOUT_SECONDS=${AXIAL_TIMEOUT_SECONDS:-80}" in common_runner,
+        "default axial hard bound changed")
 require("./check_one_map_xsm --reencoded" in common_runner,
         "re-encoded parent checker route missing")
 require("ncoef /= 1110" not in checker.lower(),

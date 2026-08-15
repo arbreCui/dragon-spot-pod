@@ -112,8 +112,10 @@ require(
 )
 require(runner.count('run_bounded "$RADIAL_WORK/radial.x2m"') == 1, "radial launch count")
 require(runner.count('run_bounded "$AXIAL_WORK/axial.x2m"') == 1, "axial launch count")
-require("RADIAL_TIMEOUT_SECONDS=120" in runner, "radial process bound changed")
-require("AXIAL_TIMEOUT_SECONDS=80" in runner, "axial process bound changed")
+require("RADIAL_TIMEOUT_SECONDS=${RADIAL_TIMEOUT_SECONDS:-120}" in runner,
+        "default radial process bound changed")
+require("AXIAL_TIMEOUT_SECONDS=${AXIAL_TIMEOUT_SECONDS:-80}" in runner,
+        "default axial process bound changed")
 require(not re.search(r"(?m)^\s*(?:while|until)\b", runner), "retry loop is forbidden")
 require(
     runner.count("./check_one_map_xsm --continued") == 1,
