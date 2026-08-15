@@ -69,6 +69,10 @@ generic, default-off continuation host.
   `run_rank2_modal_aa1_u_candidate.sh`,
   `rank2_modal_aa1_u_candidate_result.md`: deterministic no-Dragon
   publication with an independently audited `V-RAW-FLUX` lifecycle; no map.
+- `rank2_modal_aa1_u_map_parent.tsv`,
+  `rank2_modal_aa1_u_map_policy.md`,
+  `run_rank2_modal_aa1_u_map.sh`: exact `V-RAW-FLUX` preflight and default-off
+  host for one unchanged map from the latest proposal; `PREPARED_NOT_RUN`.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -314,6 +318,16 @@ a fresh artifact directory with:
 ```sh
 make spot-rank2-modal-aa1-u-candidate
 ```
+
+The corresponding one-map host is prepared but default-off:
+
+```sh
+make spot-rank2-modal-aa1-u-map
+```
+
+Its `V-RAW-FLUX` preflight precedes any Dragon launch. Preparing the host did
+not evaluate \(G_2(u_{\rm pub})\), create a stopping defect or authorize a
+retry; see [rank2_modal_aa1_u_map_policy.md](rank2_modal_aa1_u_map_policy.md).
 
 ## Current boundary
 

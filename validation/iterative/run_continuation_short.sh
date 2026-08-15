@@ -61,11 +61,11 @@ printf '%s\n' "$MAP_PARENT_FILE" |
   rg -q '^[A-Za-z0-9][A-Za-z0-9._-]*$' ||
   fail "MAP_PARENT_FILE must be a safe basename."
 case "$CHECKER_MODE" in
-  initial|continued|reencoded|proposal|proposal-z) ;;
-  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal or proposal-z." ;;
+  initial|continued|reencoded|proposal|proposal-z|proposal-v) ;;
+  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal, proposal-z or proposal-v." ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z)
+  proposal|proposal-z|proposal-v)
     test "$MAP_PARENT_FILE" = parent_axial.xsm ||
       fail "proposal checker modes require MAP_PARENT_FILE=parent_axial.xsm."
     ;;
@@ -238,13 +238,20 @@ case "$CHECKER_MODE" in
         parent_axial.xsm >parent_preflight.log
     )
     ;;
+  proposal-v)
+    (
+      cd "$RADIAL_WORK"
+      "$AXIAL_WORK/check_one_map_xsm" --proposal-parent-v \
+        parent_axial.xsm >parent_preflight.log
+    )
+    ;;
   *)
     printf 'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK NOT-APPLICABLE\n' \
       >"$RADIAL_WORK/parent_preflight.log"
     ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z)
+  proposal|proposal-z|proposal-v)
     test "$(tail -n 1 "$RADIAL_WORK/parent_preflight.log")" = \
       'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK PASS' ||
       fail "proposal parent preflight did not reach its strict terminal."
@@ -358,6 +365,11 @@ done
       ;;
     proposal-z)
       ./check_one_map_xsm --proposal-z basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+    proposal-v)
+      ./check_one_map_xsm --proposal-v basis_reference.xsm \
         candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
         candidate_snapshots.xsm >independent_check.log
       ;;

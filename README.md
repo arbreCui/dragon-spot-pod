@@ -307,3 +307,9 @@ see
 [validation/iterative/rank2_modal_aa1_u_history_result.md](validation/iterative/rank2_modal_aa1_u_history_result.md)
 and
 [validation/iterative/rank2_modal_aa1_u_candidate_result.md](validation/iterative/rank2_modal_aa1_u_candidate_result.md).
+
+The corresponding \(G_2(u_{\rm pub})\) host is now prepared but remains
+default-off. Its exact `V-RAW-FLUX` parent gate runs before any Dragon launch,
+while the physical rank-two decks, tolerance and one-attempt/no-retry rule are
+unchanged. This preparation created no map and remains `PREPARED_NOT_RUN`; see
+[validation/iterative/rank2_modal_aa1_u_map_policy.md](validation/iterative/rank2_modal_aa1_u_map_policy.md).

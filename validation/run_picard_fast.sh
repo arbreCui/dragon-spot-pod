@@ -36,6 +36,7 @@ sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_next_candidate.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_u_candidate.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_map.sh"
 sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_next_map.sh"
+sh -n "$ROOT/validation/iterative/run_rank2_modal_aa1_u_map.sh"
 sh -n "$ROOT/validation/iterative/run_residual_direction_audit.sh"
 sh -n "$ROOT/validation/iterative/run_rank_census.sh"
 continuation_default=$(RUN_CONTINUATION=0 \
@@ -81,6 +82,23 @@ rank2_aa1_next_map_default=$(RUN_RANK2_MODAL_AA1_NEXT_MAP=0 \
   sh "$ROOT/validation/iterative/run_rank2_modal_aa1_next_map.sh")
 test "$rank2_aa1_next_map_default" = \
   'SPOT-RANK2-MODAL-AA1-NEXT-MAP DEFAULT-OFF: no Dragon process started.'
+rank2_aa1_u_map_default=$(RUN_RANK2_MODAL_AA1_U_MAP=0 \
+  DRAGON_BIN="$BUILD_DIR/must-not-run" \
+  RESULT_DIR="$BUILD_DIR/must-not-create-result" \
+  TMPDIR="$BUILD_DIR/must-not-use-tmp" \
+  sh "$ROOT/validation/iterative/run_rank2_modal_aa1_u_map.sh")
+test "$rank2_aa1_u_map_default" = \
+  'SPOT-RANK2-MODAL-AA1-U-MAP DEFAULT-OFF: no Dragon process started.'
+if rank2_aa1_u_map_invalid=$(RUN_RANK2_MODAL_AA1_U_MAP=2 \
+    DRAGON_BIN="$BUILD_DIR/must-not-run" \
+    sh "$ROOT/validation/iterative/run_rank2_modal_aa1_u_map.sh" 2>&1)
+then
+  printf '%s\n' \
+    'SPOT-RANK2-MODAL-AA1-U-MAP invalid activation passed.' >&2
+  exit 1
+fi
+test "$rank2_aa1_u_map_invalid" = \
+  'SPOT-RANK2-MODAL-AA1-U-MAP ERROR: activation must be 0 or 1.'
 if continuation_invalid=$(RUN_CONTINUATION=2 \
     DRAGON_BIN="$BUILD_DIR/must-not-run" \
     sh "$ROOT/validation/iterative/run_continuation_short.sh" 2>&1)

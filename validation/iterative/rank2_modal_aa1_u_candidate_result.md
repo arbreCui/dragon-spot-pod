@@ -105,7 +105,10 @@ positivity. It does not provide \(G_2(u_{\rm pub})\), a stopping defect,
 convergence evidence, rank adequacy, transport accuracy or evidence that
 AA(1) is superior to another iteration.
 
-No map host or Dragon run was created or started in this stage. A future
-evaluation of \(G_2(u_{\rm pub})\), if authorized, must be a separately
-declared single map with the same physical equations and no empirical
-controls.
+This materialization stage started no Dragon run or map. The required
+single-map host has subsequently been prepared and remains default-off. Its
+strict `V-RAW-FLUX` preflight, unchanged physical equations and no-retry
+boundary are frozen in
+[`rank2_modal_aa1_u_map_policy.md`](rank2_modal_aa1_u_map_policy.md). Host
+preparation does not change the classification above or evaluate
+\(G_2(u_{\rm pub})\).

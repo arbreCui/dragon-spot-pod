@@ -138,6 +138,12 @@ produced. See
 and
 [iterative/rank2_modal_aa1_u_candidate_result.md](iterative/rank2_modal_aa1_u_candidate_result.md).
 
+The single-map host for \(G_2(u_{\rm pub})\) is now prepared and default-off.
+It adds only the exact `V-RAW-FLUX` preflight; the fixed rank-two physics,
+stopping defects and no-retry boundary are unchanged. No Dragon process or
+map was started, so its status is `PREPARED_NOT_RUN`; see
+[iterative/rank2_modal_aa1_u_map_policy.md](iterative/rank2_modal_aa1_u_map_policy.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable
 from Git tag `archive-pre-lean-20260814`.

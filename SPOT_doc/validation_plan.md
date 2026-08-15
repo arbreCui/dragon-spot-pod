@@ -147,6 +147,13 @@ and passes strict positivity. The classification is
 and
 [../validation/iterative/rank2_modal_aa1_u_candidate_result.md](../validation/iterative/rank2_modal_aa1_u_candidate_result.md).
 
+The exact `V-RAW-FLUX` entry for one possible \(G_2(u_{\rm pub})\) evaluation
+is now prepared and default-off. It reuses the same rank-two decks, physical
+map, tolerance and independent raw stopping defects. Its parent preflight is
+before Dragon and it permits one attempt with no retry. Preparation itself is
+`PREPARED_NOT_RUN` and generated no map; see
+[../validation/iterative/rank2_modal_aa1_u_map_policy.md](../validation/iterative/rank2_modal_aa1_u_map_policy.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated
