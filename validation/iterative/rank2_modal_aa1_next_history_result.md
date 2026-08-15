@@ -120,10 +120,16 @@ After compiling `check_one_map_xsm.f90` against Ganlib, reproduce from
 
 ## Scientific boundary
 
-`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED` means only that the unique AA(1)
-formula and canonical publication preflight pass. No proposal XSM has been
-created, no transport equation has been solved at `w_pub`, and no new outer
-defect exists. This result is neither `TOLERANCE_MET` nor `VALID_NOT_MET` and
-does not authorize a map. The smallest next step, if separately authorized,
-is deterministic materialization using the `z` carrier; it still performs no
-Dragon calculation.
+At the time of this decision, `ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED` meant
+only that the unique AA(1) formula and canonical publication preflight passed.
+No proposal XSM had yet been created, no transport equation had been solved at
+`w_pub`, and no new outer defect existed. This result was neither
+`TOLERANCE_MET` nor `VALID_NOT_MET` and did not authorize a map.
+
+## Materialization postscript
+
+The deterministic next step has now completed. The independently checked,
+hash-locked proposal uses the explicit `Z-RAW-FLUX` carrier and is classified
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`. No Dragon process or new map was run.
+See
+[`rank2_modal_aa1_next_candidate_result.md`](rank2_modal_aa1_next_candidate_result.md).

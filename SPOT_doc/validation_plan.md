@@ -115,10 +115,14 @@ actual evaluated pairs $x_1\to x_2$ and $y_{\rm pub}\to z$. The unique
 full-Gram modal coefficient gives weight `0.9302745506696768` to $z$, and the
 possible next raw affine state formula is
 $(1-\beta_z)x_2+\beta_z z$. Its canonical publication preflight is finite and
-all 8880 reconstructed points remain strictly positive. This is only
-`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: no candidate, fresh map or stopping
-defect has been generated. See
-[../validation/iterative/rank2_modal_aa1_next_history_result.md](../validation/iterative/rank2_modal_aa1_next_history_result.md).
+all 8880 reconstructed points remain strictly positive. The proposal has now
+been deterministically materialized and independently verified with the
+audited `z` raw-flux/snapshot carrier. It is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no fresh map or stopping defect has
+been generated. See
+[../validation/iterative/rank2_modal_aa1_next_history_result.md](../validation/iterative/rank2_modal_aa1_next_history_result.md)
+and
+[../validation/iterative/rank2_modal_aa1_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_next_candidate_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

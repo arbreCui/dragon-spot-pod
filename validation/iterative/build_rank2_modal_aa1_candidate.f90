@@ -24,7 +24,7 @@ program build_rank2_modal_aa1_candidate
   end type canonical_state
 
   character(len=1024) :: path(6)
-  character(len=12) :: marker
+  character(len=12) :: marker,mode
   type(canonical_state) :: x0,x1,x2
   type(c_ptr) :: snap2,staged_ax,staged_snap,out_ax,out_snap,fluxes,plane
   integer :: i,igr,isnap,a,b,nmode,nreg2d
@@ -37,8 +37,16 @@ program build_rank2_modal_aa1_candidate
   real(real64), allocatable :: candidate_a(:),candidate_l(:)
   real(real32), allocatable :: published_l(:)
 
-  if (command_argument_count() /= 6) error stop &
-    'expected x0 x1 x2 x2_snap out_ax out_snap'
+  if (command_argument_count() == 8) then
+    call get_command_argument(1,mode)
+    if (trim(mode) /= '--next') error stop &
+      'eight-argument mode requires --next'
+    call build_next_candidate
+    stop
+  else if (command_argument_count() /= 6) then
+    error stop 'expected x0 x1 x2 x2_snap out_ax out_snap or '// &
+      '--next x1 x2 y z z_snap out_ax out_snap'
+  endif
   do i=1,6
     call get_command_argument(i,path(i))
     if ((len_trim(path(i)) == 0).or.(len_trim(path(i)) > max_path)) &
@@ -208,10 +216,220 @@ program build_rank2_modal_aa1_candidate
 
 contains
 
-  subroutine load_state(file_name,data,owner)
+  subroutine build_next_candidate
+    character(len=1024) :: next_path(7)
+    character(len=12) :: next_marker
+    type(canonical_state) :: next_x1,next_x2,next_y,next_z
+    type(c_ptr) :: next_z_snap,next_staged_ax,next_staged_snap
+    type(c_ptr) :: next_out_ax,next_out_snap,next_fluxes,next_plane
+    integer :: j,g,s,r,ia,ib,ig,il,mode_count,region_count
+    integer :: positive_count
+    real(real64) :: p_sq,q_sq,p_dot,p_a,p_b,q_a,q_b
+    real(real64) :: next_denominator,next_beta,next_weight_x2
+    real(real64) :: next_rho_star,next_rho_public,next_l_roundtrip
+    real(real64) :: next_reconstructed,next_min_reconstructed,next_iter_k
+    real(real32) :: next_k_public,next_projected
+    real(real64), allocatable :: next_candidate_a(:),next_candidate_l(:)
+    real(real32), allocatable :: next_published_l(:)
+
+    do j=1,7
+      call get_command_argument(j+1,next_path(j))
+      if ((len_trim(next_path(j)) == 0).or. &
+          (len_trim(next_path(j)) > max_path)) &
+        error stop 'XSM path is empty or exceeds GANLIB limit'
+    enddo
+    if (trim(next_path(6)) == trim(next_path(7))) &
+      error stop 'candidate AX and snapshot paths must differ'
+    call require_fresh_path(next_path(6))
+    call require_fresh_path(next_path(7))
+
+    call load_state(trim(next_path(1)),next_x1,'next x1')
+    call load_state(trim(next_path(2)),next_x2,'next x2')
+    call load_state(trim(next_path(3)),next_y,'next proposal y',.true.)
+    call load_state(trim(next_path(4)),next_z,'next returned z')
+    call compare_next_fixed_space(next_x1,next_x2,'x1/x2')
+    call compare_next_fixed_space(next_x1,next_y,'x1/y')
+    call compare_next_fixed_space(next_x1,next_z,'x1/z')
+    call validate_snapshot(trim(next_path(5)),next_y,next_z,next_z_snap)
+
+    ! The two evaluated map residuals are p=x2-x1 and q=z-y.
+    p_sq=0.0_real64
+    q_sq=0.0_real64
+    p_dot=0.0_real64
+    do g=1,next_x1%dims(2)
+      mode_count=next_x1%rank(g)
+      do s=1,next_x1%dims(3)
+        do ia=1,mode_count
+          il=next_x1%offset(g)+(s-1)*mode_count+ia
+          p_a=next_x2%coordinates(il)-next_x1%coordinates(il)
+          q_a=next_z%coordinates(il)-next_y%coordinates(il)
+          do ib=1,mode_count
+            r=next_x1%offset(g)+(s-1)*mode_count+ib
+            ig=next_x1%gram_offset(g)+(ib-1)*mode_count+ia
+            p_b=next_x2%coordinates(r)-next_x1%coordinates(r)
+            q_b=next_z%coordinates(r)-next_y%coordinates(r)
+            p_sq=p_sq+next_x1%height(s)*p_a*next_x1%gram(ig)*p_b
+            q_sq=q_sq+next_x1%height(s)*q_a*next_x1%gram(ig)*q_b
+            p_dot=p_dot+next_x1%height(s)*p_a*next_x1%gram(ig)*q_b
+          enddo
+        enddo
+      enddo
+    enddo
+    if ((.not.ieee_is_finite(p_sq)).or.(p_sq < 0.0_real64).or. &
+        (.not.ieee_is_finite(q_sq)).or.(q_sq < 0.0_real64).or. &
+        (.not.ieee_is_finite(p_dot))) &
+      error stop 'invalid next modal residual geometry'
+    next_denominator=p_sq+q_sq-2.0_real64*p_dot
+    if ((.not.ieee_is_finite(next_denominator)).or. &
+        (next_denominator <= 0.0_real64)) &
+      error stop 'singular next modal Anderson scalar system'
+    next_beta=(p_sq-p_dot)/next_denominator
+    next_weight_x2=1.0_real64-next_beta
+    if ((.not.ieee_is_finite(next_beta)).or. &
+        (.not.ieee_is_finite(next_weight_x2))) &
+      error stop 'nonfinite next modal Anderson weight'
+
+    allocate(next_candidate_a(size(next_x2%coordinates)))
+    allocate(next_candidate_l(size(next_x2%leakage)))
+    allocate(next_published_l(size(next_x2%leakage)))
+    next_candidate_a=next_weight_x2*next_x2%coordinates+ &
+      next_beta*next_z%coordinates
+    next_candidate_l=next_weight_x2*next_x2%leakage+ &
+      next_beta*next_z%leakage
+    next_published_l=real(next_candidate_l,real32)
+    next_rho_star=next_weight_x2*next_x2%rho+next_beta*next_z%rho
+    if ((.not.ieee_is_finite(next_rho_star)).or. &
+        (next_rho_star <= 0.0_real64)) &
+      error stop 'invalid next affine inverse eigenvalue'
+    next_k_public=real(1.0_real64/next_rho_star,real32)
+    if ((.not.ieee_is_finite(next_k_public)).or. &
+        (next_k_public <= 0.0_real32)) &
+      error stop 'invalid next published effective eigenvalue'
+    next_rho_public=1.0_real64/real(next_k_public,real64)
+    if (any(.not.ieee_is_finite(next_candidate_a)).or. &
+        any(.not.ieee_is_finite(next_candidate_l)).or. &
+        any(.not.ieee_is_finite(next_published_l)).or. &
+        (.not.ieee_is_finite(next_rho_public)).or. &
+        (next_rho_public <= 0.0_real64)) &
+      error stop 'nonfinite next published proposal'
+    next_l_roundtrip=maxval(abs( &
+      real(next_published_l,real64)-next_candidate_l))
+
+    next_min_reconstructed=huge(next_min_reconstructed)
+    positive_count=0
+    do g=1,next_z%dims(2)
+      mode_count=next_z%rank(g)
+      region_count=(next_z%basis_offset(g+1)- &
+        next_z%basis_offset(g))/mode_count
+      do s=1,next_z%dims(3)
+        do r=1,region_count
+          next_reconstructed=0.0_real64
+          do ia=1,mode_count
+            il=next_z%offset(g)+(s-1)*mode_count+ia
+            ib=next_z%basis_offset(g)+(ia-1)*region_count+r
+            next_reconstructed=next_reconstructed+ &
+              real(next_z%basis(ib),real64)*next_candidate_a(il)
+          enddo
+          next_projected=real(next_reconstructed,real32)
+          if ((.not.ieee_is_finite(next_reconstructed)).or. &
+              (.not.ieee_is_finite(next_projected)).or. &
+              (next_projected <= 0.0_real32)) &
+            error stop 'next published reconstructed flux is not positive'
+          positive_count=positive_count+1
+          next_min_reconstructed=min(next_min_reconstructed, &
+            real(next_projected,real64))
+        enddo
+      enddo
+    enddo
+    if (positive_count /= next_z%dims(2)*next_z%dims(3)*8) &
+      error stop 'next reconstructed-flux census is incomplete'
+
+    ! z supplies the latest evaluated AX and raw-flux carrier.
+    call LCMOP(next_staged_ax,' ',0,1,0)
+    call LCMEQU(next_z%root,next_staged_ax)
+    call LCMPUT(next_staged_ax,'SPOT-X-A',size(next_candidate_a),4, &
+      next_candidate_a)
+    call LCMPUT(next_staged_ax,'K-EFFECTIVE',1,2,next_k_public)
+    call LCMPUT(next_staged_ax,'SPOT-X-RHO',1,4,next_rho_public)
+    call LCMPUT(next_staged_ax,'SPOT-X-L',size(next_published_l),4, &
+      real(next_published_l,real64))
+    call delete_if_present(next_staged_ax,'SPOT-X-RRHO')
+    call delete_if_present(next_staged_ax,'SPOT-X-RLEAK')
+    call delete_if_present(next_staged_ax,'SPOT-X-DLEAK')
+    call delete_if_present(next_staged_ax,'SPOT-X-RA')
+    call delete_if_present(next_staged_ax,'SPOT-X-PERP')
+    call delete_if_present(next_staged_ax,'SPOT-X-EPOCH')
+    call delete_if_present(next_staged_ax,'SPOT-GBAL')
+    call delete_if_present(next_staged_ax,'SPOT-GBAL-MA')
+    next_marker='PROPOSAL'
+    call LCMPTC(next_staged_ax,'SPOT-X-STATE',12,next_marker)
+    next_marker='Z-RAW-FLUX'
+    call LCMPTC(next_staged_ax,'SPOT-X-CARR',12,next_marker)
+    call LCMOP(next_out_ax,trim(next_path(6)),0,2,0)
+    call LCMEQU(next_staged_ax,next_out_ax)
+    call LCMCL(next_out_ax,1)
+    call LCMCL(next_staged_ax,2)
+
+    ! Preserve z_snap's lagged SYSTEM history and publish only k and FLUX L.
+    call LCMOP(next_staged_snap,' ',0,1,0)
+    call LCMEQU(next_z_snap,next_staged_snap)
+    next_iter_k=real(next_k_public,real64)
+    call LCMPUT(next_staged_snap,'SPOT-ITER-K',1,4,next_iter_k)
+    call delete_if_present(next_staged_snap,'SPOT-L1-ERR')
+    call delete_if_present(next_staged_snap,'SPOT-PJ-PERP')
+    call delete_if_present(next_staged_snap,'SPOT-PROJECT')
+    next_fluxes=LCMGID(next_staged_snap,'FLUX')
+    do s=1,next_z%dims(3)
+      next_plane=LCMGIL(next_fluxes,s)
+      il=(s-1)*next_z%dims(2)+1
+      call LCMPUT(next_plane,'SPOT-LEAK1D',next_z%dims(2),2, &
+        next_published_l(il:il+next_z%dims(2)-1))
+    enddo
+    call LCMOP(next_out_snap,trim(next_path(7)),0,2,0)
+    call LCMEQU(next_staged_snap,next_out_snap)
+    call LCMCL(next_out_snap,1)
+    call LCMCL(next_staged_snap,2)
+
+    call LCMCL(next_z_snap,1)
+    call LCMCL(next_z%root,1)
+    call LCMCL(next_y%root,1)
+    call LCMCL(next_x2%root,1)
+    call LCMCL(next_x1%root,1)
+
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT BETA-WEIGHT-Z ', &
+      next_beta
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT WEIGHT-X2 ', &
+      next_weight_x2
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT DENOMINATOR ', &
+      next_denominator
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT RHO-AFFINE ', &
+      next_rho_star
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT K-PUBLISHED ', &
+      real(next_k_public,real64)
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT RHO-PUBLISHED ', &
+      next_rho_public
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT RHO-Q-DELTA ', &
+      next_rho_public-next_rho_star
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT L-ROUNDTRIP-MAX ', &
+      next_l_roundtrip
+    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT MIN-PUBLISHED-BA ', &
+      next_min_reconstructed
+    write(*,'(A,I0)') 'RANK2-MODAL-AA1-NEXT POSITIVE-BA-POINTS ', &
+      positive_count
+    write(*,'(A)') 'RANK2-MODAL-AA1-NEXT CARRIER Z-RAW-FLUX'
+    write(*,'(A)') 'RANK2-MODAL-AA1-NEXT CLASSIFICATION '// &
+      'MATERIALIZED_PROPOSAL_NOT_EVALUATED NO-DRAGON NO-MAP'
+  end subroutine build_next_candidate
+
+  subroutine load_state(file_name,data,owner,proposal_schema)
     character(len=*), intent(in) :: file_name,owner
     type(canonical_state), intent(out) :: data
+    logical, intent(in), optional :: proposal_schema
     integer :: ngrp,nsnap,ncoef,total_basis,total_gram,g,nreg
+    logical :: is_proposal
+
+    is_proposal=.false.
+    if (present(proposal_schema)) is_proposal=proposal_schema
     call LCMOP(data%root,file_name,2,2,0)
     call require_character(data%root,'SIGNATURE','L_FLUX',owner)
     call require_record(data%root,'STATE-VECTOR',nstate,1,owner)
@@ -255,13 +473,18 @@ contains
     total_gram=data%gram_offset(ngrp+1)
     allocate(data%basis(total_basis),data%coordinates(ncoef))
     allocate(data%leakage(ngrp*nsnap),data%height(nsnap))
-    allocate(data%gram(total_gram),data%offspace(ngrp*nsnap))
+    allocate(data%gram(total_gram))
+    if (.not.is_proposal) allocate(data%offspace(ngrp*nsnap))
     call require_record(data%root,'SPOT-X-BASIS',total_basis,2,owner)
     call require_record(data%root,'SPOT-X-A',ncoef,4,owner)
     call require_record(data%root,'SPOT-X-L',ngrp*nsnap,4,owner)
     call require_record(data%root,'SPOT-X-H',nsnap,4,owner)
     call require_record(data%root,'SPOT-X-GRAM',total_gram,4,owner)
-    call require_record(data%root,'SPOT-X-PERP',ngrp*nsnap,4,owner)
+    if (is_proposal) then
+      call require_absent(data%root,'SPOT-X-PERP',owner)
+    else
+      call require_record(data%root,'SPOT-X-PERP',ngrp*nsnap,4,owner)
+    endif
     call require_record(data%root,'K-EFFECTIVE',1,2,owner)
     call require_record(data%root,'SPOT-X-RHO',1,4,owner)
     call require_record(data%root,'SPOT-X-NORM',1,4,owner)
@@ -274,7 +497,8 @@ contains
     call LCMGET(data%root,'SPOT-X-L',data%leakage)
     call LCMGET(data%root,'SPOT-X-H',data%height)
     call LCMGET(data%root,'SPOT-X-GRAM',data%gram)
-    call LCMGET(data%root,'SPOT-X-PERP',data%offspace)
+    if (.not.is_proposal) &
+      call LCMGET(data%root,'SPOT-X-PERP',data%offspace)
     call LCMGET(data%root,'K-EFFECTIVE',data%keff)
     call LCMGET(data%root,'SPOT-X-RHO',data%rho)
     call LCMGET(data%root,'SPOT-X-NORM',data%norm)
@@ -291,14 +515,27 @@ contains
         any(.not.ieee_is_finite(data%height)).or. &
         any(data%height <= 0.0_real64).or. &
         any(.not.ieee_is_finite(data%gram)).or. &
-        any(.not.ieee_is_finite(data%offspace)).or. &
-        any(data%offspace < 0.0_real64).or. &
         (.not.ieee_is_finite(data%keff)).or.(data%keff <= 0.0_real32).or. &
         (.not.ieee_is_finite(data%rho)).or.(data%rho <= 0.0_real64).or. &
         (.not.ieee_is_finite(data%norm)).or.(data%norm <= 0.0_real64).or. &
         (.not.ieee_is_finite(data%gram_error)).or. &
         (data%gram_error < 0.0_real64)) &
       error stop 'nonfinite canonical rank-two state'
+    if (.not.is_proposal) then
+      if (any(.not.ieee_is_finite(data%offspace)).or. &
+          any(data%offspace < 0.0_real64)) &
+        error stop 'invalid canonical off-space diagnostic'
+    else
+      call require_absent(data%root,'SPOT-X-RRHO',owner)
+      call require_absent(data%root,'SPOT-X-RLEAK',owner)
+      call require_absent(data%root,'SPOT-X-DLEAK',owner)
+      call require_absent(data%root,'SPOT-X-RA',owner)
+      call require_absent(data%root,'SPOT-X-EPOCH',owner)
+      call require_absent(data%root,'SPOT-GBAL',owner)
+      call require_absent(data%root,'SPOT-GBAL-MA',owner)
+      call require_character(data%root,'SPOT-X-STATE','PROPOSAL',owner)
+      call require_character(data%root,'SPOT-X-CARR','X2-RAW-FLUX',owner)
+    endif
     if (any(bits64(data%leakage) /= &
             bits64(real(real(data%leakage,real32),real64)))) &
       error stop 'canonical leakage is not promoted binary32'
@@ -324,6 +561,23 @@ contains
       error stop 'fixed rank-two package changed'
     endif
   end subroutine compare_fixed_space
+
+  subroutine compare_next_fixed_space(left,right,owner)
+    type(canonical_state), intent(in) :: left,right
+    character(len=*), intent(in) :: owner
+    if (any(left%dims /= right%dims).or. &
+        any(left%rank /= right%rank).or.any(left%offset /= right%offset).or. &
+        any(left%gram_offset /= right%gram_offset).or. &
+        any(left%basis_offset /= right%basis_offset).or. &
+        any(bits32(left%basis) /= bits32(right%basis)).or. &
+        any(bits64(left%height) /= bits64(right%height)).or. &
+        any(bits64(left%gram) /= bits64(right%gram)).or. &
+        (left%fixb /= right%fixb).or.(left%norm_id /= right%norm_id).or. &
+        (left%basis_type /= right%basis_type)) then
+      write(*,'(A,1X,A)') 'next fixed-space mismatch',trim(owner)
+      error stop 'next fixed rank-two package changed'
+    endif
+  end subroutine compare_next_fixed_space
 
   subroutine validate_snapshot(file_name,previous,current,root)
     character(len=*), intent(in) :: file_name

@@ -52,8 +52,11 @@ generic, default-off continuation host.
   proposal, with no retry or automatic successor.
 - `rank2_modal_aa1_next_history.tsv`,
   `rank2_modal_aa1_next_history_result.md`: hash-locked read-only AA(1)
-  update from the two evaluated pairs, without candidate materialization or
-  another map.
+  update from the two evaluated pairs.
+- `rank2_modal_aa1_next_candidate_inputs.tsv`,
+  `run_rank2_modal_aa1_next_candidate.sh`,
+  `rank2_modal_aa1_next_candidate_result.md`: deterministic no-Dragon
+  publication and independent audit of that next proposal; no new map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -232,10 +235,23 @@ w=(1-\beta_z)x_2+\beta_z z,
 \]
 
 The unique coefficient is naturally convex and the publication preflight has
-8880/8880 strictly positive `B2a` values. The classification is
-`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`; see
-[rank2_modal_aa1_next_history_result.md](rank2_modal_aa1_next_history_result.md).
-No proposal file or new map exists.
+8880/8880 strictly positive `B2a` values. The proposal has now been
+deterministically materialized with the audited `z` carrier. Its independent
+Ganlib checker verifies the affine publication, complete non-leakage snapshot
+payload, lagged SYSTEM and strict positivity. The classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; see
+[rank2_modal_aa1_next_history_result.md](rank2_modal_aa1_next_history_result.md)
+and
+[rank2_modal_aa1_next_candidate_result.md](rank2_modal_aa1_next_candidate_result.md).
+No new map exists.
+
+With the local hash-locked parents present, the no-Dragon materialization is:
+
+```sh
+make spot-rank2-modal-aa1-next-candidate
+```
+
+The target refuses to overwrite the frozen local artifact.
 
 ## Current boundary
 

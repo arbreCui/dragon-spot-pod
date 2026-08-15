@@ -109,10 +109,13 @@ stage ran once without retry and starts no next map; see
 The two evaluated pairs have also been combined in one read-only next-history
 AA(1) check. It gives the unique convex weight `0.9302745506696768` on the
 latest output and passes the complete canonical publication preflight,
-including 8880/8880 strictly positive reconstructed values. Its status is
-`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`; no candidate or map was produced.
-See
-[iterative/rank2_modal_aa1_next_history_result.md](iterative/rank2_modal_aa1_next_history_result.md).
+including 8880/8880 strictly positive reconstructed values. The resulting
+proposal is now hash-locked and independently verified with a
+`Z-RAW-FLUX` carrier. Its status is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon process or map was run. See
+[iterative/rank2_modal_aa1_next_history_result.md](iterative/rank2_modal_aa1_next_history_result.md)
+and
+[iterative/rank2_modal_aa1_next_candidate_result.md](iterative/rank2_modal_aa1_next_candidate_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable

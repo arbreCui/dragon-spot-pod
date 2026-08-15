@@ -271,7 +271,12 @@ The next AA(1) history update has now been checked offline from the two actual
 evaluated pairs $x_1\to x_2$ and $y_{\rm pub}\to z$. The unique weight on
 $z$ is `0.9302745506696768`, so the possible next proposal is
 $w=0.0697254493303232x_2+0.9302745506696768z$. Its REAL32 publication
-preflight keeps all 8880 reconstructed points strictly positive. The status
-is `ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: no candidate XSM, Dragon run or
-new convergence evidence exists. See
-[validation/iterative/rank2_modal_aa1_next_history_result.md](validation/iterative/rank2_modal_aa1_next_history_result.md).
+keeps all 8880 reconstructed points strictly positive. That proposal has now
+been deterministically materialized with an explicitly labelled `Z-RAW-FLUX`
+carrier and independently checked down to the complete lagged SYSTEM and
+fixed-source payload. Its status is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon run, new map or convergence
+evidence exists. See
+[validation/iterative/rank2_modal_aa1_next_history_result.md](validation/iterative/rank2_modal_aa1_next_history_result.md)
+and
+[validation/iterative/rank2_modal_aa1_next_candidate_result.md](validation/iterative/rank2_modal_aa1_next_candidate_result.md).
