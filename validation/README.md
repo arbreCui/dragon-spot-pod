@@ -124,6 +124,14 @@ defects are `8.34905e-7`, `8.67273e-4` and `4.44166e-5`, all above `5.0e-7`.
 No subsequent map was started; see
 [iterative/rank2_modal_aa1_next_map_result.md](iterative/rank2_modal_aa1_next_map_result.md).
 
+The subsequent read-only AA(1) history calculation uses the actual
+\(y_{\rm pub}\to z\) and \(w_{\rm pub}\to v\) pairs. It gives the unique
+unclipped weight `0.956973882871698711` on \(v\); the denominator, canonical
+publication arithmetic and 8880-point positivity preflight pass. Its
+classification is `ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: no candidate,
+Dragon process or new map was produced. See
+[iterative/rank2_modal_aa1_u_history_result.md](iterative/rank2_modal_aa1_u_history_result.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable
 from Git tag `archive-pre-lean-20260814`.

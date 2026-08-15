@@ -291,3 +291,13 @@ independent audit and 21-entry receipt all pass. The classification is
 smaller than for the preceding proposal map, but this is not a convergence
 factor or an accuracy claim. No retry or subsequent map was started; see
 [validation/iterative/rank2_modal_aa1_next_map_result.md](validation/iterative/rank2_modal_aa1_next_map_result.md).
+
+The newest read-only AA(1) history calculation uses the two actual pairs
+\(y_{\rm pub}\to z\) and \(w_{\rm pub}\to v\). The unique full-Gram modal
+weight on \(v\) is `0.956973882871698711`, giving the possible raw formula
+\(u=0.0430261171283013z+0.956973882871699v\). Its denominator is strictly
+positive and all 8880 publication-preflight values are strictly positive.
+The affine screen ratio `0.882410` is not a map residual or convergence
+factor. The stage is `ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: it created no
+candidate and ran no Dragon; see
+[validation/iterative/rank2_modal_aa1_u_history_result.md](validation/iterative/rank2_modal_aa1_u_history_result.md).

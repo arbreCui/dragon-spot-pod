@@ -23,6 +23,9 @@ next_policy = (
 next_manifest = (
     ITERATIVE / "rank2_modal_aa1_next_map_parent.tsv"
 ).read_text()
+u_history_manifest = (
+    ITERATIVE / "rank2_modal_aa1_u_history.tsv"
+).read_text()
 
 
 def require(condition: bool, message: str) -> None:
@@ -64,6 +67,24 @@ require(next_rows[4][1] ==
 require(next_rows[5][1] ==
         "530d23485baa006342b08815a9240d61fa4ec63810103307ead66104eb5bef9c",
         "next proposal snapshot parent changed")
+
+u_rows = [line.split() for line in u_history_manifest.splitlines()
+          if line.strip() and not line.startswith("#")]
+require(u_history_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa1-u-history-v1",
+        "u-history manifest version changed")
+require(tuple(row[0] for row in u_rows) == ("y_pub", "z", "w_pub", "v"),
+        "u-history roles changed")
+require(all(len(row) == 3 for row in u_rows),
+        "u-history manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in u_rows),
+        "u-history SHA-256 is invalid")
+require(tuple(row[1] for row in u_rows) == (
+        "ae5f5b328fc6c5b181f40a4122b88771c857fd0200fc6e8351fc6b97d68d5c56",
+        "a57feb6e83487561a153ae376874339c116192d0ece3d716cd10e2dac203376e",
+        "c2df5e526aa9a0c0c3dc354d3ec539475814fe73c87af19ba04dde05c1475ff4",
+        "02f922cf157a0dde1b9d072f45cdb1e39c64fa1f8682ad3a1e4fe21fede12a62",
+        ), "u-history parents changed")
 
 require(runner.index("RUN_RANK2_MODAL_AA1_MAP=") < runner.index("ROOT=$("),
         "default-off gate must precede repository access")
@@ -131,6 +152,16 @@ for token in (
     "ONE-MAP-XSM PROPOSAL-PARENT PRECHECK PASS",
 ):
     require(token in checker, f"proposal checker contract missing: {token}")
+for token in (
+    "--rank2-aa1-u-history",
+    "AA1 NEXT HISTORY PROPOSAL Y",
+    "AA1 NEXT HISTORY PROPOSAL W",
+    "MAP-W-V RAW-DEFECT BITWISE PASS",
+    "BETA WEIGHT-V",
+    "NEXT-RAW-OUTPUT U=(1-BETA)*Z+BETA*V",
+    "OFFLINE-HISTORY-ONLY NO-CANDIDATE NO-MAP NO-DRAGON",
+):
+    require(token in checker, f"u-history checker contract missing: {token}")
 require("call require_absent(root,'SPOT-X-STATE',owner)" in checker,
         "returned state may retain the proposal lifecycle marker")
 require("call require_absent(root,'SPOT-X-CARR',owner)" in checker,
@@ -163,5 +194,6 @@ require("PREPARED_NOT_RUN" in next_policy,
 require("starts no subsequent map" in next_policy,
         "next-map automatic-stop boundary is missing")
 
-print("RANK2 MODAL AA1 MAP CONTRACT PASS: old X2 and prepared Z proposal "
-      "paths are distinct, fixed rank-2, no retry and no empirical control.")
+print("RANK2 MODAL AA1 MAP CONTRACT PASS: X2/Z proposal paths remain "
+      "distinct; latest u-history is fixed rank-2, read-only and has no "
+      "empirical control.")

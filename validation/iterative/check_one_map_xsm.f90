@@ -22,6 +22,8 @@ program check_one_map_xsm
   !     state1_axial.xsm state2_axial.xsm
   !   check_one_map_xsm --rank2-aa1-history x1_axial.xsm \
   !     x2_axial.xsm proposal_y_axial.xsm returned_z_axial.xsm
+  !   check_one_map_xsm --rank2-aa1-u-history proposal_y_axial.xsm \
+  !     returned_z_axial.xsm proposal_w_axial.xsm returned_v_axial.xsm
   !   check_one_map_xsm --mode2 rank1_basis.xsm rank1_parent.xsm \
   !     rank2_system.xsm rank2_parent.xsm rank2_current.xsm
   !
@@ -112,7 +114,7 @@ program check_one_map_xsm
   logical :: continued,reencoded,proposal_mode,proposal_z_mode
   logical :: proposal_parent_mode
   logical :: direction_mode,mode2_mode
-  logical :: aa1_history_mode
+  logical :: aa1_history_mode,aa1_next_history_mode
   logical :: reencoded_first_direction
 
   continued=.false.
@@ -123,6 +125,7 @@ program check_one_map_xsm
   direction_mode=.false.
   mode2_mode=.false.
   aa1_history_mode=.false.
+  aa1_next_history_mode=.false.
   reencoded_first_direction=.false.
   argument_offset=0
   if (command_argument_count() == 2) then
@@ -184,14 +187,20 @@ program check_one_map_xsm
     call get_command_argument(1,mode)
     if (trim(mode) == '--rank2-aa1-history') then
       aa1_history_mode=.true.
-      do i=1,4
-        call get_command_argument(i+1,paths(i))
-        if (len_trim(paths(i)) == 0) &
-          call fail('EMPTY XSM PATH ARGUMENT.')
-        if (len_trim(paths(i)) > max_xsm_path) &
-          call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
-      enddo
+    else if (trim(mode) == '--rank2-aa1-u-history') then
+      aa1_history_mode=.true.
+      aa1_next_history_mode=.true.
+    else
+      call fail('FIVE-ARGUMENT MODE REQUIRES --rank2-aa1-history OR '// &
+        '--rank2-aa1-u-history.')
     endif
+    do i=1,4
+      call get_command_argument(i+1,paths(i))
+      if (len_trim(paths(i)) == 0) &
+        call fail('EMPTY XSM PATH ARGUMENT.')
+      if (len_trim(paths(i)) > max_xsm_path) &
+        call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+    enddo
   else
     call fail('EXPECTED [--continued|--reencoded|--proposal|--proposal-z] '// &
       'BASIS, SYSTEM, '// &
@@ -275,37 +284,66 @@ program check_one_map_xsm
   endif
 
   if (aa1_history_mode) then
-    call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.true., &
-      aa1_history_state(1),'AA1 HISTORY X1')
-    call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
-      aa1_history_state(2),'AA1 HISTORY X2')
-    call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
-      aa1_history_state(3),'AA1 HISTORY PROPOSAL Y',.true.)
-    call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
-      aa1_history_state(4),'AA1 HISTORY RETURNED Z')
+    if (aa1_next_history_mode) then
+      call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.false., &
+        aa1_history_state(1),'AA1 NEXT HISTORY PROPOSAL Y',.true.)
+      call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
+        aa1_history_state(2),'AA1 NEXT HISTORY RETURNED Z')
+      call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
+        aa1_history_state(3),'AA1 NEXT HISTORY PROPOSAL W',.true.,.true.)
+      call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
+        aa1_history_state(4),'AA1 NEXT HISTORY RETURNED V')
+    else
+      call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.true., &
+        aa1_history_state(1),'AA1 HISTORY X1')
+      call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
+        aa1_history_state(2),'AA1 HISTORY X2')
+      call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
+        aa1_history_state(3),'AA1 HISTORY PROPOSAL Y',.true.)
+      call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
+        aa1_history_state(4),'AA1 HISTORY RETURNED Z')
+    endif
     if (any(aa1_history_state(1)%rank /= 2).or. &
         any(aa1_history_state(2)%rank /= 2).or. &
         any(aa1_history_state(3)%rank /= 2).or. &
         any(aa1_history_state(4)%rank /= 2)) &
       call fail('AA1 HISTORY REQUIRES FOUR RANK-TWO STATES.')
-    call compare_fixed_history_state(aa1_history_state(1), &
-      aa1_history_state(2),'X1/X2')
-    call compare_fixed_history_state(aa1_history_state(1), &
-      aa1_history_state(3),'X1/Y')
-    call compare_fixed_history_state(aa1_history_state(1), &
-      aa1_history_state(4),'X1/Z')
-    call compare_states_and_defects(aa1_history_state(1), &
-      aa1_history_state(2),.true.,.false.)
-    write(6,'(A)') &
-      'RANK2-AA1-HISTORY MAP-X1-X2 RAW-DEFECT BITWISE PASS'
-    call compare_states_and_defects(aa1_history_state(3), &
-      aa1_history_state(4),.false.,.true.)
-    write(6,'(A)') &
-      'RANK2-AA1-HISTORY MAP-Y-Z RAW-DEFECT BITWISE PASS'
+    if (aa1_next_history_mode) then
+      call compare_fixed_history_state(aa1_history_state(1), &
+        aa1_history_state(2),'Y/Z')
+      call compare_fixed_history_state(aa1_history_state(1), &
+        aa1_history_state(3),'Y/W')
+      call compare_fixed_history_state(aa1_history_state(1), &
+        aa1_history_state(4),'Y/V')
+      call compare_states_and_defects(aa1_history_state(1), &
+        aa1_history_state(2),.false.,.true.)
+      write(6,'(A)') &
+        'RANK2-AA1-HISTORY MAP-Y-Z RAW-DEFECT BITWISE PASS'
+      call compare_states_and_defects(aa1_history_state(3), &
+        aa1_history_state(4),.false.,.true.)
+      write(6,'(A)') &
+        'RANK2-AA1-HISTORY MAP-W-V RAW-DEFECT BITWISE PASS'
+    else
+      call compare_fixed_history_state(aa1_history_state(1), &
+        aa1_history_state(2),'X1/X2')
+      call compare_fixed_history_state(aa1_history_state(1), &
+        aa1_history_state(3),'X1/Y')
+      call compare_fixed_history_state(aa1_history_state(1), &
+        aa1_history_state(4),'X1/Z')
+      call compare_states_and_defects(aa1_history_state(1), &
+        aa1_history_state(2),.true.,.false.)
+      write(6,'(A)') &
+        'RANK2-AA1-HISTORY MAP-X1-X2 RAW-DEFECT BITWISE PASS'
+      call compare_states_and_defects(aa1_history_state(3), &
+        aa1_history_state(4),.false.,.true.)
+      write(6,'(A)') &
+        'RANK2-AA1-HISTORY MAP-Y-Z RAW-DEFECT BITWISE PASS'
+    endif
     write(6,'(A)') &
       'RANK2-AA1-HISTORY FOUR-STATE FIXED-SPACE BITWISE PASS'
     call report_rank2_aa1_history(aa1_history_state(1), &
-      aa1_history_state(2),aa1_history_state(3),aa1_history_state(4))
+      aa1_history_state(2),aa1_history_state(3),aa1_history_state(4), &
+      aa1_next_history_mode)
     write(6,'(A)') &
       'RANK2-AA1-HISTORY CLASSIFICATION '// &
       'ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED'
@@ -1050,8 +1088,10 @@ contains
   end subroutine recompute_map_defect
 
 
-  subroutine report_rank2_aa1_history(x1,x2,proposal_y,returned_z)
+  subroutine report_rank2_aa1_history(x1,x2,proposal_y,returned_z, &
+      next_history)
     type(canonical_state), intent(in) :: x1,x2,proposal_y,returned_z
+    logical, intent(in) :: next_history
     integer :: igr,isnap,ireg,a,b,nmode,nreg2d
     integer :: index_a,index_b,index_g,positive_count
     integer :: min_group,min_snapshot,min_region
@@ -1173,17 +1213,33 @@ contains
         (min_group == 0)) &
       call fail('AA1 HISTORY NEXT B2*A POSITIVITY CENSUS IS INCOMPLETE.')
 
-    write(6,'(A)') &
-      'RANK2-AA1-HISTORY PAIRS X1-TO-X2 AND PROPOSAL-Y-TO-RETURNED-Z'
+    if (next_history) then
+      write(6,'(A)') 'RANK2-AA1-HISTORY PAIRS PROPOSAL-Y-TO-RETURNED-Z '// &
+        'AND PROPOSAL-W-TO-RETURNED-V'
+    else
+      write(6,'(A)') &
+        'RANK2-AA1-HISTORY PAIRS X1-TO-X2 AND PROPOSAL-Y-TO-RETURNED-Z'
+    endif
     write(6,'(A)') 'RANK2-AA1-HISTORY METRIC FULL-GRAM-HEIGHT'
     write(6,'(A)') &
       'RANK2-AA1-HISTORY STATED-MODAL-LS UNIQUE-MINIMIZER UNCLIPPED'
-    call write_real64_metric('RANK2-AA1-HISTORY P-NORM',sqrt(p_sq))
-    call write_real64_metric('RANK2-AA1-HISTORY Q-NORM',sqrt(q_sq))
-    call write_real64_metric('RANK2-AA1-HISTORY P-DOT-Q',p_dot)
+    if (next_history) then
+      call write_real64_metric('RANK2-AA1-HISTORY Q-NORM',sqrt(p_sq))
+      call write_real64_metric('RANK2-AA1-HISTORY R-NORM',sqrt(q_sq))
+      call write_real64_metric('RANK2-AA1-HISTORY Q-DOT-R',p_dot)
+    else
+      call write_real64_metric('RANK2-AA1-HISTORY P-NORM',sqrt(p_sq))
+      call write_real64_metric('RANK2-AA1-HISTORY Q-NORM',sqrt(q_sq))
+      call write_real64_metric('RANK2-AA1-HISTORY P-DOT-Q',p_dot)
+    endif
     call write_real64_metric('RANK2-AA1-HISTORY DENOMINATOR',denominator)
-    call write_real64_metric('RANK2-AA1-HISTORY BETA WEIGHT-Z',beta)
-    call write_real64_metric('RANK2-AA1-HISTORY WEIGHT-X2',weight_x2)
+    if (next_history) then
+      call write_real64_metric('RANK2-AA1-HISTORY BETA WEIGHT-V',beta)
+      call write_real64_metric('RANK2-AA1-HISTORY WEIGHT-Z',weight_x2)
+    else
+      call write_real64_metric('RANK2-AA1-HISTORY BETA WEIGHT-Z',beta)
+      call write_real64_metric('RANK2-AA1-HISTORY WEIGHT-X2',weight_x2)
+    endif
     call write_real64_metric( &
       'RANK2-AA1-HISTORY AFFINE-RESIDUAL-NORM',affine_residual_norm)
     if (q_sq > 0.0_real64) then
@@ -1199,8 +1255,13 @@ contains
     else
       write(6,'(A)') 'RANK2-AA1-HISTORY GEOMETRY EXTRAPOLATED'
     endif
-    write(6,'(A)') &
-      'RANK2-AA1-HISTORY NEXT-RAW-OUTPUT W=(1-BETA)*X2+BETA*Z'
+    if (next_history) then
+      write(6,'(A)') &
+        'RANK2-AA1-HISTORY NEXT-RAW-OUTPUT U=(1-BETA)*Z+BETA*V'
+    else
+      write(6,'(A)') &
+        'RANK2-AA1-HISTORY NEXT-RAW-OUTPUT W=(1-BETA)*X2+BETA*Z'
+    endif
     write(6,'(A)') 'RANK2-AA1-HISTORY NEXT-A REAL64 FULL PASS'
     call write_real64_metric('RANK2-AA1-HISTORY NEXT-RHO-RAW',rho_raw)
     call write_real64_metric('RANK2-AA1-HISTORY NEXT-K-REAL32', &

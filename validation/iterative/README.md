@@ -62,6 +62,9 @@ generic, default-off continuation host.
   `run_rank2_modal_aa1_next_map.sh`,
   `rank2_modal_aa1_next_map_result.md`: strict pre-Dragon `Z-RAW-FLUX` gate
   and the one completed, no-retry map from the next proposal.
+- `rank2_modal_aa1_u_history.tsv`,
+  `rank2_modal_aa1_u_history_result.md`: latest read-only AA(1) history from
+  the two evaluated proposal maps; no candidate or map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -277,6 +280,23 @@ The map is valid, but
 so all three stopping defects exceed `5.0e-7` and the classification is
 `VALID_NOT_MET`. No subsequent map was started or authorized. See
 [rank2_modal_aa1_next_map_result.md](rank2_modal_aa1_next_map_result.md).
+
+The latest no-Dragon history calculation now uses the actual pairs
+\(y_{\rm pub}\to z\) and \(w_{\rm pub}\to v\). In the same full modal
+Gram-height metric it gives
+
+\[
+\beta_v=0.956973882871698711,
+\qquad
+u=0.0430261171283013z+0.956973882871699v.
+\]
+
+The denominator is strictly positive and the canonical publication preflight
+has 8880/8880 strictly positive reconstructed values. The affine modal screen
+is `0.882410` of the latest known residual norm, but it is not a new map
+residual or convergence factor. The classification is
+`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`; no candidate XSM was written. See
+[rank2_modal_aa1_u_history_result.md](rank2_modal_aa1_u_history_result.md).
 
 ## Current boundary
 

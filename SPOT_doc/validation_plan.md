@@ -132,6 +132,14 @@ receipt pass. Its classification is `VALID_NOT_MET`, with
 4.44166\times10^{-5})\). No subsequent map was started; see
 [../validation/iterative/rank2_modal_aa1_next_map_result.md](../validation/iterative/rank2_modal_aa1_next_map_result.md).
 
+The latest solver decision is again read-only. From the two actual proposal
+maps \(y_{\rm pub}\to z\) and \(w_{\rm pub}\to v\), the same full modal
+Gram-height least-squares formula gives the unique unclipped weight
+`0.956973882871698711` on \(v\). The publication and strict-positivity
+preflights pass, but no candidate or map was created; the classification is
+`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`. See
+[../validation/iterative/rank2_modal_aa1_u_history_result.md](../validation/iterative/rank2_modal_aa1_u_history_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

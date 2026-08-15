@@ -113,3 +113,8 @@ meet the stopping rule. It authorizes neither acceptance nor another map. A
 possible next step must begin with a separately reviewed, no-Dragon history
 update from the two evaluated pairs \(y_{\rm pub}\to z\) and
 \(w_{\rm pub}\to v\).
+
+That read-only history calculation has subsequently completed. Its unique
+unclipped coefficient and publication preflight pass, with classification
+`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`; no candidate or map was created. See
+[rank2_modal_aa1_u_history_result.md](rank2_modal_aa1_u_history_result.md).
