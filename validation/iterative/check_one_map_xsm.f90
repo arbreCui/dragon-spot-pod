@@ -1199,6 +1199,8 @@ contains
     real(real64) :: l_update_sq(2),l_dot,l_delta12,l_delta23
     real(real64) :: a_cosine,a_ratio,l_cosine,l_ratio
     real(real64) :: l_infinity(2),rho_delta(2)
+    real(real64) :: aa1_denominator,aa1_beta,aa1_previous_weight
+    real(real64) :: aa1_modal_residual_sq,aa1_modal_residual_norm
     logical :: rank2_metric
 
     a_state_sq=0.0_real64
@@ -1270,6 +1272,22 @@ contains
           (abs(mode2_cosine) > 1.0_real64).or. &
           (.not.ieee_is_finite(mode2_ratio))) &
         call fail('INVALID MODE2-DIAGONAL DIRECTION METRIC.')
+
+      aa1_denominator=a_update_sq(1)+a_update_sq(2)- &
+        2.0_real64*a_dot
+      if ((.not.ieee_is_finite(aa1_denominator)).or. &
+          (aa1_denominator <= 0.0_real64)) &
+        call fail('INVALID RANK2 MODAL-AA1 DENOMINATOR.')
+      aa1_beta=(a_update_sq(1)-a_dot)/aa1_denominator
+      aa1_previous_weight=1.0_real64-aa1_beta
+      aa1_modal_residual_sq=aa1_previous_weight**2*a_update_sq(1)+ &
+        aa1_beta**2*a_update_sq(2)+ &
+        2.0_real64*aa1_previous_weight*aa1_beta*a_dot
+      if ((.not.ieee_is_finite(aa1_beta)).or. &
+          (.not.ieee_is_finite(aa1_modal_residual_sq)).or. &
+          (aa1_modal_residual_sq < 0.0_real64)) &
+        call fail('INVALID RANK2 MODAL-AA1 GEOMETRY.')
+      aa1_modal_residual_norm=sqrt(aa1_modal_residual_sq)
     endif
 
     l_update_sq=0.0_real64
@@ -1374,6 +1392,29 @@ contains
         write(6,'(A)') &
           'PICARD-DIRECTION MODE2-DIAGONAL GEOMETRY ORTHOGONAL'
       endif
+      write(6,'(A)') 'RANK2-MODAL-AA1 METRIC FULL-GRAM-HEIGHT'
+      write(6,'(A)') &
+        'RANK2-MODAL-AA1 STATED-MODAL-LS UNIQUE-MINIMIZER UNCLIPPED'
+      call write_real64_metric('RANK2-MODAL-AA1 BETA WEIGHT-X2', &
+        aa1_beta)
+      call write_real64_metric('RANK2-MODAL-AA1 WEIGHT-X1', &
+        aa1_previous_weight)
+      call write_real64_metric('RANK2-MODAL-AA1 DENOMINATOR', &
+        aa1_denominator)
+      call write_real64_metric('RANK2-MODAL-AA1 AFFINE-RESIDUAL-NORM', &
+        aa1_modal_residual_norm)
+      call write_real64_metric('RANK2-MODAL-AA1 AFFINE-RESIDUAL/CURRENT', &
+        aa1_modal_residual_norm/sqrt(a_update_sq(2)))
+      if ((aa1_beta >= 0.0_real64).and. &
+          (aa1_beta <= 1.0_real64)) then
+        write(6,'(A)') 'RANK2-MODAL-AA1 GEOMETRY CONVEX'
+      else
+        write(6,'(A)') 'RANK2-MODAL-AA1 GEOMETRY EXTRAPOLATED'
+      endif
+      write(6,'(A)') &
+        'RANK2-MODAL-AA1 SAME-SCALAR COMPLETE-STATE-AFFINE-PROPOSAL'
+      write(6,'(A)') &
+        'RANK2-MODAL-AA1 OFFLINE-COEFFICIENT-ONLY NO-CANDIDATE NO-MAP'
     endif
 
     write(6,'(A)') &

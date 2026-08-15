@@ -143,8 +143,13 @@ probe. It verifies:
 - consistent leakage-unit scaling gives the same physical Newton step;
 - a failed map or singular Newton system fails closed;
 - the same manufactured directional quotient is exact before publication
-  but can be hidden or distorted by binary32 materialization.
+  but can be hidden or distorted by binary32 materialization;
+- the modal-projected Anderson(1) scalar in the full Gram metric satisfies its
+  exact least-squares normal equation, is unchanged by a common metric
+  scaling, commutes with independent changes of units in the state blocks,
+  and fails closed when its scalar system is singular.
 
 The test proves only the algebra and control boundary. It does not show that
 real SPOT has an exact Jacobian, that Newton is practical, that it converges,
-or that rank 1 is adequate.
+that the rank-2 Anderson proposal improves the real residual, or that either
+rank is adequate.

@@ -83,6 +83,36 @@ def residual_jacobian(map_jacobian: Matrix) -> Matrix:
     )
 
 
+def inner_product(metric: Matrix, left: Vector, right: Vector) -> Q:
+    """Return an exact finite-dimensional Gram inner product."""
+
+    if (
+        len(left) != len(right)
+        or len(metric) != len(left)
+        or any(len(row) != len(left) for row in metric)
+    ):
+        raise ValueError("inconsistent inner-product dimensions")
+    return sum(
+        left[i] * metric[i][j] * right[j]
+        for i in range(len(left))
+        for j in range(len(right))
+    )
+
+
+def modal_anderson1_weight(first: Vector, second: Vector, metric: Matrix) -> Q:
+    """Weight on the latest state from two modal residuals."""
+
+    if len(first) != len(second):
+        raise ValueError("inconsistent Anderson residual dimensions")
+    direction = tuple(
+        right - left for left, right in zip(first, second, strict=True)
+    )
+    denominator = inner_product(metric, direction, direction)
+    if denominator <= 0:
+        raise ValueError("singular modal Anderson system")
+    return -inner_product(metric, first, direction) / denominator
+
+
 def exact_newton_oracle(base, map_function, jacobian_function):
     """Return one full exact-Newton proposal after one valid map call."""
 
@@ -267,6 +297,61 @@ class NonlinearSolverContractTests(unittest.TestCase):
             scaled_candidate,
             tuple(scale[i] * candidate[i] for i in range(3)),
         )
+
+    def test_modal_anderson1_is_unclipped_and_unit_covariant(self) -> None:
+        metric = ((Q(2), Q(1)), (Q(1), Q(3)))
+        first = (Q(1), Q(0))
+        second = (Q(2), Q(0))
+        beta = modal_anderson1_weight(first, second, metric)
+        self.assertEqual(beta, Q(-1))
+        direction = tuple(
+            right - left for left, right in zip(first, second, strict=True)
+        )
+        affine_residual = tuple(
+            (Q(1) - beta) * left + beta * right
+            for left, right in zip(first, second, strict=True)
+        )
+        self.assertEqual(
+            inner_product(metric, direction, affine_residual),
+            Q(0),
+        )
+        self.assertEqual(
+            modal_anderson1_weight(
+                first,
+                second,
+                tuple(tuple(Q(7) * value for value in row) for row in metric),
+            ),
+            beta,
+        )
+        modal_units = Q(13)
+        self.assertEqual(
+            modal_anderson1_weight(
+                tuple(modal_units * value for value in first),
+                tuple(modal_units * value for value in second),
+                metric,
+            ),
+            beta,
+        )
+
+        previous = (Q(2), Q(3), Q(5))
+        latest = (Q(7), Q(11), Q(13))
+        proposal = tuple(
+            (Q(1) - beta) * left + beta * right
+            for left, right in zip(previous, latest, strict=True)
+        )
+        units = (Q(1), Q(100), Q(9))
+        scaled_proposal = tuple(
+            (Q(1) - beta) * units[i] * previous[i]
+            + beta * units[i] * latest[i]
+            for i in range(3)
+        )
+        self.assertEqual(
+            scaled_proposal,
+            tuple(units[i] * proposal[i] for i in range(3)),
+        )
+
+        with self.assertRaises(ValueError):
+            modal_anderson1_weight(first, first, metric)
 
     def test_invalid_map_and_singular_system_fail_closed(self) -> None:
         derivative_called = False

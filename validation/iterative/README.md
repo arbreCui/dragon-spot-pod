@@ -38,6 +38,8 @@ generic, default-off continuation host.
   map.
 - `rank2_next_map_result.md`: valid second rank-2 map, exact raw defects and
   the read-only two-update direction boundary.
+- `rank2_solver_decision.md`: no-Dragon selection and real-data coefficient
+  for one modal-projected Anderson(1) proposal using the full Gram metric.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -151,6 +153,15 @@ Offline, the full modal updates have norm ratio `0.864118` and cosine
 ratio `0.932560` and cosine `-0.915973`. They are locally strongly
 anti-aligned, not proof of a cycle, convergence or divergence. See
 [rank2_next_map_result.md](rank2_next_map_result.md).
+
+No third direct map is defined. The next solver study instead freezes one
+modal-projected Anderson(1) coefficient in the full Gram-height metric from
+the two valid rank-2 updates. Its latest-state weight is
+`0.5388643265136009`; it is computed, unclipped and applied as one scalar to
+the complete state. No mixed-unit state norm, blockwise coefficients,
+candidate file or Dragon run is added. The affine modal screen is not an
+acceptance test; see
+[rank2_solver_decision.md](rank2_solver_decision.md).
 
 ## Current boundary
 

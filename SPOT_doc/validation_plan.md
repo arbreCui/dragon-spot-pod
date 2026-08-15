@@ -59,8 +59,8 @@ $$
 at an outer tolerance of $5\times10^{-7}$.
 
 A single real leakage-Anderson candidate worsened the leakage and modal
-defects relative to direct $x_6$; it is rejected. No empirical damping or
-untested second Anderson candidate is authorized.
+defects relative to direct $x_6$; that rank-1 candidate is rejected. It does
+not reject Anderson methods in general.
 
 Next: stop direct Picard. The predeclared x8 endpoint was evaluated once and
 no x9 is defined. The no-transport x6--x8 direction audit is complete: the
@@ -70,6 +70,22 @@ at plane 3/group 325 while reversing sign and growing. This motivates but
 does not select a solver or prove a cycle. Any nonlinear-solver study must be
 declared separately for the same $F(x)=G(x)-x$ and may not alter the physical
 map.
+
+The separately declared rank-2 sensitivity route has since produced two
+valid maps. The second map reduced all three defects but remains
+`VALID_NOT_MET`. Its full modal updates are strongly opposed and shrink only
+to `0.864118`, while the leakage update shrinks to `0.024606`. These are
+local two-update diagnostics, not convergence factors or cycle evidence, and
+no third direct rank-2 map is defined.
+
+The selected next study is therefore one offline modal-projected Anderson(1)
+proposal in the full Gram-height metric. The unique minimizer of that stated
+scalar least-squares problem gives latest-state weight
+`0.5388643265136009`. The same scalar would
+act on the complete state, but no mixed-unit whole-state norm is formed and
+no empirical relaxation factor is prescribed. No candidate XSM or map has
+yet been produced; see
+[../validation/iterative/rank2_solver_decision.md](../validation/iterative/rank2_solver_decision.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

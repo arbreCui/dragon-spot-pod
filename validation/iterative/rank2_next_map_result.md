@@ -136,7 +136,11 @@ The read-only direction inputs are hash-locked as
 | $x_2$ | `validation/artifacts/iterative-rank2-picard2/candidate_axial.xsm` | `bff9299595121b4b189f8b6d8e39c3b06bcefe0598d387f4aebf57861546ca02` |
 
 The direction checker SHA-256 is
-`8d8074246cf63d4afe745d85fab2d092c9492eeab2083ae30017599f260930b6`.
+`86f1657b180486942fe158109b885977dadc233b5de2999ea8f5593c94cc6039`.
+In addition to the unchanged direction audit, the current checker reports the
+read-only modal-projected Anderson(1) coefficient documented in
+[rank2_solver_decision.md](rank2_solver_decision.md). It writes no state and
+evaluates no map.
 It is invoked after compilation as
 
 ```sh

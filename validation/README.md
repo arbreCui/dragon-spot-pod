@@ -86,6 +86,13 @@ modestly. This is local evidence, not a convergence or cycle claim, and no
 third map is defined. See
 [iterative/rank2_next_map_result.md](iterative/rank2_next_map_result.md).
 
+The ensuing no-transport solver decision selects only one modal-projected
+Anderson(1) proposal in the full Gram-height metric. Its scalar is computed
+from the two valid rank-2 modal residuals and is not a fitted relaxation
+parameter; the same scalar would be applied to the complete state without
+forming a mixed-unit state norm. No candidate or new map has been produced. See
+[iterative/rank2_solver_decision.md](iterative/rank2_solver_decision.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active
 gate. They remain recoverable from Git tag `archive-pre-lean-20260814`.
