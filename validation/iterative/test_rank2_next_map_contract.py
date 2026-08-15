@@ -15,6 +15,7 @@ runner = (ITERATIVE / "run_rank2_next_map.sh").read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 manifest = (ITERATIVE / "rank2_next_parent.tsv").read_text()
 policy = (ITERATIVE / "rank2_next_map_policy.md").read_text()
+checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 
 
 def compact(text: str) -> str:
@@ -114,6 +115,14 @@ for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(policy.count(label) == 1, f"policy category changed: {label}")
 require("No third rank-2\nmap is started automatically" in policy,
         "automatic-stop boundary missing")
+for token in (
+    "--rank2-directions",
+    "RANK2-DIRECTION MODE REQUIRES RANK TWO.",
+    "MAP12 REENCODED-PARENT RAW-DEFECT BITWISE PASS",
+    "MODE2-DIAGONAL GRAM-HEIGHT BASIS-DEPENDENT",
+    "MODE2-DIAGONAL NORM-RATIO 23/12",
+):
+    require(token in checker, f"offline direction audit missing: {token}")
 
 print("RANK2 NEXT MAP CONTRACT PASS: one direct rank-2 continued map, "
       "fixed basis and tolerance, bounded once with no empirical control.")

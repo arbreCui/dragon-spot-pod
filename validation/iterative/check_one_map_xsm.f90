@@ -11,15 +11,17 @@ program check_one_map_xsm
   !     state1_snapshots.xsm
   !   check_one_map_xsm --directions state6_axial.xsm \
   !     state7_axial.xsm state8_axial.xsm
+  !   check_one_map_xsm --rank2-directions reencoded_parent.xsm \
+  !     state1_axial.xsm state2_axial.xsm
   !   check_one_map_xsm --mode2 rank1_basis.xsm rank1_parent.xsm \
   !     rank2_system.xsm rank2_parent.xsm rank2_current.xsm
   !
   ! No Dragon, SPOT, assembly, transport, or production convergence routine
   ! is linked or called. The standard one-map modes read five archived XSM
-  ! objects,
-  ! verify the fixed POD package bit for bit, require a live RADIAL-OP change,
-  ! and independently recompute the canonical defects. Direction mode reads
-  ! three frozen canonical states and describes their two stored increments.
+  ! objects, verify the fixed POD package bit for bit, require a live
+  ! RADIAL-OP change, and independently recompute the canonical defects.
+  ! Direction mode reads three frozen canonical states and describes their
+  ! two stored increments.
   ! Mode-2 mode exactly partitions one archived rank-2 update in its stored
   ! volume Gram metric; it does not evaluate another nonlinear map.
   use GANLIB
@@ -98,16 +100,22 @@ program check_one_map_xsm
   type(canonical_state) :: direction_state(3)
   integer :: i,argument_offset
   logical :: continued,reencoded,direction_mode,mode2_mode
+  logical :: reencoded_first_direction
 
   continued=.false.
   reencoded=.false.
   direction_mode=.false.
   mode2_mode=.false.
+  reencoded_first_direction=.false.
   argument_offset=0
   if (command_argument_count() == 4) then
     call get_command_argument(1,mode)
-    if (trim(mode) /= '--directions') call fail( &
-      'ONLY --directions IS ACCEPTED IN FOUR-ARGUMENT MODE.')
+    if (trim(mode) == '--rank2-directions') then
+      reencoded_first_direction=.true.
+    else if (trim(mode) /= '--directions') then
+      call fail('ONLY --directions OR --rank2-directions IS ACCEPTED IN '// &
+        'FOUR-ARGUMENT MODE.')
+    endif
     direction_mode=.true.
     do i=1,3
       call get_command_argument(i+1,paths(i))
@@ -174,15 +182,24 @@ program check_one_map_xsm
   endif
 
   if (direction_mode) then
-    call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.true., &
-      direction_state(1),'DIRECTION STATE X1')
+    call load_canonical_state(trim(paths(1)),1,'POD-FIXED', &
+      .not.reencoded_first_direction,direction_state(1), &
+      'DIRECTION STATE X1')
     call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
       direction_state(2),'DIRECTION STATE X2')
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.true., &
       direction_state(3),'DIRECTION STATE X3')
-    call compare_states_and_defects(direction_state(1), &
-      direction_state(2),.true.,.false.)
-    write(6,'(A)') 'PICARD-DIRECTION MAP12 RAW-DEFECT BITWISE PASS'
+    if (reencoded_first_direction.and. &
+        any(direction_state(1)%rank /= 2)) &
+      call fail('RANK2-DIRECTION MODE REQUIRES RANK TWO.')
+    call compare_states_and_defects(direction_state(1),direction_state(2), &
+      .not.reencoded_first_direction,reencoded_first_direction)
+    if (reencoded_first_direction) then
+      write(6,'(A)') &
+        'PICARD-DIRECTION MAP12 REENCODED-PARENT RAW-DEFECT BITWISE PASS'
+    else
+      write(6,'(A)') 'PICARD-DIRECTION MAP12 RAW-DEFECT BITWISE PASS'
+    endif
     call compare_states_and_defects(direction_state(2), &
       direction_state(3),.true.,.false.)
     write(6,'(A)') 'PICARD-DIRECTION MAP23 RAW-DEFECT BITWISE PASS'
@@ -1177,13 +1194,19 @@ contains
     integer :: l_hot_index(2),l_hot_ties(2)
     real(real64) :: a_state_sq(3),a_update_sq(2),a_dot
     real(real64) :: a_delta12_a,a_delta12_b,a_delta23_a,a_delta23_b
+    real(real64) :: mode2_update_sq(2),mode2_dot
+    real(real64) :: mode2_cosine,mode2_ratio
     real(real64) :: l_update_sq(2),l_dot,l_delta12,l_delta23
     real(real64) :: a_cosine,a_ratio,l_cosine,l_ratio
     real(real64) :: l_infinity(2),rho_delta(2)
+    logical :: rank2_metric
 
     a_state_sq=0.0_real64
     a_update_sq=0.0_real64
     a_dot=0.0_real64
+    mode2_update_sq=0.0_real64
+    mode2_dot=0.0_real64
+    rank2_metric=all(x1%rank == 2)
     do igr=1,x1%dims(2)
       nmode=x1%rank(igr)
       do isnap=1,x1%dims(3)
@@ -1211,6 +1234,14 @@ contains
               a_delta23_a*x1%gram(index_g)*a_delta23_b
             a_dot=a_dot+x1%height(isnap)*a_delta12_a* &
               x1%gram(index_g)*a_delta23_b
+            if (rank2_metric.and.(a == 2).and.(b == 2)) then
+              mode2_update_sq(1)=mode2_update_sq(1)+x1%height(isnap)* &
+                a_delta12_a*x1%gram(index_g)*a_delta12_b
+              mode2_update_sq(2)=mode2_update_sq(2)+x1%height(isnap)* &
+                a_delta23_a*x1%gram(index_g)*a_delta23_b
+              mode2_dot=mode2_dot+x1%height(isnap)*a_delta12_a* &
+                x1%gram(index_g)*a_delta23_b
+            endif
           enddo
         enddo
       enddo
@@ -1227,6 +1258,19 @@ contains
         (abs(a_cosine) > 1.0_real64).or. &
         (.not.ieee_is_finite(a_ratio))) &
       call fail('INVALID MODAL DIRECTION METRIC.')
+    if (rank2_metric) then
+      if (any(.not.ieee_is_finite(mode2_update_sq)).or. &
+          any(mode2_update_sq <= 0.0_real64).or. &
+          (.not.ieee_is_finite(mode2_dot))) &
+        call fail('INVALID MODE2-DIAGONAL UPDATE GEOMETRY.')
+      mode2_cosine=mode2_dot/ &
+        sqrt(mode2_update_sq(1)*mode2_update_sq(2))
+      mode2_ratio=sqrt(mode2_update_sq(2)/mode2_update_sq(1))
+      if ((.not.ieee_is_finite(mode2_cosine)).or. &
+          (abs(mode2_cosine) > 1.0_real64).or. &
+          (.not.ieee_is_finite(mode2_ratio))) &
+        call fail('INVALID MODE2-DIAGONAL DIRECTION METRIC.')
+    endif
 
     l_update_sq=0.0_real64
     l_dot=0.0_real64
@@ -1304,6 +1348,32 @@ contains
       write(6,'(A)') 'PICARD-DIRECTION MODAL GEOMETRY ACUTE'
     else
       write(6,'(A)') 'PICARD-DIRECTION MODAL GEOMETRY ORTHOGONAL'
+    endif
+    if (rank2_metric) then
+      write(6,'(A)') &
+        'PICARD-DIRECTION MODE2-DIAGONAL GRAM-HEIGHT BASIS-DEPENDENT'
+      call write_real64_metric( &
+        'PICARD-DIRECTION MODE2-DIAGONAL UPDATE-NORM 12', &
+        sqrt(mode2_update_sq(1)))
+      call write_real64_metric( &
+        'PICARD-DIRECTION MODE2-DIAGONAL UPDATE-NORM 23', &
+        sqrt(mode2_update_sq(2)))
+      call write_real64_metric( &
+        'PICARD-DIRECTION MODE2-DIAGONAL DOT 12-23',mode2_dot)
+      call write_real64_metric( &
+        'PICARD-DIRECTION MODE2-DIAGONAL COSINE 12-23',mode2_cosine)
+      call write_real64_metric( &
+        'PICARD-DIRECTION MODE2-DIAGONAL NORM-RATIO 23/12',mode2_ratio)
+      if (mode2_dot < 0.0_real64) then
+        write(6,'(A)') &
+          'PICARD-DIRECTION MODE2-DIAGONAL GEOMETRY OBTUSE'
+      else if (mode2_dot > 0.0_real64) then
+        write(6,'(A)') &
+          'PICARD-DIRECTION MODE2-DIAGONAL GEOMETRY ACUTE'
+      else
+        write(6,'(A)') &
+          'PICARD-DIRECTION MODE2-DIAGONAL GEOMETRY ORTHOGONAL'
+      endif
     endif
 
     write(6,'(A)') &

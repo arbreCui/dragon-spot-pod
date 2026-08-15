@@ -225,10 +225,14 @@ basis-dependent partition locates the large modal response, but does not
 establish instability, rank adequacy or physical accuracy. See
 [validation/iterative/rank2_mode2_anatomy_result.md](validation/iterative/rank2_mode2_anatomy_result.md).
 
-The next rank-2 experiment is therefore limited to one direct continued map,
-$x^{(2)}_2=G_2(x^{(2)}_1)$. The valid but tolerance-not-met candidate is
-consumed without re-encoding; the fixed rank-2 basis, equations, direct
-substitution and `5.0e-7` tolerance are unchanged. The default-off host has
-one radial and one axial launch, no retry and no automatic third map. Its
-frozen rule is in
-[validation/iterative/rank2_next_map_policy.md](validation/iterative/rank2_next_map_policy.md).
+The one direct rank-2 continuation
+$x^{(2)}_2=G_2(x^{(2)}_1)$ has now also completed. It consumed the valid but
+tolerance-not-met candidate without re-encoding and passed every strict and
+independent validity gate. All three stopping defects decreased, but the map
+remains `VALID_NOT_MET`. The full modal updates have local norm ratio
+`0.864118` and cosine `-0.874929`; the basis-dependent, $G_{22}$-restricted
+mode-2 updates have ratio `0.932560` and cosine `-0.915973`. Thus both are
+strongly anti-aligned and shrink only modestly, while the leakage defect falls
+sharply. This does not prove a cycle, convergence or divergence, and no third
+rank-2 map is defined. See
+[validation/iterative/rank2_next_map_result.md](validation/iterative/rank2_next_map_result.md).

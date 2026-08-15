@@ -76,11 +76,15 @@ current state Gram-metric squared norm; the signed cross share is
 see
 [iterative/rank2_mode2_anatomy_result.md](iterative/rank2_mode2_anatomy_result.md).
 
-A single direct rank-2 continuation is now frozen as a separate default-off
-stage. It consumes the valid candidate without re-encoding, evaluates all
-radial and axial equations once, requires the independent `--continued`
-audit, and cannot start a third map. See
-[iterative/rank2_next_map_policy.md](iterative/rank2_next_map_policy.md).
+A single direct rank-2 continuation was frozen as a separate default-off
+stage. Its one authorized run consumed the valid candidate without
+re-encoding, evaluated all radial and axial equations once, and passed the
+independent `--continued` audit and receipt. It is `VALID_NOT_MET`: all three
+stopping defects and diagnostic $D_L$ decreased, while the modal and
+$G_{22}$-restricted mode-2 updates are strongly anti-aligned and shrink only
+modestly. This is local evidence, not a convergence or cycle claim, and no
+third map is defined. See
+[iterative/rank2_next_map_result.md](iterative/rank2_next_map_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics, sensitivity probes,
 numbered map continuations and Anderson scaffolding are not part of the active

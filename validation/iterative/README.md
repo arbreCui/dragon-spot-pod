@@ -36,6 +36,8 @@ generic, default-off continuation host.
   `test_rank2_next_map_contract.py`: one default-off direct rank-2 continued
   map from the valid but tolerance-not-met candidate, with no automatic third
   map.
+- `rank2_next_map_result.md`: valid second rank-2 map, exact raw defects and
+  the read-only two-update direction boundary.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -140,6 +142,15 @@ RESULT_DIR=/absolute/path/to/new-result \
 
 These are operational process limits, not physical or convergence
 parameters. The host never starts a third rank-2 map.
+
+The one authorized run completed and passed its independent audit and full
+receipt. It remains `VALID_NOT_MET`: all three stopping defects and diagnostic
+$D_L$ decreased, but the stopping defects still exceed the tolerance.
+Offline, the full modal updates have norm ratio `0.864118` and cosine
+`-0.874929`; the basis-dependent, $G_{22}$-restricted mode-2 updates have
+ratio `0.932560` and cosine `-0.915973`. They are locally strongly
+anti-aligned, not proof of a cycle, convergence or divergence. See
+[rank2_next_map_result.md](rank2_next_map_result.md).
 
 ## Current boundary
 
