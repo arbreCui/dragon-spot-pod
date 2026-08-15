@@ -64,7 +64,11 @@ generic, default-off continuation host.
   and the one completed, no-retry map from the next proposal.
 - `rank2_modal_aa1_u_history.tsv`,
   `rank2_modal_aa1_u_history_result.md`: latest read-only AA(1) history from
-  the two evaluated proposal maps; no candidate or map.
+  the two evaluated proposal maps.
+- `rank2_modal_aa1_u_candidate_inputs.tsv`,
+  `run_rank2_modal_aa1_u_candidate.sh`,
+  `rank2_modal_aa1_u_candidate_result.md`: deterministic no-Dragon
+  publication with an independently audited `V-RAW-FLUX` lifecycle; no map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -294,9 +298,22 @@ u=0.0430261171283013z+0.956973882871699v.
 The denominator is strictly positive and the canonical publication preflight
 has 8880/8880 strictly positive reconstructed values. The affine modal screen
 is `0.882410` of the latest known residual norm, but it is not a new map
-residual or convergence factor. The classification is
-`ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`; no candidate XSM was written. See
-[rank2_modal_aa1_u_history_result.md](rank2_modal_aa1_u_history_result.md).
+residual or convergence factor. The resulting proposal has now been
+deterministically materialized from the latest returned \(v\) carrier. Its
+independent checker recursively binds all unchanged AX/snapshot payload,
+proves the \(w_{\rm pub}\to v\) lifecycle and verifies 8880/8880 strictly
+positive published reconstructions. The classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon or map was run. See
+[rank2_modal_aa1_u_history_result.md](rank2_modal_aa1_u_history_result.md)
+and
+[rank2_modal_aa1_u_candidate_result.md](rank2_modal_aa1_u_candidate_result.md).
+
+With all frozen local inputs present, reproduce this no-transport stage into
+a fresh artifact directory with:
+
+```sh
+make spot-rank2-modal-aa1-u-candidate
+```
 
 ## Current boundary
 

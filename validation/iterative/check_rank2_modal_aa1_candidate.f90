@@ -7,6 +7,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next x1 x2 y z z_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
+  !     proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -54,14 +56,18 @@ program check_rank2_modal_aa1_candidate
   real(real64) :: publication_delta
   real(real32) :: keff_published,min_published_flux
   integer :: argument_count,i,min_group,min_snapshot,min_region
-  logical :: next_mode
+  logical :: next_mode,u_mode
 
   argument_count=command_argument_count()
   next_mode=.false.
+  u_mode=.false.
   if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
-    if (trim(mode_argument) /= '--next') call fail( &
-      'NINE ARGUMENTS REQUIRE LEADING --NEXT.')
+    if (trim(mode_argument) == '--u') then
+      u_mode=.true.
+    else if (trim(mode_argument) /= '--next') then
+      call fail('NINE ARGUMENTS REQUIRE LEADING --NEXT OR --U.')
+    endif
     next_mode=.true.
     do i=1,8
       call get_command_argument(i+1,path(i))
@@ -77,12 +83,13 @@ program check_rank2_modal_aa1_candidate
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
   else
-    call fail('EXPECTED THE DEFAULT SEVEN ARGUMENTS OR --NEXT PLUS EIGHT.')
+    call fail('EXPECTED DEFAULT SEVEN ARGUMENTS OR --NEXT/--U PLUS EIGHT.')
   endif
 
   if (next_mode) then
     call check_next_candidate(trim(path(1)),trim(path(2)),trim(path(3)), &
-      trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)))
+      trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)), &
+      u_mode)
   else
 
   call load_state(trim(path(1)),0,x0,'X0')
@@ -177,9 +184,10 @@ program check_rank2_modal_aa1_candidate
 contains
 
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
-      basis_name,proposal_name,proposal_snap_name)
+      basis_name,proposal_name,proposal_snap_name,u_mode)
     character(len=*), intent(in) :: x1_name,x2_name,y_name,z_name,z_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name,proposal_snap_name
+    logical, intent(in) :: u_mode
     type(canonical_state) :: state_x1,state_x2,state_y,state_z,state_proposal
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -187,22 +195,44 @@ contains
     real(real64) :: rho_affine,rho_published,publication_delta
     real(real32) :: keff_published,min_published_flux
     integer :: min_group,min_snapshot,min_region
+    character(len=24) :: report_prefix
+    character(len=12) :: input_carrier,output_carrier
+    character(len=8) :: latest_input,latest_output,previous_output
 
-    call load_state(x1_name,1,state_x1,'NEXT X1')
-    call load_state(x2_name,1,state_x2,'NEXT X2')
-    call load_state(y_name,2,state_y,'NEXT Y')
-    call load_state(z_name,1,state_z,'NEXT Z')
-    call load_state(proposal_name,2,state_proposal,'NEXT PROPOSAL', &
-      'Z-RAW-FLUX')
+    if (u_mode) then
+      input_carrier='Z-RAW-FLUX'
+      output_carrier='V-RAW-FLUX'
+      report_prefix='RANK2-MODAL-AA1-U'
+      latest_input='W'
+      latest_output='V'
+      previous_output='Z'
+      call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Y', &
+        'X2-RAW-FLUX')
+    else
+      input_carrier='X2-RAW-FLUX'
+      output_carrier='Z-RAW-FLUX'
+      report_prefix='RANK2-NEXT-MODAL-AA1'
+      latest_input='Y'
+      latest_output='Z'
+      previous_output='X2'
+      call load_state(x1_name,1,state_x1,'NEXT X1')
+    endif
+    call load_state(x2_name,1,state_x2,'PREVIOUS RETURNED OUTPUT')
+    call load_state(y_name,2,state_y,'LATEST PROPOSAL INPUT',input_carrier)
+    call load_state(z_name,1,state_z,'LATEST RETURNED OUTPUT')
+    call load_state(proposal_name,2,state_proposal,'MATERIALIZED PROPOSAL', &
+      output_carrier)
 
     call compare_fixed_basis_layout(state_x1,state_x2,'NEXT X1/X2')
     call compare_fixed_basis_layout(state_x1,state_y,'NEXT X1/Y')
     call compare_fixed_basis_layout(state_x1,state_z,'NEXT X1/Z')
     call compare_fixed_basis_layout(state_x1,state_proposal, &
       'NEXT X1/PROPOSAL')
-    call compare_axial_carrier_metadata(state_z,state_proposal)
+    call compare_axial_carrier_metadata(state_z,state_proposal, &
+      latest_output)
     call check_basis_reference(basis_name,state_proposal)
-    call validate_input_snapshot(z_snap_name,state_y,state_z)
+    call validate_input_snapshot(z_snap_name,state_y,state_z,latest_input, &
+      latest_output)
 
     call modal_pair_geometry(state_x1,state_x2,state_y,state_z,p_sq,q_sq, &
       p_dot_q)
@@ -253,48 +283,53 @@ contains
       call fail( &
         'NEXT PROPOSAL SPOT-X-L DIFFERS FROM REAL32-ROUNDTRIP AFFINE VALUE.')
     if (real64_bits(state_proposal%norm) /= real64_bits(state_z%norm)) &
-      call fail('NEXT PROPOSAL SPOT-X-NORM DIFFERS FROM Z RAW CARRIER.')
+      call fail('PROPOSAL SPOT-X-NORM DIFFERS FROM RAW CARRIER.')
 
+    call compare_axial_carrier_payload(z_name,proposal_name)
     call compare_axial_raw_flux(z_name,proposal_name,state_z%state(2))
     call check_snapshot_publication(z_snap_name,proposal_snap_name, &
       published_l,keff_published)
     call check_projected_positivity(state_proposal,min_published_flux, &
       min_group,min_snapshot,min_region)
 
-    call write_real64_metric('RANK2-NEXT-MODAL-AA1 BETA WEIGHT-Z',beta)
-    call write_real64_metric('RANK2-NEXT-MODAL-AA1 WEIGHT-X2',weight_x2)
-    call write_real64_metric('RANK2-NEXT-MODAL-AA1 DENOMINATOR',denominator)
-    call write_real32_metric('RANK2-NEXT-MODAL-AA1 PUBLISHED K', &
+    call write_real64_metric(trim(report_prefix)//' BETA WEIGHT-'// &
+      trim(latest_output),beta)
+    call write_real64_metric(trim(report_prefix)//' WEIGHT-'// &
+      trim(previous_output),weight_x2)
+    call write_real64_metric(trim(report_prefix)//' DENOMINATOR',denominator)
+    call write_real32_metric(trim(report_prefix)//' PUBLISHED K', &
       keff_published)
-    call write_real64_metric('RANK2-NEXT-MODAL-AA1 PUBLISHED RHO', &
+    call write_real64_metric(trim(report_prefix)//' PUBLISHED RHO', &
       rho_published)
-    call write_real64_metric( &
-      'RANK2-NEXT-MODAL-AA1 RHO PUBLICATION DELTA',publication_delta)
-    call write_real32_metric('RANK2-NEXT-MODAL-AA1 MIN PUBLISHED B*A', &
+    call write_real64_metric(trim(report_prefix)// &
+      ' RHO PUBLICATION DELTA',publication_delta)
+    call write_real32_metric(trim(report_prefix)//' MIN PUBLISHED B*A', &
       min_published_flux)
     write(6,'(A,3(1X,I0))') &
-      'RANK2-NEXT-MODAL-AA1 MIN B*A GROUP/SNAPSHOT/REGION', &
+      trim(report_prefix)//' MIN B*A GROUP/SNAPSHOT/REGION', &
       min_group,min_snapshot,min_region
     write(6,'(A,I0)') &
-      'RANK2-NEXT-MODAL-AA1 STRICT-POSITIVE PUBLISHED POINTS ', &
+      trim(report_prefix)//' STRICT-POSITIVE PUBLISHED POINTS ', &
       positive_count_expected
-    write(6,'(A)') 'RANK2-NEXT-MODAL-AA1 FIXED-RANK2-BUNDLE BITWISE PASS'
-    write(6,'(A)') 'RANK2-NEXT-MODAL-AA1 PUBLICATION-Q BITWISE PASS'
-    write(6,'(A)') &
-      'RANK2-NEXT-MODAL-AA1 Z AXIAL/PLANE RAW-FLUX CARRIER BITWISE PASS'
-    write(6,'(A)') &
-      'RANK2-NEXT-MODAL-AA1 Z AXIAL STATE/GERR CARRIER BITWISE PASS'
-    write(6,'(A)') &
-      'RANK2-NEXT-MODAL-AA1 Z INPUT SNAPSHOT Y-TO-Z LIFECYCLE PASS'
-    write(6,'(A)') &
-      'RANK2-NEXT-MODAL-AA1 SNAPSHOT LEAKAGE/K PUBLICATION PASS'
-    write(6,'(A)') &
-      'RANK2-NEXT-MODAL-AA1 SNAPSHOT ROOT/PAYLOAD BITWISE PASS'
-    write(6,'(A)') 'RANK2-NEXT-MODAL-AA1 LAGGED SYSTEM BITWISE PASS'
-    write(6,'(A)') 'RANK2-NEXT-MODAL-AA1 NO STALE RESULT RECORD PASS'
-    write(6,'(A)') &
-      'RANK2-NEXT-MODAL-AA1 CLASSIFICATION MATERIALIZED_PROPOSAL_NOT_EVALUATED'
-    write(6,'(A)') 'RANK2-NEXT-MODAL-AA1 COMPLETE'
+    write(6,'(A)') trim(report_prefix)// &
+      ' FIXED-RANK2-BUNDLE BITWISE PASS'
+    write(6,'(A)') trim(report_prefix)//' PUBLICATION-Q BITWISE PASS'
+    write(6,'(A)') trim(report_prefix)//' '//trim(latest_output)// &
+      ' AXIAL ROOT/RAW-FLUX CARRIER BITWISE PASS'
+    write(6,'(A)') trim(report_prefix)//' '//trim(latest_output)// &
+      ' AXIAL STATE/GERR CARRIER BITWISE PASS'
+    write(6,'(A)') trim(report_prefix)//' '//trim(latest_output)// &
+      ' INPUT SNAPSHOT '//trim(latest_input)//'-TO-'// &
+      trim(latest_output)//' LIFECYCLE PASS'
+    write(6,'(A)') trim(report_prefix)// &
+      ' SNAPSHOT LEAKAGE/K PUBLICATION PASS'
+    write(6,'(A)') trim(report_prefix)// &
+      ' SNAPSHOT ROOT/PAYLOAD BITWISE PASS'
+    write(6,'(A)') trim(report_prefix)//' LAGGED SYSTEM BITWISE PASS'
+    write(6,'(A)') trim(report_prefix)//' NO STALE RESULT RECORD PASS'
+    write(6,'(A)') trim(report_prefix)// &
+      ' CLASSIFICATION MATERIALIZED_PROPOSAL_NOT_EVALUATED'
+    write(6,'(A)') trim(report_prefix)//' COMPLETE'
   end subroutine check_next_candidate
 
   subroutine load_state(file_name,record_mode,data,owner,proposal_carrier)
@@ -508,15 +543,19 @@ contains
       call fail(trim(owner)//' FIXED BASIS METRIC BITS DIFFER.')
   end subroutine compare_fixed_basis_layout
 
-  subroutine compare_axial_carrier_metadata(carrier,proposal_state)
+  subroutine compare_axial_carrier_metadata(carrier,proposal_state, &
+      carrier_label)
     type(canonical_state), intent(in) :: carrier,proposal_state
+    character(len=*), intent(in) :: carrier_label
 
     if ((carrier%signature /= proposal_state%signature).or. &
         any(carrier%state /= proposal_state%state)) &
-      call fail('NEXT PROPOSAL AXIAL STATE METADATA DIFFERS FROM Z.')
+      call fail('PROPOSAL AXIAL STATE METADATA DIFFERS FROM '// &
+        trim(carrier_label)//' CARRIER.')
     if (real64_bits(carrier%gram_error) /= &
         real64_bits(proposal_state%gram_error)) &
-      call fail('NEXT PROPOSAL SPOT-X-GERR DIFFERS FROM Z CARRIER.')
+      call fail('PROPOSAL SPOT-X-GERR DIFFERS FROM '// &
+        trim(carrier_label)//' CARRIER.')
   end subroutine compare_axial_carrier_metadata
 
   subroutine check_basis_reference(file_name,state_data)
@@ -651,6 +690,51 @@ contains
       call fail('INVALID NEXT MODAL PAIR GEOMETRY.')
   end subroutine modal_pair_geometry
 
+  subroutine compare_axial_carrier_payload(carrier_name,proposal_name)
+    character(len=*), intent(in) :: carrier_name,proposal_name
+    type(c_ptr) :: carrier,proposal_root
+    character(len=12) :: name,first
+    integer :: length_left,length_right,type_left,type_right,expected_count
+
+    call LCMOP(carrier,carrier_name,2,2,0)
+    call LCMOP(proposal_root,proposal_name,2,2,0)
+    ! The proposal adds exactly two lifecycle markers.
+    expected_count=2
+    name=' '
+    call LCMNXT(carrier,name)
+    first=name
+    do
+      call LCMLEN(carrier,name,length_left,type_left)
+      call LCMLEN(proposal_root,name,length_right,type_right)
+      select case(name)
+      case('SPOT-X-RRHO','SPOT-X-RLEAK','SPOT-X-DLEAK','SPOT-X-RA', &
+           'SPOT-X-PERP','SPOT-X-EPOCH','SPOT-GBAL','SPOT-GBAL-MA')
+        if (length_right /= 0) &
+          call fail('PROPOSAL AXIAL ROOT RETAINS STALE RECORD: '//trim(name))
+      case('SPOT-X-A','K-EFFECTIVE','SPOT-X-RHO','SPOT-X-L')
+        expected_count=expected_count+1
+        if ((length_left /= length_right).or. &
+            (type_left /= type_right)) &
+          call fail('PROPOSAL AXIAL PUBLISHED RECORD SHAPE DIFFERS: '// &
+            trim(name))
+      case default
+        expected_count=expected_count+1
+        if ((length_left /= length_right).or. &
+            (type_left /= type_right)) &
+          call fail('PROPOSAL AXIAL CARRIER RECORD SHAPE DIFFERS: '// &
+            trim(name))
+        call compare_named_record(carrier,proposal_root,name,length_left, &
+          type_left,'AXIAL CARRIER ROOT')
+      end select
+      call LCMNXT(carrier,name)
+      if (name == first) exit
+    enddo
+    if (count_table_records(proposal_root) /= expected_count) &
+      call fail('PROPOSAL AXIAL ROOT INVENTORY DIFFERS FROM CARRIER.')
+    call LCMCL(proposal_root,1)
+    call LCMCL(carrier,1)
+  end subroutine compare_axial_carrier_payload
+
   subroutine compare_axial_raw_flux(x2_name,proposal_name,nunk)
     character(len=*), intent(in) :: x2_name,proposal_name
     integer, intent(in) :: nunk
@@ -680,25 +764,30 @@ contains
     call LCMCL(x2_root,1)
   end subroutine compare_axial_raw_flux
 
-  subroutine validate_input_snapshot(file_name,parent_state,returned_state)
+  subroutine validate_input_snapshot(file_name,parent_state,returned_state, &
+      parent_label,returned_label)
     character(len=*), intent(in) :: file_name
     type(canonical_state), intent(in) :: parent_state,returned_state
+    character(len=*), intent(in) :: parent_label,returned_label
     type(c_ptr) :: root,fluxes,systems,plane,system
     integer :: listdim,s,first,plane_id
     real(real32) :: fixed_source_k
     real(real32), allocatable :: plane_leakage(:),system_leakage(:)
     real(real64) :: iter_k
+    character(len=64) :: owner
 
     call LCMOP(root,file_name,2,2,0)
-    call require_archive_root(root,listdim,'NEXT Z SNAPSHOT INPUT')
+    owner=trim(returned_label)//' SNAPSHOT INPUT'
+    call require_archive_root(root,listdim,trim(owner))
     if (listdim /= nsnap_expected) &
-      call fail('NEXT Z SNAPSHOT INPUT PLANE COUNT DIFFERS.')
-    call require_record(root,'SPOT-ITER-K',1,4,'NEXT Z SNAPSHOT INPUT')
+      call fail(trim(owner)//' PLANE COUNT DIFFERS.')
+    call require_record(root,'SPOT-ITER-K',1,4,trim(owner))
     call LCMGET(root,'SPOT-ITER-K',iter_k)
     if (real64_bits(iter_k) /= &
         real64_bits(real(returned_state%keff,real64))) &
-      call fail('NEXT Z SNAPSHOT K IS NOT THE RETURNED Z VALUE.')
-    call require_absent(root,'SPOT-R64','NEXT Z SNAPSHOT INPUT')
+      call fail(trim(owner)//' K IS NOT THE RETURNED '// &
+        trim(returned_label)//' VALUE.')
+    call require_absent(root,'SPOT-R64',trim(owner))
     fluxes=LCMGID(root,'FLUX')
     systems=LCMGID(root,'SYSTEM')
     allocate(plane_leakage(ngrp_expected),system_leakage(ngrp_expected))
@@ -706,27 +795,31 @@ contains
       plane=LCMGIL(fluxes,s)
       system=LCMGIL(systems,s)
       call require_record(plane,'SPOT-LEAK1D',ngrp_expected,2, &
-        'NEXT Z PLANE FLUX')
-      call require_record(plane,'SPOT-FS-K',1,2,'NEXT Z PLANE FLUX')
+        trim(owner)//' PLANE FLUX')
+      call require_record(plane,'SPOT-FS-K',1,2, &
+        trim(owner)//' PLANE FLUX')
       call LCMGET(plane,'SPOT-LEAK1D',plane_leakage)
       call LCMGET(plane,'SPOT-FS-K',fixed_source_k)
       first=(s-1)*ngrp_expected+1
       if (any(real32_bits(plane_leakage) /= real32_bits(real( &
           returned_state%leakage(first:first+ngrp_expected-1),real32)))) &
-        call fail('NEXT Z SNAPSHOT PLANE LEAKAGE DIFFERS FROM Z.')
+        call fail(trim(owner)//' PLANE LEAKAGE DIFFERS FROM '// &
+          trim(returned_label)//'.')
       if (real32_bits(fixed_source_k) /= real32_bits(parent_state%keff)) &
-        call fail('NEXT Z SNAPSHOT FIXED-SOURCE K DIFFERS FROM Y.')
+        call fail(trim(owner)//' FIXED-SOURCE K DIFFERS FROM '// &
+          trim(parent_label)//'.')
       call require_record(system,'SPOT-LEAK1D',ngrp_expected,2, &
-        'NEXT Z LAGGED SYSTEM')
+        trim(owner)//' LAGGED SYSTEM')
       call require_record(system,'SPOT-L1-SNAP',1,1, &
-        'NEXT Z LAGGED SYSTEM')
+        trim(owner)//' LAGGED SYSTEM')
       call LCMGET(system,'SPOT-LEAK1D',system_leakage)
       call LCMGET(system,'SPOT-L1-SNAP',plane_id)
       if (any(real32_bits(system_leakage) /= real32_bits(real( &
           parent_state%leakage(first:first+ngrp_expected-1),real32)))) &
-        call fail('NEXT Z LAGGED SYSTEM LEAKAGE DIFFERS FROM Y.')
+        call fail(trim(owner)//' LAGGED SYSTEM LEAKAGE DIFFERS FROM '// &
+          trim(parent_label)//'.')
       if (plane_id /= s) &
-        call fail('NEXT Z LAGGED SYSTEM SNAPSHOT INDEX DIFFERS.')
+        call fail(trim(owner)//' LAGGED SYSTEM SNAPSHOT INDEX DIFFERS.')
     enddo
     deallocate(system_leakage,plane_leakage)
     call LCMCL(root,1)

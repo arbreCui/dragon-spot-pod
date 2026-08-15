@@ -13,11 +13,17 @@ manifest = (ITERATIVE / "rank2_modal_aa1_inputs.tsv").read_text()
 next_manifest = (
     ITERATIVE / "rank2_modal_aa1_next_candidate_inputs.tsv"
 ).read_text()
+u_manifest = (
+    ITERATIVE / "rank2_modal_aa1_u_candidate_inputs.tsv"
+).read_text()
 builder = (ITERATIVE / "build_rank2_modal_aa1_candidate.f90").read_text()
 checker = (ITERATIVE / "check_rank2_modal_aa1_candidate.f90").read_text()
 runner = (ITERATIVE / "run_rank2_modal_aa1_candidate.sh").read_text()
 next_runner = (
     ITERATIVE / "run_rank2_modal_aa1_next_candidate.sh"
+).read_text()
+u_runner = (
+    ITERATIVE / "run_rank2_modal_aa1_u_candidate.sh"
 ).read_text()
 
 
@@ -55,6 +61,24 @@ require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in next_rows),
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in next_rows),
         "next manifest path escapes the repository")
+
+u_rows = [line.split() for line in u_manifest.splitlines()
+          if line.strip() and not line.startswith("#")]
+u_roles = (
+    "y_pub", "z", "w_pub", "v", "v_snapshots", "basis_reference"
+)
+require(u_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa1-u-candidate-inputs-v1",
+        "u manifest version changed")
+require(tuple(row[0] for row in u_rows) == u_roles,
+        "u manifest roles changed")
+require(all(len(row) == 3 for row in u_rows),
+        "u manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in u_rows),
+        "u manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in u_rows),
+        "u manifest path escapes the repository")
 
 for token in (
     "denominator=update_sq(1)+update_sq(2)-2.0_real64*update_dot",
@@ -94,12 +118,22 @@ for token in (
     "next_rho_star=next_weight_x2*next_x2%rho+next_beta*next_z%rho",
     "call LCMEQU(next_z%root,next_staged_ax)",
     "call LCMEQU(next_z_snap,next_staged_snap)",
-    "next_marker='Z-RAW-FLUX'",
+    "next_marker=output_carrier",
     "call validate_snapshot(trim(next_path(5)),next_y,next_z,next_z_snap)",
 ):
     require(token in builder, f"next builder contract missing: {token}")
 require("LCMGID(next_staged_snap,'SYSTEM')" not in builder,
         "next builder must not rewrite lagged SYSTEM history")
+for token in (
+    "--u y z w v v_snap out_ax out_snap",
+    "call build_next_candidate(.true.)",
+    "input_carrier='Z-RAW-FLUX'",
+    "output_carrier='V-RAW-FLUX'",
+    ".true.,'X2-RAW-FLUX'",
+    "call load_state(trim(next_path(3)),next_y,'latest proposal input',",
+    "call load_state(trim(next_path(4)),next_z,'latest returned output')",
+):
+    require(token in builder, f"u builder contract missing: {token}")
 
 for token in (
     "expected_a=previous_weight*x1%coordinates+beta*x2%coordinates",
@@ -128,9 +162,9 @@ for token in (
     "affine_a=weight_x2*state_x2%coordinates+beta*state_z%coordinates",
     "affine_l=weight_x2*state_x2%leakage+beta*state_z%leakage",
     "'Z-RAW-FLUX'",
-    "call compare_axial_carrier_metadata(state_z,state_proposal)",
-    "call validate_input_snapshot(z_snap_name,state_y,state_z)",
-    "NEXT Z SNAPSHOT FIXED-SOURCE K DIFFERS FROM Y",
+    "call compare_axial_carrier_metadata(state_z,state_proposal,",
+    "call validate_input_snapshot(z_snap_name,state_y,state_z,latest_input,",
+    "FIXED-SOURCE K DIFFERS FROM",
     "call compare_snapshot_root_carrier(x2_root,proposal_root)",
     "call compare_table_except_leakage(x2_flux,proposal_flux",
     "call compare_named_record(carrier,proposal_root,name,length_left",
@@ -138,6 +172,25 @@ for token in (
     "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
 ):
     require(token in checker, f"next checker contract missing: {token}")
+
+for token in (
+    "--u y z w v v_snap basis",
+    "if (trim(mode_argument) == '--u')",
+    "input_carrier='Z-RAW-FLUX'",
+    "output_carrier='V-RAW-FLUX'",
+    "report_prefix='RANK2-MODAL-AA1-U'",
+    "call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Y',",
+    "call compare_axial_carrier_payload(z_name,proposal_name)",
+    "count_table_records(proposal_root) /= expected_count",
+    "V-RAW-FLUX",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+):
+    require(token in checker, f"u checker contract missing: {token}")
+for record in (
+    "SPOT-X-RRHO", "SPOT-X-RLEAK", "SPOT-X-DLEAK", "SPOT-X-RA",
+    "SPOT-X-PERP", "SPOT-X-EPOCH", "SPOT-GBAL", "SPOT-GBAL-MA",
+):
+    require(record in checker, f"u full-carrier stale gate missing: {record}")
 
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
@@ -177,10 +230,32 @@ require(len(next_expected) == 2 and
 require(not re.search(r"(?m)^\s*(?:while|until)\b", next_runner),
         "next runner retry loops are forbidden")
 
-combined = "\n".join((builder, checker, runner, next_runner)).lower()
+for name in (
+    "build_rank2_modal_aa1_candidate.f90",
+    "check_rank2_modal_aa1_candidate.f90",
+    "rank2_modal_aa1_u_candidate_inputs.tsv",
+    "--u y.xsm z.xsm w.xsm v.xsm vs.xsm",
+    "proposal_axial.xsm",
+    "proposal_snapshots.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(name in u_runner, f"u runner binding missing: {name}")
+u_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", u_runner
+)
+require(u_expected == [
+    "77a4bc3916db21064dc2bae73a0397faeb15fb8033de6f761fcaa4cfd0f6852b",
+    "2f526c84f4ef42afd51178dde9481ff7336c0de5b0ff486135635a0b7fc79a81",
+], "u output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", u_runner),
+        "u runner retry loops are forbidden")
+
+combined = "\n".join((builder, checker, runner, next_runner,
+                       u_runner)).lower()
 for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: two hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: three hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

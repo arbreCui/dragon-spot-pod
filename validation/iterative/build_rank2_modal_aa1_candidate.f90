@@ -39,13 +39,18 @@ program build_rank2_modal_aa1_candidate
 
   if (command_argument_count() == 8) then
     call get_command_argument(1,mode)
-    if (trim(mode) /= '--next') error stop &
-      'eight-argument mode requires --next'
-    call build_next_candidate
+    if (trim(mode) == '--next') then
+      call build_next_candidate(.false.)
+    else if (trim(mode) == '--u') then
+      call build_next_candidate(.true.)
+    else
+      error stop 'eight-argument mode requires --next or --u'
+    endif
     stop
   else if (command_argument_count() /= 6) then
     error stop 'expected x0 x1 x2 x2_snap out_ax out_snap or '// &
-      '--next x1 x2 y z z_snap out_ax out_snap'
+      '--next x1 x2 y z z_snap out_ax out_snap or '// &
+      '--u y z w v v_snap out_ax out_snap'
   endif
   do i=1,6
     call get_command_argument(i,path(i))
@@ -216,9 +221,12 @@ program build_rank2_modal_aa1_candidate
 
 contains
 
-  subroutine build_next_candidate
+  subroutine build_next_candidate(u_mode)
+    logical, intent(in) :: u_mode
     character(len=1024) :: next_path(7)
-    character(len=12) :: next_marker
+    character(len=24) :: report_prefix
+    character(len=12) :: next_marker,input_carrier,output_carrier
+    character(len=8) :: latest_output,previous_output
     type(canonical_state) :: next_x1,next_x2,next_y,next_z
     type(c_ptr) :: next_z_snap,next_staged_ax,next_staged_snap
     type(c_ptr) :: next_out_ax,next_out_snap,next_fluxes,next_plane
@@ -243,16 +251,36 @@ contains
     call require_fresh_path(next_path(6))
     call require_fresh_path(next_path(7))
 
-    call load_state(trim(next_path(1)),next_x1,'next x1')
-    call load_state(trim(next_path(2)),next_x2,'next x2')
-    call load_state(trim(next_path(3)),next_y,'next proposal y',.true.)
-    call load_state(trim(next_path(4)),next_z,'next returned z')
+    if (u_mode) then
+      input_carrier='Z-RAW-FLUX'
+      output_carrier='V-RAW-FLUX'
+      report_prefix='RANK2-MODAL-AA1-U'
+      latest_output='V'
+      previous_output='Z'
+    else
+      input_carrier='X2-RAW-FLUX'
+      output_carrier='Z-RAW-FLUX'
+      report_prefix='RANK2-MODAL-AA1-NEXT'
+      latest_output='Z'
+      previous_output='X2'
+    endif
+
+    if (u_mode) then
+      call load_state(trim(next_path(1)),next_x1,'previous proposal input', &
+        .true.,'X2-RAW-FLUX')
+    else
+      call load_state(trim(next_path(1)),next_x1,'previous map input')
+    endif
+    call load_state(trim(next_path(2)),next_x2,'previous map output')
+    call load_state(trim(next_path(3)),next_y,'latest proposal input', &
+      .true.,input_carrier)
+    call load_state(trim(next_path(4)),next_z,'latest returned output')
     call compare_next_fixed_space(next_x1,next_x2,'x1/x2')
     call compare_next_fixed_space(next_x1,next_y,'x1/y')
     call compare_next_fixed_space(next_x1,next_z,'x1/z')
     call validate_snapshot(trim(next_path(5)),next_y,next_z,next_z_snap)
 
-    ! The two evaluated map residuals are p=x2-x1 and q=z-y.
+    ! The two evaluated map residuals are output-input for each pair.
     p_sq=0.0_real64
     q_sq=0.0_real64
     p_dot=0.0_real64
@@ -344,7 +372,7 @@ contains
     if (positive_count /= next_z%dims(2)*next_z%dims(3)*8) &
       error stop 'next reconstructed-flux census is incomplete'
 
-    ! z supplies the latest evaluated AX and raw-flux carrier.
+    ! The latest returned state supplies the AX and raw-flux carrier.
     call LCMOP(next_staged_ax,' ',0,1,0)
     call LCMEQU(next_z%root,next_staged_ax)
     call LCMPUT(next_staged_ax,'SPOT-X-A',size(next_candidate_a),4, &
@@ -363,14 +391,14 @@ contains
     call delete_if_present(next_staged_ax,'SPOT-GBAL-MA')
     next_marker='PROPOSAL'
     call LCMPTC(next_staged_ax,'SPOT-X-STATE',12,next_marker)
-    next_marker='Z-RAW-FLUX'
+    next_marker=output_carrier
     call LCMPTC(next_staged_ax,'SPOT-X-CARR',12,next_marker)
     call LCMOP(next_out_ax,trim(next_path(6)),0,2,0)
     call LCMEQU(next_staged_ax,next_out_ax)
     call LCMCL(next_out_ax,1)
     call LCMCL(next_staged_ax,2)
 
-    ! Preserve z_snap's lagged SYSTEM history and publish only k and FLUX L.
+    ! Preserve the carrier's lagged SYSTEM and publish only k and FLUX L.
     call LCMOP(next_staged_snap,' ',0,1,0)
     call LCMEQU(next_z_snap,next_staged_snap)
     next_iter_k=real(next_k_public,real64)
@@ -396,40 +424,45 @@ contains
     call LCMCL(next_x2%root,1)
     call LCMCL(next_x1%root,1)
 
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT BETA-WEIGHT-Z ', &
-      next_beta
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT WEIGHT-X2 ', &
-      next_weight_x2
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT DENOMINATOR ', &
+    write(*,'(A,ES24.16)') trim(report_prefix)//' BETA-WEIGHT-'// &
+      trim(latest_output)//' ',next_beta
+    write(*,'(A,ES24.16)') trim(report_prefix)//' WEIGHT-'// &
+      trim(previous_output)//' ',next_weight_x2
+    write(*,'(A,ES24.16)') trim(report_prefix)//' DENOMINATOR ', &
       next_denominator
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT RHO-AFFINE ', &
+    write(*,'(A,ES24.16)') trim(report_prefix)//' RHO-AFFINE ', &
       next_rho_star
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT K-PUBLISHED ', &
+    write(*,'(A,ES24.16)') trim(report_prefix)//' K-PUBLISHED ', &
       real(next_k_public,real64)
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT RHO-PUBLISHED ', &
+    write(*,'(A,ES24.16)') trim(report_prefix)//' RHO-PUBLISHED ', &
       next_rho_public
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT RHO-Q-DELTA ', &
+    write(*,'(A,ES24.16)') trim(report_prefix)//' RHO-Q-DELTA ', &
       next_rho_public-next_rho_star
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT L-ROUNDTRIP-MAX ', &
+    write(*,'(A,ES24.16)') trim(report_prefix)//' L-ROUNDTRIP-MAX ', &
       next_l_roundtrip
-    write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1-NEXT MIN-PUBLISHED-BA ', &
+    write(*,'(A,ES24.16)') trim(report_prefix)//' MIN-PUBLISHED-BA ', &
       next_min_reconstructed
-    write(*,'(A,I0)') 'RANK2-MODAL-AA1-NEXT POSITIVE-BA-POINTS ', &
+    write(*,'(A,I0)') trim(report_prefix)//' POSITIVE-BA-POINTS ', &
       positive_count
-    write(*,'(A)') 'RANK2-MODAL-AA1-NEXT CARRIER Z-RAW-FLUX'
-    write(*,'(A)') 'RANK2-MODAL-AA1-NEXT CLASSIFICATION '// &
+    write(*,'(A)') trim(report_prefix)//' CARRIER '//trim(output_carrier)
+    write(*,'(A)') trim(report_prefix)//' CLASSIFICATION '// &
       'MATERIALIZED_PROPOSAL_NOT_EVALUATED NO-DRAGON NO-MAP'
   end subroutine build_next_candidate
 
-  subroutine load_state(file_name,data,owner,proposal_schema)
+  subroutine load_state(file_name,data,owner,proposal_schema, &
+      proposal_carrier)
     character(len=*), intent(in) :: file_name,owner
     type(canonical_state), intent(out) :: data
     logical, intent(in), optional :: proposal_schema
+    character(len=*), intent(in), optional :: proposal_carrier
     integer :: ngrp,nsnap,ncoef,total_basis,total_gram,g,nreg
     logical :: is_proposal
+    character(len=12) :: expected_carrier
 
     is_proposal=.false.
     if (present(proposal_schema)) is_proposal=proposal_schema
+    expected_carrier='X2-RAW-FLUX'
+    if (present(proposal_carrier)) expected_carrier=proposal_carrier
     call LCMOP(data%root,file_name,2,2,0)
     call require_character(data%root,'SIGNATURE','L_FLUX',owner)
     call require_record(data%root,'STATE-VECTOR',nstate,1,owner)
@@ -534,7 +567,7 @@ contains
       call require_absent(data%root,'SPOT-GBAL',owner)
       call require_absent(data%root,'SPOT-GBAL-MA',owner)
       call require_character(data%root,'SPOT-X-STATE','PROPOSAL',owner)
-      call require_character(data%root,'SPOT-X-CARR','X2-RAW-FLUX',owner)
+      call require_character(data%root,'SPOT-X-CARR',expected_carrier,owner)
     endif
     if (any(bits64(data%leakage) /= &
             bits64(real(real(data%leakage,real32),real64)))) &

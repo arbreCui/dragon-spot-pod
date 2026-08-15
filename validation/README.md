@@ -128,9 +128,15 @@ The subsequent read-only AA(1) history calculation uses the actual
 \(y_{\rm pub}\to z\) and \(w_{\rm pub}\to v\) pairs. It gives the unique
 unclipped weight `0.956973882871698711` on \(v\); the denominator, canonical
 publication arithmetic and 8880-point positivity preflight pass. Its
-classification is `ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: no candidate,
-Dragon process or new map was produced. See
-[iterative/rank2_modal_aa1_u_history_result.md](iterative/rank2_modal_aa1_u_history_result.md).
+proposal has now been hash-locked with a `V-RAW-FLUX` carrier. The independent
+checker binds the complete AX and snapshot inventories to the latest returned
+\(v\) lifecycle, with only published fields and declared stale removals
+excepted. Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon process or new map was
+produced. See
+[iterative/rank2_modal_aa1_u_history_result.md](iterative/rank2_modal_aa1_u_history_result.md)
+and
+[iterative/rank2_modal_aa1_u_candidate_result.md](iterative/rank2_modal_aa1_u_candidate_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable

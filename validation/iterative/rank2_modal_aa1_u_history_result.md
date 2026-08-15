@@ -118,7 +118,15 @@ state provenance and publication preflight pass. It is not a candidate
 artifact, map result, stopping defect, convergence result, stability claim,
 rank-adequacy result or physical-accuracy validation.
 
-Any future materialization requires a separate decision. It would need to
-reuse the latest returned \(v\) raw-flux/snapshot carrier and introduce an
-explicitly audited `V-RAW-FLUX` lifecycle; that carrier and builder path are
-not implemented or authorized here.
+At this historical decision point, materialization required a separate stage
+that reused the latest returned \(v\) raw-flux/snapshot carrier and introduced
+an explicitly audited `V-RAW-FLUX` lifecycle.
+
+## Subsequent materialization
+
+That separate no-Dragon stage has now completed. It recomputed the same
+coefficient from the four frozen inputs, materialized the hash-locked
+`V-RAW-FLUX` proposal and passed the independent full AX/snapshot carrier and
+strict-positivity audit. Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; it did not evaluate a map. See
+[`rank2_modal_aa1_u_candidate_result.md`](rank2_modal_aa1_u_candidate_result.md).

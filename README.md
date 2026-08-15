@@ -298,6 +298,12 @@ weight on \(v\) is `0.956973882871698711`, giving the possible raw formula
 \(u=0.0430261171283013z+0.956973882871699v\). Its denominator is strictly
 positive and all 8880 publication-preflight values are strictly positive.
 The affine screen ratio `0.882410` is not a map residual or convergence
-factor. The stage is `ELIGIBLE_TO_MATERIALIZE_NOT_EVALUATED`: it created no
-candidate and ran no Dragon; see
-[validation/iterative/rank2_modal_aa1_u_history_result.md](validation/iterative/rank2_modal_aa1_u_history_result.md).
+factor. That formula has now been deterministically published with the
+latest returned \(v\) payload and an explicit `V-RAW-FLUX` lifecycle. The
+independent full-carrier and snapshot audit passes, including 8880/8880
+strictly positive reconstructions. Its status is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no map or Dragon run was performed;
+see
+[validation/iterative/rank2_modal_aa1_u_history_result.md](validation/iterative/rank2_modal_aa1_u_history_result.md)
+and
+[validation/iterative/rank2_modal_aa1_u_candidate_result.md](validation/iterative/rank2_modal_aa1_u_candidate_result.md).
