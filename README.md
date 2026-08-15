@@ -280,3 +280,10 @@ evidence exists. See
 [validation/iterative/rank2_modal_aa1_next_history_result.md](validation/iterative/rank2_modal_aa1_next_history_result.md)
 and
 [validation/iterative/rank2_modal_aa1_next_candidate_result.md](validation/iterative/rank2_modal_aa1_next_candidate_result.md).
+
+A minimal default-off host is now prepared for exactly one future
+$G_2(w_{\rm pub})$. It reuses the unchanged physical decks but introduces a
+strict `--proposal-z` gate: the new parent must carry `Z-RAW-FLUX`, while the
+historical `--proposal` path still accepts only `X2-RAW-FLUX`. A parent-only
+preflight runs before any Dragon launch. Its status is `PREPARED_NOT_RUN`; see
+[validation/iterative/rank2_modal_aa1_next_map_policy.md](validation/iterative/rank2_modal_aa1_next_map_policy.md).

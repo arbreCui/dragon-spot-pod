@@ -61,8 +61,14 @@ printf '%s\n' "$MAP_PARENT_FILE" |
   rg -q '^[A-Za-z0-9][A-Za-z0-9._-]*$' ||
   fail "MAP_PARENT_FILE must be a safe basename."
 case "$CHECKER_MODE" in
-  initial|continued|reencoded|proposal) ;;
-  *) fail "CHECKER_MODE must be initial, continued, reencoded or proposal." ;;
+  initial|continued|reencoded|proposal|proposal-z) ;;
+  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal or proposal-z." ;;
+esac
+case "$CHECKER_MODE" in
+  proposal|proposal-z)
+    test "$MAP_PARENT_FILE" = parent_axial.xsm ||
+      fail "proposal checker modes require MAP_PARENT_FILE=parent_axial.xsm."
+    ;;
 esac
 printf '%s\n' "$RADIAL_TIMEOUT_SECONDS" | rg -q '^[1-9][0-9]*$' ||
   fail "RADIAL_TIMEOUT_SECONDS must be a positive integer."
@@ -217,6 +223,34 @@ GANLIB_MOD_HASH_BEFORE=$(hash_file "$GANLIB_MOD/ganlib.mod") ||
   "$HOST_WORK/check_one_map_xsm.f90" \
   "$GANLIB_LIB" -lstdc++ -o "$AXIAL_WORK/check_one_map_xsm"
 
+case "$CHECKER_MODE" in
+  proposal)
+    (
+      cd "$RADIAL_WORK"
+      "$AXIAL_WORK/check_one_map_xsm" --proposal-parent \
+        parent_axial.xsm >parent_preflight.log
+    )
+    ;;
+  proposal-z)
+    (
+      cd "$RADIAL_WORK"
+      "$AXIAL_WORK/check_one_map_xsm" --proposal-parent-z \
+        parent_axial.xsm >parent_preflight.log
+    )
+    ;;
+  *)
+    printf 'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK NOT-APPLICABLE\n' \
+      >"$RADIAL_WORK/parent_preflight.log"
+    ;;
+esac
+case "$CHECKER_MODE" in
+  proposal|proposal-z)
+    test "$(tail -n 1 "$RADIAL_WORK/parent_preflight.log")" = \
+      'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK PASS' ||
+      fail "proposal parent preflight did not reach its strict terminal."
+    ;;
+esac
+
 DRAGON_HASH_BEFORE=$(hash_file "$DRAGON_BIN") ||
   fail "cannot hash Dragon before map execution."
 
@@ -322,6 +356,11 @@ done
         candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
         candidate_snapshots.xsm >independent_check.log
       ;;
+    proposal-z)
+      ./check_one_map_xsm --proposal-z basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
   esac
 )
 expect_count '^ONE-MAP-XSM COMPLETE$' 1 \
@@ -409,6 +448,7 @@ PUBLISH_DIR=$(mktemp -d "$RESULT_PARENT/.$RESULT_NAME.tmp.XXXXXX")
 cp "$RADIAL_WORK/candidate_system.xsm" \
   "$RADIAL_WORK/candidate_radial.xsm" \
   "$RADIAL_WORK/radial.log" \
+  "$RADIAL_WORK/parent_preflight.log" \
   "$AXIAL_WORK/candidate_axial.xsm" \
   "$AXIAL_WORK/candidate_snapshots.xsm" \
   "$AXIAL_WORK/axial.log" \
@@ -439,6 +479,7 @@ printf '%s  ganlib.mod\n' "$GANLIB_MOD_HASH_BEFORE" \
   shasum -a 256 \
     candidate_system.xsm candidate_radial.xsm candidate_axial.xsm \
     candidate_snapshots.xsm radial.log axial.log independent_check.log \
+    parent_preflight.log \
     current_parent.tsv continuation_policy.md continuation_radial.x2m \
     continuation_axial.x2m SpotRefFS.c2m SpotPlaneFS.c2m \
     check_one_map_xsm.f90 run_bounded_dragon.py \

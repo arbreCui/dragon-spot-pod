@@ -57,6 +57,10 @@ generic, default-off continuation host.
   `run_rank2_modal_aa1_next_candidate.sh`,
   `rank2_modal_aa1_next_candidate_result.md`: deterministic no-Dragon
   publication and independent audit of that next proposal; no new map.
+- `rank2_modal_aa1_next_map_parent.tsv`,
+  `rank2_modal_aa1_next_map_policy.md`,
+  `run_rank2_modal_aa1_next_map.sh`: prepared default-off single-map host with
+  a strict pre-Dragon `Z-RAW-FLUX` parent gate.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -252,6 +256,17 @@ make spot-rank2-modal-aa1-next-candidate
 ```
 
 The target refuses to overwrite the frozen local artifact.
+
+The corresponding one-map host is prepared but remains default-off:
+
+```sh
+make spot-rank2-modal-aa1-next-map
+```
+
+It prints the default-off terminal without reading the repository or starting
+Dragon. A future activation would require a separate explicit decision, a new
+result directory and exactly one no-retry map. See
+[rank2_modal_aa1_next_map_policy.md](rank2_modal_aa1_next_map_policy.md).
 
 ## Current boundary
 

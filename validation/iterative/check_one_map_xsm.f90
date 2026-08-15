@@ -12,6 +12,10 @@ program check_one_map_xsm
   !   check_one_map_xsm --proposal basis_reference.xsm \
   !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
   !     returned_snapshots.xsm
+  !   check_one_map_xsm --proposal-z basis_reference.xsm \
+  !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
+  !     returned_snapshots.xsm
+  !   check_one_map_xsm --proposal-parent[-z] proposal_axial.xsm
   !   check_one_map_xsm --directions state6_axial.xsm \
   !     state7_axial.xsm state8_axial.xsm
   !   check_one_map_xsm --rank2-directions reencoded_parent.xsm \
@@ -105,19 +109,38 @@ program check_one_map_xsm
   type(canonical_state) :: direction_state(3)
   type(canonical_state) :: aa1_history_state(4)
   integer :: i,argument_offset
-  logical :: continued,reencoded,proposal_mode,direction_mode,mode2_mode
+  logical :: continued,reencoded,proposal_mode,proposal_z_mode
+  logical :: proposal_parent_mode
+  logical :: direction_mode,mode2_mode
   logical :: aa1_history_mode
   logical :: reencoded_first_direction
 
   continued=.false.
   reencoded=.false.
   proposal_mode=.false.
+  proposal_z_mode=.false.
+  proposal_parent_mode=.false.
   direction_mode=.false.
   mode2_mode=.false.
   aa1_history_mode=.false.
   reencoded_first_direction=.false.
   argument_offset=0
-  if (command_argument_count() == 4) then
+  if (command_argument_count() == 2) then
+    call get_command_argument(1,mode)
+    if (trim(mode) == '--proposal-parent') then
+      proposal_parent_mode=.true.
+    else if (trim(mode) == '--proposal-parent-z') then
+      proposal_parent_mode=.true.
+      proposal_z_mode=.true.
+    else
+      call fail('TWO-ARGUMENT MODE REQUIRES --proposal-parent OR '// &
+        '--proposal-parent-z.')
+    endif
+    call get_command_argument(2,paths(1))
+    if (len_trim(paths(1)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
+    if (len_trim(paths(1)) > max_xsm_path) &
+      call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+  else if (command_argument_count() == 4) then
     call get_command_argument(1,mode)
     if (trim(mode) == '--rank2-directions') then
       reencoded_first_direction=.true.
@@ -140,6 +163,9 @@ program check_one_map_xsm
       reencoded=.true.
     else if (trim(mode) == '--proposal') then
       proposal_mode=.true.
+    else if (trim(mode) == '--proposal-z') then
+      proposal_mode=.true.
+      proposal_z_mode=.true.
     else if (trim(mode) == '--mode2') then
       mode2_mode=.true.
       do i=1,5
@@ -150,8 +176,8 @@ program check_one_map_xsm
           call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
       enddo
     else
-      call fail('ONLY --continued, --reencoded, --proposal OR --mode2 '// &
-        'IS ACCEPTED IN SIX-ARGUMENT MODE.')
+      call fail('ONLY --continued, --reencoded, --proposal, '// &
+        '--proposal-z OR --mode2 IS ACCEPTED IN SIX-ARGUMENT MODE.')
     endif
     if (.not.mode2_mode) argument_offset=1
   else if (command_argument_count() == 5) then
@@ -167,18 +193,32 @@ program check_one_map_xsm
       enddo
     endif
   else
-    call fail('EXPECTED [--continued|--reencoded|--proposal] BASIS, '// &
-      'SYSTEM, '// &
+    call fail('EXPECTED [--continued|--reencoded|--proposal|--proposal-z] '// &
+      'BASIS, SYSTEM, '// &
       'PREVIOUS, CURRENT, SNAP.')
   endif
-  if ((.not.direction_mode).and.(.not.mode2_mode).and. &
-      (.not.aa1_history_mode)) then
+  if ((.not.proposal_parent_mode).and.(.not.direction_mode).and. &
+      (.not.mode2_mode).and.(.not.aa1_history_mode)) then
     do i=1,5
       call get_command_argument(i+argument_offset,paths(i))
       if (len_trim(paths(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
       if (len_trim(paths(i)) > max_xsm_path) &
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
+  endif
+
+  if (proposal_parent_mode) then
+    call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.false., &
+      previous_state,'MATERIALIZED PROPOSAL PARENT',.true.,proposal_z_mode)
+    if (any(previous_state%rank /= 2)) &
+      call fail('MATERIALIZED PROPOSAL PARENT IS NOT RANK TWO.')
+    if (proposal_z_mode) then
+      write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT Z-CARRIER PASS'
+    else
+      write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT X2-CARRIER PASS'
+    endif
+    write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK PASS'
+    stop
   endif
 
   if (mode2_mode) then
@@ -286,7 +326,7 @@ program check_one_map_xsm
       previous_state,'REENCODED PARENT STATE')
   else if (proposal_mode) then
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
-      previous_state,'MATERIALIZED PROPOSAL STATE',.true.)
+      previous_state,'MATERIALIZED PROPOSAL STATE',.true.,proposal_z_mode)
   else
     call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
       previous_state,'STATE ZERO')
@@ -305,6 +345,8 @@ program check_one_map_xsm
     write(6,'(A)') 'ONE-MAP-XSM REENCODED-PARENT NO-STALE-DEFECT PASS'
   if (proposal_mode) &
     write(6,'(A)') 'ONE-MAP-XSM MATERIALIZED-PROPOSAL INPUT PASS'
+  if (proposal_z_mode) &
+    write(6,'(A)') 'ONE-MAP-XSM Z-RAW-FLUX CARRIER INPUT PASS'
   write(6,'(A)') 'ONE-MAP-XSM POD-PACKAGE BITWISE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RADIAL-OP LIVE-CHANGE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RAW-RADIAL-POSITIVITY PASS'
@@ -539,19 +581,24 @@ contains
 
 
   subroutine load_canonical_state(path,expected_fixb,expected_type, &
-      expect_saved_defect,data,owner,proposal_state)
+      expect_saved_defect,data,owner,proposal_state,z_carrier)
     character(len=*), intent(in) :: path,expected_type,owner
     integer, intent(in) :: expected_fixb
     logical, intent(in) :: expect_saved_defect
     logical, intent(in), optional :: proposal_state
+    logical, intent(in), optional :: z_carrier
     type(canonical_state), intent(out) :: data
     type(c_ptr) :: root
     integer :: g,ngrp,nsnap,ncoef,expected_ncoef,total_basis,total_gram
-    logical :: is_proposal
+    logical :: is_proposal,expect_z_carrier
     character(len=12) :: marker
 
     is_proposal=.false.
     if (present(proposal_state)) is_proposal=proposal_state
+    expect_z_carrier=.false.
+    if (present(z_carrier)) expect_z_carrier=z_carrier
+    if (expect_z_carrier.and.(.not.is_proposal)) &
+      call fail(trim(owner)//' Z CARRIER REQUIRES A PROPOSAL STATE.')
     if (is_proposal.and.expect_saved_defect) &
       call fail(trim(owner)//' PROPOSAL CANNOT CARRY A SAVED MAP DEFECT.')
 
@@ -695,8 +742,16 @@ contains
       if (marker /= 'PROPOSAL') &
         call fail(trim(owner)//' LIFECYCLE MARKER IS NOT PROPOSAL.')
       call LCMGTC(root,'SPOT-X-CARR',12,marker)
-      if (marker /= 'X2-RAW-FLUX') &
-        call fail(trim(owner)//' RAW-FLUX CARRIER MARKER IS INVALID.')
+      if (expect_z_carrier) then
+        if (marker /= 'Z-RAW-FLUX') &
+          call fail(trim(owner)//' RAW-FLUX CARRIER IS NOT Z.')
+      else
+        if (marker /= 'X2-RAW-FLUX') &
+          call fail(trim(owner)//' RAW-FLUX CARRIER IS NOT X2.')
+      endif
+    else
+      call require_absent(root,'SPOT-X-STATE',owner)
+      call require_absent(root,'SPOT-X-CARR',owner)
     endif
     call LCMCL(root,1)
   end subroutine load_canonical_state

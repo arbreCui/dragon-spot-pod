@@ -96,3 +96,9 @@ transport accuracy or Anderson superiority. There is still no value of
 
 The only meaningful next experiment is one separately authorized fresh map
 `G_2(w_pub)`, with no retry. It has not been started by this stage.
+
+The required host is now prepared and default-off. Its dedicated
+`--proposal-z` preflight rejects an X2 carrier before any Dragon launch, while
+the historical `--proposal` behavior is unchanged. This preparation does not
+change the classification above and does not evaluate the map. See
+[`rank2_modal_aa1_next_map_policy.md`](rank2_modal_aa1_next_map_policy.md).

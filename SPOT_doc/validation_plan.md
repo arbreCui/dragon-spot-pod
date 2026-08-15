@@ -124,6 +124,13 @@ been generated. See
 and
 [../validation/iterative/rank2_modal_aa1_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_next_candidate_result.md).
 
+The smallest runtime continuation is now prepared as a default-off single-map
+host. It binds the new `Z-RAW-FLUX` proposal through a dedicated checker mode
+and rejects a mismatched carrier before Dragon launch. The decks, rank,
+tolerance and physics are unchanged. Its status remains `PREPARED_NOT_RUN`;
+see
+[../validation/iterative/rank2_modal_aa1_next_map_policy.md](../validation/iterative/rank2_modal_aa1_next_map_policy.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated
