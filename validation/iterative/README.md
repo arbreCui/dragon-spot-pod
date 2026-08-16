@@ -74,6 +74,10 @@ generic, default-off continuation host.
   `run_rank2_modal_aa1_u_map.sh`,
   `rank2_modal_aa1_u_map_result.md`: exact `V-RAW-FLUX` preflight and the one
   completed, no-retry map from the latest proposal.
+- `rank2_modal_aa1_u_next_parent.tsv`,
+  `rank2_modal_aa1_u_next_map_policy.md`,
+  `rank2_modal_aa1_u_next_map_result.md`: one direct, no-retry Picard
+  continuation from that valid returned state using the generic host.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -337,8 +341,23 @@ but
 \]
 
 so all three stopping defects exceed `5.0e-7` and the classification is
-`VALID_NOT_MET`. No subsequent map was started. See
+`VALID_NOT_MET`. No automatic successor was started. See
 [rank2_modal_aa1_u_map_result.md](rank2_modal_aa1_u_map_result.md).
+
+One later separately authorized direct Picard continuation from the returned
+state has also completed exactly once. It remains `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223464\times10^{-7},\,5.2175156\times10^{-4},\,
+7.2463300\times10^{-6}).
+\]
+
+Relative to the preceding map, \(R_\rho\) and \(R_a\) decreased by about
+23.1% and 49.5%, while \(R_L\) increased by about 29.2%. The adjacent defects
+are not componentwise monotone and establish neither convergence nor
+divergence. No successor map was started. See
+[rank2_modal_aa1_u_next_map_result.md](rank2_modal_aa1_u_next_map_result.md).
 
 ## Current boundary
 

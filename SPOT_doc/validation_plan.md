@@ -153,9 +153,18 @@ and receipt pass, but the map is `VALID_NOT_MET`:
 \((R_\rho,R_L,R_a)=(8.34905\times10^{-7},4.03982\times10^{-4},
 1.43357\times10^{-5})\). The leakage and modal defects decreased locally,
 while \(R_\rho\) increased very slightly; this is not evidence of asymptotic
-convergence, rank adequacy or physical accuracy. No retry or subsequent map
-was started; see
+convergence, rank adequacy or physical accuracy. There was no retry, and no
+successor was started automatically; see
 [../validation/iterative/rank2_modal_aa1_u_map_result.md](../validation/iterative/rank2_modal_aa1_u_map_result.md).
+
+A later separately authorized direct Picard continuation from the returned
+state completed exactly once. It is valid but `VALID_NOT_MET`, with
+\((R_\rho,R_L,R_a)=(6.42235\times10^{-7},5.21752\times10^{-4},
+7.24633\times10^{-6})\). Relative to the preceding map, \(R_\rho\) and
+\(R_a\) decreased while \(R_L\) increased by about 29.2%. This mixed trend is
+not evidence of convergence, divergence, rank adequacy or physical accuracy.
+No successor map was started; see
+[../validation/iterative/rank2_modal_aa1_u_next_map_result.md](../validation/iterative/rank2_modal_aa1_u_next_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

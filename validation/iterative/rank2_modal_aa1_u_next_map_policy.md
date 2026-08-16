@@ -26,3 +26,7 @@ The dimensional \(D_L\) and balance values are diagnostics, not stopping
 conditions. One adjacent map may establish only a local observed change; it
 cannot by itself prove convergence, stability, rank adequacy or physical
 accuracy.
+
+The separately authorized single run subsequently completed as
+`VALID_NOT_MET`; see
+[rank2_modal_aa1_u_next_map_result.md](rank2_modal_aa1_u_next_map_result.md).

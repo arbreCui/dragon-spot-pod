@@ -141,9 +141,16 @@ and
 The separately authorized single map \(G_2(u_{\rm pub})\) has now completed
 without retry. Its V-carrier preflight, strict terminals, independent checker
 and 21-entry receipt pass. It is `VALID_NOT_MET`: the stopping defects are
-`8.34905e-7`, `4.03982e-4` and `1.43357e-5`, all above `5.0e-7`. No subsequent
-map was started; see
+`8.34905e-7`, `4.03982e-4` and `1.43357e-5`, all above `5.0e-7`. No automatic
+successor was started; see
 [iterative/rank2_modal_aa1_u_map_result.md](iterative/rank2_modal_aa1_u_map_result.md).
+
+One later separately authorized direct Picard continuation from that returned
+state also completed without retry. It remains `VALID_NOT_MET`, with stopping
+defects `6.42235e-7`, `5.21752e-4` and `7.24633e-6`. The first and third
+decreased, but the leakage defect increased by about 29.2%, so the adjacent
+step is not componentwise monotone. No successor was started; see
+[iterative/rank2_modal_aa1_u_next_map_result.md](iterative/rank2_modal_aa1_u_next_map_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable

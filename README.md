@@ -315,6 +315,18 @@ independent audit and 21-entry receipt all pass. It remains `VALID_NOT_MET`:
 \(R_L=4.03982\times10^{-4}\), and
 \(R_a=1.43357\times10^{-5}\), all above `5.0e-7`. Leakage and modal defects
 decreased locally relative to the preceding map, while \(R_\rho\) increased
-very slightly; this is not an asymptotic convergence claim. No retry or
-subsequent map was started; see
+very slightly; this is not an asymptotic convergence claim. There was no
+retry, and no successor was started automatically; see
 [validation/iterative/rank2_modal_aa1_u_map_result.md](validation/iterative/rank2_modal_aa1_u_map_result.md).
+
+A later separately authorized direct Picard continuation from that returned
+state has also completed exactly once. It is valid but remains
+`VALID_NOT_MET`:
+\(R_\rho=6.42235\times10^{-7}\),
+\(R_L=5.21752\times10^{-4}\), and
+\(R_a=7.24633\times10^{-6}\). Relative to the preceding map,
+\(R_\rho\) and \(R_a\) decreased by about 23.1% and 49.5%, while
+\(R_L\) increased by about 29.2%. The defects are therefore not
+componentwise monotone, and no convergence or accuracy claim follows. No
+successor map was started; see
+[validation/iterative/rank2_modal_aa1_u_next_map_result.md](validation/iterative/rank2_modal_aa1_u_next_map_result.md).
