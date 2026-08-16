@@ -55,3 +55,12 @@ One map cannot establish asymptotic convergence, stability, AA(1)
 superiority, rank adequacy, or physical accuracy. Preparing this host performs
 no Dragon, assembly, transport, or Picard calculation and produces no map
 result.
+
+## Subsequent authorized result
+
+The frozen policy above remains the pre-run authorization record. One later,
+separately authorized execution completed exactly once with no retry. All
+strict solve, lifecycle, independent-check, and receipt gates passed, but the
+returned map is `VALID_NOT_MET`: \(R_\rho\) passes while \(R_L\) and
+\(R_a\) fail the unchanged tolerance. No successor map was started. See
+[rank2_latest_modal_aa1_map_result.md](rank2_latest_modal_aa1_map_result.md).

@@ -445,6 +445,24 @@ carrier is retained. This is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no
 Dragon, map, stopping defect or map host was produced. See
 [../validation/iterative/rank2_latest_modal_aa1_candidate_result.md](../validation/iterative/rank2_latest_modal_aa1_candidate_result.md).
 
+The unchanged physical map was subsequently evaluated from \(Q(y)\) exactly
+once. Its strict X4-carrier preflight, three online radial solves, one axial
+solve, independent audit and 21-entry receipt pass. The original AND gate
+gives
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223469765\times10^{-8},
+6.5357267459\times10^{-4},
+8.4905089528\times10^{-7}),
+\]
+
+so the result is `VALID_NOT_MET`: only \(R_\rho\) passes. Relative to the
+historical direct \(x_4=G_2(x_3)\) map, \(R_a\) falls by about 70.74% while
+\(R_L\) rises by about 37.45%. This mixed response establishes neither
+convergence nor an AA(1) verdict. No retry or successor was started; see
+[../validation/iterative/rank2_latest_modal_aa1_map_result.md](../validation/iterative/rank2_latest_modal_aa1_map_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

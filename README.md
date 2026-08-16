@@ -611,3 +611,21 @@ Its classification is
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
 map host was produced. See
 [validation/iterative/rank2_latest_modal_aa1_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_candidate_result.md).
+
+That proposal was then evaluated by the unchanged physical map exactly once.
+The strict `X4-RAW-FLUX` preflight, three online radial solves, one axial
+solve, independent checker and 21-entry receipt all pass. The unchanged gate
+gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223470\times10^{-8},\,6.5357267\times10^{-4},\,
+8.4905090\times10^{-7}),
+$$
+
+so the result is `VALID_NOT_MET`: only $R_\rho$ passes. Relative to the
+historical direct $x_4=G_2(x_3)$ evaluation, $R_a$ falls about 70.74% but
+$R_L$ rises about 37.45%; this is not
+componentwise improvement and is not proof for or against AA(1). No retry or
+successor was started. See
+[validation/iterative/rank2_latest_modal_aa1_map_result.md](validation/iterative/rank2_latest_modal_aa1_map_result.md).

@@ -167,9 +167,11 @@ generic, default-off continuation host.
   consecutive direct Picard residuals.
 - `rank2_latest_modal_aa1_map_parent.tsv`,
   `rank2_latest_modal_aa1_map_policy.md`,
-  `run_rank2_latest_modal_aa1_map.sh`: default-off host prepared for exactly
-  one strict map from that published proposal, with an exact
-  `X4-RAW-FLUX` carrier gate, no retry, and no automatic successor.
+  `run_rank2_latest_modal_aa1_map.sh`,
+  `rank2_latest_modal_aa1_map_result.md`: default-off host and frozen
+  `VALID_NOT_MET` result for exactly one strict map from that published
+  proposal, with an exact `X4-RAW-FLUX` carrier gate, no retry, and no
+  automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -718,10 +720,26 @@ y=0.6636421413x_3+0.3363578587x_4.
 The publication-aware state \(Q(y)\) has been materialized and independently
 checked offline. All 8880 published rank-two points are positive, the
 complete \(x_4\) raw carrier is retained and the nine-entry receipt passes.
-The classification is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon, map, stopping defect or map
-host was produced. See
+That publication stage is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; see
 [rank2_latest_modal_aa1_candidate_result.md](rank2_latest_modal_aa1_candidate_result.md).
+
+Its separately frozen physical map was then executed exactly once. The X4
+carrier preflight, all four strict solve terminals, independent checker and
+21-entry receipt pass. The unchanged gate gives
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223469765\times10^{-8},
+6.5357267459\times10^{-4},
+8.4905089528\times10^{-7}),
+\]
+
+so it is `VALID_NOT_MET`: only \(R_\rho\) passes. Relative to the historical
+direct \(x_4=G_2(x_3)\) evaluation, \(R_a\) falls about 70.74% while
+\(R_L\) rises about 37.45%.
+This is not componentwise improvement and proves neither convergence nor an
+AA(1) verdict. No retry or successor was started; see
+[rank2_latest_modal_aa1_map_result.md](rank2_latest_modal_aa1_map_result.md).
 
 ## Current boundary
 
