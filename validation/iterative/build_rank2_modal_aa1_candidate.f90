@@ -1,5 +1,5 @@
 program build_rank2_modal_aa1_candidate
-  ! Materialize one rank-two modal-projected Anderson(1) proposal without
+  ! Materialize one rank-two modal-projected Anderson proposal without
   ! assembly, transport, or a nonlinear-map evaluation.
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
@@ -43,7 +43,13 @@ program build_rank2_modal_aa1_candidate
 
   consecutive_mode=.false.
   argument_offset=0
-  if (command_argument_count() == 8) then
+  if (command_argument_count() == 10) then
+    call get_command_argument(1,mode)
+    if (trim(mode) /= '--rolling-aa2') &
+      error stop 'ten-argument mode requires --rolling-aa2'
+    call build_rolling_aa2_candidate()
+    stop
+  else if (command_argument_count() == 8) then
     call get_command_argument(1,mode)
     if (trim(mode) == '--next') then
       call build_next_candidate(.false.,.false.,.false.,.false.)
@@ -74,6 +80,8 @@ program build_rank2_modal_aa1_candidate
       '--rolling-aa1 aa1 aa1p xnext xnextp xnextp_snap '// &
       'out_ax out_snap or '// &
       '--rolling-aa1-next xnext xnextp xroll xrollp xrollp_snap '// &
+      'out_ax out_snap or '// &
+      '--rolling-aa2 x0 x0p x1 x1p x2 x2p x2p_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap'
   endif
@@ -260,6 +268,244 @@ program build_rank2_modal_aa1_candidate
     ' PROPOSAL COMPLETE NOT-EVALUATED NO-DRAGON NO-MAP'
 
 contains
+
+  subroutine build_rolling_aa2_candidate()
+    character(len=1024) :: aa2_path(9)
+    type(canonical_state) :: in0,out0,in1,out1,in2,out2
+    type(c_ptr) :: out2_snap,aa2_staged_ax,aa2_staged_snap
+    type(c_ptr) :: aa2_out_ax,aa2_out_snap,aa2_fluxes,aa2_plane
+    character(len=12) :: aa2_marker
+    integer :: j,g,s,r,ia,ib,ig,il,nm,nr,positive_count
+    real(real64) :: f0a,f0b,f1a,f1b,f2a,f2b
+    real(real64) :: d0a,d0b,d1a,d1b,metric
+    real(real64) :: h00,h01,h11,c0,c1,f2_sq,determinant
+    real(real64) :: gamma0,gamma1,alpha0,alpha1,alpha2,predicted_sq
+    real(real64) :: rho_affine,rho_public,l_roundtrip
+    real(real64) :: reconstructed,min_reconstructed,iter_k
+    real(real32) :: k_public,projected
+    real(real64), allocatable :: candidate_a(:),candidate_l(:)
+    real(real32), allocatable :: published_l(:)
+
+    do j=1,9
+      call get_command_argument(j+1,aa2_path(j))
+      if ((len_trim(aa2_path(j)) == 0).or. &
+          (len_trim(aa2_path(j)) > max_path)) &
+        error stop 'AA2 XSM path is empty or exceeds GANLIB limit'
+    enddo
+    if (trim(aa2_path(8)) == trim(aa2_path(9))) &
+      error stop 'AA2 candidate AX and snapshot paths must differ'
+    call require_fresh_path(aa2_path(8))
+    call require_fresh_path(aa2_path(9))
+
+    call load_state(trim(aa2_path(1)),in0,'AA2 xnext input', &
+      .true.,'AA1-RAW-FLUX')
+    call load_state(trim(aa2_path(2)),out0,'AA2 xnext output')
+    call load_state(trim(aa2_path(3)),in1,'AA2 xroll input', &
+      .true.,'XNP-RAW-FLUX')
+    call load_state(trim(aa2_path(4)),out1,'AA2 xroll output')
+    call load_state(trim(aa2_path(5)),in2,'AA2 xroll2 input', &
+      .true.,'XRP-RAW-FLUX')
+    call load_state(trim(aa2_path(6)),out2,'AA2 xroll2 output')
+    call compare_next_fixed_space(in0,out0,'AA2 in0/out0')
+    call compare_next_fixed_space(in0,in1,'AA2 in0/in1')
+    call compare_next_fixed_space(in0,out1,'AA2 in0/out1')
+    call compare_next_fixed_space(in0,in2,'AA2 in0/in2')
+    call compare_next_fixed_space(in0,out2,'AA2 in0/out2')
+    call validate_snapshot(trim(aa2_path(7)),in2,out2,out2_snap)
+
+    ! Standard constrained AA(2) in the unchanged Gram-height metric.
+    ! d0=f0-f2 and d1=f1-f2; solve H*gamma=-c exactly as a 2x2
+    ! system.  No condition threshold or fallback is used.
+    h00=0.0_real64
+    h01=0.0_real64
+    h11=0.0_real64
+    c0=0.0_real64
+    c1=0.0_real64
+    f2_sq=0.0_real64
+    do g=1,in0%dims(2)
+      nm=in0%rank(g)
+      do s=1,in0%dims(3)
+        do ia=1,nm
+          il=in0%offset(g)+(s-1)*nm+ia
+          f0a=out0%coordinates(il)-in0%coordinates(il)
+          f1a=out1%coordinates(il)-in1%coordinates(il)
+          f2a=out2%coordinates(il)-in2%coordinates(il)
+          d0a=f0a-f2a
+          d1a=f1a-f2a
+          do ib=1,nm
+            r=in0%offset(g)+(s-1)*nm+ib
+            ig=in0%gram_offset(g)+(ib-1)*nm+ia
+            f0b=out0%coordinates(r)-in0%coordinates(r)
+            f1b=out1%coordinates(r)-in1%coordinates(r)
+            f2b=out2%coordinates(r)-in2%coordinates(r)
+            d0b=f0b-f2b
+            d1b=f1b-f2b
+            metric=in0%height(s)*in0%gram(ig)
+            h00=h00+d0a*metric*d0b
+            h01=h01+d0a*metric*d1b
+            h11=h11+d1a*metric*d1b
+            c0=c0+d0a*metric*f2b
+            c1=c1+d1a*metric*f2b
+            f2_sq=f2_sq+f2a*metric*f2b
+          enddo
+        enddo
+      enddo
+    enddo
+    if ((.not.ieee_is_finite(h00)).or.(h00 <= 0.0_real64).or. &
+        (.not.ieee_is_finite(h01)).or. &
+        (.not.ieee_is_finite(h11)).or.(h11 <= 0.0_real64).or. &
+        (.not.ieee_is_finite(c0)).or.(.not.ieee_is_finite(c1)).or. &
+        (.not.ieee_is_finite(f2_sq)).or.(f2_sq < 0.0_real64)) &
+      error stop 'invalid rolling AA2 modal geometry'
+    determinant=h00*h11-h01*h01
+    if ((.not.ieee_is_finite(determinant)).or. &
+        (determinant <= 0.0_real64)) &
+      error stop 'singular rolling AA2 system'
+    gamma0=(h01*c1-h11*c0)/determinant
+    gamma1=(h01*c0-h00*c1)/determinant
+    alpha0=gamma0
+    alpha1=gamma1
+    alpha2=1.0_real64-gamma0-gamma1
+    if ((.not.ieee_is_finite(alpha0)).or. &
+        (.not.ieee_is_finite(alpha1)).or. &
+        (.not.ieee_is_finite(alpha2))) &
+      error stop 'nonfinite rolling AA2 weight'
+    predicted_sq=f2_sq+2.0_real64*gamma0*c0+ &
+      2.0_real64*gamma1*c1+gamma0*gamma0*h00+ &
+      2.0_real64*gamma0*gamma1*h01+gamma1*gamma1*h11
+    if ((.not.ieee_is_finite(predicted_sq)).or. &
+        (predicted_sq < 0.0_real64)) &
+      error stop 'invalid rolling AA2 predicted residual'
+
+    allocate(candidate_a(size(out2%coordinates)))
+    allocate(candidate_l(size(out2%leakage)))
+    allocate(published_l(size(out2%leakage)))
+    candidate_a=alpha0*out0%coordinates+alpha1*out1%coordinates+ &
+      alpha2*out2%coordinates
+    candidate_l=alpha0*out0%leakage+alpha1*out1%leakage+ &
+      alpha2*out2%leakage
+    published_l=real(candidate_l,real32)
+    rho_affine=alpha0*out0%rho+alpha1*out1%rho+alpha2*out2%rho
+    if ((.not.ieee_is_finite(rho_affine)).or. &
+        (rho_affine <= 0.0_real64)) &
+      error stop 'invalid rolling AA2 affine inverse eigenvalue'
+    k_public=real(1.0_real64/rho_affine,real32)
+    if ((.not.ieee_is_finite(k_public)).or. &
+        (k_public <= 0.0_real32)) &
+      error stop 'invalid rolling AA2 published eigenvalue'
+    rho_public=1.0_real64/real(k_public,real64)
+    if (any(.not.ieee_is_finite(candidate_a)).or. &
+        any(.not.ieee_is_finite(candidate_l)).or. &
+        any(.not.ieee_is_finite(published_l)).or. &
+        (.not.ieee_is_finite(rho_public)).or. &
+        (rho_public <= 0.0_real64)) &
+      error stop 'nonfinite rolling AA2 proposal'
+    l_roundtrip=maxval(abs(real(published_l,real64)-candidate_l))
+
+    min_reconstructed=huge(min_reconstructed)
+    positive_count=0
+    do g=1,out2%dims(2)
+      nm=out2%rank(g)
+      nr=(out2%basis_offset(g+1)-out2%basis_offset(g))/nm
+      do s=1,out2%dims(3)
+        do r=1,nr
+          reconstructed=0.0_real64
+          do ia=1,nm
+            il=out2%offset(g)+(s-1)*nm+ia
+            ib=out2%basis_offset(g)+(ia-1)*nr+r
+            reconstructed=reconstructed+ &
+              real(out2%basis(ib),real64)*candidate_a(il)
+          enddo
+          projected=real(reconstructed,real32)
+          if ((.not.ieee_is_finite(reconstructed)).or. &
+              (.not.ieee_is_finite(projected)).or. &
+              (projected <= 0.0_real32)) &
+            error stop 'rolling AA2 reconstructed flux is not positive'
+          positive_count=positive_count+1
+          min_reconstructed=min(min_reconstructed,real(projected,real64))
+        enddo
+      enddo
+    enddo
+    if (positive_count /= out2%dims(2)*out2%dims(3)*8) &
+      error stop 'rolling AA2 reconstructed-flux census is incomplete'
+
+    ! Carry the latest returned raw AX/snapshot payload without mixing it.
+    call LCMOP(aa2_staged_ax,' ',0,1,0)
+    call LCMEQU(out2%root,aa2_staged_ax)
+    call LCMPUT(aa2_staged_ax,'SPOT-X-A',size(candidate_a),4,candidate_a)
+    call LCMPUT(aa2_staged_ax,'K-EFFECTIVE',1,2,k_public)
+    call LCMPUT(aa2_staged_ax,'SPOT-X-RHO',1,4,rho_public)
+    call LCMPUT(aa2_staged_ax,'SPOT-X-L',size(published_l),4, &
+      real(published_l,real64))
+    call delete_if_present(aa2_staged_ax,'SPOT-X-RRHO')
+    call delete_if_present(aa2_staged_ax,'SPOT-X-RLEAK')
+    call delete_if_present(aa2_staged_ax,'SPOT-X-DLEAK')
+    call delete_if_present(aa2_staged_ax,'SPOT-X-RA')
+    call delete_if_present(aa2_staged_ax,'SPOT-X-PERP')
+    call delete_if_present(aa2_staged_ax,'SPOT-X-EPOCH')
+    call delete_if_present(aa2_staged_ax,'SPOT-GBAL')
+    call delete_if_present(aa2_staged_ax,'SPOT-GBAL-MA')
+    aa2_marker='PROPOSAL'
+    call LCMPTC(aa2_staged_ax,'SPOT-X-STATE',12,aa2_marker)
+    aa2_marker='AA2-RAW-FLUX'
+    call LCMPTC(aa2_staged_ax,'SPOT-X-CARR',12,aa2_marker)
+    call LCMOP(aa2_out_ax,trim(aa2_path(8)),0,2,0)
+    call LCMEQU(aa2_staged_ax,aa2_out_ax)
+    call LCMCL(aa2_out_ax,1)
+    call LCMCL(aa2_staged_ax,2)
+
+    call LCMOP(aa2_staged_snap,' ',0,1,0)
+    call LCMEQU(out2_snap,aa2_staged_snap)
+    iter_k=real(k_public,real64)
+    call LCMPUT(aa2_staged_snap,'SPOT-ITER-K',1,4,iter_k)
+    call delete_if_present(aa2_staged_snap,'SPOT-L1-ERR')
+    call delete_if_present(aa2_staged_snap,'SPOT-PJ-PERP')
+    call delete_if_present(aa2_staged_snap,'SPOT-PROJECT')
+    aa2_fluxes=LCMGID(aa2_staged_snap,'FLUX')
+    do s=1,out2%dims(3)
+      aa2_plane=LCMGIL(aa2_fluxes,s)
+      il=(s-1)*out2%dims(2)+1
+      call LCMPUT(aa2_plane,'SPOT-LEAK1D',out2%dims(2),2, &
+        published_l(il:il+out2%dims(2)-1))
+    enddo
+    call LCMOP(aa2_out_snap,trim(aa2_path(9)),0,2,0)
+    call LCMEQU(aa2_staged_snap,aa2_out_snap)
+    call LCMCL(aa2_out_snap,1)
+    call LCMCL(aa2_staged_snap,2)
+
+    call LCMCL(out2_snap,1)
+    call LCMCL(out2%root,1)
+    call LCMCL(in2%root,1)
+    call LCMCL(out1%root,1)
+    call LCMCL(in1%root,1)
+    call LCMCL(out0%root,1)
+    call LCMCL(in0%root,1)
+
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 ALPHA-XNEXT-PLUS ',alpha0
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 ALPHA-XROLL-PLUS ',alpha1
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 ALPHA-XROLL2-PLUS ',alpha2
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 H00 ',h00
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 H01 ',h01
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 H11 ',h11
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 DETERMINANT ',determinant
+    write(*,'(A,ES24.16)') &
+      'RANK2-ROLLING-AA2 PREDICTED-RESIDUAL-SQ ',predicted_sq
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 RHO-AFFINE ',rho_affine
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 K-PUBLISHED ', &
+      real(k_public,real64)
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 RHO-PUBLISHED ',rho_public
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 RHO-Q-DELTA ', &
+      rho_public-rho_affine
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 L-ROUNDTRIP-MAX ', &
+      l_roundtrip
+    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 MIN-PUBLISHED-BA ', &
+      min_reconstructed
+    write(*,'(A,I0)') 'RANK2-ROLLING-AA2 POSITIVE-BA-POINTS ', &
+      positive_count
+    write(*,'(A)') 'RANK2-ROLLING-AA2 CARRIER AA2-RAW-FLUX'
+    write(*,'(A)') 'RANK2-ROLLING-AA2 CLASSIFICATION '// &
+      'MATERIALIZED_PROPOSAL_NOT_EVALUATED NO-DRAGON NO-MAP'
+  end subroutine build_rolling_aa2_candidate
 
   subroutine build_next_candidate(u_mode,post_aa1_mode,rolling_mode, &
       rolling_next_mode)

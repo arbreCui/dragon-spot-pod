@@ -1,6 +1,6 @@
 program check_rank2_modal_aa1_candidate
   ! Independent, read-only Ganlib audit of one materialized rank-2
-  ! modal-projected Anderson(1) proposal.  This program performs no
+  ! modal-projected Anderson proposal.  This program performs no
   ! assembly, transport solve, map evaluation, or convergence decision.
   !
   !   check_rank2_modal_aa1_candidate x0 x1 x2 x2_snap basis \
@@ -15,6 +15,8 @@ program check_rank2_modal_aa1_candidate
   !     xnextp xnextp_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --rolling-aa1-next xnext xnextp \
   !     xroll xrollp xrollp_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --rolling-aa2 x0 x0p x1 x1p \
+  !     x2 x2p x2p_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive x1_pub x2 x3 \
   !     x3_snap basis proposal_ax proposal_snap
   use GANLIB
@@ -54,7 +56,7 @@ program check_rank2_modal_aa1_candidate
     real(real64) :: gram_error=0.0_real64
   end type canonical_state
 
-  character(len=1024) :: path(8)
+  character(len=1024) :: path(10)
   character(len=1024) :: mode_argument
   type(canonical_state) :: x0,x1,x2,proposal
   real(real64), allocatable :: expected_a(:),expected_l(:)
@@ -77,7 +79,21 @@ program check_rank2_modal_aa1_candidate
   rolling_mode=.false.
   rolling_next_mode=.false.
   consecutive_mode=.false.
-  if (argument_count == 9) then
+  if (argument_count == 11) then
+    call get_command_argument(1,mode_argument)
+    if (trim(mode_argument) /= '--rolling-aa2') &
+      call fail('ELEVEN ARGUMENTS REQUIRE --ROLLING-AA2.')
+    do i=1,10
+      call get_command_argument(i+1,path(i))
+      if (len_trim(path(i)) == 0) call fail('EMPTY AA2 XSM PATH ARGUMENT.')
+      if (len_trim(path(i)) > max_xsm_path) &
+        call fail('AA2 XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+    enddo
+    call check_rolling_aa2_candidate(trim(path(1)),trim(path(2)), &
+      trim(path(3)),trim(path(4)),trim(path(5)),trim(path(6)), &
+      trim(path(7)),trim(path(8)),trim(path(9)),trim(path(10)))
+    stop
+  else if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--u') then
       u_mode=.true.
@@ -119,7 +135,7 @@ program check_rank2_modal_aa1_candidate
   else
     call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
       'SEVEN, OR --NEXT/--U/--POST-AA1/--ROLLING-AA1/'// &
-      '--ROLLING-AA1-NEXT PLUS EIGHT.')
+      '--ROLLING-AA1-NEXT PLUS EIGHT, OR --ROLLING-AA2 PLUS TEN.')
   endif
 
   if (next_mode) then
@@ -239,6 +255,186 @@ program check_rank2_modal_aa1_candidate
   endif
 
 contains
+
+  subroutine check_rolling_aa2_candidate(in0_name,out0_name,in1_name, &
+      out1_name,in2_name,out2_name,out2_snap_name,basis_name, &
+      proposal_name,proposal_snap_name)
+    character(len=*), intent(in) :: in0_name,out0_name,in1_name,out1_name
+    character(len=*), intent(in) :: in2_name,out2_name,out2_snap_name
+    character(len=*), intent(in) :: basis_name,proposal_name
+    character(len=*), intent(in) :: proposal_snap_name
+    type(canonical_state) :: in0,out0,in1,out1,in2,out2,proposal_state
+    real(real64), allocatable :: affine_a(:),affine_l(:)
+    real(real32), allocatable :: published_l(:)
+    real(real64) :: f0a,f0b,f1a,f1b,f2a,f2b
+    real(real64) :: d0a,d0b,d1a,d1b,metric
+    real(real64) :: h00,h01,h11,c0,c1,f2_sq,determinant
+    real(real64) :: gamma0,gamma1,alpha0,alpha1,alpha2,predicted_sq
+    real(real64) :: rho_affine,rho_published,publication_delta
+    real(real32) :: keff_published,min_published_flux
+    integer :: g,s,a,b,nmode,index_a,index_b,index_g
+    integer :: min_group,min_snapshot,min_region
+
+    call load_state(in0_name,2,in0,'AA2 XNEXT INPUT','AA1-RAW-FLUX')
+    call load_state(out0_name,1,out0,'AA2 XNEXT OUTPUT')
+    call load_state(in1_name,2,in1,'AA2 XROLL INPUT','XNP-RAW-FLUX')
+    call load_state(out1_name,1,out1,'AA2 XROLL OUTPUT')
+    call load_state(in2_name,2,in2,'AA2 XROLL2 INPUT','XRP-RAW-FLUX')
+    call load_state(out2_name,1,out2,'AA2 XROLL2 OUTPUT')
+    call load_state(proposal_name,2,proposal_state, &
+      'AA2 MATERIALIZED PROPOSAL','AA2-RAW-FLUX')
+
+    call compare_fixed_basis_layout(in0,out0,'AA2 IN0/OUT0')
+    call compare_fixed_basis_layout(in0,in1,'AA2 IN0/IN1')
+    call compare_fixed_basis_layout(in0,out1,'AA2 IN0/OUT1')
+    call compare_fixed_basis_layout(in0,in2,'AA2 IN0/IN2')
+    call compare_fixed_basis_layout(in0,out2,'AA2 IN0/OUT2')
+    call compare_fixed_basis_layout(in0,proposal_state,'AA2 IN0/PROPOSAL')
+    call compare_axial_carrier_metadata(out2,proposal_state,'XROLL2-PLUS')
+    call check_basis_reference(basis_name,proposal_state)
+    call validate_input_snapshot(out2_snap_name,in2,out2, &
+      'XROLL2','XROLL2-PLUS')
+
+    h00=0.0_real64
+    h01=0.0_real64
+    h11=0.0_real64
+    c0=0.0_real64
+    c1=0.0_real64
+    f2_sq=0.0_real64
+    do g=1,in0%dims(2)
+      nmode=in0%rank(g)
+      do s=1,in0%dims(3)
+        do a=1,nmode
+          index_a=in0%offset(g)+(s-1)*nmode+a
+          f0a=out0%coordinates(index_a)-in0%coordinates(index_a)
+          f1a=out1%coordinates(index_a)-in1%coordinates(index_a)
+          f2a=out2%coordinates(index_a)-in2%coordinates(index_a)
+          d0a=f0a-f2a
+          d1a=f1a-f2a
+          do b=1,nmode
+            index_b=in0%offset(g)+(s-1)*nmode+b
+            index_g=in0%gram_offset(g)+(b-1)*nmode+a
+            f0b=out0%coordinates(index_b)-in0%coordinates(index_b)
+            f1b=out1%coordinates(index_b)-in1%coordinates(index_b)
+            f2b=out2%coordinates(index_b)-in2%coordinates(index_b)
+            d0b=f0b-f2b
+            d1b=f1b-f2b
+            metric=in0%height(s)*in0%gram(index_g)
+            h00=h00+d0a*metric*d0b
+            h01=h01+d0a*metric*d1b
+            h11=h11+d1a*metric*d1b
+            c0=c0+d0a*metric*f2b
+            c1=c1+d1a*metric*f2b
+            f2_sq=f2_sq+f2a*metric*f2b
+          enddo
+        enddo
+      enddo
+    enddo
+    if ((.not.ieee_is_finite(h00)).or.(h00 <= 0.0_real64).or. &
+        (.not.ieee_is_finite(h01)).or. &
+        (.not.ieee_is_finite(h11)).or.(h11 <= 0.0_real64).or. &
+        (.not.ieee_is_finite(c0)).or.(.not.ieee_is_finite(c1)).or. &
+        (.not.ieee_is_finite(f2_sq)).or.(f2_sq < 0.0_real64)) &
+      call fail('INVALID ROLLING AA2 MODAL GEOMETRY.')
+    determinant=h00*h11-h01*h01
+    if ((.not.ieee_is_finite(determinant)).or. &
+        (determinant <= 0.0_real64)) &
+      call fail('SINGULAR ROLLING AA2 SYSTEM.')
+    gamma0=(h01*c1-h11*c0)/determinant
+    gamma1=(h01*c0-h00*c1)/determinant
+    alpha0=gamma0
+    alpha1=gamma1
+    alpha2=1.0_real64-gamma0-gamma1
+    if ((.not.ieee_is_finite(alpha0)).or. &
+        (.not.ieee_is_finite(alpha1)).or. &
+        (.not.ieee_is_finite(alpha2))) &
+      call fail('NON-FINITE ROLLING AA2 WEIGHT.')
+    predicted_sq=f2_sq+2.0_real64*gamma0*c0+ &
+      2.0_real64*gamma1*c1+gamma0*gamma0*h00+ &
+      2.0_real64*gamma0*gamma1*h01+gamma1*gamma1*h11
+    if ((.not.ieee_is_finite(predicted_sq)).or. &
+        (predicted_sq < 0.0_real64)) &
+      call fail('INVALID ROLLING AA2 PREDICTED RESIDUAL.')
+
+    allocate(affine_a(size(out2%coordinates)))
+    affine_a=alpha0*out0%coordinates+alpha1*out1%coordinates+ &
+      alpha2*out2%coordinates
+    if (any(.not.ieee_is_finite(affine_a))) &
+      call fail('NON-FINITE ROLLING AA2 AFFINE MODAL PROPOSAL.')
+    if (any(real64_bits(affine_a) /= &
+            real64_bits(proposal_state%coordinates))) &
+      call fail('ROLLING AA2 SPOT-X-A DIFFERS FROM REAL64 AFFINE VALUE.')
+
+    rho_affine=alpha0*out0%rho+alpha1*out1%rho+alpha2*out2%rho
+    if ((.not.ieee_is_finite(rho_affine)).or. &
+        (rho_affine <= 0.0_real64)) &
+      call fail('NONPOSITIVE ROLLING AA2 AFFINE INVERSE EIGENVALUE.')
+    keff_published=real(1.0_real64/rho_affine,real32)
+    if ((.not.ieee_is_finite(keff_published)).or. &
+        (keff_published <= 0.0_real32)) &
+      call fail('NONPOSITIVE ROLLING AA2 PUBLISHED EIGENVALUE.')
+    rho_published=1.0_real64/real(keff_published,real64)
+    if (real32_bits(proposal_state%keff) /= &
+        real32_bits(keff_published)) &
+      call fail('ROLLING AA2 K-EFFECTIVE DIFFERS FROM PUBLICATION.')
+    if (real64_bits(proposal_state%rho) /= real64_bits(rho_published)) &
+      call fail('ROLLING AA2 SPOT-X-RHO DIFFERS FROM K RECIPROCAL.')
+    publication_delta=abs(rho_published-rho_affine)
+
+    allocate(affine_l(size(out2%leakage)))
+    allocate(published_l(size(out2%leakage)))
+    affine_l=alpha0*out0%leakage+alpha1*out1%leakage+ &
+      alpha2*out2%leakage
+    published_l=real(affine_l,real32)
+    if (any(.not.ieee_is_finite(affine_l)).or. &
+        any(.not.ieee_is_finite(published_l))) &
+      call fail('NON-FINITE ROLLING AA2 PUBLISHED LEAKAGE.')
+    if (any(real64_bits(proposal_state%leakage) /= &
+            real64_bits(real(published_l,real64)))) &
+      call fail('ROLLING AA2 SPOT-X-L DIFFERS FROM PUBLICATION.')
+    if (real64_bits(proposal_state%norm) /= real64_bits(out2%norm)) &
+      call fail('ROLLING AA2 NORM DIFFERS FROM LATEST RAW CARRIER.')
+
+    call compare_axial_carrier_payload(out2_name,proposal_name)
+    call compare_axial_raw_flux(out2_name,proposal_name,out2%state(2))
+    call check_snapshot_publication(out2_snap_name,proposal_snap_name, &
+      published_l,keff_published)
+    call check_projected_positivity(proposal_state,min_published_flux, &
+      min_group,min_snapshot,min_region)
+
+    call write_real64_metric('RANK2-ROLLING-AA2 ALPHA-XNEXT-PLUS',alpha0)
+    call write_real64_metric('RANK2-ROLLING-AA2 ALPHA-XROLL-PLUS',alpha1)
+    call write_real64_metric('RANK2-ROLLING-AA2 ALPHA-XROLL2-PLUS',alpha2)
+    call write_real64_metric('RANK2-ROLLING-AA2 H00',h00)
+    call write_real64_metric('RANK2-ROLLING-AA2 H01',h01)
+    call write_real64_metric('RANK2-ROLLING-AA2 H11',h11)
+    call write_real64_metric('RANK2-ROLLING-AA2 DETERMINANT',determinant)
+    call write_real64_metric( &
+      'RANK2-ROLLING-AA2 PREDICTED-RESIDUAL-SQ',predicted_sq)
+    call write_real32_metric('RANK2-ROLLING-AA2 PUBLISHED K', &
+      keff_published)
+    call write_real64_metric('RANK2-ROLLING-AA2 PUBLISHED RHO', &
+      rho_published)
+    call write_real64_metric('RANK2-ROLLING-AA2 RHO PUBLICATION DELTA', &
+      publication_delta)
+    call write_real32_metric('RANK2-ROLLING-AA2 MIN PUBLISHED B*A', &
+      min_published_flux)
+    write(6,'(A,3(1X,I0))') &
+      'RANK2-ROLLING-AA2 MIN B*A GROUP/SNAPSHOT/REGION', &
+      min_group,min_snapshot,min_region
+    write(6,'(A,I0)') 'RANK2-ROLLING-AA2 STRICT-POSITIVE POINTS ', &
+      positive_count_expected
+    write(6,'(A)') 'RANK2-ROLLING-AA2 STANDARD 2X2 SYSTEM PASS'
+    write(6,'(A)') 'RANK2-ROLLING-AA2 FIXED-RANK2-BUNDLE BITWISE PASS'
+    write(6,'(A)') 'RANK2-ROLLING-AA2 PUBLICATION-Q BITWISE PASS'
+    write(6,'(A)') &
+      'RANK2-ROLLING-AA2 LATEST AX/RAW-FLUX CARRIER BITWISE PASS'
+    write(6,'(A)') 'RANK2-ROLLING-AA2 LATEST SNAPSHOT LIFECYCLE PASS'
+    write(6,'(A)') 'RANK2-ROLLING-AA2 NO STALE RESULT RECORD PASS'
+    write(6,'(A)') 'RANK2-ROLLING-AA2 CLASSIFICATION '// &
+      'MATERIALIZED_PROPOSAL_NOT_EVALUATED'
+    write(6,'(A)') 'RANK2-ROLLING-AA2 COMPLETE'
+  end subroutine check_rolling_aa2_candidate
 
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
       basis_name,proposal_name,proposal_snap_name,u_mode,post_aa1_mode, &
