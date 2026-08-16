@@ -61,11 +61,11 @@ printf '%s\n' "$MAP_PARENT_FILE" |
   rg -q '^[A-Za-z0-9][A-Za-z0-9._-]*$' ||
   fail "MAP_PARENT_FILE must be a safe basename."
 case "$CHECKER_MODE" in
-  initial|continued|reencoded|proposal|proposal-z|proposal-v|proposal-x3) ;;
-  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal, proposal-z, proposal-v or proposal-x3." ;;
+  initial|continued|reencoded|proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1) ;;
+  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal, proposal-z, proposal-v, proposal-x3 or proposal-aa1." ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z|proposal-v|proposal-x3)
+  proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1)
     test "$MAP_PARENT_FILE" = parent_axial.xsm ||
       fail "proposal checker modes require MAP_PARENT_FILE=parent_axial.xsm."
     ;;
@@ -252,13 +252,20 @@ case "$CHECKER_MODE" in
         parent_axial.xsm >parent_preflight.log
     )
     ;;
+  proposal-aa1)
+    (
+      cd "$RADIAL_WORK"
+      "$AXIAL_WORK/check_one_map_xsm" --proposal-parent-aa1 \
+        parent_axial.xsm >parent_preflight.log
+    )
+    ;;
   *)
     printf 'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK NOT-APPLICABLE\n' \
       >"$RADIAL_WORK/parent_preflight.log"
     ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z|proposal-v|proposal-x3)
+  proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1)
     test "$(tail -n 1 "$RADIAL_WORK/parent_preflight.log")" = \
       'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK PASS' ||
       fail "proposal parent preflight did not reach its strict terminal."
@@ -382,6 +389,11 @@ done
       ;;
     proposal-x3)
       ./check_one_map_xsm --proposal-x3 basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+    proposal-aa1)
+      ./check_one_map_xsm --proposal-aa1 basis_reference.xsm \
         candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
         candidate_snapshots.xsm >independent_check.log
       ;;

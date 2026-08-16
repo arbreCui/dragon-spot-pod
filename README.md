@@ -388,7 +388,13 @@ $$
 All 8880 reconstructed points are positive. The complete latest raw carrier
 is preserved as `AA1-RAW-FLUX`, and the independent publication/lifecycle
 audit passes. This is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: this stage
-launched no Dragon, created no physical-map host for
-$x_{\mathrm{next}}$, and produced no new defect or convergence conclusion.
+launched no Dragon and produced no new defect or convergence conclusion.
 See
 [validation/iterative/rank2_modal_aa1_post_candidate_result.md](validation/iterative/rank2_modal_aa1_post_candidate_result.md).
+
+A dedicated one-map host for this proposal is now prepared but default-off.
+It requires the exact `AA1-RAW-FLUX` carrier, keeps the fixed rank-two basis,
+unchanged physical decks and `5.0e-7` tolerance, and permits one attempt with
+no retry or successor map. Preparing the host performed no Dragon calculation;
+see
+[validation/iterative/rank2_modal_aa1_post_map_policy.md](validation/iterative/rank2_modal_aa1_post_map_policy.md).

@@ -97,6 +97,10 @@ generic, default-off continuation host.
   `rank2_modal_aa1_post_candidate_result.md`: the next standard AA(1)
   proposal from the two latest evaluated residuals, materialized offline with
   the complete `AA1-RAW-FLUX` carrier and no new map.
+- `rank2_modal_aa1_post_map_parent.tsv`,
+  `rank2_modal_aa1_post_map_policy.md`,
+  `run_rank2_modal_aa1_post_map.sh`: default-off host for exactly one map from
+  that proposal, with a strict pre-Dragon `AA1-RAW-FLUX` gate and no retry.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -431,8 +435,15 @@ complete latest returned carrier marked `AA1-RAW-FLUX`. The independent
 checker passes the affine publication, exact snapshot lifecycle and 8880/8880
 positive reconstructions. It remains
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: this stage launched no Dragon and
-created no physical-map host, and it produced no new stopping defect. See
+produced no new stopping defect. See
 [rank2_modal_aa1_post_candidate_result.md](rank2_modal_aa1_post_candidate_result.md).
+
+Its dedicated one-map host is prepared but remains default-off. It accepts
+only the hash-locked proposal with the exact `AA1-RAW-FLUX` carrier, retains
+the fixed rank-two basis and unchanged `5.0e-7` gate, and permits one attempt
+without retry or successor map. No Dragon calculation was performed while
+preparing this host; see
+[rank2_modal_aa1_post_map_policy.md](rank2_modal_aa1_post_map_policy.md).
 
 ## Current boundary
 
