@@ -102,6 +102,11 @@ generic, default-off continuation host.
   `run_rank2_modal_aa1_post_map.sh`,
   `rank2_modal_aa1_post_map_result.md`: default-off host for exactly one map
   from that proposal and its completed, no-retry `VALID_NOT_MET` result.
+- `rank2_modal_aa1_rolling_candidate_inputs.tsv`,
+  `run_rank2_modal_aa1_rolling_candidate.sh`,
+  `rank2_modal_aa1_rolling_candidate_result.md`: the next rolling AA(1)
+  proposal from the two latest valid maps, materialized offline with the
+  complete `XNP-RAW-FLUX` carrier and no new map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -456,6 +461,24 @@ not componentwise improvement or a convergence factor. No successor map was
 started; see
 [rank2_modal_aa1_post_map_result.md](rank2_modal_aa1_post_map_result.md).
 
+The two latest valid map pairs then give the standard rolling depth-one
+coefficient `0.5607794188057197` on \(x_{\mathrm{next}}^+\), hence
+
+\[
+x_{\mathrm{roll}}=
+0.4392205811942803x_{\mathrm{AA1}}^+
++0.5607794188057197x_{\mathrm{next}}^+.
+\]
+
+This naturally convex, unclipped proposal has been materialized without
+Dragon. The checker passes exact publication, the
+\(x_{\mathrm{next}}\to x_{\mathrm{next}}^+\) lifecycle, complete
+`XNP-RAW-FLUX` carrier identity and 8880/8880 positive reconstructions. It is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; the offline minimized modal residual
+is not a new stopping defect, and no map host or successor map was created.
+See
+[rank2_modal_aa1_rolling_candidate_result.md](rank2_modal_aa1_rolling_candidate_result.md).
+
 ## Current boundary
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
@@ -478,8 +501,8 @@ One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
 The separate fixed-rank-two AA(1) study also remains unconverged. Its latest
-step is the one evaluated map above; it is valid, but $R_L$ and $R_a$ still
-fail the declared gate.
+evaluated map is valid, but $R_L$ and $R_a$ still fail the declared gate. The
+new rolling state above is only an unevaluated offline proposal.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

@@ -409,3 +409,21 @@ not componentwise improving. This is a cross-input comparison, not a
 convergence factor or proof of Anderson superiority. No successor map was
 started; see
 [validation/iterative/rank2_modal_aa1_post_map_result.md](validation/iterative/rank2_modal_aa1_post_map_result.md).
+
+The two latest valid maps now define one further seconds-scale, no-Dragon
+rolling AA(1) proposal:
+
+$$
+x_{\mathrm{roll}}=
+0.4392205811942803x_{\mathrm{AA1}}^+
++0.5607794188057197x_{\mathrm{next}}^+.
+$$
+
+The coefficient is the unique standard Gram-height minimizer; it is naturally
+convex and was not clipped or tuned. The independently checked publication
+keeps all 8880 reconstructed points positive and carries the complete latest
+returned raw payload as `XNP-RAW-FLUX`. This is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: the predicted modal residual reduction
+is not a real stopping defect, and no Dragon or successor map was started.
+See
+[validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).

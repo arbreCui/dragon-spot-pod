@@ -238,6 +238,24 @@ cross-input response is not a convergence factor or proof of Anderson
 superiority. No successor map was started. See
 [../validation/iterative/rank2_modal_aa1_post_map_result.md](../validation/iterative/rank2_modal_aa1_post_map_result.md).
 
+The two latest valid map pairs subsequently define one standard rolling
+depth-one proposal without another solve:
+
+\[
+x_{\mathrm{roll}}=
+0.4392205811942803x_{\mathrm{AA1}}^+
++0.5607794188057197x_{\mathrm{next}}^+.
+\]
+
+The Gram-height coefficient is unique, naturally convex and unmodified. Its
+independent no-Dragon checker passes the complete `XNP-RAW-FLUX` carrier,
+the actual \(x_{\mathrm{next}}\to x_{\mathrm{next}}^+\) snapshot lifecycle
+and 8880/8880 positive reconstructions. The classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; its offline modal residual prediction
+is not a real stopping defect, and no physical-map host or successor map was
+created. See
+[../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

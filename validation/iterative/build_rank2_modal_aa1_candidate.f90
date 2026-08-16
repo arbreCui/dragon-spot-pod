@@ -46,13 +46,16 @@ program build_rank2_modal_aa1_candidate
   if (command_argument_count() == 8) then
     call get_command_argument(1,mode)
     if (trim(mode) == '--next') then
-      call build_next_candidate(.false.,.false.)
+      call build_next_candidate(.false.,.false.,.false.)
     else if (trim(mode) == '--u') then
-      call build_next_candidate(.true.,.false.)
+      call build_next_candidate(.true.,.false.,.false.)
     else if (trim(mode) == '--post-aa1') then
-      call build_next_candidate(.false.,.true.)
+      call build_next_candidate(.false.,.true.,.false.)
+    else if (trim(mode) == '--rolling-aa1') then
+      call build_next_candidate(.false.,.false.,.true.)
     else
-      error stop 'eight-argument mode requires --next, --u or --post-aa1'
+      error stop 'eight-argument mode requires --next, --u, '// &
+        '--post-aa1 or --rolling-aa1'
     endif
     stop
   else if (command_argument_count() == 7) then
@@ -66,6 +69,8 @@ program build_rank2_modal_aa1_candidate
       '--next x1 x2 y z z_snap out_ax out_snap or '// &
       '--u y z w v v_snap out_ax out_snap or '// &
       '--post-aa1 x2 x3 aa1 aa1p aa1p_snap out_ax out_snap or '// &
+      '--rolling-aa1 aa1 aa1p xnext xnextp xnextp_snap '// &
+      'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap'
   endif
   do i=1,6
@@ -252,8 +257,8 @@ program build_rank2_modal_aa1_candidate
 
 contains
 
-  subroutine build_next_candidate(u_mode,post_aa1_mode)
-    logical, intent(in) :: u_mode,post_aa1_mode
+  subroutine build_next_candidate(u_mode,post_aa1_mode,rolling_mode)
+    logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
     character(len=1024) :: next_path(7)
     character(len=24) :: report_prefix
     character(len=12) :: next_marker,input_carrier,output_carrier
@@ -282,9 +287,17 @@ contains
     call require_fresh_path(next_path(6))
     call require_fresh_path(next_path(7))
 
-    if (u_mode.and.post_aa1_mode) &
+    if ((u_mode.and.post_aa1_mode).or. &
+        (u_mode.and.rolling_mode).or. &
+        (post_aa1_mode.and.rolling_mode)) &
       error stop 'next proposal modes are mutually exclusive'
-    if (post_aa1_mode) then
+    if (rolling_mode) then
+      input_carrier='AA1-RAW-FLUX'
+      output_carrier='XNP-RAW-FLUX'
+      report_prefix='RANK2-ROLL-AA1'
+      latest_output='XNEXT-P'
+      previous_output='AA1-PLUS'
+    else if (post_aa1_mode) then
       input_carrier='X3-RAW-FLUX'
       output_carrier='AA1-RAW-FLUX'
       report_prefix='RANK2-POST-AA1'
@@ -304,7 +317,10 @@ contains
       previous_output='X2'
     endif
 
-    if (u_mode) then
+    if (rolling_mode) then
+      call load_state(trim(next_path(1)),next_x1,'previous proposal input', &
+        .true.,'X3-RAW-FLUX')
+    else if (u_mode) then
       call load_state(trim(next_path(1)),next_x1,'previous proposal input', &
         .true.,'X2-RAW-FLUX')
     else
