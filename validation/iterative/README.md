@@ -165,6 +165,11 @@ generic, default-off continuation host.
   `rank2_latest_modal_aa1_candidate_result.md`: hash-locked, no-Dragon
   materialization of the standard modal AA(1) proposal from the latest two
   consecutive direct Picard residuals.
+- `rank2_latest_modal_aa1_map_parent.tsv`,
+  `rank2_latest_modal_aa1_map_policy.md`,
+  `run_rank2_latest_modal_aa1_map.sh`: default-off host prepared for exactly
+  one strict map from that published proposal, with an exact
+  `X4-RAW-FLUX` carrier gate, no retry, and no automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
