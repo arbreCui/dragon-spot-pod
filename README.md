@@ -459,9 +459,20 @@ is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
 convergence conclusion was produced. See
 [validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).
 
-A dedicated one-map host for this proposal is now prepared but default-off.
-It requires the exact `XRP-RAW-FLUX` carrier and keeps the fixed rank-two
-basis, physical decks and `5.0e-7` gate unchanged. Activation permits one
-attempt with no retry and starts no successor proposal, AA(2) or map.
-Preparing the host performed no Dragon calculation; see
-[validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md](validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md).
+Its dedicated default-off host was then executed exactly once, with no retry.
+The strict `XRP-RAW-FLUX` preflight, three radial terminals, axial terminal,
+independent audit and 21-entry receipt all pass. The map is valid but not
+converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(1.2844695\times10^{-7},\,4.1544793\times10^{-4},\,
+7.7744807\times10^{-7}).
+$$
+
+Only $R_\rho$ meets `5.0e-7`; leakage remains the dominant failure. Relative
+to the preceding different-parent map, $R_L$ rose about 15.39% while $R_a$
+fell about 46.52% but still failed. This mixed comparison is not a convergence
+factor or monotone-convergence claim. No retry, successor proposal, AA(2)
+stage or successor map was started; see
+[validation/iterative/rank2_modal_aa1_rolling_next_map_result.md](validation/iterative/rank2_modal_aa1_rolling_next_map_result.md).

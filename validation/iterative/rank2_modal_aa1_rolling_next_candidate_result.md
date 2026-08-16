@@ -107,3 +107,19 @@ AA(1) proposal. It does not evaluate \(G_2(x_{\mathrm{roll2}})\), create a new
 raw stopping defect or establish convergence, contraction, stability,
 Anderson superiority, rank adequacy or physical accuracy. No Dragon process,
 physical map, retry or successor calculation was started.
+
+## Subsequent map evaluation
+
+The dedicated default-off host was later authorized exactly once and
+evaluated \(G_2(x_{\mathrm{roll2}})\), with no retry. The map is valid but
+does not meet the unchanged three-component stopping gate:
+
+\[
+(R_\rho,R_L,R_a)=
+(1.284469506313002\times10^{-7},
+4.154479333198419\times10^{-4},
+7.774480661208137\times10^{-7}).
+\]
+
+See
+[rank2_modal_aa1_rolling_next_map_result.md](rank2_modal_aa1_rolling_next_map_result.md).

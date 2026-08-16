@@ -289,13 +289,23 @@ the fixed rank-two publication, complete latest `XRP-RAW-FLUX` carrier, true
 defect, map or convergence conclusion. See
 [../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).
 
-A dedicated host is now prepared, but remains default-off, for exactly one
-evaluation of this proposal. It requires the hash-locked `XRP-RAW-FLUX`
-carrier and keeps the fixed rank-two basis, original physical decks and
-`5.0e-7` tolerance. Activation permits one attempt with no retry and starts
-no successor proposal, AA(2) or map. Preparing it performed no Dragon
-calculation; see
-[../validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md](../validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md).
+The dedicated default-off host was subsequently activated exactly once, with
+no retry. The `XRP-RAW-FLUX` preflight, three radial terminals, axial
+terminal, independent audit and 21-entry receipt all pass. The unchanged
+three-component gate gives
+
+\[
+(R_\rho,R_L,R_a)=
+(1.2844695063\times10^{-7},
+4.1544793332\times10^{-4},
+7.7744806612\times10^{-7}),
+\]
+
+so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
+remains the dominant failure. The mixed comparison with the preceding
+different-parent map is not a convergence factor or monotonicity evidence.
+No retry, successor proposal, AA(2) stage or successor map was started; see
+[../validation/iterative/rank2_modal_aa1_rolling_next_map_result.md](../validation/iterative/rank2_modal_aa1_rolling_next_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
