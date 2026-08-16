@@ -160,6 +160,11 @@ generic, default-off continuation host.
   `rank2_latest_picard_next_map_result.md`: default-off host and frozen result
   for exactly one further direct Picard map from the latest valid returned
   state.
+- `rank2_latest_modal_aa1_candidate_inputs.tsv`,
+  `run_rank2_latest_modal_aa1_candidate.sh`,
+  `rank2_latest_modal_aa1_candidate_result.md`: hash-locked, no-Dragon
+  materialization of the standard modal AA(1) proposal from the latest two
+  consecutive direct Picard residuals.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -697,6 +702,22 @@ decreasing, and this mixed step establishes neither convergence nor
 divergence. No retry or further map was started; see
 [rank2_latest_picard_next_map_result.md](rank2_latest_picard_next_map_result.md).
 
+The latest two direct modal residuals are nearly opposed in the Gram-height
+metric, with cosine `-0.985084` and norm ratio `1.963408`. Their unique
+standard AA(1) coefficient gives
+
+\[
+y=0.6636421413x_3+0.3363578587x_4.
+\]
+
+The publication-aware state \(Q(y)\) has been materialized and independently
+checked offline. All 8880 published rank-two points are positive, the
+complete \(x_4\) raw carrier is retained and the nine-entry receipt passes.
+The classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon, map, stopping defect or map
+host was produced. See
+[rank2_latest_modal_aa1_candidate_result.md](rank2_latest_modal_aa1_candidate_result.md).
+
 ## Current boundary
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
@@ -722,10 +743,10 @@ The fixed-rank-two study also remains unconverged. Its latest shifted rolling
 AA(2) proposal and two subsequent direct Picard maps have each been evaluated
 exactly once. All are valid, but $R_L$ and $R_a$ still fail the declared
 gate. The first direct step was locally componentwise improved; the second
-reduced leakage but increased the modal defect. No retry or further map has
-been prepared or started. The offline direction audit localizes the earlier
-leakage response but does not identify rank two or finite inner error as its
-cause.
+reduced leakage but increased the modal defect. One subsequent standard
+modal AA(1) proposal from those direct residuals is now materialized but not
+evaluated. No retry or further map has been prepared or started. The offline
+direction audits do not identify rank two or finite inner error as the cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

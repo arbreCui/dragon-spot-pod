@@ -429,6 +429,22 @@ not evidence of convergence, divergence, a cycle or contraction. No retry or
 further map was started; see
 [../validation/iterative/rank2_latest_picard_next_map_result.md](../validation/iterative/rank2_latest_picard_next_map_result.md).
 
+The latest two direct modal residuals were then compared offline in the
+unchanged Gram-height metric. Their cosine is `-0.985084` and their norm ratio
+is `1.963408`, so the smallest parameter-free next proposal is standard
+modal Anderson(1):
+
+\[
+y=0.6636421413x_3+0.3363578587x_4.
+\]
+
+The unique coefficient was not clipped or prescribed. The publication-aware
+state \(Q(y)\) has been materialized and independently checked; all 8880
+reconstructed rank-two points are positive and the complete \(x_4\) raw
+carrier is retained. This is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no
+Dragon, map, stopping defect or map host was produced. See
+[../validation/iterative/rank2_latest_modal_aa1_candidate_result.md](../validation/iterative/rank2_latest_modal_aa1_candidate_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

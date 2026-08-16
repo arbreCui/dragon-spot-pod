@@ -134,3 +134,10 @@ This is one valid evaluation of the stated fixed rank-two discrete map. It
 does not meet the stopping rule and does not establish asymptotic convergence,
 stability, contraction, convergence order, rank adequacy or physical
 accuracy. No retry, further proposal or further map was started.
+
+## Subsequent offline proposal
+
+The latest two consecutive direct Picard residuals were later used to
+materialize exactly one standard modal AA(1) proposal. That no-Dragon stage
+does not evaluate a map or create a new stopping defect; see
+[rank2_latest_modal_aa1_candidate_result.md](rank2_latest_modal_aa1_candidate_result.md).

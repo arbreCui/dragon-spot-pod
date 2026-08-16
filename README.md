@@ -594,3 +594,20 @@ about 24.38% while $R_a$ rises about 96.34%; the defects are no longer
 componentwise decreasing. This mixed step proves neither convergence nor
 divergence. No retry or further map was started; see
 [validation/iterative/rank2_latest_picard_next_map_result.md](validation/iterative/rank2_latest_picard_next_map_result.md).
+
+The latest two direct modal residuals are nearly opposed in the existing
+Gram-height metric, with cosine `-0.985084` and norm ratio `1.963408`.
+Therefore the smallest parameter-free next study is one standard modal
+Anderson(1) proposal,
+
+$$
+y=0.6636421413x_3+0.3363578587x_4.
+$$
+
+The publication-aware state $Q(y)$ has now been materialized and independently
+checked offline. All 8880 published rank-two flux points are positive, the
+complete $x_4$ raw carrier is retained, and the nine-entry receipt passes.
+Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
+map host was produced. See
+[validation/iterative/rank2_latest_modal_aa1_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_candidate_result.md).
