@@ -131,4 +131,11 @@ This is one valid evaluation of the stated fixed rank-two discrete map. It
 does not meet the stopping rule and does not establish asymptotic convergence,
 stability, contraction, convergence order, rank adequacy or physical
 accuracy. No retry, further successor proposal or further successor map was
-started.
+started as part of that map evaluation.
+
+## Subsequent direct Picard map
+
+The complete returned state was later used as the parent of exactly one
+further direct Picard map. That map is valid but still fails the unchanged
+gate, and its modal defect increases relative to this parent; see
+[rank2_latest_picard_next_map_result.md](rank2_latest_picard_next_map_result.md).

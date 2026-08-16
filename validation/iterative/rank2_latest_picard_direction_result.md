@@ -107,3 +107,10 @@ check_one_map_xsm --proposal-aa2-directions x1.xsm x2.xsm x3.xsm
 
 The three short names were temporary regular-file copies of the hash-locked
 inputs above. The temporary directory was removed after the read-only audit.
+
+## Subsequent separately authorized map
+
+This offline audit did not itself authorize a new map. The user later
+authorized exactly one further direct Picard evaluation from \(x_3\). It is
+valid but does not meet the stopping gate; see
+[rank2_latest_picard_next_map_result.md](rank2_latest_picard_next_map_result.md).

@@ -576,5 +576,21 @@ unchanged, so the 46.26% reduction in $R_L$ comes from the smaller absolute
 update. This is a locally damped sign reversal, not a contraction proof.
 Strict inner termination passed and the outer map remains unclosed; the data
 do not identify rank two or finite inner error as the cause. No new map was
-started; see
+started as part of that audit; see
 [validation/iterative/rank2_latest_picard_direction_result.md](validation/iterative/rank2_latest_picard_direction_result.md).
+
+The complete latest returned state was then used for exactly one further
+direct Picard map. All strict solve terminals, the independent audit and the
+21-entry receipt pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223470\times10^{-8},\,4.7549514\times10^{-4},\,
+2.9019324\times10^{-6}),
+$$
+
+so the result is `VALID_NOT_MET`. Relative to its direct parent, $R_L$ falls
+about 24.38% while $R_a$ rises about 96.34%; the defects are no longer
+componentwise decreasing. This mixed step proves neither convergence nor
+divergence. No retry or further map was started; see
+[validation/iterative/rank2_latest_picard_next_map_result.md](validation/iterative/rank2_latest_picard_next_map_result.md).

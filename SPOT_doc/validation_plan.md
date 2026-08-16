@@ -409,8 +409,25 @@ not a normalization effect. The height-\(L_2\) leakage cosine is
 The inner terminal contract passes and the outer map remains unclosed, but
 without a same-parent tighter solve or rank-three counterfactual the audit
 does not assign the cause to finite inner error or rank two. No Dragon or new
-map was run; see
+map was run as part of that audit; see
 [../validation/iterative/rank2_latest_picard_direction_result.md](../validation/iterative/rank2_latest_picard_direction_result.md).
+
+The complete latest returned state was subsequently used for exactly one
+further direct Picard map. All strict solve terminals, the independent audit
+and the 21-entry receipt pass. The unchanged gate gives
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223469765\times10^{-8},
+4.7549513628\times10^{-4},
+2.9019323645\times10^{-6}),
+\]
+
+so the result is `VALID_NOT_MET`. Relative to its direct parent, \(R_L\)
+falls about 24.38%, while \(R_a\) rises about 96.34%. This mixed update is
+not evidence of convergence, divergence, a cycle or contraction. No retry or
+further map was started; see
+[../validation/iterative/rank2_latest_picard_next_map_result.md](../validation/iterative/rank2_latest_picard_next_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

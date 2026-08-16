@@ -52,3 +52,12 @@ diagnostics. One map cannot establish contraction, convergence order, rank
 adequacy or physical accuracy. It starts no retry or further successor.
 Preparing this host performs no Dragon, transport, assembly or Picard
 calculation and produces no map result.
+
+## Post-run record
+
+The frozen host was subsequently activated exactly once from source commit
+`95dd9204d1010b1583d8d4e4de530b094a80ee98`. All strict solve terminals,
+the independent continued-state audit and the 21-entry receipt passed. The
+runtime classification is `VALID_NOT_MET`; \(R_L\) and \(R_a\) exceed the
+unchanged tolerance. No retry or further map was started. See
+[rank2_latest_picard_next_map_result.md](rank2_latest_picard_next_map_result.md).

@@ -156,8 +156,10 @@ generic, default-off continuation host.
   latest leakage hotspot, signs and separate update directions.
 - `rank2_latest_picard_next_map_parent.tsv`,
   `rank2_latest_picard_next_map_policy.md`,
-  `run_rank2_latest_picard_next_map.sh`: default-off host for exactly one
-  further direct Picard map from the latest valid returned state.
+  `run_rank2_latest_picard_next_map.sh`,
+  `rank2_latest_picard_next_map_result.md`: default-off host and frozen result
+  for exactly one further direct Picard map from the latest valid returned
+  state.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -675,8 +677,25 @@ reduction in \(R_L\) is a smaller absolute update. The non-production
 height-\(L_2\) cosine is `-0.713236`. This is local damped-oscillatory
 evidence, not a contraction result. Strict inner termination passed and the
 outer map remains unclosed, while rank and finite-inner-error causality remain
-unresolved. No new map was started; see
+unresolved. No new map was started as part of that audit; see
 [rank2_latest_picard_direction_result.md](rank2_latest_picard_direction_result.md).
+
+The complete latest returned state was then used for exactly one further
+direct Picard map. The strict solve terminals, independent continued-state
+audit and 21-entry receipt pass. The result is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223469765\times10^{-8},
+4.7549513628\times10^{-4},
+2.9019323645\times10^{-6}).
+\]
+
+Relative to its direct parent, \(R_L\) decreases by about 24.38%, while
+\(R_a\) increases by about 96.34%. The defects are no longer componentwise
+decreasing, and this mixed step establishes neither convergence nor
+divergence. No retry or further map was started; see
+[rank2_latest_picard_next_map_result.md](rank2_latest_picard_next_map_result.md).
 
 ## Current boundary
 
@@ -700,12 +719,13 @@ One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
 The fixed-rank-two study also remains unconverged. Its latest shifted rolling
-AA(2) proposal and one direct Picard successor from that returned state have
-each been evaluated exactly once. Both maps are valid. The direct successor
-is locally componentwise improved, but $R_L$ and $R_a$ still fail the
-declared gate. No retry or further successor has been prepared or started.
-The latest offline direction audit localizes the leakage response but does
-not identify rank two or finite inner error as its cause.
+AA(2) proposal and two subsequent direct Picard maps have each been evaluated
+exactly once. All are valid, but $R_L$ and $R_a$ still fail the declared
+gate. The first direct step was locally componentwise improved; the second
+reduced leakage but increased the modal defect. No retry or further map has
+been prepared or started. The offline direction audit localizes the earlier
+leakage response but does not identify rank two or finite inner error as its
+cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map
