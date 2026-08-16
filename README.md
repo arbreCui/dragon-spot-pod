@@ -648,3 +648,11 @@ points. This is only a read-only directional decision: no candidate, Dragon
 run or new stopping defect was produced. The next minimal step is to
 materialize and independently check \(Q(t)\) offline. See
 [validation/iterative/rank2_latest_modal_aa1_history_result.md](validation/iterative/rank2_latest_modal_aa1_history_result.md).
+
+That selected state has now been deterministically materialized as \(Q(t)\).
+The independent checker reproduces the standard coefficient and publication,
+verifies the complete returned-\(z\) `Z-RAW-FLUX` AX/snapshot carrier, and
+accepts all 8880 reconstructed points. The nine-entry receipt passes. Its
+classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map
+host or new stopping defect was produced. See
+[validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md).

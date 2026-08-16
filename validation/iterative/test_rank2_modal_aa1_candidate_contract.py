@@ -22,6 +22,9 @@ consecutive_manifest = (
 latest_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_candidate_inputs.tsv"
 ).read_text()
+latest_next_manifest = (
+    ITERATIVE / "rank2_latest_modal_aa1_next_candidate_inputs.tsv"
+).read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_candidate_inputs.tsv"
 ).read_text()
@@ -45,6 +48,9 @@ consecutive_runner = (
 ).read_text()
 latest_runner = (
     ITERATIVE / "run_rank2_latest_modal_aa1_candidate.sh"
+).read_text()
+latest_next_runner = (
+    ITERATIVE / "run_rank2_latest_modal_aa1_next_candidate.sh"
 ).read_text()
 post_runner = (
     ITERATIVE / "run_rank2_modal_aa1_post_candidate.sh"
@@ -150,6 +156,35 @@ require(latest_rows[2][1] ==
 require(latest_rows[3][1] ==
         "4b5deac64ec6ab50cd9c1c7a9e868f824bb2078895492eeb56c95863bd85e87a",
         "latest x4 snapshots changed")
+
+latest_next_rows = [
+    line.split() for line in latest_next_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+latest_next_roles = (
+    "x3", "x4", "qy_pub", "z", "z_snapshots", "basis_reference"
+)
+require(latest_next_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-modal-aa1-next-candidate-inputs-v1",
+        "latest-next manifest version changed")
+require(tuple(row[0] for row in latest_next_rows) == latest_next_roles,
+        "latest-next manifest roles changed")
+require(all(len(row) == 3 for row in latest_next_rows),
+        "latest-next manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in latest_next_rows),
+        "latest-next manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in latest_next_rows),
+        "latest-next manifest path escapes the repository")
+require(tuple(row[1] for row in latest_next_rows) == (
+        "154c707c0f21a1241fad0c887486867e9953af794fec0aa883220d669de74651",
+        "ee50a8cb438aba8bb36a30613975d92bdc93528b070bd61d1a43f2d17e53cc08",
+        "0c7d94c9df4b1a7f7f94b8a9d54eb51aacfcead8ab34d5f288c85351b1c0ab9d",
+        "8f641951ded5f7709a074f71313045396930f5c0985b598bcb22adca7d189ec9",
+        "01d8fe5bc2556c1efa0931f72e69b727925589a3d2ad34aeac82c362b83d8647",
+        "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+        ), "latest-next parents changed")
 
 post_rows = [line.split() for line in post_manifest.splitlines()
              if line.strip() and not line.startswith("#")]
@@ -264,7 +299,7 @@ require("LCMGID(next_staged_snap,'SYSTEM')" not in builder,
         "next builder must not rewrite lagged SYSTEM history")
 for token in (
     "--u y z w v v_snap out_ax out_snap",
-    "call build_next_candidate(.true.,.false.,.false.,.false.)",
+    "call build_next_candidate(.true.,.false.,.false.,.false.,.false.)",
     "input_carrier='Z-RAW-FLUX'",
     "output_carrier='V-RAW-FLUX'",
     ".true.,'X2-RAW-FLUX'",
@@ -274,7 +309,7 @@ for token in (
     require(token in builder, f"u builder contract missing: {token}")
 for token in (
     "--post-aa1 x2 x3 aa1 aa1p aa1p_snap out_ax out_snap",
-    "call build_next_candidate(.false.,.true.,.false.,.false.)",
+    "call build_next_candidate(.false.,.true.,.false.,.false.,.false.)",
     "input_carrier='X3-RAW-FLUX'",
     "output_carrier='AA1-RAW-FLUX'",
     "report_prefix='RANK2-POST-AA1'",
@@ -284,7 +319,7 @@ for token in (
     require(token in builder, f"post-AA1 builder contract missing: {token}")
 for token in (
     "--rolling-aa1 aa1 aa1p xnext xnextp xnextp_snap",
-    "call build_next_candidate(.false.,.false.,.true.,.false.)",
+    "call build_next_candidate(.false.,.false.,.true.,.false.,.false.)",
     "input_carrier='AA1-RAW-FLUX'",
     "output_carrier='XNP-RAW-FLUX'",
     "report_prefix='RANK2-ROLL-AA1'",
@@ -296,7 +331,7 @@ for token in (
             f"rolling-AA1 builder contract missing: {token}")
 for token in (
     "--rolling-aa1-next xnext xnextp xroll xrollp xrollp_snap",
-    "call build_next_candidate(.false.,.false.,.false.,.true.)",
+    "call build_next_candidate(.false.,.false.,.false.,.true.,.false.)",
     "input_carrier='XNP-RAW-FLUX'",
     "output_carrier='XRP-RAW-FLUX'",
     "report_prefix='RANK2-ROLL2-AA1'",
@@ -306,6 +341,17 @@ for token in (
 ):
     require(token in builder,
             f"rolling-next-AA1 builder contract missing: {token}")
+for token in (
+    "--next-x4 x3 x4 qy z z_snap out_ax out_snap",
+    "call build_next_candidate(.false.,.false.,.false.,.false.,.true.)",
+    "input_carrier='X4-RAW-FLUX'",
+    "output_carrier='Z-RAW-FLUX'",
+    "report_prefix='RANK2-LATEST-AA1-NEXT'",
+    "latest_output='Z'",
+    "previous_output='X4'",
+):
+    require(token in builder,
+            f"latest-next builder contract missing: {token}")
 for token in (
     "--consecutive x1_pub x2 x3 x3_snap out_ax out_snap",
     "call load_state(trim(path(1)),x0,'x1 proposal',.true.,'V-RAW-FLUX')",
@@ -375,6 +421,19 @@ for token in (
     "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
 ):
     require(token in checker, f"u checker contract missing: {token}")
+for token in (
+    "--next-x4 x3 x4 qy z z_snap basis",
+    "x4_history_mode=.true.",
+    "input_carrier='X4-RAW-FLUX'",
+    "output_carrier='Z-RAW-FLUX'",
+    "report_prefix='RANK2-LATEST-AA1-NEXT'",
+    "latest_input='QY'",
+    "latest_output='Z'",
+    "previous_output='X4'",
+    "'PREVIOUS MAP INPUT X3'",
+):
+    require(token in checker,
+            f"latest-next checker contract missing: {token}")
 for token in (
     "--consecutive x1_pub x2 x3",
     "call load_state(trim(path(1)),2,x0,'X1 PROPOSAL','V-RAW-FLUX')",
@@ -546,6 +605,31 @@ require("spot-rank2-latest-modal-aa1-candidate" in
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
+    "rank2_latest_modal_aa1_next_candidate_inputs.tsv",
+    "--next-x4 x3.xsm x4.xsm qy_pub.xsm z.xsm",
+    "proposal_axial.xsm",
+    "proposal_snapshots.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(name in latest_next_runner,
+            f"latest-next runner binding missing: {name}")
+latest_next_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", latest_next_runner
+)
+require(latest_next_expected == [
+    "e9e37246df25ef9afb449fad77e55b6ce21cd03f09e2f185d458aea4bd85d28c",
+    "8414fb2298bcd9797f5d1b0613d985413c7c87d533feb80e8f24360471c05b38",
+], "latest-next output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", latest_next_runner),
+        "latest-next runner retry loops are forbidden")
+require("spot-rank2-latest-modal-aa1-next-candidate" in
+        (ROOT / "Makefile").read_text(),
+        "latest-next Make target is missing")
+
+for name in (
+    "build_rank2_modal_aa1_candidate.f90",
+    "check_rank2_modal_aa1_candidate.f90",
     "rank2_modal_aa1_post_candidate_inputs.tsv",
     "--post-aa1 x2.xsm x3.xsm aa1.xsm aa1p.xsm",
     "proposal_axial.xsm",
@@ -609,11 +693,12 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
         "rolling-next-AA1 runner retry loops are forbidden")
 
 combined = "\n".join((builder, checker, runner, next_runner,
-                       u_runner, consecutive_runner, latest_runner, post_runner,
-                       rolling_runner, rolling_next_runner)).lower()
+                       u_runner, consecutive_runner, latest_runner,
+                       latest_next_runner, post_runner, rolling_runner,
+                       rolling_next_runner)).lower()
 for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: eight hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: nine hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

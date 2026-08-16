@@ -57,18 +57,20 @@ program build_rank2_modal_aa1_candidate
   else if (command_argument_count() == 8) then
     call get_command_argument(1,mode)
     if (trim(mode) == '--next') then
-      call build_next_candidate(.false.,.false.,.false.,.false.)
+      call build_next_candidate(.false.,.false.,.false.,.false.,.false.)
+    else if (trim(mode) == '--next-x4') then
+      call build_next_candidate(.false.,.false.,.false.,.false.,.true.)
     else if (trim(mode) == '--u') then
-      call build_next_candidate(.true.,.false.,.false.,.false.)
+      call build_next_candidate(.true.,.false.,.false.,.false.,.false.)
     else if (trim(mode) == '--post-aa1') then
-      call build_next_candidate(.false.,.true.,.false.,.false.)
+      call build_next_candidate(.false.,.true.,.false.,.false.,.false.)
     else if (trim(mode) == '--rolling-aa1') then
-      call build_next_candidate(.false.,.false.,.true.,.false.)
+      call build_next_candidate(.false.,.false.,.true.,.false.,.false.)
     else if (trim(mode) == '--rolling-aa1-next') then
-      call build_next_candidate(.false.,.false.,.false.,.true.)
+      call build_next_candidate(.false.,.false.,.false.,.true.,.false.)
     else
-      error stop 'eight-argument mode requires --next, --u, '// &
-        '--post-aa1, --rolling-aa1 or --rolling-aa1-next'
+      error stop 'eight-argument mode requires --next, --next-x4, '// &
+        '--u, --post-aa1, --rolling-aa1 or --rolling-aa1-next'
     endif
     stop
   else if (command_argument_count() == 7) then
@@ -85,6 +87,7 @@ program build_rank2_modal_aa1_candidate
   else if (command_argument_count() /= 6) then
     error stop 'expected x0 x1 x2 x2_snap out_ax out_snap or '// &
       '--next x1 x2 y z z_snap out_ax out_snap or '// &
+      '--next-x4 x3 x4 qy z z_snap out_ax out_snap or '// &
       '--u y z w v v_snap out_ax out_snap or '// &
       '--post-aa1 x2 x3 aa1 aa1p aa1p_snap out_ax out_snap or '// &
       '--rolling-aa1 aa1 aa1p xnext xnextp xnextp_snap '// &
@@ -557,9 +560,9 @@ contains
   end subroutine build_rolling_aa2_candidate
 
   subroutine build_next_candidate(u_mode,post_aa1_mode,rolling_mode, &
-      rolling_next_mode)
+      rolling_next_mode,x4_history_mode)
     logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
-    logical, intent(in) :: rolling_next_mode
+    logical, intent(in) :: rolling_next_mode,x4_history_mode
     character(len=1024) :: next_path(7)
     character(len=24) :: report_prefix
     character(len=12) :: next_marker,input_carrier,output_carrier
@@ -589,11 +592,19 @@ contains
     call require_fresh_path(next_path(7))
 
     if ((u_mode.and.(post_aa1_mode.or.rolling_mode.or. &
-          rolling_next_mode)).or. &
-        (post_aa1_mode.and.(rolling_mode.or.rolling_next_mode)).or. &
-        (rolling_mode.and.rolling_next_mode)) &
+          rolling_next_mode.or.x4_history_mode)).or. &
+        (post_aa1_mode.and.(rolling_mode.or.rolling_next_mode.or. &
+          x4_history_mode)).or. &
+        (rolling_mode.and.(rolling_next_mode.or.x4_history_mode)).or. &
+        (rolling_next_mode.and.x4_history_mode)) &
       error stop 'next proposal modes are mutually exclusive'
-    if (rolling_next_mode) then
+    if (x4_history_mode) then
+      input_carrier='X4-RAW-FLUX'
+      output_carrier='Z-RAW-FLUX'
+      report_prefix='RANK2-LATEST-AA1-NEXT'
+      latest_output='Z'
+      previous_output='X4'
+    else if (rolling_next_mode) then
       input_carrier='XNP-RAW-FLUX'
       output_carrier='XRP-RAW-FLUX'
       report_prefix='RANK2-ROLL2-AA1'

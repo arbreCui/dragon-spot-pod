@@ -176,6 +176,11 @@ generic, default-off continuation host.
   `rank2_latest_modal_aa1_history_result.md`: hash-locked, read-only
   four-state decision audit of the latest direct and proposal-map residuals;
   it creates no candidate and runs no Dragon.
+- `rank2_latest_modal_aa1_next_candidate_inputs.tsv`,
+  `run_rank2_latest_modal_aa1_next_candidate.sh`,
+  `rank2_latest_modal_aa1_next_candidate_result.md`: deterministic
+  no-Dragon publication and independent `Z-RAW-FLUX` carrier audit of the
+  selected standard AA(1) proposal; no map host or solve.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -761,6 +766,19 @@ stored dimensional \(D_L\) screens are `0.7632785965453454` and
 preflight points are positive. This is `OFFLINE_DECISION_COMPLETE`, not a
 new map or convergence claim; see
 [rank2_latest_modal_aa1_history_result.md](rank2_latest_modal_aa1_history_result.md).
+
+That selected state has now been materialized as
+
+\[
+Q(t)=Q(0.2233339696054483x_4+0.7766660303945517z).
+\]
+
+The independent checker reproduces the coefficient and publication, binds
+the complete raw AX/snapshot carrier to returned \(z\), and accepts all
+8880 reconstructed points. The nine-entry receipt passes. Its classification
+is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map host or new
+stopping defect was produced; see
+[rank2_latest_modal_aa1_next_candidate_result.md](rank2_latest_modal_aa1_next_candidate_result.md).
 
 ## Current boundary
 

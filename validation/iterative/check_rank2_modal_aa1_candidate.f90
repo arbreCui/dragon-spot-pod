@@ -7,6 +7,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next x1 x2 y z z_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-x4 x3 x4 qy z z_snap basis \
+  !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --post-aa1 x2 x3 aa1 aa1p \
@@ -71,7 +73,8 @@ program check_rank2_modal_aa1_candidate
   real(real32) :: keff_published,min_published_flux
   integer :: argument_count,i,min_group,min_snapshot,min_region
   logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
-  logical :: rolling_next_mode,rolling_aa2_next_mode,consecutive_mode
+  logical :: rolling_next_mode,x4_history_mode,rolling_aa2_next_mode
+  logical :: consecutive_mode
   logical :: consecutive_returned_mode
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
@@ -83,6 +86,7 @@ program check_rank2_modal_aa1_candidate
   post_aa1_mode=.false.
   rolling_mode=.false.
   rolling_next_mode=.false.
+  x4_history_mode=.false.
   rolling_aa2_next_mode=.false.
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
@@ -108,6 +112,8 @@ program check_rank2_modal_aa1_candidate
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--u') then
       u_mode=.true.
+    else if (trim(mode_argument) == '--next-x4') then
+      x4_history_mode=.true.
     else if (trim(mode_argument) == '--post-aa1') then
       post_aa1_mode=.true.
     else if (trim(mode_argument) == '--rolling-aa1') then
@@ -115,8 +121,8 @@ program check_rank2_modal_aa1_candidate
     else if (trim(mode_argument) == '--rolling-aa1-next') then
       rolling_next_mode=.true.
     else if (trim(mode_argument) /= '--next') then
-      call fail('NINE ARGUMENTS REQUIRE --NEXT, --U, --POST-AA1 OR '// &
-        '--ROLLING-AA1/--ROLLING-AA1-NEXT.')
+      call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --U, '// &
+        '--POST-AA1 OR --ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
     do i=1,8
@@ -150,14 +156,14 @@ program check_rank2_modal_aa1_candidate
     enddo
   else
     call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
-      'SEVEN, OR --NEXT/--U/--POST-AA1/--ROLLING-AA1/'// &
+      'SEVEN, OR --NEXT/--NEXT-X4/--U/--POST-AA1/--ROLLING-AA1/'// &
       '--ROLLING-AA1-NEXT PLUS EIGHT, OR A ROLLING-AA2 MODE PLUS TEN.')
   endif
 
   if (next_mode) then
     call check_next_candidate(trim(path(1)),trim(path(2)),trim(path(3)), &
       trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)), &
-      u_mode,post_aa1_mode,rolling_mode,rolling_next_mode)
+      u_mode,post_aa1_mode,rolling_mode,rolling_next_mode,x4_history_mode)
   else
 
   report_prefix='RANK2-MODAL-AA1'
@@ -503,11 +509,11 @@ contains
 
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
       basis_name,proposal_name,proposal_snap_name,u_mode,post_aa1_mode, &
-      rolling_mode,rolling_next_mode)
+      rolling_mode,rolling_next_mode,x4_history_mode)
     character(len=*), intent(in) :: x1_name,x2_name,y_name,z_name,z_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name,proposal_snap_name
     logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
-    logical, intent(in) :: rolling_next_mode
+    logical, intent(in) :: rolling_next_mode,x4_history_mode
     type(canonical_state) :: state_x1,state_x2,state_y,state_z,state_proposal
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -520,11 +526,21 @@ contains
     character(len=8) :: latest_input,latest_output,previous_output
 
     if ((u_mode.and.(post_aa1_mode.or.rolling_mode.or. &
-          rolling_next_mode)).or. &
-        (post_aa1_mode.and.(rolling_mode.or.rolling_next_mode)).or. &
-        (rolling_mode.and.rolling_next_mode)) &
+          rolling_next_mode.or.x4_history_mode)).or. &
+        (post_aa1_mode.and.(rolling_mode.or.rolling_next_mode.or. &
+          x4_history_mode)).or. &
+        (rolling_mode.and.(rolling_next_mode.or.x4_history_mode)).or. &
+        (rolling_next_mode.and.x4_history_mode)) &
       call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
-    if (rolling_next_mode) then
+    if (x4_history_mode) then
+      input_carrier='X4-RAW-FLUX'
+      output_carrier='Z-RAW-FLUX'
+      report_prefix='RANK2-LATEST-AA1-NEXT'
+      latest_input='QY'
+      latest_output='Z'
+      previous_output='X4'
+      call load_state(x1_name,1,state_x1,'PREVIOUS MAP INPUT X3')
+    else if (rolling_next_mode) then
       input_carrier='XNP-RAW-FLUX'
       output_carrier='XRP-RAW-FLUX'
       report_prefix='RANK2-ROLL2-AA1'
