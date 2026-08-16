@@ -428,9 +428,17 @@ is not a real stopping defect, and no Dragon or successor map was started.
 See
 [validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).
 
-A dedicated one-map host for this rolling proposal is now prepared but
-default-off. It requires the exact `XNP-RAW-FLUX` carrier and keeps the fixed
-rank-two basis, physical decks and `5.0e-7` gate unchanged. Activation permits
-one attempt with no retry and starts no successor proposal or map. Preparing
-the host performed no Dragon calculation; see
-[validation/iterative/rank2_modal_aa1_rolling_map_policy.md](validation/iterative/rank2_modal_aa1_rolling_map_policy.md).
+Its dedicated host was then executed exactly once, with no retry. The strict
+`XNP-RAW-FLUX` preflight, three radial terminals, axial terminal, independent
+audit and 21-entry receipt all pass. The result is valid but not converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(0,\,3.6004863\times10^{-4},\,1.4537807\times10^{-6}).
+$$
+
+At `5.0e-7`, only $R_\rho$ passes. Relative to the preceding evaluated map,
+$R_L$ and diagnostic $D_L$ fell about 21.1%, while $R_a$ rose about 8.26%.
+Because the parents differ, this is not a convergence factor or monotone
+convergence evidence. No successor proposal or map was started; see
+[validation/iterative/rank2_modal_aa1_rolling_map_result.md](validation/iterative/rank2_modal_aa1_rolling_map_result.md).

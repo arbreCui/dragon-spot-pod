@@ -256,13 +256,21 @@ is not a real stopping defect, and no physical-map host or successor map was
 created. See
 [../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).
 
-A dedicated host is now prepared, but remains default-off, for exactly one
-evaluation of this rolling proposal. It requires the hash-locked
-`XNP-RAW-FLUX` carrier and keeps the fixed rank-two basis, original physical
-decks and `5.0e-7` tolerance. Activation permits one attempt with no retry
-and starts no successor proposal or map. Preparing it performed no Dragon
-calculation; see
-[../validation/iterative/rank2_modal_aa1_rolling_map_policy.md](../validation/iterative/rank2_modal_aa1_rolling_map_policy.md).
+The dedicated host was subsequently activated exactly once, with no retry.
+The strict `XNP-RAW-FLUX` preflight, all three radial terminals, the axial
+terminal, independent audit and receipt pass. The result is
+`VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\ 3.6004863\times10^{-4},\ 1.4537807\times10^{-6}).
+\]
+
+Only $R_\rho$ passes `5.0e-7`. Relative to the preceding evaluated map,
+$R_L$ and diagnostic $D_L$ fell about 21.1%, while $R_a$ rose about 8.26%.
+This is a different-parent comparison, not a convergence factor or monotone
+convergence evidence. No successor proposal or map was started; see
+[../validation/iterative/rank2_modal_aa1_rolling_map_result.md](../validation/iterative/rank2_modal_aa1_rolling_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

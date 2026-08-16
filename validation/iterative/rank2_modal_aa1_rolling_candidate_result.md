@@ -109,3 +109,19 @@ rolling AA(1) proposal. It does not evaluate \(G_2(x_{\mathrm{roll}})\),
 produce a new raw stopping defect or establish convergence, contraction,
 stability, Anderson superiority, rank adequacy or physical accuracy. No
 Dragon process, physical-map host or successor map was started.
+
+## Subsequent evaluation
+
+The dedicated host was later activated exactly once from source commit
+`d8c87eaf70cace3e976ac1fe10d0c60eba35512f`, with no retry. The map passed
+all strict solve, provenance, positivity and receipt checks, but its runtime
+classification is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\ 3.600486262295603\times10^{-4},\
+1.453780683665123\times10^{-6}).
+\]
+
+No successor proposal or map was started. See
+[rank2_modal_aa1_rolling_map_result.md](rank2_modal_aa1_rolling_map_result.md).

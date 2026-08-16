@@ -112,6 +112,8 @@ generic, default-off continuation host.
   `run_rank2_modal_aa1_rolling_map.sh`: default-off host for exactly one map
   from that proposal, with a strict pre-Dragon `XNP-RAW-FLUX` gate and no
   retry or automatic successor.
+- `rank2_modal_aa1_rolling_map_result.md`: independently audited result from
+  the single authorized rolling-proposal map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -484,12 +486,20 @@ is not a new stopping defect, and no map host or successor map was created.
 See
 [rank2_modal_aa1_rolling_candidate_result.md](rank2_modal_aa1_rolling_candidate_result.md).
 
-Its dedicated one-map host is prepared but remains default-off. It accepts
-only the hash-locked proposal with the exact `XNP-RAW-FLUX` carrier, retains
-the fixed rank-two basis and unchanged `5.0e-7` gate, and permits one attempt
-without retry or automatic successor. No Dragon calculation was performed
-while preparing this host; see
-[rank2_modal_aa1_rolling_map_policy.md](rank2_modal_aa1_rolling_map_policy.md).
+Its dedicated host was then executed exactly once, without retry. The strict
+`XNP-RAW-FLUX` preflight, three radial terminals, axial terminal, independent
+audit and 21-entry receipt all pass. The result is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\ 3.6004863\times10^{-4},\ 1.4537807\times10^{-6}).
+\]
+
+Only $R_\rho$ passes `5.0e-7`. Relative to the preceding evaluated map,
+$R_L$ and diagnostic $D_L$ fell about 21.1%, while $R_a$ rose about 8.26%.
+This different-parent comparison is not a convergence factor or monotone
+convergence evidence. No successor proposal or map was started; see
+[rank2_modal_aa1_rolling_map_result.md](rank2_modal_aa1_rolling_map_result.md).
 
 ## Current boundary
 
@@ -513,8 +523,8 @@ One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
 The separate fixed-rank-two AA(1) study also remains unconverged. Its latest
-evaluated map is valid, but $R_L$ and $R_a$ still fail the declared gate. The
-new rolling state above is only an unevaluated offline proposal.
+evaluated rolling-proposal map is valid, but $R_L$ and $R_a$ still fail the
+declared gate. No further proposal or map has been started.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

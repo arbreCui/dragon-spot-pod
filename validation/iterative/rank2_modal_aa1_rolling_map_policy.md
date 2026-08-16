@@ -53,3 +53,12 @@ establish asymptotic convergence, stability, Anderson superiority, rank
 adequacy or physical accuracy, and it starts no successor proposal or map.
 Preparing this host performs no Dragon, assembly, transport or Picard
 calculation and produces no map result.
+
+## Post-run record
+
+The frozen host was subsequently activated exactly once from source commit
+`d8c87eaf70cace3e976ac1fe10d0c60eba35512f`. All strict terminals, the
+independent audit and the 21-entry receipt passed. The runtime classification
+is `VALID_NOT_MET`; \(R_L\) and \(R_a\) exceed the unchanged tolerance. No
+retry, successor proposal or successor map was started. See
+[rank2_modal_aa1_rolling_map_result.md](rank2_modal_aa1_rolling_map_result.md).
