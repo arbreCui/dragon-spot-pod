@@ -134,6 +134,11 @@ generic, default-off continuation host.
   `run_rank2_modal_aa2_map.sh`, `rank2_modal_aa2_map_result.md`: default-off
   host and frozen result for exactly one map from the AA(2) proposal, with
   strict carrier identity, no retry and no automatic successor.
+- `rank2_modal_aa2_rolling_next_candidate_inputs.tsv`,
+  `run_rank2_modal_aa2_rolling_next_candidate.sh`,
+  `rank2_modal_aa2_rolling_next_candidate_result.md`: one shifted standard
+  AA(2) proposal from the latest three real maps, materialized offline with
+  no new map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -585,8 +590,26 @@ pass. The result is `VALID_NOT_MET`:
 
 Only \(R_\rho\) passes `5.0e-7`; leakage remains the dominant failure. The
 cross-input comparison is not a convergence factor or monotonicity claim. No
-retry, successor proposal or successor map was started; see
+retry or successor was started as part of that map evaluation; see
 [rank2_modal_aa2_map_result.md](rank2_modal_aa2_map_result.md).
+
+The three-pair window was then shifted forward once to
+\((x_{\mathrm{roll}},x_{\mathrm{roll2}},x_{\mathrm{AA2}})\). The unchanged
+standard AA(2) system materialized offline
+
+\[
+x_{\mathrm{rAA2}}=
+-1.2827949098x_{\mathrm{roll}}^+
++0.2370041391x_{\mathrm{roll2}}^+
++2.0457907708x_{\mathrm{AA2}}^+.
+\]
+
+The finite positive determinant, exact publication, latest returned carrier
+and 8880/8880 positive reconstructions pass independent checks. The
+extrapolating coefficients were neither clipped nor regularized. The result
+is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon, map, stopping defect or
+map host was produced. See
+[rank2_modal_aa2_rolling_next_candidate_result.md](rank2_modal_aa2_rolling_next_candidate_result.md).
 
 ## Current boundary
 
@@ -609,10 +632,10 @@ local and Git-ignored.
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
-The fixed-rank-two study also remains unconverged. Its latest AA(2)-parent map
-is valid, but $R_L$ and $R_a$ still fail the declared gate. The single
-authorized attempt is complete; no retry, successor proposal or successor map
-has been started.
+The fixed-rank-two study also remains unconverged. Its latest evaluated map is
+valid, but $R_L$ and $R_a$ still fail the declared gate. A shifted rolling
+AA(2) proposal has been materialized offline, but it has not been evaluated;
+no successor map has been prepared or started.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

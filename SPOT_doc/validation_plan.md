@@ -341,8 +341,26 @@ three-component gate gives
 so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
 remains the dominant failure. The comparison with the preceding
 different-parent map is not a convergence factor or monotonicity evidence.
-No retry, successor proposal or successor map was started; see
+No retry or successor was started as part of that map evaluation; see
 [../validation/iterative/rank2_modal_aa2_map_result.md](../validation/iterative/rank2_modal_aa2_map_result.md).
+
+The three-pair window was then shifted forward once, offline, to
+\((x_{\mathrm{roll}},x_{\mathrm{roll2}},x_{\mathrm{AA2}})\). The same exact
+AA(2) system materialized
+
+\[
+x_{\mathrm{rAA2}}=
+-1.2827949098x_{\mathrm{roll}}^+
++0.2370041391x_{\mathrm{roll2}}^+
++2.0457907708x_{\mathrm{AA2}}^+.
+\]
+
+The determinant is finite and positive. No condition threshold,
+regularization, pseudoinverse, clipping or fallback was used; the independent
+checker passes exact publication and 8880/8880 positive reconstructions. The
+classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map,
+stopping defect or map host was produced. See
+[../validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

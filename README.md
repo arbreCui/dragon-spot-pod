@@ -511,5 +511,23 @@ leakage remains the dominant failure. Relative to the preceding
 different-parent map, $R_\rho$ fell about 50.0%, but $R_L$ and $R_a$ rose
 about 21.34% and 29.65%. This mixed comparison is not a convergence factor or
 monotonicity claim. No retry, successor proposal or successor map was
-started; see
+started as part of that map evaluation; see
 [validation/iterative/rank2_modal_aa2_map_result.md](validation/iterative/rank2_modal_aa2_map_result.md).
+
+The three-pair AA(2) window was then shifted forward once, offline, to
+\((x_{\mathrm{roll}},x_{\mathrm{roll2}},x_{\mathrm{AA2}})\). The exact
+standard solve materialized
+
+$$
+x_{\mathrm{rAA2}}=
+-1.2827949098x_{\mathrm{roll}}^+
++0.2370041391x_{\mathrm{roll2}}^+
++2.0457907708x_{\mathrm{AA2}}^+.
+$$
+
+The determinant is finite and strictly positive. The unmodified
+extrapolating weights were not clipped or regularized, and all 8880 published
+rank-two flux values remain strictly positive. This is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map or stopping defect was
+produced, and no map host was prepared. See
+[validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md](validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md).

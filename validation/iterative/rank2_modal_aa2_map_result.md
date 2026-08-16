@@ -130,5 +130,13 @@ and therefore still says `PREPARED_NOT_RUN`; the logs and
 This is one valid evaluation of the stated fixed rank-two discrete map. It
 does not meet the stopping rule and does not establish asymptotic convergence,
 stability, contraction, convergence order, Anderson superiority, rank
-adequacy or physical accuracy. No retry, successor proposal or successor map
-was started.
+adequacy or physical accuracy. No retry or successor was started as part of
+that map evaluation.
+
+## Subsequent offline proposal
+
+The three-map AA(2) window was later shifted forward once to include this
+returned state. A separate Ganlib-only stage materialized a finite, positive
+rolling AA(2) proposal without Dragon or a new map. It created no stopping
+defect and prepared no map host; see
+[rank2_modal_aa2_rolling_next_candidate_result.md](rank2_modal_aa2_rolling_next_candidate_result.md).
