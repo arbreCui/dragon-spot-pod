@@ -151,6 +151,9 @@ generic, default-off continuation host.
   `rank2_modal_aa2_rolling_next_picard_map_result.md`: default-off host and
   frozen result for one direct Picard successor from the latest valid returned
   state, with no mixing, retry or automatic successor.
+- `rank2_latest_picard_direction_result.md`: Ganlib-only comparison of the
+  rolling-AA(2) proposal and its two returned states, including the exact
+  latest leakage hotspot, signs and separate update directions.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -660,6 +663,17 @@ contraction result, convergence-order measurement or future prediction. No
 retry or further successor was started; see
 [rank2_modal_aa2_rolling_next_picard_map_result.md](rank2_modal_aa2_rolling_next_picard_map_result.md).
 
+The following no-Dragon three-state audit reproduced both maps' raw defects
+bit for bit. The unique leakage hotspot remains at snapshot 1/group 327; its
+signed update reverses from `+1.7144775e-6` to
+`-9.2131086e-7 cm^-1`. Both maps use the same leakage scale, so the 46.26%
+reduction in \(R_L\) is a smaller absolute update. The non-production
+height-\(L_2\) cosine is `-0.713236`. This is local damped-oscillatory
+evidence, not a contraction result. Strict inner termination passed and the
+outer map remains unclosed, while rank and finite-inner-error causality remain
+unresolved. No new map was started; see
+[rank2_latest_picard_direction_result.md](rank2_latest_picard_direction_result.md).
+
 ## Current boundary
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
@@ -686,6 +700,8 @@ AA(2) proposal and one direct Picard successor from that returned state have
 each been evaluated exactly once. Both maps are valid. The direct successor
 is locally componentwise improved, but $R_L$ and $R_a$ still fail the
 declared gate. No retry or further successor has been prepared or started.
+The latest offline direction audit localizes the leakage response but does
+not identify rank two or finite inner error as its cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

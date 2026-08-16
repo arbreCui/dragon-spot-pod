@@ -399,6 +399,19 @@ a convergence factor, contraction result, convergence-order measurement or
 future prediction. No retry or further successor was started; see
 [../validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md).
 
+A subsequent Ganlib-only three-state audit reproduced both adjacent maps'
+raw defects bit for bit. Their unique \(D_L\) hotspot is the same snapshot
+1/group 327 component, where the signed update changes from
+`+1.7144775e-6` to `-9.2131086e-7 cm^-1`. Both \(R_L\) values use the same
+leakage scale, so the local 46.26% decrease is an absolute-update decrease,
+not a normalization effect. The height-\(L_2\) leakage cosine is
+`-0.713236`; this is locally damped oscillatory evidence, not contraction.
+The inner terminal contract passes and the outer map remains unclosed, but
+without a same-parent tighter solve or rank-three counterfactual the audit
+does not assign the cause to finite inner error or rank two. No Dragon or new
+map was run; see
+[../validation/iterative/rank2_latest_picard_direction_result.md](../validation/iterative/rank2_latest_picard_direction_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

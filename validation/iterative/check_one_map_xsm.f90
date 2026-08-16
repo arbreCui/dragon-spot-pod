@@ -42,6 +42,8 @@ program check_one_map_xsm
   !     state1_axial.xsm state2_axial.xsm
   !   check_one_map_xsm --proposal-v-directions proposal_v_axial.xsm \
   !     returned_u_axial.xsm continued_axial.xsm
+  !   check_one_map_xsm --proposal-aa2-directions proposal_aa2_axial.xsm \
+  !     returned_raa2_axial.xsm continued_axial.xsm
   !   check_one_map_xsm --rank2-aa1-history x1_axial.xsm \
   !     x2_axial.xsm proposal_y_axial.xsm returned_z_axial.xsm
   !   check_one_map_xsm --rank2-aa1-u-history proposal_y_axial.xsm \
@@ -141,6 +143,7 @@ program check_one_map_xsm
   logical :: aa1_history_mode,aa1_next_history_mode
   logical :: reencoded_first_direction
   logical :: proposal_v_direction_mode
+  logical :: proposal_aa2_direction_mode
 
   continued=.false.
   reencoded=.false.
@@ -159,6 +162,7 @@ program check_one_map_xsm
   aa1_next_history_mode=.false.
   reencoded_first_direction=.false.
   proposal_v_direction_mode=.false.
+  proposal_aa2_direction_mode=.false.
   argument_offset=0
   if (command_argument_count() == 2) then
     call get_command_argument(1,mode)
@@ -203,9 +207,13 @@ program check_one_map_xsm
     else if (trim(mode) == '--proposal-v-directions') then
       reencoded_first_direction=.true.
       proposal_v_direction_mode=.true.
+    else if (trim(mode) == '--proposal-aa2-directions') then
+      reencoded_first_direction=.true.
+      proposal_aa2_direction_mode=.true.
     else if (trim(mode) /= '--directions') then
       call fail('ONLY --directions, --rank2-directions OR '// &
-        '--proposal-v-directions IS ACCEPTED IN FOUR-ARGUMENT MODE.')
+        '--proposal-v-directions OR --proposal-aa2-directions IS '// &
+        'ACCEPTED IN FOUR-ARGUMENT MODE.')
     endif
     direction_mode=.true.
     do i=1,3
@@ -349,7 +357,11 @@ program check_one_map_xsm
   endif
 
   if (direction_mode) then
-    if (proposal_v_direction_mode) then
+    if (proposal_aa2_direction_mode) then
+      call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.false., &
+        direction_state(1),'DIRECTION PROPOSAL AA2', &
+        proposal_state=.true.,aa2_carrier=.true.)
+    else if (proposal_v_direction_mode) then
       call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.false., &
         direction_state(1),'DIRECTION PROPOSAL V',.true.,.false.,.true.)
     else
@@ -366,7 +378,10 @@ program check_one_map_xsm
       call fail('RANK2-DIRECTION MODE REQUIRES RANK TWO.')
     call compare_states_and_defects(direction_state(1),direction_state(2), &
       .not.reencoded_first_direction,reencoded_first_direction)
-    if (proposal_v_direction_mode) then
+    if (proposal_aa2_direction_mode) then
+      write(6,'(A)') &
+        'PICARD-DIRECTION MAP12 PROPOSAL-AA2-PARENT RAW-DEFECT BITWISE PASS'
+    else if (proposal_v_direction_mode) then
       write(6,'(A)') &
         'PICARD-DIRECTION MAP12 PROPOSAL-V-PARENT RAW-DEFECT BITWISE PASS'
     else if (reencoded_first_direction) then

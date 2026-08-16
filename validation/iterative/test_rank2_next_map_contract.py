@@ -182,8 +182,11 @@ for forbidden in ("relaxation", "damping", "Anderson mixing", "clipping",
             f"latest successor forbidden-control boundary missing: {forbidden}")
 for token in (
     "--rank2-directions",
+    "--proposal-aa2-directions",
+    "proposal_state=.true.,aa2_carrier=.true.",
     "RANK2-DIRECTION MODE REQUIRES RANK TWO.",
     "MAP12 REENCODED-PARENT RAW-DEFECT BITWISE PASS",
+    "MAP12 PROPOSAL-AA2-PARENT RAW-DEFECT BITWISE PASS",
     "MODE2-DIAGONAL GRAM-HEIGHT BASIS-DEPENDENT",
     "MODE2-DIAGONAL NORM-RATIO 23/12",
 ):

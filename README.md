@@ -567,3 +567,14 @@ Relative to its direct parent, the three stopping defects fell about 50.0%,
 convergence factor, contraction result, convergence-order measurement or
 future prediction. No retry or further successor was started; see
 [validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md](validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md).
+
+A subsequent no-Dragon three-state audit reproduced both adjacent maps'
+defects bit for bit. The unique leakage hotspot remains at snapshot 1/group
+327: its signed increment changes from
+`+1.7144775e-6` to `-9.2131086e-7 cm^-1`. The common leakage scale is
+unchanged, so the 46.26% reduction in $R_L$ comes from the smaller absolute
+update. This is a locally damped sign reversal, not a contraction proof.
+Strict inner termination passed and the outer map remains unclosed; the data
+do not identify rank two or finite inner error as the cause. No new map was
+started; see
+[validation/iterative/rank2_latest_picard_direction_result.md](validation/iterative/rank2_latest_picard_direction_result.md).
