@@ -13,6 +13,8 @@ program check_rank2_modal_aa1_candidate
   !     aa1p_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --rolling-aa1 aa1 aa1p xnext \
   !     xnextp xnextp_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --rolling-aa1-next xnext xnextp \
+  !     xroll xrollp xrollp_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive x1_pub x2 x3 \
   !     x3_snap basis proposal_ax proposal_snap
   use GANLIB
@@ -62,7 +64,8 @@ program check_rank2_modal_aa1_candidate
   real(real64) :: publication_delta
   real(real32) :: keff_published,min_published_flux
   integer :: argument_count,i,min_group,min_snapshot,min_region
-  logical :: next_mode,u_mode,post_aa1_mode,rolling_mode,consecutive_mode
+  logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
+  logical :: rolling_next_mode,consecutive_mode
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
   character(len=2) :: previous_output,latest_output
@@ -72,6 +75,7 @@ program check_rank2_modal_aa1_candidate
   u_mode=.false.
   post_aa1_mode=.false.
   rolling_mode=.false.
+  rolling_next_mode=.false.
   consecutive_mode=.false.
   if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
@@ -81,9 +85,11 @@ program check_rank2_modal_aa1_candidate
       post_aa1_mode=.true.
     else if (trim(mode_argument) == '--rolling-aa1') then
       rolling_mode=.true.
+    else if (trim(mode_argument) == '--rolling-aa1-next') then
+      rolling_next_mode=.true.
     else if (trim(mode_argument) /= '--next') then
       call fail('NINE ARGUMENTS REQUIRE --NEXT, --U, --POST-AA1 OR '// &
-        '--ROLLING-AA1.')
+        '--ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
     do i=1,8
@@ -112,13 +118,14 @@ program check_rank2_modal_aa1_candidate
     enddo
   else
     call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
-      'SEVEN, OR --NEXT/--U/--POST-AA1/--ROLLING-AA1 PLUS EIGHT.')
+      'SEVEN, OR --NEXT/--U/--POST-AA1/--ROLLING-AA1/'// &
+      '--ROLLING-AA1-NEXT PLUS EIGHT.')
   endif
 
   if (next_mode) then
     call check_next_candidate(trim(path(1)),trim(path(2)),trim(path(3)), &
       trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)), &
-      u_mode,post_aa1_mode,rolling_mode)
+      u_mode,post_aa1_mode,rolling_mode,rolling_next_mode)
   else
 
   report_prefix='RANK2-MODAL-AA1'
@@ -235,10 +242,11 @@ contains
 
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
       basis_name,proposal_name,proposal_snap_name,u_mode,post_aa1_mode, &
-      rolling_mode)
+      rolling_mode,rolling_next_mode)
     character(len=*), intent(in) :: x1_name,x2_name,y_name,z_name,z_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name,proposal_snap_name
     logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
+    logical, intent(in) :: rolling_next_mode
     type(canonical_state) :: state_x1,state_x2,state_y,state_z,state_proposal
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -250,11 +258,21 @@ contains
     character(len=12) :: input_carrier,output_carrier
     character(len=8) :: latest_input,latest_output,previous_output
 
-    if ((u_mode.and.post_aa1_mode).or. &
-        (u_mode.and.rolling_mode).or. &
-        (post_aa1_mode.and.rolling_mode)) &
+    if ((u_mode.and.(post_aa1_mode.or.rolling_mode.or. &
+          rolling_next_mode)).or. &
+        (post_aa1_mode.and.(rolling_mode.or.rolling_next_mode)).or. &
+        (rolling_mode.and.rolling_next_mode)) &
       call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
-    if (rolling_mode) then
+    if (rolling_next_mode) then
+      input_carrier='XNP-RAW-FLUX'
+      output_carrier='XRP-RAW-FLUX'
+      report_prefix='RANK2-ROLL2-AA1'
+      latest_input='XROLL'
+      latest_output='XROLL-P'
+      previous_output='XNEXT-P'
+      call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL XNEXT', &
+        'AA1-RAW-FLUX')
+    else if (rolling_mode) then
       input_carrier='AA1-RAW-FLUX'
       output_carrier='XNP-RAW-FLUX'
       report_prefix='RANK2-ROLL-AA1'
