@@ -46,6 +46,7 @@ all :
 	spot-rank2-modal-aa2-rolling-next-candidate \
 	spot-rank2-modal-aa2-rolling-next-map \
 	spot-rank2-modal-aa2-rolling-next-picard-map \
+	spot-rank2-latest-picard-next-map \
 	spot-rank2-modal-aa2-map
 spot-fast :
 	sh validation/run_fast.sh
@@ -95,6 +96,8 @@ spot-rank2-modal-aa2-rolling-next-map :
 	sh validation/iterative/run_rank2_modal_aa2_rolling_next_map.sh
 spot-rank2-modal-aa2-rolling-next-picard-map :
 	sh validation/iterative/run_rank2_modal_aa2_rolling_next_picard_map.sh
+spot-rank2-latest-picard-next-map :
+	sh validation/iterative/run_rank2_latest_picard_next_map.sh
 spot-rank2-modal-aa2-map :
 	sh validation/iterative/run_rank2_modal_aa2_map.sh
 clean :

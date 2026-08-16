@@ -154,6 +154,10 @@ generic, default-off continuation host.
 - `rank2_latest_picard_direction_result.md`: Ganlib-only comparison of the
   rolling-AA(2) proposal and its two returned states, including the exact
   latest leakage hotspot, signs and separate update directions.
+- `rank2_latest_picard_next_map_parent.tsv`,
+  `rank2_latest_picard_next_map_policy.md`,
+  `run_rank2_latest_picard_next_map.sh`: default-off host for exactly one
+  further direct Picard map from the latest valid returned state.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,

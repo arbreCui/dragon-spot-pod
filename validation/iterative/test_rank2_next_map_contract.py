@@ -15,14 +15,23 @@ runner = (ITERATIVE / "run_rank2_next_map.sh").read_text()
 successor_runner = (
     ITERATIVE / "run_rank2_modal_aa2_rolling_next_picard_map.sh"
 ).read_text()
+latest_runner = (
+    ITERATIVE / "run_rank2_latest_picard_next_map.sh"
+).read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 manifest = (ITERATIVE / "rank2_next_parent.tsv").read_text()
 successor_manifest = (
     ITERATIVE / "rank2_modal_aa2_rolling_next_picard_map_parent.tsv"
 ).read_text()
+latest_manifest = (
+    ITERATIVE / "rank2_latest_picard_next_map_parent.tsv"
+).read_text()
 policy = (ITERATIVE / "rank2_next_map_policy.md").read_text()
 successor_policy = (
     ITERATIVE / "rank2_modal_aa2_rolling_next_picard_map_policy.md"
+).read_text()
+latest_policy = (
+    ITERATIVE / "rank2_latest_picard_next_map_policy.md"
 ).read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 
@@ -107,6 +116,24 @@ require(successor_rows[5][1] ==
         "9c69da5c78d0c6a4a2b99eba54b23e9ce9869df5f142c2ed86c40859ba1176a8",
         "latest returned snapshot parent changed")
 
+latest_rows = [
+    line.split() for line in latest_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(latest_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-picard-next-map-parent-v1",
+        "further Picard manifest version changed")
+require(tuple(row[0] for row in latest_rows) == roles,
+        "further Picard manifest roles changed")
+require(all(len(row) == 3 for row in latest_rows),
+        "further Picard manifest row width changed")
+require(latest_rows[4][1] ==
+        "154c707c0f21a1241fad0c887486867e9953af794fec0aa883220d669de74651",
+        "further Picard axial parent changed")
+require(latest_rows[5][1] ==
+        "0cf7d0a46ac84e5d94f9ed11d834c1d854f79c89eceea83c581fb1847e9bf911",
+        "further Picard snapshot parent changed")
+
 require(runner.index("RUN_RANK2_NEXT_MAP=") < runner.index("ROOT=$("),
         "default-off gate must precede repository access")
 for token in (
@@ -153,6 +180,30 @@ require("DRAGON" not in
         successor_runner.upper().split("ROOT=$(", 1)[1],
         "latest successor wrapper must not launch Dragon directly")
 
+require(latest_runner.index("RUN_RANK2_LATEST_PICARD_NEXT_MAP=") <
+        latest_runner.index("ROOT=$("),
+        "further Picard default-off gate must precede repository access")
+for token in (
+    "rank2_latest_picard_next_map_parent.tsv",
+    "rank2_latest_picard_next_map_policy.md",
+    "iterative-rank2-modal-aa2-rolling-next-picard-map",
+    "iterative-rank2-latest-picard-next-map",
+    "VALID_NOT_MET",
+    "shasum -a 256 -c result.sha256",
+    "MAP_PARENT_FILE=parent_axial.xsm",
+    "CHECKER_MODE=continued",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=420",
+):
+    require(token in latest_runner,
+            f"further Picard wrapper binding missing: {token}")
+require(latest_runner.count("run_continuation_short.sh") == 1,
+        "further Picard common host invocation count changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", latest_runner),
+        "further Picard retry loop is forbidden")
+require("DRAGON" not in latest_runner.upper().split("ROOT=$(", 1)[1],
+        "further Picard wrapper must not launch Dragon directly")
+
 for token in (
     "RADIAL_TIMEOUT_SECONDS=${RADIAL_TIMEOUT_SECONDS:-120}",
     "AXIAL_TIMEOUT_SECONDS=${AXIAL_TIMEOUT_SECONDS:-80}",
@@ -180,6 +231,18 @@ for forbidden in ("relaxation", "damping", "Anderson mixing", "clipping",
                   "fallback", "empirical"):
     require(forbidden in successor_policy,
             f"latest successor forbidden-control boundary missing: {forbidden}")
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in latest_policy,
+            f"further Picard policy category missing: {label}")
+require("PREPARED_NOT_RUN" in latest_policy,
+        "further Picard policy overstates runtime completion")
+require("starts no retry or further successor" in latest_policy,
+        "further Picard automatic-stop boundary missing")
+for forbidden in ("relaxation", "damping", "Anderson mixing", "clipping",
+                  "fitted closure", "regularization", "pseudoinverse",
+                  "fallback", "empirical"):
+    require(forbidden in latest_policy,
+            f"further Picard forbidden-control boundary missing: {forbidden}")
 for token in (
     "--rank2-directions",
     "--proposal-aa2-directions",
