@@ -359,8 +359,26 @@ The determinant is finite and positive. No condition threshold,
 regularization, pseudoinverse, clipping or fallback was used; the independent
 checker passes exact publication and 8880/8880 positive reconstructions. The
 classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map,
-stopping defect or map host was produced. See
+stopping defect or map host was produced as part of that offline stage. See
 [../validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md).
+
+The dedicated host was subsequently activated exactly once. The strict
+carrier preflight, three radial terminals, axial terminal, independent audit
+and 21-entry receipt pass. The unchanged gate gives
+
+\[
+(R_\rho,R_L,R_a)=
+(1.2844697306\times10^{-7},
+1.1701447564\times10^{-3},
+1.7994707454\times10^{-6}),
+\]
+
+so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
+remains the dominant failure. All three stopping defects are higher than in
+the preceding different-parent map. This is not a convergence factor,
+stability result or general Anderson(2) comparison. No retry or successor was
+started; see
+[../validation/iterative/rank2_modal_aa2_rolling_next_map_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

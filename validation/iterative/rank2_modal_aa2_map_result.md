@@ -138,5 +138,5 @@ that map evaluation.
 The three-map AA(2) window was later shifted forward once to include this
 returned state. A separate Ganlib-only stage materialized a finite, positive
 rolling AA(2) proposal without Dragon or a new map. It created no stopping
-defect and prepared no map host; see
+defect and prepared no map host as part of that offline stage; see
 [rank2_modal_aa2_rolling_next_candidate_result.md](rank2_modal_aa2_rolling_next_candidate_result.md).

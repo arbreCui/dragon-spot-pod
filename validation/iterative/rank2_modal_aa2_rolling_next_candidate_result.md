@@ -137,4 +137,11 @@ AA(2) proposal. It did not run Dragon or evaluate
 \(G_2(x_{\mathrm{rAA2}})\), and therefore created no raw stopping defect. It
 does not establish convergence, stability, contraction, Anderson superiority,
 rank adequacy or physical accuracy. No map host or successor calculation was
-prepared.
+prepared as part of that offline stage.
+
+## Subsequent real map
+
+A separately frozen, default-off host was later activated exactly once to
+evaluate \(G_2(x_{\mathrm{rAA2}})\). The map is valid but does not satisfy the
+unchanged stopping gate; see
+[rank2_modal_aa2_rolling_next_map_result.md](rank2_modal_aa2_rolling_next_map_result.md).

@@ -141,8 +141,10 @@ generic, default-off continuation host.
   no new map.
 - `rank2_modal_aa2_rolling_next_map_parent.tsv`,
   `rank2_modal_aa2_rolling_next_map_policy.md`,
-  `run_rank2_modal_aa2_rolling_next_map.sh`: default-off host for exactly one
-  map from that shifted proposal, with no retry or automatic successor.
+  `run_rank2_modal_aa2_rolling_next_map.sh`,
+  `rank2_modal_aa2_rolling_next_map_result.md`: default-off host and frozen
+  result for exactly one map from that shifted proposal, with no retry or
+  automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -612,8 +614,25 @@ The finite positive determinant, exact publication, latest returned carrier
 and 8880/8880 positive reconstructions pass independent checks. The
 extrapolating coefficients were neither clipped nor regularized. The result
 is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon, map, stopping defect or
-map host was produced. See
+map host was produced as part of that offline stage. See
 [rank2_modal_aa2_rolling_next_candidate_result.md](rank2_modal_aa2_rolling_next_candidate_result.md).
+
+The dedicated host was then executed exactly once, with no retry. The strict
+preflight, all four solve terminals, independent audit and 21-entry receipt
+pass. The map is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(1.2844697306\times10^{-7},
+1.1701447564\times10^{-3},
+1.7994707454\times10^{-6}).
+\]
+
+Only \(R_\rho\) passes `5.0e-7`; leakage remains the dominant failure. All
+three stopping defects increased relative to the preceding different-parent
+map, but this cross-input comparison is not a convergence factor, stability
+result or general Anderson(2) verdict. No retry or successor was started; see
+[rank2_modal_aa2_rolling_next_map_result.md](rank2_modal_aa2_rolling_next_map_result.md).
 
 ## Current boundary
 
@@ -636,10 +655,10 @@ local and Git-ignored.
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
-The fixed-rank-two study also remains unconverged. Its latest evaluated map is
-valid, but $R_L$ and $R_a$ still fail the declared gate. A shifted rolling
-AA(2) proposal has been materialized offline, but it has not been evaluated;
-no successor map has been prepared or started.
+The fixed-rank-two study also remains unconverged. Its latest shifted rolling
+AA(2) proposal has now been evaluated exactly once. The map is valid, but
+$R_L$ and $R_a$ fail the declared gate; no retry or successor has been
+prepared or started.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

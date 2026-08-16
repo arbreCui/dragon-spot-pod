@@ -529,5 +529,23 @@ The determinant is finite and strictly positive. The unmodified
 extrapolating weights were not clipped or regularized, and all 8880 published
 rank-two flux values remain strictly positive. This is
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map or stopping defect was
-produced, and no map host was prepared. See
+produced, and no map host was prepared as part of that offline stage. See
 [validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md](validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md).
+
+Its dedicated host was then frozen and executed exactly once, with no retry.
+The carrier preflight, all four strict solve terminals, independent audit and
+21-entry receipt pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(1.2844697\times10^{-7},\,1.1701448\times10^{-3},\,
+1.7994707\times10^{-6}),
+$$
+
+so the classification is `VALID_NOT_MET`. Only $R_\rho$ passes `5.0e-7`;
+leakage remains the dominant failure. Relative to the preceding
+different-parent map, all three stopping defects increased. This finite
+cross-input comparison is not a convergence factor, a stability result or a
+general verdict on Anderson(2). No retry, successor proposal or successor map
+was started; see
+[validation/iterative/rank2_modal_aa2_rolling_next_map_result.md](validation/iterative/rank2_modal_aa2_rolling_next_map_result.md).
