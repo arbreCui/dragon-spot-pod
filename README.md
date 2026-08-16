@@ -546,6 +546,24 @@ so the classification is `VALID_NOT_MET`. Only $R_\rho$ passes `5.0e-7`;
 leakage remains the dominant failure. Relative to the preceding
 different-parent map, all three stopping defects increased. This finite
 cross-input comparison is not a convergence factor, a stability result or a
-general verdict on Anderson(2). No retry, successor proposal or successor map
-was started; see
+general verdict on Anderson(2). No retry or successor was started as part of
+that map evaluation; see
 [validation/iterative/rank2_modal_aa2_rolling_next_map_result.md](validation/iterative/rank2_modal_aa2_rolling_next_map_result.md).
+
+The complete returned state was then used directly as the parent of exactly
+one Picard successor, with no mixing or retry. All four strict solve
+terminals, the independent continued-state audit and the 21-entry receipt
+pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223470\times10^{-8},\,6.2880209\times10^{-4},\,
+1.4780076\times10^{-6}),
+$$
+
+so the classification is `VALID_NOT_MET`: only $R_\rho$ passes `5.0e-7`.
+Relative to its direct parent, the three stopping defects fell about 50.0%,
+46.26% and 17.86%. This is one local componentwise improvement, not a
+convergence factor, contraction result, convergence-order measurement or
+future prediction. No retry or further successor was started; see
+[validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md](validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md).

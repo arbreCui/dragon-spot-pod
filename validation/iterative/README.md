@@ -147,9 +147,10 @@ generic, default-off continuation host.
   automatic successor.
 - `rank2_modal_aa2_rolling_next_picard_map_parent.tsv`,
   `rank2_modal_aa2_rolling_next_picard_map_policy.md`,
-  `run_rank2_modal_aa2_rolling_next_picard_map.sh`: default-off host for one
-  direct Picard successor from the latest valid returned state, with no
-  mixing, retry or automatic successor.
+  `run_rank2_modal_aa2_rolling_next_picard_map.sh`,
+  `rank2_modal_aa2_rolling_next_picard_map_result.md`: default-off host and
+  frozen result for one direct Picard successor from the latest valid returned
+  state, with no mixing, retry or automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -636,8 +637,28 @@ pass. The map is `VALID_NOT_MET`:
 Only \(R_\rho\) passes `5.0e-7`; leakage remains the dominant failure. All
 three stopping defects increased relative to the preceding different-parent
 map, but this cross-input comparison is not a convergence factor, stability
-result or general Anderson(2) verdict. No retry or successor was started; see
+result or general Anderson(2) verdict. No retry or successor was started as
+part of that map evaluation; see
 [rank2_modal_aa2_rolling_next_map_result.md](rank2_modal_aa2_rolling_next_map_result.md).
+
+The complete returned state was then used directly as the parent of exactly
+one Picard successor, with no mixing or retry. The strict solve terminals,
+independent continued-state audit and 21-entry receipt pass. The result is
+`VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223469765\times10^{-8},
+6.2880209149\times10^{-4},
+1.4780076244\times10^{-6}).
+\]
+
+Only \(R_\rho\) passes `5.0e-7`. Relative to its direct parent, the three
+stopping defects decreased by approximately 50.0%, 46.26% and 17.86%. This
+is one local componentwise improvement, not a convergence factor,
+contraction result, convergence-order measurement or future prediction. No
+retry or further successor was started; see
+[rank2_modal_aa2_rolling_next_picard_map_result.md](rank2_modal_aa2_rolling_next_picard_map_result.md).
 
 ## Current boundary
 
@@ -661,9 +682,10 @@ One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
 The fixed-rank-two study also remains unconverged. Its latest shifted rolling
-AA(2) proposal has now been evaluated exactly once. The map is valid, but
-$R_L$ and $R_a$ fail the declared gate. One direct Picard successor is now
-prepared default-off; it has not been started.
+AA(2) proposal and one direct Picard successor from that returned state have
+each been evaluated exactly once. Both maps are valid. The direct successor
+is locally componentwise improved, but $R_L$ and $R_a$ still fail the
+declared gate. No retry or further successor has been prepared or started.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

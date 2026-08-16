@@ -377,8 +377,27 @@ so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
 remains the dominant failure. All three stopping defects are higher than in
 the preceding different-parent map. This is not a convergence factor,
 stability result or general Anderson(2) comparison. No retry or successor was
-started; see
+started as part of that map evaluation; see
 [../validation/iterative/rank2_modal_aa2_rolling_next_map_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_map_result.md).
+
+The complete returned state was then used directly as the parent of exactly
+one Picard successor, with no mixing or retry. All four strict solve
+terminals, the independent continued-state audit and the 21-entry receipt
+pass. The unchanged gate gives
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223469765\times10^{-8},
+6.2880209149\times10^{-4},
+1.4780076244\times10^{-6}),
+\]
+
+so the classification is `VALID_NOT_MET`: only \(R_\rho\) passes. Relative
+to its direct parent, the three stopping defects decreased by approximately
+50.0%, 46.26% and 17.86%. This single local componentwise improvement is not
+a convergence factor, contraction result, convergence-order measurement or
+future prediction. No retry or further successor was started; see
+[../validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
