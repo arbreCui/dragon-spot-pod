@@ -99,8 +99,9 @@ generic, default-off continuation host.
   the complete `AA1-RAW-FLUX` carrier and no new map.
 - `rank2_modal_aa1_post_map_parent.tsv`,
   `rank2_modal_aa1_post_map_policy.md`,
-  `run_rank2_modal_aa1_post_map.sh`: default-off host for exactly one map from
-  that proposal, with a strict pre-Dragon `AA1-RAW-FLUX` gate and no retry.
+  `run_rank2_modal_aa1_post_map.sh`,
+  `rank2_modal_aa1_post_map_result.md`: default-off host for exactly one map
+  from that proposal and its completed, no-retry `VALID_NOT_MET` result.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -438,12 +439,22 @@ positive reconstructions. It remains
 produced no new stopping defect. See
 [rank2_modal_aa1_post_candidate_result.md](rank2_modal_aa1_post_candidate_result.md).
 
-Its dedicated one-map host is prepared but remains default-off. It accepts
-only the hash-locked proposal with the exact `AA1-RAW-FLUX` carrier, retains
-the fixed rank-two basis and unchanged `5.0e-7` gate, and permits one attempt
-without retry or successor map. No Dragon calculation was performed while
-preparing this host; see
-[rank2_modal_aa1_post_map_policy.md](rank2_modal_aa1_post_map_policy.md).
+Its dedicated default-off host was then executed exactly once, without retry.
+The strict `AA1-RAW-FLUX` preflight, three radial terminals, axial terminal,
+independent audit and 21-entry receipt all pass. The result is
+`VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223481\times10^{-8},\,4.5636753\times10^{-4},\,
+1.3428559\times10^{-6}).
+\]
+
+Only $R_\rho$ passes `5.0e-7`. Relative to the preceding evaluated proposal
+map, $R_L$ and $D_L$ rose about 8.44%, while $R_\rho$ and $R_a$ fell. This is
+not componentwise improvement or a convergence factor. No successor map was
+started; see
+[rank2_modal_aa1_post_map_result.md](rank2_modal_aa1_post_map_result.md).
 
 ## Current boundary
 
@@ -467,7 +478,8 @@ One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
 The separate fixed-rank-two AA(1) study also remains unconverged. Its latest
-step is only the offline proposal above, not another evaluated map.
+step is the one evaluated map above; it is valid, but $R_L$ and $R_a$ still
+fail the declared gate.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

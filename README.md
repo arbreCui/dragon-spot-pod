@@ -392,9 +392,20 @@ launched no Dragon and produced no new defect or convergence conclusion.
 See
 [validation/iterative/rank2_modal_aa1_post_candidate_result.md](validation/iterative/rank2_modal_aa1_post_candidate_result.md).
 
-A dedicated one-map host for this proposal is now prepared but default-off.
-It requires the exact `AA1-RAW-FLUX` carrier, keeps the fixed rank-two basis,
-unchanged physical decks and `5.0e-7` tolerance, and permits one attempt with
-no retry or successor map. Preparing the host performed no Dragon calculation;
-see
-[validation/iterative/rank2_modal_aa1_post_map_policy.md](validation/iterative/rank2_modal_aa1_post_map_policy.md).
+Its dedicated default-off host was then authorized exactly once, with no
+retry. The strict `AA1-RAW-FLUX` preflight, three radial terminals, axial
+terminal, independent audit and 21-entry receipt all pass. The result is
+valid but not converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223481\times10^{-8},\,4.5636753\times10^{-4},\,
+1.3428559\times10^{-6}).
+$$
+
+Only $R_\rho$ meets `5.0e-7`; $R_L$ and $R_a$ fail. Relative to the preceding
+evaluated proposal map, the leakage defect rose about 8.44%, so the update is
+not componentwise improving. This is a cross-input comparison, not a
+convergence factor or proof of Anderson superiority. No successor map was
+started; see
+[validation/iterative/rank2_modal_aa1_post_map_result.md](validation/iterative/rank2_modal_aa1_post_map_result.md).

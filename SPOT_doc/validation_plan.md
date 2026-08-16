@@ -222,12 +222,21 @@ positive reconstructions. The classification is
 convergence conclusion was produced. See
 [../validation/iterative/rank2_modal_aa1_post_candidate_result.md](../validation/iterative/rank2_modal_aa1_post_candidate_result.md).
 
-A dedicated host is now prepared, but remains default-off, for exactly one
-evaluation of this proposal. It requires the hash-locked `AA1-RAW-FLUX`
-carrier and keeps the fixed rank-two basis, original physical decks and
-`5.0e-7` tolerance. Activation permits one attempt with no retry and starts no
-successor map. Preparing it performed no Dragon calculation; see
-[../validation/iterative/rank2_modal_aa1_post_map_policy.md](../validation/iterative/rank2_modal_aa1_post_map_policy.md).
+The dedicated default-off host was then authorized exactly once, with no
+retry. Its `AA1-RAW-FLUX` preflight, three radial terminals, axial terminal,
+independent audit and receipt all pass. The result is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223481\times10^{-8},\,4.5636753\times10^{-4},\,
+1.3428559\times10^{-6}).
+\]
+
+Only $R_\rho$ passes the unchanged `5.0e-7` gate. Relative to the preceding
+evaluated proposal map, $R_L$ and $D_L$ rose about 8.44%; this mixed
+cross-input response is not a convergence factor or proof of Anderson
+superiority. No successor map was started. See
+[../validation/iterative/rank2_modal_aa1_post_map_result.md](../validation/iterative/rank2_modal_aa1_post_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

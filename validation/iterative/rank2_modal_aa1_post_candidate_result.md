@@ -111,3 +111,10 @@ superiority, rank adequacy or physical accuracy. In particular,
 $x_3\to x_{\mathrm{AA1}}^+$ is not a map pair; the two residuals above are
 formed from their own declared inputs. No Dragon process was launched, and no
 physical-map host or successor map was created.
+
+## Subsequent evaluation
+
+A separately frozen, default-off host subsequently evaluated this proposal
+exactly once. That later map is valid but does not meet the unchanged stopping
+gate; it does not alter this proposal-stage classification. See
+[rank2_modal_aa1_post_map_result.md](rank2_modal_aa1_post_map_result.md).
