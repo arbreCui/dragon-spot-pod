@@ -9,6 +9,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --consecutive x1_pub x2 x3 \
+  !     x3_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -56,11 +58,15 @@ program check_rank2_modal_aa1_candidate
   real(real64) :: publication_delta
   real(real32) :: keff_published,min_published_flux
   integer :: argument_count,i,min_group,min_snapshot,min_region
-  logical :: next_mode,u_mode
+  logical :: next_mode,u_mode,consecutive_mode
+  character(len=24) :: report_prefix
+  character(len=12) :: proposal_carrier
+  character(len=2) :: previous_output,latest_output
 
   argument_count=command_argument_count()
   next_mode=.false.
   u_mode=.false.
+  consecutive_mode=.false.
   if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--u') then
@@ -75,6 +81,17 @@ program check_rank2_modal_aa1_candidate
       if (len_trim(path(i)) > max_xsm_path) &
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
+  else if (argument_count == 8) then
+    call get_command_argument(1,mode_argument)
+    if (trim(mode_argument) /= '--consecutive') &
+      call fail('EIGHT ARGUMENTS REQUIRE LEADING --CONSECUTIVE.')
+    consecutive_mode=.true.
+    do i=1,7
+      call get_command_argument(i+1,path(i))
+      if (len_trim(path(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
+      if (len_trim(path(i)) > max_xsm_path) &
+        call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
+    enddo
   else if (argument_count == 7) then
     do i=1,7
       call get_command_argument(i,path(i))
@@ -83,7 +100,8 @@ program check_rank2_modal_aa1_candidate
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
   else
-    call fail('EXPECTED DEFAULT SEVEN ARGUMENTS OR --NEXT/--U PLUS EIGHT.')
+    call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
+      'SEVEN, OR --NEXT/--U PLUS EIGHT.')
   endif
 
   if (next_mode) then
@@ -92,15 +110,29 @@ program check_rank2_modal_aa1_candidate
       u_mode)
   else
 
-  call load_state(trim(path(1)),0,x0,'X0')
+  report_prefix='RANK2-MODAL-AA1'
+  previous_output='X1'
+  latest_output='X2'
+  proposal_carrier='X2-RAW-FLUX'
+  if (consecutive_mode) then
+    report_prefix='RANK2-CONSECUTIVE-AA1'
+    previous_output='X2'
+    latest_output='X3'
+    proposal_carrier='X3-RAW-FLUX'
+    call load_state(trim(path(1)),2,x0,'X1 PROPOSAL','V-RAW-FLUX')
+  else
+    call load_state(trim(path(1)),0,x0,'X0')
+  endif
   call load_state(trim(path(2)),1,x1,'X1')
   call load_state(trim(path(3)),1,x2,'X2')
-  call load_state(trim(path(6)),2,proposal,'PROPOSAL')
+  call load_state(trim(path(6)),2,proposal,'PROPOSAL',proposal_carrier)
 
   call compare_fixed_bundle(x0,x1,'X0/X1')
   call compare_fixed_bundle(x0,x2,'X0/X2')
   call compare_fixed_bundle(x0,proposal,'X0/PROPOSAL')
   call check_basis_reference(trim(path(5)),proposal)
+  if (consecutive_mode) &
+    call validate_input_snapshot(trim(path(4)),x1,x2,'X2','X3')
 
   call modal_history_geometry(x0,x1,x2,update0_sq,update1_sq, &
     update_dot)
@@ -150,35 +182,42 @@ program check_rank2_modal_aa1_candidate
     call fail('PROPOSAL SPOT-X-NORM DIFFERS FROM X2 RAW CARRIER.')
 
   call compare_axial_raw_flux(trim(path(3)),trim(path(6)),x2%state(2))
+  if (consecutive_mode) &
+    call compare_axial_carrier_payload(trim(path(3)),trim(path(6)))
   call check_snapshot_publication(trim(path(4)),trim(path(7)), &
     expected_l32,keff_published)
   call check_projected_positivity(proposal,min_published_flux,min_group, &
     min_snapshot,min_region)
 
-  call write_real64_metric('RANK2-MODAL-AA1 BETA WEIGHT-X2',beta)
-  call write_real64_metric('RANK2-MODAL-AA1 WEIGHT-X1',previous_weight)
-  call write_real64_metric('RANK2-MODAL-AA1 DENOMINATOR',denominator)
-  call write_real32_metric('RANK2-MODAL-AA1 PUBLISHED K',keff_published)
-  call write_real64_metric('RANK2-MODAL-AA1 PUBLISHED RHO',rho_published)
-  call write_real64_metric('RANK2-MODAL-AA1 RHO PUBLICATION DELTA', &
+  call write_real64_metric(trim(report_prefix)//' BETA WEIGHT-'// &
+    latest_output,beta)
+  call write_real64_metric(trim(report_prefix)//' WEIGHT-'// &
+    previous_output,previous_weight)
+  call write_real64_metric(trim(report_prefix)//' DENOMINATOR',denominator)
+  call write_real32_metric(trim(report_prefix)//' PUBLISHED K',keff_published)
+  call write_real64_metric(trim(report_prefix)//' PUBLISHED RHO',rho_published)
+  call write_real64_metric(trim(report_prefix)//' RHO PUBLICATION DELTA', &
     publication_delta)
-  call write_real32_metric('RANK2-MODAL-AA1 MIN PUBLISHED B*A', &
+  call write_real32_metric(trim(report_prefix)//' MIN PUBLISHED B*A', &
     min_published_flux)
   write(6,'(A,3(1X,I0))') &
-    'RANK2-MODAL-AA1 MIN B*A GROUP/SNAPSHOT/REGION', &
+    trim(report_prefix)//' MIN B*A GROUP/SNAPSHOT/REGION', &
     min_group,min_snapshot,min_region
-  write(6,'(A,I0)') &
-    'RANK2-MODAL-AA1 STRICT-POSITIVE PUBLISHED POINTS ', &
+  write(6,'(A,I0)') trim(report_prefix)// &
+    ' STRICT-POSITIVE PUBLISHED POINTS ', &
     positive_count_expected
-  write(6,'(A)') 'RANK2-MODAL-AA1 FIXED-RANK2-BUNDLE BITWISE PASS'
-  write(6,'(A)') 'RANK2-MODAL-AA1 PUBLICATION-Q BITWISE PASS'
-  write(6,'(A)') 'RANK2-MODAL-AA1 AXIAL/PLANE RAW-FLUX CARRIER BITWISE PASS'
-  write(6,'(A)') 'RANK2-MODAL-AA1 SNAPSHOT LEAKAGE/K PUBLICATION PASS'
-  write(6,'(A)') 'RANK2-MODAL-AA1 LAGGED SYSTEM BITWISE PASS'
-  write(6,'(A)') 'RANK2-MODAL-AA1 NO STALE RESULT RECORD PASS'
-  write(6,'(A)') &
-    'RANK2-MODAL-AA1 CLASSIFICATION MATERIALIZED_PROPOSAL_NOT_EVALUATED'
-  write(6,'(A)') 'RANK2-MODAL-AA1 COMPLETE'
+  write(6,'(A)') trim(report_prefix)// &
+    ' FIXED-RANK2-BUNDLE BITWISE PASS'
+  write(6,'(A)') trim(report_prefix)//' PUBLICATION-Q BITWISE PASS'
+  write(6,'(A)') trim(report_prefix)// &
+    ' AXIAL/PLANE RAW-FLUX CARRIER BITWISE PASS'
+  write(6,'(A)') trim(report_prefix)// &
+    ' SNAPSHOT LEAKAGE/K PUBLICATION PASS'
+  write(6,'(A)') trim(report_prefix)//' LAGGED SYSTEM BITWISE PASS'
+  write(6,'(A)') trim(report_prefix)//' NO STALE RESULT RECORD PASS'
+  write(6,'(A)') trim(report_prefix)// &
+    ' CLASSIFICATION MATERIALIZED_PROPOSAL_NOT_EVALUATED'
+  write(6,'(A)') trim(report_prefix)//' COMPLETE'
   endif
 
 contains

@@ -81,6 +81,11 @@ generic, default-off continuation host.
 - `rank2_modal_aa1_u_leakage_localization_result.md`: no-Dragon REAL64
   localization of the two adjacent leakage defects, scales, hotspots and
   signs.
+- `rank2_modal_aa1_consecutive_candidate_inputs.tsv`,
+  `run_rank2_modal_aa1_consecutive_candidate.sh`,
+  `rank2_modal_aa1_consecutive_candidate_result.md`: one deterministic
+  no-Dragon standard AA(1) proposal from the genuinely consecutive maps,
+  with an explicit `X3-RAW-FLUX` carrier and no new map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -369,6 +374,16 @@ increment. Thus the 29.1523% rebound comes from the leakage change itself,
 not the normalization scale. This is local oscillatory evidence, not proof of
 a two-cycle or its cause; see
 [rank2_modal_aa1_u_leakage_localization_result.md](rank2_modal_aa1_u_leakage_localization_result.md).
+
+Those two consecutive maps now define one standard depth-one modal
+Anderson proposal without another solve. The unique, unclipped coefficient is
+`0.6723407962072613` on the latest output \(x_3\), giving
+\(x_{\rm AA1}=0.3276592037927387x_2+0.6723407962072613x_3\). One scalar is
+applied to `(A,rho,L)`; raw flux is not mixed. The proposal instead preserves
+the complete \(x_3\) AX/snapshot carrier as `X3-RAW-FLUX`, and the independent
+checker passes its exact \(x_2\to x_3\) lifecycle and 8880/8880 positive
+reconstructions. It remains `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; see
+[rank2_modal_aa1_consecutive_candidate_result.md](rank2_modal_aa1_consecutive_candidate_result.md).
 
 ## Current boundary
 

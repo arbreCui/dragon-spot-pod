@@ -174,6 +174,18 @@ This is evidence of a local oscillatory tendency, not proof of a two-cycle or
 its cause. No Dragon or new map was run; see
 [../validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md](../validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md).
 
+The two genuinely consecutive returned maps now support one short offline
+standard Anderson(1) publication. In the unchanged Gram-height modal metric,
+the unique latest-output weight is `0.6723407962072613`; no clipping or fitted
+coefficient is used. The same scalar publishes `(A,rho,L)`, while the raw AX
+and snapshot payload remain the complete latest returned \(x_3\) carrier,
+explicitly marked `X3-RAW-FLUX`. The independent no-Dragon checker passes
+the affine identities, actual \(x_2\to x_3\) lagged lifecycle and 8880/8880
+strictly positive reconstructions. This stage is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; it supplies no new stopping residual
+or convergence conclusion. See
+[../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

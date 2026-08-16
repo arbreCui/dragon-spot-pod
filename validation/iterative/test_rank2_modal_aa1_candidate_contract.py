@@ -16,6 +16,9 @@ next_manifest = (
 u_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_candidate_inputs.tsv"
 ).read_text()
+consecutive_manifest = (
+    ITERATIVE / "rank2_modal_aa1_consecutive_candidate_inputs.tsv"
+).read_text()
 builder = (ITERATIVE / "build_rank2_modal_aa1_candidate.f90").read_text()
 checker = (ITERATIVE / "check_rank2_modal_aa1_candidate.f90").read_text()
 runner = (ITERATIVE / "run_rank2_modal_aa1_candidate.sh").read_text()
@@ -24,6 +27,9 @@ next_runner = (
 ).read_text()
 u_runner = (
     ITERATIVE / "run_rank2_modal_aa1_u_candidate.sh"
+).read_text()
+consecutive_runner = (
+    ITERATIVE / "run_rank2_modal_aa1_consecutive_candidate.sh"
 ).read_text()
 
 
@@ -80,6 +86,25 @@ require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in u_rows),
         "u manifest path escapes the repository")
 
+consecutive_rows = [line.split() for line in consecutive_manifest.splitlines()
+                    if line.strip() and not line.startswith("#")]
+consecutive_roles = (
+    "x1_pub", "x2", "x3", "x3_snapshots", "basis_reference"
+)
+require(consecutive_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa1-consecutive-candidate-inputs-v1",
+        "consecutive manifest version changed")
+require(tuple(row[0] for row in consecutive_rows) == consecutive_roles,
+        "consecutive manifest roles changed")
+require(all(len(row) == 3 for row in consecutive_rows),
+        "consecutive manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in consecutive_rows),
+        "consecutive manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in consecutive_rows),
+        "consecutive manifest path escapes the repository")
+
 for token in (
     "denominator=update_sq(1)+update_sq(2)-2.0_real64*update_dot",
     "beta=(update_sq(1)-update_dot)/denominator",
@@ -134,6 +159,14 @@ for token in (
     "call load_state(trim(next_path(4)),next_z,'latest returned output')",
 ):
     require(token in builder, f"u builder contract missing: {token}")
+for token in (
+    "--consecutive x1_pub x2 x3 x3_snap out_ax out_snap",
+    "call load_state(trim(path(1)),x0,'x1 proposal',.true.,'V-RAW-FLUX')",
+    "carrier_marker='X3-RAW-FLUX'",
+    "report_prefix='RANK2-CONSECUTIVE-AA1'",
+):
+    require(token in builder,
+            f"consecutive builder contract missing: {token}")
 
 for token in (
     "expected_a=previous_weight*x1%coordinates+beta*x2%coordinates",
@@ -186,6 +219,16 @@ for token in (
     "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
 ):
     require(token in checker, f"u checker contract missing: {token}")
+for token in (
+    "--consecutive x1_pub x2 x3",
+    "call load_state(trim(path(1)),2,x0,'X1 PROPOSAL','V-RAW-FLUX')",
+    "proposal_carrier='X3-RAW-FLUX'",
+    "call validate_input_snapshot(trim(path(4)),x1,x2,'X2','X3')",
+    "call compare_axial_carrier_payload(trim(path(3)),trim(path(6)))",
+    "report_prefix='RANK2-CONSECUTIVE-AA1'",
+):
+    require(token in checker,
+            f"consecutive checker contract missing: {token}")
 for record in (
     "SPOT-X-RRHO", "SPOT-X-RLEAK", "SPOT-X-DLEAK", "SPOT-X-RA",
     "SPOT-X-PERP", "SPOT-X-EPOCH", "SPOT-GBAL", "SPOT-GBAL-MA",
@@ -251,11 +294,33 @@ require(u_expected == [
 require(not re.search(r"(?m)^\s*(?:while|until)\b", u_runner),
         "u runner retry loops are forbidden")
 
+for name in (
+    "build_rank2_modal_aa1_candidate.f90",
+    "check_rank2_modal_aa1_candidate.f90",
+    "rank2_modal_aa1_consecutive_candidate_inputs.tsv",
+    "--consecutive x1.xsm x2.xsm x3.xsm x3s.xsm",
+    "proposal_axial.xsm",
+    "proposal_snapshots.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(name in consecutive_runner,
+            f"consecutive runner binding missing: {name}")
+consecutive_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", consecutive_runner
+)
+require(consecutive_expected == [
+    "7094d4dc57156aae8f0d0180bcac24bf02640f5de0435b46635151ed975186f1",
+    "ebd0d7f0ca762f907f6d767273298b80262039f22cc4b36682d73a15d34065b2",
+], "consecutive output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", consecutive_runner),
+        "consecutive runner retry loops are forbidden")
+
 combined = "\n".join((builder, checker, runner, next_runner,
-                       u_runner)).lower()
+                       u_runner, consecutive_runner)).lower()
 for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: three hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: four hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

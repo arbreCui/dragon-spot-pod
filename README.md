@@ -338,3 +338,20 @@ hotspot moved from snapshot 1/group 328 with a positive increment to snapshot
 1/group 326 with a larger negative increment. This is local oscillatory
 evidence, not proof of a two-cycle or its cause; see
 [validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md](validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md).
+
+The next no-Dragon step now uses those two genuinely consecutive Picard
+maps to materialize one standard modal Anderson(1) proposal. The computed,
+unclipped latest-output weight is `0.6723407962072613`, so
+
+$$
+x_{\mathrm{AA1}}=0.3276592037927387\,x_2+
+0.6723407962072613\,x_3.
+$$
+
+The same scalar is applied to `(A,rho,L)`. Raw flux is not interpolated: the
+proposal carries the complete latest returned \(x_3\) payload under the
+truthful `X3-RAW-FLUX` marker. Its independent checker passes all 8880
+strict-positivity points and the exact snapshot lifecycle. This is only a
+materialized, unevaluated proposal; no new map or convergence claim exists.
+See
+[validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).

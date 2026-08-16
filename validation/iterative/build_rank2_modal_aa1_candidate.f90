@@ -24,10 +24,13 @@ program build_rank2_modal_aa1_candidate
   end type canonical_state
 
   character(len=1024) :: path(6)
-  character(len=12) :: marker,mode
+  character(len=24) :: report_prefix
+  character(len=16) :: mode
+  character(len=12) :: marker,carrier_marker
+  character(len=2) :: previous_output,latest_output
   type(canonical_state) :: x0,x1,x2
   type(c_ptr) :: snap2,staged_ax,staged_snap,out_ax,out_snap,fluxes,plane
-  integer :: i,igr,isnap,a,b,nmode,nreg2d
+  integer :: i,igr,isnap,a,b,nmode,nreg2d,argument_offset
   integer :: index_a,index_b,index_g,index_l
   real(real64) :: update_sq(2),update_dot,denominator,beta,weight1
   real(real64) :: delta01_a,delta01_b,delta12_a,delta12_b
@@ -36,7 +39,10 @@ program build_rank2_modal_aa1_candidate
   real(real32) :: keff_public,projected
   real(real64), allocatable :: candidate_a(:),candidate_l(:)
   real(real32), allocatable :: published_l(:)
+  logical :: consecutive_mode
 
+  consecutive_mode=.false.
+  argument_offset=0
   if (command_argument_count() == 8) then
     call get_command_argument(1,mode)
     if (trim(mode) == '--next') then
@@ -47,13 +53,20 @@ program build_rank2_modal_aa1_candidate
       error stop 'eight-argument mode requires --next or --u'
     endif
     stop
+  else if (command_argument_count() == 7) then
+    call get_command_argument(1,mode)
+    if (trim(mode) /= '--consecutive') &
+      error stop 'seven-argument mode requires --consecutive'
+    consecutive_mode=.true.
+    argument_offset=1
   else if (command_argument_count() /= 6) then
     error stop 'expected x0 x1 x2 x2_snap out_ax out_snap or '// &
       '--next x1 x2 y z z_snap out_ax out_snap or '// &
-      '--u y z w v v_snap out_ax out_snap'
+      '--u y z w v v_snap out_ax out_snap or '// &
+      '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap'
   endif
   do i=1,6
-    call get_command_argument(i,path(i))
+    call get_command_argument(i+argument_offset,path(i))
     if ((len_trim(path(i)) == 0).or.(len_trim(path(i)) > max_path)) &
       error stop 'XSM path is empty or exceeds GANLIB limit'
   enddo
@@ -62,7 +75,19 @@ program build_rank2_modal_aa1_candidate
   call require_fresh_path(path(5))
   call require_fresh_path(path(6))
 
-  call load_state(trim(path(1)),x0,'x0')
+  report_prefix='RANK2-MODAL-AA1'
+  previous_output='X1'
+  latest_output='X2'
+  carrier_marker='X2-RAW-FLUX'
+  if (consecutive_mode) then
+    report_prefix='RANK2-CONSECUTIVE-AA1'
+    previous_output='X2'
+    latest_output='X3'
+    carrier_marker='X3-RAW-FLUX'
+    call load_state(trim(path(1)),x0,'x1 proposal',.true.,'V-RAW-FLUX')
+  else
+    call load_state(trim(path(1)),x0,'x0')
+  endif
   call load_state(trim(path(2)),x1,'x1')
   call load_state(trim(path(3)),x2,'x2')
   call compare_fixed_space(x0,x1,'x0/x1')
@@ -150,7 +175,7 @@ program build_rank2_modal_aa1_candidate
     enddo
   enddo
 
-  ! AX is an explicitly labelled x2 raw-flux carrier.  Only the complete
+  ! AX is an explicitly labelled latest-returned raw-flux carrier.  Only the
   ! outer state (A,rho,L) and its binary32 effective eigenvalue are replaced.
   call LCMOP(staged_ax,' ',0,1,0)
   call LCMEQU(x2%root,staged_ax)
@@ -171,15 +196,15 @@ program build_rank2_modal_aa1_candidate
   call delete_if_present(staged_ax,'SPOT-GBAL-MA')
   marker='PROPOSAL'
   call LCMPTC(staged_ax,'SPOT-X-STATE',12,marker)
-  marker='X2-RAW-FLUX'
+  marker=carrier_marker
   call LCMPTC(staged_ax,'SPOT-X-CARR',12,marker)
   call LCMOP(out_ax,trim(path(5)),0,2,0)
   call LCMEQU(staged_ax,out_ax)
   call LCMCL(out_ax,1)
   call LCMCL(staged_ax,2)
 
-  ! The x2 archive remains a carrier.  Publish only the root k identity and
-  ! FLUX leakage consumed by the next assembly; preserve lagged SYSTEM data.
+  ! The latest returned archive remains a carrier.  Publish only the root k
+  ! identity and FLUX leakage; preserve the actual lagged SYSTEM history.
   call LCMOP(staged_snap,' ',0,1,0)
   call LCMEQU(snap2,staged_snap)
   iter_keff=real(keff_public,real64)
@@ -204,20 +229,23 @@ program build_rank2_modal_aa1_candidate
   call LCMCL(x1%root,1)
   call LCMCL(x0%root,1)
 
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 BETA-WEIGHT-X2 ',beta
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 WEIGHT-X1 ',weight1
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 DENOMINATOR ',denominator
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 RHO-AFFINE ',rho_star
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 K-PUBLISHED ', &
+  write(*,'(A,ES24.16)') trim(report_prefix)//' BETA-WEIGHT-'// &
+    latest_output//' ',beta
+  write(*,'(A,ES24.16)') trim(report_prefix)//' WEIGHT-'// &
+    previous_output//' ',weight1
+  write(*,'(A,ES24.16)') trim(report_prefix)//' DENOMINATOR ',denominator
+  write(*,'(A,ES24.16)') trim(report_prefix)//' RHO-AFFINE ',rho_star
+  write(*,'(A,ES24.16)') trim(report_prefix)//' K-PUBLISHED ', &
     real(keff_public,real64)
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 RHO-PUBLISHED ',rho_public
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 RHO-Q-DELTA ', &
+  write(*,'(A,ES24.16)') trim(report_prefix)//' RHO-PUBLISHED ',rho_public
+  write(*,'(A,ES24.16)') trim(report_prefix)//' RHO-Q-DELTA ', &
     rho_public-rho_star
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 L-ROUNDTRIP-MAX ',l_roundtrip
-  write(*,'(A,ES24.16)') 'RANK2-MODAL-AA1 MIN-PUBLISHED-BA ', &
+  write(*,'(A,ES24.16)') trim(report_prefix)//' L-ROUNDTRIP-MAX ', &
+    l_roundtrip
+  write(*,'(A,ES24.16)') trim(report_prefix)//' MIN-PUBLISHED-BA ', &
     min_reconstructed
-  write(*,'(A)') &
-    'RANK2-MODAL-AA1 PROPOSAL COMPLETE NOT-EVALUATED NO-DRAGON NO-MAP'
+  write(*,'(A)') trim(report_prefix)// &
+    ' PROPOSAL COMPLETE NOT-EVALUATED NO-DRAGON NO-MAP'
 
 contains
 
