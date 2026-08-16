@@ -30,7 +30,11 @@ program check_one_map_xsm
   !   check_one_map_xsm --proposal-xrp basis_reference.xsm \
   !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
   !     returned_snapshots.xsm
-  !   check_one_map_xsm --proposal-parent[-z|-v|-x3|-aa1|-xnp|-xrp] \
+  !   check_one_map_xsm --proposal-aa2 basis_reference.xsm \
+  !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
+  !     returned_snapshots.xsm
+  !   check_one_map_xsm \
+  !     --proposal-parent[-z|-v|-x3|-aa1|-xnp|-xrp|-aa2] \
   !     proposal_axial.xsm
   !   check_one_map_xsm --directions state6_axial.xsm \
   !     state7_axial.xsm state8_axial.xsm
@@ -131,7 +135,7 @@ program check_one_map_xsm
   integer :: i,argument_offset
   logical :: continued,reencoded,proposal_mode,proposal_z_mode
   logical :: proposal_v_mode,proposal_x3_mode,proposal_aa1_mode
-  logical :: proposal_xnp_mode,proposal_xrp_mode
+  logical :: proposal_xnp_mode,proposal_xrp_mode,proposal_aa2_mode
   logical :: proposal_parent_mode
   logical :: direction_mode,mode2_mode
   logical :: aa1_history_mode,aa1_next_history_mode
@@ -147,6 +151,7 @@ program check_one_map_xsm
   proposal_aa1_mode=.false.
   proposal_xnp_mode=.false.
   proposal_xrp_mode=.false.
+  proposal_aa2_mode=.false.
   proposal_parent_mode=.false.
   direction_mode=.false.
   mode2_mode=.false.
@@ -177,11 +182,15 @@ program check_one_map_xsm
     else if (trim(mode) == '--proposal-parent-xrp') then
       proposal_parent_mode=.true.
       proposal_xrp_mode=.true.
+    else if (trim(mode) == '--proposal-parent-aa2') then
+      proposal_parent_mode=.true.
+      proposal_aa2_mode=.true.
     else
       call fail('TWO-ARGUMENT MODE REQUIRES --proposal-parent, '// &
         '--proposal-parent-z, --proposal-parent-v, '// &
         '--proposal-parent-x3, --proposal-parent-aa1, '// &
-        '--proposal-parent-xnp OR --proposal-parent-xrp.')
+        '--proposal-parent-xnp, --proposal-parent-xrp OR '// &
+        '--proposal-parent-aa2.')
     endif
     call get_command_argument(2,paths(1))
     if (len_trim(paths(1)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
@@ -231,6 +240,9 @@ program check_one_map_xsm
     else if (trim(mode) == '--proposal-xrp') then
       proposal_mode=.true.
       proposal_xrp_mode=.true.
+    else if (trim(mode) == '--proposal-aa2') then
+      proposal_mode=.true.
+      proposal_aa2_mode=.true.
     else if (trim(mode) == '--mode2') then
       mode2_mode=.true.
       do i=1,5
@@ -243,7 +255,7 @@ program check_one_map_xsm
     else
       call fail('ONLY --continued, --reencoded, --proposal, '// &
         '--proposal-z, --proposal-v, --proposal-x3, --proposal-aa1, '// &
-        '--proposal-xnp, --proposal-xrp OR --mode2 IS '// &
+        '--proposal-xnp, --proposal-xrp, --proposal-aa2 OR --mode2 IS '// &
         'ACCEPTED IN '// &
         'SIX-ARGUMENT MODE.')
     endif
@@ -269,7 +281,7 @@ program check_one_map_xsm
   else
     call fail('EXPECTED [--continued|--reencoded|--proposal|--proposal-z|'// &
       '--proposal-v|--proposal-x3|--proposal-aa1|--proposal-xnp|'// &
-      '--proposal-xrp] '// &
+      '--proposal-xrp|--proposal-aa2] '// &
       'BASIS, SYSTEM, '// &
       'PREVIOUS, CURRENT, SNAP.')
   endif
@@ -287,10 +299,12 @@ program check_one_map_xsm
     call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.false., &
       previous_state,'MATERIALIZED PROPOSAL PARENT',.true.,proposal_z_mode, &
       proposal_v_mode,proposal_x3_mode,proposal_aa1_mode,proposal_xnp_mode, &
-      proposal_xrp_mode)
+      proposal_xrp_mode,proposal_aa2_mode)
     if (any(previous_state%rank /= 2)) &
       call fail('MATERIALIZED PROPOSAL PARENT IS NOT RANK TWO.')
-    if (proposal_xrp_mode) then
+    if (proposal_aa2_mode) then
+      write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT AA2-CARRIER PASS'
+    else if (proposal_xrp_mode) then
       write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT XRP-CARRIER PASS'
     else if (proposal_xnp_mode) then
       write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT XNP-CARRIER PASS'
@@ -453,7 +467,7 @@ program check_one_map_xsm
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
       previous_state,'MATERIALIZED PROPOSAL STATE',.true.,proposal_z_mode, &
       proposal_v_mode,proposal_x3_mode,proposal_aa1_mode,proposal_xnp_mode, &
-      proposal_xrp_mode)
+      proposal_xrp_mode,proposal_aa2_mode)
   else
     call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
       previous_state,'STATE ZERO')
@@ -484,6 +498,8 @@ program check_one_map_xsm
     write(6,'(A)') 'ONE-MAP-XSM XNP-RAW-FLUX CARRIER INPUT PASS'
   if (proposal_xrp_mode) &
     write(6,'(A)') 'ONE-MAP-XSM XRP-RAW-FLUX CARRIER INPUT PASS'
+  if (proposal_aa2_mode) &
+    write(6,'(A)') 'ONE-MAP-XSM AA2-RAW-FLUX CARRIER INPUT PASS'
   write(6,'(A)') 'ONE-MAP-XSM POD-PACKAGE BITWISE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RADIAL-OP LIVE-CHANGE PASS'
   write(6,'(A)') 'ONE-MAP-XSM RAW-RADIAL-POSITIVITY PASS'
@@ -719,7 +735,7 @@ contains
 
   subroutine load_canonical_state(path,expected_fixb,expected_type, &
       expect_saved_defect,data,owner,proposal_state,z_carrier,v_carrier, &
-      x3_carrier,aa1_carrier,xnp_carrier,xrp_carrier)
+      x3_carrier,aa1_carrier,xnp_carrier,xrp_carrier,aa2_carrier)
     character(len=*), intent(in) :: path,expected_type,owner
     integer, intent(in) :: expected_fixb
     logical, intent(in) :: expect_saved_defect
@@ -730,12 +746,13 @@ contains
     logical, intent(in), optional :: aa1_carrier
     logical, intent(in), optional :: xnp_carrier
     logical, intent(in), optional :: xrp_carrier
+    logical, intent(in), optional :: aa2_carrier
     type(canonical_state), intent(out) :: data
     type(c_ptr) :: root
     integer :: g,ngrp,nsnap,ncoef,expected_ncoef,total_basis,total_gram
     logical :: is_proposal,expect_z_carrier,expect_v_carrier
     logical :: expect_x3_carrier,expect_aa1_carrier,expect_xnp_carrier
-    logical :: expect_xrp_carrier
+    logical :: expect_xrp_carrier,expect_aa2_carrier
     character(len=12) :: marker
 
     is_proposal=.false.
@@ -752,24 +769,33 @@ contains
     if (present(xnp_carrier)) expect_xnp_carrier=xnp_carrier
     expect_xrp_carrier=.false.
     if (present(xrp_carrier)) expect_xrp_carrier=xrp_carrier
+    expect_aa2_carrier=.false.
+    if (present(aa2_carrier)) expect_aa2_carrier=aa2_carrier
     if ((expect_z_carrier.and.expect_v_carrier).or. &
         (expect_z_carrier.and.expect_x3_carrier).or. &
         (expect_z_carrier.and.expect_aa1_carrier).or. &
         (expect_z_carrier.and.expect_xnp_carrier).or. &
         (expect_z_carrier.and.expect_xrp_carrier).or. &
+        (expect_z_carrier.and.expect_aa2_carrier).or. &
         (expect_v_carrier.and.expect_x3_carrier).or. &
         (expect_v_carrier.and.expect_aa1_carrier).or. &
         (expect_v_carrier.and.expect_xnp_carrier).or. &
         (expect_v_carrier.and.expect_xrp_carrier).or. &
+        (expect_v_carrier.and.expect_aa2_carrier).or. &
         (expect_x3_carrier.and.expect_aa1_carrier).or. &
         (expect_x3_carrier.and.expect_xnp_carrier).or. &
         (expect_x3_carrier.and.expect_xrp_carrier).or. &
+        (expect_x3_carrier.and.expect_aa2_carrier).or. &
         (expect_aa1_carrier.and.expect_xnp_carrier).or. &
         (expect_aa1_carrier.and.expect_xrp_carrier).or. &
-        (expect_xnp_carrier.and.expect_xrp_carrier)) &
+        (expect_aa1_carrier.and.expect_aa2_carrier).or. &
+        (expect_xnp_carrier.and.expect_xrp_carrier).or. &
+        (expect_xnp_carrier.and.expect_aa2_carrier).or. &
+        (expect_xrp_carrier.and.expect_aa2_carrier)) &
       call fail(trim(owner)//' PROPOSAL CARRIER FLAGS CONFLICT.')
     if ((expect_z_carrier.or.expect_v_carrier.or.expect_x3_carrier.or. &
-        expect_aa1_carrier.or.expect_xnp_carrier.or.expect_xrp_carrier).and. &
+        expect_aa1_carrier.or.expect_xnp_carrier.or.expect_xrp_carrier.or. &
+        expect_aa2_carrier).and. &
         (.not.is_proposal)) &
       call fail(trim(owner)//' RAW CARRIER REQUIRES A PROPOSAL STATE.')
     if (is_proposal.and.expect_saved_defect) &
@@ -915,7 +941,10 @@ contains
       if (marker /= 'PROPOSAL') &
         call fail(trim(owner)//' LIFECYCLE MARKER IS NOT PROPOSAL.')
       call LCMGTC(root,'SPOT-X-CARR',12,marker)
-      if (expect_xrp_carrier) then
+      if (expect_aa2_carrier) then
+        if (marker /= 'AA2-RAW-FLUX') &
+          call fail(trim(owner)//' RAW-FLUX CARRIER IS NOT AA2.')
+      else if (expect_xrp_carrier) then
         if (marker /= 'XRP-RAW-FLUX') &
           call fail(trim(owner)//' RAW-FLUX CARRIER IS NOT XRP.')
       else if (expect_xnp_carrier) then

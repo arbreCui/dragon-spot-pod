@@ -134,5 +134,14 @@ This result establishes one finite, positive, provenance-checked standard
 AA(2) proposal. It did not run Dragon or evaluate
 \(G_2(x_{\mathrm{AA2}})\), and therefore created no raw stopping defect and
 does not establish convergence, stability, contraction, Anderson superiority,
-rank adequacy or physical accuracy. No map host or successor calculation was
-prepared.
+rank adequacy or physical accuracy. No map calculation or successor state was
+produced.
+
+## Subsequent map preparation
+
+A dedicated default-off host was later prepared for exactly one evaluation
+of \(G_2(x_{\mathrm{AA2}})\). It keeps the fixed rank-two basis, physical
+decks and three-component stopping gate unchanged, requires the exact
+`AA2-RAW-FLUX` carrier and permits no retry or automatic successor. Preparing
+that host did not run Dragon; see
+[rank2_modal_aa2_map_policy.md](rank2_modal_aa2_map_policy.md).

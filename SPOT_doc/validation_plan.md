@@ -326,6 +326,14 @@ latest returned carrier and 8880/8880 positive reconstructions. The result is
 host was produced. See
 [../validation/iterative/rank2_modal_aa2_candidate_result.md](../validation/iterative/rank2_modal_aa2_candidate_result.md).
 
+A dedicated host is now prepared, but remains default-off, for exactly one
+evaluation of this proposal. It requires the hash-locked `AA2-RAW-FLUX`
+carrier and retains the fixed rank-two basis, original physical decks and
+`5.0e-7` three-component AND gate. One activation permits one attempt with no
+retry or automatic successor. Preparing it performed no Dragon calculation;
+see
+[../validation/iterative/rank2_modal_aa2_map_policy.md](../validation/iterative/rank2_modal_aa2_map_policy.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

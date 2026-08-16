@@ -495,3 +495,10 @@ and 8880/8880 positive reconstructions. This is
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map or stopping defect was
 produced, and no map host was prepared. See
 [validation/iterative/rank2_modal_aa2_candidate_result.md](validation/iterative/rank2_modal_aa2_candidate_result.md).
+
+A dedicated one-map host for this proposal is now prepared but default-off.
+It requires the exact `AA2-RAW-FLUX` carrier and keeps the fixed rank-two
+basis, physical decks and `5.0e-7` gate unchanged. One activation permits one
+attempt with no retry or automatic successor. Preparing the host performed no
+Dragon calculation; see
+[validation/iterative/rank2_modal_aa2_map_policy.md](validation/iterative/rank2_modal_aa2_map_policy.md).

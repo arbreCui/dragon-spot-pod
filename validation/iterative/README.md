@@ -130,6 +130,10 @@ generic, default-off continuation host.
   `rank2_modal_aa2_candidate_result.md`: one standard AA(2) proposal from the
   latest three real fixed-rank maps, materialized offline with the latest
   `AA2-RAW-FLUX` carrier and no new map.
+- `rank2_modal_aa2_map_parent.tsv`, `rank2_modal_aa2_map_policy.md`,
+  `run_rank2_modal_aa2_map.sh`: default-off host for exactly one map from the
+  AA(2) proposal, with strict carrier identity, no retry and no automatic
+  successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -568,6 +572,13 @@ independent checker passes exact publication, latest returned carrier and
 host was produced. See
 [rank2_modal_aa2_candidate_result.md](rank2_modal_aa2_candidate_result.md).
 
+Its dedicated one-map host is prepared but remains default-off. It accepts
+only the hash-locked proposal with the exact `AA2-RAW-FLUX` marker, retains
+the fixed rank-two basis and unchanged `5.0e-7` AND gate, and permits one
+attempt without retry or automatic successor. No Dragon calculation was
+performed while preparing this host; see
+[rank2_modal_aa2_map_policy.md](rank2_modal_aa2_map_policy.md).
+
 ## Current boundary
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
@@ -592,7 +603,8 @@ rejected. See [current_result.md](current_result.md).
 The fixed-rank-two study also remains unconverged. Its latest XRP-carrier map
 is valid, but $R_L$ and $R_a$ still fail the declared gate. The subsequent
 standard AA(2) state above is only an evaluated-history proposal; no further
-map or stopping defect has been produced.
+map or stopping defect has been produced. Its one-map host is prepared but
+remains default-off.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map
