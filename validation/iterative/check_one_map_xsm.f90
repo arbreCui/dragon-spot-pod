@@ -23,6 +23,8 @@ program check_one_map_xsm
   !     state7_axial.xsm state8_axial.xsm
   !   check_one_map_xsm --rank2-directions reencoded_parent.xsm \
   !     state1_axial.xsm state2_axial.xsm
+  !   check_one_map_xsm --proposal-v-directions proposal_v_axial.xsm \
+  !     returned_u_axial.xsm continued_axial.xsm
   !   check_one_map_xsm --rank2-aa1-history x1_axial.xsm \
   !     x2_axial.xsm proposal_y_axial.xsm returned_z_axial.xsm
   !   check_one_map_xsm --rank2-aa1-u-history proposal_y_axial.xsm \
@@ -120,6 +122,7 @@ program check_one_map_xsm
   logical :: direction_mode,mode2_mode
   logical :: aa1_history_mode,aa1_next_history_mode
   logical :: reencoded_first_direction
+  logical :: proposal_v_direction_mode
 
   continued=.false.
   reencoded=.false.
@@ -132,6 +135,7 @@ program check_one_map_xsm
   aa1_history_mode=.false.
   aa1_next_history_mode=.false.
   reencoded_first_direction=.false.
+  proposal_v_direction_mode=.false.
   argument_offset=0
   if (command_argument_count() == 2) then
     call get_command_argument(1,mode)
@@ -155,9 +159,12 @@ program check_one_map_xsm
     call get_command_argument(1,mode)
     if (trim(mode) == '--rank2-directions') then
       reencoded_first_direction=.true.
+    else if (trim(mode) == '--proposal-v-directions') then
+      reencoded_first_direction=.true.
+      proposal_v_direction_mode=.true.
     else if (trim(mode) /= '--directions') then
-      call fail('ONLY --directions OR --rank2-directions IS ACCEPTED IN '// &
-        'FOUR-ARGUMENT MODE.')
+      call fail('ONLY --directions, --rank2-directions OR '// &
+        '--proposal-v-directions IS ACCEPTED IN FOUR-ARGUMENT MODE.')
     endif
     direction_mode=.true.
     do i=1,3
@@ -271,9 +278,14 @@ program check_one_map_xsm
   endif
 
   if (direction_mode) then
-    call load_canonical_state(trim(paths(1)),1,'POD-FIXED', &
-      .not.reencoded_first_direction,direction_state(1), &
-      'DIRECTION STATE X1')
+    if (proposal_v_direction_mode) then
+      call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.false., &
+        direction_state(1),'DIRECTION PROPOSAL V',.true.,.false.,.true.)
+    else
+      call load_canonical_state(trim(paths(1)),1,'POD-FIXED', &
+        .not.reencoded_first_direction,direction_state(1), &
+        'DIRECTION STATE X1')
+    endif
     call load_canonical_state(trim(paths(2)),1,'POD-FIXED',.true., &
       direction_state(2),'DIRECTION STATE X2')
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.true., &
@@ -283,7 +295,10 @@ program check_one_map_xsm
       call fail('RANK2-DIRECTION MODE REQUIRES RANK TWO.')
     call compare_states_and_defects(direction_state(1),direction_state(2), &
       .not.reencoded_first_direction,reencoded_first_direction)
-    if (reencoded_first_direction) then
+    if (proposal_v_direction_mode) then
+      write(6,'(A)') &
+        'PICARD-DIRECTION MAP12 PROPOSAL-V-PARENT RAW-DEFECT BITWISE PASS'
+    else if (reencoded_first_direction) then
       write(6,'(A)') &
         'PICARD-DIRECTION MAP12 REENCODED-PARENT RAW-DEFECT BITWISE PASS'
     else
@@ -1877,6 +1892,9 @@ contains
       write(6,'(A)') 'PICARD-DIRECTION LEAKAGE GEOMETRY ORTHOGONAL'
     endif
     write(6,'(A)') 'PICARD-DIRECTION LEAKAGE-INF PRODUCTION-DIAGNOSTIC'
+    call report_leakage_state_max('X1',x1)
+    call report_leakage_state_max('X2',x2)
+    call report_leakage_state_max('X3',x3)
     call write_real64_metric('PICARD-DIRECTION LEAKAGE D_L 12', &
       l_infinity(1))
     call write_real64_metric('PICARD-DIRECTION LEAKAGE D_L 23', &
@@ -1929,7 +1947,7 @@ contains
     delta12=x2%leakage(index_l)-x1%leakage(index_l)
     delta23=x3%leakage(index_l)-x2%leakage(index_l)
     write(6,'(A,3(1X,I0))') 'PICARD-DIRECTION LEAKAGE HOTSPOT '// &
-      trim(label)//' FIRST-PLANE/GROUP/TIES',isnap,igr,ties
+      trim(label)//' FIRST-SNAPSHOT/GROUP/TIES',isnap,igr,ties
     call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
       trim(label)//' L1',x1%leakage(index_l))
     call write_real64_metric('PICARD-DIRECTION LEAKAGE HOTSPOT '// &
@@ -1951,6 +1969,34 @@ contains
         trim(label)//' SIGN OPPOSITE'
     endif
   end subroutine report_leakage_hotspot
+
+
+  subroutine report_leakage_state_max(label,state)
+    character(len=*), intent(in) :: label
+    type(canonical_state), intent(in) :: state
+    integer :: i,index_l,ties,igr,isnap
+    real(real64) :: maximum
+
+    maximum=maxval(abs(state%leakage))
+    index_l=0
+    ties=0
+    do i=1,size(state%leakage)
+      if (abs(state%leakage(i)) == maximum) then
+        ties=ties+1
+        if (index_l == 0) index_l=i
+      endif
+    enddo
+    if ((index_l == 0).or.(ties == 0)) &
+      call fail('LEAKAGE STATE MAXIMUM NOT FOUND.')
+    igr=mod(index_l-1,state%dims(2))+1
+    isnap=(index_l-1)/state%dims(2)+1
+    write(6,'(A,3(1X,I0))') 'PICARD-DIRECTION LEAKAGE STATE '// &
+      trim(label)//' MAXABS-FIRST-SNAPSHOT/GROUP/TIES',isnap,igr,ties
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE STATE '// &
+      trim(label)//' MAXABS',maximum)
+    call write_real64_metric('PICARD-DIRECTION LEAKAGE STATE '// &
+      trim(label)//' SIGNED-AT-MAXABS',state%leakage(index_l))
+  end subroutine report_leakage_state_max
 
 
   subroutine write_real64_metric(label,value)

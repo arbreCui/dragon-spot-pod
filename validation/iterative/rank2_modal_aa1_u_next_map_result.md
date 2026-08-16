@@ -96,3 +96,8 @@ This is one valid map of the fixed rank-two discrete model, but it does not
 meet the stopping rule. The mixed component trend does not establish
 convergence, divergence, stability, contraction, rank adequacy or physical
 accuracy. No successor map was started.
+
+A subsequent no-Dragon read-only localization showed that the \(R_L\)
+denominator was unchanged while the unique \(D_L\) hotspot moved and reversed
+sign; see
+[rank2_modal_aa1_u_leakage_localization_result.md](rank2_modal_aa1_u_leakage_localization_result.md).

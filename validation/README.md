@@ -152,6 +152,13 @@ decreased, but the leakage defect increased by about 29.2%, so the adjacent
 step is not componentwise monotone. No successor was started; see
 [iterative/rank2_modal_aa1_u_next_map_result.md](iterative/rank2_modal_aa1_u_next_map_result.md).
 
+The subsequent read-only REAL64 localization ran no Dragon. The \(R_L\)
+scale is identical in both adjacent maps; the 29.1523% rebound comes entirely
+from \(D_L\). Its unique hotspot moved from snapshot 1/group 328 with positive
+increment to snapshot 1/group 326 with larger negative increment. This is local
+oscillatory evidence only; see
+[iterative/rank2_modal_aa1_u_leakage_localization_result.md](iterative/rank2_modal_aa1_u_leakage_localization_result.md).
+
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable
 from Git tag `archive-pre-lean-20260814`.

@@ -330,3 +330,11 @@ state has also completed exactly once. It is valid but remains
 componentwise monotone, and no convergence or accuracy claim follows. No
 successor map was started; see
 [validation/iterative/rank2_modal_aa1_u_next_map_result.md](validation/iterative/rank2_modal_aa1_u_next_map_result.md).
+
+A no-Dragon REAL64 localization now explains the leakage rebound. Both
+adjacent \(R_L\) denominators are the identical middle-state value
+`1.46519986446946859e-3 cm^-1`; \(D_L\) increased by 29.1523%. Its unique
+hotspot moved from snapshot 1/group 328 with a positive increment to snapshot
+1/group 326 with a larger negative increment. This is local oscillatory
+evidence, not proof of a two-cycle or its cause; see
+[validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md](validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md).

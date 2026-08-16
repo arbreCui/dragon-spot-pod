@@ -78,6 +78,9 @@ generic, default-off continuation host.
   `rank2_modal_aa1_u_next_map_policy.md`,
   `rank2_modal_aa1_u_next_map_result.md`: one direct, no-retry Picard
   continuation from that valid returned state using the generic host.
+- `rank2_modal_aa1_u_leakage_localization_result.md`: no-Dragon REAL64
+  localization of the two adjacent leakage defects, scales, hotspots and
+  signs.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -358,6 +361,14 @@ Relative to the preceding map, \(R_\rho\) and \(R_a\) decreased by about
 are not componentwise monotone and establish neither convergence nor
 divergence. No successor map was started. See
 [rank2_modal_aa1_u_next_map_result.md](rank2_modal_aa1_u_next_map_result.md).
+
+The subsequent no-Dragon REAL64 localization found identical \(R_L\) scales
+in the two adjacent maps. The unique \(D_L\) hotspot moved from snapshot 1/group
+328 with positive increment to snapshot 1/group 326 with a larger negative
+increment. Thus the 29.1523% rebound comes from the leakage change itself,
+not the normalization scale. This is local oscillatory evidence, not proof of
+a two-cycle or its cause; see
+[rank2_modal_aa1_u_leakage_localization_result.md](rank2_modal_aa1_u_leakage_localization_result.md).
 
 ## Current boundary
 

@@ -166,6 +166,14 @@ not evidence of convergence, divergence, rank adequacy or physical accuracy.
 No successor map was started; see
 [../validation/iterative/rank2_modal_aa1_u_next_map_result.md](../validation/iterative/rank2_modal_aa1_u_next_map_result.md).
 
+A read-only REAL64 localization subsequently showed that the two adjacent
+\(R_L\) denominators are identical. The 29.1523% rebound therefore comes from
+the larger \(D_L\): its unique hotspot moved from snapshot 1/group 328 with a
+positive increment to snapshot 1/group 326 with a larger negative increment.
+This is evidence of a local oscillatory tendency, not proof of a two-cycle or
+its cause. No Dragon or new map was run; see
+[../validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md](../validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated
