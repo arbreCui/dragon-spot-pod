@@ -55,3 +55,13 @@ cannot establish asymptotic convergence, stability, Anderson superiority,
 rank adequacy or physical accuracy, and it starts no successor map. Preparing
 this host performs no Dragon, assembly, transport or Picard calculation and
 produces no map result.
+
+## Subsequent authorized result
+
+The frozen policy above is the pre-run authorization record and remains
+`PREPARED_NOT_RUN` by design. One later, separately authorized execution
+completed exactly once with no retry. All strict solve, lifecycle,
+independent-check and receipt gates passed, but the returned map is
+`VALID_NOT_MET`: $R_\rho$ passes while $R_L$ and $R_a$ fail the unchanged
+tolerance. No successor map was started. See
+[rank2_modal_aa1_consecutive_map_result.md](rank2_modal_aa1_consecutive_map_result.md).

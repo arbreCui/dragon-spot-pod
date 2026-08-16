@@ -186,13 +186,23 @@ strictly positive reconstructions. This stage is
 or convergence conclusion. See
 [../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).
 
-The next physical-map host is prepared but default-off. Its only new runtime
-branch is the strict `proposal-x3` lifecycle gate. The frozen candidate
-receipt, six parent hashes and exact `X3-RAW-FLUX` marker must pass before
-either bounded Dragon invocation; the existing radial and axial decks remain
-unchanged. This preparation performed no solve and produced no map or
-convergence evidence. See
-[../validation/iterative/rank2_modal_aa1_consecutive_map_policy.md](../validation/iterative/rank2_modal_aa1_consecutive_map_policy.md).
+The corresponding default-off physical-map host was then executed once under
+separate authorization, with no retry. Its strict `proposal-x3` preflight,
+three radial terminals, axial terminal, independent audit and receipt all
+pass. The result is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(1.2844695\times10^{-7},\,4.2083074\times10^{-4},\,
+1.6578761\times10^{-6}).
+\]
+
+Only $R_\rho$ passes the unchanged `5.0e-7` gate. The lower defects relative
+to the immediately preceding direct Picard map are a cross-input comparison,
+not a convergence factor, contraction proof or solver ranking; relative to
+an earlier proposal map, $R_L$ is about 4.17% higher. No successor map was
+started. See
+[../validation/iterative/rank2_modal_aa1_consecutive_map_result.md](../validation/iterative/rank2_modal_aa1_consecutive_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

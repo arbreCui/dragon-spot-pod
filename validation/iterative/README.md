@@ -88,8 +88,10 @@ generic, default-off continuation host.
   with an explicit `X3-RAW-FLUX` carrier and no new map.
 - `rank2_modal_aa1_consecutive_map_parent.tsv`,
   `rank2_modal_aa1_consecutive_map_policy.md`,
-  `run_rank2_modal_aa1_consecutive_map.sh`: one default-off physical-map
-  host with a strict pre-Dragon `X3-RAW-FLUX` gate; no map has been run.
+  `run_rank2_modal_aa1_consecutive_map.sh`,
+  `rank2_modal_aa1_consecutive_map_result.md`: one default-off physical-map
+  host with a strict pre-Dragon `X3-RAW-FLUX` gate and its completed,
+  no-retry `VALID_NOT_MET` result.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -389,13 +391,24 @@ checker passes its exact \(x_2\to x_3\) lifecycle and 8880/8880 positive
 reconstructions. It remains `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; see
 [rank2_modal_aa1_consecutive_candidate_result.md](rank2_modal_aa1_consecutive_candidate_result.md).
 
-The corresponding one-map host is now frozen separately and remains
-default-off. It adds only a dedicated `proposal-x3` lifecycle path: the
-candidate receipt, parent hashes and `X3-RAW-FLUX` marker must pass before
-either bounded Dragon invocation. It then reuses the unchanged three radial
-fixed-source solves and one axial solve. Preparing the host ran no Dragon and
-produced no new residual; see
-[rank2_modal_aa1_consecutive_map_policy.md](rank2_modal_aa1_consecutive_map_policy.md).
+The corresponding one-map host remains default-off. Its one separately
+authorized execution completed exactly once without retry. The dedicated
+`proposal-x3` gate, all three radial terminals, the axial terminal,
+independent audit and 21-entry receipt pass. The result is nevertheless
+`VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(1.2844695\times10^{-7},\,4.2083074\times10^{-4},\,
+1.6578761\times10^{-6}).
+\]
+
+Thus $R_\rho$ passes, while $R_L$ and $R_a$ fail the unchanged
+`5.0e-7` gate. All four recorded defects are lower than in the immediately
+preceding direct Picard map, but this is a cross-input comparison, not a
+convergence factor or proof of Anderson superiority. No successor map was
+started; see
+[rank2_modal_aa1_consecutive_map_result.md](rank2_modal_aa1_consecutive_map_result.md).
 
 ## Current boundary
 
@@ -453,11 +466,13 @@ The next representation-only step is also complete: the genuine second mode
 has been rebuilt from those same original snapshots with production
 `SPOPOD`/`ALSVDF`. A fresh rank-1 control, the rank-2 mode-1 prefix, stored
 diagnostics and duplicate rank-2 files all agree bitwise under their declared
-checks. The local rank-2 package remains inactive and Git-ignored. This is
-`OFFLINE_RECONSTRUCTION_ONLY`; the later single-map attempt did not complete
-the axial half and therefore does not promote this basis to a validated
-rank-2 map. See [rank2_basis_result.md](rank2_basis_result.md) and
-[rank2_map_attempt_result.md](rank2_map_attempt_result.md).
+checks. The basis-build artifact remains local and Git-ignored. That build
+stage is `OFFLINE_RECONSTRUCTION_ONLY`; its first single-map attempt did not
+complete the axial half. A later, separately authorized axial-only completion
+did produce a valid rank-2 map, classified `VALID_NOT_MET`. See
+[rank2_basis_result.md](rank2_basis_result.md),
+[rank2_map_attempt_result.md](rank2_map_attempt_result.md), and
+[rank2_axial_only_result.md](rank2_axial_only_result.md).
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.

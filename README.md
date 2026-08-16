@@ -351,13 +351,25 @@ $$
 The same scalar is applied to `(A,rho,L)`. Raw flux is not interpolated: the
 proposal carries the complete latest returned \(x_3\) payload under the
 truthful `X3-RAW-FLUX` marker. Its independent checker passes all 8880
-strict-positivity points and the exact snapshot lifecycle. This is only a
-materialized, unevaluated proposal; no new map or convergence claim exists.
+strict-positivity points and the exact snapshot lifecycle. This candidate
+publication stage itself did not evaluate a map and makes no convergence
+claim.
 See
 [validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).
 
-Its one-map host is now prepared but remains default-off. A dedicated
-`proposal-x3` gate verifies the candidate receipt, six frozen parent hashes
-and the exact `X3-RAW-FLUX` marker before either bounded Dragon invocation.
-The radial and axial physical decks are unchanged; no map has been run. See
-[validation/iterative/rank2_modal_aa1_consecutive_map_policy.md](validation/iterative/rank2_modal_aa1_consecutive_map_policy.md).
+Its default-off one-map host has now been executed once under separate
+authorization, with no retry. The dedicated `proposal-x3` gate, three radial
+terminals, axial terminal, independent audit and 21-entry receipt all pass.
+The result is valid but not converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(1.2844695\times10^{-7},\,4.2083074\times10^{-4},\,
+1.6578761\times10^{-6}).
+$$
+
+At `5.0e-7`, $R_\rho$ passes but $R_L$ and $R_a$ fail. The defects are
+all lower than in the immediately preceding direct Picard map, but the
+parents differ, so this is not a convergence factor or proof of Anderson
+superiority. No successor map was started; see
+[validation/iterative/rank2_modal_aa1_consecutive_map_result.md](validation/iterative/rank2_modal_aa1_consecutive_map_result.md).

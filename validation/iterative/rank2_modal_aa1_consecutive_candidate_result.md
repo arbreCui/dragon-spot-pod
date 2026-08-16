@@ -77,3 +77,10 @@ positivity. It does not evaluate \(G_2(x_{\mathrm{AA1}})\), provide a new
 stopping defect, prove convergence or stability, establish superiority over
 Picard, or qualify rank adequacy or transport accuracy. No Dragon process or
 new map was started.
+
+## Subsequent map result
+
+The candidate-stage classification above remains unchanged. A later,
+separately authorized single map from this exact hash-locked proposal
+completed and was classified `VALID_NOT_MET`; see
+[rank2_modal_aa1_consecutive_map_result.md](rank2_modal_aa1_consecutive_map_result.md).
