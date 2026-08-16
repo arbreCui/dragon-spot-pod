@@ -131,9 +131,9 @@ generic, default-off continuation host.
   latest three real fixed-rank maps, materialized offline with the latest
   `AA2-RAW-FLUX` carrier and no new map.
 - `rank2_modal_aa2_map_parent.tsv`, `rank2_modal_aa2_map_policy.md`,
-  `run_rank2_modal_aa2_map.sh`: default-off host for exactly one map from the
-  AA(2) proposal, with strict carrier identity, no retry and no automatic
-  successor.
+  `run_rank2_modal_aa2_map.sh`, `rank2_modal_aa2_map_result.md`: default-off
+  host and frozen result for exactly one map from the AA(2) proposal, with
+  strict carrier identity, no retry and no automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -568,16 +568,25 @@ The exact two-by-two system is finite with positive determinant. No condition
 threshold, pseudoinverse, nonnegativity constraint or fallback was used. The
 independent checker passes exact publication, latest returned carrier and
 8880/8880 positive reconstructions. The result is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon, map, stopping defect or map
-host was produced. See
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon calculation, map or stopping
+defect was produced. See
 [rank2_modal_aa2_candidate_result.md](rank2_modal_aa2_candidate_result.md).
 
-Its dedicated one-map host is prepared but remains default-off. It accepts
-only the hash-locked proposal with the exact `AA2-RAW-FLUX` marker, retains
-the fixed rank-two basis and unchanged `5.0e-7` AND gate, and permits one
-attempt without retry or automatic successor. No Dragon calculation was
-performed while preparing this host; see
-[rank2_modal_aa2_map_policy.md](rank2_modal_aa2_map_policy.md).
+Its dedicated host was then executed exactly once, with no retry. The AA2
+preflight, all strict solve terminals, independent audit and 21-entry receipt
+pass. The result is `VALID_NOT_MET`:
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223480867\times10^{-8},
+5.0408972648\times10^{-4},
+1.0079586253\times10^{-6}).
+\]
+
+Only \(R_\rho\) passes `5.0e-7`; leakage remains the dominant failure. The
+cross-input comparison is not a convergence factor or monotonicity claim. No
+retry, successor proposal or successor map was started; see
+[rank2_modal_aa2_map_result.md](rank2_modal_aa2_map_result.md).
 
 ## Current boundary
 
@@ -600,11 +609,10 @@ local and Git-ignored.
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
-The fixed-rank-two study also remains unconverged. Its latest XRP-carrier map
-is valid, but $R_L$ and $R_a$ still fail the declared gate. The subsequent
-standard AA(2) state above is only an evaluated-history proposal; no further
-map or stopping defect has been produced. Its one-map host is prepared but
-remains default-off.
+The fixed-rank-two study also remains unconverged. Its latest AA(2)-parent map
+is valid, but $R_L$ and $R_a$ still fail the declared gate. The single
+authorized attempt is complete; no retry, successor proposal or successor map
+has been started.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

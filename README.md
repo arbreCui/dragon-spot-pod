@@ -481,7 +481,7 @@ The latest three valid map residuals were then used once in the same
 Gram-height metric to materialize the standard AA(2) proposal
 
 $$
-x_{mathrm{AA2}}=
+x_{\mathrm{AA2}}=
 0.7766427453x_{mathrm{next}}^+
 -0.5452141528x_{mathrm{roll}}^+
 +0.7685714076x_{mathrm{roll2}}^+.
@@ -493,12 +493,23 @@ was used; the negative coefficient is the unmodified standard solution.
 Independent checks pass exact publication, the latest `AA2-RAW-FLUX` carrier
 and 8880/8880 positive reconstructions. This is
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map or stopping defect was
-produced, and no map host was prepared. See
+produced. See
 [validation/iterative/rank2_modal_aa2_candidate_result.md](validation/iterative/rank2_modal_aa2_candidate_result.md).
 
-A dedicated one-map host for this proposal is now prepared but default-off.
-It requires the exact `AA2-RAW-FLUX` carrier and keeps the fixed rank-two
-basis, physical decks and `5.0e-7` gate unchanged. One activation permits one
-attempt with no retry or automatic successor. Preparing the host performed no
-Dragon calculation; see
-[validation/iterative/rank2_modal_aa2_map_policy.md](validation/iterative/rank2_modal_aa2_map_policy.md).
+Its dedicated host was then executed exactly once, with no retry. The exact
+`AA2-RAW-FLUX` preflight, all four strict solve terminals, independent audit
+and 21-entry receipt pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223481\times10^{-8},\,5.0408973\times10^{-4},\,
+1.0079586\times10^{-6}),
+$$
+
+so the classification is `VALID_NOT_MET`. Only $R_\rho$ passes `5.0e-7`;
+leakage remains the dominant failure. Relative to the preceding
+different-parent map, $R_\rho$ fell about 50.0%, but $R_L$ and $R_a$ rose
+about 21.34% and 29.65%. This mixed comparison is not a convergence factor or
+monotonicity claim. No retry, successor proposal or successor map was
+started; see
+[validation/iterative/rank2_modal_aa2_map_result.md](validation/iterative/rank2_modal_aa2_map_result.md).

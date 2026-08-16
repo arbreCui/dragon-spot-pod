@@ -137,11 +137,12 @@ does not establish convergence, stability, contraction, Anderson superiority,
 rank adequacy or physical accuracy. No map calculation or successor state was
 produced.
 
-## Subsequent map preparation
+## Subsequent one-map evaluation
 
 A dedicated default-off host was later prepared for exactly one evaluation
 of \(G_2(x_{\mathrm{AA2}})\). It keeps the fixed rank-two basis, physical
 decks and three-component stopping gate unchanged, requires the exact
-`AA2-RAW-FLUX` carrier and permits no retry or automatic successor. Preparing
-that host did not run Dragon; see
-[rank2_modal_aa2_map_policy.md](rank2_modal_aa2_map_policy.md).
+`AA2-RAW-FLUX` carrier and permits no retry or automatic successor. That host
+was subsequently activated once. The map is valid but does not meet the
+unchanged stopping rule; see
+[rank2_modal_aa2_map_result.md](rank2_modal_aa2_map_result.md).
