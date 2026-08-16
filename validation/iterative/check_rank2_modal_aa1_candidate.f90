@@ -17,6 +17,8 @@ program check_rank2_modal_aa1_candidate
   !     xroll xrollp xrollp_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --rolling-aa2 x0 x0p x1 x1p \
   !     x2 x2p x2p_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --rolling-aa2-next x0 x0p x1 x1p \
+  !     x2 x2p x2p_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive x1_pub x2 x3 \
   !     x3_snap basis proposal_ax proposal_snap
   use GANLIB
@@ -67,7 +69,7 @@ program check_rank2_modal_aa1_candidate
   real(real32) :: keff_published,min_published_flux
   integer :: argument_count,i,min_group,min_snapshot,min_region
   logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
-  logical :: rolling_next_mode,consecutive_mode
+  logical :: rolling_next_mode,rolling_aa2_next_mode,consecutive_mode
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
   character(len=2) :: previous_output,latest_output
@@ -78,11 +80,15 @@ program check_rank2_modal_aa1_candidate
   post_aa1_mode=.false.
   rolling_mode=.false.
   rolling_next_mode=.false.
+  rolling_aa2_next_mode=.false.
   consecutive_mode=.false.
   if (argument_count == 11) then
     call get_command_argument(1,mode_argument)
-    if (trim(mode_argument) /= '--rolling-aa2') &
-      call fail('ELEVEN ARGUMENTS REQUIRE --ROLLING-AA2.')
+    if (trim(mode_argument) == '--rolling-aa2-next') then
+      rolling_aa2_next_mode=.true.
+    else if (trim(mode_argument) /= '--rolling-aa2') then
+      call fail('ELEVEN ARGUMENTS REQUIRE A ROLLING-AA2 MODE.')
+    endif
     do i=1,10
       call get_command_argument(i+1,path(i))
       if (len_trim(path(i)) == 0) call fail('EMPTY AA2 XSM PATH ARGUMENT.')
@@ -91,7 +97,8 @@ program check_rank2_modal_aa1_candidate
     enddo
     call check_rolling_aa2_candidate(trim(path(1)),trim(path(2)), &
       trim(path(3)),trim(path(4)),trim(path(5)),trim(path(6)), &
-      trim(path(7)),trim(path(8)),trim(path(9)),trim(path(10)))
+      trim(path(7)),trim(path(8)),trim(path(9)),trim(path(10)), &
+      rolling_aa2_next_mode)
     stop
   else if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
@@ -135,7 +142,7 @@ program check_rank2_modal_aa1_candidate
   else
     call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
       'SEVEN, OR --NEXT/--U/--POST-AA1/--ROLLING-AA1/'// &
-      '--ROLLING-AA1-NEXT PLUS EIGHT, OR --ROLLING-AA2 PLUS TEN.')
+      '--ROLLING-AA1-NEXT PLUS EIGHT, OR A ROLLING-AA2 MODE PLUS TEN.')
   endif
 
   if (next_mode) then
@@ -258,11 +265,12 @@ contains
 
   subroutine check_rolling_aa2_candidate(in0_name,out0_name,in1_name, &
       out1_name,in2_name,out2_name,out2_snap_name,basis_name, &
-      proposal_name,proposal_snap_name)
+      proposal_name,proposal_snap_name,rolling_next_mode)
     character(len=*), intent(in) :: in0_name,out0_name,in1_name,out1_name
     character(len=*), intent(in) :: in2_name,out2_name,out2_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name
     character(len=*), intent(in) :: proposal_snap_name
+    logical, intent(in) :: rolling_next_mode
     type(canonical_state) :: in0,out0,in1,out1,in2,out2,proposal_state
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -274,13 +282,40 @@ contains
     real(real32) :: keff_published,min_published_flux
     integer :: g,s,a,b,nmode,index_a,index_b,index_g
     integer :: min_group,min_snapshot,min_region
+    character(len=24) :: aa2_report_prefix
+    character(len=12) :: aa2_label0,aa2_label1,aa2_label2
+    character(len=12) :: aa2_latest_input,aa2_latest_output
 
-    call load_state(in0_name,2,in0,'AA2 XNEXT INPUT','AA1-RAW-FLUX')
-    call load_state(out0_name,1,out0,'AA2 XNEXT OUTPUT')
-    call load_state(in1_name,2,in1,'AA2 XROLL INPUT','XNP-RAW-FLUX')
-    call load_state(out1_name,1,out1,'AA2 XROLL OUTPUT')
-    call load_state(in2_name,2,in2,'AA2 XROLL2 INPUT','XRP-RAW-FLUX')
-    call load_state(out2_name,1,out2,'AA2 XROLL2 OUTPUT')
+    if (rolling_next_mode) then
+      aa2_report_prefix='RANK2-ROLLING-AA2-NEXT'
+      aa2_label0='XROLL-PLUS'
+      aa2_label1='XROLL2-PLUS'
+      aa2_label2='XAA2-PLUS'
+      aa2_latest_input='XAA2'
+      aa2_latest_output='XAA2-PLUS'
+      call load_state(in0_name,2,in0,'AA2-NEXT XROLL INPUT', &
+        'XNP-RAW-FLUX')
+      call load_state(out0_name,1,out0,'AA2-NEXT XROLL OUTPUT')
+      call load_state(in1_name,2,in1,'AA2-NEXT XROLL2 INPUT', &
+        'XRP-RAW-FLUX')
+      call load_state(out1_name,1,out1,'AA2-NEXT XROLL2 OUTPUT')
+      call load_state(in2_name,2,in2,'AA2-NEXT XAA2 INPUT', &
+        'AA2-RAW-FLUX')
+      call load_state(out2_name,1,out2,'AA2-NEXT XAA2 OUTPUT')
+    else
+      aa2_report_prefix='RANK2-ROLLING-AA2'
+      aa2_label0='XNEXT-PLUS'
+      aa2_label1='XROLL-PLUS'
+      aa2_label2='XROLL2-PLUS'
+      aa2_latest_input='XROLL2'
+      aa2_latest_output='XROLL2-PLUS'
+      call load_state(in0_name,2,in0,'AA2 XNEXT INPUT','AA1-RAW-FLUX')
+      call load_state(out0_name,1,out0,'AA2 XNEXT OUTPUT')
+      call load_state(in1_name,2,in1,'AA2 XROLL INPUT','XNP-RAW-FLUX')
+      call load_state(out1_name,1,out1,'AA2 XROLL OUTPUT')
+      call load_state(in2_name,2,in2,'AA2 XROLL2 INPUT','XRP-RAW-FLUX')
+      call load_state(out2_name,1,out2,'AA2 XROLL2 OUTPUT')
+    endif
     call load_state(proposal_name,2,proposal_state, &
       'AA2 MATERIALIZED PROPOSAL','AA2-RAW-FLUX')
 
@@ -290,10 +325,11 @@ contains
     call compare_fixed_basis_layout(in0,in2,'AA2 IN0/IN2')
     call compare_fixed_basis_layout(in0,out2,'AA2 IN0/OUT2')
     call compare_fixed_basis_layout(in0,proposal_state,'AA2 IN0/PROPOSAL')
-    call compare_axial_carrier_metadata(out2,proposal_state,'XROLL2-PLUS')
+    call compare_axial_carrier_metadata(out2,proposal_state, &
+      trim(aa2_latest_output))
     call check_basis_reference(basis_name,proposal_state)
     call validate_input_snapshot(out2_snap_name,in2,out2, &
-      'XROLL2','XROLL2-PLUS')
+      trim(aa2_latest_input),trim(aa2_latest_output))
 
     h00=0.0_real64
     h01=0.0_real64
@@ -402,38 +438,49 @@ contains
     call check_projected_positivity(proposal_state,min_published_flux, &
       min_group,min_snapshot,min_region)
 
-    call write_real64_metric('RANK2-ROLLING-AA2 ALPHA-XNEXT-PLUS',alpha0)
-    call write_real64_metric('RANK2-ROLLING-AA2 ALPHA-XROLL-PLUS',alpha1)
-    call write_real64_metric('RANK2-ROLLING-AA2 ALPHA-XROLL2-PLUS',alpha2)
-    call write_real64_metric('RANK2-ROLLING-AA2 H00',h00)
-    call write_real64_metric('RANK2-ROLLING-AA2 H01',h01)
-    call write_real64_metric('RANK2-ROLLING-AA2 H11',h11)
-    call write_real64_metric('RANK2-ROLLING-AA2 DETERMINANT',determinant)
+    call write_real64_metric(trim(aa2_report_prefix)//' ALPHA-'// &
+      trim(aa2_label0),alpha0)
+    call write_real64_metric(trim(aa2_report_prefix)//' ALPHA-'// &
+      trim(aa2_label1),alpha1)
+    call write_real64_metric(trim(aa2_report_prefix)//' ALPHA-'// &
+      trim(aa2_label2),alpha2)
+    call write_real64_metric(trim(aa2_report_prefix)//' H00',h00)
+    call write_real64_metric(trim(aa2_report_prefix)//' H01',h01)
+    call write_real64_metric(trim(aa2_report_prefix)//' H11',h11)
+    call write_real64_metric(trim(aa2_report_prefix)//' DETERMINANT', &
+      determinant)
     call write_real64_metric( &
-      'RANK2-ROLLING-AA2 PREDICTED-RESIDUAL-SQ',predicted_sq)
-    call write_real32_metric('RANK2-ROLLING-AA2 PUBLISHED K', &
+      trim(aa2_report_prefix)//' PREDICTED-RESIDUAL-SQ',predicted_sq)
+    call write_real32_metric(trim(aa2_report_prefix)//' PUBLISHED K', &
       keff_published)
-    call write_real64_metric('RANK2-ROLLING-AA2 PUBLISHED RHO', &
+    call write_real64_metric(trim(aa2_report_prefix)//' PUBLISHED RHO', &
       rho_published)
-    call write_real64_metric('RANK2-ROLLING-AA2 RHO PUBLICATION DELTA', &
-      publication_delta)
-    call write_real32_metric('RANK2-ROLLING-AA2 MIN PUBLISHED B*A', &
+    call write_real64_metric(trim(aa2_report_prefix)// &
+      ' RHO PUBLICATION DELTA',publication_delta)
+    call write_real32_metric(trim(aa2_report_prefix)// &
+      ' MIN PUBLISHED B*A', &
       min_published_flux)
     write(6,'(A,3(1X,I0))') &
-      'RANK2-ROLLING-AA2 MIN B*A GROUP/SNAPSHOT/REGION', &
+      trim(aa2_report_prefix)//' MIN B*A GROUP/SNAPSHOT/REGION', &
       min_group,min_snapshot,min_region
-    write(6,'(A,I0)') 'RANK2-ROLLING-AA2 STRICT-POSITIVE POINTS ', &
+    write(6,'(A,I0)') trim(aa2_report_prefix)// &
+      ' STRICT-POSITIVE POINTS ', &
       positive_count_expected
-    write(6,'(A)') 'RANK2-ROLLING-AA2 STANDARD 2X2 SYSTEM PASS'
-    write(6,'(A)') 'RANK2-ROLLING-AA2 FIXED-RANK2-BUNDLE BITWISE PASS'
-    write(6,'(A)') 'RANK2-ROLLING-AA2 PUBLICATION-Q BITWISE PASS'
-    write(6,'(A)') &
-      'RANK2-ROLLING-AA2 LATEST AX/RAW-FLUX CARRIER BITWISE PASS'
-    write(6,'(A)') 'RANK2-ROLLING-AA2 LATEST SNAPSHOT LIFECYCLE PASS'
-    write(6,'(A)') 'RANK2-ROLLING-AA2 NO STALE RESULT RECORD PASS'
-    write(6,'(A)') 'RANK2-ROLLING-AA2 CLASSIFICATION '// &
+    write(6,'(A)') trim(aa2_report_prefix)// &
+      ' STANDARD 2X2 SYSTEM PASS'
+    write(6,'(A)') trim(aa2_report_prefix)// &
+      ' FIXED-RANK2-BUNDLE BITWISE PASS'
+    write(6,'(A)') trim(aa2_report_prefix)// &
+      ' PUBLICATION-Q BITWISE PASS'
+    write(6,'(A)') trim(aa2_report_prefix)// &
+      ' LATEST AX/RAW-FLUX CARRIER BITWISE PASS'
+    write(6,'(A)') trim(aa2_report_prefix)// &
+      ' LATEST SNAPSHOT LIFECYCLE PASS'
+    write(6,'(A)') trim(aa2_report_prefix)// &
+      ' NO STALE RESULT RECORD PASS'
+    write(6,'(A)') trim(aa2_report_prefix)//' CLASSIFICATION '// &
       'MATERIALIZED_PROPOSAL_NOT_EVALUATED'
-    write(6,'(A)') 'RANK2-ROLLING-AA2 COMPLETE'
+    write(6,'(A)') trim(aa2_report_prefix)//' COMPLETE'
   end subroutine check_rolling_aa2_candidate
 
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &

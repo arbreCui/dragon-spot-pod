@@ -45,9 +45,13 @@ program build_rank2_modal_aa1_candidate
   argument_offset=0
   if (command_argument_count() == 10) then
     call get_command_argument(1,mode)
-    if (trim(mode) /= '--rolling-aa2') &
-      error stop 'ten-argument mode requires --rolling-aa2'
-    call build_rolling_aa2_candidate()
+    if (trim(mode) == '--rolling-aa2') then
+      call build_rolling_aa2_candidate(.false.)
+    else if (trim(mode) == '--rolling-aa2-next') then
+      call build_rolling_aa2_candidate(.true.)
+    else
+      error stop 'ten-argument mode requires rolling-aa2 mode'
+    endif
     stop
   else if (command_argument_count() == 8) then
     call get_command_argument(1,mode)
@@ -82,6 +86,8 @@ program build_rank2_modal_aa1_candidate
       '--rolling-aa1-next xnext xnextp xroll xrollp xrollp_snap '// &
       'out_ax out_snap or '// &
       '--rolling-aa2 x0 x0p x1 x1p x2 x2p x2p_snap '// &
+      'out_ax out_snap or '// &
+      '--rolling-aa2-next x0 x0p x1 x1p x2 x2p x2p_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap'
   endif
@@ -269,12 +275,14 @@ program build_rank2_modal_aa1_candidate
 
 contains
 
-  subroutine build_rolling_aa2_candidate()
+  subroutine build_rolling_aa2_candidate(rolling_next_mode)
+    logical, intent(in) :: rolling_next_mode
     character(len=1024) :: aa2_path(9)
     type(canonical_state) :: in0,out0,in1,out1,in2,out2
     type(c_ptr) :: out2_snap,aa2_staged_ax,aa2_staged_snap
     type(c_ptr) :: aa2_out_ax,aa2_out_snap,aa2_fluxes,aa2_plane
-    character(len=12) :: aa2_marker
+    character(len=24) :: aa2_report_prefix
+    character(len=12) :: aa2_marker,aa2_label0,aa2_label1,aa2_label2
     integer :: j,g,s,r,ia,ib,ig,il,nm,nr,positive_count
     real(real64) :: f0a,f0b,f1a,f1b,f2a,f2b
     real(real64) :: d0a,d0b,d1a,d1b,metric
@@ -297,15 +305,35 @@ contains
     call require_fresh_path(aa2_path(8))
     call require_fresh_path(aa2_path(9))
 
-    call load_state(trim(aa2_path(1)),in0,'AA2 xnext input', &
-      .true.,'AA1-RAW-FLUX')
-    call load_state(trim(aa2_path(2)),out0,'AA2 xnext output')
-    call load_state(trim(aa2_path(3)),in1,'AA2 xroll input', &
-      .true.,'XNP-RAW-FLUX')
-    call load_state(trim(aa2_path(4)),out1,'AA2 xroll output')
-    call load_state(trim(aa2_path(5)),in2,'AA2 xroll2 input', &
-      .true.,'XRP-RAW-FLUX')
-    call load_state(trim(aa2_path(6)),out2,'AA2 xroll2 output')
+    if (rolling_next_mode) then
+      aa2_report_prefix='RANK2-ROLLING-AA2-NEXT'
+      aa2_label0='XROLL-PLUS'
+      aa2_label1='XROLL2-PLUS'
+      aa2_label2='XAA2-PLUS'
+      call load_state(trim(aa2_path(1)),in0,'AA2-next xroll input', &
+        .true.,'XNP-RAW-FLUX')
+      call load_state(trim(aa2_path(2)),out0,'AA2-next xroll output')
+      call load_state(trim(aa2_path(3)),in1,'AA2-next xroll2 input', &
+        .true.,'XRP-RAW-FLUX')
+      call load_state(trim(aa2_path(4)),out1,'AA2-next xroll2 output')
+      call load_state(trim(aa2_path(5)),in2,'AA2-next xAA2 input', &
+        .true.,'AA2-RAW-FLUX')
+      call load_state(trim(aa2_path(6)),out2,'AA2-next xAA2 output')
+    else
+      aa2_report_prefix='RANK2-ROLLING-AA2'
+      aa2_label0='XNEXT-PLUS'
+      aa2_label1='XROLL-PLUS'
+      aa2_label2='XROLL2-PLUS'
+      call load_state(trim(aa2_path(1)),in0,'AA2 xnext input', &
+        .true.,'AA1-RAW-FLUX')
+      call load_state(trim(aa2_path(2)),out0,'AA2 xnext output')
+      call load_state(trim(aa2_path(3)),in1,'AA2 xroll input', &
+        .true.,'XNP-RAW-FLUX')
+      call load_state(trim(aa2_path(4)),out1,'AA2 xroll output')
+      call load_state(trim(aa2_path(5)),in2,'AA2 xroll2 input', &
+        .true.,'XRP-RAW-FLUX')
+      call load_state(trim(aa2_path(6)),out2,'AA2 xroll2 output')
+    endif
     call compare_next_fixed_space(in0,out0,'AA2 in0/out0')
     call compare_next_fixed_space(in0,in1,'AA2 in0/in1')
     call compare_next_fixed_space(in0,out1,'AA2 in0/out1')
@@ -481,29 +509,37 @@ contains
     call LCMCL(out0%root,1)
     call LCMCL(in0%root,1)
 
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 ALPHA-XNEXT-PLUS ',alpha0
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 ALPHA-XROLL-PLUS ',alpha1
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 ALPHA-XROLL2-PLUS ',alpha2
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 H00 ',h00
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 H01 ',h01
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 H11 ',h11
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 DETERMINANT ',determinant
-    write(*,'(A,ES24.16)') &
-      'RANK2-ROLLING-AA2 PREDICTED-RESIDUAL-SQ ',predicted_sq
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 RHO-AFFINE ',rho_affine
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 K-PUBLISHED ', &
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' ALPHA-'// &
+      trim(aa2_label0)//' ',alpha0
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' ALPHA-'// &
+      trim(aa2_label1)//' ',alpha1
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' ALPHA-'// &
+      trim(aa2_label2)//' ',alpha2
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' H00 ',h00
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' H01 ',h01
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' H11 ',h11
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' DETERMINANT ', &
+      determinant
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)// &
+      ' PREDICTED-RESIDUAL-SQ ',predicted_sq
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' RHO-AFFINE ', &
+      rho_affine
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' K-PUBLISHED ', &
       real(k_public,real64)
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 RHO-PUBLISHED ',rho_public
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 RHO-Q-DELTA ', &
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' RHO-PUBLISHED ', &
+      rho_public
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)//' RHO-Q-DELTA ', &
       rho_public-rho_affine
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 L-ROUNDTRIP-MAX ', &
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)// &
+      ' L-ROUNDTRIP-MAX ', &
       l_roundtrip
-    write(*,'(A,ES24.16)') 'RANK2-ROLLING-AA2 MIN-PUBLISHED-BA ', &
+    write(*,'(A,ES24.16)') trim(aa2_report_prefix)// &
+      ' MIN-PUBLISHED-BA ', &
       min_reconstructed
-    write(*,'(A,I0)') 'RANK2-ROLLING-AA2 POSITIVE-BA-POINTS ', &
+    write(*,'(A,I0)') trim(aa2_report_prefix)//' POSITIVE-BA-POINTS ', &
       positive_count
-    write(*,'(A)') 'RANK2-ROLLING-AA2 CARRIER AA2-RAW-FLUX'
-    write(*,'(A)') 'RANK2-ROLLING-AA2 CLASSIFICATION '// &
+    write(*,'(A)') trim(aa2_report_prefix)//' CARRIER AA2-RAW-FLUX'
+    write(*,'(A)') trim(aa2_report_prefix)//' CLASSIFICATION '// &
       'MATERIALIZED_PROPOSAL_NOT_EVALUATED NO-DRAGON NO-MAP'
   end subroutine build_rolling_aa2_candidate
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Seconds-scale static contract for the single offline rank-2 AA(2) proposal."""
+"""Seconds-scale static contract for offline rank-2 AA(2) proposals."""
 
 from __future__ import annotations
 
@@ -10,9 +10,15 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 ITERATIVE = ROOT / "validation/iterative"
 manifest = (ITERATIVE / "rank2_modal_aa2_candidate_inputs.tsv").read_text()
+next_manifest = (
+    ITERATIVE / "rank2_modal_aa2_rolling_next_candidate_inputs.tsv"
+).read_text()
 builder = (ITERATIVE / "build_rank2_modal_aa1_candidate.f90").read_text()
 checker = (ITERATIVE / "check_rank2_modal_aa1_candidate.f90").read_text()
 runner = (ITERATIVE / "run_rank2_modal_aa2_candidate.sh").read_text()
+next_runner = (
+    ITERATIVE / "run_rank2_modal_aa2_rolling_next_candidate.sh"
+).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
 
@@ -45,6 +51,34 @@ require(rows[6][1] ==
         "bf08f193d745e1bbf66fc200f5fd8041b3b8eb37d1aa0e6b33757ca60f59eeb4",
         "latest returned snapshot changed")
 
+next_rows = [line.split() for line in next_manifest.splitlines()
+             if line.strip() and not line.startswith("#")]
+next_roles = (
+    "x0_pub", "x0_plus", "x1_pub", "x1_plus", "x2_pub", "x2_plus",
+    "x2_plus_snapshots", "basis_reference",
+)
+require(next_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa2-rolling-next-candidate-inputs-v1",
+        "rolling-next manifest version changed")
+require(tuple(row[0] for row in next_rows) == next_roles,
+        "rolling-next manifest roles changed")
+require(all(len(row) == 3 for row in next_rows),
+        "rolling-next manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in next_rows),
+        "rolling-next manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in next_rows),
+        "rolling-next manifest path escapes repository")
+require(next_rows[4][1] ==
+        "aaa0d6afa2883f5eb528c26c466833454629160e2fd1b2f1a2e53a69168183ed",
+        "rolling-next latest proposal input changed")
+require(next_rows[5][1] ==
+        "ebab72eb17b6b70e79fd8b48d0903b3dc9388ca417757efa90730bd3859acc17",
+        "rolling-next latest returned AX changed")
+require(next_rows[6][1] ==
+        "3f71736ec3a7b490f8635e9b0dcd7c365e7be05bc4a5af21232431954ac74f21",
+        "rolling-next latest returned snapshot changed")
+
 for token in (
     "--rolling-aa2 x0 x0p x1 x1p x2 x2p x2p_snap",
     "d0a=f0a-f2a", "d1a=f1a-f2a",
@@ -63,6 +97,21 @@ for token in (
     "aa2_marker='AA2-RAW-FLUX'",
 ):
     require(token in builder, f"builder contract missing: {token}")
+
+for token in (
+    "trim(mode) == '--rolling-aa2-next'",
+    "call build_rolling_aa2_candidate(.true.)",
+    "aa2_report_prefix='RANK2-ROLLING-AA2-NEXT'",
+    "'AA2-next xroll input'",
+    ".true.,'XNP-RAW-FLUX'",
+    "'AA2-next xroll2 input'",
+    ".true.,'XRP-RAW-FLUX'",
+    "'AA2-next xAA2 input'",
+    ".true.,'AA2-RAW-FLUX'",
+    "aa2_label2='XAA2-PLUS'",
+):
+    require(token in builder,
+            f"rolling-next builder contract missing: {token}")
 
 for token in (
     "trim(mode_argument) /= '--rolling-aa2'",
@@ -84,6 +133,21 @@ for token in (
     require(token in checker, f"checker contract missing: {token}")
 
 for token in (
+    "trim(mode_argument) == '--rolling-aa2-next'",
+    "rolling_aa2_next_mode=.true.",
+    "aa2_report_prefix='RANK2-ROLLING-AA2-NEXT'",
+    "'AA2-NEXT XROLL INPUT'",
+    "'XNP-RAW-FLUX'",
+    "'AA2-NEXT XROLL2 INPUT'",
+    "'XRP-RAW-FLUX'",
+    "'AA2-NEXT XAA2 INPUT'",
+    "'AA2-RAW-FLUX'",
+    "aa2_latest_output='XAA2-PLUS'",
+):
+    require(token in checker,
+            f"rolling-next checker contract missing: {token}")
+
+for token in (
     "rank2_modal_aa2_candidate_inputs.tsv",
     "--rolling-aa2 x0.xsm x0p.xsm x1.xsm x1p.xsm",
     "AA2-RAW-FLUX", "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
@@ -100,9 +164,30 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", runner),
 require("spot-rank2-modal-aa2-candidate" in makefile,
         "Make target is missing")
 
-combined = "\n".join((builder, checker, runner)).lower()
+for token in (
+    "rank2_modal_aa2_rolling_next_candidate_inputs.tsv",
+    "--rolling-aa2-next",
+    "AA2-RAW-FLUX", "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(token in next_runner,
+            f"rolling-next runner contract missing: {token}")
+next_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", next_runner
+)
+require(next_expected == [
+    "ce9544e8f58b01d933f5937d781a0f1b70a58862468bbd380d5d2bc5c0e07715",
+    "61604c1dfb586abe71115544aa73b4628f7528f5da32f6bce14ce8f7f8f30763",
+], "rolling-next output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", next_runner),
+        "rolling-next retry loop is forbidden")
+require("spot-rank2-modal-aa2-rolling-next-candidate" in makefile,
+        "rolling-next Make target is missing")
+
+combined = "\n".join((builder, checker, runner, next_runner)).lower()
 for forbidden in ("regularization", "pseudoinverse", "pinv", "condition cutoff"):
     require(forbidden not in combined, f"forbidden control present: {forbidden}")
 
-print("RANK2 MODAL AA2 CONTRACT PASS: three real residuals, one exact 2x2 "
-      "system, fixed rank two, latest raw carrier and no map solve.")
+print("RANK2 MODAL AA2 CONTRACT PASS: both three-residual windows use one "
+      "exact 2x2 system, fixed rank two, the latest raw carrier and no map "
+      "solve.")
