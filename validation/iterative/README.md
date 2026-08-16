@@ -86,6 +86,10 @@ generic, default-off continuation host.
   `rank2_modal_aa1_consecutive_candidate_result.md`: one deterministic
   no-Dragon standard AA(1) proposal from the genuinely consecutive maps,
   with an explicit `X3-RAW-FLUX` carrier and no new map.
+- `rank2_modal_aa1_consecutive_map_parent.tsv`,
+  `rank2_modal_aa1_consecutive_map_policy.md`,
+  `run_rank2_modal_aa1_consecutive_map.sh`: one default-off physical-map
+  host with a strict pre-Dragon `X3-RAW-FLUX` gate; no map has been run.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -384,6 +388,14 @@ the complete \(x_3\) AX/snapshot carrier as `X3-RAW-FLUX`, and the independent
 checker passes its exact \(x_2\to x_3\) lifecycle and 8880/8880 positive
 reconstructions. It remains `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; see
 [rank2_modal_aa1_consecutive_candidate_result.md](rank2_modal_aa1_consecutive_candidate_result.md).
+
+The corresponding one-map host is now frozen separately and remains
+default-off. It adds only a dedicated `proposal-x3` lifecycle path: the
+candidate receipt, parent hashes and `X3-RAW-FLUX` marker must pass before
+either bounded Dragon invocation. It then reuses the unchanged three radial
+fixed-source solves and one axial solve. Preparing the host ran no Dragon and
+produced no new residual; see
+[rank2_modal_aa1_consecutive_map_policy.md](rank2_modal_aa1_consecutive_map_policy.md).
 
 ## Current boundary
 

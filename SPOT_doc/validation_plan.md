@@ -186,6 +186,14 @@ strictly positive reconstructions. This stage is
 or convergence conclusion. See
 [../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).
 
+The next physical-map host is prepared but default-off. Its only new runtime
+branch is the strict `proposal-x3` lifecycle gate. The frozen candidate
+receipt, six parent hashes and exact `X3-RAW-FLUX` marker must pass before
+either bounded Dragon invocation; the existing radial and axial decks remain
+unchanged. This preparation performed no solve and produced no map or
+convergence evidence. See
+[../validation/iterative/rank2_modal_aa1_consecutive_map_policy.md](../validation/iterative/rank2_modal_aa1_consecutive_map_policy.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -12,6 +13,10 @@ ITERATIVE = ROOT / "validation/iterative"
 runner = (ITERATIVE / "run_rank2_modal_aa1_map.sh").read_text()
 next_runner = (ITERATIVE / "run_rank2_modal_aa1_next_map.sh").read_text()
 u_runner = (ITERATIVE / "run_rank2_modal_aa1_u_map.sh").read_text()
+consecutive_runner_path = (
+    ITERATIVE / "run_rank2_modal_aa1_consecutive_map.sh"
+)
+consecutive_runner = consecutive_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -27,6 +32,12 @@ next_manifest = (
 u_policy = (ITERATIVE / "rank2_modal_aa1_u_map_policy.md").read_text()
 u_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_map_parent.tsv"
+).read_text()
+consecutive_policy = (
+    ITERATIVE / "rank2_modal_aa1_consecutive_map_policy.md"
+).read_text()
+consecutive_manifest = (
+    ITERATIVE / "rank2_modal_aa1_consecutive_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -93,6 +104,28 @@ require(u_map_rows[4][1] ==
 require(u_map_rows[5][1] ==
         "2f526c84f4ef42afd51178dde9481ff7336c0de5b0ff486135635a0b7fc79a81",
         "u proposal snapshot parent changed")
+
+consecutive_rows = [line.split() for line in consecutive_manifest.splitlines()
+                    if line.strip() and not line.startswith("#")]
+require(consecutive_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa1-consecutive-map-parent-v1",
+        "consecutive-map manifest version changed")
+require(tuple(row[0] for row in consecutive_rows) == roles,
+        "consecutive-map manifest roles changed")
+require(all(len(row) == 3 for row in consecutive_rows),
+        "consecutive-map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in consecutive_rows),
+        "consecutive-map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in consecutive_rows),
+        "consecutive-map manifest path escapes the repository")
+require(consecutive_rows[4][1] ==
+        "7094d4dc57156aae8f0d0180bcac24bf02640f5de0435b46635151ed975186f1",
+        "consecutive proposal AX parent changed")
+require(consecutive_rows[5][1] ==
+        "ebd0d7f0ca762f907f6d767273298b80262039f22cc4b36682d73a15d34065b2",
+        "consecutive proposal snapshot parent changed")
 
 u_rows = [line.split() for line in u_history_manifest.splitlines()
           if line.strip() and not line.startswith("#")]
@@ -169,7 +202,53 @@ require(u_runner.count("run_continuation_short.sh") == 1,
 require(not re.search(r"(?m)^\s*(?:while|until)\b", u_runner),
         "u-map retry loop is forbidden")
 
-require("initial|continued|reencoded|proposal|proposal-z|proposal-v" in common,
+require(consecutive_runner.index(
+        "RUN_RANK2_MODAL_AA1_CONSECUTIVE_MAP=") <
+        consecutive_runner.index("ROOT=$("),
+        "consecutive-map default-off gate must precede repository access")
+for token in (
+    "rank2_modal_aa1_consecutive_map_parent.tsv",
+    "rank2_modal_aa1_consecutive_map_policy.md",
+    "iterative-rank2-modal-aa1-consecutive-candidate",
+    "CHECKER_MODE=proposal-x3",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=420",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in consecutive_runner,
+            f"consecutive-map runner binding missing: {token}")
+require(consecutive_runner.count("run_continuation_short.sh") == 1,
+        "consecutive-map common host invocation count is not one")
+require("run_bounded_dragon.py" not in consecutive_runner and
+        "DRAGON_BIN" not in consecutive_runner,
+        "consecutive-map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", consecutive_runner),
+        "consecutive-map retry loop is forbidden")
+default_off = subprocess.run(
+    ["sh", str(consecutive_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_MODAL_AA1_CONSECUTIVE_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(default_off.returncode == 0 and default_off.stderr == "" and
+        default_off.stdout ==
+        "SPOT-RANK2-MODAL-AA1-CONSECUTIVE-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "consecutive-map default-off terminal changed")
+bad_activation = subprocess.run(
+    ["sh", str(consecutive_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_MODAL_AA1_CONSECUTIVE_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(bad_activation.returncode == 2 and bad_activation.stdout == "" and
+        bad_activation.stderr ==
+        "SPOT-RANK2-MODAL-AA1-CONSECUTIVE-MAP ERROR: activation must be "
+        "0 or 1.\n",
+        "consecutive-map activation gate changed")
+
+require(
+        "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
+        "proposal-x3" in common,
         "common host does not accept all proposal modes")
 require("./check_one_map_xsm --proposal" in common,
         "proposal checker dispatch is missing")
@@ -177,30 +256,41 @@ require("./check_one_map_xsm --proposal-z" in common,
         "z-carrier proposal checker dispatch is missing")
 require("./check_one_map_xsm --proposal-v" in common,
         "v-carrier proposal checker dispatch is missing")
+require("./check_one_map_xsm --proposal-x3" in common,
+        "x3-carrier proposal checker dispatch is missing")
 require("--proposal-parent-z" in common,
         "z-carrier parent preflight is missing")
 require("--proposal-parent-v" in common,
         "v-carrier parent preflight is missing")
+require("--proposal-parent-x3" in common,
+        "x3-carrier parent preflight is missing")
 require(common.index("--proposal-parent-z") < common.index("MAP_STARTED=1"),
         "z-carrier parent preflight must precede map execution")
 require(common.index("--proposal-parent-v") < common.index("MAP_STARTED=1"),
         "v-carrier parent preflight must precede map execution")
+require(common.index("--proposal-parent-x3") <
+        common.index("MAP_STARTED=1"),
+        "x3-carrier parent preflight must precede map execution")
 require("parent_preflight.log" in common,
         "parent preflight log is absent from the host receipt")
 for token in (
     "trim(mode) == '--proposal'",
     "trim(mode) == '--proposal-z'",
     "trim(mode) == '--proposal-v'",
+    "trim(mode) == '--proposal-x3'",
     "trim(mode) == '--proposal-parent-z'",
     "trim(mode) == '--proposal-parent-v'",
+    "trim(mode) == '--proposal-parent-x3'",
     "MATERIALIZED PROPOSAL STATE",
     "SPOT-X-STATE",
     "X2-RAW-FLUX",
     "Z-RAW-FLUX",
     "V-RAW-FLUX",
+    "X3-RAW-FLUX",
     "RAW-FLUX CARRIER IS NOT X2",
     "RAW-FLUX CARRIER IS NOT Z",
     "RAW-FLUX CARRIER IS NOT V",
+    "RAW-FLUX CARRIER IS NOT X3",
     "SPOT-X-PERP",
     "SPOT-GBAL-MA",
     "ONE-MAP-XSM MATERIALIZED-PROPOSAL INPUT PASS",
@@ -259,6 +349,16 @@ require("PREPARED_NOT_RUN" in u_policy,
 require("starts no subsequent" in u_policy,
         "u-map automatic-stop boundary is missing")
 
-print("RANK2 MODAL AA1 MAP CONTRACT PASS: X2/Z/V proposal paths remain "
-      "distinct; the V host is default-off, fixed rank-2 and has no "
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in consecutive_policy,
+            f"consecutive-map classification missing: {label}")
+require("X3-RAW-FLUX" in consecutive_policy,
+        "consecutive-map policy does not bind the x3 carrier")
+require("PREPARED_NOT_RUN" in consecutive_policy,
+        "consecutive-map policy overstates runtime completion")
+require("starts no successor map" in consecutive_policy,
+        "consecutive-map automatic-stop boundary is missing")
+
+print("RANK2 MODAL AA1 MAP CONTRACT PASS: X2/Z/V/X3 proposal paths remain "
+      "distinct; the X3 host is default-off, fixed rank-2 and has no "
       "empirical control.")

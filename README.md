@@ -355,3 +355,9 @@ strict-positivity points and the exact snapshot lifecycle. This is only a
 materialized, unevaluated proposal; no new map or convergence claim exists.
 See
 [validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).
+
+Its one-map host is now prepared but remains default-off. A dedicated
+`proposal-x3` gate verifies the candidate receipt, six frozen parent hashes
+and the exact `X3-RAW-FLUX` marker before either bounded Dragon invocation.
+The radial and axial physical decks are unchanged; no map has been run. See
+[validation/iterative/rank2_modal_aa1_consecutive_map_policy.md](validation/iterative/rank2_modal_aa1_consecutive_map_policy.md).
