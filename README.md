@@ -442,3 +442,19 @@ $R_L$ and diagnostic $D_L$ fell about 21.1%, while $R_a$ rose about 8.26%.
 Because the parents differ, this is not a convergence factor or monotone
 convergence evidence. No successor proposal or map was started; see
 [validation/iterative/rank2_modal_aa1_rolling_map_result.md](validation/iterative/rank2_modal_aa1_rolling_map_result.md).
+
+Using this map and the preceding valid map, the next standard rolling AA(1)
+proposal has now been materialized offline:
+
+$$
+x_{\mathrm{roll2}}=
+0.7941295518990515x_{\mathrm{next}}^+
++0.2058704481009485x_{\mathrm{roll}}^+.
+$$
+
+The coefficient is the unmodified Gram-height result. Independent checks pass
+the fixed rank-two publication, complete latest `XRP-RAW-FLUX` carrier, true
+snapshot lifecycle and 8880/8880 positive reconstructions. Its classification
+is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
+convergence conclusion was produced. See
+[validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).

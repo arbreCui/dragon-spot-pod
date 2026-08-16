@@ -135,3 +135,18 @@ does not meet the stopping rule and does not establish asymptotic convergence,
 stability, contraction, convergence order, Anderson superiority, rank
 adequacy or physical accuracy. No retry, successor proposal or successor map
 was started.
+
+## Subsequent offline proposal
+
+A later no-Dragon stage used this map together with the preceding valid map
+to materialize the next standard rolling AA(1) state,
+
+\[
+x_{\mathrm{roll2}}=
+0.79412955189905154x_{\mathrm{next}}^+
++0.20587044810094848x_{\mathrm{roll}}^+.
+\]
+
+That separate stage remains `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; it created
+no stopping defect and started no map. See
+[rank2_modal_aa1_rolling_next_candidate_result.md](rank2_modal_aa1_rolling_next_candidate_result.md).

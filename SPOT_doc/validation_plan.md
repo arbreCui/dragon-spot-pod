@@ -272,6 +272,23 @@ This is a different-parent comparison, not a convergence factor or monotone
 convergence evidence. No successor proposal or map was started; see
 [../validation/iterative/rank2_modal_aa1_rolling_map_result.md](../validation/iterative/rank2_modal_aa1_rolling_map_result.md).
 
+The latest two valid map pairs were then used in one further no-Dragon,
+standard depth-one update:
+
+\[
+x_{\mathrm{roll2}}=
+0.79412955189905154x_{\mathrm{next}}^+
++0.20587044810094848x_{\mathrm{roll}}^+.
+\]
+
+The coefficient was neither clipped nor tuned. The independent checker passes
+the fixed rank-two publication, complete latest `XRP-RAW-FLUX` carrier, true
+\(x_{\mathrm{roll}}\to x_{\mathrm{roll}}^+\) snapshot lifecycle and
+8880/8880 positive reconstructions. The classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; this stage produced no new stopping
+defect, map or convergence conclusion. See
+[../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

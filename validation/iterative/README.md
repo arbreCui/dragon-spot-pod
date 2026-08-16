@@ -114,6 +114,11 @@ generic, default-off continuation host.
   retry or automatic successor.
 - `rank2_modal_aa1_rolling_map_result.md`: independently audited result from
   the single authorized rolling-proposal map.
+- `rank2_modal_aa1_rolling_next_candidate_inputs.tsv`,
+  `run_rank2_modal_aa1_rolling_next_candidate.sh`,
+  `rank2_modal_aa1_rolling_next_candidate_result.md`: next standard rolling
+  AA(1) proposal from the latest two real maps, with the complete
+  `XRP-RAW-FLUX` carrier and no new map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -501,6 +506,23 @@ This different-parent comparison is not a convergence factor or monotone
 convergence evidence. No successor proposal or map was started; see
 [rank2_modal_aa1_rolling_map_result.md](rank2_modal_aa1_rolling_map_result.md).
 
+The latest two valid map pairs then give the standard depth-one coefficient
+`0.20587044810094848` on \(x_{\mathrm{roll}}^+\), hence
+
+\[
+x_{\mathrm{roll2}}=
+0.79412955189905154x_{\mathrm{next}}^+
++0.20587044810094848x_{\mathrm{roll}}^+.
+\]
+
+This unmodified proposal was materialized without Dragon. The independent
+checker passes exact publication, the true
+\(x_{\mathrm{roll}}\to x_{\mathrm{roll}}^+\) lifecycle, complete
+`XRP-RAW-FLUX` carrier identity and 8880/8880 positive reconstructions. It is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no stopping defect or convergence
+conclusion was produced, and no map was started. See
+[rank2_modal_aa1_rolling_next_candidate_result.md](rank2_modal_aa1_rolling_next_candidate_result.md).
+
 ## Current boundary
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
@@ -524,7 +546,8 @@ rejected. See [current_result.md](current_result.md).
 
 The separate fixed-rank-two AA(1) study also remains unconverged. Its latest
 evaluated rolling-proposal map is valid, but $R_L$ and $R_a$ still fail the
-declared gate. No further proposal or map has been started.
+declared gate. The new rolling state above is an independently checked but
+unevaluated offline proposal; no further map has been started.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map
