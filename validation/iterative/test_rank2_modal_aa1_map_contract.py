@@ -29,6 +29,10 @@ rolling_next_map_runner_path = (
 rolling_next_map_runner = rolling_next_map_runner_path.read_text()
 aa2_map_runner_path = ITERATIVE / "run_rank2_modal_aa2_map.sh"
 aa2_map_runner = aa2_map_runner_path.read_text()
+aa2_rolling_next_map_runner_path = (
+    ITERATIVE / "run_rank2_modal_aa2_rolling_next_map.sh"
+)
+aa2_rolling_next_map_runner = aa2_rolling_next_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -70,6 +74,12 @@ rolling_next_map_manifest = (
 aa2_map_policy = (ITERATIVE / "rank2_modal_aa2_map_policy.md").read_text()
 aa2_map_manifest = (
     ITERATIVE / "rank2_modal_aa2_map_parent.tsv"
+).read_text()
+aa2_rolling_next_map_policy = (
+    ITERATIVE / "rank2_modal_aa2_rolling_next_map_policy.md"
+).read_text()
+aa2_rolling_next_map_manifest = (
+    ITERATIVE / "rank2_modal_aa2_rolling_next_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -248,6 +258,31 @@ require(aa2_map_rows[4][1] ==
 require(aa2_map_rows[5][1] ==
         "a6231acf84ed551e9144811c4bc775368c4a21132817ac757143a4c7e74d51dc",
         "AA2 proposal snapshot parent changed")
+
+aa2_rolling_next_map_rows = [
+    line.split() for line in aa2_rolling_next_map_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(aa2_rolling_next_map_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa2-rolling-next-map-parent-v1",
+        "rolling-AA2-map manifest version changed")
+require(tuple(row[0] for row in aa2_rolling_next_map_rows) == roles,
+        "rolling-AA2-map manifest roles changed")
+require(all(len(row) == 3 for row in aa2_rolling_next_map_rows),
+        "rolling-AA2-map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in aa2_rolling_next_map_rows),
+        "rolling-AA2-map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts
+            for row in aa2_rolling_next_map_rows),
+        "rolling-AA2-map manifest path escapes the repository")
+require(aa2_rolling_next_map_rows[4][1] ==
+        "ce9544e8f58b01d933f5937d781a0f1b70a58862468bbd380d5d2bc5c0e07715",
+        "rolling-AA2 proposal AX parent changed")
+require(aa2_rolling_next_map_rows[5][1] ==
+        "61604c1dfb586abe71115544aa73b4628f7528f5da32f6bce14ce8f7f8f30763",
+        "rolling-AA2 proposal snapshot parent changed")
 
 u_rows = [line.split() for line in u_history_manifest.splitlines()
           if line.strip() and not line.startswith("#")]
@@ -548,6 +583,53 @@ require(aa2_bad_activation.returncode == 2 and
         "SPOT-RANK2-MODAL-AA2-MAP ERROR: activation must be 0 or 1.\n",
         "AA2-map activation gate changed")
 
+require(aa2_rolling_next_map_runner.index(
+        "RUN_RANK2_MODAL_AA2_ROLLING_NEXT_MAP=") <
+        aa2_rolling_next_map_runner.index("ROOT=$("),
+        "rolling-AA2-map default-off gate must precede repository access")
+for token in (
+    "rank2_modal_aa2_rolling_next_map_parent.tsv",
+    "rank2_modal_aa2_rolling_next_map_policy.md",
+    "iterative-rank2-modal-aa2-rolling-next-candidate",
+    "CHECKER_MODE=proposal-aa2",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=420",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in aa2_rolling_next_map_runner,
+            f"rolling-AA2-map runner binding missing: {token}")
+require(aa2_rolling_next_map_runner.count("run_continuation_short.sh") == 1,
+        "rolling-AA2-map common host invocation count is not one")
+require("run_bounded_dragon.py" not in aa2_rolling_next_map_runner and
+        "DRAGON_BIN" not in aa2_rolling_next_map_runner,
+        "rolling-AA2-map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b",
+                      aa2_rolling_next_map_runner),
+        "rolling-AA2-map retry loop is forbidden")
+aa2_rolling_next_default_off = subprocess.run(
+    ["sh", str(aa2_rolling_next_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_MODAL_AA2_ROLLING_NEXT_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(aa2_rolling_next_default_off.returncode == 0 and
+        aa2_rolling_next_default_off.stderr == "" and
+        aa2_rolling_next_default_off.stdout ==
+        "SPOT-RANK2-MODAL-AA2-ROLLING-NEXT-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "rolling-AA2-map default-off terminal changed")
+aa2_rolling_next_bad_activation = subprocess.run(
+    ["sh", str(aa2_rolling_next_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_MODAL_AA2_ROLLING_NEXT_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(aa2_rolling_next_bad_activation.returncode == 2 and
+        aa2_rolling_next_bad_activation.stdout == "" and
+        aa2_rolling_next_bad_activation.stderr ==
+        "SPOT-RANK2-MODAL-AA2-ROLLING-NEXT-MAP ERROR: activation must be "
+        "0 or 1.\n",
+        "rolling-AA2-map activation gate changed")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
         "proposal-x3|proposal-aa1|proposal-xnp|proposal-xrp|proposal-aa2"
@@ -747,6 +829,17 @@ require("PREPARED_NOT_RUN" in aa2_map_policy,
 require("starts no successor proposal or map" in aa2_map_policy,
         "AA2-map automatic-stop boundary is missing")
 
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in aa2_rolling_next_map_policy,
+            f"rolling-AA2-map classification missing: {label}")
+require("AA2-RAW-FLUX" in aa2_rolling_next_map_policy,
+        "rolling-AA2-map policy does not bind the AA2 carrier")
+require("PREPARED_NOT_RUN" in aa2_rolling_next_map_policy,
+        "rolling-AA2-map policy overstates runtime completion")
+require("starts no successor proposal or map" in
+        aa2_rolling_next_map_policy,
+        "rolling-AA2-map automatic-stop boundary is missing")
+
 print("RANK2 MODAL AA1 MAP CONTRACT PASS: "
-      "X2/Z/V/X3/AA1/XNP/XRP/AA2 proposal paths remain distinct; the AA2 "
-      "host is default-off, fixed rank-2 and has no empirical control.")
+      "X2/Z/V/X3/AA1/XNP/XRP/AA2 proposal paths remain distinct; both AA2 "
+      "hosts are default-off, fixed rank-2 and have no empirical control.")

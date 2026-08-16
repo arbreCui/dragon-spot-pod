@@ -139,6 +139,10 @@ generic, default-off continuation host.
   `rank2_modal_aa2_rolling_next_candidate_result.md`: one shifted standard
   AA(2) proposal from the latest three real maps, materialized offline with
   no new map.
+- `rank2_modal_aa2_rolling_next_map_parent.tsv`,
+  `rank2_modal_aa2_rolling_next_map_policy.md`,
+  `run_rank2_modal_aa2_rolling_next_map.sh`: default-off host for exactly one
+  map from that shifted proposal, with no retry or automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
