@@ -308,8 +308,13 @@ see
 and
 [validation/iterative/rank2_modal_aa1_u_candidate_result.md](validation/iterative/rank2_modal_aa1_u_candidate_result.md).
 
-The corresponding \(G_2(u_{\rm pub})\) host is now prepared but remains
-default-off. Its exact `V-RAW-FLUX` parent gate runs before any Dragon launch,
-while the physical rank-two decks, tolerance and one-attempt/no-retry rule are
-unchanged. This preparation created no map and remains `PREPARED_NOT_RUN`; see
-[validation/iterative/rank2_modal_aa1_u_map_policy.md](validation/iterative/rank2_modal_aa1_u_map_policy.md).
+The separately authorized \(G_2(u_{\rm pub})\) map has now completed exactly
+once. Its exact `V-RAW-FLUX` parent gate, four strict solve terminals,
+independent audit and 21-entry receipt all pass. It remains `VALID_NOT_MET`:
+\(R_\rho=8.34905\times10^{-7}\),
+\(R_L=4.03982\times10^{-4}\), and
+\(R_a=1.43357\times10^{-5}\), all above `5.0e-7`. Leakage and modal defects
+decreased locally relative to the preceding map, while \(R_\rho\) increased
+very slightly; this is not an asymptotic convergence claim. No retry or
+subsequent map was started; see
+[validation/iterative/rank2_modal_aa1_u_map_result.md](validation/iterative/rank2_modal_aa1_u_map_result.md).

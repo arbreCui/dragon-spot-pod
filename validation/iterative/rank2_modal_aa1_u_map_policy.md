@@ -50,3 +50,9 @@ fixed-point stopping gate, not physical validation.
 
 Status: `PREPARED_NOT_RUN`. Freezing this policy and its default-off host
 produces no map.
+
+The separately authorized single attempt subsequently completed as a valid
+map, but all three stopping defects exceed the tolerance. Its classification
+is `VALID_NOT_MET`; the frozen runtime copy of this pre-run policy remains in
+the artifact receipt. See
+[`rank2_modal_aa1_u_map_result.md`](rank2_modal_aa1_u_map_result.md).

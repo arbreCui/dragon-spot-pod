@@ -71,8 +71,9 @@ generic, default-off continuation host.
   publication with an independently audited `V-RAW-FLUX` lifecycle; no map.
 - `rank2_modal_aa1_u_map_parent.tsv`,
   `rank2_modal_aa1_u_map_policy.md`,
-  `run_rank2_modal_aa1_u_map.sh`: exact `V-RAW-FLUX` preflight and default-off
-  host for one unchanged map from the latest proposal; `PREPARED_NOT_RUN`.
+  `run_rank2_modal_aa1_u_map.sh`,
+  `rank2_modal_aa1_u_map_result.md`: exact `V-RAW-FLUX` preflight and the one
+  completed, no-retry map from the latest proposal.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -325,9 +326,19 @@ The corresponding one-map host is prepared but default-off:
 make spot-rank2-modal-aa1-u-map
 ```
 
-Its `V-RAW-FLUX` preflight precedes any Dragon launch. Preparing the host did
-not evaluate \(G_2(u_{\rm pub})\), create a stopping defect or authorize a
-retry; see [rank2_modal_aa1_u_map_policy.md](rank2_modal_aa1_u_map_policy.md).
+Its `V-RAW-FLUX` preflight precedes any Dragon launch. The separately
+authorized single attempt has now completed with no retry. The map is valid,
+but
+
+\[
+(R_\rho,R_L,R_a)=
+(8.3490525\times10^{-7},\,4.0398154\times10^{-4},\,
+1.4335690\times10^{-5}),
+\]
+
+so all three stopping defects exceed `5.0e-7` and the classification is
+`VALID_NOT_MET`. No subsequent map was started. See
+[rank2_modal_aa1_u_map_result.md](rank2_modal_aa1_u_map_result.md).
 
 ## Current boundary
 

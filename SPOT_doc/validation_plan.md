@@ -147,12 +147,15 @@ and passes strict positivity. The classification is
 and
 [../validation/iterative/rank2_modal_aa1_u_candidate_result.md](../validation/iterative/rank2_modal_aa1_u_candidate_result.md).
 
-The exact `V-RAW-FLUX` entry for one possible \(G_2(u_{\rm pub})\) evaluation
-is now prepared and default-off. It reuses the same rank-two decks, physical
-map, tolerance and independent raw stopping defects. Its parent preflight is
-before Dragon and it permits one attempt with no retry. Preparation itself is
-`PREPARED_NOT_RUN` and generated no map; see
-[../validation/iterative/rank2_modal_aa1_u_map_policy.md](../validation/iterative/rank2_modal_aa1_u_map_policy.md).
+The exact `V-RAW-FLUX` entry was then used for one separately authorized
+\(G_2(u_{\rm pub})\) evaluation. The unchanged four solves, independent audit
+and receipt pass, but the map is `VALID_NOT_MET`:
+\((R_\rho,R_L,R_a)=(8.34905\times10^{-7},4.03982\times10^{-4},
+1.43357\times10^{-5})\). The leakage and modal defects decreased locally,
+while \(R_\rho\) increased very slightly; this is not evidence of asymptotic
+convergence, rank adequacy or physical accuracy. No retry or subsequent map
+was started; see
+[../validation/iterative/rank2_modal_aa1_u_map_result.md](../validation/iterative/rank2_modal_aa1_u_map_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

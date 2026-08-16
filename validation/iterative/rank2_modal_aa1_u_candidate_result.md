@@ -106,9 +106,9 @@ convergence evidence, rank adequacy, transport accuracy or evidence that
 AA(1) is superior to another iteration.
 
 This materialization stage started no Dragon run or map. The required
-single-map host has subsequently been prepared and remains default-off. Its
-strict `V-RAW-FLUX` preflight, unchanged physical equations and no-retry
-boundary are frozen in
-[`rank2_modal_aa1_u_map_policy.md`](rank2_modal_aa1_u_map_policy.md). Host
-preparation does not change the classification above or evaluate
-\(G_2(u_{\rm pub})\).
+single-map host was subsequently prepared with a strict `V-RAW-FLUX`
+preflight and unchanged physical equations. Its separately authorized single
+attempt later evaluated \(G_2(u_{\rm pub})\) and completed as
+`VALID_NOT_MET`; see
+[`rank2_modal_aa1_u_map_result.md`](rank2_modal_aa1_u_map_result.md). That
+later result does not change the materialization classification above.

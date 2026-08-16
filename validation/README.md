@@ -138,11 +138,12 @@ produced. See
 and
 [iterative/rank2_modal_aa1_u_candidate_result.md](iterative/rank2_modal_aa1_u_candidate_result.md).
 
-The single-map host for \(G_2(u_{\rm pub})\) is now prepared and default-off.
-It adds only the exact `V-RAW-FLUX` preflight; the fixed rank-two physics,
-stopping defects and no-retry boundary are unchanged. No Dragon process or
-map was started, so its status is `PREPARED_NOT_RUN`; see
-[iterative/rank2_modal_aa1_u_map_policy.md](iterative/rank2_modal_aa1_u_map_policy.md).
+The separately authorized single map \(G_2(u_{\rm pub})\) has now completed
+without retry. Its V-carrier preflight, strict terminals, independent checker
+and 21-entry receipt pass. It is `VALID_NOT_MET`: the stopping defects are
+`8.34905e-7`, `4.03982e-4` and `1.43357e-5`, all above `5.0e-7`. No subsequent
+map was started; see
+[iterative/rank2_modal_aa1_u_map_result.md](iterative/rank2_modal_aa1_u_map_result.md).
 
 Historical REAL64/B2 staging, GMRES/raw-MOC forensics and retired rank-1
 Anderson scaffolding are not part of the active gate. They remain recoverable
