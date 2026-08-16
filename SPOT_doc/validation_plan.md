@@ -256,6 +256,14 @@ is not a real stopping defect, and no physical-map host or successor map was
 created. See
 [../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).
 
+A dedicated host is now prepared, but remains default-off, for exactly one
+evaluation of this rolling proposal. It requires the hash-locked
+`XNP-RAW-FLUX` carrier and keeps the fixed rank-two basis, original physical
+decks and `5.0e-7` tolerance. Activation permits one attempt with no retry
+and starts no successor proposal or map. Preparing it performed no Dragon
+calculation; see
+[../validation/iterative/rank2_modal_aa1_rolling_map_policy.md](../validation/iterative/rank2_modal_aa1_rolling_map_policy.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

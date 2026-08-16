@@ -427,3 +427,10 @@ returned raw payload as `XNP-RAW-FLUX`. This is
 is not a real stopping defect, and no Dragon or successor map was started.
 See
 [validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).
+
+A dedicated one-map host for this rolling proposal is now prepared but
+default-off. It requires the exact `XNP-RAW-FLUX` carrier and keeps the fixed
+rank-two basis, physical decks and `5.0e-7` gate unchanged. Activation permits
+one attempt with no retry and starts no successor proposal or map. Preparing
+the host performed no Dragon calculation; see
+[validation/iterative/rank2_modal_aa1_rolling_map_policy.md](validation/iterative/rank2_modal_aa1_rolling_map_policy.md).

@@ -61,11 +61,11 @@ printf '%s\n' "$MAP_PARENT_FILE" |
   rg -q '^[A-Za-z0-9][A-Za-z0-9._-]*$' ||
   fail "MAP_PARENT_FILE must be a safe basename."
 case "$CHECKER_MODE" in
-  initial|continued|reencoded|proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1) ;;
-  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal, proposal-z, proposal-v, proposal-x3 or proposal-aa1." ;;
+  initial|continued|reencoded|proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1|proposal-xnp) ;;
+  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal, proposal-z, proposal-v, proposal-x3, proposal-aa1 or proposal-xnp." ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1)
+  proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1|proposal-xnp)
     test "$MAP_PARENT_FILE" = parent_axial.xsm ||
       fail "proposal checker modes require MAP_PARENT_FILE=parent_axial.xsm."
     ;;
@@ -259,13 +259,20 @@ case "$CHECKER_MODE" in
         parent_axial.xsm >parent_preflight.log
     )
     ;;
+  proposal-xnp)
+    (
+      cd "$RADIAL_WORK"
+      "$AXIAL_WORK/check_one_map_xsm" --proposal-parent-xnp \
+        parent_axial.xsm >parent_preflight.log
+    )
+    ;;
   *)
     printf 'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK NOT-APPLICABLE\n' \
       >"$RADIAL_WORK/parent_preflight.log"
     ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1)
+  proposal|proposal-z|proposal-v|proposal-x3|proposal-aa1|proposal-xnp)
     test "$(tail -n 1 "$RADIAL_WORK/parent_preflight.log")" = \
       'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK PASS' ||
       fail "proposal parent preflight did not reach its strict terminal."
@@ -394,6 +401,11 @@ done
       ;;
     proposal-aa1)
       ./check_one_map_xsm --proposal-aa1 basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+    proposal-xnp)
+      ./check_one_map_xsm --proposal-xnp basis_reference.xsm \
         candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
         candidate_snapshots.xsm >independent_check.log
       ;;

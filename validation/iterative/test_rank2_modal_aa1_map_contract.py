@@ -19,6 +19,10 @@ consecutive_runner_path = (
 consecutive_runner = consecutive_runner_path.read_text()
 post_runner_path = ITERATIVE / "run_rank2_modal_aa1_post_map.sh"
 post_runner = post_runner_path.read_text()
+rolling_map_runner_path = (
+    ITERATIVE / "run_rank2_modal_aa1_rolling_map.sh"
+)
+rolling_map_runner = rolling_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -44,6 +48,12 @@ consecutive_manifest = (
 post_policy = (ITERATIVE / "rank2_modal_aa1_post_map_policy.md").read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_map_parent.tsv"
+).read_text()
+rolling_map_policy = (
+    ITERATIVE / "rank2_modal_aa1_rolling_map_policy.md"
+).read_text()
+rolling_map_manifest = (
+    ITERATIVE / "rank2_modal_aa1_rolling_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -153,6 +163,28 @@ require(post_rows[4][1] ==
 require(post_rows[5][1] ==
         "0c22cc9748beb813757d154ca592f343654e61c710f9b852ad35270ae19e186c",
         "post-AA1 proposal snapshot parent changed")
+
+rolling_map_rows = [line.split() for line in rolling_map_manifest.splitlines()
+                    if line.strip() and not line.startswith("#")]
+require(rolling_map_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa1-rolling-map-parent-v1",
+        "rolling-map manifest version changed")
+require(tuple(row[0] for row in rolling_map_rows) == roles,
+        "rolling-map manifest roles changed")
+require(all(len(row) == 3 for row in rolling_map_rows),
+        "rolling-map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in rolling_map_rows),
+        "rolling-map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in rolling_map_rows),
+        "rolling-map manifest path escapes the repository")
+require(rolling_map_rows[4][1] ==
+        "a7166bdfff6a477542118e5f355eacd4e0018c496717cac845df0cd6233108ee",
+        "rolling proposal AX parent changed")
+require(rolling_map_rows[5][1] ==
+        "6762e58a75cc2bcbffae476187389797a9aebf95e8619355060b6de9c41b5102",
+        "rolling proposal snapshot parent changed")
 
 u_rows = [line.split() for line in u_history_manifest.splitlines()
           if line.strip() and not line.startswith("#")]
@@ -316,9 +348,55 @@ require(post_bad_activation.returncode == 2 and
         "SPOT-RANK2-MODAL-AA1-POST-MAP ERROR: activation must be 0 or 1.\n",
         "post-map activation gate changed")
 
+require(rolling_map_runner.index(
+        "RUN_RANK2_MODAL_AA1_ROLLING_MAP=") <
+        rolling_map_runner.index("ROOT=$("),
+        "rolling-map default-off gate must precede repository access")
+for token in (
+    "rank2_modal_aa1_rolling_map_parent.tsv",
+    "rank2_modal_aa1_rolling_map_policy.md",
+    "iterative-rank2-modal-aa1-rolling-candidate",
+    "CHECKER_MODE=proposal-xnp",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=420",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in rolling_map_runner,
+            f"rolling-map runner binding missing: {token}")
+require(rolling_map_runner.count("run_continuation_short.sh") == 1,
+        "rolling-map common host invocation count is not one")
+require("run_bounded_dragon.py" not in rolling_map_runner and
+        "DRAGON_BIN" not in rolling_map_runner,
+        "rolling-map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_map_runner),
+        "rolling-map retry loop is forbidden")
+rolling_default_off = subprocess.run(
+    ["sh", str(rolling_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_MODAL_AA1_ROLLING_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(rolling_default_off.returncode == 0 and
+        rolling_default_off.stderr == "" and
+        rolling_default_off.stdout ==
+        "SPOT-RANK2-MODAL-AA1-ROLLING-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "rolling-map default-off terminal changed")
+rolling_bad_activation = subprocess.run(
+    ["sh", str(rolling_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_MODAL_AA1_ROLLING_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(rolling_bad_activation.returncode == 2 and
+        rolling_bad_activation.stdout == "" and
+        rolling_bad_activation.stderr ==
+        "SPOT-RANK2-MODAL-AA1-ROLLING-MAP ERROR: activation must be "
+        "0 or 1.\n",
+        "rolling-map activation gate changed")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
-        "proposal-x3|proposal-aa1" in common,
+        "proposal-x3|proposal-aa1|proposal-xnp" in common,
         "common host does not accept all proposal modes")
 require("./check_one_map_xsm --proposal" in common,
         "proposal checker dispatch is missing")
@@ -330,6 +408,8 @@ require("./check_one_map_xsm --proposal-x3" in common,
         "x3-carrier proposal checker dispatch is missing")
 require("./check_one_map_xsm --proposal-aa1" in common,
         "aa1-carrier proposal checker dispatch is missing")
+require("./check_one_map_xsm --proposal-xnp" in common,
+        "xnp-carrier proposal checker dispatch is missing")
 require("--proposal-parent-z" in common,
         "z-carrier parent preflight is missing")
 require("--proposal-parent-v" in common,
@@ -338,6 +418,8 @@ require("--proposal-parent-x3" in common,
         "x3-carrier parent preflight is missing")
 require("--proposal-parent-aa1" in common,
         "aa1-carrier parent preflight is missing")
+require("--proposal-parent-xnp" in common,
+        "xnp-carrier parent preflight is missing")
 require(common.index("--proposal-parent-z") < common.index("MAP_STARTED=1"),
         "z-carrier parent preflight must precede map execution")
 require(common.index("--proposal-parent-v") < common.index("MAP_STARTED=1"),
@@ -348,6 +430,9 @@ require(common.index("--proposal-parent-x3") <
 require(common.index("--proposal-parent-aa1") <
         common.index("MAP_STARTED=1"),
         "aa1-carrier parent preflight must precede map execution")
+require(common.index("--proposal-parent-xnp") <
+        common.index("MAP_STARTED=1"),
+        "xnp-carrier parent preflight must precede map execution")
 require("parent_preflight.log" in common,
         "parent preflight log is absent from the host receipt")
 for token in (
@@ -356,10 +441,12 @@ for token in (
     "trim(mode) == '--proposal-v'",
     "trim(mode) == '--proposal-x3'",
     "trim(mode) == '--proposal-aa1'",
+    "trim(mode) == '--proposal-xnp'",
     "trim(mode) == '--proposal-parent-z'",
     "trim(mode) == '--proposal-parent-v'",
     "trim(mode) == '--proposal-parent-x3'",
     "trim(mode) == '--proposal-parent-aa1'",
+    "trim(mode) == '--proposal-parent-xnp'",
     "MATERIALIZED PROPOSAL STATE",
     "SPOT-X-STATE",
     "X2-RAW-FLUX",
@@ -367,11 +454,13 @@ for token in (
     "V-RAW-FLUX",
     "X3-RAW-FLUX",
     "AA1-RAW-FLUX",
+    "XNP-RAW-FLUX",
     "RAW-FLUX CARRIER IS NOT X2",
     "RAW-FLUX CARRIER IS NOT Z",
     "RAW-FLUX CARRIER IS NOT V",
     "RAW-FLUX CARRIER IS NOT X3",
     "RAW-FLUX CARRIER IS NOT AA1",
+    "RAW-FLUX CARRIER IS NOT XNP",
     "SPOT-X-PERP",
     "SPOT-GBAL-MA",
     "ONE-MAP-XSM MATERIALIZED-PROPOSAL INPUT PASS",
@@ -402,7 +491,7 @@ for token in ("AX_CURRENT := FLU:", "AX_CURRENT := SPOSTATE:",
               "AX_CURRENT := SPOXCONV:", "SNAP := SPOLEAK:"):
     require(token in acompact, f"axial physical chain missing: {token}")
 for text in (runner, next_runner, u_runner, consecutive_runner, post_runner,
-             radial, axial):
+             rolling_map_runner, radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
                 f"empirical control present: {forbidden}")
@@ -451,6 +540,16 @@ require("PREPARED_NOT_RUN" in post_policy,
 require("starts no successor map" in post_policy,
         "post-map automatic-stop boundary is missing")
 
-print("RANK2 MODAL AA1 MAP CONTRACT PASS: X2/Z/V/X3/AA1 proposal paths "
-      "remain distinct; the AA1 host is default-off, fixed rank-2 and has no "
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in rolling_map_policy,
+            f"rolling-map classification missing: {label}")
+require("XNP-RAW-FLUX" in rolling_map_policy,
+        "rolling-map policy does not bind the XNP carrier")
+require("PREPARED_NOT_RUN" in rolling_map_policy,
+        "rolling-map policy overstates runtime completion")
+require("starts no successor proposal or map" in rolling_map_policy,
+        "rolling-map automatic-stop boundary is missing")
+
+print("RANK2 MODAL AA1 MAP CONTRACT PASS: X2/Z/V/X3/AA1/XNP proposal paths "
+      "remain distinct; the XNP host is default-off, fixed rank-2 and has no "
       "empirical control.")

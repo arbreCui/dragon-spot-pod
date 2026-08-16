@@ -38,7 +38,8 @@ all :
 	spot-rank2-modal-aa1-consecutive-map \
 	spot-rank2-modal-aa1-post-candidate \
 	spot-rank2-modal-aa1-post-map \
-	spot-rank2-modal-aa1-rolling-candidate
+	spot-rank2-modal-aa1-rolling-candidate \
+	spot-rank2-modal-aa1-rolling-map
 spot-fast :
 	sh validation/run_fast.sh
 spot-rank-census :
@@ -73,6 +74,8 @@ spot-rank2-modal-aa1-post-map :
 	sh validation/iterative/run_rank2_modal_aa1_post_map.sh
 spot-rank2-modal-aa1-rolling-candidate :
 	sh validation/iterative/run_rank2_modal_aa1_rolling_candidate.sh
+spot-rank2-modal-aa1-rolling-map :
+	sh validation/iterative/run_rank2_modal_aa1_rolling_map.sh
 clean :
 	$(MAKE) clean -C src
 tests :
