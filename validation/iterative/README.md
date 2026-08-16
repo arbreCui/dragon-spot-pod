@@ -172,6 +172,10 @@ generic, default-off continuation host.
   `VALID_NOT_MET` result for exactly one strict map from that published
   proposal, with an exact `X4-RAW-FLUX` carrier gate, no retry, and no
   automatic successor.
+- `rank2_latest_modal_aa1_history.tsv`,
+  `rank2_latest_modal_aa1_history_result.md`: hash-locked, read-only
+  four-state decision audit of the latest direct and proposal-map residuals;
+  it creates no candidate and runs no Dragon.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -740,6 +744,23 @@ direct \(x_4=G_2(x_3)\) evaluation, \(R_a\) falls about 70.74% while
 This is not componentwise improvement and proves neither convergence nor an
 AA(1) verdict. No retry or successor was started; see
 [rank2_latest_modal_aa1_map_result.md](rank2_latest_modal_aa1_map_result.md).
+
+The latest read-only four-state audit then compared the two actual residuals
+
+\[
+p=x_4-x_3,
+\qquad q=z-Q(y).
+\]
+
+Their standard full-Gram modal AA(1) coefficient is
+`0.7766660303945517` on \(z\), with no clipping or fitted parameter. The
+affine modal residual is `0.1927051998914537` of the current residual. With
+that same modal coefficient, the auxiliary leakage height-\(L_2\) and
+stored dimensional \(D_L\) screens are `0.7632785965453454` and
+`0.7073369976148646` of the current leakage residual. All 8880 publication
+preflight points are positive. This is `OFFLINE_DECISION_COMPLETE`, not a
+new map or convergence claim; see
+[rank2_latest_modal_aa1_history_result.md](rank2_latest_modal_aa1_history_result.md).
 
 ## Current boundary
 

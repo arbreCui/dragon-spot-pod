@@ -92,6 +92,9 @@ aa2_rolling_next_map_manifest = (
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
+latest_history_manifest = (
+    ITERATIVE / "rank2_latest_modal_aa1_history.tsv"
+).read_text()
 
 
 def require(condition: bool, message: str) -> None:
@@ -331,6 +334,31 @@ require(tuple(row[1] for row in u_rows) == (
         "c2df5e526aa9a0c0c3dc354d3ec539475814fe73c87af19ba04dde05c1475ff4",
         "02f922cf157a0dde1b9d072f45cdb1e39c64fa1f8682ad3a1e4fe21fede12a62",
         ), "u-history parents changed")
+
+latest_history_rows = [
+    line.split() for line in latest_history_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(latest_history_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-modal-aa1-history-v1",
+        "latest-history manifest version changed")
+require(tuple(row[0] for row in latest_history_rows) ==
+        ("x3", "x4", "qy_pub", "z"),
+        "latest-history roles changed")
+require(all(len(row) == 3 for row in latest_history_rows),
+        "latest-history manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in latest_history_rows),
+        "latest-history SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in latest_history_rows),
+        "latest-history manifest path escapes the repository")
+require(tuple(row[1] for row in latest_history_rows) == (
+        "154c707c0f21a1241fad0c887486867e9953af794fec0aa883220d669de74651",
+        "ee50a8cb438aba8bb36a30613975d92bdc93528b070bd61d1a43f2d17e53cc08",
+        "0c7d94c9df4b1a7f7f94b8a9d54eb51aacfcead8ab34d5f288c85351b1c0ab9d",
+        "8f641951ded5f7709a074f71313045396930f5c0985b598bcb22adca7d189ec9",
+        ), "latest-history parents changed")
 
 require(runner.index("RUN_RANK2_MODAL_AA1_MAP=") < runner.index("ROOT=$("),
         "default-off gate must precede repository access")
@@ -823,6 +851,19 @@ for token in (
     "OFFLINE-HISTORY-ONLY NO-CANDIDATE NO-MAP NO-DRAGON",
 ):
     require(token in checker, f"u-history checker contract missing: {token}")
+for token in (
+    "--rank2-aa1-x4-history",
+    "MAP-X3-X4 RAW-DEFECT BITWISE PASS",
+    "MAP-QY-Z RAW-DEFECT BITWISE PASS",
+    "PROPOSAL-QY-TO-RETURNED-Z",
+    "WEIGHT-X4",
+    "LEAKAGE AFFINE-D_L/CURRENT",
+    "LEAKAGE SAME-BETA SCREEN ONLY NO LEAKAGE FIT",
+    "NEXT-RAW-OUTPUT (1-BETA)*X4+BETA*Z",
+    "OFFLINE_DECISION_ONLY_NO_AUTHORIZATION",
+):
+    require(token in checker,
+            f"latest-history checker contract missing: {token}")
 require("call require_absent(root,'SPOT-X-STATE',owner)" in checker,
         "returned state may retain the proposal lifecycle marker")
 require("call require_absent(root,'SPOT-X-CARR',owner)" in checker,

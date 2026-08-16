@@ -629,3 +629,22 @@ $R_L$ rises about 37.45%; this is not
 componentwise improvement and is not proof for or against AA(1). No retry or
 successor was started. See
 [validation/iterative/rank2_latest_modal_aa1_map_result.md](validation/iterative/rank2_latest_modal_aa1_map_result.md).
+
+The next decision has now been made without another transport solve. Using
+the two real residuals \(p=x_4-x_3\) and \(q=z-Q(y)\), the unique standard
+modal AA(1) coefficient is
+
+$$
+\beta=0.7766660303945517,
+\qquad
+t=0.2233339696054483x_4+0.7766660303945517z.
+$$
+
+The affine modal screen is `0.1927051998914537` of the latest residual. The
+same coefficient, without fitting leakage separately, gives offline leakage
+height-$L_2$ and $D_L$ ratios `0.7632785965453454` and
+`0.7073369976148646`. The publication preflight is positive at 8880/8880
+points. This is only a read-only directional decision: no candidate, Dragon
+run or new stopping defect was produced. The next minimal step is to
+materialize and independently check \(Q(t)\) offline. See
+[validation/iterative/rank2_latest_modal_aa1_history_result.md](validation/iterative/rank2_latest_modal_aa1_history_result.md).
