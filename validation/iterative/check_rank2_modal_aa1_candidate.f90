@@ -9,6 +9,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --post-aa1 x2 x3 aa1 aa1p \
+  !     aa1p_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive x1_pub x2 x3 \
   !     x3_snap basis proposal_ax proposal_snap
   use GANLIB
@@ -58,7 +60,7 @@ program check_rank2_modal_aa1_candidate
   real(real64) :: publication_delta
   real(real32) :: keff_published,min_published_flux
   integer :: argument_count,i,min_group,min_snapshot,min_region
-  logical :: next_mode,u_mode,consecutive_mode
+  logical :: next_mode,u_mode,post_aa1_mode,consecutive_mode
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
   character(len=2) :: previous_output,latest_output
@@ -66,13 +68,16 @@ program check_rank2_modal_aa1_candidate
   argument_count=command_argument_count()
   next_mode=.false.
   u_mode=.false.
+  post_aa1_mode=.false.
   consecutive_mode=.false.
   if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--u') then
       u_mode=.true.
+    else if (trim(mode_argument) == '--post-aa1') then
+      post_aa1_mode=.true.
     else if (trim(mode_argument) /= '--next') then
-      call fail('NINE ARGUMENTS REQUIRE LEADING --NEXT OR --U.')
+      call fail('NINE ARGUMENTS REQUIRE --NEXT, --U OR --POST-AA1.')
     endif
     next_mode=.true.
     do i=1,8
@@ -101,13 +106,13 @@ program check_rank2_modal_aa1_candidate
     enddo
   else
     call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
-      'SEVEN, OR --NEXT/--U PLUS EIGHT.')
+      'SEVEN, OR --NEXT/--U/--POST-AA1 PLUS EIGHT.')
   endif
 
   if (next_mode) then
     call check_next_candidate(trim(path(1)),trim(path(2)),trim(path(3)), &
       trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)), &
-      u_mode)
+      u_mode,post_aa1_mode)
   else
 
   report_prefix='RANK2-MODAL-AA1'
@@ -223,10 +228,10 @@ program check_rank2_modal_aa1_candidate
 contains
 
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
-      basis_name,proposal_name,proposal_snap_name,u_mode)
+      basis_name,proposal_name,proposal_snap_name,u_mode,post_aa1_mode)
     character(len=*), intent(in) :: x1_name,x2_name,y_name,z_name,z_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name,proposal_snap_name
-    logical, intent(in) :: u_mode
+    logical, intent(in) :: u_mode,post_aa1_mode
     type(canonical_state) :: state_x1,state_x2,state_y,state_z,state_proposal
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -238,7 +243,17 @@ contains
     character(len=12) :: input_carrier,output_carrier
     character(len=8) :: latest_input,latest_output,previous_output
 
-    if (u_mode) then
+    if (u_mode.and.post_aa1_mode) &
+      call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
+    if (post_aa1_mode) then
+      input_carrier='X3-RAW-FLUX'
+      output_carrier='AA1-RAW-FLUX'
+      report_prefix='RANK2-POST-AA1'
+      latest_input='AA1'
+      latest_output='AA1-PLUS'
+      previous_output='X3'
+      call load_state(x1_name,1,state_x1,'PREVIOUS MAP INPUT X2')
+    else if (u_mode) then
       input_carrier='Z-RAW-FLUX'
       output_carrier='V-RAW-FLUX'
       report_prefix='RANK2-MODAL-AA1-U'

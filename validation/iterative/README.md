@@ -92,6 +92,11 @@ generic, default-off continuation host.
   `rank2_modal_aa1_consecutive_map_result.md`: one default-off physical-map
   host with a strict pre-Dragon `X3-RAW-FLUX` gate and its completed,
   no-retry `VALID_NOT_MET` result.
+- `rank2_modal_aa1_post_candidate_inputs.tsv`,
+  `run_rank2_modal_aa1_post_candidate.sh`,
+  `rank2_modal_aa1_post_candidate_result.md`: the next standard AA(1)
+  proposal from the two latest evaluated residuals, materialized offline with
+  the complete `AA1-RAW-FLUX` carrier and no new map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -410,6 +415,25 @@ convergence factor or proof of Anderson superiority. No successor map was
 started; see
 [rank2_modal_aa1_consecutive_map_result.md](rank2_modal_aa1_consecutive_map_result.md).
 
+Those two latest evaluated pairs now define the next standard depth-one
+history: $p=x_3-x_2$ and
+$q=x_{\mathrm{AA1}}^+-x_{\mathrm{AA1}}$. The unique modal coefficient is
+`0.8591556991759952`, giving
+
+\[
+x_{\mathrm{next}}=
+0.1408443008240048x_3+
+0.8591556991759952x_{\mathrm{AA1}}^+.
+\]
+
+This naturally convex, unclipped proposal has been published with the
+complete latest returned carrier marked `AA1-RAW-FLUX`. The independent
+checker passes the affine publication, exact snapshot lifecycle and 8880/8880
+positive reconstructions. It remains
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: this stage launched no Dragon and
+created no physical-map host, and it produced no new stopping defect. See
+[rank2_modal_aa1_post_candidate_result.md](rank2_modal_aa1_post_candidate_result.md).
+
 ## Current boundary
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
@@ -430,6 +454,9 @@ local and Git-ignored.
 
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
+
+The separate fixed-rank-two AA(1) study also remains unconverged. Its latest
+step is only the offline proposal above, not another evaluated map.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

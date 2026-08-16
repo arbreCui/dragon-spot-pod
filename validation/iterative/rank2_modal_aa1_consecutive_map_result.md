@@ -145,3 +145,11 @@ This is one valid evaluation of the stated fixed rank-two discrete map. It
 does not meet the stopping rule and does not establish asymptotic convergence,
 stability, contraction, convergence order, Anderson superiority, rank
 adequacy or physical accuracy. No successor map was started.
+
+## Subsequent offline proposal
+
+A later no-Dragon stage used this returned state together with the preceding
+direct map to materialize the next standard depth-one proposal. That separate
+stage remains `MATERIALIZED_PROPOSAL_NOT_EVALUATED` and did not start another
+map; see
+[rank2_modal_aa1_post_candidate_result.md](rank2_modal_aa1_post_candidate_result.md).

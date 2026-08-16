@@ -204,6 +204,24 @@ an earlier proposal map, $R_L$ is about 4.17% higher. No successor map was
 started. See
 [../validation/iterative/rank2_modal_aa1_consecutive_map_result.md](../validation/iterative/rank2_modal_aa1_consecutive_map_result.md).
 
+The following step is again offline. From the two evaluated pairs
+$x_2\to x_3$ and
+$x_{\mathrm{AA1}}\to x_{\mathrm{AA1}}^+$, the standard depth-one modal
+formula gives the unique unclipped weight `0.8591556991759952` on
+$x_{\mathrm{AA1}}^+$. The resulting proposal is
+
+\[
+x_{\mathrm{next}}=
+0.1408443008240048x_3+
+0.8591556991759952x_{\mathrm{AA1}}^+.
+\]
+
+Its independent publication and carrier audit passes, including 8880/8880
+positive reconstructions. The classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no physical map, stopping defect or
+convergence conclusion was produced. See
+[../validation/iterative/rank2_modal_aa1_post_candidate_result.md](../validation/iterative/rank2_modal_aa1_post_candidate_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

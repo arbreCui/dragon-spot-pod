@@ -373,3 +373,22 @@ all lower than in the immediately preceding direct Picard map, but the
 parents differ, so this is not a convergence factor or proof of Anderson
 superiority. No successor map was started; see
 [validation/iterative/rank2_modal_aa1_consecutive_map_result.md](validation/iterative/rank2_modal_aa1_consecutive_map_result.md).
+
+The next step has now been completed offline using the two latest evaluated
+residuals $p=x_3-x_2$ and
+$q=x_{\mathrm{AA1}}^+-x_{\mathrm{AA1}}$. Standard modal Anderson(1) gives
+the unique, unclipped coefficient `0.8591556991759952`, hence
+
+$$
+x_{\mathrm{next}}=
+0.1408443008240048x_3+
+0.8591556991759952x_{\mathrm{AA1}}^+.
+$$
+
+All 8880 reconstructed points are positive. The complete latest raw carrier
+is preserved as `AA1-RAW-FLUX`, and the independent publication/lifecycle
+audit passes. This is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: this stage
+launched no Dragon, created no physical-map host for
+$x_{\mathrm{next}}$, and produced no new defect or convergence conclusion.
+See
+[validation/iterative/rank2_modal_aa1_post_candidate_result.md](validation/iterative/rank2_modal_aa1_post_candidate_result.md).
