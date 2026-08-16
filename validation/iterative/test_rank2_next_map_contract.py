@@ -12,9 +12,18 @@ ITERATIVE = ROOT / "validation/iterative"
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
 axial = (ITERATIVE / "continuation_axial.x2m").read_text()
 runner = (ITERATIVE / "run_rank2_next_map.sh").read_text()
+successor_runner = (
+    ITERATIVE / "run_rank2_modal_aa2_rolling_next_picard_map.sh"
+).read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 manifest = (ITERATIVE / "rank2_next_parent.tsv").read_text()
+successor_manifest = (
+    ITERATIVE / "rank2_modal_aa2_rolling_next_picard_map_parent.tsv"
+).read_text()
 policy = (ITERATIVE / "rank2_next_map_policy.md").read_text()
+successor_policy = (
+    ITERATIVE / "rank2_modal_aa2_rolling_next_picard_map_policy.md"
+).read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 
 
@@ -80,6 +89,24 @@ require(rows[5][1] ==
         "f9c0b78073ba6da05c5e5912b4e5c45045ac2506e72465a33c007b545a667d4c",
         "continued snapshot parent changed")
 
+successor_rows = [
+    line.split() for line in successor_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(successor_manifest.splitlines()[0] ==
+        "# spot-rank2-modal-aa2-rolling-next-picard-map-parent-v1",
+        "latest successor manifest version changed")
+require(tuple(row[0] for row in successor_rows) == roles,
+        "latest successor manifest roles changed")
+require(all(len(row) == 3 for row in successor_rows),
+        "latest successor manifest row width changed")
+require(successor_rows[4][1] ==
+        "21e5f4e8660020aee9509a656993c45049deb9a01029d86e63801432c948ab67",
+        "latest returned axial parent changed")
+require(successor_rows[5][1] ==
+        "9c69da5c78d0c6a4a2b99eba54b23e9ce9869df5f142c2ed86c40859ba1176a8",
+        "latest returned snapshot parent changed")
+
 require(runner.index("RUN_RANK2_NEXT_MAP=") < runner.index("ROOT=$("),
         "default-off gate must precede repository access")
 for token in (
@@ -100,6 +127,32 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", runner),
 require("DRAGON" not in runner.upper().split("ROOT=$(", 1)[1],
         "wrapper must not launch Dragon directly")
 
+require(successor_runner.index(
+        "RUN_RANK2_MODAL_AA2_ROLLING_NEXT_PICARD_MAP=") <
+        successor_runner.index("ROOT=$("),
+        "latest successor default-off gate must precede repository access")
+for token in (
+    "rank2_modal_aa2_rolling_next_picard_map_parent.tsv",
+    "rank2_modal_aa2_rolling_next_picard_map_policy.md",
+    "iterative-rank2-modal-aa2-rolling-next-map",
+    "iterative-rank2-modal-aa2-rolling-next-picard-map",
+    "VALID_NOT_MET",
+    "shasum -a 256 -c result.sha256",
+    "MAP_PARENT_FILE=parent_axial.xsm",
+    "CHECKER_MODE=continued",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=420",
+):
+    require(token in successor_runner,
+            f"latest successor wrapper binding missing: {token}")
+require(successor_runner.count("run_continuation_short.sh") == 1,
+        "latest successor common host invocation count changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", successor_runner),
+        "latest successor retry loop is forbidden")
+require("DRAGON" not in
+        successor_runner.upper().split("ROOT=$(", 1)[1],
+        "latest successor wrapper must not launch Dragon directly")
+
 for token in (
     "RADIAL_TIMEOUT_SECONDS=${RADIAL_TIMEOUT_SECONDS:-120}",
     "AXIAL_TIMEOUT_SECONDS=${AXIAL_TIMEOUT_SECONDS:-80}",
@@ -115,6 +168,18 @@ for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(policy.count(label) == 1, f"policy category changed: {label}")
 require("No third rank-2\nmap is started automatically" in policy,
         "automatic-stop boundary missing")
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in successor_policy,
+            f"latest successor policy category missing: {label}")
+require("PREPARED_NOT_RUN" in successor_policy,
+        "latest successor policy overstates runtime completion")
+require("starts no successor\nproposal or map" in successor_policy,
+        "latest successor automatic-stop boundary missing")
+for forbidden in ("relaxation", "damping", "Anderson mixing", "clipping",
+                  "fitted closure", "regularization", "pseudoinverse",
+                  "fallback", "empirical"):
+    require(forbidden in successor_policy,
+            f"latest successor forbidden-control boundary missing: {forbidden}")
 for token in (
     "--rank2-directions",
     "RANK2-DIRECTION MODE REQUIRES RANK TWO.",
@@ -125,4 +190,5 @@ for token in (
     require(token in checker, f"offline direction audit missing: {token}")
 
 print("RANK2 NEXT MAP CONTRACT PASS: one direct rank-2 continued map, "
-      "fixed basis and tolerance, bounded once with no empirical control.")
+      "including the latest returned successor; fixed basis and tolerance, "
+      "bounded once with no empirical control.")

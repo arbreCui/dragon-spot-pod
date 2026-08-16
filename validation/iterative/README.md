@@ -145,6 +145,11 @@ generic, default-off continuation host.
   `rank2_modal_aa2_rolling_next_map_result.md`: default-off host and frozen
   result for exactly one map from that shifted proposal, with no retry or
   automatic successor.
+- `rank2_modal_aa2_rolling_next_picard_map_parent.tsv`,
+  `rank2_modal_aa2_rolling_next_picard_map_policy.md`,
+  `run_rank2_modal_aa2_rolling_next_picard_map.sh`: default-off host for one
+  direct Picard successor from the latest valid returned state, with no
+  mixing, retry or automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -657,8 +662,8 @@ rejected. See [current_result.md](current_result.md).
 
 The fixed-rank-two study also remains unconverged. Its latest shifted rolling
 AA(2) proposal has now been evaluated exactly once. The map is valid, but
-$R_L$ and $R_a$ fail the declared gate; no retry or successor has been
-prepared or started.
+$R_L$ and $R_a$ fail the declared gate. One direct Picard successor is now
+prepared default-off; it has not been started.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map
