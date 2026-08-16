@@ -128,5 +128,13 @@ and therefore still says `PREPARED_NOT_RUN`; the logs and
 This is one valid evaluation of the stated fixed rank-two discrete map. It
 does not meet the stopping rule and does not establish asymptotic convergence,
 stability, contraction, convergence order, Anderson superiority, rank
-adequacy or physical accuracy. No retry, successor proposal, AA(2) stage or
-successor map was started.
+adequacy or physical accuracy. No retry or successor map was started as part
+of that evaluation.
+
+## Subsequent offline proposal
+
+The latest three valid fixed-rank maps, including this one, were later used
+once to materialize a standard AA(2) proposal. That separate no-Dragon stage
+is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; it created no stopping defect and
+prepared no map host. See
+[rank2_modal_aa2_candidate_result.md](rank2_modal_aa2_candidate_result.md).

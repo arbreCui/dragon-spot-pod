@@ -125,6 +125,11 @@ generic, default-off continuation host.
   map from that proposal, with no retry or automatic successor.
 - `rank2_modal_aa1_rolling_next_map_result.md`: independently audited result
   from the single authorized XRP-carrier map.
+- `rank2_modal_aa2_candidate_inputs.tsv`,
+  `run_rank2_modal_aa2_candidate.sh`,
+  `rank2_modal_aa2_candidate_result.md`: one standard AA(2) proposal from the
+  latest three real fixed-rank maps, materialized offline with the latest
+  `AA2-RAW-FLUX` carrier and no new map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -542,8 +547,26 @@ receipt pass. The result is `VALID_NOT_MET`:
 
 Only \(R_\rho\) passes `5.0e-7`; leakage is still the dominant failure. The
 cross-input trend is mixed and is not a convergence factor or monotonicity
-claim. No retry, successor proposal, AA(2) stage or successor map was started; see
+claim. No retry or successor map was started; see
 [rank2_modal_aa1_rolling_next_map_result.md](rank2_modal_aa1_rolling_next_map_result.md).
+
+Those three latest valid map residuals then define the standard AA(2)
+proposal
+
+\[
+x_{\mathrm{AA2}}=
+0.7766427453x_{\mathrm{next}}^+
+-0.5452141528x_{\mathrm{roll}}^+
++0.7685714076x_{\mathrm{roll2}}^+.
+\]
+
+The exact two-by-two system is finite with positive determinant. No condition
+threshold, pseudoinverse, nonnegativity constraint or fallback was used. The
+independent checker passes exact publication, latest returned carrier and
+8880/8880 positive reconstructions. The result is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon, map, stopping defect or map
+host was produced. See
+[rank2_modal_aa2_candidate_result.md](rank2_modal_aa2_candidate_result.md).
 
 ## Current boundary
 
@@ -566,9 +589,10 @@ local and Git-ignored.
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
-The separate fixed-rank-two AA(1) study also remains unconverged. Its latest
-XRP-carrier map is valid, but $R_L$ and $R_a$ still fail the declared gate.
-No retry, successor proposal, AA(2) stage or further map has been started.
+The fixed-rank-two study also remains unconverged. Its latest XRP-carrier map
+is valid, but $R_L$ and $R_a$ still fail the declared gate. The subsequent
+standard AA(2) state above is only an evaluated-history proposal; no further
+map or stopping defect has been produced.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

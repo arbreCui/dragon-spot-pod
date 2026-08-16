@@ -473,6 +473,25 @@ $$
 Only $R_\rho$ meets `5.0e-7`; leakage remains the dominant failure. Relative
 to the preceding different-parent map, $R_L$ rose about 15.39% while $R_a$
 fell about 46.52% but still failed. This mixed comparison is not a convergence
-factor or monotone-convergence claim. No retry, successor proposal, AA(2)
-stage or successor map was started; see
+factor or monotone-convergence claim. No retry or successor map was started;
+see
 [validation/iterative/rank2_modal_aa1_rolling_next_map_result.md](validation/iterative/rank2_modal_aa1_rolling_next_map_result.md).
+
+The latest three valid map residuals were then used once in the same
+Gram-height metric to materialize the standard AA(2) proposal
+
+$$
+x_{mathrm{AA2}}=
+0.7766427453x_{mathrm{next}}^+
+-0.5452141528x_{mathrm{roll}}^+
++0.7685714076x_{mathrm{roll2}}^+.
+$$
+
+The finite two-by-two system has strictly positive determinant. No condition
+threshold, regularization, pseudoinverse, nonnegativity constraint or fallback
+was used; the negative coefficient is the unmodified standard solution.
+Independent checks pass exact publication, the latest `AA2-RAW-FLUX` carrier
+and 8880/8880 positive reconstructions. This is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map or stopping defect was
+produced, and no map host was prepared. See
+[validation/iterative/rank2_modal_aa2_candidate_result.md](validation/iterative/rank2_modal_aa2_candidate_result.md).

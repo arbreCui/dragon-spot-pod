@@ -304,8 +304,27 @@ three-component gate gives
 so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
 remains the dominant failure. The mixed comparison with the preceding
 different-parent map is not a convergence factor or monotonicity evidence.
-No retry, successor proposal, AA(2) stage or successor map was started; see
+No retry or successor map was started; see
 [../validation/iterative/rank2_modal_aa1_rolling_next_map_result.md](../validation/iterative/rank2_modal_aa1_rolling_next_map_result.md).
+
+The latest three valid fixed-rank map residuals were subsequently used in one
+standard, unregularized AA(2) solve in the unchanged Gram-height metric. It
+materialized
+
+\[
+x_{\mathrm{AA2}}=
+0.7766427453x_{\mathrm{next}}^+
+-0.5452141528x_{\mathrm{roll}}^+
++0.7685714076x_{\mathrm{roll2}}^+.
+\]
+
+The two-by-two determinant is finite and strictly positive. No condition
+threshold, pseudoinverse, nonnegativity constraint or lower-depth fallback was
+used. The independent checker passes fixed rank two, exact publication,
+latest returned carrier and 8880/8880 positive reconstructions. The result is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon, map, stopping defect or map
+host was produced. See
+[../validation/iterative/rank2_modal_aa2_candidate_result.md](../validation/iterative/rank2_modal_aa2_candidate_result.md).
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
