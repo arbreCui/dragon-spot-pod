@@ -19,6 +19,9 @@ u_manifest = (
 consecutive_manifest = (
     ITERATIVE / "rank2_modal_aa1_consecutive_candidate_inputs.tsv"
 ).read_text()
+latest_manifest = (
+    ITERATIVE / "rank2_latest_modal_aa1_candidate_inputs.tsv"
+).read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_candidate_inputs.tsv"
 ).read_text()
@@ -39,6 +42,9 @@ u_runner = (
 ).read_text()
 consecutive_runner = (
     ITERATIVE / "run_rank2_modal_aa1_consecutive_candidate.sh"
+).read_text()
+latest_runner = (
+    ITERATIVE / "run_rank2_latest_modal_aa1_candidate.sh"
 ).read_text()
 post_runner = (
     ITERATIVE / "run_rank2_modal_aa1_post_candidate.sh"
@@ -122,6 +128,28 @@ require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in consecutive_rows),
         "consecutive manifest path escapes the repository")
+
+latest_rows = [line.split() for line in latest_manifest.splitlines()
+               if line.strip() and not line.startswith("#")]
+latest_roles = ("x2", "x3", "x4", "x4_snapshots", "basis_reference")
+require(latest_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-modal-aa1-candidate-inputs-v1",
+        "latest manifest version changed")
+require(tuple(row[0] for row in latest_rows) == latest_roles,
+        "latest manifest roles changed")
+require(all(len(row) == 3 for row in latest_rows),
+        "latest manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in latest_rows),
+        "latest manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in latest_rows),
+        "latest manifest path escapes the repository")
+require(latest_rows[2][1] ==
+        "ee50a8cb438aba8bb36a30613975d92bdc93528b070bd61d1a43f2d17e53cc08",
+        "latest x4 AX changed")
+require(latest_rows[3][1] ==
+        "4b5deac64ec6ab50cd9c1c7a9e868f824bb2078895492eeb56c95863bd85e87a",
+        "latest x4 snapshots changed")
 
 post_rows = [line.split() for line in post_manifest.splitlines()
              if line.strip() and not line.startswith("#")]
@@ -286,6 +314,15 @@ for token in (
 ):
     require(token in builder,
             f"consecutive builder contract missing: {token}")
+for token in (
+    "--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap",
+    "consecutive_returned_mode=.true.",
+    "call load_state(trim(path(1)),x0,'x2 returned')",
+    "carrier_marker='X4-RAW-FLUX'",
+    "report_prefix='RANK2-LATEST-AA1'",
+):
+    require(token in builder,
+            f"latest builder contract missing: {token}")
 
 for token in (
     "expected_a=previous_weight*x1%coordinates+beta*x2%coordinates",
@@ -348,6 +385,16 @@ for token in (
 ):
     require(token in checker,
             f"consecutive checker contract missing: {token}")
+for token in (
+    "--consecutive-returned x2 x3 x4",
+    "consecutive_returned_mode=.true.",
+    "call load_state(trim(path(1)),1,x0,'X2 RETURNED')",
+    "proposal_carrier='X4-RAW-FLUX'",
+    "call validate_input_snapshot(trim(path(4)),x1,x2,'X3','X4')",
+    "report_prefix='RANK2-LATEST-AA1'",
+):
+    require(token in checker,
+            f"latest checker contract missing: {token}")
 for token in (
     "--post-aa1 x2 x3 aa1 aa1p",
     "post_aa1_mode=.true.",
@@ -476,6 +523,29 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", consecutive_runner),
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
+    "rank2_latest_modal_aa1_candidate_inputs.tsv",
+    "--consecutive-returned",
+    "proposal_axial.xsm",
+    "proposal_snapshots.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(name in latest_runner, f"latest runner binding missing: {name}")
+latest_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", latest_runner
+)
+require(latest_expected == [
+    "0c7d94c9df4b1a7f7f94b8a9d54eb51aacfcead8ab34d5f288c85351b1c0ab9d",
+    "b5d03cb519ce54f0ade469288f70a50e303bb6a7bd7d4396c04558d38ffd108b",
+], "latest output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", latest_runner),
+        "latest runner retry loops are forbidden")
+require("spot-rank2-latest-modal-aa1-candidate" in
+        (ROOT / "Makefile").read_text(), "latest Make target is missing")
+
+for name in (
+    "build_rank2_modal_aa1_candidate.f90",
+    "check_rank2_modal_aa1_candidate.f90",
     "rank2_modal_aa1_post_candidate_inputs.tsv",
     "--post-aa1 x2.xsm x3.xsm aa1.xsm aa1p.xsm",
     "proposal_axial.xsm",
@@ -539,11 +609,11 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
         "rolling-next-AA1 runner retry loops are forbidden")
 
 combined = "\n".join((builder, checker, runner, next_runner,
-                       u_runner, consecutive_runner, post_runner,
+                       u_runner, consecutive_runner, latest_runner, post_runner,
                        rolling_runner, rolling_next_runner)).lower()
 for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: seven hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: eight hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

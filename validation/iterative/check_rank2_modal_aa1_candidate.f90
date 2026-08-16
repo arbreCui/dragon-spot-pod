@@ -21,6 +21,8 @@ program check_rank2_modal_aa1_candidate
   !     x2 x2p x2p_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive x1_pub x2 x3 \
   !     x3_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --consecutive-returned x2 x3 x4 \
+  !     x4_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -70,6 +72,7 @@ program check_rank2_modal_aa1_candidate
   integer :: argument_count,i,min_group,min_snapshot,min_region
   logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
   logical :: rolling_next_mode,rolling_aa2_next_mode,consecutive_mode
+  logical :: consecutive_returned_mode
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
   character(len=2) :: previous_output,latest_output
@@ -82,6 +85,7 @@ program check_rank2_modal_aa1_candidate
   rolling_next_mode=.false.
   rolling_aa2_next_mode=.false.
   consecutive_mode=.false.
+  consecutive_returned_mode=.false.
   if (argument_count == 11) then
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--rolling-aa2-next') then
@@ -123,9 +127,14 @@ program check_rank2_modal_aa1_candidate
     enddo
   else if (argument_count == 8) then
     call get_command_argument(1,mode_argument)
-    if (trim(mode_argument) /= '--consecutive') &
-      call fail('EIGHT ARGUMENTS REQUIRE LEADING --CONSECUTIVE.')
-    consecutive_mode=.true.
+    if (trim(mode_argument) == '--consecutive') then
+      consecutive_mode=.true.
+    else if (trim(mode_argument) == '--consecutive-returned') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+    else
+      call fail('EIGHT ARGUMENTS REQUIRE A CONSECUTIVE MODE.')
+    endif
     do i=1,7
       call get_command_argument(i+1,path(i))
       if (len_trim(path(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
@@ -155,7 +164,13 @@ program check_rank2_modal_aa1_candidate
   previous_output='X1'
   latest_output='X2'
   proposal_carrier='X2-RAW-FLUX'
-  if (consecutive_mode) then
+  if (consecutive_returned_mode) then
+    report_prefix='RANK2-LATEST-AA1'
+    previous_output='X3'
+    latest_output='X4'
+    proposal_carrier='X4-RAW-FLUX'
+    call load_state(trim(path(1)),1,x0,'X2 RETURNED')
+  else if (consecutive_mode) then
     report_prefix='RANK2-CONSECUTIVE-AA1'
     previous_output='X2'
     latest_output='X3'
@@ -172,8 +187,11 @@ program check_rank2_modal_aa1_candidate
   call compare_fixed_bundle(x0,x2,'X0/X2')
   call compare_fixed_bundle(x0,proposal,'X0/PROPOSAL')
   call check_basis_reference(trim(path(5)),proposal)
-  if (consecutive_mode) &
+  if (consecutive_returned_mode) then
+    call validate_input_snapshot(trim(path(4)),x1,x2,'X3','X4')
+  else if (consecutive_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'X2','X3')
+  endif
 
   call modal_history_geometry(x0,x1,x2,update0_sq,update1_sq, &
     update_dot)

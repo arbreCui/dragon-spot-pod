@@ -39,9 +39,10 @@ program build_rank2_modal_aa1_candidate
   real(real32) :: keff_public,projected
   real(real64), allocatable :: candidate_a(:),candidate_l(:)
   real(real32), allocatable :: published_l(:)
-  logical :: consecutive_mode
+  logical :: consecutive_mode,consecutive_returned_mode
 
   consecutive_mode=.false.
+  consecutive_returned_mode=.false.
   argument_offset=0
   if (command_argument_count() == 10) then
     call get_command_argument(1,mode)
@@ -72,9 +73,14 @@ program build_rank2_modal_aa1_candidate
     stop
   else if (command_argument_count() == 7) then
     call get_command_argument(1,mode)
-    if (trim(mode) /= '--consecutive') &
-      error stop 'seven-argument mode requires --consecutive'
-    consecutive_mode=.true.
+    if (trim(mode) == '--consecutive') then
+      consecutive_mode=.true.
+    else if (trim(mode) == '--consecutive-returned') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+    else
+      error stop 'seven-argument mode requires a consecutive mode'
+    endif
     argument_offset=1
   else if (command_argument_count() /= 6) then
     error stop 'expected x0 x1 x2 x2_snap out_ax out_snap or '// &
@@ -89,7 +95,8 @@ program build_rank2_modal_aa1_candidate
       'out_ax out_snap or '// &
       '--rolling-aa2-next x0 x0p x1 x1p x2 x2p x2p_snap '// &
       'out_ax out_snap or '// &
-      '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap'
+      '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
+      '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap'
   endif
   do i=1,6
     call get_command_argument(i+argument_offset,path(i))
@@ -105,7 +112,13 @@ program build_rank2_modal_aa1_candidate
   previous_output='X1'
   latest_output='X2'
   carrier_marker='X2-RAW-FLUX'
-  if (consecutive_mode) then
+  if (consecutive_returned_mode) then
+    report_prefix='RANK2-LATEST-AA1'
+    previous_output='X3'
+    latest_output='X4'
+    carrier_marker='X4-RAW-FLUX'
+    call load_state(trim(path(1)),x0,'x2 returned')
+  else if (consecutive_mode) then
     report_prefix='RANK2-CONSECUTIVE-AA1'
     previous_output='X2'
     latest_output='X3'

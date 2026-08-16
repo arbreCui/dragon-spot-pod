@@ -1,0 +1,6 @@
+# spot-rank2-latest-modal-aa1-candidate-inputs-v1
+x2	21e5f4e8660020aee9509a656993c45049deb9a01029d86e63801432c948ab67	validation/artifacts/iterative-rank2-modal-aa2-rolling-next-map/candidate_axial.xsm
+x3	154c707c0f21a1241fad0c887486867e9953af794fec0aa883220d669de74651	validation/artifacts/iterative-rank2-modal-aa2-rolling-next-picard-map/candidate_axial.xsm
+x4	ee50a8cb438aba8bb36a30613975d92bdc93528b070bd61d1a43f2d17e53cc08	validation/artifacts/iterative-rank2-latest-picard-next-map/candidate_axial.xsm
+x4_snapshots	4b5deac64ec6ab50cd9c1c7a9e868f824bb2078895492eeb56c95863bd85e87a	validation/artifacts/iterative-rank2-latest-picard-next-map/candidate_snapshots.xsm
+basis_reference	2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8	validation/artifacts/iterative-rank2-basis/rank2_basis.xsm
