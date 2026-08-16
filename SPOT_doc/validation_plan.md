@@ -289,6 +289,14 @@ the fixed rank-two publication, complete latest `XRP-RAW-FLUX` carrier, true
 defect, map or convergence conclusion. See
 [../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).
 
+A dedicated host is now prepared, but remains default-off, for exactly one
+evaluation of this proposal. It requires the hash-locked `XRP-RAW-FLUX`
+carrier and keeps the fixed rank-two basis, original physical decks and
+`5.0e-7` tolerance. Activation permits one attempt with no retry and starts
+no successor proposal, AA(2) or map. Preparing it performed no Dragon
+calculation; see
+[../validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md](../validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated

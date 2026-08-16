@@ -119,6 +119,10 @@ generic, default-off continuation host.
   `rank2_modal_aa1_rolling_next_candidate_result.md`: next standard rolling
   AA(1) proposal from the latest two real maps, with the complete
   `XRP-RAW-FLUX` carrier and no new map.
+- `rank2_modal_aa1_rolling_next_map_parent.tsv`,
+  `rank2_modal_aa1_rolling_next_map_policy.md`,
+  `run_rank2_modal_aa1_rolling_next_map.sh`: default-off host for exactly one
+  map from that proposal, with no retry or automatic successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -522,6 +526,13 @@ checker passes exact publication, the true
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no stopping defect or convergence
 conclusion was produced, and no map was started. See
 [rank2_modal_aa1_rolling_next_candidate_result.md](rank2_modal_aa1_rolling_next_candidate_result.md).
+
+Its dedicated one-map host is prepared but remains default-off. It accepts
+only the hash-locked proposal with the exact `XRP-RAW-FLUX` carrier, retains
+the fixed rank-two basis and unchanged `5.0e-7` gate, and permits one attempt
+without retry or automatic successor. No Dragon calculation was performed
+while preparing this host; see
+[rank2_modal_aa1_rolling_next_map_policy.md](rank2_modal_aa1_rolling_next_map_policy.md).
 
 ## Current boundary
 

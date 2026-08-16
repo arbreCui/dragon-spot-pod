@@ -458,3 +458,10 @@ snapshot lifecycle and 8880/8880 positive reconstructions. Its classification
 is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
 convergence conclusion was produced. See
 [validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).
+
+A dedicated one-map host for this proposal is now prepared but default-off.
+It requires the exact `XRP-RAW-FLUX` carrier and keeps the fixed rank-two
+basis, physical decks and `5.0e-7` gate unchanged. Activation permits one
+attempt with no retry and starts no successor proposal, AA(2) or map.
+Preparing the host performed no Dragon calculation; see
+[validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md](validation/iterative/rank2_modal_aa1_rolling_next_map_policy.md).
