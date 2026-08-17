@@ -23,6 +23,10 @@ latest_next_runner_path = (
     ITERATIVE / "run_rank2_latest_modal_aa1_next_map.sh"
 )
 latest_next_runner = latest_next_runner_path.read_text()
+latest_next_recovery_runner_path = (
+    ITERATIVE / "run_rank2_latest_modal_aa1_next_map_recovery.sh"
+)
+latest_next_recovery_runner = latest_next_recovery_runner_path.read_text()
 post_runner_path = ITERATIVE / "run_rank2_modal_aa1_post_map.sh"
 post_runner = post_runner_path.read_text()
 rolling_map_runner_path = (
@@ -75,6 +79,9 @@ latest_next_manifest = (
 ).read_text()
 latest_next_attempt_result = (
     ITERATIVE / "rank2_latest_modal_aa1_next_map_attempt_result.md"
+).read_text()
+latest_next_recovery_policy = (
+    ITERATIVE / "rank2_latest_modal_aa1_next_map_recovery_policy.md"
 ).read_text()
 post_policy = (ITERATIVE / "rank2_modal_aa1_post_map_policy.md").read_text()
 post_manifest = (
@@ -579,6 +586,62 @@ require(latest_next_bad_activation.returncode == 2 and
         "SPOT-RANK2-LATEST-MODAL-AA1-NEXT-MAP ERROR: activation must be "
         "0 or 1.\n",
         "latest-next-map activation gate changed")
+
+require(latest_next_recovery_runner.index(
+        "RUN_RANK2_LATEST_MODAL_AA1_NEXT_MAP_RECOVERY=") <
+        latest_next_recovery_runner.index("ROOT=$("),
+        "recovery default-off gate must precede repository access")
+for token in (
+    "rank2_latest_modal_aa1_next_map_parent.tsv",
+    "rank2_latest_modal_aa1_next_map_recovery_policy.md",
+    "iterative-rank2-latest-modal-aa1-next-candidate",
+    "iterative-rank2-latest-modal-aa1-next-map-attempt",
+    "iterative-rank2-latest-modal-aa1-next-map-recovery",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "INVALID_MAP",
+    "TIMEOUT_BEFORE_TERMINAL",
+    "96f9bc1eacba30a629f35feceb2177d77e3f0bba4ff9ddaaaa03ecb66e5205c3",
+    "-type f",
+    "-type l",
+    "= 11",
+    "= 0",
+    "CHECKER_MODE=proposal-z",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=420",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in latest_next_recovery_runner,
+            f"recovery runner binding missing: {token}")
+require(latest_next_recovery_runner.count("run_continuation_short.sh") == 1,
+        "recovery common host invocation count is not one")
+require("run_bounded_dragon.py" not in latest_next_recovery_runner and
+        "DRAGON_BIN" not in latest_next_recovery_runner,
+        "recovery wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b",
+                      latest_next_recovery_runner),
+        "recovery retry loop is forbidden")
+latest_next_recovery_default_off = subprocess.run(
+    ["sh", str(latest_next_recovery_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_LATEST_MODAL_AA1_NEXT_MAP_RECOVERY": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(latest_next_recovery_default_off.returncode == 0 and
+        latest_next_recovery_default_off.stderr == "" and
+        latest_next_recovery_default_off.stdout ==
+        "SPOT-RANK2-LATEST-MODAL-AA1-NEXT-MAP-RECOVERY DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "recovery default-off terminal changed")
+latest_next_recovery_bad_activation = subprocess.run(
+    ["sh", str(latest_next_recovery_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_LATEST_MODAL_AA1_NEXT_MAP_RECOVERY": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(latest_next_recovery_bad_activation.returncode == 2 and
+        latest_next_recovery_bad_activation.stdout == "" and
+        latest_next_recovery_bad_activation.stderr ==
+        "SPOT-RANK2-LATEST-MODAL-AA1-NEXT-MAP-RECOVERY ERROR: activation "
+        "must be 0 or 1.\n",
+        "recovery activation gate changed")
 bad_activation = subprocess.run(
     ["sh", str(consecutive_runner_path)], cwd=ROOT,
     env={"RUN_RANK2_MODAL_AA1_CONSECUTIVE_MAP": "2"},
@@ -962,7 +1025,7 @@ for token in ("AX_CURRENT := FLU:", "AX_CURRENT := SPOSTATE:",
               "AX_CURRENT := SPOXCONV:", "SNAP := SPOLEAK:"):
     require(token in acompact, f"axial physical chain missing: {token}")
 for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
-             latest_next_runner, post_runner,
+             latest_next_runner, latest_next_recovery_runner, post_runner,
              rolling_map_runner, rolling_next_map_runner, radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
@@ -1031,6 +1094,25 @@ for token in (
 ):
     require(token in latest_next_attempt_result,
             f"latest-next-map attempt boundary missing: {token}")
+
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in latest_next_recovery_policy,
+            f"recovery classification missing: {label}")
+for token in (
+    "PREPARED_NOT_RUN",
+    "INVALID_MAP / TIMEOUT_BEFORE_TERMINAL / Scientific result NONE",
+    "Z-RAW-FLUX",
+    "radial process cap: 120 seconds",
+    "axial process cap: 420 seconds",
+    "external process-safety bounds",
+    "not an estimated runtime",
+    "automatic successor",
+):
+    require(token in latest_next_recovery_policy,
+            f"recovery policy boundary missing: {token}")
+require(re.search(r"no loop,\s+automatic\s+retry",
+                  latest_next_recovery_policy) is not None,
+        "recovery no-retry boundary is missing")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(label in post_policy,

@@ -188,6 +188,11 @@ generic, default-off continuation host.
   no-retry binding and the single `INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`
   attempt from that proposal. The three radial terminals passed, but no
   axial terminal or stopping defect was produced before the 80-second bound.
+- `rank2_latest_modal_aa1_next_map_recovery_policy.md`,
+  `run_rank2_latest_modal_aa1_next_map_recovery.sh`: separately authorized,
+  default-off host prepared for one fresh evaluation of the same map with the
+  established 420-second external axial cap. It reuses no failed staging,
+  changes no physics or stopping criterion, and has not yet been run.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -796,6 +801,13 @@ Its no-Dragon timing census found 14 strict historical completions with the
 identical deck under the existing 420-second cap and CPU records of 132--141
 seconds. Exact wall times are unavailable, so no minimum safe bound or future
 completion is inferred.
+A separately authorized recovery host is now `PREPARED_NOT_RUN`. It will
+repeat the complete radial-plus-axial chain once from the same hash-locked
+proposal, reuse nothing from the invalid attempt, and change only the external
+axial process cap from 80 to 420 seconds. Rank two, basis, decks, equations,
+tolerances, AA(1) coefficient, and the three-component AND gate are unchanged;
+there is no new result yet. See
+[rank2_latest_modal_aa1_next_map_recovery_policy.md](rank2_latest_modal_aa1_next_map_recovery_policy.md).
 
 ## Current boundary
 
