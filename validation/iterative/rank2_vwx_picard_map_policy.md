@@ -27,3 +27,10 @@ The decision is their AND gate. $D_L$ and balances remain diagnostics. The
 120/420 second bounds are external process limits and do not enter the map.
 There is no proposal, coefficient, retry, relaxation, damping, clipping,
 fitted closure, regularization, fallback or automatic successor.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit `8067954`.
+All strict terminals, the independent continued-state audit and the 21-entry
+receipt passed. The result is `VALID_NOT_MET`; no retry was started. See
+[rank2_vwx_picard_map_result.md](rank2_vwx_picard_map_result.md).
