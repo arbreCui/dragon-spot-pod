@@ -183,9 +183,11 @@ generic, default-off continuation host.
   selected standard AA(1) proposal; that publication stage ran no map.
 - `rank2_latest_modal_aa1_next_map_parent.tsv`,
   `rank2_latest_modal_aa1_next_map_policy.md`,
-  `run_rank2_latest_modal_aa1_next_map.sh`: default-off, no-retry binding for
-  exactly one unchanged map from that proposal, with an 80-second axial hard
-  limit; status is `PREPARED_NOT_RUN` until the separately activated run.
+  `run_rank2_latest_modal_aa1_next_map.sh`,
+  `rank2_latest_modal_aa1_next_map_attempt_result.md`: default-off,
+  no-retry binding and the single `INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`
+  attempt from that proposal. The three radial terminals passed, but no
+  axial terminal or stopping defect was produced before the 80-second bound.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -784,10 +786,12 @@ the complete raw AX/snapshot carrier to returned \(z\), and accepts all
 is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: that publication stage ran no
 Dragon or map and produced no stopping defect; see
 [rank2_latest_modal_aa1_next_candidate_result.md](rank2_latest_modal_aa1_next_candidate_result.md).
-A separate default-off, no-retry host is now `PREPARED_NOT_RUN` for exactly
-one unchanged (G_2(Q(t))). It binds `proposal-z`, a 120-second radial bound
-and an 80-second axial bound; see
-[rank2_latest_modal_aa1_next_map_policy.md](rank2_latest_modal_aa1_next_map_policy.md).
+A separate default-off host was then activated exactly once for the unchanged
+$G_2(Q(t))$. The `proposal-z` preflight and all three radial terminals
+passed, but the axial solve produced no strict terminal before its 80-second
+process bound. This is `INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`, not a new
+stopping result or proof of physical nonconvergence. No retry occurred; see
+[rank2_latest_modal_aa1_next_map_attempt_result.md](rank2_latest_modal_aa1_next_map_attempt_result.md).
 
 ## Current boundary
 

@@ -99,3 +99,13 @@ AA(1) superiority, rank adequacy or physical accuracy.
 
 No map host was added or started. If separately authorized, exactly one
 unchanged evaluation \(G_2(Q(t))\) is the next physical test.
+
+## Subsequent authorized attempt
+
+The publication result above remains the frozen no-map stage record. A later
+default-off host was separately activated exactly once. Its `proposal-z`
+preflight and three radial strict terminals passed, but the axial solve did
+not produce a strict terminal before the predeclared 80-second process
+bound. The attempt is `INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`; it created no
+candidate or stopping defect and was not retried. See
+[rank2_latest_modal_aa1_next_map_attempt_result.md](rank2_latest_modal_aa1_next_map_attempt_result.md).

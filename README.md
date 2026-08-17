@@ -655,9 +655,15 @@ verifies the complete returned-\(z\) `Z-RAW-FLUX` AX/snapshot carrier, and
 accepts all 8880 reconstructed points. The nine-entry receipt passes. Its
 classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: the publication
 stage itself ran no Dragon or map and produced no stopping defect. A separate
-default-off, no-retry host is now `PREPARED_NOT_RUN` for exactly one
-unchanged (G_2(Q(t))), using the strict `proposal-z` gate, a 120-second
-radial bound and an 80-second axial bound. See
+default-off host was then activated exactly once for the unchanged
+$G_2(Q(t))$, using the strict `proposal-z` gate, a 120-second radial bound
+and an 80-second axial bound. The carrier preflight and all three radial
+strict terminals passed, but the axial solve produced no strict terminal
+before the 80-second process bound. The classification is therefore
+`INVALID_MAP` with reason `TIMEOUT_BEFORE_TERMINAL`: no candidate, stopping
+defect, or scientific map result exists, and there was no retry. See
 [validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md).
-Its frozen execution policy is
+The attempt record and frozen pre-run policy are
+[validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md](validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md)
+and
 [validation/iterative/rank2_latest_modal_aa1_next_map_policy.md](validation/iterative/rank2_latest_modal_aa1_next_map_policy.md).

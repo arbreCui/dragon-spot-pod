@@ -73,6 +73,9 @@ latest_next_policy = (
 latest_next_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_next_map_parent.tsv"
 ).read_text()
+latest_next_attempt_result = (
+    ITERATIVE / "rank2_latest_modal_aa1_next_map_attempt_result.md"
+).read_text()
 post_policy = (ITERATIVE / "rank2_modal_aa1_post_map_policy.md").read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_map_parent.tsv"
@@ -1018,6 +1021,16 @@ require("PREPARED_NOT_RUN" in latest_next_policy,
         "latest-next-map policy overstates runtime completion")
 require("successor map" in latest_next_policy,
         "latest-next-map automatic-stop boundary is missing")
+for token in (
+    "Classification: `INVALID_MAP`",
+    "Reported reason: `TIMEOUT_BEFORE_TERMINAL`",
+    "Scientific result: `NONE`",
+    "timeout after 80 seconds; no scientific result",
+    "$R_\\rho$, $R_L$, $D_L$, or $R_a$ exists",
+    "no retry or successor map was started",
+):
+    require(token in latest_next_attempt_result,
+            f"latest-next-map attempt boundary missing: {token}")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(label in post_policy,

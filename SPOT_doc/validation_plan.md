@@ -463,6 +463,27 @@ historical direct \(x_4=G_2(x_3)\) map, \(R_a\) falls by about 70.74% while
 convergence nor an AA(1) verdict. No retry or successor was started; see
 [../validation/iterative/rank2_latest_modal_aa1_map_result.md](../validation/iterative/rank2_latest_modal_aa1_map_result.md).
 
+The latest direct and proposal-map residuals were then audited offline with
+the same standard modal Anderson(1) formula. The unique unclipped weight on
+the latest returned state is `0.7766660303945517`, giving
+
+\[
+t=0.2233339696054483x_4+0.7766660303945517z.
+\]
+
+The fixed-rank publication $Q(t)$ was materialized without Dragon. Its
+independent `Z-RAW-FLUX` carrier audit and 8880/8880 positivity preflight
+pass. This offline stage itself generated no stopping defect.
+
+The unchanged $G_2(Q(t))$ was subsequently attempted exactly once with no
+retry. The carrier preflight and all three online radial strict terminals
+passed. The axial solve entered `FLU` but produced no strict terminal before
+the predeclared 80-second process bound, so the only valid classification is
+`INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`. No candidate, $R_\rho$, $R_L$,
+$D_L$, or $R_a$ was published. A process timeout is not evidence of physical
+nonconvergence; see
+[../validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md](../validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md).
+
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used
 only as a parameter-free algebraic reference. Real SPOT has no validated
