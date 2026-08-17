@@ -100,21 +100,23 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-The latest bounded three-step study used the genuine fixed-rank-two map and
-stopped after the promised two real evaluations:
+The latest physical map is valid but not converged:
 
-| map | \(R_\rho\) | \(R_L\) | \(D_L\;[\mathrm{cm}^{-1}]\) | \(R_a\) |
-|---|---:|---:|---:|---:|
-| direct \(v\mapsto w\) | `6.4223492e-8` | `2.6358057e-4` | `3.8619328e-7` | `1.8766784e-6` |
-| standard AA(1) \(y\mapsto G_2(y)\) | `6.4223481e-8` | `3.2381696e-4` | `4.7445064e-7` | `5.4687342e-7` |
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,1.2851779219\times10^{-3},\,
+1.8830178306\times10^{-6}\ \mathrm{cm}^{-1},\,
+4.6074323529\times10^{-7}).
+\]
 
-Both maps are independently valid, but both are `VALID_NOT_MET` at the
-unchanged \(5\times10^{-7}\) AND gate. The final AA(1) map passes
-\(R_\rho\), misses \(R_a\) by about 9.37%, and still misses \(R_L\) by a
-factor of 647.6. Therefore SPOT has a verified physical iteration path, but
-not yet a converged rank-two fixed point. See
-[the direct result](validation/iterative/rank2_qv_picard_map_result.md) and
-[the final AA(1) result](validation/iterative/rank2_qsvw_aa1_map_result.md).
+Only leakage fails the unchanged \(5\times10^{-7}\) AND gate, by a factor of
+2570.36. The next no-Dragon audit used the latest three real map pairs. Its
+unique standard AA(2) state is finite and positive but has one negative
+affine weight, so it fails the all-convex authorization condition frozen
+before the calculation. The weight was not clipped and no fallback map ran.
+SPOT therefore still has a verified physical iteration path but no accepted
+rank-two fixed point. See [the latest real map](validation/iterative/rank2_wxcd_aa1_map_result.md)
+and [the route decision](validation/iterative/rank2_latest_three_route_decision.md).
 
 ## Historical validation record
 

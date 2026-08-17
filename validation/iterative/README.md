@@ -5,33 +5,29 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest bounded three-step follow-up is complete. The existing standard
-sequential full-Gram AA(1), using the real $w\mapsto x$ and $c\mapsto d$
-pairs, uniquely selected
+The latest bounded three-step route audit is complete and ran no Dragon. The
+standard full-Gram AA(2) solution from the real
+$w\mapsto x$, $c\mapsto d$ and $y\mapsto e$ pairs is
 
 \[
-y=1.6615840721007848x-0.66158407210078485d.
+q=0.72283238162036112x
+-0.23768716180315402d
++0.51485478018279296e.
 \]
 
-The candidate was materialized offline and then evaluated exactly once with
-fresh online radial transport. Its real-map defects were
-
-\[
-(R_\rho,R_L,D_L,R_a)=
-(0,\,1.2851779219\times10^{-3},\,
-1.8830178306\times10^{-6}\ \mathrm{cm}^{-1},\,
-4.6074323529\times10^{-7}).
-\]
-
-All strict terminals, independent checks and receipts passed. $R_\rho$ and
-$R_a$ pass, but $R_L$ is 2570.36 times the unchanged tolerance, so the result
-is `VALID_NOT_MET`. No empirical coefficient, retry, fallback or successor
-map was introduced. See
-[rank2_wxcd_aa1_decision_result.md](rank2_wxcd_aa1_decision_result.md),
-[rank2_wxcd_aa1_candidate_result.md](rank2_wxcd_aa1_candidate_result.md), and
-[rank2_wxcd_aa1_map_result.md](rank2_wxcd_aa1_map_result.md).
+The standard solution is unique and publication-positive at 8880/8880
+points, and its leakage screen is favorable, but it is not all-convex. It
+therefore fails the authorization condition frozen before this audit. The
+negative weight was not clipped, no AA(1) or direct fallback was substituted,
+and no proposal or physical map was started. This is
+`OFFLINE_ROUTE_DECISION_COMPLETE_NO_MAP`, not convergence. See
+[rank2_latest_three_route_decision.md](rank2_latest_three_route_decision.md).
 
 ## Active files
+
+- `rank2_latest_three_route_decision.md`: latest three-pair AA(2), AA(1) and
+  direct-route audit; the predeclared AA(2) convexity condition failed, so it
+  freezes a no-proposal, no-map boundary.
 
 - `rank2_wxcd_aa1_decision_result.md`,
   `rank2_wxcd_aa1_candidate_result.md`, `rank2_wxcd_aa1_map_policy.md`,
