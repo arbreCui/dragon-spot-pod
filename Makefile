@@ -55,6 +55,7 @@ all :
 	spot-rank2-latest-modal-aa1-next-map \
 	spot-rank2-latest-modal-aa1-next-map-recovery \
 	spot-rank2-latest-modal-aa1-recovery-map \
+	spot-rank2-qv-picard-map \
 	spot-rank2-modal-aa2-map
 spot-fast :
 	sh validation/run_fast.sh
@@ -122,6 +123,8 @@ spot-rank2-latest-modal-aa1-next-map-recovery :
 	sh validation/iterative/run_rank2_latest_modal_aa1_next_map_recovery.sh
 spot-rank2-latest-modal-aa1-recovery-map :
 	sh validation/iterative/run_rank2_latest_modal_aa1_recovery_map.sh
+spot-rank2-qv-picard-map :
+	sh validation/iterative/run_rank2_qv_picard_map.sh
 spot-rank2-modal-aa2-map :
 	sh validation/iterative/run_rank2_modal_aa2_map.sh
 clean :
