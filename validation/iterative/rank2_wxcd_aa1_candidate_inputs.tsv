@@ -1,0 +1,7 @@
+# spot-rank2-wxcd-aa1-candidate-inputs-v1
+x3	defdee0cf442470eb623ebb83c8bed59b8c20308121951ef0c72073ddba3c243	validation/artifacts/iterative-rank2-qv-picard-map/candidate_axial.xsm
+x4	b693b310ae8f499a869254cee77b1b787f9fa66813c24321dbfe5b00994c7196	validation/artifacts/iterative-rank2-vwx-picard-map/candidate_axial.xsm
+qy_pub	31579eccb0d6668c21c02add7d9dea9d64752fa9f32e20409ca22e3a53bf3255	validation/artifacts/iterative-rank2-vwx-aa1-candidate/proposal_axial.xsm
+z	4e1d50a42353a8d76e3796539746225de6f62857045275847b5049f28e542a48	validation/artifacts/iterative-rank2-vwx-aa1-map/candidate_axial.xsm
+z_snapshots	77c2f98ef473faba9e44c3de1b7c685466264e4ed6e5ddc5b4175bf1623316ca	validation/artifacts/iterative-rank2-vwx-aa1-map/candidate_snapshots.xsm
+basis_reference	2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8	validation/artifacts/iterative-rank2-basis/rank2_basis.xsm

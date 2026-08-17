@@ -61,6 +61,8 @@ all :
 	spot-rank2-vwx-picard-map \
 	spot-rank2-vwx-aa1-candidate \
 	spot-rank2-vwx-aa1-map \
+	spot-rank2-wxcd-aa1-candidate \
+	spot-rank2-wxcd-aa1-map \
 	spot-rank2-modal-aa2-map
 spot-fast :
 	sh validation/run_fast.sh
@@ -140,6 +142,10 @@ spot-rank2-vwx-aa1-candidate :
 	sh validation/iterative/run_rank2_vwx_aa1_candidate.sh
 spot-rank2-vwx-aa1-map :
 	sh validation/iterative/run_rank2_vwx_aa1_map.sh
+spot-rank2-wxcd-aa1-candidate :
+	sh validation/iterative/run_rank2_wxcd_aa1_candidate.sh
+spot-rank2-wxcd-aa1-map :
+	sh validation/iterative/run_rank2_wxcd_aa1_map.sh
 spot-rank2-modal-aa2-map :
 	sh validation/iterative/run_rank2_modal_aa2_map.sh
 clean :
