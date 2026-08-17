@@ -4,6 +4,7 @@ program build_rank2_modal_aa1_candidate
   !
   !   --consecutive-current qs v w w_snap out_ax out_snap
   !   --consecutive-current-aa2-picard q p z z_snap out_ax out_snap
+  !   --consecutive-returned-screened z r s s_snap out_ax out_snap
   !   --current-qpzst-aa2 q p p z s t t_snap out_ax out_snap
   !   --current-stuvvw-aa2 s t u v v w w_snap out_ax out_snap
   !   --current-uvvwxy-aa2 u v v w x y y_snap out_ax out_snap
@@ -53,11 +54,13 @@ program build_rank2_modal_aa1_candidate
   logical :: consecutive_mode,consecutive_returned_mode
   logical :: consecutive_current_mode
   logical :: consecutive_current_aa2_picard_mode
+  logical :: consecutive_returned_screened_mode
 
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
   consecutive_current_mode=.false.
   consecutive_current_aa2_picard_mode=.false.
+  consecutive_returned_screened_mode=.false.
   argument_offset=0
   if (command_argument_count() == 10) then
     call get_command_argument(1,mode)
@@ -109,6 +112,10 @@ program build_rank2_modal_aa1_candidate
     else if (trim(mode) == '--consecutive-returned') then
       consecutive_mode=.true.
       consecutive_returned_mode=.true.
+    else if (trim(mode) == '--consecutive-returned-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_screened_mode=.true.
     else if (trim(mode) == '--consecutive-current') then
       consecutive_mode=.true.
       consecutive_current_mode=.true.
@@ -176,9 +183,15 @@ program build_rank2_modal_aa1_candidate
     carrier_marker='X4-RAW-FLUX'
     call load_state(trim(path(1)),x0,'qs proposal',.true.,'U-RAW-FLUX')
   else if (consecutive_returned_mode) then
-    report_prefix='RANK2-LATEST-AA1'
-    previous_output='X3'
-    latest_output='X4'
+    if (consecutive_returned_screened_mode) then
+      report_prefix='RANK2-CURRENT-ZRS-AA1'
+      previous_output='R'
+      latest_output='S'
+    else
+      report_prefix='RANK2-LATEST-AA1'
+      previous_output='X3'
+      latest_output='X4'
+    endif
     carrier_marker='X4-RAW-FLUX'
     call load_state(trim(path(1)),x0,'x2 returned')
   else if (consecutive_mode) then
@@ -233,18 +246,25 @@ program build_rank2_modal_aa1_candidate
   weight1=1.0_real64-beta
   if ((.not.ieee_is_finite(beta)).or.(.not.ieee_is_finite(weight1))) &
     error stop 'nonfinite modal Anderson weight'
-  if (consecutive_current_aa2_picard_mode) then
+  if (consecutive_current_aa2_picard_mode.or. &
+      consecutive_returned_screened_mode) then
     modal_affine_sq=weight1**2*update_sq(1)+beta**2*update_sq(2)+ &
       2.0_real64*weight1*beta*update_dot
     if ((.not.ieee_is_finite(modal_affine_sq)).or. &
-        (modal_affine_sq < 0.0_real64)) &
-      error stop 'invalid AA2-Picard modal Anderson screen'
+        (modal_affine_sq < 0.0_real64)) then
+      if (consecutive_current_aa2_picard_mode) then
+        error stop 'invalid AA2-Picard modal Anderson screen'
+      else
+        error stop 'invalid screened returned modal Anderson screen'
+      endif
+    endif
     modal_affine_norm=sqrt(modal_affine_sq)
     modal_current_norm=sqrt(update_sq(2))
   endif
 
   if (consecutive_current_mode.or. &
-      consecutive_current_aa2_picard_mode) then
+      consecutive_current_aa2_picard_mode.or. &
+      consecutive_returned_screened_mode) then
     leakage_sq=0.0_real64
     leakage_dot=0.0_real64
     leakage_affine_d=0.0_real64
@@ -277,11 +297,17 @@ program build_rank2_modal_aa1_candidate
       error stop 'invalid current leakage Anderson screen'
     leakage_current_norm=sqrt(leakage_sq(2))
     leakage_affine_norm=sqrt(leakage_affine_sq)
-    if (consecutive_current_aa2_picard_mode) then
+    if (consecutive_current_aa2_picard_mode.or. &
+        consecutive_returned_screened_mode) then
       if ((modal_affine_norm >= modal_current_norm).or. &
           (leakage_affine_norm >= leakage_current_norm).or. &
-          (leakage_affine_d >= leakage_current_d)) &
-        error stop 'AA2-Picard parameter-free direction gate failed'
+          (leakage_affine_d >= leakage_current_d)) then
+        if (consecutive_current_aa2_picard_mode) then
+          error stop 'AA2-Picard parameter-free direction gate failed'
+        else
+          error stop 'screened returned parameter-free direction gate failed'
+        endif
+      endif
     endif
   endif
 
@@ -398,8 +424,10 @@ program build_rank2_modal_aa1_candidate
   write(*,'(A,ES24.16)') trim(report_prefix)//' MIN-PUBLISHED-BA ', &
     min_reconstructed
   if (consecutive_current_mode.or. &
-      consecutive_current_aa2_picard_mode) then
-    if (consecutive_current_aa2_picard_mode) then
+      consecutive_current_aa2_picard_mode.or. &
+      consecutive_returned_screened_mode) then
+    if (consecutive_current_aa2_picard_mode.or. &
+        consecutive_returned_screened_mode) then
       write(*,'(A,ES24.16)') trim(report_prefix)// &
         ' MODAL-AFFINE-L2/CURRENT ', &
         modal_affine_norm/modal_current_norm
@@ -412,7 +440,8 @@ program build_rank2_modal_aa1_candidate
       leakage_affine_d/leakage_current_d
     write(*,'(A)') trim(report_prefix)// &
       ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
-    if (consecutive_current_aa2_picard_mode) &
+    if (consecutive_current_aa2_picard_mode.or. &
+        consecutive_returned_screened_mode) &
       write(*,'(A)') trim(report_prefix)// &
         ' PARAMETER-FREE DIRECTION GATE PASS'
   endif
