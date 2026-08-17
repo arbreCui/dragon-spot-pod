@@ -2,7 +2,7 @@
 
 Date: 2026-08-17
 
-Status: `PREPARED_NOT_RUN`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 The two genuine residuals $e-c_{\mathrm{next}}$ and $f-e$ give the standard
 unregularized full-Gram proposal
@@ -42,3 +42,30 @@ The host may return only `INVALID_MAP`, `TOLERANCE_MET`, or
 `VALID_NOT_MET`.  If valid, the physical residual is $g-q_1$; $g-f$ and
 $g-e$ are not fixed-point residuals.  This batch permits no second physical
 map.
+
+## Frozen result
+
+The stage was activated exactly once from source commit
+`afbd273a52ac55cd2164b465f59eb94d7f110171`.  All four strict terminals,
+the independent `proposal-aa1` checker, and the 21/21 receipt passed.  The
+physical residual $g-q_1$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.422348086676521\times10^{-8},\,
+3.858515151996695\times10^{-4},\,
+5.653419066220522\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.741219010720005\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass the original AND gate; $R_L$ does not.  The map is
+therefore `VALID_NOT_MET`, with no retry or automatic successor.
+
+The next standard AA(1), formed only from $f-e$ and $g-q_1$, fails because
+its leakage direction ratios are `1.0164960989601337` and
+`1.0021076380581850`.  The subsequently permitted standard AA(2), formed
+from the latest three genuine residuals, has direction ratios
+`0.33342566026806181`, `0.47696732762436056`, and
+`0.39981312880450964`, all strictly below one.  Thus
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  No durable proposal is published
+and no second physical map is run.

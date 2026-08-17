@@ -103,36 +103,37 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-After both preceding Anderson directions failed their leakage screens, the
-latest true return was advanced by exactly one direct Picard map:
+The latest parameter-free AA(1) direction was materialized and evaluated
+exactly once:
 
 $$
-f=G_2(e).
+q_1=0.5431706909\,e+0.4568293091\,f,\qquad g=G_2(q_1).
 $$
 
 Its three fresh online radial fixed-source solves, one axial solve, strict
 terminals, independent checker, and 21/21 receipt all passed.  The physical
-residual $f-e$ is
+residual $g-q_1$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(1.2844697\times10^{-7},\,8.3183078\times10^{-4},\,
-1.2187811\times10^{-6}\ \mathrm{cm}^{-1},\,
-1.5051965\times10^{-6}).
+(6.4223481\times10^{-8},\,3.8585152\times10^{-4},\,
+5.6534191\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.7412190\times10^{-7}).
 $$
 
-Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  Relative to
-the preceding genuine residual $e-c_{\mathrm{next}}$, $R_L$, $D_L$, and
-$R_a$ increased by 6.96%, 6.96%, and 18.81%.  This single step is not an
-asymptotic convergence or divergence result.  SPOT still has no accepted
+$R_\rho$ and $R_a$ pass the unchanged $5\times10^{-7}$ AND gate; only
+$R_L$ fails.  Relative to $f-e$, all four defects decreased by 50.00%,
+53.61%, 53.61%, and 88.43%.  This favorable single step is not an
+asymptotic contraction or convergence result.  SPOT still has no accepted
 rank-two fixed point.
 
-The next minimum-order AA(1), using only $e-c_{\mathrm{next}}$ and $f-e$,
-has modal, leakage height-$L_2$, and same-weight maximum-$|D_L|$ ratios
-`0.05942`, `0.19596`, and `0.28717`, all strictly below one.  Thus
-`AA1_DIRECTION_PASS_AA2_SKIPPED`.  This authorizes a direction only; no
-durable next proposal is published and no second map is run.  See
-[the latest map and direction result](validation/iterative/rank2_current_zpcd_e_picard_map_result.md).
+The next AA(1), using only $f-e$ and $g-q_1$, fails its two leakage screens
+at `1.01650` and `1.00211`.  Only then, standard AA(2) on the latest three
+genuine residuals gives direction ratios `0.33343`, `0.47697`, and
+`0.39981`, all strictly below one.  Thus
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  No durable next proposal is
+published and no second map is run.  See
+[the latest map and direction result](validation/iterative/rank2_current_cef_aa1_map_result.md).
 
 ## Historical validation record
 

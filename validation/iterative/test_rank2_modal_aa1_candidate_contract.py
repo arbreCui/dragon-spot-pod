@@ -1237,5 +1237,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: sixteen hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: seventeen hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

@@ -219,6 +219,9 @@ cef_map_policy = (
 cef_map_manifest = (
     ITERATIVE / "rank2_current_cef_aa1_map_parent.tsv"
 ).read_text()
+cef_map_result = (
+    ITERATIVE / "rank2_current_cef_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1655,6 +1658,31 @@ require(cef_default_off.returncode == 0 and
         "SPOT-RANK2-CURRENT-CEF-AA1-MAP DEFAULT-OFF: "
         "no Dragon process started.\n",
         "CEF AA1 map default-off terminal changed")
+for token in (
+    "Map classification: `VALID_NOT_MET`",
+    "afbd273a52ac55cd2164b465f59eb94d7f110171",
+    "6.422348086676521",
+    "3.858515151996695",
+    "5.653419066220522",
+    "1.741219010720005",
+    "21/21 receipt",
+    "-0.054660706649195978",
+    "1.0546607066491960",
+    "1.0164960989601337",
+    "1.0021076380581850",
+    "0.37059923635358261",
+    "0.28970803656130206",
+    "0.33969272708511533",
+    "6.0576152422719129e-26",
+    "0.33342566026806181",
+    "0.47696732762436056",
+    "0.39981312880450964",
+    "AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS",
+    "No durable next",
+    "no second physical map is run",
+):
+    require(token in cef_map_result,
+            f"CEF AA1 map result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
