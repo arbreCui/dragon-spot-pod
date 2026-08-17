@@ -107,23 +107,22 @@ The latest physical map is valid but not converged:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223492\times10^{-8},\,4.8961883\times10^{-4},\,
-7.1738032\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.6606584\times10^{-6}).
+(6.4223481\times10^{-8},\,8.6092982\times10^{-4},\,
+1.2614182\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.8950660\times10^{-6}).
 \]
 
-The latest two genuine returned-state residuals produced the standard
-unregularized AA(1) proposal
-$p=0.8068677617r+0.1931322383s$.  Its modal, leakage-$L_2$, and dimensional
-leakage direction ratios were all below one, so the minimum-order rule
-authorized AA(1) and did not form AA(2).  Exactly one $p^+=G_2(p)$ then ran
-with online radial recomputation.  All strict terminals, independent checks,
-and the 21/21 receipt passed.  Only $R_\rho$ passes the unchanged
-$5\times10^{-7}$ AND gate; $R_L$ and $R_a$ fail.  A comparison with the
-preceding map shows smaller defect magnitudes at this different input, but
-is not a contraction claim.  SPOT therefore has a verified physical
-iteration path but no accepted rank-two fixed point.  See
-[the latest map result](validation/iterative/rank2_current_zrs_aa1_map_result.md).
+Before this map, standard AA(1) on $s-r,t-p$ and, only after its failure,
+standard AA(2) on $r-z,s-r,t-p$ both reduced the modal direction but
+increased the two leakage directions.  Neither candidate was materialized.
+The return $t$ was therefore used unchanged in exactly one direct $G_2(t)$
+with online radial recomputation.  All strict terminals,
+independent checks, and the 21/21 receipt passed.  Only $R_\rho$ passes the
+unchanged $5\times10^{-7}$ AND gate; $R_L$ and $R_a$ fail.  Relative to the
+preceding genuinely adjacent residual, leakage increased by 75.84% while
+$R_a$ decreased by 28.77%, a local direction tradeoff rather than a
+contraction claim.  SPOT has no accepted rank-two fixed point.  See
+[the latest map result](validation/iterative/rank2_current_t_picard_map_result.md).
 
 ## Historical validation record
 
@@ -1088,7 +1087,7 @@ empirical parameter, or successor was started.  See the
 [decision](validation/iterative/rank2_current_xyqz_decision_result.md) and
 [real map](validation/iterative/rank2_current_z_picard_map_result.md).
 
-## Historical direct Picard continuation — immediately preceding window
+## Historical direct Picard continuation — later direct window
 
 The latest two genuine residuals $z-q$ and $r-z$ first defined standard AA(1):
 its modal direction ratio was `0.489069`, but its leakage height-$L_2$ and
@@ -1119,7 +1118,7 @@ No retry, fallback, empirical parameter, or successor was started.  See the
 [decision](validation/iterative/rank2_current_qzzr_decision_result.md) and
 [real map](validation/iterative/rank2_current_zplus_picard_map_result.md).
 
-## Latest returned-state AA(1) continuation
+## Historical returned-state AA(1) continuation
 
 The latest genuine residuals $r-z$ and $s-r$ define standard unregularized
 full-Gram AA(1):
@@ -1153,3 +1152,32 @@ of convergence.  No retry, fallback, AA(2), empirical parameter, or
 successor was started.  See the
 [proposal](validation/iterative/rank2_current_zrs_aa1_candidate_result.md)
 and [real map](validation/iterative/rank2_current_zrs_aa1_map_result.md).
+
+## Latest direct continuation from the AA(1) return
+
+Using the actual residuals $s-r$ and $t-p$, standard AA(1) reduced its modal
+direction to `0.335365` of the current residual but increased the leakage
+height-$L_2$ and $D_L$ directions to `4.52646` and `3.72196`.  Only after
+that failure, standard unregularized AA(2) on $r-z$, $s-r$, and $t-p$ was
+checked; its corresponding ratios were `0.0577970`, `1.70181`, and
+`1.18840`.  It also failed.  Neither affine state was materialized.
+
+The return $t$ was used unchanged in exactly one direct
+$t^+=G_2(t)$.  Three online radial solves, the axial solve, every strict
+terminal, the independent checker, and the 21/21 receipt passed.  The raw
+result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,8.6092982\times10^{-4},\,
+1.2614182\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.8950660\times10^{-6}).
+\]
+
+The unchanged AND gate gives `VALID_NOT_MET`: only $R_\rho$ passes.  Against
+the preceding genuinely adjacent residual $t-p$, $R_L$ and $D_L$ increased
+by 75.84%, while $R_a$ decreased by 28.77%.  This is a local leakage/modal
+tradeoff, not proof of a cycle, convergence, or divergence.  No retry,
+fallback, empirical parameter, or successor was started.  See the
+[decision](validation/iterative/rank2_current_zrspt_decision_result.md) and
+[real map](validation/iterative/rank2_current_t_picard_map_result.md).

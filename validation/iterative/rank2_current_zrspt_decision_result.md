@@ -4,8 +4,8 @@ Date: 2026-08-17
 
 Classification: `READ_ONLY_DIRECTION_DECISION`.
 
-Let $t=G_2(p)$ be the latest valid return from the accepted previous AA(1)
-proposal.  The two latest evaluated fixed-point residuals are
+Let $t=G_2(p)$ be the then-latest valid return from the accepted previous
+AA(1) proposal.  The two then-latest evaluated fixed-point residuals are
 
 \[
 f(r)=s-r,\qquad f(p)=t-p.
@@ -28,7 +28,7 @@ leakage height-$L_2$, and leakage $D_L$ same-weight ratios are
 `3.7219595041373470`.  The two leakage directions increase, so AA(1) fails
 the fixed componentwise direction screen.  It is not materialized.
 
-Only after that failure, the latest three evaluated maps
+Only after that failure, the then-latest three evaluated maps
 
 \[
 z\mapsto r,\qquad r\mapsto s,\qquad p\mapsto t
@@ -56,7 +56,7 @@ and determinant `3.2018040079658118e-25`, strictly positive without a
 condition threshold.  The predicted modal residual squared is
 `1.0503837043351299e-14`.  Relative to $t-p$, the modal, leakage
 height-$L_2$, and leakage $D_L$ direction ratios are
-`0.057797030555672743`, `1.7018125733694425`, and
+`0.057797030555672736`, `1.7018125733694425`, and
 `1.1884041542212693`.  The affine dimensional leakage direction is
 `8.5253774879384046e-7 cm^-1`; it is an authorization diagnostic, not an
 outer stopping defect.  The affine inverse eigenvalue is
@@ -73,6 +73,7 @@ damping, clipping, regularization, pseudoinverse threshold, condition cutoff,
 leakage fit, mixed-unit objective, empirical parameter, Dragon, or transport
 solve.
 
-By the predeclared minimum-order rule, the selected next input is the latest
-valid return $t$ itself, unchanged.  Exactly one direct $G_2(t)$ evaluation
-is permitted before the original three-component AND gate is tested.
+By the predeclared minimum-order rule, the selected next input is the
+then-latest valid return $t$ itself, unchanged.  Exactly one direct
+$G_2(t)$ evaluation is permitted before the original three-component AND
+gate is tested.

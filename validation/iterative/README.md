@@ -5,27 +5,33 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest genuine residuals $r-z$ and $s-r$ produced standard unregularized
-full-Gram AA(1).  Its modal, leakage height-$L_2$, and dimensional leakage
-direction ratios were `0.0551069`, `0.799194`, and `0.787927`; all passed the
-fixed parameter-free screen.  The minimum-order rule therefore did not form
-AA(2).  Exactly one physical map from the AA(1) proposal completed, and every
+Standard AA(1) on $s-r,t-p$ and, only after its failure, standard
+unregularized AA(2) on $r-z,s-r,t-p$ both improved the modal direction but
+increased the two leakage directions.  Neither candidate was materialized.
+The return $t$ was used unchanged in exactly one direct map; every
 strict terminal and independent check passed:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223492\times10^{-8},\,4.8961883\times10^{-4},\,
-7.1738032\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.6606584\times10^{-6}).
+(6.4223481\times10^{-8},\,8.6092982\times10^{-4},\,
+1.2614182\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.8950660\times10^{-6}).
 \]
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ fail.
-The lower defect magnitudes relative to the preceding map are a cross-input
-comparison, not a contraction claim.  No retry, fallback, AA(2), or
-successor was started.  See
-[rank2_current_zrs_aa1_map_result.md](rank2_current_zrs_aa1_map_result.md).
+Leakage increased by 75.84% while the modal defect decreased by 28.77%
+against the preceding genuinely adjacent residual.  This is not an
+asymptotic contraction claim.  No retry or successor was started.  See
+[rank2_current_t_picard_map_result.md](rank2_current_t_picard_map_result.md).
 
 ## Active files
+
+- `rank2_current_zrspt_decision_result.md`,
+  `rank2_current_t_picard_map_parent.tsv`,
+  `rank2_current_t_picard_map_policy.md`,
+  `run_rank2_current_t_picard_map.sh`,
+  `rank2_current_t_picard_map_result.md`: latest minimum-order decision and
+  its single direct, valid but unconverged map from return $t$.
 
 - `rank2_current_zrs_aa1_candidate_inputs.tsv`,
   `run_rank2_current_zrs_aa1_candidate.sh`,
@@ -33,16 +39,16 @@ successor was started.  See
   `rank2_current_zrs_aa1_map_parent.tsv`,
   `rank2_current_zrs_aa1_map_policy.md`,
   `run_rank2_current_zrs_aa1_map.sh`,
-  `rank2_current_zrs_aa1_map_result.md`: latest minimum-order AA(1) decision,
-  materialized proposal, and its single valid but unconverged physical map.
+  `rank2_current_zrs_aa1_map_result.md`: immediately preceding minimum-order
+  AA(1) decision, materialized proposal, and its single valid but unconverged
+  physical map.
 
 - `rank2_current_qzzr_decision_result.md`,
   `rank2_current_zplus_picard_map_parent.tsv`,
   `rank2_current_zplus_picard_map_policy.md`,
   `run_rank2_current_zplus_picard_map.sh`,
-  `rank2_current_zplus_picard_map_result.md`: immediately preceding
-  minimum-order decision and its single direct, valid but unconverged Picard
-  map.
+  `rank2_current_zplus_picard_map_result.md`: historical minimum-order
+  decision and its single direct, valid but unconverged Picard map.
 
 - `rank2_current_xyqz_decision_result.md`,
   `rank2_current_z_picard_map_parent.tsv`,
@@ -1279,7 +1285,7 @@ fallback, empirical parameter, or successor was started.  See
 [rank2_current_xyqz_decision_result.md](rank2_current_xyqz_decision_result.md)
 and [rank2_current_z_picard_map_result.md](rank2_current_z_picard_map_result.md).
 
-## Historical direct Picard continuation — immediately preceding window
+## Historical direct Picard continuation — later direct window
 
 Standard AA(1) from the two latest actual residuals $z-q$ and $r-z$ reduced its
 modal direction to `0.489069` of the current residual but increased the
@@ -1310,7 +1316,7 @@ started.  See
 [rank2_current_qzzr_decision_result.md](rank2_current_qzzr_decision_result.md)
 and [rank2_current_zplus_picard_map_result.md](rank2_current_zplus_picard_map_result.md).
 
-## Latest returned-state AA(1) continuation
+## Historical returned-state AA(1) continuation
 
 The latest genuine residuals $r-z$ and $s-r$ give
 
@@ -1340,3 +1346,29 @@ contraction factor or proof of convergence.  No retry, fallback, AA(2), or
 successor was started.  See
 [rank2_current_zrs_aa1_candidate_result.md](rank2_current_zrs_aa1_candidate_result.md)
 and [rank2_current_zrs_aa1_map_result.md](rank2_current_zrs_aa1_map_result.md).
+
+## Latest direct continuation from the AA(1) return
+
+Standard AA(1) on the actual residuals $s-r,t-p$ gave modal, leakage
+height-$L_2$, and $D_L$ direction ratios `0.335365`, `4.52646`, and
+`3.72196`.  Only after that failure, standard unregularized AA(2) on
+$r-z,s-r,t-p$ gave `0.0577970`, `1.70181`, and `1.18840`.  Both failed the
+fixed leakage screen, so neither affine state was materialized.
+
+The return $t$ was used unchanged in exactly one direct
+$t^+=G_2(t)$.  All strict terminals, the independent checker, and the 21/21
+receipt pass:
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,8.6092982\times10^{-4},\,
+1.2614182\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.8950660\times10^{-6}).
+\]
+
+The unchanged AND gate gives `VALID_NOT_MET`: only $R_\rho$ passes.  Against
+the preceding genuinely adjacent residual, leakage increased by 75.84%
+while $R_a$ decreased by 28.77%.  This local direction tradeoff is not proof
+of a cycle, convergence, or divergence.  No retry or successor was started.
+See [rank2_current_zrspt_decision_result.md](rank2_current_zrspt_decision_result.md)
+and [rank2_current_t_picard_map_result.md](rank2_current_t_picard_map_result.md).
