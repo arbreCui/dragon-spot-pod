@@ -19,6 +19,9 @@ u_manifest = (
 consecutive_manifest = (
     ITERATIVE / "rank2_modal_aa1_consecutive_candidate_inputs.tsv"
 ).read_text()
+ptu_manifest = (
+    ITERATIVE / "rank2_current_ptu_aa1_candidate_inputs.tsv"
+).read_text()
 latest_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_candidate_inputs.tsv"
 ).read_text()
@@ -60,6 +63,9 @@ u_runner = (
 ).read_text()
 consecutive_runner = (
     ITERATIVE / "run_rank2_modal_aa1_consecutive_candidate.sh"
+).read_text()
+ptu_runner = (
+    ITERATIVE / "run_rank2_current_ptu_aa1_candidate.sh"
 ).read_text()
 latest_runner = (
     ITERATIVE / "run_rank2_latest_modal_aa1_candidate.sh"
@@ -158,6 +164,22 @@ require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in consecutive_rows),
         "consecutive manifest path escapes the repository")
+
+ptu_rows = [line.split() for line in ptu_manifest.splitlines()
+            if line.strip() and not line.startswith("#")]
+ptu_roles = ("p", "t", "u", "u_snapshots", "basis_reference")
+require(ptu_manifest.splitlines()[0] ==
+        "# spot-rank2-current-ptu-aa1-candidate-inputs-v1",
+        "PTU manifest version changed")
+require(tuple(row[0] for row in ptu_rows) == ptu_roles,
+        "PTU manifest roles changed")
+require(all(len(row) == 3 for row in ptu_rows),
+        "PTU manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in ptu_rows),
+        "PTU manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in ptu_rows),
+        "PTU manifest path escapes the repository")
 
 latest_rows = [line.split() for line in latest_manifest.splitlines()
                if line.strip() and not line.startswith("#")]
@@ -735,6 +757,34 @@ require(consecutive_expected == [
 require(not re.search(r"(?m)^\s*(?:while|until)\b", consecutive_runner),
         "consecutive runner retry loops are forbidden")
 
+for token in (
+    "--consecutive-ptu-screened",
+    "RANK2-CURRENT-PTU-AA1",
+    "X4-RAW-FLUX",
+    "PARAMETER-FREE DIRECTION GATE PASS",
+):
+    require(token in builder, f"PTU builder contract missing: {token}")
+    require(token in checker, f"PTU checker contract missing: {token}")
+for token in (
+    "rank2_current_ptu_aa1_candidate_inputs.tsv",
+    "--consecutive-ptu-screened",
+    "p.xsm t.xsm u.xsm us.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(token in ptu_runner, f"PTU runner binding missing: {token}")
+ptu_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", ptu_runner
+)
+require(ptu_expected == [
+    "75dd254844b001596f3e57e6aad373e6bdec7aa84958e79b9111c555e93556cf",
+    "169be7e8f17e7b1985b65ae2522966bbba0768febadb2a031f0e0a860e0a11fd",
+], "PTU output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", ptu_runner),
+        "PTU runner retry loops are forbidden")
+require("spot-rank2-current-ptu-aa1-candidate" in
+        (ROOT / "Makefile").read_text(), "PTU Make target is missing")
+
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
@@ -957,7 +1007,7 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
         "rolling-next-AA1 runner retry loops are forbidden")
 
 combined = "\n".join((builder, checker, runner, next_runner,
-                       u_runner, consecutive_runner, latest_runner,
+                       u_runner, consecutive_runner, ptu_runner, latest_runner,
                        latest_next_runner, recovery_runner, qv_runner,
                        qsvw_runner,
                        post_runner,
@@ -966,5 +1016,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: twelve hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: thirteen hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

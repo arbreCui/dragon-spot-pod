@@ -103,29 +103,7 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-The latest physical map is valid but not converged:
-
-\[
-(R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,8.6092982\times10^{-4},\,
-1.2614182\times10^{-6}\ \mathrm{cm}^{-1},\,
-1.8950660\times10^{-6}).
-\]
-
-Before this map, standard AA(1) on $s-r,t-p$ and, only after its failure,
-standard AA(2) on $r-z,s-r,t-p$ both reduced the modal direction but
-increased the two leakage directions.  Neither candidate was materialized.
-The return $t$ was therefore used unchanged in exactly one direct $G_2(t)$
-with online radial recomputation.  All strict terminals,
-independent checks, and the 21/21 receipt passed.  Only $R_\rho$ passes the
-unchanged $5\times10^{-7}$ AND gate; $R_L$ and $R_a$ fail.  Relative to the
-preceding genuinely adjacent residual, leakage increased by 75.84% while
-$R_a$ decreased by 28.77%, a local direction tradeoff rather than a
-contraction claim.  SPOT has no accepted rank-two fixed point.  See
-[the latest map result](validation/iterative/rank2_current_t_picard_map_result.md).
-
-The next minimum-order screen is complete.  The latest actual residuals
-$t-p$ and $u-t$ give standard full-Gram AA(1)
+The latest actual residuals $t-p$ and $u-t$ give standard full-Gram AA(1)
 
 \[
 q=0.4154615501\,t+0.5845384499\,u.
@@ -133,11 +111,25 @@ q=0.4154615501\,t+0.5845384499\,u.
 
 Its modal, leakage height-$L_2$, and $D_L$ direction ratios are
 `0.09230435`, `0.66391213`, and `0.56107589`; all three pass without a
-fitted coefficient or tuned empirical threshold.  AA(2) is therefore
-skipped.  The proposal
-is materialized and independently verified, but it is not yet a physical
-map or convergence result.  Exactly one default-off $G_2(q)$ stage is
-prepared; no Dragon process has been started for it.
+fitted coefficient or tuned empirical threshold, so AA(2) is skipped.  The
+verified proposal was evaluated exactly once with online radial
+recomputation.  Every strict terminal, independent check, and the 21/21
+receipt passed:
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.9874274\times10^{-4},\,
+5.8423029\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.4222472\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ now pass the unchanged $5\times10^{-7}$ AND gate;
+$R_L$ remains `797.485` times its threshold.  Against the preceding
+evaluated residual, the three nonzero defect magnitudes fell by 53.68%,
+53.68%, and 87.22%.  Because the inputs differ, this is a useful local
+accelerated step, not a contraction factor.  SPOT still has no accepted
+rank-two fixed point.  No retry or successor was started.  See
+[the latest map result](validation/iterative/rank2_current_ptu_aa1_map_result.md).
 
 ## Historical validation record
 
@@ -1168,7 +1160,7 @@ successor was started.  See the
 [proposal](validation/iterative/rank2_current_zrs_aa1_candidate_result.md)
 and [real map](validation/iterative/rank2_current_zrs_aa1_map_result.md).
 
-## Latest direct continuation from the AA(1) return
+## Historical direct continuation from the AA(1) return
 
 Using the actual residuals $s-r$ and $t-p$, standard AA(1) reduced its modal
 direction to `0.335365` of the current residual but increased the leakage

@@ -4,7 +4,7 @@ Date: 2026-08-17
 
 Classification: `AA1_DIRECTION_PASS_AA2_SKIPPED`.
 
-Let (t=G_2(p)) and (u=G_2(t)).  Hash and raw-defect checks establish the
+Let $t=G_2(p)$ and $u=G_2(t)$.  Hash and raw-defect checks establish the
 two latest actual map residuals
 
 \[
@@ -46,6 +46,6 @@ or empirical coefficient.
 
 This is an offline direction decision only.  It does not establish a fixed
 point.  The sole authorized continuation is to materialize $q$, verify its
-publication and latest-(u) raw carrier independently, and then evaluate at
+publication and the latest $u$ raw carrier independently, and then evaluate at
 most one fresh physical map $G_2(q)$ before applying the original
 three-component AND gate.

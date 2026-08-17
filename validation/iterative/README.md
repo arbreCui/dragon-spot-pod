@@ -5,27 +5,7 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-Standard AA(1) on $s-r,t-p$ and, only after its failure, standard
-unregularized AA(2) on $r-z,s-r,t-p$ both improved the modal direction but
-increased the two leakage directions.  Neither candidate was materialized.
-The return $t$ was used unchanged in exactly one direct map; every
-strict terminal and independent check passed:
-
-\[
-(R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,8.6092982\times10^{-4},\,
-1.2614182\times10^{-6}\ \mathrm{cm}^{-1},\,
-1.8950660\times10^{-6}).
-\]
-
-The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ fail.
-Leakage increased by 75.84% while the modal defect decreased by 28.77%
-against the preceding genuinely adjacent residual.  This is not an
-asymptotic contraction claim.  No retry or successor was started.  See
-[rank2_current_t_picard_map_result.md](rank2_current_t_picard_map_result.md).
-
-The new lowest-order direction check uses the actual residuals $t-p$ and
-$u-t$.  Standard full-Gram AA(1) gives
+The latest actual residuals $t-p$ and $u-t$ give standard full-Gram AA(1)
 
 \[
 q=0.4154615501\,t+0.5845384499\,u,
@@ -33,8 +13,22 @@ q=0.4154615501\,t+0.5845384499\,u,
 
 with modal, leakage height-$L_2$, and $D_L$ direction ratios
 `0.09230435`, `0.66391213`, and `0.56107589`.  All three pass, so AA(2) is
-skipped.  The hash-locked proposal and 9/9 receipt pass independent checks;
-the single $G_2(q)$ stage remains default-off and has not run.
+skipped.  The hash-locked proposal and 9/9 receipt pass independent checks.
+Its single physical map then passed all strict terminals, the independent
+map checker, and the 21/21 receipt:
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.9874274\times10^{-4},\,
+5.8423029\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.4222472\times10^{-7}).
+$$
+
+The result is `VALID_NOT_MET`: $R_\rho$ and $R_a$ pass, but $R_L$ fails.
+All three nonzero defect magnitudes are lower than for the preceding map,
+but the inputs differ, so this is not a contraction claim.  No retry or
+successor was started.  See
+[rank2_current_ptu_aa1_map_result.md](rank2_current_ptu_aa1_map_result.md).
 
 ## Active files
 
@@ -44,14 +38,16 @@ the single $G_2(q)$ stage remains default-off and has not run.
   `rank2_current_ptu_aa1_candidate_result.md`,
   `rank2_current_ptu_aa1_map_parent.tsv`,
   `rank2_current_ptu_aa1_map_policy.md`,
-  `run_rank2_current_ptu_aa1_map.sh`: latest minimum-order AA(1) decision,
-  independently verified proposal, and its one default-off physical map.
+  `run_rank2_current_ptu_aa1_map.sh`,
+  `rank2_current_ptu_aa1_map_result.md`: latest minimum-order AA(1) decision,
+  independently verified proposal, and its one valid but unconverged
+  physical map.
 
 - `rank2_current_zrspt_decision_result.md`,
   `rank2_current_t_picard_map_parent.tsv`,
   `rank2_current_t_picard_map_policy.md`,
   `run_rank2_current_t_picard_map.sh`,
-  `rank2_current_t_picard_map_result.md`: latest minimum-order decision and
+  `rank2_current_t_picard_map_result.md`: preceding minimum-order decision and
   its single direct, valid but unconverged map from return $t$.
 
 - `rank2_current_zrs_aa1_candidate_inputs.tsv`,
@@ -1368,7 +1364,7 @@ successor was started.  See
 [rank2_current_zrs_aa1_candidate_result.md](rank2_current_zrs_aa1_candidate_result.md)
 and [rank2_current_zrs_aa1_map_result.md](rank2_current_zrs_aa1_map_result.md).
 
-## Latest direct continuation from the AA(1) return
+## Historical direct continuation from the AA(1) return
 
 Standard AA(1) on the actual residuals $s-r,t-p$ gave modal, leakage
 height-$L_2$, and $D_L$ direction ratios `0.335365`, `4.52646`, and

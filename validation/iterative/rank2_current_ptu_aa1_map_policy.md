@@ -21,7 +21,7 @@ fresh physical map
 q^+=G_2(q).
 \]
 
-The verified proposal uses the latest returned (u) raw AX and snapshot
+The verified proposal uses the latest returned $u$ raw AX and snapshot
 payloads as carriers.  The unchanged fixed-rank-two host performs three
 online radial fixed-source solves and one axial solve.  The fixed POD basis,
 normalization, physical equations, strict inner terminals, and original
@@ -33,7 +33,7 @@ R_L\leq5\times10^{-7},\qquad
 R_a\leq5\times10^{-7}.
 \]
 
-Dimensional (D_L\,[\mathrm{cm}^{-1}]) is not part of this dimensionless
+Dimensional $D_L\,[\mathrm{cm}^{-1}]$ is not part of this dimensionless
 outer gate.  The 120-second radial and 180-second axial limits are process
 safety bounds, not model or convergence parameters.  One activation permits
 one attempt.  There is no retry, fallback, automatic successor, older-window
@@ -50,3 +50,23 @@ receipt checks pass, the unchanged host assigns exactly one classification:
 
 Preparing and default-off checking this stage runs no Dragon or transport
 calculation and creates no map-result artifact.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`39f075dc1d23b128f7a5b49c2469df7119c8138b`.  All four strict solve
+terminals, the independent `proposal-x4` checker, and the 21/21 receipt
+passed.  The raw result is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.9874274\times10^{-4},\,
+5.8423029\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.4222472\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass the unchanged gate; $R_L$ does not, so the result is
+`VALID_NOT_MET`.  Relative to the preceding residual, all three nonzero
+defect magnitudes decreased, but this cross-input observation is not a
+contraction claim.  No retry, fallback, or successor was started.  See
+[rank2_current_ptu_aa1_map_result.md](rank2_current_ptu_aa1_map_result.md).

@@ -4,7 +4,7 @@ Date: 2026-08-17
 
 Classification: `MATERIALIZED_PROPOSAL_NOT_EVALUATED`.
 
-The latest actual maps are (p\mapsto t) and (t\mapsto u).  Standard
+The latest actual maps are $p\mapsto t$ and $t\mapsto u$.  Standard
 unregularized full-Gram AA(1) gives
 
 \[
@@ -19,13 +19,13 @@ height-$L_2$, and leakage $D_L$ direction ratios are respectively
 passes the fixed parameter-free screen and AA(2) is skipped.
 
 The same weights act on $(a,\rho,L)$.  The affine inverse eigenvalue is
-`0.73399291408231893`; publication gives (k=1.3624110221862793) and
-(\rho=0.73399288739993207).  All 8880 reconstructed points are strictly
+`0.73399291408231893`; publication gives $k=1.3624110221862793$ and
+$\rho=0.73399288739993207$.  All 8880 reconstructed points are strictly
 positive, with minimum `1.7534001289472908e-15`.
 
-The complete latest returned (u) AX/raw-flux and snapshot payloads are the
+The complete latest returned $u$ AX/raw-flux and snapshot payloads are the
 carriers.  `X4-RAW-FLUX` is only the existing protocol marker; the input
-manifest and bitwise checker bind the payload to (u).  The independent
+manifest and bitwise checker bind the payload to $u$.  The independent
 checker reproduced the weights, three direction ratios, REAL64/REAL32
 publication, fixed rank-two bundle, raw carrier, lagged system, and
 positivity.
