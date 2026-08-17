@@ -811,11 +811,43 @@ reproduces the REAL64/REAL32 publication, and accepts 8880/8880 points. The
 convergence decision was produced. See
 [validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md).
 
-## Boundary after the three-step study
+## Latest three-step convergence attempt
 
-No further map is authorized by this result. The leakage defect is still the
-dominant obstacle, while the modal defect is nearly closed. If the study is
-resumed, the first new action should compare the final AA(1) return with its
-direct \(w\) parent without transport. Only after that separate evidence may
-one new map be predeclared. It must not introduce relaxation, clipping,
-fitted leakage weights or a combined empirical norm.
+The new bounded study is complete. First, a read-only comparison froze the
+genuine consecutive direct route. Second, one $x=G_2(w)$ was evaluated with
+fresh online radial transport; it was valid but not converged:
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\,4.5994291504\times10^{-4},\,1.1437675695\times10^{-6}).
+\]
+
+Its leakage defect increased, while its two modal updates were nearly
+opposed (cosine `-0.990028`). The third and final step therefore used the
+unique standard full-Gram AA(1) state
+
+\[
+c=0.37810309349656490w+0.62189690650343510x.
+\]
+
+The coefficient was not fitted or clipped. One fresh $G_2(c)$ passed all
+strict inner terminals, the independent checker and the 21/21 receipt, but
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492191\times10^{-8},\,
+8.0189470417\times10^{-4},\,
+1.1749216355\times10^{-6}\ \mathrm{cm}^{-1},\,
+2.7219350042\times10^{-6}).
+\]
+
+Thus only $R_\rho$ passes the unchanged $5\times10^{-7}$ three-component
+AND gate. The result is `VALID_NOT_MET`: the physical map is valid, but the
+rank-two fixed point has not converged. No retry, fallback, empirical
+coefficient or successor map was started. See the
+[direct result](validation/iterative/rank2_vwx_picard_map_result.md),
+[direction decision](validation/iterative/rank2_vwx_direction_result.md),
+[AA(1) candidate](validation/iterative/rank2_vwx_aa1_candidate_result.md),
+and [final map](validation/iterative/rank2_vwx_aa1_map_result.md).
+
+No further map is authorized by this result.

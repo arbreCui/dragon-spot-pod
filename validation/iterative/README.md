@@ -5,22 +5,36 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest direct \(v\mapsto w\) map and the subsequent standard AA(1) map
-are both independently valid and both `VALID_NOT_MET`. The final raw defects
-are
+The bounded three-step study is complete. One direct $x=G_2(w)$ and one
+standard full-Gram AA(1) $G_2(c)$ were evaluated exactly once, each with
+fresh online radial transport. The final state was
+
+\[
+c=0.37810309349656490w+0.62189690650343510x,
+\]
+
+and its real-map defects were
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,3.2381696\times10^{-4},\,
-4.7445064\times10^{-7},\,5.4687342\times10^{-7}).
+(6.4223492191\times10^{-8},\,8.0189470417\times10^{-4},\,
+1.1749216355\times10^{-6}\ \mathrm{cm}^{-1},\,
+2.7219350042\times10^{-6}).
 \]
 
-The three-step experiment is complete and starts no automatic successor.
-The fixed rank-two basis, online radial recomputation, equations, tolerance
-and three-component AND gate were unchanged; no empirical coefficient was
-introduced.
+All strict terminals, independent checks and receipts passed, but only
+$R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate. The result is
+`VALID_NOT_MET`. No empirical coefficient, retry, fallback or successor map
+was introduced. See [rank2_vwx_picard_map_result.md](rank2_vwx_picard_map_result.md),
+[rank2_vwx_direction_result.md](rank2_vwx_direction_result.md), and
+[rank2_vwx_aa1_map_result.md](rank2_vwx_aa1_map_result.md).
 
 ## Active files
+
+- `rank2_vwx_picard_map_result.md`, `rank2_vwx_direction_result.md`,
+  `rank2_vwx_aa1_candidate_result.md`, `rank2_vwx_aa1_map_policy.md`,
+  `rank2_vwx_aa1_map_result.md`: the completed latest three-step route,
+  parameter-free AA(1) decision and final `VALID_NOT_MET` boundary.
 
 - `check_source_identity.py`: frozen-fission source and returned-source
   identity.
