@@ -46,6 +46,8 @@ all :
 	spot-rank2-current-aa2-candidate \
 	spot-rank2-current-aa2-map \
 	spot-rank2-current-aa2-picard-map \
+	spot-rank2-current-aa2-picard-aa1-candidate \
+	spot-rank2-current-aa2-picard-aa1-map \
 	spot-rank2-modal-aa2-rolling-next-candidate \
 	spot-rank2-modal-aa2-rolling-next-map \
 	spot-rank2-modal-aa2-rolling-next-picard-map \
@@ -115,6 +117,10 @@ spot-rank2-current-aa2-map :
 	sh validation/iterative/run_rank2_current_aa2_map.sh
 spot-rank2-current-aa2-picard-map :
 	sh validation/iterative/run_rank2_current_aa2_picard_map.sh
+spot-rank2-current-aa2-picard-aa1-candidate :
+	sh validation/iterative/run_rank2_current_aa2_picard_aa1_candidate.sh
+spot-rank2-current-aa2-picard-aa1-map :
+	sh validation/iterative/run_rank2_current_aa2_picard_aa1_map.sh
 spot-rank2-modal-aa2-rolling-next-candidate :
 	sh validation/iterative/run_rank2_modal_aa2_rolling_next_candidate.sh
 spot-rank2-modal-aa2-rolling-next-map :
