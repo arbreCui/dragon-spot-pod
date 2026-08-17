@@ -49,3 +49,15 @@ receipt checks pass, the unchanged host assigns exactly one classification:
 
 Preparing and default-off checking this stage runs no Dragon or transport
 calculation and creates no result artifact.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`bd1a37ab9c3d4fbe38544f382769bfee90d4efc5`.  All strict solve terminals,
+the independent `continued` checker, and the 21/21 receipt passed.  The valid
+result is `VALID_NOT_MET`: \(R_\rho\) passes, while \(R_L\) and \(R_a\)
+fail the unchanged gate.  Against the preceding consecutive residual,
+leakage increased while the modal defect decreased; these observed ratios do
+not establish asymptotic contraction.  No retry, fallback, or successor was
+started.  See
+[rank2_current_z_picard_map_result.md](rank2_current_z_picard_map_result.md).

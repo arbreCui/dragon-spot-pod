@@ -10,8 +10,9 @@ The active method is deliberately small:
 - one volume-weighted POD basis, fixed during the iteration;
 - online radial transport at every outer step;
 - one reduced axial solve;
-- direct Picard as the baseline, with standard full-Gram AA(1) formed only
-  from actual map residuals;
+- direct Picard as the baseline, with standard unregularized full-Gram AA(1)
+  and, only when AA(1) fails the fixed direction screen, AA(2) formed from
+  the latest actual map residuals;
 - no fitted closure, relaxation, damping, clipping, flux floor, CMFD
   correction, or empirical coupling coefficient.
 
@@ -104,19 +105,21 @@ The latest physical map is valid but not converged:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(0,\,3.9433305\times10^{-4},\,
-5.7776924\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.7262886\times10^{-6}).
+(6.4223492\times10^{-8},\,8.1007981\times10^{-4},\,
+1.1869124\times10^{-6}\ \mathrm{cm}^{-1},\,
+8.9336792\times10^{-7}).
 \]
 
-This was one map from the latest standard unregularized AA(2) proposal.  All
-strict terminals, independent checks, and the 21/21 receipt passed.  Against
-the preceding evaluated map \(x\mapsto y\), leakage decreased by 36.63% but
-the modal defect increased by 10.28%; this is a cross-input defect comparison,
-not a contraction factor.  Therefore \(R_\rho\) passes while \(R_L\) and
-\(R_a\) fail the unchanged \(5\times10^{-7}\) AND gate.  SPOT has a verified
-physical iteration path but no accepted rank-two fixed point.  See
-[the latest map result](validation/iterative/rank2_current_uvvwxy_aa2_map_result.md).
+This was one direct Picard map from the latest valid return after both
+standard AA(1) and sliding AA(2) failed the fixed leakage-direction screen.
+All strict terminals, independent checks, and the 21/21 receipt passed.
+Against the preceding genuinely consecutive residual, leakage increased by
+105.43% while the modal defect decreased by 67.23%; these observed adjacent
+ratios are not asymptotic contraction factors.  Therefore \(R_\rho\) passes
+while \(R_L\) and \(R_a\) fail the unchanged \(5\times10^{-7}\) AND gate.
+SPOT has a verified physical iteration path but no accepted rank-two fixed
+point.  See
+[the latest map result](validation/iterative/rank2_current_z_picard_map_result.md).
 
 ## Historical validation record
 
@@ -813,7 +816,7 @@ reproduces the REAL64/REAL32 publication, and accepts 8880/8880 points. The
 convergence decision was produced. See
 [validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md).
 
-## Latest three-step convergence attempt
+## Historical three-step convergence attempt
 
 The new bounded study is complete. First, a read-only comparison froze the
 genuine consecutive direct route. Second, one $x=G_2(w)$ was evaluated with
@@ -854,7 +857,7 @@ and [final map](validation/iterative/rank2_vwx_aa1_map_result.md).
 
 That experiment started no automatic successor.
 
-## Latest bounded sequential AA(1) follow-up
+## Historical bounded sequential AA(1) follow-up
 
 The next three-step study reused only existing mathematics and code. A
 no-Dragon audit found that the newest direct modal residual was 2.37980 times
@@ -889,7 +892,7 @@ fallback, empirical coefficient or successor map was started. See the
 
 That result itself authorized no automatic successor.
 
-## Latest parameter-free AA(1) check
+## Historical parameter-free AA(1) check
 
 The next separately declared three-step batch used the genuine consecutive
 maps \(q_{\mathrm{AA2}}\mapsto p\) and \(p\mapsto z\). Standard full-Gram
@@ -920,7 +923,7 @@ fallback, empirical parameter or successor was started. See the
 [candidate](validation/iterative/rank2_current_aa2_picard_aa1_candidate_result.md)
 and [real map](validation/iterative/rank2_current_aa2_picard_aa1_map_result.md).
 
-## Latest minimum-order AA(2) continuation
+## Historical minimum-order AA(2) continuation
 
 The following bounded batch first rejected the newest AA(1): its modal screen
 improved, but the same-weight leakage \(L_2\) and \(D_L\) screens increased to
@@ -953,7 +956,7 @@ empirical parameter or successor was started. See the
 [candidate](validation/iterative/rank2_current_qpzst_aa2_candidate_result.md),
 and [real map](validation/iterative/rank2_current_qpzst_aa2_map_result.md).
 
-## Latest direct Picard check
+## Historical direct Picard check
 
 The newest standard AA(1), using \(s\mapsto t\) and \(u\mapsto v\), reduced
 the modal direction but increased both leakage directions. The sliding
@@ -983,7 +986,7 @@ successor was started. See the
 [decision](validation/iterative/rank2_current_stuv_decision_result.md) and
 [real map](validation/iterative/rank2_current_v_picard_map_result.md).
 
-## Previous chronological AA(2) continuation
+## Historical chronological AA(2) continuation — previous window
 
 The newest consecutive AA(1), from \(u\mapsto v\) and \(v\mapsto w\), was
 rejected because its same-weight leakage directions increased. The latest
@@ -1016,7 +1019,7 @@ fallback, empirical parameter, or successor was started. See the
 [candidate](validation/iterative/rank2_current_stuvvw_aa2_candidate_result.md),
 and [real map](validation/iterative/rank2_current_stuvvw_aa2_map_result.md).
 
-## Latest chronological AA(2) continuation
+## Historical chronological AA(2) continuation — latest AA(2) window
 
 The newest standard AA(1), using the actual map residuals from
 \(v\mapsto w\) and \(x\mapsto y\), was rejected because its leakage
@@ -1051,3 +1054,32 @@ successor was started.  See the
 [decision](validation/iterative/rank2_current_vwxy_decision_result.md),
 [candidate](validation/iterative/rank2_current_uvvwxy_aa2_candidate_result.md),
 and [real map](validation/iterative/rank2_current_uvvwxy_aa2_map_result.md).
+
+## Latest direct Picard continuation
+
+The standard AA(1) direction from \(x\mapsto y,q\mapsto z\) was rejected:
+its leakage height-\(L_2\) and \(D_L\) ratios were `11.1972` and `13.2371`.
+Only then was the latest three-pair standard unregularized AA(2) direction
+checked; its corresponding leakage ratios were `1.28482` and `1.22668`, so
+it was also rejected.  No Anderson proposal was published.
+
+The latest returned state \(z\) was therefore used unchanged in exactly one
+direct \(z^+=G_2(z)\).  Three online radial solves, the axial solve, every
+strict terminal, the independent checker, and the 21/21 receipt passed.  The
+raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,8.1007981\times10^{-4},\,
+1.1869124\times10^{-6}\ \mathrm{cm}^{-1},\,
+8.9336792\times10^{-7}).
+\]
+
+The original AND gate still fails through \(R_L\) and \(R_a\), so the
+classification is `VALID_NOT_MET`.  Against the preceding genuinely
+consecutive residual, leakage increased by 105.43% while \(R_a\) decreased
+by 67.23%.  These adjacent observations show a leakage/modal tradeoff, not
+an asymptotic contraction or divergence proof.  No retry, fallback,
+empirical parameter, or successor was started.  See the
+[decision](validation/iterative/rank2_current_xyqz_decision_result.md) and
+[real map](validation/iterative/rank2_current_z_picard_map_result.md).

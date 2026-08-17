@@ -5,27 +5,33 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest bounded three-step experiment first rejected standard AA(1), then
-selected and materialized the lowest-order admissible unregularized AA(2)
-proposal from the genuine maps \(u\mapsto v\), \(v\mapsto w\), and
-\(x\mapsto y\).  Exactly one fresh map passed every strict terminal and
-independent check:
+The latest bounded three-step experiment rejected standard AA(1) and the
+latest sliding unregularized AA(2) because both increased the two leakage
+directions.  It then used the latest valid return \(z\) unchanged in exactly
+one direct Picard map.  Every strict terminal and independent check passed:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(0,\,3.9433305\times10^{-4},\,
-5.7776924\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.7262886\times10^{-6}).
+(6.4223492\times10^{-8},\,8.1007981\times10^{-4},\,
+1.1869124\times10^{-6}\ \mathrm{cm}^{-1},\,
+8.9336792\times10^{-7}).
 \]
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$
-fail.  Against the preceding evaluated map \(x\mapsto y\), leakage decreased
-by 36.63% but the modal defect increased by 10.28%; this is a cross-input
-defect comparison, not a contraction factor.  No retry or successor was
+fail.  Against the preceding genuinely consecutive residual, leakage
+increased by 105.43% but the modal defect decreased by 67.23%; these observed
+ratios are not asymptotic contraction factors.  No retry or successor was
 started.  See
-[rank2_current_uvvwxy_aa2_map_result.md](rank2_current_uvvwxy_aa2_map_result.md).
+[rank2_current_z_picard_map_result.md](rank2_current_z_picard_map_result.md).
 
 ## Active files
+
+- `rank2_current_xyqz_decision_result.md`,
+  `rank2_current_z_picard_map_parent.tsv`,
+  `rank2_current_z_picard_map_policy.md`,
+  `run_rank2_current_z_picard_map.sh`,
+  `rank2_current_z_picard_map_result.md`: latest minimum-order decision and
+  its single direct, valid but unconverged Picard map.
 
 - `rank2_current_vwxy_decision_result.md`,
   `rank2_current_uvvwxy_aa2_candidate_inputs.tsv`,
@@ -1071,7 +1077,7 @@ did produce a valid rank-2 map, classified `VALID_NOT_MET`. See
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.
 
-## Latest parameter-free AA(1) check
+## Historical parameter-free AA(1) check
 
 The genuine consecutive maps \(q_{\mathrm{AA2}}\mapsto p\) and
 \(p\mapsto z\) define the unique standard full-Gram proposal
@@ -1101,7 +1107,7 @@ fallback, empirical parameter or successor map was started. See
 and
 [rank2_current_aa2_picard_aa1_map_result.md](rank2_current_aa2_picard_aa1_map_result.md).
 
-## Latest minimum-order AA(2) continuation
+## Historical minimum-order AA(2) continuation
 
 The newest standard AA(1) was rejected because its leakage height-\(L_2\) and
 \(D_L\) screens increased by factors `3.27` and `3.95`. The next-lowest-order
@@ -1132,7 +1138,7 @@ successor map was started. See
 [rank2_current_qpzst_aa2_candidate_result.md](rank2_current_qpzst_aa2_candidate_result.md),
 and [rank2_current_qpzst_aa2_map_result.md](rank2_current_qpzst_aa2_map_result.md).
 
-## Latest direct Picard check
+## Historical direct Picard check
 
 The latest standard AA(1) and sliding AA(2) both improved their modal
 directions but worsened the leakage height-\(L_2\) and \(D_L\) directions.
@@ -1159,7 +1165,7 @@ started. See
 [rank2_current_stuv_decision_result.md](rank2_current_stuv_decision_result.md)
 and [rank2_current_v_picard_map_result.md](rank2_current_v_picard_map_result.md).
 
-## Previous chronological AA(2) continuation
+## Historical chronological AA(2) continuation — previous window
 
 Standard AA(1) from the consecutive maps \(u\mapsto v\) and
 \(v\mapsto w\) failed because both same-weight leakage directions increased.
@@ -1192,7 +1198,7 @@ started. See
 [rank2_current_stuvvw_aa2_candidate_result.md](rank2_current_stuvvw_aa2_candidate_result.md),
 and [rank2_current_stuvvw_aa2_map_result.md](rank2_current_stuvvw_aa2_map_result.md).
 
-## Latest chronological AA(2) continuation
+## Historical chronological AA(2) continuation — latest AA(2) window
 
 Standard AA(1) from the latest evaluated pairs \(v\mapsto w\) and
 \(x\mapsto y\) failed because the same-weight leakage height-\(L_2\)
@@ -1225,3 +1231,31 @@ empirical parameter, or successor was started.  See
 [rank2_current_vwxy_decision_result.md](rank2_current_vwxy_decision_result.md),
 [rank2_current_uvvwxy_aa2_candidate_result.md](rank2_current_uvvwxy_aa2_candidate_result.md),
 and [rank2_current_uvvwxy_aa2_map_result.md](rank2_current_uvvwxy_aa2_map_result.md).
+
+## Latest direct Picard continuation
+
+Standard AA(1) from \(x\mapsto y,q\mapsto z\) failed because its leakage
+height-\(L_2\) and \(D_L\) ratios were `11.1972` and `13.2371`.  The latest
+three-pair standard unregularized AA(2) was checked only after that failure;
+its leakage ratios were `1.28482` and `1.22668`, so it also failed.  Neither
+Anderson state was materialized.
+
+The latest returned state \(z\) was therefore used unchanged in exactly one
+direct \(z^+=G_2(z)\).  All strict terminals, the independent continued-state
+checker, and the 21/21 receipt passed, giving
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,8.1007981\times10^{-4},\,
+1.1869124\times10^{-6}\ \mathrm{cm}^{-1},\,
+8.9336792\times10^{-7}).
+\]
+
+The original AND gate fails through \(R_L\) and \(R_a\), hence
+`VALID_NOT_MET`.  Against the preceding genuinely consecutive residual,
+\(R_L\) and dimensional \(D_L\) increased by 105.43%, while \(R_a\)
+decreased by 67.23%.  These adjacent observations show a leakage/modal
+tradeoff, not an asymptotic contraction or divergence proof.  No retry,
+fallback, empirical parameter, or successor was started.  See
+[rank2_current_xyqz_decision_result.md](rank2_current_xyqz_decision_result.md)
+and [rank2_current_z_picard_map_result.md](rank2_current_z_picard_map_result.md).
