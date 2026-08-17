@@ -104,18 +104,19 @@ The latest physical map is valid but not converged:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,4.0362910\times10^{-4},\,
-5.9138983\times10^{-7}\ \mathrm{cm}^{-1},\,
-3.4760357\times10^{-6}).
+(0,\,3.9433305\times10^{-4},\,
+5.7776924\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.7262886\times10^{-6}).
 \]
 
-This was one direct Picard continuation from the preceding valid AA(2)
-return; it introduced no new coefficient or proposal. All strict terminals
-and independent checks passed. Leakage decreased by another 35.15%, but the
-modal defect increased by 64.06%. Therefore \(R_\rho\) passes while
-\(R_L\) and \(R_a\) fail the unchanged \(5\times10^{-7}\) AND gate.
-SPOT has a verified physical iteration path but no accepted rank-two fixed
-point. See [the direct-map result](validation/iterative/rank2_current_aa2_picard_map_result.md).
+This was one map from the latest standard unregularized AA(2) proposal.  All
+strict terminals, independent checks, and the 21/21 receipt passed.  Against
+the preceding evaluated map \(x\mapsto y\), leakage decreased by 36.63% but
+the modal defect increased by 10.28%; this is a cross-input defect comparison,
+not a contraction factor.  Therefore \(R_\rho\) passes while \(R_L\) and
+\(R_a\) fail the unchanged \(5\times10^{-7}\) AND gate.  SPOT has a verified
+physical iteration path but no accepted rank-two fixed point.  See
+[the latest map result](validation/iterative/rank2_current_uvvwxy_aa2_map_result.md).
 
 ## Historical validation record
 
@@ -982,7 +983,7 @@ successor was started. See the
 [decision](validation/iterative/rank2_current_stuv_decision_result.md) and
 [real map](validation/iterative/rank2_current_v_picard_map_result.md).
 
-## Latest chronological AA(2) continuation
+## Previous chronological AA(2) continuation
 
 The newest consecutive AA(1), from \(u\mapsto v\) and \(v\mapsto w\), was
 rejected because its same-weight leakage directions increased. The latest
@@ -1014,3 +1015,39 @@ fallback, empirical parameter, or successor was started. See the
 [decision](validation/iterative/rank2_current_uvvw_decision_result.md),
 [candidate](validation/iterative/rank2_current_stuvvw_aa2_candidate_result.md),
 and [real map](validation/iterative/rank2_current_stuvvw_aa2_map_result.md).
+
+## Latest chronological AA(2) continuation
+
+The newest standard AA(1), using the actual map residuals from
+\(v\mapsto w\) and \(x\mapsto y\), was rejected because its leakage
+height-\(L_2\) direction increased by a factor `1.066406`.  Only then was
+the standard unregularized AA(2) window
+\(u\mapsto v,v\mapsto w,x\mapsto y\) used:
+
+\[
+q_2=0.3924817303v+0.2890750334w+0.3184432363y.
+\]
+
+Its modal, leakage height-\(L_2\), and \(D_L\) direction ratios were
+`0.029854`, `0.576288`, and `0.622210`; 8880/8880 publication points were
+positive.  Exactly one real \(G_2(q_2)\), including three online radial
+solves, passed every strict terminal, the independent checker, and the 21/21
+receipt.  It returned
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.9433305\times10^{-4},\,
+5.7776924\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.7262886\times10^{-6}).
+\]
+
+Against the preceding evaluated map \(x\mapsto y\), leakage fell by 36.63%
+while \(R_a\) rose by 10.28%.  This cross-input defect comparison is not a
+contraction factor.  The original AND gate still fails through \(R_L\) and
+\(R_a\), so the classification remains `VALID_NOT_MET`.  This is local
+leakage improvement, not componentwise defect decrease or evidence of
+asymptotic convergence.  No retry, fallback, empirical parameter, or
+successor was started.  See the
+[decision](validation/iterative/rank2_current_vwxy_decision_result.md),
+[candidate](validation/iterative/rank2_current_uvvwxy_aa2_candidate_result.md),
+and [real map](validation/iterative/rank2_current_uvvwxy_aa2_map_result.md).

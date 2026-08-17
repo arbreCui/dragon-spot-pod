@@ -5,25 +5,37 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest bounded three-step experiment used the valid current-AA(2)
-return directly, without constructing another affine proposal. Exactly one
-fresh direct Picard map passed every strict inner terminal and independent
-check:
+The latest bounded three-step experiment first rejected standard AA(1), then
+selected and materialized the lowest-order admissible unregularized AA(2)
+proposal from the genuine maps \(u\mapsto v\), \(v\mapsto w\), and
+\(x\mapsto y\).  Exactly one fresh map passed every strict terminal and
+independent check:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,4.0362910\times10^{-4},\,
-5.9138983\times10^{-7}\ \mathrm{cm}^{-1},\,
-3.4760357\times10^{-6}).
+(0,\,3.9433305\times10^{-4},\,
+5.7776924\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.7262886\times10^{-6}).
 \]
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$
-fail. Leakage decreased by another 35.15%, but the modal defect increased by
-64.06%. Thus direct substitution did not resolve the leakage/modal conflict.
-No retry or successor was started. See
-[rank2_current_aa2_picard_map_result.md](rank2_current_aa2_picard_map_result.md).
+fail.  Against the preceding evaluated map \(x\mapsto y\), leakage decreased
+by 36.63% but the modal defect increased by 10.28%; this is a cross-input
+defect comparison, not a contraction factor.  No retry or successor was
+started.  See
+[rank2_current_uvvwxy_aa2_map_result.md](rank2_current_uvvwxy_aa2_map_result.md).
 
 ## Active files
+
+- `rank2_current_vwxy_decision_result.md`,
+  `rank2_current_uvvwxy_aa2_candidate_inputs.tsv`,
+  `run_rank2_current_uvvwxy_aa2_candidate.sh`,
+  `rank2_current_uvvwxy_aa2_candidate_result.md`,
+  `rank2_current_uvvwxy_aa2_map_parent.tsv`,
+  `rank2_current_uvvwxy_aa2_map_policy.md`,
+  `run_rank2_current_uvvwxy_aa2_map.sh`,
+  `rank2_current_uvvwxy_aa2_map_result.md`: latest minimum-order decision,
+  standard AA(2) publication, and its single valid but unconverged map.
 
 - `rank2_current_aa2_picard_map_parent.tsv`,
   `rank2_current_aa2_picard_map_policy.md`,
@@ -1147,7 +1159,7 @@ started. See
 [rank2_current_stuv_decision_result.md](rank2_current_stuv_decision_result.md)
 and [rank2_current_v_picard_map_result.md](rank2_current_v_picard_map_result.md).
 
-## Latest chronological AA(2) continuation
+## Previous chronological AA(2) continuation
 
 Standard AA(1) from the consecutive maps \(u\mapsto v\) and
 \(v\mapsto w\) failed because both same-weight leakage directions increased.
@@ -1179,3 +1191,37 @@ started. See
 [rank2_current_uvvw_decision_result.md](rank2_current_uvvw_decision_result.md),
 [rank2_current_stuvvw_aa2_candidate_result.md](rank2_current_stuvvw_aa2_candidate_result.md),
 and [rank2_current_stuvvw_aa2_map_result.md](rank2_current_stuvvw_aa2_map_result.md).
+
+## Latest chronological AA(2) continuation
+
+Standard AA(1) from the latest evaluated pairs \(v\mapsto w\) and
+\(x\mapsto y\) failed because the same-weight leakage height-\(L_2\)
+direction ratio was `1.066406`.  The next-lowest-order standard option used
+the chronological window \(u\mapsto v,v\mapsto w,x\mapsto y\):
+
+\[
+q_2=0.3924817303v+0.2890750334w+0.3184432363y.
+\]
+
+The unregularized AA(2) candidate passed all three direction screens,
+8880/8880 positivity, the independent checker, and its 9/9 receipt.  Exactly
+one real \(G_2(q_2)\) then passed all strict terminals, the independent map
+checker, and the 21/21 receipt, giving
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.9433305\times10^{-4},\,
+5.7776924\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.7262886\times10^{-6}).
+\]
+
+The original AND gate fails through \(R_L\) and \(R_a\).  Against the
+preceding evaluated map \(x\mapsto y\), \(R_L\) and dimensional \(D_L\)
+decreased by 36.63%, while \(R_a\) increased by 10.28%.  This cross-input
+defect comparison is not a contraction factor.  The classification is
+`VALID_NOT_MET`: a valid map with local leakage improvement, not
+componentwise defect decrease or proof of convergence.  No retry, fallback,
+empirical parameter, or successor was started.  See
+[rank2_current_vwxy_decision_result.md](rank2_current_vwxy_decision_result.md),
+[rank2_current_uvvwxy_aa2_candidate_result.md](rank2_current_uvvwxy_aa2_candidate_result.md),
+and [rank2_current_uvvwxy_aa2_map_result.md](rank2_current_uvvwxy_aa2_map_result.md).
