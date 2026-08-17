@@ -1119,3 +1119,30 @@ successor map was started. See
 [rank2_current_qpzst_aa2_decision_result.md](rank2_current_qpzst_aa2_decision_result.md),
 [rank2_current_qpzst_aa2_candidate_result.md](rank2_current_qpzst_aa2_candidate_result.md),
 and [rank2_current_qpzst_aa2_map_result.md](rank2_current_qpzst_aa2_map_result.md).
+
+## Latest direct Picard check
+
+The latest standard AA(1) and sliding AA(2) both improved their modal
+directions but worsened the leakage height-\(L_2\) and \(D_L\) directions.
+They failed the unchanged componentwise authorization gate and were not
+published as project proposal artifacts. The latest returned state \(v\) was
+therefore used directly in exactly one \(w=G_2(v)\).
+
+All four strict solve terminals, the independent continued-state checker,
+and the 21/21 receipt passed. The raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,7.8300470403\times10^{-4},\,
+1.1472438928\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.5092725607\times10^{-6}).
+\]
+
+The original AND gate fails through \(R_L\) and \(R_a\). Relative to the
+parent map, \(R_L\) and dimensional \(D_L\) increased by 129.67%, while
+\(R_a\) increased by 64.88%. The classification is `VALID_NOT_MET`; this is
+a valid map and a local non-contractive Picard observation, not proof of
+global divergence. No retry, fallback, empirical parameter, or successor was
+started. See
+[rank2_current_stuv_decision_result.md](rank2_current_stuv_decision_result.md)
+and [rank2_current_v_picard_map_result.md](rank2_current_v_picard_map_result.md).

@@ -48,3 +48,14 @@ receipt checks pass, the unchanged host assigns exactly one classification:
 
 Preparing and default-off checking this stage runs no Dragon or transport
 calculation and creates no result artifact.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`073f54ba826a745eb498b27d66cc759b7693a93f`. All four strict solve
+terminals, the independent continued-state checker, and the 21/21 receipt
+passed. The valid result is `VALID_NOT_MET`: \(R_\rho\) passes, while
+\(R_L\) and \(R_a\) fail the unchanged gate. Relative to the parent map,
+all three nonzero defect components increased. No retry, fallback, or
+successor was started. See
+[rank2_current_v_picard_map_result.md](rank2_current_v_picard_map_result.md).

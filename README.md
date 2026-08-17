@@ -951,3 +951,33 @@ empirical parameter or successor was started. See the
 [decision](validation/iterative/rank2_current_qpzst_aa2_decision_result.md),
 [candidate](validation/iterative/rank2_current_qpzst_aa2_candidate_result.md),
 and [real map](validation/iterative/rank2_current_qpzst_aa2_map_result.md).
+
+## Latest direct Picard check
+
+The newest standard AA(1), using \(s\mapsto t\) and \(u\mapsto v\), reduced
+the modal direction but increased both leakage directions. The sliding
+standard AA(2), using \(p\mapsto z\), \(s\mapsto t\), and \(u\mapsto v\),
+did the same. Both parameter-free Anderson candidates were rejected before a
+real map, so the latest returned state \(v\) was used directly.
+
+Exactly one \(w=G_2(v)\), including three online radial solves, passed every
+strict terminal, the independent checker, and the 21/21 receipt. Its raw
+result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,7.8300470403\times10^{-4},\,
+1.1472438928\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.5092725607\times10^{-6}).
+\]
+
+The unchanged AND gate contains \(R_\rho,R_L,R_a\): \(R_\rho\) passes,
+while \(R_L\) and \(R_a\) fail; dimensional \(D_L\) is diagnostic only.
+Relative to the parent map, the leakage defects increased by 129.67% and the
+modal defect by 64.88%, so the result is `VALID_NOT_MET`. This observed
+Picard step is not
+componentwise contractive, but one map does not prove global divergence or
+invalidate fixed-rank-two SPOD. No retry, fallback, empirical parameter, or
+successor was started. See the
+[decision](validation/iterative/rank2_current_stuv_decision_result.md) and
+[real map](validation/iterative/rank2_current_v_picard_map_result.md).
