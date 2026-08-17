@@ -209,6 +209,11 @@ generic, default-off continuation host.
   `rank2_latest_modal_aa1_recovery_map_result.md`: minimal default-off host,
   frozen policy and independently checked `VALID_NOT_MET` result for exactly
   one unchanged physical map from that proposal, with no retry or successor.
+- `rank2_latest_modal_aa1_qv_history.tsv`,
+  `rank2_latest_modal_aa1_qv_history_result.md`: hash-locked, read-only
+  standard AA(1) audit of the actual $Q(t)\mapsto u$ and $Q(s)\mapsto v$
+  pairs. It records the unique unrestricted extrapolation and adverse
+  same-coefficient leakage screens, creates no proposal, and runs no Dragon.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -873,6 +878,23 @@ Its frozen contract is
 [rank2_latest_modal_aa1_recovery_map_policy.md](rank2_latest_modal_aa1_recovery_map_policy.md).
 The completed map record is
 [rank2_latest_modal_aa1_recovery_map_result.md](rank2_latest_modal_aa1_recovery_map_result.md).
+
+The next read-only audit used the actual pairs $Q(t)\mapsto u$ and
+$Q(s)\mapsto v$. Standard full-Gram-height AA(1), without clipping or
+damping, gives
+
+\[
+x_{\mathrm{AA1}}=
+-2.43937066250607248u+3.43937066250607248v.
+\]
+
+The modal affine screen is `0.1980858222` of the latest modal residual, but
+the same-coefficient leakage height-$L_2$ and $D_L$ screens are `5.2566` and
+`5.9025` times their latest values. The publication preflight remains
+positive at 8880/8880 points. This is an arithmetically admissible,
+high-risk extrapolation, not a convergence result or a physical AND-gate
+evaluation. No proposal or map was started. See
+[rank2_latest_modal_aa1_qv_history_result.md](rank2_latest_modal_aa1_qv_history_result.md).
 
 ## Current boundary
 

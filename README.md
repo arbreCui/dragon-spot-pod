@@ -742,3 +742,22 @@ The frozen pre-run contract is
 [validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md](validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md).
 The completed result is
 [validation/iterative/rank2_latest_modal_aa1_recovery_map_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_map_result.md).
+
+The subsequent no-Dragon audit used the actual pairs
+$Q(t)\mapsto u$ and $Q(s)\mapsto v$. The unrestricted standard modal AA(1)
+minimizer is
+
+$$
+x_{\mathrm{AA1}}=-2.43937066250607248u
+                 +3.43937066250607248v.
+$$
+
+This is a genuine extrapolation, not a tuned relaxation: the two modal
+residuals have cosine `0.9983735514`. Its modal affine screen is `0.1981` of
+the latest residual, but the same-coefficient leakage $L_2$ and $D_L$
+screens increase to `5.26` and `5.90` times their latest values. All 8880
+publication points remain positive. Thus the unique state is arithmetically
+eligible only for separate offline materialization; it is high risk and does
+not establish convergence, componentwise improvement, or AA(1) superiority.
+No proposal or map was started. See
+[validation/iterative/rank2_latest_modal_aa1_qv_history_result.md](validation/iterative/rank2_latest_modal_aa1_qv_history_result.md).
