@@ -850,4 +850,39 @@ coefficient or successor map was started. See the
 [AA(1) candidate](validation/iterative/rank2_vwx_aa1_candidate_result.md),
 and [final map](validation/iterative/rank2_vwx_aa1_map_result.md).
 
+That experiment started no automatic successor.
+
+## Latest bounded sequential AA(1) follow-up
+
+The next three-step study reused only existing mathematics and code. A
+no-Dragon audit found that the newest direct modal residual was 2.37980 times
+the preceding one, so another blind direct step was not selected. AA(2) was
+also rejected because accepting the current carrier sequence would require a
+new production mode. The existing standard sequential AA(1) uniquely gave
+
+\[
+y=1.6615840721007848x-0.66158407210078485d.
+\]
+
+This is an unclipped full-Gram extrapolation, not a fitted relaxation. The
+offline candidate retained 8880/8880 positive points and passed its 9/9
+receipt. Exactly one fresh $G_2(y)$ then passed all strict solve terminals,
+the independent checker and the 21/21 receipt. Its real defects are
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,1.2851779219\times10^{-3},\,
+1.8830178306\times10^{-6}\ \mathrm{cm}^{-1},\,
+4.6074323529\times10^{-7}).
+\]
+
+$R_\rho$ and $R_a$ pass, but $R_L$ remains 2570.36 times the unchanged
+tolerance. The classification is `VALID_NOT_MET`. The modal defect improved
+into tolerance while leakage worsened, so the current evidence shows a clear
+modal/leakage conflict rather than an inner-solver failure. No retry,
+fallback, empirical coefficient or successor map was started. See the
+[decision](validation/iterative/rank2_wxcd_aa1_decision_result.md),
+[candidate](validation/iterative/rank2_wxcd_aa1_candidate_result.md), and
+[real map](validation/iterative/rank2_wxcd_aa1_map_result.md).
+
 No further map is authorized by this result.

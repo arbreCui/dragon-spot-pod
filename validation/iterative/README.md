@@ -5,31 +5,38 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The bounded three-step study is complete. One direct $x=G_2(w)$ and one
-standard full-Gram AA(1) $G_2(c)$ were evaluated exactly once, each with
-fresh online radial transport. The final state was
+The latest bounded three-step follow-up is complete. The existing standard
+sequential full-Gram AA(1), using the real $w\mapsto x$ and $c\mapsto d$
+pairs, uniquely selected
 
 \[
-c=0.37810309349656490w+0.62189690650343510x,
+y=1.6615840721007848x-0.66158407210078485d.
 \]
 
-and its real-map defects were
+The candidate was materialized offline and then evaluated exactly once with
+fresh online radial transport. Its real-map defects were
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223492191\times10^{-8},\,8.0189470417\times10^{-4},\,
-1.1749216355\times10^{-6}\ \mathrm{cm}^{-1},\,
-2.7219350042\times10^{-6}).
+(0,\,1.2851779219\times10^{-3},\,
+1.8830178306\times10^{-6}\ \mathrm{cm}^{-1},\,
+4.6074323529\times10^{-7}).
 \]
 
-All strict terminals, independent checks and receipts passed, but only
-$R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate. The result is
-`VALID_NOT_MET`. No empirical coefficient, retry, fallback or successor map
-was introduced. See [rank2_vwx_picard_map_result.md](rank2_vwx_picard_map_result.md),
-[rank2_vwx_direction_result.md](rank2_vwx_direction_result.md), and
-[rank2_vwx_aa1_map_result.md](rank2_vwx_aa1_map_result.md).
+All strict terminals, independent checks and receipts passed. $R_\rho$ and
+$R_a$ pass, but $R_L$ is 2570.36 times the unchanged tolerance, so the result
+is `VALID_NOT_MET`. No empirical coefficient, retry, fallback or successor
+map was introduced. See
+[rank2_wxcd_aa1_decision_result.md](rank2_wxcd_aa1_decision_result.md),
+[rank2_wxcd_aa1_candidate_result.md](rank2_wxcd_aa1_candidate_result.md), and
+[rank2_wxcd_aa1_map_result.md](rank2_wxcd_aa1_map_result.md).
 
 ## Active files
+
+- `rank2_wxcd_aa1_decision_result.md`,
+  `rank2_wxcd_aa1_candidate_result.md`, `rank2_wxcd_aa1_map_policy.md`,
+  `rank2_wxcd_aa1_map_result.md`: the completed latest parameter-free
+  sequential AA(1) route and its final `VALID_NOT_MET` boundary.
 
 - `rank2_vwx_picard_map_result.md`, `rank2_vwx_direction_result.md`,
   `rank2_vwx_aa1_candidate_result.md`, `rank2_vwx_aa1_map_policy.md`,
