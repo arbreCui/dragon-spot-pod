@@ -63,6 +63,10 @@ qvwx_zplus_map_runner_path = (
     ITERATIVE / "run_rank2_current_qvwx_zplus_aa1_map.sh"
 )
 qvwx_zplus_map_runner = qvwx_zplus_map_runner_path.read_text()
+zpcd_map_runner_path = (
+    ITERATIVE / "run_rank2_current_zpcd_aa1_map.sh"
+)
+zpcd_map_runner = zpcd_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -182,6 +186,12 @@ qvwx_zplus_map_manifest = (
 ).read_text()
 qvwx_zplus_map_result = (
     ITERATIVE / "rank2_current_qvwx_zplus_aa1_map_result.md"
+).read_text()
+zpcd_map_policy = (
+    ITERATIVE / "rank2_current_zpcd_aa1_map_policy.md"
+).read_text()
+zpcd_map_manifest = (
+    ITERATIVE / "rank2_current_zpcd_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -1396,6 +1406,71 @@ for token in (
     require(token in qvwx_zplus_map_result,
             f"QVWX-ZPLUS AA1 map result boundary missing: {token}")
 
+zpcd_map_rows = [
+    line.split() for line in zpcd_map_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(zpcd_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-zpcd-aa1-map-parent-v1",
+        "ZPCD AA1 map manifest version changed")
+require(tuple(row[0] for row in zpcd_map_rows) == roles,
+        "ZPCD AA1 map manifest roles changed")
+require(tuple(row[1] for row in zpcd_map_rows[-2:]) == (
+    "978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6",
+    "cf43ed781a1f86625aa6ae46023eca2e6e000ed76d16c81470a3544b13bb0354",
+), "ZPCD AA1 map parent changed")
+require(zpcd_map_runner.index("RUN_RANK2_CURRENT_ZPCD_AA1_MAP=") <
+        zpcd_map_runner.index("ROOT=$("),
+        "ZPCD AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-zpcd-aa1-candidate",
+    "rank2_current_zpcd_aa1_map_parent.tsv",
+    "rank2_current_zpcd_aa1_map_policy.md",
+    "iterative-rank2-current-zpcd-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in zpcd_map_runner,
+            f"ZPCD AA1 map runner missing: {token}")
+require(zpcd_map_runner.count("run_continuation_short.sh") == 1,
+        "ZPCD AA1 map runner must delegate once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", zpcd_map_runner),
+        "ZPCD AA1 map retry loop is forbidden")
+require("run_bounded_dragon.py" not in zpcd_map_runner and
+        "DRAGON_BIN" not in zpcd_map_runner,
+        "ZPCD wrapper must not launch Dragon directly")
+for token in (
+    "R_\\rho", "R_L", "R_a", "diagnostic only", "no retry",
+    "three online radial", "one axial solve", "e-c_{\\mathrm{next}}",
+    "second physical map",
+):
+    require(token in zpcd_map_policy,
+            f"ZPCD AA1 map policy missing: {token}")
+require("spot-rank2-current-zpcd-aa1-map" in
+        (ROOT / "Makefile").read_text(), "ZPCD AA1 map target is missing")
+zpcd_default_off = subprocess.run(
+    ["sh", str(zpcd_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_ZPCD_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(zpcd_default_off.returncode == 0 and
+        zpcd_default_off.stderr == "" and
+        zpcd_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-ZPCD-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "ZPCD AA1 map default-off terminal changed")
+zpcd_bad_activation = subprocess.run(
+    ["sh", str(zpcd_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_ZPCD_AA1_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(zpcd_bad_activation.returncode == 2 and
+        zpcd_bad_activation.stdout == "" and
+        zpcd_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-ZPCD-AA1-MAP ERROR: activation must be 0 or 1.\n",
+        "ZPCD AA1 map activation gate changed")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
         "proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
@@ -1583,7 +1658,7 @@ for token in ("AX_CURRENT := FLU:", "AX_CURRENT := SPOSTATE:",
 for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
              latest_next_runner, latest_next_recovery_runner,
              latest_recovery_runner, post_runner, rolling_map_runner,
-             rolling_next_map_runner, radial, axial):
+             rolling_next_map_runner, zpcd_map_runner, radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
                 f"empirical control present: {forbidden}")

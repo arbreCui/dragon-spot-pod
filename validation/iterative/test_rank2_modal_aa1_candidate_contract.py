@@ -28,6 +28,12 @@ qvwx_manifest = (
 qvwx_zplus_manifest = (
     ITERATIVE / "rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv"
 ).read_text()
+zpcd_manifest = (
+    ITERATIVE / "rank2_current_zpcd_aa1_candidate_inputs.tsv"
+).read_text()
+zpcd_result = (
+    ITERATIVE / "rank2_current_zpcd_aa1_candidate_result.md"
+).read_text()
 latest_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_candidate_inputs.tsv"
 ).read_text()
@@ -78,6 +84,9 @@ qvwx_runner = (
 ).read_text()
 qvwx_zplus_runner = (
     ITERATIVE / "run_rank2_current_qvwx_zplus_aa1_candidate.sh"
+).read_text()
+zpcd_runner = (
+    ITERATIVE / "run_rank2_current_zpcd_aa1_candidate.sh"
 ).read_text()
 latest_runner = (
     ITERATIVE / "run_rank2_latest_modal_aa1_candidate.sh"
@@ -890,6 +899,64 @@ require("spot-rank2-current-qvwx-zplus-aa1-candidate" in
         (ROOT / "Makefile").read_text(),
         "QVWX-ZPLUS Make target is missing")
 
+zpcd_rows = [
+    line.split() for line in zpcd_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(zpcd_manifest.splitlines()[0] ==
+        "# spot-rank2-current-zpcd-aa1-candidate-inputs-v1",
+        "ZPCD manifest version changed")
+require(tuple(row[0] for row in zpcd_rows) == (
+    "z", "z_plus", "c_aa1_pub", "d", "d_snapshots", "basis_reference"
+), "ZPCD manifest roles changed")
+require(all(len(row) == 3 for row in zpcd_rows),
+        "ZPCD manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in zpcd_rows),
+        "ZPCD manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in zpcd_rows),
+        "ZPCD manifest path escapes the repository")
+for token in (
+    "--next-zpcd-screened",
+    "RANK2-CURRENT-ZPCD-AA1",
+    "AA1-RAW-FLUX",
+    "PARAMETER-FREE DIRECTION GATE PASS",
+):
+    require(token in builder, f"ZPCD builder contract missing: {token}")
+    require(token in checker, f"ZPCD checker contract missing: {token}")
+for token in (
+    "rank2_current_zpcd_aa1_candidate_inputs.tsv",
+    "--next-zpcd-screened z.xsm zp.xsm c.xsm d.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(token in zpcd_runner, f"ZPCD runner binding missing: {token}")
+zpcd_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", zpcd_runner
+)
+require(zpcd_expected == [
+    "978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6",
+    "cf43ed781a1f86625aa6ae46023eca2e6e000ed76d16c81470a3544b13bb0354",
+], "ZPCD output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", zpcd_runner),
+        "ZPCD runner retry loops are forbidden")
+require("spot-rank2-current-zpcd-aa1-candidate" in
+        (ROOT / "Makefile").read_text(), "ZPCD Make target is missing")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "0.48771444550122545",
+    "0.51228555449877455",
+    "3.7547749561704630e-14",
+    "0.99411674241637549",
+    "0.93884958302279575",
+    "0.79362266755606770",
+    "8880/8880",
+    "9/9 receipt",
+    "4f47ca2e50e4038fb980cf3ccfa6a4b9998ecf793e6caaec6d06ca4ff1b0d96c",
+):
+    require(token in zpcd_result,
+            f"ZPCD candidate result boundary missing: {token}")
+
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
@@ -1113,7 +1180,7 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
 
 combined = "\n".join((builder, checker, runner, next_runner,
                        u_runner, consecutive_runner, ptu_runner, qvwx_runner,
-                       qvwx_zplus_runner,
+                       qvwx_zplus_runner, zpcd_runner,
                        latest_runner,
                        latest_next_runner, recovery_runner, qv_runner,
                        qsvw_runner,
@@ -1123,5 +1190,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: fifteen hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: sixteen hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

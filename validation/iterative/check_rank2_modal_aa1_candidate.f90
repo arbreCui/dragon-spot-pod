@@ -15,6 +15,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-x4aa2-screened q v w x \
   !     x_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-zpcd-screened z zp c d \
+  !     d_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --post-aa1 x2 x3 aa1 aa1p \
@@ -188,6 +190,8 @@ program check_rank2_modal_aa1_candidate
       zu_history_mode=.true.
     else if (trim(mode_argument) == '--next-x4aa2-screened') then
       x4aa2_screened_mode=.true.
+    else if (trim(mode_argument) == '--next-zpcd-screened') then
+      x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--post-aa1') then
       post_aa1_mode=.true.
     else if (trim(mode_argument) == '--rolling-aa1') then
@@ -196,7 +200,7 @@ program check_rank2_modal_aa1_candidate
       rolling_next_mode=.true.
     else if (trim(mode_argument) /= '--next') then
       call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --NEXT-X4Z, '// &
-        '--NEXT-ZU, --NEXT-X4AA2-SCREENED, '// &
+        '--NEXT-ZU, --NEXT-X4AA2-SCREENED, --NEXT-ZPCD-SCREENED, '// &
         '--U, --POST-AA1 OR --ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
@@ -250,7 +254,7 @@ program check_rank2_modal_aa1_candidate
   else
     call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, A CONSECUTIVE MODE PLUS '// &
       'SEVEN, OR --NEXT/--NEXT-X4/--NEXT-X4Z/--NEXT-ZU/--U/--POST-AA1/'// &
-      '--ROLLING-AA1/'// &
+      '--NEXT-ZPCD-SCREENED/--ROLLING-AA1/'// &
       '--ROLLING-AA1-NEXT PLUS EIGHT, OR A ROLLING-AA2 MODE PLUS TEN.')
   endif
 
@@ -950,14 +954,24 @@ contains
         (zu_history_mode.and.current_screened_mode)) &
       call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
     if (current_screened_mode) then
-      input_carrier='AA2-RAW-FLUX'
-      output_carrier='AA1-RAW-FLUX'
-      report_prefix='RANK2-CURRENT-QVWX-AA1'
-      latest_input='W'
-      latest_output='X'
-      previous_output='V'
-      call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Q', &
-        'X4-RAW-FLUX')
+      if (trim(mode_argument) == '--next-zpcd-screened') then
+        input_carrier='AA1-RAW-FLUX'
+        output_carrier='AA1-RAW-FLUX'
+        report_prefix='RANK2-CURRENT-ZPCD-AA1'
+        latest_input='C'
+        latest_output='D'
+        previous_output='ZP'
+        call load_state(x1_name,1,state_x1,'PREVIOUS MAP INPUT Z')
+      else
+        input_carrier='AA2-RAW-FLUX'
+        output_carrier='AA1-RAW-FLUX'
+        report_prefix='RANK2-CURRENT-QVWX-AA1'
+        latest_input='W'
+        latest_output='X'
+        previous_output='V'
+        call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Q', &
+          'X4-RAW-FLUX')
+      endif
     else if (zu_history_mode) then
       input_carrier='U-RAW-FLUX'
       output_carrier='V2-RAW-FLUX'
