@@ -43,3 +43,11 @@ R_a\leq5\times10^{-7}
 
 as an AND gate. The 120/420 second bounds are external process limits.
 There is no retry, fallback, empirical coefficient or automatic successor.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit `f421801`.
+All strict solve terminals, the independent proposal/carrier/map audit and
+the 21-entry receipt passed. The result is `VALID_NOT_MET`; no retry or
+successor was started. See
+[rank2_qsvw_aa1_map_result.md](rank2_qsvw_aa1_map_result.md).

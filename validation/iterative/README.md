@@ -3,6 +3,23 @@
 This directory contains the direct fixed-space SPOD/Picard contracts and one
 generic, default-off continuation host.
 
+## Latest boundary
+
+The latest direct \(v\mapsto w\) map and the subsequent standard AA(1) map
+are both independently valid and both `VALID_NOT_MET`. The final raw defects
+are
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,3.2381696\times10^{-4},\,
+4.7445064\times10^{-7},\,5.4687342\times10^{-7}).
+\]
+
+The three-step experiment is complete and starts no automatic successor.
+The fixed rank-two basis, online radial recomputation, equations, tolerance
+and three-component AND gate were unchanged; no empirical coefficient was
+introduced.
+
 ## Active files
 
 - `check_source_identity.py`: frozen-fission source and returned-source
@@ -219,6 +236,19 @@ generic, default-off continuation host.
   `rank2_latest_modal_aa1_qv_candidate_result.md`: deterministic no-Dragon
   publication of that unrestricted affine state, with an independent
   `V2-RAW-FLUX` carrier and $Q(s)\mapsto v$ snapshot-lifecycle audit.
+- `rank2_qv_picard_map_parent.tsv`, `rank2_qv_picard_map_policy.md`,
+  `run_rank2_qv_picard_map.sh`, `rank2_qv_picard_map_result.md`: one direct,
+  no-retry map from the latest returned \(v\), including fresh online radial
+  transport and the independently checked `VALID_NOT_MET` result.
+- `rank2_qsvw_aa1_candidate_inputs.tsv`,
+  `run_rank2_qsvw_aa1_candidate.sh`,
+  `rank2_qsvw_aa1_candidate_result.md`: standard full-Gram AA(1) from the
+  actual \(Q(s)\mapsto v\) and \(v\mapsto w\) residuals, published offline
+  with one coefficient for \((A,\rho,L)\) and no solver call.
+- `rank2_qsvw_aa1_map_parent.tsv`, `rank2_qsvw_aa1_map_policy.md`,
+  `run_rank2_qsvw_aa1_map.sh`, `rank2_qsvw_aa1_map_result.md`: the single
+  strict physical map from that proposal and its final no-retry
+  `VALID_NOT_MET` evidence boundary.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -918,7 +948,7 @@ artifact has a passing 9/9 receipt and remains
 convergence decision was produced. See
 [rank2_latest_modal_aa1_qv_candidate_result.md](rank2_latest_modal_aa1_qv_candidate_result.md).
 
-## Current boundary
+## Historical boundary before the latest three-step study
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
 not converged. The final defects are
@@ -945,8 +975,10 @@ the unchanged physical map. It is valid, but $R_L$ and $R_a$ still fail the
 declared gate. A new read-only AA(1) history calculation selected one
 parameter-free $Q(s)$, which has now been materialized and independently
 checked offline and evaluated exactly once by the physical map. The map is
-valid but $R_L$ and $R_a$ remain above tolerance. No retry, new proposal or
-successor map is defined. The offline
+valid but $R_L$ and $R_a$ remain above tolerance. At that historical stop,
+no retry, new proposal or successor map was defined. The later
+\(v\mapsto w\) and current AA(1) maps are summarized in `Latest boundary`
+above. The offline
 direction audits do not identify rank two or finite inner error as the cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The

@@ -10,7 +10,8 @@ The active method is deliberately small:
 - one volume-weighted POD basis, fixed during the iteration;
 - online radial transport at every outer step;
 - one reduced axial solve;
-- direct Picard substitution;
+- direct Picard as the baseline, with standard full-Gram AA(1) formed only
+  from actual map residuals;
 - no fitted closure, relaxation, damping, clipping, flux floor, CMFD
   correction, or empirical coupling coefficient.
 
@@ -45,11 +46,23 @@ $$
 x^+=G(x).
 $$
 
-The current nonlinear method is simply
+The baseline nonlinear iteration is simply
 
 $$
 x^{m+1}=G(x^m).
 $$
+
+When two actual residuals \(p=G(x^{m-1})-x^{m-1}\) and
+\(q=G(x^m)-x^m\) are available, the tested parameter-free accelerator is
+
+$$
+\beta=\frac{\lVert p\rVert_{HG}^2-\langle p,q\rangle_{HG}}
+{\lVert q-p\rVert_{HG}^2},\qquad
+y=(1-\beta)G(x^{m-1})+\beta G(x^m).
+$$
+
+The same \(\beta\) acts on \((a,\rho,L)\). Only a fresh physical map
+\(G(y)\) and the original three-component AND gate can accept it.
 
 Writing an $\alpha=1$ would add notation but no method. The rank $r$ is the
 number of retained radial basis functions; it is a discretization order, not
@@ -85,7 +98,25 @@ only as a diagnostic.
 An inner solve that reaches its iteration cap without satisfying the strict
 terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
-## Current result
+## Current rank-2 result
+
+The latest bounded three-step study used the genuine fixed-rank-two map and
+stopped after the promised two real evaluations:
+
+| map | \(R_\rho\) | \(R_L\) | \(D_L\;[\mathrm{cm}^{-1}]\) | \(R_a\) |
+|---|---:|---:|---:|---:|
+| direct \(v\mapsto w\) | `6.4223492e-8` | `2.6358057e-4` | `3.8619328e-7` | `1.8766784e-6` |
+| standard AA(1) \(y\mapsto G_2(y)\) | `6.4223481e-8` | `3.2381696e-4` | `4.7445064e-7` | `5.4687342e-7` |
+
+Both maps are independently valid, but both are `VALID_NOT_MET` at the
+unchanged \(5\times10^{-7}\) AND gate. The final AA(1) map passes
+\(R_\rho\), misses \(R_a\) by about 9.37%, and still misses \(R_L\) by a
+factor of 647.6. Therefore SPOT has a verified physical iteration path, but
+not yet a converged rank-two fixed point. See
+[the direct result](validation/iterative/rank2_qv_picard_map_result.md) and
+[the final AA(1) result](validation/iterative/rank2_qsvw_aa1_map_result.md).
+
+## Historical validation record
 
 The fixed rank-1 trajectory has been evaluated through the predeclared final
 $x_8=G(x_7)$. Each
@@ -146,7 +177,7 @@ launch Dragon.
 The validation plan is
 [SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
 
-## Next scientific step
+## Historical scientific record
 
 The valid x8 publication is independently checked and hash-receipted. The
 direct rank-1 Picard census is complete, and no x9 is defined. The retained
@@ -779,3 +810,12 @@ reproduces the REAL64/REAL32 publication, and accepts 8880/8880 points. The
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect, or
 convergence decision was produced. See
 [validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md).
+
+## Boundary after the three-step study
+
+No further map is authorized by this result. The leakage defect is still the
+dominant obstacle, while the modal defect is nearly closed. If the study is
+resumed, the first new action should compare the final AA(1) return with its
+direct \(w\) parent without transport. Only after that separate evidence may
+one new map be predeclared. It must not introduce relaxation, clipping,
+fitted leakage weights or a combined empirical norm.
