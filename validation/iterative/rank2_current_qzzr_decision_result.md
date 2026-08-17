@@ -26,7 +26,7 @@ leakage height-$L_2$, and leakage $D_L$ same-weight direction ratios are
 `0.73399304202375126`; all 8880 reconstructed publication points are
 positive, with minimum `1.7533929291672391e-15`.  The two leakage
 directions increase, so AA(1) fails the predeclared componentwise direction
-screen and is not materialized.
+screen and is not authorized or published as a production map parent.
 
 Only after that failure, the latest three genuine evaluated maps
 
@@ -35,8 +35,8 @@ x\mapsto y,\qquad q\mapsto z,\qquad z\mapsto r
 \]
 
 were examined with standard unregularized full-Gram AA(2).  Their residuals
-are exactly $y-x$, $z-q$, and $r-z$; no return-to-return difference is used as a
-map residual.  The affine direction is
+are exactly $y-x$, $z-q$, and $r-z$; no return-to-return difference is used
+as a map residual.  The affine direction is
 
 \[
 p_2=
@@ -61,14 +61,17 @@ height-$L_2$, and leakage $D_L$ direction ratios are
 `2.1032558289214176`.  The affine inverse eigenvalue is
 `0.73399299197359924`; all 8880 reconstructed publication points are
 positive, with minimum `1.7533932468045943e-15`.  Both leakage directions
-again increase, so AA(2) fails the same screen and is not materialized.
+again increase, so AA(2) fails the same screen and is not authorized or
+published as a production map parent.
 
 The dimensional $D_L\,[\mathrm{cm}^{-1}]$ direction is a fixed candidate
 authorization diagnostic; it is not a fourth member of the final
-dimensionless convergence gate.  No Anderson proposal, relaxation,
-damping, clipping, regularization, pseudoinverse threshold, condition
-cutoff, leakage fit, mixed-unit norm, older-window search, Dragon, or
-transport solve was used in this decision.
+dimensionless convergence gate.  The two affine directions were used only
+for this offline authorization audit; no scratch carrier was retained or
+used as a physical-map parent.  No relaxation, damping, clipping,
+regularization, pseudoinverse threshold, condition cutoff, leakage fit,
+mixed-unit norm, older-window search, Dragon, or transport solve was used in
+this decision.
 
 As predeclared, the selected state is the latest valid return $r$ itself,
 unchanged, permitting exactly one ordinary Picard evaluation $G_2(r)$.

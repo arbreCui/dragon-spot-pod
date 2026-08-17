@@ -93,8 +93,10 @@ R_a^2=
 $$
 
 All three must pass the declared tolerance. They are not combined into a
-tuned score. The dimensional $D_L=\lVert L^+-L\rVert_\infty$ is reported
-only as a diagnostic.
+tuned score. The dimensional $D_L=\lVert L^+-L\rVert_\infty$ is not part of
+the outer convergence gate.  It is used only as a same-unit direction
+diagnostic in the predeclared AA authorization screen and is never combined
+with the dimensionless defects.
 
 An inner solve that reaches its iteration cap without satisfying the strict
 terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
@@ -105,21 +107,20 @@ The latest physical map is valid but not converged:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223492\times10^{-8},\,8.1007981\times10^{-4},\,
-1.1869124\times10^{-6}\ \mathrm{cm}^{-1},\,
-8.9336792\times10^{-7}).
+(6.4223492\times10^{-8},\,7.4792564\times10^{-4},\,
+1.0958465\times10^{-6}\ \mathrm{cm}^{-1},\,
+3.6424204\times10^{-6}).
 \]
 
-This was one direct Picard map from the latest valid return after both
+This was one direct Picard map from the newest valid return after both
 standard AA(1) and sliding AA(2) failed the fixed leakage-direction screen.
 All strict terminals, independent checks, and the 21/21 receipt passed.
-Against the preceding genuinely consecutive residual, leakage increased by
-105.43% while the modal defect decreased by 67.23%; these observed adjacent
-ratios are not asymptotic contraction factors.  Therefore \(R_\rho\) passes
-while \(R_L\) and \(R_a\) fail the unchanged \(5\times10^{-7}\) AND gate.
-SPOT has a verified physical iteration path but no accepted rank-two fixed
-point.  See
-[the latest map result](validation/iterative/rank2_current_z_picard_map_result.md).
+Against the preceding genuinely consecutive residual, leakage decreased by
+7.67% while the modal defect increased by 307.72%; these observed adjacent
+ratios are not asymptotic contraction factors.  Therefore $R_\rho$ passes
+while $R_L$ and $R_a$ fail the unchanged $5\times10^{-7}$ AND gate.  SPOT
+has a verified physical iteration path but no accepted rank-two fixed point.
+See [the latest map result](validation/iterative/rank2_current_zplus_picard_map_result.md).
 
 ## Historical validation record
 
@@ -1055,7 +1056,7 @@ successor was started.  See the
 [candidate](validation/iterative/rank2_current_uvvwxy_aa2_candidate_result.md),
 and [real map](validation/iterative/rank2_current_uvvwxy_aa2_map_result.md).
 
-## Latest direct Picard continuation
+## Historical direct Picard continuation — previous window
 
 The standard AA(1) direction from \(x\mapsto y,q\mapsto z\) was rejected:
 its leakage height-\(L_2\) and \(D_L\) ratios were `11.1972` and `13.2371`.
@@ -1083,3 +1084,34 @@ an asymptotic contraction or divergence proof.  No retry, fallback,
 empirical parameter, or successor was started.  See the
 [decision](validation/iterative/rank2_current_xyqz_decision_result.md) and
 [real map](validation/iterative/rank2_current_z_picard_map_result.md).
+
+## Latest direct Picard continuation
+
+The latest two genuine residuals $z-q$ and $r-z$ first defined standard AA(1):
+its modal direction ratio was `0.489069`, but its leakage height-$L_2$ and
+$D_L$ ratios were `1.54593` and `1.56696`, so it was rejected.  Only then
+was standard unregularized AA(2) evaluated from $y-x$, $z-q$, and $r-z$.
+Its corresponding ratios were `0.458935`, `1.83517`, and
+`2.10326`; it was also rejected.  Neither direction was authorized or
+published as a production map parent.
+
+The newest valid return $r$ was used unchanged in exactly one direct
+$r^+=G_2(r)$.  Three online radial solves, the axial solve, every strict
+terminal, the independent checker, and the 21/21 receipt passed.  The raw
+result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,7.4792564\times10^{-4},\,
+1.0958465\times10^{-6}\ \mathrm{cm}^{-1},\,
+3.6424204\times10^{-6}).
+\]
+
+The original AND gate still fails through $R_L$ and $R_a$, so the
+classification is `VALID_NOT_MET`.  Against the preceding genuinely
+consecutive residual, leakage decreased by 7.67% while $R_a$ increased by
+307.72%.  Together the last two direct maps show an alternating local
+leakage/modal tradeoff, not proof of a cycle, convergence, or divergence.
+No retry, fallback, empirical parameter, or successor was started.  See the
+[decision](validation/iterative/rank2_current_qzzr_decision_result.md) and
+[real map](validation/iterative/rank2_current_zplus_picard_map_result.md).

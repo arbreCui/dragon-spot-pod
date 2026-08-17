@@ -7,30 +7,37 @@ generic, default-off continuation host.
 
 The latest bounded three-step experiment rejected standard AA(1) and the
 latest sliding unregularized AA(2) because both increased the two leakage
-directions.  It then used the latest valid return \(z\) unchanged in exactly
+directions.  It then used the newest valid return $r$ unchanged in exactly
 one direct Picard map.  Every strict terminal and independent check passed:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223492\times10^{-8},\,8.1007981\times10^{-4},\,
-1.1869124\times10^{-6}\ \mathrm{cm}^{-1},\,
-8.9336792\times10^{-7}).
+(6.4223492\times10^{-8},\,7.4792564\times10^{-4},\,
+1.0958465\times10^{-6}\ \mathrm{cm}^{-1},\,
+3.6424204\times10^{-6}).
 \]
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$
 fail.  Against the preceding genuinely consecutive residual, leakage
-increased by 105.43% but the modal defect decreased by 67.23%; these observed
+decreased by 7.67% but the modal defect increased by 307.72%; these observed
 ratios are not asymptotic contraction factors.  No retry or successor was
 started.  See
-[rank2_current_z_picard_map_result.md](rank2_current_z_picard_map_result.md).
+[rank2_current_zplus_picard_map_result.md](rank2_current_zplus_picard_map_result.md).
 
 ## Active files
+
+- `rank2_current_qzzr_decision_result.md`,
+  `rank2_current_zplus_picard_map_parent.tsv`,
+  `rank2_current_zplus_picard_map_policy.md`,
+  `run_rank2_current_zplus_picard_map.sh`,
+  `rank2_current_zplus_picard_map_result.md`: latest minimum-order decision
+  and its single direct, valid but unconverged Picard map.
 
 - `rank2_current_xyqz_decision_result.md`,
   `rank2_current_z_picard_map_parent.tsv`,
   `rank2_current_z_picard_map_policy.md`,
   `run_rank2_current_z_picard_map.sh`,
-  `rank2_current_z_picard_map_result.md`: latest minimum-order decision and
+  `rank2_current_z_picard_map_result.md`: previous minimum-order decision and
   its single direct, valid but unconverged Picard map.
 
 - `rank2_current_vwxy_decision_result.md`,
@@ -1232,7 +1239,7 @@ empirical parameter, or successor was started.  See
 [rank2_current_uvvwxy_aa2_candidate_result.md](rank2_current_uvvwxy_aa2_candidate_result.md),
 and [rank2_current_uvvwxy_aa2_map_result.md](rank2_current_uvvwxy_aa2_map_result.md).
 
-## Latest direct Picard continuation
+## Historical direct Picard continuation — previous window
 
 Standard AA(1) from \(x\mapsto y,q\mapsto z\) failed because its leakage
 height-\(L_2\) and \(D_L\) ratios were `11.1972` and `13.2371`.  The latest
@@ -1259,3 +1266,34 @@ tradeoff, not an asymptotic contraction or divergence proof.  No retry,
 fallback, empirical parameter, or successor was started.  See
 [rank2_current_xyqz_decision_result.md](rank2_current_xyqz_decision_result.md)
 and [rank2_current_z_picard_map_result.md](rank2_current_z_picard_map_result.md).
+
+## Latest direct Picard continuation
+
+Standard AA(1) from the two latest actual residuals $z-q$ and $r-z$ reduced its
+modal direction to `0.489069` of the current residual but increased the
+leakage height-$L_2$ and $D_L$ directions to `1.54593` and `1.56696`.
+Only after that rejection, standard unregularized AA(2) from $y-x$, $z-q$,
+and $r-z$ was checked; its ratios were `0.458935`, `1.83517`, and
+`2.10326`.  It also failed.  Neither direction was authorized or published
+as a production map parent.
+
+The newest returned state $r$ was therefore used unchanged in exactly one
+direct $r^+=G_2(r)$.  All strict terminals, the independent continued-state
+checker, and the 21/21 receipt passed, giving
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,7.4792564\times10^{-4},\,
+1.0958465\times10^{-6}\ \mathrm{cm}^{-1},\,
+3.6424204\times10^{-6}).
+\]
+
+The original AND gate fails through $R_L$ and $R_a$, hence
+`VALID_NOT_MET`.  Against the preceding genuinely consecutive residual,
+$R_L$ and dimensional $D_L$ decreased by 7.67%, while $R_a$ increased
+by 307.72%.  The last two direct maps therefore show alternating local
+defect directions, not proof of a periodic orbit, convergence, or
+divergence.  No retry, fallback, empirical parameter, or successor was
+started.  See
+[rank2_current_qzzr_decision_result.md](rank2_current_qzzr_decision_result.md)
+and [rank2_current_zplus_picard_map_result.md](rank2_current_zplus_picard_map_result.md).
