@@ -198,6 +198,11 @@ generic, default-off continuation host.
   `rank2_latest_modal_aa1_recovery_history_result.md`: hash-locked,
   read-only standard AA(1) direction audit of the two latest valid
   proposal-to-returned pairs; it creates no proposal and runs no Dragon.
+- `rank2_latest_modal_aa1_recovery_candidate_inputs.tsv`,
+  `run_rank2_latest_modal_aa1_recovery_candidate.sh`,
+  `rank2_latest_modal_aa1_recovery_candidate_result.md`: deterministic
+  no-Dragon publication of the one history-selected $Q(s)$, with an
+  independent `U-RAW-FLUX` carrier and snapshot-lifecycle audit.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -832,9 +837,19 @@ Q(s)=Q(0.815637869982362540z+0.184362130017637404u).
 The modal affine screen is `0.0390808376459939` of the latest residual, but
 the same-coefficient leakage screens are mixed: height-$L_2$ improves while
 $D_L$ increases by about `13.25%`. Thus $Q(s)$ is eligible only for a
-separate offline materialization; no AA(1) superiority, proposal artifact,
-map authorization, or convergence result follows. See
+separate offline materialization; no AA(1) superiority, map authorization,
+or convergence result follows. See
 [rank2_latest_modal_aa1_recovery_history_result.md](rank2_latest_modal_aa1_recovery_history_result.md).
+
+That selected state has now been materialized offline. Its independently
+recomputed weights are `0.815637869982362540` on $z$ and
+`0.184362130017637404` on $u$. The same coefficient publishes
+$(A,\rho,L)$; the complete raw AX/snapshot carrier comes from $u$ and is
+marked `U-RAW-FLUX`, without mixing raw fluxes. The checker reproduces the
+publication bitwise, preserves the `Q(t) -> u` lifecycle, and accepts all
+8880 points. The result is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon,
+map host, stopping defect or convergence decision was created. See
+[rank2_latest_modal_aa1_recovery_candidate_result.md](rank2_latest_modal_aa1_recovery_candidate_result.md).
 
 ## Current boundary
 
@@ -860,9 +875,10 @@ rejected. See [current_result.md](current_result.md).
 The fixed-rank-two study also remains unconverged. The latest history-selected
 standard modal AA(1) proposal $Q(t)$ has now been evaluated exactly once by
 the unchanged physical map. It is valid, but $R_L$ and $R_a$ still fail the
-declared gate. A new read-only AA(1) history calculation makes one $Q(s)$
-eligible for offline materialization, but has not created it. No retry,
-further proposal, or successor map has been prepared or started. The offline
+declared gate. A new read-only AA(1) history calculation selected one
+parameter-free $Q(s)$, which has now been materialized and independently
+checked offline. It has not been evaluated by the physical map. No retry,
+map host, or successor map has been prepared or started. The offline
 direction audits do not identify rank two or finite inner error as the cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The

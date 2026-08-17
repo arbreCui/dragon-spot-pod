@@ -710,5 +710,17 @@ the same-coefficient height-$L_2$ screen is `0.8110507722462015` of the
 latest value, while the maximum $D_L$ screen is `1.1325277442611905`.
 Therefore this does not establish AA(1) superiority or convergence. It only
 makes the unique parameter-free $Q(s)$ eligible for a separate offline
-materialization; no proposal or map has been started. See
+materialization. See
 [validation/iterative/rank2_latest_modal_aa1_recovery_history_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_history_result.md).
+
+That one eligible state has now been materialized and independently checked.
+The coefficient was recomputed from the four frozen publication-aware
+states; the same value was used for $A$, $\rho$ and $L$. The proposal
+copies the complete latest returned-$u$ carrier without mixing raw fluxes
+and is marked `PROPOSAL + U-RAW-FLUX`. The checker reproduces the REAL64 and
+REAL32 publication arithmetic, preserves the `Q(t) -> u` snapshot
+lifecycle, and accepts 8880/8880 positive reconstructed points. The 9/9
+receipt passes. Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
+convergence decision was produced, and no map host was added or started. See
+[validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md).
