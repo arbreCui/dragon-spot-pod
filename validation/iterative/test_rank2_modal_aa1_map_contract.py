@@ -19,6 +19,10 @@ consecutive_runner_path = (
 consecutive_runner = consecutive_runner_path.read_text()
 latest_runner_path = ITERATIVE / "run_rank2_latest_modal_aa1_map.sh"
 latest_runner = latest_runner_path.read_text()
+latest_next_runner_path = (
+    ITERATIVE / "run_rank2_latest_modal_aa1_next_map.sh"
+)
+latest_next_runner = latest_next_runner_path.read_text()
 post_runner_path = ITERATIVE / "run_rank2_modal_aa1_post_map.sh"
 post_runner = post_runner_path.read_text()
 rolling_map_runner_path = (
@@ -62,6 +66,12 @@ latest_policy = (
 ).read_text()
 latest_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_map_parent.tsv"
+).read_text()
+latest_next_policy = (
+    ITERATIVE / "rank2_latest_modal_aa1_next_map_policy.md"
+).read_text()
+latest_next_manifest = (
+    ITERATIVE / "rank2_latest_modal_aa1_next_map_parent.tsv"
 ).read_text()
 post_policy = (ITERATIVE / "rank2_modal_aa1_post_map_policy.md").read_text()
 post_manifest = (
@@ -201,6 +211,30 @@ require(latest_rows[4][1] ==
 require(latest_rows[5][1] ==
         "b5d03cb519ce54f0ade469288f70a50e303bb6a7bd7d4396c04558d38ffd108b",
         "latest proposal snapshot parent changed")
+
+latest_next_rows = [
+    line.split() for line in latest_next_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(latest_next_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-modal-aa1-next-map-parent-v1",
+        "latest-next-map manifest version changed")
+require(tuple(row[0] for row in latest_next_rows) == roles,
+        "latest-next-map manifest roles changed")
+require(all(len(row) == 3 for row in latest_next_rows),
+        "latest-next-map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in latest_next_rows),
+        "latest-next-map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in latest_next_rows),
+        "latest-next-map manifest path escapes the repository")
+require(latest_next_rows[4][1] ==
+        "e9e37246df25ef9afb449fad77e55b6ce21cd03f09e2f185d458aea4bd85d28c",
+        "latest-next proposal AX parent changed")
+require(latest_next_rows[5][1] ==
+        "8414fb2298bcd9797f5d1b0613d985413c7c87d533feb80e8f24360471c05b38",
+        "latest-next proposal snapshot parent changed")
 
 post_rows = [line.split() for line in post_manifest.splitlines()
              if line.strip() and not line.startswith("#")]
@@ -495,6 +529,53 @@ require(latest_bad_activation.returncode == 2 and
         latest_bad_activation.stderr ==
         "SPOT-RANK2-LATEST-MODAL-AA1-MAP ERROR: activation must be 0 or 1.\n",
         "latest-map activation gate changed")
+
+require(latest_next_runner.index(
+        "RUN_RANK2_LATEST_MODAL_AA1_NEXT_MAP=") <
+        latest_next_runner.index("ROOT=$("),
+        "latest-next-map default-off gate must precede repository access")
+for token in (
+    "rank2_latest_modal_aa1_next_map_parent.tsv",
+    "rank2_latest_modal_aa1_next_map_policy.md",
+    "iterative-rank2-latest-modal-aa1-next-candidate",
+    "iterative-rank2-latest-modal-aa1-next-map",
+    "CHECKER_MODE=proposal-z",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=80",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in latest_next_runner,
+            f"latest-next-map runner binding missing: {token}")
+require(latest_next_runner.count("run_continuation_short.sh") == 1,
+        "latest-next-map common host invocation count is not one")
+require("run_bounded_dragon.py" not in latest_next_runner and
+        "DRAGON_BIN" not in latest_next_runner,
+        "latest-next-map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", latest_next_runner),
+        "latest-next-map retry loop is forbidden")
+latest_next_default_off = subprocess.run(
+    ["sh", str(latest_next_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_LATEST_MODAL_AA1_NEXT_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(latest_next_default_off.returncode == 0 and
+        latest_next_default_off.stderr == "" and
+        latest_next_default_off.stdout ==
+        "SPOT-RANK2-LATEST-MODAL-AA1-NEXT-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "latest-next-map default-off terminal changed")
+latest_next_bad_activation = subprocess.run(
+    ["sh", str(latest_next_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_LATEST_MODAL_AA1_NEXT_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(latest_next_bad_activation.returncode == 2 and
+        latest_next_bad_activation.stdout == "" and
+        latest_next_bad_activation.stderr ==
+        "SPOT-RANK2-LATEST-MODAL-AA1-NEXT-MAP ERROR: activation must be "
+        "0 or 1.\n",
+        "latest-next-map activation gate changed")
 bad_activation = subprocess.run(
     ["sh", str(consecutive_runner_path)], cwd=ROOT,
     env={"RUN_RANK2_MODAL_AA1_CONSECUTIVE_MAP": "2"},
@@ -878,7 +959,7 @@ for token in ("AX_CURRENT := FLU:", "AX_CURRENT := SPOSTATE:",
               "AX_CURRENT := SPOXCONV:", "SNAP := SPOLEAK:"):
     require(token in acompact, f"axial physical chain missing: {token}")
 for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
-             post_runner,
+             latest_next_runner, post_runner,
              rolling_map_runner, rolling_next_map_runner, radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
@@ -927,6 +1008,16 @@ require("PREPARED_NOT_RUN" in latest_policy,
         "latest-map policy overstates runtime completion")
 require("successor map" in latest_policy,
         "latest-map automatic-stop boundary is missing")
+
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in latest_next_policy,
+            f"latest-next-map classification missing: {label}")
+require("Z-RAW-FLUX" in latest_next_policy,
+        "latest-next-map policy does not bind the z carrier")
+require("PREPARED_NOT_RUN" in latest_next_policy,
+        "latest-next-map policy overstates runtime completion")
+require("successor map" in latest_next_policy,
+        "latest-next-map automatic-stop boundary is missing")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(label in post_policy,

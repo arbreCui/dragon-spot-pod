@@ -653,6 +653,11 @@ That selected state has now been deterministically materialized as \(Q(t)\).
 The independent checker reproduces the standard coefficient and publication,
 verifies the complete returned-\(z\) `Z-RAW-FLUX` AX/snapshot carrier, and
 accepts all 8880 reconstructed points. The nine-entry receipt passes. Its
-classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map
-host or new stopping defect was produced. See
+classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: the publication
+stage itself ran no Dragon or map and produced no stopping defect. A separate
+default-off, no-retry host is now `PREPARED_NOT_RUN` for exactly one
+unchanged (G_2(Q(t))), using the strict `proposal-z` gate, a 120-second
+radial bound and an 80-second axial bound. See
 [validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md).
+Its frozen execution policy is
+[validation/iterative/rank2_latest_modal_aa1_next_map_policy.md](validation/iterative/rank2_latest_modal_aa1_next_map_policy.md).

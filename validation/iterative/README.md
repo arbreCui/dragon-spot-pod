@@ -180,7 +180,12 @@ generic, default-off continuation host.
   `run_rank2_latest_modal_aa1_next_candidate.sh`,
   `rank2_latest_modal_aa1_next_candidate_result.md`: deterministic
   no-Dragon publication and independent `Z-RAW-FLUX` carrier audit of the
-  selected standard AA(1) proposal; no map host or solve.
+  selected standard AA(1) proposal; that publication stage ran no map.
+- `rank2_latest_modal_aa1_next_map_parent.tsv`,
+  `rank2_latest_modal_aa1_next_map_policy.md`,
+  `run_rank2_latest_modal_aa1_next_map.sh`: default-off, no-retry binding for
+  exactly one unchanged map from that proposal, with an 80-second axial hard
+  limit; status is `PREPARED_NOT_RUN` until the separately activated run.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -776,9 +781,13 @@ Q(t)=Q(0.2233339696054483x_4+0.7766660303945517z).
 The independent checker reproduces the coefficient and publication, binds
 the complete raw AX/snapshot carrier to returned \(z\), and accepts all
 8880 reconstructed points. The nine-entry receipt passes. Its classification
-is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map host or new
-stopping defect was produced; see
+is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: that publication stage ran no
+Dragon or map and produced no stopping defect; see
 [rank2_latest_modal_aa1_next_candidate_result.md](rank2_latest_modal_aa1_next_candidate_result.md).
+A separate default-off, no-retry host is now `PREPARED_NOT_RUN` for exactly
+one unchanged (G_2(Q(t))). It binds `proposal-z`, a 120-second radial bound
+and an 80-second axial bound; see
+[rank2_latest_modal_aa1_next_map_policy.md](rank2_latest_modal_aa1_next_map_policy.md).
 
 ## Current boundary
 

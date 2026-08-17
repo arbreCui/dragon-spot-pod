@@ -50,6 +50,7 @@ all :
 	spot-rank2-latest-modal-aa1-candidate \
 	spot-rank2-latest-modal-aa1-next-candidate \
 	spot-rank2-latest-modal-aa1-map \
+	spot-rank2-latest-modal-aa1-next-map \
 	spot-rank2-modal-aa2-map
 spot-fast :
 	sh validation/run_fast.sh
@@ -107,6 +108,8 @@ spot-rank2-latest-modal-aa1-next-candidate :
 	sh validation/iterative/run_rank2_latest_modal_aa1_next_candidate.sh
 spot-rank2-latest-modal-aa1-map :
 	sh validation/iterative/run_rank2_latest_modal_aa1_map.sh
+spot-rank2-latest-modal-aa1-next-map :
+	sh validation/iterative/run_rank2_latest_modal_aa1_next_map.sh
 spot-rank2-modal-aa2-map :
 	sh validation/iterative/run_rank2_modal_aa2_map.sh
 clean :
