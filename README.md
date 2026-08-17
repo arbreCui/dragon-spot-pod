@@ -918,3 +918,36 @@ used as acceptance and did not reproduce the nonlinear map outcome. No retry,
 fallback, empirical parameter or successor was started. See the
 [candidate](validation/iterative/rank2_current_aa2_picard_aa1_candidate_result.md)
 and [real map](validation/iterative/rank2_current_aa2_picard_aa1_map_result.md).
+
+## Latest minimum-order AA(2) continuation
+
+The following bounded batch first rejected the newest AA(1): its modal screen
+improved, but the same-weight leakage \(L_2\) and \(D_L\) screens increased to
+`3.27` and `3.95` times their current values. Only then were the three genuine
+maps \(q_{\mathrm{AA2}}\mapsto p\), \(p\mapsto z\), and \(s\mapsto t\)
+used in standard full-Gram AA(2):
+
+\[
+u=0.6095234759p+0.3127594889z+0.0777170352t.
+\]
+
+All weights are positive and were obtained from the unregularized 2-by-2
+system. The candidate passed its three componentwise authorization screens,
+8880/8880 positivity, independent checker and 9/9 receipt. Exactly one fresh
+\(G_2(u)\), including three online radial solves, then passed every strict
+terminal, the independent map checker and 21/21 receipt. Its raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.4091960058\times10^{-4},\,
+4.9950904213\times10^{-7}\ \mathrm{cm}^{-1},\,
+9.1538037695\times10^{-7}).
+\]
+
+Relative to the preceding map, the leakage measures fell by 56.28% and the
+modal defect by 65.19%. Nevertheless, \(R_L\) and \(R_a\) still fail the
+unchanged gate, so the classification is `VALID_NOT_MET`. No retry, fallback,
+empirical parameter or successor was started. See the
+[decision](validation/iterative/rank2_current_qpzst_aa2_decision_result.md),
+[candidate](validation/iterative/rank2_current_qpzst_aa2_candidate_result.md),
+and [real map](validation/iterative/rank2_current_qpzst_aa2_map_result.md).

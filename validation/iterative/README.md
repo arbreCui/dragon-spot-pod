@@ -1088,3 +1088,34 @@ fallback, empirical parameter or successor map was started. See
 [rank2_current_aa2_picard_aa1_candidate_result.md](rank2_current_aa2_picard_aa1_candidate_result.md)
 and
 [rank2_current_aa2_picard_aa1_map_result.md](rank2_current_aa2_picard_aa1_map_result.md).
+
+## Latest minimum-order AA(2) continuation
+
+The newest standard AA(1) was rejected because its leakage height-\(L_2\) and
+\(D_L\) screens increased by factors `3.27` and `3.95`. The next-lowest-order
+standard option used the genuine residuals from
+\(q_{\mathrm{AA2}}\mapsto p\), \(p\mapsto z\), and \(s\mapsto t\):
+
+\[
+u=0.6095234759p+0.3127594889z+0.0777170352t.
+\]
+
+The unregularized AA(2) candidate passed all three same-weight direction
+screens, 8880/8880 positivity, the independent checker and 9/9 receipt.
+Exactly one real \(G_2(u)\) then passed all strict terminals, the independent
+map checker and 21/21 receipt, giving
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.4091960058\times10^{-4},\,
+4.9950904213\times10^{-7}\ \mathrm{cm}^{-1},\,
+9.1538037695\times10^{-7}).
+\]
+
+All three nonzero defects improved relative to the preceding map, but the
+original AND gate still fails through \(R_L\) and \(R_a\). The result is
+`VALID_NOT_MET`, not convergence. No retry, fallback, empirical parameter or
+successor map was started. See
+[rank2_current_qpzst_aa2_decision_result.md](rank2_current_qpzst_aa2_decision_result.md),
+[rank2_current_qpzst_aa2_candidate_result.md](rank2_current_qpzst_aa2_candidate_result.md),
+and [rank2_current_qpzst_aa2_map_result.md](rank2_current_qpzst_aa2_map_result.md).

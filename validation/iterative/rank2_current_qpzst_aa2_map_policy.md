@@ -37,3 +37,12 @@ remain unchanged. The 120-second radial and 180-second axial bounds are only
 process-safety limits. One activation permits one attempt, with no retry,
 fallback, relaxation, damping, clipping, fitted coefficient, regularization,
 condition cutoff, or automatic successor.
+
+## Post-run record
+
+The host was activated exactly once from source commit
+`16e4f64c151566d7e6128142160c19e8545c1f7e`. All strict solve terminals, the
+independent checker and the 21/21 receipt passed. The result is
+`VALID_NOT_MET`: \(R_\rho\) passes, while \(R_L\) and \(R_a\) fail the
+unchanged gate. No retry, fallback or successor was started. See
+[rank2_current_qpzst_aa2_map_result.md](rank2_current_qpzst_aa2_map_result.md).
