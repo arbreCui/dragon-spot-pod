@@ -13,6 +13,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-zu qt u qs v v_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-x4aa2-screened q v w x \
+  !     x_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --post-aa1 x2 x3 aa1 aa1p \
@@ -106,6 +108,7 @@ program check_rank2_modal_aa1_candidate
   logical :: current_uvvwxy_aa2_mode
   logical :: current_ptuqv_aa2_mode
   logical :: x4z_history_mode,zu_history_mode
+  logical :: x4aa2_screened_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
   logical :: consecutive_current_mode
@@ -125,6 +128,7 @@ program check_rank2_modal_aa1_candidate
   x4_history_mode=.false.
   x4z_history_mode=.false.
   zu_history_mode=.false.
+  x4aa2_screened_mode=.false.
   rolling_aa2_next_mode=.false.
   current_aa2_mode=.false.
   current_qpzst_aa2_mode=.false.
@@ -177,6 +181,8 @@ program check_rank2_modal_aa1_candidate
       x4z_history_mode=.true.
     else if (trim(mode_argument) == '--next-zu') then
       zu_history_mode=.true.
+    else if (trim(mode_argument) == '--next-x4aa2-screened') then
+      x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--post-aa1') then
       post_aa1_mode=.true.
     else if (trim(mode_argument) == '--rolling-aa1') then
@@ -185,7 +191,7 @@ program check_rank2_modal_aa1_candidate
       rolling_next_mode=.true.
     else if (trim(mode_argument) /= '--next') then
       call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --NEXT-X4Z, '// &
-        '--NEXT-ZU, '// &
+        '--NEXT-ZU, --NEXT-X4AA2-SCREENED, '// &
         '--U, --POST-AA1 OR --ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
@@ -243,7 +249,7 @@ program check_rank2_modal_aa1_candidate
     call check_next_candidate(trim(path(1)),trim(path(2)),trim(path(3)), &
       trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)), &
       u_mode,post_aa1_mode,rolling_mode,rolling_next_mode,x4_history_mode, &
-      x4z_history_mode,zu_history_mode)
+      x4z_history_mode,zu_history_mode,x4aa2_screened_mode)
   else
 
   report_prefix='RANK2-MODAL-AA1'
@@ -877,36 +883,59 @@ contains
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
       basis_name,proposal_name,proposal_snap_name,u_mode,post_aa1_mode, &
       rolling_mode,rolling_next_mode,x4_history_mode,x4z_history_mode, &
-      zu_history_mode)
+      zu_history_mode,x4aa2_screened_mode)
     character(len=*), intent(in) :: x1_name,x2_name,y_name,z_name,z_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name,proposal_snap_name
     logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
     logical, intent(in) :: rolling_next_mode,x4_history_mode
     logical, intent(in) :: x4z_history_mode,zu_history_mode
+    logical, intent(in), optional :: x4aa2_screened_mode
     type(canonical_state) :: state_x1,state_x2,state_y,state_z,state_proposal
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
     real(real64) :: p_sq,q_sq,p_dot_q,denominator,beta,weight_x2
+    real(real64) :: modal_affine_sq,modal_affine_norm,modal_current_norm
+    real(real64) :: leakage_affine_sq,leakage_affine_norm
+    real(real64) :: leakage_current_sq,leakage_current_norm
+    real(real64) :: leakage_affine_d,leakage_current_d
+    real(real64) :: leakage_p,leakage_q,leakage_affine
     real(real64) :: rho_affine,rho_published,publication_delta
     real(real32) :: keff_published,min_published_flux
-    integer :: min_group,min_snapshot,min_region
+    integer :: min_group,min_snapshot,min_region,g,s,il
     character(len=24) :: report_prefix
     character(len=12) :: input_carrier,output_carrier
     character(len=8) :: latest_input,latest_output,previous_output
+    logical :: current_screened_mode
+
+    current_screened_mode=.false.
+    if (present(x4aa2_screened_mode)) &
+      current_screened_mode=x4aa2_screened_mode
 
     if ((u_mode.and.(post_aa1_mode.or.rolling_mode.or. &
           rolling_next_mode.or.x4_history_mode.or.x4z_history_mode.or. &
-          zu_history_mode)).or. &
+          zu_history_mode.or.current_screened_mode)).or. &
         (post_aa1_mode.and.(rolling_mode.or.rolling_next_mode.or. &
-          x4_history_mode.or.x4z_history_mode.or.zu_history_mode)).or. &
+          x4_history_mode.or.x4z_history_mode.or.zu_history_mode.or. &
+          current_screened_mode)).or. &
         (rolling_mode.and.(rolling_next_mode.or.x4_history_mode.or. &
-          x4z_history_mode.or.zu_history_mode)).or. &
+          x4z_history_mode.or.zu_history_mode.or.current_screened_mode)).or. &
         (rolling_next_mode.and.(x4_history_mode.or.x4z_history_mode.or. &
-          zu_history_mode)).or. &
-        (x4_history_mode.and.(x4z_history_mode.or.zu_history_mode)).or. &
-        (x4z_history_mode.and.zu_history_mode)) &
+          zu_history_mode.or.current_screened_mode)).or. &
+        (x4_history_mode.and.(x4z_history_mode.or.zu_history_mode.or. &
+          current_screened_mode)).or. &
+        (x4z_history_mode.and.(zu_history_mode.or.current_screened_mode)).or. &
+        (zu_history_mode.and.current_screened_mode)) &
       call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
-    if (zu_history_mode) then
+    if (current_screened_mode) then
+      input_carrier='AA2-RAW-FLUX'
+      output_carrier='AA1-RAW-FLUX'
+      report_prefix='RANK2-CURRENT-QVWX-AA1'
+      latest_input='W'
+      latest_output='X'
+      previous_output='V'
+      call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Q', &
+        'X4-RAW-FLUX')
+    else if (zu_history_mode) then
       input_carrier='U-RAW-FLUX'
       output_carrier='V2-RAW-FLUX'
       report_prefix='RANK2-LATEST-QV-AA1'
@@ -1005,6 +1034,51 @@ contains
         (.not.ieee_is_finite(weight_x2))) &
       call fail('NON-FINITE NEXT MODAL-AA1 WEIGHT.')
 
+    if (current_screened_mode) then
+      if (q_sq <= 0.0_real64) &
+        call fail('INVALID CURRENT SCREENED MODAL RESIDUAL.')
+      modal_affine_sq=weight_x2**2*p_sq+beta**2*q_sq+ &
+        2.0_real64*weight_x2*beta*p_dot_q
+      if ((.not.ieee_is_finite(modal_affine_sq)).or. &
+          (modal_affine_sq < 0.0_real64)) &
+        call fail('INVALID CURRENT SCREENED MODAL DIRECTION.')
+      modal_affine_norm=sqrt(modal_affine_sq)
+      modal_current_norm=sqrt(q_sq)
+
+      leakage_affine_sq=0.0_real64
+      leakage_current_sq=0.0_real64
+      leakage_affine_d=0.0_real64
+      leakage_current_d=0.0_real64
+      do s=1,state_x1%dims(3)
+        do g=1,state_x1%dims(2)
+          il=(s-1)*state_x1%dims(2)+g
+          leakage_p=state_x2%leakage(il)-state_x1%leakage(il)
+          leakage_q=state_z%leakage(il)-state_y%leakage(il)
+          leakage_affine=weight_x2*leakage_p+beta*leakage_q
+          leakage_affine_sq=leakage_affine_sq+ &
+            state_x1%height(s)*leakage_affine**2
+          leakage_current_sq=leakage_current_sq+ &
+            state_x1%height(s)*leakage_q**2
+          leakage_affine_d=max(leakage_affine_d,abs(leakage_affine))
+          leakage_current_d=max(leakage_current_d,abs(leakage_q))
+        enddo
+      enddo
+      if ((.not.ieee_is_finite(leakage_affine_sq)).or. &
+          (leakage_affine_sq < 0.0_real64).or. &
+          (.not.ieee_is_finite(leakage_current_sq)).or. &
+          (leakage_current_sq <= 0.0_real64).or. &
+          (.not.ieee_is_finite(leakage_affine_d)).or. &
+          (.not.ieee_is_finite(leakage_current_d)).or. &
+          (leakage_current_d <= 0.0_real64)) &
+        call fail('INVALID CURRENT SCREENED LEAKAGE DIRECTION.')
+      leakage_affine_norm=sqrt(leakage_affine_sq)
+      leakage_current_norm=sqrt(leakage_current_sq)
+      if ((modal_affine_norm >= modal_current_norm).or. &
+          (leakage_affine_norm >= leakage_current_norm).or. &
+          (leakage_affine_d >= leakage_current_d)) &
+        call fail('CURRENT AA1 PARAMETER-FREE DIRECTION GATE FAILED.')
+    endif
+
     allocate(affine_a(size(state_x2%coordinates)))
     affine_a=weight_x2*state_x2%coordinates+beta*state_z%coordinates
     if (any(.not.ieee_is_finite(affine_a))) &
@@ -1070,6 +1144,20 @@ contains
     write(6,'(A,I0)') &
       trim(report_prefix)//' STRICT-POSITIVE PUBLISHED POINTS ', &
       positive_count_expected
+    if (current_screened_mode) then
+      call write_real64_metric(trim(report_prefix)// &
+        ' MODAL AFFINE L2/CURRENT',modal_affine_norm/modal_current_norm)
+      call write_real64_metric(trim(report_prefix)// &
+        ' LEAKAGE AFFINE L2/CURRENT SAME-MODAL-BETA', &
+        leakage_affine_norm/leakage_current_norm)
+      call write_real64_metric(trim(report_prefix)// &
+        ' LEAKAGE AFFINE DL/CURRENT SAME-MODAL-BETA', &
+        leakage_affine_d/leakage_current_d)
+      write(6,'(A)') trim(report_prefix)// &
+        ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
+      write(6,'(A)') trim(report_prefix)// &
+        ' PARAMETER-FREE DIRECTION GATE PASS'
+    endif
     write(6,'(A)') trim(report_prefix)// &
       ' FIXED-RANK2-BUNDLE BITWISE PASS'
     write(6,'(A)') trim(report_prefix)//' PUBLICATION-Q BITWISE PASS'

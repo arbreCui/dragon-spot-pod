@@ -51,6 +51,10 @@ current_aa2_map_runner_path = (
     ITERATIVE / "run_rank2_current_aa2_map.sh"
 )
 current_aa2_map_runner = current_aa2_map_runner_path.read_text()
+qvwx_map_runner_path = (
+    ITERATIVE / "run_rank2_current_qvwx_aa1_map.sh"
+)
+qvwx_map_runner = qvwx_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -143,6 +147,12 @@ current_aa2_map_manifest = (
 ).read_text()
 current_aa2_map_result = (
     ITERATIVE / "rank2_current_aa2_map_result.md"
+).read_text()
+qvwx_map_policy = (
+    ITERATIVE / "rank2_current_qvwx_aa1_map_policy.md"
+).read_text()
+qvwx_map_manifest = (
+    ITERATIVE / "rank2_current_qvwx_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -1112,6 +1122,69 @@ require(current_aa2_bad_activation.returncode == 2 and
         current_aa2_bad_activation.stderr ==
         "SPOT-RANK2-CURRENT-AA2-MAP ERROR: activation must be 0 or 1.\n",
         "current-AA2-map activation gate changed")
+
+qvwx_rows = [line.split() for line in qvwx_map_manifest.splitlines()
+             if line.strip() and not line.startswith("#")]
+require(qvwx_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-qvwx-aa1-map-parent-v1",
+        "QVWX map manifest version changed")
+require(tuple(row[0] for row in qvwx_rows) == roles,
+        "QVWX map manifest roles changed")
+require(qvwx_rows[4][1] ==
+        "012ccd8e428e7a819ce41cec70eab90745e92dc1bb95735a35631f3ef0e2057d",
+        "QVWX proposal AX parent changed")
+require(qvwx_rows[5][1] ==
+        "8942bf5ca0c2f551200dcf78508093a34da39636c5fe57f167a05b4d1da37504",
+        "QVWX proposal snapshots parent changed")
+require(qvwx_map_runner.index("RUN_RANK2_CURRENT_QVWX_AA1_MAP=") <
+        qvwx_map_runner.index("ROOT=$("),
+        "QVWX map default-off gate must precede repository access")
+for token in (
+    "rank2_current_qvwx_aa1_map_parent.tsv",
+    "rank2_current_qvwx_aa1_map_policy.md",
+    "iterative-rank2-current-qvwx-aa1-candidate",
+    "iterative-rank2-current-qvwx-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+):
+    require(token in qvwx_map_runner,
+            f"QVWX map runner binding missing: {token}")
+require(qvwx_map_runner.count("run_continuation_short.sh") == 1,
+        "QVWX map common host invocation count is not one")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_map_runner),
+        "QVWX map retry loop is forbidden")
+require("run_bounded_dragon.py" not in qvwx_map_runner and
+        "DRAGON_BIN" not in qvwx_map_runner,
+        "QVWX map wrapper must not launch Dragon directly")
+require("spot-rank2-current-qvwx-aa1-map" in
+        (ROOT / "Makefile").read_text(), "QVWX map Make target is missing")
+for token in ("R_\\rho", "R_L", "R_a", "D_L", "diagnostic only",
+              "AA(2) is skipped", "no retry"):
+    require(token in qvwx_map_policy,
+            f"QVWX map policy contract missing: {token}")
+qvwx_default_off = subprocess.run(
+    ["sh", str(qvwx_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_QVWX_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(qvwx_default_off.returncode == 0 and
+        qvwx_default_off.stderr == "" and
+        qvwx_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-QVWX-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "QVWX map default-off terminal changed")
+qvwx_bad_activation = subprocess.run(
+    ["sh", str(qvwx_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_QVWX_AA1_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(qvwx_bad_activation.returncode == 2 and
+        qvwx_bad_activation.stdout == "" and
+        qvwx_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-QVWX-AA1-MAP ERROR: activation must be 0 or 1.\n",
+        "QVWX map activation gate changed")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

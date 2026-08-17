@@ -22,6 +22,9 @@ consecutive_manifest = (
 ptu_manifest = (
     ITERATIVE / "rank2_current_ptu_aa1_candidate_inputs.tsv"
 ).read_text()
+qvwx_manifest = (
+    ITERATIVE / "rank2_current_qvwx_aa1_candidate_inputs.tsv"
+).read_text()
 latest_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_candidate_inputs.tsv"
 ).read_text()
@@ -66,6 +69,9 @@ consecutive_runner = (
 ).read_text()
 ptu_runner = (
     ITERATIVE / "run_rank2_current_ptu_aa1_candidate.sh"
+).read_text()
+qvwx_runner = (
+    ITERATIVE / "run_rank2_current_qvwx_aa1_candidate.sh"
 ).read_text()
 latest_runner = (
     ITERATIVE / "run_rank2_latest_modal_aa1_candidate.sh"
@@ -180,6 +186,22 @@ require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in ptu_rows),
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in ptu_rows),
         "PTU manifest path escapes the repository")
+
+qvwx_rows = [line.split() for line in qvwx_manifest.splitlines()
+             if line.strip() and not line.startswith("#")]
+qvwx_roles = ("q", "v", "w", "x", "x_snapshots", "basis_reference")
+require(qvwx_manifest.splitlines()[0] ==
+        "# spot-rank2-current-qvwx-aa1-candidate-inputs-v1",
+        "QVWX manifest version changed")
+require(tuple(row[0] for row in qvwx_rows) == qvwx_roles,
+        "QVWX manifest roles changed")
+require(all(len(row) == 3 for row in qvwx_rows),
+        "QVWX manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in qvwx_rows),
+        "QVWX manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in qvwx_rows),
+        "QVWX manifest path escapes the repository")
 
 latest_rows = [line.split() for line in latest_manifest.splitlines()
                if line.strip() and not line.startswith("#")]
@@ -785,6 +807,34 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", ptu_runner),
 require("spot-rank2-current-ptu-aa1-candidate" in
         (ROOT / "Makefile").read_text(), "PTU Make target is missing")
 
+for token in (
+    "--next-x4aa2-screened",
+    "RANK2-CURRENT-QVWX-AA1",
+    "AA2-RAW-FLUX",
+    "AA1-RAW-FLUX",
+    "PARAMETER-FREE DIRECTION GATE PASS",
+):
+    require(token in builder, f"QVWX builder contract missing: {token}")
+    require(token in checker, f"QVWX checker contract missing: {token}")
+for token in (
+    "rank2_current_qvwx_aa1_candidate_inputs.tsv",
+    "--next-x4aa2-screened q.xsm v.xsm w.xsm x.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(token in qvwx_runner, f"QVWX runner binding missing: {token}")
+qvwx_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", qvwx_runner
+)
+require(qvwx_expected == [
+    "012ccd8e428e7a819ce41cec70eab90745e92dc1bb95735a35631f3ef0e2057d",
+    "8942bf5ca0c2f551200dcf78508093a34da39636c5fe57f167a05b4d1da37504",
+], "QVWX output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_runner),
+        "QVWX runner retry loops are forbidden")
+require("spot-rank2-current-qvwx-aa1-candidate" in
+        (ROOT / "Makefile").read_text(), "QVWX Make target is missing")
+
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
@@ -1007,7 +1057,8 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
         "rolling-next-AA1 runner retry loops are forbidden")
 
 combined = "\n".join((builder, checker, runner, next_runner,
-                       u_runner, consecutive_runner, ptu_runner, latest_runner,
+                       u_runner, consecutive_runner, ptu_runner, qvwx_runner,
+                       latest_runner,
                        latest_next_runner, recovery_runner, qv_runner,
                        qsvw_runner,
                        post_runner,
@@ -1016,5 +1067,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: thirteen hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: fourteen hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")
