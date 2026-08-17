@@ -5,31 +5,34 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The standard full-Gram candidate from $z^+-z$ and $d-c$ was materialized as
-$c_{\mathrm{next}}=0.4877144455z^++0.5122855545d$ and evaluated exactly
-once.  Its strict terminals, independent checker, and 21/21 receipt pass.
-For $e=G_2(c_{\mathrm{next}})$, the physical residual
-$e-c_{\mathrm{next}}$ is
+After the preceding AA(1) and AA(2) leakage-direction failures, the latest
+true return was advanced exactly once by $f=G_2(e)$.  Its strict terminals,
+independent checker, and 21/21 receipt pass.  The physical residual $f-e$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223492\times10^{-8},\,7.7772159\times10^{-4},\,
-1.1395023\times10^{-6}\ \mathrm{cm}^{-1},\,
-1.2668577\times10^{-6}).
+(1.2844697\times10^{-7},\,8.3183078\times10^{-4},\,
+1.2187811\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.5051965\times10^{-6}).
 $$
 
-The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Against $d-c$, $R_L$
-and $D_L$ increase by 56.83%, while $R_a$ decreases by 3.23%; this single
-step is not an asymptotic convergence or divergence result.
+The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Against
+$e-c_{\mathrm{next}}$, $R_L$, $D_L$, and $R_a$ increase by 6.96%, 6.96%,
+and 18.81%; this single step is not an asymptotic convergence or divergence
+result.
 
-The next AA(1) ratios are `0.99707`, `1.48910`, and `1.51855`; the leakage
-screens fail.  The then-permitted AA(2) ratios are `0.99515`, `1.36547`, and
-`1.34349`, so it also fails.  The classification is
-`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`; no proposal is published and no
-second map is run.  See
-[rank2_current_zpcd_aa1_map_result.md](rank2_current_zpcd_aa1_map_result.md).
+The next AA(1) direction ratios are `0.05942`, `0.19596`, and `0.28717`,
+so `AA1_DIRECTION_PASS_AA2_SKIPPED`.  No durable proposal is published and
+no second map is run.  See
+[rank2_current_zpcd_e_picard_map_result.md](rank2_current_zpcd_e_picard_map_result.md).
 
 ## Active files
+
+- `rank2_current_zpcd_e_picard_map_parent.tsv`,
+  `rank2_current_zpcd_e_picard_map_policy.md`,
+  `run_rank2_current_zpcd_e_picard_map.sh`,
+  `rank2_current_zpcd_e_picard_map_result.md`: latest single direct Picard
+  map and the following parameter-free AA(1) direction decision.
 
 - `rank2_current_zpcd_aa1_candidate_inputs.tsv`,
   `run_rank2_current_zpcd_aa1_candidate.sh`,
@@ -37,7 +40,7 @@ second map is run.  See
   `rank2_current_zpcd_aa1_map_parent.tsv`,
   `rank2_current_zpcd_aa1_map_policy.md`,
   `run_rank2_current_zpcd_aa1_map.sh`,
-  `rank2_current_zpcd_aa1_map_result.md`: latest minimum-order AA(1)
+  `rank2_current_zpcd_aa1_map_result.md`: preceding minimum-order AA(1)
   proposal, its single valid but unconverged map, and the following
   AA(1)/AA(2) direction rejection.
 

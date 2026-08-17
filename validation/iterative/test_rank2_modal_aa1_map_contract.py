@@ -206,6 +206,9 @@ zpcd_e_picard_policy = (
 zpcd_e_picard_manifest = (
     ITERATIVE / "rank2_current_zpcd_e_picard_map_parent.tsv"
 ).read_text()
+zpcd_e_picard_result = (
+    ITERATIVE / "rank2_current_zpcd_e_picard_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1571,6 +1574,27 @@ require(zpcd_e_bad_activation.returncode == 2 and
         "SPOT-RANK2-CURRENT-ZPCD-E-PICARD-MAP ERROR: activation must be "
         "0 or 1.\n",
         "ZPCD-E Picard activation gate changed")
+for token in (
+    "Map classification: `VALID_NOT_MET`",
+    "ce6be5b9c18201bd24af1c9318c830a6e0b8f6b3",
+    "1.284469730578053",
+    "8.318307793557387",
+    "1.218781108036637",
+    "1.505196532244700",
+    "21/21 receipt",
+    "0.54317069088638781",
+    "0.45682930911361219",
+    "3.3988810913576900e-12",
+    "0.059424727376440133",
+    "0.19596354669013863",
+    "0.28717479223258224",
+    "AA1_DIRECTION_PASS_AA2_SKIPPED",
+    "AA(2) is not evaluated",
+    "No durable next",
+    "no second physical map is run",
+):
+    require(token in zpcd_e_picard_result,
+            f"ZPCD-E Picard result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
