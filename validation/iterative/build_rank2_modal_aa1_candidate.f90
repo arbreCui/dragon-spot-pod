@@ -55,11 +55,13 @@ program build_rank2_modal_aa1_candidate
   if (command_argument_count() == 10) then
     call get_command_argument(1,mode)
     if (trim(mode) == '--rolling-aa2') then
-      call build_rolling_aa2_candidate(.false.)
+      call build_rolling_aa2_candidate(.false.,.false.)
     else if (trim(mode) == '--rolling-aa2-next') then
-      call build_rolling_aa2_candidate(.true.)
+      call build_rolling_aa2_candidate(.true.,.false.)
+    else if (trim(mode) == '--current-aa2') then
+      call build_rolling_aa2_candidate(.false.,.true.)
     else
-      error stop 'ten-argument mode requires rolling-aa2 mode'
+      error stop 'ten-argument mode requires an AA2 mode'
     endif
     stop
   else if (command_argument_count() == 8) then
@@ -115,6 +117,8 @@ program build_rank2_modal_aa1_candidate
       '--rolling-aa2 x0 x0p x1 x1p x2 x2p x2p_snap '// &
       'out_ax out_snap or '// &
       '--rolling-aa2-next x0 x0p x1 x1p x2 x2p x2p_snap '// &
+      'out_ax out_snap or '// &
+      '--current-aa2 w x c d y e e_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
       '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap or '// &
@@ -361,8 +365,8 @@ program build_rank2_modal_aa1_candidate
 
 contains
 
-  subroutine build_rolling_aa2_candidate(rolling_next_mode)
-    logical, intent(in) :: rolling_next_mode
+  subroutine build_rolling_aa2_candidate(rolling_next_mode,current_mode)
+    logical, intent(in) :: rolling_next_mode,current_mode
     character(len=1024) :: aa2_path(9)
     type(canonical_state) :: in0,out0,in1,out1,in2,out2
     type(c_ptr) :: out2_snap,aa2_staged_ax,aa2_staged_snap
@@ -391,7 +395,22 @@ contains
     call require_fresh_path(aa2_path(8))
     call require_fresh_path(aa2_path(9))
 
-    if (rolling_next_mode) then
+    if (current_mode.and.rolling_next_mode) &
+      error stop 'AA2 modes are mutually exclusive'
+    if (current_mode) then
+      aa2_report_prefix='RANK2-CURRENT-AA2'
+      aa2_label0='X'
+      aa2_label1='D'
+      aa2_label2='E'
+      call load_state(trim(aa2_path(1)),in0,'current w input')
+      call load_state(trim(aa2_path(2)),out0,'current x output')
+      call load_state(trim(aa2_path(3)),in1,'current c input', &
+        .true.,'X4-RAW-FLUX')
+      call load_state(trim(aa2_path(4)),out1,'current d output')
+      call load_state(trim(aa2_path(5)),in2,'current y input', &
+        .true.,'Z-RAW-FLUX')
+      call load_state(trim(aa2_path(6)),out2,'current e output')
+    else if (rolling_next_mode) then
       aa2_report_prefix='RANK2-ROLLING-AA2-NEXT'
       aa2_label0='XROLL-PLUS'
       aa2_label1='XROLL2-PLUS'

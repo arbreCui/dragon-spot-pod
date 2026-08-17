@@ -28,6 +28,8 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_modal_aa2_candidate_contract.py"
 sh -n "$ROOT/validation/iterative/run_rank2_modal_aa2_candidate.sh"
+sh -n "$ROOT/validation/iterative/run_rank2_current_aa2_candidate.sh"
+sh -n "$ROOT/validation/iterative/run_rank2_current_aa2_map.sh"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_rank2_modal_aa1_map_contract.py"
 sh -n "$ROOT/validation/iterative/run_continuation_short.sh"

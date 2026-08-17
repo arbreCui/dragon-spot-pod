@@ -84,6 +84,7 @@ program check_rank2_modal_aa1_candidate
   integer :: argument_count,i,g,s,il,min_group,min_snapshot,min_region
   logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
   logical :: rolling_next_mode,x4_history_mode,rolling_aa2_next_mode
+  logical :: current_aa2_mode
   logical :: x4z_history_mode,zu_history_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
@@ -102,6 +103,7 @@ program check_rank2_modal_aa1_candidate
   x4z_history_mode=.false.
   zu_history_mode=.false.
   rolling_aa2_next_mode=.false.
+  current_aa2_mode=.false.
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
   consecutive_current_mode=.false.
@@ -109,8 +111,10 @@ program check_rank2_modal_aa1_candidate
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--rolling-aa2-next') then
       rolling_aa2_next_mode=.true.
+    else if (trim(mode_argument) == '--current-aa2') then
+      current_aa2_mode=.true.
     else if (trim(mode_argument) /= '--rolling-aa2') then
-      call fail('ELEVEN ARGUMENTS REQUIRE A ROLLING-AA2 MODE.')
+      call fail('ELEVEN ARGUMENTS REQUIRE AN AA2 MODE.')
     endif
     do i=1,10
       call get_command_argument(i+1,path(i))
@@ -121,7 +125,7 @@ program check_rank2_modal_aa1_candidate
     call check_rolling_aa2_candidate(trim(path(1)),trim(path(2)), &
       trim(path(3)),trim(path(4)),trim(path(5)),trim(path(6)), &
       trim(path(7)),trim(path(8)),trim(path(9)),trim(path(10)), &
-      rolling_aa2_next_mode)
+      rolling_aa2_next_mode,current_aa2_mode)
     stop
   else if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
@@ -366,12 +370,12 @@ contains
 
   subroutine check_rolling_aa2_candidate(in0_name,out0_name,in1_name, &
       out1_name,in2_name,out2_name,out2_snap_name,basis_name, &
-      proposal_name,proposal_snap_name,rolling_next_mode)
+      proposal_name,proposal_snap_name,rolling_next_mode,current_mode)
     character(len=*), intent(in) :: in0_name,out0_name,in1_name,out1_name
     character(len=*), intent(in) :: in2_name,out2_name,out2_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name
     character(len=*), intent(in) :: proposal_snap_name
-    logical, intent(in) :: rolling_next_mode
+    logical, intent(in) :: rolling_next_mode,current_mode
     type(canonical_state) :: in0,out0,in1,out1,in2,out2,proposal_state
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -387,7 +391,22 @@ contains
     character(len=12) :: aa2_label0,aa2_label1,aa2_label2
     character(len=12) :: aa2_latest_input,aa2_latest_output
 
-    if (rolling_next_mode) then
+    if (current_mode.and.rolling_next_mode) &
+      call fail('AA2 MODES ARE MUTUALLY EXCLUSIVE.')
+    if (current_mode) then
+      aa2_report_prefix='RANK2-CURRENT-AA2'
+      aa2_label0='X'
+      aa2_label1='D'
+      aa2_label2='E'
+      aa2_latest_input='Y'
+      aa2_latest_output='E'
+      call load_state(in0_name,1,in0,'CURRENT W INPUT')
+      call load_state(out0_name,1,out0,'CURRENT X OUTPUT')
+      call load_state(in1_name,2,in1,'CURRENT C INPUT','X4-RAW-FLUX')
+      call load_state(out1_name,1,out1,'CURRENT D OUTPUT')
+      call load_state(in2_name,2,in2,'CURRENT Y INPUT','Z-RAW-FLUX')
+      call load_state(out2_name,1,out2,'CURRENT E OUTPUT')
+    else if (rolling_next_mode) then
       aa2_report_prefix='RANK2-ROLLING-AA2-NEXT'
       aa2_label0='XROLL-PLUS'
       aa2_label1='XROLL2-PLUS'
