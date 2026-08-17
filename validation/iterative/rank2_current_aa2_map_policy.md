@@ -60,3 +60,12 @@ The dimensional \(D_L\), balance records and offline AA(2) predictions are
 diagnostics only. This single map cannot by itself establish asymptotic
 convergence, Anderson superiority, rank adequacy or physical accuracy, and
 it starts no successor proposal or map.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`d6bf4365b04a4c3b9ffd41e112b44c8123f6c106`. All four strict solve
+terminals, the independent audit and the 21/21 payload receipt passed. The
+runtime classification is `VALID_NOT_MET`: \(R_\rho\) passes, while
+\(R_L\) and \(R_a\) fail the unchanged gate. No retry or successor was
+started. See [rank2_current_aa2_map_result.md](rank2_current_aa2_map_result.md).

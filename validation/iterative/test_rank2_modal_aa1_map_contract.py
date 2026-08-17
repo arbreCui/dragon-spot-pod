@@ -141,6 +141,9 @@ current_aa2_map_policy = (
 current_aa2_map_manifest = (
     ITERATIVE / "rank2_current_aa2_map_parent.tsv"
 ).read_text()
+current_aa2_map_result = (
+    ITERATIVE / "rank2_current_aa2_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1526,6 +1529,21 @@ for token in (
 ):
     require(token in current_aa2_map_policy,
             f"current-AA2-map policy boundary missing: {token}")
+
+for token in (
+    "Classification: `VALID_NOT_MET`",
+    "d6bf4365b04a4c3b9ffd41e112b44c8123f6c106",
+    "6.422348086676521e-8",
+    "6.224270631088404e-4",
+    r"9.119685273617506\times10^{-7}",
+    "2.118720252720744e-6",
+    "51.57%",
+    "359.85%",
+    "21/21 payload receipt",
+    "No successor",
+):
+    require(token in current_aa2_map_result,
+            f"current-AA2-map result boundary missing: {token}")
 
 print("RANK2 MODAL AA1 MAP CONTRACT PASS: "
       "X2/Z/V/U/X3/X4/AA1/XNP/XRP/AA2 proposal paths remain distinct; "
