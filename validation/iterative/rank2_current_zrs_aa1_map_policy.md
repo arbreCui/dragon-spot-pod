@@ -51,3 +51,23 @@ classification:
 
 Preparing and default-off checking this stage runs no Dragon or transport
 calculation and creates no map-result artifact.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`6e7b6ecc3102bf76423807bb8908107b69e06bca`.  All four strict solve
+terminals, the independent `proposal-x4` checker, and the 21/21 receipt
+passed.  The returned raw defects are
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,4.8961883\times10^{-4},\,
+7.1738032\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.6606584\times10^{-6}).
+\]
+
+Only $R_\rho$ passes the unchanged gate, so the result is
+`VALID_NOT_MET`.  A cross-input comparison with the preceding direct map
+shows smaller leakage and modal defects, but is not a contraction claim.
+No retry, fallback, AA(2), or successor was started.  See
+[rank2_current_zrs_aa1_map_result.md](rank2_current_zrs_aa1_map_result.md).

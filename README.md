@@ -107,20 +107,23 @@ The latest physical map is valid but not converged:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223492\times10^{-8},\,7.4792564\times10^{-4},\,
-1.0958465\times10^{-6}\ \mathrm{cm}^{-1},\,
-3.6424204\times10^{-6}).
+(6.4223492\times10^{-8},\,4.8961883\times10^{-4},\,
+7.1738032\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.6606584\times10^{-6}).
 \]
 
-This was one direct Picard map from the newest valid return after both
-standard AA(1) and sliding AA(2) failed the fixed leakage-direction screen.
-All strict terminals, independent checks, and the 21/21 receipt passed.
-Against the preceding genuinely consecutive residual, leakage decreased by
-7.67% while the modal defect increased by 307.72%; these observed adjacent
-ratios are not asymptotic contraction factors.  Therefore $R_\rho$ passes
-while $R_L$ and $R_a$ fail the unchanged $5\times10^{-7}$ AND gate.  SPOT
-has a verified physical iteration path but no accepted rank-two fixed point.
-See [the latest map result](validation/iterative/rank2_current_zplus_picard_map_result.md).
+The latest two genuine returned-state residuals produced the standard
+unregularized AA(1) proposal
+$p=0.8068677617r+0.1931322383s$.  Its modal, leakage-$L_2$, and dimensional
+leakage direction ratios were all below one, so the minimum-order rule
+authorized AA(1) and did not form AA(2).  Exactly one $p^+=G_2(p)$ then ran
+with online radial recomputation.  All strict terminals, independent checks,
+and the 21/21 receipt passed.  Only $R_\rho$ passes the unchanged
+$5\times10^{-7}$ AND gate; $R_L$ and $R_a$ fail.  A comparison with the
+preceding map shows smaller defect magnitudes at this different input, but
+is not a contraction claim.  SPOT therefore has a verified physical
+iteration path but no accepted rank-two fixed point.  See
+[the latest map result](validation/iterative/rank2_current_zrs_aa1_map_result.md).
 
 ## Historical validation record
 
@@ -1085,7 +1088,7 @@ empirical parameter, or successor was started.  See the
 [decision](validation/iterative/rank2_current_xyqz_decision_result.md) and
 [real map](validation/iterative/rank2_current_z_picard_map_result.md).
 
-## Latest direct Picard continuation
+## Historical direct Picard continuation — immediately preceding window
 
 The latest two genuine residuals $z-q$ and $r-z$ first defined standard AA(1):
 its modal direction ratio was `0.489069`, but its leakage height-$L_2$ and
@@ -1115,3 +1118,38 @@ leakage/modal tradeoff, not proof of a cycle, convergence, or divergence.
 No retry, fallback, empirical parameter, or successor was started.  See the
 [decision](validation/iterative/rank2_current_qzzr_decision_result.md) and
 [real map](validation/iterative/rank2_current_zplus_picard_map_result.md).
+
+## Latest returned-state AA(1) continuation
+
+The latest genuine residuals $r-z$ and $s-r$ define standard unregularized
+full-Gram AA(1):
+
+\[
+p=0.80686776173198704\,r+0.19313223826801298\,s.
+\]
+
+Its modal, leakage height-$L_2$, and dimensional leakage-direction ratios
+are `0.0551069`, `0.799194`, and `0.787927`.  All three pass the fixed
+parameter-free screen, so the minimum-order rule authorizes AA(1) and does
+not form AA(2).  The same weights act on $(a,\rho,L)$ before the existing
+publication rules.
+
+Exactly one $p^+=G_2(p)$ completed with three fresh online radial solves and
+one axial solve.  Strict terminals, the independent checker, and the 21/21
+receipt pass.  The raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,4.8961883\times10^{-4},\,
+7.1738032\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.6606584\times10^{-6}).
+\]
+
+The unchanged AND gate gives `VALID_NOT_MET`: only $R_\rho$ passes.  Relative
+to the preceding direct map evaluated at the different parent $r$, the
+defect magnitudes $R_L$, $D_L$, and $R_a$ are lower by 34.54%, 34.54%, and
+26.95%.  This cross-input comparison is not a contraction factor or proof
+of convergence.  No retry, fallback, AA(2), empirical parameter, or
+successor was started.  See the
+[proposal](validation/iterative/rank2_current_zrs_aa1_candidate_result.md)
+and [real map](validation/iterative/rank2_current_zrs_aa1_map_result.md).
