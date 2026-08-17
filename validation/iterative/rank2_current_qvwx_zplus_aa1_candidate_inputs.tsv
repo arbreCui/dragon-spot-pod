@@ -1,0 +1,6 @@
+# spot-rank2-current-qvwx-zplus-aa1-candidate-inputs-v1
+y_aa1_pub	012ccd8e428e7a819ce41cec70eab90745e92dc1bb95735a35631f3ef0e2057d	validation/artifacts/iterative-rank2-current-qvwx-aa1-candidate/proposal_axial.xsm
+z	2c2649c4317cc98fb84b0fa441d14d62834736db9dd1b52857004b34804761cb	validation/artifacts/iterative-rank2-current-qvwx-aa1-map/candidate_axial.xsm
+z_plus	0f2bf2c721097ab85afd0946500578c4fd8feaac657e8302515ed1d494ffa5b3	validation/artifacts/iterative-rank2-current-qvwx-z-picard-map/candidate_axial.xsm
+z_plus_snapshots	e070b086b8a6aac41108b6cbd27918cc906e77e5c329a442fbac04ac7e2b7e95	validation/artifacts/iterative-rank2-current-qvwx-z-picard-map/candidate_snapshots.xsm
+basis_reference	2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8	validation/artifacts/iterative-rank2-basis/rank2_basis.xsm

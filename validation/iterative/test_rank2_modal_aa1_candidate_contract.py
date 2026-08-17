@@ -25,6 +25,9 @@ ptu_manifest = (
 qvwx_manifest = (
     ITERATIVE / "rank2_current_qvwx_aa1_candidate_inputs.tsv"
 ).read_text()
+qvwx_zplus_manifest = (
+    ITERATIVE / "rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv"
+).read_text()
 latest_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_candidate_inputs.tsv"
 ).read_text()
@@ -72,6 +75,9 @@ ptu_runner = (
 ).read_text()
 qvwx_runner = (
     ITERATIVE / "run_rank2_current_qvwx_aa1_candidate.sh"
+).read_text()
+qvwx_zplus_runner = (
+    ITERATIVE / "run_rank2_current_qvwx_zplus_aa1_candidate.sh"
 ).read_text()
 latest_runner = (
     ITERATIVE / "run_rank2_latest_modal_aa1_candidate.sh"
@@ -835,6 +841,55 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_runner),
 require("spot-rank2-current-qvwx-aa1-candidate" in
         (ROOT / "Makefile").read_text(), "QVWX Make target is missing")
 
+qvwx_zplus_rows = [
+    line.split() for line in qvwx_zplus_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(qvwx_zplus_manifest.splitlines()[0] ==
+        "# spot-rank2-current-qvwx-zplus-aa1-candidate-inputs-v1",
+        "QVWX-ZPLUS manifest version changed")
+require(tuple(row[0] for row in qvwx_zplus_rows) == (
+    "y_aa1_pub", "z", "z_plus", "z_plus_snapshots", "basis_reference"
+), "QVWX-ZPLUS manifest roles changed")
+require(all(len(row) == 3 for row in qvwx_zplus_rows),
+        "QVWX-ZPLUS manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in qvwx_zplus_rows),
+        "QVWX-ZPLUS manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in qvwx_zplus_rows),
+        "QVWX-ZPLUS manifest path escapes the repository")
+for token in (
+    "--consecutive-qvwx-zplus-screened",
+    "RANK2-QVWX-ZPLUS-AA1",
+    "AA1-RAW-FLUX",
+    "PARAMETER-FREE DIRECTION GATE PASS",
+):
+    require(token in builder,
+            f"QVWX-ZPLUS builder contract missing: {token}")
+    require(token in checker,
+            f"QVWX-ZPLUS checker contract missing: {token}")
+for token in (
+    "rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv",
+    "--consecutive-qvwx-zplus-screened y.xsm z.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(token in qvwx_zplus_runner,
+            f"QVWX-ZPLUS runner binding missing: {token}")
+qvwx_zplus_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", qvwx_zplus_runner
+)
+require(qvwx_zplus_expected == [
+    "5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c",
+    "3c216fff2be1336c29e584e4b8b0d6d9eca537f80c6a5fc07bf08f4ad509eb84",
+], "QVWX-ZPLUS output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_zplus_runner),
+        "QVWX-ZPLUS runner retry loops are forbidden")
+require("spot-rank2-current-qvwx-zplus-aa1-candidate" in
+        (ROOT / "Makefile").read_text(),
+        "QVWX-ZPLUS Make target is missing")
+
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
@@ -1058,6 +1113,7 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
 
 combined = "\n".join((builder, checker, runner, next_runner,
                        u_runner, consecutive_runner, ptu_runner, qvwx_runner,
+                       qvwx_zplus_runner,
                        latest_runner,
                        latest_next_runner, recovery_runner, qv_runner,
                        qsvw_runner,
@@ -1067,5 +1123,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: fourteen hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: fifteen hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

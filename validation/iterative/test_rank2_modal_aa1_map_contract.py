@@ -59,6 +59,10 @@ qvwx_z_picard_runner_path = (
     ITERATIVE / "run_rank2_current_qvwx_z_picard_map.sh"
 )
 qvwx_z_picard_runner = qvwx_z_picard_runner_path.read_text()
+qvwx_zplus_map_runner_path = (
+    ITERATIVE / "run_rank2_current_qvwx_zplus_aa1_map.sh"
+)
+qvwx_zplus_map_runner = qvwx_zplus_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -169,6 +173,12 @@ qvwx_z_picard_manifest = (
 ).read_text()
 qvwx_z_picard_result = (
     ITERATIVE / "rank2_current_qvwx_z_picard_map_result.md"
+).read_text()
+qvwx_zplus_map_policy = (
+    ITERATIVE / "rank2_current_qvwx_zplus_aa1_map_policy.md"
+).read_text()
+qvwx_zplus_map_manifest = (
+    ITERATIVE / "rank2_current_qvwx_zplus_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -1295,6 +1305,74 @@ for token in (
 ):
     require(token in qvwx_z_picard_result,
             f"QVWX-Z Picard result boundary missing: {token}")
+
+qvwx_zplus_map_rows = [
+    line.split() for line in qvwx_zplus_map_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(qvwx_zplus_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-qvwx-zplus-aa1-map-parent-v1",
+        "QVWX-ZPLUS AA1 map manifest version changed")
+require(tuple(row[0] for row in qvwx_zplus_map_rows) == roles,
+        "QVWX-ZPLUS AA1 map manifest roles changed")
+require(tuple(row[1] for row in qvwx_zplus_map_rows[-2:]) == (
+    "5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c",
+    "3c216fff2be1336c29e584e4b8b0d6d9eca537f80c6a5fc07bf08f4ad509eb84",
+), "QVWX-ZPLUS AA1 map parent changed")
+require(qvwx_zplus_map_runner.index(
+        "RUN_RANK2_CURRENT_QVWX_ZPLUS_AA1_MAP=") <
+        qvwx_zplus_map_runner.index("ROOT=$("),
+        "QVWX-ZPLUS AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-qvwx-zplus-aa1-candidate",
+    "rank2_current_qvwx_zplus_aa1_map_parent.tsv",
+    "rank2_current_qvwx_zplus_aa1_map_policy.md",
+    "iterative-rank2-current-qvwx-zplus-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in qvwx_zplus_map_runner,
+            f"QVWX-ZPLUS AA1 map runner missing: {token}")
+require(qvwx_zplus_map_runner.count("run_continuation_short.sh") == 1,
+        "QVWX-ZPLUS AA1 map runner must delegate once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_zplus_map_runner),
+        "QVWX-ZPLUS AA1 map retry loop is forbidden")
+require("run_bounded_dragon.py" not in qvwx_zplus_map_runner and
+        "DRAGON_BIN" not in qvwx_zplus_map_runner,
+        "QVWX-ZPLUS wrapper must not launch Dragon directly")
+for token in (
+    "R_\\rho", "R_L", "R_a", "diagnostic only", "no retry",
+    "three online radial", "one axial solve", "d-c",
+    "second physical map",
+):
+    require(token in qvwx_zplus_map_policy,
+            f"QVWX-ZPLUS AA1 map policy missing: {token}")
+require("spot-rank2-current-qvwx-zplus-aa1-map" in
+        (ROOT / "Makefile").read_text(),
+        "QVWX-ZPLUS AA1 map target is missing")
+qvwx_zplus_default_off = subprocess.run(
+    ["sh", str(qvwx_zplus_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_QVWX_ZPLUS_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(qvwx_zplus_default_off.returncode == 0 and
+        qvwx_zplus_default_off.stderr == "" and
+        qvwx_zplus_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-QVWX-ZPLUS-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "QVWX-ZPLUS AA1 map default-off terminal changed")
+qvwx_zplus_bad_activation = subprocess.run(
+    ["sh", str(qvwx_zplus_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_QVWX_ZPLUS_AA1_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(qvwx_zplus_bad_activation.returncode == 2 and
+        qvwx_zplus_bad_activation.stdout == "" and
+        qvwx_zplus_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-QVWX-ZPLUS-AA1-MAP ERROR: activation must be "
+        "0 or 1.\n",
+        "QVWX-ZPLUS AA1 map activation gate changed")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
