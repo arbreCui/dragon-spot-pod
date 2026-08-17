@@ -180,6 +180,9 @@ qvwx_zplus_map_policy = (
 qvwx_zplus_map_manifest = (
     ITERATIVE / "rank2_current_qvwx_zplus_aa1_map_parent.tsv"
 ).read_text()
+qvwx_zplus_map_result = (
+    ITERATIVE / "rank2_current_qvwx_zplus_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1373,6 +1376,25 @@ require(qvwx_zplus_bad_activation.returncode == 2 and
         "SPOT-RANK2-CURRENT-QVWX-ZPLUS-AA1-MAP ERROR: activation must be "
         "0 or 1.\n",
         "QVWX-ZPLUS AA1 map activation gate changed")
+for token in (
+    "Map classification: `VALID_NOT_MET`",
+    "246a4cf48e7b2babbf04c089d9d09a0074f079e2",
+    "6.422348086676521",
+    "4.958958534883100",
+    "7.265771273523569",
+    "1.309164007655304",
+    "21/21 receipt",
+    "0.48771444550122545",
+    "0.51228555449877455",
+    "0.99411674241637549",
+    "0.93884958302279575",
+    "0.79362266755606770",
+    "AA1_DIRECTION_PASS_AA2_SKIPPED",
+    "next proposal is not materialized",
+    "no second map is run",
+):
+    require(token in qvwx_zplus_map_result,
+            f"QVWX-ZPLUS AA1 map result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

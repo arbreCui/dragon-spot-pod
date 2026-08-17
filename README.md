@@ -103,38 +103,42 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-After the previous AA(1) map returned $z$, the rejected AA(1)/AA(2) window
-was not forced.  Instead, one direct Picard continuation $z^+=G_2(z)$ was
-evaluated with three fresh online radial fixed-source solves and one axial
-solve.  Every strict terminal, independent check, and the 21/21 receipt
-passed:
+The standard full-Gram candidate formed from the genuine residuals $z-y$
+and $z^+-z$ was materialized and evaluated exactly once:
+
+$$
+c=0.4151118145\,z+0.5848881855\,z^+,\qquad d=G_2(c).
+$$
+
+Its three fresh online radial fixed-source solves, one axial solve, strict
+terminals, independent checker, and 21/21 receipt all passed.  The physical
+residual $d-c$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(0,\,5.3246461\times10^{-4},\,
-7.8015728\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3099571\times10^{-6}).
+(6.4223481\times10^{-8},\,4.9589585\times10^{-4},\,
+7.2657713\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3091640\times10^{-6}).
 $$
 
-Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  From the
-genuinely consecutive residual $z-y$ to $z^+-z$, $R_L$ and $D_L$ increased
-by 40.87%, while $R_a$ decreased by 28.87%.  This one-step tradeoff is not
-an asymptotic convergence or divergence claim.  SPOT still has no accepted
+Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  Relative to
+the preceding genuine residual $z^+-z$, $R_L$, $D_L$, and $R_a$ decreased
+by 6.87%, 6.87%, and 0.061%.  This is a favorable single step, not an
+asymptotic contraction or convergence result.  SPOT still has no accepted
 rank-two fixed point.
 
 The next minimum-order decision uses only those two genuine residuals.
 Standard full-Gram AA(1) gives
 
 $$
-y_{\mathrm{AA1}}=0.4151118145\,z+0.5848881855\,z^+.
+c_{\mathrm{next}}=0.4877144455\,z^++0.5122855545\,d.
 $$
 
 Its modal, leakage height-$L_2$, and same-weight maximum-$|D_L|$ direction
-ratios are `0.09336`, `0.42215`, and `0.61066`, all strictly below one.
-Thus the offline classification is `AA1_DIRECTION_PASS_AA2_SKIPPED`.
-This batch stops there: the proposal is not materialized and a second map
-is not run.  See
-[the latest map and direction result](validation/iterative/rank2_current_qvwx_z_picard_map_result.md).
+ratios are `0.99412`, `0.93885`, and `0.79362`, all strictly below one.
+Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`, although the modal margin is small.
+The next proposal is not materialized and a second map is not run.  See
+[the latest map and direction result](validation/iterative/rank2_current_qvwx_zplus_aa1_map_result.md).
 
 ## Historical validation record
 

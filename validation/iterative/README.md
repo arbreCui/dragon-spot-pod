@@ -5,36 +5,45 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-After the previous AA(1)/AA(2) window failed its leakage directions, exactly
-one direct Picard continuation $z^+=G_2(z)$ ran from the latest returned
-state.  Its strict terminals, independent checker, and 21/21 receipt pass.
-The physical map returns
+The standard full-Gram candidate from $z-y$ and $z^+-z$ was materialized as
+$c=0.4151118145z+0.5848881855z^+$ and evaluated exactly once.  Its strict
+terminals, independent checker, and 21/21 receipt pass.  For $d=G_2(c)$,
+the physical residual $d-c$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(0,\,5.3246461\times10^{-4},\,
-7.8015728\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3099571\times10^{-6}).
+(6.4223481\times10^{-8},\,4.9589585\times10^{-4},\,
+7.2657713\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3091640\times10^{-6}).
 $$
 
-The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Against the genuinely
-consecutive residual $z-y$, $R_L$ and $D_L$ increase by 40.87% while $R_a$
-decreases by 28.87%; this single step is not an asymptotic convergence or
-divergence claim.
+The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Against $z^+-z$,
+$R_L$, $D_L$, and $R_a$ decrease by 6.87%, 6.87%, and 0.061%; this single
+step is not an asymptotic convergence result.
 
-The next standard full-Gram AA(1), using only $z-y$ and $z^+-z$, gives
-$0.4151118145z+0.5848881855z^+$.  Its three parameter-free direction ratios
-are `0.09336`, `0.42215`, and `0.61066`, so the current decision is
-`AA1_DIRECTION_PASS_AA2_SKIPPED`.  The proposal is not materialized and no
-second map is run in this batch.  See
-[rank2_current_qvwx_z_picard_map_result.md](rank2_current_qvwx_z_picard_map_result.md).
+The next standard full-Gram AA(1), using only $z^+-z$ and $d-c$, gives
+$0.4877144455z^++0.5122855545d$.  Its three direction ratios are `0.99412`,
+`0.93885`, and `0.79362`, so `AA1_DIRECTION_PASS_AA2_SKIPPED`.  The modal
+margin is small; this is authorization, not convergence evidence.  The next
+proposal is not materialized and no second map is run.  See
+[rank2_current_qvwx_zplus_aa1_map_result.md](rank2_current_qvwx_zplus_aa1_map_result.md).
 
 ## Active files
+
+- `rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv`,
+  `run_rank2_current_qvwx_zplus_aa1_candidate.sh`,
+  `rank2_current_qvwx_zplus_aa1_candidate_result.md`,
+  `rank2_current_qvwx_zplus_aa1_map_parent.tsv`,
+  `rank2_current_qvwx_zplus_aa1_map_policy.md`,
+  `run_rank2_current_qvwx_zplus_aa1_map.sh`,
+  `rank2_current_qvwx_zplus_aa1_map_result.md`: latest minimum-order AA(1)
+  proposal, its single valid but unconverged map, and the following offline
+  AA(1) direction decision.
 
 - `rank2_current_qvwx_z_picard_map_parent.tsv`,
   `rank2_current_qvwx_z_picard_map_policy.md`,
   `run_rank2_current_qvwx_z_picard_map.sh`,
-  `rank2_current_qvwx_z_picard_map_result.md`: latest single direct Picard
+  `rank2_current_qvwx_z_picard_map_result.md`: preceding single direct Picard
   map and the following offline minimum-order AA(1) direction decision.
 
 - `rank2_current_wxyz_decision_result.md`: preceding minimum-order AA(1)/AA(2)

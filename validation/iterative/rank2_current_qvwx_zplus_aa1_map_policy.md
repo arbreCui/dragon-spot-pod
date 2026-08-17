@@ -2,7 +2,7 @@
 
 Date: 2026-08-17
 
-Status: `PREPARED_NOT_RUN`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 The genuine consecutive residuals $z-y$ and $z^+-z$ give the unique
 standard full-Gram AA(1) proposal
@@ -44,3 +44,28 @@ The host may return only `INVALID_MAP`, `TOLERANCE_MET`, or
 `VALID_NOT_MET`.  If the map is valid, its physical residual is $d-c$.
 Neither $d-z^+$ nor $d-z$ is a fixed-point residual.  This batch permits no
 second physical map.
+
+## Frozen result
+
+The host was activated exactly once from source commit
+`246a4cf48e7b2babbf04c089d9d09a0074f079e2`.  All four strict terminals,
+the independent `proposal-aa1` checker, and the 21/21 receipt passed.  The
+physical residual $d-c$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.422348086676521\times10^{-8},\,
+4.958958534883100\times10^{-4},\,
+7.265771273523569\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.309164007655304\times10^{-6}).
+$$
+
+Only $R_\rho$ passes the original AND gate, hence `VALID_NOT_MET`.  There
+was no retry or automatic successor.
+
+The next offline standard AA(1), formed only from $z^+-z$ and $d-c$, has
+weights `0.48771444550122545` and `0.51228555449877455`.  Its modal,
+leakage height-$L_2$, and same-weight maximum-$|D_L|$ ratios are
+`0.99411674241637549`, `0.93884958302279575`, and
+`0.79362266755606770`.  Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`.  The next
+proposal is not materialized and no second map is run.
