@@ -93,6 +93,9 @@ latest_next_recovery_result = (
 latest_recovery_policy = (
     ITERATIVE / "rank2_latest_modal_aa1_recovery_map_policy.md"
 ).read_text()
+latest_recovery_result = (
+    ITERATIVE / "rank2_latest_modal_aa1_recovery_map_result.md"
+).read_text()
 latest_recovery_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_recovery_map_parent.tsv"
 ).read_text()
@@ -1298,6 +1301,21 @@ for token in (
 ):
     require(token in latest_recovery_policy,
             f"latest-recovery-map policy boundary missing: {token}")
+for token in (
+    "Classification: `VALID_NOT_MET`",
+    "2e05b2ad17c568fa6b7a2359d0ae752962ab8409",
+    "1.284469730578053e-7",
+    "4.207912846624437e-4",
+    r"6.165355443954468\times10^{-7}",
+    "2.653141867393721e-6",
+    "57bdd4825d61f1947dafe1b8564aaae21748cc09ee519a70dd2745616ddb932a",
+    "21/21 receipt",
+    "22 regular files, no symbolic",
+    "does not meet the convergence target",
+    "No retry, new proposal or successor map was started",
+):
+    require(token in latest_recovery_result,
+            f"latest-recovery-map result boundary missing: {token}")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(label in post_policy,

@@ -205,9 +205,10 @@ generic, default-off continuation host.
   independent `U-RAW-FLUX` carrier and snapshot-lifecycle audit.
 - `rank2_latest_modal_aa1_recovery_map_parent.tsv`,
   `rank2_latest_modal_aa1_recovery_map_policy.md`,
-  `run_rank2_latest_modal_aa1_recovery_map.sh`: minimal default-off host for
-  one unchanged physical map from that proposal; preparation runs no Dragon
-  and permits no retry or successor.
+  `run_rank2_latest_modal_aa1_recovery_map.sh`,
+  `rank2_latest_modal_aa1_recovery_map_result.md`: minimal default-off host,
+  frozen policy and independently checked `VALID_NOT_MET` result for exactly
+  one unchanged physical map from that proposal, with no retry or successor.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -853,12 +854,25 @@ $(A,\rho,L)$; the complete raw AX/snapshot carrier comes from $u$ and is
 marked `U-RAW-FLUX`, without mixing raw fluxes. The checker reproduces the
 publication bitwise, preserves the `Q(t) -> u` lifecycle, and accepts all
 8880 points. The result is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon,
-stopping defect or convergence decision was created. A minimal default-off
-`proposal-u` host is now prepared for one unchanged $G_2(Q(s))$ evaluation;
-it has not been activated and defines no retry or successor. See
+stopping defect or convergence decision was created. The minimal
+`proposal-u` host was then activated exactly once for the unchanged
+$G_2(Q(s))$. All four strict terminals and the independent checker passed,
+but
+
+\[
+(R_\rho,R_L,R_a)=
+(1.2844697306\times10^{-7},
+4.2079128466\times10^{-4},
+2.6531418674\times10^{-6})
+\]
+
+fails the unchanged AND gate through $R_L$ and $R_a$. The result is
+`VALID_NOT_MET`; no retry, proposal or successor map was started. See
 [rank2_latest_modal_aa1_recovery_candidate_result.md](rank2_latest_modal_aa1_recovery_candidate_result.md).
 Its frozen contract is
 [rank2_latest_modal_aa1_recovery_map_policy.md](rank2_latest_modal_aa1_recovery_map_policy.md).
+The completed map record is
+[rank2_latest_modal_aa1_recovery_map_result.md](rank2_latest_modal_aa1_recovery_map_result.md).
 
 ## Current boundary
 
@@ -886,9 +900,9 @@ standard modal AA(1) proposal $Q(t)$ has now been evaluated exactly once by
 the unchanged physical map. It is valid, but $R_L$ and $R_a$ still fail the
 declared gate. A new read-only AA(1) history calculation selected one
 parameter-free $Q(s)$, which has now been materialized and independently
-checked offline. It has not been evaluated by the physical map. One minimal
-default-off host is prepared but not activated; no retry or successor map is
-defined. The offline
+checked offline and evaluated exactly once by the physical map. The map is
+valid but $R_L$ and $R_a$ remain above tolerance. No retry, new proposal or
+successor map is defined. The offline
 direction audits do not identify rank two or finite inner error as the cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The

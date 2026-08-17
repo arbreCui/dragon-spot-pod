@@ -722,10 +722,23 @@ REAL32 publication arithmetic, preserves the `Q(t) -> u` snapshot
 lifecycle, and accepts 8880/8880 positive reconstructed points. The 9/9
 receipt passes. Its classification is
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
-convergence decision was produced. A minimal default-off `U-RAW-FLUX` host is
-now prepared for exactly one unchanged evaluation $G_2(Q(s))$ with 120/420
-second process bounds. Preparation started no Dragon process and defines no
-retry or successor. See
+convergence decision was produced. The minimal `U-RAW-FLUX` host was then
+activated exactly once for the unchanged $G_2(Q(s))$, with 120/420-second
+process bounds. All four strict terminals, normal ends, the independent
+checker and 21/21 receipt passed. The raw result is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(1.2844697306\times10^{-7},\,
+4.2079128466\times10^{-4},\,
+6.1653554440\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.6531418674\times10^{-6}).
+$$
+
+The classification is `VALID_NOT_MET`: $R_L$ and $R_a$ fail the unchanged
+AND gate. There was no retry, new proposal or successor map. See
 [validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md).
 The frozen pre-run contract is
 [validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md](validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md).
+The completed result is
+[validation/iterative/rank2_latest_modal_aa1_recovery_map_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_map_result.md).
