@@ -104,20 +104,18 @@ The latest physical map is valid but not converged:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,6.2242706\times10^{-4},\,
-9.1196853\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.1187203\times10^{-6}).
+(6.4223481\times10^{-8},\,4.0362910\times10^{-4},\,
+5.9138983\times10^{-7}\ \mathrm{cm}^{-1},\,
+3.4760357\times10^{-6}).
 \]
 
-The map used the unique standard AA(2) state from the latest three real map
-pairs. Its negative affine weight was not clipped or damped. All strict
-terminals and independent checks passed. Relative to the preceding map,
-leakage decreased by 51.57%, but the modal defect increased by 359.85%.
-Therefore \(R_\rho\) passes while \(R_L\) and \(R_a\) fail the unchanged
-\(5\times10^{-7}\) AND gate. SPOT has a verified physical iteration path
-but no accepted rank-two fixed point. See
-[the AA(2) candidate](validation/iterative/rank2_current_aa2_candidate_result.md)
-and [the real map](validation/iterative/rank2_current_aa2_map_result.md).
+This was one direct Picard continuation from the preceding valid AA(2)
+return; it introduced no new coefficient or proposal. All strict terminals
+and independent checks passed. Leakage decreased by another 35.15%, but the
+modal defect increased by 64.06%. Therefore \(R_\rho\) passes while
+\(R_L\) and \(R_a\) fail the unchanged \(5\times10^{-7}\) AND gate.
+SPOT has a verified physical iteration path but no accepted rank-two fixed
+point. See [the direct-map result](validation/iterative/rank2_current_aa2_picard_map_result.md).
 
 ## Historical validation record
 

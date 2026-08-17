@@ -5,34 +5,31 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest bounded three-step experiment is complete. The standard
-full-Gram AA(2) solution from the real $w\mapsto x$, $c\mapsto d$ and
-$y\mapsto e$ pairs was published without clipping:
-
-\[
-q=0.72283238162036112x
--0.23768716180315402d
-+0.51485478018279296e.
-\]
-
-The proposal passed 8880/8880 positivity and its independent receipt.
-Exactly one fresh physical map then passed every strict inner terminal and
-independent check:
+The latest bounded three-step experiment used the valid current-AA(2)
+return directly, without constructing another affine proposal. Exactly one
+fresh direct Picard map passed every strict inner terminal and independent
+check:
 
 \[
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,6.2242706\times10^{-4},\,
-9.1196853\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.1187203\times10^{-6}).
+(6.4223481\times10^{-8},\,4.0362910\times10^{-4},\,
+5.9138983\times10^{-7}\ \mathrm{cm}^{-1},\,
+3.4760357\times10^{-6}).
 \]
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$
-fail. Leakage decreased by 51.57% from the preceding map, but the modal
-defect increased by 359.85%. No retry or successor was started. See
-[rank2_current_aa2_candidate_result.md](rank2_current_aa2_candidate_result.md)
-and [rank2_current_aa2_map_result.md](rank2_current_aa2_map_result.md).
+fail. Leakage decreased by another 35.15%, but the modal defect increased by
+64.06%. Thus direct substitution did not resolve the leakage/modal conflict.
+No retry or successor was started. See
+[rank2_current_aa2_picard_map_result.md](rank2_current_aa2_picard_map_result.md).
 
 ## Active files
+
+- `rank2_current_aa2_picard_map_parent.tsv`,
+  `rank2_current_aa2_picard_map_policy.md`,
+  `run_rank2_current_aa2_picard_map.sh`,
+  `rank2_current_aa2_picard_map_result.md`: the completed one-shot direct
+  Picard continuation from the current-AA(2) return.
 
 - `rank2_current_aa2_candidate_inputs.tsv`,
   `run_rank2_current_aa2_candidate.sh`,

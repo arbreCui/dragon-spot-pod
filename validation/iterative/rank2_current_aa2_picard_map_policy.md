@@ -46,3 +46,12 @@ terminals, the independent continued-state audit and the receipt checks pass:
 
 Preparing this stage performs no Dragon or transport calculation and creates
 no result artifact.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`613eb436752c02091d2f10eaf4f136125e9480c1`. All strict solve terminals,
+the independent continued-state audit and the 21/21 payload receipt passed.
+The result is `VALID_NOT_MET`: \(R_\rho\) passes, while \(R_L\) and
+\(R_a\) fail. No retry or successor was started. See
+[rank2_current_aa2_picard_map_result.md](rank2_current_aa2_picard_map_result.md).
