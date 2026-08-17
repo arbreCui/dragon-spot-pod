@@ -663,6 +663,12 @@ before the 80-second process bound. The classification is therefore
 `INVALID_MAP` with reason `TIMEOUT_BEFORE_TERMINAL`: no candidate, stopping
 defect, or scientific map result exists, and there was no retry. See
 [validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md).
+The subsequent no-Dragon timing census found 14 strict historical completions
+with the identical axial deck under the established 420-second cap; their
+recorded CPU times are 132--141 seconds. Because exact wall times were not
+recorded, this shows only that the 80-second cap was operationally aggressive,
+not how long $Q(t)$ would require or that it would complete under a larger
+cap.
 The attempt record and frozen pre-run policy are
 [validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md](validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md)
 and

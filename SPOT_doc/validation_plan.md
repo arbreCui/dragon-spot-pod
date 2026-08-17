@@ -477,12 +477,18 @@ pass. This offline stage itself generated no stopping defect.
 
 The unchanged $G_2(Q(t))$ was subsequently attempted exactly once with no
 retry. The carrier preflight and all three online radial strict terminals
-passed. The axial solve entered `FLU` but produced no strict terminal before
-the predeclared 80-second process bound, so the only valid classification is
+passed. The axial route reached the `AX_CURRENT := FLU` invocation but
+produced neither a FLU begin marker nor a strict terminal before the
+predeclared 80-second process bound, so the only valid classification is
 `INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`. No candidate, $R_\rho$, $R_L$,
 $D_L$, or $R_a$ was published. A process timeout is not evidence of physical
 nonconvergence; see
 [../validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md](../validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md).
+A no-Dragon timing census found 14 strict historical completions with the
+identical axial deck under the established 420-second process cap. Their CPU
+records span 132--141 seconds, but exact wall times are unavailable; the
+census therefore supports only that 80 seconds was insufficient for this
+attempt, not a minimum safe bound or a completion prediction.
 
 The solver-independent proposal and acceptance contract is now frozen and
 passes exact-arithmetic manufactured tests. A full exact-Newton step is used

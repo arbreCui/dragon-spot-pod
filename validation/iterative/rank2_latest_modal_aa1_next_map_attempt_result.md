@@ -60,9 +60,10 @@ a complete map or a successor state.
 
 ## Axial timeout
 
-The axial log records `CONT-AXIAL-BEGIN`, the unchanged tolerance, and entry
-into `FLU`. The bounded host terminated the process group after 80 seconds
-with
+The axial log records `CONT-AXIAL-BEGIN`, the unchanged tolerance, and the
+executed `AX_CURRENT := FLU` invocation. It contains no
+`->@BEGIN MODULE : FLU:` marker. The bounded host terminated the process
+group after 80 seconds with
 
 ```text
 RAW-MOC-CAPTURE PROCESS FAIL: timeout after 80 seconds; no scientific result
@@ -96,6 +97,29 @@ was not evaluated. This result is neither `VALID_NOT_MET` nor
 The timeout shows only that the axial solve did not reach and publish its
 strict terminal within the predeclared 80-second process bound. It is not
 evidence of mathematical or physical nonconvergence.
+
+## Post-attempt timing census
+
+A subsequent no-Dragon census found 14 valid historical rank-two maps using
+the byte-identical axial deck
+`190a1a14ae862db6b19fb485fd8ae1361fc4bbc0ddc5e3dd48d1e8ed80323e5f`.
+All 14 used the established 420-second axial process cap and reached a
+strict terminal. Their recorded total axial CPU times span 132--141 seconds
+with median 137 seconds; `IEXTF` spans 187--234 with median 210, and
+`ITERF=1` in every case. Terminal `EUNK` spans
+`3.12193379e-7`--`4.81873997e-7`, and `EINR` spans
+`4.47429045e-7`--`4.87475631e-7`. The closest prior latest-modal map
+recorded 136 CPU seconds and `IEXTF=187`; another prior `proposal-z` map
+recorded 138 CPU seconds and `IEXTF=205`.
+
+The completed historical logs do not record exact wall duration, and the
+partial $Q(t)$ log contains no iteration counter or CPU record. Therefore
+CPU time cannot be converted into a minimum safe wall bound, host load cannot
+be assigned as the cause, and completion under a larger cap cannot be
+guaranteed. The rigorous operational statement is only that this attempt did
+not complete within 80 wall seconds, while other inputs using the identical
+deck completed under the already exercised 420-second cap. This census does not
+change the `INVALID_MAP` classification or authorize another attempt.
 
 ## Frozen evidence
 

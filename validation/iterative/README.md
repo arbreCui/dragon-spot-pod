@@ -792,6 +792,10 @@ passed, but the axial solve produced no strict terminal before its 80-second
 process bound. This is `INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`, not a new
 stopping result or proof of physical nonconvergence. No retry occurred; see
 [rank2_latest_modal_aa1_next_map_attempt_result.md](rank2_latest_modal_aa1_next_map_attempt_result.md).
+Its no-Dragon timing census found 14 strict historical completions with the
+identical deck under the existing 420-second cap and CPU records of 132--141
+seconds. Exact wall times are unavailable, so no minimum safe bound or future
+completion is inferred.
 
 ## Current boundary
 
