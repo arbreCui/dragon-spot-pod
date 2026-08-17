@@ -27,6 +27,10 @@ latest_next_recovery_runner_path = (
     ITERATIVE / "run_rank2_latest_modal_aa1_next_map_recovery.sh"
 )
 latest_next_recovery_runner = latest_next_recovery_runner_path.read_text()
+latest_recovery_runner_path = (
+    ITERATIVE / "run_rank2_latest_modal_aa1_recovery_map.sh"
+)
+latest_recovery_runner = latest_recovery_runner_path.read_text()
 post_runner_path = ITERATIVE / "run_rank2_modal_aa1_post_map.sh"
 post_runner = post_runner_path.read_text()
 rolling_map_runner_path = (
@@ -85,6 +89,12 @@ latest_next_recovery_policy = (
 ).read_text()
 latest_next_recovery_result = (
     ITERATIVE / "rank2_latest_modal_aa1_next_map_recovery_result.md"
+).read_text()
+latest_recovery_policy = (
+    ITERATIVE / "rank2_latest_modal_aa1_recovery_map_policy.md"
+).read_text()
+latest_recovery_manifest = (
+    ITERATIVE / "rank2_latest_modal_aa1_recovery_map_parent.tsv"
 ).read_text()
 recovery_history_result = (
     ITERATIVE / "rank2_latest_modal_aa1_recovery_history_result.md"
@@ -254,6 +264,30 @@ require(latest_next_rows[4][1] ==
 require(latest_next_rows[5][1] ==
         "8414fb2298bcd9797f5d1b0613d985413c7c87d533feb80e8f24360471c05b38",
         "latest-next proposal snapshot parent changed")
+
+latest_recovery_rows = [
+    line.split() for line in latest_recovery_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(latest_recovery_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-modal-aa1-recovery-map-parent-v1",
+        "latest-recovery-map manifest version changed")
+require(tuple(row[0] for row in latest_recovery_rows) == roles,
+        "latest-recovery-map manifest roles changed")
+require(all(len(row) == 3 for row in latest_recovery_rows),
+        "latest-recovery-map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in latest_recovery_rows),
+        "latest-recovery-map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in latest_recovery_rows),
+        "latest-recovery-map manifest path escapes the repository")
+require(latest_recovery_rows[4][1] ==
+        "53f6bb3e48ef583778e54ce0e21ff68f5f63d3d3857c3211c0803bc9a2ef0193",
+        "latest-recovery proposal AX parent changed")
+require(latest_recovery_rows[5][1] ==
+        "3404d4295b8f71fa20d9b565fc88c0631184775dcac336be2f50e797999cefaa",
+        "latest-recovery proposal snapshot parent changed")
 
 post_rows = [line.split() for line in post_manifest.splitlines()
              if line.strip() and not line.startswith("#")]
@@ -676,6 +710,53 @@ require(latest_next_recovery_bad_activation.returncode == 2 and
         "SPOT-RANK2-LATEST-MODAL-AA1-NEXT-MAP-RECOVERY ERROR: activation "
         "must be 0 or 1.\n",
         "recovery activation gate changed")
+
+require(latest_recovery_runner.index(
+        "RUN_RANK2_LATEST_MODAL_AA1_RECOVERY_MAP=") <
+        latest_recovery_runner.index("ROOT=$("),
+        "latest-recovery-map default-off gate must precede repository access")
+for token in (
+    "rank2_latest_modal_aa1_recovery_map_parent.tsv",
+    "rank2_latest_modal_aa1_recovery_map_policy.md",
+    "iterative-rank2-latest-modal-aa1-recovery-candidate",
+    "iterative-rank2-latest-modal-aa1-recovery-map",
+    "CHECKER_MODE=proposal-u",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=420",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in latest_recovery_runner,
+            f"latest-recovery-map runner binding missing: {token}")
+require(latest_recovery_runner.count("run_continuation_short.sh") == 1,
+        "latest-recovery-map common host invocation count is not one")
+require("run_bounded_dragon.py" not in latest_recovery_runner and
+        "DRAGON_BIN" not in latest_recovery_runner,
+        "latest-recovery-map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", latest_recovery_runner),
+        "latest-recovery-map retry loop is forbidden")
+latest_recovery_default_off = subprocess.run(
+    ["sh", str(latest_recovery_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_LATEST_MODAL_AA1_RECOVERY_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(latest_recovery_default_off.returncode == 0 and
+        latest_recovery_default_off.stderr == "" and
+        latest_recovery_default_off.stdout ==
+        "SPOT-RANK2-LATEST-MODAL-AA1-RECOVERY-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "latest-recovery-map default-off terminal changed")
+latest_recovery_bad_activation = subprocess.run(
+    ["sh", str(latest_recovery_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_LATEST_MODAL_AA1_RECOVERY_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(latest_recovery_bad_activation.returncode == 2 and
+        latest_recovery_bad_activation.stdout == "" and
+        latest_recovery_bad_activation.stderr ==
+        "SPOT-RANK2-LATEST-MODAL-AA1-RECOVERY-MAP ERROR: activation must "
+        "be 0 or 1.\n",
+        "latest-recovery-map activation gate changed")
 bad_activation = subprocess.run(
     ["sh", str(consecutive_runner_path)], cwd=ROOT,
     env={"RUN_RANK2_MODAL_AA1_CONSECUTIVE_MAP": "2"},
@@ -916,7 +997,7 @@ require(aa2_rolling_next_bad_activation.returncode == 2 and
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
-        "proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
+        "proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
         "proposal-aa2"
         in common,
         "common host does not accept all proposal modes")
@@ -926,6 +1007,8 @@ require("./check_one_map_xsm --proposal-z" in common,
         "z-carrier proposal checker dispatch is missing")
 require("./check_one_map_xsm --proposal-v" in common,
         "v-carrier proposal checker dispatch is missing")
+require("./check_one_map_xsm --proposal-u" in common,
+        "u-carrier proposal checker dispatch is missing")
 require("./check_one_map_xsm --proposal-x3" in common,
         "x3-carrier proposal checker dispatch is missing")
 require("./check_one_map_xsm --proposal-x4" in common,
@@ -942,6 +1025,8 @@ require("--proposal-parent-z" in common,
         "z-carrier parent preflight is missing")
 require("--proposal-parent-v" in common,
         "v-carrier parent preflight is missing")
+require("--proposal-parent-u" in common,
+        "u-carrier parent preflight is missing")
 require("--proposal-parent-x3" in common,
         "x3-carrier parent preflight is missing")
 require("--proposal-parent-x4" in common,
@@ -958,6 +1043,8 @@ require(common.index("--proposal-parent-z") < common.index("MAP_STARTED=1"),
         "z-carrier parent preflight must precede map execution")
 require(common.index("--proposal-parent-v") < common.index("MAP_STARTED=1"),
         "v-carrier parent preflight must precede map execution")
+require(common.index("--proposal-parent-u") < common.index("MAP_STARTED=1"),
+        "u-carrier parent preflight must precede map execution")
 require(common.index("--proposal-parent-x3") <
         common.index("MAP_STARTED=1"),
         "x3-carrier parent preflight must precede map execution")
@@ -982,6 +1069,7 @@ for token in (
     "trim(mode) == '--proposal'",
     "trim(mode) == '--proposal-z'",
     "trim(mode) == '--proposal-v'",
+    "trim(mode) == '--proposal-u'",
     "trim(mode) == '--proposal-x3'",
     "trim(mode) == '--proposal-x4'",
     "trim(mode) == '--proposal-aa1'",
@@ -990,6 +1078,7 @@ for token in (
     "trim(mode) == '--proposal-aa2'",
     "trim(mode) == '--proposal-parent-z'",
     "trim(mode) == '--proposal-parent-v'",
+    "trim(mode) == '--proposal-parent-u'",
     "trim(mode) == '--proposal-parent-x3'",
     "trim(mode) == '--proposal-parent-x4'",
     "trim(mode) == '--proposal-parent-aa1'",
@@ -1001,6 +1090,7 @@ for token in (
     "X2-RAW-FLUX",
     "Z-RAW-FLUX",
     "V-RAW-FLUX",
+    "U-RAW-FLUX",
     "X3-RAW-FLUX",
     "X4-RAW-FLUX",
     "AA1-RAW-FLUX",
@@ -1010,6 +1100,7 @@ for token in (
     "RAW-FLUX CARRIER IS NOT X2",
     "RAW-FLUX CARRIER IS NOT Z",
     "RAW-FLUX CARRIER IS NOT V",
+    "RAW-FLUX CARRIER IS NOT U",
     "RAW-FLUX CARRIER IS NOT X3",
     "RAW-FLUX CARRIER IS NOT X4",
     "RAW-FLUX CARRIER IS NOT AA1",
@@ -1074,8 +1165,9 @@ for token in ("AX_CURRENT := FLU:", "AX_CURRENT := SPOSTATE:",
               "AX_CURRENT := SPOXCONV:", "SNAP := SPOLEAK:"):
     require(token in acompact, f"axial physical chain missing: {token}")
 for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
-             latest_next_runner, latest_next_recovery_runner, post_runner,
-             rolling_map_runner, rolling_next_map_runner, radial, axial):
+             latest_next_runner, latest_next_recovery_runner,
+             latest_recovery_runner, post_runner, rolling_map_runner,
+             rolling_next_map_runner, radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
                 f"empirical control present: {forbidden}")
@@ -1194,6 +1286,20 @@ for token in (
             f"recovery-history result boundary missing: {token}")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
+    require(label in latest_recovery_policy,
+            f"latest-recovery-map classification missing: {label}")
+for token in (
+    "PREPARED_NOT_RUN",
+    "U-RAW-FLUX",
+    "120 and 420 seconds",
+    "external",
+    "no retry",
+    "automatic successor",
+):
+    require(token in latest_recovery_policy,
+            f"latest-recovery-map policy boundary missing: {token}")
+
+for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(label in post_policy,
             f"post-map classification missing: {label}")
 require("AA1-RAW-FLUX" in post_policy,
@@ -1245,6 +1351,6 @@ require("starts no successor proposal or map" in
         "rolling-AA2-map automatic-stop boundary is missing")
 
 print("RANK2 MODAL AA1 MAP CONTRACT PASS: "
-      "X2/Z/V/X3/X4/AA1/XNP/XRP/AA2 proposal paths remain distinct; "
+      "X2/Z/V/U/X3/X4/AA1/XNP/XRP/AA2 proposal paths remain distinct; "
       "all hosts are default-off, fixed rank-2 and have no empirical "
       "control.")

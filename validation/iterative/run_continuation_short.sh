@@ -61,11 +61,11 @@ printf '%s\n' "$MAP_PARENT_FILE" |
   rg -q '^[A-Za-z0-9][A-Za-z0-9._-]*$' ||
   fail "MAP_PARENT_FILE must be a safe basename."
 case "$CHECKER_MODE" in
-  initial|continued|reencoded|proposal|proposal-z|proposal-v|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|proposal-aa2) ;;
-  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal, proposal-z, proposal-v, proposal-x3, proposal-x4, proposal-aa1, proposal-xnp, proposal-xrp or proposal-aa2." ;;
+  initial|continued|reencoded|proposal|proposal-z|proposal-v|proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|proposal-aa2) ;;
+  *) fail "CHECKER_MODE must be initial, continued, reencoded, proposal, proposal-z, proposal-v, proposal-u, proposal-x3, proposal-x4, proposal-aa1, proposal-xnp, proposal-xrp or proposal-aa2." ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z|proposal-v|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|proposal-aa2)
+  proposal|proposal-z|proposal-v|proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|proposal-aa2)
     test "$MAP_PARENT_FILE" = parent_axial.xsm ||
       fail "proposal checker modes require MAP_PARENT_FILE=parent_axial.xsm."
     ;;
@@ -245,6 +245,13 @@ case "$CHECKER_MODE" in
         parent_axial.xsm >parent_preflight.log
     )
     ;;
+  proposal-u)
+    (
+      cd "$RADIAL_WORK"
+      "$AXIAL_WORK/check_one_map_xsm" --proposal-parent-u \
+        parent_axial.xsm >parent_preflight.log
+    )
+    ;;
   proposal-x3)
     (
       cd "$RADIAL_WORK"
@@ -293,7 +300,7 @@ case "$CHECKER_MODE" in
     ;;
 esac
 case "$CHECKER_MODE" in
-  proposal|proposal-z|proposal-v|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|proposal-aa2)
+  proposal|proposal-z|proposal-v|proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|proposal-aa2)
     test "$(tail -n 1 "$RADIAL_WORK/parent_preflight.log")" = \
       'ONE-MAP-XSM PROPOSAL-PARENT PRECHECK PASS' ||
       fail "proposal parent preflight did not reach its strict terminal."
@@ -412,6 +419,11 @@ done
       ;;
     proposal-v)
       ./check_one_map_xsm --proposal-v basis_reference.xsm \
+        candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
+        candidate_snapshots.xsm >independent_check.log
+      ;;
+    proposal-u)
+      ./check_one_map_xsm --proposal-u basis_reference.xsm \
         candidate_system.xsm "$MAP_PARENT_FILE" candidate_axial.xsm \
         candidate_snapshots.xsm >independent_check.log
       ;;

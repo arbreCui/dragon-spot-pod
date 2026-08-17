@@ -722,5 +722,10 @@ REAL32 publication arithmetic, preserves the `Q(t) -> u` snapshot
 lifecycle, and accepts 8880/8880 positive reconstructed points. The 9/9
 receipt passes. Its classification is
 `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
-convergence decision was produced, and no map host was added or started. See
+convergence decision was produced. A minimal default-off `U-RAW-FLUX` host is
+now prepared for exactly one unchanged evaluation $G_2(Q(s))$ with 120/420
+second process bounds. Preparation started no Dragon process and defines no
+retry or successor. See
 [validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md).
+The frozen pre-run contract is
+[validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md](validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md).

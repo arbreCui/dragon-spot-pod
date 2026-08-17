@@ -18,6 +18,9 @@ program check_one_map_xsm
   !   check_one_map_xsm --proposal-v basis_reference.xsm \
   !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
   !     returned_snapshots.xsm
+  !   check_one_map_xsm --proposal-u basis_reference.xsm \
+  !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
+  !     returned_snapshots.xsm
   !   check_one_map_xsm --proposal-x3 basis_reference.xsm \
   !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
   !     returned_snapshots.xsm
@@ -37,7 +40,7 @@ program check_one_map_xsm
   !     returned_system.xsm proposal_axial.xsm returned_axial.xsm \
   !     returned_snapshots.xsm
   !   check_one_map_xsm \
-  !     --proposal-parent[-z|-v|-x3|-x4|-aa1|-xnp|-xrp|-aa2] \
+  !     --proposal-parent[-z|-v|-u|-x3|-x4|-aa1|-xnp|-xrp|-aa2] \
   !     proposal_axial.xsm
   !   check_one_map_xsm --directions state6_axial.xsm \
   !     state7_axial.xsm state8_axial.xsm
@@ -143,7 +146,7 @@ program check_one_map_xsm
   type(canonical_state) :: aa1_history_state(4)
   integer :: i,argument_offset
   logical :: continued,reencoded,proposal_mode,proposal_z_mode
-  logical :: proposal_v_mode,proposal_x3_mode,proposal_x4_mode
+  logical :: proposal_v_mode,proposal_u_mode,proposal_x3_mode,proposal_x4_mode
   logical :: proposal_aa1_mode
   logical :: proposal_xnp_mode,proposal_xrp_mode,proposal_aa2_mode
   logical :: proposal_parent_mode
@@ -159,6 +162,7 @@ program check_one_map_xsm
   proposal_mode=.false.
   proposal_z_mode=.false.
   proposal_v_mode=.false.
+  proposal_u_mode=.false.
   proposal_x3_mode=.false.
   proposal_x4_mode=.false.
   proposal_aa1_mode=.false.
@@ -186,6 +190,9 @@ program check_one_map_xsm
     else if (trim(mode) == '--proposal-parent-v') then
       proposal_parent_mode=.true.
       proposal_v_mode=.true.
+    else if (trim(mode) == '--proposal-parent-u') then
+      proposal_parent_mode=.true.
+      proposal_u_mode=.true.
     else if (trim(mode) == '--proposal-parent-x3') then
       proposal_parent_mode=.true.
       proposal_x3_mode=.true.
@@ -206,7 +213,7 @@ program check_one_map_xsm
       proposal_aa2_mode=.true.
     else
       call fail('TWO-ARGUMENT MODE REQUIRES --proposal-parent, '// &
-        '--proposal-parent-z, --proposal-parent-v, '// &
+        '--proposal-parent-z, --proposal-parent-v, --proposal-parent-u, '// &
         '--proposal-parent-x3, --proposal-parent-x4, '// &
         '--proposal-parent-aa1, '// &
         '--proposal-parent-xnp, --proposal-parent-xrp OR '// &
@@ -252,6 +259,9 @@ program check_one_map_xsm
     else if (trim(mode) == '--proposal-v') then
       proposal_mode=.true.
       proposal_v_mode=.true.
+    else if (trim(mode) == '--proposal-u') then
+      proposal_mode=.true.
+      proposal_u_mode=.true.
     else if (trim(mode) == '--proposal-x3') then
       proposal_mode=.true.
       proposal_x3_mode=.true.
@@ -281,7 +291,8 @@ program check_one_map_xsm
       enddo
     else
       call fail('ONLY --continued, --reencoded, --proposal, '// &
-        '--proposal-z, --proposal-v, --proposal-x3, --proposal-x4, '// &
+        '--proposal-z, --proposal-v, --proposal-u, --proposal-x3, '// &
+        '--proposal-x4, '// &
         '--proposal-aa1, '// &
         '--proposal-xnp, --proposal-xrp, --proposal-aa2 OR --mode2 IS '// &
         'ACCEPTED IN '// &
@@ -316,7 +327,8 @@ program check_one_map_xsm
     enddo
   else
     call fail('EXPECTED [--continued|--reencoded|--proposal|--proposal-z|'// &
-      '--proposal-v|--proposal-x3|--proposal-x4|--proposal-aa1|'// &
+      '--proposal-v|--proposal-u|--proposal-x3|--proposal-x4|'// &
+      '--proposal-aa1|'// &
       '--proposal-xnp|'// &
       '--proposal-xrp|--proposal-aa2] '// &
       'BASIS, SYSTEM, '// &
@@ -336,10 +348,12 @@ program check_one_map_xsm
     call load_canonical_state(trim(paths(1)),1,'POD-FIXED',.false., &
       previous_state,'MATERIALIZED PROPOSAL PARENT',.true.,proposal_z_mode, &
       proposal_v_mode,proposal_x3_mode,proposal_aa1_mode,proposal_xnp_mode, &
-      proposal_xrp_mode,proposal_aa2_mode,proposal_x4_mode)
+      proposal_xrp_mode,proposal_aa2_mode,proposal_x4_mode,proposal_u_mode)
     if (any(previous_state%rank /= 2)) &
       call fail('MATERIALIZED PROPOSAL PARENT IS NOT RANK TWO.')
-    if (proposal_x4_mode) then
+    if (proposal_u_mode) then
+      write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT U-CARRIER PASS'
+    else if (proposal_x4_mode) then
       write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT X4-CARRIER PASS'
     else if (proposal_aa2_mode) then
       write(6,'(A)') 'ONE-MAP-XSM PROPOSAL-PARENT AA2-CARRIER PASS'
@@ -582,7 +596,7 @@ program check_one_map_xsm
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
       previous_state,'MATERIALIZED PROPOSAL STATE',.true.,proposal_z_mode, &
       proposal_v_mode,proposal_x3_mode,proposal_aa1_mode,proposal_xnp_mode, &
-      proposal_xrp_mode,proposal_aa2_mode,proposal_x4_mode)
+      proposal_xrp_mode,proposal_aa2_mode,proposal_x4_mode,proposal_u_mode)
   else
     call load_canonical_state(trim(paths(3)),0,'POD-BUILT',.false., &
       previous_state,'STATE ZERO')
@@ -605,6 +619,8 @@ program check_one_map_xsm
     write(6,'(A)') 'ONE-MAP-XSM Z-RAW-FLUX CARRIER INPUT PASS'
   if (proposal_v_mode) &
     write(6,'(A)') 'ONE-MAP-XSM V-RAW-FLUX CARRIER INPUT PASS'
+  if (proposal_u_mode) &
+    write(6,'(A)') 'ONE-MAP-XSM U-RAW-FLUX CARRIER INPUT PASS'
   if (proposal_x3_mode) &
     write(6,'(A)') 'ONE-MAP-XSM X3-RAW-FLUX CARRIER INPUT PASS'
   if (proposal_x4_mode) &
@@ -852,7 +868,8 @@ contains
 
   subroutine load_canonical_state(path,expected_fixb,expected_type, &
       expect_saved_defect,data,owner,proposal_state,z_carrier,v_carrier, &
-      x3_carrier,aa1_carrier,xnp_carrier,xrp_carrier,aa2_carrier,x4_carrier)
+      x3_carrier,aa1_carrier,xnp_carrier,xrp_carrier,aa2_carrier,x4_carrier, &
+      u_carrier)
     character(len=*), intent(in) :: path,expected_type,owner
     integer, intent(in) :: expected_fixb
     logical, intent(in) :: expect_saved_defect
@@ -865,12 +882,14 @@ contains
     logical, intent(in), optional :: xrp_carrier
     logical, intent(in), optional :: aa2_carrier
     logical, intent(in), optional :: x4_carrier
+    logical, intent(in), optional :: u_carrier
     type(canonical_state), intent(out) :: data
     type(c_ptr) :: root
     integer :: g,ngrp,nsnap,ncoef,expected_ncoef,total_basis,total_gram
     logical :: is_proposal,expect_z_carrier,expect_v_carrier
     logical :: expect_x3_carrier,expect_aa1_carrier,expect_xnp_carrier
     logical :: expect_xrp_carrier,expect_aa2_carrier,expect_x4_carrier
+    logical :: expect_u_carrier
     character(len=12) :: marker
 
     is_proposal=.false.
@@ -891,6 +910,13 @@ contains
     if (present(aa2_carrier)) expect_aa2_carrier=aa2_carrier
     expect_x4_carrier=.false.
     if (present(x4_carrier)) expect_x4_carrier=x4_carrier
+    expect_u_carrier=.false.
+    if (present(u_carrier)) expect_u_carrier=u_carrier
+    if (expect_u_carrier.and. &
+        (expect_z_carrier.or.expect_v_carrier.or.expect_x3_carrier.or. &
+        expect_aa1_carrier.or.expect_xnp_carrier.or.expect_xrp_carrier.or. &
+        expect_aa2_carrier.or.expect_x4_carrier)) &
+      call fail(trim(owner)//' PROPOSAL CARRIER FLAGS CONFLICT.')
     if (expect_x4_carrier.and. &
         (expect_z_carrier.or.expect_v_carrier.or.expect_x3_carrier.or. &
         expect_aa1_carrier.or.expect_xnp_carrier.or.expect_xrp_carrier.or. &
@@ -920,7 +946,7 @@ contains
       call fail(trim(owner)//' PROPOSAL CARRIER FLAGS CONFLICT.')
     if ((expect_z_carrier.or.expect_v_carrier.or.expect_x3_carrier.or. &
         expect_aa1_carrier.or.expect_xnp_carrier.or.expect_xrp_carrier.or. &
-        expect_aa2_carrier.or.expect_x4_carrier).and. &
+        expect_aa2_carrier.or.expect_x4_carrier.or.expect_u_carrier).and. &
         (.not.is_proposal)) &
       call fail(trim(owner)//' RAW CARRIER REQUIRES A PROPOSAL STATE.')
     if (is_proposal.and.expect_saved_defect) &
@@ -1066,7 +1092,10 @@ contains
       if (marker /= 'PROPOSAL') &
         call fail(trim(owner)//' LIFECYCLE MARKER IS NOT PROPOSAL.')
       call LCMGTC(root,'SPOT-X-CARR',12,marker)
-      if (expect_x4_carrier) then
+      if (expect_u_carrier) then
+        if (marker /= 'U-RAW-FLUX') &
+          call fail(trim(owner)//' RAW-FLUX CARRIER IS NOT U.')
+      else if (expect_x4_carrier) then
         if (marker /= 'X4-RAW-FLUX') &
           call fail(trim(owner)//' RAW-FLUX CARRIER IS NOT X4.')
       else if (expect_aa2_carrier) then
