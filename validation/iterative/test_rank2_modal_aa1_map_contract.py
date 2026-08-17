@@ -193,6 +193,9 @@ zpcd_map_policy = (
 zpcd_map_manifest = (
     ITERATIVE / "rank2_current_zpcd_aa1_map_parent.tsv"
 ).read_text()
+zpcd_map_result = (
+    ITERATIVE / "rank2_current_zpcd_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1470,6 +1473,26 @@ require(zpcd_bad_activation.returncode == 2 and
         zpcd_bad_activation.stderr ==
         "SPOT-RANK2-CURRENT-ZPCD-AA1-MAP ERROR: activation must be 0 or 1.\n",
         "ZPCD AA1 map activation gate changed")
+for token in (
+    "Map classification: `VALID_NOT_MET`",
+    "fa154ed421598c5f91fe9b5bd1878af46c993386",
+    "6.422349219104007",
+    "7.777215945396249",
+    "1.139502273872495",
+    "1.266857654692717",
+    "21/21 receipt",
+    "1.3920591161462217",
+    "1.4891030102954350",
+    "1.5185498258021630",
+    "0.27450453816512377",
+    "1.3654718014730096",
+    "1.3434921133428195",
+    "AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL",
+    "No next proposal is published",
+    "no second map is run",
+):
+    require(token in zpcd_map_result,
+            f"ZPCD AA1 map result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

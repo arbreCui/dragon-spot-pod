@@ -5,30 +5,41 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The standard full-Gram candidate from $z-y$ and $z^+-z$ was materialized as
-$c=0.4151118145z+0.5848881855z^+$ and evaluated exactly once.  Its strict
-terminals, independent checker, and 21/21 receipt pass.  For $d=G_2(c)$,
-the physical residual $d-c$ is
+The standard full-Gram candidate from $z^+-z$ and $d-c$ was materialized as
+$c_{\mathrm{next}}=0.4877144455z^++0.5122855545d$ and evaluated exactly
+once.  Its strict terminals, independent checker, and 21/21 receipt pass.
+For $e=G_2(c_{\mathrm{next}})$, the physical residual
+$e-c_{\mathrm{next}}$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,4.9589585\times10^{-4},\,
-7.2657713\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3091640\times10^{-6}).
+(6.4223492\times10^{-8},\,7.7772159\times10^{-4},\,
+1.1395023\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.2668577\times10^{-6}).
 $$
 
-The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Against $z^+-z$,
-$R_L$, $D_L$, and $R_a$ decrease by 6.87%, 6.87%, and 0.061%; this single
-step is not an asymptotic convergence result.
+The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Against $d-c$, $R_L$
+and $D_L$ increase by 56.83%, while $R_a$ decreases by 3.23%; this single
+step is not an asymptotic convergence or divergence result.
 
-The next standard full-Gram AA(1), using only $z^+-z$ and $d-c$, gives
-$0.4877144455z^++0.5122855545d$.  Its three direction ratios are `0.99412`,
-`0.93885`, and `0.79362`, so `AA1_DIRECTION_PASS_AA2_SKIPPED`.  The modal
-margin is small; this is authorization, not convergence evidence.  The next
-proposal is not materialized and no second map is run.  See
-[rank2_current_qvwx_zplus_aa1_map_result.md](rank2_current_qvwx_zplus_aa1_map_result.md).
+The next AA(1) ratios are `0.99707`, `1.48910`, and `1.51855`; the leakage
+screens fail.  The then-permitted AA(2) ratios are `0.99515`, `1.36547`, and
+`1.34349`, so it also fails.  The classification is
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`; no proposal is published and no
+second map is run.  See
+[rank2_current_zpcd_aa1_map_result.md](rank2_current_zpcd_aa1_map_result.md).
 
 ## Active files
+
+- `rank2_current_zpcd_aa1_candidate_inputs.tsv`,
+  `run_rank2_current_zpcd_aa1_candidate.sh`,
+  `rank2_current_zpcd_aa1_candidate_result.md`,
+  `rank2_current_zpcd_aa1_map_parent.tsv`,
+  `rank2_current_zpcd_aa1_map_policy.md`,
+  `run_rank2_current_zpcd_aa1_map.sh`,
+  `rank2_current_zpcd_aa1_map_result.md`: latest minimum-order AA(1)
+  proposal, its single valid but unconverged map, and the following
+  AA(1)/AA(2) direction rejection.
 
 - `rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv`,
   `run_rank2_current_qvwx_zplus_aa1_candidate.sh`,
@@ -36,7 +47,7 @@ proposal is not materialized and no second map is run.  See
   `rank2_current_qvwx_zplus_aa1_map_parent.tsv`,
   `rank2_current_qvwx_zplus_aa1_map_policy.md`,
   `run_rank2_current_qvwx_zplus_aa1_map.sh`,
-  `rank2_current_qvwx_zplus_aa1_map_result.md`: latest minimum-order AA(1)
+  `rank2_current_qvwx_zplus_aa1_map_result.md`: preceding minimum-order AA(1)
   proposal, its single valid but unconverged map, and the following offline
   AA(1) direction decision.
 

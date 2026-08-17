@@ -103,42 +103,39 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-The standard full-Gram candidate formed from the genuine residuals $z-y$
-and $z^+-z$ was materialized and evaluated exactly once:
+The standard full-Gram candidate formed from the genuine residuals $z^+-z$
+and $d-c$ was materialized and evaluated exactly once:
 
 $$
-c=0.4151118145\,z+0.5848881855\,z^+,\qquad d=G_2(c).
+c_{\mathrm{next}}=0.4877144455\,z^++0.5122855545\,d,\qquad
+e=G_2(c_{\mathrm{next}}).
 $$
 
 Its three fresh online radial fixed-source solves, one axial solve, strict
 terminals, independent checker, and 21/21 receipt all passed.  The physical
-residual $d-c$ is
+residual $e-c_{\mathrm{next}}$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,4.9589585\times10^{-4},\,
-7.2657713\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3091640\times10^{-6}).
+(6.4223492\times10^{-8},\,7.7772159\times10^{-4},\,
+1.1395023\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.2668577\times10^{-6}).
 $$
 
 Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  Relative to
-the preceding genuine residual $z^+-z$, $R_L$, $D_L$, and $R_a$ decreased
-by 6.87%, 6.87%, and 0.061%.  This is a favorable single step, not an
-asymptotic contraction or convergence result.  SPOT still has no accepted
+the preceding genuine residual $d-c$, $R_L$ and $D_L$ increased by 56.83%,
+while $R_a$ decreased by 3.23%.  This single leakage/modal tradeoff is not
+an asymptotic convergence or divergence result.  SPOT still has no accepted
 rank-two fixed point.
 
-The next minimum-order decision uses only those two genuine residuals.
-Standard full-Gram AA(1) gives
-
-$$
-c_{\mathrm{next}}=0.4877144455\,z^++0.5122855545\,d.
-$$
-
-Its modal, leakage height-$L_2$, and same-weight maximum-$|D_L|$ direction
-ratios are `0.99412`, `0.93885`, and `0.79362`, all strictly below one.
-Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`, although the modal margin is small.
-The next proposal is not materialized and a second map is not run.  See
-[the latest map and direction result](validation/iterative/rank2_current_qvwx_zplus_aa1_map_result.md).
+The next minimum-order AA(1), using only $d-c$ and
+$e-c_{\mathrm{next}}$, has direction ratios `0.99707`, `1.48910`, and
+`1.51855`, so it fails both leakage screens.  The then-permitted AA(2),
+using the latest three genuine residuals, has ratios `0.99515`, `1.36547`,
+and `1.34349` and also fails.  Thus
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`; no next proposal is published and
+no second map is run.  See
+[the latest map and direction result](validation/iterative/rank2_current_zpcd_aa1_map_result.md).
 
 ## Historical validation record
 
