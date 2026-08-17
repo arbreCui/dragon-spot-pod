@@ -154,6 +154,9 @@ qvwx_map_policy = (
 qvwx_map_manifest = (
     ITERATIVE / "rank2_current_qvwx_aa1_map_parent.tsv"
 ).read_text()
+qvwx_map_result = (
+    ITERATIVE / "rank2_current_qvwx_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1185,6 +1188,19 @@ require(qvwx_bad_activation.returncode == 2 and
         qvwx_bad_activation.stderr ==
         "SPOT-RANK2-CURRENT-QVWX-AA1-MAP ERROR: activation must be 0 or 1.\n",
         "QVWX map activation gate changed")
+for token in (
+    "Classification: `VALID_NOT_MET`",
+    "523d5adcbf2deb5c951c5c56634ff86fc7fcac83",
+    "3.779851170520331",
+    "5.538167897611856",
+    "1.841719645535316",
+    "755.970234",
+    "3.683439",
+    "21/21 receipt",
+    "No further map is authorized",
+):
+    require(token in qvwx_map_result,
+            f"QVWX map result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

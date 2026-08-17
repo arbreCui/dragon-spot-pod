@@ -24,4 +24,6 @@ All 8880 reconstructed points are positive, with minimum
 - AX: `012ccd8e428e7a819ce41cec70eab90745e92dc1bb95735a35631f3ef0e2057d`
 - snapshots: `8942bf5ca0c2f551200dcf78508093a34da39636c5fe57f167a05b4d1da37504`
 
-The 9/9 receipt contains no transport solve or map result.
+The 9/9 receipt contains no transport solve or map result.  The proposal was
+subsequently evaluated exactly once; see
+[rank2_current_qvwx_aa1_map_result.md](rank2_current_qvwx_aa1_map_result.md).

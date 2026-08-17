@@ -103,35 +103,32 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-After the valid map $q\mapsto v$, the actual residuals $u-t$ and $v-q$
-give standard AA(1) direction ratios `0.6667`, `1.1538`, and `1.2579`.
-Because both leakage directions increase, AA(1) is rejected.  Only then,
-standard unregularized full-Gram AA(2) on $p\mapsto t$, $t\mapsto u$, and
-$q\mapsto v$ gives
+After the valid map $w\mapsto x$, the latest genuine residuals $v-q$ and
+$x-w$ give standard full-Gram AA(1):
 
 $$
-w=0.1976858571\,t+0.2162723008\,u+0.5860418421\,v.
+y=0.8805731304\,v+0.1194268696\,x.
 $$
 
-Its three direction ratios `0.3561`, `0.5843`, and `0.7122` pass without a
-fitted coefficient or numerical cutoff.  The verified proposal was
-evaluated exactly once with online radial recomputation.  Every strict
-terminal, independent check, and the 21/21 receipt passed:
+Its three direction ratios `0.1097`, `0.7137`, and `0.8419` pass without a
+fitted coefficient or numerical cutoff, so AA(2) is skipped.  The verified
+proposal was evaluated exactly once with online radial recomputation.  Every
+strict terminal, independent check, and the 21/21 receipt passed:
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,4.7279444\times10^{-4},\,
-6.9272937\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3934958\times10^{-6}).
+(0,\,3.7798512\times10^{-4},\,
+5.5381679\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.8417196\times10^{-6}).
 $$
 
-Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  Compared
-with the preceding evaluated residual, $R_L$, $D_L$, and $R_a$ increased by
-18.57%, 18.57%, and 475.29%.  Because the inputs differ, this is a local
+Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  Relative to
+the preceding evaluated residual, $R_L$ and $D_L$ decreased by 20.05%, while
+$R_a$ increased by 32.17%.  Because the inputs differ, this is a local
 nonlinear response, not a contraction, divergence, or cycle claim.  SPOT
 still has no accepted rank-two fixed point.  No retry or successor was
 started.  See
-[the latest map result](validation/iterative/rank2_current_ptuqv_aa2_map_result.md).
+[the latest map result](validation/iterative/rank2_current_qvwx_aa1_map_result.md).
 
 ## Historical validation record
 

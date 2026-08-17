@@ -2,7 +2,7 @@
 
 Date: 2026-08-17
 
-Status: `AUTHORIZED_NOT_EXECUTED`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 The genuine residuals $v-q$ and $x-w$ give standard full-Gram AA(1):
 
@@ -28,3 +28,12 @@ Dimensional $D_L\,[\mathrm{cm}^{-1}]$ is diagnostic only.  The 120 s radial
 and 180 s axial limits are process-safety bounds.  There is no retry,
 fallback, relaxation, damping, clipping, fit, regularization, cutoff, or
 automatic successor.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`523d5adcbf2deb5c951c5c56634ff86fc7fcac83`.  All four strict solver
+terminals, the independent `proposal-aa1` checker, and the 21/21 receipt
+passed.  The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and
+$R_a$ fail.  No retry or successor was started.  See
+[rank2_current_qvwx_aa1_map_result.md](rank2_current_qvwx_aa1_map_result.md).

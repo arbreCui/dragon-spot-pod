@@ -5,33 +5,43 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest two actual residuals $u-t$ and $v-q$ reject standard AA(1)
-because its two leakage direction ratios exceed one.  The latest three
-actual maps $p\mapsto t$, $t\mapsto u$, and $q\mapsto v$ then give the
-minimum-order admissible standard AA(2) proposal
+The latest genuine residuals $v-q$ and $x-w$ give the minimum-order
+admissible standard AA(1) proposal
 
 $$
-w=0.1976858571\,t+0.2162723008\,u+0.5860418421\,v.
+y=0.8805731304\,v+0.1194268696\,x.
 $$
 
-Its three direction ratios are `0.3561`, `0.5843`, and `0.7122`.  The
-hash-locked proposal, strict map terminals, independent checker, and 21/21
-receipt all pass.  The one physical map returns
+Its three direction ratios are `0.1097`, `0.7137`, and `0.8419`; AA(2) is
+therefore skipped.  The hash-locked proposal, strict map terminals,
+independent checker, and 21/21 receipt all pass.  The one physical map
+returns
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,4.7279444\times10^{-4},\,
-6.9272937\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3934958\times10^{-6}).
+(0,\,3.7798512\times10^{-4},\,
+5.5381679\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.8417196\times10^{-6}).
 $$
 
-The result is `VALID_NOT_MET`: only $R_\rho$ passes.  $R_L$, $D_L$, and
-$R_a$ are larger than for the preceding evaluated map, but this cross-input
-comparison is not a contraction or divergence claim.  No retry or successor
-was started.  See
-[rank2_current_ptuqv_aa2_map_result.md](rank2_current_ptuqv_aa2_map_result.md).
+The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Relative to the
+preceding evaluated residual, $R_L$ and $D_L$ decrease while $R_a$ increases;
+this cross-input comparison is not a contraction or divergence claim.  No
+retry or successor was started.  See
+[rank2_current_qvwx_aa1_map_result.md](rank2_current_qvwx_aa1_map_result.md).
 
 ## Active files
+
+- `rank2_current_qvwx_decision_result.md`,
+  `rank2_current_qvwx_aa1_candidate_inputs.tsv`,
+  `run_rank2_current_qvwx_aa1_candidate.sh`,
+  `rank2_current_qvwx_aa1_candidate_result.md`,
+  `rank2_current_qvwx_aa1_map_parent.tsv`,
+  `rank2_current_qvwx_aa1_map_policy.md`,
+  `run_rank2_current_qvwx_aa1_map.sh`,
+  `rank2_current_qvwx_aa1_map_result.md`: latest minimum-order AA(1)
+  decision, independently verified proposal, and its one valid but
+  unconverged physical map.
 
 - `rank2_current_ptuqv_decision_result.md`,
   `rank2_current_ptuqv_aa2_candidate_inputs.tsv`,
@@ -40,7 +50,7 @@ was started.  See
   `rank2_current_ptuqv_aa2_map_parent.tsv`,
   `rank2_current_ptuqv_aa2_map_policy.md`,
   `run_rank2_current_ptuqv_aa2_map.sh`,
-  `rank2_current_ptuqv_aa2_map_result.md`: latest minimum-order decision,
+  `rank2_current_ptuqv_aa2_map_result.md`: preceding minimum-order decision,
   independently verified AA(2) proposal, and its one valid but unconverged
   physical map.
 
