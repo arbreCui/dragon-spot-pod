@@ -34,6 +34,8 @@ program check_rank2_modal_aa1_candidate
   !   check_rank2_modal_aa1_candidate \
   !     --consecutive-current-aa2-picard q p z z_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --current-qpzst-aa2 q p p z s t \
+  !     t_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -89,6 +91,7 @@ program check_rank2_modal_aa1_candidate
   logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
   logical :: rolling_next_mode,x4_history_mode,rolling_aa2_next_mode
   logical :: current_aa2_mode
+  logical :: current_qpzst_aa2_mode
   logical :: x4z_history_mode,zu_history_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
@@ -109,6 +112,7 @@ program check_rank2_modal_aa1_candidate
   zu_history_mode=.false.
   rolling_aa2_next_mode=.false.
   current_aa2_mode=.false.
+  current_qpzst_aa2_mode=.false.
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
   consecutive_current_mode=.false.
@@ -119,6 +123,8 @@ program check_rank2_modal_aa1_candidate
       rolling_aa2_next_mode=.true.
     else if (trim(mode_argument) == '--current-aa2') then
       current_aa2_mode=.true.
+    else if (trim(mode_argument) == '--current-qpzst-aa2') then
+      current_qpzst_aa2_mode=.true.
     else if (trim(mode_argument) /= '--rolling-aa2') then
       call fail('ELEVEN ARGUMENTS REQUIRE AN AA2 MODE.')
     endif
@@ -131,7 +137,7 @@ program check_rank2_modal_aa1_candidate
     call check_rolling_aa2_candidate(trim(path(1)),trim(path(2)), &
       trim(path(3)),trim(path(4)),trim(path(5)),trim(path(6)), &
       trim(path(7)),trim(path(8)),trim(path(9)),trim(path(10)), &
-      rolling_aa2_next_mode,current_aa2_mode)
+      rolling_aa2_next_mode,current_aa2_mode,current_qpzst_aa2_mode)
     stop
   else if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
@@ -412,12 +418,14 @@ contains
 
   subroutine check_rolling_aa2_candidate(in0_name,out0_name,in1_name, &
       out1_name,in2_name,out2_name,out2_snap_name,basis_name, &
-      proposal_name,proposal_snap_name,rolling_next_mode,current_mode)
+      proposal_name,proposal_snap_name,rolling_next_mode,current_mode, &
+      current_qpzst_mode)
     character(len=*), intent(in) :: in0_name,out0_name,in1_name,out1_name
     character(len=*), intent(in) :: in2_name,out2_name,out2_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name
     character(len=*), intent(in) :: proposal_snap_name
     logical, intent(in) :: rolling_next_mode,current_mode
+    logical, intent(in), optional :: current_qpzst_mode
     type(canonical_state) :: in0,out0,in1,out1,in2,out2,proposal_state
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -425,6 +433,11 @@ contains
     real(real64) :: d0a,d0b,d1a,d1b,metric
     real(real64) :: h00,h01,h11,c0,c1,f2_sq,determinant
     real(real64) :: gamma0,gamma1,alpha0,alpha1,alpha2,predicted_sq
+    real(real64) :: modal_predicted_norm,modal_current_norm
+    real(real64) :: leakage_predicted_sq,leakage_current_sq
+    real(real64) :: leakage_predicted_norm,leakage_current_norm
+    real(real64) :: leakage_predicted_d,leakage_current_d
+    real(real64) :: leakage_f0,leakage_f1,leakage_f2,leakage_affine
     real(real64) :: rho_affine,rho_published,publication_delta
     real(real32) :: keff_published,min_published_flux
     integer :: g,s,a,b,nmode,index_a,index_b,index_g
@@ -432,10 +445,32 @@ contains
     character(len=24) :: aa2_report_prefix
     character(len=12) :: aa2_label0,aa2_label1,aa2_label2
     character(len=12) :: aa2_latest_input,aa2_latest_output
+    integer :: il
+    logical :: qpzst_mode
 
-    if (current_mode.and.rolling_next_mode) &
+    qpzst_mode=.false.
+    if (present(current_qpzst_mode)) qpzst_mode=current_qpzst_mode
+
+    if (qpzst_mode.and.(trim(out0_name) /= trim(in1_name))) &
+      call fail('QPZST P OUTPUT AND P INPUT MUST BE THE SAME PATH.')
+
+    if ((current_mode.and.rolling_next_mode).or. &
+        (qpzst_mode.and.(current_mode.or.rolling_next_mode))) &
       call fail('AA2 MODES ARE MUTUALLY EXCLUSIVE.')
-    if (current_mode) then
+    if (qpzst_mode) then
+      aa2_report_prefix='RANK2-CURRENT-QPZST-AA2'
+      aa2_label0='P'
+      aa2_label1='Z'
+      aa2_label2='T'
+      aa2_latest_input='S'
+      aa2_latest_output='T'
+      call load_state(in0_name,2,in0,'QPZST Q INPUT','AA2-RAW-FLUX')
+      call load_state(out0_name,1,out0,'QPZST P OUTPUT')
+      call load_state(in1_name,1,in1,'QPZST P INPUT')
+      call load_state(out1_name,1,out1,'QPZST Z OUTPUT')
+      call load_state(in2_name,2,in2,'QPZST S INPUT','Z-RAW-FLUX')
+      call load_state(out2_name,1,out2,'QPZST T OUTPUT')
+    else if (current_mode) then
       aa2_report_prefix='RANK2-CURRENT-AA2'
       aa2_label0='X'
       aa2_label1='D'
@@ -554,6 +589,48 @@ contains
         (predicted_sq < 0.0_real64)) &
       call fail('INVALID ROLLING AA2 PREDICTED RESIDUAL.')
 
+    if (qpzst_mode) then
+      if (f2_sq <= 0.0_real64) &
+        call fail('INVALID QPZST CURRENT MODAL RESIDUAL.')
+      modal_predicted_norm=sqrt(predicted_sq)
+      modal_current_norm=sqrt(f2_sq)
+      leakage_predicted_sq=0.0_real64
+      leakage_current_sq=0.0_real64
+      leakage_predicted_d=0.0_real64
+      leakage_current_d=0.0_real64
+      do s=1,in0%dims(3)
+        do g=1,in0%dims(2)
+          il=(s-1)*in0%dims(2)+g
+          leakage_f0=out0%leakage(il)-in0%leakage(il)
+          leakage_f1=out1%leakage(il)-in1%leakage(il)
+          leakage_f2=out2%leakage(il)-in2%leakage(il)
+          leakage_affine=alpha0*leakage_f0+alpha1*leakage_f1+ &
+            alpha2*leakage_f2
+          leakage_predicted_sq=leakage_predicted_sq+ &
+            in0%height(s)*leakage_affine**2
+          leakage_current_sq=leakage_current_sq+ &
+            in0%height(s)*leakage_f2**2
+          leakage_predicted_d=max(leakage_predicted_d, &
+            abs(leakage_affine))
+          leakage_current_d=max(leakage_current_d,abs(leakage_f2))
+        enddo
+      enddo
+      if ((.not.ieee_is_finite(leakage_predicted_sq)).or. &
+          (leakage_predicted_sq < 0.0_real64).or. &
+          (.not.ieee_is_finite(leakage_current_sq)).or. &
+          (leakage_current_sq <= 0.0_real64).or. &
+          (.not.ieee_is_finite(leakage_predicted_d)).or. &
+          (.not.ieee_is_finite(leakage_current_d)).or. &
+          (leakage_current_d <= 0.0_real64)) &
+        call fail('INVALID QPZST LEAKAGE DIRECTION SCREEN.')
+      leakage_predicted_norm=sqrt(leakage_predicted_sq)
+      leakage_current_norm=sqrt(leakage_current_sq)
+      if ((modal_predicted_norm >= modal_current_norm).or. &
+          (leakage_predicted_norm >= leakage_current_norm).or. &
+          (leakage_predicted_d >= leakage_current_d)) &
+        call fail('QPZST PARAMETER-FREE DIRECTION GATE FAILED.')
+    endif
+
     allocate(affine_a(size(out2%coordinates)))
     affine_a=alpha0*out0%coordinates+alpha1*out1%coordinates+ &
       alpha2*out2%coordinates
@@ -628,6 +705,21 @@ contains
     write(6,'(A,I0)') trim(aa2_report_prefix)// &
       ' STRICT-POSITIVE POINTS ', &
       positive_count_expected
+    if (qpzst_mode) then
+      call write_real64_metric(trim(aa2_report_prefix)// &
+        ' MODAL AFFINE L2/CURRENT', &
+        modal_predicted_norm/modal_current_norm)
+      call write_real64_metric(trim(aa2_report_prefix)// &
+        ' LEAKAGE AFFINE L2/CURRENT SAME-MODAL-WEIGHTS', &
+        leakage_predicted_norm/leakage_current_norm)
+      call write_real64_metric(trim(aa2_report_prefix)// &
+        ' LEAKAGE AFFINE DL/CURRENT SAME-MODAL-WEIGHTS', &
+        leakage_predicted_d/leakage_current_d)
+      write(6,'(A)') trim(aa2_report_prefix)// &
+        ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
+      write(6,'(A)') trim(aa2_report_prefix)// &
+        ' PARAMETER-FREE DIRECTION GATE PASS'
+    endif
     write(6,'(A)') trim(aa2_report_prefix)// &
       ' STANDARD 2X2 SYSTEM PASS'
     write(6,'(A)') trim(aa2_report_prefix)// &

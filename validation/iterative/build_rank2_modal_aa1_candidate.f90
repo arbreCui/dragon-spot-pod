@@ -4,6 +4,7 @@ program build_rank2_modal_aa1_candidate
   !
   !   --consecutive-current qs v w w_snap out_ax out_snap
   !   --consecutive-current-aa2-picard q p z z_snap out_ax out_snap
+  !   --current-qpzst-aa2 q p p z s t t_snap out_ax out_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -64,6 +65,8 @@ program build_rank2_modal_aa1_candidate
       call build_rolling_aa2_candidate(.true.,.false.)
     else if (trim(mode) == '--current-aa2') then
       call build_rolling_aa2_candidate(.false.,.true.)
+    else if (trim(mode) == '--current-qpzst-aa2') then
+      call build_rolling_aa2_candidate(.false.,.false.,.true.)
     else
       error stop 'ten-argument mode requires an AA2 mode'
     endif
@@ -126,6 +129,8 @@ program build_rank2_modal_aa1_candidate
       '--rolling-aa2-next x0 x0p x1 x1p x2 x2p x2p_snap '// &
       'out_ax out_snap or '// &
       '--current-aa2 w x c d y e e_snap '// &
+      'out_ax out_snap or '// &
+      '--current-qpzst-aa2 q p p z s t t_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
       '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap or '// &
@@ -405,8 +410,10 @@ program build_rank2_modal_aa1_candidate
 
 contains
 
-  subroutine build_rolling_aa2_candidate(rolling_next_mode,current_mode)
+  subroutine build_rolling_aa2_candidate(rolling_next_mode,current_mode, &
+      current_qpzst_mode)
     logical, intent(in) :: rolling_next_mode,current_mode
+    logical, intent(in), optional :: current_qpzst_mode
     character(len=1024) :: aa2_path(9)
     type(canonical_state) :: in0,out0,in1,out1,in2,out2
     type(c_ptr) :: out2_snap,aa2_staged_ax,aa2_staged_snap
@@ -418,11 +425,20 @@ contains
     real(real64) :: d0a,d0b,d1a,d1b,metric
     real(real64) :: h00,h01,h11,c0,c1,f2_sq,determinant
     real(real64) :: gamma0,gamma1,alpha0,alpha1,alpha2,predicted_sq
+    real(real64) :: modal_predicted_norm,modal_current_norm
+    real(real64) :: leakage_predicted_sq,leakage_current_sq
+    real(real64) :: leakage_predicted_norm,leakage_current_norm
+    real(real64) :: leakage_predicted_d,leakage_current_d
+    real(real64) :: leakage_f0,leakage_f1,leakage_f2,leakage_affine
     real(real64) :: rho_affine,rho_public,l_roundtrip
     real(real64) :: reconstructed,min_reconstructed,iter_k
     real(real32) :: k_public,projected
     real(real64), allocatable :: candidate_a(:),candidate_l(:)
     real(real32), allocatable :: published_l(:)
+    logical :: qpzst_mode
+
+    qpzst_mode=.false.
+    if (present(current_qpzst_mode)) qpzst_mode=current_qpzst_mode
 
     do j=1,9
       call get_command_argument(j+1,aa2_path(j))
@@ -432,12 +448,29 @@ contains
     enddo
     if (trim(aa2_path(8)) == trim(aa2_path(9))) &
       error stop 'AA2 candidate AX and snapshot paths must differ'
+    if (qpzst_mode.and. &
+        (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
+      error stop 'QPZST p output and p input must be the same path'
     call require_fresh_path(aa2_path(8))
     call require_fresh_path(aa2_path(9))
 
-    if (current_mode.and.rolling_next_mode) &
+    if ((current_mode.and.rolling_next_mode).or. &
+        (qpzst_mode.and.(current_mode.or.rolling_next_mode))) &
       error stop 'AA2 modes are mutually exclusive'
-    if (current_mode) then
+    if (qpzst_mode) then
+      aa2_report_prefix='RANK2-CURRENT-QPZST-AA2'
+      aa2_label0='P'
+      aa2_label1='Z'
+      aa2_label2='T'
+      call load_state(trim(aa2_path(1)),in0,'QPZST q input', &
+        .true.,'AA2-RAW-FLUX')
+      call load_state(trim(aa2_path(2)),out0,'QPZST p output')
+      call load_state(trim(aa2_path(3)),in1,'QPZST p input')
+      call load_state(trim(aa2_path(4)),out1,'QPZST z output')
+      call load_state(trim(aa2_path(5)),in2,'QPZST s input', &
+        .true.,'Z-RAW-FLUX')
+      call load_state(trim(aa2_path(6)),out2,'QPZST t output')
+    else if (current_mode) then
       aa2_report_prefix='RANK2-CURRENT-AA2'
       aa2_label0='X'
       aa2_label1='D'
@@ -549,6 +582,48 @@ contains
     if ((.not.ieee_is_finite(predicted_sq)).or. &
         (predicted_sq < 0.0_real64)) &
       error stop 'invalid rolling AA2 predicted residual'
+
+    if (qpzst_mode) then
+      if (f2_sq <= 0.0_real64) &
+        error stop 'invalid QPZST current modal residual'
+      modal_predicted_norm=sqrt(predicted_sq)
+      modal_current_norm=sqrt(f2_sq)
+      leakage_predicted_sq=0.0_real64
+      leakage_current_sq=0.0_real64
+      leakage_predicted_d=0.0_real64
+      leakage_current_d=0.0_real64
+      do s=1,in0%dims(3)
+        do g=1,in0%dims(2)
+          il=(s-1)*in0%dims(2)+g
+          leakage_f0=out0%leakage(il)-in0%leakage(il)
+          leakage_f1=out1%leakage(il)-in1%leakage(il)
+          leakage_f2=out2%leakage(il)-in2%leakage(il)
+          leakage_affine=alpha0*leakage_f0+alpha1*leakage_f1+ &
+            alpha2*leakage_f2
+          leakage_predicted_sq=leakage_predicted_sq+ &
+            in0%height(s)*leakage_affine**2
+          leakage_current_sq=leakage_current_sq+ &
+            in0%height(s)*leakage_f2**2
+          leakage_predicted_d=max(leakage_predicted_d, &
+            abs(leakage_affine))
+          leakage_current_d=max(leakage_current_d,abs(leakage_f2))
+        enddo
+      enddo
+      if ((.not.ieee_is_finite(leakage_predicted_sq)).or. &
+          (leakage_predicted_sq < 0.0_real64).or. &
+          (.not.ieee_is_finite(leakage_current_sq)).or. &
+          (leakage_current_sq <= 0.0_real64).or. &
+          (.not.ieee_is_finite(leakage_predicted_d)).or. &
+          (.not.ieee_is_finite(leakage_current_d)).or. &
+          (leakage_current_d <= 0.0_real64)) &
+        error stop 'invalid QPZST leakage direction screen'
+      leakage_predicted_norm=sqrt(leakage_predicted_sq)
+      leakage_current_norm=sqrt(leakage_current_sq)
+      if ((modal_predicted_norm >= modal_current_norm).or. &
+          (leakage_predicted_norm >= leakage_current_norm).or. &
+          (leakage_predicted_d >= leakage_current_d)) &
+        error stop 'QPZST parameter-free direction gate failed'
+    endif
 
     allocate(candidate_a(size(out2%coordinates)))
     allocate(candidate_l(size(out2%leakage)))
@@ -683,6 +758,21 @@ contains
       min_reconstructed
     write(*,'(A,I0)') trim(aa2_report_prefix)//' POSITIVE-BA-POINTS ', &
       positive_count
+    if (qpzst_mode) then
+      write(*,'(A,ES24.16)') trim(aa2_report_prefix)// &
+        ' MODAL-AFFINE-L2/CURRENT ', &
+        modal_predicted_norm/modal_current_norm
+      write(*,'(A,ES24.16)') trim(aa2_report_prefix)// &
+        ' LEAKAGE-AFFINE-L2/CURRENT SAME-MODAL-WEIGHTS ', &
+        leakage_predicted_norm/leakage_current_norm
+      write(*,'(A,ES24.16)') trim(aa2_report_prefix)// &
+        ' LEAKAGE-AFFINE-DL/CURRENT SAME-MODAL-WEIGHTS ', &
+        leakage_predicted_d/leakage_current_d
+      write(*,'(A)') trim(aa2_report_prefix)// &
+        ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
+      write(*,'(A)') trim(aa2_report_prefix)// &
+        ' PARAMETER-FREE DIRECTION GATE PASS'
+    endif
     write(*,'(A)') trim(aa2_report_prefix)//' CARRIER AA2-RAW-FLUX'
     write(*,'(A)') trim(aa2_report_prefix)//' CLASSIFICATION '// &
       'MATERIALIZED_PROPOSAL_NOT_EVALUATED NO-DRAGON NO-MAP'
