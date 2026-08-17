@@ -54,6 +54,7 @@ all :
 	spot-rank2-current-uvvwxy-aa2-candidate \
 	spot-rank2-current-uvvwxy-aa2-map \
 	spot-rank2-current-z-picard-map \
+	spot-rank2-current-zplus-picard-map \
 	spot-rank2-current-qpzst-aa2-map \
 	spot-rank2-current-v-picard-map \
 	spot-rank2-modal-aa2-rolling-next-candidate \
@@ -141,6 +142,8 @@ spot-rank2-current-uvvwxy-aa2-map :
 	sh validation/iterative/run_rank2_current_uvvwxy_aa2_map.sh
 spot-rank2-current-z-picard-map :
 	sh validation/iterative/run_rank2_current_z_picard_map.sh
+spot-rank2-current-zplus-picard-map :
+	sh validation/iterative/run_rank2_current_zplus_picard_map.sh
 spot-rank2-current-qpzst-aa2-map :
 	sh validation/iterative/run_rank2_current_qpzst_aa2_map.sh
 spot-rank2-current-v-picard-map :
