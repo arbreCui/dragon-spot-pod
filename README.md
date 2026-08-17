@@ -103,41 +103,38 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-After the valid map $w\mapsto x$, the latest genuine residuals $v-q$ and
-$x-w$ give standard full-Gram AA(1):
-
-$$
-y=0.8805731304\,v+0.1194268696\,x.
-$$
-
-Its three direction ratios `0.1097`, `0.7137`, and `0.8419` pass without a
-fitted coefficient or numerical cutoff, so AA(2) is skipped.  The verified
-proposal was evaluated exactly once with online radial recomputation.  Every
-strict terminal, independent check, and the 21/21 receipt passed:
+After the previous AA(1) map returned $z$, the rejected AA(1)/AA(2) window
+was not forced.  Instead, one direct Picard continuation $z^+=G_2(z)$ was
+evaluated with three fresh online radial fixed-source solves and one axial
+solve.  Every strict terminal, independent check, and the 21/21 receipt
+passed:
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(0,\,3.7798512\times10^{-4},\,
-5.5381679\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.8417196\times10^{-6}).
+(0,\,5.3246461\times10^{-4},\,
+7.8015728\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3099571\times10^{-6}).
 $$
 
-Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  Relative to
-the preceding evaluated residual, $R_L$ and $D_L$ decreased by 20.05%, while
-$R_a$ increased by 32.17%.  Because the inputs differ, this is a local
-nonlinear response, not a contraction, divergence, or cycle claim.  SPOT
-still has no accepted rank-two fixed point.  No retry or successor was
-started.  See
-[the latest map result](validation/iterative/rank2_current_qvwx_aa1_map_result.md).
+Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  From the
+genuinely consecutive residual $z-y$ to $z^+-z$, $R_L$ and $D_L$ increased
+by 40.87%, while $R_a$ decreased by 28.87%.  This one-step tradeoff is not
+an asymptotic convergence or divergence claim.  SPOT still has no accepted
+rank-two fixed point.
 
-The next minimum-order decision uses only the genuine residuals $x-w$ and
-$z-y$.  Standard AA(1) has direction ratios `0.6625`, `2.8228`, and
-`2.5387`, so it fails both leakage screens.  Standard AA(2), formed only
-after that failure from $v-q$, $x-w$, and $z-y$, has ratios `0.06361`,
-`1.2052`, and `1.0316`; it also fails both leakage screens.  Therefore no
-new candidate or map is authorized, and Dragon was not run.  The latest
-physical result above remains the active `VALID_NOT_MET` boundary.  See
-[the latest decision](validation/iterative/rank2_current_wxyz_decision_result.md).
+The next minimum-order decision uses only those two genuine residuals.
+Standard full-Gram AA(1) gives
+
+$$
+y_{\mathrm{AA1}}=0.4151118145\,z+0.5848881855\,z^+.
+$$
+
+Its modal, leakage height-$L_2$, and same-weight maximum-$|D_L|$ direction
+ratios are `0.09336`, `0.42215`, and `0.61066`, all strictly below one.
+Thus the offline classification is `AA1_DIRECTION_PASS_AA2_SKIPPED`.
+This batch stops there: the proposal is not materialized and a second map
+is not run.  See
+[the latest map and direction result](validation/iterative/rank2_current_qvwx_z_picard_map_result.md).
 
 ## Historical validation record
 

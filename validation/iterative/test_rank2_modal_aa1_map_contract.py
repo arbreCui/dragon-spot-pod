@@ -167,6 +167,9 @@ qvwx_z_picard_policy = (
 qvwx_z_picard_manifest = (
     ITERATIVE / "rank2_current_qvwx_z_picard_map_parent.tsv"
 ).read_text()
+qvwx_z_picard_result = (
+    ITERATIVE / "rank2_current_qvwx_z_picard_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1274,6 +1277,24 @@ require(qvwx_z_bad_activation.returncode == 2 and
         "SPOT-RANK2-CURRENT-QVWX-Z-PICARD-MAP ERROR: activation must be "
         "0 or 1.\n",
         "QVWX-Z Picard activation gate changed")
+for token in (
+    "Map classification: `VALID_NOT_MET`",
+    "3a30ffd94100df023bfb446487a44311a05a181f",
+    "5.324646091595354",
+    "7.801572792232037",
+    "1.309957085222539",
+    "21/21 receipt",
+    "0.41511181447765411",
+    "0.58488818552234589",
+    "0.093357573037484751",
+    "0.42214650302136536",
+    "0.61065652318148245",
+    "AA1_DIRECTION_PASS_AA2_SKIPPED",
+    "does not materialize",
+    "does not run a second physical map",
+):
+    require(token in qvwx_z_picard_result,
+            f"QVWX-Z Picard result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

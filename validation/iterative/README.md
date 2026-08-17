@@ -5,40 +5,39 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest genuine residuals $x-w$ and $z-y$ give standard AA(1) direction
-ratios `0.6625`, `2.8228`, and `2.5387`; both leakage directions fail.
-Only then, standard AA(2) on $v-q$, $x-w$, and $z-y$ gives ratios `0.06361`,
-`1.2052`, and `1.0316`; both leakage directions again fail.  Therefore the
-current minimum-order decision is
-`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL_NO_CANDIDATE_NO_MAP`.  No proposal
-or map is created, and Dragon execution count is zero.  See
-[rank2_current_wxyz_decision_result.md](rank2_current_wxyz_decision_result.md).
-
-The latest physical map remains the preceding AA(1) evaluation
-
-$$
-y=0.8805731304\,v+0.1194268696\,x.
-$$
-
-Its hash-locked proposal, strict map terminals, independent checker, and
-21/21 receipt all pass.  The physical map returns
+After the previous AA(1)/AA(2) window failed its leakage directions, exactly
+one direct Picard continuation $z^+=G_2(z)$ ran from the latest returned
+state.  Its strict terminals, independent checker, and 21/21 receipt pass.
+The physical map returns
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(0,\,3.7798512\times10^{-4},\,
-5.5381679\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.8417196\times10^{-6}).
+(0,\,5.3246461\times10^{-4},\,
+7.8015728\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3099571\times10^{-6}).
 $$
 
-The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Relative to the
-preceding evaluated residual, $R_L$ and $D_L$ decrease while $R_a$ increases;
-this cross-input comparison is not a contraction or divergence claim.  No
-retry or successor was started.  See
-[rank2_current_qvwx_aa1_map_result.md](rank2_current_qvwx_aa1_map_result.md).
+The result is `VALID_NOT_MET`: only $R_\rho$ passes.  Against the genuinely
+consecutive residual $z-y$, $R_L$ and $D_L$ increase by 40.87% while $R_a$
+decreases by 28.87%; this single step is not an asymptotic convergence or
+divergence claim.
+
+The next standard full-Gram AA(1), using only $z-y$ and $z^+-z$, gives
+$0.4151118145z+0.5848881855z^+$.  Its three parameter-free direction ratios
+are `0.09336`, `0.42215`, and `0.61066`, so the current decision is
+`AA1_DIRECTION_PASS_AA2_SKIPPED`.  The proposal is not materialized and no
+second map is run in this batch.  See
+[rank2_current_qvwx_z_picard_map_result.md](rank2_current_qvwx_z_picard_map_result.md).
 
 ## Active files
 
-- `rank2_current_wxyz_decision_result.md`: latest minimum-order AA(1)/AA(2)
+- `rank2_current_qvwx_z_picard_map_parent.tsv`,
+  `rank2_current_qvwx_z_picard_map_policy.md`,
+  `run_rank2_current_qvwx_z_picard_map.sh`,
+  `rank2_current_qvwx_z_picard_map_result.md`: latest single direct Picard
+  map and the following offline minimum-order AA(1) direction decision.
+
+- `rank2_current_wxyz_decision_result.md`: preceding minimum-order AA(1)/AA(2)
   rejection boundary; no candidate and no map.
 
 - `rank2_current_qvwx_decision_result.md`,
