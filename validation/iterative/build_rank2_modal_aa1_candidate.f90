@@ -6,6 +6,7 @@ program build_rank2_modal_aa1_candidate
   !   --consecutive-current-aa2-picard q p z z_snap out_ax out_snap
   !   --current-qpzst-aa2 q p p z s t t_snap out_ax out_snap
   !   --current-stuvvw-aa2 s t u v v w w_snap out_ax out_snap
+  !   --current-uvvwxy-aa2 u v v w x y y_snap out_ax out_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -70,6 +71,9 @@ program build_rank2_modal_aa1_candidate
       call build_rolling_aa2_candidate(.false.,.false.,.true.)
     else if (trim(mode) == '--current-stuvvw-aa2') then
       call build_rolling_aa2_candidate(.false.,.false.,.false.,.true.)
+    else if (trim(mode) == '--current-uvvwxy-aa2') then
+      call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
+        .true.)
     else
       error stop 'ten-argument mode requires an AA2 mode'
     endif
@@ -136,6 +140,8 @@ program build_rank2_modal_aa1_candidate
       '--current-qpzst-aa2 q p p z s t t_snap '// &
       'out_ax out_snap or '// &
       '--current-stuvvw-aa2 s t u v v w w_snap '// &
+      'out_ax out_snap or '// &
+      '--current-uvvwxy-aa2 u v v w x y y_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
       '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap or '// &
@@ -416,10 +422,11 @@ program build_rank2_modal_aa1_candidate
 contains
 
   subroutine build_rolling_aa2_candidate(rolling_next_mode,current_mode, &
-      current_qpzst_mode,current_stuvvw_mode)
+      current_qpzst_mode,current_stuvvw_mode,current_uvvwxy_mode)
     logical, intent(in) :: rolling_next_mode,current_mode
     logical, intent(in), optional :: current_qpzst_mode
     logical, intent(in), optional :: current_stuvvw_mode
+    logical, intent(in), optional :: current_uvvwxy_mode
     character(len=1024) :: aa2_path(9)
     type(canonical_state) :: in0,out0,in1,out1,in2,out2
     type(c_ptr) :: out2_snap,aa2_staged_ax,aa2_staged_snap
@@ -441,13 +448,15 @@ contains
     real(real32) :: k_public,projected
     real(real64), allocatable :: candidate_a(:),candidate_l(:)
     real(real32), allocatable :: published_l(:)
-    logical :: qpzst_mode,stuvvw_mode,direction_gate_mode
+    logical :: qpzst_mode,stuvvw_mode,uvvwxy_mode,direction_gate_mode
 
     qpzst_mode=.false.
     if (present(current_qpzst_mode)) qpzst_mode=current_qpzst_mode
     stuvvw_mode=.false.
     if (present(current_stuvvw_mode)) stuvvw_mode=current_stuvvw_mode
-    direction_gate_mode=qpzst_mode.or.stuvvw_mode
+    uvvwxy_mode=.false.
+    if (present(current_uvvwxy_mode)) uvvwxy_mode=current_uvvwxy_mode
+    direction_gate_mode=qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode
 
     do j=1,9
       call get_command_argument(j+1,aa2_path(j))
@@ -463,15 +472,33 @@ contains
     if (stuvvw_mode.and. &
         (trim(aa2_path(4)) /= trim(aa2_path(5)))) &
       error stop 'STUVVW v output and v input must be the same path'
+    if (uvvwxy_mode.and. &
+        (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
+      error stop 'UVVWXY v output and v input must be the same path'
     call require_fresh_path(aa2_path(8))
     call require_fresh_path(aa2_path(9))
 
     if ((current_mode.and.rolling_next_mode).or. &
         (qpzst_mode.and.(current_mode.or.rolling_next_mode.or. &
-          stuvvw_mode)).or. &
-        (stuvvw_mode.and.(current_mode.or.rolling_next_mode))) &
+          stuvvw_mode.or.uvvwxy_mode)).or. &
+        (stuvvw_mode.and.(current_mode.or.rolling_next_mode.or. &
+          uvvwxy_mode)).or. &
+        (uvvwxy_mode.and.(current_mode.or.rolling_next_mode))) &
       error stop 'AA2 modes are mutually exclusive'
-    if (stuvvw_mode) then
+    if (uvvwxy_mode) then
+      aa2_report_prefix='RANK2-CURRENT-UVVWXY-AA2'
+      aa2_label0='V'
+      aa2_label1='W'
+      aa2_label2='Y'
+      call load_state(trim(aa2_path(1)),in0,'UVVWXY u input', &
+        .true.,'AA2-RAW-FLUX')
+      call load_state(trim(aa2_path(2)),out0,'UVVWXY v output')
+      call load_state(trim(aa2_path(3)),in1,'UVVWXY v input')
+      call load_state(trim(aa2_path(4)),out1,'UVVWXY w output')
+      call load_state(trim(aa2_path(5)),in2,'UVVWXY x input', &
+        .true.,'AA2-RAW-FLUX')
+      call load_state(trim(aa2_path(6)),out2,'UVVWXY y output')
+    else if (stuvvw_mode) then
       aa2_report_prefix='RANK2-CURRENT-STUVVW-AA2'
       aa2_label0='T'
       aa2_label1='V'

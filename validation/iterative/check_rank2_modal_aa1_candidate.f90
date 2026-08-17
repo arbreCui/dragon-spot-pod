@@ -38,6 +38,8 @@ program check_rank2_modal_aa1_candidate
   !     t_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --current-stuvvw-aa2 s t u v v w \
   !     w_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --current-uvvwxy-aa2 u v v w x y \
+  !     y_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -95,6 +97,7 @@ program check_rank2_modal_aa1_candidate
   logical :: current_aa2_mode
   logical :: current_qpzst_aa2_mode
   logical :: current_stuvvw_aa2_mode
+  logical :: current_uvvwxy_aa2_mode
   logical :: x4z_history_mode,zu_history_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
@@ -117,6 +120,7 @@ program check_rank2_modal_aa1_candidate
   current_aa2_mode=.false.
   current_qpzst_aa2_mode=.false.
   current_stuvvw_aa2_mode=.false.
+  current_uvvwxy_aa2_mode=.false.
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
   consecutive_current_mode=.false.
@@ -131,6 +135,8 @@ program check_rank2_modal_aa1_candidate
       current_qpzst_aa2_mode=.true.
     else if (trim(mode_argument) == '--current-stuvvw-aa2') then
       current_stuvvw_aa2_mode=.true.
+    else if (trim(mode_argument) == '--current-uvvwxy-aa2') then
+      current_uvvwxy_aa2_mode=.true.
     else if (trim(mode_argument) /= '--rolling-aa2') then
       call fail('ELEVEN ARGUMENTS REQUIRE AN AA2 MODE.')
     endif
@@ -144,7 +150,7 @@ program check_rank2_modal_aa1_candidate
       trim(path(3)),trim(path(4)),trim(path(5)),trim(path(6)), &
       trim(path(7)),trim(path(8)),trim(path(9)),trim(path(10)), &
       rolling_aa2_next_mode,current_aa2_mode,current_qpzst_aa2_mode, &
-      current_stuvvw_aa2_mode)
+      current_stuvvw_aa2_mode,current_uvvwxy_aa2_mode)
     stop
   else if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
@@ -426,7 +432,7 @@ contains
   subroutine check_rolling_aa2_candidate(in0_name,out0_name,in1_name, &
       out1_name,in2_name,out2_name,out2_snap_name,basis_name, &
       proposal_name,proposal_snap_name,rolling_next_mode,current_mode, &
-      current_qpzst_mode,current_stuvvw_mode)
+      current_qpzst_mode,current_stuvvw_mode,current_uvvwxy_mode)
     character(len=*), intent(in) :: in0_name,out0_name,in1_name,out1_name
     character(len=*), intent(in) :: in2_name,out2_name,out2_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name
@@ -434,6 +440,7 @@ contains
     logical, intent(in) :: rolling_next_mode,current_mode
     logical, intent(in), optional :: current_qpzst_mode
     logical, intent(in), optional :: current_stuvvw_mode
+    logical, intent(in), optional :: current_uvvwxy_mode
     type(canonical_state) :: in0,out0,in1,out1,in2,out2,proposal_state
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -454,25 +461,44 @@ contains
     character(len=12) :: aa2_label0,aa2_label1,aa2_label2
     character(len=12) :: aa2_latest_input,aa2_latest_output
     integer :: il
-    logical :: qpzst_mode,stuvvw_mode,direction_gate_mode
+    logical :: qpzst_mode,stuvvw_mode,uvvwxy_mode,direction_gate_mode
 
     qpzst_mode=.false.
     if (present(current_qpzst_mode)) qpzst_mode=current_qpzst_mode
     stuvvw_mode=.false.
     if (present(current_stuvvw_mode)) stuvvw_mode=current_stuvvw_mode
-    direction_gate_mode=qpzst_mode.or.stuvvw_mode
+    uvvwxy_mode=.false.
+    if (present(current_uvvwxy_mode)) uvvwxy_mode=current_uvvwxy_mode
+    direction_gate_mode=qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode
 
     if (qpzst_mode.and.(trim(out0_name) /= trim(in1_name))) &
       call fail('QPZST P OUTPUT AND P INPUT MUST BE THE SAME PATH.')
     if (stuvvw_mode.and.(trim(out1_name) /= trim(in2_name))) &
       call fail('STUVVW V OUTPUT AND V INPUT MUST BE THE SAME PATH.')
+    if (uvvwxy_mode.and.(trim(out0_name) /= trim(in1_name))) &
+      call fail('UVVWXY V OUTPUT AND V INPUT MUST BE THE SAME PATH.')
 
     if ((current_mode.and.rolling_next_mode).or. &
         (qpzst_mode.and.(current_mode.or.rolling_next_mode.or. &
-          stuvvw_mode)).or. &
-        (stuvvw_mode.and.(current_mode.or.rolling_next_mode))) &
+          stuvvw_mode.or.uvvwxy_mode)).or. &
+        (stuvvw_mode.and.(current_mode.or.rolling_next_mode.or. &
+          uvvwxy_mode)).or. &
+        (uvvwxy_mode.and.(current_mode.or.rolling_next_mode))) &
       call fail('AA2 MODES ARE MUTUALLY EXCLUSIVE.')
-    if (stuvvw_mode) then
+    if (uvvwxy_mode) then
+      aa2_report_prefix='RANK2-CURRENT-UVVWXY-AA2'
+      aa2_label0='V'
+      aa2_label1='W'
+      aa2_label2='Y'
+      aa2_latest_input='X'
+      aa2_latest_output='Y'
+      call load_state(in0_name,2,in0,'UVVWXY U INPUT','AA2-RAW-FLUX')
+      call load_state(out0_name,1,out0,'UVVWXY V OUTPUT')
+      call load_state(in1_name,1,in1,'UVVWXY V INPUT')
+      call load_state(out1_name,1,out1,'UVVWXY W OUTPUT')
+      call load_state(in2_name,2,in2,'UVVWXY X INPUT','AA2-RAW-FLUX')
+      call load_state(out2_name,1,out2,'UVVWXY Y OUTPUT')
+    else if (stuvvw_mode) then
       aa2_report_prefix='RANK2-CURRENT-STUVVW-AA2'
       aa2_label0='T'
       aa2_label1='V'
