@@ -67,6 +67,10 @@ zpcd_map_runner_path = (
     ITERATIVE / "run_rank2_current_zpcd_aa1_map.sh"
 )
 zpcd_map_runner = zpcd_map_runner_path.read_text()
+zpcd_e_picard_runner_path = (
+    ITERATIVE / "run_rank2_current_zpcd_e_picard_map.sh"
+)
+zpcd_e_picard_runner = zpcd_e_picard_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -195,6 +199,12 @@ zpcd_map_manifest = (
 ).read_text()
 zpcd_map_result = (
     ITERATIVE / "rank2_current_zpcd_aa1_map_result.md"
+).read_text()
+zpcd_e_picard_policy = (
+    ITERATIVE / "rank2_current_zpcd_e_picard_map_policy.md"
+).read_text()
+zpcd_e_picard_manifest = (
+    ITERATIVE / "rank2_current_zpcd_e_picard_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -1494,6 +1504,74 @@ for token in (
     require(token in zpcd_map_result,
             f"ZPCD AA1 map result boundary missing: {token}")
 
+zpcd_e_rows = [
+    line.split() for line in zpcd_e_picard_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(zpcd_e_picard_manifest.splitlines()[0] ==
+        "# spot-rank2-current-zpcd-e-picard-map-parent-v1",
+        "ZPCD-E Picard manifest version changed")
+require(tuple(row[0] for row in zpcd_e_rows) == roles,
+        "ZPCD-E Picard manifest roles changed")
+require(tuple(row[1] for row in zpcd_e_rows[-2:]) == (
+    "0b5c8d27b4d2e37d90d56d27d75619842851b7a0e0206947b31c3d5b88936828",
+    "ae6ea8d66c581a496eb56feb512ef5dbbcd0e3a9596871b439a80a3c2a1e66e5",
+), "ZPCD-E Picard parent changed")
+require(zpcd_e_picard_runner.index(
+        "RUN_RANK2_CURRENT_ZPCD_E_PICARD_MAP=") <
+        zpcd_e_picard_runner.index("ROOT=$("),
+        "ZPCD-E default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-zpcd-aa1-map",
+    "rank2_current_zpcd_e_picard_map_parent.tsv",
+    "rank2_current_zpcd_e_picard_map_policy.md",
+    "iterative-rank2-current-zpcd-e-picard-map",
+    "CHECKER_MODE=continued",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in zpcd_e_picard_runner,
+            f"ZPCD-E Picard runner missing: {token}")
+require(zpcd_e_picard_runner.count("run_continuation_short.sh") == 1,
+        "ZPCD-E Picard runner must delegate once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", zpcd_e_picard_runner),
+        "ZPCD-E Picard retry loop is forbidden")
+require("run_bounded_dragon.py" not in zpcd_e_picard_runner and
+        "DRAGON_BIN" not in zpcd_e_picard_runner,
+        "ZPCD-E wrapper must not launch Dragon directly")
+for token in (
+    "R_\\rho", "R_L", "R_a", "diagnostic only", "no retry",
+    "no affine mixing", "three", "one axial solve", "f-e",
+    "no second physical map",
+):
+    require(token in zpcd_e_picard_policy,
+            f"ZPCD-E Picard policy missing: {token}")
+require("spot-rank2-current-zpcd-e-picard-map" in
+        (ROOT / "Makefile").read_text(),
+        "ZPCD-E Picard Make target is missing")
+zpcd_e_default_off = subprocess.run(
+    ["sh", str(zpcd_e_picard_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_ZPCD_E_PICARD_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(zpcd_e_default_off.returncode == 0 and
+        zpcd_e_default_off.stderr == "" and
+        zpcd_e_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-ZPCD-E-PICARD-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "ZPCD-E Picard default-off terminal changed")
+zpcd_e_bad_activation = subprocess.run(
+    ["sh", str(zpcd_e_picard_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_ZPCD_E_PICARD_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(zpcd_e_bad_activation.returncode == 2 and
+        zpcd_e_bad_activation.stdout == "" and
+        zpcd_e_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-ZPCD-E-PICARD-MAP ERROR: activation must be "
+        "0 or 1.\n",
+        "ZPCD-E Picard activation gate changed")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
         "proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
@@ -1681,7 +1759,8 @@ for token in ("AX_CURRENT := FLU:", "AX_CURRENT := SPOSTATE:",
 for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
              latest_next_runner, latest_next_recovery_runner,
              latest_recovery_runner, post_runner, rolling_map_runner,
-             rolling_next_map_runner, zpcd_map_runner, radial, axial):
+             rolling_next_map_runner, zpcd_map_runner,
+             zpcd_e_picard_runner, radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
                 f"empirical control present: {forbidden}")
