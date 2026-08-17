@@ -24,7 +24,28 @@ against the preceding genuinely adjacent residual.  This is not an
 asymptotic contraction claim.  No retry or successor was started.  See
 [rank2_current_t_picard_map_result.md](rank2_current_t_picard_map_result.md).
 
+The new lowest-order direction check uses the actual residuals $t-p$ and
+$u-t$.  Standard full-Gram AA(1) gives
+
+\[
+q=0.4154615501\,t+0.5845384499\,u,
+\]
+
+with modal, leakage height-$L_2$, and $D_L$ direction ratios
+`0.09230435`, `0.66391213`, and `0.56107589`.  All three pass, so AA(2) is
+skipped.  The hash-locked proposal and 9/9 receipt pass independent checks;
+the single $G_2(q)$ stage remains default-off and has not run.
+
 ## Active files
+
+- `rank2_current_ptu_decision_result.md`,
+  `rank2_current_ptu_aa1_candidate_inputs.tsv`,
+  `run_rank2_current_ptu_aa1_candidate.sh`,
+  `rank2_current_ptu_aa1_candidate_result.md`,
+  `rank2_current_ptu_aa1_map_parent.tsv`,
+  `rank2_current_ptu_aa1_map_policy.md`,
+  `run_rank2_current_ptu_aa1_map.sh`: latest minimum-order AA(1) decision,
+  independently verified proposal, and its one default-off physical map.
 
 - `rank2_current_zrspt_decision_result.md`,
   `rank2_current_t_picard_map_parent.tsv`,

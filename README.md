@@ -124,6 +124,21 @@ $R_a$ decreased by 28.77%, a local direction tradeoff rather than a
 contraction claim.  SPOT has no accepted rank-two fixed point.  See
 [the latest map result](validation/iterative/rank2_current_t_picard_map_result.md).
 
+The next minimum-order screen is complete.  The latest actual residuals
+$t-p$ and $u-t$ give standard full-Gram AA(1)
+
+\[
+q=0.4154615501\,t+0.5845384499\,u.
+\]
+
+Its modal, leakage height-$L_2$, and $D_L$ direction ratios are
+`0.09230435`, `0.66391213`, and `0.56107589`; all three pass without a
+fitted coefficient or tuned empirical threshold.  AA(2) is therefore
+skipped.  The proposal
+is materialized and independently verified, but it is not yet a physical
+map or convergence result.  Exactly one default-off $G_2(q)$ stage is
+prepared; no Dragon process has been started for it.
+
 ## Historical validation record
 
 The fixed rank-1 trajectory has been evaluated through the predeclared final

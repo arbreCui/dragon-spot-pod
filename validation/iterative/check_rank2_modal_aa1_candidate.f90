@@ -31,6 +31,8 @@ program check_rank2_modal_aa1_candidate
   !     x4_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive-returned-screened \
   !     z r s s_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --consecutive-ptu-screened \
+  !     p t u u_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive-current qs v w \
   !     w_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate \
@@ -106,6 +108,7 @@ program check_rank2_modal_aa1_candidate
   logical :: consecutive_current_mode
   logical :: consecutive_current_aa2_picard_mode
   logical :: consecutive_returned_screened_mode
+  logical :: consecutive_ptu_screened_mode
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
   character(len=2) :: previous_output,latest_output
@@ -129,6 +132,7 @@ program check_rank2_modal_aa1_candidate
   consecutive_current_mode=.false.
   consecutive_current_aa2_picard_mode=.false.
   consecutive_returned_screened_mode=.false.
+  consecutive_ptu_screened_mode=.false.
   if (argument_count == 11) then
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--rolling-aa2-next') then
@@ -195,6 +199,9 @@ program check_rank2_modal_aa1_candidate
       consecutive_mode=.true.
       consecutive_returned_mode=.true.
       consecutive_returned_screened_mode=.true.
+    else if (trim(mode_argument) == '--consecutive-ptu-screened') then
+      consecutive_mode=.true.
+      consecutive_ptu_screened_mode=.true.
     else if (trim(mode_argument) == '--consecutive-current') then
       consecutive_mode=.true.
       consecutive_current_mode=.true.
@@ -242,6 +249,12 @@ program check_rank2_modal_aa1_candidate
     latest_output='Z'
     proposal_carrier='Z-RAW-FLUX'
     call load_state(trim(path(1)),2,x0,'QAA2 PROPOSAL','AA2-RAW-FLUX')
+  else if (consecutive_ptu_screened_mode) then
+    report_prefix='RANK2-CURRENT-PTU-AA1'
+    previous_output='T'
+    latest_output='U'
+    proposal_carrier='X4-RAW-FLUX'
+    call load_state(trim(path(1)),2,x0,'P PROPOSAL','X4-RAW-FLUX')
   else if (consecutive_current_mode) then
     report_prefix='RANK2-QSVW-AA1'
     previous_output='V'
@@ -279,6 +292,8 @@ program check_rank2_modal_aa1_candidate
   call check_basis_reference(trim(path(5)),proposal)
   if (consecutive_current_aa2_picard_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'P','Z')
+  else if (consecutive_ptu_screened_mode) then
+    call validate_input_snapshot(trim(path(4)),x1,x2,'T','U')
   else if (consecutive_returned_screened_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'R','S')
   else if (consecutive_current_mode) then
@@ -301,7 +316,8 @@ program check_rank2_modal_aa1_candidate
       (.not.ieee_is_finite(previous_weight))) &
     call fail('NON-FINITE MODAL-AA1 WEIGHT.')
   if (consecutive_current_aa2_picard_mode.or. &
-      consecutive_returned_screened_mode) then
+      consecutive_returned_screened_mode.or. &
+      consecutive_ptu_screened_mode) then
     modal_affine_sq=previous_weight**2*update0_sq+beta**2*update1_sq+ &
       2.0_real64*previous_weight*beta*update_dot
     if ((.not.ieee_is_finite(modal_affine_sq)).or. &
@@ -318,7 +334,8 @@ program check_rank2_modal_aa1_candidate
 
   if (consecutive_current_mode.or. &
       consecutive_current_aa2_picard_mode.or. &
-      consecutive_returned_screened_mode) then
+      consecutive_returned_screened_mode.or. &
+      consecutive_ptu_screened_mode) then
     leakage_sq=0.0_real64
     leakage_dot=0.0_real64
     leakage_affine_d=0.0_real64
@@ -351,7 +368,8 @@ program check_rank2_modal_aa1_candidate
     leakage_current_norm=sqrt(leakage_sq(2))
     leakage_affine_norm=sqrt(leakage_affine_sq)
     if (consecutive_current_aa2_picard_mode.or. &
-        consecutive_returned_screened_mode) then
+        consecutive_returned_screened_mode.or. &
+        consecutive_ptu_screened_mode) then
       if ((modal_affine_norm >= modal_current_norm).or. &
           (leakage_affine_norm >= leakage_current_norm).or. &
           (leakage_affine_d >= leakage_current_d)) then
@@ -420,9 +438,11 @@ program check_rank2_modal_aa1_candidate
     min_published_flux)
   if (consecutive_current_mode.or. &
       consecutive_current_aa2_picard_mode.or. &
-      consecutive_returned_screened_mode) then
+      consecutive_returned_screened_mode.or. &
+      consecutive_ptu_screened_mode) then
     if (consecutive_current_aa2_picard_mode.or. &
-        consecutive_returned_screened_mode) then
+        consecutive_returned_screened_mode.or. &
+        consecutive_ptu_screened_mode) then
       call write_real64_metric(trim(report_prefix)// &
         ' MODAL AFFINE L2/CURRENT',modal_affine_norm/modal_current_norm)
     endif
@@ -435,7 +455,8 @@ program check_rank2_modal_aa1_candidate
     write(6,'(A)') trim(report_prefix)// &
       ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
     if (consecutive_current_aa2_picard_mode.or. &
-        consecutive_returned_screened_mode) &
+        consecutive_returned_screened_mode.or. &
+        consecutive_ptu_screened_mode) &
       write(6,'(A)') trim(report_prefix)// &
         ' PARAMETER-FREE DIRECTION GATE PASS'
   endif
