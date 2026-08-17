@@ -11,8 +11,8 @@ FC=${FC:-gfortran}
 BUILDER="$ROOT/validation/iterative/build_rank2_modal_aa1_candidate.f90"
 CHECKER="$ROOT/validation/iterative/check_rank2_modal_aa1_candidate.f90"
 RUNNER="$ROOT/validation/iterative/run_rank2_current_qvwx_zplus_aa1_candidate.sh"
-EXPECTED_AX_SHA=5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c
-EXPECTED_SNAP_SHA=3c216fff2be1336c29e584e4b8b0d6d9eca537f80c6a5fc07bf08f4ad509eb84
+EXPECTED_AX_SHA=${EXPECTED_AX_SHA:-5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c}
+EXPECTED_SNAP_SHA=${EXPECTED_SNAP_SHA:-3c216fff2be1336c29e584e4b8b0d6d9eca537f80c6a5fc07bf08f4ad509eb84}
 
 for file in "$MANIFEST" "$BUILDER" "$CHECKER" "$RUNNER" \
   "$GANLIB_LIB" "$GANLIB_MOD/ganlib.mod"

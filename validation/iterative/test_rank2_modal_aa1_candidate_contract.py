@@ -28,6 +28,12 @@ qvwx_manifest = (
 qvwx_zplus_manifest = (
     ITERATIVE / "rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv"
 ).read_text()
+cef_manifest = (
+    ITERATIVE / "rank2_current_cef_aa1_candidate_inputs.tsv"
+).read_text()
+cef_result = (
+    ITERATIVE / "rank2_current_cef_aa1_candidate_result.md"
+).read_text()
 zpcd_manifest = (
     ITERATIVE / "rank2_current_zpcd_aa1_candidate_inputs.tsv"
 ).read_text()
@@ -887,7 +893,8 @@ for token in (
     require(token in qvwx_zplus_runner,
             f"QVWX-ZPLUS runner binding missing: {token}")
 qvwx_zplus_expected = re.findall(
-    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", qvwx_zplus_runner
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=\$\{EXPECTED_(?:AX|SNAP)_SHA:-"
+    r"([0-9a-f]{64})\}$", qvwx_zplus_runner
 )
 require(qvwx_zplus_expected == [
     "5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c",
@@ -898,6 +905,46 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_zplus_runner),
 require("spot-rank2-current-qvwx-zplus-aa1-candidate" in
         (ROOT / "Makefile").read_text(),
         "QVWX-ZPLUS Make target is missing")
+
+cef_rows = [line.split() for line in cef_manifest.splitlines()
+            if line.strip() and not line.startswith("#")]
+require(cef_manifest.splitlines()[0] ==
+        "# spot-rank2-current-qvwx-zplus-aa1-candidate-inputs-v1",
+        "CEF AA1 manifest version changed")
+require(tuple(row[0] for row in cef_rows) == (
+    "y_aa1_pub", "z", "z_plus", "z_plus_snapshots", "basis_reference"
+), "CEF AA1 manifest roles changed")
+require(tuple(row[1] for row in cef_rows) == (
+    "978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6",
+    "0b5c8d27b4d2e37d90d56d27d75619842851b7a0e0206947b31c3d5b88936828",
+    "6e26d8dc40bf79c0dedad19912557dfed5ccd2c3bdb38ea719ce32b5cc9aba6c",
+    "4e6ede5bb7253999850d8306c8f0683df9c6191e4dc5f19b2381b10f56fb0a2d",
+    "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+), "CEF AA1 inputs changed")
+makefile = (ROOT / "Makefile").read_text()
+for token in (
+    "spot-rank2-current-cef-aa1-candidate",
+    "rank2_current_cef_aa1_candidate_inputs.tsv",
+    "iterative-rank2-current-cef-aa1-candidate",
+    "76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd",
+    "5b7d6d7c0cf00a4097284b53816d7e3c91ca4e27656f0bc437f6a0472555ac68",
+    "run_rank2_current_qvwx_zplus_aa1_candidate.sh",
+):
+    require(token in makefile, f"CEF AA1 Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "0.54317069088638781",
+    "0.45682930911361219",
+    "3.3988810913576900e-12",
+    "0.059424727376440133",
+    "0.19596354669013863",
+    "0.28717479223258224",
+    "76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd",
+    "5b7d6d7c0cf00a4097284b53816d7e3c91ca4e27656f0bc437f6a0472555ac68",
+    "9/9 receipt",
+    "No Dragon, ASM, FLU, transport, or physical map was run",
+):
+    require(token in cef_result, f"CEF AA1 result missing: {token}")
 
 zpcd_rows = [
     line.split() for line in zpcd_manifest.splitlines()

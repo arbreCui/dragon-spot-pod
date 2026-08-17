@@ -71,6 +71,10 @@ zpcd_e_picard_runner_path = (
     ITERATIVE / "run_rank2_current_zpcd_e_picard_map.sh"
 )
 zpcd_e_picard_runner = zpcd_e_picard_runner_path.read_text()
+cef_map_runner_path = (
+    ITERATIVE / "run_rank2_current_cef_aa1_map.sh"
+)
+cef_map_runner = cef_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -208,6 +212,12 @@ zpcd_e_picard_manifest = (
 ).read_text()
 zpcd_e_picard_result = (
     ITERATIVE / "rank2_current_zpcd_e_picard_map_result.md"
+).read_text()
+cef_map_policy = (
+    ITERATIVE / "rank2_current_cef_aa1_map_policy.md"
+).read_text()
+cef_map_manifest = (
+    ITERATIVE / "rank2_current_cef_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -1596,6 +1606,56 @@ for token in (
     require(token in zpcd_e_picard_result,
             f"ZPCD-E Picard result boundary missing: {token}")
 
+cef_map_rows = [line.split() for line in cef_map_manifest.splitlines()
+                if line.strip() and not line.startswith("#")]
+require(cef_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-cef-aa1-map-parent-v1",
+        "CEF AA1 map manifest version changed")
+require(tuple(row[0] for row in cef_map_rows) == roles,
+        "CEF AA1 map manifest roles changed")
+require(tuple(row[1] for row in cef_map_rows[-2:]) == (
+    "76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd",
+    "5b7d6d7c0cf00a4097284b53816d7e3c91ca4e27656f0bc437f6a0472555ac68",
+), "CEF AA1 map parent changed")
+require(cef_map_runner.index("RUN_RANK2_CURRENT_CEF_AA1_MAP=") <
+        cef_map_runner.index("ROOT=$("),
+        "CEF AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-cef-aa1-candidate",
+    "rank2_current_cef_aa1_map_parent.tsv",
+    "rank2_current_cef_aa1_map_policy.md",
+    "iterative-rank2-current-cef-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in cef_map_runner,
+            f"CEF AA1 map runner missing: {token}")
+require(cef_map_runner.count("run_continuation_short.sh") == 1,
+        "CEF AA1 map runner must delegate once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", cef_map_runner),
+        "CEF AA1 map retry loop is forbidden")
+for token in (
+    "R_\\rho", "R_L", "R_a", "diagnostic only", "no retry",
+    "three online radial", "one axial solve", "g-q_1",
+    "no second physical",
+):
+    require(token in cef_map_policy,
+            f"CEF AA1 map policy missing: {token}")
+require("spot-rank2-current-cef-aa1-map" in
+        (ROOT / "Makefile").read_text(), "CEF AA1 map target is missing")
+cef_default_off = subprocess.run(
+    ["sh", str(cef_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_CEF_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(cef_default_off.returncode == 0 and
+        cef_default_off.stderr == "" and
+        cef_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-CEF-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "CEF AA1 map default-off terminal changed")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
         "proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
@@ -1784,7 +1844,7 @@ for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
              latest_next_runner, latest_next_recovery_runner,
              latest_recovery_runner, post_runner, rolling_map_runner,
              rolling_next_map_runner, zpcd_map_runner,
-             zpcd_e_picard_runner, radial, axial):
+             zpcd_e_picard_runner, cef_map_runner, radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
                 f"empirical control present: {forbidden}")
