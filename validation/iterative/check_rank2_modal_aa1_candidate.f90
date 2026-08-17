@@ -36,6 +36,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --current-qpzst-aa2 q p p z s t \
   !     t_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --current-stuvvw-aa2 s t u v v w \
+  !     w_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -92,6 +94,7 @@ program check_rank2_modal_aa1_candidate
   logical :: rolling_next_mode,x4_history_mode,rolling_aa2_next_mode
   logical :: current_aa2_mode
   logical :: current_qpzst_aa2_mode
+  logical :: current_stuvvw_aa2_mode
   logical :: x4z_history_mode,zu_history_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
@@ -113,6 +116,7 @@ program check_rank2_modal_aa1_candidate
   rolling_aa2_next_mode=.false.
   current_aa2_mode=.false.
   current_qpzst_aa2_mode=.false.
+  current_stuvvw_aa2_mode=.false.
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
   consecutive_current_mode=.false.
@@ -125,6 +129,8 @@ program check_rank2_modal_aa1_candidate
       current_aa2_mode=.true.
     else if (trim(mode_argument) == '--current-qpzst-aa2') then
       current_qpzst_aa2_mode=.true.
+    else if (trim(mode_argument) == '--current-stuvvw-aa2') then
+      current_stuvvw_aa2_mode=.true.
     else if (trim(mode_argument) /= '--rolling-aa2') then
       call fail('ELEVEN ARGUMENTS REQUIRE AN AA2 MODE.')
     endif
@@ -137,7 +143,8 @@ program check_rank2_modal_aa1_candidate
     call check_rolling_aa2_candidate(trim(path(1)),trim(path(2)), &
       trim(path(3)),trim(path(4)),trim(path(5)),trim(path(6)), &
       trim(path(7)),trim(path(8)),trim(path(9)),trim(path(10)), &
-      rolling_aa2_next_mode,current_aa2_mode,current_qpzst_aa2_mode)
+      rolling_aa2_next_mode,current_aa2_mode,current_qpzst_aa2_mode, &
+      current_stuvvw_aa2_mode)
     stop
   else if (argument_count == 9) then
     call get_command_argument(1,mode_argument)
@@ -419,13 +426,14 @@ contains
   subroutine check_rolling_aa2_candidate(in0_name,out0_name,in1_name, &
       out1_name,in2_name,out2_name,out2_snap_name,basis_name, &
       proposal_name,proposal_snap_name,rolling_next_mode,current_mode, &
-      current_qpzst_mode)
+      current_qpzst_mode,current_stuvvw_mode)
     character(len=*), intent(in) :: in0_name,out0_name,in1_name,out1_name
     character(len=*), intent(in) :: in2_name,out2_name,out2_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name
     character(len=*), intent(in) :: proposal_snap_name
     logical, intent(in) :: rolling_next_mode,current_mode
     logical, intent(in), optional :: current_qpzst_mode
+    logical, intent(in), optional :: current_stuvvw_mode
     type(canonical_state) :: in0,out0,in1,out1,in2,out2,proposal_state
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -446,18 +454,38 @@ contains
     character(len=12) :: aa2_label0,aa2_label1,aa2_label2
     character(len=12) :: aa2_latest_input,aa2_latest_output
     integer :: il
-    logical :: qpzst_mode
+    logical :: qpzst_mode,stuvvw_mode,direction_gate_mode
 
     qpzst_mode=.false.
     if (present(current_qpzst_mode)) qpzst_mode=current_qpzst_mode
+    stuvvw_mode=.false.
+    if (present(current_stuvvw_mode)) stuvvw_mode=current_stuvvw_mode
+    direction_gate_mode=qpzst_mode.or.stuvvw_mode
 
     if (qpzst_mode.and.(trim(out0_name) /= trim(in1_name))) &
       call fail('QPZST P OUTPUT AND P INPUT MUST BE THE SAME PATH.')
+    if (stuvvw_mode.and.(trim(out1_name) /= trim(in2_name))) &
+      call fail('STUVVW V OUTPUT AND V INPUT MUST BE THE SAME PATH.')
 
     if ((current_mode.and.rolling_next_mode).or. &
-        (qpzst_mode.and.(current_mode.or.rolling_next_mode))) &
+        (qpzst_mode.and.(current_mode.or.rolling_next_mode.or. &
+          stuvvw_mode)).or. &
+        (stuvvw_mode.and.(current_mode.or.rolling_next_mode))) &
       call fail('AA2 MODES ARE MUTUALLY EXCLUSIVE.')
-    if (qpzst_mode) then
+    if (stuvvw_mode) then
+      aa2_report_prefix='RANK2-CURRENT-STUVVW-AA2'
+      aa2_label0='T'
+      aa2_label1='V'
+      aa2_label2='W'
+      aa2_latest_input='V'
+      aa2_latest_output='W'
+      call load_state(in0_name,2,in0,'STUVVW S INPUT','Z-RAW-FLUX')
+      call load_state(out0_name,1,out0,'STUVVW T OUTPUT')
+      call load_state(in1_name,2,in1,'STUVVW U INPUT','AA2-RAW-FLUX')
+      call load_state(out1_name,1,out1,'STUVVW V OUTPUT')
+      call load_state(in2_name,1,in2,'STUVVW V INPUT')
+      call load_state(out2_name,1,out2,'STUVVW W OUTPUT')
+    else if (qpzst_mode) then
       aa2_report_prefix='RANK2-CURRENT-QPZST-AA2'
       aa2_label0='P'
       aa2_label1='Z'
@@ -589,9 +617,9 @@ contains
         (predicted_sq < 0.0_real64)) &
       call fail('INVALID ROLLING AA2 PREDICTED RESIDUAL.')
 
-    if (qpzst_mode) then
+    if (direction_gate_mode) then
       if (f2_sq <= 0.0_real64) &
-        call fail('INVALID QPZST CURRENT MODAL RESIDUAL.')
+        call fail('INVALID CURRENT AA2 MODAL RESIDUAL.')
       modal_predicted_norm=sqrt(predicted_sq)
       modal_current_norm=sqrt(f2_sq)
       leakage_predicted_sq=0.0_real64
@@ -622,13 +650,13 @@ contains
           (.not.ieee_is_finite(leakage_predicted_d)).or. &
           (.not.ieee_is_finite(leakage_current_d)).or. &
           (leakage_current_d <= 0.0_real64)) &
-        call fail('INVALID QPZST LEAKAGE DIRECTION SCREEN.')
+        call fail('INVALID CURRENT AA2 LEAKAGE DIRECTION SCREEN.')
       leakage_predicted_norm=sqrt(leakage_predicted_sq)
       leakage_current_norm=sqrt(leakage_current_sq)
       if ((modal_predicted_norm >= modal_current_norm).or. &
           (leakage_predicted_norm >= leakage_current_norm).or. &
           (leakage_predicted_d >= leakage_current_d)) &
-        call fail('QPZST PARAMETER-FREE DIRECTION GATE FAILED.')
+        call fail('CURRENT AA2 PARAMETER-FREE DIRECTION GATE FAILED.')
     endif
 
     allocate(affine_a(size(out2%coordinates)))
@@ -705,7 +733,7 @@ contains
     write(6,'(A,I0)') trim(aa2_report_prefix)// &
       ' STRICT-POSITIVE POINTS ', &
       positive_count_expected
-    if (qpzst_mode) then
+    if (direction_gate_mode) then
       call write_real64_metric(trim(aa2_report_prefix)// &
         ' MODAL AFFINE L2/CURRENT', &
         modal_predicted_norm/modal_current_norm)
