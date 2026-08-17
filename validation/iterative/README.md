@@ -1146,3 +1146,36 @@ global divergence. No retry, fallback, empirical parameter, or successor was
 started. See
 [rank2_current_stuv_decision_result.md](rank2_current_stuv_decision_result.md)
 and [rank2_current_v_picard_map_result.md](rank2_current_v_picard_map_result.md).
+
+## Latest chronological AA(2) continuation
+
+Standard AA(1) from the consecutive maps \(u\mapsto v\) and
+\(v\mapsto w\) failed because both same-weight leakage directions increased.
+The next-lowest-order standard option used the chronological window
+\(s\mapsto t,u\mapsto v,v\mapsto w\):
+
+\[
+x=0.3128924934t+0.3453549519v+0.3417525548w.
+\]
+
+The unregularized AA(2) candidate passed all three direction screens,
+8880/8880 positivity, the independent checker, and its 9/9 receipt. Exactly
+one real \(G_2(x)\) then passed all strict terminals, the independent map
+checker, and the 21/21 receipt, giving
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.2222828\times10^{-4},\,
+9.1167749\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.4721160\times10^{-6}).
+\]
+
+The original AND gate fails through \(R_L\) and \(R_a\). Relative to the
+parent map, \(R_L\) and dimensional \(D_L\) decreased by 20.53%, while
+\(R_a\) increased by 63.80%. The classification is `VALID_NOT_MET`: a valid
+map with local leakage improvement, not componentwise contraction or proof
+of convergence. No retry, fallback, empirical parameter, or successor was
+started. See
+[rank2_current_uvvw_decision_result.md](rank2_current_uvvw_decision_result.md),
+[rank2_current_stuvvw_aa2_candidate_result.md](rank2_current_stuvvw_aa2_candidate_result.md),
+and [rank2_current_stuvvw_aa2_map_result.md](rank2_current_stuvvw_aa2_map_result.md).

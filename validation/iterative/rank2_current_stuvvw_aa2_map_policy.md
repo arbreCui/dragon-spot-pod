@@ -42,3 +42,14 @@ bounds are process-safety limits, not model or convergence parameters. One
 activation permits one attempt, with no retry, fallback, relaxation,
 damping, clipping, fitted coefficient, regularization, pseudoinverse
 threshold, condition cutoff, or automatic successor.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`90dce89d7d14f2c35a92137f63c2b7a33983c138`. All strict solve terminals,
+the independent `proposal-aa2` checker, and the 21/21 receipt passed. The
+valid result is `VALID_NOT_MET`: \(R_\rho\) passes, while \(R_L\) and
+\(R_a\) fail the unchanged gate. Relative to the parent map, leakage
+improved but the modal defect increased. No retry, fallback, or successor
+was started. See
+[rank2_current_stuvvw_aa2_map_result.md](rank2_current_stuvvw_aa2_map_result.md).

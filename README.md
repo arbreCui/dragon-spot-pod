@@ -981,3 +981,36 @@ invalidate fixed-rank-two SPOD. No retry, fallback, empirical parameter, or
 successor was started. See the
 [decision](validation/iterative/rank2_current_stuv_decision_result.md) and
 [real map](validation/iterative/rank2_current_v_picard_map_result.md).
+
+## Latest chronological AA(2) continuation
+
+The newest consecutive AA(1), from \(u\mapsto v\) and \(v\mapsto w\), was
+rejected because its same-weight leakage directions increased. The latest
+three-map window \(s\mapsto t,u\mapsto v,v\mapsto w\) then gave the standard
+unregularized AA(2) state
+
+\[
+x=0.3128924934t+0.3453549519v+0.3417525548w.
+\]
+
+All weights are positive. Its modal, leakage height-\(L_2\), and \(D_L\)
+direction ratios were `0.062849`, `0.587018`, and `0.546809`; 8880/8880
+publication points were positive. Exactly one real \(G_2(x)\), including
+three online radial solves, passed every strict terminal, the independent
+checker, and the 21/21 receipt. It returned
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.2222828\times10^{-4},\,
+9.1167749\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.4721160\times10^{-6}).
+\]
+
+Relative to the parent map, leakage fell by 20.53% but \(R_a\) rose by
+63.80%. The original AND gate therefore still fails through \(R_L\) and
+\(R_a\), giving `VALID_NOT_MET`. This is local leakage improvement, not
+componentwise contraction or evidence of asymptotic convergence. No retry,
+fallback, empirical parameter, or successor was started. See the
+[decision](validation/iterative/rank2_current_uvvw_decision_result.md),
+[candidate](validation/iterative/rank2_current_stuvvw_aa2_candidate_result.md),
+and [real map](validation/iterative/rank2_current_stuvvw_aa2_map_result.md).
