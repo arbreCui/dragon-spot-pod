@@ -5,32 +5,44 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest actual residuals $t-p$ and $u-t$ give standard full-Gram AA(1)
+The latest two actual residuals $u-t$ and $v-q$ reject standard AA(1)
+because its two leakage direction ratios exceed one.  The latest three
+actual maps $p\mapsto t$, $t\mapsto u$, and $q\mapsto v$ then give the
+minimum-order admissible standard AA(2) proposal
 
-\[
-q=0.4154615501\,t+0.5845384499\,u,
-\]
+$$
+w=0.1976858571\,t+0.2162723008\,u+0.5860418421\,v.
+$$
 
-with modal, leakage height-$L_2$, and $D_L$ direction ratios
-`0.09230435`, `0.66391213`, and `0.56107589`.  All three pass, so AA(2) is
-skipped.  The hash-locked proposal and 9/9 receipt pass independent checks.
-Its single physical map then passed all strict terminals, the independent
-map checker, and the 21/21 receipt:
+Its three direction ratios are `0.3561`, `0.5843`, and `0.7122`.  The
+hash-locked proposal, strict map terminals, independent checker, and 21/21
+receipt all pass.  The one physical map returns
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(0,\,3.9874274\times10^{-4},\,
-5.8423029\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.4222472\times10^{-7}).
+(6.4223481\times10^{-8},\,4.7279444\times10^{-4},\,
+6.9272937\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3934958\times10^{-6}).
 $$
 
-The result is `VALID_NOT_MET`: $R_\rho$ and $R_a$ pass, but $R_L$ fails.
-All three nonzero defect magnitudes are lower than for the preceding map,
-but the inputs differ, so this is not a contraction claim.  No retry or
-successor was started.  See
-[rank2_current_ptu_aa1_map_result.md](rank2_current_ptu_aa1_map_result.md).
+The result is `VALID_NOT_MET`: only $R_\rho$ passes.  $R_L$, $D_L$, and
+$R_a$ are larger than for the preceding evaluated map, but this cross-input
+comparison is not a contraction or divergence claim.  No retry or successor
+was started.  See
+[rank2_current_ptuqv_aa2_map_result.md](rank2_current_ptuqv_aa2_map_result.md).
 
 ## Active files
+
+- `rank2_current_ptuqv_decision_result.md`,
+  `rank2_current_ptuqv_aa2_candidate_inputs.tsv`,
+  `run_rank2_current_ptuqv_aa2_candidate.sh`,
+  `rank2_current_ptuqv_aa2_candidate_result.md`,
+  `rank2_current_ptuqv_aa2_map_parent.tsv`,
+  `rank2_current_ptuqv_aa2_map_policy.md`,
+  `run_rank2_current_ptuqv_aa2_map.sh`,
+  `rank2_current_ptuqv_aa2_map_result.md`: latest minimum-order decision,
+  independently verified AA(2) proposal, and its one valid but unconverged
+  physical map.
 
 - `rank2_current_ptu_decision_result.md`,
   `rank2_current_ptu_aa1_candidate_inputs.tsv`,
@@ -39,7 +51,7 @@ successor was started.  See
   `rank2_current_ptu_aa1_map_parent.tsv`,
   `rank2_current_ptu_aa1_map_policy.md`,
   `run_rank2_current_ptu_aa1_map.sh`,
-  `rank2_current_ptu_aa1_map_result.md`: latest minimum-order AA(1) decision,
+  `rank2_current_ptu_aa1_map_result.md`: preceding minimum-order AA(1) decision,
   independently verified proposal, and its one valid but unconverged
   physical map.
 

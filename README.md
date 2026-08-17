@@ -103,33 +103,35 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-The latest actual residuals $t-p$ and $u-t$ give standard full-Gram AA(1)
+After the valid map $q\mapsto v$, the actual residuals $u-t$ and $v-q$
+give standard AA(1) direction ratios `0.6667`, `1.1538`, and `1.2579`.
+Because both leakage directions increase, AA(1) is rejected.  Only then,
+standard unregularized full-Gram AA(2) on $p\mapsto t$, $t\mapsto u$, and
+$q\mapsto v$ gives
 
-\[
-q=0.4154615501\,t+0.5845384499\,u.
-\]
+$$
+w=0.1976858571\,t+0.2162723008\,u+0.5860418421\,v.
+$$
 
-Its modal, leakage height-$L_2$, and $D_L$ direction ratios are
-`0.09230435`, `0.66391213`, and `0.56107589`; all three pass without a
-fitted coefficient or tuned empirical threshold, so AA(2) is skipped.  The
-verified proposal was evaluated exactly once with online radial
-recomputation.  Every strict terminal, independent check, and the 21/21
-receipt passed:
+Its three direction ratios `0.3561`, `0.5843`, and `0.7122` pass without a
+fitted coefficient or numerical cutoff.  The verified proposal was
+evaluated exactly once with online radial recomputation.  Every strict
+terminal, independent check, and the 21/21 receipt passed:
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(0,\,3.9874274\times10^{-4},\,
-5.8423029\times10^{-7}\ \mathrm{cm}^{-1},\,
-2.4222472\times10^{-7}).
+(6.4223481\times10^{-8},\,4.7279444\times10^{-4},\,
+6.9272937\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3934958\times10^{-6}).
 $$
 
-$R_\rho$ and $R_a$ now pass the unchanged $5\times10^{-7}$ AND gate;
-$R_L$ remains `797.485` times its threshold.  Against the preceding
-evaluated residual, the three nonzero defect magnitudes fell by 53.68%,
-53.68%, and 87.22%.  Because the inputs differ, this is a useful local
-accelerated step, not a contraction factor.  SPOT still has no accepted
-rank-two fixed point.  No retry or successor was started.  See
-[the latest map result](validation/iterative/rank2_current_ptu_aa1_map_result.md).
+Only $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate.  Compared
+with the preceding evaluated residual, $R_L$, $D_L$, and $R_a$ increased by
+18.57%, 18.57%, and 475.29%.  Because the inputs differ, this is a local
+nonlinear response, not a contraction, divergence, or cycle claim.  SPOT
+still has no accepted rank-two fixed point.  No retry or successor was
+started.  See
+[the latest map result](validation/iterative/rank2_current_ptuqv_aa2_map_result.md).
 
 ## Historical validation record
 

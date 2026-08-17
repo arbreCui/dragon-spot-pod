@@ -2,7 +2,7 @@
 
 Date: 2026-08-17
 
-Status: `PREPARED_NOT_RUN`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 The latest two actual residuals, $u-t$ and $v-q$, first gave standard
 full-Gram AA(1).  Its modal direction ratio was `0.6667217753`, but its
@@ -35,3 +35,15 @@ Dimensional $D_L\,[\mathrm{cm}^{-1}]$ remains diagnostic only.  The 120 s
 radial and 180 s axial bounds are process-safety limits.  There is no retry,
 fallback, relaxation, damping, clipping, fit, regularization, condition
 cutoff, or automatic successor.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit
+`9c1fe4b6109c2cd2c2fcfae8904d6aa9c1af190e`.  All four strict solver
+terminals, the independent `proposal-aa2` checker, and the 21/21 receipt
+passed.  The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and
+$R_a$ fail.  Relative to the preceding evaluated map, $R_L$, $D_L$, and
+$R_a$ increased by 18.57%, 18.57%, and 475.29%; this cross-input comparison
+is not a contraction or divergence claim.  No retry or successor was
+started.  See
+[rank2_current_ptuqv_aa2_map_result.md](rank2_current_ptuqv_aa2_map_result.md).

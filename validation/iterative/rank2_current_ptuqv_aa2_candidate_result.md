@@ -25,4 +25,5 @@ The proposal hashes are:
 - snapshots: `cdd6893892c5ba0140a3f5d3ce82bfef476c9a6537a939f41ecd53b2825e14e0`
 
 The artifact has a passing 9/9 receipt and contains no transport solve or
-map result.  Exactly one default-off $G_2(w)$ stage is prepared separately.
+map result.  The proposal was subsequently evaluated exactly once; see
+[rank2_current_ptuqv_aa2_map_result.md](rank2_current_ptuqv_aa2_map_result.md).
