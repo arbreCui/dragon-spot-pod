@@ -86,6 +86,9 @@ latest_next_recovery_policy = (
 latest_next_recovery_result = (
     ITERATIVE / "rank2_latest_modal_aa1_next_map_recovery_result.md"
 ).read_text()
+recovery_history_result = (
+    ITERATIVE / "rank2_latest_modal_aa1_recovery_history_result.md"
+).read_text()
 post_policy = (ITERATIVE / "rank2_modal_aa1_post_map_policy.md").read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_map_parent.tsv"
@@ -117,6 +120,9 @@ u_history_manifest = (
 ).read_text()
 latest_history_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_history.tsv"
+).read_text()
+recovery_history_manifest = (
+    ITERATIVE / "rank2_latest_modal_aa1_recovery_history.tsv"
 ).read_text()
 
 
@@ -406,6 +412,31 @@ require(tuple(row[1] for row in latest_history_rows) == (
         "0c7d94c9df4b1a7f7f94b8a9d54eb51aacfcead8ab34d5f288c85351b1c0ab9d",
         "8f641951ded5f7709a074f71313045396930f5c0985b598bcb22adca7d189ec9",
         ), "latest-history parents changed")
+
+recovery_history_rows = [
+    line.split() for line in recovery_history_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(recovery_history_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-modal-aa1-recovery-history-v1",
+        "recovery-history manifest version changed")
+require(tuple(row[0] for row in recovery_history_rows) ==
+        ("qy_pub", "z", "qt_pub", "u"),
+        "recovery-history roles changed")
+require(all(len(row) == 3 for row in recovery_history_rows),
+        "recovery-history manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in recovery_history_rows),
+        "recovery-history SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in recovery_history_rows),
+        "recovery-history manifest path escapes the repository")
+require(tuple(row[1] for row in recovery_history_rows) == (
+        "0c7d94c9df4b1a7f7f94b8a9d54eb51aacfcead8ab34d5f288c85351b1c0ab9d",
+        "8f641951ded5f7709a074f71313045396930f5c0985b598bcb22adca7d189ec9",
+        "e9e37246df25ef9afb449fad77e55b6ce21cd03f09e2f185d458aea4bd85d28c",
+        "d2e394bc4d222cf5515f27ed2a2b1fe3333ba9cb346b25c1424b292b27d1f744",
+        ), "recovery-history parents changed")
 
 require(runner.index("RUN_RANK2_MODAL_AA1_MAP=") < runner.index("ROOT=$("),
         "default-off gate must precede repository access")
@@ -1014,6 +1045,21 @@ for token in (
 ):
     require(token in checker,
             f"latest-history checker contract missing: {token}")
+for token in (
+    "--rank2-aa1-x4z-history",
+    "MAP-QY-Z RAW-DEFECT BITWISE PASS",
+    "MAP-QT-U RAW-DEFECT BITWISE PASS",
+    "PROPOSAL-QY-TO-RETURNED-Z",
+    "PROPOSAL-QT-TO-RETURNED-U",
+    "BETA WEIGHT-U",
+    "WEIGHT-Z",
+    "LEAKAGE AFFINE-D_L/CURRENT",
+    "LEAKAGE SAME-BETA SCREEN ONLY NO LEAKAGE FIT",
+    "NEXT-RAW-OUTPUT S=(1-BETA)*Z+BETA*U",
+    "OFFLINE_DECISION_ONLY_NO_AUTHORIZATION",
+):
+    require(token in checker,
+            f"recovery-history checker contract missing: {token}")
 require("call require_absent(root,'SPOT-X-STATE',owner)" in checker,
         "returned state may retain the proposal lifecycle marker")
 require("call require_absent(root,'SPOT-X-CARR',owner)" in checker,
@@ -1131,6 +1177,21 @@ for token in (
 ):
     require(token in latest_next_recovery_result,
             f"recovery result boundary missing: {token}")
+for token in (
+    "Classification: `OFFLINE_DECISION_COMPLETE`",
+    "5.65865271195166948e-7",
+    "2.46867988169239516e-6",
+    "0.184362130017637404",
+    "0.815637869982362540",
+    "0.0390808376459938628",
+    "0.811050772246201479",
+    "1.13252774426119052",
+    "8880 / 8880",
+    "no componentwise physical verdict",
+    "does not authorize",
+):
+    require(token in recovery_history_result,
+            f"recovery-history result boundary missing: {token}")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(label in post_policy,

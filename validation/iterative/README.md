@@ -194,6 +194,10 @@ generic, default-off continuation host.
   one-shot recovery using fresh staging and the established 420-second
   external axial cap. It changed no physics or stopping criterion and
   produced one independently checked `VALID_NOT_MET` map.
+- `rank2_latest_modal_aa1_recovery_history.tsv`,
+  `rank2_latest_modal_aa1_recovery_history_result.md`: hash-locked,
+  read-only standard AA(1) direction audit of the two latest valid
+  proposal-to-returned pairs; it creates no proposal and runs no Dragon.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -818,6 +822,20 @@ fails the unchanged AND gate through $R_L$ and $R_a$. The result is
 `VALID_NOT_MET`; no retry or successor map was started. See
 [rank2_latest_modal_aa1_next_map_recovery_result.md](rank2_latest_modal_aa1_next_map_recovery_result.md).
 
+The following no-Dragon history audit used the actual pairs
+$Q(y)\mapsto z$ and $Q(t)\mapsto u$. Its unique standard modal AA(1) state is
+
+\[
+Q(s)=Q(0.815637869982362540z+0.184362130017637404u).
+\]
+
+The modal affine screen is `0.0390808376459939` of the latest residual, but
+the same-coefficient leakage screens are mixed: height-$L_2$ improves while
+$D_L$ increases by about `13.25%`. Thus $Q(s)$ is eligible only for a
+separate offline materialization; no AA(1) superiority, proposal artifact,
+map authorization, or convergence result follows. See
+[rank2_latest_modal_aa1_recovery_history_result.md](rank2_latest_modal_aa1_recovery_history_result.md).
+
 ## Current boundary
 
 Direct rank-1 Picard has valid maps through the predeclared final x8, but has
@@ -842,9 +860,10 @@ rejected. See [current_result.md](current_result.md).
 The fixed-rank-two study also remains unconverged. The latest history-selected
 standard modal AA(1) proposal $Q(t)$ has now been evaluated exactly once by
 the unchanged physical map. It is valid, but $R_L$ and $R_a$ still fail the
-declared gate. No retry, further proposal, or successor map has been prepared
-or started. The offline direction audits do not identify rank two or finite
-inner error as the cause.
+declared gate. A new read-only AA(1) history calculation makes one $Q(s)$
+eligible for offline materialization, but has not created it. No retry,
+further proposal, or successor map has been prepared or started. The offline
+direction audits do not identify rank two or finite inner error as the cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map

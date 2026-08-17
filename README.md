@@ -695,3 +695,20 @@ The recovery policy is
 [validation/iterative/rank2_latest_modal_aa1_next_map_recovery_policy.md](validation/iterative/rank2_latest_modal_aa1_next_map_recovery_policy.md).
 The completed recovery result is
 [validation/iterative/rank2_latest_modal_aa1_next_map_recovery_result.md](validation/iterative/rank2_latest_modal_aa1_next_map_recovery_result.md).
+
+The subsequent no-Dragon audit used the two latest valid pairs
+$Q(y)\mapsto z$ and $Q(t)\mapsto u$. Standard modal AA(1), with no fitted or
+clipped coefficient, gives
+
+$$
+s=0.815637869982362540z+0.184362130017637404u.
+$$
+
+Its affine modal screen is `0.0390808376459939` of the latest residual and
+all 8880 publication points are positive. The leakage evidence is mixed:
+the same-coefficient height-$L_2$ screen is `0.8110507722462015` of the
+latest value, while the maximum $D_L$ screen is `1.1325277442611905`.
+Therefore this does not establish AA(1) superiority or convergence. It only
+makes the unique parameter-free $Q(s)$ eligible for a separate offline
+materialization; no proposal or map has been started. See
+[validation/iterative/rank2_latest_modal_aa1_recovery_history_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_history_result.md).
