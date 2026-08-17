@@ -886,4 +886,35 @@ fallback, empirical coefficient or successor map was started. See the
 [candidate](validation/iterative/rank2_wxcd_aa1_candidate_result.md), and
 [real map](validation/iterative/rank2_wxcd_aa1_map_result.md).
 
-No further map is authorized by this result.
+That result itself authorized no automatic successor.
+
+## Latest parameter-free AA(1) check
+
+The next separately declared three-step batch used the genuine consecutive
+maps \(q_{\mathrm{AA2}}\mapsto p\) and \(p\mapsto z\). Standard full-Gram
+AA(1), with no fitted or clipped coefficient, uniquely gave
+
+\[
+s=0.62153295893235927p+0.37846704106764067z.
+\]
+
+Before evaluation, the same weights reduced the modal, leakage
+height-\(L_2\), and \(D_L\) screens to `0.033998`, `0.534864`, and `0.720624`
+of the latest residual; the independently materialized proposal retained
+8880/8880 positive points. Exactly one fresh \(G_2(s)\), including three
+online radial solves, passed all strict terminals, the independent checker
+and the 21/21 receipt. Its raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,7.7972621269\times10^{-4},\,
+1.1424417607\times10^{-6}\ \mathrm{cm}^{-1},\,
+2.6297993459\times10^{-6}).
+\]
+
+Only \(R_\rho\) passes the unchanged \(5\times10^{-7}\) AND gate, so the
+classification is `VALID_NOT_MET`. The offline affine prediction was not
+used as acceptance and did not reproduce the nonlinear map outcome. No retry,
+fallback, empirical parameter or successor was started. See the
+[candidate](validation/iterative/rank2_current_aa2_picard_aa1_candidate_result.md)
+and [real map](validation/iterative/rank2_current_aa2_picard_aa1_map_result.md).

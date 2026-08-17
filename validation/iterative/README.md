@@ -1058,3 +1058,33 @@ did produce a valid rank-2 map, classified `VALID_NOT_MET`. See
 
 The removed detailed validation history is recoverable from Git tag
 `archive-pre-lean-20260814`.
+
+## Latest parameter-free AA(1) check
+
+The genuine consecutive maps \(q_{\mathrm{AA2}}\mapsto p\) and
+\(p\mapsto z\) define the unique standard full-Gram proposal
+
+\[
+s=0.62153295893235927p+0.37846704106764067z.
+\]
+
+Its modal, leakage height-\(L_2\), and \(D_L\) authorization ratios are
+`0.033998`, `0.534864`, and `0.720624`; all 8880 publication points are
+positive. The offline proposal passed its independent checker and 9/9
+receipt without running Dragon. One separately activated real \(G_2(s)\)
+then passed all strict terminals, the independent map checker and 21/21
+receipt, but produced
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,7.7972621269\times10^{-4},\,
+1.1424417607\times10^{-6}\ \mathrm{cm}^{-1},\,
+2.6297993459\times10^{-6}).
+\]
+
+The unchanged AND gate therefore gives `VALID_NOT_MET`: \(R_L\) and \(R_a\)
+fail. This is a valid nonlinear map, not a converged fixed point. No retry,
+fallback, empirical parameter or successor map was started. See
+[rank2_current_aa2_picard_aa1_candidate_result.md](rank2_current_aa2_picard_aa1_candidate_result.md)
+and
+[rank2_current_aa2_picard_aa1_map_result.md](rank2_current_aa2_picard_aa1_map_result.md).

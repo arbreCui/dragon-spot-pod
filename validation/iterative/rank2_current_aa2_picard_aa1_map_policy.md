@@ -39,3 +39,12 @@ fallback, empirical parameter or automatic successor.
 The result is classified only as `INVALID_MAP`, `TOLERANCE_MET`, or
 `VALID_NOT_MET` by the existing independent checker and the unchanged AND
 gate. Offline predictions and \(D_L\) remain diagnostics.
+
+## Post-run record
+
+The default-off host was activated exactly once from source commit
+`18170cca5fcd7ac30e3768e852ad25bd2ed2ebae`. All four strict solve terminals,
+the independent checker and the 21/21 receipt passed. The result is
+`VALID_NOT_MET`: \(R_\rho\) passes while \(R_L\) and \(R_a\) fail. No retry,
+fallback or successor was started. See
+[rank2_current_aa2_picard_aa1_map_result.md](rank2_current_aa2_picard_aa1_map_result.md).
