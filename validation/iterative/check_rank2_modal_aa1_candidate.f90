@@ -11,6 +11,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-x4z qy z qt u u_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-zu qt u qs v v_snap basis \
+  !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --post-aa1 x2 x3 aa1 aa1p \
@@ -76,7 +78,7 @@ program check_rank2_modal_aa1_candidate
   integer :: argument_count,i,min_group,min_snapshot,min_region
   logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
   logical :: rolling_next_mode,x4_history_mode,rolling_aa2_next_mode
-  logical :: x4z_history_mode
+  logical :: x4z_history_mode,zu_history_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
   character(len=24) :: report_prefix
@@ -91,6 +93,7 @@ program check_rank2_modal_aa1_candidate
   rolling_next_mode=.false.
   x4_history_mode=.false.
   x4z_history_mode=.false.
+  zu_history_mode=.false.
   rolling_aa2_next_mode=.false.
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
@@ -120,6 +123,8 @@ program check_rank2_modal_aa1_candidate
       x4_history_mode=.true.
     else if (trim(mode_argument) == '--next-x4z') then
       x4z_history_mode=.true.
+    else if (trim(mode_argument) == '--next-zu') then
+      zu_history_mode=.true.
     else if (trim(mode_argument) == '--post-aa1') then
       post_aa1_mode=.true.
     else if (trim(mode_argument) == '--rolling-aa1') then
@@ -128,6 +133,7 @@ program check_rank2_modal_aa1_candidate
       rolling_next_mode=.true.
     else if (trim(mode_argument) /= '--next') then
       call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --NEXT-X4Z, '// &
+        '--NEXT-ZU, '// &
         '--U, --POST-AA1 OR --ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
@@ -162,7 +168,7 @@ program check_rank2_modal_aa1_candidate
     enddo
   else
     call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
-      'SEVEN, OR --NEXT/--NEXT-X4/--NEXT-X4Z/--U/--POST-AA1/'// &
+      'SEVEN, OR --NEXT/--NEXT-X4/--NEXT-X4Z/--NEXT-ZU/--U/--POST-AA1/'// &
       '--ROLLING-AA1/'// &
       '--ROLLING-AA1-NEXT PLUS EIGHT, OR A ROLLING-AA2 MODE PLUS TEN.')
   endif
@@ -171,7 +177,7 @@ program check_rank2_modal_aa1_candidate
     call check_next_candidate(trim(path(1)),trim(path(2)),trim(path(3)), &
       trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)), &
       u_mode,post_aa1_mode,rolling_mode,rolling_next_mode,x4_history_mode, &
-      x4z_history_mode)
+      x4z_history_mode,zu_history_mode)
   else
 
   report_prefix='RANK2-MODAL-AA1'
@@ -517,12 +523,13 @@ contains
 
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
       basis_name,proposal_name,proposal_snap_name,u_mode,post_aa1_mode, &
-      rolling_mode,rolling_next_mode,x4_history_mode,x4z_history_mode)
+      rolling_mode,rolling_next_mode,x4_history_mode,x4z_history_mode, &
+      zu_history_mode)
     character(len=*), intent(in) :: x1_name,x2_name,y_name,z_name,z_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name,proposal_snap_name
     logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
     logical, intent(in) :: rolling_next_mode,x4_history_mode
-    logical, intent(in) :: x4z_history_mode
+    logical, intent(in) :: x4z_history_mode,zu_history_mode
     type(canonical_state) :: state_x1,state_x2,state_y,state_z,state_proposal
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -535,15 +542,27 @@ contains
     character(len=8) :: latest_input,latest_output,previous_output
 
     if ((u_mode.and.(post_aa1_mode.or.rolling_mode.or. &
-          rolling_next_mode.or.x4_history_mode.or.x4z_history_mode)).or. &
+          rolling_next_mode.or.x4_history_mode.or.x4z_history_mode.or. &
+          zu_history_mode)).or. &
         (post_aa1_mode.and.(rolling_mode.or.rolling_next_mode.or. &
-          x4_history_mode.or.x4z_history_mode)).or. &
+          x4_history_mode.or.x4z_history_mode.or.zu_history_mode)).or. &
         (rolling_mode.and.(rolling_next_mode.or.x4_history_mode.or. &
-          x4z_history_mode)).or. &
-        (rolling_next_mode.and.(x4_history_mode.or.x4z_history_mode)).or. &
-        (x4_history_mode.and.x4z_history_mode)) &
+          x4z_history_mode.or.zu_history_mode)).or. &
+        (rolling_next_mode.and.(x4_history_mode.or.x4z_history_mode.or. &
+          zu_history_mode)).or. &
+        (x4_history_mode.and.(x4z_history_mode.or.zu_history_mode)).or. &
+        (x4z_history_mode.and.zu_history_mode)) &
       call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
-    if (x4z_history_mode) then
+    if (zu_history_mode) then
+      input_carrier='U-RAW-FLUX'
+      output_carrier='V2-RAW-FLUX'
+      report_prefix='RANK2-LATEST-QV-AA1'
+      latest_input='QS'
+      latest_output='V'
+      previous_output='U'
+      call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL QT', &
+        'Z-RAW-FLUX')
+    else if (x4z_history_mode) then
       input_carrier='Z-RAW-FLUX'
       output_carrier='U-RAW-FLUX'
       report_prefix='RANK2-LATEST2-AA1-NEXT'

@@ -50,6 +50,7 @@ all :
 	spot-rank2-latest-modal-aa1-candidate \
 	spot-rank2-latest-modal-aa1-next-candidate \
 	spot-rank2-latest-modal-aa1-recovery-candidate \
+	spot-rank2-latest-modal-aa1-qv-candidate \
 	spot-rank2-latest-modal-aa1-map \
 	spot-rank2-latest-modal-aa1-next-map \
 	spot-rank2-latest-modal-aa1-next-map-recovery \
@@ -111,6 +112,8 @@ spot-rank2-latest-modal-aa1-next-candidate :
 	sh validation/iterative/run_rank2_latest_modal_aa1_next_candidate.sh
 spot-rank2-latest-modal-aa1-recovery-candidate :
 	sh validation/iterative/run_rank2_latest_modal_aa1_recovery_candidate.sh
+spot-rank2-latest-modal-aa1-qv-candidate :
+	sh validation/iterative/run_rank2_latest_modal_aa1_qv_candidate.sh
 spot-rank2-latest-modal-aa1-map :
 	sh validation/iterative/run_rank2_latest_modal_aa1_map.sh
 spot-rank2-latest-modal-aa1-next-map :

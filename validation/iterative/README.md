@@ -214,6 +214,11 @@ generic, default-off continuation host.
   standard AA(1) audit of the actual $Q(t)\mapsto u$ and $Q(s)\mapsto v$
   pairs. It records the unique unrestricted extrapolation and adverse
   same-coefficient leakage screens, creates no proposal, and runs no Dragon.
+- `rank2_latest_modal_aa1_qv_candidate_inputs.tsv`,
+  `run_rank2_latest_modal_aa1_qv_candidate.sh`,
+  `rank2_latest_modal_aa1_qv_candidate_result.md`: deterministic no-Dragon
+  publication of that unrestricted affine state, with an independent
+  `V2-RAW-FLUX` carrier and $Q(s)\mapsto v$ snapshot-lifecycle audit.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -895,6 +900,23 @@ positive at 8880/8880 points. This is an arithmetically admissible,
 high-risk extrapolation, not a convergence result or a physical AND-gate
 evaluation. No proposal or map was started. See
 [rank2_latest_modal_aa1_qv_history_result.md](rank2_latest_modal_aa1_qv_history_result.md).
+
+That exact unrestricted state has now been materialized offline:
+
+$$
+x_{\mathrm{AA1}}=
+-2.43937066250607248u+3.43937066250607248v.
+$$
+
+One coefficient publishes $(A,\rho,L)$ without clipping or damping. The
+complete AX/raw-flux and snapshot carrier comes only from the latest
+returned $v$ and is marked `V2-RAW-FLUX`; no raw fluxes were mixed. The
+independent checker reproduces the coefficient and publication bitwise,
+verifies the $Q(s)\mapsto v$ lifecycle, and accepts 8880/8880 points. The
+artifact has a passing 9/9 receipt and remains
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`. No Dragon, map, stopping defect, or
+convergence decision was produced. See
+[rank2_latest_modal_aa1_qv_candidate_result.md](rank2_latest_modal_aa1_qv_candidate_result.md).
 
 ## Current boundary
 

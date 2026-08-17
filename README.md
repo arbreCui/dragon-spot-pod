@@ -761,3 +761,21 @@ eligible only for separate offline materialization; it is high risk and does
 not establish convergence, componentwise improvement, or AA(1) superiority.
 No proposal or map was started. See
 [validation/iterative/rank2_latest_modal_aa1_qv_history_result.md](validation/iterative/rank2_latest_modal_aa1_qv_history_result.md).
+
+That one unrestricted state has now been materialized offline, without
+clipping its coefficient:
+
+$$
+x_{\mathrm{AA1}}=-2.43937066250607248u
+                 +3.43937066250607248v.
+$$
+
+The same scalar publishes $(A,\rho,L)$. The complete raw AX and snapshot
+carrier comes only from the latest returned $v$ and is marked
+`V2-RAW-FLUX`; raw fluxes were not mixed. The independent checker binds the
+hash-locked $Q(t)\to u$ pair, verifies the $Q(s)\to v$ snapshot lifecycle,
+reproduces the REAL64/REAL32 publication, and accepts 8880/8880 points. The
+9/9 receipt passes. The result remains
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect, or
+convergence decision was produced. See
+[validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md).

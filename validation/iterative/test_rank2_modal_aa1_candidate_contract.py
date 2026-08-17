@@ -28,6 +28,12 @@ latest_next_manifest = (
 recovery_manifest = (
     ITERATIVE / "rank2_latest_modal_aa1_recovery_candidate_inputs.tsv"
 ).read_text()
+qv_manifest = (
+    ITERATIVE / "rank2_latest_modal_aa1_qv_candidate_inputs.tsv"
+).read_text()
+qv_result = (
+    ITERATIVE / "rank2_latest_modal_aa1_qv_candidate_result.md"
+).read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_candidate_inputs.tsv"
 ).read_text()
@@ -57,6 +63,9 @@ latest_next_runner = (
 ).read_text()
 recovery_runner = (
     ITERATIVE / "run_rank2_latest_modal_aa1_recovery_candidate.sh"
+).read_text()
+qv_runner = (
+    ITERATIVE / "run_rank2_latest_modal_aa1_qv_candidate.sh"
 ).read_text()
 post_runner = (
     ITERATIVE / "run_rank2_modal_aa1_post_candidate.sh"
@@ -221,6 +230,35 @@ require(tuple(row[1] for row in recovery_rows) == (
         "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
         ), "recovery-candidate parents changed")
 
+qv_rows = [
+    line.split() for line in qv_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+qv_roles = (
+    "qt_pub", "u", "qs_pub", "v", "v_snapshots", "basis_reference"
+)
+require(qv_manifest.splitlines()[0] ==
+        "# spot-rank2-latest-modal-aa1-qv-candidate-inputs-v1",
+        "qv-candidate manifest version changed")
+require(tuple(row[0] for row in qv_rows) == qv_roles,
+        "qv-candidate manifest roles changed")
+require(all(len(row) == 3 for row in qv_rows),
+        "qv-candidate manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in qv_rows),
+        "qv-candidate manifest contains an invalid SHA-256")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in qv_rows),
+        "qv-candidate manifest path escapes the repository")
+require(tuple(row[1] for row in qv_rows) == (
+        "e9e37246df25ef9afb449fad77e55b6ce21cd03f09e2f185d458aea4bd85d28c",
+        "d2e394bc4d222cf5515f27ed2a2b1fe3333ba9cb346b25c1424b292b27d1f744",
+        "53f6bb3e48ef583778e54ce0e21ff68f5f63d3d3857c3211c0803bc9a2ef0193",
+        "0842ea931a0b53babb7ea7cde6af459ad86d219ea70e83f1242b7b86ce2bf737",
+        "a701f41dfc42fb31043befad8c3607d669bbba456c1dda663a6c6a1873d1f9ed",
+        "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+        ), "qv-candidate parents changed")
+
 post_rows = [line.split() for line in post_manifest.splitlines()
              if line.strip() and not line.startswith("#")]
 post_roles = (
@@ -334,7 +372,7 @@ require("LCMGID(next_staged_snap,'SYSTEM')" not in builder,
         "next builder must not rewrite lagged SYSTEM history")
 for token in (
     "--u y z w v v_snap out_ax out_snap",
-    "call build_next_candidate(.true.,.false.,.false.,.false.,.false.,.false.)",
+    "call build_next_candidate(.true.,.false.,.false.,.false.,.false.,.false.,.false.)",
     "input_carrier='Z-RAW-FLUX'",
     "output_carrier='V-RAW-FLUX'",
     ".true.,'X2-RAW-FLUX'",
@@ -344,7 +382,7 @@ for token in (
     require(token in builder, f"u builder contract missing: {token}")
 for token in (
     "--post-aa1 x2 x3 aa1 aa1p aa1p_snap out_ax out_snap",
-    "call build_next_candidate(.false.,.true.,.false.,.false.,.false.,.false.)",
+    "call build_next_candidate(.false.,.true.,.false.,.false.,.false.,.false.,.false.)",
     "input_carrier='X3-RAW-FLUX'",
     "output_carrier='AA1-RAW-FLUX'",
     "report_prefix='RANK2-POST-AA1'",
@@ -354,7 +392,7 @@ for token in (
     require(token in builder, f"post-AA1 builder contract missing: {token}")
 for token in (
     "--rolling-aa1 aa1 aa1p xnext xnextp xnextp_snap",
-    "call build_next_candidate(.false.,.false.,.true.,.false.,.false.,.false.)",
+    "call build_next_candidate(.false.,.false.,.true.,.false.,.false.,.false.,.false.)",
     "input_carrier='AA1-RAW-FLUX'",
     "output_carrier='XNP-RAW-FLUX'",
     "report_prefix='RANK2-ROLL-AA1'",
@@ -366,7 +404,7 @@ for token in (
             f"rolling-AA1 builder contract missing: {token}")
 for token in (
     "--rolling-aa1-next xnext xnextp xroll xrollp xrollp_snap",
-    "call build_next_candidate(.false.,.false.,.false.,.true.,.false.,.false.)",
+    "call build_next_candidate(.false.,.false.,.false.,.true.,.false.,.false.,.false.)",
     "input_carrier='XNP-RAW-FLUX'",
     "output_carrier='XRP-RAW-FLUX'",
     "report_prefix='RANK2-ROLL2-AA1'",
@@ -378,7 +416,7 @@ for token in (
             f"rolling-next-AA1 builder contract missing: {token}")
 for token in (
     "--next-x4 x3 x4 qy z z_snap out_ax out_snap",
-    "call build_next_candidate(.false.,.false.,.false.,.false.,.true.,.false.)",
+    "call build_next_candidate(.false.,.false.,.false.,.false.,.true.,.false.,.false.)",
     "input_carrier='X4-RAW-FLUX'",
     "output_carrier='Z-RAW-FLUX'",
     "report_prefix='RANK2-LATEST-AA1-NEXT'",
@@ -389,7 +427,7 @@ for token in (
             f"latest-next builder contract missing: {token}")
 for token in (
     "--next-x4z qy z qt u u_snap out_ax out_snap",
-    "call build_next_candidate(.false.,.false.,.false.,.false.,.false.,.true.)",
+    "call build_next_candidate(.false.,.false.,.false.,.false.,.false.,.true.,.false.)",
     "input_carrier='Z-RAW-FLUX'",
     "output_carrier='U-RAW-FLUX'",
     "report_prefix='RANK2-LATEST2-AA1-NEXT'",
@@ -399,6 +437,18 @@ for token in (
 ):
     require(token in builder,
             f"recovery-candidate builder contract missing: {token}")
+for token in (
+    "--next-zu qt u qs v v_snap out_ax out_snap",
+    "call build_next_candidate(.false.,.false.,.false.,.false.,.false.,.false.,.true.)",
+    "input_carrier='U-RAW-FLUX'",
+    "output_carrier='V2-RAW-FLUX'",
+    "report_prefix='RANK2-LATEST-QV-AA1'",
+    "latest_output='V'",
+    "previous_output='U'",
+    ".true.,'Z-RAW-FLUX'",
+):
+    require(token in builder,
+            f"qv-candidate builder contract missing: {token}")
 for token in (
     "--consecutive x1_pub x2 x3 x3_snap out_ax out_snap",
     "call load_state(trim(path(1)),x0,'x1 proposal',.true.,'V-RAW-FLUX')",
@@ -495,6 +545,20 @@ for token in (
 ):
     require(token in checker,
             f"recovery-candidate checker contract missing: {token}")
+for token in (
+    "--next-zu qt u qs v v_snap basis",
+    "zu_history_mode=.true.",
+    "input_carrier='U-RAW-FLUX'",
+    "output_carrier='V2-RAW-FLUX'",
+    "report_prefix='RANK2-LATEST-QV-AA1'",
+    "latest_input='QS'",
+    "latest_output='V'",
+    "previous_output='U'",
+    "'PREVIOUS PROPOSAL QT'",
+    "'Z-RAW-FLUX'",
+):
+    require(token in checker,
+            f"qv-candidate checker contract missing: {token}")
 for token in (
     "--consecutive x1_pub x2 x3",
     "call load_state(trim(path(1)),2,x0,'X1 PROPOSAL','V-RAW-FLUX')",
@@ -716,6 +780,42 @@ require("spot-rank2-latest-modal-aa1-recovery-candidate" in
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
+    "rank2_latest_modal_aa1_qv_candidate_inputs.tsv",
+    "--next-zu qt_pub.xsm u.xsm qs_pub.xsm v.xsm",
+    "proposal_axial.xsm",
+    "proposal_snapshots.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(name in qv_runner,
+            f"qv-candidate runner binding missing: {name}")
+qv_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", qv_runner
+)
+require(qv_expected == [
+    "bdfc6f8c1a0e4c0d2eb02bffd218cace6bd263ad25bc5439f17751376417549f",
+    "b6a92d2c553f535b0066a63e644423cae22848cd012492f89d0cbff535704490",
+], "qv-candidate output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", qv_runner),
+        "qv-candidate runner retry loops are forbidden")
+require("spot-rank2-latest-modal-aa1-qv-candidate" in
+        (ROOT / "Makefile").read_text(),
+        "qv-candidate Make target is missing")
+for token in (
+    "Classification: `MATERIALIZED_PROPOSAL_NOT_EVALUATED`",
+    "3.43937066250607248",
+    "-2.43937066250607248",
+    "V2-RAW-FLUX",
+    "8880 / 8880",
+    "passing 9/9 receipt",
+    "does not authorize a map",
+):
+    require(token in qv_result,
+            f"qv-candidate result boundary missing: {token}")
+
+for name in (
+    "build_rank2_modal_aa1_candidate.f90",
+    "check_rank2_modal_aa1_candidate.f90",
     "rank2_modal_aa1_post_candidate_inputs.tsv",
     "--post-aa1 x2.xsm x3.xsm aa1.xsm aa1p.xsm",
     "proposal_axial.xsm",
@@ -780,11 +880,12 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
 
 combined = "\n".join((builder, checker, runner, next_runner,
                        u_runner, consecutive_runner, latest_runner,
-                       latest_next_runner, recovery_runner, post_runner,
+                       latest_next_runner, recovery_runner, qv_runner,
+                       post_runner,
                        rolling_runner, rolling_next_runner)).lower()
 for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: ten hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: eleven hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")
