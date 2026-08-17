@@ -83,6 +83,9 @@ latest_next_attempt_result = (
 latest_next_recovery_policy = (
     ITERATIVE / "rank2_latest_modal_aa1_next_map_recovery_policy.md"
 ).read_text()
+latest_next_recovery_result = (
+    ITERATIVE / "rank2_latest_modal_aa1_next_map_recovery_result.md"
+).read_text()
 post_policy = (ITERATIVE / "rank2_modal_aa1_post_map_policy.md").read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_map_parent.tsv"
@@ -1113,6 +1116,21 @@ for token in (
 require(re.search(r"no loop,\s+automatic\s+retry",
                   latest_next_recovery_policy) is not None,
         "recovery no-retry boundary is missing")
+for token in (
+    "Classification: `VALID_NOT_MET`",
+    "2da48acefe9bb9cd313b785580eed9e2a3b9e3d2",
+    "6.422348086676521e-8",
+    "4.434556239270658e-4",
+    r"6.497430149465799\times10^{-7}",
+    "3.704123514999033e-6",
+    "50898b375ffd92d7ad2355cf9ed6cc7b72e0f0c5c9318da78b011ad06b0cf3d3",
+    "21-entry receipt passes 21/21",
+    "22 regular files and no symbolic",
+    "does not satisfy the stopping rule",
+    "No retry, new proposal, or",
+):
+    require(token in latest_next_recovery_result,
+            f"recovery result boundary missing: {token}")
 
 for label in ("INVALID_MAP", "TOLERANCE_MET", "VALID_NOT_MET"):
     require(label in post_policy,

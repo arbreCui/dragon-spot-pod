@@ -669,16 +669,29 @@ recorded CPU times are 132--141 seconds. Because exact wall times were not
 recorded, this shows only that the 80-second cap was operationally aggressive,
 not how long $Q(t)$ would require or that it would complete under a larger
 cap.
-A separately authorized, default-off recovery host is now prepared for one
-fresh evaluation of the same $G_2(Q(t))$. It changes no parent, rank, basis,
-deck, equation, tolerance, AA(1) coefficient, or stopping gate; it restores
-only the established external axial process cap from 80 to 420 seconds. It
-has not yet been run and provides no new scientific result. The invalid
-80-second attempt remains unchanged and no intermediate from it will be
-reused.
+A separately authorized recovery then evaluated the same $G_2(Q(t))$
+exactly once from fresh radial staging. It changed no parent, rank, basis,
+deck, equation, tolerance, AA(1) coefficient, or stopping gate; it restored
+only the established external axial process cap from 80 to 420 seconds. All
+four strict solves and the independent checker passed. The valid raw defects
+are
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223480867\times10^{-8},\,
+4.4345562393\times10^{-4},\,
+6.4974301495\times10^{-7}\ \mathrm{cm}^{-1},\,
+3.7041235150\times10^{-6}).
+$$
+
+The unchanged three-component AND gate therefore gives `VALID_NOT_MET`:
+$R_L$ and $R_a$ fail. The invalid 80-second attempt remains unchanged; none
+of its staging was reused, and no retry or successor map was started.
 The attempt record and frozen pre-run policy are
 [validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md](validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md)
 and
 [validation/iterative/rank2_latest_modal_aa1_next_map_policy.md](validation/iterative/rank2_latest_modal_aa1_next_map_policy.md).
 The recovery policy is
 [validation/iterative/rank2_latest_modal_aa1_next_map_recovery_policy.md](validation/iterative/rank2_latest_modal_aa1_next_map_recovery_policy.md).
+The completed recovery result is
+[validation/iterative/rank2_latest_modal_aa1_next_map_recovery_result.md](validation/iterative/rank2_latest_modal_aa1_next_map_recovery_result.md).

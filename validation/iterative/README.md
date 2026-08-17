@@ -189,10 +189,11 @@ generic, default-off continuation host.
   attempt from that proposal. The three radial terminals passed, but no
   axial terminal or stopping defect was produced before the 80-second bound.
 - `rank2_latest_modal_aa1_next_map_recovery_policy.md`,
-  `run_rank2_latest_modal_aa1_next_map_recovery.sh`: separately authorized,
-  default-off host prepared for one fresh evaluation of the same map with the
-  established 420-second external axial cap. It reuses no failed staging,
-  changes no physics or stopping criterion, and has not yet been run.
+  `run_rank2_latest_modal_aa1_next_map_recovery.sh`,
+  `rank2_latest_modal_aa1_next_map_recovery_result.md`: separately authorized
+  one-shot recovery using fresh staging and the established 420-second
+  external axial cap. It changed no physics or stopping criterion and
+  produced one independently checked `VALID_NOT_MET` map.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
   handling.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
@@ -801,13 +802,21 @@ Its no-Dragon timing census found 14 strict historical completions with the
 identical deck under the existing 420-second cap and CPU records of 132--141
 seconds. Exact wall times are unavailable, so no minimum safe bound or future
 completion is inferred.
-A separately authorized recovery host is now `PREPARED_NOT_RUN`. It will
-repeat the complete radial-plus-axial chain once from the same hash-locked
-proposal, reuse nothing from the invalid attempt, and change only the external
-axial process cap from 80 to 420 seconds. Rank two, basis, decks, equations,
-tolerances, AA(1) coefficient, and the three-component AND gate are unchanged;
-there is no new result yet. See
-[rank2_latest_modal_aa1_next_map_recovery_policy.md](rank2_latest_modal_aa1_next_map_recovery_policy.md).
+The separately authorized recovery then repeated the full radial-plus-axial
+chain exactly once from the same hash-locked proposal. It reused nothing from
+the invalid attempt and changed only the external axial process cap from 80
+to 420 seconds. All strict terminals and the independent checker passed, but
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223480867\times10^{-8},
+4.4345562393\times10^{-4},
+3.7041235150\times10^{-6})
+\]
+
+fails the unchanged AND gate through $R_L$ and $R_a$. The result is
+`VALID_NOT_MET`; no retry or successor map was started. See
+[rank2_latest_modal_aa1_next_map_recovery_result.md](rank2_latest_modal_aa1_next_map_recovery_result.md).
 
 ## Current boundary
 
@@ -830,14 +839,12 @@ local and Git-ignored.
 One real leakage-Anderson candidate made $R_L$ and $R_a$ worse and was
 rejected. See [current_result.md](current_result.md).
 
-The fixed-rank-two study also remains unconverged. Its latest shifted rolling
-AA(2) proposal and two subsequent direct Picard maps have each been evaluated
-exactly once. All are valid, but $R_L$ and $R_a$ still fail the declared
-gate. The first direct step was locally componentwise improved; the second
-reduced leakage but increased the modal defect. One subsequent standard
-modal AA(1) proposal from those direct residuals is now materialized but not
-evaluated. No retry or further map has been prepared or started. The offline
-direction audits do not identify rank two or finite inner error as the cause.
+The fixed-rank-two study also remains unconverged. The latest history-selected
+standard modal AA(1) proposal $Q(t)$ has now been evaluated exactly once by
+the unchanged physical map. It is valid, but $R_L$ and $R_a$ still fail the
+declared gate. No retry, further proposal, or successor map has been prepared
+or started. The offline direction audits do not identify rank two or finite
+inner error as the cause.
 
 Stop after x8. The direct rank-1 census is complete; no x9 is defined. The
 retained x7 parent manifest records the exact input to x8 and is not a next-map
