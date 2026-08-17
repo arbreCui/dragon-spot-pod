@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import re
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -16,6 +18,9 @@ next_manifest = (
 current_manifest = (
     ITERATIVE / "rank2_current_aa2_candidate_inputs.tsv"
 ).read_text()
+ptuqv_manifest = (
+    ITERATIVE / "rank2_current_ptuqv_aa2_candidate_inputs.tsv"
+).read_text()
 builder = (ITERATIVE / "build_rank2_modal_aa1_candidate.f90").read_text()
 checker = (ITERATIVE / "check_rank2_modal_aa1_candidate.f90").read_text()
 runner = (ITERATIVE / "run_rank2_modal_aa2_candidate.sh").read_text()
@@ -24,6 +29,14 @@ next_runner = (
 ).read_text()
 current_runner = (
     ITERATIVE / "run_rank2_current_aa2_candidate.sh"
+).read_text()
+ptuqv_runner = (
+    ITERATIVE / "run_rank2_current_ptuqv_aa2_candidate.sh"
+).read_text()
+ptuqv_map_runner_path = ITERATIVE / "run_rank2_current_ptuqv_aa2_map.sh"
+ptuqv_map_runner = ptuqv_map_runner_path.read_text()
+ptuqv_map_parent = (
+    ITERATIVE / "rank2_current_ptuqv_aa2_map_parent.tsv"
 ).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
@@ -112,6 +125,30 @@ require(tuple(row[1] for row in current_rows[:7]) == (
     "608b4ae084d7c5fdebbe3eaad30e82a453cd81fca160419eed4a7e73be288c91",
 ), "current w/x/c/d/y/e history changed")
 
+ptuqv_rows = [line.split() for line in ptuqv_manifest.splitlines()
+              if line.strip() and not line.startswith("#")]
+require(ptuqv_manifest.splitlines()[0] ==
+        "# spot-rank2-current-ptuqv-aa2-candidate-inputs-v1",
+        "PTUQV manifest version changed")
+require(tuple(row[0] for row in ptuqv_rows) ==
+        ("p", "t", "u", "q", "v", "v_snapshots", "basis_reference"),
+        "PTUQV manifest roles changed")
+require(all(len(row) == 3 for row in ptuqv_rows),
+        "PTUQV manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in ptuqv_rows),
+        "PTUQV manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in ptuqv_rows),
+        "PTUQV manifest path escapes repository")
+require(tuple(row[1] for row in ptuqv_rows[:6]) == (
+    "d00a310cffb832cfec6ef2bdaa6cf27cfd51443904afd8d26ca57418e140d225",
+    "e35636e5badd21a5deb02964b995a948ea0df4eb110b7fd2783ef5c41f36145e",
+    "7620e0a4a7bdfd77e89e83a46c09b5bd66d235c0e9cd0c0c68718a711b96ae3c",
+    "75dd254844b001596f3e57e6aad373e6bdec7aa84958e79b9111c555e93556cf",
+    "b58e6022a2d56f580038015bc0db2d2d584911d27633eccfbdb2d30ad9296fed",
+    "2cb0fdc254599faacd695e25a043e2f3fd9331c848526929fb934ced2074ed81",
+), "PTUQV actual-map history changed")
+
 for token in (
     "--rolling-aa2 x0 x0p x1 x1p x2 x2p x2p_snap",
     "d0a=f0a-f2a", "d1a=f1a-f2a",
@@ -159,6 +196,17 @@ for token in (
             f"current builder contract missing: {token}")
 
 for token in (
+    "trim(mode) == '--current-ptuqv-aa2'",
+    "aa2_report_prefix='RANK2-CURRENT-PTUQV-AA2'",
+    "'PTUQV p input'", ".true.,'X4-RAW-FLUX'",
+    "'PTUQV t output'", "'PTUQV t input'", "'PTUQV u output'",
+    "'PTUQV q input'", "'PTUQV v output'",
+    "direction_gate_mode=qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode.or.",
+):
+    require(token in builder,
+            f"PTUQV builder contract missing: {token}")
+
+for token in (
     "trim(mode_argument) /= '--rolling-aa2'",
     "'AA2 XNEXT INPUT','AA1-RAW-FLUX'",
     "'AA2 XROLL INPUT','XNP-RAW-FLUX'",
@@ -203,6 +251,18 @@ for token in (
 ):
     require(token in checker,
             f"current checker contract missing: {token}")
+
+for token in (
+    "trim(mode_argument) == '--current-ptuqv-aa2'",
+    "current_ptuqv_aa2_mode=.true.",
+    "aa2_report_prefix='RANK2-CURRENT-PTUQV-AA2'",
+    "'PTUQV P INPUT','X4-RAW-FLUX'", "'PTUQV T OUTPUT'",
+    "'PTUQV T INPUT'", "'PTUQV U OUTPUT'",
+    "'PTUQV Q INPUT','X4-RAW-FLUX'", "'PTUQV V OUTPUT'",
+    "aa2_latest_input='Q'", "aa2_latest_output='V'",
+):
+    require(token in checker,
+            f"PTUQV checker contract missing: {token}")
 
 for token in (
     "rank2_modal_aa2_candidate_inputs.tsv",
@@ -261,8 +321,74 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", current_runner),
 require("spot-rank2-current-aa2-candidate" in makefile,
         "current Make target is missing")
 
+for token in (
+    "rank2_current_ptuqv_aa2_candidate_inputs.tsv",
+    "--current-ptuqv-aa2 p.xsm t.xsm t.xsm u.xsm",
+    "PARAMETER-FREE DIRECTION GATE PASS",
+    "AA2-RAW-FLUX", "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(token in ptuqv_runner,
+            f"PTUQV runner contract missing: {token}")
+ptuqv_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", ptuqv_runner
+)
+require(ptuqv_expected == [
+    "0be2f39496fb5de7f4c942ec2e249d484492218e1376a9331b3ec19e7427a2d0",
+    "cdd6893892c5ba0140a3f5d3ce82bfef476c9a6537a939f41ecd53b2825e14e0",
+], "PTUQV output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", ptuqv_runner),
+        "PTUQV retry loop is forbidden")
+require("spot-rank2-current-ptuqv-aa2-candidate" in makefile,
+        "PTUQV Make target is missing")
+
+ptuqv_parent_rows = [line.split() for line in ptuqv_map_parent.splitlines()
+                     if line.strip() and not line.startswith("#")]
+require(ptuqv_map_parent.splitlines()[0] ==
+        "# spot-rank2-current-ptuqv-aa2-map-parent-v1",
+        "PTUQV map-parent version changed")
+require(tuple(row[0] for row in ptuqv_parent_rows) == (
+    "axial_track", "axial_macrolib", "radial_track", "basis_reference",
+    "parent_axial", "parent_snapshots",
+), "PTUQV map-parent roles changed")
+require(tuple(row[1] for row in ptuqv_parent_rows[-2:]) == (
+    "0be2f39496fb5de7f4c942ec2e249d484492218e1376a9331b3ec19e7427a2d0",
+    "cdd6893892c5ba0140a3f5d3ce82bfef476c9a6537a939f41ecd53b2825e14e0",
+), "PTUQV map parent proposal changed")
+for token in (
+    "RUN_RANK2_CURRENT_PTUQV_AA2_MAP=${RUN_RANK2_CURRENT_PTUQV_AA2_MAP:-0}",
+    "iterative-rank2-current-ptuqv-aa2-candidate",
+    "rank2_current_ptuqv_aa2_map_parent.tsv",
+    "rank2_current_ptuqv_aa2_map_policy.md",
+    "iterative-rank2-current-ptuqv-aa2-map",
+    "CHECKER_MODE=proposal-aa2",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in ptuqv_map_runner,
+            f"PTUQV map runner contract missing: {token}")
+require(ptuqv_map_runner.index("RUN_RANK2_CURRENT_PTUQV_AA2_MAP=") <
+        ptuqv_map_runner.index("ROOT=$("),
+        "PTUQV default-off gate must precede filesystem access")
+require(ptuqv_map_runner.count("run_continuation_short.sh") == 1,
+        "PTUQV map runner must delegate exactly once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", ptuqv_map_runner),
+        "PTUQV map retry loop is forbidden")
+require("spot-rank2-current-ptuqv-aa2-map" in makefile,
+        "PTUQV map Make target is missing")
+default_env = os.environ.copy()
+default_env["RUN_RANK2_CURRENT_PTUQV_AA2_MAP"] = "0"
+default_run = subprocess.run(
+    ["sh", str(ptuqv_map_runner_path)], cwd=ROOT, env=default_env,
+    capture_output=True, text=True, check=False,
+)
+require(default_run.returncode == 0 and
+        default_run.stdout.strip() ==
+        "SPOT-RANK2-CURRENT-PTUQV-AA2-MAP DEFAULT-OFF: no Dragon process started.",
+        "PTUQV map default-off execution changed")
+
 combined = "\n".join(
-    (builder, checker, runner, next_runner, current_runner)
+    (builder, checker, runner, next_runner, current_runner, ptuqv_runner)
 ).lower()
 for forbidden in ("regularization", "pseudoinverse", "pinv", "condition cutoff"):
     require(forbidden not in combined, f"forbidden control present: {forbidden}")

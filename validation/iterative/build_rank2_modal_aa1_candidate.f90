@@ -9,6 +9,7 @@ program build_rank2_modal_aa1_candidate
   !   --current-qpzst-aa2 q p p z s t t_snap out_ax out_snap
   !   --current-stuvvw-aa2 s t u v v w w_snap out_ax out_snap
   !   --current-uvvwxy-aa2 u v v w x y y_snap out_ax out_snap
+  !   --current-ptuqv-aa2 p t t u q v v_snap out_ax out_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -80,6 +81,9 @@ program build_rank2_modal_aa1_candidate
     else if (trim(mode) == '--current-uvvwxy-aa2') then
       call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
         .true.)
+    else if (trim(mode) == '--current-ptuqv-aa2') then
+      call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
+        .false.,.true.)
     else
       error stop 'ten-argument mode requires an AA2 mode'
     endif
@@ -469,11 +473,13 @@ program build_rank2_modal_aa1_candidate
 contains
 
   subroutine build_rolling_aa2_candidate(rolling_next_mode,current_mode, &
-      current_qpzst_mode,current_stuvvw_mode,current_uvvwxy_mode)
+      current_qpzst_mode,current_stuvvw_mode,current_uvvwxy_mode, &
+      current_ptuqv_mode)
     logical, intent(in) :: rolling_next_mode,current_mode
     logical, intent(in), optional :: current_qpzst_mode
     logical, intent(in), optional :: current_stuvvw_mode
     logical, intent(in), optional :: current_uvvwxy_mode
+    logical, intent(in), optional :: current_ptuqv_mode
     character(len=1024) :: aa2_path(9)
     type(canonical_state) :: in0,out0,in1,out1,in2,out2
     type(c_ptr) :: out2_snap,aa2_staged_ax,aa2_staged_snap
@@ -495,7 +501,8 @@ contains
     real(real32) :: k_public,projected
     real(real64), allocatable :: candidate_a(:),candidate_l(:)
     real(real32), allocatable :: published_l(:)
-    logical :: qpzst_mode,stuvvw_mode,uvvwxy_mode,direction_gate_mode
+    logical :: qpzst_mode,stuvvw_mode,uvvwxy_mode,ptuqv_mode
+    logical :: direction_gate_mode
 
     qpzst_mode=.false.
     if (present(current_qpzst_mode)) qpzst_mode=current_qpzst_mode
@@ -503,7 +510,10 @@ contains
     if (present(current_stuvvw_mode)) stuvvw_mode=current_stuvvw_mode
     uvvwxy_mode=.false.
     if (present(current_uvvwxy_mode)) uvvwxy_mode=current_uvvwxy_mode
-    direction_gate_mode=qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode
+    ptuqv_mode=.false.
+    if (present(current_ptuqv_mode)) ptuqv_mode=current_ptuqv_mode
+    direction_gate_mode=qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode.or. &
+      ptuqv_mode
 
     do j=1,9
       call get_command_argument(j+1,aa2_path(j))
@@ -522,6 +532,9 @@ contains
     if (uvvwxy_mode.and. &
         (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
       error stop 'UVVWXY v output and v input must be the same path'
+    if (ptuqv_mode.and. &
+        (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
+      error stop 'PTUQV t output and t input must be the same path'
     call require_fresh_path(aa2_path(8))
     call require_fresh_path(aa2_path(9))
 
@@ -530,9 +543,24 @@ contains
           stuvvw_mode.or.uvvwxy_mode)).or. &
         (stuvvw_mode.and.(current_mode.or.rolling_next_mode.or. &
           uvvwxy_mode)).or. &
-        (uvvwxy_mode.and.(current_mode.or.rolling_next_mode))) &
+        (uvvwxy_mode.and.(current_mode.or.rolling_next_mode)).or. &
+        (ptuqv_mode.and.(current_mode.or.rolling_next_mode.or. &
+          qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode))) &
       error stop 'AA2 modes are mutually exclusive'
-    if (uvvwxy_mode) then
+    if (ptuqv_mode) then
+      aa2_report_prefix='RANK2-CURRENT-PTUQV-AA2'
+      aa2_label0='T'
+      aa2_label1='U'
+      aa2_label2='V'
+      call load_state(trim(aa2_path(1)),in0,'PTUQV p input', &
+        .true.,'X4-RAW-FLUX')
+      call load_state(trim(aa2_path(2)),out0,'PTUQV t output')
+      call load_state(trim(aa2_path(3)),in1,'PTUQV t input')
+      call load_state(trim(aa2_path(4)),out1,'PTUQV u output')
+      call load_state(trim(aa2_path(5)),in2,'PTUQV q input', &
+        .true.,'X4-RAW-FLUX')
+      call load_state(trim(aa2_path(6)),out2,'PTUQV v output')
+    else if (uvvwxy_mode) then
       aa2_report_prefix='RANK2-CURRENT-UVVWXY-AA2'
       aa2_label0='V'
       aa2_label1='W'
