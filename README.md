@@ -130,6 +130,15 @@ still has no accepted rank-two fixed point.  No retry or successor was
 started.  See
 [the latest map result](validation/iterative/rank2_current_qvwx_aa1_map_result.md).
 
+The next minimum-order decision uses only the genuine residuals $x-w$ and
+$z-y$.  Standard AA(1) has direction ratios `0.6625`, `2.8228`, and
+`2.5387`, so it fails both leakage screens.  Standard AA(2), formed only
+after that failure from $v-q$, $x-w$, and $z-y$, has ratios `0.06361`,
+`1.2052`, and `1.0316`; it also fails both leakage screens.  Therefore no
+new candidate or map is authorized, and Dragon was not run.  The latest
+physical result above remains the active `VALID_NOT_MET` boundary.  See
+[the latest decision](validation/iterative/rank2_current_wxyz_decision_result.md).
+
 ## Historical validation record
 
 The fixed rank-1 trajectory has been evaluated through the predeclared final

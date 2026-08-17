@@ -5,17 +5,23 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest genuine residuals $v-q$ and $x-w$ give the minimum-order
-admissible standard AA(1) proposal
+The latest genuine residuals $x-w$ and $z-y$ give standard AA(1) direction
+ratios `0.6625`, `2.8228`, and `2.5387`; both leakage directions fail.
+Only then, standard AA(2) on $v-q$, $x-w$, and $z-y$ gives ratios `0.06361`,
+`1.2052`, and `1.0316`; both leakage directions again fail.  Therefore the
+current minimum-order decision is
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL_NO_CANDIDATE_NO_MAP`.  No proposal
+or map is created, and Dragon execution count is zero.  See
+[rank2_current_wxyz_decision_result.md](rank2_current_wxyz_decision_result.md).
+
+The latest physical map remains the preceding AA(1) evaluation
 
 $$
 y=0.8805731304\,v+0.1194268696\,x.
 $$
 
-Its three direction ratios are `0.1097`, `0.7137`, and `0.8419`; AA(2) is
-therefore skipped.  The hash-locked proposal, strict map terminals,
-independent checker, and 21/21 receipt all pass.  The one physical map
-returns
+Its hash-locked proposal, strict map terminals, independent checker, and
+21/21 receipt all pass.  The physical map returns
 
 $$
 (R_\rho,R_L,D_L,R_a)=
@@ -32,6 +38,9 @@ retry or successor was started.  See
 
 ## Active files
 
+- `rank2_current_wxyz_decision_result.md`: latest minimum-order AA(1)/AA(2)
+  rejection boundary; no candidate and no map.
+
 - `rank2_current_qvwx_decision_result.md`,
   `rank2_current_qvwx_aa1_candidate_inputs.tsv`,
   `run_rank2_current_qvwx_aa1_candidate.sh`,
@@ -39,7 +48,7 @@ retry or successor was started.  See
   `rank2_current_qvwx_aa1_map_parent.tsv`,
   `rank2_current_qvwx_aa1_map_policy.md`,
   `run_rank2_current_qvwx_aa1_map.sh`,
-  `rank2_current_qvwx_aa1_map_result.md`: latest minimum-order AA(1)
+  `rank2_current_qvwx_aa1_map_result.md`: preceding minimum-order AA(1)
   decision, independently verified proposal, and its one valid but
   unconverged physical map.
 
