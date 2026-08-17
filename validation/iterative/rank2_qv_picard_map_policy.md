@@ -34,3 +34,10 @@ clipping, fitted closure, regularization, pseudoinverse, fallback, empirical
 coefficient or automatic successor. Only `INVALID_MAP`, `TOLERANCE_MET` and
 `VALID_NOT_MET` are allowed. This map alone cannot establish contraction,
 convergence order, rank adequacy or physical accuracy.
+
+## Post-run record
+
+The frozen host was activated exactly once from source commit `2243d63`.
+All four strict solve terminals, the independent continued-state audit and
+the 21-entry receipt passed. The result is `VALID_NOT_MET`; no retry was
+started. See [rank2_qv_picard_map_result.md](rank2_qv_picard_map_result.md).

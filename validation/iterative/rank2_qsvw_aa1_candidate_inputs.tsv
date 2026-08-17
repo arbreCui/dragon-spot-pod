@@ -1,0 +1,6 @@
+# spot-rank2-qsvw-aa1-candidate-inputs-v1
+qs_pub	53f6bb3e48ef583778e54ce0e21ff68f5f63d3d3857c3211c0803bc9a2ef0193	validation/artifacts/iterative-rank2-latest-modal-aa1-recovery-candidate/proposal_axial.xsm
+v	0842ea931a0b53babb7ea7cde6af459ad86d219ea70e83f1242b7b86ce2bf737	validation/artifacts/iterative-rank2-latest-modal-aa1-recovery-map/candidate_axial.xsm
+w	defdee0cf442470eb623ebb83c8bed59b8c20308121951ef0c72073ddba3c243	validation/artifacts/iterative-rank2-qv-picard-map/candidate_axial.xsm
+w_snapshots	661fa88ed1a8a08907d5a31d90a367565a5c3dbcd0e50a8c3ccecc866436f1ca	validation/artifacts/iterative-rank2-qv-picard-map/candidate_snapshots.xsm
+basis_reference	2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8	validation/artifacts/iterative-rank2-basis/rank2_basis.xsm

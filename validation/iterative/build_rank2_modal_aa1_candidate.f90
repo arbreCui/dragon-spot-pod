@@ -1,6 +1,8 @@
 program build_rank2_modal_aa1_candidate
   ! Materialize one rank-two modal-projected Anderson proposal without
   ! assembly, transport, or a nonlinear-map evaluation.
+  !
+  !   --consecutive-current qs v w w_snap out_ax out_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -33,6 +35,10 @@ program build_rank2_modal_aa1_candidate
   integer :: i,igr,isnap,a,b,nmode,nreg2d,argument_offset
   integer :: index_a,index_b,index_g,index_l
   real(real64) :: update_sq(2),update_dot,denominator,beta,weight1
+  real(real64) :: leakage_sq(2),leakage_dot,leakage_affine_sq
+  real(real64) :: leakage_affine_norm,leakage_current_norm
+  real(real64) :: leakage_affine_d,leakage_current_d
+  real(real64) :: leakage_delta01,leakage_delta12
   real(real64) :: delta01_a,delta01_b,delta12_a,delta12_b
   real(real64) :: rho_star,rho_public,l_roundtrip,reconstructed
   real(real64) :: min_reconstructed,iter_keff
@@ -40,9 +46,11 @@ program build_rank2_modal_aa1_candidate
   real(real64), allocatable :: candidate_a(:),candidate_l(:)
   real(real32), allocatable :: published_l(:)
   logical :: consecutive_mode,consecutive_returned_mode
+  logical :: consecutive_current_mode
 
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
+  consecutive_current_mode=.false.
   argument_offset=0
   if (command_argument_count() == 10) then
     call get_command_argument(1,mode)
@@ -85,6 +93,9 @@ program build_rank2_modal_aa1_candidate
     else if (trim(mode) == '--consecutive-returned') then
       consecutive_mode=.true.
       consecutive_returned_mode=.true.
+    else if (trim(mode) == '--consecutive-current') then
+      consecutive_mode=.true.
+      consecutive_current_mode=.true.
     else
       error stop 'seven-argument mode requires a consecutive mode'
     endif
@@ -106,7 +117,8 @@ program build_rank2_modal_aa1_candidate
       '--rolling-aa2-next x0 x0p x1 x1p x2 x2p x2p_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
-      '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap'
+      '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap or '// &
+      '--consecutive-current qs v w w_snap out_ax out_snap'
   endif
   do i=1,6
     call get_command_argument(i+argument_offset,path(i))
@@ -122,7 +134,13 @@ program build_rank2_modal_aa1_candidate
   previous_output='X1'
   latest_output='X2'
   carrier_marker='X2-RAW-FLUX'
-  if (consecutive_returned_mode) then
+  if (consecutive_current_mode) then
+    report_prefix='RANK2-QSVW-AA1'
+    previous_output='V'
+    latest_output='W'
+    carrier_marker='X4-RAW-FLUX'
+    call load_state(trim(path(1)),x0,'qs proposal',.true.,'U-RAW-FLUX')
+  else if (consecutive_returned_mode) then
     report_prefix='RANK2-LATEST-AA1'
     previous_output='X3'
     latest_output='X4'
@@ -180,6 +198,41 @@ program build_rank2_modal_aa1_candidate
   weight1=1.0_real64-beta
   if ((.not.ieee_is_finite(beta)).or.(.not.ieee_is_finite(weight1))) &
     error stop 'nonfinite modal Anderson weight'
+
+  if (consecutive_current_mode) then
+    leakage_sq=0.0_real64
+    leakage_dot=0.0_real64
+    leakage_affine_d=0.0_real64
+    do isnap=1,x0%dims(3)
+      do igr=1,x0%dims(2)
+        index_l=(isnap-1)*x0%dims(2)+igr
+        leakage_delta01=x1%leakage(index_l)-x0%leakage(index_l)
+        leakage_delta12=x2%leakage(index_l)-x1%leakage(index_l)
+        leakage_sq(1)=leakage_sq(1)+x0%height(isnap)* &
+          leakage_delta01**2
+        leakage_sq(2)=leakage_sq(2)+x0%height(isnap)* &
+          leakage_delta12**2
+        leakage_dot=leakage_dot+x0%height(isnap)* &
+          leakage_delta01*leakage_delta12
+        leakage_affine_d=max(leakage_affine_d, &
+          abs(weight1*leakage_delta01+beta*leakage_delta12))
+      enddo
+    enddo
+    leakage_affine_sq=weight1**2*leakage_sq(1)+ &
+      beta**2*leakage_sq(2)+2.0_real64*weight1*beta*leakage_dot
+    leakage_current_d=maxval(abs(x2%leakage-x1%leakage))
+    if (any(.not.ieee_is_finite(leakage_sq)).or. &
+        any(leakage_sq <= 0.0_real64).or. &
+        (.not.ieee_is_finite(leakage_dot)).or. &
+        (.not.ieee_is_finite(leakage_affine_sq)).or. &
+        (leakage_affine_sq < 0.0_real64).or. &
+        (.not.ieee_is_finite(leakage_affine_d)).or. &
+        (.not.ieee_is_finite(leakage_current_d)).or. &
+        (leakage_current_d <= 0.0_real64)) &
+      error stop 'invalid current leakage Anderson screen'
+    leakage_current_norm=sqrt(leakage_sq(2))
+    leakage_affine_norm=sqrt(leakage_affine_sq)
+  endif
 
   allocate(candidate_a(size(x1%coordinates)))
   allocate(candidate_l(size(x1%leakage)),published_l(size(x1%leakage)))
@@ -293,6 +346,16 @@ program build_rank2_modal_aa1_candidate
     l_roundtrip
   write(*,'(A,ES24.16)') trim(report_prefix)//' MIN-PUBLISHED-BA ', &
     min_reconstructed
+  if (consecutive_current_mode) then
+    write(*,'(A,ES24.16)') trim(report_prefix)// &
+      ' LEAKAGE-AFFINE-L2/CURRENT SAME-MODAL-BETA ', &
+      leakage_affine_norm/leakage_current_norm
+    write(*,'(A,ES24.16)') trim(report_prefix)// &
+      ' LEAKAGE-AFFINE-DL/CURRENT SAME-MODAL-BETA ', &
+      leakage_affine_d/leakage_current_d
+    write(*,'(A)') trim(report_prefix)// &
+      ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
+  endif
   write(*,'(A)') trim(report_prefix)// &
     ' PROPOSAL COMPLETE NOT-EVALUATED NO-DRAGON NO-MAP'
 

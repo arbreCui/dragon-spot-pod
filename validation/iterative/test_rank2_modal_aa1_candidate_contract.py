@@ -34,6 +34,12 @@ qv_manifest = (
 qv_result = (
     ITERATIVE / "rank2_latest_modal_aa1_qv_candidate_result.md"
 ).read_text()
+qsvw_manifest = (
+    ITERATIVE / "rank2_qsvw_aa1_candidate_inputs.tsv"
+).read_text()
+qsvw_result = (
+    ITERATIVE / "rank2_qsvw_aa1_candidate_result.md"
+).read_text()
 post_manifest = (
     ITERATIVE / "rank2_modal_aa1_post_candidate_inputs.tsv"
 ).read_text()
@@ -66,6 +72,9 @@ recovery_runner = (
 ).read_text()
 qv_runner = (
     ITERATIVE / "run_rank2_latest_modal_aa1_qv_candidate.sh"
+).read_text()
+qsvw_runner = (
+    ITERATIVE / "run_rank2_qsvw_aa1_candidate.sh"
 ).read_text()
 post_runner = (
     ITERATIVE / "run_rank2_modal_aa1_post_candidate.sh"
@@ -258,6 +267,28 @@ require(tuple(row[1] for row in qv_rows) == (
         "a701f41dfc42fb31043befad8c3607d669bbba456c1dda663a6c6a1873d1f9ed",
         "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
         ), "qv-candidate parents changed")
+
+qsvw_rows = [
+    line.split() for line in qsvw_manifest.splitlines()
+    if line.strip() and not line.startswith("#")
+]
+require(qsvw_manifest.splitlines()[0] ==
+        "# spot-rank2-qsvw-aa1-candidate-inputs-v1",
+        "qsvw-candidate manifest version changed")
+require(tuple(row[0] for row in qsvw_rows) ==
+        ("qs_pub", "v", "w", "w_snapshots", "basis_reference"),
+        "qsvw-candidate manifest roles changed")
+require(all(len(row) == 3 for row in qsvw_rows),
+        "qsvw-candidate manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in qsvw_rows),
+        "qsvw-candidate manifest contains an invalid SHA-256")
+require(tuple(row[1] for row in qsvw_rows) == (
+            "53f6bb3e48ef583778e54ce0e21ff68f5f63d3d3857c3211c0803bc9a2ef0193",
+            "0842ea931a0b53babb7ea7cde6af459ad86d219ea70e83f1242b7b86ce2bf737",
+            "defdee0cf442470eb623ebb83c8bed59b8c20308121951ef0c72073ddba3c243",
+            "661fa88ed1a8a08907d5a31d90a367565a5c3dbcd0e50a8c3ccecc866436f1ca",
+            "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+        ), "qsvw-candidate parents changed")
 
 post_rows = [line.split() for line in post_manifest.splitlines()
              if line.strip() and not line.startswith("#")]
@@ -813,6 +844,53 @@ for token in (
     require(token in qv_result,
             f"qv-candidate result boundary missing: {token}")
 
+for token in (
+    "--consecutive-current",
+    "U-RAW-FLUX",
+    "RANK2-QSVW-AA1",
+    "LEAKAGE-AFFINE-L2/CURRENT SAME-MODAL-BETA",
+    "LEAKAGE SCREEN ONLY NO LEAKAGE FIT",
+):
+    require(token in builder, f"qsvw builder contract missing: {token}")
+for token in (
+    "--consecutive-current",
+    "U-RAW-FLUX",
+    "RANK2-QSVW-AA1",
+    "LEAKAGE AFFINE L2/CURRENT SAME-MODAL-BETA",
+    "LEAKAGE SCREEN ONLY NO LEAKAGE FIT",
+):
+    require(token in checker, f"qsvw checker contract missing: {token}")
+for token in (
+    "rank2_qsvw_aa1_candidate_inputs.tsv",
+    "--consecutive-current qs.xsm v.xsm w.xsm ws.xsm",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "DRAGON/ASM/FLU/TRANSPORT=0",
+):
+    require(token in qsvw_runner,
+            f"qsvw-candidate runner binding missing: {token}")
+qsvw_expected = re.findall(
+    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", qsvw_runner
+)
+require(qsvw_expected == [
+    "18860e284a02f104821a6eba26ea7743863ccf1193e01089389685648ef7f6c0",
+    "77a3f082955c42ecdcae925a8b52f40217e129715123eca4c5fb45ce6c9440e8",
+], "qsvw-candidate output SHA-256 values changed")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", qsvw_runner),
+        "qsvw-candidate runner loops are forbidden")
+require("spot-rank2-qsvw-aa1-candidate" in
+        (ROOT / "Makefile").read_text(),
+        "qsvw-candidate Make target is missing")
+for token in (
+    "Classification: `MATERIALIZED_PROPOSAL_NOT_EVALUATED`",
+    "0.58613211193957626",
+    "0.59562646285803311",
+    "0.59916457255893851",
+    "8880/8880",
+    "passing 9/9",
+):
+    require(token in qsvw_result,
+            f"qsvw-candidate result boundary missing: {token}")
+
 for name in (
     "build_rank2_modal_aa1_candidate.f90",
     "check_rank2_modal_aa1_candidate.f90",
@@ -881,11 +959,12 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", rolling_next_runner),
 combined = "\n".join((builder, checker, runner, next_runner,
                        u_runner, consecutive_runner, latest_runner,
                        latest_next_runner, recovery_runner, qv_runner,
+                       qsvw_runner,
                        post_runner,
                        rolling_runner, rolling_next_runner)).lower()
 for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: eleven hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: twelve hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

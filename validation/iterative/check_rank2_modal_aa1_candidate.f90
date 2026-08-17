@@ -29,6 +29,8 @@ program check_rank2_modal_aa1_candidate
   !     x3_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive-returned x2 x3 x4 \
   !     x4_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --consecutive-current qs v w \
+  !     w_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -74,13 +76,18 @@ program check_rank2_modal_aa1_candidate
   real(real64) :: update0_sq,update1_sq,update_dot,denominator
   real(real64) :: beta,previous_weight,rho_affine,rho_published
   real(real64) :: publication_delta
+  real(real64) :: leakage_sq(2),leakage_dot,leakage_affine_sq
+  real(real64) :: leakage_affine_norm,leakage_current_norm
+  real(real64) :: leakage_affine_d,leakage_current_d
+  real(real64) :: leakage_delta01,leakage_delta12
   real(real32) :: keff_published,min_published_flux
-  integer :: argument_count,i,min_group,min_snapshot,min_region
+  integer :: argument_count,i,g,s,il,min_group,min_snapshot,min_region
   logical :: next_mode,u_mode,post_aa1_mode,rolling_mode
   logical :: rolling_next_mode,x4_history_mode,rolling_aa2_next_mode
   logical :: x4z_history_mode,zu_history_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
+  logical :: consecutive_current_mode
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
   character(len=2) :: previous_output,latest_output
@@ -97,6 +104,7 @@ program check_rank2_modal_aa1_candidate
   rolling_aa2_next_mode=.false.
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
+  consecutive_current_mode=.false.
   if (argument_count == 11) then
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--rolling-aa2-next') then
@@ -150,6 +158,9 @@ program check_rank2_modal_aa1_candidate
     else if (trim(mode_argument) == '--consecutive-returned') then
       consecutive_mode=.true.
       consecutive_returned_mode=.true.
+    else if (trim(mode_argument) == '--consecutive-current') then
+      consecutive_mode=.true.
+      consecutive_current_mode=.true.
     else
       call fail('EIGHT ARGUMENTS REQUIRE A CONSECUTIVE MODE.')
     endif
@@ -167,7 +178,7 @@ program check_rank2_modal_aa1_candidate
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
   else
-    call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, --CONSECUTIVE PLUS '// &
+    call fail('EXPECTED DEFAULT SEVEN ARGUMENTS, A CONSECUTIVE MODE PLUS '// &
       'SEVEN, OR --NEXT/--NEXT-X4/--NEXT-X4Z/--NEXT-ZU/--U/--POST-AA1/'// &
       '--ROLLING-AA1/'// &
       '--ROLLING-AA1-NEXT PLUS EIGHT, OR A ROLLING-AA2 MODE PLUS TEN.')
@@ -184,7 +195,13 @@ program check_rank2_modal_aa1_candidate
   previous_output='X1'
   latest_output='X2'
   proposal_carrier='X2-RAW-FLUX'
-  if (consecutive_returned_mode) then
+  if (consecutive_current_mode) then
+    report_prefix='RANK2-QSVW-AA1'
+    previous_output='V'
+    latest_output='W'
+    proposal_carrier='X4-RAW-FLUX'
+    call load_state(trim(path(1)),2,x0,'QS PROPOSAL','U-RAW-FLUX')
+  else if (consecutive_returned_mode) then
     report_prefix='RANK2-LATEST-AA1'
     previous_output='X3'
     latest_output='X4'
@@ -207,7 +224,9 @@ program check_rank2_modal_aa1_candidate
   call compare_fixed_bundle(x0,x2,'X0/X2')
   call compare_fixed_bundle(x0,proposal,'X0/PROPOSAL')
   call check_basis_reference(trim(path(5)),proposal)
-  if (consecutive_returned_mode) then
+  if (consecutive_current_mode) then
+    call validate_input_snapshot(trim(path(4)),x1,x2,'V','W')
+  else if (consecutive_returned_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'X3','X4')
   else if (consecutive_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'X2','X3')
@@ -224,6 +243,40 @@ program check_rank2_modal_aa1_candidate
   if ((.not.ieee_is_finite(beta)).or. &
       (.not.ieee_is_finite(previous_weight))) &
     call fail('NON-FINITE MODAL-AA1 WEIGHT.')
+
+  if (consecutive_current_mode) then
+    leakage_sq=0.0_real64
+    leakage_dot=0.0_real64
+    leakage_affine_d=0.0_real64
+    do s=1,x0%dims(3)
+      do g=1,x0%dims(2)
+        il=(s-1)*x0%dims(2)+g
+        leakage_delta01=x1%leakage(il)-x0%leakage(il)
+        leakage_delta12=x2%leakage(il)-x1%leakage(il)
+        leakage_sq(1)=leakage_sq(1)+x0%height(s)*leakage_delta01**2
+        leakage_sq(2)=leakage_sq(2)+x0%height(s)*leakage_delta12**2
+        leakage_dot=leakage_dot+x0%height(s)* &
+          leakage_delta01*leakage_delta12
+        leakage_affine_d=max(leakage_affine_d, &
+          abs(previous_weight*leakage_delta01+beta*leakage_delta12))
+      enddo
+    enddo
+    leakage_affine_sq=previous_weight**2*leakage_sq(1)+ &
+      beta**2*leakage_sq(2)+ &
+      2.0_real64*previous_weight*beta*leakage_dot
+    leakage_current_d=maxval(abs(x2%leakage-x1%leakage))
+    if (any(.not.ieee_is_finite(leakage_sq)).or. &
+        any(leakage_sq <= 0.0_real64).or. &
+        (.not.ieee_is_finite(leakage_dot)).or. &
+        (.not.ieee_is_finite(leakage_affine_sq)).or. &
+        (leakage_affine_sq < 0.0_real64).or. &
+        (.not.ieee_is_finite(leakage_affine_d)).or. &
+        (.not.ieee_is_finite(leakage_current_d)).or. &
+        (leakage_current_d <= 0.0_real64)) &
+      call fail('INVALID CURRENT LEAKAGE ANDERSON SCREEN.')
+    leakage_current_norm=sqrt(leakage_sq(2))
+    leakage_affine_norm=sqrt(leakage_affine_sq)
+  endif
 
   allocate(expected_a(size(x1%coordinates)))
   expected_a=previous_weight*x1%coordinates+beta*x2%coordinates
@@ -279,6 +332,16 @@ program check_rank2_modal_aa1_candidate
     publication_delta)
   call write_real32_metric(trim(report_prefix)//' MIN PUBLISHED B*A', &
     min_published_flux)
+  if (consecutive_current_mode) then
+    call write_real64_metric(trim(report_prefix)// &
+      ' LEAKAGE AFFINE L2/CURRENT SAME-MODAL-BETA', &
+      leakage_affine_norm/leakage_current_norm)
+    call write_real64_metric(trim(report_prefix)// &
+      ' LEAKAGE AFFINE DL/CURRENT SAME-MODAL-BETA', &
+      leakage_affine_d/leakage_current_d)
+    write(6,'(A)') trim(report_prefix)// &
+      ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
+  endif
   write(6,'(A,3(1X,I0))') &
     trim(report_prefix)//' MIN B*A GROUP/SNAPSHOT/REGION', &
     min_group,min_snapshot,min_region
