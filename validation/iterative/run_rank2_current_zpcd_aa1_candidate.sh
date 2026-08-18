@@ -11,8 +11,9 @@ FC=${FC:-gfortran}
 BUILDER="$ROOT/validation/iterative/build_rank2_modal_aa1_candidate.f90"
 CHECKER="$ROOT/validation/iterative/check_rank2_modal_aa1_candidate.f90"
 RUNNER="$ROOT/validation/iterative/run_rank2_current_zpcd_aa1_candidate.sh"
-EXPECTED_AX_SHA=978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6
-EXPECTED_SNAP_SHA=cf43ed781a1f86625aa6ae46023eca2e6e000ed76d16c81470a3544b13bb0354
+MANIFEST_HEADER=${MANIFEST_HEADER:-'# spot-rank2-current-zpcd-aa1-candidate-inputs-v1'}
+EXPECTED_AX_SHA=${EXPECTED_AX_SHA:-978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6}
+EXPECTED_SNAP_SHA=${EXPECTED_SNAP_SHA:-cf43ed781a1f86625aa6ae46023eca2e6e000ed76d16c81470a3544b13bb0354}
 
 for file in "$MANIFEST" "$BUILDER" "$CHECKER" "$RUNNER" \
   "$GANLIB_LIB" "$GANLIB_MOD/ganlib.mod"
@@ -37,8 +38,12 @@ manifest_path() {
   awk -v role="$1" '$1 == role {print $3}' "$MANIFEST"
 }
 
-test "$(sed -n '1p' "$MANIFEST")" = \
-  '# spot-rank2-current-zpcd-aa1-candidate-inputs-v1'
+case "$MANIFEST_HEADER" in
+  '# spot-rank2-current-zpcd-aa1-candidate-inputs-v1'|\
+  '# spot-rank2-current-klm-aa1-candidate-inputs-v1') ;;
+  *) exit 2 ;;
+esac
+test "$(sed -n '1p' "$MANIFEST")" = "$MANIFEST_HEADER"
 test "$(awk 'NF && $1 !~ /^#/ {n++} END {print n+0}' "$MANIFEST")" = 6
 test "$(awk 'NF && $1 !~ /^#/ && NF != 3 {n++} END {print n+0}' \
   "$MANIFEST")" = 0

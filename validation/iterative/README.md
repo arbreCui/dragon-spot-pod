@@ -27,11 +27,20 @@ not.  Dimensional $D_L$ remains diagnostic only.
 
 The next AA(1) on $l-k,m-q_6$ has direction ratios `0.08932`, `0.82454`,
 and `0.56421`, all strictly below one.  The boundary is
-`AA1_DIRECTION_PASS_AA2_SKIPPED`: AA(2) was not calculated, no durable
-successor was published, and no second map was run.  See
-[rank2_current_kl_aa1_map_result.md](rank2_current_kl_aa1_map_result.md).
+`AA1_DIRECTION_PASS_AA2_SKIPPED`: AA(2) was not calculated.  The standard
+$q_7$ proposal is independently materialized with a passing 9/9 receipt.
+Exactly one $n=G_2(q_7)$ is prepared but remains default-off.  See
+[rank2_current_klm_aa1_candidate_result.md](rank2_current_klm_aa1_candidate_result.md)
+and [rank2_current_klm_aa1_map_policy.md](rank2_current_klm_aa1_map_policy.md).
 
 ## Active files
+
+- `rank2_current_klm_aa1_candidate_inputs.tsv`,
+  `rank2_current_klm_aa1_candidate_result.md`,
+  `rank2_current_klm_aa1_map_parent.tsv`,
+  `rank2_current_klm_aa1_map_policy.md`, and
+  `run_rank2_current_klm_aa1_map.sh`: latest minimum-order AA(1) proposal and
+  its one prepared, default-off physical map.
 
 - `rank2_current_kl_aa1_candidate_inputs.tsv`,
   `rank2_current_kl_aa1_candidate_result.md`,

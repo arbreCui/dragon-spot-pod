@@ -91,6 +91,10 @@ kl_map_runner_path = (
     ITERATIVE / "run_rank2_current_kl_aa1_map.sh"
 )
 kl_map_runner = kl_map_runner_path.read_text()
+klm_map_runner_path = (
+    ITERATIVE / "run_rank2_current_klm_aa1_map.sh"
+)
+klm_map_runner = klm_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -273,6 +277,12 @@ kl_map_manifest = (
 ).read_text()
 kl_map_result = (
     ITERATIVE / "rank2_current_kl_aa1_map_result.md"
+).read_text()
+klm_map_policy = (
+    ITERATIVE / "rank2_current_klm_aa1_map_policy.md"
+).read_text()
+klm_map_manifest = (
+    ITERATIVE / "rank2_current_klm_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -2087,6 +2097,82 @@ for token in (
     require(token in kl_map_result,
             f"KL AA1 map result boundary missing: {token}")
 
+klm_map_rows = [line.split() for line in klm_map_manifest.splitlines()
+                if line.strip() and not line.startswith("#")]
+require(klm_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-klm-aa1-map-parent-v1",
+        "KLM AA1 map manifest version changed")
+require(tuple(row[0] for row in klm_map_rows) == roles,
+        "KLM AA1 map manifest roles changed")
+require(all(len(row) == 3 for row in klm_map_rows),
+        "KLM AA1 map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1])
+            for row in klm_map_rows),
+        "KLM AA1 map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in klm_map_rows),
+        "KLM AA1 map manifest path escapes the repository")
+require(tuple(row[1] for row in klm_map_rows[-2:]) == (
+    "74cbee2ffcb72db1a86e728f8643cfbe9dfb6f2784965fe440bd20567a50ee89",
+    "78a999ff7b2fab8f7fbfd4b29e0d433b9ae9e9ef5b124ff812c776b7422f437c",
+), "KLM AA1 map parent changed")
+require(klm_map_runner.index("RUN_RANK2_CURRENT_KLM_AA1_MAP=") <
+        klm_map_runner.index("ROOT=$("),
+        "KLM AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-klm-aa1-candidate",
+    "rank2_current_klm_aa1_map_parent.tsv",
+    "rank2_current_klm_aa1_map_policy.md",
+    "iterative-rank2-current-klm-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in klm_map_runner,
+            f"KLM AA1 map runner missing: {token}")
+require(klm_map_runner.count("run_continuation_short.sh") == 1,
+        "KLM AA1 map runner must delegate once")
+require("run_bounded_dragon.py" not in klm_map_runner and
+        "DRAGON_BIN" not in klm_map_runner,
+        "KLM AA1 map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", klm_map_runner),
+        "KLM AA1 map retry loop is forbidden")
+for token in (
+    "PREPARED_DEFAULT_OFF", "0.71958187611175339",
+    "0.28041812388824661", "n=G_2(q_7)",
+    "R_\\rho", "R_L", "R_a", "diagnostic only",
+    "three online radial", "one axial solve", "n-q_7",
+    "120 s", "180 s", "no retry", "no second physical map",
+    "empirical parameter",
+):
+    require(token in klm_map_policy,
+            f"KLM AA1 map policy missing: {token}")
+klm_default_off = subprocess.run(
+    ["sh", str(klm_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_KLM_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(klm_default_off.returncode == 0 and
+        klm_default_off.stderr == "" and
+        klm_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-KLM-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "KLM AA1 map default-off terminal changed")
+klm_bad_activation = subprocess.run(
+    ["sh", str(klm_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_KLM_AA1_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(klm_bad_activation.returncode == 2 and
+        klm_bad_activation.stdout == "" and
+        klm_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-KLM-AA1-MAP ERROR: activation must be 0 or 1.\n",
+        "KLM AA1 map activation gate changed")
+require("spot-rank2-current-klm-aa1-map" in
+        (ROOT / "Makefile").read_text(), "KLM AA1 map target is missing")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
         "proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
@@ -2276,7 +2362,7 @@ for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
              latest_recovery_runner, post_runner, rolling_map_runner,
              rolling_next_map_runner, zpcd_map_runner,
              zpcd_e_picard_runner, cef_map_runner, k_picard_runner,
-             kl_map_runner,
+             kl_map_runner, klm_map_runner,
              radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),

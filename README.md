@@ -131,9 +131,12 @@ q_7=0.71958187611175339\,l+0.28041812388824661\,m.
 $$
 
 Its direction ratios are `0.08932`, `0.82454`, and `0.56421`, all strictly
-below one.  Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) was not calculated,
-no durable successor was published, and no second physical map was run.  See
-the [latest map result](validation/iterative/rank2_current_kl_aa1_map_result.md).
+below one.  Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) was not calculated.
+The standard $q_7$ proposal is independently materialized with a passing 9/9
+receipt.  Exactly one $n=G_2(q_7)$ is prepared but remains default-off at
+this source boundary.  See the
+[proposal result](validation/iterative/rank2_current_klm_aa1_candidate_result.md)
+and [map policy](validation/iterative/rank2_current_klm_aa1_map_policy.md).
 
 ## Historical validation record
 

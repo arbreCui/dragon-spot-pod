@@ -55,6 +55,12 @@ cef_result = (
 zpcd_manifest = (
     ITERATIVE / "rank2_current_zpcd_aa1_candidate_inputs.tsv"
 ).read_text()
+klm_manifest = (
+    ITERATIVE / "rank2_current_klm_aa1_candidate_inputs.tsv"
+).read_text()
+klm_result = (
+    ITERATIVE / "rank2_current_klm_aa1_candidate_result.md"
+).read_text()
 zpcd_result = (
     ITERATIVE / "rank2_current_zpcd_aa1_candidate_result.md"
 ).read_text()
@@ -1200,17 +1206,66 @@ for token in (
     "DRAGON/ASM/FLU/TRANSPORT=0",
 ):
     require(token in zpcd_runner, f"ZPCD runner binding missing: {token}")
-zpcd_expected = re.findall(
-    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=([^\n]+)$", zpcd_runner
-)
-require(zpcd_expected == [
+zpcd_expected = [
     "978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6",
     "cf43ed781a1f86625aa6ae46023eca2e6e000ed76d16c81470a3544b13bb0354",
-], "ZPCD output SHA-256 values changed")
+]
+require(all(digest in zpcd_runner for digest in zpcd_expected),
+        "ZPCD output SHA-256 values changed")
 require(not re.search(r"(?m)^\s*(?:while|until)\b", zpcd_runner),
         "ZPCD runner retry loops are forbidden")
 require("spot-rank2-current-zpcd-aa1-candidate" in
         (ROOT / "Makefile").read_text(), "ZPCD Make target is missing")
+
+klm_rows = [line.split() for line in klm_manifest.splitlines()
+            if line.strip() and not line.startswith("#")]
+require(klm_manifest.splitlines()[0] ==
+        "# spot-rank2-current-klm-aa1-candidate-inputs-v1",
+        "KLM AA1 manifest version changed")
+require(tuple(row[0] for row in klm_rows) == (
+    "z", "z_plus", "c_aa1_pub", "d", "d_snapshots", "basis_reference"
+), "KLM AA1 manifest roles changed")
+require(tuple(row[1] for row in klm_rows) == (
+    "d8c77928f992adf67136331192a018060f203bedf3d1728d46a39d987c6938de",
+    "fee603751609b7a9ab79ac854e7ecfa93125f3f4597e411e020728ae267180d0",
+    "d223068dbabd5424762f6f73fb488a927cca94ca4db3cee7ef3bbf7f090d825d",
+    "76e4d5e44a6f0a1020fd6280c8da262b322acba80940799a28fc3998ef3da4fc",
+    "af1ffa33b39dc9df8e6a7f4813d408974f933bd39f4e512e68f135927d9cb406",
+    "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+), "KLM AA1 inputs changed")
+require(all(len(row) == 3 for row in klm_rows),
+        "KLM AA1 manifest row width changed")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in klm_rows),
+        "KLM AA1 manifest path escapes the repository")
+for token in (
+    "MANIFEST_HEADER", "# spot-rank2-current-klm-aa1-candidate-inputs-v1",
+    "EXPECTED_AX_SHA=${EXPECTED_AX_SHA:-",
+    "EXPECTED_SNAP_SHA=${EXPECTED_SNAP_SHA:-",
+):
+    require(token in zpcd_runner, f"KLM runner binding missing: {token}")
+klm_makefile = (ROOT / "Makefile").read_text()
+for token in (
+    "spot-rank2-current-klm-aa1-candidate",
+    "rank2_current_klm_aa1_candidate_inputs.tsv",
+    "iterative-rank2-current-klm-aa1-candidate",
+    "74cbee2ffcb72db1a86e728f8643cfbe9dfb6f2784965fe440bd20567a50ee89",
+    "78a999ff7b2fab8f7fbfd4b29e0d433b9ae9e9ef5b124ff812c776b7422f437c",
+):
+    require(token in klm_makefile, f"KLM Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "0.71958187611175339", "0.28041812388824661",
+    "1.4220277430317252e-11", "0.089320649038882691",
+    "0.82454368960985658", "0.56421285796347498",
+    "8880/8880",
+    "74cbee2ffcb72db1a86e728f8643cfbe9dfb6f2784965fe440bd20567a50ee89",
+    "78a999ff7b2fab8f7fbfd4b29e0d433b9ae9e9ef5b124ff812c776b7422f437c",
+    "defc91abd0622bbe45e31fa1633c1fa0e7c80fe483ea255a618d0dcf6d29fc77",
+    "No Dragon", "AA(2) was not calculated", "empirical",
+):
+    require(token in klm_result, f"KLM AA1 result missing: {token}")
+
 for token in (
     "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
     "0.48771444550122545",
@@ -1459,5 +1514,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: nineteen hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: twenty hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

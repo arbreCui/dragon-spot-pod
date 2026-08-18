@@ -83,6 +83,8 @@ all :
 	spot-rank2-current-k-picard-map \
 	spot-rank2-current-kl-aa1-candidate \
 	spot-rank2-current-kl-aa1-map \
+	spot-rank2-current-klm-aa1-candidate \
+	spot-rank2-current-klm-aa1-map \
 	spot-rank2-current-qpzst-aa2-map \
 	spot-rank2-current-v-picard-map \
 	spot-rank2-modal-aa2-rolling-next-candidate \
@@ -269,6 +271,15 @@ spot-rank2-current-kl-aa1-candidate :
 	sh validation/iterative/run_rank2_current_qvwx_zplus_aa1_candidate.sh
 spot-rank2-current-kl-aa1-map :
 	sh validation/iterative/run_rank2_current_kl_aa1_map.sh
+spot-rank2-current-klm-aa1-candidate :
+	MANIFEST="$(CURDIR)/validation/iterative/rank2_current_klm_aa1_candidate_inputs.tsv" \
+	ARTIFACT_DIR="$(CURDIR)/validation/artifacts/iterative-rank2-current-klm-aa1-candidate" \
+	MANIFEST_HEADER='# spot-rank2-current-klm-aa1-candidate-inputs-v1' \
+	EXPECTED_AX_SHA=74cbee2ffcb72db1a86e728f8643cfbe9dfb6f2784965fe440bd20567a50ee89 \
+	EXPECTED_SNAP_SHA=78a999ff7b2fab8f7fbfd4b29e0d433b9ae9e9ef5b124ff812c776b7422f437c \
+	sh validation/iterative/run_rank2_current_zpcd_aa1_candidate.sh
+spot-rank2-current-klm-aa1-map :
+	sh validation/iterative/run_rank2_current_klm_aa1_map.sh
 spot-rank2-current-qpzst-aa2-map :
 	sh validation/iterative/run_rank2_current_qpzst_aa2_map.sh
 spot-rank2-current-v-picard-map :
