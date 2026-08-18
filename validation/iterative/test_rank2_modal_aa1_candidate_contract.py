@@ -25,6 +25,12 @@ ptu_manifest = (
 qvwx_manifest = (
     ITERATIVE / "rank2_current_qvwx_aa1_candidate_inputs.tsv"
 ).read_text()
+gh_manifest = (
+    ITERATIVE / "rank2_current_gh_aa1_candidate_inputs.tsv"
+).read_text()
+gh_result = (
+    ITERATIVE / "rank2_current_gh_aa1_candidate_result.md"
+).read_text()
 qvwx_zplus_manifest = (
     ITERATIVE / "rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv"
 ).read_text()
@@ -223,6 +229,27 @@ require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in qvwx_rows),
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in qvwx_rows),
         "QVWX manifest path escapes the repository")
+
+gh_rows = [line.split() for line in gh_manifest.splitlines()
+           if line.strip() and not line.startswith("#")]
+require(gh_manifest.splitlines()[0] ==
+        "# spot-rank2-current-gh-aa1-candidate-inputs-v1",
+        "GH manifest version changed")
+require(tuple(row[0] for row in gh_rows) == qvwx_roles,
+        "GH manifest roles changed")
+require(all(len(row) == 3 for row in gh_rows),
+        "GH manifest row width changed")
+require(tuple(row[1] for row in gh_rows) == (
+    "76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd",
+    "1b52b5ebd421e620f1f9d7d4e60e50fb002f85c25031533cc4d650e858dd030a",
+    "d4b25fc5bf9b3cc2eb4c6665833f7560073408ffd5462c0f07e4cf30ead0d1fe",
+    "5e53f33aea3d91db6999cc735d4ffd47677545ba350f34e36a266ff5e6f123ad",
+    "17da9628503fafe310ae7dc3223e34de61d78b4c9cc6e4a302ea6e1b6345e5de",
+    "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+), "GH q1/g/q2/h history changed")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in gh_rows),
+        "GH manifest path escapes the repository")
 
 latest_rows = [line.split() for line in latest_manifest.splitlines()
                if line.strip() and not line.startswith("#")]
@@ -839,7 +866,10 @@ for token in (
     require(token in checker, f"QVWX checker contract missing: {token}")
 for token in (
     "rank2_current_qvwx_aa1_candidate_inputs.tsv",
-    "--next-x4aa2-screened q.xsm v.xsm w.xsm x.xsm",
+    "CANDIDATE_MODE=${CANDIDATE_MODE:---next-x4aa2-screened}",
+    "--next-x4aa2-screened)", "--next-aa1aa2-screened)",
+    './build_candidate "$CANDIDATE_MODE" q.xsm v.xsm w.xsm x.xsm',
+    './check_candidate "$CANDIDATE_MODE" q.xsm v.xsm w.xsm x.xsm',
     "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
     "DRAGON/ASM/FLU/TRANSPORT=0",
 ):
@@ -855,6 +885,44 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_runner),
         "QVWX runner retry loops are forbidden")
 require("spot-rank2-current-qvwx-aa1-candidate" in
         (ROOT / "Makefile").read_text(), "QVWX Make target is missing")
+
+for token in (
+    "--next-aa1aa2-screened",
+    "RANK2-CURRENT-GH-AA1",
+    "'previous proposal input',.true.,'AA1-RAW-FLUX'",
+    "input_carrier='AA2-RAW-FLUX'",
+    "output_carrier='AA1-RAW-FLUX'",
+):
+    require(token in builder, f"GH builder contract missing: {token}")
+for token in (
+    "--next-aa1aa2-screened",
+    "RANK2-CURRENT-GH-AA1",
+    "'PREVIOUS PROPOSAL Q1'", "'AA1-RAW-FLUX'",
+    "input_carrier='AA2-RAW-FLUX'",
+    "output_carrier='AA1-RAW-FLUX'",
+):
+    require(token in checker, f"GH checker contract missing: {token}")
+gh_makefile = (ROOT / "Makefile").read_text()
+for token in (
+    "spot-rank2-current-gh-aa1-candidate",
+    "rank2_current_gh_aa1_candidate_inputs.tsv",
+    "iterative-rank2-current-gh-aa1-candidate",
+    "CANDIDATE_MODE=--next-aa1aa2-screened",
+    "REPORT_PREFIX=RANK2-CURRENT-GH-AA1",
+    "EXPECTED_AX_SHA_OVERRIDE=c40c7011626864da111ab6a8097dcb3d0d3a87b2683a72986660f7f0574569c6",
+    "EXPECTED_SNAP_SHA_OVERRIDE=3cd88d1d7f65ad05cc7a62025cb12a2d50bc016a52d35b251685da71c559b37f",
+):
+    require(token in gh_makefile, f"GH Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "0.92198482219461153", "0.078015177805388483",
+    "7.3007449964465324e-13", "0.11971305975561962",
+    "0.47525043616253554", "0.70441518119387303",
+    "c40c7011626864da111ab6a8097dcb3d0d3a87b2683a72986660f7f0574569c6",
+    "3cd88d1d7f65ad05cc7a62025cb12a2d50bc016a52d35b251685da71c559b37f",
+    "8b7ddf314b8d62c5a60cf3eb75b341157dcdb5ebfa90307d8bf41a2909beafa6",
+):
+    require(token in gh_result, f"GH candidate result missing: {token}")
 
 qvwx_zplus_rows = [
     line.split() for line in qvwx_zplus_manifest.splitlines()
@@ -1237,5 +1305,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: seventeen hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: eighteen hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

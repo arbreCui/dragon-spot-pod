@@ -15,6 +15,8 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-x4aa2-screened q v w x \
   !     x_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-aa1aa2-screened q1 g q2 h \
+  !     h_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-zpcd-screened z zp c d \
   !     d_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
@@ -196,6 +198,8 @@ program check_rank2_modal_aa1_candidate
       zu_history_mode=.true.
     else if (trim(mode_argument) == '--next-x4aa2-screened') then
       x4aa2_screened_mode=.true.
+    else if (trim(mode_argument) == '--next-aa1aa2-screened') then
+      x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--next-zpcd-screened') then
       x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--post-aa1') then
@@ -206,7 +210,8 @@ program check_rank2_modal_aa1_candidate
       rolling_next_mode=.true.
     else if (trim(mode_argument) /= '--next') then
       call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --NEXT-X4Z, '// &
-        '--NEXT-ZU, --NEXT-X4AA2-SCREENED, --NEXT-ZPCD-SCREENED, '// &
+        '--NEXT-ZU, --NEXT-X4AA2-SCREENED, --NEXT-AA1AA2-SCREENED, '// &
+        '--NEXT-ZPCD-SCREENED, '// &
         '--U, --POST-AA1 OR --ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
@@ -988,6 +993,15 @@ contains
         latest_output='D'
         previous_output='ZP'
         call load_state(x1_name,1,state_x1,'PREVIOUS MAP INPUT Z')
+      else if (trim(mode_argument) == '--next-aa1aa2-screened') then
+        input_carrier='AA2-RAW-FLUX'
+        output_carrier='AA1-RAW-FLUX'
+        report_prefix='RANK2-CURRENT-GH-AA1'
+        latest_input='Q2'
+        latest_output='H'
+        previous_output='G'
+        call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Q1', &
+          'AA1-RAW-FLUX')
       else
         input_carrier='AA2-RAW-FLUX'
         output_carrier='AA1-RAW-FLUX'

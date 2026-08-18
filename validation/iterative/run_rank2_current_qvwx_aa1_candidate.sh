@@ -7,12 +7,40 @@ ARTIFACT_DIR=${ARTIFACT_DIR:-"$ROOT/validation/artifacts/iterative-rank2-current
 GANLIB_LIB=${GANLIB_LIB:-"$ROOT/Ganlib/src/libGanlib.a"}
 GANLIB_MOD=${GANLIB_MOD:-"$ROOT/Ganlib/src"}
 FC=${FC:-gfortran}
+CANDIDATE_MODE=${CANDIDATE_MODE:---next-x4aa2-screened}
+REPORT_PREFIX=${REPORT_PREFIX:-RANK2-CURRENT-QVWX-AA1}
+MANIFEST_HEADER=${MANIFEST_HEADER:-'# spot-rank2-current-qvwx-aa1-candidate-inputs-v1'}
 
 BUILDER="$ROOT/validation/iterative/build_rank2_modal_aa1_candidate.f90"
 CHECKER="$ROOT/validation/iterative/check_rank2_modal_aa1_candidate.f90"
 RUNNER="$ROOT/validation/iterative/run_rank2_current_qvwx_aa1_candidate.sh"
 EXPECTED_AX_SHA=012ccd8e428e7a819ce41cec70eab90745e92dc1bb95735a35631f3ef0e2057d
 EXPECTED_SNAP_SHA=8942bf5ca0c2f551200dcf78508093a34da39636c5fe57f167a05b4d1da37504
+expected_ax_sha=$EXPECTED_AX_SHA
+expected_snap_sha=$EXPECTED_SNAP_SHA
+
+case "$CANDIDATE_MODE" in
+  --next-x4aa2-screened)
+    test "$REPORT_PREFIX" = 'RANK2-CURRENT-QVWX-AA1'
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-qvwx-aa1-candidate-inputs-v1'
+    ;;
+  --next-aa1aa2-screened)
+    test "$REPORT_PREFIX" = 'RANK2-CURRENT-GH-AA1'
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-gh-aa1-candidate-inputs-v1'
+    expected_ax_sha=${EXPECTED_AX_SHA_OVERRIDE:-}
+    expected_snap_sha=${EXPECTED_SNAP_SHA_OVERRIDE:-}
+    for expected_sha in "$expected_ax_sha" "$expected_snap_sha"
+    do
+      printf '%s\n' "$expected_sha" | rg -q '^[0-9a-f]{64}$'
+    done
+    ;;
+  *)
+    printf '%s\n' 'AA1 candidate mode must be QVWX or AA1/AA2.' >&2
+    exit 2
+    ;;
+esac
 
 for file in "$MANIFEST" "$BUILDER" "$CHECKER" "$RUNNER" \
   "$GANLIB_LIB" "$GANLIB_MOD/ganlib.mod"
@@ -37,8 +65,7 @@ manifest_path() {
   awk -v role="$1" '$1 == role {print $3}' "$MANIFEST"
 }
 
-test "$(sed -n '1p' "$MANIFEST")" = \
-  '# spot-rank2-current-qvwx-aa1-candidate-inputs-v1'
+test "$(sed -n '1p' "$MANIFEST")" = "$MANIFEST_HEADER"
 test "$(awk 'NF && $1 !~ /^#/ {n++} END {print n+0}' "$MANIFEST")" = 6
 test "$(awk 'NF && $1 !~ /^#/ && NF != 3 {n++} END {print n+0}' \
   "$MANIFEST")" = 0
@@ -85,21 +112,21 @@ if rg -qi \
   '(_|[[:space:]])(asm|flu|dragon|spoasm|spoproj|spostate|spoxconv|spopod)(_|[[:space:]]|$)' \
   "$WORK/builder.nm" "$WORK/checker.nm"
 then
-  printf '%s\n' 'RANK2-CURRENT-QVWX-AA1 ERROR: forbidden solver symbol.' >&2
+  printf '%s\n' "$REPORT_PREFIX ERROR: forbidden solver symbol." >&2
   exit 2
 fi
 
 (
   cd "$WORK"
-  ./build_candidate --next-x4aa2-screened q.xsm v.xsm w.xsm x.xsm \
+  ./build_candidate "$CANDIDATE_MODE" q.xsm v.xsm w.xsm x.xsm \
     xs.xsm proposal_axial.xsm proposal_snapshots.xsm >build.log
-  ./check_candidate --next-x4aa2-screened q.xsm v.xsm w.xsm x.xsm \
+  ./check_candidate "$CANDIDATE_MODE" q.xsm v.xsm w.xsm x.xsm \
     xs.xsm basis.xsm proposal_axial.xsm proposal_snapshots.xsm >check.log
 )
-rg -q '^RANK2-CURRENT-QVWX-AA1 PARAMETER-FREE DIRECTION GATE PASS$' \
+rg -q "^$REPORT_PREFIX PARAMETER-FREE DIRECTION GATE PASS$" \
   "$WORK/build.log" "$WORK/check.log"
-rg -q '^RANK2-CURRENT-QVWX-AA1 CARRIER AA1-RAW-FLUX$' "$WORK/build.log"
-rg -q '^RANK2-CURRENT-QVWX-AA1 COMPLETE$' "$WORK/check.log"
+rg -q "^$REPORT_PREFIX CARRIER AA1-RAW-FLUX$" "$WORK/build.log"
+rg -q "^$REPORT_PREFIX COMPLETE$" "$WORK/check.log"
 
 for role in q v w x x_snapshots basis_reference
 do
@@ -108,8 +135,8 @@ do
 done
 ax_sha=$(hash_file "$WORK/proposal_axial.xsm")
 snap_sha=$(hash_file "$WORK/proposal_snapshots.xsm")
-test "$ax_sha" = "$EXPECTED_AX_SHA"
-test "$snap_sha" = "$EXPECTED_SNAP_SHA"
+test "$ax_sha" = "$expected_ax_sha"
+test "$snap_sha" = "$expected_snap_sha"
 
 mkdir "$STAGE"
 cp "$WORK/proposal_axial.xsm" "$STAGE/proposal_axial.xsm"
@@ -137,10 +164,10 @@ mv "$STAGE" "$ARTIFACT_DIR"
 cat "$ARTIFACT_DIR/build.log"
 cat "$ARTIFACT_DIR/check.log"
 printf '%s\n' \
-  "RANK2-CURRENT-QVWX-AA1 AX-SHA256=$ax_sha" \
-  "RANK2-CURRENT-QVWX-AA1 SNAP-SHA256=$snap_sha" \
-  'RANK2-CURRENT-QVWX-AA1 INPUTS-READ-ONLY HASH PASS' \
-  'RANK2-CURRENT-QVWX-AA1 RECEIPT 9/9 PASS' \
-  'RANK2-CURRENT-QVWX-AA1 DRAGON/ASM/FLU/TRANSPORT=0' \
-  'RANK2-CURRENT-QVWX-AA1 CLASSIFICATION=MATERIALIZED_PROPOSAL_NOT_EVALUATED' \
-  "RANK2-CURRENT-QVWX-AA1 RESULT=$ARTIFACT_DIR"
+  "$REPORT_PREFIX AX-SHA256=$ax_sha" \
+  "$REPORT_PREFIX SNAP-SHA256=$snap_sha" \
+  "$REPORT_PREFIX INPUTS-READ-ONLY HASH PASS" \
+  "$REPORT_PREFIX RECEIPT 9/9 PASS" \
+  "$REPORT_PREFIX DRAGON/ASM/FLU/TRANSPORT=0" \
+  "$REPORT_PREFIX CLASSIFICATION=MATERIALIZED_PROPOSAL_NOT_EVALUATED" \
+  "$REPORT_PREFIX RESULT=$ARTIFACT_DIR"

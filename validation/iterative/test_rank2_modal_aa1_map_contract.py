@@ -75,6 +75,10 @@ cef_map_runner_path = (
     ITERATIVE / "run_rank2_current_cef_aa1_map.sh"
 )
 cef_map_runner = cef_map_runner_path.read_text()
+gh_map_runner_path = (
+    ITERATIVE / "run_rank2_current_gh_aa1_map.sh"
+)
+gh_map_runner = gh_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -221,6 +225,12 @@ cef_map_manifest = (
 ).read_text()
 cef_map_result = (
     ITERATIVE / "rank2_current_cef_aa1_map_result.md"
+).read_text()
+gh_map_policy = (
+    ITERATIVE / "rank2_current_gh_aa1_map_policy.md"
+).read_text()
+gh_map_manifest = (
+    ITERATIVE / "rank2_current_gh_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -1683,6 +1693,57 @@ for token in (
 ):
     require(token in cef_map_result,
             f"CEF AA1 map result boundary missing: {token}")
+
+gh_map_rows = [line.split() for line in gh_map_manifest.splitlines()
+               if line.strip() and not line.startswith("#")]
+require(gh_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-gh-aa1-map-parent-v1",
+        "GH AA1 map manifest version changed")
+require(tuple(row[0] for row in gh_map_rows) == roles,
+        "GH AA1 map manifest roles changed")
+require(tuple(row[1] for row in gh_map_rows[-2:]) == (
+    "c40c7011626864da111ab6a8097dcb3d0d3a87b2683a72986660f7f0574569c6",
+    "3cd88d1d7f65ad05cc7a62025cb12a2d50bc016a52d35b251685da71c559b37f",
+), "GH AA1 map parent changed")
+require(gh_map_runner.index("RUN_RANK2_CURRENT_GH_AA1_MAP=") <
+        gh_map_runner.index("ROOT=$("),
+        "GH AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-gh-aa1-candidate",
+    "rank2_current_gh_aa1_map_parent.tsv",
+    "rank2_current_gh_aa1_map_policy.md",
+    "iterative-rank2-current-gh-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in gh_map_runner,
+            f"GH AA1 map runner missing: {token}")
+require(gh_map_runner.count("run_continuation_short.sh") == 1,
+        "GH AA1 map runner must delegate once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", gh_map_runner),
+        "GH AA1 map retry loop is forbidden")
+for token in (
+    "0.92198482219461153", "0.078015177805388483",
+    "i=G_2(q_3)", "R_\\rho", "R_L", "R_a", "diagnostic only",
+    "three online radial", "one axial solve", "i-q_3",
+    "no second physical map",
+):
+    require(token in gh_map_policy,
+            f"GH AA1 map policy missing: {token}")
+require("spot-rank2-current-gh-aa1-map" in
+        (ROOT / "Makefile").read_text(), "GH AA1 map target is missing")
+gh_default_off = subprocess.run(
+    ["sh", str(gh_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_GH_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(gh_default_off.returncode == 0 and
+        gh_default_off.stderr == "" and
+        gh_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-GH-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "GH AA1 map default-off terminal changed")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
