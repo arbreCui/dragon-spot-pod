@@ -232,6 +232,9 @@ gh_map_policy = (
 gh_map_manifest = (
     ITERATIVE / "rank2_current_gh_aa1_map_parent.tsv"
 ).read_text()
+gh_map_result = (
+    ITERATIVE / "rank2_current_gh_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1727,10 +1730,30 @@ for token in (
     "0.92198482219461153", "0.078015177805388483",
     "i=G_2(q_3)", "R_\\rho", "R_L", "R_a", "diagnostic only",
     "three online radial", "one axial solve", "i-q_3",
+    "EXECUTED_ONCE_VALID_NOT_MET", "VALID_NOT_MET",
+    "1.0001541854604454", "AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS",
     "no second physical map",
 ):
     require(token in gh_map_policy,
             f"GH AA1 map policy missing: {token}")
+for token in (
+    "a802ba1031414c4e25c74791f1043d453b5387c1",
+    "6.422348086676521", "4.699542341368844",
+    "6.885675247758627", "1.040590980549194",
+    "c35dc70d8d6dd35b889622734b81112a3e3fdc09455f8390ef262123f5aa3636",
+    "c4f0b6ff6d6ffa28ff3a34061e5cf9e25c78fb1b31546188e932c5e82492f9b1",
+    "52f6ddd62d50c6cec8357c8bd7b34eb6c396db1e0cbe850a027d7b23cac37bf3",
+    "0.46547000956679907", "0.53452999043320093",
+    "1.0001541854604454",
+    "0.54656692430484066", "0.22903224207636369",
+    "0.22440083361879565", "7.9724244756408422e-26",
+    "0.085602787687317231", "0.50064418931908561",
+    "0.44048518991529284",
+    "AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS",
+    "No durable", "no second physical map is run",
+):
+    require(token in gh_map_result,
+            f"GH AA1 map result boundary missing: {token}")
 require("spot-rank2-current-gh-aa1-map" in
         (ROOT / "Makefile").read_text(), "GH AA1 map target is missing")
 gh_default_off = subprocess.run(

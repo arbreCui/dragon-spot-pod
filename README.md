@@ -103,33 +103,35 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-The latest admissible full-Gram AA(2) direction was materialized and
+The latest admissible full-Gram AA(1) direction was materialized and
 evaluated exactly once:
 
 $$
-q_2=0.3705992364\,e+0.2897080366\,f+0.3396927271\,g,
-\qquad h=G_2(q_2).
+q_3=0.9219848222\,g+0.0780151778\,h,
+\qquad i=G_2(q_3).
 $$
 
 Its three fresh online radial fixed-source solves, one axial solve, strict
 terminals, independent checker, and 21/21 receipt all passed.  The physical
-residual $h-q_2$ is
+residual $i-q_3$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(1.2844695\times10^{-7},\,4.8083952\times10^{-4},\,
-7.0451642\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.1905909\times10^{-6}).
+(6.4223481\times10^{-8},\,4.6995423\times10^{-4},\,
+6.8856752\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.0405910\times10^{-6}).
 $$
 
 $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate; $R_L$ and $R_a$
 fail.  SPOT still has no accepted rank-two fixed point.
 
-The next minimum-order AA(1), using only $g-q_1$ and $h-q_2$, has direction
-ratios `0.11971`, `0.47525`, and `0.70442`, all strictly below one.  Thus
-`AA1_DIRECTION_PASS`; AA(2) is not calculated.  No durable next proposal is
+The next minimum-order AA(1), using only $h-q_2$ and $i-q_3$, fails because
+its leakage height-$L_2$ ratio is `1.000154`.  Only then, standard
+unregularized AA(2) on the latest three genuine residuals gives direction
+ratios `0.08560`, `0.50064`, and `0.44049`, all strictly below one.  Thus
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  No durable next proposal is
 published and no second map is run.  See
-[the latest map and direction result](validation/iterative/rank2_current_cefg_aa2_map_result.md).
+[the latest map and direction result](validation/iterative/rank2_current_gh_aa1_map_result.md).
 
 ## Historical validation record
 
