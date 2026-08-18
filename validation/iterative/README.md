@@ -73,8 +73,20 @@ q_{10}=1.2246645215600993\,o-0.22466452156009933\,p
 $$
 
 is now independently materialized with a passing 9/9 receipt.  One
-$r=G_2(q_{10})$ map is prepared default-off and has not yet been run.  See
-[rank2_current_op_aa1_candidate_result.md](rank2_current_op_aa1_candidate_result.md).
+$r=G_2(q_{10})$ map was evaluated exactly once.  The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,9.4082235\times10^{-4},\,
+1.3784738\times10^{-6}\ \mathrm{cm}^{-1},\,
+5.5762475\times10^{-7}).
+$$
+
+The map is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ fail.
+The following AA(1), using only $p-q_9,r-q_{10}$, passes all three direction
+screens.  Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`; no durable successor and no
+second map were produced.  See
+[rank2_current_op_aa1_map_result.md](rank2_current_op_aa1_map_result.md).
 
 ## Active files
 
@@ -82,8 +94,10 @@ $r=G_2(q_{10})$ map is prepared default-off and has not yet been run.  See
   `rank2_current_op_aa1_candidate_result.md`,
   `rank2_current_op_aa1_map_parent.tsv`,
   `rank2_current_op_aa1_map_policy.md`, and
-  `run_rank2_current_op_aa1_map.sh`: latest standard AA(1) proposal and its
-  one prepared, default-off physical map.
+  `run_rank2_current_op_aa1_map.sh`,
+  `rank2_current_op_aa1_map_result.md`: latest standard AA(1) proposal, its
+  one valid but unconverged map, and the following AA(1)-pass/AA(2)-skip
+  direction decision with no second map.
 
 - `rank2_current_no_aa1_candidate_inputs.tsv`,
   `rank2_current_no_aa1_candidate_result.md`,

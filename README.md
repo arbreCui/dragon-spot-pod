@@ -176,9 +176,22 @@ q_{10}=1.2246645215600993\,o-0.22466452156009933\,p
 $$
 
 is now independently materialized as an `AA1-RAW-FLUX` carrier with a
-passing 9/9 receipt.  Exactly one $r=G_2(q_{10})$ map is prepared
-default-off and has not yet been evaluated.  See the
-[q10 proposal record](validation/iterative/rank2_current_op_aa1_candidate_result.md).
+passing 9/9 receipt.  It was evaluated exactly once as $r=G_2(q_{10})$.
+The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,9.4082235\times10^{-4},\,
+1.3784738\times10^{-6}\ \mathrm{cm}^{-1},\,
+5.5762475\times10^{-7}).
+$$
+
+$R_\rho$ passes; $R_L$ and $R_a$ fail, so this remains `VALID_NOT_MET`.
+The next standard AA(1), using only $p-q_9,r-q_{10}$, passes all three
+direction screens with ratios `0.50305`, `0.87863`, and `0.82135`;
+therefore AA(2) is skipped.  No durable successor or second physical map
+was produced.  See the
+[latest map result](validation/iterative/rank2_current_op_aa1_map_result.md).
 
 ## Historical validation record
 
