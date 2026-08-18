@@ -189,9 +189,16 @@ $$
 $R_\rho$ passes; $R_L$ and $R_a$ fail, so this remains `VALID_NOT_MET`.
 The next standard AA(1), using only $p-q_9,r-q_{10}$, passes all three
 direction screens with ratios `0.50305`, `0.87863`, and `0.82135`;
-therefore AA(2) is skipped.  No durable successor or second physical map
-was produced.  See the
-[latest map result](validation/iterative/rank2_current_op_aa1_map_result.md).
+therefore AA(2) is skipped.  Its standard proposal
+
+$$
+q_{11}=0.21697843452735655\,p+0.78302156547264345\,r
+$$
+
+is independently materialized with a passing 9/9 receipt.  Exactly one
+$s=G_2(q_{11})$ map is prepared default-off and has not yet been evaluated.
+See the
+[q11 proposal record](validation/iterative/rank2_current_pr_aa1_candidate_result.md).
 
 ## Historical validation record
 

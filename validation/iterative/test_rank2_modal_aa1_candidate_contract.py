@@ -34,6 +34,12 @@ op_manifest = (
 op_result = (
     ITERATIVE / "rank2_current_op_aa1_candidate_result.md"
 ).read_text()
+pr_manifest = (
+    ITERATIVE / "rank2_current_pr_aa1_candidate_inputs.tsv"
+).read_text()
+pr_result = (
+    ITERATIVE / "rank2_current_pr_aa1_candidate_result.md"
+).read_text()
 no_result = (
     ITERATIVE / "rank2_current_no_aa1_candidate_result.md"
 ).read_text()
@@ -327,6 +333,27 @@ require(tuple(row[2] for row in op_rows) == (
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in op_rows),
         "OP manifest path escapes the repository")
+
+pr_rows = [line.split() for line in pr_manifest.splitlines()
+           if line.strip() and not line.startswith("#")]
+require(pr_manifest.splitlines()[0] ==
+        "# spot-rank2-current-pr-aa1-candidate-inputs-v1",
+        "PR manifest version changed")
+require(tuple(row[0] for row in pr_rows) == qvwx_roles,
+        "PR manifest roles changed")
+require(all(len(row) == 3 for row in pr_rows),
+        "PR manifest row width changed")
+require(tuple(row[1] for row in pr_rows) == (
+    "c5d3275ead6dc8b5afb6d7ec125965678a0659ed8cf027d547edd6a009738b4e",
+    "6e7bb36ac9c123e86919bfc4655d23e4b9958a0ae6aa24e9d5815a90acc89132",
+    "bd0785e9f3da27b9639c3ac4c04d3bf25689c5dc7f16fc51cdcdde7306b154fb",
+    "d92f92919316f1abd8b2c00712b0c804c6a82d141d4501c39d2dc77c9dec10ff",
+    "4cc762f6932ed42af7ea22d6130b741c14c463d37c388c93fff2269646ee22f9",
+    "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+), "PR q9/p/q10/r history changed")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in pr_rows),
+        "PR manifest path escapes the repository")
 
 gh_rows = [line.split() for line in gh_manifest.splitlines()
            if line.strip() and not line.startswith("#")]
@@ -1159,6 +1186,35 @@ for token in (
 ):
     require(token in checker, f"MN checker contract missing: {token}")
 for token in (
+    "--next-aa1aa1-screened)",
+    "RANK2-CURRENT-MN-AA1",
+    "# spot-rank2-current-pr-aa1-candidate-inputs-v1",
+    "EXPECTED_AX_SHA_OVERRIDE", "EXPECTED_SNAP_SHA_OVERRIDE",
+):
+    require(token in qvwx_runner, f"PR runner binding missing: {token}")
+pr_makefile = (ROOT / "Makefile").read_text()
+for token in (
+    "spot-rank2-current-pr-aa1-candidate",
+    "rank2_current_pr_aa1_candidate_inputs.tsv",
+    "iterative-rank2-current-pr-aa1-candidate",
+    "CANDIDATE_MODE=--next-aa1aa1-screened",
+    "REPORT_PREFIX=RANK2-CURRENT-MN-AA1",
+    "EXPECTED_AX_SHA_OVERRIDE=20b4a9fb31f6baa4f62d9fa5b22cf0801709ceb37579bf9f16dfc7e6c450f05d",
+    "EXPECTED_SNAP_SHA_OVERRIDE=d974a4883eaa5460614d25cdf81284644760218308c88f35ed41bd54065d0167",
+):
+    require(token in pr_makefile, f"PR Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "0.21697843452735655", "0.78302156547264345",
+    "2.1912767600921286e-12", "0.50304720552788507",
+    "0.87862793996767796", "0.82134690926235421", "8880",
+    "20b4a9fb31f6baa4f62d9fa5b22cf0801709ceb37579bf9f16dfc7e6c450f05d",
+    "d974a4883eaa5460614d25cdf81284644760218308c88f35ed41bd54065d0167",
+    "98efcfad6fe207c1261eaa9c33cd1333541eae8e4c6dbb2162378a8e3e34f83e",
+    "No Dragon", "not convergence evidence",
+):
+    require(token in pr_result, f"PR candidate result missing: {token}")
+for token in (
     "--next-aa1aa2-ij-screened)",
     "RANK2-CURRENT-IJ-AA1",
     "# spot-rank2-current-ij-aa1-candidate-inputs-v1",
@@ -1700,5 +1756,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: twenty-two hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: twenty-three hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")
