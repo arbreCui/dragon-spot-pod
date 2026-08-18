@@ -11,8 +11,30 @@ FC=${FC:-gfortran}
 BUILDER="$ROOT/validation/iterative/build_rank2_modal_aa1_candidate.f90"
 CHECKER="$ROOT/validation/iterative/check_rank2_modal_aa1_candidate.f90"
 RUNNER="$ROOT/validation/iterative/run_rank2_current_qvwx_zplus_aa1_candidate.sh"
-EXPECTED_AX_SHA=${EXPECTED_AX_SHA:-5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c}
-EXPECTED_SNAP_SHA=${EXPECTED_SNAP_SHA:-3c216fff2be1336c29e584e4b8b0d6d9eca537f80c6a5fc07bf08f4ad509eb84}
+MODE=${MODE:---consecutive-qvwx-zplus-screened}
+REPORT_PREFIX=${REPORT_PREFIX:-RANK2-QVWX-ZPLUS-AA1}
+MANIFEST_HEADER=${MANIFEST_HEADER:-'# spot-rank2-current-qvwx-zplus-aa1-candidate-inputs-v1'}
+PROPOSAL_ROLE=${PROPOSAL_ROLE:-y_aa1_pub}
+PREVIOUS_ROLE=${PREVIOUS_ROLE:-z}
+LATEST_ROLE=${LATEST_ROLE:-z_plus}
+LATEST_SNAPSHOTS_ROLE=${LATEST_SNAPSHOTS_ROLE:-z_plus_snapshots}
+BASIS_ROLE=${BASIS_ROLE:-basis_reference}
+
+case "$MODE:$REPORT_PREFIX" in
+  --consecutive-qvwx-zplus-screened:RANK2-QVWX-ZPLUS-AA1)
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-qvwx-zplus-aa1-candidate-inputs-v1'
+    EXPECTED_AX_SHA=${EXPECTED_AX_SHA:-5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c}
+    EXPECTED_SNAP_SHA=${EXPECTED_SNAP_SHA:-3c216fff2be1336c29e584e4b8b0d6d9eca537f80c6a5fc07bf08f4ad509eb84}
+    ;;
+  --consecutive-q5kl-screened:RANK2-CURRENT-KL-AA1)
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-kl-aa1-candidate-inputs-v1'
+    EXPECTED_AX_SHA=${EXPECTED_AX_SHA:-d223068dbabd5424762f6f73fb488a927cca94ca4db3cee7ef3bbf7f090d825d}
+    EXPECTED_SNAP_SHA=${EXPECTED_SNAP_SHA:-c6c9546bb7807864aa2b0eaa56e289ee91ffa1ec4328b7889a5deb81d9b2cec6}
+    ;;
+  *) exit 2 ;;
+esac
 
 for file in "$MANIFEST" "$BUILDER" "$CHECKER" "$RUNNER" \
   "$GANLIB_LIB" "$GANLIB_MOD/ganlib.mod"
@@ -37,12 +59,12 @@ manifest_path() {
   awk -v role="$1" '$1 == role {print $3}' "$MANIFEST"
 }
 
-test "$(sed -n '1p' "$MANIFEST")" = \
-  '# spot-rank2-current-qvwx-zplus-aa1-candidate-inputs-v1'
+test "$(sed -n '1p' "$MANIFEST")" = "$MANIFEST_HEADER"
 test "$(awk 'NF && $1 !~ /^#/ {n++} END {print n+0}' "$MANIFEST")" = 5
 test "$(awk 'NF && $1 !~ /^#/ && NF != 3 {n++} END {print n+0}' \
   "$MANIFEST")" = 0
-for role in y_aa1_pub z z_plus z_plus_snapshots basis_reference
+for role in "$PROPOSAL_ROLE" "$PREVIOUS_ROLE" "$LATEST_ROLE" \
+  "$LATEST_SNAPSHOTS_ROLE" "$BASIS_ROLE"
 do
   test "$(awk -v role="$role" '$1 == role {n++} END {print n+0}' \
     "$MANIFEST")" = 1
@@ -64,7 +86,8 @@ cleanup() {
 }
 trap cleanup EXIT HUP INT TERM
 
-for binding in y:y_aa1_pub z:z zp:z_plus zps:z_plus_snapshots basis:basis_reference
+for binding in y:"$PROPOSAL_ROLE" z:"$PREVIOUS_ROLE" zp:"$LATEST_ROLE" \
+  zps:"$LATEST_SNAPSHOTS_ROLE" basis:"$BASIS_ROLE"
 do
   short=${binding%%:*}
   role=${binding#*:}
@@ -91,18 +114,19 @@ fi
 
 (
   cd "$WORK"
-  ./build_candidate --consecutive-qvwx-zplus-screened y.xsm z.xsm \
+  ./build_candidate "$MODE" y.xsm z.xsm \
     zp.xsm zps.xsm proposal_axial.xsm proposal_snapshots.xsm >build.log
-  ./check_candidate --consecutive-qvwx-zplus-screened y.xsm z.xsm \
+  ./check_candidate "$MODE" y.xsm z.xsm \
     zp.xsm zps.xsm basis.xsm proposal_axial.xsm \
     proposal_snapshots.xsm >check.log
 )
-rg -q '^RANK2-QVWX-ZPLUS-AA1 PARAMETER-FREE DIRECTION GATE PASS$' \
+rg -q "^$REPORT_PREFIX PARAMETER-FREE DIRECTION GATE PASS$" \
   "$WORK/build.log" "$WORK/check.log"
-rg -q '^RANK2-QVWX-ZPLUS-AA1 CARRIER AA1-RAW-FLUX$' "$WORK/build.log"
-rg -q '^RANK2-QVWX-ZPLUS-AA1 COMPLETE$' "$WORK/check.log"
+rg -q "^$REPORT_PREFIX CARRIER AA1-RAW-FLUX$" "$WORK/build.log"
+rg -q "^$REPORT_PREFIX COMPLETE$" "$WORK/check.log"
 
-for role in y_aa1_pub z z_plus z_plus_snapshots basis_reference
+for role in "$PROPOSAL_ROLE" "$PREVIOUS_ROLE" "$LATEST_ROLE" \
+  "$LATEST_SNAPSHOTS_ROLE" "$BASIS_ROLE"
 do
   test "$(hash_file "$ROOT/$(manifest_path "$role")")" = \
     "$(manifest_value "$role")"
@@ -138,10 +162,10 @@ mv "$STAGE" "$ARTIFACT_DIR"
 cat "$ARTIFACT_DIR/build.log"
 cat "$ARTIFACT_DIR/check.log"
 printf '%s\n' \
-  "RANK2-QVWX-ZPLUS-AA1 AX-SHA256=$ax_sha" \
-  "RANK2-QVWX-ZPLUS-AA1 SNAP-SHA256=$snap_sha" \
-  'RANK2-QVWX-ZPLUS-AA1 INPUTS-READ-ONLY HASH PASS' \
-  'RANK2-QVWX-ZPLUS-AA1 RECEIPT 9/9 PASS' \
-  'RANK2-QVWX-ZPLUS-AA1 DRAGON/ASM/FLU/TRANSPORT=0' \
-  'RANK2-QVWX-ZPLUS-AA1 CLASSIFICATION=MATERIALIZED_PROPOSAL_NOT_EVALUATED' \
-  "RANK2-QVWX-ZPLUS-AA1 RESULT=$ARTIFACT_DIR"
+  "$REPORT_PREFIX AX-SHA256=$ax_sha" \
+  "$REPORT_PREFIX SNAP-SHA256=$snap_sha" \
+  "$REPORT_PREFIX INPUTS-READ-ONLY HASH PASS" \
+  "$REPORT_PREFIX RECEIPT 9/9 PASS" \
+  "$REPORT_PREFIX DRAGON/ASM/FLU/TRANSPORT=0" \
+  "$REPORT_PREFIX CLASSIFICATION=MATERIALIZED_PROPOSAL_NOT_EVALUATED" \
+  "$REPORT_PREFIX RESULT=$ARTIFACT_DIR"

@@ -81,6 +81,8 @@ all :
 	spot-rank2-current-ij-aa1-candidate \
 	spot-rank2-current-ij-aa1-map \
 	spot-rank2-current-k-picard-map \
+	spot-rank2-current-kl-aa1-candidate \
+	spot-rank2-current-kl-aa1-map \
 	spot-rank2-current-qpzst-aa2-map \
 	spot-rank2-current-v-picard-map \
 	spot-rank2-modal-aa2-rolling-next-candidate \
@@ -254,6 +256,19 @@ spot-rank2-current-ij-aa1-map :
 	sh validation/iterative/run_rank2_current_ij_aa1_map.sh
 spot-rank2-current-k-picard-map :
 	sh validation/iterative/run_rank2_current_k_picard_map.sh
+spot-rank2-current-kl-aa1-candidate :
+	MANIFEST="$(CURDIR)/validation/iterative/rank2_current_kl_aa1_candidate_inputs.tsv" \
+	ARTIFACT_DIR="$(CURDIR)/validation/artifacts/iterative-rank2-current-kl-aa1-candidate" \
+	MODE=--consecutive-q5kl-screened \
+	REPORT_PREFIX=RANK2-CURRENT-KL-AA1 \
+	MANIFEST_HEADER='# spot-rank2-current-kl-aa1-candidate-inputs-v1' \
+	PROPOSAL_ROLE=q5_aa1_pub PREVIOUS_ROLE=k LATEST_ROLE=l \
+	LATEST_SNAPSHOTS_ROLE=l_snapshots BASIS_ROLE=basis_reference \
+	EXPECTED_AX_SHA=d223068dbabd5424762f6f73fb488a927cca94ca4db3cee7ef3bbf7f090d825d \
+	EXPECTED_SNAP_SHA=c6c9546bb7807864aa2b0eaa56e289ee91ffa1ec4328b7889a5deb81d9b2cec6 \
+	sh validation/iterative/run_rank2_current_qvwx_zplus_aa1_candidate.sh
+spot-rank2-current-kl-aa1-map :
+	sh validation/iterative/run_rank2_current_kl_aa1_map.sh
 spot-rank2-current-qpzst-aa2-map :
 	sh validation/iterative/run_rank2_current_qpzst_aa2_map.sh
 spot-rank2-current-v-picard-map :

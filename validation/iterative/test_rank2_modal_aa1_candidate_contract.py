@@ -40,6 +40,12 @@ gh_result = (
 qvwx_zplus_manifest = (
     ITERATIVE / "rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv"
 ).read_text()
+kl_manifest = (
+    ITERATIVE / "rank2_current_kl_aa1_candidate_inputs.tsv"
+).read_text()
+kl_result = (
+    ITERATIVE / "rank2_current_kl_aa1_candidate_result.md"
+).read_text()
 cef_manifest = (
     ITERATIVE / "rank2_current_cef_aa1_candidate_inputs.tsv"
 ).read_text()
@@ -1043,25 +1049,84 @@ for token in (
             f"QVWX-ZPLUS checker contract missing: {token}")
 for token in (
     "rank2_current_qvwx_zplus_aa1_candidate_inputs.tsv",
-    "--consecutive-qvwx-zplus-screened y.xsm z.xsm",
+    "MODE=${MODE:---consecutive-qvwx-zplus-screened}",
     "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
     "DRAGON/ASM/FLU/TRANSPORT=0",
 ):
     require(token in qvwx_zplus_runner,
             f"QVWX-ZPLUS runner binding missing: {token}")
-qvwx_zplus_expected = re.findall(
-    r"(?m)^EXPECTED_(?:AX|SNAP)_SHA=\$\{EXPECTED_(?:AX|SNAP)_SHA:-"
-    r"([0-9a-f]{64})\}$", qvwx_zplus_runner
-)
-require(qvwx_zplus_expected == [
+qvwx_zplus_expected = [
     "5d462c634e7f909ff059d72ac8bb8d9240cb18c21232c682c99d8f34d791c67c",
     "3c216fff2be1336c29e584e4b8b0d6d9eca537f80c6a5fc07bf08f4ad509eb84",
-], "QVWX-ZPLUS output SHA-256 values changed")
+]
+require(all(digest in qvwx_zplus_runner for digest in qvwx_zplus_expected),
+        "QVWX-ZPLUS output SHA-256 values changed")
 require(not re.search(r"(?m)^\s*(?:while|until)\b", qvwx_zplus_runner),
         "QVWX-ZPLUS runner retry loops are forbidden")
 require("spot-rank2-current-qvwx-zplus-aa1-candidate" in
         (ROOT / "Makefile").read_text(),
         "QVWX-ZPLUS Make target is missing")
+
+kl_rows = [line.split() for line in kl_manifest.splitlines()
+           if line.strip() and not line.startswith("#")]
+require(kl_manifest.splitlines()[0] ==
+        "# spot-rank2-current-kl-aa1-candidate-inputs-v1",
+        "KL AA1 manifest version changed")
+require(tuple(row[0] for row in kl_rows) == (
+    "q5_aa1_pub", "k", "l", "l_snapshots", "basis_reference"
+), "KL AA1 manifest roles changed")
+require(tuple(row[1] for row in kl_rows) == (
+    "27250a1b370d2cdbf83f35fbf1a380919261bb938890b2f3d04d7390afb72743",
+    "d8c77928f992adf67136331192a018060f203bedf3d1728d46a39d987c6938de",
+    "fee603751609b7a9ab79ac854e7ecfa93125f3f4597e411e020728ae267180d0",
+    "9ffe3428e70f001a5f0e3384a5030fe4a0334787d7454c0f0d143b2b4a5b165f",
+    "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+), "KL AA1 inputs changed")
+require(all(len(row) == 3 for row in kl_rows),
+        "KL AA1 manifest row width changed")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in kl_rows),
+        "KL AA1 manifest path escapes the repository")
+for token in (
+    "--consecutive-q5kl-screened", "RANK2-CURRENT-KL-AA1",
+    "previous_output='K'", "latest_output='L'", "AA1-RAW-FLUX",
+):
+    require(token in builder, f"KL AA1 builder contract missing: {token}")
+    require(token.upper() in checker.upper(),
+            f"KL AA1 checker contract missing: {token}")
+for token in (
+    "--consecutive-q5kl-screened:RANK2-CURRENT-KL-AA1",
+    "# spot-rank2-current-kl-aa1-candidate-inputs-v1",
+    "d223068dbabd5424762f6f73fb488a927cca94ca4db3cee7ef3bbf7f090d825d",
+    "c6c9546bb7807864aa2b0eaa56e289ee91ffa1ec4328b7889a5deb81d9b2cec6",
+    "PROPOSAL_ROLE", "PREVIOUS_ROLE", "LATEST_ROLE",
+    "LATEST_SNAPSHOTS_ROLE", "PARAMETER-FREE DIRECTION GATE PASS",
+):
+    require(token in qvwx_zplus_runner,
+            f"KL AA1 runner binding missing: {token}")
+kl_makefile = (ROOT / "Makefile").read_text()
+for token in (
+    "spot-rank2-current-kl-aa1-candidate",
+    "rank2_current_kl_aa1_candidate_inputs.tsv",
+    "iterative-rank2-current-kl-aa1-candidate",
+    "MODE=--consecutive-q5kl-screened",
+    "REPORT_PREFIX=RANK2-CURRENT-KL-AA1",
+    "PROPOSAL_ROLE=q5_aa1_pub PREVIOUS_ROLE=k LATEST_ROLE=l",
+    "LATEST_SNAPSHOTS_ROLE=l_snapshots",
+):
+    require(token in kl_makefile, f"KL AA1 Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "0.99334779753418823", "0.0066522024658117341",
+    "3.9604495076589152e-13", "0.81736979605403082",
+    "0.80173988821917219", "0.90621455552995278",
+    "8880/8880",
+    "d223068dbabd5424762f6f73fb488a927cca94ca4db3cee7ef3bbf7f090d825d",
+    "c6c9546bb7807864aa2b0eaa56e289ee91ffa1ec4328b7889a5deb81d9b2cec6",
+    "c0ca1244186e3b70e23efde028cb5bb2fd04a215364cf8728abc95250bcf4e6e",
+    "No Dragon", "AA(2) was not calculated", "empirical",
+):
+    require(token in kl_result, f"KL AA1 result missing: {token}")
 
 cef_rows = [line.split() for line in cef_manifest.splitlines()
             if line.strip() and not line.startswith("#")]
@@ -1394,5 +1459,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: eighteen hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: nineteen hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

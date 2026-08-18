@@ -1,0 +1,6 @@
+# spot-rank2-current-kl-aa1-candidate-inputs-v1
+q5_aa1_pub	27250a1b370d2cdbf83f35fbf1a380919261bb938890b2f3d04d7390afb72743	validation/artifacts/iterative-rank2-current-ij-aa1-candidate/proposal_axial.xsm
+k	d8c77928f992adf67136331192a018060f203bedf3d1728d46a39d987c6938de	validation/artifacts/iterative-rank2-current-ij-aa1-map/candidate_axial.xsm
+l	fee603751609b7a9ab79ac854e7ecfa93125f3f4597e411e020728ae267180d0	validation/artifacts/iterative-rank2-current-k-picard-map/candidate_axial.xsm
+l_snapshots	9ffe3428e70f001a5f0e3384a5030fe4a0334787d7454c0f0d143b2b4a5b165f	validation/artifacts/iterative-rank2-current-k-picard-map/candidate_snapshots.xsm
+basis_reference	2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8	validation/artifacts/iterative-rank2-basis/rank2_basis.xsm

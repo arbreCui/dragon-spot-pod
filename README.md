@@ -126,9 +126,17 @@ fail.  SPOT still has no accepted rank-two fixed point.
 
 The next minimum-order AA(1), using only $k-q_5$ and $l-k$, has direction
 ratios `0.81737`, `0.80174`, and `0.90621`, all strictly below one.  Thus
-`AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) is not calculated, no successor is
-published, and no second map is run.  See the
-[latest map result](validation/iterative/rank2_current_k_picard_map_result.md).
+`AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) is not calculated.  Its standard
+proposal
+
+$$
+q_6=0.99334779753418823\,k+0.0066522024658117341\,l
+$$
+
+is independently materialized with a passing 9/9 receipt.  Exactly one
+$m=G_2(q_6)$ is prepared but remains default-off at this source boundary.
+See the [proposal result](validation/iterative/rank2_current_kl_aa1_candidate_result.md)
+and [map policy](validation/iterative/rank2_current_kl_aa1_map_policy.md).
 
 ## Historical validation record
 

@@ -51,6 +51,9 @@ program check_rank2_modal_aa1_candidate
   !   check_rank2_modal_aa1_candidate \
   !     --consecutive-qvwx-zplus-screened y z zp zp_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate \
+  !     --consecutive-q5kl-screened q5 k l l_snap basis \
+  !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --current-qpzst-aa2 q p p z s t \
   !     t_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --current-stuvvw-aa2 s t u v v w \
@@ -130,6 +133,7 @@ program check_rank2_modal_aa1_candidate
   logical :: consecutive_current_mode
   logical :: consecutive_current_aa2_picard_mode
   logical :: consecutive_qvwx_zplus_screened_mode
+  logical :: consecutive_q5kl_screened_mode
   logical :: consecutive_returned_screened_mode
   logical :: consecutive_ptu_screened_mode
   character(len=24) :: report_prefix
@@ -158,6 +162,7 @@ program check_rank2_modal_aa1_candidate
   consecutive_current_mode=.false.
   consecutive_current_aa2_picard_mode=.false.
   consecutive_qvwx_zplus_screened_mode=.false.
+  consecutive_q5kl_screened_mode=.false.
   consecutive_returned_screened_mode=.false.
   consecutive_ptu_screened_mode=.false.
   if (argument_count == 11) then
@@ -259,6 +264,9 @@ program check_rank2_modal_aa1_candidate
         '--consecutive-qvwx-zplus-screened') then
       consecutive_mode=.true.
       consecutive_qvwx_zplus_screened_mode=.true.
+    else if (trim(mode_argument) == '--consecutive-q5kl-screened') then
+      consecutive_mode=.true.
+      consecutive_q5kl_screened_mode=.true.
     else
       call fail('EIGHT ARGUMENTS REQUIRE A CONSECUTIVE MODE.')
     endif
@@ -293,7 +301,13 @@ program check_rank2_modal_aa1_candidate
   previous_output='X1'
   latest_output='X2'
   proposal_carrier='X2-RAW-FLUX'
-  if (consecutive_qvwx_zplus_screened_mode) then
+  if (consecutive_q5kl_screened_mode) then
+    report_prefix='RANK2-CURRENT-KL-AA1'
+    previous_output='K'
+    latest_output='L'
+    proposal_carrier='AA1-RAW-FLUX'
+    call load_state(trim(path(1)),2,x0,'Q5 AA1 PROPOSAL','AA1-RAW-FLUX')
+  else if (consecutive_qvwx_zplus_screened_mode) then
     report_prefix='RANK2-QVWX-ZPLUS-AA1'
     previous_output='Z'
     latest_output='ZP'
@@ -346,7 +360,9 @@ program check_rank2_modal_aa1_candidate
   call compare_fixed_bundle(x0,x2,'X0/X2')
   call compare_fixed_bundle(x0,proposal,'X0/PROPOSAL')
   call check_basis_reference(trim(path(5)),proposal)
-  if (consecutive_qvwx_zplus_screened_mode) then
+  if (consecutive_q5kl_screened_mode) then
+    call validate_input_snapshot(trim(path(4)),x1,x2,'K','L')
+  else if (consecutive_qvwx_zplus_screened_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'Z','ZP')
   else if (consecutive_current_aa2_picard_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'P','Z')
@@ -374,6 +390,7 @@ program check_rank2_modal_aa1_candidate
       (.not.ieee_is_finite(previous_weight))) &
     call fail('NON-FINITE MODAL-AA1 WEIGHT.')
   if (consecutive_current_aa2_picard_mode.or. &
+      consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
       consecutive_ptu_screened_mode) then
@@ -393,6 +410,7 @@ program check_rank2_modal_aa1_candidate
 
   if (consecutive_current_mode.or. &
       consecutive_current_aa2_picard_mode.or. &
+      consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
       consecutive_ptu_screened_mode) then
@@ -428,6 +446,7 @@ program check_rank2_modal_aa1_candidate
     leakage_current_norm=sqrt(leakage_sq(2))
     leakage_affine_norm=sqrt(leakage_affine_sq)
     if (consecutive_current_aa2_picard_mode.or. &
+        consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
         consecutive_ptu_screened_mode) then
@@ -499,10 +518,12 @@ program check_rank2_modal_aa1_candidate
     min_published_flux)
   if (consecutive_current_mode.or. &
       consecutive_current_aa2_picard_mode.or. &
+      consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
       consecutive_ptu_screened_mode) then
     if (consecutive_current_aa2_picard_mode.or. &
+        consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
         consecutive_ptu_screened_mode) then
@@ -518,6 +539,7 @@ program check_rank2_modal_aa1_candidate
     write(6,'(A)') trim(report_prefix)// &
       ' LEAKAGE SCREEN ONLY NO LEAKAGE FIT'
     if (consecutive_current_aa2_picard_mode.or. &
+        consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
         consecutive_ptu_screened_mode) &
