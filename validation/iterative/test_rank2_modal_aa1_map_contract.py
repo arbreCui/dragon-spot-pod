@@ -328,6 +328,9 @@ rs_map_policy = (
 rs_map_manifest = (
     ITERATIVE / "rank2_current_rs_aa1_map_parent.tsv"
 ).read_text()
+rs_map_result = (
+    ITERATIVE / "rank2_current_rs_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -2540,7 +2543,7 @@ require("run_bounded_dragon.py" not in rs_map_runner and
 require(not re.search(r"(?m)^\s*(?:while|until)\b", rs_map_runner),
         "RS AA1 map retry loop is forbidden")
 for token in (
-    "PREPARED_DEFAULT_OFF", "0.41267816249435374",
+    "EXECUTED_ONCE_VALID_NOT_MET", "0.41267816249435374",
     "0.58732183750564626", "3.8071754534215003e-13",
     "0.30785297571708414", "0.94676682054309913",
     "0.98610570398914554", "t=G_2(q_{12})",
@@ -2551,6 +2554,22 @@ for token in (
 ):
     require(token in rs_map_policy,
             f"RS AA1 map policy missing: {token}")
+for token in (
+    "3f3df1d58f03bfc7fb990e476d2f9358089f484c",
+    "4.684047945454728", "6.862974260002375",
+    "5.179951998082914", "936.809589", "1.035990400",
+    "VALID_NOT_MET", "21/21",
+    "135334cf0c961eae0c591d6a75e59a0cd60d42d7a660c421e45da3d2248d2b54",
+    "88e442304e73a82cf1dd91c11225c41c3492a5706c3819250080df9ed3ef4579",
+    "048e71f74d1d534a5fdb753ed6e50461731f6b78c4f31cc3984ebb3dd5d8daf6",
+    "0.71645836326662038", "0.28354163673337962",
+    "1.0985063835946206e-13", "0.72586264533733025",
+    "0.72631617652927194", "0.90812221320053177",
+    "8880/8880", "AA1_DIRECTION_PASS_AA2_SKIPPED",
+    "AA(2) is not", "no durable", "no second physical map",
+):
+    require(token.lower() in rs_map_result.lower(),
+            f"RS AA1 map result boundary missing: {token}")
 rs_default_off = subprocess.run(
     ["sh", str(rs_map_runner_path)], cwd=ROOT,
     env={"RUN_RANK2_CURRENT_RS_AA1_MAP": "0"},

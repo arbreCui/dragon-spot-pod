@@ -215,10 +215,22 @@ $$
 q_{12}=0.41267816249435374\,r+0.58732183750564626\,s
 $$
 
-is independently materialized with a passing 9/9 receipt.  Exactly one
-$t=G_2(q_{12})$ map is prepared default-off and has not yet been evaluated.
-See the
-[q12 proposal record](validation/iterative/rank2_current_rs_aa1_candidate_result.md).
+is independently materialized with a passing 9/9 receipt and was evaluated
+exactly once as $t=G_2(q_{12})$.  The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,4.6840479\times10^{-4},\,
+6.8629743\times10^{-7}\ \mathrm{cm}^{-1},\,
+5.1799520\times10^{-7}).
+$$
+
+$R_\rho$ passes; $R_L$ and $R_a$ fail, so this remains `VALID_NOT_MET`.
+The next standard AA(1), using only $s-q_{11},t-q_{12}$, passes all three
+direction screens with ratios `0.72586`, `0.72632`, and `0.90812`;
+therefore AA(2) is skipped.  No durable successor or second physical map
+was produced.  See the
+[latest map result](validation/iterative/rank2_current_rs_aa1_map_result.md).
 
 ## Historical validation record
 
