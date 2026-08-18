@@ -49,6 +49,9 @@ cefg_map_parent = (
 cefg_map_policy = (
     ITERATIVE / "rank2_current_cefg_aa2_map_policy.md"
 ).read_text()
+cefg_map_result = (
+    ITERATIVE / "rank2_current_cefg_aa2_map_result.md"
+).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
 
@@ -498,6 +501,17 @@ for token in (
 ):
     require(token in cefg_map_policy,
             f"CEFG map policy missing: {token}")
+for token in (
+    "1be7a4070d1083592e7e8f966e383ea44196c14a",
+    "1.284469506313002", "4.808395175515263",
+    "7.045164238661528", "1.190590942018258",
+    "0.92198482219461153", "0.078015177805388483",
+    "0.11971305975561962", "0.47525043616253554",
+    "0.70441518119387303", "AA1_DIRECTION_PASS",
+    "AA(2) is not calculated", "no second physical map",
+):
+    require(token in cefg_map_result,
+            f"CEFG map result boundary missing: {token}")
 require("spot-rank2-current-cefg-aa2-map" in makefile,
         "CEFG map Make target is missing")
 cefg_default_env = os.environ.copy()

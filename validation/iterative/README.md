@@ -5,29 +5,36 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest parameter-free AA(1) proposal
-$q_1=0.5431706909e+0.4568293091f$ was materialized and evaluated exactly
-once.  Its strict terminals, independent checker, and 21/21 receipt pass.
-For $g=G_2(q_1)$, the physical residual $g-q_1$ is
+The latest admissible full-Gram AA(2) proposal
+$q_2=0.3705992364e+0.2897080366f+0.3396927271g$ was materialized and
+evaluated exactly once.  Its strict terminals, independent checker, and
+21/21 receipt pass.  For $h=G_2(q_2)$, the physical residual $h-q_2$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,3.8585152\times10^{-4},\,
-5.6534191\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.7412190\times10^{-7}).
+(1.2844695\times10^{-7},\,4.8083952\times10^{-4},\,
+7.0451642\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.1905909\times10^{-6}).
 $$
 
-The result is `VALID_NOT_MET`: $R_\rho$ and $R_a$ pass, while $R_L$ does
-not.  Against $f-e$, all four defects decrease by 50.00%, 53.61%, 53.61%,
-and 88.43%; this single step is not an asymptotic convergence result.
+The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ do
+not.  Dimensional $D_L$ remains diagnostic only.
 
-The next AA(1) fails its two leakage screens at `1.01650` and `1.00211`.
-The then-permitted AA(2) direction ratios are `0.33343`, `0.47697`, and
-`0.39981`, so `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  No durable
-proposal is published and no second map is run.  See
-[rank2_current_cef_aa1_map_result.md](rank2_current_cef_aa1_map_result.md).
+The next AA(1) direction ratios are `0.11971`, `0.47525`, and `0.70442`, so
+`AA1_DIRECTION_PASS`; AA(2) is not calculated.  No durable proposal is
+published and no second map is run.  See
+[rank2_current_cefg_aa2_map_result.md](rank2_current_cefg_aa2_map_result.md).
 
 ## Active files
+
+- `rank2_current_cefg_aa2_candidate_inputs.tsv`,
+  `rank2_current_cefg_aa2_candidate_result.md`,
+  `rank2_current_cefg_aa2_map_parent.tsv`,
+  `rank2_current_cefg_aa2_map_policy.md`,
+  `run_rank2_current_cefg_aa2_map.sh`,
+  `rank2_current_cefg_aa2_map_result.md`: latest minimum-order AA(2)
+  proposal, its single valid but unconverged map, and the following AA(1)
+  direction pass with no second map.
 
 - `rank2_current_cef_aa1_candidate_inputs.tsv`,
   `rank2_current_cef_aa1_candidate_result.md`,
