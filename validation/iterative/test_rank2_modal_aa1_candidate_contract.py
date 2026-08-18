@@ -28,6 +28,12 @@ qvwx_manifest = (
 no_manifest = (
     ITERATIVE / "rank2_current_no_aa1_candidate_inputs.tsv"
 ).read_text()
+op_manifest = (
+    ITERATIVE / "rank2_current_op_aa1_candidate_inputs.tsv"
+).read_text()
+op_result = (
+    ITERATIVE / "rank2_current_op_aa1_candidate_result.md"
+).read_text()
 no_result = (
     ITERATIVE / "rank2_current_no_aa1_candidate_result.md"
 ).read_text()
@@ -287,6 +293,40 @@ require(tuple(row[2] for row in no_rows) == (
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in no_rows),
         "NO manifest path escapes the repository")
+
+op_rows = [line.split() for line in op_manifest.splitlines()
+           if line.strip() and not line.startswith("#")]
+require(op_manifest.splitlines()[0] ==
+        "# spot-rank2-current-op-aa1-candidate-inputs-v1",
+        "OP manifest version changed")
+require(tuple(row[0] for row in op_rows) == qvwx_roles,
+        "OP manifest roles changed")
+require(all(len(row) == 3 for row in op_rows),
+        "OP manifest row width changed")
+require(tuple(row[1] for row in op_rows) == (
+    "6dee27775279ddf1b75113ceafa62bf60acad27965b13f2122c146976ae892c8",
+    "48369be8c875f7c1389c850b89287d5a649d72047afd34964dc69a7067eb1a13",
+    "c5d3275ead6dc8b5afb6d7ec125965678a0659ed8cf027d547edd6a009738b4e",
+    "6e7bb36ac9c123e86919bfc4655d23e4b9958a0ae6aa24e9d5815a90acc89132",
+    "7c38ad7b197554c22a101664bff5367153f87496007928adaca601bc975a2649",
+    "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+), "OP q8/o/q9/p history changed")
+require(tuple(row[2] for row in op_rows) == (
+    "validation/artifacts/iterative-rank2-current-klmn-aa2-candidate/"
+    "proposal_axial.xsm",
+    "validation/artifacts/iterative-rank2-current-klmn-aa2-map/"
+    "candidate_axial.xsm",
+    "validation/artifacts/iterative-rank2-current-no-aa1-candidate/"
+    "proposal_axial.xsm",
+    "validation/artifacts/iterative-rank2-current-no-aa1-map/"
+    "candidate_axial.xsm",
+    "validation/artifacts/iterative-rank2-current-no-aa1-map/"
+    "candidate_snapshots.xsm",
+    "validation/artifacts/iterative-rank2-basis/rank2_basis.xsm",
+), "OP manifest does not bind q8/o/q9/p/p_snap exactly")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in op_rows),
+        "OP manifest path escapes the repository")
 
 gh_rows = [line.split() for line in gh_manifest.splitlines()
            if line.strip() and not line.startswith("#")]
@@ -1058,6 +1098,51 @@ for token in (
 ):
     require(token in checker, f"JK checker contract missing: {token}")
 for token in (
+    "--next-aa2aa1-op-screened",
+    "RANK2-CURRENT-OP-AA1",
+    "'previous proposal input',.true.,'AA2-RAW-FLUX'",
+    "input_carrier='AA1-RAW-FLUX'",
+    "output_carrier='AA1-RAW-FLUX'",
+    "latest_output='P'", "previous_output='O'",
+):
+    require(token in builder, f"OP builder contract missing: {token}")
+for token in (
+    "--next-aa2aa1-op-screened",
+    "RANK2-CURRENT-OP-AA1",
+    "'PREVIOUS PROPOSAL Q8'", "'AA2-RAW-FLUX'",
+    "latest_input='Q9'", "latest_output='P'", "previous_output='O'",
+):
+    require(token in checker, f"OP checker contract missing: {token}")
+for token in (
+    "--next-aa2aa1-op-screened)",
+    "RANK2-CURRENT-OP-AA1",
+    "# spot-rank2-current-op-aa1-candidate-inputs-v1",
+    "EXPECTED_AX_SHA_OVERRIDE", "EXPECTED_SNAP_SHA_OVERRIDE",
+):
+    require(token in qvwx_runner, f"OP runner binding missing: {token}")
+op_makefile = (ROOT / "Makefile").read_text()
+for token in (
+    "spot-rank2-current-op-aa1-candidate",
+    "rank2_current_op_aa1_candidate_inputs.tsv",
+    "iterative-rank2-current-op-aa1-candidate",
+    "CANDIDATE_MODE=--next-aa2aa1-op-screened",
+    "REPORT_PREFIX=RANK2-CURRENT-OP-AA1",
+    "EXPECTED_AX_SHA_OVERRIDE=bd0785e9f3da27b9639c3ac4c04d3bf25689c5dc7f16fc51cdcdde7306b154fb",
+    "EXPECTED_SNAP_SHA_OVERRIDE=4587fcc293ba18c40c0c785e6de4991d969cc10cca8975b4b4fddf114725c209",
+):
+    require(token in op_makefile, f"OP Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "1.2246645215600993", "0.22466452156009933",
+    "9.0412608575558238e-13", "0.12764993865086841",
+    "0.82141838136874701", "0.89227926518865730", "8880",
+    "bd0785e9f3da27b9639c3ac4c04d3bf25689c5dc7f16fc51cdcdde7306b154fb",
+    "4587fcc293ba18c40c0c785e6de4991d969cc10cca8975b4b4fddf114725c209",
+    "907855530c6b1e07cfad007086463a996417490f3cfa92eafff4fbe3ee1c28cc",
+    "No Dragon", "not convergence evidence",
+):
+    require(token in op_result, f"OP candidate result missing: {token}")
+for token in (
     "--next-aa1aa1-screened",
     "RANK2-CURRENT-MN-AA1",
     "'previous proposal q6',.true.,'AA1-RAW-FLUX'",
@@ -1615,5 +1700,5 @@ for forbidden in ("relaxation", "damping", "clipping", "empirical factor"):
     require(forbidden not in combined,
             f"forbidden empirical control present: {forbidden}")
 
-print("RANK2 MODAL AA1 CONTRACT PASS: twenty-one hash-locked offline proposals, "
+print("RANK2 MODAL AA1 CONTRACT PASS: twenty-two hash-locked offline proposals, "
       "binary publication, fixed basis, strict positivity and no map solve.")

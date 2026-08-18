@@ -47,6 +47,17 @@ case "$CANDIDATE_MODE" in
       printf '%s\n' "$expected_sha" | rg -q '^[0-9a-f]{64}$'
     done
     ;;
+  --next-aa2aa1-op-screened)
+    test "$REPORT_PREFIX" = 'RANK2-CURRENT-OP-AA1'
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-op-aa1-candidate-inputs-v1'
+    expected_ax_sha=${EXPECTED_AX_SHA_OVERRIDE:-}
+    expected_snap_sha=${EXPECTED_SNAP_SHA_OVERRIDE:-}
+    for expected_sha in "$expected_ax_sha" "$expected_snap_sha"
+    do
+      printf '%s\n' "$expected_sha" | rg -q '^[0-9a-f]{64}$'
+    done
+    ;;
   --next-aa1aa2-ij-screened)
     test "$REPORT_PREFIX" = 'RANK2-CURRENT-IJ-AA1'
     test "$MANIFEST_HEADER" = \
@@ -55,7 +66,7 @@ case "$CANDIDATE_MODE" in
     expected_snap_sha=f7e351eab9c895c4b43023e37734f4675898fa39b70e07ca9c25c29eecd66f7c
     ;;
   *)
-    printf '%s\n' 'AA1 candidate mode must be QVWX, GH, IJ, or NO.' >&2
+    printf '%s\n' 'AA1 candidate mode must be QVWX, GH, IJ, NO, or OP.' >&2
     exit 2
     ;;
 esac

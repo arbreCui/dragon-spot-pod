@@ -20,6 +20,7 @@ program build_rank2_modal_aa1_candidate
   !   --next-aa1aa2-no-screened q7 n q8 o o_snap out_ax out_snap
   !   --next-aa1aa2-ij-screened q3 i q4 j j_snap out_ax out_snap
   !   --next-aa2aa1-jk-screened q4 j q5 k k_snap out_ax out_snap
+  !   --next-aa2aa1-op-screened q8 o q9 p p_snap out_ax out_snap
   !   --next-zpcd-screened z zp c d d_snap out_ax out_snap
   !   --next-aa1aa1-screened q6 m q7 n n_snap out_ax out_snap
   use GANLIB
@@ -138,6 +139,9 @@ program build_rank2_modal_aa1_candidate
     else if (trim(mode) == '--next-aa2aa1-jk-screened') then
       call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
         .false.,.false.,.true.)
+    else if (trim(mode) == '--next-aa2aa1-op-screened') then
+      call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
+        .false.,.false.,.true.)
     else if (trim(mode) == '--next-zpcd-screened') then
       call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
         .false.,.false.,.true.)
@@ -157,7 +161,7 @@ program build_rank2_modal_aa1_candidate
         '--next-x4z, --next-zu, --next-x4aa2-screened, '// &
         '--next-aa1aa2-screened, --next-aa1aa2-no-screened, '// &
         '--next-aa1aa2-ij-screened, '// &
-        '--next-aa2aa1-jk-screened, '// &
+        '--next-aa2aa1-jk-screened, --next-aa2aa1-op-screened, '// &
         '--next-zpcd-screened, --next-aa1aa1-screened, --u, '// &
         '--post-aa1, --rolling-aa1 or --rolling-aa1-next'
     endif
@@ -203,6 +207,7 @@ program build_rank2_modal_aa1_candidate
       '--next-aa1aa2-no-screened q7 n q8 o o_snap out_ax out_snap or '// &
       '--next-aa1aa2-ij-screened q3 i q4 j j_snap out_ax out_snap or '// &
       '--next-aa2aa1-jk-screened q4 j q5 k k_snap out_ax out_snap or '// &
+      '--next-aa2aa1-op-screened q8 o q9 p p_snap out_ax out_snap or '// &
       '--next-zpcd-screened z zp c d d_snap out_ax out_snap or '// &
       '--next-aa1aa1-screened q6 m q7 n n_snap out_ax out_snap or '// &
       '--u y z w v v_snap out_ax out_snap or '// &
@@ -1141,6 +1146,12 @@ contains
         report_prefix='RANK2-CURRENT-JK-AA1'
         latest_output='K'
         previous_output='J'
+      else if (trim(mode) == '--next-aa2aa1-op-screened') then
+        input_carrier='AA1-RAW-FLUX'
+        output_carrier='AA1-RAW-FLUX'
+        report_prefix='RANK2-CURRENT-OP-AA1'
+        latest_output='P'
+        previous_output='O'
       else if (trim(mode) == '--next-aa1aa2-no-screened') then
         input_carrier='AA2-RAW-FLUX'
         output_carrier='AA1-RAW-FLUX'
@@ -1221,7 +1232,8 @@ contains
           (trim(mode) == '--next-aa1aa2-ij-screened')) then
         call load_state(trim(next_path(1)),next_x1, &
           'previous proposal input',.true.,'AA1-RAW-FLUX')
-      else if (trim(mode) == '--next-aa2aa1-jk-screened') then
+      else if ((trim(mode) == '--next-aa2aa1-jk-screened').or. &
+          (trim(mode) == '--next-aa2aa1-op-screened')) then
         call load_state(trim(next_path(1)),next_x1, &
           'previous proposal input',.true.,'AA2-RAW-FLUX')
       else
