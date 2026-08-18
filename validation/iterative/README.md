@@ -5,28 +5,26 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest admissible full-Gram AA(2) proposal
-$q_4=0.5465669243g+0.2290322421h+0.2244008336i$ was materialized and
+The latest admissible full-Gram AA(1) proposal
+$q_5=1.1922339466i-0.1922339466j$ was materialized and
 evaluated exactly once.  Its strict terminals, independent checker, and
-21/21 receipt pass.  For $j=G_2(q_4)$, the physical residual $j-q_4$ is
+21/21 receipt pass.  For $k=G_2(q_5)$, the physical residual $k-q_5$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223470\times10^{-8},\,4.9718691\times10^{-4},\,
-7.2846888\times10^{-7}\ \mathrm{cm}^{-1},\,
-6.0038084\times10^{-6}).
+(6.4223481\times10^{-8},\,3.4134718\times10^{-4},\,
+5.0013477\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3307906\times10^{-6}).
 $$
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ do
 not.  Dimensional $D_L$ remains diagnostic only.
 
-The next AA(1) on $i-q_3$ and $j-q_4$ gives ratios `0.06442`, `0.93187`,
-and `0.97357`, so `AA1_DIRECTION_PASS`; AA(2) is not calculated.  The
-standard unconstrained proposal
-$q_5=1.1922339466i-0.1922339466j$ is now materialized; its independent
-checker, 8880/8880 positivity check, and 9/9 receipt pass.  One physical
-$G_2(q_5)$ map is prepared behind a default-off gate and has not yet run.
-See [rank2_current_ij_aa1_candidate_result.md](rank2_current_ij_aa1_candidate_result.md).
+The next AA(1) on $j-q_4,k-q_5$ fails only the maximum-$|D_L|$ direction
+screen at `1.0008704`.  Only then, AA(2) on $i-q_3,j-q_4,k-q_5$ was checked
+and also fails that screen at `1.2201877`.  The boundary is
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`: no successor and no second map.
+See [rank2_current_ij_aa1_map_result.md](rank2_current_ij_aa1_map_result.md).
 
 ## Active files
 
@@ -34,8 +32,10 @@ See [rank2_current_ij_aa1_candidate_result.md](rank2_current_ij_aa1_candidate_re
   `rank2_current_ij_aa1_candidate_result.md`,
   `rank2_current_ij_aa1_map_parent.tsv`,
   `rank2_current_ij_aa1_map_policy.md`, and
-  `run_rank2_current_ij_aa1_map.sh`: latest minimum-order AA(1) proposal
-  and its single default-off physical-map route.  No map has yet run.
+  `run_rank2_current_ij_aa1_map.sh`,
+  `rank2_current_ij_aa1_map_result.md`: latest minimum-order AA(1)
+  proposal, its single valid but unconverged map, and the following
+  AA(1)/AA(2) direction rejection with no second map.
 
 - `rank2_current_ghi_aa2_candidate_inputs.tsv`,
   `rank2_current_ghi_aa2_candidate_result.md`,

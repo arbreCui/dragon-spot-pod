@@ -946,6 +946,21 @@ for token in (
 ):
     require(token in checker, f"IJ checker contract missing: {token}")
 for token in (
+    "--next-aa2aa1-jk-screened",
+    "RANK2-CURRENT-JK-AA1",
+    "'previous proposal input',.true.,'AA2-RAW-FLUX'",
+    "input_carrier='AA1-RAW-FLUX'",
+    "output_carrier='AA1-RAW-FLUX'",
+):
+    require(token in builder, f"JK builder contract missing: {token}")
+for token in (
+    "--next-aa2aa1-jk-screened",
+    "RANK2-CURRENT-JK-AA1",
+    "'PREVIOUS PROPOSAL Q4'", "'AA2-RAW-FLUX'",
+    "latest_input='Q5'", "latest_output='K'", "previous_output='J'",
+):
+    require(token in checker, f"JK checker contract missing: {token}")
+for token in (
     "--next-aa1aa2-ij-screened)",
     "RANK2-CURRENT-IJ-AA1",
     "# spot-rank2-current-ij-aa1-candidate-inputs-v1",

@@ -245,6 +245,9 @@ ij_map_policy = (
 ij_map_manifest = (
     ITERATIVE / "rank2_current_ij_aa1_map_parent.tsv"
 ).read_text()
+ij_map_result = (
+    ITERATIVE / "rank2_current_ij_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1823,8 +1826,9 @@ for token in (
     "1.1922339465680236", "-0.19223394656802359",
     "k=G_2(q_5)", "R_\\rho", "R_L", "R_a", "diagnostic only",
     "three online radial", "one axial solve", "k-q_5",
-    "PREPARED_DEFAULT_OFF", "no retry", "no second physical map",
-    "empirical parameter",
+    "EXECUTED_ONCE_VALID_NOT_MET", "no retry", "no second physical map",
+    "empirical parameter", "AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL",
+    "1.0008704340662933", "1.2201877109802688",
 ):
     require(token in ij_map_policy,
             f"IJ AA1 map policy missing: {token}")
@@ -1851,6 +1855,26 @@ require(ij_bad_activation.returncode == 2 and
         "IJ AA1 map activation gate changed")
 require("spot-rank2-current-ij-aa1-map" in
         (ROOT / "Makefile").read_text(), "IJ AA1 map target is missing")
+for token in (
+    "fbe6058300a93cc771bc050f81397aa2f563b9e7",
+    "6.422348086676521", "3.413471840828782",
+    "5.001347744837403", "1.330790586136073",
+    "VALID_NOT_MET", "21/21",
+    "d8c77928f992adf67136331192a018060f203bedf3d1728d46a39d987c6938de",
+    "343afaa62d1c6b0e880afe1cd090c944ffc7ecab837125c76b048987634ea9ae",
+    "8c8b9d18f208f91494b3fac79947abcbd2bd46b2605b9af6e441c6eba93bd5f0",
+    "0.17292455736665602", "0.82707544263334398",
+    "2.3273113779303836e-11", "0.33957735217447371",
+    "0.88879107302551907", "1.0008704340662933",
+    "0.64695441259132080", "0.029106166249854366",
+    "0.38215175365853354", "4.8856879432852540e-24",
+    "0.060133483366234260", "0.49773629519031415",
+    "1.2201877109802688", "8880/8880",
+    "AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL",
+    "No durable successor", "second physical map",
+):
+    require(token in ij_map_result,
+            f"IJ AA1 map result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

@@ -19,6 +19,8 @@ program check_rank2_modal_aa1_candidate
   !     h_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-aa1aa2-ij-screened q3 i q4 j \
   !     j_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-aa2aa1-jk-screened q4 j q5 k \
+  !     k_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-zpcd-screened z zp c d \
   !     d_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
@@ -208,6 +210,8 @@ program check_rank2_modal_aa1_candidate
       x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--next-aa1aa2-ij-screened') then
       x4aa2_screened_mode=.true.
+    else if (trim(mode_argument) == '--next-aa2aa1-jk-screened') then
+      x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--next-zpcd-screened') then
       x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--post-aa1') then
@@ -219,7 +223,8 @@ program check_rank2_modal_aa1_candidate
     else if (trim(mode_argument) /= '--next') then
       call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --NEXT-X4Z, '// &
         '--NEXT-ZU, --NEXT-X4AA2-SCREENED, --NEXT-AA1AA2-SCREENED, '// &
-        '--NEXT-AA1AA2-IJ-SCREENED, --NEXT-ZPCD-SCREENED, '// &
+        '--NEXT-AA1AA2-IJ-SCREENED, --NEXT-AA2AA1-JK-SCREENED, '// &
+        '--NEXT-ZPCD-SCREENED, '// &
         '--U, --POST-AA1 OR --ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
@@ -1027,6 +1032,15 @@ contains
         previous_output='I'
         call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Q3', &
           'AA1-RAW-FLUX')
+      else if (trim(mode_argument) == '--next-aa2aa1-jk-screened') then
+        input_carrier='AA1-RAW-FLUX'
+        output_carrier='AA1-RAW-FLUX'
+        report_prefix='RANK2-CURRENT-JK-AA1'
+        latest_input='Q5'
+        latest_output='K'
+        previous_output='J'
+        call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Q4', &
+          'AA2-RAW-FLUX')
       else if (trim(mode_argument) == '--next-aa1aa2-screened') then
         input_carrier='AA2-RAW-FLUX'
         output_carrier='AA1-RAW-FLUX'

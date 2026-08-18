@@ -103,37 +103,35 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-The latest admissible full-Gram AA(2) direction was materialized and
+The latest admissible full-Gram AA(1) direction was materialized and
 evaluated exactly once:
 
 $$
-q_4=0.5465669243\,g+0.2290322421\,h+0.2244008336\,i,
-\qquad j=G_2(q_4).
+q_5=1.1922339466\,i-0.1922339466\,j,
+\qquad k=G_2(q_5).
 $$
 
 Its three fresh online radial fixed-source solves, one axial solve, strict
 terminals, independent checker, and 21/21 receipt all passed.  The physical
-residual $j-q_4$ is
+residual $k-q_5$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223470\times10^{-8},\,4.9718691\times10^{-4},\,
-7.2846888\times10^{-7}\ \mathrm{cm}^{-1},\,
-6.0038084\times10^{-6}).
+(6.4223481\times10^{-8},\,3.4134718\times10^{-4},\,
+5.0013477\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.3307906\times10^{-6}).
 $$
 
 $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate; $R_L$ and $R_a$
 fail.  SPOT still has no accepted rank-two fixed point.
 
-The next minimum-order AA(1), using only $i-q_3$ and $j-q_4$, gives
-$q_5=1.1922339466i-0.1922339466j$.  Its direction ratios are `0.06442`,
-`0.93187`, and `0.97357`, all strictly below one.  Thus
-`AA1_DIRECTION_PASS`; AA(2) is not calculated.  The proposal is now
-materialized with a passing independent checker and 9/9 receipt.  Its
-negative $j$ coefficient is the unchanged standard unconstrained AA(1)
-result, not an empirical control.  Exactly one $G_2(q_5)$ map is prepared
-behind a default-off gate; it has not yet been run.  See the
-[proposal result](validation/iterative/rank2_current_ij_aa1_candidate_result.md).
+The next minimum-order AA(1), using only $j-q_4$ and $k-q_5$, fails the
+fixed maximum-$|D_L|$ direction screen at `1.0008704`.  Only then, standard
+unregularized AA(2) on $i-q_3,j-q_4,k-q_5$ was checked and also fails that
+screen at `1.2201877`.  Thus
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`: no successor was published and no
+second map was run.  See the
+[latest map result](validation/iterative/rank2_current_ij_aa1_map_result.md).
 
 ## Historical validation record
 

@@ -2,7 +2,7 @@
 
 Date: 2026-08-17
 
-Status: `PREPARED_DEFAULT_OFF`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 The latest two genuine fixed-point residuals, $i-q_3$ and $j-q_4$, give
 the standard unregularized full-Gram proposal
@@ -44,3 +44,29 @@ One activation permits one attempt.  There is no retry, fallback, automatic
 successor, relaxation, damping, clipping, fit, regularization, pseudoinverse,
 condition cutoff, empirical parameter, mixed-unit objective, older-window
 search, or AA(3).  This batch permits no second physical map.
+
+## Post-run record
+
+The stage was activated exactly once from source commit
+`fbe6058300a93cc771bc050f81397aa2f563b9e7`.  All four strict terminals,
+the independent `proposal-aa1` checker, and the 21/21 receipt passed.  The
+physical residual $k-q_5$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.422348086676521\times10^{-8},\,
+3.413471840828782\times10^{-4},\,
+5.001347744837403\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.330790586136073\times10^{-6}).
+$$
+
+$R_\rho$ passes the original AND gate; $R_L$ and $R_a$ do not, so the map
+is `VALID_NOT_MET`.  AA(1) on $j-q_4,k-q_5$ was tried first and failed only
+the same-weight maximum-$|D_L|$ direction screen at
+`1.0008704340662933`.  Only then, standard unregularized AA(2) on
+$i-q_3,j-q_4,k-q_5$ was evaluated and also failed that screen at
+`1.2201877109802688`.  The final offline classification is
+`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`; no direction was published and no
+second map was run.  The artifact's `continuation_policy.md` remains the
+receipt-protected pre-run policy copy.  See
+[rank2_current_ij_aa1_map_result.md](rank2_current_ij_aa1_map_result.md).
