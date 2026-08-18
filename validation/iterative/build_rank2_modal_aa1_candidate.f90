@@ -11,6 +11,7 @@ program build_rank2_modal_aa1_candidate
   !   --current-stuvvw-aa2 s t u v v w w_snap out_ax out_snap
   !   --current-uvvwxy-aa2 u v v w x y y_snap out_ax out_snap
   !   --current-ptuqv-aa2 p t t u q v v_snap out_ax out_snap
+  !   --current-cefg-aa2 c e e f q g g_snap out_ax out_snap
   !   --next-x4aa2-screened q v w x x_snap out_ax out_snap
   !   --next-zpcd-screened z zp c d d_snap out_ax out_snap
   use GANLIB
@@ -89,6 +90,9 @@ program build_rank2_modal_aa1_candidate
     else if (trim(mode) == '--current-ptuqv-aa2') then
       call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
         .false.,.true.)
+    else if (trim(mode) == '--current-cefg-aa2') then
+      call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
+        .false.,.false.,.true.)
     else
       error stop 'ten-argument mode requires an AA2 mode'
     endif
@@ -176,6 +180,8 @@ program build_rank2_modal_aa1_candidate
       '--current-stuvvw-aa2 s t u v v w w_snap '// &
       'out_ax out_snap or '// &
       '--current-uvvwxy-aa2 u v v w x y y_snap '// &
+      'out_ax out_snap or '// &
+      '--current-cefg-aa2 c e e f q g g_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
       '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap or '// &
@@ -506,12 +512,13 @@ contains
 
   subroutine build_rolling_aa2_candidate(rolling_next_mode,current_mode, &
       current_qpzst_mode,current_stuvvw_mode,current_uvvwxy_mode, &
-      current_ptuqv_mode)
+      current_ptuqv_mode,current_cefg_mode)
     logical, intent(in) :: rolling_next_mode,current_mode
     logical, intent(in), optional :: current_qpzst_mode
     logical, intent(in), optional :: current_stuvvw_mode
     logical, intent(in), optional :: current_uvvwxy_mode
     logical, intent(in), optional :: current_ptuqv_mode
+    logical, intent(in), optional :: current_cefg_mode
     character(len=1024) :: aa2_path(9)
     type(canonical_state) :: in0,out0,in1,out1,in2,out2
     type(c_ptr) :: out2_snap,aa2_staged_ax,aa2_staged_snap
@@ -533,7 +540,7 @@ contains
     real(real32) :: k_public,projected
     real(real64), allocatable :: candidate_a(:),candidate_l(:)
     real(real32), allocatable :: published_l(:)
-    logical :: qpzst_mode,stuvvw_mode,uvvwxy_mode,ptuqv_mode
+    logical :: qpzst_mode,stuvvw_mode,uvvwxy_mode,ptuqv_mode,cefg_mode
     logical :: direction_gate_mode
 
     qpzst_mode=.false.
@@ -544,8 +551,10 @@ contains
     if (present(current_uvvwxy_mode)) uvvwxy_mode=current_uvvwxy_mode
     ptuqv_mode=.false.
     if (present(current_ptuqv_mode)) ptuqv_mode=current_ptuqv_mode
+    cefg_mode=.false.
+    if (present(current_cefg_mode)) cefg_mode=current_cefg_mode
     direction_gate_mode=qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode.or. &
-      ptuqv_mode
+      ptuqv_mode.or.cefg_mode
 
     do j=1,9
       call get_command_argument(j+1,aa2_path(j))
@@ -567,6 +576,9 @@ contains
     if (ptuqv_mode.and. &
         (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
       error stop 'PTUQV t output and t input must be the same path'
+    if (cefg_mode.and. &
+        (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
+      error stop 'CEFG e output and e input must be the same path'
     call require_fresh_path(aa2_path(8))
     call require_fresh_path(aa2_path(9))
 
@@ -577,9 +589,24 @@ contains
           uvvwxy_mode)).or. &
         (uvvwxy_mode.and.(current_mode.or.rolling_next_mode)).or. &
         (ptuqv_mode.and.(current_mode.or.rolling_next_mode.or. &
-          qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode))) &
+          qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode)).or. &
+        (cefg_mode.and.(current_mode.or.rolling_next_mode.or. &
+          qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode.or.ptuqv_mode))) &
       error stop 'AA2 modes are mutually exclusive'
-    if (ptuqv_mode) then
+    if (cefg_mode) then
+      aa2_report_prefix='RANK2-CURRENT-CEFG-AA2'
+      aa2_label0='E'
+      aa2_label1='F'
+      aa2_label2='G'
+      call load_state(trim(aa2_path(1)),in0,'CEFG c input', &
+        .true.,'AA1-RAW-FLUX')
+      call load_state(trim(aa2_path(2)),out0,'CEFG e output')
+      call load_state(trim(aa2_path(3)),in1,'CEFG e input')
+      call load_state(trim(aa2_path(4)),out1,'CEFG f output')
+      call load_state(trim(aa2_path(5)),in2,'CEFG q input', &
+        .true.,'AA1-RAW-FLUX')
+      call load_state(trim(aa2_path(6)),out2,'CEFG g output')
+    else if (ptuqv_mode) then
       aa2_report_prefix='RANK2-CURRENT-PTUQV-AA2'
       aa2_label0='T'
       aa2_label1='U'

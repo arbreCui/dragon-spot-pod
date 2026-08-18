@@ -21,6 +21,9 @@ current_manifest = (
 ptuqv_manifest = (
     ITERATIVE / "rank2_current_ptuqv_aa2_candidate_inputs.tsv"
 ).read_text()
+cefg_manifest = (
+    ITERATIVE / "rank2_current_cefg_aa2_candidate_inputs.tsv"
+).read_text()
 builder = (ITERATIVE / "build_rank2_modal_aa1_candidate.f90").read_text()
 checker = (ITERATIVE / "check_rank2_modal_aa1_candidate.f90").read_text()
 runner = (ITERATIVE / "run_rank2_modal_aa2_candidate.sh").read_text()
@@ -37,6 +40,14 @@ ptuqv_map_runner_path = ITERATIVE / "run_rank2_current_ptuqv_aa2_map.sh"
 ptuqv_map_runner = ptuqv_map_runner_path.read_text()
 ptuqv_map_parent = (
     ITERATIVE / "rank2_current_ptuqv_aa2_map_parent.tsv"
+).read_text()
+cefg_map_runner_path = ITERATIVE / "run_rank2_current_cefg_aa2_map.sh"
+cefg_map_runner = cefg_map_runner_path.read_text()
+cefg_map_parent = (
+    ITERATIVE / "rank2_current_cefg_aa2_map_parent.tsv"
+).read_text()
+cefg_map_policy = (
+    ITERATIVE / "rank2_current_cefg_aa2_map_policy.md"
 ).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
@@ -149,6 +160,30 @@ require(tuple(row[1] for row in ptuqv_rows[:6]) == (
     "2cb0fdc254599faacd695e25a043e2f3fd9331c848526929fb934ced2074ed81",
 ), "PTUQV actual-map history changed")
 
+cefg_rows = [line.split() for line in cefg_manifest.splitlines()
+             if line.strip() and not line.startswith("#")]
+require(cefg_manifest.splitlines()[0] ==
+        "# spot-rank2-current-cefg-aa2-candidate-inputs-v1",
+        "CEFG manifest version changed")
+require(tuple(row[0] for row in cefg_rows) ==
+        ("p", "t", "u", "q", "v", "v_snapshots", "basis_reference"),
+        "CEFG manifest roles changed")
+require(all(len(row) == 3 for row in cefg_rows),
+        "CEFG manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in cefg_rows),
+        "CEFG manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in cefg_rows),
+        "CEFG manifest path escapes repository")
+require(tuple(row[1] for row in cefg_rows[:6]) == (
+    "978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6",
+    "0b5c8d27b4d2e37d90d56d27d75619842851b7a0e0206947b31c3d5b88936828",
+    "6e26d8dc40bf79c0dedad19912557dfed5ccd2c3bdb38ea719ce32b5cc9aba6c",
+    "76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd",
+    "1b52b5ebd421e620f1f9d7d4e60e50fb002f85c25031533cc4d650e858dd030a",
+    "7a0e441a25ad2cc3067210dd6ebd90cb26ba5a9722a4c38ea289237590e90602",
+), "CEFG actual-map history changed")
+
 for token in (
     "--rolling-aa2 x0 x0p x1 x1p x2 x2p x2p_snap",
     "d0a=f0a-f2a", "d1a=f1a-f2a",
@@ -205,6 +240,17 @@ for token in (
 ):
     require(token in builder,
             f"PTUQV builder contract missing: {token}")
+
+for token in (
+    "trim(mode) == '--current-cefg-aa2'",
+    "aa2_report_prefix='RANK2-CURRENT-CEFG-AA2'",
+    "aa2_label0='E'", "aa2_label1='F'", "aa2_label2='G'",
+    "'CEFG c input'", "'AA1-RAW-FLUX'", "'CEFG e output'",
+    "'CEFG e input'", "'CEFG f output'", "'CEFG q input'",
+    "'CEFG g output'",
+):
+    require(token in builder,
+            f"CEFG builder contract missing: {token}")
 
 for token in (
     "trim(mode_argument) /= '--rolling-aa2'",
@@ -265,6 +311,18 @@ for token in (
             f"PTUQV checker contract missing: {token}")
 
 for token in (
+    "trim(mode_argument) == '--current-cefg-aa2'",
+    "current_cefg_aa2_mode=.true.",
+    "aa2_report_prefix='RANK2-CURRENT-CEFG-AA2'",
+    "'CEFG C INPUT','AA1-RAW-FLUX'", "'CEFG E OUTPUT'",
+    "'CEFG E INPUT'", "'CEFG F OUTPUT'",
+    "'CEFG Q INPUT','AA1-RAW-FLUX'", "'CEFG G OUTPUT'",
+    "aa2_latest_input='Q'", "aa2_latest_output='G'",
+):
+    require(token in checker,
+            f"CEFG checker contract missing: {token}")
+
+for token in (
     "rank2_modal_aa2_candidate_inputs.tsv",
     "--rolling-aa2 x0.xsm x0p.xsm x1.xsm x1p.xsm",
     "AA2-RAW-FLUX", "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
@@ -323,7 +381,10 @@ require("spot-rank2-current-aa2-candidate" in makefile,
 
 for token in (
     "rank2_current_ptuqv_aa2_candidate_inputs.tsv",
-    "--current-ptuqv-aa2 p.xsm t.xsm t.xsm u.xsm",
+    "CANDIDATE_MODE=${CANDIDATE_MODE:---current-ptuqv-aa2}",
+    "--current-ptuqv-aa2)", "--current-cefg-aa2)",
+    './build_candidate "$CANDIDATE_MODE" p.xsm t.xsm t.xsm u.xsm',
+    './check_candidate "$CANDIDATE_MODE" p.xsm t.xsm t.xsm u.xsm',
     "PARAMETER-FREE DIRECTION GATE PASS",
     "AA2-RAW-FLUX", "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
     "DRAGON/ASM/FLU/TRANSPORT=0",
@@ -341,6 +402,16 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", ptuqv_runner),
         "PTUQV retry loop is forbidden")
 require("spot-rank2-current-ptuqv-aa2-candidate" in makefile,
         "PTUQV Make target is missing")
+for token in (
+    "spot-rank2-current-cefg-aa2-candidate",
+    "rank2_current_cefg_aa2_candidate_inputs.tsv",
+    "iterative-rank2-current-cefg-aa2-candidate",
+    "CANDIDATE_MODE=--current-cefg-aa2",
+    "REPORT_PREFIX=RANK2-CURRENT-CEFG-AA2",
+    "EXPECTED_AX_SHA_OVERRIDE=d4b25fc5bf9b3cc2eb4c6665833f7560073408ffd5462c0f07e4cf30ead0d1fe",
+    "EXPECTED_SNAP_SHA_OVERRIDE=b0aac9dd5575fc48ca351e0b330946afc968777152a6356f9846b5c9ac1b1c79",
+):
+    require(token in makefile, f"CEFG Make binding missing: {token}")
 
 ptuqv_parent_rows = [line.split() for line in ptuqv_map_parent.splitlines()
                      if line.strip() and not line.startswith("#")]
@@ -387,8 +458,62 @@ require(default_run.returncode == 0 and
         "SPOT-RANK2-CURRENT-PTUQV-AA2-MAP DEFAULT-OFF: no Dragon process started.",
         "PTUQV map default-off execution changed")
 
+cefg_parent_rows = [line.split() for line in cefg_map_parent.splitlines()
+                    if line.strip() and not line.startswith("#")]
+require(cefg_map_parent.splitlines()[0] ==
+        "# spot-rank2-current-cefg-aa2-map-parent-v1",
+        "CEFG map-parent version changed")
+require(tuple(row[0] for row in cefg_parent_rows) == (
+    "axial_track", "axial_macrolib", "radial_track", "basis_reference",
+    "parent_axial", "parent_snapshots",
+), "CEFG map-parent roles changed")
+require(tuple(row[1] for row in cefg_parent_rows[-2:]) == (
+    "d4b25fc5bf9b3cc2eb4c6665833f7560073408ffd5462c0f07e4cf30ead0d1fe",
+    "b0aac9dd5575fc48ca351e0b330946afc968777152a6356f9846b5c9ac1b1c79",
+), "CEFG map parent proposal changed")
+for token in (
+    "RUN_RANK2_CURRENT_CEFG_AA2_MAP=${RUN_RANK2_CURRENT_CEFG_AA2_MAP:-0}",
+    "iterative-rank2-current-cefg-aa2-candidate",
+    "rank2_current_cefg_aa2_map_parent.tsv",
+    "rank2_current_cefg_aa2_map_policy.md",
+    "iterative-rank2-current-cefg-aa2-map",
+    "CHECKER_MODE=proposal-aa2",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in cefg_map_runner,
+            f"CEFG map runner contract missing: {token}")
+require(cefg_map_runner.index("RUN_RANK2_CURRENT_CEFG_AA2_MAP=") <
+        cefg_map_runner.index("ROOT=$("),
+        "CEFG default-off gate must precede filesystem access")
+require(cefg_map_runner.count("run_continuation_short.sh") == 1,
+        "CEFG map runner must delegate exactly once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", cefg_map_runner),
+        "CEFG map retry loop is forbidden")
+for token in (
+    "0.37059923635358261", "0.28970803656130206",
+    "0.33969272708511533", "h=G_2(q_2)",
+    "R_\\rho\\le5\\times10^{-7}", "R_L\\le5\\times10^{-7}",
+    "R_a\\le5\\times10^{-7}", "h-q_2", "no second physical map",
+):
+    require(token in cefg_map_policy,
+            f"CEFG map policy missing: {token}")
+require("spot-rank2-current-cefg-aa2-map" in makefile,
+        "CEFG map Make target is missing")
+cefg_default_env = os.environ.copy()
+cefg_default_env["RUN_RANK2_CURRENT_CEFG_AA2_MAP"] = "0"
+cefg_default_run = subprocess.run(
+    ["sh", str(cefg_map_runner_path)], cwd=ROOT, env=cefg_default_env,
+    capture_output=True, text=True, check=False,
+)
+require(cefg_default_run.returncode == 0 and
+        cefg_default_run.stdout.strip() ==
+        "SPOT-RANK2-CURRENT-CEFG-AA2-MAP DEFAULT-OFF: no Dragon process started.",
+        "CEFG map default-off execution changed")
+
 combined = "\n".join(
-    (builder, checker, runner, next_runner, current_runner, ptuqv_runner)
+    (builder, checker, runner, next_runner, current_runner, ptuqv_runner,
+     cefg_map_runner)
 ).lower()
 for forbidden in ("regularization", "pseudoinverse", "pinv", "condition cutoff"):
     require(forbidden not in combined, f"forbidden control present: {forbidden}")

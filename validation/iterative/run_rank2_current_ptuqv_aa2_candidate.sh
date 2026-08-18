@@ -7,12 +7,40 @@ ARTIFACT_DIR=${ARTIFACT_DIR:-"$ROOT/validation/artifacts/iterative-rank2-current
 GANLIB_LIB=${GANLIB_LIB:-"$ROOT/Ganlib/src/libGanlib.a"}
 GANLIB_MOD=${GANLIB_MOD:-"$ROOT/Ganlib/src"}
 FC=${FC:-gfortran}
+CANDIDATE_MODE=${CANDIDATE_MODE:---current-ptuqv-aa2}
+REPORT_PREFIX=${REPORT_PREFIX:-RANK2-CURRENT-PTUQV-AA2}
+MANIFEST_HEADER=${MANIFEST_HEADER:-'# spot-rank2-current-ptuqv-aa2-candidate-inputs-v1'}
 
 BUILDER="$ROOT/validation/iterative/build_rank2_modal_aa1_candidate.f90"
 CHECKER="$ROOT/validation/iterative/check_rank2_modal_aa1_candidate.f90"
 RUNNER="$ROOT/validation/iterative/run_rank2_current_ptuqv_aa2_candidate.sh"
 EXPECTED_AX_SHA=0be2f39496fb5de7f4c942ec2e249d484492218e1376a9331b3ec19e7427a2d0
 EXPECTED_SNAP_SHA=cdd6893892c5ba0140a3f5d3ce82bfef476c9a6537a939f41ecd53b2825e14e0
+expected_ax_sha=$EXPECTED_AX_SHA
+expected_snap_sha=$EXPECTED_SNAP_SHA
+
+case "$CANDIDATE_MODE" in
+  --current-ptuqv-aa2)
+    test "$REPORT_PREFIX" = 'RANK2-CURRENT-PTUQV-AA2'
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-ptuqv-aa2-candidate-inputs-v1'
+    ;;
+  --current-cefg-aa2)
+    test "$REPORT_PREFIX" = 'RANK2-CURRENT-CEFG-AA2'
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-cefg-aa2-candidate-inputs-v1'
+    expected_ax_sha=${EXPECTED_AX_SHA_OVERRIDE:-}
+    expected_snap_sha=${EXPECTED_SNAP_SHA_OVERRIDE:-}
+    for expected_sha in "$expected_ax_sha" "$expected_snap_sha"
+    do
+      printf '%s\n' "$expected_sha" | rg -q '^[0-9a-f]{64}$'
+    done
+    ;;
+  *)
+    printf '%s\n' 'AA2 candidate mode must be PTUQV or CEFG.' >&2
+    exit 2
+    ;;
+esac
 
 for file in "$MANIFEST" "$BUILDER" "$CHECKER" "$RUNNER" \
   "$GANLIB_LIB" "$GANLIB_MOD/ganlib.mod"
@@ -37,8 +65,7 @@ manifest_path() {
   awk -v role="$1" '$1 == role {print $3}' "$MANIFEST"
 }
 
-test "$(sed -n '1p' "$MANIFEST")" = \
-  '# spot-rank2-current-ptuqv-aa2-candidate-inputs-v1'
+test "$(sed -n '1p' "$MANIFEST")" = "$MANIFEST_HEADER"
 test "$(awk 'NF && $1 !~ /^#/ {n++} END {print n+0}' "$MANIFEST")" = 7
 test "$(awk 'NF && $1 !~ /^#/ && NF != 3 {n++} END {print n+0}' \
   "$MANIFEST")" = 0
@@ -85,23 +112,23 @@ if rg -qi \
   '(_|[[:space:]])(asm|flu|dragon|spoasm|spoproj|spostate|spoxconv|spopod)(_|[[:space:]]|$)' \
   "$WORK/builder.nm" "$WORK/checker.nm"
 then
-  printf '%s\n' 'RANK2-CURRENT-PTUQV-AA2 ERROR: forbidden solver symbol.' >&2
+  printf '%s\n' "$REPORT_PREFIX ERROR: forbidden solver symbol." >&2
   exit 2
 fi
 
 (
   cd "$WORK"
-  ./build_candidate --current-ptuqv-aa2 p.xsm t.xsm t.xsm u.xsm \
+  ./build_candidate "$CANDIDATE_MODE" p.xsm t.xsm t.xsm u.xsm \
     q.xsm v.xsm vs.xsm proposal_axial.xsm proposal_snapshots.xsm \
     >build.log
-  ./check_candidate --current-ptuqv-aa2 p.xsm t.xsm t.xsm u.xsm \
+  ./check_candidate "$CANDIDATE_MODE" p.xsm t.xsm t.xsm u.xsm \
     q.xsm v.xsm vs.xsm basis.xsm proposal_axial.xsm \
     proposal_snapshots.xsm >check.log
 )
-rg -q '^RANK2-CURRENT-PTUQV-AA2 PARAMETER-FREE DIRECTION GATE PASS$' \
+rg -q "^$REPORT_PREFIX PARAMETER-FREE DIRECTION GATE PASS$" \
   "$WORK/build.log" "$WORK/check.log"
-rg -q '^RANK2-CURRENT-PTUQV-AA2 CARRIER AA2-RAW-FLUX$' "$WORK/build.log"
-rg -q '^RANK2-CURRENT-PTUQV-AA2 COMPLETE$' "$WORK/check.log"
+rg -q "^$REPORT_PREFIX CARRIER AA2-RAW-FLUX$" "$WORK/build.log"
+rg -q "^$REPORT_PREFIX COMPLETE$" "$WORK/check.log"
 
 for role in p t u q v v_snapshots basis_reference
 do
@@ -110,8 +137,8 @@ do
 done
 ax_sha=$(hash_file "$WORK/proposal_axial.xsm")
 snap_sha=$(hash_file "$WORK/proposal_snapshots.xsm")
-test "$ax_sha" = "$EXPECTED_AX_SHA"
-test "$snap_sha" = "$EXPECTED_SNAP_SHA"
+test "$ax_sha" = "$expected_ax_sha"
+test "$snap_sha" = "$expected_snap_sha"
 
 mkdir "$STAGE"
 cp "$WORK/proposal_axial.xsm" "$STAGE/proposal_axial.xsm"
@@ -139,10 +166,10 @@ mv "$STAGE" "$ARTIFACT_DIR"
 cat "$ARTIFACT_DIR/build.log"
 cat "$ARTIFACT_DIR/check.log"
 printf '%s\n' \
-  "RANK2-CURRENT-PTUQV-AA2 AX-SHA256=$ax_sha" \
-  "RANK2-CURRENT-PTUQV-AA2 SNAP-SHA256=$snap_sha" \
-  'RANK2-CURRENT-PTUQV-AA2 INPUTS-READ-ONLY HASH PASS' \
-  'RANK2-CURRENT-PTUQV-AA2 RECEIPT 9/9 PASS' \
-  'RANK2-CURRENT-PTUQV-AA2 DRAGON/ASM/FLU/TRANSPORT=0' \
-  'RANK2-CURRENT-PTUQV-AA2 CLASSIFICATION=MATERIALIZED_PROPOSAL_NOT_EVALUATED' \
-  "RANK2-CURRENT-PTUQV-AA2 RESULT=$ARTIFACT_DIR"
+  "$REPORT_PREFIX AX-SHA256=$ax_sha" \
+  "$REPORT_PREFIX SNAP-SHA256=$snap_sha" \
+  "$REPORT_PREFIX INPUTS-READ-ONLY HASH PASS" \
+  "$REPORT_PREFIX RECEIPT 9/9 PASS" \
+  "$REPORT_PREFIX DRAGON/ASM/FLU/TRANSPORT=0" \
+  "$REPORT_PREFIX CLASSIFICATION=MATERIALIZED_PROPOSAL_NOT_EVALUATED" \
+  "$REPORT_PREFIX RESULT=$ARTIFACT_DIR"

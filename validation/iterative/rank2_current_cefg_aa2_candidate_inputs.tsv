@@ -1,0 +1,8 @@
+# spot-rank2-current-cefg-aa2-candidate-inputs-v1
+p	978593b2813bad2242ad8c235fdd83e6f5bc33b3aff624b60ccecaaf077d95c6	validation/artifacts/iterative-rank2-current-zpcd-aa1-candidate/proposal_axial.xsm
+t	0b5c8d27b4d2e37d90d56d27d75619842851b7a0e0206947b31c3d5b88936828	validation/artifacts/iterative-rank2-current-zpcd-aa1-map/candidate_axial.xsm
+u	6e26d8dc40bf79c0dedad19912557dfed5ccd2c3bdb38ea719ce32b5cc9aba6c	validation/artifacts/iterative-rank2-current-zpcd-e-picard-map/candidate_axial.xsm
+q	76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd	validation/artifacts/iterative-rank2-current-cef-aa1-candidate/proposal_axial.xsm
+v	1b52b5ebd421e620f1f9d7d4e60e50fb002f85c25031533cc4d650e858dd030a	validation/artifacts/iterative-rank2-current-cef-aa1-map/candidate_axial.xsm
+v_snapshots	7a0e441a25ad2cc3067210dd6ebd90cb26ba5a9722a4c38ea289237590e90602	validation/artifacts/iterative-rank2-current-cef-aa1-map/candidate_snapshots.xsm
+basis_reference	2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8	validation/artifacts/iterative-rank2-basis/rank2_basis.xsm
