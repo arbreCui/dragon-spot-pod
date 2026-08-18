@@ -258,6 +258,9 @@ k_picard_policy = (
 k_picard_manifest = (
     ITERATIVE / "rank2_current_k_picard_map_parent.tsv"
 ).read_text()
+k_picard_result = (
+    ITERATIVE / "rank2_current_k_picard_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -1929,10 +1932,12 @@ require("run_bounded_dragon.py" not in k_picard_runner and
 require(not re.search(r"(?m)^\s*(?:while|until)\b", k_picard_runner),
         "K direct Picard retry loop is forbidden")
 for token in (
-    "PREPARED_NOT_RUN", "l=G_2(k)", "R_\\rho", "R_L", "R_a",
+    "EXECUTED_ONCE_VALID_NOT_MET", "l=G_2(k)", "R_\\rho", "R_L", "R_a",
     "diagnostic only", "three online radial", "one axial solve", "l-k",
     "120 s", "180 s", "no retry", "no second physical map",
     "empirical parameter", "TOLERANCE_MET", "VALID_NOT_MET", "INVALID_MAP",
+    "AA1_DIRECTION_PASS_AA2_SKIPPED", "0.81736979605403082",
+    "0.80173988821917219", "0.90621455552995278",
 ):
     require(token in k_picard_policy,
             f"K direct Picard map policy missing: {token}")
@@ -1960,6 +1965,22 @@ require(k_picard_bad_activation.returncode == 2 and
 require("spot-rank2-current-k-picard-map" in
         (ROOT / "Makefile").read_text(),
         "K direct Picard map target is missing")
+for token in (
+    "de35bc474fa5788acda9ce037d7a31721e07d34d",
+    "6.422348086676521", "3.744499849949860",
+    "5.486363079398870", "1.628119765098577",
+    "VALID_NOT_MET", "21/21",
+    "fee603751609b7a9ab79ac854e7ecfa93125f3f4597e411e020728ae267180d0",
+    "9ffe3428e70f001a5f0e3384a5030fe4a0334787d7454c0f0d143b2b4a5b165f",
+    "393597539ad275c1094afea9d241265c7258dbd14229034c90c31140963766bf",
+    "0.99334779753418823", "0.0066522024658117341",
+    "3.9604495076589152e-13", "0.81736979605403082",
+    "0.80173988821917219", "0.90621455552995278",
+    "8880/8880", "AA1_DIRECTION_PASS_AA2_SKIPPED",
+    "AA(2) was not calculated", "no second physical map",
+):
+    require(token in k_picard_result,
+            f"K direct Picard map result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

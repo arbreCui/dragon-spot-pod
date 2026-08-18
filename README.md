@@ -103,37 +103,32 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Current rank-2 result
 
-The latest admissible full-Gram AA(1) direction was materialized and
-evaluated exactly once:
+After both latest-window AA directions were rejected, the newest valid
+return $k$ was used unchanged in exactly one direct Picard map:
 
 $$
-q_5=1.1922339466\,i-0.1922339466\,j,
-\qquad k=G_2(q_5).
+l=G_2(k).
 $$
 
 Its three fresh online radial fixed-source solves, one axial solve, strict
 terminals, independent checker, and 21/21 receipt all passed.  The physical
-residual $k-q_5$ is
+residual $l-k$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,3.4134718\times10^{-4},\,
-5.0013477\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3307906\times10^{-6}).
+(6.4223481\times10^{-8},\,3.7444998\times10^{-4},\,
+5.4863631\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.6281198\times10^{-6}).
 $$
 
 $R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate; $R_L$ and $R_a$
 fail.  SPOT still has no accepted rank-two fixed point.
 
-The next minimum-order AA(1), using only $j-q_4$ and $k-q_5$, fails the
-fixed maximum-$|D_L|$ direction screen at `1.0008704`.  Only then, standard
-unregularized AA(2) on $i-q_3,j-q_4,k-q_5$ was checked and also fails that
-screen at `1.2201877`.  Thus
-`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`: no successor was published and no
-second map was run in that batch.  The newest valid return $k$ is now the
-unchanged parent of one default-off direct Picard map; it has not yet run.
-See the
-[latest map result](validation/iterative/rank2_current_ij_aa1_map_result.md).
+The next minimum-order AA(1), using only $k-q_5$ and $l-k$, has direction
+ratios `0.81737`, `0.80174`, and `0.90621`, all strictly below one.  Thus
+`AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) is not calculated, no successor is
+published, and no second map is run.  See the
+[latest map result](validation/iterative/rank2_current_k_picard_map_result.md).
 
 ## Historical validation record
 

@@ -5,35 +5,35 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest admissible full-Gram AA(1) proposal
-$q_5=1.1922339466i-0.1922339466j$ was materialized and
-evaluated exactly once.  Its strict terminals, independent checker, and
-21/21 receipt pass.  For $k=G_2(q_5)$, the physical residual $k-q_5$ is
+After both latest-window AA directions were rejected, the newest valid
+return $k$ was used unchanged in exactly one direct Picard map.  Its strict
+terminals, independent checker, and 21/21 receipt pass.  For $l=G_2(k)$,
+the physical residual $l-k$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,3.4134718\times10^{-4},\,
-5.0013477\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.3307906\times10^{-6}).
+(6.4223481\times10^{-8},\,3.7444998\times10^{-4},\,
+5.4863631\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.6281198\times10^{-6}).
 $$
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ do
 not.  Dimensional $D_L$ remains diagnostic only.
 
-The next AA(1) on $j-q_4,k-q_5$ fails only the maximum-$|D_L|$ direction
-screen at `1.0008704`.  Only then, AA(2) on $i-q_3,j-q_4,k-q_5$ was checked
-and also fails that screen at `1.2201877`.  The boundary is
-`AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`: no successor and no second map.
-The valid return $k$ is now the sole parent of one default-off direct Picard
-map; it has not yet run.  See
-[rank2_current_ij_aa1_map_result.md](rank2_current_ij_aa1_map_result.md).
+The next AA(1) on $k-q_5,l-k$ has direction ratios `0.81737`, `0.80174`,
+and `0.90621`, all strictly below one.  The boundary is
+`AA1_DIRECTION_PASS_AA2_SKIPPED`: AA(2) is not calculated, no successor is
+published, and no second map is run.  See
+[rank2_current_k_picard_map_result.md](rank2_current_k_picard_map_result.md).
 
 ## Active files
 
 - `rank2_current_k_picard_map_parent.tsv`,
   `rank2_current_k_picard_map_policy.md`, and
-  `run_rank2_current_k_picard_map.sh`: one default-off direct Picard map
-  from the latest valid return $k$, with no affine mixing or retry.
+  `run_rank2_current_k_picard_map.sh`,
+  `rank2_current_k_picard_map_result.md`: one direct Picard map from the
+  latest valid return $k$ and the following AA(1)-pass/AA(2)-skipped
+  direction decision, with no second map.
 
 - `rank2_current_ij_aa1_candidate_inputs.tsv`,
   `rank2_current_ij_aa1_candidate_result.md`,
