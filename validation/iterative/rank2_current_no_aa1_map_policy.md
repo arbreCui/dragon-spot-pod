@@ -2,7 +2,7 @@
 
 Date: 2026-08-18
 
-Status: `PREPARED_DEFAULT_OFF`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 Standard unregularized AA(1) uses only the two latest genuine residuals
 $n-q_7$ and $o-q_8$ and gives
@@ -42,3 +42,27 @@ One activation permits one attempt.  There is no retry, fallback, automatic
 successor, relaxation, damping, clipping, fit, regularization, pseudoinverse,
 condition cutoff, empirical parameter, mixed-unit objective, older-window
 search, or AA(3).  This batch permits no second physical map.
+
+## Post-run record
+
+The stage was activated exactly once from source commit
+`8f1eb8fc19a3ee71a839f0661712910cac9b6a89`.  All four strict terminals,
+the independent `proposal-aa1` checker, and the 21/21 receipt passed.  The
+physical residual $p-q_9$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.422348086676521\times10^{-8},\,
+6.792180645546773\times10^{-4},\,
+9.951763786375523\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.761650656565653\times10^{-6}).
+$$
+
+$R_\rho$ passes the original AND gate; $R_L$ and $R_a$ do not.  The map is
+therefore `VALID_NOT_MET`.  AA(1) on $o-q_8$ and $p-q_9$ has direction
+ratios `0.12764993865086841`, `0.82141838136874701`, and
+`0.89227926518865730`, all strictly below one.  Thus
+`AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) is not calculated.  No durable
+proposal is published and no second physical map is run.  The artifact's
+`continuation_policy.md` remains the receipt-protected pre-run policy copy.
+See [rank2_current_no_aa1_map_result.md](rank2_current_no_aa1_map_result.md).
