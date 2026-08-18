@@ -24,6 +24,12 @@ ptuqv_manifest = (
 cefg_manifest = (
     ITERATIVE / "rank2_current_cefg_aa2_candidate_inputs.tsv"
 ).read_text()
+ghi_manifest = (
+    ITERATIVE / "rank2_current_ghi_aa2_candidate_inputs.tsv"
+).read_text()
+ghi_candidate_result = (
+    ITERATIVE / "rank2_current_ghi_aa2_candidate_result.md"
+).read_text()
 builder = (ITERATIVE / "build_rank2_modal_aa1_candidate.f90").read_text()
 checker = (ITERATIVE / "check_rank2_modal_aa1_candidate.f90").read_text()
 runner = (ITERATIVE / "run_rank2_modal_aa2_candidate.sh").read_text()
@@ -51,6 +57,14 @@ cefg_map_policy = (
 ).read_text()
 cefg_map_result = (
     ITERATIVE / "rank2_current_cefg_aa2_map_result.md"
+).read_text()
+ghi_map_runner_path = ITERATIVE / "run_rank2_current_ghi_aa2_map.sh"
+ghi_map_runner = ghi_map_runner_path.read_text()
+ghi_map_parent = (
+    ITERATIVE / "rank2_current_ghi_aa2_map_parent.tsv"
+).read_text()
+ghi_map_policy = (
+    ITERATIVE / "rank2_current_ghi_aa2_map_policy.md"
 ).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
@@ -187,6 +201,32 @@ require(tuple(row[1] for row in cefg_rows[:6]) == (
     "7a0e441a25ad2cc3067210dd6ebd90cb26ba5a9722a4c38ea289237590e90602",
 ), "CEFG actual-map history changed")
 
+ghi_rows = [line.split() for line in ghi_manifest.splitlines()
+            if line.strip() and not line.startswith("#")]
+require(ghi_manifest.splitlines()[0] ==
+        "# spot-rank2-current-ghi-aa2-candidate-inputs-v1",
+        "GHI manifest version changed")
+require(tuple(row[0] for row in ghi_rows) ==
+        ("w", "x", "c", "d", "y", "e", "e_snapshots",
+         "basis_reference"),
+        "GHI manifest roles changed")
+require(all(len(row) == 3 for row in ghi_rows),
+        "GHI manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in ghi_rows),
+        "GHI manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in ghi_rows),
+        "GHI manifest path escapes repository")
+require(tuple(row[1] for row in ghi_rows[:7]) == (
+    "76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd",
+    "1b52b5ebd421e620f1f9d7d4e60e50fb002f85c25031533cc4d650e858dd030a",
+    "d4b25fc5bf9b3cc2eb4c6665833f7560073408ffd5462c0f07e4cf30ead0d1fe",
+    "5e53f33aea3d91db6999cc735d4ffd47677545ba350f34e36a266ff5e6f123ad",
+    "c40c7011626864da111ab6a8097dcb3d0d3a87b2683a72986660f7f0574569c6",
+    "c35dc70d8d6dd35b889622734b81112a3e3fdc09455f8390ef262123f5aa3636",
+    "c4f0b6ff6d6ffa28ff3a34061e5cf9e25c78fb1b31546188e932c5e82492f9b1",
+), "GHI actual-map history changed")
+
 for token in (
     "--rolling-aa2 x0 x0p x1 x1p x2 x2p x2p_snap",
     "d0a=f0a-f2a", "d1a=f1a-f2a",
@@ -254,6 +294,17 @@ for token in (
 ):
     require(token in builder,
             f"CEFG builder contract missing: {token}")
+
+for token in (
+    "trim(mode) == '--current-ghi-aa2'",
+    "aa2_report_prefix='RANK2-CURRENT-GHI-AA2'",
+    "aa2_label0='G'", "aa2_label1='H'", "aa2_label2='I'",
+    "'GHI q1 input'", "'GHI g output'", "'GHI q2 input'",
+    "'AA2-RAW-FLUX'", "'GHI h output'", "'GHI q3 input'",
+    "'AA1-RAW-FLUX'", "'GHI i output'",
+):
+    require(token in builder,
+            f"GHI builder contract missing: {token}")
 
 for token in (
     "trim(mode_argument) /= '--rolling-aa2'",
@@ -326,6 +377,17 @@ for token in (
             f"CEFG checker contract missing: {token}")
 
 for token in (
+    "trim(mode_argument) == '--current-ghi-aa2'",
+    "aa2_report_prefix='RANK2-CURRENT-GHI-AA2'",
+    "'GHI Q1 INPUT','AA1-RAW-FLUX'", "'GHI G OUTPUT'",
+    "'GHI Q2 INPUT','AA2-RAW-FLUX'", "'GHI H OUTPUT'",
+    "'GHI Q3 INPUT','AA1-RAW-FLUX'", "'GHI I OUTPUT'",
+    "aa2_latest_input='Q3'", "aa2_latest_output='I'",
+):
+    require(token in checker,
+            f"GHI checker contract missing: {token}")
+
+for token in (
     "rank2_modal_aa2_candidate_inputs.tsv",
     "--rolling-aa2 x0.xsm x0p.xsm x1.xsm x1p.xsm",
     "AA2-RAW-FLUX", "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
@@ -364,7 +426,11 @@ require("spot-rank2-modal-aa2-rolling-next-candidate" in makefile,
 
 for token in (
     "rank2_current_aa2_candidate_inputs.tsv",
-    "--current-aa2 w.xsm x.xsm c.xsm d.xsm y.xsm",
+    "CANDIDATE_MODE=${CANDIDATE_MODE:---current-aa2}",
+    "--current-aa2)", "--current-ghi-aa2)",
+    './build_candidate "$CANDIDATE_MODE" w.xsm x.xsm c.xsm d.xsm',
+    './check_candidate "$CANDIDATE_MODE" w.xsm x.xsm c.xsm d.xsm',
+    "PARAMETER-FREE DIRECTION GATE PASS", "RECEIPT 9/9 PASS",
     "AA2-RAW-FLUX", "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
     "DRAGON/ASM/FLU/TRANSPORT=0",
 ):
@@ -381,6 +447,27 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", current_runner),
         "current retry loop is forbidden")
 require("spot-rank2-current-aa2-candidate" in makefile,
         "current Make target is missing")
+for token in (
+    "spot-rank2-current-ghi-aa2-candidate",
+    "rank2_current_ghi_aa2_candidate_inputs.tsv",
+    "iterative-rank2-current-ghi-aa2-candidate",
+    "CANDIDATE_MODE=--current-ghi-aa2",
+    "REPORT_PREFIX=RANK2-CURRENT-GHI-AA2",
+    "EXPECTED_AX_SHA_OVERRIDE=5202ebe842a373800fe65c0748890a6a21fdc43e497bb24f152d536fb53ae391",
+    "EXPECTED_SNAP_SHA_OVERRIDE=d841554d9bb0b9e158dfda323ead4016c98c450387bb656416218f3b6d1d5548",
+):
+    require(token in makefile, f"GHI Make binding missing: {token}")
+for token in (
+    "0.54656692430484066", "0.22903224207636369",
+    "0.22440083361879565", "7.9724244756408422e-26",
+    "0.085602787687317231", "0.50064418931908561",
+    "0.44048518991529284", "8880", "9/9",
+    "5202ebe842a373800fe65c0748890a6a21fdc43e497bb24f152d536fb53ae391",
+    "d841554d9bb0b9e158dfda323ead4016c98c450387bb656416218f3b6d1d5548",
+    "Dragon", "physical map was run", "condition cutoff",
+):
+    require(token in ghi_candidate_result,
+            f"GHI candidate result missing: {token}")
 
 for token in (
     "rank2_current_ptuqv_aa2_candidate_inputs.tsv",
@@ -525,9 +612,64 @@ require(cefg_default_run.returncode == 0 and
         "SPOT-RANK2-CURRENT-CEFG-AA2-MAP DEFAULT-OFF: no Dragon process started.",
         "CEFG map default-off execution changed")
 
+ghi_parent_rows = [line.split() for line in ghi_map_parent.splitlines()
+                   if line.strip() and not line.startswith("#")]
+require(ghi_map_parent.splitlines()[0] ==
+        "# spot-rank2-current-ghi-aa2-map-parent-v1",
+        "GHI map-parent version changed")
+require(tuple(row[0] for row in ghi_parent_rows) == (
+    "axial_track", "axial_macrolib", "radial_track", "basis_reference",
+    "parent_axial", "parent_snapshots",
+), "GHI map-parent roles changed")
+require(tuple(row[1] for row in ghi_parent_rows[-2:]) == (
+    "5202ebe842a373800fe65c0748890a6a21fdc43e497bb24f152d536fb53ae391",
+    "d841554d9bb0b9e158dfda323ead4016c98c450387bb656416218f3b6d1d5548",
+), "GHI map parent proposal changed")
+for token in (
+    "RUN_RANK2_CURRENT_GHI_AA2_MAP=${RUN_RANK2_CURRENT_GHI_AA2_MAP:-0}",
+    "iterative-rank2-current-ghi-aa2-candidate",
+    "rank2_current_ghi_aa2_map_parent.tsv",
+    "rank2_current_ghi_aa2_map_policy.md",
+    "iterative-rank2-current-ghi-aa2-map",
+    "CHECKER_MODE=proposal-aa2",
+    "RADIAL_TIMEOUT_SECONDS=120", "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in ghi_map_runner,
+            f"GHI map runner contract missing: {token}")
+require(ghi_map_runner.index("RUN_RANK2_CURRENT_GHI_AA2_MAP=") <
+        ghi_map_runner.index("ROOT=$("),
+        "GHI default-off gate must precede filesystem access")
+require(ghi_map_runner.count("run_continuation_short.sh") == 1,
+        "GHI map runner must delegate exactly once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", ghi_map_runner),
+        "GHI map retry loop is forbidden")
+for token in (
+    "0.54656692430484066", "0.22903224207636369",
+    "0.22440083361879565", "7.9724244756408422e-26",
+    "0.085602787687317231", "0.50064418931908561",
+    "0.44048518991529284", "j=G_2(q_4)",
+    "R_\\rho\\le5\\times10^{-7}", "R_L\\le5\\times10^{-7}",
+    "R_a\\le5\\times10^{-7}", "j-q_4", "diagnostic only",
+    "no second physical map",
+):
+    require(token in ghi_map_policy,
+            f"GHI map policy missing: {token}")
+require("spot-rank2-current-ghi-aa2-map" in makefile,
+        "GHI map Make target is missing")
+ghi_default_env = os.environ.copy()
+ghi_default_env["RUN_RANK2_CURRENT_GHI_AA2_MAP"] = "0"
+ghi_default_run = subprocess.run(
+    ["sh", str(ghi_map_runner_path)], cwd=ROOT, env=ghi_default_env,
+    capture_output=True, text=True, check=False,
+)
+require(ghi_default_run.returncode == 0 and
+        ghi_default_run.stdout.strip() ==
+        "SPOT-RANK2-CURRENT-GHI-AA2-MAP DEFAULT-OFF: no Dragon process started.",
+        "GHI map default-off execution changed")
+
 combined = "\n".join(
     (builder, checker, runner, next_runner, current_runner, ptuqv_runner,
-     cefg_map_runner)
+     cefg_map_runner, ghi_map_runner)
 ).lower()
 for forbidden in ("regularization", "pseudoinverse", "pinv", "condition cutoff"):
     require(forbidden not in combined, f"forbidden control present: {forbidden}")

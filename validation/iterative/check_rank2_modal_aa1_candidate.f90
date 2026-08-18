@@ -57,6 +57,8 @@ program check_rank2_modal_aa1_candidate
   !     v_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --current-cefg-aa2 c e e f q g \
   !     g_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --current-ghi-aa2 q1 g q2 h q3 i \
+  !     i_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -169,6 +171,8 @@ program check_rank2_modal_aa1_candidate
     else if (trim(mode_argument) == '--current-ptuqv-aa2') then
       current_ptuqv_aa2_mode=.true.
     else if (trim(mode_argument) == '--current-cefg-aa2') then
+      current_cefg_aa2_mode=.true.
+    else if (trim(mode_argument) == '--current-ghi-aa2') then
       current_cefg_aa2_mode=.true.
     else if (trim(mode_argument) /= '--rolling-aa2') then
       call fail('ELEVEN ARGUMENTS REQUIRE AN AA2 MODE.')
@@ -592,7 +596,9 @@ contains
       call fail('UVVWXY V OUTPUT AND V INPUT MUST BE THE SAME PATH.')
     if (ptuqv_mode.and.(trim(out0_name) /= trim(in1_name))) &
       call fail('PTUQV T OUTPUT AND T INPUT MUST BE THE SAME PATH.')
-    if (cefg_mode.and.(trim(out0_name) /= trim(in1_name))) &
+    if (cefg_mode.and. &
+        (trim(mode_argument) == '--current-cefg-aa2').and. &
+        (trim(out0_name) /= trim(in1_name))) &
       call fail('CEFG E OUTPUT AND E INPUT MUST BE THE SAME PATH.')
 
     if ((current_mode.and.rolling_next_mode).or. &
@@ -607,18 +613,33 @@ contains
           qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode.or.ptuqv_mode))) &
       call fail('AA2 MODES ARE MUTUALLY EXCLUSIVE.')
     if (cefg_mode) then
-      aa2_report_prefix='RANK2-CURRENT-CEFG-AA2'
-      aa2_label0='E'
-      aa2_label1='F'
-      aa2_label2='G'
-      aa2_latest_input='Q'
-      aa2_latest_output='G'
-      call load_state(in0_name,2,in0,'CEFG C INPUT','AA1-RAW-FLUX')
-      call load_state(out0_name,1,out0,'CEFG E OUTPUT')
-      call load_state(in1_name,1,in1,'CEFG E INPUT')
-      call load_state(out1_name,1,out1,'CEFG F OUTPUT')
-      call load_state(in2_name,2,in2,'CEFG Q INPUT','AA1-RAW-FLUX')
-      call load_state(out2_name,1,out2,'CEFG G OUTPUT')
+      if (trim(mode_argument) == '--current-ghi-aa2') then
+        aa2_report_prefix='RANK2-CURRENT-GHI-AA2'
+        aa2_label0='G'
+        aa2_label1='H'
+        aa2_label2='I'
+        aa2_latest_input='Q3'
+        aa2_latest_output='I'
+        call load_state(in0_name,2,in0,'GHI Q1 INPUT','AA1-RAW-FLUX')
+        call load_state(out0_name,1,out0,'GHI G OUTPUT')
+        call load_state(in1_name,2,in1,'GHI Q2 INPUT','AA2-RAW-FLUX')
+        call load_state(out1_name,1,out1,'GHI H OUTPUT')
+        call load_state(in2_name,2,in2,'GHI Q3 INPUT','AA1-RAW-FLUX')
+        call load_state(out2_name,1,out2,'GHI I OUTPUT')
+      else
+        aa2_report_prefix='RANK2-CURRENT-CEFG-AA2'
+        aa2_label0='E'
+        aa2_label1='F'
+        aa2_label2='G'
+        aa2_latest_input='Q'
+        aa2_latest_output='G'
+        call load_state(in0_name,2,in0,'CEFG C INPUT','AA1-RAW-FLUX')
+        call load_state(out0_name,1,out0,'CEFG E OUTPUT')
+        call load_state(in1_name,1,in1,'CEFG E INPUT')
+        call load_state(out1_name,1,out1,'CEFG F OUTPUT')
+        call load_state(in2_name,2,in2,'CEFG Q INPUT','AA1-RAW-FLUX')
+        call load_state(out2_name,1,out2,'CEFG G OUTPUT')
+      endif
     else if (ptuqv_mode) then
       aa2_report_prefix='RANK2-CURRENT-PTUQV-AA2'
       aa2_label0='T'

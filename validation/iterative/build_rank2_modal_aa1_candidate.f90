@@ -12,6 +12,7 @@ program build_rank2_modal_aa1_candidate
   !   --current-uvvwxy-aa2 u v v w x y y_snap out_ax out_snap
   !   --current-ptuqv-aa2 p t t u q v v_snap out_ax out_snap
   !   --current-cefg-aa2 c e e f q g g_snap out_ax out_snap
+  !   --current-ghi-aa2 q1 g q2 h q3 i i_snap out_ax out_snap
   !   --next-x4aa2-screened q v w x x_snap out_ax out_snap
   !   --next-aa1aa2-screened q1 g q2 h h_snap out_ax out_snap
   !   --next-zpcd-screened z zp c d d_snap out_ax out_snap
@@ -92,6 +93,9 @@ program build_rank2_modal_aa1_candidate
       call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
         .false.,.true.)
     else if (trim(mode) == '--current-cefg-aa2') then
+      call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
+        .false.,.false.,.true.)
+    else if (trim(mode) == '--current-ghi-aa2') then
       call build_rolling_aa2_candidate(.false.,.false.,.false.,.false., &
         .false.,.false.,.true.)
     else
@@ -188,6 +192,8 @@ program build_rank2_modal_aa1_candidate
       '--current-uvvwxy-aa2 u v v w x y y_snap '// &
       'out_ax out_snap or '// &
       '--current-cefg-aa2 c e e f q g g_snap '// &
+      'out_ax out_snap or '// &
+      '--current-ghi-aa2 q1 g q2 h q3 i i_snap '// &
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
       '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap or '// &
@@ -582,7 +588,7 @@ contains
     if (ptuqv_mode.and. &
         (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
       error stop 'PTUQV t output and t input must be the same path'
-    if (cefg_mode.and. &
+    if (cefg_mode.and.(trim(mode) == '--current-cefg-aa2').and. &
         (trim(aa2_path(2)) /= trim(aa2_path(3)))) &
       error stop 'CEFG e output and e input must be the same path'
     call require_fresh_path(aa2_path(8))
@@ -600,18 +606,34 @@ contains
           qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode.or.ptuqv_mode))) &
       error stop 'AA2 modes are mutually exclusive'
     if (cefg_mode) then
-      aa2_report_prefix='RANK2-CURRENT-CEFG-AA2'
-      aa2_label0='E'
-      aa2_label1='F'
-      aa2_label2='G'
-      call load_state(trim(aa2_path(1)),in0,'CEFG c input', &
-        .true.,'AA1-RAW-FLUX')
-      call load_state(trim(aa2_path(2)),out0,'CEFG e output')
-      call load_state(trim(aa2_path(3)),in1,'CEFG e input')
-      call load_state(trim(aa2_path(4)),out1,'CEFG f output')
-      call load_state(trim(aa2_path(5)),in2,'CEFG q input', &
-        .true.,'AA1-RAW-FLUX')
-      call load_state(trim(aa2_path(6)),out2,'CEFG g output')
+      if (trim(mode) == '--current-ghi-aa2') then
+        aa2_report_prefix='RANK2-CURRENT-GHI-AA2'
+        aa2_label0='G'
+        aa2_label1='H'
+        aa2_label2='I'
+        call load_state(trim(aa2_path(1)),in0,'GHI q1 input', &
+          .true.,'AA1-RAW-FLUX')
+        call load_state(trim(aa2_path(2)),out0,'GHI g output')
+        call load_state(trim(aa2_path(3)),in1,'GHI q2 input', &
+          .true.,'AA2-RAW-FLUX')
+        call load_state(trim(aa2_path(4)),out1,'GHI h output')
+        call load_state(trim(aa2_path(5)),in2,'GHI q3 input', &
+          .true.,'AA1-RAW-FLUX')
+        call load_state(trim(aa2_path(6)),out2,'GHI i output')
+      else
+        aa2_report_prefix='RANK2-CURRENT-CEFG-AA2'
+        aa2_label0='E'
+        aa2_label1='F'
+        aa2_label2='G'
+        call load_state(trim(aa2_path(1)),in0,'CEFG c input', &
+          .true.,'AA1-RAW-FLUX')
+        call load_state(trim(aa2_path(2)),out0,'CEFG e output')
+        call load_state(trim(aa2_path(3)),in1,'CEFG e input')
+        call load_state(trim(aa2_path(4)),out1,'CEFG f output')
+        call load_state(trim(aa2_path(5)),in2,'CEFG q input', &
+          .true.,'AA1-RAW-FLUX')
+        call load_state(trim(aa2_path(6)),out2,'CEFG g output')
+      endif
     else if (ptuqv_mode) then
       aa2_report_prefix='RANK2-CURRENT-PTUQV-AA2'
       aa2_label0='T'
