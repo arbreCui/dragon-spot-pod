@@ -23,6 +23,8 @@ program check_rank2_modal_aa1_candidate
   !     k_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-zpcd-screened z zp c d \
   !     d_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-aa1aa1-screened q6 m q7 n \
+  !     n_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --u y z w v v_snap basis \
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --post-aa1 x2 x3 aa1 aa1p \
@@ -66,6 +68,8 @@ program check_rank2_modal_aa1_candidate
   !     g_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --current-ghi-aa2 q1 g q2 h q3 i \
   !     i_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --current-klmn-aa2 k l q6 m q7 n \
+  !     n_snap basis proposal_ax proposal_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -183,6 +187,8 @@ program check_rank2_modal_aa1_candidate
       current_cefg_aa2_mode=.true.
     else if (trim(mode_argument) == '--current-ghi-aa2') then
       current_cefg_aa2_mode=.true.
+    else if (trim(mode_argument) == '--current-klmn-aa2') then
+      current_cefg_aa2_mode=.true.
     else if (trim(mode_argument) /= '--rolling-aa2') then
       call fail('ELEVEN ARGUMENTS REQUIRE AN AA2 MODE.')
     endif
@@ -219,6 +225,8 @@ program check_rank2_modal_aa1_candidate
       x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--next-zpcd-screened') then
       x4aa2_screened_mode=.true.
+    else if (trim(mode_argument) == '--next-aa1aa1-screened') then
+      x4aa2_screened_mode=.true.
     else if (trim(mode_argument) == '--post-aa1') then
       post_aa1_mode=.true.
     else if (trim(mode_argument) == '--rolling-aa1') then
@@ -229,7 +237,7 @@ program check_rank2_modal_aa1_candidate
       call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --NEXT-X4Z, '// &
         '--NEXT-ZU, --NEXT-X4AA2-SCREENED, --NEXT-AA1AA2-SCREENED, '// &
         '--NEXT-AA1AA2-IJ-SCREENED, --NEXT-AA2AA1-JK-SCREENED, '// &
-        '--NEXT-ZPCD-SCREENED, '// &
+        '--NEXT-ZPCD-SCREENED, --NEXT-AA1AA1-SCREENED, '// &
         '--U, --POST-AA1 OR --ROLLING-AA1/--ROLLING-AA1-NEXT.')
     endif
     next_mode=.true.
@@ -644,7 +652,20 @@ contains
           qpzst_mode.or.stuvvw_mode.or.uvvwxy_mode.or.ptuqv_mode))) &
       call fail('AA2 MODES ARE MUTUALLY EXCLUSIVE.')
     if (cefg_mode) then
-      if (trim(mode_argument) == '--current-ghi-aa2') then
+      if (trim(mode_argument) == '--current-klmn-aa2') then
+        aa2_report_prefix='RANK2-CURRENT-KLMN-AA2'
+        aa2_label0='L'
+        aa2_label1='M'
+        aa2_label2='N'
+        aa2_latest_input='Q7'
+        aa2_latest_output='N'
+        call load_state(in0_name,1,in0,'KLMN K INPUT')
+        call load_state(out0_name,1,out0,'KLMN L OUTPUT')
+        call load_state(in1_name,2,in1,'KLMN Q6 INPUT','AA1-RAW-FLUX')
+        call load_state(out1_name,1,out1,'KLMN M OUTPUT')
+        call load_state(in2_name,2,in2,'KLMN Q7 INPUT','AA1-RAW-FLUX')
+        call load_state(out2_name,1,out2,'KLMN N OUTPUT')
+      else if (trim(mode_argument) == '--current-ghi-aa2') then
         aa2_report_prefix='RANK2-CURRENT-GHI-AA2'
         aa2_label0='G'
         aa2_label1='H'
@@ -1037,7 +1058,16 @@ contains
         (zu_history_mode.and.current_screened_mode)) &
       call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
     if (current_screened_mode) then
-      if (trim(mode_argument) == '--next-zpcd-screened') then
+      if (trim(mode_argument) == '--next-aa1aa1-screened') then
+        input_carrier='AA1-RAW-FLUX'
+        output_carrier='AA1-RAW-FLUX'
+        report_prefix='RANK2-CURRENT-MN-AA1'
+        latest_input='Q7'
+        latest_output='N'
+        previous_output='M'
+        call load_state(x1_name,2,state_x1,'PREVIOUS PROPOSAL Q6', &
+          'AA1-RAW-FLUX')
+      else if (trim(mode_argument) == '--next-zpcd-screened') then
         input_carrier='AA1-RAW-FLUX'
         output_carrier='AA1-RAW-FLUX'
         report_prefix='RANK2-CURRENT-ZPCD-AA1'

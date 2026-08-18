@@ -2,7 +2,7 @@
 
 Date: 2026-08-17
 
-Status: `PREPARED_DEFAULT_OFF`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 The latest consecutive genuine residuals, $l-k$ and $m-q_6$, give the
 standard unconstrained full-Gram proposal
@@ -42,3 +42,27 @@ One activation permits one attempt.  There is no retry, fallback, automatic
 successor, relaxation, damping, clipping, fit, regularization, pseudoinverse,
 condition cutoff, empirical parameter, mixed-unit objective, older-window
 search, or AA(3).  This batch permits no second physical map.
+
+## Post-run record
+
+The stage was activated exactly once from source commit
+`767fe7da92de238fdb7face911cf7e487c7e4901`.  All four strict terminals,
+the independent `proposal-aa1` checker, and the 21/21 receipt passed.  The
+physical residual $n-q_7$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.422348086676521\times10^{-8},\,
+4.990742346753720\times10^{-4},\,
+7.312337402254343\times10^{-7}\ \mathrm{cm}^{-1},\,
+4.639312542887599\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass the original AND gate; $R_L$ does not, so the map
+is `VALID_NOT_MET`.  Standard AA(1) on $m-q_6,n-q_7$ fails the two leakage
+direction screens.  Only then, standard unregularized AA(2) on
+$l-k,m-q_6,n-q_7$ passes all three direction screens.  The offline
+classification is `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`; no durable
+successor was published and no second map was run.  The artifact's
+`continuation_policy.md` remains the receipt-protected pre-run policy copy.
+See [rank2_current_klm_aa1_map_result.md](rank2_current_klm_aa1_map_result.md).

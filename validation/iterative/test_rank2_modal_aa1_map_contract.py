@@ -284,6 +284,9 @@ klm_map_policy = (
 klm_map_manifest = (
     ITERATIVE / "rank2_current_klm_aa1_map_parent.tsv"
 ).read_text()
+klm_map_result = (
+    ITERATIVE / "rank2_current_klm_aa1_map_result.md"
+).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
 ).read_text()
@@ -2140,7 +2143,7 @@ require("run_bounded_dragon.py" not in klm_map_runner and
 require(not re.search(r"(?m)^\s*(?:while|until)\b", klm_map_runner),
         "KLM AA1 map retry loop is forbidden")
 for token in (
-    "PREPARED_DEFAULT_OFF", "0.71958187611175339",
+    "EXECUTED_ONCE_VALID_NOT_MET", "0.71958187611175339",
     "0.28041812388824661", "n=G_2(q_7)",
     "R_\\rho", "R_L", "R_a", "diagnostic only",
     "three online radial", "one axial solve", "n-q_7",
@@ -2172,6 +2175,25 @@ require(klm_bad_activation.returncode == 2 and
         "KLM AA1 map activation gate changed")
 require("spot-rank2-current-klm-aa1-map" in
         (ROOT / "Makefile").read_text(), "KLM AA1 map target is missing")
+for token in (
+    "767fe7da92de238fdb7face911cf7e487c7e4901",
+    "6.422348086676521", "4.990742346753720",
+    "7.312337402254343", "4.639312542887599",
+    "VALID_NOT_MET", "21/21",
+    "973f8951dca356d1f9c3d42bfc8791fda19bb5263b3dea3ca9df8fa3f1712e56",
+    "4371455c7fccff86d6586447d1e0433db5743ee1c1af2cdcdb4c5c30f4df4c4f",
+    "11d847935af19f6f74b7295980f194880e64ce58d2929bec7dd970279ad73d79",
+    "-0.061472310444878220", "1.0614723104448782",
+    "6.5246745314225801e-12", "0.86145202366683948",
+    "1.0902164970939685", "1.0741288780839371",
+    "0.37973124035268829", "0.10995812065327257",
+    "0.51031063899403917", "3.0970099337137395e-24",
+    "0.16177043590261239", "0.45458049672516687",
+    "0.46901724246492071", "8880/8880",
+    "AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS", "no second physical map",
+):
+    require(token in klm_map_result,
+            f"KLM AA1 map result boundary missing: {token}")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"

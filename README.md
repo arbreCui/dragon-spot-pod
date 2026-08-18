@@ -106,37 +106,38 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 The latest standard AA(1) proposal
 
 $$
-q_6=0.99334779753418823\,k+0.0066522024658117341\,l
+q_7=0.71958187611175339\,l+0.28041812388824661\,m
 $$
 
-was evaluated exactly once as $m=G_2(q_6)$.  Its three fresh online radial
+was evaluated exactly once as $n=G_2(q_7)$.  Its three fresh online radial
 fixed-source solves, one axial solve, strict terminals, independent checker,
-and 21/21 receipt all passed.  The physical residual $m-q_6$ is
+and 21/21 receipt all passed.  The physical residual $n-q_7$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,6.8150233\times10^{-4},\,
-9.9852332\times10^{-7}\ \mathrm{cm}^{-1},\,
-4.0878445\times10^{-6}).
+(6.4223481\times10^{-8},\,4.9907423\times10^{-4},\,
+7.3123374\times10^{-7}\ \mathrm{cm}^{-1},\,
+4.6393125\times10^{-7}).
 $$
 
-$R_\rho$ passes the unchanged $5\times10^{-7}$ AND gate; $R_L$ and $R_a$
-fail.  SPOT still has no accepted rank-two fixed point.
+$R_\rho$ and $R_a$ pass the unchanged $5\times10^{-7}$ AND gate; $R_L$
+fails.  SPOT still has no accepted rank-two fixed point.
 
-The next minimum-order AA(1), using only the genuine residuals $l-k$ and
-$m-q_6$, gives
+The next AA(1), using only $m-q_6$ and $n-q_7$, failed its two leakage
+direction screens.  Only then was standard unregularized AA(2) formed from
+$l-k,m-q_6,n-q_7$:
 
 $$
-q_7=0.71958187611175339\,l+0.28041812388824661\,m.
+q_8=0.37973124035268829\,l+
+0.10995812065327257\,m+
+0.51031063899403917\,n.
 $$
 
-Its direction ratios are `0.08932`, `0.82454`, and `0.56421`, all strictly
-below one.  Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) was not calculated.
-The standard $q_7$ proposal is independently materialized with a passing 9/9
-receipt.  Exactly one $n=G_2(q_7)$ is prepared but remains default-off at
-this source boundary.  See the
-[proposal result](validation/iterative/rank2_current_klm_aa1_candidate_result.md)
-and [map policy](validation/iterative/rank2_current_klm_aa1_map_policy.md).
+Its direction ratios are `0.16177`, `0.45458`, and `0.46902`, all strictly
+below one.  Thus `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  The diagnostic
+candidate was deleted; no durable successor and no second physical map were
+produced.  See the
+[latest map result](validation/iterative/rank2_current_klm_aa1_map_result.md).
 
 ## Historical validation record
 

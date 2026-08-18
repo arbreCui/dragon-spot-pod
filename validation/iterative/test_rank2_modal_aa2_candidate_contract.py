@@ -310,6 +310,17 @@ for token in (
             f"GHI builder contract missing: {token}")
 
 for token in (
+    "trim(mode) == '--current-klmn-aa2'",
+    "aa2_report_prefix='RANK2-CURRENT-KLMN-AA2'",
+    "aa2_label0='L'", "aa2_label1='M'", "aa2_label2='N'",
+    "'KLMN k input'", "'KLMN l output'",
+    "'KLMN q6 input'", ".true.,'AA1-RAW-FLUX'",
+    "'KLMN m output'", "'KLMN q7 input'", "'KLMN n output'",
+):
+    require(token in builder,
+            f"KLMN builder contract missing: {token}")
+
+for token in (
     "trim(mode_argument) /= '--rolling-aa2'",
     "'AA2 XNEXT INPUT','AA1-RAW-FLUX'",
     "'AA2 XROLL INPUT','XNP-RAW-FLUX'",
@@ -389,6 +400,18 @@ for token in (
 ):
     require(token in checker,
             f"GHI checker contract missing: {token}")
+
+for token in (
+    "trim(mode_argument) == '--current-klmn-aa2'",
+    "aa2_report_prefix='RANK2-CURRENT-KLMN-AA2'",
+    "'KLMN K INPUT'", "'KLMN L OUTPUT'",
+    "'KLMN Q6 INPUT','AA1-RAW-FLUX'", "'KLMN M OUTPUT'",
+    "'KLMN Q7 INPUT','AA1-RAW-FLUX'", "'KLMN N OUTPUT'",
+    "aa2_latest_input='Q7'", "aa2_latest_output='N'",
+    "'AA2 MATERIALIZED PROPOSAL','AA2-RAW-FLUX'",
+):
+    require(token in checker,
+            f"KLMN checker contract missing: {token}")
 
 for token in (
     "rank2_modal_aa2_candidate_inputs.tsv",

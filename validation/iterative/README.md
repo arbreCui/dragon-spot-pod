@@ -8,30 +8,28 @@ generic, default-off continuation host.
 The latest standard AA(1) proposal
 
 $$
-q_6=0.99334779753418823\,k+0.0066522024658117341\,l
+q_7=0.71958187611175339\,l+0.28041812388824661\,m
 $$
 
-was evaluated exactly once as $m=G_2(q_6)$.  Its strict terminals,
-independent checker, and 21/21 receipt pass.  The physical residual $m-q_6$
+was evaluated exactly once as $n=G_2(q_7)$.  Its strict terminals,
+independent checker, and 21/21 receipt pass.  The physical residual $n-q_7$
 is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,6.8150233\times10^{-4},\,
-9.9852332\times10^{-7}\ \mathrm{cm}^{-1},\,
-4.0878445\times10^{-6}).
+(6.4223481\times10^{-8},\,4.9907423\times10^{-4},\,
+7.3123374\times10^{-7}\ \mathrm{cm}^{-1},\,
+4.6393125\times10^{-7}).
 $$
 
-The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ do
+The result is `VALID_NOT_MET`: $R_\rho$ and $R_a$ pass, while $R_L$ does
 not.  Dimensional $D_L$ remains diagnostic only.
 
-The next AA(1) on $l-k,m-q_6$ has direction ratios `0.08932`, `0.82454`,
-and `0.56421`, all strictly below one.  The boundary is
-`AA1_DIRECTION_PASS_AA2_SKIPPED`: AA(2) was not calculated.  The standard
-$q_7$ proposal is independently materialized with a passing 9/9 receipt.
-Exactly one $n=G_2(q_7)$ is prepared but remains default-off.  See
-[rank2_current_klm_aa1_candidate_result.md](rank2_current_klm_aa1_candidate_result.md)
-and [rank2_current_klm_aa1_map_policy.md](rank2_current_klm_aa1_map_policy.md).
+The next AA(1) on $m-q_6,n-q_7$ fails its two leakage direction screens.
+Only then, standard unregularized AA(2) on $l-k,m-q_6,n-q_7$ passes all
+three direction screens, giving `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.
+No durable successor was published and no second map was run.  See
+[rank2_current_klm_aa1_map_result.md](rank2_current_klm_aa1_map_result.md).
 
 ## Active files
 
@@ -39,8 +37,10 @@ and [rank2_current_klm_aa1_map_policy.md](rank2_current_klm_aa1_map_policy.md).
   `rank2_current_klm_aa1_candidate_result.md`,
   `rank2_current_klm_aa1_map_parent.tsv`,
   `rank2_current_klm_aa1_map_policy.md`, and
-  `run_rank2_current_klm_aa1_map.sh`: latest minimum-order AA(1) proposal and
-  its one prepared, default-off physical map.
+  `run_rank2_current_klm_aa1_map.sh`,
+  `rank2_current_klm_aa1_map_result.md`: latest minimum-order AA(1) proposal,
+  its one valid but unconverged physical map, and the following
+  AA(1)-fail/AA(2)-pass direction decision with no second map.
 
 - `rank2_current_kl_aa1_candidate_inputs.tsv`,
   `rank2_current_kl_aa1_candidate_result.md`,
