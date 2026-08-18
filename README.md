@@ -130,7 +130,9 @@ fixed maximum-$|D_L|$ direction screen at `1.0008704`.  Only then, standard
 unregularized AA(2) on $i-q_3,j-q_4,k-q_5$ was checked and also fails that
 screen at `1.2201877`.  Thus
 `AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`: no successor was published and no
-second map was run.  See the
+second map was run in that batch.  The newest valid return $k$ is now the
+unchanged parent of one default-off direct Picard map; it has not yet run.
+See the
 [latest map result](validation/iterative/rank2_current_ij_aa1_map_result.md).
 
 ## Historical validation record

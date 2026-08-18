@@ -24,9 +24,16 @@ The next AA(1) on $j-q_4,k-q_5$ fails only the maximum-$|D_L|$ direction
 screen at `1.0008704`.  Only then, AA(2) on $i-q_3,j-q_4,k-q_5$ was checked
 and also fails that screen at `1.2201877`.  The boundary is
 `AA1_DIRECTION_FAIL_AA2_DIRECTION_FAIL`: no successor and no second map.
-See [rank2_current_ij_aa1_map_result.md](rank2_current_ij_aa1_map_result.md).
+The valid return $k$ is now the sole parent of one default-off direct Picard
+map; it has not yet run.  See
+[rank2_current_ij_aa1_map_result.md](rank2_current_ij_aa1_map_result.md).
 
 ## Active files
+
+- `rank2_current_k_picard_map_parent.tsv`,
+  `rank2_current_k_picard_map_policy.md`, and
+  `run_rank2_current_k_picard_map.sh`: one default-off direct Picard map
+  from the latest valid return $k$, with no affine mixing or retry.
 
 - `rank2_current_ij_aa1_candidate_inputs.tsv`,
   `rank2_current_ij_aa1_candidate_result.md`,
