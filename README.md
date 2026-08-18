@@ -195,10 +195,22 @@ $$
 q_{11}=0.21697843452735655\,p+0.78302156547264345\,r
 $$
 
-is independently materialized with a passing 9/9 receipt.  Exactly one
-$s=G_2(q_{11})$ map is prepared default-off and has not yet been evaluated.
-See the
-[q11 proposal record](validation/iterative/rank2_current_pr_aa1_candidate_result.md).
+is independently materialized with a passing 9/9 receipt and was evaluated
+exactly once as $s=G_2(q_{11})$.  The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,4.3725852\times10^{-4},\,
+6.4066262\times10^{-7}\ \mathrm{cm}^{-1},\,
+4.0156419\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass; only $R_L$ fails, so this remains
+`VALID_NOT_MET`.  The next standard AA(1), using only
+$r-q_{10},s-q_{11}$, passes all three direction screens with ratios
+`0.30785`, `0.94677`, and `0.98611`; therefore AA(2) is skipped.  No
+durable successor or second physical map was produced.  See the
+[latest map result](validation/iterative/rank2_current_pr_aa1_map_result.md).
 
 ## Historical validation record
 

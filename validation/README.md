@@ -42,9 +42,14 @@ $R_a=5.576247465674659\times10^{-7}$ fail, so the classification is
 `VALID_NOT_MET`.  The following minimum-order AA(1) direction passes all
 three parameter-free screens, so AA(2) is skipped and no second physical
 map is run in that batch.  Its $q_{11}$ proposal is independently
-materialized with a passing 9/9 receipt.  One $s=G_2(q_{11})$ map is
-prepared default-off and has not yet been run; see
-[the q11 proposal record](iterative/rank2_current_pr_aa1_candidate_result.md).
+materialized with a passing 9/9 receipt and was evaluated exactly once as
+$s=G_2(q_{11})$.  Its strict terminals, independent checker, and 21/21
+receipt pass.  $R_\rho$ and $R_a$ pass the original gate;
+$R_L=4.372585176123830\times10^{-4}$ fails, so the classification is
+`VALID_NOT_MET`.  The following minimum-order AA(1) direction passes all
+three parameter-free screens, so AA(2) is skipped and no second physical
+map is run; see
+[the latest map record](iterative/rank2_current_pr_aa1_map_result.md).
 
 The generic continuation host is default-off. Enabling it evaluates one
 unchanged direct map from the hash-locked parent and requires a new result
