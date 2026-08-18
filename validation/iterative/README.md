@@ -27,11 +27,27 @@ not.  Dimensional $D_L$ remains diagnostic only.
 
 The next AA(1) on $m-q_6,n-q_7$ fails its two leakage direction screens.
 Only then, standard unregularized AA(2) on $l-k,m-q_6,n-q_7$ passes all
-three direction screens, giving `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.
-No durable successor was published and no second map was run.  See
-[rank2_current_klm_aa1_map_result.md](rank2_current_klm_aa1_map_result.md).
+three direction screens and gives
+
+$$
+q_8=0.37973124035268829\,l+
+0.10995812065327257\,m+
+0.51031063899403917\,n.
+$$
+
+This `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS` proposal is now independently
+materialized with a passing 9/9 receipt.  One $o=G_2(q_8)$ map is prepared
+default-off; it has not yet been run.  See
+[rank2_current_klmn_aa2_candidate_result.md](rank2_current_klmn_aa2_candidate_result.md).
 
 ## Active files
+
+- `rank2_current_klmn_aa2_candidate_inputs.tsv`,
+  `rank2_current_klmn_aa2_candidate_result.md`,
+  `rank2_current_klmn_aa2_map_parent.tsv`,
+  `rank2_current_klmn_aa2_map_policy.md`, and
+  `run_rank2_current_klmn_aa2_map.sh`: latest standard AA(2) proposal and
+  its one prepared, default-off physical map.
 
 - `rank2_current_klm_aa1_candidate_inputs.tsv`,
   `rank2_current_klm_aa1_candidate_result.md`,

@@ -18,6 +18,14 @@ The gate launches no Dragon process. It checks the production method,
 compiles the retained CLE-2000 and Fortran paths, and runs only seconds-scale
 tests.
 
+The latest rank-2 boundary is a standard, unregularized AA(2) proposal
+$q_8$ formed only after AA(1) failed its leakage direction screens.  Its
+three parameter-free direction ratios pass, its independent 9/9 proposal
+receipt passes, and one $o=G_2(q_8)$ map is prepared default-off.  The
+proposal is not convergence evidence and no new physical map has yet been
+run; see
+[the q8 proposal record](iterative/rank2_current_klmn_aa2_candidate_result.md).
+
 The generic continuation host is default-off. Enabling it evaluates one
 unchanged direct map from the hash-locked parent and requires a new result
 directory:

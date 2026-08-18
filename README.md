@@ -135,9 +135,11 @@ $$
 
 Its direction ratios are `0.16177`, `0.45458`, and `0.46902`, all strictly
 below one.  Thus `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  The diagnostic
-candidate was deleted; no durable successor and no second physical map were
-produced.  See the
-[latest map result](validation/iterative/rank2_current_klm_aa1_map_result.md).
+candidate has now been independently materialized as a hash-locked
+`AA2-RAW-FLUX` proposal with a passing 9/9 receipt.  Exactly one
+$o=G_2(q_8)$ map is prepared and default-off; it has not yet been evaluated.
+See the [latest map result](validation/iterative/rank2_current_klm_aa1_map_result.md)
+and [q8 proposal record](validation/iterative/rank2_current_klmn_aa2_candidate_result.md).
 
 ## Historical validation record
 

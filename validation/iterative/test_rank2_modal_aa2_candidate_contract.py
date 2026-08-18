@@ -27,6 +27,12 @@ cefg_manifest = (
 ghi_manifest = (
     ITERATIVE / "rank2_current_ghi_aa2_candidate_inputs.tsv"
 ).read_text()
+klmn_manifest = (
+    ITERATIVE / "rank2_current_klmn_aa2_candidate_inputs.tsv"
+).read_text()
+klmn_candidate_result = (
+    ITERATIVE / "rank2_current_klmn_aa2_candidate_result.md"
+).read_text()
 ghi_candidate_result = (
     ITERATIVE / "rank2_current_ghi_aa2_candidate_result.md"
 ).read_text()
@@ -68,6 +74,14 @@ ghi_map_policy = (
 ).read_text()
 ghi_map_result = (
     ITERATIVE / "rank2_current_ghi_aa2_map_result.md"
+).read_text()
+klmn_map_runner_path = ITERATIVE / "run_rank2_current_klmn_aa2_map.sh"
+klmn_map_runner = klmn_map_runner_path.read_text()
+klmn_map_parent = (
+    ITERATIVE / "rank2_current_klmn_aa2_map_parent.tsv"
+).read_text()
+klmn_map_policy = (
+    ITERATIVE / "rank2_current_klmn_aa2_map_policy.md"
 ).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
@@ -220,6 +234,30 @@ require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in ghi_rows),
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in ghi_rows),
         "GHI manifest path escapes repository")
+
+klmn_rows = [line.split() for line in klmn_manifest.splitlines()
+             if line.strip() and not line.startswith("#")]
+require(klmn_manifest.splitlines()[0] ==
+        "# spot-rank2-current-klmn-aa2-candidate-inputs-v1",
+        "KLMN manifest version changed")
+require(tuple(row[0] for row in klmn_rows) ==
+        ("w", "x", "c", "d", "y", "e", "e_snapshots",
+         "basis_reference"),
+        "KLMN manifest roles changed")
+require(tuple(row[1] for row in klmn_rows[:7]) == (
+    "d8c77928f992adf67136331192a018060f203bedf3d1728d46a39d987c6938de",
+    "fee603751609b7a9ab79ac854e7ecfa93125f3f4597e411e020728ae267180d0",
+    "d223068dbabd5424762f6f73fb488a927cca94ca4db3cee7ef3bbf7f090d825d",
+    "76e4d5e44a6f0a1020fd6280c8da262b322acba80940799a28fc3998ef3da4fc",
+    "74cbee2ffcb72db1a86e728f8643cfbe9dfb6f2784965fe440bd20567a50ee89",
+    "973f8951dca356d1f9c3d42bfc8791fda19bb5263b3dea3ca9df8fa3f1712e56",
+    "4371455c7fccff86d6586447d1e0433db5743ee1c1af2cdcdb4c5c30f4df4c4f",
+), "KLMN three-residual history changed")
+require(all(len(row) == 3 for row in klmn_rows),
+        "KLMN manifest row width changed")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in klmn_rows),
+        "KLMN manifest path escapes repository")
 require(tuple(row[1] for row in ghi_rows[:7]) == (
     "76f38e5076c6e060866401d81dac5f177babebac0e220af73aa77a90a3f486bd",
     "1b52b5ebd421e620f1f9d7d4e60e50fb002f85c25031533cc4d650e858dd030a",
@@ -474,6 +512,38 @@ require(not re.search(r"(?m)^\s*(?:while|until)\b", current_runner),
 require("spot-rank2-current-aa2-candidate" in makefile,
         "current Make target is missing")
 for token in (
+    "--current-klmn-aa2)", "RANK2-CURRENT-KLMN-AA2",
+    "# spot-rank2-current-klmn-aa2-candidate-inputs-v1",
+    "EXPECTED_AX_SHA_OVERRIDE", "EXPECTED_SNAP_SHA_OVERRIDE",
+    "PARAMETER-FREE DIRECTION GATE PASS", "RECEIPT 9/9 PASS",
+):
+    require(token in current_runner,
+            f"KLMN runner contract missing: {token}")
+for token in (
+    "spot-rank2-current-klmn-aa2-candidate",
+    "rank2_current_klmn_aa2_candidate_inputs.tsv",
+    "iterative-rank2-current-klmn-aa2-candidate",
+    "CANDIDATE_MODE=--current-klmn-aa2",
+    "REPORT_PREFIX=RANK2-CURRENT-KLMN-AA2",
+    "EXPECTED_AX_SHA_OVERRIDE=6dee27775279ddf1b75113ceafa62bf60acad27965b13f2122c146976ae892c8",
+    "EXPECTED_SNAP_SHA_OVERRIDE=d925a87d087cf971b1d2a8f18dae9603caed3b3233b738ada97bae82a0b6998e",
+):
+    require(token in makefile, f"KLMN Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "0.37973124035268829", "0.10995812065327257",
+    "0.51031063899403917", "1.8044480565486487e-12",
+    "-2.9455774211730038e-12", "6.5246745314225818e-12",
+    "3.0970099337137395e-24", "0.16177043590261239",
+    "0.45458049672516687", "0.46901724246492071", "8880",
+    "6dee27775279ddf1b75113ceafa62bf60acad27965b13f2122c146976ae892c8",
+    "d925a87d087cf971b1d2a8f18dae9603caed3b3233b738ada97bae82a0b6998e",
+    "1b0bae6de9918643aae1058a6eaa3d5aa3c7faac7feb958b1802f0a2f8d44d67",
+    "No Dragon", "not convergence evidence",
+):
+    require(token in klmn_candidate_result,
+            f"KLMN candidate result boundary missing: {token}")
+for token in (
     "spot-rank2-current-ghi-aa2-candidate",
     "rank2_current_ghi_aa2_candidate_inputs.tsv",
     "iterative-rank2-current-ghi-aa2-candidate",
@@ -711,9 +781,64 @@ require(ghi_default_run.returncode == 0 and
         "SPOT-RANK2-CURRENT-GHI-AA2-MAP DEFAULT-OFF: no Dragon process started.",
         "GHI map default-off execution changed")
 
+klmn_parent_rows = [line.split() for line in klmn_map_parent.splitlines()
+                    if line.strip() and not line.startswith("#")]
+require(klmn_map_parent.splitlines()[0] ==
+        "# spot-rank2-current-klmn-aa2-map-parent-v1",
+        "KLMN map-parent version changed")
+require(tuple(row[0] for row in klmn_parent_rows) == (
+    "axial_track", "axial_macrolib", "radial_track", "basis_reference",
+    "parent_axial", "parent_snapshots",
+), "KLMN map-parent roles changed")
+require(tuple(row[1] for row in klmn_parent_rows[-2:]) == (
+    "6dee27775279ddf1b75113ceafa62bf60acad27965b13f2122c146976ae892c8",
+    "d925a87d087cf971b1d2a8f18dae9603caed3b3233b738ada97bae82a0b6998e",
+), "KLMN map parent proposal changed")
+for token in (
+    "RUN_RANK2_CURRENT_KLMN_AA2_MAP=${RUN_RANK2_CURRENT_KLMN_AA2_MAP:-0}",
+    "iterative-rank2-current-klmn-aa2-candidate",
+    "rank2_current_klmn_aa2_map_parent.tsv",
+    "rank2_current_klmn_aa2_map_policy.md",
+    "iterative-rank2-current-klmn-aa2-map",
+    "CHECKER_MODE=proposal-aa2",
+    "RADIAL_TIMEOUT_SECONDS=120", "AXIAL_TIMEOUT_SECONDS=180",
+):
+    require(token in klmn_map_runner,
+            f"KLMN map runner contract missing: {token}")
+require(klmn_map_runner.index("RUN_RANK2_CURRENT_KLMN_AA2_MAP=") <
+        klmn_map_runner.index("ROOT=$("),
+        "KLMN default-off gate must precede filesystem access")
+require(klmn_map_runner.count("run_continuation_short.sh") == 1,
+        "KLMN map runner must delegate exactly once")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", klmn_map_runner),
+        "KLMN map retry loop is forbidden")
+for token in (
+    "PREPARED_DEFAULT_OFF", "0.37973124035268829",
+    "0.10995812065327257", "0.51031063899403917",
+    "3.0970099337137395e-24", "0.16177043590261239",
+    "0.45458049672516687", "0.46901724246492071",
+    "o=G_2(q_8)", r"R_\rho\le5\times10^{-7}",
+    r"R_L\le5\times10^{-7}", r"R_a\le5\times10^{-7}",
+    "o-q_8", "diagnostic only", "no second physical map",
+):
+    require(token in klmn_map_policy,
+            f"KLMN map policy missing: {token}")
+require("spot-rank2-current-klmn-aa2-map" in makefile,
+        "KLMN map Make target is missing")
+klmn_default_env = os.environ.copy()
+klmn_default_env["RUN_RANK2_CURRENT_KLMN_AA2_MAP"] = "0"
+klmn_default_run = subprocess.run(
+    ["sh", str(klmn_map_runner_path)], cwd=ROOT, env=klmn_default_env,
+    capture_output=True, text=True, check=False,
+)
+require(klmn_default_run.returncode == 0 and
+        klmn_default_run.stdout.strip() ==
+        "SPOT-RANK2-CURRENT-KLMN-AA2-MAP DEFAULT-OFF: no Dragon process started.",
+        "KLMN map default-off execution changed")
+
 combined = "\n".join(
     (builder, checker, runner, next_runner, current_runner, ptuqv_runner,
-     cefg_map_runner, ghi_map_runner)
+     cefg_map_runner, ghi_map_runner, klmn_map_runner)
 ).lower()
 for forbidden in ("regularization", "pseudoinverse", "pinv", "condition cutoff"):
     require(forbidden not in combined, f"forbidden control present: {forbidden}")

@@ -36,8 +36,19 @@ case "$CANDIDATE_MODE" in
       printf '%s\n' "$expected_sha" | rg -q '^[0-9a-f]{64}$'
     done
     ;;
+  --current-klmn-aa2)
+    test "$REPORT_PREFIX" = 'RANK2-CURRENT-KLMN-AA2'
+    test "$MANIFEST_HEADER" = \
+      '# spot-rank2-current-klmn-aa2-candidate-inputs-v1'
+    expected_ax_sha=${EXPECTED_AX_SHA_OVERRIDE:-}
+    expected_snap_sha=${EXPECTED_SNAP_SHA_OVERRIDE:-}
+    for expected_sha in "$expected_ax_sha" "$expected_snap_sha"
+    do
+      printf '%s\n' "$expected_sha" | rg -q '^[0-9a-f]{64}$'
+    done
+    ;;
   *)
-    printf '%s\n' 'AA2 candidate mode must be current or GHI.' >&2
+    printf '%s\n' 'AA2 candidate mode must be current, GHI, or KLMN.' >&2
     exit 2
     ;;
 esac
@@ -123,7 +134,8 @@ fi
     e.xsm e_snapshots.xsm basis_reference.xsm proposal_axial.xsm \
     proposal_snapshots.xsm >check.log
 )
-if test "$CANDIDATE_MODE" = '--current-ghi-aa2'; then
+if test "$CANDIDATE_MODE" = '--current-ghi-aa2' || \
+    test "$CANDIDATE_MODE" = '--current-klmn-aa2'; then
   rg -q "^$REPORT_PREFIX PARAMETER-FREE DIRECTION GATE PASS$" \
     "$WORK/build.log" "$WORK/check.log"
 fi
