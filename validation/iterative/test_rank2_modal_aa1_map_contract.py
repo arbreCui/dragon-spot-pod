@@ -101,6 +101,8 @@ op_map_runner_path = ITERATIVE / "run_rank2_current_op_aa1_map.sh"
 op_map_runner = op_map_runner_path.read_text()
 pr_map_runner_path = ITERATIVE / "run_rank2_current_pr_aa1_map.sh"
 pr_map_runner = pr_map_runner_path.read_text()
+rs_map_runner_path = ITERATIVE / "run_rank2_current_rs_aa1_map.sh"
+rs_map_runner = rs_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -319,6 +321,12 @@ pr_map_manifest = (
 ).read_text()
 pr_map_result = (
     ITERATIVE / "rank2_current_pr_aa1_map_result.md"
+).read_text()
+rs_map_policy = (
+    ITERATIVE / "rank2_current_rs_aa1_map_policy.md"
+).read_text()
+rs_map_manifest = (
+    ITERATIVE / "rank2_current_rs_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -2496,6 +2504,76 @@ require(pr_bad_activation.returncode == 2 and
 require("spot-rank2-current-pr-aa1-map" in
         (ROOT / "Makefile").read_text(), "PR AA1 map target is missing")
 
+rs_map_rows = [line.split() for line in rs_map_manifest.splitlines()
+               if line.strip() and not line.startswith("#")]
+require(rs_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-rs-aa1-map-parent-v1",
+        "RS AA1 map manifest version changed")
+require(tuple(row[0] for row in rs_map_rows) == roles,
+        "RS AA1 map manifest roles changed")
+require(all(len(row) == 3 for row in rs_map_rows),
+        "RS AA1 map manifest row width changed")
+require(tuple(row[1] for row in rs_map_rows[-2:]) == (
+    "11c73abd4e35419da447429b6de73191b05d31cff132db0e762d45316f5b4e26",
+    "779e419a8b2a378b837976dd726757c2bf13d406184126182eca64b00c065f6f",
+), "RS AA1 map parent changed")
+require(rs_map_runner.index("RUN_RANK2_CURRENT_RS_AA1_MAP=") <
+        rs_map_runner.index("ROOT=$("),
+        "RS AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-rs-aa1-candidate",
+    "rank2_current_rs_aa1_map_parent.tsv",
+    "rank2_current_rs_aa1_map_policy.md",
+    "iterative-rank2-current-rs-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120", "AXIAL_TIMEOUT_SECONDS=180",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in rs_map_runner,
+            f"RS AA1 map runner missing: {token}")
+require(rs_map_runner.count("run_continuation_short.sh") == 1,
+        "RS AA1 map runner must delegate once")
+require("run_bounded_dragon.py" not in rs_map_runner and
+        "DRAGON_BIN" not in rs_map_runner,
+        "RS AA1 map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", rs_map_runner),
+        "RS AA1 map retry loop is forbidden")
+for token in (
+    "PREPARED_DEFAULT_OFF", "0.41267816249435374",
+    "0.58732183750564626", "3.8071754534215003e-13",
+    "0.30785297571708414", "0.94676682054309913",
+    "0.98610570398914554", "t=G_2(q_{12})",
+    "R_\\rho", "R_L", "R_a", "diagnostic only",
+    "three online radial", "one axial solve", "t-q_{12}",
+    "120 s", "180 s", "no retry", "no second physical map",
+    "empirical parameter",
+):
+    require(token in rs_map_policy,
+            f"RS AA1 map policy missing: {token}")
+rs_default_off = subprocess.run(
+    ["sh", str(rs_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_RS_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(rs_default_off.returncode == 0 and rs_default_off.stderr == "" and
+        rs_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-RS-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "RS AA1 map default-off terminal changed")
+rs_bad_activation = subprocess.run(
+    ["sh", str(rs_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_RS_AA1_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(rs_bad_activation.returncode == 2 and
+        rs_bad_activation.stdout == "" and
+        rs_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-RS-AA1-MAP ERROR: activation must be 0 or 1.\n",
+        "RS AA1 map activation gate changed")
+require("spot-rank2-current-rs-aa1-map" in
+        (ROOT / "Makefile").read_text(), "RS AA1 map target is missing")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
         "proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
@@ -2686,7 +2764,7 @@ for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
              rolling_next_map_runner, zpcd_map_runner,
              zpcd_e_picard_runner, cef_map_runner, k_picard_runner,
              kl_map_runner, klm_map_runner, no_map_runner, op_map_runner,
-             pr_map_runner,
+             pr_map_runner, rs_map_runner,
              radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),

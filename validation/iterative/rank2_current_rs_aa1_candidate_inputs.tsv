@@ -1,0 +1,7 @@
+# spot-rank2-current-rs-aa1-candidate-inputs-v1
+q	bd0785e9f3da27b9639c3ac4c04d3bf25689c5dc7f16fc51cdcdde7306b154fb	validation/artifacts/iterative-rank2-current-op-aa1-candidate/proposal_axial.xsm
+v	d92f92919316f1abd8b2c00712b0c804c6a82d141d4501c39d2dc77c9dec10ff	validation/artifacts/iterative-rank2-current-op-aa1-map/candidate_axial.xsm
+w	20b4a9fb31f6baa4f62d9fa5b22cf0801709ceb37579bf9f16dfc7e6c450f05d	validation/artifacts/iterative-rank2-current-pr-aa1-candidate/proposal_axial.xsm
+x	7f9b0e62322acde5ffcfee4aab5d5d4da68b1b04dc7dbdc8314b39787b3b0e11	validation/artifacts/iterative-rank2-current-pr-aa1-map/candidate_axial.xsm
+x_snapshots	26de1301b2c9773b18258c07686edba6e4bbc18d16168632da14a92483712219	validation/artifacts/iterative-rank2-current-pr-aa1-map/candidate_snapshots.xsm
+basis_reference	2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8	validation/artifacts/iterative-rank2-basis/rank2_basis.xsm

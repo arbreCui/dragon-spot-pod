@@ -60,8 +60,11 @@ case "$CANDIDATE_MODE" in
     ;;
   --next-aa1aa1-screened)
     test "$REPORT_PREFIX" = 'RANK2-CURRENT-MN-AA1'
-    test "$MANIFEST_HEADER" = \
-      '# spot-rank2-current-pr-aa1-candidate-inputs-v1'
+    case "$MANIFEST_HEADER" in
+      '# spot-rank2-current-pr-aa1-candidate-inputs-v1'|\
+      '# spot-rank2-current-rs-aa1-candidate-inputs-v1') ;;
+      *) exit 2 ;;
+    esac
     expected_ax_sha=${EXPECTED_AX_SHA_OVERRIDE:-}
     expected_snap_sha=${EXPECTED_SNAP_SHA_OVERRIDE:-}
     for expected_sha in "$expected_ax_sha" "$expected_snap_sha"
@@ -77,7 +80,7 @@ case "$CANDIDATE_MODE" in
     expected_snap_sha=f7e351eab9c895c4b43023e37734f4675898fa39b70e07ca9c25c29eecd66f7c
     ;;
   *)
-    printf '%s\n' 'AA1 candidate mode must be QVWX, GH, IJ, NO, OP, or PR.' >&2
+    printf '%s\n' 'AA1 candidate mode must be QVWX, GH, IJ, NO, OP, PR, or RS.' >&2
     exit 2
     ;;
 esac
