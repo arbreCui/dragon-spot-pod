@@ -78,6 +78,8 @@ all :
 	spot-rank2-current-gh-aa1-map \
 	spot-rank2-current-ghi-aa2-candidate \
 	spot-rank2-current-ghi-aa2-map \
+	spot-rank2-current-ij-aa1-candidate \
+	spot-rank2-current-ij-aa1-map \
 	spot-rank2-current-qpzst-aa2-map \
 	spot-rank2-current-v-picard-map \
 	spot-rank2-modal-aa2-rolling-next-candidate \
@@ -238,6 +240,17 @@ spot-rank2-current-ghi-aa2-candidate :
 	sh validation/iterative/run_rank2_current_aa2_candidate.sh
 spot-rank2-current-ghi-aa2-map :
 	sh validation/iterative/run_rank2_current_ghi_aa2_map.sh
+spot-rank2-current-ij-aa1-candidate :
+	MANIFEST="$(CURDIR)/validation/iterative/rank2_current_ij_aa1_candidate_inputs.tsv" \
+	ARTIFACT_DIR="$(CURDIR)/validation/artifacts/iterative-rank2-current-ij-aa1-candidate" \
+	CANDIDATE_MODE=--next-aa1aa2-ij-screened \
+	REPORT_PREFIX=RANK2-CURRENT-IJ-AA1 \
+	MANIFEST_HEADER='# spot-rank2-current-ij-aa1-candidate-inputs-v1' \
+	EXPECTED_AX_SHA_OVERRIDE=27250a1b370d2cdbf83f35fbf1a380919261bb938890b2f3d04d7390afb72743 \
+	EXPECTED_SNAP_SHA_OVERRIDE=f7e351eab9c895c4b43023e37734f4675898fa39b70e07ca9c25c29eecd66f7c \
+	sh validation/iterative/run_rank2_current_qvwx_aa1_candidate.sh
+spot-rank2-current-ij-aa1-map :
+	sh validation/iterative/run_rank2_current_ij_aa1_map.sh
 spot-rank2-current-qpzst-aa2-map :
 	sh validation/iterative/run_rank2_current_qpzst_aa2_map.sh
 spot-rank2-current-v-picard-map :

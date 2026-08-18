@@ -21,11 +21,21 @@ The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ do
 not.  Dimensional $D_L$ remains diagnostic only.
 
 The next AA(1) on $i-q_3$ and $j-q_4$ gives ratios `0.06442`, `0.93187`,
-and `0.97357`, so `AA1_DIRECTION_PASS`; AA(2) is not calculated.  No
-durable proposal is published and no second map is run.  See
-[rank2_current_ghi_aa2_map_result.md](rank2_current_ghi_aa2_map_result.md).
+and `0.97357`, so `AA1_DIRECTION_PASS`; AA(2) is not calculated.  The
+standard unconstrained proposal
+$q_5=1.1922339466i-0.1922339466j$ is now materialized; its independent
+checker, 8880/8880 positivity check, and 9/9 receipt pass.  One physical
+$G_2(q_5)$ map is prepared behind a default-off gate and has not yet run.
+See [rank2_current_ij_aa1_candidate_result.md](rank2_current_ij_aa1_candidate_result.md).
 
 ## Active files
+
+- `rank2_current_ij_aa1_candidate_inputs.tsv`,
+  `rank2_current_ij_aa1_candidate_result.md`,
+  `rank2_current_ij_aa1_map_parent.tsv`,
+  `rank2_current_ij_aa1_map_policy.md`, and
+  `run_rank2_current_ij_aa1_map.sh`: latest minimum-order AA(1) proposal
+  and its single default-off physical-map route.  No map has yet run.
 
 - `rank2_current_ghi_aa2_candidate_inputs.tsv`,
   `rank2_current_ghi_aa2_candidate_result.md`,

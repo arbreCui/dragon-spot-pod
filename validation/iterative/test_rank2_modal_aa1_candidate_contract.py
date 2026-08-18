@@ -28,6 +28,12 @@ qvwx_manifest = (
 gh_manifest = (
     ITERATIVE / "rank2_current_gh_aa1_candidate_inputs.tsv"
 ).read_text()
+ij_manifest = (
+    ITERATIVE / "rank2_current_ij_aa1_candidate_inputs.tsv"
+).read_text()
+ij_result = (
+    ITERATIVE / "rank2_current_ij_aa1_candidate_result.md"
+).read_text()
 gh_result = (
     ITERATIVE / "rank2_current_gh_aa1_candidate_result.md"
 ).read_text()
@@ -250,6 +256,27 @@ require(tuple(row[1] for row in gh_rows) == (
 require(all(not Path(row[2]).is_absolute() and
             ".." not in Path(row[2]).parts for row in gh_rows),
         "GH manifest path escapes the repository")
+
+ij_rows = [line.split() for line in ij_manifest.splitlines()
+           if line.strip() and not line.startswith("#")]
+require(ij_manifest.splitlines()[0] ==
+        "# spot-rank2-current-ij-aa1-candidate-inputs-v1",
+        "IJ manifest version changed")
+require(tuple(row[0] for row in ij_rows) == qvwx_roles,
+        "IJ manifest roles changed")
+require(all(len(row) == 3 for row in ij_rows),
+        "IJ manifest row width changed")
+require(tuple(row[1] for row in ij_rows) == (
+    "c40c7011626864da111ab6a8097dcb3d0d3a87b2683a72986660f7f0574569c6",
+    "c35dc70d8d6dd35b889622734b81112a3e3fdc09455f8390ef262123f5aa3636",
+    "5202ebe842a373800fe65c0748890a6a21fdc43e497bb24f152d536fb53ae391",
+    "1910e6d0c4bc413cda29713d7bb38191d5ab41ca6f1564f07a9a1a093e240f42",
+    "ff2f7e2ab6fbd955212fdf337f318657757eb04e507a65bd4669cefe65d0d587",
+    "2d7fc2bf36f65a203731c34dcea18a679fc0232b58c59caad828178a77ff45a8",
+), "IJ q3/i/q4/j history changed")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in ij_rows),
+        "IJ manifest path escapes the repository")
 
 latest_rows = [line.split() for line in latest_manifest.splitlines()
                if line.strip() and not line.startswith("#")]
@@ -902,6 +929,53 @@ for token in (
     "output_carrier='AA1-RAW-FLUX'",
 ):
     require(token in checker, f"GH checker contract missing: {token}")
+
+for token in (
+    "--next-aa1aa2-ij-screened",
+    "RANK2-CURRENT-IJ-AA1",
+    "'previous proposal input',.true.,'AA1-RAW-FLUX'",
+    "input_carrier='AA2-RAW-FLUX'",
+    "output_carrier='AA1-RAW-FLUX'",
+):
+    require(token in builder, f"IJ builder contract missing: {token}")
+for token in (
+    "--next-aa1aa2-ij-screened",
+    "RANK2-CURRENT-IJ-AA1",
+    "'PREVIOUS PROPOSAL Q3'", "'AA1-RAW-FLUX'",
+    "latest_input='Q4'", "latest_output='J'", "previous_output='I'",
+):
+    require(token in checker, f"IJ checker contract missing: {token}")
+for token in (
+    "--next-aa1aa2-ij-screened)",
+    "RANK2-CURRENT-IJ-AA1",
+    "# spot-rank2-current-ij-aa1-candidate-inputs-v1",
+    "27250a1b370d2cdbf83f35fbf1a380919261bb938890b2f3d04d7390afb72743",
+    "f7e351eab9c895c4b43023e37734f4675898fa39b70e07ca9c25c29eecd66f7c",
+):
+    require(token in qvwx_runner, f"IJ runner binding missing: {token}")
+ij_makefile = (ROOT / "Makefile").read_text()
+for token in (
+    "spot-rank2-current-ij-aa1-candidate",
+    "rank2_current_ij_aa1_candidate_inputs.tsv",
+    "iterative-rank2-current-ij-aa1-candidate",
+    "CANDIDATE_MODE=--next-aa1aa2-ij-screened",
+    "REPORT_PREFIX=RANK2-CURRENT-IJ-AA1",
+    "EXPECTED_AX_SHA_OVERRIDE=27250a1b370d2cdbf83f35fbf1a380919261bb938890b2f3d04d7390afb72743",
+    "EXPECTED_SNAP_SHA_OVERRIDE=f7e351eab9c895c4b43023e37734f4675898fa39b70e07ca9c25c29eecd66f7c",
+):
+    require(token in ij_makefile, f"IJ Make binding missing: {token}")
+for token in (
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "1.1922339465680236", "0.19223394656802359",
+    "1.1217162258501826e-11", "0.064424480296712869",
+    "0.93186663298811390", "0.97357313211276764",
+    "8880/8880", "standard", "unconstrained AA(1)", "not clipped",
+    "27250a1b370d2cdbf83f35fbf1a380919261bb938890b2f3d04d7390afb72743",
+    "f7e351eab9c895c4b43023e37734f4675898fa39b70e07ca9c25c29eecd66f7c",
+    "00a4011204736be578dd2c65eb94f6505e4fde0e7a29c593e044210f37261752",
+    "No Dragon", "No", "AA(2)",
+):
+    require(token in ij_result, f"IJ candidate result missing: {token}")
 gh_makefile = (ROOT / "Makefile").read_text()
 for token in (
     "spot-rank2-current-gh-aa1-candidate",

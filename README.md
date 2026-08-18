@@ -128,9 +128,12 @@ fail.  SPOT still has no accepted rank-two fixed point.
 The next minimum-order AA(1), using only $i-q_3$ and $j-q_4$, gives
 $q_5=1.1922339466i-0.1922339466j$.  Its direction ratios are `0.06442`,
 `0.93187`, and `0.97357`, all strictly below one.  Thus
-`AA1_DIRECTION_PASS`; AA(2) is not calculated.  No durable next proposal is
-published and no second map is run.  See
-[the latest map and direction result](validation/iterative/rank2_current_ghi_aa2_map_result.md).
+`AA1_DIRECTION_PASS`; AA(2) is not calculated.  The proposal is now
+materialized with a passing independent checker and 9/9 receipt.  Its
+negative $j$ coefficient is the unchanged standard unconstrained AA(1)
+result, not an empirical control.  Exactly one $G_2(q_5)$ map is prepared
+behind a default-off gate; it has not yet been run.  See the
+[proposal result](validation/iterative/rank2_current_ij_aa1_candidate_result.md).
 
 ## Historical validation record
 

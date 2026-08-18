@@ -15,6 +15,7 @@ program build_rank2_modal_aa1_candidate
   !   --current-ghi-aa2 q1 g q2 h q3 i i_snap out_ax out_snap
   !   --next-x4aa2-screened q v w x x_snap out_ax out_snap
   !   --next-aa1aa2-screened q1 g q2 h h_snap out_ax out_snap
+  !   --next-aa1aa2-ij-screened q3 i q4 j j_snap out_ax out_snap
   !   --next-zpcd-screened z zp c d d_snap out_ax out_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
@@ -118,6 +119,9 @@ program build_rank2_modal_aa1_candidate
     else if (trim(mode) == '--next-aa1aa2-screened') then
       call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
         .false.,.false.,.true.)
+    else if (trim(mode) == '--next-aa1aa2-ij-screened') then
+      call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
+        .false.,.false.,.true.)
     else if (trim(mode) == '--next-zpcd-screened') then
       call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
         .false.,.false.,.true.)
@@ -132,7 +136,7 @@ program build_rank2_modal_aa1_candidate
     else
       error stop 'eight-argument mode requires --next, --next-x4, '// &
         '--next-x4z, --next-zu, --next-x4aa2-screened, '// &
-        '--next-aa1aa2-screened, '// &
+        '--next-aa1aa2-screened, --next-aa1aa2-ij-screened, '// &
         '--next-zpcd-screened, --u, '// &
         '--post-aa1, --rolling-aa1 or --rolling-aa1-next'
     endif
@@ -172,6 +176,7 @@ program build_rank2_modal_aa1_candidate
       '--next-zu qt u qs v v_snap out_ax out_snap or '// &
       '--next-x4aa2-screened q v w x x_snap out_ax out_snap or '// &
       '--next-aa1aa2-screened q1 g q2 h h_snap out_ax out_snap or '// &
+      '--next-aa1aa2-ij-screened q3 i q4 j j_snap out_ax out_snap or '// &
       '--next-zpcd-screened z zp c d d_snap out_ax out_snap or '// &
       '--u y z w v v_snap out_ax out_snap or '// &
       '--post-aa1 x2 x3 aa1 aa1p aa1p_snap out_ax out_snap or '// &
@@ -1062,6 +1067,12 @@ contains
         report_prefix='RANK2-CURRENT-ZPCD-AA1'
         latest_output='D'
         previous_output='ZP'
+      else if (trim(mode) == '--next-aa1aa2-ij-screened') then
+        input_carrier='AA2-RAW-FLUX'
+        output_carrier='AA1-RAW-FLUX'
+        report_prefix='RANK2-CURRENT-IJ-AA1'
+        latest_output='J'
+        previous_output='I'
       else if (trim(mode) == '--next-aa1aa2-screened') then
         input_carrier='AA2-RAW-FLUX'
         output_carrier='AA1-RAW-FLUX'
@@ -1128,7 +1139,8 @@ contains
     if (current_screened_mode) then
       if (trim(mode) == '--next-zpcd-screened') then
         call load_state(trim(next_path(1)),next_x1,'previous map input')
-      else if (trim(mode) == '--next-aa1aa2-screened') then
+      else if ((trim(mode) == '--next-aa1aa2-screened').or. &
+          (trim(mode) == '--next-aa1aa2-ij-screened')) then
         call load_state(trim(next_path(1)),next_x1, &
           'previous proposal input',.true.,'AA1-RAW-FLUX')
       else

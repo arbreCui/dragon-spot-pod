@@ -79,6 +79,10 @@ gh_map_runner_path = (
     ITERATIVE / "run_rank2_current_gh_aa1_map.sh"
 )
 gh_map_runner = gh_map_runner_path.read_text()
+ij_map_runner_path = (
+    ITERATIVE / "run_rank2_current_ij_aa1_map.sh"
+)
+ij_map_runner = ij_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -234,6 +238,12 @@ gh_map_manifest = (
 ).read_text()
 gh_map_result = (
     ITERATIVE / "rank2_current_gh_aa1_map_result.md"
+).read_text()
+ij_map_policy = (
+    ITERATIVE / "rank2_current_ij_aa1_map_policy.md"
+).read_text()
+ij_map_manifest = (
+    ITERATIVE / "rank2_current_ij_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -1767,6 +1777,80 @@ require(gh_default_off.returncode == 0 and
         "SPOT-RANK2-CURRENT-GH-AA1-MAP DEFAULT-OFF: "
         "no Dragon process started.\n",
         "GH AA1 map default-off terminal changed")
+
+ij_map_rows = [line.split() for line in ij_map_manifest.splitlines()
+               if line.strip() and not line.startswith("#")]
+require(ij_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-ij-aa1-map-parent-v1",
+        "IJ AA1 map manifest version changed")
+require(tuple(row[0] for row in ij_map_rows) == roles,
+        "IJ AA1 map manifest roles changed")
+require(all(len(row) == 3 for row in ij_map_rows),
+        "IJ AA1 map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in ij_map_rows),
+        "IJ AA1 map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in ij_map_rows),
+        "IJ AA1 map manifest path escapes the repository")
+require(tuple(row[1] for row in ij_map_rows[-2:]) == (
+    "27250a1b370d2cdbf83f35fbf1a380919261bb938890b2f3d04d7390afb72743",
+    "f7e351eab9c895c4b43023e37734f4675898fa39b70e07ca9c25c29eecd66f7c",
+), "IJ AA1 map parent changed")
+require(ij_map_runner.index("RUN_RANK2_CURRENT_IJ_AA1_MAP=") <
+        ij_map_runner.index("ROOT=$("),
+        "IJ AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-ij-aa1-candidate",
+    "rank2_current_ij_aa1_map_parent.tsv",
+    "rank2_current_ij_aa1_map_policy.md",
+    "iterative-rank2-current-ij-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120",
+    "AXIAL_TIMEOUT_SECONDS=180",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in ij_map_runner,
+            f"IJ AA1 map runner missing: {token}")
+require(ij_map_runner.count("run_continuation_short.sh") == 1,
+        "IJ AA1 map runner must delegate once")
+require("run_bounded_dragon.py" not in ij_map_runner and
+        "DRAGON_BIN" not in ij_map_runner,
+        "IJ AA1 map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", ij_map_runner),
+        "IJ AA1 map retry loop is forbidden")
+for token in (
+    "1.1922339465680236", "-0.19223394656802359",
+    "k=G_2(q_5)", "R_\\rho", "R_L", "R_a", "diagnostic only",
+    "three online radial", "one axial solve", "k-q_5",
+    "PREPARED_DEFAULT_OFF", "no retry", "no second physical map",
+    "empirical parameter",
+):
+    require(token in ij_map_policy,
+            f"IJ AA1 map policy missing: {token}")
+ij_default_off = subprocess.run(
+    ["sh", str(ij_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_IJ_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(ij_default_off.returncode == 0 and
+        ij_default_off.stderr == "" and
+        ij_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-IJ-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "IJ AA1 map default-off terminal changed")
+ij_bad_activation = subprocess.run(
+    ["sh", str(ij_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_IJ_AA1_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(ij_bad_activation.returncode == 2 and
+        ij_bad_activation.stdout == "" and
+        ij_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-IJ-AA1-MAP ERROR: activation must be 0 or 1.\n",
+        "IJ AA1 map activation gate changed")
+require("spot-rank2-current-ij-aa1-map" in
+        (ROOT / "Makefile").read_text(), "IJ AA1 map target is missing")
 
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
