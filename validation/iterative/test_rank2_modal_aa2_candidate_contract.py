@@ -83,6 +83,9 @@ klmn_map_parent = (
 klmn_map_policy = (
     ITERATIVE / "rank2_current_klmn_aa2_map_policy.md"
 ).read_text()
+klmn_map_result = (
+    ITERATIVE / "rank2_current_klmn_aa2_map_result.md"
+).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
 
@@ -813,7 +816,7 @@ require(klmn_map_runner.count("run_continuation_short.sh") == 1,
 require(not re.search(r"(?m)^\s*(?:while|until)\b", klmn_map_runner),
         "KLMN map retry loop is forbidden")
 for token in (
-    "PREPARED_DEFAULT_OFF", "0.37973124035268829",
+    "EXECUTED_ONCE_VALID_NOT_MET", "0.37973124035268829",
     "0.10995812065327257", "0.51031063899403917",
     "3.0970099337137395e-24", "0.16177043590261239",
     "0.45458049672516687", "0.46901724246492071",
@@ -823,6 +826,21 @@ for token in (
 ):
     require(token in klmn_map_policy,
             f"KLMN map policy missing: {token}")
+for token in (
+    "334d3eebddaef382ddedc4ba99457518a375d83d",
+    "4.573608580149287", "6.701156962662935",
+    "3.915463384152092", "914.721716", "VALID_NOT_MET",
+    "48369be8c875f7c1389c850b89287d5a649d72047afd34964dc69a7067eb1a13",
+    "3a11159cd8dff5703a28da1222ee8dab798f46d54ba0a0a46bee1119e70caf3e",
+    "05261d095719f530baf4ed3743e964aa4e6ec0c799ea36021676d3f1fbe69a3c",
+    "0.14445266271586943", "0.85554733728413057",
+    "3.8680130073227605e-14", "0.99405602856832498",
+    "0.78327883203609316", "0.82926667695332601",
+    "AA1_DIRECTION_PASS_AA2_SKIPPED", "AA(2) is not",
+    "no durable", "no second physical map",
+):
+    require(token.lower() in klmn_map_result.lower(),
+            f"KLMN map result boundary missing: {token}")
 require("spot-rank2-current-klmn-aa2-map" in makefile,
         "KLMN map Make target is missing")
 klmn_default_env = os.environ.copy()

@@ -136,10 +136,22 @@ $$
 Its direction ratios are `0.16177`, `0.45458`, and `0.46902`, all strictly
 below one.  Thus `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  The diagnostic
 candidate has now been independently materialized as a hash-locked
-`AA2-RAW-FLUX` proposal with a passing 9/9 receipt.  Exactly one
-$o=G_2(q_8)$ map is prepared and default-off; it has not yet been evaluated.
-See the [latest map result](validation/iterative/rank2_current_klm_aa1_map_result.md)
-and [q8 proposal record](validation/iterative/rank2_current_klmn_aa2_candidate_result.md).
+`AA2-RAW-FLUX` proposal with a passing 9/9 receipt.  It was evaluated exactly
+once as $o=G_2(q_8)$.  The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,4.5736086\times10^{-4},\,
+6.7011570\times10^{-7}\ \mathrm{cm}^{-1},\,
+3.9154634\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass; $R_L$ fails, so this remains `VALID_NOT_MET`.
+The next standard AA(1), using only $n-q_7,o-q_8$, passes all three
+parameter-free direction screens with ratios `0.99406`, `0.78328`, and
+`0.82927`; therefore AA(2) is skipped.  No durable successor or second
+physical map was produced.  See the
+[latest map result](validation/iterative/rank2_current_klmn_aa2_map_result.md).
 
 ## Historical validation record
 

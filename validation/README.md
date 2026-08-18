@@ -21,10 +21,13 @@ tests.
 The latest rank-2 boundary is a standard, unregularized AA(2) proposal
 $q_8$ formed only after AA(1) failed its leakage direction screens.  Its
 three parameter-free direction ratios pass, its independent 9/9 proposal
-receipt passes, and one $o=G_2(q_8)$ map is prepared default-off.  The
-proposal is not convergence evidence and no new physical map has yet been
-run; see
-[the q8 proposal record](iterative/rank2_current_klmn_aa2_candidate_result.md).
+receipt passes, and one $o=G_2(q_8)$ map was evaluated.  Its strict
+terminals, independent checker, and 21/21 receipt pass.  $R_\rho$ and $R_a$
+pass the original gate; $R_L=4.573608580149287\times10^{-4}$ fails, so the
+classification is `VALID_NOT_MET`.  The following minimum-order AA(1)
+direction passes all three parameter-free screens, so AA(2) is skipped and
+no second physical map is run; see
+[the latest map record](iterative/rank2_current_klmn_aa2_map_result.md).
 
 The generic continuation host is default-off. Enabling it evaluates one
 unchanged direct map from the hash-locked parent and requires a new result

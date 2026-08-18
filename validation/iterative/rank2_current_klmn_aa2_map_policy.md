@@ -2,7 +2,7 @@
 
 Date: 2026-08-18
 
-Status: `PREPARED_DEFAULT_OFF`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 Standard AA(1) from $m-q_6$ and $n-q_7$ failed its two leakage direction
 screens.  Only then, the three latest genuine residuals $l-k$, $m-q_6$, and
@@ -46,3 +46,26 @@ One activation permits one attempt.  There is no retry, fallback, automatic
 successor, relaxation, damping, clipping, fit, regularization, pseudoinverse,
 condition cutoff, empirical parameter, mixed-unit objective, older-window
 search, or AA(3).  This batch permits no second physical map.
+
+## Post-run record
+
+The stage was activated exactly once from source commit
+`334d3eebddaef382ddedc4ba99457518a375d83d`.  All four strict terminals,
+the independent `proposal-aa2` checker, and the 21/21 receipt passed.  The
+physical residual $o-q_8$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,4.573608580149287\times10^{-4},\,
+6.701156962662935\times10^{-7}\ \mathrm{cm}^{-1},\,
+3.915463384152092\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass the original AND gate; $R_L$ does not.  The map is
+therefore `VALID_NOT_MET`.  AA(1) on $n-q_7$ and $o-q_8$ has direction
+ratios `0.99405602856832498`, `0.78327883203609316`, and
+`0.82926667695332601`, all strictly below one.  Thus
+`AA1_DIRECTION_PASS_AA2_SKIPPED`; AA(2) is not calculated.  No durable
+proposal is published and no second physical map is run.  The artifact's
+`continuation_policy.md` remains the receipt-protected pre-run policy copy.
+See [rank2_current_klmn_aa2_map_result.md](rank2_current_klmn_aa2_map_result.md).
