@@ -48,11 +48,24 @@ $$
 
 The map is `VALID_NOT_MET`: $R_\rho$ and $R_a$ pass, while $R_L$ fails.
 The following AA(1), using only $n-q_7,o-q_8$, passes all three direction
-screens.  Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`; no durable successor and no
-second map were produced.  See
-[rank2_current_klmn_aa2_map_result.md](rank2_current_klmn_aa2_map_result.md).
+screens.  Thus `AA1_DIRECTION_PASS_AA2_SKIPPED`, and the standard proposal
+
+$$
+q_9=0.14445266271586943\,n+0.85554733728413057\,o
+$$
+
+is now independently materialized with a passing 9/9 receipt.  One
+$p=G_2(q_9)$ map is prepared default-off and has not yet been run.  See
+[rank2_current_no_aa1_candidate_result.md](rank2_current_no_aa1_candidate_result.md).
 
 ## Active files
+
+- `rank2_current_no_aa1_candidate_inputs.tsv`,
+  `rank2_current_no_aa1_candidate_result.md`,
+  `rank2_current_no_aa1_map_parent.tsv`,
+  `rank2_current_no_aa1_map_policy.md`, and
+  `run_rank2_current_no_aa1_map.sh`: latest standard AA(1) proposal and its
+  one prepared, default-off physical map.
 
 - `rank2_current_klmn_aa2_candidate_inputs.tsv`,
   `rank2_current_klmn_aa2_candidate_result.md`,

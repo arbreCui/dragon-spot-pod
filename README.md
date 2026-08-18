@@ -149,9 +149,16 @@ $$
 $R_\rho$ and $R_a$ pass; $R_L$ fails, so this remains `VALID_NOT_MET`.
 The next standard AA(1), using only $n-q_7,o-q_8$, passes all three
 parameter-free direction screens with ratios `0.99406`, `0.78328`, and
-`0.82927`; therefore AA(2) is skipped.  No durable successor or second
-physical map was produced.  See the
-[latest map result](validation/iterative/rank2_current_klmn_aa2_map_result.md).
+`0.82927`; therefore AA(2) is skipped.  Its standard proposal
+
+$$
+q_9=0.14445266271586943\,n+0.85554733728413057\,o
+$$
+
+is now independently materialized as an `AA1-RAW-FLUX` carrier with a
+passing 9/9 receipt.  Exactly one $p=G_2(q_9)$ map is prepared default-off
+and has not yet been evaluated.  See the
+[q9 proposal record](validation/iterative/rank2_current_no_aa1_candidate_result.md).
 
 ## Historical validation record
 

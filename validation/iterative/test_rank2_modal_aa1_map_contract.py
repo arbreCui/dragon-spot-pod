@@ -95,6 +95,8 @@ klm_map_runner_path = (
     ITERATIVE / "run_rank2_current_klm_aa1_map.sh"
 )
 klm_map_runner = klm_map_runner_path.read_text()
+no_map_runner_path = ITERATIVE / "run_rank2_current_no_aa1_map.sh"
+no_map_runner = no_map_runner_path.read_text()
 common = (ITERATIVE / "run_continuation_short.sh").read_text()
 checker = (ITERATIVE / "check_one_map_xsm.f90").read_text()
 radial = (ITERATIVE / "continuation_rank2_continued_radial.x2m").read_text()
@@ -286,6 +288,12 @@ klm_map_manifest = (
 ).read_text()
 klm_map_result = (
     ITERATIVE / "rank2_current_klm_aa1_map_result.md"
+).read_text()
+no_map_policy = (
+    ITERATIVE / "rank2_current_no_aa1_map_policy.md"
+).read_text()
+no_map_manifest = (
+    ITERATIVE / "rank2_current_no_aa1_map_parent.tsv"
 ).read_text()
 u_history_manifest = (
     ITERATIVE / "rank2_modal_aa1_u_history.tsv"
@@ -2195,6 +2203,81 @@ for token in (
     require(token in klm_map_result,
             f"KLM AA1 map result boundary missing: {token}")
 
+no_map_rows = [line.split() for line in no_map_manifest.splitlines()
+               if line.strip() and not line.startswith("#")]
+require(no_map_manifest.splitlines()[0] ==
+        "# spot-rank2-current-no-aa1-map-parent-v1",
+        "NO AA1 map manifest version changed")
+require(tuple(row[0] for row in no_map_rows) == roles,
+        "NO AA1 map manifest roles changed")
+require(all(len(row) == 3 for row in no_map_rows),
+        "NO AA1 map manifest row width changed")
+require(all(re.fullmatch(r"[0-9a-f]{64}", row[1]) for row in no_map_rows),
+        "NO AA1 map manifest SHA-256 is invalid")
+require(all(not Path(row[2]).is_absolute() and
+            ".." not in Path(row[2]).parts for row in no_map_rows),
+        "NO AA1 map manifest path escapes the repository")
+require(tuple(row[1] for row in no_map_rows[-2:]) == (
+    "c5d3275ead6dc8b5afb6d7ec125965678a0659ed8cf027d547edd6a009738b4e",
+    "f7476c9f42d5de128e56c01044609e233a11ec147019942d429b8db419ba30ab",
+), "NO AA1 map parent changed")
+require(no_map_runner.index("RUN_RANK2_CURRENT_NO_AA1_MAP=") <
+        no_map_runner.index("ROOT=$("),
+        "NO AA1 default-off gate must precede repository access")
+for token in (
+    "iterative-rank2-current-no-aa1-candidate",
+    "rank2_current_no_aa1_map_parent.tsv",
+    "rank2_current_no_aa1_map_policy.md",
+    "iterative-rank2-current-no-aa1-map",
+    "CHECKER_MODE=proposal-aa1",
+    "RADIAL_TIMEOUT_SECONDS=120", "AXIAL_TIMEOUT_SECONDS=180",
+    "MATERIALIZED_PROPOSAL_NOT_EVALUATED",
+    "shasum -a 256 -c result.sha256",
+):
+    require(token in no_map_runner,
+            f"NO AA1 map runner missing: {token}")
+require(no_map_runner.count("run_continuation_short.sh") == 1,
+        "NO AA1 map runner must delegate once")
+require("run_bounded_dragon.py" not in no_map_runner and
+        "DRAGON_BIN" not in no_map_runner,
+        "NO AA1 map wrapper must not launch Dragon directly")
+require(not re.search(r"(?m)^\s*(?:while|until)\b", no_map_runner),
+        "NO AA1 map retry loop is forbidden")
+for token in (
+    "PREPARED_DEFAULT_OFF", "0.14445266271586943",
+    "0.85554733728413057", "3.8680130073227605e-14",
+    "0.99405602856832498", "0.78327883203609316",
+    "0.82926667695332601", "p=G_2(q_9)",
+    "R_\\rho", "R_L", "R_a", "diagnostic only",
+    "three online radial", "one axial solve", "p-q_9",
+    "120 s", "180 s", "no retry", "no second physical map",
+    "empirical parameter",
+):
+    require(token in no_map_policy,
+            f"NO AA1 map policy missing: {token}")
+no_default_off = subprocess.run(
+    ["sh", str(no_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_NO_AA1_MAP": "0"},
+    capture_output=True, text=True, check=False,
+)
+require(no_default_off.returncode == 0 and no_default_off.stderr == "" and
+        no_default_off.stdout ==
+        "SPOT-RANK2-CURRENT-NO-AA1-MAP DEFAULT-OFF: "
+        "no Dragon process started.\n",
+        "NO AA1 map default-off terminal changed")
+no_bad_activation = subprocess.run(
+    ["sh", str(no_map_runner_path)], cwd=ROOT,
+    env={"RUN_RANK2_CURRENT_NO_AA1_MAP": "2"},
+    capture_output=True, text=True, check=False,
+)
+require(no_bad_activation.returncode == 2 and
+        no_bad_activation.stdout == "" and
+        no_bad_activation.stderr ==
+        "SPOT-RANK2-CURRENT-NO-AA1-MAP ERROR: activation must be 0 or 1.\n",
+        "NO AA1 map activation gate changed")
+require("spot-rank2-current-no-aa1-map" in
+        (ROOT / "Makefile").read_text(), "NO AA1 map target is missing")
+
 require(
         "initial|continued|reencoded|proposal|proposal-z|proposal-v|"
         "proposal-u|proposal-x3|proposal-x4|proposal-aa1|proposal-xnp|proposal-xrp|"
@@ -2384,7 +2467,7 @@ for text in (runner, next_runner, u_runner, consecutive_runner, latest_runner,
              latest_recovery_runner, post_runner, rolling_map_runner,
              rolling_next_map_runner, zpcd_map_runner,
              zpcd_e_picard_runner, cef_map_runner, k_picard_runner,
-             kl_map_runner, klm_map_runner,
+             kl_map_runner, klm_map_runner, no_map_runner,
              radial, axial):
     for forbidden in ("RELA", "ALPHA", "ANDERSON", "CMFD", "CLIP"):
         require(not re.search(rf"\b{forbidden}\b", text.upper()),
