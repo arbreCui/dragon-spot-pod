@@ -66,6 +66,9 @@ ghi_map_parent = (
 ghi_map_policy = (
     ITERATIVE / "rank2_current_ghi_aa2_map_policy.md"
 ).read_text()
+ghi_map_result = (
+    ITERATIVE / "rank2_current_ghi_aa2_map_result.md"
+).read_text()
 makefile = (ROOT / "Makefile").read_text()
 
 
@@ -650,10 +653,28 @@ for token in (
     "0.44048518991529284", "j=G_2(q_4)",
     "R_\\rho\\le5\\times10^{-7}", "R_L\\le5\\times10^{-7}",
     "R_a\\le5\\times10^{-7}", "j-q_4", "diagnostic only",
+    "EXECUTED_ONCE_VALID_NOT_MET", "VALID_NOT_MET",
+    "AA1_DIRECTION_PASS", "AA(2) is not calculated",
     "no second physical map",
 ):
     require(token in ghi_map_policy,
             f"GHI map policy missing: {token}")
+for token in (
+    "d78482590ca0d9be8078d15407a49b04bc5552dd",
+    "6.422346976453497", "4.971869112913671",
+    "7.284688763320446", "6.003808415562571",
+    "1910e6d0c4bc413cda29713d7bb38191d5ab41ca6f1564f07a9a1a093e240f42",
+    "ff2f7e2ab6fbd955212fdf337f318657757eb04e507a65bd4669cefe65d0d587",
+    "b468c4381da4093d1055f51c320150faf0162f022942acde5611673c49588c1c",
+    "1.1922339465680236", "0.19223394656802359",
+    "1.1217162258501826e-11",
+    "0.064424480296712869", "0.93186663298811390",
+    "0.97357313211276764", "AA1_DIRECTION_PASS",
+    "AA(2) is not calculated", "No durable",
+    "no second physical map is run",
+):
+    require(token in ghi_map_result,
+            f"GHI map result boundary missing: {token}")
 require("spot-rank2-current-ghi-aa2-map" in makefile,
         "GHI map Make target is missing")
 ghi_default_env = os.environ.copy()

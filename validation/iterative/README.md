@@ -5,35 +5,43 @@ generic, default-off continuation host.
 
 ## Latest boundary
 
-The latest admissible full-Gram AA(1) proposal
-$q_3=0.9219848222g+0.0780151778h$ was materialized and
+The latest admissible full-Gram AA(2) proposal
+$q_4=0.5465669243g+0.2290322421h+0.2244008336i$ was materialized and
 evaluated exactly once.  Its strict terminals, independent checker, and
-21/21 receipt pass.  For $i=G_2(q_3)$, the physical residual $i-q_3$ is
+21/21 receipt pass.  For $j=G_2(q_4)$, the physical residual $j-q_4$ is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223481\times10^{-8},\,4.6995423\times10^{-4},\,
-6.8856752\times10^{-7}\ \mathrm{cm}^{-1},\,
-1.0405910\times10^{-6}).
+(6.4223470\times10^{-8},\,4.9718691\times10^{-4},\,
+7.2846888\times10^{-7}\ \mathrm{cm}^{-1},\,
+6.0038084\times10^{-6}).
 $$
 
 The result is `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and $R_a$ do
 not.  Dimensional $D_L$ remains diagnostic only.
 
-The next AA(1) fails because its leakage height-$L_2$ direction ratio is
-`1.000154`.  Only then, standard AA(2) gives ratios `0.08560`, `0.50064`,
-and `0.44049`, so `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  No durable
-proposal is published and no second map is run.  See
-[rank2_current_gh_aa1_map_result.md](rank2_current_gh_aa1_map_result.md).
+The next AA(1) on $i-q_3$ and $j-q_4$ gives ratios `0.06442`, `0.93187`,
+and `0.97357`, so `AA1_DIRECTION_PASS`; AA(2) is not calculated.  No
+durable proposal is published and no second map is run.  See
+[rank2_current_ghi_aa2_map_result.md](rank2_current_ghi_aa2_map_result.md).
 
 ## Active files
+
+- `rank2_current_ghi_aa2_candidate_inputs.tsv`,
+  `rank2_current_ghi_aa2_candidate_result.md`,
+  `rank2_current_ghi_aa2_map_parent.tsv`,
+  `rank2_current_ghi_aa2_map_policy.md`,
+  `run_rank2_current_ghi_aa2_map.sh`,
+  `rank2_current_ghi_aa2_map_result.md`: latest minimum-order AA(2)
+  proposal, its single valid but unconverged map, and the following AA(1)
+  direction pass with no second map.
 
 - `rank2_current_gh_aa1_candidate_inputs.tsv`,
   `rank2_current_gh_aa1_candidate_result.md`,
   `rank2_current_gh_aa1_map_parent.tsv`,
   `rank2_current_gh_aa1_map_policy.md`,
   `run_rank2_current_gh_aa1_map.sh`,
-  `rank2_current_gh_aa1_map_result.md`: latest minimum-order AA(1)
+  `rank2_current_gh_aa1_map_result.md`: preceding minimum-order AA(1)
   proposal, its single valid but unconverged map, and the following
   AA(1)-fail/AA(2)-pass direction decision with no second map.
 

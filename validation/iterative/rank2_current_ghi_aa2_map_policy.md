@@ -2,7 +2,7 @@
 
 Date: 2026-08-17
 
-Status: `PREPARED_NOT_RUN`.
+Status: `EXECUTED_ONCE_VALID_NOT_MET`.
 
 AA(1) on $h-q_2$ and $i-q_3$ was tried first and failed because its
 leakage height-$L_2$ direction ratio is `1.0001541854604454`.  Only then,
@@ -47,3 +47,27 @@ AA(3).
 The host may return only `INVALID_MAP`, `TOLERANCE_MET`, or
 `VALID_NOT_MET`.  If valid, the physical residual is $j-q_4$; $j-i$ is not
 a fixed-point residual.  This batch permits no second physical map.
+
+## Post-run record
+
+The stage was activated exactly once from source commit
+`d78482590ca0d9be8078d15407a49b04bc5552dd`.  All four strict terminals,
+the independent `proposal-aa2` checker, and the 21/21 receipt passed.  The
+physical residual $j-q_4$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.422346976453497\times10^{-8},\,
+4.971869112913671\times10^{-4},\,
+7.284688763320446\times10^{-7}\ \mathrm{cm}^{-1},\,
+6.003808415562571\times10^{-6}).
+$$
+
+$R_\rho$ passes the original AND gate; $R_L$ and $R_a$ do not.  The map is
+therefore `VALID_NOT_MET`, with no retry or automatic successor.  AA(1) on
+$i-q_3$ and $j-q_4$ has direction ratios `0.064424480296712869`,
+`0.93186663298811390`, and `0.97357313211276764`, all strictly below one.
+Thus `AA1_DIRECTION_PASS`; AA(2) is not calculated.  No durable proposal is
+published and no second physical map is run.  The artifact's
+`continuation_policy.md` remains the receipt-protected pre-run policy copy.
+See [rank2_current_ghi_aa2_map_result.md](rank2_current_ghi_aa2_map_result.md).
