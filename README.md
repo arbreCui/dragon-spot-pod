@@ -101,7 +101,44 @@ with the dimensionless defects.
 An inner solve that reaches its iteration cap without satisfying the strict
 terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
-## Current rank-2 result
+## Latest REAL64 rank-2 result
+
+The latest standard unregularized full-Gram AA(1) proposal uses the genuine
+map pairs `x3 -> x4` and `y -> z`:
+
+$$
+t=0.252802215112331696\,x_4+
+  0.747197784887668304\,z.
+$$
+
+Its three parameter-free direction ratios are all below one, so AA(2) was
+skipped.  It was independently materialized in the fixed rank-two POD
+space, all 8880 published radial scalar-flux values were positive, and
+exactly one bounded physical map completed without retry through
+`PROPOSAL -> PROJECTED/5 -> RETURNED/5 -> CLOSED/5`.  Its raw defect is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223470\times10^{-8},\,2.4829538\times10^{-6},\,
+3.6379788\times10^{-9}\ \mathrm{cm}^{-1},\,
+2.7689296\times10^{-7}).
+$$
+
+At the unchanged `5e-7` AND gate, $R_\rho$ and $R_a$ pass; only $R_L$
+fails.  Both $R_L$ and $R_a$ improved, but the result remains
+`VALID_NOT_MET`.  No empirical parameter or model correction was
+introduced.  See
+[the complete result](validation/iterative/rank2_h2_r64_aa1_z_map_result.md).
+
+A subsequent same-parent axial-only sensitivity retained the radial response
+bit for bit and changed only the axial terminal from `2.5e-7` to `1.25e-7`.
+It gave $R_L=2.9994077\times10^{-6}$, 20.80% above the value shown above.
+Thus the current leakage defect is not yet stable with respect to the axial
+inner terminal.  This is not a new full map and does not authorize rank three
+or the next AA(1); see
+[the sensitivity result](validation/iterative/rank2_h2_r64_aa1_z_axial_tight_result.md).
+
+## Earlier rank-2 development history
 
 The latest standard AA(1) proposal
 
@@ -231,6 +268,102 @@ direction screens with ratios `0.72586`, `0.72632`, and `0.90812`;
 therefore AA(2) is skipped.  No durable successor or second physical map
 was produced.  See the
 [latest map result](validation/iterative/rank2_current_rs_aa1_map_result.md).
+
+A numerical-resolution follow-up now establishes a narrower result.  At the
+same $q_{12}$ input, a warm-start REAL32 plane and the same plane with the
+MCCG inner threshold matched to $2.5\times10^{-7}$ both produced no strict
+return within separate 30-second bounds.  The existing mixed-precision
+REAL64 radial kernel then solved all three fixed-source planes in one
+22.14-second attempt at $2.5\times10^{-7}$.  Its three independently read
+balance diagnostics were `3.172963e-8`, `2.872780e-8`, and `3.606618e-8`,
+and all 31,080 REAL64-to-REAL32 compatibility values were bitwise correct.
+This proves that the $q_{12}$ radial half can return on the REAL64 lane.  One
+subsequent cold-start axial solve reached its 80-second bound and remains
+`NO_SCIENTIFIC_RESULT`.  The separately frozen warm-start deck was then run
+exactly once, with no retry.  It used the $q_{12}$ parent flux only as FLU's
+initial iterate while retaining the unchanged TYPE-K/SPOT equation, rank-2
+basis, direct leakage return, and $2.5\times10^{-7}$ inner terminal.  FLU
+completed normally in 32 seconds at `IEXTF=132`; all strict terminals passed.
+After deleting only two inherited proposal-lifecycle markers in a no-solve
+canonical copy, the independent checker passed and bitwise verified
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.2272492\times10^{-4},\,
+9.1240508\times10^{-7}\ \mathrm{cm}^{-1},\,
+7.6638114\times10^{-6}).
+$$
+
+At the unchanged $5\times10^{-7}$ outer gate, only $R_\rho$ passes; the
+half-tolerance result is therefore `VALID_NOT_MET`.  No relaxation,
+empirical parameter, altered equation, fallback, or retry was used.  The
+only production-code change separates a BOOT initial iterate's historical
+tolerance from the new equation's unchanged strict tolerance; CONT remains
+bitwise restricted to $2.5\times10^{-7}$.
+
+The first clean REAL64 continuation from that h/2 return has now also been
+completed.  B2I/B2J performed the no-transport `CLOSED/0 -> PROJECTED/1`
+staging, one `SpotStepR64` call solved the three CONT planes in about 22.13
+seconds, and one warm axial solve completed in about 14.46 seconds.  There
+was no retry.  The independent rank-two checker and the exact B2W admission
+both pass, giving
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.3067022\times10^{-6},\,
+9.2404662\times10^{-9}\ \mathrm{cm}^{-1},\,
+1.2853320\times10^{-6}).
+$$
+
+That first result remains `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and
+$R_a$ fail.  AA(1) was not formed there because the adjacent older residual
+came from BOOT rather than the same finite-precision CONT map.  See the
+[first REAL64 CONT result](validation/iterative/rank2_h2_r64_cont_x1_map_result.md).
+
+The rank-two close path and lifecycle are now epoch-generic, and the next
+map has been completed as `CLOSED/1 -> PROJECTED/2 -> RETURNED/2 ->
+CLOSED/2`.  One bounded radial call and one warm axial call, with no retry,
+gave
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,1.0587314\times10^{-5},\,
+1.5512342\times10^{-8}\ \mathrm{cm}^{-1},\,
+1.1066465\times10^{-6}).
+$$
+
+The independent checker and production gates pass, but only $R_\rho$ passes
+the unchanged outer AND gate, so this is `VALID_NOT_MET`.  Two consecutive
+CONT residuals are now scientifically available.  Standard unregularized
+full-Gram AA(1) was evaluated only as an offline direction: its modal,
+leakage height-$L_2$, and $D_L$ ratios are `0.895356`, `1.105813`, and
+`0.564659`.  The leakage height-$L_2$ screen fails, so no AA state was
+materialized.  See the
+[second REAL64 CONT result](validation/iterative/rank2_h2_r64_cont_x2_map_result.md).
+
+A third consecutive CONT map has now completed the next lifecycle epoch,
+`CLOSED/2 -> PROJECTED/3 -> RETURNED/3 -> CLOSED/3`, again with one radial
+call, one warm axial call, and no retry:
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223470\times10^{-8},\,2.8206358\times10^{-6},\,
+4.1327439\times10^{-9}\ \mathrm{cm}^{-1},\,
+7.4996305\times10^{-7}).
+$$
+
+This remains `VALID_NOT_MET`: only $R_\rho$ passes.  The latest standard
+AA(1), using only $x_3-x_2$ and $x_4-x_3$, has modal, leakage
+height-$L_2$, and $D_L$ direction ratios `0.900503`, `0.974662`, and
+`0.957500`.  All three pass, so `AA1_DIRECTION_PASS_AA2_SKIPPED`.  The
+authorized affine direction is
+
+$$
+y=0.27113387220513907\,x_3+0.72886612779486093\,x_4.
+$$
+
+It has not yet been materialized or evaluated.  See the
+[third REAL64 CONT result](validation/iterative/rank2_h2_r64_cont_x3_map_result.md).
 
 ## Historical validation record
 

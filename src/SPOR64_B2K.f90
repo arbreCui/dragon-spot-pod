@@ -17,8 +17,6 @@ module SPOR64_B2K
   integer, parameter :: NMAT = 8
   integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
-  integer, parameter :: PROJECTED_EPOCH = 1
-  integer, parameter :: ASSEMBLED_EPOCH = 1
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
@@ -61,6 +59,8 @@ contains
     type(c_ptr) :: tracks, libraries, fluxes
     type(c_ptr) :: input_track(NSNAP), input_library(NSNAP)
     type(c_ptr) :: input_flux(NSNAP), input_macro(NSNAP)
+    integer :: probe_ilong, probe_itylcm
+    logical :: unreduced_mode
     type(c_ptr) :: output_tracks, output_libraries
     type(c_ptr) :: output_systems, output_fluxes, output_item
     type(c_ptr) :: staged_system(NSNAP), staged_authority
@@ -88,7 +88,7 @@ contains
     end do
     if (.not. EMPTY_LCM_ROOT(ipout)) return
 
-    ! Admit exactly the root published by B2j: PROJECTED/1 has no SYSTEM.
+    ! Admit exactly the root published by B2j: PROJECTED/e has no SYSTEM.
     if (.not. PROJECTED_ARCHIVE_ROOT_IS_EXACT(ipprojected)) return
     if (.not. CHARACTER_RECORD_MATCHES(ipprojected,'SIGNATURE',3,12, &
         'L_ARCHIVE')) return
@@ -112,7 +112,7 @@ contains
     call LCMGET(root_authority,'NPLANE',root_planes)
     call LCMGET(root_authority,'EPOCH',root_epoch)
     if (.not. ieee_is_finite(rho64) .or. rho64 <= +0.0_real64) return
-    if (root_planes /= NSNAP .or. root_epoch /= PROJECTED_EPOCH) return
+    if (root_planes /= NSNAP .or. root_epoch <= 0) return
     found64 = transfer(rho64,0_int64)
     expected64 = transfer(1.0_real64/iter_keff64,0_int64)
     if (found64 /= expected64) return
@@ -224,20 +224,23 @@ contains
       if (.not. RECORD_MATCHES(input_macro(ip),'GROUP',NGRP,10)) return
 
       if (.not. PROJECTED_PLANE_IS_EXACT(input_flux(ip),rho64, &
-          PROJECTED_EPOCH,keyflx,leakage32)) return
+          root_epoch,keyflx,leakage32)) return
       plane_authority = LCMGID(input_flux(ip),'SPOT-R64')
       call LCMGET(plane_authority,'RHO',plane_rho64)
       call LCMGET(plane_authority,'EPOCH',plane_epoch)
       if (transfer(plane_rho64,0_int64) /= &
           transfer(rho64,0_int64)) return
-      if (plane_epoch /= PROJECTED_EPOCH) return
+      if (plane_epoch /= root_epoch) return
 
       if (.not. ABSENT_RECORD(ipsystems(ip),'SPOT-R64')) return
       if (.not. ABSENT_RECORD(ipsystems(ip),'B2I-SENT')) return
       if (.not. ABSENT_RECORD(ipsystems(ip),'B2I-DEEP')) return
       if (.not. CANDIDATE_SYSTEM_ROOT_IS_EXACT(ipsystems(ip))) return
+      call LCMLEN(input_flux(ip),'LEAK1D64',probe_ilong,probe_itylcm)
+      unreduced_mode = (probe_ilong == NGRP .and. probe_itylcm == 4)
+      if (probe_ilong /= 0 .and. .not. unreduced_mode) return
       if (.not. SYSTEM_PAYLOAD_IS_VALID(ipsystems(ip),input_macro(ip), &
-          leakage32,ip)) return
+          leakage32,ip,unreduced_mode)) return
     end do
 
     ! Preserve each complete host system in a private LCM stage.  Only the
@@ -252,20 +255,26 @@ contains
       lifecycle_state = 'ASSEMBLED'
       call LCMPUT(staged_authority,'RHO',1,4,rho64)
       call LCMPTC(staged_authority,'STATE',12,lifecycle_state)
-      call LCMPUT(staged_authority,'EPOCH',1,1,ASSEMBLED_EPOCH)
+      call LCMPUT(staged_authority,'EPOCH',1,1,root_epoch)
 
       call LCMGET(input_flux(ip),'SPOT-LEAK1D',leakage32)
       if (.not. STAGED_SYSTEM_ROOT_IS_EXACT(staged_system(ip))) then
         call CLOSE_STAGES(staged_system)
         return
       end if
+      call LCMLEN(input_flux(ip),'LEAK1D64',probe_ilong,probe_itylcm)
+      unreduced_mode = (probe_ilong == NGRP .and. probe_itylcm == 4)
+      if (probe_ilong /= 0 .and. .not. unreduced_mode) then
+        call CLOSE_STAGES(staged_system)
+        return
+      end if
       if (.not. SYSTEM_PAYLOAD_IS_VALID(staged_system(ip), &
-          input_macro(ip),leakage32,ip)) then
+          input_macro(ip),leakage32,ip,unreduced_mode)) then
         call CLOSE_STAGES(staged_system)
         return
       end if
       if (.not. SYSTEM_AUTHORITY_IS_COMMITTED(staged_system(ip), &
-          rho64,ASSEMBLED_EPOCH)) then
+          rho64,root_epoch)) then
         call CLOSE_STAGES(staged_system)
         return
       end if
@@ -321,7 +330,7 @@ contains
     call LCMPUT(root_authority,'RHO',1,4,rho64)
     call LCMPUT(root_authority,'NPLANE',1,1,root_planes)
     call LCMPTC(root_authority,'STATE',12,lifecycle_state)
-    call LCMPUT(root_authority,'EPOCH',1,1,ASSEMBLED_EPOCH)
+    call LCMPUT(root_authority,'EPOCH',1,1,root_epoch)
     status = SPOR64_B2K_ARCHIVE_ASSEMBLED
   end subroutine SPOR64_B2K_COMMIT_SYSTEM_ARCHIVE
 
@@ -415,10 +424,12 @@ contains
   end function PROJECTED_PLANE_IS_EXACT
 
 
-  logical function SYSTEM_PAYLOAD_IS_VALID(ipsystem,ipmacro,leakage,plane)
+  logical function SYSTEM_PAYLOAD_IS_VALID(ipsystem,ipmacro,leakage, &
+      plane,unreduced)
     type(c_ptr), intent(in) :: ipsystem, ipmacro
     real(real32), intent(in) :: leakage(NGRP)
     integer, intent(in) :: plane
+    logical, intent(in) :: unreduced
 
     integer :: state(NSTATE), snapshot, ig, im, ilong, itylcm
     real(real32) :: ntot32(NMAT), sigw32(NMAT), tranc32(NMAT)
@@ -484,13 +495,23 @@ contains
       expected_tx32 = +0.0_real32
       expected_sphys32 = +0.0_real32
       expected_sused32 = +0.0_real32
-      expected_sused32(0) = expected_sphys32(0)-leakage(ig)
+      if (unreduced) then
+        ! REAL64 leakage mode: the stored self-scattering is the
+        ! physical one; the reduction is applied in the solver core.
+        expected_sused32(0) = expected_sphys32(0)
+      else
+        expected_sused32(0) = expected_sphys32(0)-leakage(ig)
+      end if
       do im = 1, NMAT
         expected_tx32(im) = ntot32(im)
         expected_sphys32(im) = sigw32(im)
         expected_tx32(im) = expected_tx32(im)-tranc32(im)
         expected_sphys32(im) = expected_sphys32(im)-tranc32(im)
-        expected_sused32(im) = expected_sphys32(im)-leakage(ig)
+        if (unreduced) then
+          expected_sused32(im) = expected_sphys32(im)
+        else
+          expected_sused32(im) = expected_sphys32(im)-leakage(ig)
+        end if
       end do
       if (.not. all(ieee_is_finite(expected_tx32))) return
       if (.not. all(ieee_is_finite(expected_sphys32))) return
@@ -704,8 +725,14 @@ contains
         ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
          'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
          'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ']
+    character(len=12), parameter :: names64(13) = &
+        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
+         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
+         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ', &
+         'LEAK1D64    ']
 
-    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names64) &
+        .or. EXACT_INVENTORY(iplist,names)
   end function PROJECTED_PLANE_ROOT_IS_EXACT
 
 

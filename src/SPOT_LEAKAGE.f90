@@ -2,7 +2,8 @@ module SPOT_LEAKAGE
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   implicit none
   private
-  public :: SPOLE1, SPOLE2, SPOF00, SPOQ00, SPOQFS
+  public :: SPOLE1, SPOLE1D, SPOLE2, SPOLE2D, SPOF00, SPOQ00, SPOQFS
+  public :: SPOQFSD
 
 contains
 
@@ -49,6 +50,49 @@ contains
     enddo
   end subroutine SPOLE1
 
+  ! Double-precision twin of SPOLE1: identical geometry and admission
+  ! checks, REAL64 flux/current input and REAL64 accumulation.
+  subroutine SPOLE1D(nreg,nfloor,nsnap,mat1d,dz,area,phi,current, &
+                     leak1d,numerator,denominator)
+    integer, intent(in) :: nreg,nfloor,nsnap
+    integer, intent(in) :: mat1d(nfloor)
+    real, intent(in) :: dz(nfloor),area(nreg)
+    double precision, intent(in) :: phi(nfloor,nreg)
+    double precision, intent(in) :: current(nfloor+1,nreg)
+    double precision, intent(out) :: leak1d(nsnap),numerator(nsnap), &
+      denominator(nsnap)
+
+    integer :: i,ifloor,isnap
+
+    if (nreg <= 0 .or. nfloor <= 0 .or. nsnap <= 0) &
+      call XABORT('SPOLE1D: INVALID DIMENSION.')
+    if (any(mat1d < 1) .or. any(mat1d > nsnap)) &
+      call XABORT('SPOLE1D: INVALID SNAPSHOT INDEX.')
+    if (any(dz <= 0.0) .or. any(area <= 0.0)) &
+      call XABORT('SPOLE1D: NONPOSITIVE GEOMETRIC MEASURE.')
+
+    numerator=0.0d0
+    denominator=0.0d0
+    do ifloor=1,nfloor
+      isnap=mat1d(ifloor)
+      do i=1,nreg
+        numerator(isnap)=numerator(isnap)+dble(area(i))* &
+          (current(ifloor+1,i)-current(ifloor,i))
+        denominator(isnap)=denominator(isnap)+ &
+          dble(area(i))*dble(dz(ifloor))*phi(ifloor,i)
+      enddo
+    enddo
+
+    leak1d=0.0d0
+    do isnap=1,nsnap
+      if (denominator(isnap) > 0.0d0) then
+        leak1d(isnap)=numerator(isnap)/denominator(isnap)
+      else if (denominator(isnap) < 0.0d0) then
+        call XABORT('SPOLE1D: NEGATIVE FLUX INTEGRAL.')
+      endif
+    enddo
+  end subroutine SPOLE1D
+
   ! Local radial current-divergence coefficient obtained from the converged
   ! 2D scalar balance.  LEAK1D is positive for axial loss and is therefore
   ! subtracted from the right-hand-side balance.
@@ -57,6 +101,18 @@ contains
 
     SPOLE2=-total+scatter0+qfixed/phi-leak1d
   end function SPOLE2
+
+  ! Double-precision twin of SPOLE2.  The state-dependent source and
+  ! flux arrive in double precision; the frozen REAL32 cross sections
+  ! and the REAL32 axial leakage are promoted at the point of use,
+  ! mirroring SPOLE1D's treatment of REAL32 inputs.  Same expression.
+  elemental double precision function SPOLE2D(total,scatter0,qfixed, &
+      phi,leak1d)
+    real, intent(in) :: total,scatter0,leak1d
+    double precision, intent(in) :: qfixed,phi
+
+    SPOLE2D=-dble(total)+dble(scatter0)+qfixed/phi-dble(leak1d)
+  end function SPOLE2D
 
   ! Precompute sum_h(nu*Sigma_f)_h*phi_h for every active cell and fission
   ! component.  Keeping this intermediate in double precision preserves
@@ -213,5 +269,52 @@ contains
     if (any(.not.ieee_is_finite(qtotal))) &
       call XABORT('SPOQFS: NON-FINITE FIXED-SOURCE RHS.')
   end subroutine SPOQFS
+
+  ! Double-precision twin of SPOQFS.  The accumulation was already
+  ! double precision; this variant takes the state-dependent flux and
+  ! frozen fission source in double precision and keeps the result in
+  ! double precision instead of demoting it.  Same loop, same guards.
+  subroutine SPOQFSD(nreg,ngrp,nmix,igr,mat,phi,njjs,ijjs,ipos,scat, &
+                     qfrozen,qtotal)
+    integer, intent(in) :: nreg,ngrp,nmix,igr
+    integer, intent(in) :: mat(nreg),njjs(nmix),ijjs(nmix),ipos(nmix)
+    double precision, intent(in) :: phi(nreg,ngrp),qfrozen(nreg)
+    real, intent(in) :: scat(:)
+    double precision, intent(out) :: qtotal(nreg)
+
+    integer :: i,ibm,jg,jnd,index0
+    double precision :: source
+
+    if ((nreg <= 0).or.(ngrp <= 0).or.(nmix <= 0)) &
+      call XABORT('SPOQFSD: INVALID DIMENSION.')
+    if ((igr < 1).or.(igr > ngrp)) &
+      call XABORT('SPOQFSD: INVALID TARGET GROUP.')
+    if (any((mat < 0).or.(mat > nmix))) &
+      call XABORT('SPOQFSD: MATERIAL INDEX OVERFLOW.')
+    if (any(.not.ieee_is_finite(phi)).or. &
+        any(.not.ieee_is_finite(scat)).or. &
+        any(.not.ieee_is_finite(qfrozen))) &
+      call XABORT('SPOQFSD: NON-FINITE PHYSICAL INPUT.')
+
+    qtotal=0.0d0
+    do i=1,nreg
+      ibm=mat(i)
+      if (ibm == 0) cycle
+      source=qfrozen(i)
+      if (njjs(ibm) < 0) call XABORT('SPOQFSD: NEGATIVE NJJS00.')
+      jg=ijjs(ibm)
+      do jnd=1,njjs(ibm)
+        index0=ipos(ibm)+jnd-1
+        if ((jg < 1).or.(jg > ngrp).or.(index0 < 1).or. &
+            (index0 > size(scat))) &
+          call XABORT('SPOQFSD: COMPRESSED SCATTER MAP OVERFLOW.')
+        if (jg /= igr) source=source+dble(scat(index0))*phi(i,jg)
+        jg=jg-1
+      enddo
+      qtotal(i)=source
+    enddo
+    if (any(.not.ieee_is_finite(qtotal))) &
+      call XABORT('SPOQFSD: NON-FINITE FIXED-SOURCE RHS.')
+  end subroutine SPOQFSD
 
 end module SPOT_LEAKAGE

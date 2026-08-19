@@ -19,13 +19,11 @@ module SPOR64_B2J
   integer, parameter :: NUNKNO = 14
   integer, parameter :: NMAT = 8
   integer, parameter :: NIFIS = 32
-  integer, parameter :: BOOTSTRAP_INPUT_EPOCH = 0
-  integer, parameter :: BOOTSTRAP_OUTPUT_EPOCH = 1
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
 
-  public :: SPOR64_B2J_PROJECT_ARCHIVE
+  public :: SPOR64_B2J_PROJECT_ARCHIVE, SPOR64_B2J_PROJECT_PROPOSAL
 
 contains
 
@@ -47,6 +45,8 @@ contains
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
     real(real32) :: keff32, area32(NREG), plane_volume32(NREG)
+    real(real64) :: axkeff64
+    integer :: k64len, k64typ
     real(real32) :: plane_leakage32(NGRP), system_leakage32(NGRP)
     real(real64) :: rho64, root_rho64, plane_rho64, iter_keff64
     real(real32), allocatable :: basis32(:)
@@ -94,8 +94,8 @@ contains
         'CLOSED')) return
     if (.not. RECORD_MATCHES(ipax,'SPOT-X-EPOCH',1,1)) return
     call LCMGET(ipax,'SPOT-X-EPOCH',axial_epoch)
-    if (axial_epoch /= BOOTSTRAP_INPUT_EPOCH) return
-    projected_epoch = BOOTSTRAP_OUTPUT_EPOCH
+    if (axial_epoch < 0 .or. axial_epoch == huge(axial_epoch)) return
+    projected_epoch = axial_epoch + 1
     if (.not. RECORD_MATCHES(ipax,'SPOT-X-DIMS',4,1)) return
     call LCMGET(ipax,'SPOT-X-DIMS',state_dims)
     if (any(state_dims(1:3) /= [1,NGRP,NSNAP])) return
@@ -145,7 +145,15 @@ contains
     if (.not. ieee_is_finite(keff32) .or. keff32 <= +0.0_real32) return
     found64 = transfer(rho64,0_int64)
     expected64 = transfer(1.0_real64/real(keff32,real64),0_int64)
-    if (found64 /= expected64) return
+    if (found64 /= expected64) then
+      call LCMLEN(ipax,'SPOT-X-KEFF',k64len,k64typ)
+      if (k64len /= 1 .or. k64typ /= 4) return
+      call LCMGET(ipax,'SPOT-X-KEFF',axkeff64)
+      if (transfer(rho64,0_int64) /= &
+          transfer(1.0_real64/axkeff64,0_int64)) return
+      if (transfer(real(axkeff64,real32),0_int32) /= &
+          transfer(keff32,0_int32)) return
+    end if
 
     ! AREA2D fixes the row ordering used by every stored POD basis.
     if (.not. CHARACTER_RECORD_MATCHES(ipaxtrack,'SIGNATURE',3,12, &
@@ -177,7 +185,10 @@ contains
         iter_keff64 <= +0.0_real64) return
     found64 = transfer(iter_keff64,0_int64)
     expected64 = transfer(real(keff32,real64),0_int64)
-    if (found64 /= expected64) return
+    if (found64 /= expected64) then
+      if (transfer(real(iter_keff64,real32),0_int32) /= &
+          transfer(keff32,0_int32)) return
+    end if
     if (.not. RECORD_MATCHES(iparchive,'SPOT-R64',-1,0)) return
     root_authority = LCMGID(iparchive,'SPOT-R64')
     if (.not. c_associated(root_authority)) return
@@ -332,7 +343,12 @@ contains
         if (.not. ieee_is_finite(plane_leakage32(ig))) return
         found64 = transfer(leakage64((ip-1)*NGRP+ig),0_int64)
         expected64 = transfer(real(plane_leakage32(ig),real64),0_int64)
-        if (found64 /= expected64) return
+        if (found64 /= expected64) then
+          found32 = transfer(real(leakage64((ip-1)*NGRP+ig), &
+              real32),0_int32)
+          expected32 = transfer(plane_leakage32(ig),0_int32)
+          if (found32 /= expected32) return
+        end if
       end do
     end do
 
@@ -431,6 +447,208 @@ contains
   end subroutine SPOR64_B2J_PROJECT_ARCHIVE
 
 
+  subroutine SPOR64_B2J_PROJECT_PROPOSAL(iparchiveout,ipproposal, &
+      ipaxtrack,iptemplate,status)
+    type(c_ptr), intent(in) :: iparchiveout, ipproposal
+    type(c_ptr), intent(in) :: ipaxtrack, iptemplate
+    integer, intent(out) :: status
+
+    integer :: ip, template_epoch, template_planes, plane_epoch
+    integer :: rank(NGRP)
+    integer(int64) :: found64, expected64
+    real(real32) :: proposal_keff32, template_keff32
+    real(real32) :: plane_leakage32(NGRP)
+    real(real64) :: proposal_rho64, template_iter_keff64
+    real(real64) :: template_rho64, plane_rho64
+    real(real64) :: proposal_leakage64(NGRP*NSNAP)
+    real(real64) :: proposal_iter_keff64
+    character(len=12) :: lifecycle_state
+    type(c_ptr) :: template_authority, template_fluxes
+    type(c_ptr) :: template_plane, template_plane_authority
+    type(c_ptr) :: staged_ax, staged_archive
+    type(c_ptr) :: staged_authority, staged_fluxes
+    type(c_ptr) :: staged_plane, staged_plane_authority
+    integer :: projected_status
+
+    status = SPOR64_B2J_ADMISSION_FAILED
+    staged_ax = c_null_ptr
+    staged_archive = c_null_ptr
+
+    ! A proposal is a separate lifecycle boundary.  It is never admitted by
+    ! weakening the CLOSED/e contract above, and none of its normalization
+    ! records are written to a caller-owned root.
+    if (.not. c_associated(iparchiveout)) return
+    if (.not. c_associated(ipproposal)) return
+    if (.not. c_associated(ipaxtrack)) return
+    if (.not. c_associated(iptemplate)) return
+    if (c_associated(iparchiveout,ipproposal)) return
+    if (c_associated(iparchiveout,ipaxtrack)) return
+    if (c_associated(iparchiveout,iptemplate)) return
+    if (c_associated(ipproposal,ipaxtrack)) return
+    if (c_associated(ipproposal,iptemplate)) return
+    if (c_associated(ipaxtrack,iptemplate)) return
+    if (.not. EMPTY_LCM_ROOT(iparchiveout)) return
+
+    ! Accept only the published, fixed-rank AA(1) carrier selected for this
+    ! branch.  Saved map defects and solver diagnostics belong to x4, not to
+    ! the affine proposal, and therefore cannot cross this boundary.
+    if (.not. CHARACTER_RECORD_MATCHES(ipproposal,'SPOT-X-STATE',3,12, &
+        'PROPOSAL')) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipproposal,'SPOT-X-CARR',3,12, &
+        'X4-RAW-FLUX')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-R64')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-X-EPOCH')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-X-RRHO')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-X-RLEAK')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-X-DLEAK')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-X-RA')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-X-PERP')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-GBAL')) return
+    if (.not. ABSENT_RECORD(ipproposal,'SPOT-GBAL-MA')) return
+    if (.not. RECORD_MATCHES(ipproposal,'SPOT-X-RANK',NGRP,1)) return
+    call LCMGET(ipproposal,'SPOT-X-RANK',rank)
+    if (any(rank /= 2)) return
+    if (.not. RECORD_MATCHES(ipproposal,'K-EFFECTIVE',1,2)) return
+    if (.not. RECORD_MATCHES(ipproposal,'SPOT-X-RHO',1,4)) return
+    if (.not. RECORD_MATCHES(ipproposal,'SPOT-X-L',NGRP*NSNAP,4)) return
+    call LCMGET(ipproposal,'K-EFFECTIVE',proposal_keff32)
+    call LCMGET(ipproposal,'SPOT-X-RHO',proposal_rho64)
+    call LCMGET(ipproposal,'SPOT-X-L',proposal_leakage64)
+    if (.not. ieee_is_finite(proposal_keff32) .or. &
+        proposal_keff32 <= +0.0_real32) return
+    if (.not. ieee_is_finite(proposal_rho64) .or. &
+        proposal_rho64 <= +0.0_real64) return
+    if (.not. all(ieee_is_finite(proposal_leakage64))) return
+    found64 = transfer(proposal_rho64,0_int64)
+    expected64 = transfer(1.0_real64/real(proposal_keff32,real64), &
+        0_int64)
+    if (found64 /= expected64) return
+    ! The proposal's SPOT-X-L is the exact double-precision affine of
+    ! its parents; the historical binary32 round-trip requirement is
+    ! retired with the dp leakage channel (finiteness checked above).
+    proposal_iter_keff64 = real(proposal_keff32,real64)
+
+    ! The template supplies only the immutable plane structures and the
+    ! lineage epoch.  Check its original CLOSED state before making the
+    ! private copy, so normalization cannot conceal a malformed template.
+    if (.not. CHARACTER_RECORD_MATCHES(iptemplate,'SIGNATURE',3,12, &
+        'L_ARCHIVE')) return
+    if (.not. CLOSED_ARCHIVE_ROOT_IS_EXACT(iptemplate)) return
+    if (.not. RECORD_MATCHES(iptemplate,'LISTDIM',1,1)) return
+    if (.not. RECORD_MATCHES(iptemplate,'SPOT-ITER-K',1,4)) return
+    if (.not. RECORD_MATCHES(iptemplate,'SPOT-R64',-1,0)) return
+    call LCMGET(iptemplate,'LISTDIM',template_planes)
+    call LCMGET(iptemplate,'SPOT-ITER-K',template_iter_keff64)
+    if (template_planes /= NSNAP) return
+    if (.not. ieee_is_finite(template_iter_keff64) .or. &
+        template_iter_keff64 <= +0.0_real64) return
+    template_keff32 = real(template_iter_keff64,real32)
+    template_authority = LCMGID(iptemplate,'SPOT-R64')
+    if (.not. c_associated(template_authority)) return
+    if (.not. CLOSED_ROOT_AUTHORITY_IS_EXACT(template_authority)) return
+    if (.not. CHARACTER_RECORD_MATCHES(template_authority,'STATE',3,12, &
+        'CLOSED')) return
+    if (.not. RECORD_MATCHES(template_authority,'RHO',1,4)) return
+    if (.not. RECORD_MATCHES(template_authority,'NPLANE',1,1)) return
+    if (.not. RECORD_MATCHES(template_authority,'EPOCH',1,1)) return
+    call LCMGET(template_authority,'RHO',template_rho64)
+    call LCMGET(template_authority,'NPLANE',template_planes)
+    call LCMGET(template_authority,'EPOCH',template_epoch)
+    if (template_planes /= NSNAP) return
+    ! A proposal branch exists only after at least one completed CONT epoch;
+    ! epoch zero remains the one-time B2I/B2J bootstrap route.
+    if (template_epoch <= 0 .or. template_epoch == huge(template_epoch)) &
+      return
+    if (.not. ieee_is_finite(template_rho64) .or. &
+        template_rho64 <= +0.0_real64) return
+    found64 = transfer(template_rho64,0_int64)
+    expected64 = transfer(1.0_real64/real(template_keff32,real64), &
+        0_int64)
+    if (found64 /= expected64) then
+      if (transfer(template_rho64,0_int64) /= &
+          transfer(1.0_real64/template_iter_keff64,0_int64)) return
+    end if
+    if (.not. RECORD_MATCHES(iptemplate,'FLUX',NSNAP,10)) return
+    template_fluxes = LCMGID(iptemplate,'FLUX')
+    if (.not. c_associated(template_fluxes)) return
+    do ip = 1, NSNAP
+      if (.not. LIST_ITEM_IS_DIRECTORY(template_fluxes,ip)) return
+      template_plane = LCMGIL(template_fluxes,ip)
+      if (.not. c_associated(template_plane)) return
+      if (.not. RECORD_MATCHES(template_plane,'SPOT-R64',-1,0)) return
+      template_plane_authority = LCMGID(template_plane,'SPOT-R64')
+      if (.not. c_associated(template_plane_authority)) return
+      if (.not. SOLVED_AUTHORITY_IS_EXACT(template_plane_authority)) &
+        return
+      if (.not. CHARACTER_RECORD_MATCHES(template_plane_authority, &
+          'STATE',3,12,'SOLVED')) return
+      if (.not. RECORD_MATCHES(template_plane_authority,'RHO',1,4)) &
+        return
+      if (.not. RECORD_MATCHES(template_plane_authority,'EPOCH',1,1)) &
+        return
+      call LCMGET(template_plane_authority,'RHO',plane_rho64)
+      call LCMGET(template_plane_authority,'EPOCH',plane_epoch)
+      if (plane_epoch /= template_epoch) return
+      if (.not. ieee_is_finite(plane_rho64)) return
+      if (transfer(plane_rho64,0_int64) /= &
+          transfer(template_rho64,0_int64)) return
+      if (.not. RECORD_MATCHES(template_plane,'SPOT-LEAK1D',NGRP,2)) &
+        return
+      call LCMGET(template_plane,'SPOT-LEAK1D',plane_leakage32)
+      if (.not. all(ieee_is_finite(plane_leakage32))) return
+    end do
+
+    ! Normalize only two private in-memory copies to the already proven B2J
+    ! CLOSED/e contract.  The original proposal and template remain read-only,
+    ! and no normalized CLOSED object is ever returned to the caller.
+    call LCMOP(staged_ax,'B2J-PROP-AX',0,1,0)
+    call LCMOP(staged_archive,'B2J-PROP-AR',0,1,0)
+    call LCMEQU(ipproposal,staged_ax)
+    call LCMEQU(iptemplate,staged_archive)
+
+    call LCMDEL(staged_ax,'SPOT-X-CARR')
+    lifecycle_state = 'CLOSED'
+    call LCMPTC(staged_ax,'SPOT-X-STATE',12,lifecycle_state)
+    call LCMPUT(staged_ax,'SPOT-X-EPOCH',1,1,template_epoch)
+    call LCMPUT(staged_archive,'SPOT-ITER-K',1,4, &
+        proposal_iter_keff64)
+    staged_authority = LCMGID(staged_archive,'SPOT-R64')
+    if (.not. c_associated(staged_authority)) &
+      call XABORT('SPOR64_B2J: PRIVATE PROPOSAL ROOT AUTHORITY MISSING.')
+    call LCMPUT(staged_authority,'RHO',1,4,proposal_rho64)
+    staged_fluxes = LCMGID(staged_archive,'FLUX')
+    if (.not. c_associated(staged_fluxes)) &
+      call XABORT('SPOR64_B2J: PRIVATE PROPOSAL FLUX LIST MISSING.')
+    do ip = 1, NSNAP
+      staged_plane = LCMGIL(staged_fluxes,ip)
+      if (.not. c_associated(staged_plane)) &
+        call XABORT('SPOR64_B2J: PRIVATE PROPOSAL PLANE MISSING.')
+      staged_plane_authority = LCMGID(staged_plane,'SPOT-R64')
+      if (.not. c_associated(staged_plane_authority)) &
+        call XABORT('SPOR64_B2J: PRIVATE PROPOSAL AUTHORITY MISSING.')
+      call LCMPUT(staged_plane_authority,'RHO',1,4,proposal_rho64)
+      plane_leakage32 = real(proposal_leakage64( &
+          (ip-1)*NGRP+1:ip*NGRP),real32)
+      call LCMPUT(staged_plane,'SPOT-LEAK1D',NGRP,2, &
+          plane_leakage32)
+      ! The REAL64 leakage authority; SPOT-LEAK1D above is its exact
+      ! bitwise demote mirror by construction.
+      call LCMPUT(staged_plane,'LEAK1D64',NGRP,4, &
+          proposal_leakage64((ip-1)*NGRP+1:ip*NGRP))
+    end do
+
+    projected_status = SPOR64_B2J_ADMISSION_FAILED
+    call SPOR64_B2J_PROJECT_ARCHIVE(iparchiveout,staged_ax,ipaxtrack, &
+        staged_archive,projected_status)
+    call LCMCL(staged_archive,2)
+    staged_archive = c_null_ptr
+    call LCMCL(staged_ax,2)
+    staged_ax = c_null_ptr
+    if (projected_status /= SPOR64_B2J_ARCHIVE_PROJECTED) return
+    status = SPOR64_B2J_ARCHIVE_PROJECTED
+  end subroutine SPOR64_B2J_PROJECT_PROPOSAL
+
+
   subroutine CLOSE_STAGES(staged_flux)
     type(c_ptr), intent(inout) :: staged_flux(:)
     integer :: ip
@@ -474,6 +692,18 @@ contains
     RECORD_MATCHES = actual_length == expected_length .and. &
         actual_type == expected_type
   end function RECORD_MATCHES
+
+
+  logical function ABSENT_RECORD(iplist,name)
+    type(c_ptr), intent(in) :: iplist
+    character(len=*), intent(in) :: name
+    integer :: actual_length, actual_type
+
+    ABSENT_RECORD = .false.
+    if (.not. c_associated(iplist)) return
+    call LCMLEN(iplist,name,actual_length,actual_type)
+    ABSENT_RECORD = actual_length == 0 .and. actual_type == 99
+  end function ABSENT_RECORD
 
 
   logical function LIST_ITEM_IS_DIRECTORY(iplist,index)
@@ -548,8 +778,14 @@ contains
         ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
          'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
          'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ']
+    character(len=12), parameter :: names64(13) = &
+        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
+         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
+         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ', &
+         'LEAK1D64    ']
 
-    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names64) &
+        .or. EXACT_INVENTORY(iplist,names)
   end function PROJECTED_PLANE_ROOT_IS_EXACT
 
 
@@ -640,7 +876,10 @@ contains
       end do
       if (.not. ieee_is_finite(found_leakage(ig))) return
       if (transfer(real(found_leakage(ig),real64),0_int64) /= &
-          transfer(expected_leakage(ig),0_int64)) return
+          transfer(expected_leakage(ig),0_int64)) then
+        if (transfer(found_leakage(ig),0_int32) /= &
+            transfer(real(expected_leakage(ig),real32),0_int32)) return
+      end if
     end do
     STAGED_PROJECTED_OBJECT_IS_COMMITTED = .true.
   end function STAGED_PROJECTED_OBJECT_IS_COMMITTED

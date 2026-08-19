@@ -27,6 +27,10 @@ module SPOR64_B2B
   integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
   integer, parameter :: MAX_SCAT = NMAT*NGRP
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
+  ! Axial lineage terminal of the r64dp route (solver_eps = 5.0E-8 in
+  ! REAL32).  Seeds projected from dp-era axial states carry this value
+  ! in EPS-CONVERGE(1:3) and IREBAL=0 (REBA OFF) in their state vector.
+  integer(int32), parameter :: DP_AXIAL_TOL_BITS = int(z'3356bf95',int32)
   integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
   integer, parameter :: kind_guard = 1 / merge(1, 0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -84,6 +88,9 @@ contains
     real(real32) :: vol32(NREG), volume_track32(NUNKNO)
     real(real32) :: albedo32(NSOUT), surfac32(NSOUT)
     real(real32) :: leak1d_input32(NGRP), seed_leak1d32(NGRP), qint32(NGRP)
+    real(real32) :: s0phys_stage32(NMAT+1)
+    real(real64) :: leak1d64(NGRP)
+    logical :: have_leak1d64
     real(real32) :: flux_stage32(NUNKNO), source_stage32(NUNKNO)
     real(real32) :: nusigf_stage32(NMAT*NIFIS)
     real(real32) :: xstrc32(0:NMAT,NGRP)
@@ -195,6 +202,23 @@ contains
     if (.not. RECORD_MATCHES(ipseed,'SPOT-LEAK1D',NGRP,2)) return
     call LCMGET(ipseed,'SPOT-LEAK1D',seed_leak1d32)
     if (.not. all(ieee_is_finite(seed_leak1d32))) return
+    ! Presence-gated REAL64 leakage authority on the projected seed.
+    ! When present, the REAL32 record must be its exact bitwise demote
+    ! mirror and the assembled system must be UNREDUCED (verified in
+    ! the group loop below); the reduction is then applied in REAL64
+    ! inside the solver core.
+    call LCMLEN(ipseed,'LEAK1D64',ilong,itylcm)
+    have_leak1d64 = (ilong == NGRP .and. itylcm == 4)
+    if (ilong /= 0 .and. .not. have_leak1d64) return
+    leak1d64 = 0.0_real64
+    if (have_leak1d64) then
+      call LCMGET(ipseed,'LEAK1D64',leak1d64)
+      if (.not. all(ieee_is_finite(leak1d64))) return
+      do ig = 1, NGRP
+        if (transfer(seed_leak1d32(ig),0_int32) /= &
+            transfer(real(leak1d64(ig),real32),0_int32)) return
+      end do
+    end if
     if (.not. RECORD_MATCHES(ipseed,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipseed,'STATE-VECTOR',flux_state)
     if (flux_state(1) /= NGRP .or. flux_state(2) /= NUNKNO) return
@@ -202,15 +226,19 @@ contains
     if (flux_state(4) /= 0 .or. flux_state(5) /= 0) return
     if (flux_state(6) /= 0 .or. flux_state(7) /= 0) return
     if (flux_state(8) /= 3 .or. flux_state(9) /= 3) return
-    if (flux_state(10) /= 1 .or. flux_state(17) /= NMAT) return
+    if (flux_state(10) /= 1 .and. flux_state(10) /= 0) return
+    if (flux_state(17) /= NMAT) return
     if (flux_state(11) /= 740 .or. flux_state(12) /= 500) return
     if (flux_state(18) /= 1) return
     if (.not. RECORD_MATCHES(ipseed,'EPS-CONVERGE',5,2)) return
     call LCMGET(ipseed,'EPS-CONVERGE',eps_stage32)
     if (.not. all(ieee_is_finite(eps_stage32))) return
-    if (transfer(eps_stage32(1),0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(eps_stage32(2),0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(eps_stage32(3),0_int32) /= FROZEN_TOL_BITS) return
+    if (transfer(eps_stage32(1),0_int32) /= FROZEN_TOL_BITS .and. &
+        transfer(eps_stage32(1),0_int32) /= DP_AXIAL_TOL_BITS) return
+    if (transfer(eps_stage32(2),0_int32) /= &
+        transfer(eps_stage32(1),0_int32)) return
+    if (transfer(eps_stage32(3),0_int32) /= &
+        transfer(eps_stage32(1),0_int32)) return
     if (abs(eps_stage32(4)) > 0.0_real32) return
     if (abs(eps_stage32(5)) > 0.0_real32) return
     if (.not. RECORD_MATCHES(ipseed,'IMERGE-LEAK',NMAT,1)) return
@@ -484,6 +512,16 @@ contains
       if (.not. RECORD_MATCHES(kpsys,'DRAGON-S0XSC',NMAT+1,2)) return
       call LCMGET(kpsys,'DRAGON-S0XSC',xsdia0_32(:,ig))
       if (.not. all(ieee_is_finite(xsdia0_32(:,ig)))) return
+      if (have_leak1d64) then
+        ! REAL64 leakage mode: the system must be UNREDUCED, i.e. the
+        ! stored self-scattering must be bitwise the physical one.
+        if (.not. RECORD_MATCHES(kpsys,'SPOT-S0-PHYS',NMAT+1,2)) return
+        call LCMGET(kpsys,'SPOT-S0-PHYS',s0phys_stage32)
+        do ibm = 1, NMAT
+          if (transfer(xsdia0_32(ibm,ig),0_int32) /= &
+              transfer(s0phys_stage32(ibm+1),0_int32)) return
+        end do
+      end if
       xsdia0_32(0,ig) = +0.0_real32
       call LCMLEN(kpsys,'FUNKNO$USS',ilong,itylcm)
       if (ilong /= 0 .or. itylcm /= 99) return
@@ -496,7 +534,7 @@ contains
         keyflx_base1,matcod,vol32,xstrc32,xsdia0_32,keycur, &
         matalb_surface,albedo32,surfac32,njj_off,ijj_off,ipos_off, &
         nscat_off,scat_off32,fixed_source64,initial_flux64, &
-        real(epsinr32,real64),real(epsunk32,real64), &
+        leak1d64,real(epsinr32,real64),real(epsunk32,real64), &
         real(epsout32,real64),terminal_flux64,terminal_source64, &
         cutoff_visit64,accepted,core_ok)
 
@@ -527,7 +565,6 @@ contains
     type(c_ptr), intent(in) :: ipseed, ipsource, ipsystem
     real(real32), intent(in) :: seed_leakage(:), system_leakage(:)
 
-    integer, parameter :: CONT_EPOCH = 1
     integer, parameter :: NPLANE = 3
     integer :: seed_epoch, source_epoch, system_epoch
     integer :: seed_plane, source_plane, system_plane
@@ -590,9 +627,11 @@ contains
         transfer(source_rho64,0_int64)) return
     if (transfer(seed_rho64,0_int64) /= &
         transfer(system_rho64,0_int64)) return
-    if (seed_epoch /= CONT_EPOCH) return
-    if (source_epoch /= CONT_EPOCH) return
-    if (system_epoch /= CONT_EPOCH) return
+    ! The continuation epoch is dynamic: the three authorities must
+    ! agree exactly among themselves; no fixed epoch is pinned.
+    if (seed_epoch < 1) return
+    if (source_epoch /= seed_epoch) return
+    if (system_epoch /= seed_epoch) return
     if (source_plane < 1 .or. source_plane > NPLANE) return
     if (seed_plane /= source_plane) return
     if (system_plane /= source_plane) return

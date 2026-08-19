@@ -15,7 +15,6 @@ module SPOR64_B2R
   integer, parameter :: NREG = 8
   integer, parameter :: NMAT = 8
   integer, parameter :: NUNKNO = 14
-  integer, parameter :: RETURN_EPOCH = 1
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -80,7 +79,7 @@ contains
     end do
     if (.not. EMPTY_LCM_ROOT(ipout)) return
 
-    ! Admit one B2k ASSEMBLED/1 archive.  Its RHO is the bitwise reciprocal of
+    ! Admit one B2k ASSEMBLED/e archive.  Its RHO is the bitwise reciprocal of
     ! the current outer-state eigenvalue used by the radial equation and is
     ! the common generation label.
     if (.not. ASSEMBLED_ROOT_IS_EXACT(ipassembled)) return
@@ -107,7 +106,7 @@ contains
     call LCMGET(root_authority,'EPOCH',root_epoch)
     if (.not. ieee_is_finite(root_rho64)) return
     if (root_rho64 <= +0.0_real64) return
-    if (root_planes /= NSNAP .or. root_epoch /= RETURN_EPOCH) return
+    if (root_planes /= NSNAP .or. root_epoch <= 0) return
     expected64 = transfer(1.0_real64/iter_keff64,0_int64)
     if (transfer(root_rho64,0_int64) /= expected64) return
 

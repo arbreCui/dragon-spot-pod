@@ -64,6 +64,58 @@ receipt.
 | independent check | `852969d74c0664055c23a42ca49dbc2608c05ce18ca2e95cac46bc3cdb32bb75` |
 | receipt | `048e71f74d1d534a5fdb753ed6e50461731f6b78c4f31cc3984ebb3dd5d8daf6` |
 
+## Half-tolerance numerical-route check
+
+The same q12 input was checked once at an inner solver tolerance of
+`2.5e-7`; the physical model, rank-2 basis, proposal, and outer gate were
+unchanged.  A verified REAL64 radial solve returned all three planes, and
+the frozen axial system precheck passed.  The first, cold-start axial call
+reached its 80-second hard bound without a strict terminal and remains the
+historical `NO_SCIENTIFIC_RESULT` retained under
+`validation/artifacts/iterative-rank2-current-rs-aa1-h2-axial-no-result/`.
+
+The separately frozen warm-start deck was then evaluated exactly once, with
+no retry.  It copied the q12 parent flux only as FLU's initial iterate and
+retained the same TYPE-K/SPOT equation, `2.5e-7` terminal, fixed rank-2
+basis, and direct leakage return.  FLU completed normally in 32 seconds at
+`IEXTF=132`, with strict terminals
+
+| `EEXT` | `EUNK` | `EINR` |
+|---:|---:|---:|
+| `7.52153756e-11` | `2.48240752e-7` | `2.48508769e-7` |
+
+The physical log reported, and the independent Ganlib checker bitwise
+verified,
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.422348086676521\times10^{-8},\,
+6.227249187060924\times10^{-4},\,
+9.124050848186016\times10^{-7}\ \mathrm{cm}^{-1},\,
+7.663811383042230\times10^{-6}).
+$$
+
+Only two inherited proposal-lifecycle records, `SPOT-X-STATE` and
+`SPOT-X-CARR`, were removed in a separate no-solve canonical copy before
+the checker was rerun.  It then passed proposal provenance, frozen POD
+package, live radial operator, radial positivity, canonical layout, raw
+defects, and restart archive.  At the unchanged `5e-7` outer gate, $R_\rho$
+passes, while $R_L$ and $R_a$ fail at `1245.44983741` and
+`15.3276227661` gate multiples.  The classification is `VALID_NOT_MET`.
+
+Relative to the completed `5e-7` q12 map, $R_L$ and $D_L$ increase by about
+`32.9459%`, while $R_a$ is about `14.7951` times larger.  This reveals
+substantial numerical-route sensitivity at q12, not a pure tolerance
+effect: the old route used REAL32 radial solves and a cold axial start,
+whereas this route used the verified REAL64 radial kernel and a parent-flux
+axial start.  One comparison does not establish a convergence order,
+uniqueness, or divergence.  No relaxation, empirical coefficient, altered
+physical equation, fallback, or retry was used.  The verified evidence is
+retained under
+`validation/artifacts/iterative-rank2-current-rs-aa1-h2-warm-map/`.
+This return is the first successor of a new, fixed numerical-map contract;
+the older `5e-7` residual history must not be mixed into its future AA(1).
+
 ## Minimum-order direction decision
 
 AA(1) used only the consecutive genuine residuals $s-q_{11}$ and

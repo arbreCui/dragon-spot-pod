@@ -16,7 +16,6 @@ module SPOR64_B2W
   integer, parameter :: NREG = 8
   integer, parameter :: NUNKNO = 14
   integer, parameter :: NMAT = 8
-  integer, parameter :: CLOSE_EPOCH = 1
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -65,7 +64,7 @@ contains
     if (.not. ABSENT_RECORD(root_authority,'RHO')) return
     call LCMGET(root_authority,'NPLANE',root_planes)
     call LCMGET(root_authority,'EPOCH',root_epoch)
-    if (root_planes /= NSNAP .or. root_epoch /= CLOSE_EPOCH) return
+    if (root_planes /= NSNAP .or. root_epoch <= 0) return
 
     if (.not. RECORD_MATCHES(ipfeedback,'TRACK',NSNAP,10)) return
     if (.not. RECORD_MATCHES(ipfeedback,'MICROLIB2',NSNAP,10)) return
@@ -92,6 +91,7 @@ contains
       if (.not. RETURNED_CHILD_IS_VALID(input_flux,child_rho64(ip), &
           fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
           child_leakage32(:,ip))) return
+      if (child_epoch(ip) /= root_epoch) return
       if (.not. RETURNED_SYSTEM_IS_VALID(input_system,ip, &
           child_rho64(ip),child_epoch(ip),system_leakage32(:,ip))) return
 
@@ -177,7 +177,11 @@ contains
     if (iter_keff64 <= +0.0_real64) return
     found64 = transfer(iter_keff64,0_int64)
     expected64 = transfer(real(keff32,real64),0_int64)
-    if (found64 /= expected64) return
+    if (found64 /= expected64) then
+      found32 = transfer(real(iter_keff64,real32),0_int32)
+      expected32 = transfer(keff32,0_int32)
+      if (found32 /= expected32) return
+    end if
     if (.not. ieee_is_finite(l1_error32)) return
     if (l1_error32 < +0.0_real32) return
 
@@ -191,7 +195,7 @@ contains
     if (.not. ABSENT_RECORD(root_authority,'RHO')) return
     call LCMGET(root_authority,'NPLANE',root_planes)
     call LCMGET(root_authority,'EPOCH',root_epoch)
-    if (root_planes /= NSNAP .or. root_epoch /= CLOSE_EPOCH) return
+    if (root_planes /= NSNAP .or. root_epoch <= 0) return
 
     if (.not. RECORD_MATCHES(ipfeedback,'TRACK',NSNAP,10)) return
     if (.not. RECORD_MATCHES(ipfeedback,'MICROLIB2',NSNAP,10)) return
@@ -222,6 +226,7 @@ contains
       if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip), &
           child_rho64(ip),fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
           child_leakage32(:,ip))) return
+      if (child_epoch(ip) /= root_epoch) return
       if (.not. RETURNED_SYSTEM_IS_VALID(input_system(ip),ip, &
           child_rho64(ip),child_epoch(ip),system_leakage32(:,ip))) return
     end do
@@ -253,7 +258,12 @@ contains
         found64 = transfer(axial_leakage64((ip-1)*NGRP+ig),0_int64)
         expected64 = transfer(real(child_leakage32(ig,ip),real64), &
             0_int64)
-        if (found64 /= expected64) return
+        if (found64 /= expected64) then
+          found32 = transfer(real(axial_leakage64((ip-1)*NGRP+ig), &
+              real32),0_int32)
+          expected32 = transfer(child_leakage32(ig,ip),0_int32)
+          if (found32 /= expected32) return
+        end if
       end do
     end do
 
@@ -264,7 +274,7 @@ contains
     call LCMEQU(ipax,ipaxout)
     lifecycle_state = 'CLOSED'
     call LCMPTC(ipaxout,'SPOT-X-STATE',12,lifecycle_state)
-    call LCMPUT(ipaxout,'SPOT-X-EPOCH',1,1,CLOSE_EPOCH)
+    call LCMPUT(ipaxout,'SPOT-X-EPOCH',1,1,root_epoch)
 
     ! Rebuild the archive root so the transition-only error diagnostic is
     ! not propagated.  All four indexed payloads are recursive copies.
@@ -302,6 +312,19 @@ contains
       if (.not. c_associated(output_item)) &
           call XABORT('SPOR64_B2W: OUTPUT FLUX ITEM CREATION FAILED.')
       call LCMEQU(input_flux(ip),output_item)
+      output_authority = LCMGID(output_item,'SPOT-R64')
+      if (.not. c_associated(output_authority)) &
+          call XABORT('SPOR64_B2W: OUTPUT FLUX AUTHORITY MISSING.')
+      ! QFISS belongs only to the RETURNED transition.  A CLOSED child has
+      ! the same five-record authority consumed by B2j on the next epoch.
+      call LCMDEL(output_authority,'QFISS')
+      ! In a CLOSED archive, child RHO labels the completed outer state.
+      ! SPOT-FS-K remains the immutable receipt of the preceding radial
+      ! equation; B2j must not confuse that lagged equation coefficient with
+      ! the state being projected next.
+      call LCMPUT(output_authority,'RHO',1,4,rho1)
+      ! Rewriting EPOCH commits the relabelled child after its RHO update.
+      call LCMPUT(output_authority,'EPOCH',1,1,root_epoch)
     end do
 
     output_authority = LCMDID(iparchiveout,'SPOT-R64')
@@ -311,7 +334,7 @@ contains
     call LCMPUT(output_authority,'NPLANE',1,1,archive_planes)
     call LCMPTC(output_authority,'STATE',12,lifecycle_state)
     ! This is the archive-wide commit and the final LCM mutation.
-    call LCMPUT(output_authority,'EPOCH',1,1,CLOSE_EPOCH)
+    call LCMPUT(output_authority,'EPOCH',1,1,root_epoch)
     status = SPOR64_B2W_CLOSED
   end subroutine SPOR64_B2W_CLOSE
 
@@ -329,6 +352,8 @@ contains
     real(real32), allocatable :: basis32(:)
     real(real64), allocatable :: coordinates64(:), gram64(:)
     real(real64) :: height64(NSNAP), norm64
+    real(real64) :: keff64r
+    integer :: lenk64, tylk64
     real(real64) :: offspace64(NGRP*NSNAP), gram_error64
 
     CANONICAL_AX_IS_VALID = .false.
@@ -421,7 +446,15 @@ contains
     if (rho64 <= +0.0_real64) return
     found64 = transfer(rho64,0_int64)
     expected64 = transfer(1.0_real64/real(keff32,real64),0_int64)
-    if (found64 /= expected64) return
+    if (found64 /= expected64) then
+      call LCMLEN(ipax,'SPOT-X-KEFF',lenk64,tylk64)
+      if (lenk64 /= 1 .or. tylk64 /= 4) return
+      call LCMGET(ipax,'SPOT-X-KEFF',keff64r)
+      if (transfer(rho64,0_int64) /= &
+          transfer(1.0_real64/keff64r,0_int64)) return
+      if (transfer(real(keff64r,real32),0_int32) /= &
+          transfer(keff32,0_int32)) return
+    end if
 
     CANONICAL_AX_IS_VALID = .true.
   end function CANONICAL_AX_IS_VALID
@@ -480,11 +513,12 @@ contains
 
 
   logical function RETURNED_CHILD_IS_VALID(child,rho64,fs_keff32,epoch, &
-      fs_marker,leakage32)
+      fs_marker,leakage32,iter_keff64_in)
     type(c_ptr), intent(in) :: child
     real(real64), intent(out) :: rho64
     real(real32), intent(out) :: fs_keff32, leakage32(NGRP)
     integer, intent(out) :: epoch, fs_marker
+    real(real64), intent(in), optional :: iter_keff64_in
 
     integer :: state(NSTATE), imerge(NMAT), keyflx(NREG)
     integer :: ig, ir
@@ -584,10 +618,20 @@ contains
     call LCMGET(authority,'EPOCH',epoch)
     if (.not. ieee_is_finite(rho64)) return
     if (rho64 <= +0.0_real64) return
-    if (epoch /= CLOSE_EPOCH) return
+    if (epoch <= 0) return
     found64 = transfer(rho64,0_int64)
     expected64 = transfer(1.0_real64/real(fs_keff32,real64),0_int64)
-    if (found64 /= expected64) return
+    if (found64 /= expected64) then
+      if (present(iter_keff64_in)) then
+        if (transfer(rho64,0_int64) /= &
+            transfer(1.0_real64/iter_keff64_in,0_int64)) return
+        if (transfer(fs_keff32,0_int32) /= &
+            transfer(real(iter_keff64_in,real32),0_int32)) return
+      else
+        if (transfer(fs_keff32,0_int32) /= &
+            transfer(real(1.0_real64/rho64,real32),0_int32)) return
+      end if
+    end if
 
     authority_flux = LCMGID(authority,'FLUX')
     authority_source = LCMGID(authority,'SOUR')

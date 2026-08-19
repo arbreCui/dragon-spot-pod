@@ -65,7 +65,7 @@ subroutine SPOR64X(nentry,hentry,ientry,jentry,kentry)
   ! SPOR64X is the thin terminal adapter of the deployment-default-off
   ! SpotCloseR64 procedure.  The procedure owns AX_NEXT and FEEDBACK from
   ! their creation through this call; the public B2W gate remains responsible
-  ! for exact content admission and the final CLOSED/1 commit.
+  ! for exact content admission and the final CLOSED/e commit.
   if (nentry /= 4) then
     call XABORT('SPOR64X: FOUR ENTRIES EXPECTED.')
     return

@@ -3,18 +3,20 @@
 *                                                              *
 * This procedure is not selected by a shipped calculation.     *
 * It owns every mutable intermediate from the RETURNED copy     *
-* through the final B2W CLOSED/1 commit.                        *
+* through the final B2W CLOSED/e commit.                        *
 ****************************************************************
-PARAMETER AX_CLOSED ARCH_CLOSED RETURNED TRACK_AX MACROLIB3 BASIS_REF ::
-  ::: LINKED_LIST AX_CLOSED ARCH_CLOSED RETURNED TRACK_AX
+PARAMETER AX_CLOSED ARCH_CLOSED RETURNED PARENT_AX TRACK_AX MACROLIB3
+          BASIS_REF ::
+  ::: LINKED_LIST AX_CLOSED ARCH_CLOSED RETURNED PARENT_AX TRACK_AX
                   MACROLIB3 BASIS_REF ; ;
 
 LINKED_LIST FEEDBACK SYSTEM_NEXT AX_NEXT ;
-MODULE SPOR64V: ASM: FLU: SPOSTATE: SPOLEAK: SPOR64X: DELETE: END: ;
+MODULE SPOR64V: ASM: FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK:
+       SPOR64X: UTL: DELETE: END: ;
 
 REAL leak_change ;
 
-* Preserve the caller's RETURNED/1 object.  FEEDBACK is the sole mutable
+* Preserve the caller's RETURNED/e object.  FEEDBACK is the sole mutable
 * archive seen by this procedure and stays local until B2W consumes it.
 FEEDBACK := RETURNED ;
 
@@ -23,19 +25,29 @@ FEEDBACK := RETURNED ;
 * no scalar norm or numerical tolerance substitutes for that identity.
 SPOR64V: FEEDBACK :: ;
 
-* Rank one is the frozen reduced-space dimension.  FIXB reuses the supplied
+* Rank two is the frozen reduced-space dimension.  FIXB reuses the supplied
 * offline basis and rebuilds only the current radial response.
 SYSTEM_NEXT := ASM: MACROLIB3 TRACK_AX FEEDBACK BASIS_REF ::
-  EDIT 0 SPOD 1 FIXB ;
+  EDIT 0 SPOD 2 FIXB ;
 
 * These are the already frozen binary32 axial inner-solver termination
 * controls.  They are neither outer acceptance criteria nor mixing factors.
-AX_NEXT := FLU: MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+* Use the preceding canonical state only as FLU's initial iterate.  Removing
+* the CLOSED markers does not change its numerical fields or the new system.
+AX_NEXT := PARENT_AX ;
+AX_NEXT := UTL: AX_NEXT ::
+  EDIT 0
+  DEL 'SPOT-X-STATE'
+  DEL 'SPOT-X-EPOCH' ;
+AX_NEXT := FLU: AX_NEXT MACROLIB3 TRACK_AX SYSTEM_NEXT ::
   EDIT -3 TYPE K B1 SIGS EXTE 500 2.5E-7
   UNKT 2.5E-7 THER 2.5E-7 ;
 
+AX_NEXT := SPOGBAL:
+  AX_NEXT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
 AX_NEXT := SPOSTATE:
   AX_NEXT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+AX_NEXT := SPOXCONV: AX_NEXT PARENT_AX :: ;
 
 * SPOLEAK writes the fresh undamped L1 only into the private feedback copy.
 FEEDBACK := SPOLEAK: FEEDBACK AX_NEXT TRACK_AX :: >>leak_change<< ;

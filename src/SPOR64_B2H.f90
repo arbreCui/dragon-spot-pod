@@ -67,6 +67,8 @@ contains
     integer :: ig, ir, ilong, itylcm, allocation_status
     logical :: seen_unknown(NUNKNO)
     real(real32) :: eps_converge(5), leak1d(NGRP)
+    real(real64) :: leak1d64(NGRP)
+    logical :: have_leak1d64
     real(real64) :: seed_rho64
     real(real64), allocatable :: seed_flux64(:,:), seed_source64(:,:)
     real(real64), allocatable :: projected_flux64(:,:)
@@ -130,6 +132,20 @@ contains
     if (.not. RECORD_MATCHES(ipseed,'SPOT-LEAK1D',NGRP,2)) return
     call LCMGET(ipseed,'SPOT-LEAK1D',leak1d)
     if (.not. all(ieee_is_finite(leak1d))) return
+    ! Presence-gated REAL64 leakage authority; when present the REAL32
+    ! record must be its exact bitwise demote mirror.
+    call LCMLEN(ipseed,'LEAK1D64',ilong,itylcm)
+    have_leak1d64 = (ilong == NGRP .and. itylcm == 4)
+    if (ilong /= 0 .and. .not. have_leak1d64) return
+    leak1d64 = 0.0_real64
+    if (have_leak1d64) then
+      call LCMGET(ipseed,'LEAK1D64',leak1d64)
+      if (.not. all(ieee_is_finite(leak1d64))) return
+      do ig = 1, NGRP
+        if (transfer(leak1d(ig),0_int32) /= &
+            transfer(real(leak1d64(ig),real32),0_int32)) return
+      end do
+    end if
 
     if (.not. CHARACTER_RECORD_MATCHES(iptrack,'SIGNATURE',3,12, &
         'L_TRACK')) return
@@ -237,6 +253,7 @@ contains
     call LCMPTC(ipout,'LINK.TRACK',12,track_name)
     call LCMPTC(ipout,'LINK.SYSTEM',12,system_name)
     call LCMPUT(ipout,'SPOT-LEAK1D',NGRP,2,leak1d)
+    if (have_leak1d64) call LCMPUT(ipout,'LEAK1D64',NGRP,4,leak1d64)
     call LCMPTC(output_authority,'STATE',12,authority_state)
     call LCMPUT(output_authority,'EPOCH',1,1,output_epoch)
     status = SPOR64_B2H_PROJECTED_COMMITTED

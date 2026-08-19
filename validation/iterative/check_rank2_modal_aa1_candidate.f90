@@ -9,6 +9,10 @@ program check_rank2_modal_aa1_candidate
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-x4 x3 x4 qy z z_snap basis \
   !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-x4-r64-screened x3 x4 qy z \
+  !     z_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate --next-r64-bd-screened r b c d \
+  !     d_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-x4z qy z qt u u_snap basis \
   !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --next-zu qt u qs v v_snap basis \
@@ -47,6 +51,15 @@ program check_rank2_modal_aa1_candidate
   !     x4_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive-returned-screened \
   !     z r s s_snap basis proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate \
+  !     --consecutive-returned-r64-screened x2 x3 x4 x4_snap basis \
+  !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate \
+  !     --consecutive-returned-r64-uvw-screened u v w w_snap basis \
+  !     proposal_ax proposal_snap
+  !   check_rank2_modal_aa1_candidate \
+  !     --consecutive-r64-qrb-screened q r b b_snap basis \
+  !     proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive-ptu-screened \
   !     p t u u_snap basis proposal_ax proposal_snap
   !   check_rank2_modal_aa1_candidate --consecutive-current qs v w \
@@ -136,6 +149,7 @@ program check_rank2_modal_aa1_candidate
   logical :: current_cefg_aa2_mode
   logical :: x4z_history_mode,zu_history_mode
   logical :: x4aa2_screened_mode
+  logical :: next_x4_r64_screened_mode
   logical :: consecutive_mode
   logical :: consecutive_returned_mode
   logical :: consecutive_current_mode
@@ -143,7 +157,19 @@ program check_rank2_modal_aa1_candidate
   logical :: consecutive_qvwx_zplus_screened_mode
   logical :: consecutive_q5kl_screened_mode
   logical :: consecutive_returned_screened_mode
+  logical :: consecutive_returned_r64_screened_mode
+  logical :: consecutive_returned_r64_uvw_screened_mode
+  logical :: consecutive_returned_r64_fgh_screened_mode
+  logical :: affine_beta_mode
+  type(c_ptr) :: snap_probe,auth_probe
+  integer :: probe_len,probe_typ
+  character(len=12) :: marker_probe
+  real(real64) :: beta_input
+  character(len=48) :: beta_text
+  logical :: consecutive_r64_qrb_screened_mode
   logical :: consecutive_ptu_screened_mode
+  integer :: r64_carrier_epoch
+  integer :: next_r64_epoch
   character(len=24) :: report_prefix
   character(len=12) :: proposal_carrier
   character(len=2) :: previous_output,latest_output
@@ -158,6 +184,7 @@ program check_rank2_modal_aa1_candidate
   x4z_history_mode=.false.
   zu_history_mode=.false.
   x4aa2_screened_mode=.false.
+  next_x4_r64_screened_mode=.false.
   rolling_aa2_next_mode=.false.
   current_aa2_mode=.false.
   current_qpzst_aa2_mode=.false.
@@ -172,8 +199,34 @@ program check_rank2_modal_aa1_candidate
   consecutive_qvwx_zplus_screened_mode=.false.
   consecutive_q5kl_screened_mode=.false.
   consecutive_returned_screened_mode=.false.
+  consecutive_returned_r64_screened_mode=.false.
+  consecutive_returned_r64_uvw_screened_mode=.false.
+  consecutive_returned_r64_fgh_screened_mode=.false.
+  affine_beta_mode=.false.
+  beta_input=0.0_real64
+  consecutive_r64_qrb_screened_mode=.false.
   consecutive_ptu_screened_mode=.false.
-  if (argument_count == 11) then
+  r64_carrier_epoch=3
+  next_r64_epoch=4
+  call get_command_argument(1,mode_argument)
+  if ((argument_count == 9).and. &
+      (trim(mode_argument) == '--affine-r64-fgh-beta')) then
+    consecutive_mode=.true.
+    consecutive_returned_mode=.true.
+    consecutive_returned_r64_screened_mode=.true.
+    consecutive_returned_r64_fgh_screened_mode=.true.
+    affine_beta_mode=.true.
+    call get_command_argument(9,beta_text)
+    if (len_trim(beta_text) == 0) &
+      call fail('AFFINE BETA ARGUMENT IS EMPTY.')
+    read(beta_text,*) beta_input
+    if (.not.ieee_is_finite(beta_input)) &
+      call fail('AFFINE BETA ARGUMENT IS NOT FINITE.')
+    do i=1,7
+      call get_command_argument(i+1,path(i))
+      if (len_trim(path(i)) == 0) call fail('EMPTY XSM PATH ARGUMENT.')
+    enddo
+  else if (argument_count == 11) then
     call get_command_argument(1,mode_argument)
     if (trim(mode_argument) == '--rolling-aa2-next') then
       rolling_aa2_next_mode=.true.
@@ -215,6 +268,11 @@ program check_rank2_modal_aa1_candidate
       u_mode=.true.
     else if (trim(mode_argument) == '--next-x4') then
       x4_history_mode=.true.
+    else if (trim(mode_argument) == '--next-x4-r64-screened') then
+      next_x4_r64_screened_mode=.true.
+    else if (trim(mode_argument) == '--next-r64-bd-screened') then
+      next_x4_r64_screened_mode=.true.
+      next_r64_epoch=10
     else if (trim(mode_argument) == '--next-x4z') then
       x4z_history_mode=.true.
     else if (trim(mode_argument) == '--next-zu') then
@@ -242,7 +300,8 @@ program check_rank2_modal_aa1_candidate
     else if (trim(mode_argument) == '--rolling-aa1-next') then
       rolling_next_mode=.true.
     else if (trim(mode_argument) /= '--next') then
-      call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, --NEXT-X4Z, '// &
+      call fail('NINE ARGUMENTS REQUIRE --NEXT, --NEXT-X4, '// &
+        '--NEXT-X4-R64-SCREENED, --NEXT-X4Z, '// &
         '--NEXT-ZU, --NEXT-X4AA2-SCREENED, --NEXT-AA1AA2-SCREENED, '// &
         '--NEXT-AA1AA2-NO-SCREENED, '// &
         '--NEXT-AA1AA2-IJ-SCREENED, --NEXT-AA2AA1-JK-SCREENED, '// &
@@ -268,6 +327,29 @@ program check_rank2_modal_aa1_candidate
       consecutive_mode=.true.
       consecutive_returned_mode=.true.
       consecutive_returned_screened_mode=.true.
+    else if (trim(mode_argument) == &
+        '--consecutive-returned-r64-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+    else if (trim(mode_argument) == &
+        '--consecutive-returned-r64-uvw-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+      consecutive_returned_r64_uvw_screened_mode=.true.
+    else if (trim(mode_argument) == &
+        '--consecutive-returned-r64-fgh-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+      consecutive_returned_r64_fgh_screened_mode=.true.
+    else if (trim(mode_argument) == &
+        '--consecutive-r64-qrb-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+      consecutive_r64_qrb_screened_mode=.true.
     else if (trim(mode_argument) == '--consecutive-ptu-screened') then
       consecutive_mode=.true.
       consecutive_ptu_screened_mode=.true.
@@ -312,7 +394,8 @@ program check_rank2_modal_aa1_candidate
     call check_next_candidate(trim(path(1)),trim(path(2)),trim(path(3)), &
       trim(path(4)),trim(path(5)),trim(path(6)),trim(path(7)),trim(path(8)), &
       u_mode,post_aa1_mode,rolling_mode,rolling_next_mode,x4_history_mode, &
-      x4z_history_mode,zu_history_mode,x4aa2_screened_mode)
+      x4z_history_mode,zu_history_mode,x4aa2_screened_mode, &
+      next_x4_r64_screened_mode,next_r64_epoch)
   else
 
   report_prefix='RANK2-MODAL-AA1'
@@ -350,7 +433,26 @@ program check_rank2_modal_aa1_candidate
     proposal_carrier='X4-RAW-FLUX'
     call load_state(trim(path(1)),2,x0,'QS PROPOSAL','U-RAW-FLUX')
   else if (consecutive_returned_mode) then
-    if (consecutive_returned_screened_mode) then
+    if (consecutive_returned_r64_screened_mode) then
+      report_prefix='RANK2-R64-AA1'
+      previous_output='X3'
+      latest_output='X4'
+      if (consecutive_returned_r64_uvw_screened_mode) then
+        previous_output='V'
+        latest_output='W'
+        r64_carrier_epoch=7
+      endif
+      if (consecutive_returned_r64_fgh_screened_mode) then
+        previous_output='G'
+        latest_output='H'
+        r64_carrier_epoch=13
+      endif
+      if (consecutive_r64_qrb_screened_mode) then
+        previous_output='R'
+        latest_output='B'
+        r64_carrier_epoch=9
+      endif
+    else if (consecutive_returned_screened_mode) then
       report_prefix='RANK2-CURRENT-ZRS-AA1'
       previous_output='R'
       latest_output='S'
@@ -360,7 +462,11 @@ program check_rank2_modal_aa1_candidate
       latest_output='X4'
     endif
     proposal_carrier='X4-RAW-FLUX'
-    call load_state(trim(path(1)),1,x0,'X2 RETURNED')
+    if (consecutive_r64_qrb_screened_mode) then
+      call load_state(trim(path(1)),2,x0,'Q PROPOSAL','X4-RAW-FLUX')
+    else
+      call load_state(trim(path(1)),1,x0,'X2 RETURNED')
+    endif
   else if (consecutive_mode) then
     report_prefix='RANK2-CONSECUTIVE-AA1'
     previous_output='X2'
@@ -370,7 +476,21 @@ program check_rank2_modal_aa1_candidate
   else
     call load_state(trim(path(1)),0,x0,'X0')
   endif
-  call load_state(trim(path(2)),1,x1,'X1')
+  if (affine_beta_mode) then
+    call LCMOP(snap_probe,trim(path(2)),2,2,0)
+    call LCMLEN(snap_probe,'SPOT-X-STATE',probe_len,probe_typ)
+    marker_probe='            '
+    if (probe_len > 0) call LCMGTC(snap_probe,'SPOT-X-STATE',12, &
+      marker_probe)
+    call LCMCL(snap_probe,1)
+    if (marker_probe == 'PROPOSAL') then
+      call load_state(trim(path(2)),2,x1,'X1 PROPOSAL','X4-RAW-FLUX')
+    else
+      call load_state(trim(path(2)),1,x1,'X1')
+    endif
+  else
+    call load_state(trim(path(2)),1,x1,'X1')
+  endif
   call load_state(trim(path(3)),1,x2,'X2')
   call load_state(trim(path(6)),2,proposal,'PROPOSAL',proposal_carrier)
 
@@ -386,6 +506,27 @@ program check_rank2_modal_aa1_candidate
     call validate_input_snapshot(trim(path(4)),x1,x2,'P','Z')
   else if (consecutive_ptu_screened_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'T','U')
+  else if (consecutive_returned_r64_screened_mode) then
+    if (consecutive_returned_r64_uvw_screened_mode) then
+      call validate_input_snapshot(trim(path(4)),x1,x2,'V','W',.true., &
+        r64_carrier_epoch)
+    else if (consecutive_returned_r64_fgh_screened_mode) then
+      if (affine_beta_mode) then
+        call LCMOP(snap_probe,trim(path(4)),2,2,0)
+        auth_probe=LCMGID(snap_probe,'SPOT-R64')
+        call LCMGET(auth_probe,'EPOCH',r64_carrier_epoch)
+        call LCMCL(snap_probe,1)
+        if (r64_carrier_epoch <= 0) &
+          call fail('AFFINE CARRIER EPOCH IS NOT POSITIVE.')
+      endif
+      call validate_input_snapshot(trim(path(4)),x1,x2,'G','H',.true., &
+        r64_carrier_epoch)
+    else if (consecutive_r64_qrb_screened_mode) then
+      call validate_input_snapshot(trim(path(4)),x1,x2,'R','B',.true., &
+        r64_carrier_epoch)
+    else
+      call validate_input_snapshot(trim(path(4)),x1,x2,'X3','X4',.true.)
+    endif
   else if (consecutive_returned_screened_mode) then
     call validate_input_snapshot(trim(path(4)),x1,x2,'R','S')
   else if (consecutive_current_mode) then
@@ -404,6 +545,10 @@ program check_rank2_modal_aa1_candidate
     call fail('NONPOSITIVE MODAL-AA1 DENOMINATOR.')
   beta=(update0_sq-update_dot)/denominator
   previous_weight=1.0_real64-beta
+  if (affine_beta_mode) then
+    beta=beta_input
+    previous_weight=1.0_real64-beta
+  endif
   if ((.not.ieee_is_finite(beta)).or. &
       (.not.ieee_is_finite(previous_weight))) &
     call fail('NON-FINITE MODAL-AA1 WEIGHT.')
@@ -411,6 +556,7 @@ program check_rank2_modal_aa1_candidate
       consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
+      consecutive_returned_r64_screened_mode.or. &
       consecutive_ptu_screened_mode) then
     modal_affine_sq=previous_weight**2*update0_sq+beta**2*update1_sq+ &
       2.0_real64*previous_weight*beta*update_dot
@@ -431,6 +577,7 @@ program check_rank2_modal_aa1_candidate
       consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
+      consecutive_returned_r64_screened_mode.or. &
       consecutive_ptu_screened_mode) then
     leakage_sq=0.0_real64
     leakage_dot=0.0_real64
@@ -467,6 +614,7 @@ program check_rank2_modal_aa1_candidate
         consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
+        consecutive_returned_r64_screened_mode.or. &
         consecutive_ptu_screened_mode) then
       if ((modal_affine_norm >= modal_current_norm).or. &
           (leakage_affine_norm >= leakage_current_norm).or. &
@@ -474,7 +622,8 @@ program check_rank2_modal_aa1_candidate
         if (consecutive_current_aa2_picard_mode) then
           call fail('AA2-PICARD PARAMETER-FREE DIRECTION GATE FAILED.')
         else
-          call fail('SCREENED RETURNED PARAMETER-FREE DIRECTION GATE FAILED.')
+          if (.not.affine_beta_mode) call fail( &
+            'SCREENED RETURNED PARAMETER-FREE DIRECTION GATE FAILED.')
         endif
       endif
     endif
@@ -506,20 +655,21 @@ program check_rank2_modal_aa1_candidate
   allocate(expected_l32(size(x1%leakage)))
   allocate(expected_l(size(x1%leakage)))
   expected_l32=real(previous_weight*x1%leakage+beta*x2%leakage,real32)
-  expected_l=real(expected_l32,real64)
+  expected_l=previous_weight*x1%leakage+beta*x2%leakage
   if (any(.not.ieee_is_finite(expected_l32)).or. &
       any(.not.ieee_is_finite(expected_l))) &
     call fail('NON-FINITE PUBLISHED LEAKAGE.')
   if (any(real64_bits(proposal%leakage) /= real64_bits(expected_l))) &
-    call fail('PROPOSAL SPOT-X-L DIFFERS FROM REAL32-ROUNDTRIP AFFINE VALUE.')
+    call fail('PROPOSAL SPOT-X-L DIFFERS FROM EXACT DP AFFINE VALUE.')
   if (real64_bits(proposal%norm) /= real64_bits(x2%norm)) &
     call fail('PROPOSAL SPOT-X-NORM DIFFERS FROM X2 RAW CARRIER.')
 
   call compare_axial_raw_flux(trim(path(3)),trim(path(6)),x2%state(2))
   if (consecutive_mode) &
-    call compare_axial_carrier_payload(trim(path(3)),trim(path(6)))
+    call compare_axial_carrier_payload(trim(path(3)),trim(path(6)), &
+      consecutive_returned_r64_screened_mode)
   call check_snapshot_publication(trim(path(4)),trim(path(7)), &
-    expected_l32,keff_published)
+    expected_l32,keff_published,consecutive_returned_r64_screened_mode)
   call check_projected_positivity(proposal,min_published_flux,min_group, &
     min_snapshot,min_region)
 
@@ -539,11 +689,13 @@ program check_rank2_modal_aa1_candidate
       consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
+      consecutive_returned_r64_screened_mode.or. &
       consecutive_ptu_screened_mode) then
     if (consecutive_current_aa2_picard_mode.or. &
         consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
+        consecutive_returned_r64_screened_mode.or. &
         consecutive_ptu_screened_mode) then
       call write_real64_metric(trim(report_prefix)// &
         ' MODAL AFFINE L2/CURRENT',modal_affine_norm/modal_current_norm)
@@ -560,6 +712,7 @@ program check_rank2_modal_aa1_candidate
         consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
+        consecutive_returned_r64_screened_mode.or. &
         consecutive_ptu_screened_mode) &
       write(6,'(A)') trim(report_prefix)// &
         ' PARAMETER-FREE DIRECTION GATE PASS'
@@ -577,6 +730,21 @@ program check_rank2_modal_aa1_candidate
     ' AXIAL/PLANE RAW-FLUX CARRIER BITWISE PASS'
   write(6,'(A)') trim(report_prefix)// &
     ' SNAPSHOT LEAKAGE/K PUBLICATION PASS'
+  if (consecutive_returned_r64_screened_mode) then
+    if (consecutive_returned_r64_uvw_screened_mode) then
+      write(6,'(A)') trim(report_prefix)// &
+        ' R64 RETURNED/7 INPUT AND AUTHORITY STRIP PASS'
+    else if (consecutive_returned_r64_fgh_screened_mode) then
+      write(6,'(A)') trim(report_prefix)// &
+        ' R64 RETURNED/13 INPUT AND AUTHORITY STRIP PASS'
+    else if (consecutive_r64_qrb_screened_mode) then
+      write(6,'(A)') trim(report_prefix)// &
+        ' R64 RETURNED/9 INPUT AND AUTHORITY STRIP PASS'
+    else
+      write(6,'(A)') trim(report_prefix)// &
+        ' R64 RETURNED/3 INPUT AND AUTHORITY STRIP PASS'
+    endif
+  endif
   write(6,'(A)') trim(report_prefix)//' LAGGED SYSTEM BITWISE PASS'
   write(6,'(A)') trim(report_prefix)//' NO STALE RESULT RECORD PASS'
   write(6,'(A)') trim(report_prefix)// &
@@ -1024,13 +1192,16 @@ contains
   subroutine check_next_candidate(x1_name,x2_name,y_name,z_name,z_snap_name, &
       basis_name,proposal_name,proposal_snap_name,u_mode,post_aa1_mode, &
       rolling_mode,rolling_next_mode,x4_history_mode,x4z_history_mode, &
-      zu_history_mode,x4aa2_screened_mode)
+      zu_history_mode,x4aa2_screened_mode,next_x4_r64_screened_mode, &
+      next_r64_epoch_in)
     character(len=*), intent(in) :: x1_name,x2_name,y_name,z_name,z_snap_name
     character(len=*), intent(in) :: basis_name,proposal_name,proposal_snap_name
     logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
     logical, intent(in) :: rolling_next_mode,x4_history_mode
     logical, intent(in) :: x4z_history_mode,zu_history_mode
     logical, intent(in), optional :: x4aa2_screened_mode
+    logical, intent(in), optional :: next_x4_r64_screened_mode
+    integer, intent(in), optional :: next_r64_epoch_in
     type(canonical_state) :: state_x1,state_x2,state_y,state_z,state_proposal
     real(real64), allocatable :: affine_a(:),affine_l(:)
     real(real32), allocatable :: published_l(:)
@@ -1046,11 +1217,18 @@ contains
     character(len=24) :: report_prefix
     character(len=12) :: input_carrier,output_carrier
     character(len=8) :: latest_input,latest_output,previous_output
-    logical :: current_screened_mode
+    logical :: current_screened_mode,r64_screened_mode
+    integer :: r64_epoch
 
     current_screened_mode=.false.
     if (present(x4aa2_screened_mode)) &
       current_screened_mode=x4aa2_screened_mode
+    r64_screened_mode=.false.
+    if (present(next_x4_r64_screened_mode)) &
+      r64_screened_mode=next_x4_r64_screened_mode
+    current_screened_mode=current_screened_mode.or.r64_screened_mode
+    r64_epoch=4
+    if (present(next_r64_epoch_in)) r64_epoch=next_r64_epoch_in
 
     if ((u_mode.and.(post_aa1_mode.or.rolling_mode.or. &
           rolling_next_mode.or.x4_history_mode.or.x4z_history_mode.or. &
@@ -1068,7 +1246,20 @@ contains
         (zu_history_mode.and.current_screened_mode)) &
       call fail('NEXT PROPOSAL MODES ARE MUTUALLY EXCLUSIVE.')
     if (current_screened_mode) then
-      if (trim(mode_argument) == '--next-aa1aa1-screened') then
+      if (r64_screened_mode) then
+        input_carrier='X4-RAW-FLUX'
+        output_carrier='X4-RAW-FLUX'
+        report_prefix='RANK2-R64-AA1-NEXT'
+        latest_input='QY'
+        latest_output='Z'
+        previous_output='X4'
+        if (r64_epoch == 10) then
+          latest_input='C'
+          latest_output='D'
+          previous_output='B'
+        endif
+        call load_state(x1_name,1,state_x1,'PREVIOUS MAP INPUT X3')
+      else if (trim(mode_argument) == '--next-aa1aa1-screened') then
         input_carrier='AA1-RAW-FLUX'
         output_carrier='AA1-RAW-FLUX'
         report_prefix='RANK2-CURRENT-MN-AA1'
@@ -1224,8 +1415,13 @@ contains
     call compare_axial_carrier_metadata(state_z,state_proposal, &
       latest_output)
     call check_basis_reference(basis_name,state_proposal)
-    call validate_input_snapshot(z_snap_name,state_y,state_z,latest_input, &
-      latest_output)
+    if (r64_screened_mode) then
+      call validate_input_snapshot(z_snap_name,state_y,state_z, &
+        latest_input,latest_output,.true.,r64_epoch)
+    else
+      call validate_input_snapshot(z_snap_name,state_y,state_z, &
+        latest_input,latest_output)
+    endif
 
     call modal_pair_geometry(state_x1,state_x2,state_y,state_z,p_sq,q_sq, &
       p_dot_q)
@@ -1323,10 +1519,11 @@ contains
     if (real64_bits(state_proposal%norm) /= real64_bits(state_z%norm)) &
       call fail('PROPOSAL SPOT-X-NORM DIFFERS FROM RAW CARRIER.')
 
-    call compare_axial_carrier_payload(z_name,proposal_name)
+    call compare_axial_carrier_payload(z_name,proposal_name, &
+      r64_screened_mode)
     call compare_axial_raw_flux(z_name,proposal_name,state_z%state(2))
     call check_snapshot_publication(z_snap_name,proposal_snap_name, &
-      published_l,keff_published)
+      published_l,keff_published,r64_screened_mode)
     call check_projected_positivity(state_proposal,min_published_flux, &
       min_group,min_snapshot,min_region)
 
@@ -1379,6 +1576,8 @@ contains
       ' SNAPSHOT ROOT/PAYLOAD BITWISE PASS'
     write(6,'(A)') trim(report_prefix)//' LAGGED SYSTEM BITWISE PASS'
     write(6,'(A)') trim(report_prefix)//' NO STALE RESULT RECORD PASS'
+    if (r64_screened_mode) write(6,'(A,I0,A)') trim(report_prefix)// &
+      ' R64 RETURNED/',r64_epoch,' INPUT AND AUTHORITY STRIP PASS'
     write(6,'(A)') trim(report_prefix)// &
       ' CLASSIFICATION MATERIALIZED_PROPOSAL_NOT_EVALUATED'
     write(6,'(A)') trim(report_prefix)//' COMPLETE'
@@ -1391,6 +1590,8 @@ contains
     character(len=*), intent(in), optional :: proposal_carrier
     type(c_ptr) :: root
     integer :: ngrp,nsnap,ncoef,total_basis,total_gram,g
+    integer :: lk64,tk64
+    real(real64) :: dkeff64
     integer :: length_found,type_found
     real(real64), allocatable :: offspace(:),defect(:)
     character(len=12) :: marker,expected_carrier
@@ -1485,9 +1686,20 @@ contains
         (.not.ieee_is_finite(data%gram_error)).or. &
         (data%gram_error < 0.0_real64)) &
       call fail(trim(owner)//' NON-FINITE OR NONPHYSICAL STATE.')
-    if (real64_bits(data%rho) /= &
-        real64_bits(1.0_real64/real(data%keff,real64))) &
-      call fail(trim(owner)//' K/RHO PUBLICATION IDENTITY FAILED.')
+    call LCMLEN(root,'SPOT-X-KEFF',lk64,tk64)
+    if (lk64 == 1) then
+      if (tk64 /= 4) call fail(trim(owner)//' INVALID SPOT-X-KEFF.')
+      call LCMGET(root,'SPOT-X-KEFF',dkeff64)
+      if (real32_bits(real(dkeff64,real32)) /= &
+          real32_bits(data%keff)) &
+        call fail(trim(owner)//' SPOT-X-KEFF MIRROR MISMATCH.')
+      if (real64_bits(data%rho) /= real64_bits(1.0_real64/dkeff64)) &
+        call fail(trim(owner)//' K/RHO PUBLICATION IDENTITY FAILED.')
+    else
+      if (real64_bits(data%rho) /= &
+          real64_bits(1.0_real64/real(data%keff,real64))) &
+        call fail(trim(owner)//' K/RHO PUBLICATION IDENTITY FAILED.')
+    endif
 
     if (record_mode == 2) then
       call require_absent(root,'SPOT-X-RRHO',owner)
@@ -1557,7 +1769,9 @@ contains
     character(len=*), intent(in) :: owner
 
     if ((left%signature /= right%signature).or. &
-        any(left%state /= right%state).or.any(left%dims /= right%dims).or. &
+        any(left%state(1:8) /= right%state(1:8)).or. &
+        any(left%state(11:) /= right%state(11:)).or. &
+        any(left%dims /= right%dims).or. &
         (left%fixb /= right%fixb).or. &
         (left%norm_id /= right%norm_id).or. &
         (left%basis_type /= right%basis_type).or. &
@@ -1742,11 +1956,17 @@ contains
       call fail('INVALID NEXT MODAL PAIR GEOMETRY.')
   end subroutine modal_pair_geometry
 
-  subroutine compare_axial_carrier_payload(carrier_name,proposal_name)
+  subroutine compare_axial_carrier_payload(carrier_name,proposal_name, &
+      strip_r64_mode)
     character(len=*), intent(in) :: carrier_name,proposal_name
+    logical, intent(in), optional :: strip_r64_mode
     type(c_ptr) :: carrier,proposal_root
     character(len=12) :: name,first
     integer :: length_left,length_right,type_left,type_right,expected_count
+    logical :: strip_r64
+
+    strip_r64=.false.
+    if (present(strip_r64_mode)) strip_r64=strip_r64_mode
 
     call LCMOP(carrier,carrier_name,2,2,0)
     call LCMOP(proposal_root,proposal_name,2,2,0)
@@ -1758,9 +1978,14 @@ contains
     do
       call LCMLEN(carrier,name,length_left,type_left)
       call LCMLEN(proposal_root,name,length_right,type_right)
+      if (strip_r64.and.(name == 'SPOT-R64')) then
+        if (length_right /= 0) &
+          call fail('PROPOSAL AXIAL ROOT RETAINS SPOT-R64.')
+      else
       select case(name)
       case('SPOT-X-RRHO','SPOT-X-RLEAK','SPOT-X-DLEAK','SPOT-X-RA', &
-           'SPOT-X-PERP','SPOT-X-EPOCH','SPOT-GBAL','SPOT-GBAL-MA')
+           'SPOT-X-PERP','SPOT-X-EPOCH','SPOT-GBAL','SPOT-GBAL-MA', &
+           'SPOT-X-KEFF','SPOT-KEFF64','FLUX64')
         if (length_right /= 0) &
           call fail('PROPOSAL AXIAL ROOT RETAINS STALE RECORD: '//trim(name))
       case('SPOT-X-A','K-EFFECTIVE','SPOT-X-RHO','SPOT-X-L')
@@ -1778,6 +2003,7 @@ contains
         call compare_named_record(carrier,proposal_root,name,length_left, &
           type_left,'AXIAL CARRIER ROOT')
       end select
+      endif
       call LCMNXT(carrier,name)
       if (name == first) exit
     enddo
@@ -1817,16 +2043,25 @@ contains
   end subroutine compare_axial_raw_flux
 
   subroutine validate_input_snapshot(file_name,parent_state,returned_state, &
-      parent_label,returned_label)
+      parent_label,returned_label,returned_r64_mode,returned_r64_epoch)
     character(len=*), intent(in) :: file_name
     type(canonical_state), intent(in) :: parent_state,returned_state
     character(len=*), intent(in) :: parent_label,returned_label
-    type(c_ptr) :: root,fluxes,systems,plane,system
-    integer :: listdim,s,first,plane_id
-    real(real32) :: fixed_source_k
+    logical, intent(in), optional :: returned_r64_mode
+    integer, intent(in), optional :: returned_r64_epoch
+    type(c_ptr) :: root,fluxes,systems,plane,system,authority
+    integer :: listdim,s,first,plane_id,root_epoch,plane_epoch,system_epoch
+    integer :: root_planes,expected_epoch
+    real(real32) :: fixed_source_k,l1_error,checked_l1
     real(real32), allocatable :: plane_leakage(:),system_leakage(:)
-    real(real64) :: iter_k
+    real(real64) :: iter_k,plane_rho,system_rho,first_rho
     character(len=64) :: owner
+    logical :: admit_r64
+
+    admit_r64=.false.
+    if (present(returned_r64_mode)) admit_r64=returned_r64_mode
+    expected_epoch=3
+    if (present(returned_r64_epoch)) expected_epoch=returned_r64_epoch
 
     call LCMOP(root,file_name,2,2,0)
     owner=trim(returned_label)//' SNAPSHOT INPUT'
@@ -1836,13 +2071,34 @@ contains
     call require_record(root,'SPOT-ITER-K',1,4,trim(owner))
     call LCMGET(root,'SPOT-ITER-K',iter_k)
     if (real64_bits(iter_k) /= &
-        real64_bits(real(returned_state%keff,real64))) &
-      call fail(trim(owner)//' K IS NOT THE RETURNED '// &
-        trim(returned_label)//' VALUE.')
-    call require_absent(root,'SPOT-R64',trim(owner))
+        real64_bits(real(returned_state%keff,real64))) then
+      if (real32_bits(real(iter_k,real32)) /= &
+          real32_bits(returned_state%keff)) &
+        call fail(trim(owner)//' K IS NOT THE RETURNED '// &
+          trim(returned_label)//' VALUE.')
+    endif
+    if (admit_r64) then
+      call require_record(root,'SPOT-L1-ERR',1,2,trim(owner))
+      call require_record(root,'SPOT-R64',-1,0,trim(owner))
+      call LCMGET(root,'SPOT-L1-ERR',l1_error)
+      if ((.not.ieee_is_finite(l1_error)).or.(l1_error < 0.0_real32)) &
+        call fail(trim(owner)//' INVALID R64 L1 RECEIPT.')
+      authority=LCMGID(root,'SPOT-R64')
+      call require_record(authority,'NPLANE',1,1,trim(owner))
+      call require_record(authority,'EPOCH',1,1,trim(owner))
+      call require_character(authority,'STATE','RETURNED',trim(owner))
+      call LCMGET(authority,'NPLANE',root_planes)
+      call LCMGET(authority,'EPOCH',root_epoch)
+      if (root_planes /= listdim .or. root_epoch /= expected_epoch) &
+        call fail(trim(owner)//' HAS WRONG RETURNED EPOCH.')
+    else
+      call require_absent(root,'SPOT-R64',trim(owner))
+    endif
     fluxes=LCMGID(root,'FLUX')
     systems=LCMGID(root,'SYSTEM')
     allocate(plane_leakage(ngrp_expected),system_leakage(ngrp_expected))
+    checked_l1=0.0_real32
+    first_rho=0.0_real64
     do s=1,nsnap_expected
       plane=LCMGIL(fluxes,s)
       system=LCMGIL(systems,s)
@@ -1857,34 +2113,86 @@ contains
           returned_state%leakage(first:first+ngrp_expected-1),real32)))) &
         call fail(trim(owner)//' PLANE LEAKAGE DIFFERS FROM '// &
           trim(returned_label)//'.')
-      if (real32_bits(fixed_source_k) /= real32_bits(parent_state%keff)) &
-        call fail(trim(owner)//' FIXED-SOURCE K DIFFERS FROM '// &
-          trim(parent_label)//'.')
+      if (.not.affine_beta_mode) then
+        if (real32_bits(fixed_source_k) /= &
+            real32_bits(parent_state%keff)) &
+          call fail(trim(owner)//' FIXED-SOURCE K DIFFERS FROM '// &
+            trim(parent_label)//'.')
+      endif
       call require_record(system,'SPOT-LEAK1D',ngrp_expected,2, &
         trim(owner)//' LAGGED SYSTEM')
       call require_record(system,'SPOT-L1-SNAP',1,1, &
         trim(owner)//' LAGGED SYSTEM')
       call LCMGET(system,'SPOT-LEAK1D',system_leakage)
       call LCMGET(system,'SPOT-L1-SNAP',plane_id)
-      if (any(real32_bits(system_leakage) /= real32_bits(real( &
-          parent_state%leakage(first:first+ngrp_expected-1),real32)))) &
-        call fail(trim(owner)//' LAGGED SYSTEM LEAKAGE DIFFERS FROM '// &
-          trim(parent_label)//'.')
+      if (.not.affine_beta_mode) then
+        if (any(real32_bits(system_leakage) /= real32_bits(real( &
+            parent_state%leakage(first:first+ngrp_expected-1), &
+            real32)))) &
+          call fail(trim(owner)//' LAGGED SYSTEM LEAKAGE DIFFERS '// &
+            'FROM '//trim(parent_label)//'.')
+      endif
       if (plane_id /= s) &
         call fail(trim(owner)//' LAGGED SYSTEM SNAPSHOT INDEX DIFFERS.')
+      if (admit_r64) then
+        call require_record(plane,'SPOT-R64',-1,0, &
+          trim(owner)//' PLANE FLUX')
+        authority=LCMGID(plane,'SPOT-R64')
+        call require_character(authority,'STATE','SOLVED', &
+          trim(owner)//' PLANE FLUX')
+        call require_record(authority,'RHO',1,4, &
+          trim(owner)//' PLANE FLUX')
+        call require_record(authority,'EPOCH',1,1, &
+          trim(owner)//' PLANE FLUX')
+        call LCMGET(authority,'RHO',plane_rho)
+        call LCMGET(authority,'EPOCH',plane_epoch)
+        call require_record(system,'SPOT-R64',-1,0, &
+          trim(owner)//' LAGGED SYSTEM')
+        authority=LCMGID(system,'SPOT-R64')
+        call require_character(authority,'STATE','ASSEMBLED', &
+          trim(owner)//' LAGGED SYSTEM')
+        call require_record(authority,'RHO',1,4, &
+          trim(owner)//' LAGGED SYSTEM')
+        call require_record(authority,'EPOCH',1,1, &
+          trim(owner)//' LAGGED SYSTEM')
+        call LCMGET(authority,'RHO',system_rho)
+        call LCMGET(authority,'EPOCH',system_epoch)
+        if ((.not.ieee_is_finite(plane_rho)).or. &
+            (real64_bits(plane_rho) /= real64_bits(system_rho)).or. &
+            (plane_epoch /= root_epoch).or.(system_epoch /= root_epoch)) &
+          call fail(trim(owner)//' R64 CHILD AUTHORITY DIFFERS.')
+        if (s == 1) then
+          first_rho=plane_rho
+        else if (real64_bits(plane_rho) /= real64_bits(first_rho)) then
+          call fail(trim(owner)//' R64 PLANE EQUATIONS DIFFER.')
+        endif
+        checked_l1=max(checked_l1,maxval(abs( &
+          plane_leakage-system_leakage)))
+      endif
     enddo
+    if (admit_r64) then
+      if (real32_bits(l1_error) /= real32_bits(checked_l1)) &
+        call fail(trim(owner)//' R64 L1 RECEIPT DIFFERS BITWISE.')
+    endif
     deallocate(system_leakage,plane_leakage)
     call LCMCL(root,1)
   end subroutine validate_input_snapshot
 
-  subroutine check_snapshot_publication(x2_name,proposal_name,leak_pub,k_pub)
+  subroutine check_snapshot_publication(x2_name,proposal_name,leak_pub,k_pub, &
+      strip_r64_mode)
     character(len=*), intent(in) :: x2_name,proposal_name
     real(real32), intent(in) :: leak_pub(:),k_pub
+    logical, intent(in), optional :: strip_r64_mode
     type(c_ptr) :: x2_root,proposal_root
     type(c_ptr) :: x2_fluxes,proposal_fluxes,x2_flux,proposal_flux
+    type(c_ptr) :: x2_systems,proposal_systems,x2_system,proposal_system
     integer :: listdim_x2,listdim_proposal,s
     real(real32), allocatable :: stored_leak(:)
     real(real64) :: iter_k
+    logical :: strip_r64
+
+    strip_r64=.false.
+    if (present(strip_r64_mode)) strip_r64=strip_r64_mode
 
     call LCMOP(x2_root,x2_name,2,2,0)
     call LCMOP(proposal_root,proposal_name,2,2,0)
@@ -1894,7 +2202,7 @@ contains
     if ((listdim_x2 /= nsnap_expected).or. &
         (listdim_proposal /= listdim_x2)) &
       call fail('SNAPSHOT ARCHIVE PLANE COUNT DIFFERS.')
-    call compare_snapshot_root_carrier(x2_root,proposal_root)
+    call compare_snapshot_root_carrier(x2_root,proposal_root,strip_r64)
     call require_record(proposal_root,'SPOT-ITER-K',1,4, &
       'PROPOSAL SNAPSHOT')
     call LCMGET(proposal_root,'SPOT-ITER-K',iter_k)
@@ -1908,6 +2216,8 @@ contains
 
     x2_fluxes=LCMGID(x2_root,'FLUX')
     proposal_fluxes=LCMGID(proposal_root,'FLUX')
+    x2_systems=LCMGID(x2_root,'SYSTEM')
+    proposal_systems=LCMGID(proposal_root,'SYSTEM')
     allocate(stored_leak(ngrp_expected))
     do s=1,nsnap_expected
       x2_flux=LCMGIL(x2_fluxes,s)
@@ -1915,8 +2225,21 @@ contains
       ! Everything in the plane, including raw FLUX, SOUR, SPOT-QFISS and
       ! every fixed-source diagnostic, remains the z/x2 carrier.  Only the
       ! explicitly published SPOT-LEAK1D value may differ.
-      call compare_table_except_leakage(x2_flux,proposal_flux, &
-        'SNAPSHOT PLANE FLUX')
+      if (strip_r64) then
+        call compare_table_stripped_r64(x2_flux,proposal_flux, &
+          'SNAPSHOT PLANE FLUX',.true.)
+        call require_absent(proposal_flux,'SPOT-R64', &
+          'PROPOSAL SNAPSHOT PLANE FLUX')
+        x2_system=LCMGIL(x2_systems,s)
+        proposal_system=LCMGIL(proposal_systems,s)
+        call compare_table_stripped_r64(x2_system,proposal_system, &
+          'SNAPSHOT LAGGED SYSTEM',.false.)
+        call require_absent(proposal_system,'SPOT-R64', &
+          'PROPOSAL SNAPSHOT LAGGED SYSTEM')
+      else
+        call compare_table_except_leakage(x2_flux,proposal_flux, &
+          'SNAPSHOT PLANE FLUX')
+      endif
       call require_record(x2_flux,'SPOT-LEAK1D',ngrp_expected,2, &
         'X2 PLANE FLUX')
       call require_record(proposal_flux,'SPOT-LEAK1D',ngrp_expected,2, &
@@ -1949,13 +2272,19 @@ contains
     call require_record(root,'FLUX',listdim,10,owner)
   end subroutine require_archive_root
 
-  subroutine compare_snapshot_root_carrier(carrier,proposal_root)
+  subroutine compare_snapshot_root_carrier(carrier,proposal_root, &
+      strip_r64_mode)
     type(c_ptr), intent(in) :: carrier,proposal_root
+    logical, intent(in), optional :: strip_r64_mode
     character(len=72) :: file_name,my_name
     character(len=12) :: name,first
     logical :: empty,is_lcm
     integer :: root_length,length_left,length_right,type_left,type_right
     integer :: expected_count
+    logical :: strip_r64
+
+    strip_r64=.false.
+    if (present(strip_r64_mode)) strip_r64=strip_r64_mode
 
     call LCMINF(carrier,file_name,my_name,empty,root_length,is_lcm)
     if (empty) call fail('SNAPSHOT CARRIER ROOT IS EMPTY.')
@@ -1966,6 +2295,10 @@ contains
     do
       call LCMLEN(carrier,name,length_left,type_left)
       call LCMLEN(proposal_root,name,length_right,type_right)
+      if (strip_r64.and.(name == 'SPOT-R64')) then
+        if (length_right /= 0) &
+          call fail('PROPOSAL SNAPSHOT RETAINS ROOT SPOT-R64.')
+      else
       select case(name)
       case('SPOT-L1-ERR','SPOT-PJ-PERP','SPOT-PROJECT')
         if (length_right /= 0) &
@@ -1974,10 +2307,12 @@ contains
         expected_count=expected_count+1
         if ((length_left /= length_right).or.(type_left /= type_right)) &
           call fail('PROPOSAL SNAPSHOT ROOT RECORD DIFFERS: '//trim(name))
-        if ((name /= 'SPOT-ITER-K').and.(name /= 'FLUX')) &
+        if ((name /= 'SPOT-ITER-K').and.(name /= 'FLUX').and. &
+            (.not.(strip_r64.and.(name == 'SYSTEM')))) &
           call compare_named_record(carrier,proposal_root,name,length_left, &
             type_left,'SNAPSHOT ROOT')
       end select
+      endif
       call LCMNXT(carrier,name)
       if (name == first) exit
     enddo
@@ -2059,6 +2394,37 @@ contains
       if (name == first) exit
     enddo
   end subroutine compare_table_except_leakage
+
+  subroutine compare_table_stripped_r64(left,right,owner,skip_leakage)
+    type(c_ptr), intent(in) :: left,right
+    character(len=*), intent(in) :: owner
+    logical, intent(in) :: skip_leakage
+    character(len=12) :: name,first
+    integer :: length_left,length_right,type_left,type_right,expected_count
+
+    expected_count=count_table_records(left)-1
+    if (count_table_records(right) /= expected_count) &
+      call fail(trim(owner)//' STRIPPED INVENTORY COUNT DIFFERS.')
+    name=' '
+    call LCMNXT(left,name)
+    first=name
+    do
+      call LCMLEN(left,name,length_left,type_left)
+      call LCMLEN(right,name,length_right,type_right)
+      if (name == 'SPOT-R64') then
+        if (length_right /= 0) &
+          call fail(trim(owner)//' RETAINS SPOT-R64.')
+      else
+        if ((length_left /= length_right).or.(type_left /= type_right)) &
+          call fail(trim(owner)//' RECORD DIFFERS: '//trim(name))
+        if ((.not.skip_leakage).or.(name /= 'SPOT-LEAK1D')) &
+          call compare_named_record(left,right,name,length_left,type_left, &
+            owner)
+      endif
+      call LCMNXT(left,name)
+      if (name == first) exit
+    enddo
+  end subroutine compare_table_stripped_r64
 
   recursive subroutine compare_table_exact(left,right,owner)
     type(c_ptr), intent(in) :: left,right
@@ -2282,6 +2648,18 @@ contains
         (type_found /= type_expected)) &
       call fail(trim(owner)//' INVALID RECORD '//trim(name)//'.')
   end subroutine require_record
+
+  subroutine require_character(ptr,name,expected,owner)
+    type(c_ptr), intent(in) :: ptr
+    character(len=*), intent(in) :: name,expected,owner
+    character(len=12) :: found
+
+    call require_record(ptr,name,3,3,owner)
+    found=' '
+    call LCMGTC(ptr,name,12,found)
+    if (found /= expected) &
+      call fail(trim(owner)//' CHARACTER RECORD DIFFERS: '//trim(name))
+  end subroutine require_character
 
   subroutine require_absent(ptr,name,owner)
     type(c_ptr), intent(in) :: ptr

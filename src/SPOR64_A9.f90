@@ -48,7 +48,7 @@ contains
       keyflx_base1,matcod,vol32,xstrc32,xsdia0_32,keycur, &
       matalb_surface,albedo32,surfac32,njj_off,ijj_off,ipos_off, &
       nscat_off,scat_off32,fixed_source64,initial_flux64, &
-      epsinr64,epsunk64,epsout64,terminal_flux64, &
+      leak1d64,epsinr64,epsunk64,epsout64,terminal_flux64, &
       terminal_source64,cutoff_visit64,accepted,ok)
     type(c_ptr), intent(in) :: jpsys_group, iptrk
     integer, intent(in) :: iftrak, impx
@@ -64,6 +64,7 @@ contains
     real(real32), intent(in) :: scat_off32(NMAT*NGRP,NGRP)
     real(real64), intent(in) :: fixed_source64(NUNKNO,NGRP)
     real(real64), intent(in) :: initial_flux64(NUNKNO,NGRP)
+    real(real64), intent(in) :: leak1d64(NGRP)
     real(real64), intent(in) :: epsinr64, epsunk64, epsout64
     real(real64), intent(out) :: terminal_flux64(NUNKNO,NGRP)
     real(real64), intent(out) :: terminal_source64(NUNKNO,NGRP)
@@ -95,6 +96,7 @@ contains
     if (transfer(epsinr64,0_int64) /= FROZEN_TOL64_BITS) return
     if (transfer(epsunk64,0_int64) /= FROZEN_TOL64_BITS) return
     if (transfer(epsout64,0_int64) /= FROZEN_TOL64_BITS) return
+    if (.not. all(ieee_is_finite(leak1d64))) return
     if (.not. all(ieee_is_finite(initial_flux64))) return
     if (.not. all(ieee_is_finite(fixed_source64))) return
     if (any(fixed_source64 < 0.0_real64)) return
@@ -196,7 +198,7 @@ contains
         end do
         cutoff_delta64 = 0_int64
         call DOORFV64(jpsys_group,npsys,iptrk,iftrak,impx,NGRP,NUNKNO, &
-            keyflx_base1,title,flux64(:,:,8),flux64(:,:,7), &
+            keyflx_base1,title,leak1d64,flux64(:,:,8),flux64(:,:,7), &
             cutoff_delta64,child_ok)
         if (cutoff_delta64 < 0_int64) return
         if (cutoff_visit64 > huge(cutoff_visit64)-cutoff_delta64) return
@@ -205,8 +207,8 @@ contains
         if (.not. all(ieee_is_finite(flux64(:,igdeb:NGRP,7)))) return
 
         call FLUBAL64(matcod,vol32,keyflx_base1,xstrc32,xsdia0_32, &
-            xcsou64,igdeb,keycur,matalb_surface,albedo32,surfac32, &
-            njj_off,ijj_off,ipos_off,nscat_off,scat_off32, &
+            leak1d64,xcsou64,igdeb,keycur,matalb_surface,albedo32, &
+            surfac32,njj_off,ijj_off,ipos_off,nscat_off,scat_off32, &
             flux64(:,:,7),balance_ok)
         if (.not. balance_ok) return
 
@@ -298,8 +300,8 @@ contains
   end subroutine FLU2DR64_CORE
 
   subroutine FLUBAL64(matcod,vol32,keyflx_base1,xstrc32,xsdia0_32, &
-      xcsou64,igdeb,keycur,matalb_surface,albedo32,surfac32,njj_off, &
-      ijj_off,ipos_off,nscat_off,scat_off32,flux64,ok)
+      leak1d64,xcsou64,igdeb,keycur,matalb_surface,albedo32,surfac32, &
+      njj_off,ijj_off,ipos_off,nscat_off,scat_off32,flux64,ok)
     integer, intent(in) :: matcod(NREG), keyflx_base1(NREG), igdeb
     integer, intent(in) :: keycur(NSOUT), matalb_surface(NSOUT)
     integer, intent(in) :: njj_off(NMAT,NGRP), ijj_off(NMAT,NGRP)
@@ -307,6 +309,7 @@ contains
     real(real32), intent(in) :: vol32(NREG)
     real(real32), intent(in) :: xstrc32(0:NMAT,NGRP)
     real(real32), intent(in) :: xsdia0_32(0:NMAT,NGRP)
+    real(real64), intent(in) :: leak1d64(NGRP)
     real(real32), intent(in) :: albedo32(NSOUT), surfac32(NSOUT)
     real(real32), intent(in) :: scat_off32(NMAT*NGRP,NGRP)
     real(real64), intent(in) :: xcsou64(NGRP)
@@ -370,7 +373,8 @@ contains
             rebal64(ioff,ioff) = rebal64(ioff,ioff) + &
                 flux64(ind,igr) * &
                 (real(xstrc32(ibm,igr),real64) - &
-                 real(xsdia0_32(ibm,igr),real64)) * &
+                 real(xsdia0_32(ibm,igr),real64) + &
+                 leak1d64(igr)) * &
                 real(vol32(ir),real64)
           else
             rebal64(ioff,jgr-igdeb+1) = &

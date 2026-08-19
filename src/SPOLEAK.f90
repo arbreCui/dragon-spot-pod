@@ -8,7 +8,7 @@ subroutine SPOLEAK(nentry,hentry,ientry,jentry,kentry)
   ! absolute direct change, in inverse length.  The interface intentionally
   ! has no relaxation factor: the freshly integrated leakage is stored.
   use GANLIB
-  use SPOT_LEAKAGE, only : SPOLE1
+  use SPOT_LEAKAGE, only : SPOLE1, SPOLE1D
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   implicit none
 
@@ -28,6 +28,12 @@ subroutine SPOLEAK(nentry,hentry,ientry,jentry,kentry)
   real, allocatable :: phi(:,:),current(:,:)
   real, allocatable :: fresh(:,:),old(:,:)
   real, allocatable :: numerator(:),denominator(:)
+  logical :: lr64
+  double precision :: keff64
+  double precision, allocatable :: unknown64(:)
+  double precision, allocatable :: phi64(:,:),current64(:,:)
+  double precision, allocatable :: leak64(:),num64(:),den64(:)
+  type(c_ptr) :: jpflux64
   character(len=4) :: text4
   character(len=12) :: signature,track_type
   type(c_ptr) :: jpflux,jpsnap,kpsnap
@@ -62,6 +68,16 @@ subroutine SPOLEAK(nentry,hentry,ientry,jentry,kentry)
   call LCMGET(kentry(2),'K-EFFECTIVE',keff)
   if ((.not.ieee_is_finite(keff)).or.(keff <= 0.0)) &
     call XABORT('SPOLEAK: INVALID K-EFFECTIVE VALUE.')
+  lr64=.false.
+  keff64=dble(keff)
+  call LCMLEN(kentry(2),'SPOT-KEFF64',ilong,itylcm)
+  if (ilong == 1) then
+    if (itylcm /= 4) call XABORT('SPOLEAK: INVALID SPOT-KEFF64.')
+    call LCMGET(kentry(2),'SPOT-KEFF64',keff64)
+    if (transfer(real(keff64),0) /= transfer(keff,0)) &
+      call XABORT('SPOLEAK: K-EFFECTIVE MIRROR MISMATCH.')
+    lr64=.true.
+  endif
   ngrp=iflux(1)
   nunk=iflux(2)
   nreg=itrack(1)
@@ -82,6 +98,9 @@ subroutine SPOLEAK(nentry,hentry,ientry,jentry,kentry)
   allocate(phi(nfloor,nreg2d),current(nfloor+1,nreg2d))
   allocate(fresh(ngrp,nsnap),old(ngrp,nsnap))
   allocate(numerator(nsnap),denominator(nsnap))
+  allocate(unknown64(nunk),phi64(nfloor,nreg2d))
+  allocate(current64(nfloor+1,nreg2d))
+  allocate(leak64(nsnap),num64(nsnap),den64(nsnap))
   call LCMLEN(kentry(3),'AREA2D',ilong,itylcm)
   if ((ilong /= nreg2d).or.(itylcm /= 2)) &
     call XABORT('SPOLEAK: INVALID AREA2D RECORD.')
@@ -110,6 +129,12 @@ subroutine SPOLEAK(nentry,hentry,ientry,jentry,kentry)
   enddo
 
   jpflux=LCMGID(kentry(2),'FLUX')
+  if (lr64) then
+    call LCMLEN(kentry(2),'FLUX64',ilong,itylcm)
+    if ((ilong /= ngrp).or.(itylcm /= 10)) &
+      call XABORT('SPOLEAK: MISSING FLUX64 LIST.')
+    jpflux64=LCMGID(kentry(2),'FLUX64')
+  endif
   do igr=1,ngrp
     call LCMLEL(jpflux,igr,ilong,itylcm)
     if ((ilong /= nunk).or.(itylcm /= 2)) &
@@ -130,8 +155,36 @@ subroutine SPOLEAK(nentry,hentry,ientry,jentry,kentry)
         current(iface,i)=unknown(ll4+(i-1)*(nfloor+1)+iface)
       enddo
     enddo
-    call SPOLE1(nreg2d,nfloor,nsnap,mat1d,dz,area,phi,current, &
-                fresh(igr,:),numerator,denominator)
+    if (lr64) then
+      call LCMLEL(jpflux64,igr,ilong,itylcm)
+      if ((ilong /= nunk).or.(itylcm /= 4)) &
+        call XABORT('SPOLEAK: INVALID FLUX64 LIST ITEM.')
+      call LCMGDL(jpflux64,igr,unknown64)
+      do i=1,nunk
+        if (transfer(real(unknown64(i)),0) /= &
+            transfer(unknown(i),0)) &
+          call XABORT('SPOLEAK: FLUX64 MIRROR MISMATCH.')
+      enddo
+      do i=1,nreg2d
+        do ifloor=1,nfloor
+          ireg=(i-1)*nfloor+ifloor
+          if (keyflx(ireg) > 0) then
+            phi64(ifloor,i)=unknown64(keyflx(ireg))
+          else
+            phi64(ifloor,i)=0.0d0
+          endif
+        enddo
+        do iface=1,nfloor+1
+          current64(iface,i)=unknown64(ll4+(i-1)*(nfloor+1)+iface)
+        enddo
+      enddo
+      call SPOLE1D(nreg2d,nfloor,nsnap,mat1d,dz,area,phi64, &
+                   current64,leak64,num64,den64)
+      fresh(igr,:)=real(leak64)
+    else
+      call SPOLE1(nreg2d,nfloor,nsnap,mat1d,dz,area,phi,current, &
+                  fresh(igr,:),numerator,denominator)
+    endif
   enddo
 
   old=0.0
@@ -156,7 +209,7 @@ subroutine SPOLEAK(nentry,hentry,ientry,jentry,kentry)
     kpsnap=LCMGIL(jpsnap,isnap)
     call LCMPUT(kpsnap,'SPOT-LEAK1D',ngrp,2,fresh(:,isnap))
   enddo
-  dkeff=dble(keff)
+  dkeff=keff64
   call LCMPUT(kentry(1),'SPOT-ITER-K',1,4,dkeff)
   call LCMPUT(kentry(1),'SPOT-L1-ERR',1,2,error)
   write(6,'(A,ES24.16)') 'SPOLEAK ITER K ',dkeff

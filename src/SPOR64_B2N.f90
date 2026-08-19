@@ -17,8 +17,6 @@ module SPOR64_B2N
   integer, parameter :: NMAT = 8
   integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
-  integer, parameter :: PROJECTED_EPOCH = 1
-  integer, parameter :: FROZEN_SOURCE_EPOCH = 1
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
@@ -78,7 +76,7 @@ contains
     status = SPOR64_B2N_PREFLIGHT_FAILED
 
     ! Both products are new in-memory LCM objects.  They cannot alias each
-    ! other or the immutable B2l PROJECTED/1 archive.
+    ! other or the immutable B2l PROJECTED/e archive.
     if (.not. c_associated(ipprojected)) return
     if (.not. c_associated(ipmacro_out)) return
     if (.not. c_associated(ipsource_out)) return
@@ -89,7 +87,7 @@ contains
     if (.not. EMPTY_LCM_ROOT(ipmacro_out)) return
     if (.not. EMPTY_LCM_ROOT(ipsource_out)) return
 
-    ! Admit exactly one B2l PROJECTED/1 root.  RHO is authoritative and must
+    ! Admit exactly one B2l PROJECTED/e root.  RHO is authoritative and must
     ! be the bitwise result of the stated reciprocal, not an independent
     ! caller parameter.
     if (.not. PROJECTED_ARCHIVE_ROOT_IS_EXACT(ipprojected)) return
@@ -122,7 +120,7 @@ contains
     if (.not. ieee_is_finite(rho64)) return
     if (rho64 <= +0.0_real64) return
     if (root_planes /= NSNAP) return
-    if (root_epoch /= PROJECTED_EPOCH) return
+    if (root_epoch <= 0) return
     found64 = transfer(rho64,0_int64)
     expected64 = transfer(1.0_real64/iter_keff64,0_int64)
     if (found64 /= expected64) return
@@ -249,7 +247,7 @@ contains
       if (any(chi32(:,:,g) < +0.0_real32)) return
     end do
 
-    ! The plane root is PROJECTED/1 and contains no source.  Its root FLUX
+    ! The plane root is PROJECTED/e and contains no source.  Its root FLUX
     ! is only a legacy mirror: no value is read from that binary32 list.
     if (.not. PROJECTED_PLANE_ROOT_IS_EXACT(input_flux)) return
     if (.not. CHARACTER_RECORD_MATCHES(input_flux,'SIGNATURE',3,12, &
@@ -300,7 +298,7 @@ contains
     call LCMGET(plane_authority,'EPOCH',plane_epoch)
     if (.not. ieee_is_finite(plane_rho64)) return
     if (transfer(plane_rho64,0_int64) /= transfer(rho64,0_int64)) return
-    if (plane_epoch /= PROJECTED_EPOCH) return
+    if (plane_epoch /= root_epoch) return
     authority_flux = LCMGID(plane_authority,'FLUX')
     if (.not. c_associated(authority_flux)) return
     do h = 1, NGRP
@@ -427,7 +425,7 @@ contains
     end do
 
     ! EPOCH is the source-wide commit and the final output mutation.
-    call LCMPUT(source_authority,'EPOCH',1,1,FROZEN_SOURCE_EPOCH)
+    call LCMPUT(source_authority,'EPOCH',1,1,root_epoch)
     status = SPOR64_B2N_COMMITTED
   end subroutine SPOR64_B2N_BUILD
 
@@ -526,8 +524,14 @@ contains
         ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
          'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
          'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ']
+    character(len=12), parameter :: names64(13) = &
+        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
+         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
+         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ', &
+         'LEAK1D64    ']
 
-    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names64) &
+        .or. EXACT_INVENTORY(iplist,names)
   end function PROJECTED_PLANE_ROOT_IS_EXACT
 
 

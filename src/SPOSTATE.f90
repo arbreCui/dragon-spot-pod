@@ -10,7 +10,7 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   ! volume restriction and solving the stored-basis Gram system. Leakage is
   ! independently reconstructed from the same scalar flux and face currents.
   use GANLIB
-  use SPOT_LEAKAGE, only : SPOLE1
+  use SPOT_LEAKAGE, only : SPOLE1, SPOLE1D
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   implicit none
 
@@ -33,6 +33,12 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   real, allocatable :: phi(:,:),current(:,:),leak_sp(:)
   real, allocatable :: numerator(:),denominator(:)
   real(kind=dp) :: dflott,norm,production,weight_sum
+  logical :: lr64
+  real(kind=dp) :: keff64
+  real(kind=dp), allocatable :: unknown64(:,:)
+  real(kind=dp), allocatable :: phi64(:,:),current64(:,:)
+  real(kind=dp), allocatable :: leak64(:),num64(:),den64(:)
+  type(c_ptr) :: jpflux64
   real(kind=dp) :: rho,gram_error,offspace2,reconstructed
   real(kind=dp), allocatable :: coordinates(:),leak(:),height(:)
   real(kind=dp), allocatable :: gram_flat(:),offspace(:)
@@ -98,6 +104,17 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   if ((.not.ieee_is_finite(keff)).or.(keff <= 0.0)) &
     call XABORT('SPOSTATE: NONPOSITIVE K-EFFECTIVE.')
   rho=1.0_dp/real(keff,dp)
+  lr64=.false.
+  keff64=real(keff,dp)
+  call LCMLEN(kentry(1),'SPOT-KEFF64',ilong,itylcm)
+  if (ilong == 1) then
+    if (itylcm /= 4) call XABORT('SPOSTATE: INVALID SPOT-KEFF64.')
+    call LCMGET(kentry(1),'SPOT-KEFF64',keff64)
+    if (transfer(real(keff64),0) /= transfer(keff,0)) &
+      call XABORT('SPOSTATE: K-EFFECTIVE MIRROR MISMATCH.')
+    rho=1.0_dp/keff64
+    lr64=.true.
+  endif
 
   call LCMLEN(kentry(3),'SPOT-FIXB',ilong,itylcm)
   if ((ilong /= 1).or.(itylcm /= 1)) &
@@ -156,6 +173,24 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   enddo
   if (any(.not.ieee_is_finite(unknown))) &
     call XABORT('SPOSTATE: NON-FINITE AXIAL FIELD.')
+  if (lr64) then
+    call LCMLEN(kentry(1),'FLUX64',ilong,itylcm)
+    if ((ilong /= ngrp).or.(itylcm /= 10)) &
+      call XABORT('SPOSTATE: MISSING FLUX64 LIST.')
+    jpflux64=LCMGID(kentry(1),'FLUX64')
+    allocate(unknown64(nunk,ngrp))
+    do igr=1,ngrp
+      call LCMLEL(jpflux64,igr,ilong,itylcm)
+      if ((ilong /= nunk).or.(itylcm /= 4)) &
+        call XABORT('SPOSTATE: INVALID FLUX64 ITEM.')
+      call LCMGDL(jpflux64,igr,unknown64(:,igr))
+      do i=1,nunk
+        if (transfer(real(unknown64(i,igr)),0) /= &
+            transfer(unknown(i,igr),0)) &
+          call XABORT('SPOSTATE: FLUX64 MIRROR MISMATCH.')
+      enddo
+    enddo
+  endif
   do ireg=1,nreg
     if ((mat(ireg) > 0).and.(keyflx(ireg) > 0)) then
       do igr=1,ngrp
@@ -197,6 +232,10 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   allocate(phi(nfloor,nreg2d),current(nfloor+1,nreg2d))
   allocate(leak_sp(nsnap),numerator(nsnap),denominator(nsnap))
   allocate(leak(ngrp*nsnap))
+  if (lr64) then
+    allocate(phi64(nfloor,nreg2d),current64(nfloor+1,nreg2d))
+    allocate(leak64(nsnap),num64(nsnap),den64(nsnap))
+  endif
   do igr=1,ngrp
     do i=1,nreg2d
       do ifloor=1,nfloor
@@ -211,12 +250,34 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
         current(a,i)=unknown(ll4+(i-1)*(nfloor+1)+a,igr)
       enddo
     enddo
-    call SPOLE1(nreg2d,nfloor,nsnap,mat1d,dz,area,phi,current, &
-                leak_sp,numerator,denominator)
-    do isnap=1,nsnap
-      index=(isnap-1)*ngrp+igr
-      leak(index)=real(leak_sp(isnap),dp)
-    enddo
+    if (lr64) then
+      do i=1,nreg2d
+        do ifloor=1,nfloor
+          ireg=(i-1)*nfloor+ifloor
+          if (keyflx(ireg) > 0) then
+            phi64(ifloor,i)=unknown64(keyflx(ireg),igr)
+          else
+            phi64(ifloor,i)=0.0_dp
+          endif
+        enddo
+        do a=1,nfloor+1
+          current64(a,i)=unknown64(ll4+(i-1)*(nfloor+1)+a,igr)
+        enddo
+      enddo
+      call SPOLE1D(nreg2d,nfloor,nsnap,mat1d,dz,area,phi64, &
+                   current64,leak64,num64,den64)
+      do isnap=1,nsnap
+        index=(isnap-1)*ngrp+igr
+        leak(index)=leak64(isnap)
+      enddo
+    else
+      call SPOLE1(nreg2d,nfloor,nsnap,mat1d,dz,area,phi,current, &
+                  leak_sp,numerator,denominator)
+      do isnap=1,nsnap
+        index=(isnap-1)*ngrp+igr
+        leak(index)=real(leak_sp(isnap),dp)
+      enddo
+    endif
   enddo
   if (any(.not.ieee_is_finite(leak))) &
     call XABORT('SPOSTATE: NON-FINITE LEAKAGE STATE.')
@@ -379,6 +440,7 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   call LCMPUT(kentry(1),'SPOT-X-GRAM',total_gram,4,gram_flat)
   call LCMPUT(kentry(1),'SPOT-X-BASIS',total_basis,2,basis_state)
   call LCMPUT(kentry(1),'SPOT-X-RHO',1,4,rho)
+  if (lr64) call LCMPUT(kentry(1),'SPOT-X-KEFF',1,4,keff64)
   call LCMPUT(kentry(1),'SPOT-X-L',ngrp*nsnap,4,leak)
   call LCMPUT(kentry(1),'SPOT-X-H',nsnap,4,height)
   call LCMPUT(kentry(1),'SPOT-X-NORM',1,4,norm)

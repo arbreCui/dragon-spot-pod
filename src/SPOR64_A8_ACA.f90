@@ -57,13 +57,14 @@ contains
 
 
   subroutine MCGFCR64(kpn, n1, nreg, m, ngeff, ii, keyflx2, keycur, &
-      nzon, iperm, fi64, fiold64, sc32, ar64, ok)
+      nzon, iperm, fi64, fiold64, sc32, leak64, ar64, ok)
     integer, intent(in) :: kpn, n1, nreg, m, ngeff, ii
     integer, intent(in) :: keyflx2(nreg,1), keycur(n1-nreg)
     integer, intent(in) :: nzon(n1), iperm(n1)
     real(real64), intent(in) :: fi64(kpn,ngeff)
     real(real64), intent(in) :: fiold64(kpn,ngeff)
     real(real32), intent(in) :: sc32(0:m,1)
+    real(real64), intent(in) :: leak64
     real(real64), intent(out) :: ar64(n1)
     logical, intent(out) :: ok
 
@@ -99,7 +100,7 @@ contains
       j = iperm(i)
       ibm = nzon(j)
       if (ibm >= 0) then
-        sigc64 = real(sc32(ibm,1), real64)
+        sigc64 = real(sc32(ibm,1), real64) - leak64
         ind = keyflx2(j,1)
       else
         sigc64 = 0.5_real64
@@ -422,13 +423,14 @@ contains
 
   subroutine MCGFCA64(n1, ngeff, kpn, nreg, m, lc, lforw, paca, &
       keyflx2, keycur, nzon, nconv, maxm, epsaca64, response64, &
-      phiin64, sc_by_group32, im, mcu, iperm, ju, diagq32, cq32, &
-      iludf32, cf32, diagf32, cutoff_delta64, ok)
+      phiin64, sc_by_group32, leak_slot64, im, mcu, iperm, ju, &
+      diagq32, cq32, iludf32, cf32, diagf32, cutoff_delta64, ok)
     integer, intent(in) :: n1, ngeff, kpn, nreg, m, lc, paca, maxm
     logical, intent(in) :: lforw, nconv(ngeff)
     integer, intent(in) :: keyflx2(nreg,1), keycur(n1-nreg), nzon(n1)
     integer, intent(in) :: im(n1+1), mcu(lc), iperm(n1), ju(n1)
     real(real64), intent(in) :: epsaca64, phiin64(kpn,ngeff)
+    real(real64), intent(in) :: leak_slot64(ngeff)
     real(real64), intent(inout) :: response64(kpn,ngeff)
     real(real32), intent(in) :: sc_by_group32(0:m,1,ngeff)
     real(real32), intent(in) :: diagq32(n1,ngeff), cq32(lc,ngeff)
@@ -488,7 +490,7 @@ contains
       if (nconv(ii)) then
         call MCGFCR64(kpn, n1, nreg, m, ngeff, ii, keyflx2, keycur, &
             nzon, iperm, response64, phiin64, sc_by_group32(:,:,ii), &
-            ar64(:,ii), child_ok)
+            leak_slot64(ii), ar64(:,ii), child_ok)
         if (.not. child_ok) return
       end if
     end do

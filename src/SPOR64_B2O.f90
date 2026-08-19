@@ -11,7 +11,6 @@ module SPOR64_B2O
 
   integer, parameter :: NSNAP = 3
   integer, parameter :: NGRP = 370
-  integer, parameter :: CONT_EPOCH = 1
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
 
@@ -78,7 +77,7 @@ contains
     if (.not. ieee_is_finite(root_rho64)) return
     if (root_rho64 <= +0.0_real64) return
     if (nplane /= NSNAP) return
-    if (root_epoch /= CONT_EPOCH) return
+    if (root_epoch <= 0) return
     expected64 = transfer(1.0_real64/iter_keff64,0_int64)
     if (transfer(root_rho64,0_int64) /= expected64) return
 
@@ -281,7 +280,13 @@ contains
         ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
          'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
          'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ']
-    PROJECTED_SEED_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    character(len=12), parameter :: names64(13) = &
+        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
+         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
+         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ', &
+         'LEAK1D64    ']
+    PROJECTED_SEED_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names64) &
+        .or. EXACT_INVENTORY(iplist,names)
   end function PROJECTED_SEED_ROOT_IS_EXACT
 
 

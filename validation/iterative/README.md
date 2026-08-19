@@ -3,6 +3,297 @@
 This directory contains the direct fixed-space SPOD/Picard contracts and one
 generic, default-off continuation host.
 
+## Current REAL64 continuation boundary
+
+The latest complete three-step cycle used the genuine map pairs
+`x3 -> x4` and `y -> z`, then materialized the standard unregularized
+full-Gram AA(1) direction
+
+\[
+t=0.252802215112331696\,x_4+
+  0.747197784887668304\,z.
+\]
+
+The three fixed direction ratios are `(0.930191, 0.929884, 0.806313)`, so
+AA(1) passed and AA(2) was skipped.  Independent verification retained the
+fixed rank-two/full-Gram package and found 8880 positive published
+scalar-flux values.  Exactly one map then passed
+`PROPOSAL -> PROJECTED/5 -> RETURNED/5 -> CLOSED/5`, without retry.
+
+The independently reproduced defect is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223470\times10^{-8},\,2.4829538\times10^{-6},\,
+3.6379788\times10^{-9}\ \mathrm{cm}^{-1},\,
+2.7689296\times10^{-7}).
+\]
+
+$R_\rho$ and $R_a$ pass the unchanged `5e-7` AND gate; only $R_L$ fails.
+Both $R_L$ and $R_a$ improved, but the result remains `VALID_NOT_MET`.
+No empirical parameter or model correction was introduced.  See
+[rank2_h2_r64_aa1_z_map_result.md](rank2_h2_r64_aa1_z_map_result.md).
+
+The next standard AA(1) direction was rejected because its same-coefficient
+leakage ratios are `1.37138` and `1.51906`, although its modal ratio passes.
+One same-parent axial-only sensitivity then retained the radial response bit
+for bit and halved only the axial terminal to `1.25e-7`.  The independently
+checked result was
+
+\[
+(R_\rho,R_L,R_a)=
+(6.4223470\times10^{-8},,2.9994077\times10^{-6},
+ 3.4364540\times10^{-7}).
+\]
+
+The 20.80% increase in $R_L$ shows material axial-terminal sensitivity.  It
+is not a new full map, rank-three authorization, or convergence result; see
+[rank2_h2_r64_aa1_z_axial_tight_result.md](rank2_h2_r64_aa1_z_axial_tight_result.md).
+
+With the AA(1) direction rejected, one direct CONT map
+$v=G_{\rm CONT}(u)$ advanced `CLOSED/5 -> PROJECTED/6` and completed
+exactly once.  Its independently reproduced defect is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,1.1292474\times10^{-5},\,
+1.6545528\times10^{-8}\ \mathrm{cm}^{-1},\,
+2.0355057\times10^{-7}).
+\]
+
+$R_\rho$ and $R_a$ pass; only $R_L$ fails, rebounding by a factor of
+about 4.55 with the known sign-reversing leakage hotspot.  The following
+AA(1) on $u-q_t,v-u$ is extrapolated and fails both leakage screens
+(`1.371384828` became `1.07969069` and `1.07490239`), so it was not run;
+see [rank2_h2_r64_cont_u_map_result.md](rank2_h2_r64_cont_u_map_result.md).
+
+A second direct CONT map $w=G_{\rm CONT}(v)$ then advanced
+`CLOSED/6 -> PROJECTED/7` and completed exactly once, with
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,1.0408543\times10^{-5},\,
+1.5250407\times10^{-8}\ \mathrm{cm}^{-1},\,
+1.5351536\times10^{-7}).
+\]
+
+The following standard AA(1) on $v-u,w-v$ passes all three direction
+screens `(0.995646498, 0.855926138, 0.799420440)`; thus
+`AA1_DIRECTION_PASS_AA2_SKIPPED`; see
+[rank2_h2_r64_cont_v_map_result.md](rank2_h2_r64_cont_v_map_result.md).
+
+The standard proposal
+
+\[
+q=0.0962047501787943737\,v+0.903795249821205626\,w
+\]
+
+was independently materialized with 8880/8880 positive published values
+and evaluated exactly once as $r=G_2(q)$ through
+`PROPOSAL -> PROJECTED/8 -> RETURNED/8 -> CLOSED/8`.  The independently
+reproduced defect is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.2259772\times10^{-6},\,
+4.7266440\times10^{-9}\ \mathrm{cm}^{-1},\,
+1.3439421\times10^{-7}).
+\]
+
+$R_\rho$ and $R_a$ pass the unchanged `5e-7` AND gate; only $R_L$ fails,
+at about 6.45 gate multiples, and $R_a$ is the smallest modal defect of
+the REAL64 track.  The result remains `VALID_NOT_MET`.  The following
+AA(1) on $w-v,r-q$ passes its modal and leakage-height-L2 screens
+(`0.965935618`, `0.754897744`) but fails the same-coefficient
+maximum-$D_L$ screen at `1.168859686`, so no successor proposal was
+materialized and no further map was started.  No empirical parameter or
+model correction was introduced.  See
+[rank2_h2_r64_aa1_w_map_result.md](rank2_h2_r64_aa1_w_map_result.md).
+
+With that direction rejected, one direct CONT map $b=G_{\rm CONT}(r)$
+advanced `CLOSED/8 -> PROJECTED/9` and completed exactly once, with
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,2.7411806\times10^{-6},\,
+4.0163286\times10^{-9}\ \mathrm{cm}^{-1},\,
+1.3271558\times10^{-7}).
+\]
+
+Unlike the two preceding cycles, this direct map did not rebound: $R_L$
+fell 15.0% below the preceding AA(1) map.  The following AA(1) on
+$r-q,b-r$ passed all three screens with the strongest ratios of the track
+`(0.848686012, 0.613945987, 0.597652389)`; see
+[rank2_h2_r64_cont_r_map_result.md](rank2_h2_r64_cont_r_map_result.md).
+The standard proposal $c=0.489114497782001889\,r+0.510885502217998111\,b$
+was materialized and evaluated exactly once as $d=G_2(c)$ through
+`PROPOSAL -> PROJECTED/10 -> RETURNED/10 -> CLOSED/10`, giving
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223470\times10^{-8},\,4.8010391\times10^{-5},\,
+7.0343958\times10^{-8}\ \mathrm{cm}^{-1},\,
+1.2924627\times10^{-7}).
+\]
+
+$R_L$ increased by a factor of about 17.5 although the same-coefficient
+affine screen had predicted a 0.614 leakage reduction: direct local
+evidence that the affine screen does not control the mapped leakage
+response at amplitudes near `3e-6`.  See
+[rank2_h2_r64_aa1_b_map_result.md](rank2_h2_r64_aa1_b_map_result.md).
+The following AA(1) on $b-r,d-c$ nevertheless passed all three screens
+`(0.924823980, 0.544585033, 0.532005871)`, and the proposal
+$e=0.460187880181553877\,b+0.539812119818446123\,d$ was materialized and
+evaluated exactly once as $f=G_2(e)$ through
+`PROPOSAL -> PROJECTED/11 -> RETURNED/11 -> CLOSED/11`, giving
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223470\times10^{-8},\,2.0797218\times10^{-5},\,
+3.0471710\times10^{-8}\ \mathrm{cm}^{-1},\,
+1.2406359\times10^{-7}).
+\]
+
+$R_\rho$ and $R_a$ pass throughout this cycle and $R_a$ has decreased
+monotonically to the smallest value of the track, but $R_L$ remains the
+only failing component.  The following AA(1) on $d-c,f-e$ passes its
+modal screen (`0.937704802`) and fails both same-coefficient leakage
+screens (`1.405547256`, `1.567341918`), so no successor proposal was
+materialized and no further map was started.  The parameter-free
+fallback is one direct CONT map from `CLOSED/11`.  No empirical
+parameter or model correction was introduced.  See
+[rank2_h2_r64_aa1_d_map_result.md](rank2_h2_r64_aa1_d_map_result.md).
+
+A third same-parent axial-terminal point at `solver_eps = 5.0e-8` was
+then probed on the unchanged epoch-5 window.  Under the established
+420-second cap the solve exhausted `MAXOUT=500` outer iterations in
+131.7 s with the eigenvalue at `EEXT=1.3e-11` but the flux-unknown
+successive change plateaued near `EUNK=5.8e-7`, and the strict
+termination contract refused publication.  Together with the existing
+`2.5e-7` and `1.25e-7` points, the tolerance-tightening route to the
+`5e-7` outer leakage gate is closed with the present single-precision
+flux kernel: the flux-update floor sits near `5.8e-7` and tightening
+within the reachable range does not reduce $R_L$.  No map result,
+empirical parameter, or model change was produced.  See
+[rank2_h2_r64_aa1_z_axial_eps5e8_result.md](rank2_h2_r64_aa1_z_axial_eps5e8_result.md).
+
+The consolidated solver-floor boundary is now frozen: under the
+present single-precision flux kernel the certifiable $R_L$ floor is
+about $2.5\times10^{-6}$, the unchanged `5e-7` gate remains the
+standard, every map remains `VALID_NOT_MET`, and continuation-map
+production is suspended at `CLOSED/11` pending the REAL64 axial
+flux-kernel scoping decision.  See
+[rank2_h2_r64_solver_floor_boundary.md](rank2_h2_r64_solver_floor_boundary.md).
+
+The REAL64 axial flux kernel has now been scoped
+([r64_flux_kernel_scoping_audit.md](r64_flux_kernel_scoping_audit.md)),
+implemented (`FLU2DR64`/`SPOF64`/`SPOT1P64`/`SPOLE1D` plus the
+`SPOLEAK`/`SPOSTATE`/`SPOR64_B2W` REAL64-era extensions; no algorithm,
+physics, or empirical-parameter change), and validated on the frozen
+epoch-5 window: the strict `5e-8` axial terminal that the REAL32
+kernel could not reach (500-outer plateau at `EUNK=5.8e-7`) is met in
+8 outers and 16.89 s, and the true REAL64 defect of the same input is
+$(R_\rho,R_L,D_L,R_a)=
+(1.1265762\times10^{-7},\,5.3396711\times10^{-6},\,
+7.8235890\times10^{-9}\ \mathrm{cm}^{-1},\,3.9396661\times10^{-7})$ —
+only $R_L$ fails, now as a genuine outer defect.  The previous binary
+is archived under `validation/artifacts/frozen-binaries/`.
+Continuation awaits the predeclared new numerical-map contract (new
+deck constants `REBA OFF ACCE 3 0`, new Dragon hash, restarted
+residual history, one BOOT from a frozen best state).  See
+[rank2_h2_r64_dp_kernel_probe_result.md](rank2_h2_r64_dp_kernel_probe_result.md).
+
+The new `r64dp` route has now produced its first three maps (epochs
+12-14 from `CLOSED/11`, strict `5e-8` terminals in 9 outers each, no
+old-route residual mixed).  Under exact arithmetic the leakage defect
+grew 2.22x under direct Picard and overshot 6.1x under a
+screen-passing depth-one Anderson map, while $R_\rho$ (down to
+$5.2\times10^{-9}$) and $R_a$ (down to $1.02\times10^{-7}$) contract
+and pass the gate.  The r32-era oscillation is thereby identified as a
+genuine leakage-channel expansion of the outer map, not noise; and the
+REAL64 kernel removes the binary32 obstruction that had frozen the
+Newton/JFNK route.  The next solver-contract decision (Newton-type
+leakage treatment or deeper Anderson) is open.  See
+[rank2_h2_r64dp_first_cycle_result.md](rank2_h2_r64dp_first_cycle_result.md).
+
+The Newton/JFNK route is now open and measured: two derivative-probe
+maps on the exact `g`-`h` line (epochs 15-16) give finite, consistent
+directional quotients — the binary32 counterexample that froze the
+nonlinear-solver contract is overturned — and quantify the affine
+validity radius (curvature 1.12 for steps up to half the pair
+separation, 10.1 beyond).  The measured 1-D line minimum (`x_A`,
+already evaluated) reduces the height-L2 leakage residual 34% but not
+the gate-metric hotspots; a multi-direction Newton-Krylov cycle from
+`x_A` (4-6 bounded directional maps plus one offline least-squares
+iterate) is the predeclared next step.  See
+[rank2_h2_r64dp_newton1d_result.md](rank2_h2_r64dp_newton1d_result.md).
+
+Newton-Krylov cycle 1 is complete (epochs 17-19): the two-direction
+linear model validated to 3.7% (predicted leakage L2 residual
+`8.606e-8`, measured `8.924e-8`), the height-L2 leakage residual
+contracted 0.53x in one cycle (`1.648e-7` at `g` to `8.62e-8` at
+`y_1`), and the gate-metric $R_L$ reached `4.397e-6` — the smallest
+certified leakage stopping defect of the project, with $R_\rho$ and
+$R_a$ passing the unchanged gate throughout.  Every coefficient is
+computed from measured quantities in the frozen metric.  Continuation
+is further identical cycles from the best iterate.  See
+[rank2_h2_r64dp_newton_c1_result.md](rank2_h2_r64dp_newton_c1_result.md).
+
+Cycle 2 (epochs 20-22, anchor `y_1`) sustained the contraction: the
+direction-1 probe `z_1` reached $R_L = 3.0281\times10^{-6}$ — 6.06
+gate multiples, the smallest certified leakage stopping defect of the
+project — with $R_\rho$ and $R_a$ passing throughout; the iterate
+validated at 8.6% model error.  Both cycles show the second Krylov
+direction contributing negligibly while the `anchor + 0.25 F` probe
+captures the gain; that measured fact is recorded for the next
+contract decision.  Chain at `CLOSED/22`, best state `z_1`.  See
+[rank2_h2_r64dp_newton_c2_result.md](rank2_h2_r64dp_newton_c2_result.md).
+
+The direction-1 campaign (epochs 23-24 from `z_1`) first set a new
+project best — `w_1` at $R_L = 2.1220\times10^{-6}$ (4.24 gate
+multiples, 0.70x per step as projected) — and then hit and fully
+diagnosed a structural floor: the radial feedback operator
+(`RADIAL-OP`) is computed and stored in REAL32 through a ~780x
+catastrophic cancellation in `SPOLE2` at resonance groups, so the
+computed map hops between adjacent quantization buckets
+(~1.2e-6 apart in leakage L2) under `1e-8`-level state changes.  The
+cycle-2 `z_2` reading is superseded by the same mechanism.  The `5e-7`
+gate is unreachable until the radial feedback chain
+(`PHIRK`/`QREG`/`DB2`/`RADIAL-OP`) is promoted to REAL64 with the
+established dp-record + demote-mirror pattern.  Chain at `CLOSED/24`,
+best state `w_1`.  See
+[rank2_h2_r64dp_d1_campaign_result.md](rank2_h2_r64dp_d1_campaign_result.md).
+
+The REAL64 radial feedback kernel is built and validated (dp
+`RADIAL-OP64` + bitwise REAL32 demote mirror through
+SPOASM/SPOLE2D/SPOQFSD/SPOT1P64/SPOF64; legacy path replays frozen
+receipts digit for digit).  It closed the r32 operator pocket — and
+thereby disproved it as the event's cause: the `6.55e-5` leakage event
+persists in exact arithmetic, the radial solves are exact (two outer
+iterations to `1e-15`; the `2.5e-7` terminal never binds), and a
+beta-scan shows a step function with the projected plane-2/group-132
+seed violently non-affine in beta.  The discrete branch lives in the
+publication/projection chain, not in any solver.  Chain unchanged at
+`CLOSED/24`; direction-1 steps paused until that branch is closed
+(precision/fail-closed repair, next contract).  Route binary re-pinned
+(`1964e004...`, tree-consistent after an incident recovery recorded in
+the result).  See
+[rank2_h2_r64dp_radialop64_result.md](rank2_h2_r64dp_radialop64_result.md).
+
+**GATE PASSED (2026-08-19).**  The three nested quantizers behind the
+`6.55e-5` events were measured and closed — the builder's REAL32
+leakage grid (exact dp affine published), the ASMDRV REAL32
+self-scattering reduction (dp `LEAK1D64` channel with the reduction
+applied in REAL64 inside the solver core), and the MCCG inner
+terminal's iteration-count quantization (`1e-13` pinned inner terminal
+in the dp mode, count pegged at the tracked cap) — after which the
+direction-1 campaign contracted at 0.750x per step with zero events
+from the `3.49e-4` era offset to
+$(R_\rho, R_L, R_a) = (3.12\times10^{-8},\,4.685\times10^{-7},\,
+1.78\times10^{-9})$ at `CLOSED/62` — **all three below the unchanged
+`5e-7` gate; the first `VALID_MET` state of the project.**  See
+[rank2_h2_r64dp2_gate_result.md](rank2_h2_r64dp2_gate_result.md).
+
 ## Latest boundary
 
 The latest standard AA(1) proposal

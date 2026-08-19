@@ -7,6 +7,11 @@ program build_rank2_modal_aa1_candidate
   !   --consecutive-qvwx-zplus-screened y z zp zp_snap out_ax out_snap
   !   --consecutive-q5kl-screened q5 k l l_snap out_ax out_snap
   !   --consecutive-returned-screened z r s s_snap out_ax out_snap
+  !   --consecutive-returned-r64-screened x2 x3 x4 x4_snap out_ax out_snap
+  !   --consecutive-returned-r64-uvw-screened u v w w_snap out_ax out_snap
+  !   --consecutive-r64-qrb-screened q r b b_snap out_ax out_snap
+  !   --next-x4-r64-screened x3 x4 y z z_snap out_ax out_snap
+  !   --next-r64-bd-screened r b c d d_snap out_ax out_snap
   !   --consecutive-ptu-screened p t u u_snap out_ax out_snap
   !   --current-qpzst-aa2 q p p z s t t_snap out_ax out_snap
   !   --current-stuvvw-aa2 s t u v v w w_snap out_ax out_snap
@@ -25,7 +30,7 @@ program build_rank2_modal_aa1_candidate
   !   --next-aa1aa1-screened q6 m q7 n n_snap out_ax out_snap
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
-  use, intrinsic :: iso_c_binding, only : c_ptr
+  use, intrinsic :: iso_c_binding, only : c_associated,c_ptr
   use, intrinsic :: iso_fortran_env, only : int32,int64,real32,real64
   implicit none
 
@@ -51,7 +56,8 @@ program build_rank2_modal_aa1_candidate
   character(len=12) :: marker,carrier_marker
   character(len=2) :: previous_output,latest_output
   type(canonical_state) :: x0,x1,x2
-  type(c_ptr) :: snap2,staged_ax,staged_snap,out_ax,out_snap,fluxes,plane
+  type(c_ptr) :: snap2,staged_ax,staged_snap,out_ax,out_snap
+  type(c_ptr) :: fluxes,plane,systems,system
   integer :: i,igr,isnap,a,b,nmode,nreg2d,argument_offset
   integer :: index_a,index_b,index_g,index_l
   real(real64) :: update_sq(2),update_dot,denominator,beta,weight1
@@ -72,7 +78,18 @@ program build_rank2_modal_aa1_candidate
   logical :: consecutive_qvwx_zplus_screened_mode
   logical :: consecutive_q5kl_screened_mode
   logical :: consecutive_returned_screened_mode
+  logical :: consecutive_returned_r64_screened_mode
+  logical :: consecutive_returned_r64_uvw_screened_mode
+  logical :: consecutive_returned_r64_fgh_screened_mode
+  logical :: affine_beta_mode
+  type(c_ptr) :: snap_probe,auth_probe
+  integer :: probe_len,probe_typ
+  character(len=12) :: marker_probe
+  real(real64) :: beta_input
+  character(len=48) :: beta_text
+  logical :: consecutive_r64_qrb_screened_mode
   logical :: consecutive_ptu_screened_mode
+  integer :: r64_carrier_epoch
 
   consecutive_mode=.false.
   consecutive_returned_mode=.false.
@@ -81,9 +98,31 @@ program build_rank2_modal_aa1_candidate
   consecutive_qvwx_zplus_screened_mode=.false.
   consecutive_q5kl_screened_mode=.false.
   consecutive_returned_screened_mode=.false.
+  consecutive_returned_r64_screened_mode=.false.
+  consecutive_returned_r64_uvw_screened_mode=.false.
+  consecutive_returned_r64_fgh_screened_mode=.false.
+  affine_beta_mode=.false.
+  beta_input=0.0_real64
+  consecutive_r64_qrb_screened_mode=.false.
   consecutive_ptu_screened_mode=.false.
+  r64_carrier_epoch=3
   argument_offset=0
-  if (command_argument_count() == 10) then
+  call get_command_argument(1,mode)
+  if ((command_argument_count() == 8).and. &
+      (trim(mode) == '--affine-r64-fgh-beta')) then
+    consecutive_mode=.true.
+    consecutive_returned_mode=.true.
+    consecutive_returned_r64_screened_mode=.true.
+    consecutive_returned_r64_fgh_screened_mode=.true.
+    affine_beta_mode=.true.
+    call get_command_argument(8,beta_text)
+    if (len_trim(beta_text) == 0) &
+      error stop 'affine beta argument is empty'
+    read(beta_text,*) beta_input
+    if (.not.ieee_is_finite(beta_input)) &
+      error stop 'affine beta argument is not finite'
+    argument_offset=1
+  else if (command_argument_count() == 10) then
     call get_command_argument(1,mode)
     if (trim(mode) == '--rolling-aa2') then
       call build_rolling_aa2_candidate(.false.,.false.)
@@ -120,6 +159,12 @@ program build_rank2_modal_aa1_candidate
       call build_next_candidate(.false.,.false.,.false.,.false.,.false.,.false.,.false.)
     else if (trim(mode) == '--next-x4') then
       call build_next_candidate(.false.,.false.,.false.,.false.,.true.,.false.,.false.)
+    else if (trim(mode) == '--next-x4-r64-screened') then
+      call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
+        .false.,.false.,.false.,.true.)
+    else if (trim(mode) == '--next-r64-bd-screened') then
+      call build_next_candidate(.false.,.false.,.false.,.false.,.false., &
+        .false.,.false.,.false.,.true.,10)
     else if (trim(mode) == '--next-x4z') then
       call build_next_candidate(.false.,.false.,.false.,.false.,.false.,.true.,.false.)
     else if (trim(mode) == '--next-zu') then
@@ -177,6 +222,28 @@ program build_rank2_modal_aa1_candidate
       consecutive_mode=.true.
       consecutive_returned_mode=.true.
       consecutive_returned_screened_mode=.true.
+    else if (trim(mode) == '--consecutive-returned-r64-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+    else if (trim(mode) == &
+        '--consecutive-returned-r64-uvw-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+      consecutive_returned_r64_uvw_screened_mode=.true.
+    else if (trim(mode) == &
+        '--consecutive-returned-r64-fgh-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+      consecutive_returned_r64_fgh_screened_mode=.true.
+    else if (trim(mode) == &
+        '--consecutive-r64-qrb-screened') then
+      consecutive_mode=.true.
+      consecutive_returned_mode=.true.
+      consecutive_returned_r64_screened_mode=.true.
+      consecutive_r64_qrb_screened_mode=.true.
     else if (trim(mode) == '--consecutive-ptu-screened') then
       consecutive_mode=.true.
       consecutive_ptu_screened_mode=.true.
@@ -199,7 +266,8 @@ program build_rank2_modal_aa1_candidate
   else if (command_argument_count() /= 6) then
     error stop 'expected x0 x1 x2 x2_snap out_ax out_snap or '// &
       '--next x1 x2 y z z_snap out_ax out_snap or '// &
-      '--next-x4 x3 x4 qy z z_snap out_ax out_snap or '// &
+        '--next-x4 x3 x4 qy z z_snap out_ax out_snap or '// &
+        '--next-x4-r64-screened x3 x4 qy z z_snap out_ax out_snap or '// &
       '--next-x4z qy z qt u u_snap out_ax out_snap or '// &
       '--next-zu qt u qs v v_snap out_ax out_snap or '// &
       '--next-x4aa2-screened q v w x x_snap out_ax out_snap or '// &
@@ -236,6 +304,8 @@ program build_rank2_modal_aa1_candidate
       'out_ax out_snap or '// &
       '--consecutive x1_pub x2 x3 x3_snap out_ax out_snap or '// &
       '--consecutive-returned x2 x3 x4 x4_snap out_ax out_snap or '// &
+      '--consecutive-returned-r64-screened x2 x3 x4 x4_snap '// &
+      'out_ax out_snap or '// &
       '--consecutive-current qs v w w_snap out_ax out_snap or '// &
       '--consecutive-current-aa2-picard q p z z_snap out_ax out_snap or '// &
       '--consecutive-qvwx-zplus-screened y z zp zp_snap out_ax out_snap or '// &
@@ -289,7 +359,26 @@ program build_rank2_modal_aa1_candidate
     carrier_marker='X4-RAW-FLUX'
     call load_state(trim(path(1)),x0,'qs proposal',.true.,'U-RAW-FLUX')
   else if (consecutive_returned_mode) then
-    if (consecutive_returned_screened_mode) then
+    if (consecutive_returned_r64_screened_mode) then
+      report_prefix='RANK2-R64-AA1'
+      previous_output='X3'
+      latest_output='X4'
+      if (consecutive_returned_r64_uvw_screened_mode) then
+        previous_output='V'
+        latest_output='W'
+        r64_carrier_epoch=7
+      endif
+      if (consecutive_returned_r64_fgh_screened_mode) then
+        previous_output='G'
+        latest_output='H'
+        r64_carrier_epoch=13
+      endif
+      if (consecutive_r64_qrb_screened_mode) then
+        previous_output='R'
+        latest_output='B'
+        r64_carrier_epoch=9
+      endif
+    else if (consecutive_returned_screened_mode) then
       report_prefix='RANK2-CURRENT-ZRS-AA1'
       previous_output='R'
       latest_output='S'
@@ -299,7 +388,11 @@ program build_rank2_modal_aa1_candidate
       latest_output='X4'
     endif
     carrier_marker='X4-RAW-FLUX'
-    call load_state(trim(path(1)),x0,'x2 returned')
+    if (consecutive_r64_qrb_screened_mode) then
+      call load_state(trim(path(1)),x0,'q proposal',.true.,'X4-RAW-FLUX')
+    else
+      call load_state(trim(path(1)),x0,'x2 returned')
+    endif
   else if (consecutive_mode) then
     report_prefix='RANK2-CONSECUTIVE-AA1'
     previous_output='X2'
@@ -309,11 +402,35 @@ program build_rank2_modal_aa1_candidate
   else
     call load_state(trim(path(1)),x0,'x0')
   endif
-  call load_state(trim(path(2)),x1,'x1')
+  if (affine_beta_mode) then
+    call LCMOP(snap_probe,trim(path(2)),2,2,0)
+    call LCMLEN(snap_probe,'SPOT-X-STATE',probe_len,probe_typ)
+    marker_probe='            '
+    if (probe_len > 0) call LCMGTC(snap_probe,'SPOT-X-STATE',12, &
+      marker_probe)
+    call LCMCL(snap_probe,1)
+    if (marker_probe == 'PROPOSAL') then
+      call load_state(trim(path(2)),x1,'x1 proposal',.true., &
+        'X4-RAW-FLUX')
+    else
+      call load_state(trim(path(2)),x1,'x1')
+    endif
+  else
+    call load_state(trim(path(2)),x1,'x1')
+  endif
   call load_state(trim(path(3)),x2,'x2')
   call compare_fixed_space(x0,x1,'x0/x1')
   call compare_fixed_space(x1,x2,'x1/x2')
-  call validate_snapshot(trim(path(4)),x1,x2,snap2)
+  if (affine_beta_mode) then
+    call LCMOP(snap_probe,trim(path(4)),2,2,0)
+    auth_probe=LCMGID(snap_probe,'SPOT-R64')
+    call LCMGET(auth_probe,'EPOCH',r64_carrier_epoch)
+    call LCMCL(snap_probe,1)
+    if (r64_carrier_epoch <= 0) &
+      error stop 'affine carrier epoch is not positive'
+  endif
+  call validate_snapshot(trim(path(4)),x1,x2,snap2, &
+    consecutive_returned_r64_screened_mode,r64_carrier_epoch)
 
   ! Reproduce the full Gram-height arithmetic of the frozen direction audit.
   update_sq=0.0_real64
@@ -350,12 +467,17 @@ program build_rank2_modal_aa1_candidate
     error stop 'singular modal Anderson scalar system'
   beta=(update_sq(1)-update_dot)/denominator
   weight1=1.0_real64-beta
+  if (affine_beta_mode) then
+    beta=beta_input
+    weight1=1.0_real64-beta
+  endif
   if ((.not.ieee_is_finite(beta)).or.(.not.ieee_is_finite(weight1))) &
     error stop 'nonfinite modal Anderson weight'
   if (consecutive_current_aa2_picard_mode.or. &
       consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
+      consecutive_returned_r64_screened_mode.or. &
       consecutive_ptu_screened_mode) then
     modal_affine_sq=weight1**2*update_sq(1)+beta**2*update_sq(2)+ &
       2.0_real64*weight1*beta*update_dot
@@ -376,6 +498,7 @@ program build_rank2_modal_aa1_candidate
       consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
+      consecutive_returned_r64_screened_mode.or. &
       consecutive_ptu_screened_mode) then
     leakage_sq=0.0_real64
     leakage_dot=0.0_real64
@@ -413,6 +536,7 @@ program build_rank2_modal_aa1_candidate
         consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
+        consecutive_returned_r64_screened_mode.or. &
         consecutive_ptu_screened_mode) then
       if ((modal_affine_norm >= modal_current_norm).or. &
           (leakage_affine_norm >= leakage_current_norm).or. &
@@ -420,7 +544,8 @@ program build_rank2_modal_aa1_candidate
         if (consecutive_current_aa2_picard_mode) then
           error stop 'AA2-Picard parameter-free direction gate failed'
         else
-          error stop 'screened returned parameter-free direction gate failed'
+          if (.not.affine_beta_mode) error stop &
+            'screened returned parameter-free direction gate failed'
         endif
       endif
     endif
@@ -476,14 +601,21 @@ program build_rank2_modal_aa1_candidate
   call LCMPUT(staged_ax,'SPOT-X-A',size(candidate_a),4,candidate_a)
   call LCMPUT(staged_ax,'K-EFFECTIVE',1,2,keff_public)
   call LCMPUT(staged_ax,'SPOT-X-RHO',1,4,rho_public)
-  call LCMPUT(staged_ax,'SPOT-X-L',size(published_l),4, &
-    real(published_l,real64))
+  ! The published leakage is the EXACT double-precision affine of the
+  ! parents' SPOT-X-L records; published_l stays its bitwise REAL32
+  ! demote mirror for the snapshot-plane records below.
+  call LCMPUT(staged_ax,'SPOT-X-L',size(candidate_l),4,candidate_l)
   call delete_if_present(staged_ax,'SPOT-X-RRHO')
   call delete_if_present(staged_ax,'SPOT-X-RLEAK')
   call delete_if_present(staged_ax,'SPOT-X-DLEAK')
   call delete_if_present(staged_ax,'SPOT-X-RA')
   call delete_if_present(staged_ax,'SPOT-X-PERP')
   call delete_if_present(staged_ax,'SPOT-X-EPOCH')
+  call delete_if_present(staged_ax,'SPOT-X-KEFF')
+  call delete_if_present(staged_ax,'SPOT-KEFF64')
+  call delete_if_present(staged_ax,'FLUX64')
+  if (consecutive_returned_r64_screened_mode) &
+    call delete_if_present(staged_ax,'SPOT-R64')
   call delete_if_present(staged_ax,'SPOT-GBAL')
   ! The physical GANLIB key is the 12-character truncation of the logical
   ! diagnostic name SPOT-GBAL-MAX.
@@ -506,12 +638,20 @@ program build_rank2_modal_aa1_candidate
   call delete_if_present(staged_snap,'SPOT-L1-ERR')
   call delete_if_present(staged_snap,'SPOT-PJ-PERP')
   call delete_if_present(staged_snap,'SPOT-PROJECT')
+  if (consecutive_returned_r64_screened_mode) &
+    call delete_if_present(staged_snap,'SPOT-R64')
   fluxes=LCMGID(staged_snap,'FLUX')
+  systems=LCMGID(staged_snap,'SYSTEM')
   do isnap=1,x2%dims(3)
     plane=LCMGIL(fluxes,isnap)
+    system=LCMGIL(systems,isnap)
     index_l=(isnap-1)*x2%dims(2)+1
     call LCMPUT(plane,'SPOT-LEAK1D',x2%dims(2),2, &
       published_l(index_l:index_l+x2%dims(2)-1))
+    if (consecutive_returned_r64_screened_mode) then
+      call delete_if_present(plane,'SPOT-R64')
+      call delete_if_present(system,'SPOT-R64')
+    endif
   enddo
 
   call LCMOP(out_snap,trim(path(6)),0,2,0)
@@ -543,11 +683,13 @@ program build_rank2_modal_aa1_candidate
       consecutive_q5kl_screened_mode.or. &
       consecutive_qvwx_zplus_screened_mode.or. &
       consecutive_returned_screened_mode.or. &
+      consecutive_returned_r64_screened_mode.or. &
       consecutive_ptu_screened_mode) then
     if (consecutive_current_aa2_picard_mode.or. &
         consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
+        consecutive_returned_r64_screened_mode.or. &
         consecutive_ptu_screened_mode) then
       write(*,'(A,ES24.16)') trim(report_prefix)// &
         ' MODAL-AFFINE-L2/CURRENT ', &
@@ -565,6 +707,7 @@ program build_rank2_modal_aa1_candidate
         consecutive_q5kl_screened_mode.or. &
         consecutive_qvwx_zplus_screened_mode.or. &
         consecutive_returned_screened_mode.or. &
+        consecutive_returned_r64_screened_mode.or. &
         consecutive_ptu_screened_mode) &
       write(*,'(A)') trim(report_prefix)// &
         ' PARAMETER-FREE DIRECTION GATE PASS'
@@ -1062,11 +1205,13 @@ contains
 
   subroutine build_next_candidate(u_mode,post_aa1_mode,rolling_mode, &
       rolling_next_mode,x4_history_mode,x4z_history_mode,zu_history_mode, &
-      x4aa2_screened_mode)
+      x4aa2_screened_mode,next_x4_r64_screened_mode,next_r64_epoch)
     logical, intent(in) :: u_mode,post_aa1_mode,rolling_mode
     logical, intent(in) :: rolling_next_mode,x4_history_mode
     logical, intent(in) :: x4z_history_mode,zu_history_mode
     logical, intent(in), optional :: x4aa2_screened_mode
+    logical, intent(in), optional :: next_x4_r64_screened_mode
+    integer, intent(in), optional :: next_r64_epoch
     character(len=1024) :: next_path(7)
     character(len=24) :: report_prefix
     character(len=12) :: next_marker,input_carrier,output_carrier
@@ -1074,6 +1219,7 @@ contains
     type(canonical_state) :: next_x1,next_x2,next_y,next_z
     type(c_ptr) :: next_z_snap,next_staged_ax,next_staged_snap
     type(c_ptr) :: next_out_ax,next_out_snap,next_fluxes,next_plane
+    type(c_ptr) :: next_systems,next_system
     integer :: j,g,s,r,ia,ib,ig,il,mode_count,region_count
     integer :: positive_count
     real(real64) :: p_sq,q_sq,p_dot,p_a,p_b,q_a,q_b
@@ -1089,11 +1235,18 @@ contains
     real(real32) :: next_k_public,next_projected
     real(real64), allocatable :: next_candidate_a(:),next_candidate_l(:)
     real(real32), allocatable :: next_published_l(:)
-    logical :: current_screened_mode
+    logical :: current_screened_mode,r64_screened_mode
+    integer :: r64_epoch
 
     current_screened_mode=.false.
     if (present(x4aa2_screened_mode)) &
       current_screened_mode=x4aa2_screened_mode
+    r64_screened_mode=.false.
+    if (present(next_x4_r64_screened_mode)) &
+      r64_screened_mode=next_x4_r64_screened_mode
+    current_screened_mode=current_screened_mode.or.r64_screened_mode
+    r64_epoch=4
+    if (present(next_r64_epoch)) r64_epoch=next_r64_epoch
 
     do j=1,7
       call get_command_argument(j+1,next_path(j))
@@ -1122,7 +1275,17 @@ contains
         (zu_history_mode.and.current_screened_mode)) &
       error stop 'next proposal modes are mutually exclusive'
     if (current_screened_mode) then
-      if (trim(mode) == '--next-aa1aa1-screened') then
+      if (r64_screened_mode) then
+        input_carrier='X4-RAW-FLUX'
+        output_carrier='X4-RAW-FLUX'
+        report_prefix='RANK2-R64-AA1-NEXT'
+        latest_output='Z'
+        previous_output='X4'
+        if (r64_epoch == 10) then
+          latest_output='D'
+          previous_output='B'
+        endif
+      else if (trim(mode) == '--next-aa1aa1-screened') then
         input_carrier='AA1-RAW-FLUX'
         output_carrier='AA1-RAW-FLUX'
         report_prefix='RANK2-CURRENT-MN-AA1'
@@ -1222,7 +1385,9 @@ contains
     endif
 
     if (current_screened_mode) then
-      if (trim(mode) == '--next-aa1aa1-screened') then
+      if (r64_screened_mode) then
+        call load_state(trim(next_path(1)),next_x1,'previous map input')
+      else if (trim(mode) == '--next-aa1aa1-screened') then
         call load_state(trim(next_path(1)),next_x1, &
           'previous proposal q6',.true.,'AA1-RAW-FLUX')
       else if (trim(mode) == '--next-zpcd-screened') then
@@ -1265,7 +1430,12 @@ contains
     call compare_next_fixed_space(next_x1,next_x2,'x1/x2')
     call compare_next_fixed_space(next_x1,next_y,'x1/y')
     call compare_next_fixed_space(next_x1,next_z,'x1/z')
-    call validate_snapshot(trim(next_path(5)),next_y,next_z,next_z_snap)
+    if (r64_screened_mode) then
+      call validate_snapshot(trim(next_path(5)),next_y,next_z,next_z_snap, &
+        .true.,r64_epoch)
+    else
+      call validate_snapshot(trim(next_path(5)),next_y,next_z,next_z_snap)
+    endif
 
     ! The two evaluated map residuals are output-input for each pair.
     p_sq=0.0_real64
@@ -1424,6 +1594,8 @@ contains
     call delete_if_present(next_staged_ax,'SPOT-X-EPOCH')
     call delete_if_present(next_staged_ax,'SPOT-GBAL')
     call delete_if_present(next_staged_ax,'SPOT-GBAL-MA')
+    if (r64_screened_mode) &
+      call delete_if_present(next_staged_ax,'SPOT-R64')
     next_marker='PROPOSAL'
     call LCMPTC(next_staged_ax,'SPOT-X-STATE',12,next_marker)
     next_marker=output_carrier
@@ -1441,12 +1613,20 @@ contains
     call delete_if_present(next_staged_snap,'SPOT-L1-ERR')
     call delete_if_present(next_staged_snap,'SPOT-PJ-PERP')
     call delete_if_present(next_staged_snap,'SPOT-PROJECT')
+    if (r64_screened_mode) &
+      call delete_if_present(next_staged_snap,'SPOT-R64')
     next_fluxes=LCMGID(next_staged_snap,'FLUX')
+    next_systems=LCMGID(next_staged_snap,'SYSTEM')
     do s=1,next_z%dims(3)
       next_plane=LCMGIL(next_fluxes,s)
+      next_system=LCMGIL(next_systems,s)
       il=(s-1)*next_z%dims(2)+1
       call LCMPUT(next_plane,'SPOT-LEAK1D',next_z%dims(2),2, &
         next_published_l(il:il+next_z%dims(2)-1))
+      if (r64_screened_mode) then
+        call delete_if_present(next_plane,'SPOT-R64')
+        call delete_if_present(next_system,'SPOT-R64')
+      endif
     enddo
     call LCMOP(next_out_snap,trim(next_path(7)),0,2,0)
     call LCMEQU(next_staged_snap,next_out_snap)
@@ -1494,6 +1674,8 @@ contains
       write(*,'(A)') trim(report_prefix)// &
         ' PARAMETER-FREE DIRECTION GATE PASS'
     endif
+    if (r64_screened_mode) write(*,'(A,I0,A)') trim(report_prefix)// &
+      ' R64 RETURNED/',r64_epoch,' INPUT AND AUTHORITY STRIP PASS'
     write(*,'(A)') trim(report_prefix)//' CARRIER '//trim(output_carrier)
     write(*,'(A)') trim(report_prefix)//' CLASSIFICATION '// &
       'MATERIALIZED_PROPOSAL_NOT_EVALUATED NO-DRAGON NO-MAP'
@@ -1506,6 +1688,8 @@ contains
     logical, intent(in), optional :: proposal_schema
     character(len=*), intent(in), optional :: proposal_carrier
     integer :: ngrp,nsnap,ncoef,total_basis,total_gram,g,nreg
+    integer :: lk64,tk64
+    real(real64) :: dkeff64
     logical :: is_proposal
     character(len=12) :: expected_carrier
 
@@ -1619,18 +1803,38 @@ contains
       call require_character(data%root,'SPOT-X-STATE','PROPOSAL',owner)
       call require_character(data%root,'SPOT-X-CARR',expected_carrier,owner)
     endif
-    if (any(bits64(data%leakage) /= &
-            bits64(real(real(data%leakage,real32),real64)))) &
-      error stop 'canonical leakage is not promoted binary32'
-    if (bits64(data%rho) /= &
-        bits64(1.0_real64/real(data%keff,real64))) &
-      error stop 'inverse-eigenvalue identity differs'
+    call LCMLEN(data%root,'SPOT-X-KEFF',lk64,tk64)
+    if (lk64 == 1) then
+      if (tk64 /= 4) error stop 'invalid SPOT-X-KEFF record'
+      call LCMGET(data%root,'SPOT-X-KEFF',dkeff64)
+      if (transfer(real(dkeff64,real32),0_int32) /= &
+          transfer(data%keff,0_int32)) &
+        error stop 'SPOT-X-KEFF mirror mismatch'
+      if (bits64(data%rho) /= bits64(1.0_real64/dkeff64)) &
+        error stop 'inverse-eigenvalue identity differs'
+    else
+      ! Proposal states publish the exact dp affine leakage; only
+      ! returned/canonical states must sit on the promoted r32 grid.
+      if (.not.is_proposal) then
+        if (any(bits64(data%leakage) /= &
+                bits64(real(real(data%leakage,real32),real64)))) &
+          error stop 'canonical leakage is not promoted binary32'
+      endif
+      if (bits64(data%rho) /= &
+          bits64(1.0_real64/real(data%keff,real64))) &
+        error stop 'inverse-eigenvalue identity differs'
+    endif
   end subroutine load_state
 
   subroutine compare_fixed_space(left,right,owner)
     type(canonical_state), intent(in) :: left,right
     character(len=*), intent(in) :: owner
-    if (any(left%state /= right%state).or.any(left%dims /= right%dims).or. &
+    ! Entries 9 and 10 are the declared solver iteration-control options
+    ! (acceleration count, rebalance flag); they are route-contract inputs,
+    ! not part of the fixed physical package.
+    if (any(left%state(1:8) /= right%state(1:8)).or. &
+        any(left%state(11:) /= right%state(11:)).or. &
+        any(left%dims /= right%dims).or. &
         any(left%rank /= right%rank).or.any(left%offset /= right%offset).or. &
         any(left%gram_offset /= right%gram_offset).or. &
         any(left%basis_offset /= right%basis_offset).or. &
@@ -1662,15 +1866,29 @@ contains
     endif
   end subroutine compare_next_fixed_space
 
-  subroutine validate_snapshot(file_name,previous,current,root)
+  subroutine validate_snapshot(file_name,previous,current,root, &
+      returned_r64_mode,returned_r64_epoch)
     character(len=*), intent(in) :: file_name
     type(canonical_state), intent(in) :: previous,current
     type(c_ptr), intent(out) :: root
+    logical, intent(in), optional :: returned_r64_mode
+    integer, intent(in), optional :: returned_r64_epoch
     type(c_ptr) :: local_fluxes,local_systems,local_plane,local_system
-    integer :: s,first,plane_id
+    type(c_ptr) :: authority
+    integer :: s,first,plane_id,root_planes,root_epoch,expected_epoch
+    integer :: plane_epoch,system_epoch
     integer :: local_listdim
     real(real64) :: local_iter
+    real(real64) :: plane_rho,system_rho,first_rho
+    real(real32) :: l1_error,checked_l1
     real(real32), allocatable :: local_l(:),local_system_l(:)
+    logical :: admit_returned_r64
+
+    admit_returned_r64=.false.
+    if (present(returned_r64_mode)) &
+      admit_returned_r64=returned_r64_mode
+    expected_epoch=3
+    if (present(returned_r64_epoch)) expected_epoch=returned_r64_epoch
 
     call LCMOP(root,file_name,2,2,0)
     call require_character(root,'SIGNATURE','L_ARCHIVE','x2 snapshots')
@@ -1680,14 +1898,37 @@ contains
       error stop 'x2 snapshot count differs'
     call require_record(root,'SPOT-ITER-K',1,4,'x2 snapshots')
     call LCMGET(root,'SPOT-ITER-K',local_iter)
-    if (bits64(local_iter) /= bits64(real(current%keff,real64))) &
-      error stop 'x2 snapshot effective eigenvalue differs'
-    call require_absent(root,'SPOT-R64','x2 snapshots')
+    if (bits64(local_iter) /= bits64(real(current%keff,real64))) then
+      if (transfer(real(local_iter,real32),0_int32) /= &
+          transfer(current%keff,0_int32)) &
+        error stop 'x2 snapshot effective eigenvalue differs'
+    endif
+    if (admit_returned_r64) then
+      call require_record(root,'SPOT-L1-ERR',1,2,'R64 returned root')
+      call require_record(root,'SPOT-R64',-1,0,'R64 returned root')
+      call LCMGET(root,'SPOT-L1-ERR',l1_error)
+      if ((.not.ieee_is_finite(l1_error)).or.(l1_error < 0.0_real32)) &
+        error stop 'invalid R64 returned leakage receipt'
+      authority=LCMGID(root,'SPOT-R64')
+      call require_record(authority,'NPLANE',1,1,'R64 root authority')
+      call require_character(authority,'STATE','RETURNED', &
+        'R64 root authority')
+      call require_record(authority,'EPOCH',1,1,'R64 root authority')
+      call LCMGET(authority,'NPLANE',root_planes)
+      call LCMGET(authority,'EPOCH',root_epoch)
+      if ((root_planes /= local_listdim).or. &
+          (root_epoch /= expected_epoch)) &
+        error stop 'R64 snapshot has wrong RETURNED epoch'
+    else
+      call require_absent(root,'SPOT-R64','x2 snapshots')
+    endif
     call require_record(root,'FLUX',local_listdim,10,'x2 snapshots')
     call require_record(root,'SYSTEM',local_listdim,10,'x2 snapshots')
     local_fluxes=LCMGID(root,'FLUX')
     local_systems=LCMGID(root,'SYSTEM')
     allocate(local_l(current%dims(2)),local_system_l(current%dims(2)))
+    checked_l1=0.0_real32
+    first_rho=0.0_real64
     do s=1,local_listdim
       local_plane=LCMGIL(local_fluxes,s)
       local_system=LCMGIL(local_systems,s)
@@ -1704,11 +1945,49 @@ contains
       if (any(bits32(local_l) /= bits32(real( &
           current%leakage(first:first+current%dims(2)-1),real32)))) &
         error stop 'x2 snapshot FLUX leakage differs from x2 state'
-      if (any(bits32(local_system_l) /= bits32(real( &
-          previous%leakage(first:first+current%dims(2)-1),real32)))) &
-        error stop 'x2 lagged SYSTEM leakage differs from x1 state'
+      if (.not.affine_beta_mode) then
+        if (any(bits32(local_system_l) /= bits32(real( &
+            previous%leakage(first:first+current%dims(2)-1),real32)))) &
+          error stop 'x2 lagged SYSTEM leakage differs from x1 state'
+      endif
       if (plane_id /= s) error stop 'x2 lagged SYSTEM snapshot id differs'
+      if (admit_returned_r64) then
+        call require_record(local_plane,'SPOT-R64',-1,0, &
+          'R64 returned FLUX')
+        authority=LCMGID(local_plane,'SPOT-R64')
+        call require_record(authority,'RHO',1,4,'R64 FLUX authority')
+        call require_character(authority,'STATE','SOLVED', &
+          'R64 FLUX authority')
+        call require_record(authority,'EPOCH',1,1,'R64 FLUX authority')
+        call LCMGET(authority,'RHO',plane_rho)
+        call LCMGET(authority,'EPOCH',plane_epoch)
+        if ((.not.ieee_is_finite(plane_rho)).or. &
+            (plane_rho <= 0.0_real64).or.(plane_epoch /= root_epoch)) &
+          error stop 'invalid R64 FLUX authority'
+        call require_record(local_system,'SPOT-R64',-1,0, &
+          'R64 returned SYSTEM')
+        authority=LCMGID(local_system,'SPOT-R64')
+        call require_record(authority,'RHO',1,4,'R64 SYSTEM authority')
+        call require_character(authority,'STATE','ASSEMBLED', &
+          'R64 SYSTEM authority')
+        call require_record(authority,'EPOCH',1,1,'R64 SYSTEM authority')
+        call LCMGET(authority,'RHO',system_rho)
+        call LCMGET(authority,'EPOCH',system_epoch)
+        if ((bits64(system_rho) /= bits64(plane_rho)).or. &
+            (system_epoch /= root_epoch)) &
+          error stop 'R64 SYSTEM authority differs'
+        if (s == 1) then
+          first_rho=plane_rho
+        else if (bits64(plane_rho) /= bits64(first_rho)) then
+          error stop 'R64 returned planes use different equations'
+        endif
+        checked_l1=max(checked_l1,maxval(abs(local_l-local_system_l)))
+      endif
     enddo
+    if (admit_returned_r64) then
+      if (bits32(l1_error) /= bits32(checked_l1)) &
+        error stop 'R64 returned leakage receipt differs'
+    endif
     deallocate(local_system_l,local_l)
   end subroutine validate_snapshot
 

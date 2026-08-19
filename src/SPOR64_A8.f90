@@ -25,6 +25,12 @@ module SPOR64_A8
   integer, parameter :: ISCR = 0
   integer, parameter :: PACA = 4
   integer, parameter :: MAXI = 20
+  ! Deep inner terminal of the REAL64-leakage contract.  With the
+  ! legacy 1e-5 inner terminal the flight-iteration count varies with
+  ! the state and quantizes the effective swept operator; pinned far
+  ! below reach, the count pegs at the tracked MAXI and the operator
+  ! becomes a smooth deterministic function of the state.
+  real(real64), parameter :: DP_MCCG_EPSI64 = 1.0e-13_real64
   integer, parameter :: NSTART = 10
   integer, parameter :: MAXIT = 19
   integer, parameter :: MAXACC = 200
@@ -286,10 +292,11 @@ contains
   end subroutine MAP_INTEGER3
 
   subroutine DOORFV64(ipsys, npsys, iptrk, iftrak, impx, ngrp, nun, &
-      keyflx_base1, title, full_source64, full_flux64, cutoff_delta64, &
-      ok)
+      keyflx_base1, title, leak1d64, full_source64, full_flux64, &
+      cutoff_delta64, ok)
     type(c_ptr), intent(in) :: ipsys, iptrk
     integer, intent(in) :: ngrp, nun, iftrak, impx
+    real(real64), intent(in) :: leak1d64(:)
     integer, intent(in) :: npsys(ngrp), keyflx_base1(NREG)
     character(len=72), intent(in) :: title
     real(real64), intent(in) :: full_source64(nun,ngrp)
@@ -358,8 +365,8 @@ contains
 
     child_delta64 = 0_int64
     call MCCGF64(kpsys_tail, iptrk, iftrak, impx, ngeff, ngind, nun, &
-        keyflx_base1, qfr_tail64, phiin_tail64, title, child_delta64, &
-        child_ok)
+        keyflx_base1, leak1d64, qfr_tail64, phiin_tail64, title, &
+        child_delta64, child_ok)
     cutoff_delta64 = cutoff_delta64 + child_delta64
     if (.not. child_ok) return
     if (.not. all(ieee_is_finite(phiin_tail64))) return
@@ -380,10 +387,12 @@ contains
   end subroutine DOORFV64
 
   subroutine MCCGF64(kpsys, iptrk, iftrak, impx, ngeff, ngind, nun, &
-      keyflx_base1, qfr64, phiin64, title, cutoff_delta64, ok)
+      keyflx_base1, leak1d64, qfr64, phiin64, title, cutoff_delta64, &
+      ok)
     integer, intent(in) :: iftrak, impx, ngeff, nun
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     integer, intent(in) :: ngind(ngeff), keyflx_base1(NREG)
+    real(real64), intent(in) :: leak1d64(:)
     real(real64), intent(in) :: qfr64(nun,ngeff)
     real(real64), intent(inout) :: phiin64(nun,ngeff)
     character(len=72), intent(in) :: title
@@ -465,6 +474,10 @@ contains
     if (transfer(real_param32(4), 0_int32) /= 0_int32) return
     epsi64 = real(real_param32(1), real64)
     if (.not. ieee_is_finite(epsi64) .or. epsi64 <= 0.0_real64) return
+    ! Data-keyed: the REAL64-leakage mode always carries a physically
+    ! nonzero leakage vector; the legacy mode passes exact zeros and
+    ! keeps the tracked terminal byte-identically.
+    if (any(leak1d64 /= 0.0_real64)) epsi64 = DP_MCCG_EPSI64
 
     rewind(iftrak, iostat=ios)
     if (ios /= 0) return
@@ -601,6 +614,7 @@ contains
         nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
         keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
         caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
+        leak1d64, &
         qfr64, phiin64, epsi64, reps64, eps64, itst, nconv, lnconv, &
         child_delta64, child_ok)
     cutoff_delta64 = cutoff_delta64 + child_delta64
@@ -621,13 +635,14 @@ contains
   end subroutine MCCGF64
 
   subroutine MCGFCS64(n, ndim0, nzon, qn64, fi64, m, nani0, nlin0, &
-      nfunl0, sc32, s64, kpn0, nreg0, iprint, keyflx3, keycur, ibc, &
-      sigal32, stis0, ok)
+      nfunl0, sc32, leak64, s64, kpn0, nreg0, iprint, keyflx3, keycur, &
+      ibc, sigal32, stis0, ok)
     integer, intent(in) :: n, ndim0, m, nani0, nlin0, nfunl0
     integer, intent(in) :: kpn0, nreg0, iprint, stis0
     integer, intent(in) :: nzon(n), keycur(n-nreg0), ibc(n-nreg0)
     integer, intent(in) :: keyflx3(nreg0,nlin0,nfunl0)
     real(real64), intent(in) :: qn64(kpn0), fi64(kpn0)
+    real(real64), intent(in) :: leak64
     real(real64), intent(inout) :: s64(kpn0)
     real(real32), intent(in) :: sc32(0:m,nani0)
     real(real32), intent(in) :: sigal32(-NSOUT:m)
@@ -664,7 +679,7 @@ contains
         ind = keyflx3(ir,1,1)
         if (ind < 1 .or. ind > kpn0) return
         s64(ind) = qn64(ind) + &
-            real(sc32(ibm,1), real64) * fi64(ind)
+            (real(sc32(ibm,1), real64) - leak64) * fi64(ind)
       end if
     end do
     if (.not. all(ieee_is_finite(s64))) return
@@ -676,11 +691,14 @@ contains
       nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
+      leak1d64, &
       qfr64, phiin64, source64, response64, nconv, epsacc64, &
       cutoff_delta64, ok)
     integer, intent(in) :: iftrak, iprint, ngeff, nun, nbtr, nmax
     integer, intent(in) :: nmu, nangl, nbatch, lc
+    real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
+    real(real64) :: leak_slot64(ngeff)
     integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:NREG)
     integer, intent(in) :: keyflx_trk3(NREG,NLIN,NFUNL)
     integer, intent(in) :: keycur_trk1(NLONG-NREG), nzon_trk1(NLONG)
@@ -765,7 +783,8 @@ contains
       if (nconv(i)) then
         call MCGFCS64(NLONG, NDIM, nzon_trk1, qfr64(:,i), &
             phiin64(:,i), NBMIX, NANI, NLIN, NFUNL, &
-            sc_by_group32(:,:,i), source64(:,i), KPN, NREG, iprint, &
+            sc_by_group32(:,:,i), leak1d64(ngind(i)), source64(:,i), &
+            KPN, NREG, iprint, &
             keyflx_trk3, keycur_trk1, bc_index_trk1, sigal32(:,i), &
             STIS, child_ok)
         if (.not. child_ok) return
@@ -852,9 +871,13 @@ contains
     if (.not. all(ieee_is_finite(diagf32))) return
 
     child_delta64 = 0_int64
+    do i = 1, ngeff
+      leak_slot64(i) = leak1d64(ngind(i))
+    end do
     call MCGFCA64(NLONG, ngeff, KPN, NREG, NBMIX, lc, LFORW, PACA, &
         keyflx_trk3(:,1,:), keycur_trk1, nzon_trk1, nconv, MAXACC, &
-        epsacc64, response64, phiin64, sc_by_group32, im, mcu, iperm, &
+        epsacc64, response64, phiin64, sc_by_group32, leak_slot64, &
+        im, mcu, iperm, &
         ju, diagq32, cq32, iludf32, cf32, diagf32, child_delta64, &
         child_ok)
     cutoff_delta64 = cutoff_delta64 + child_delta64
@@ -867,10 +890,12 @@ contains
       nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
+      leak1d64, &
       qfr64, phiin64, epsi64, reps64, eps64, itst, nconv, lnconv, &
       cutoff_delta64, ok)
     integer, intent(in) :: iftrak, iprint, ngeff, nun, nbtr, nmax
     integer, intent(in) :: nmu, nangl, nbatch, lc
+    real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:NREG)
     integer, intent(in) :: keyflx_trk3(NREG,NLIN,NFUNL)
@@ -920,6 +945,7 @@ contains
         nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
         keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
         caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
+        leak1d64, &
         qfr64, phiin64, source64, response64, epsi64, reps64, eps64, &
         itst, nconv, lnconv, child_delta64, child_ok)
     cutoff_delta64 = cutoff_delta64 + child_delta64
@@ -931,10 +957,12 @@ contains
       nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
+      leak1d64, &
       qfr64, phiin64, source64, response64, epsi64, reps64, eps64, &
       itst, nconv, lnconv, cutoff_delta64, ok)
     integer, intent(in) :: iftrak, iprint, ngeff, nun, nbtr, nmax
     integer, intent(in) :: nmu, nangl, nbatch, lc
+    real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:NREG)
     integer, intent(in) :: keyflx_trk3(NREG,NLIN,NFUNL)
@@ -1007,6 +1035,7 @@ contains
           nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
           keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
           caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
+          leak1d64, &
           qfr64, phiin64, source64, response64, nconv, epsinto64, &
           child_delta64, child_ok)
       cutoff_delta64 = cutoff_delta64 + child_delta64
@@ -1052,8 +1081,8 @@ contains
             nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, &
             keyflx_trk3, keycur_trk1, nzon_trk1, volume_trk32, &
             caz1_track64, caz2_track64, cpo32, zmu32, wzmu32, &
-            sc_by_group32, sigal32, qfr64, rhs64, source64, flout64, &
-            nconv, epsinto64, child_delta64, child_ok)
+            sc_by_group32, sigal32, leak1d64, qfr64, rhs64, source64, &
+            flout64, nconv, epsinto64, child_delta64, child_ok)
         cutoff_delta64 = cutoff_delta64 + child_delta64
         if (.not. child_ok) return
         if (.not. all(ieee_is_finite(flout64))) return
@@ -1074,8 +1103,8 @@ contains
             nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, &
             keyflx_trk3, keycur_trk1, nzon_trk1, volume_trk32, &
             caz1_track64, caz2_track64, cpo32, zmu32, wzmu32, &
-            sc_by_group32, sigal32, qfr64, gar64, source64, flout64, &
-            nconv, epsinto64, child_delta64, child_ok)
+            sc_by_group32, sigal32, leak1d64, qfr64, gar64, source64, &
+            flout64, nconv, epsinto64, child_delta64, child_ok)
         cutoff_delta64 = cutoff_delta64 + child_delta64
         if (.not. child_ok) return
         if (.not. all(ieee_is_finite(flout64))) return
