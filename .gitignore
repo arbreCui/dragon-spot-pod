@@ -110,3 +110,9 @@ src/*.v1.bak
 *.swp
 *.swo
 *~
+
+# host tool binaries (built by validation/iterative/Makefile)
+validation/iterative/admit_candidate_radial
+validation/iterative/close_r64_returned
+validation/iterative/prepare_r64_aa1_projected
+validation/iterative/prepare_r64_next_projected

@@ -311,6 +311,16 @@ fourth quantizer — the REAL32 `K-EFFECTIVE` publication grid, half-ULP
 below the gate.  The standing contract is now `beta = 1.0`.  See
 [rank2_h2_r64dp2_method_erratum.md](rank2_h2_r64dp2_method_erratum.md).
 
+**Host tools.**  `admit_candidate_radial`, `close_r64_returned`,
+`prepare_r64_aa1_projected` and `prepare_r64_next_projected` link the
+`SPOR64` modules out of `libDragon.a`, so any change under `src/` leaves
+them stale.  A stale tool cannot produce a wrong answer — the lifecycle
+boundaries are fail-closed and it hard-rejects the archive instead — but
+finding out costs a run.  Build them with `make -C validation/iterative`
+after every `src` build; the Makefile pins the protocol's canonical
+`-O0 -ffp-contract=off` flags, because `-O2` has been observed to shift
+a recomputed defect by 1 ULP and break the bitwise receipts.
+
 ## Latest boundary
 
 The latest standard AA(1) proposal
