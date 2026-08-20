@@ -3,6 +3,8 @@ module SPOR64_B2H
   use, intrinsic :: iso_fortran_env, only : int32, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_VERIFY, only : CHARACTER_RECORD_MATCHES, EMPTY_MEMORY_ROOT, &
+      RECORD_MATCHES
   implicit none
   private
 
@@ -87,7 +89,7 @@ contains
     if (c_associated(ipout,ipseed)) return
     if (c_associated(ipout,iptrack)) return
     if (c_associated(ipseed,iptrack)) return
-    if (.not. EMPTY_LCM_ROOT(ipout)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipout)) return
     if (size(projected_region64,1) /= NREG) return
     if (size(projected_region64,2) /= NGRP) return
     ! This boundary checks the scalar representation only.  A future host
@@ -213,7 +215,7 @@ contains
     if (any(abs(projected_flux64) > REAL32_MAX64)) return
     flux_stage32 = real(projected_flux64,real32)
     if (.not. all(ieee_is_finite(flux_stage32))) return
-    if (.not. EMPTY_LCM_ROOT(ipout)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipout)) return
 
     ! Publish the REAL64 payload first.  STATE and EPOCH are withheld until
     ! every authoritative and compatibility payload has been written, so a
@@ -260,51 +262,4 @@ contains
 
     deallocate(flux_stage32,projected_flux64,seed_source64,seed_flux64)
   end subroutine SPOR64_B2H_PROJECT
-
-
-  logical function EMPTY_LCM_ROOT(iplist)
-    type(c_ptr), intent(in) :: iplist
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    integer :: object_length
-    logical :: empty, is_lcm
-
-    EMPTY_LCM_ROOT = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
-    EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
-        trim(object_name) == '/'
-  end function EMPTY_LCM_ROOT
-
-
-  logical function RECORD_MATCHES(iplist,name,expected_length,expected_type)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
-
-    RECORD_MATCHES = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    RECORD_MATCHES = actual_length == expected_length .and. &
-        actual_type == expected_type
-  end function RECORD_MATCHES
-
-
-  logical function CHARACTER_RECORD_MATCHES(iplist,name,expected_length, &
-      character_count,expected)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name, expected
-    integer, intent(in) :: expected_length, character_count
-    character(len=:), allocatable :: found
-
-    CHARACTER_RECORD_MATCHES = .false.
-    if (.not. RECORD_MATCHES(iplist,name,expected_length,3)) return
-    allocate(character(len=character_count) :: found)
-    found(:) = ' '
-    call LCMGTC(iplist,name,character_count,found)
-    CHARACTER_RECORD_MATCHES = found == expected
-    deallocate(found)
-  end function CHARACTER_RECORD_MATCHES
-
 end module SPOR64_B2H

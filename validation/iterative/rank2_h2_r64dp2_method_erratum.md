@@ -145,7 +145,23 @@ both rejected); bitwise neutrality on a replay of the `CLOSED/69`
 fixed-point map (`SPOT-X-RLEAK` bits `3DFDBB83122907D0`, `0/1110` and
 `0/2220`); and one complete map through every gate (`CLOSED/70`).
 
-This is the argument against the copies.  A shared verification module
+**Done (2026-08-20).**  The seven helpers now live in one module,
+`src/SPOR64_VERIFY.f90` (160 lines), and the fourteen `SPOR64` modules
+import them: **+70 / -1095 lines, a net 865 removed**.  Every handover
+still runs its own complete admission; only the implementation is
+shared.  `EXACT_INVENTORY` in the shared module is byte-identical to
+the hardened authority copy.  The one genuine semantic fork is now
+explicit at every call site — `EMPTY_MEMORY_ROOT` (requires an
+in-memory LCM table, 12 modules) versus `EMPTY_ROOT` (either medium;
+B2J and B2W drive memory tables and XSM files through the same GANLIB
+root operations) — where both were previously called `EMPTY_LCM_ROOT`
+with no signal to the reader.  Verified by a bitwise replay of the
+`CLOSED/69` fixed-point map (`SPOT-X-RLEAK` bits `3DFDBB83122907D0`
+unchanged, `0/1110` and `0/2220`) and one complete map through every
+gate at `CLOSED/71`
+(`iterative-rank2-h2-r64dp2-shared-verify`).
+
+This was the argument against the copies.  A shared verification module
 would delete ~600 duplicated lines **without weakening one boundary** —
 each handover would still run every check independently; only the
 implementation would be shared.  The defence of the copies would be
@@ -161,8 +177,8 @@ Chain at `CLOSED/70`, at the fixed point of the discrete outer map
 (`CLOSED/69` is the certified fixed-point receipt; `CLOSED/70` is one
 further map run to exercise the hardened inventories).
 Route binary
-`d35a0a3f440768bcbb6e711e370980b844270142cca7699c3c0eb1931932e3b5`
-(predecessor `3db907dc...`, bitwise equivalent).
+`22cf72ba046ce11d7d3f52bbb1f6f4c3e6896bdfccaa010eccdc41febe7e325d`
+(predecessors `d35a0a3f...`, `3db907dc...`; all bitwise equivalent).
 The correct continuation contract is **`beta = 1.0`** — pure Picard —
 until a measurement says otherwise; no damping, and no step scalar
 carried across an era boundary without re-deriving it.  Evidence:

@@ -3,6 +3,9 @@ module SPOR64_B2N
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
+      EMPTY_MEMORY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, &
+      RECORD_MATCHES
   implicit none
   private
 
@@ -84,8 +87,8 @@ contains
     if (c_associated(ipprojected,ipsource_out)) return
     if (c_associated(ipmacro_out,ipsource_out)) return
     if (plane_index < 1 .or. plane_index > NSNAP) return
-    if (.not. EMPTY_LCM_ROOT(ipmacro_out)) return
-    if (.not. EMPTY_LCM_ROOT(ipsource_out)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipmacro_out)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipsource_out)) return
 
     ! Admit exactly one B2l PROJECTED/e root.  RHO is authoritative and must
     ! be the bitwise result of the stated reciprocal, not an independent
@@ -372,8 +375,8 @@ contains
 
     ! Complete preflight precedes the first output mutation.  Repeating both
     ! freshness checks closes the caller-visible time-of-check window.
-    if (.not. EMPTY_LCM_ROOT(ipmacro_out)) return
-    if (.not. EMPTY_LCM_ROOT(ipsource_out)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipmacro_out)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipsource_out)) return
 
     ! MACRO0 is a recursive copy of the selected macrolib.  Its only changed
     ! physical records are all NUSIGF arrays, set to positive numerical zero
@@ -428,77 +431,6 @@ contains
     call LCMPUT(source_authority,'EPOCH',1,1,root_epoch)
     status = SPOR64_B2N_COMMITTED
   end subroutine SPOR64_B2N_BUILD
-
-
-  logical function EMPTY_LCM_ROOT(iplist)
-    type(c_ptr), intent(in) :: iplist
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    integer :: object_length
-    logical :: empty, is_lcm
-
-    EMPTY_LCM_ROOT = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
-    EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
-        trim(object_name) == '/'
-  end function EMPTY_LCM_ROOT
-
-
-  logical function RECORD_MATCHES(iplist,name,expected_length,expected_type)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
-
-    RECORD_MATCHES = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    RECORD_MATCHES = actual_length == expected_length .and. &
-        actual_type == expected_type
-  end function RECORD_MATCHES
-
-
-  logical function ABSENT_RECORD(iplist,name)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer :: actual_length, actual_type
-
-    ABSENT_RECORD = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    ABSENT_RECORD = actual_length == 0 .and. actual_type == 99
-  end function ABSENT_RECORD
-
-
-  logical function LIST_ITEM_IS_DIRECTORY(iplist,index)
-    type(c_ptr), intent(in) :: iplist
-    integer, intent(in) :: index
-    integer :: actual_length, actual_type
-
-    LIST_ITEM_IS_DIRECTORY = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEL(iplist,index,actual_length,actual_type)
-    LIST_ITEM_IS_DIRECTORY = actual_length == -1 .and. actual_type == 0
-  end function LIST_ITEM_IS_DIRECTORY
-
-
-  logical function CHARACTER_RECORD_MATCHES(iplist,name,expected_words, &
-      character_count,expected_value)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name, expected_value
-    integer, intent(in) :: expected_words, character_count
-    character(len=72) :: value
-
-    CHARACTER_RECORD_MATCHES = .false.
-    if (character_count < 1 .or. character_count > len(value)) return
-    if (.not. RECORD_MATCHES(iplist,name,expected_words,3)) return
-    value = ' '
-    call LCMGTC(iplist,name,character_count,value)
-    CHARACTER_RECORD_MATCHES = value(1:character_count) == expected_value
-  end function CHARACTER_RECORD_MATCHES
-
-
   logical function PROJECTED_ARCHIVE_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
     character(len=12), parameter :: names(7) = &
@@ -542,45 +474,4 @@ contains
 
     PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
   end function PROJECTED_AUTHORITY_IS_EXACT
-
-
-  logical function EXACT_INVENTORY(iplist,expected_names)
-    type(c_ptr), intent(in) :: iplist
-    character(len=12), intent(in) :: expected_names(:)
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    character(len=12) :: first_name, item_name
-    integer :: count, i, allocation_status, object_length
-    logical :: empty, is_lcm
-    logical, allocatable :: found(:)
-
-    EXACT_INVENTORY = .false.
-    if (.not. c_associated(iplist)) return
-    ! LCMNXT is not defined for an empty directory or a list.
-    ! LCMINF makes both ordinary preflight failures instead.
-    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
-    if (empty .or. object_length /= -1) return
-    allocate(found(size(expected_names)),stat=allocation_status)
-    if (allocation_status /= 0) return
-    found = .false.
-    item_name = ' '
-    call LCMNXT(iplist,item_name)
-    if (item_name == ' ') return
-    first_name = item_name
-    count = 0
-    do
-      count = count+1
-      if (count > size(expected_names)) return
-      do i = 1, size(expected_names)
-        if (item_name == expected_names(i)) exit
-      end do
-      if (i > size(expected_names)) return
-      if (found(i)) return
-      found(i) = .true.
-      call LCMNXT(iplist,item_name)
-      if (item_name == first_name) exit
-    end do
-    EXACT_INVENTORY = count == size(expected_names) .and. all(found)
-  end function EXACT_INVENTORY
-
 end module SPOR64_B2N

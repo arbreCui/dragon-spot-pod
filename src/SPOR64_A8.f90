@@ -4,6 +4,7 @@ module SPOR64_A8
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use SPOR64_A8_ACA, only : MCGFCA64
+  use SPOR64_VERIFY, only : RECORD_MATCHES
   implicit none
   private
 
@@ -195,19 +196,6 @@ contains
     logical, intent(out) :: ok
     ok = all(ieee_is_finite(sc32)) .and. all(ieee_is_finite(sigal32))
   end subroutine SPOR64_A8_OPERATOR_PROBE
-
-  logical function RECORD_MATCHES(iplist, name, expected_length, &
-      expected_type) result(matches)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: length, itylcm
-    matches = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist, name, length, itylcm)
-    matches = length == expected_length .and. itylcm == expected_type
-  end function RECORD_MATCHES
-
   subroutine MAP_INTEGER1(iplist, name, n, values, ok)
     type(c_ptr), intent(in) :: iplist
     character(len=*), intent(in) :: name

@@ -7,6 +7,8 @@ module SPOR64_B2S
   use SPOR64_B2O, only : SPOR64_B2O_SEALED, &
       SPOR64_B2O_SEAL_CONT_PAIR
   use SPOR64_B2R, only : SPOR64_B2R_RETURNED, SPOR64_B2R_COLLECT
+  use SPOR64_VERIFY, only : EMPTY_MEMORY_ROOT, LIST_ITEM_IS_DIRECTORY, &
+      RECORD_MATCHES
   implicit none
   private
 
@@ -82,7 +84,7 @@ contains
         if (c_associated(ipmacros(slot),ipsources(plane))) return
       end do
     end do
-    if (.not. EMPTY_LCM_ROOT(ipout)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipout)) return
 
     sealed_seed = c_null_ptr
     sealed_system = c_null_ptr
@@ -232,46 +234,4 @@ contains
       LCM_STORAGE_KIND = 2
     end if
   end function LCM_STORAGE_KIND
-
-
-  logical function EMPTY_LCM_ROOT(owner)
-    type(c_ptr), intent(in) :: owner
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    integer :: object_length
-    logical :: empty, is_lcm
-
-    EMPTY_LCM_ROOT = .false.
-    if (.not. c_associated(owner)) return
-    call LCMINF(owner,object_file,object_name,empty,object_length,is_lcm)
-    EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
-        trim(object_name) == '/'
-  end function EMPTY_LCM_ROOT
-
-
-  logical function RECORD_MATCHES(owner,name,expected_length,expected_type)
-    type(c_ptr), intent(in) :: owner
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
-
-    RECORD_MATCHES = .false.
-    if (.not. c_associated(owner)) return
-    call LCMLEN(owner,name,actual_length,actual_type)
-    RECORD_MATCHES = actual_length == expected_length .and. &
-        actual_type == expected_type
-  end function RECORD_MATCHES
-
-
-  logical function LIST_ITEM_IS_DIRECTORY(owner,index)
-    type(c_ptr), intent(in) :: owner
-    integer, intent(in) :: index
-    integer :: actual_length, actual_type
-
-    LIST_ITEM_IS_DIRECTORY = .false.
-    if (.not. c_associated(owner)) return
-    call LCMLEL(owner,index,actual_length,actual_type)
-    LIST_ITEM_IS_DIRECTORY = actual_length == -1 .and. actual_type == 0
-  end function LIST_ITEM_IS_DIRECTORY
-
 end module SPOR64_B2S

@@ -7,6 +7,7 @@ module SPOR64_B2T
   use SPOR64_B2N, only : SPOR64_B2N_COMMITTED, SPOR64_B2N_BUILD
   use SPOR64_B2S, only : SPOR64_B2S_RETURNED, &
       SPOR64_B2S_HOST_BRIDGE
+  use SPOR64_VERIFY, only : EMPTY_MEMORY_ROOT
   implicit none
   private
 
@@ -63,7 +64,7 @@ contains
         if (c_associated(ipsystems(plane),ipsystems(other))) return
       end do
     end do
-    if (.not. EMPTY_LCM_ROOT(ipout)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipout)) return
 
     assembled = c_null_ptr
     macros = c_null_ptr
@@ -135,20 +136,4 @@ contains
     if (c_associated(assembled)) call LCMCL(assembled,2)
     assembled = c_null_ptr
   end subroutine CLOSE_PRIVATE
-
-
-  logical function EMPTY_LCM_ROOT(owner)
-    type(c_ptr), intent(in) :: owner
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    integer :: object_length
-    logical :: empty, is_lcm
-
-    EMPTY_LCM_ROOT = .false.
-    if (.not. c_associated(owner)) return
-    call LCMINF(owner,object_file,object_name,empty,object_length,is_lcm)
-    EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
-        trim(object_name) == '/'
-  end function EMPTY_LCM_ROOT
-
 end module SPOR64_B2T

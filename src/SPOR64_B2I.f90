@@ -3,6 +3,8 @@ module SPOR64_B2I
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
+      EMPTY_MEMORY_ROOT, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES
   implicit none
   private
 
@@ -94,8 +96,8 @@ contains
     if (c_associated(ipax,ipaxtrack)) return
     if (c_associated(ipax,iparchive)) return
     if (c_associated(ipaxtrack,iparchive)) return
-    if (.not. EMPTY_LCM_ROOT(ipaxout)) return
-    if (.not. EMPTY_LCM_ROOT(iparchiveout)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipaxout)) return
+    if (.not. EMPTY_MEMORY_ROOT(iparchiveout)) return
 
     ! Canonical B/A/RHO/L are admitted only from one SPOSTATE-owned AX root.
     if (.not. CHARACTER_RECORD_MATCHES(ipax,'SIGNATURE',3,12, &
@@ -485,8 +487,8 @@ contains
     end do
 
     ! Repeat the two freshness checks immediately before the first write.
-    if (.not. EMPTY_LCM_ROOT(ipaxout)) return
-    if (.not. EMPTY_LCM_ROOT(iparchiveout)) return
+    if (.not. EMPTY_MEMORY_ROOT(ipaxout)) return
+    if (.not. EMPTY_MEMORY_ROOT(iparchiveout)) return
 
     ! Fresh-target copies are deliberate: LCMEQU is never applied to an old
     ! archive or plane.  The read-only inputs remain untouched on all paths.
@@ -549,61 +551,6 @@ contains
     call LCMPUT(output_authority,'EPOCH',1,1,BOOTSTRAP_EPOCH)
     status = SPOR64_B2I_BOOTSTRAP_COMMITTED
   end subroutine SPOR64_B2I_SEAL_BOOTSTRAP
-
-
-  logical function EMPTY_LCM_ROOT(iplist)
-    type(c_ptr), intent(in) :: iplist
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    integer :: object_length
-    logical :: empty, is_lcm
-
-    EMPTY_LCM_ROOT = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
-    EMPTY_LCM_ROOT = is_lcm .and. empty .and. object_length == -1 .and. &
-        trim(object_name) == '/'
-  end function EMPTY_LCM_ROOT
-
-
-  logical function RECORD_MATCHES(iplist,name,expected_length,expected_type)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
-
-    RECORD_MATCHES = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    RECORD_MATCHES = actual_length == expected_length .and. &
-        actual_type == expected_type
-  end function RECORD_MATCHES
-
-
-  logical function ABSENT_RECORD(iplist,name)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer :: actual_length, actual_type
-
-    ABSENT_RECORD = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    ABSENT_RECORD = actual_length == 0 .and. actual_type == 99
-  end function ABSENT_RECORD
-
-
-  logical function LIST_ITEM_IS_DIRECTORY(iplist,index)
-    type(c_ptr), intent(in) :: iplist
-    integer, intent(in) :: index
-    integer :: actual_length, actual_type
-
-    LIST_ITEM_IS_DIRECTORY = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEL(iplist,index,actual_length,actual_type)
-    LIST_ITEM_IS_DIRECTORY = actual_length == -1 .and. actual_type == 0
-  end function LIST_ITEM_IS_DIRECTORY
-
-
   logical function AUTHORITY_HAS_EXACT_PAYLOAD(iplist)
     type(c_ptr), intent(in) :: iplist
     character(len=12) :: first_name, item_name
@@ -638,21 +585,4 @@ contains
     AUTHORITY_HAS_EXACT_PAYLOAD = item_count == 2 .and. &
         saw_flux .and. saw_source
   end function AUTHORITY_HAS_EXACT_PAYLOAD
-
-
-  logical function CHARACTER_RECORD_MATCHES(iplist,name,expected_words, &
-      character_count,expected_value)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name, expected_value
-    integer, intent(in) :: expected_words, character_count
-    character(len=72) :: value
-
-    CHARACTER_RECORD_MATCHES = .false.
-    if (character_count < 1 .or. character_count > len(value)) return
-    if (.not. RECORD_MATCHES(iplist,name,expected_words,3)) return
-    value = ' '
-    call LCMGTC(iplist,name,character_count,value)
-    CHARACTER_RECORD_MATCHES = value(1:character_count) == expected_value
-  end function CHARACTER_RECORD_MATCHES
-
 end module SPOR64_B2I

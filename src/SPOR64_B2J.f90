@@ -6,6 +6,8 @@ module SPOR64_B2J
   use SPOR64_B2H, only : SPOR64_B2H_ADMISSION_FAILED, &
       SPOR64_B2H_PROJECTED_COMMITTED, SPOR64_B2H_PROJECT, &
       SPOR64_B2H_RECONSTRUCT
+  use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
+      EMPTY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES
   implicit none
   private
 
@@ -82,7 +84,7 @@ contains
     if (c_associated(ipax,ipaxtrack)) return
     if (c_associated(ipax,iparchive)) return
     if (c_associated(ipaxtrack,iparchive)) return
-    if (.not. EMPTY_LCM_ROOT(iparchiveout)) return
+    if (.not. EMPTY_ROOT(iparchiveout)) return
 
     ! Admit the fixed Synthesis-POD representation from the sealed AX root.
     if (.not. CHARACTER_RECORD_MATCHES(ipax,'SIGNATURE',3,12, &
@@ -395,7 +397,7 @@ contains
     end do
 
     ! This repeat is immediately before the first caller-visible mutation.
-    if (.not. EMPTY_LCM_ROOT(iparchiveout)) then
+    if (.not. EMPTY_ROOT(iparchiveout)) then
       call CLOSE_STAGES(staged_flux)
       return
     end if
@@ -487,7 +489,7 @@ contains
     if (c_associated(ipproposal,ipaxtrack)) return
     if (c_associated(ipproposal,iptemplate)) return
     if (c_associated(ipaxtrack,iptemplate)) return
-    if (.not. EMPTY_LCM_ROOT(iparchiveout)) return
+    if (.not. EMPTY_ROOT(iparchiveout)) return
 
     ! Accept only the published, fixed-rank AA(1) carrier selected for this
     ! branch.  Saved map defects and solver diagnostics belong to x4, not to
@@ -658,82 +660,6 @@ contains
       staged_flux(ip) = c_null_ptr
     end do
   end subroutine CLOSE_STAGES
-
-
-  logical function EMPTY_LCM_ROOT(iplist)
-    type(c_ptr), intent(in) :: iplist
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    integer :: object_length
-    logical :: empty, memory_backed
-
-    EMPTY_LCM_ROOT = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMINF(iplist,object_file,object_name,empty,object_length, &
-        memory_backed)
-    ! LCMINF uses the final logical only to report the storage medium:
-    ! true is an in-memory LCM table and false is an XSM file.  B2j uses
-    ! the same GANLIB root operations for both, so freshness is defined by
-    ! the active root itself rather than by its storage medium.
-    EMPTY_LCM_ROOT = empty .and. object_length == -1 .and. &
-        trim(object_name) == '/'
-  end function EMPTY_LCM_ROOT
-
-
-  logical function RECORD_MATCHES(iplist,name,expected_length,expected_type)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer, intent(in) :: expected_length, expected_type
-    integer :: actual_length, actual_type
-
-    RECORD_MATCHES = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    RECORD_MATCHES = actual_length == expected_length .and. &
-        actual_type == expected_type
-  end function RECORD_MATCHES
-
-
-  logical function ABSENT_RECORD(iplist,name)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name
-    integer :: actual_length, actual_type
-
-    ABSENT_RECORD = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEN(iplist,name,actual_length,actual_type)
-    ABSENT_RECORD = actual_length == 0 .and. actual_type == 99
-  end function ABSENT_RECORD
-
-
-  logical function LIST_ITEM_IS_DIRECTORY(iplist,index)
-    type(c_ptr), intent(in) :: iplist
-    integer, intent(in) :: index
-    integer :: actual_length, actual_type
-
-    LIST_ITEM_IS_DIRECTORY = .false.
-    if (.not. c_associated(iplist)) return
-    call LCMLEL(iplist,index,actual_length,actual_type)
-    LIST_ITEM_IS_DIRECTORY = actual_length == -1 .and. actual_type == 0
-  end function LIST_ITEM_IS_DIRECTORY
-
-
-  logical function CHARACTER_RECORD_MATCHES(iplist,name,expected_words, &
-      character_count,expected_value)
-    type(c_ptr), intent(in) :: iplist
-    character(len=*), intent(in) :: name, expected_value
-    integer, intent(in) :: expected_words, character_count
-    character(len=72) :: value
-
-    CHARACTER_RECORD_MATCHES = .false.
-    if (character_count < 1 .or. character_count > len(value)) return
-    if (.not. RECORD_MATCHES(iplist,name,expected_words,3)) return
-    value = ' '
-    call LCMGTC(iplist,name,character_count,value)
-    CHARACTER_RECORD_MATCHES = value(1:character_count) == expected_value
-  end function CHARACTER_RECORD_MATCHES
-
-
   logical function CLOSED_ROOT_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
     character(len=12), parameter :: names(4) = &
@@ -787,48 +713,6 @@ contains
     PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names64) &
         .or. EXACT_INVENTORY(iplist,names)
   end function PROJECTED_PLANE_ROOT_IS_EXACT
-
-
-  logical function EXACT_INVENTORY(iplist,expected_names)
-    type(c_ptr), intent(in) :: iplist
-    character(len=12), intent(in) :: expected_names(:)
-    character(len=72) :: object_file
-    character(len=12) :: object_name
-    character(len=12) :: first_name, item_name
-    integer :: count, i, object_length
-    logical :: empty, is_lcm
-    logical, allocatable :: found(:)
-
-    EXACT_INVENTORY = .false.
-    if (.not. c_associated(iplist)) return
-    ! LCMNXT is not defined for an empty directory or a list.
-    ! LCMINF makes both ordinary preflight failures instead.
-    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
-    if (empty .or. object_length /= -1) return
-    allocate(found(size(expected_names)),stat=i)
-    if (i /= 0) return
-    found = .false.
-    item_name = ' '
-    call LCMNXT(iplist,item_name)
-    if (item_name == ' ') return
-    first_name = item_name
-    count = 0
-    do
-      count = count+1
-      if (count > size(expected_names)) return
-      do i = 1, size(expected_names)
-        if (item_name == expected_names(i)) exit
-      end do
-      if (i > size(expected_names)) return
-      if (found(i)) return
-      found(i) = .true.
-      call LCMNXT(iplist,item_name)
-      if (item_name == first_name) exit
-    end do
-    EXACT_INVENTORY = count == size(expected_names) .and. all(found)
-  end function EXACT_INVENTORY
-
-
   logical function STAGED_PROJECTED_OBJECT_IS_COMMITTED(iplist,rho,epoch, &
       expected_leakage)
     type(c_ptr), intent(in) :: iplist
