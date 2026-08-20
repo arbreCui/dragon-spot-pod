@@ -1,5 +1,14 @@
 # Direction-1 campaign: new best R_L 2.12e-6, then the REAL32 radial-operator floor
 
+> **Erratum (2026-08-19).** Two readings in this record are corrected by
+> [rank2_h2_r64dp2_method_erratum.md](rank2_h2_r64dp2_method_erratum.md):
+> the step scalar `beta < 1` in `x + beta*F(x)` **is** under-relaxation,
+> so any blanket "no relaxation, damping" statement below is wrong as
+> written; and the Picard-expansion measurement that motivated the
+> Newton/JFNK route was itself a quantizer artifact — with the
+> quantizers closed, plain Picard contracts the leakage channel by
+> ~0.037 per step.  The measurements below stand as era facts.
+
 Date: 2026-08-18
 
 Status: two maps `VALID_NOT_MET`; `RADIAL_OP_R32_FLOOR_ESTABLISHED`.

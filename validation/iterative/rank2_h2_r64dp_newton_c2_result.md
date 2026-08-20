@@ -1,5 +1,14 @@
 # Newton-Krylov cycle 2: R_L at 3.03e-6, six gate multiples
 
+> **Erratum (2026-08-19).** Two readings in this record are corrected by
+> [rank2_h2_r64dp2_method_erratum.md](rank2_h2_r64dp2_method_erratum.md):
+> the step scalar `beta < 1` in `x + beta*F(x)` **is** under-relaxation,
+> so any blanket "no relaxation, damping" statement below is wrong as
+> written; and the Picard-expansion measurement that motivated the
+> Newton/JFNK route was itself a quantizer artifact — with the
+> quantizers closed, plain Picard contracts the leakage channel by
+> ~0.037 per step.  The measurements below stand as era facts.
+
 Date: 2026-08-18
 
 Status: three maps `VALID_NOT_MET`; contraction sustained.

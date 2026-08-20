@@ -823,8 +823,13 @@ contains
     character(len=12), parameter :: names(8) = &
         ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
          'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ']
+    character(len=12), parameter :: raw(9) = &
+        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
+         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ', &
+         'SPOT-L1-RAW ']
 
-    RETURNED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    RETURNED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,raw) &
+        .or. EXACT_INVENTORY(iplist,names)
   end function RETURNED_SYSTEM_ROOT_IS_EXACT
 
 

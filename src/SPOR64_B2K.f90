@@ -759,8 +759,12 @@ contains
     character(len=12), parameter :: names(7) = &
         ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
          'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ']
+    character(len=12), parameter :: raw(8) = &
+        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
+         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-L1-RAW ']
 
-    CANDIDATE_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    CANDIDATE_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,raw) &
+        .or. EXACT_INVENTORY(iplist,names)
   end function CANDIDATE_SYSTEM_ROOT_IS_EXACT
 
 
@@ -769,8 +773,13 @@ contains
     character(len=12), parameter :: names(8) = &
         ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
          'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ']
+    character(len=12), parameter :: raw(9) = &
+        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
+         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ', &
+         'SPOT-L1-RAW ']
 
-    STAGED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    STAGED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,raw) &
+        .or. EXACT_INVENTORY(iplist,names)
   end function STAGED_SYSTEM_ROOT_IS_EXACT
 
 

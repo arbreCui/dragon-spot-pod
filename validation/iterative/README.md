@@ -294,6 +294,23 @@ $(R_\rho, R_L, R_a) = (3.12\times10^{-8},\,4.685\times10^{-7},\,
 `5e-7` gate; the first `VALID_MET` state of the project.**  See
 [rank2_h2_r64dp2_gate_result.md](rank2_h2_r64dp2_gate_result.md).
 
+**Erratum and fixed point (2026-08-19).**  A post-hoc audit found the
+direction-1 step scalar `beta = 0.25` to be under-relaxation carried
+over from the quantizer era, and the Picard-expansion measurement that
+motivated the whole Newton/JFNK route to be a quantizer artifact: with
+the quantizers closed, one **pure Picard** map contracts the leakage
+residual by `0.0372`.  Four such maps from `w_41` reach the fixed point
+of the discrete outer map at `CLOSED/69` — $(R_\rho, R_L, R_a) =
+(3.119\times10^{-8},\,4.327\times10^{-10},\,2.629\times10^{-9})$,
+margins 16x / 1156x / 190x, step-to-step ratio `0.9998`.  The same pass
+closed a fail-open (`SPOT-L1-RAW`: an unreduced system fed to a legacy
+door would have silently dropped the axial leakage; proven closed by
+negative control) and identified the remaining $R_\rho$ floor as a
+fourth quantizer — the REAL32 `K-EFFECTIVE` publication grid, half-ULP
+`3.211e-8` analytic against `3.119e-8` measured — left open at 16x
+below the gate.  The standing contract is now `beta = 1.0`.  See
+[rank2_h2_r64dp2_method_erratum.md](rank2_h2_r64dp2_method_erratum.md).
+
 ## Latest boundary
 
 The latest standard AA(1) proposal
