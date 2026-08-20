@@ -5,6 +5,10 @@ module SPOR64_B2W
   use GANLIB
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES
+  use SPOR64_SCHEMA, only : SCHEMA_FEEDBACK_ROOT, &
+      SCHEMA_RETURNED_CHILD_AUTHORITY, SCHEMA_RETURNED_CHILD_ROOT, &
+      SCHEMA_RETURNED_FEEDBACK_ROOT, SCHEMA_RETURNED_ROOT_AUTHORITY, &
+      SCHEMA_SYSTEM_AUTHORITY, SCHEMA_SYSTEM_ROOT, SCHEMA_SYSTEM_ROOT_L1RAW
   implicit none
   private
 
@@ -706,76 +710,50 @@ contains
   end function LIST_ITEM_MATCHES
   logical function FEEDBACK_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(9) = &
-        ['SIGNATURE   ','LISTDIM     ','SPOT-ITER-K ','SPOT-L1-ERR ', &
-         'TRACK       ','MICROLIB2   ','SYSTEM      ','FLUX        ', &
-         'SPOT-R64    ']
 
-    FEEDBACK_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    FEEDBACK_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_FEEDBACK_ROOT)
   end function FEEDBACK_ROOT_IS_EXACT
 
 
   logical function RETURNED_FEEDBACK_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(7) = &
-        ['SIGNATURE   ','LISTDIM     ','TRACK       ','MICROLIB2   ', &
-         'SYSTEM      ','FLUX        ','SPOT-R64    ']
 
-    RETURNED_FEEDBACK_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    RETURNED_FEEDBACK_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_RETURNED_FEEDBACK_ROOT)
   end function RETURNED_FEEDBACK_ROOT_IS_EXACT
 
 
   logical function RETURNED_ROOT_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(3) = &
-        ['NPLANE      ','STATE       ','EPOCH       ']
 
-    RETURNED_ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    RETURNED_ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_RETURNED_ROOT_AUTHORITY)
   end function RETURNED_ROOT_AUTHORITY_IS_EXACT
 
 
   logical function RETURNED_CHILD_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(16) = &
-        ['SPOT-R64    ','FLUX        ','SOUR        ','SIGNATURE   ', &
-         'STATE-VECTOR','EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ', &
-         'OPTION      ','LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ', &
-         'SPOT-LEAK1D ','SPOT-FS-EQN ','SPOT-FS-K   ','SPOT-QFISS  ']
 
-    RETURNED_CHILD_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    RETURNED_CHILD_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_RETURNED_CHILD_ROOT)
   end function RETURNED_CHILD_ROOT_IS_EXACT
 
 
   logical function RETURNED_SYSTEM_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(8) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ']
-    character(len=12), parameter :: raw(9) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ', &
-         'SPOT-L1-RAW ']
 
-    RETURNED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,raw) &
-        .or. EXACT_INVENTORY(iplist,names)
+    RETURNED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_ROOT_L1RAW) &
+        .or. EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_ROOT)
   end function RETURNED_SYSTEM_ROOT_IS_EXACT
 
 
   logical function RETURNED_SYSTEM_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(3) = &
-        ['RHO         ','STATE       ','EPOCH       ']
 
-    RETURNED_SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    RETURNED_SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_AUTHORITY)
   end function RETURNED_SYSTEM_AUTHORITY_IS_EXACT
 
 
   logical function RETURNED_CHILD_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(6) = &
-        ['RHO         ','FLUX        ','SOUR        ','QFISS       ', &
-         'STATE       ','EPOCH       ']
 
-    RETURNED_CHILD_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    RETURNED_CHILD_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_RETURNED_CHILD_AUTHORITY)
   end function RETURNED_CHILD_AUTHORITY_IS_EXACT
 end module SPOR64_B2W

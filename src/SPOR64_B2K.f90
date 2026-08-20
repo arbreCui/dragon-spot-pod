@@ -6,6 +6,12 @@ module SPOR64_B2K
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_MEMORY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, &
       RECORD_MATCHES, SAME_REAL32_BITS
+  use SPOR64_SCHEMA, only : SCHEMA_ARCHIVE_ROOT_AUTHORITY, &
+      SCHEMA_CANDIDATE_SYSTEM_ROOT, SCHEMA_CANDIDATE_SYSTEM_ROOT_L1RAW, &
+      SCHEMA_PROJECTED_ARCHIVE_ROOT, SCHEMA_PROJECTED_AUTHORITY, &
+      SCHEMA_PROJECTED_PLANE_ROOT, SCHEMA_PROJECTED_PLANE_ROOT_L64, &
+      SCHEMA_RESPONSE_GROUP, SCHEMA_RESPONSE_GROUP_PHYS, &
+      SCHEMA_SYSTEM_AUTHORITY, SCHEMA_SYSTEM_ROOT, SCHEMA_SYSTEM_ROOT_L1RAW
   implicit none
   private
 
@@ -529,23 +535,15 @@ contains
 
   logical function RESPONSE_GROUP_IS_EXACT(group)
     type(c_ptr), intent(in) :: group
-    character(len=12), parameter :: names(15) = &
-        ['CF$MCCG     ','ILUDF$MCCG  ','CQ$MCCG     ','DIAGQ$MCCG  ', &
-         'PJJ$MCCG    ','PJJX$MCCG   ','PJJY$MCCG   ','PJJZ$MCCG   ', &
-         'PJJXI$MCCG  ','PJJYI$MCCG  ','PJJZI$MCCG  ','DRAGON-TXSC ', &
-         'SPOT-S0-PHYS','DRAGON-S0XSC','DIAGF$MCCG  ']
-    character(len=12), parameter :: response_names(12) = &
-        ['CF$MCCG     ','ILUDF$MCCG  ','CQ$MCCG     ','DIAGQ$MCCG  ', &
-         'PJJ$MCCG    ','PJJX$MCCG   ','PJJY$MCCG   ','PJJZ$MCCG   ', &
-         'PJJXI$MCCG  ','PJJYI$MCCG  ','PJJZI$MCCG  ','DIAGF$MCCG  ']
+
     integer, parameter :: response_lengths(12) = &
         [32,14,32,14,8,8,8,8,8,8,8,14]
     integer :: i
 
     RESPONSE_GROUP_IS_EXACT = .false.
-    if (.not. EXACT_INVENTORY(group,names)) return
-    do i = 1, size(response_names)
-      if (.not. FINITE_REAL32_RECORD(group,response_names(i), &
+    if (.not. EXACT_INVENTORY(group,SCHEMA_RESPONSE_GROUP_PHYS)) return
+    do i = 1, size(SCHEMA_RESPONSE_GROUP)
+      if (.not. FINITE_REAL32_RECORD(group,SCHEMA_RESPONSE_GROUP(i), &
           response_lengths(i))) return
     end do
     if (.not. FINITE_REAL32_RECORD(group,'DRAGON-TXSC',NMAT+1)) return
@@ -624,84 +622,53 @@ contains
   end subroutine CLOSE_STAGES
   logical function PROJECTED_ARCHIVE_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(7) = &
-        ['SIGNATURE   ','LISTDIM     ','SPOT-ITER-K ','TRACK       ', &
-         'MICROLIB2   ','FLUX        ','SPOT-R64    ']
 
-    PROJECTED_ARCHIVE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    PROJECTED_ARCHIVE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_ARCHIVE_ROOT)
   end function PROJECTED_ARCHIVE_ROOT_IS_EXACT
 
 
   logical function ROOT_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(4) = &
-        ['RHO         ','NPLANE      ','STATE       ','EPOCH       ']
 
-    ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_ARCHIVE_ROOT_AUTHORITY)
   end function ROOT_AUTHORITY_IS_EXACT
 
 
   logical function PROJECTED_PLANE_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(12) = &
-        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
-         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
-         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ']
-    character(len=12), parameter :: names64(13) = &
-        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
-         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
-         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ', &
-         'LEAK1D64    ']
 
-    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names64) &
-        .or. EXACT_INVENTORY(iplist,names)
+    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT_L64) &
+        .or. EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT)
   end function PROJECTED_PLANE_ROOT_IS_EXACT
 
 
   logical function PROJECTED_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(4) = &
-        ['RHO         ','FLUX        ','STATE       ','EPOCH       ']
 
-    PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_AUTHORITY)
   end function PROJECTED_AUTHORITY_IS_EXACT
 
 
   logical function SYSTEM_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(3) = &
-        ['RHO         ','STATE       ','EPOCH       ']
 
-    SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_AUTHORITY)
   end function SYSTEM_AUTHORITY_IS_EXACT
 
 
   logical function CANDIDATE_SYSTEM_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(7) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ']
-    character(len=12), parameter :: raw(8) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-L1-RAW ']
 
-    CANDIDATE_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,raw) &
-        .or. EXACT_INVENTORY(iplist,names)
+    CANDIDATE_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_CANDIDATE_SYSTEM_ROOT_L1RAW) &
+        .or. EXACT_INVENTORY(iplist,SCHEMA_CANDIDATE_SYSTEM_ROOT)
   end function CANDIDATE_SYSTEM_ROOT_IS_EXACT
 
 
   logical function STAGED_SYSTEM_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(8) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ']
-    character(len=12), parameter :: raw(9) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ', &
-         'SPOT-L1-RAW ']
 
-    STAGED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,raw) &
-        .or. EXACT_INVENTORY(iplist,names)
+    STAGED_SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_ROOT_L1RAW) &
+        .or. EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_ROOT)
   end function STAGED_SYSTEM_ROOT_IS_EXACT
 end module SPOR64_B2K
 

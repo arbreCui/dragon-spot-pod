@@ -5,6 +5,7 @@ module SPOR64_B2C
   use GANLIB
   use SPOR64_VERIFY, only : CHARACTER_RECORD_MATCHES, EMPTY_MEMORY_ROOT, &
       EXACT_INVENTORY, RECORD_MATCHES
+  use SPOR64_SCHEMA, only : SCHEMA_PLANE_SEED_AUTHORITY
   implicit none
   private
 
@@ -253,11 +254,8 @@ contains
   end subroutine SPOR64_B2C_PUBLISH_IMPL
   logical function PROJECTED_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(5) = &
-        ['RHO         ','PLANE       ','FLUX        ','STATE       ', &
-         'EPOCH       ']
 
-    PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PLANE_SEED_AUTHORITY)
   end function PROJECTED_AUTHORITY_IS_EXACT
 
 

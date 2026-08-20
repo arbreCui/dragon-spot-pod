@@ -8,6 +8,10 @@ module SPOR64_B2J
       SPOR64_B2H_RECONSTRUCT
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES
+  use SPOR64_SCHEMA, only : SCHEMA_ARCHIVE_ROOT_AUTHORITY, &
+      SCHEMA_CLOSED_ARCHIVE_ROOT, SCHEMA_PROJECTED_AUTHORITY, &
+      SCHEMA_PROJECTED_PLANE_ROOT, SCHEMA_PROJECTED_PLANE_ROOT_L64, &
+      SCHEMA_SOLVED_AUTHORITY
   implicit none
   private
 
@@ -662,56 +666,37 @@ contains
   end subroutine CLOSE_STAGES
   logical function CLOSED_ROOT_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(4) = &
-        ['RHO         ','NPLANE      ','STATE       ','EPOCH       ']
 
-    CLOSED_ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    CLOSED_ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_ARCHIVE_ROOT_AUTHORITY)
   end function CLOSED_ROOT_AUTHORITY_IS_EXACT
 
 
   logical function CLOSED_ARCHIVE_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(8) = &
-        ['SIGNATURE   ','LISTDIM     ','SPOT-ITER-K ','TRACK       ', &
-         'MICROLIB2   ','SYSTEM      ','FLUX        ','SPOT-R64    ']
 
-    CLOSED_ARCHIVE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    CLOSED_ARCHIVE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_CLOSED_ARCHIVE_ROOT)
   end function CLOSED_ARCHIVE_ROOT_IS_EXACT
 
 
   logical function SOLVED_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(5) = &
-        ['FLUX        ','SOUR        ','RHO         ','STATE       ', &
-         'EPOCH       ']
 
-    SOLVED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    SOLVED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SOLVED_AUTHORITY)
   end function SOLVED_AUTHORITY_IS_EXACT
 
 
   logical function PROJECTED_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(4) = &
-        ['RHO         ','FLUX        ','STATE       ','EPOCH       ']
 
-    PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    PROJECTED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_AUTHORITY)
   end function PROJECTED_AUTHORITY_IS_EXACT
 
 
   logical function PROJECTED_PLANE_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(12) = &
-        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
-         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
-         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ']
-    character(len=12), parameter :: names64(13) = &
-        ['SPOT-R64    ','FLUX        ','SIGNATURE   ','STATE-VECTOR', &
-         'EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ','OPTION      ', &
-         'LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ','SPOT-LEAK1D ', &
-         'LEAK1D64    ']
 
-    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names64) &
-        .or. EXACT_INVENTORY(iplist,names)
+    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT_L64) &
+        .or. EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT)
   end function PROJECTED_PLANE_ROOT_IS_EXACT
   logical function STAGED_PROJECTED_OBJECT_IS_COMMITTED(iplist,rho,epoch, &
       expected_leakage)

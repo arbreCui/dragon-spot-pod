@@ -6,6 +6,10 @@ module SPOR64_B2R
   use SPOR64_VERIFY, only : CHARACTER_RECORD_MATCHES, EMPTY_MEMORY_ROOT, &
       EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES, &
       SAME_REAL32_BITS
+  use SPOR64_SCHEMA, only : SCHEMA_ARCHIVE_ROOT_AUTHORITY, &
+      SCHEMA_CLOSED_ARCHIVE_ROOT, SCHEMA_SOLVED_PLANE_AUTHORITY, &
+      SCHEMA_SOLVED_ROOT, SCHEMA_SOURCE_AUTHORITY, SCHEMA_SOURCE_ROOT, &
+      SCHEMA_SYSTEM_AUTHORITY, SCHEMA_SYSTEM_ROOT, SCHEMA_SYSTEM_ROOT_L1RAW
   implicit none
   private
 
@@ -543,85 +547,57 @@ contains
   end function LIST_ITEM_MATCHES
   logical function ASSEMBLED_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(8) = &
-        ['SIGNATURE   ','LISTDIM     ','SPOT-ITER-K ','TRACK       ', &
-         'MICROLIB2   ','SYSTEM      ','FLUX        ','SPOT-R64    ']
 
-    ASSEMBLED_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    ASSEMBLED_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_CLOSED_ARCHIVE_ROOT)
   end function ASSEMBLED_ROOT_IS_EXACT
 
 
   logical function ROOT_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(4) = &
-        ['RHO         ','NPLANE      ','STATE       ','EPOCH       ']
 
-    ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    ROOT_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_ARCHIVE_ROOT_AUTHORITY)
   end function ROOT_AUTHORITY_IS_EXACT
 
 
   logical function SYSTEM_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(8) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ']
-    character(len=12), parameter :: raw(9) = &
-        ['SIGNATURE   ','LINK.MACRO  ','LINK.TRACK  ','STATE-VECTOR', &
-         'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ', &
-         'SPOT-L1-RAW ']
 
-    SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,raw) &
-        .or. EXACT_INVENTORY(iplist,names)
+    SYSTEM_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_ROOT_L1RAW) &
+        .or. EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_ROOT)
   end function SYSTEM_ROOT_IS_EXACT
 
 
   logical function SYSTEM_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(3) = &
-        ['RHO         ','STATE       ','EPOCH       ']
 
-    SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_AUTHORITY)
   end function SYSTEM_AUTHORITY_IS_EXACT
 
 
   logical function SOLVED_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(13) = &
-        ['SPOT-R64    ','FLUX        ','SOUR        ','SIGNATURE   ', &
-         'STATE-VECTOR','EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ', &
-         'OPTION      ','LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ', &
-         'SPOT-LEAK1D ']
 
-    SOLVED_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    SOLVED_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SOLVED_ROOT)
   end function SOLVED_ROOT_IS_EXACT
 
 
   logical function SOLVED_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(6) = &
-        ['RHO         ','PLANE       ','FLUX        ','SOUR        ', &
-         'STATE       ','EPOCH       ']
 
-    SOLVED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    SOLVED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SOLVED_PLANE_AUTHORITY)
   end function SOLVED_AUTHORITY_IS_EXACT
 
 
   logical function SOURCE_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(7) = &
-        ['SIGNATURE   ','STATE-VECTOR','SPOT-FROZEN ','SPOT-KEFF   ', &
-         'SPOT-QINT   ','DSOUR       ','SPOT-R64    ']
 
-    SOURCE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    SOURCE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SOURCE_ROOT)
   end function SOURCE_ROOT_IS_EXACT
 
 
   logical function SOURCE_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(5) = &
-        ['RHO         ','PLANE       ','STATE       ','QFISS       ', &
-         'EPOCH       ']
 
-    SOURCE_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    SOURCE_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SOURCE_AUTHORITY)
   end function SOURCE_AUTHORITY_IS_EXACT
 end module SPOR64_B2R

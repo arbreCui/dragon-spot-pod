@@ -8,6 +8,8 @@ module SPOR64_B2B
   use SPOR64_B2C, only : SPOR64_B2C_PUBLISH, SPOR64_B2C_PUBLISH_CONT
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EXACT_INVENTORY, RECORD_MATCHES, SAME_REAL32_BITS
+  use SPOR64_SCHEMA, only : SCHEMA_PLANE_SEED_AUTHORITY, &
+      SCHEMA_SOURCE_AUTHORITY, SCHEMA_SYSTEM_AUTHORITY
   implicit none
   private
 
@@ -650,29 +652,21 @@ contains
   end function LCM_ENTRY_KIND
   logical function CONT_SEED_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(5) = &
-        ['RHO         ','PLANE       ','FLUX        ','STATE       ', &
-         'EPOCH       ']
 
-    CONT_SEED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    CONT_SEED_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PLANE_SEED_AUTHORITY)
   end function CONT_SEED_AUTHORITY_IS_EXACT
 
 
   logical function CONT_SOURCE_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(5) = &
-        ['RHO         ','PLANE       ','STATE       ','QFISS       ', &
-         'EPOCH       ']
 
-    CONT_SOURCE_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    CONT_SOURCE_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SOURCE_AUTHORITY)
   end function CONT_SOURCE_AUTHORITY_IS_EXACT
 
 
   logical function CONT_SYSTEM_AUTHORITY_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
-    character(len=12), parameter :: names(3) = &
-        ['RHO         ','STATE       ','EPOCH       ']
 
-    CONT_SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,names)
+    CONT_SYSTEM_AUTHORITY_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_SYSTEM_AUTHORITY)
   end function CONT_SYSTEM_AUTHORITY_IS_EXACT
 end module SPOR64_B2B
