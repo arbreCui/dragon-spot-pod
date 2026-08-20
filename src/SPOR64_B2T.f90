@@ -1,4 +1,5 @@
 module SPOR64_B2T
+  ! One host step: assemble, solve, collect.
   use, intrinsic :: iso_c_binding, only : c_associated, c_null_ptr, c_ptr
   use, intrinsic :: iso_fortran_env, only : int64
   use GANLIB

@@ -321,6 +321,37 @@ after every `src` build; the Makefile pins the protocol's canonical
 `-O0 -ffp-contract=off` flags, because `-O2` has been observed to shift
 a recomputed defect by 1 ULP and break the bitwise receipts.
 
+**The `SPOR64` modules.**  Their names are development-phase labels and
+carry no meaning; each now states its role in its own header, and the
+pipeline of one outer map is:
+
+```
+B2U  CLE-2000 adapter behind SPOR64T:
+ |
+ B2T  one host step
+  |-- B2K  commit the assembled system archive
+  |-- B2O  pair a source authority with its archive plane
+  |-- B2N  build the frozen fission source
+  |-- B2S  drive the three radial solves
+  |    |-- B2B  one radial solve: admit -> core -> publish
+  |    |    |-- A9   REAL64 outer solver (FLU2DR64_CORE, rebalance)
+  |    |    |    \-- A8 + A8_ACA  REAL64 flight sweep and ACA
+  |    |    \-- B2C  publish one SOLVED plane
+  |    \-- B2R  collect three planes into a RETURNED archive
+  \-- B2W  admit RETURNED, close the epoch
+       \-- B2J + B2H  project CLOSED -> PROJECTED for the next epoch
+
+B2I  one-time bootstrap seal      B2X  read-only admission before ASM
+SPOR64_VERIFY  admission primitives   SPOR64_SCHEMA  record inventories
+```
+
+Each arrow is an ownership handover, and every receiver re-validates its
+input from scratch and refuses rather than repairs — which is why the
+modules run 22-37% rejection lines.  The names were left alone
+deliberately: they appear in 59 places in these records, 7 in sealed
+artifact receipts and 12 in commit messages, and this protocol adds
+errata rather than rewriting what it has already sealed.
+
 ## Latest boundary
 
 The latest standard AA(1) proposal

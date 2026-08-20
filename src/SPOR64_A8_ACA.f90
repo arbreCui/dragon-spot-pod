@@ -1,4 +1,5 @@
 module SPOR64_A8_ACA
+  ! ACA acceleration for the REAL64 flight solver.
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   implicit none

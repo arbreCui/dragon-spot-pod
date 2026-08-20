@@ -1,4 +1,6 @@
 module SPOR64_A8
+  ! The REAL64 flight solver: the SPOT door down to the
+  ! characteristic sweep and its accelerated inner iteration.
   use, intrinsic :: iso_c_binding, only : c_associated, c_f_pointer, &
       c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64

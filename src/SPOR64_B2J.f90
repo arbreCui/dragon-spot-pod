@@ -1,4 +1,6 @@
 module SPOR64_B2J
+  ! Projects a CLOSED archive, or a proposal, into the
+  ! PROJECTED archive of the next epoch.
   use, intrinsic :: iso_c_binding, only : c_associated, c_null_ptr, c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite

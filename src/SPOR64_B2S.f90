@@ -1,4 +1,6 @@
 module SPOR64_B2S
+  ! Drives the three radial solves of one step and hands the
+  ! result to B2R.
   use, intrinsic :: iso_c_binding, only : c_associated, c_null_ptr, c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32
   use GANLIB

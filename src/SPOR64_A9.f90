@@ -1,4 +1,6 @@
 module SPOR64_A9
+  ! The REAL64 outer solver: FLU2DR64_CORE, its rebalance and
+  ! its outer acceleration.
   use, intrinsic :: iso_c_binding, only : c_associated, c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite

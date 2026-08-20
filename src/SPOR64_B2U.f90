@@ -1,4 +1,5 @@
 subroutine SPOR64T(nentry,hentry,ientry,jentry,kentry)
+  ! The CLE-2000 adapter behind the SPOR64T: module call.
   use, intrinsic :: iso_c_binding, only : c_ptr
   use, intrinsic :: iso_fortran_env, only : int64
   use GANLIB

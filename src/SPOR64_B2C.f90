@@ -1,4 +1,6 @@
 module SPOR64_B2C
+  ! Publishes one SOLVED plane: the REAL64 authority and the
+  ! REAL32 records that mirror it bitwise.
   use, intrinsic :: iso_c_binding, only : c_associated, c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite

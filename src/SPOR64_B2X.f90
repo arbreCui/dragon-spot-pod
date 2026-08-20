@@ -1,4 +1,6 @@
 subroutine SPOR64V(nentry,hentry,ientry,jentry,kentry)
+  ! Read-only admission of a returned object immediately
+  ! before ASM.
   use, intrinsic :: iso_c_binding, only : c_ptr
   use GANLIB
   use SPOR64_B2W, only : SPOR64_B2W_RETURNED_ADMITTED, &

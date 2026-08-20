@@ -1,4 +1,5 @@
 module SPOR64_B2W
+  ! Admits a RETURNED archive and closes the epoch.
   use, intrinsic :: iso_c_binding, only : c_associated, c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
