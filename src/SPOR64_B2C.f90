@@ -329,12 +329,19 @@ contains
   logical function EXACT_INVENTORY(iplist,expected_names)
     type(c_ptr), intent(in) :: iplist
     character(len=12), intent(in) :: expected_names(:)
+    character(len=72) :: object_file
+    character(len=12) :: object_name
     character(len=12) :: first_name, item_name
-    integer :: count, i, allocation_status
+    integer :: count, i, allocation_status, object_length
+    logical :: empty, is_lcm
     logical, allocatable :: found(:)
 
     EXACT_INVENTORY = .false.
     if (.not. c_associated(iplist)) return
+    ! LCMNXT is not defined for an empty directory or a list.
+    ! LCMINF makes both ordinary preflight failures instead.
+    call LCMINF(iplist,object_file,object_name,empty,object_length,is_lcm)
+    if (empty .or. object_length /= -1) return
     allocate(found(size(expected_names)),stat=allocation_status)
     if (allocation_status /= 0) return
     found = .false.

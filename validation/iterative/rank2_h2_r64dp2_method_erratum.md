@@ -118,10 +118,51 @@ campaign resumed.  Host tools must be rebuilt whenever `src` changes.
   maps plus the legacy receipt).  That is strong evidence, not proof
   that no guard was lost.
 
+## 6. A hardening that had reached 2 of 8 copies
+
+The `SPOR64_B2*` lifecycle modules each carry their own copy of the
+validation helpers rather than sharing them: 41 copies of 4 functions,
+collapsing to **14 distinct implementations**.  Most divergence is
+cosmetic (line breaks, local names).  Two are semantic:
+
+- `EMPTY_LCM_ROOT` in B2W drops the `is_lcm` (memory-backed)
+  requirement that the other ten copies impose.  That is *correct* for
+  B2W, which closes file-backed archives — but two functions with one
+  name and different contracts give a reader no signal.
+- `EXACT_INVENTORY` in **B2R and B2W** carries an `LCMINF` preflight
+  that turns an empty directory or a list into an ordinary rejection,
+  because `LCMNXT` is undefined on both.  **B2B, B2C, B2J, B2K, B2N and
+  B2O did not**: a hardening that propagated to 2 of 8 copies, leaving
+  six inventories that would meet undefined behaviour instead of
+  failing closed.  Latent on the current route — every inventory there
+  is called on a populated directory — but it is the same fail-open
+  class as section 4.
+
+Fixed: the same preflight applied to all six.  Verified three ways
+(`iterative-rank2-h2-r64dp2-inventory-hardening`): the guard expression
+discriminates (populated directory passes, empty directory and list are
+both rejected); bitwise neutrality on a replay of the `CLOSED/69`
+fixed-point map (`SPOT-X-RLEAK` bits `3DFDBB83122907D0`, `0/1110` and
+`0/2220`); and one complete map through every gate (`CLOSED/70`).
+
+This is the argument against the copies.  A shared verification module
+would delete ~600 duplicated lines **without weakening one boundary** —
+each handover would still run every check independently; only the
+implementation would be shared.  The defence of the copies would be
+independent implementations, so that one bug cannot pass all
+boundaries; but these are not independent implementations, they are
+copies, which carry the cost of duplication and none of the benefit of
+diversity.  Where they do differ, it is because a fix stopped
+propagating.
+
 ## Boundary
 
-Chain at `CLOSED/69`, at the fixed point of the discrete outer map.
-Route binary `3db907dc62f8f5f2c6fe011cff662b79540173795d4109e33a6ba88174ff5794`.
+Chain at `CLOSED/70`, at the fixed point of the discrete outer map
+(`CLOSED/69` is the certified fixed-point receipt; `CLOSED/70` is one
+further map run to exercise the hardened inventories).
+Route binary
+`d35a0a3f440768bcbb6e711e370980b844270142cca7699c3c0eb1931932e3b5`
+(predecessor `3db907dc...`, bitwise equivalent).
 The correct continuation contract is **`beta = 1.0`** — pure Picard —
 until a measurement says otherwise; no damping, and no step scalar
 carried across an era boundary without re-deriving it.  Evidence:
