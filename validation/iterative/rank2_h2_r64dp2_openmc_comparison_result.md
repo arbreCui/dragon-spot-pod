@@ -105,6 +105,54 @@ the decomposition that remains open runs the other way — give the
 that changes the method's configuration and needs a new era and a
 re-convergence, so it was not started.
 
+## Rank adequacy, the question this comparison left open
+
+The Level-4 record says plainly that passing the rank-1 comparison "did
+not by itself establish rank adequacy".  With three snapshots, rank
+three is **full** rank: the basis spans the snapshot set exactly and the
+out-of-span residual vanishes, so a converged rank-3 solution would
+separate the POD truncation from everything else in the `-174 pcm`.
+
+The rank-3 basis builds cleanly and passes both nesting checks of the
+existing discipline — a fresh rank-2 rebuild reproduces the frozen
+rank-2 reference bitwise, and rank three's leading two modes reproduce
+fresh rank two bitwise.  **The rank-3 outer iteration then does not
+converge.**  Five pure Picard steps oscillate in `k` by about `1e-3`
+while the leakage residual stops contracting and begins to grow
+(`4.35e-5 -> 1.21e-5 -> 1.44e-5 -> 1.83e-5`), where rank two on the same
+map contracts `0.037` per step to a fixed point.
+
+The POD spectrum says why:
+
+| | median | |
+|---|---|---|
+| $\sigma_2/\sigma_1$ | `4.46e-05` | a real, small second mode |
+| $\sigma_3/\sigma_1$ | `1.96e-07` | below `1e-07` in **182 of 370 groups** |
+
+The snapshot fluxes and the POD basis are REAL32, whose relative
+precision is `~6e-08`.  The third singular value is therefore about
+three times the arithmetic noise floor of its own input data, and in
+half the groups it sits on that floor.  **The third mode is not physics;
+it is the single-precision noise of the snapshots**, and feeding a
+noise-dominated coordinate through the outer feedback loop is what
+destroys the contraction.
+
+Three consequences.  Rank two is **not** a truncation compromise here —
+it is the numerically supported rank of this snapshot set, and the
+original design choice is vindicated by measurement.  The `-174 pcm`
+therefore **cannot be attributed to POD truncation and cannot be reduced
+by adding modes**: the modes are not there to add; what remains is the
+2D/1D synthesis itself and the transport-correction modelling
+difference.  And a genuine third mode would need REAL64 snapshot fluxes,
+which is a different era and was not attempted.
+
+These rank-3 numbers are **diagnostic, not certified**.  The iteration
+runs through the B2W close and the B2J projection unchanged — both are
+rank-generic — but `SPOXCONV` cannot compare states of different rank,
+so no certified stopping defect exists, and the builder and checker are
+hard-wired to rank two (`invalid frozen rank-two dimensions`).
+Evidence: `level4-rank3-adequacy-probe`.
+
 Nothing here is fitted.  The acceptance limit, the protocol and the
 reactivity formula are imported from the 2026 checker
 (`check_reference.py`) by the rank-2 variant so that the two
