@@ -70,6 +70,41 @@ problem, driving the residual from `1.98e-7` to the fixed point buys
 `~95 pcm` of *disagreement* with the only external reference the
 project has.
 
+## The decomposition was attempted and is not executable
+
+The obvious follow-up is to remove the modelling difference: give OpenMC
+the transport-corrected data so that the Monte Carlo solves the same
+approximate problem the deterministic route solves, and the remainder is
+the SPOD method error alone.  It cannot be done.
+
+Applying DRAGON's own correction to the export drives the P0
+self-scatter diagonal negative in **2043 of 8880 entries (23.0%)**,
+worst `-6.674e-02` at mixture 4, group 43, and Monte Carlo cannot sample
+a negative scattering probability; `build_reference` refuses the file.
+For scale, the raw export's own negative P0 mass is `8.0e-08` of the
+positive mass — numerical noise, which the frozen protocol zeroes and
+rescales.  The corrected data is negative by six orders of magnitude
+more, across a quarter of its diagonal.  Zeroing that would fabricate a
+third model belonging to neither solver.
+
+This is precisely why the 2026 protocol compares raw-P2 Monte Carlo with
+transport-corrected deterministic and predeclares a `500 pcm` allowance:
+**there is no Monte-Carlo-samplable form of the deterministic solver's
+own cross sections.**  So the `-174 pcm` cannot be decomposed from the
+reference side at all.
+
+Two by-products of the attempt are recorded with it
+(`level4-transport-correction-decomposition`).  First, stripping `TRANC`
+from `initial_axial_macrolib.xsm` and rerunning the fixed-point map
+leaves `k` **bitwise unchanged** — that macrolib's `TRANC` is dead data
+on this route, since the axial SPOD assembly reads `DRAGON-TXSC` and
+`DRAGON-S0XSC` off the snapshot systems and never consults it, while the
+OpenMC export is taken from that same macrolib's raw `NTOT0`.  Second,
+the decomposition that remains open runs the other way — give the
+*DRAGON* route the raw P2 data, where negativity is not a problem — but
+that changes the method's configuration and needs a new era and a
+re-convergence, so it was not started.
+
 Nothing here is fitted.  The acceptance limit, the protocol and the
 reactivity formula are imported from the 2026 checker
 (`check_reference.py`) by the rank-2 variant so that the two
