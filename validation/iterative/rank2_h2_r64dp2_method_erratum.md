@@ -161,7 +161,49 @@ unchanged, `0/1110` and `0/2220`) and one complete map through every
 gate at `CLOSED/71`
 (`iterative-rank2-h2-r64dp2-shared-verify`).
 
-This was the argument against the copies.  A shared verification module
+This was the argument against the copies.
+
+## 7. The gate itself was not evaluated by a program
+
+Every record shape, every lineage tie and every bit of a map is
+recomputed by an independent checker before it is believed.  The
+acceptance criterion was the exception.  `grep` for `5e-7` across `src/`
+returns one unrelated `LIBPTT` weight threshold; no checker refers to
+it; the `5.0E-7` in the decks is `solver_eps`, a solver terminal, not
+the criterion.  The lines
+
+```
+GATE=(Rrho,RL,Ra) ALL <= 5.0e-7 : PASS
+CLASSIFICATION=VALID_MET
+```
+
+in every receipt of this project were **typed by hand** from the printed
+defect.  The defect values were never in doubt — they are recomputed and
+bit-compared.  What was unautomated was the comparison against the
+threshold and the classification label: a transcription, in a protocol
+whose rule everywhere else is to recompute rather than trust one.
+
+`validation/iterative/check_convergence_gate.f90` now reads the four
+double-precision stopping defects of a closed axial state, compares the
+three gated ones against a threshold pinned in its source — so relaxing
+the gate is a visible source change — and emits those two lines itself.
+`step.sh` runs it after the map checker, so every future map carries a
+machine verdict.
+
+It also gives `SPOT-X-PERP` the home section 5 said it lacked.
+`SPOT-X-PERP` is the volume-weighted RMS of the radial flux the rank-2
+basis cannot represent, in the same norm `SPOT-X-GRAM` defines — both
+weight by $V_i/\sum_j V_j$ (`SPOSTATE.f90:362` and `:418`) — so their
+ratio is a true relative representation error.  At the fixed point it is
+`1.856e-07` and the gated residuals are `0.168` of it, so the tool
+prints `SUBSPACE-LIMITED`: the answer is defined by the trial space, not
+by the residual.  That is reported, not enforced; changing what the gate
+accepts is not the checker's business.
+
+**All 25 sealed classifications were re-evaluated independently: 25
+agree, 0 disagree**, including both `VALID_MET` states.  The hand-typed
+verdicts were correct — but they are no longer the evidence.  Frozen:
+`iterative-rank2-h2-r64dp2-gate-checker`.  A shared verification module
 would delete ~600 duplicated lines **without weakening one boundary** —
 each handover would still run every check independently; only the
 implementation would be shared.  The defence of the copies would be

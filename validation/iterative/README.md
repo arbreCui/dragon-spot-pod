@@ -319,7 +319,12 @@ boundaries are fail-closed and it hard-rejects the archive instead — but
 finding out costs a run.  Build them with `make -C validation/iterative`
 after every `src` build; the Makefile pins the protocol's canonical
 `-O0 -ffp-contract=off` flags, because `-O2` has been observed to shift
-a recomputed defect by 1 ULP and break the bitwise receipts.
+a recomputed defect by 1 ULP and break the bitwise receipts.  `check_convergence_gate`
+evaluates the outer gate itself: until 2026-08-20 the `5e-7` criterion
+existed nowhere in code and every `PASS` was typed by hand.  It is now
+pinned in that program's source, emitted by it, and run after the map
+checker on every map; all 25 sealed classifications were re-evaluated
+and agree.
 
 **The `SPOR64` modules.**  Their names are development-phase labels and
 carry no meaning; each now states its role in its own header, and the

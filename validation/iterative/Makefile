@@ -23,6 +23,7 @@ INCLUDE := -I $(DRAGON)/modules -I $(GANLIB)/modules
 LIBS    := $(DRAGON)/libDragon.a $(GANLIB)/libGanlib.a -lstdc++
 
 TOOLS   := admit_candidate_radial close_r64_returned \
+           check_convergence_gate \
            prepare_r64_aa1_projected prepare_r64_next_projected
 
 .PHONY: all tools clean
