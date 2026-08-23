@@ -41,15 +41,19 @@ to the existing OpenMC reference are summarized in
 The second physical case is frozen as the IRENA D4-A 1/12 assembly.  A
 bounded geometry-only TRACK build independently verifies
 `(NREG,NMAT,NSURF,NUNKNO,NCODE)=(132,6,12,144,6)` and the existing production
-MCCG tolerance bits; no transport has been run.  The seconds-scale slices
+MCCG tolerance bits.  A first-state transport attempt was rejected when TONE
+reached its self-shielding iteration cap and was stopped before any snapshot
+was published; no accepted physical D4-A result exists.  The seconds-scale slices
 cover `SPOR64_B2C`, the
 `SPOR64_B2B -> A9 -> A8` REAL64 radial boundary, and runtime geometry through
 `B2K/B2N/B2S/B2R/B2W` and `B2H/B2I/B2J`.  The fast gate strictly compiles
 the latter three and runs a manufactured 132-region B2H projection; separate
 frozen pin-cell lifecycle replays remain byte-identical.  None of these is a
 physical D4-A result.  The three physical material states and their
-default-off archive generator are now hash-locked, and the no-transport input
-preflight passes.  The archive itself still requires a separately authorized
+default-off archive generator are now hash-locked.  The corrected builder
+restores the historical TONE/MERGMIX tracking density `50.0` while retaining
+`100.0` for production radial transport; all tolerances and physical inputs
+are unchanged, and the no-transport input preflight passes.  The archive itself still requires a separately authorized
 physical run, followed by an independent reference.  See
 [the D4-A case contract](iterative/second_case_d4a_contract.md) and
 [the snapshot preflight result](iterative/d4a_snapshot_preflight_result.md).

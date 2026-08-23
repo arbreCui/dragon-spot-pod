@@ -51,6 +51,14 @@ export OMP_NUM_THREADS
 
 test ! -s "$RESULT_DIR/d4a_three_snapshots.err"
 test -s "$RESULT_DIR/d4a_snapshots.xsm"
+if grep -q 'MAXIMUM NUMBER OF SELF-SHIELDING ITERATIONS EXCEEDED' \
+  "$RESULT_DIR/d4a_three_snapshots.log"
+then
+  echo "D4A snapshot build rejected: TONE did not converge" >&2
+  exit 1
+fi
+test "$(grep -c 'CONVERGENCE REACHED AT TONE ITERATION' \
+  "$RESULT_DIR/d4a_three_snapshots.log")" -eq 3
 grep -q '^>|D4A-THREE-SNAPSHOT-ARCHIVE-COMPLETE' \
   "$RESULT_DIR/d4a_three_snapshots.log"
 (

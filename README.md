@@ -129,8 +129,10 @@ The independent second case is the 132-region IRENA D4-A 1/12 assembly.
 One bounded geometry-only TRACK build established the actual radial tuple
 `(NREG,NMAT,NSURF,NUNKNO,NCODE)=(132,6,12,144,6)`.  Here `NSURF=12` is the
 number of numerical surface-current unknowns, while `NCODE=6` remains the
-number of physical boundary/albedo code slots.  No D4-A transport has been
-run.  The no-transport implementation now carries these TRACK-authoritative
+number of physical boundary/albedo code slots.  One first-state D4-A attempt
+was rejected because TONE reached its self-shielding iteration cap; it was
+stopped before publishing a snapshot.  No accepted D4-A transport result
+exists.  The no-transport implementation now carries these TRACK-authoritative
 runtime region, material, surface and unknown counts through
 `SPOR64_B2B -> SPOR64_A9 -> SPOR64_A8`, the `SPOR64_B2C` publication
 boundary, the assembled-to-close `B2K/B2N/B2S/B2R/B2W` lifecycle, and the
@@ -147,9 +149,14 @@ accepted pin baseline's thermophysical sampling schedule while testing the
 assembly-scale D4-A radial configuration.  Temperature is an offline material
 coordinate that changes cross sections and densities; it is not the online
 reduced unknown.  POD will be applied to the resulting 132-region, 370-group
-flux fields.  A hash-locked, default-off generation deck and a seconds-scale
-no-transport preflight pass.
-The physical archive has not yet been generated, and an independent D4-A
+flux fields.  The failed deck had accidentally copied the production radial
+tracking density `100.0` into the separate TONE/MERGMIX track.  The builder
+now restores its historical density `50.0`, keeps production transport at
+`100.0`, and requires both absence of the TONE-cap warning and an explicit
+terminal for all three states.  No tolerance or physical input changed.  The
+corrected, hash-locked, default-off deck passes its seconds-scale preflight but
+has not been rerun.
+The physical archive has therefore not yet been generated, and an independent D4-A
 reference and the unchanged gate must be frozen before any convergence claim.
 See
 [the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md)

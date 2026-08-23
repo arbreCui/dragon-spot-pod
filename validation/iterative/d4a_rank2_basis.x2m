@@ -1,0 +1,41 @@
+****************************************************************
+* D4-A: build the fixed rank-2 radial POD space once.          *
+*                                                              *
+* The three coarse axial layers select snapshots 1, 2 and 3.   *
+* This deck runs GEO, SPOT, SPOLIB and ASM only: no FLU solve,  *
+* online feedback, relaxation or convergence iteration.        *
+****************************************************************
+
+XSM_FILE SNAP :: FILE './d4a_snapshots.xsm' ;
+XSM_FILE BASIS_ARCH :: FILE './d4a_rank2_basis.xsm' ;
+XSM_FILE TRACK_ARCH :: FILE './d4a_axial_track.xsm' ;
+XSM_FILE MACRO_ARCH :: FILE './d4a_axial_macrolib.xsm' ;
+
+LINKED_LIST GEOM_AX TRACK_AX MACROLIB3 SYSTEM ;
+
+MODULE GEO: SPOT: SPOLIB: ASM: END: ;
+
+GEOM_AX := GEO: :: CAR1D 3
+  X- VOID X+ VOID
+  MESHX 0.0 50.0 100.0 150.0
+  MIX 1 2 3
+;
+
+TRACK_AX := SPOT: GEOM_AX SNAP ::
+  EDIT 1 MAXR 2500 TITL 'D4-A coarse axial validation'
+  ALLG DIAM 0 SN 8 SCAT 3
+;
+
+MACROLIB3 := SPOLIB: SNAP :: ;
+
+SYSTEM := ASM: MACROLIB3 TRACK_AX SNAP ::
+  EDIT 1 SPOD 2
+;
+
+BASIS_ARCH := SYSTEM ;
+TRACK_ARCH := TRACK_AX ;
+MACRO_ARCH := MACROLIB3 ;
+
+ECHO "D4A-RANK2-BASIS-COMPLETE" ;
+END: ;
+QUIT "LIST" .

@@ -2,13 +2,18 @@
 
 ## Status
 
-`THREE_SNAPSHOT_INPUTS_FROZEN_AND_PREFLIGHTED_NO_D4_TRANSPORT`.
+`TONE_INPUT_CORRECTED_AND_PREFLIGHTED_NO_ACCEPTED_D4_SNAPSHOT`.
 
 The accepted bounded Dragon run built only the radial tracking object from the
-frozen geometry.  The current three-snapshot inputs now also pass a static,
-hash-locked material/library preflight.  No D4-A library processing,
-eigenvalue solve, radial fixed-source solve, axial solve or Picard iteration
-has been started.  No OpenMC process was started.
+frozen geometry.  A later first-state attempt reached the TONE self-shielding
+iteration cap and was stopped before publishing a snapshot, so it is not an
+accepted physical result.  Comparison with the historical successful builder
+isolated an input-copy error: TONE/MERGMIX must retain tracking density `50.0`,
+while the separate production radial track uses `100.0`.  That distinction is
+now restored and the hash-locked static preflight passes.  No criterion,
+material state, empirical coefficient or physical equation changed.  The
+corrected transport has not been run; no radial archive, axial solve or Picard
+iteration has been accepted.  No OpenMC process was started.
 
 ## Why this case
 
@@ -235,11 +240,12 @@ ordering, not D4-A transport or D4-A convergence.
 
 ## Remaining work before a convergence census
 
-1. separately authorize and execute the one current three-snapshot deck;
-2. independently verify the resulting physical archive, admit it through the
-   existing lifecycle and freeze an independent D4-A reference;
-3. only then run one separately authorized, bounded physical convergence
-   census with no empirical parameter or automatic retry.
+1. run only the corrected 650 C `LIB + SALT + TONE` gate once and reject any
+   TONE-cap warning;
+2. only if it passes, execute and independently verify the three-snapshot
+   archive, then build the fixed rank-two basis;
+3. only then run one bounded physical convergence census with no empirical
+   parameter or automatic retry.
 
 The method remains the same 370-group, fixed rank-two basis, three-snapshot
 Synthesis-POD iteration.  The historical five-temperature campaign is not

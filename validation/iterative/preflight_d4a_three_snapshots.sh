@@ -46,8 +46,12 @@ if grep -Eqi 'eps_pod|rank_pod|SpotPod|SPOT:|SPOR64|Picard|Anderson|relax' "$DRI
 fi
 
 grep -Fq 'NMIX 6' "$BUILDER" || fail "the D4-A builder is not six-medium"
-grep -Fq 'TISO 24 100.0 LONG' "$BUILDER" ||
-  fail "the admitted D4-A tracking discretization changed"
+test "$(grep -Fc 'TISO 24 50.0 LONG' "$BUILDER")" -eq 1 ||
+  fail "the frozen historical TONE self-shielding quadrature changed"
+test "$(grep -Fc 'TISO 24 100.0 LONG' "$BUILDER")" -eq 1 ||
+  fail "the admitted production tracking discretization changed"
+grep -Fq 'EDIT 1 MXIT 20 EPS 1.0E-5 TRAN PIJ ;' "$BUILDER" ||
+  fail "TONE no longer uses its frozen criterion with an explicit terminal"
 grep -Fq 'GAUS 4 AAC 80 TMT STIS 1 EPSI 1.0E-5 MCU 10000' "$BUILDER" ||
   fail "the admitted MCCG settings changed"
 grep -Fq 'EDIT 0 TYPE K EXTE 500 <<solver_eps>>' "$BUILDER" ||

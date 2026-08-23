@@ -2,12 +2,27 @@
 
 ## Result
 
-`PASS_NO_TRANSPORT`.
+`PASS_STATIC_AFTER_REJECTED_TONE_RUN`.
 
-The frozen D4-A snapshot inputs pass their seconds-scale preflight.  The
+The corrected D4-A snapshot inputs pass their seconds-scale preflight.  This
 check executed no Dragon module and produced no physical flux.  Running the
-default-off wrapper without explicit authorization repeated the same
-preflight and exited before launching Dragon.
+default-off wrapper repeated the same preflight and exited before launching
+Dragon.
+
+The preceding physical attempt entered state 1 at 650 C, but TONE reached
+`MXIT=20` before satisfying its unchanged `EPS=1.0E-5` criterion.  Because
+TONE can continue with its last iterate, that result was stopped during the
+subsequent FLU solve and is rejected.  No snapshot or archive was published.
+The failed log SHA-256 is
+`8d75fb0226ae4b073adeaa075010ef4a348a0227728901d446f8b170fb6f5506`.
+
+The cause isolated by source and history comparison was an input-copy error:
+the TONE/MERGMIX tracking density had been changed from its historical
+`50.0` to the separate production transport value `100.0`.  The builder now
+restores `50.0` for TONE and retains `100.0` for radial transport.  The three
+temperatures, material data, library, `MXIT`, `EPS`, and FLU criteria are
+unchanged.  This is an input-contract correction, not an empirical closure or
+a claim that the corrected 650/750/850 C states have already converged.
 
 ```text
 D4A SNAPSHOT PREFLIGHT PASS
@@ -18,8 +33,8 @@ D4A TRANSPORT EXECUTED=0
 D4A SNAPSHOT BUILD DISABLED: set RUN_D4A_SNAPSHOTS=1 and an unused RESULT_DIR
 ```
 
-The frozen repository-input manifest SHA-256 is
-`ffac9146159c7271ef51b70045c1ed045a560d8d3028d0a8abb0b142a44e873b`.
+The corrected repository-input manifest SHA-256 is
+`9a6ef1405b81e68723d08f61e1efcdc9568e0bd093fb92b645bbb57d9222b61c`.
 The preflight requires the canonical geometry and material procedure hashes
 already declared by the D4-A case contract.
 

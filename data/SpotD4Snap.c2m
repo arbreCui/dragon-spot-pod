@@ -174,17 +174,18 @@ MICROLIB := LIB: ::
     He4ext = 'He4' <<N_He_2>>
 ;
 
-* Step 1: SALT MERGMIX for TONE.
+* Step 1: SALT MERGMIX for TONE.  Keep the historical
+* self-shielding quadrature distinct from the production transport track.
 TRACK_T TRACK_T_f := SALT: glow ::
     EDIT 0
     ANIS 1
-    TISO 24 100.0 LONG
+    TISO 24 50.0 LONG
     MERGMIX
     ;
 
 ECHO "SpotD4Snap: TONE self-shielding (MERGMIX track)" ;
 MICROLIB2 := TONE: MICROLIB TRACK_T TRACK_T_f ::
-    EDIT 0 MXIT 20 EPS 1.0E-5 TRAN PIJ ;
+    EDIT 1 MXIT 20 EPS 1.0E-5 TRAN PIJ ;
 
 TRACK_T TRACK_T_f := DELETE: TRACK_T TRACK_T_f ;
 
