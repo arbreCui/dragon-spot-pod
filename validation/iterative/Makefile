@@ -1,6 +1,6 @@
 # Host tools for the SPOR64 iterative route.
 #
-# These four programs link the SPOR64 modules out of libDragon.a, so any
+# These host programs link the current Dragon/Ganlib libraries, so any
 # change under ../../src leaves them stale.  A stale tool does not produce
 # a wrong answer -- the lifecycle boundaries are fail-closed and it will
 # hard-reject the archive instead -- but it costs a run to find out.
@@ -23,7 +23,7 @@ INCLUDE := -I $(DRAGON)/modules -I $(GANLIB)/modules
 LIBS    := $(DRAGON)/libDragon.a $(GANLIB)/libGanlib.a -lstdc++
 
 TOOLS   := admit_candidate_radial close_r64_returned \
-           check_convergence_gate \
+           check_convergence_gate check_one_map_xsm \
            prepare_r64_aa1_projected prepare_r64_next_projected
 
 .PHONY: all tools clean
