@@ -14,50 +14,35 @@ Run the complete no-transport gate with:
 make spot-fast
 ```
 
-The gate launches no Dragon process. It checks the production method,
-compiles the retained CLE-2000 and Fortran paths, and runs only seconds-scale
-tests.
+The gate launches no Dragon process. It checks the active production method,
+the canonical strict-REAL64 decks, process bounds and fixed-state contracts;
+it also compiles and runs the retained Level-1/2 algebra kernels.  All checks
+are seconds-scale.  The old continuation/AA development census remains in
+`run_picard_fast.sh` as historical archaeology and is not an acceptance gate
+for the current method.
 
-The latest rank-2 boundary is a standard, unregularized AA(2) proposal
-$q_8$ formed only after AA(1) failed its leakage direction screens.  Its
-three parameter-free direction ratios pass, its independent 9/9 proposal
-receipt passes, and one $o=G_2(q_8)$ map was evaluated.  Its strict
-terminals, independent checker, and 21/21 receipt pass.  $R_\rho$ and $R_a$
-pass the original gate; $R_L=4.573608580149287\times10^{-4}$ fails, so the
-classification is `VALID_NOT_MET`.  The following minimum-order AA(1)
-direction passes all three parameter-free screens, so AA(2) is skipped and
-its $q_9$ proposal is now independently materialized with a passing 9/9
-receipt and was evaluated exactly once as $p=G_2(q_9)$.  Its strict
-terminals, independent checker, and 21/21 receipt pass.  Only $R_\rho$
-passes the original gate; $R_L=6.792180645546773\times10^{-4}$ and
-$R_a=1.761650656565653\times10^{-6}$ fail, so the classification is
-`VALID_NOT_MET`.  The following minimum-order AA(1) direction passes all
-three parameter-free screens, so AA(2) is skipped and no second physical
-map was run in that batch.  Its $q_{10}$ proposal is now independently
-materialized with a passing 9/9 receipt and was evaluated exactly once as
-$r=G_2(q_{10})$.  Its strict terminals, independent checker, and 21/21
-receipt pass.  $R_\rho$ passes the original gate;
-$R_L=9.408223459489815\times10^{-4}$ and
-$R_a=5.576247465674659\times10^{-7}$ fail, so the classification is
-`VALID_NOT_MET`.  The following minimum-order AA(1) direction passes all
-three parameter-free screens, so AA(2) is skipped and no second physical
-map is run in that batch.  Its $q_{11}$ proposal is independently
-materialized with a passing 9/9 receipt and was evaluated exactly once as
-$s=G_2(q_{11})$.  Its strict terminals, independent checker, and 21/21
-receipt pass.  $R_\rho$ and $R_a$ pass the original gate;
-$R_L=4.372585176123830\times10^{-4}$ fails, so the classification is
-`VALID_NOT_MET`.  The following minimum-order AA(1) direction passes all
-three parameter-free screens, so AA(2) is skipped and no second physical
-map is run in that batch.  Its $q_{12}$ proposal is independently
-materialized with a passing 9/9 receipt and was evaluated exactly once as
-$t=G_2(q_{12})$.  Its strict terminals, independent checker, and 21/21
-receipt pass.  $R_\rho$ passes the original gate;
-$R_L=4.684047945454728\times10^{-4}$ and
-$R_a=5.179951998082914\times10^{-7}$ fail, so the classification is
-`VALID_NOT_MET`.  The following minimum-order AA(1) direction passes all
-three parameter-free screens, so AA(2) is skipped and no second physical
-map is run; see
-[the latest map record](iterative/rank2_current_rs_aa1_map_result.md).
+The current rank-2 result is the corrected strict-REAL64 leakage map.  One
+radial solve and one axial solve completed without retry; production
+admission, the independent one-map checker, no-transport close and the
+separate convergence checker all pass.  The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(3.1217481\times10^{-8},\,4.7437810\times10^{-9},\,
+2.6517344\times10^{-9}) < 5\times10^{-7},
+$$
+
+so the classification is `VALID_MET`.  A detached-source replay reproduced
+all six physical XSM outputs byte for byte.  It used no rank increase,
+relaxation or empirical parameter.  The frozen receipt and the comparison
+to the existing OpenMC reference are summarized in
+[the clean-replay result](iterative/rank2_strict_leak64_clean_replay_result.md).
+
+The second physical case is frozen as an input-only audit of the IRENA D4-A
+1/12 assembly.  No transport has been run: the strict lifecycle must first
+replace its pin-cell dimension constants by runtime dimensions while keeping
+the equations and gate unchanged.  See
+[the D4-A case contract](iterative/second_case_d4a_contract.md).
 
 The generic continuation host is default-off. Enabling it evaluates one
 unchanged direct map from the hash-locked parent and requires a new result

@@ -103,40 +103,25 @@ terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
 
 ## Latest REAL64 rank-2 result
 
-The latest standard unregularized full-Gram AA(1) proposal uses the genuine
-map pairs `x3 -> x4` and `y -> z`:
-
-$$
-t=0.252802215112331696\,x_4+
-  0.747197784887668304\,z.
-$$
-
-Its three parameter-free direction ratios are all below one, so AA(2) was
-skipped.  It was independently materialized in the fixed rank-two POD
-space, all 8880 published radial scalar-flux values were positive, and
-exactly one bounded physical map completed without retry through
-`PROPOSAL -> PROJECTED/5 -> RETURNED/5 -> CLOSED/5`.  Its raw defect is
+The corrected strict-REAL64 leakage route has reached the unchanged outer
+fixed-point gate.  One radial solve and one axial solve, each bounded and
+without retry, completed through `PROJECTED -> RETURNED -> CLOSED/69`.
+The independent one-map checker and the separate convergence checker pass.
+The measured defect is
 
 $$
 (R_\rho,R_L,D_L,R_a)=
-(6.4223470\times10^{-8},\,2.4829538\times10^{-6},\,
-3.6379788\times10^{-9}\ \mathrm{cm}^{-1},\,
-2.7689296\times10^{-7}).
+(3.1217481\times10^{-8},\,4.7437810\times10^{-9},\,
+6.9504965\times10^{-12}\ \mathrm{cm}^{-1},\,
+2.6517344\times10^{-9}).
 $$
 
-At the unchanged `5e-7` AND gate, $R_\rho$ and $R_a$ pass; only $R_L$
-fails.  Both $R_L$ and $R_a$ improved, but the result remains
-`VALID_NOT_MET`.  No empirical parameter or model correction was
-introduced.  See
-[the complete result](validation/iterative/rank2_h2_r64_aa1_z_map_result.md).
-
-A subsequent same-parent axial-only sensitivity retained the radial response
-bit for bit and changed only the axial terminal from `2.5e-7` to `1.25e-7`.
-It gave $R_L=2.9994077\times10^{-6}$, 20.80% above the value shown above.
-Thus the current leakage defect is not yet stable with respect to the axial
-inner terminal.  This is not a new full map and does not authorize rank three
-or the next AA(1); see
-[the sensitivity result](validation/iterative/rank2_h2_r64_aa1_z_axial_tight_result.md).
+All three gated quantities are below `5e-7`, so the classification is
+`VALID_MET`; $D_L$ remains diagnostic only.  A detached-source rebuild and
+one zero-retry replay reproduced all six physical XSM outputs byte for byte.
+No rank increase, empirical coefficient, relaxation parameter, gate change
+or added model term was used.  See
+[the clean-replay result](validation/iterative/rank2_strict_leak64_clean_replay_result.md).
 
 ## Earlier rank-2 development history
 
