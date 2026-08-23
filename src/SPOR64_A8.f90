@@ -11,11 +11,7 @@ module SPOR64_A8
   private
 
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
   integer, parameter :: NSOUT = 6
-  integer, parameter :: NLONG = 14
-  integer, parameter :: KPN = 14
-  integer, parameter :: NBMIX = 8
   integer, parameter :: NANI = 1
   integer, parameter :: NLIN = 1
   integer, parameter :: NFUNL = 1
@@ -181,9 +177,11 @@ contains
     integer, contiguous, intent(in) :: keyflx_trk3(:,:,:)
     integer, contiguous, intent(in) :: pjjind_trk2(:,:)
     logical, intent(out) :: ok
+    integer :: nreg
     ok = .false.
-    if (size(keyflx_base1) /= NREG) return
-    if (size(keyflx_trk3,1) /= NREG) return
+    nreg = size(keyflx_base1)
+    if (nreg <= 0) return
+    if (size(keyflx_trk3,1) /= nreg) return
     if (size(keyflx_trk3,2) /= NLIN) return
     if (size(keyflx_trk3,3) /= NFUNL) return
     if (size(pjjind_trk2,1) /= 1) return
@@ -193,9 +191,12 @@ contains
   end subroutine SPOR64_A8_RANK_PROBE
 
   subroutine SPOR64_A8_OPERATOR_PROBE(sc32, sigal32, ok)
-    real(real32), intent(in) :: sc32(0:NBMIX,1)
-    real(real32), intent(in) :: sigal32(-NSOUT:NBMIX)
+    real(real32), intent(in) :: sc32(0:,:)
+    real(real32), intent(in) :: sigal32(-NSOUT:)
     logical, intent(out) :: ok
+    ok = .false.
+    if (size(sc32,1) <= 1 .or. size(sc32,2) /= 1) return
+    if (ubound(sigal32,1) /= ubound(sc32,1)) return
     ok = all(ieee_is_finite(sc32)) .and. all(ieee_is_finite(sigal32))
   end subroutine SPOR64_A8_OPERATOR_PROBE
   subroutine MAP_INTEGER1(iplist, name, n, values, ok)
@@ -287,14 +288,14 @@ contains
     type(c_ptr), intent(in) :: ipsys, iptrk
     integer, intent(in) :: ngrp, nun, iftrak, impx
     real(real64), intent(in) :: leak1d64(:)
-    integer, intent(in) :: npsys(ngrp), keyflx_base1(NREG)
+    integer, intent(in) :: npsys(ngrp), keyflx_base1(:)
     character(len=72), intent(in) :: title
     real(real64), intent(in) :: full_source64(nun,ngrp)
     real(real64), intent(inout) :: full_flux64(nun,ngrp)
     integer(int64), intent(out) :: cutoff_delta64
     logical, intent(out) :: ok
 
-    integer :: first_group, ig, ii, ileng, itylcm, ngeff
+    integer :: first_group, ig, ii, ileng, itylcm, ngeff, nreg
     integer(int64) :: child_delta64
     logical :: child_ok
     logical, allocatable :: seen(:)
@@ -305,7 +306,9 @@ contains
 
     cutoff_delta64 = 0_int64
     ok = .false.
-    if (ngrp /= NGRP .or. nun /= KPN) return
+    nreg = size(keyflx_base1)
+    if (ngrp /= NGRP .or. nun <= 0) return
+    if (nreg <= 0 .or. nreg > nun) return
     if (.not. c_associated(ipsys) .or. .not. c_associated(iptrk)) return
     if (iftrak <= 0) return
     if (.not. all(ieee_is_finite(full_source64))) return
@@ -313,7 +316,7 @@ contains
 
     allocate(seen(nun))
     seen = .false.
-    do ii = 1, NREG
+    do ii = 1, nreg
       if (keyflx_base1(ii) < 1 .or. keyflx_base1(ii) > nun) return
       if (seen(keyflx_base1(ii))) return
       seen(keyflx_base1(ii)) = .true.
@@ -343,13 +346,13 @@ contains
     end do
 
     if (impx > 3) then
-      allocate(fgar64(NREG))
+      allocate(fgar64(nreg))
       do ii = 1, ngeff
         fgar64 = +0.0_real64
-        do ig = 1, NREG
+        do ig = 1, nreg
           fgar64(ig) = qfr_tail64(keyflx_base1(ig),ii)
         end do
-        call PRINDM('QFR64 ', fgar64, NREG)
+        call PRINDM('QFR64 ', fgar64, nreg)
       end do
     end if
 
@@ -367,10 +370,10 @@ contains
     if (impx > 3) then
       do ii = 1, ngeff
         fgar64 = +0.0_real64
-        do ig = 1, NREG
+        do ig = 1, nreg
           fgar64(ig) = phiin_tail64(keyflx_base1(ig),ii)
         end do
-        call PRINDM('FLUX64', fgar64, NREG)
+        call PRINDM('FLUX64', fgar64, nreg)
       end do
     end if
     ok = .true.
@@ -381,7 +384,7 @@ contains
       ok)
     integer, intent(in) :: iftrak, impx, ngeff, nun
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
-    integer, intent(in) :: ngind(ngeff), keyflx_base1(NREG)
+    integer, intent(in) :: ngind(ngeff), keyflx_base1(:)
     real(real64), intent(in) :: leak1d64(:)
     real(real64), intent(in) :: qfr64(nun,ngeff)
     real(real64), intent(inout) :: phiin64(nun,ngeff)
@@ -393,6 +396,7 @@ contains
     integer :: i, icom, ifmt, ios, ispec, itylcm, j, nalbg, nalbp
     integer :: nangl, nbatch, nbtr, ncomnt, ncor, nmax, nmu
     integer :: n2reg, n2sou, mxseg, mxsub, lc, lnconv
+    integer :: nbmix, nlong, nreg
     integer(int64) :: child_delta64
     integer, allocatable :: itst(:), matalb_trk(:)
     integer, contiguous, pointer :: icode_trk1(:), keycur_trk1(:)
@@ -415,7 +419,9 @@ contains
 
     cutoff_delta64 = 0_int64
     ok = .false.
-    if (ngeff <= 0 .or. ngeff > NGRP .or. nun /= KPN) return
+    nreg = size(keyflx_base1)
+    if (ngeff <= 0 .or. ngeff > NGRP .or. nun <= 0) return
+    if (nreg <= 0 .or. nreg > nun) return
     if (iftrak <= 0 .or. .not. c_associated(iptrk)) return
     do i = 1, ngeff
       if (.not. c_associated(kpsys(i))) return
@@ -433,8 +439,10 @@ contains
     if (.not. map_ok) return
     call MAP_REAL321(iptrk, 'REAL-PARAM', 4, real_param32, map_ok)
     if (.not. map_ok) return
-    if (state_vector(1) /= NREG .or. state_vector(2) /= KPN) return
-    if (state_vector(3) /= 1 .or. state_vector(4) /= NBMIX) return
+    nbmix = state_vector(4)
+    if (nbmix <= 0) return
+    if (state_vector(1) /= nreg .or. state_vector(2) /= nun) return
+    if (state_vector(3) /= 1) return
     if (state_vector(5) /= NSOUT .or. state_vector(6) /= NANI) return
     if (state_vector(9) /= 0 .or. state_vector(14) /= 4) return
     if (state_vector(16) /= 2 .or. state_vector(22) /= 1) return
@@ -469,6 +477,13 @@ contains
     ! keeps the tracked terminal byte-identically.
     if (any(leak1d64 /= 0.0_real64)) epsi64 = DP_MCCG_EPSI64
 
+    ! V$MCCG is the tracking authority for the long-vector extent.  The
+    ! present isotropic, non-TIBERE route has one unknown per region or
+    ! outer surface, exactly as in the frozen pin case.
+    call LCMLEN(iptrk, 'V$MCCG', nlong, itylcm)
+    if (nlong <= 0 .or. itylcm /= 2) return
+    if (nlong /= nreg + NSOUT .or. nun /= nlong) return
+
     rewind(iftrak, iostat=ios)
     if (ios /= 0) return
     read(iftrak, iostat=ios) text4, ncomnt, nbtr, ifmt
@@ -482,19 +497,19 @@ contains
     read(iftrak, iostat=ios) i, ispec, n2reg, n2sou, nalbg, ncor, &
         nangl, mxsub, mxseg
     if (ios /= 0) return
-    if (i /= NDIM .or. n2reg /= NREG .or. n2sou /= NSOUT) return
+    if (i /= NDIM .or. n2reg /= nreg .or. n2sou /= NSOUT) return
     if (ncor /= 1 .or. nangl <= 0 .or. mxsub <= 0 .or. mxseg <= 0) &
         return
     if (nalbg < 0 .or. ispec < 0 .or. len_trim(text4) > 4) return
 
     call SPOMOC_MCCGF_BEGIN(NGRP, ngeff, ngind, nun, NDIM, .false., &
-        NLONG, NREG, NSOUT, NANI, NLIN, NFUNL, KRYL, STIS, IAAC, ISCR, &
+        nlong, nreg, NSOUT, NANI, NLIN, NFUNL, KRYL, STIS, IAAC, ISCR, &
         0, PACA, IDIR)
 
-    allocate(matalb_trk(-NSOUT:NREG))
+    allocate(matalb_trk(-NSOUT:nreg))
     read(iftrak, iostat=ios)
     if (ios /= 0) return
-    read(iftrak, iostat=ios) (matalb_trk(j), j=-NSOUT,NREG)
+    read(iftrak, iostat=ios) (matalb_trk(j), j=-NSOUT,nreg)
     if (ios /= 0) return
     read(iftrak, iostat=ios)
     if (ios /= 0) return
@@ -516,14 +531,14 @@ contains
     if (.not. map_ok) return
     call MAP_REAL321(iptrk, 'ZMU$MCCG', nmu, zmu32, map_ok)
     if (.not. map_ok) return
-    call MAP_REAL321(iptrk, 'V$MCCG', NLONG, volume_trk32, map_ok)
+    call MAP_REAL321(iptrk, 'V$MCCG', nlong, volume_trk32, map_ok)
     if (.not. map_ok) return
-    call MAP_INTEGER1(iptrk, 'NZON$MCCG', NLONG, nzon_trk1, map_ok)
+    call MAP_INTEGER1(iptrk, 'NZON$MCCG', nlong, nzon_trk1, map_ok)
     if (.not. map_ok) return
-    call MAP_INTEGER3(iptrk, 'KEYFLX$ANIS', NREG, NLIN, NFUNL, &
+    call MAP_INTEGER3(iptrk, 'KEYFLX$ANIS', nreg, NLIN, NFUNL, &
         keyflx_trk3, map_ok)
     if (.not. map_ok) return
-    call MAP_INTEGER1(iptrk, 'KEYCUR$MCCG', NLONG-NREG, keycur_trk1, &
+    call MAP_INTEGER1(iptrk, 'KEYCUR$MCCG', nlong-nreg, keycur_trk1, &
         map_ok)
     if (.not. map_ok) return
     if (.not. all(keyflx_base1 == keyflx_trk3(:,1,1))) return
@@ -531,23 +546,23 @@ contains
     if (.not. all(ieee_is_finite(zmu32))) return
     if (.not. all(ieee_is_finite(volume_trk32))) return
     if (any(volume_trk32 <= 0.0_real32)) return
-    if (any(nzon_trk1(:NREG) < 0) .or. &
-        any(nzon_trk1(:NREG) > NBMIX)) return
-    if (any(nzon_trk1(NREG+1:) < -NSOUT) .or. &
-        any(nzon_trk1(NREG+1:) > -1)) return
-    if (any(matalb_trk(1:NREG) /= nzon_trk1(1:NREG))) return
+    if (any(nzon_trk1(:nreg) < 0) .or. &
+        any(nzon_trk1(:nreg) > nbmix)) return
+    if (any(nzon_trk1(nreg+1:) < -NSOUT) .or. &
+        any(nzon_trk1(nreg+1:) > -1)) return
+    if (any(matalb_trk(1:nreg) /= nzon_trk1(1:nreg))) return
 
-    allocate(seen(KPN))
+    allocate(seen(nun))
     seen = .false.
-    do i = 1, NREG
+    do i = 1, nreg
       j = keyflx_trk3(i,1,1)
-      if (j < 1 .or. j > KPN) return
+      if (j < 1 .or. j > nun) return
       if (seen(j)) return
       seen(j) = .true.
     end do
-    do i = 1, NLONG-NREG
+    do i = 1, nlong-nreg
       j = keycur_trk1(i)
-      if (j < 1 .or. j > KPN) return
+      if (j < 1 .or. j > nun) return
       if (seen(j)) return
       seen(j) = .true.
     end do
@@ -561,11 +576,11 @@ contains
     call LCMLEN(kpsys(1), 'ALBEDO', nalbp, itylcm)
     if (nalbp < 0) return
     if (any(icode_trk1 > nalbp)) return
-    allocate(sc_by_group32(0:NBMIX,1,ngeff))
+    allocate(sc_by_group32(0:nbmix,1,ngeff))
     do i = 1, ngeff
-      if (.not. RECORD_MATCHES(kpsys(i), 'DRAGON-TXSC', NBMIX+1, 2)) &
+      if (.not. RECORD_MATCHES(kpsys(i), 'DRAGON-TXSC', nbmix+1, 2)) &
           return
-      if (.not. RECORD_MATCHES(kpsys(i), 'DRAGON-S0XSC', NBMIX+1, 2)) &
+      if (.not. RECORD_MATCHES(kpsys(i), 'DRAGON-S0XSC', nbmix+1, 2)) &
           return
       if (nalbp == 0) then
         call LCMLEN(kpsys(i), 'ALBEDO', j, itylcm)
@@ -576,19 +591,19 @@ contains
         if (.not. map_ok) return
         if (.not. all(ieee_is_finite(group_albedo32))) return
       end if
-      call MAP_REAL321(kpsys(i), 'DRAGON-TXSC', NBMIX+1, &
+      call MAP_REAL321(kpsys(i), 'DRAGON-TXSC', nbmix+1, &
           txsc_record32, map_ok)
       if (.not. map_ok) return
       if (.not. all(ieee_is_finite(txsc_record32))) return
-      call MAP_REAL321(kpsys(i), 'DRAGON-S0XSC', NBMIX+1, &
+      call MAP_REAL321(kpsys(i), 'DRAGON-S0XSC', nbmix+1, &
           sc_record32, map_ok)
       if (.not. map_ok) return
       sc_by_group32(:,1,i) = sc_record32
     end do
     if (.not. all(ieee_is_finite(sc_by_group32))) return
 
-    allocate(sigal32(-NSOUT:NBMIX,ngeff))
-    call MCGSIG(iptrk, NBMIX, ngeff, nalbp, kpsys, sigal32, lvoid)
+    allocate(sigal32(-NSOUT:nbmix,ngeff))
+    call MCGSIG(iptrk, nbmix, ngeff, nalbp, kpsys, sigal32, lvoid)
     if (.not. all(ieee_is_finite(sigal32))) return
 
     allocate(reps64(MAXI,ngeff), eps64(ngeff), itst(ngeff))
@@ -600,8 +615,9 @@ contains
     lnconv = ngeff
 
     child_delta64 = 0_int64
-    call MCGFLX64(kpsys, iptrk, iftrak, impx, ngeff, ngind, nun, nbtr, &
-        nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
+    call MCGFLX64(kpsys, iptrk, iftrak, impx, ngeff, ngind, nun, nreg, &
+        nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, &
+        keyflx_trk3, &
         keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
         caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
         leak1d64, &
@@ -638,9 +654,11 @@ contains
     integer :: ibm, ind, ind2, ir, isur, isur2
 
     ok = .false.
-    if (n /= NLONG .or. ndim0 /= NDIM .or. m /= NBMIX) return
+    if (n <= 0 .or. m <= 0 .or. kpn0 <= 0 .or. nreg0 <= 0) return
+    if (nreg0 > n .or. n /= nreg0 + NSOUT .or. kpn0 /= n) return
+    if (ndim0 /= NDIM) return
     if (nani0 /= NANI .or. nlin0 /= NLIN .or. nfunl0 /= NFUNL) return
-    if (kpn0 /= KPN .or. nreg0 /= NREG .or. stis0 /= STIS) return
+    if (stis0 /= STIS) return
     if (.not. all(ieee_is_finite(qn64))) return
     if (.not. all(ieee_is_finite(fi64))) return
     if (.not. all(ieee_is_finite(s64))) return
@@ -675,24 +693,26 @@ contains
   end subroutine MCGFCS64
 
   subroutine MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-      nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
+      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+      matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
       leak1d64, &
       qfr64, phiin64, source64, response64, nconv, epsacc64, &
       cutoff_delta64, ok)
-    integer, intent(in) :: iftrak, iprint, ngeff, nun, nbtr, nmax
+    integer, intent(in) :: iftrak, iprint, ngeff, nun, nreg, nbmix
+    integer, intent(in) :: nlong, nbtr, nmax
     integer, intent(in) :: nmu, nangl, nbatch, lc
     real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     real(real64) :: leak_slot64(ngeff)
-    integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:NREG)
-    integer, intent(in) :: keyflx_trk3(NREG,NLIN,NFUNL)
-    integer, intent(in) :: keycur_trk1(NLONG-NREG), nzon_trk1(NLONG)
-    real(real32), intent(in) :: volume_trk32(NLONG), cpo32(nmu)
+    integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:nreg)
+    integer, intent(in) :: keyflx_trk3(nreg,NLIN,NFUNL)
+    integer, intent(in) :: keycur_trk1(nlong-nreg), nzon_trk1(nlong)
+    real(real32), intent(in) :: volume_trk32(nlong), cpo32(nmu)
     real(real32), intent(in) :: zmu32(nmu), wzmu32(nmu)
-    real(real32), intent(in) :: sc_by_group32(0:NBMIX,1,ngeff)
-    real(real32), intent(in) :: sigal32(-NSOUT:NBMIX,ngeff)
+    real(real32), intent(in) :: sc_by_group32(0:nbmix,1,ngeff)
+    real(real32), intent(in) :: sigal32(-NSOUT:nbmix,ngeff)
     real(real64), intent(in) :: caz1_track64(nangl)
     real(real64), intent(in) :: caz2_track64(nangl)
     real(real64), intent(in) :: qfr64(nun,ngeff), phiin64(nun,ngeff)
@@ -720,7 +740,9 @@ contains
     cutoff_delta64 = 0_int64
     ok = .false.
     response64 = 0.0_real64
-    if (ngeff <= 0 .or. ngeff > NGRP .or. nun /= KPN) return
+    if (ngeff <= 0 .or. ngeff > NGRP .or. nun <= 0) return
+    if (nreg <= 0 .or. nbmix <= 0 .or. nlong <= 0) return
+    if (nlong /= nreg + NSOUT .or. nun /= nlong) return
     if (nbtr <= 0 .or. nmax <= 0 .or. nmu <= 0 .or. nangl <= 0) return
     if (nbatch <= 0 .or. lc <= 0 .or. iftrak <= 0) return
     if (.not. c_associated(iptrk)) return
@@ -748,13 +770,13 @@ contains
     if (.not. all(ieee_is_finite(wzmu32))) return
     if (.not. all(ieee_is_finite(sc_by_group32))) return
     if (.not. all(ieee_is_finite(sigal32))) return
-    if (any(matalb_trk(1:NREG) /= nzon_trk1(1:NREG))) return
+    if (any(matalb_trk(1:nreg) /= nzon_trk1(1:nreg))) return
 
-    call MAP_INTEGER1(iptrk, 'BC-REFL+TRAN', NLONG-NREG, &
+    call MAP_INTEGER1(iptrk, 'BC-REFL+TRAN', nlong-nreg, &
         bc_index_trk1, map_ok)
     if (.not. map_ok) return
     if (any(bc_index_trk1 < 1) .or. &
-        any(bc_index_trk1 > NLONG-NREG)) return
+        any(bc_index_trk1 > nlong-nreg)) return
     call MAP_INTEGER2(iptrk, 'PJJIND$MCCG', NFUNL, 2, &
         pjjind_trk2, map_ok)
     if (.not. map_ok) return
@@ -762,16 +784,16 @@ contains
     do i = 1, ngeff
       if (nconv(i)) then
         if (.not. RECORD_MATCHES(kpsys(i), 'PJJ$MCCG', &
-            NREG*NFUNL, 2)) return
+            nreg*NFUNL, 2)) return
       end if
     end do
 
     do i = 1, ngeff
       if (nconv(i)) then
-        call MCGFCS64(NLONG, NDIM, nzon_trk1, qfr64(:,i), &
-            phiin64(:,i), NBMIX, NANI, NLIN, NFUNL, &
+        call MCGFCS64(nlong, NDIM, nzon_trk1, qfr64(:,i), &
+            phiin64(:,i), nbmix, NANI, NLIN, NFUNL, &
             sc_by_group32(:,:,i), leak1d64(ngind(i)), source64(:,i), &
-            KPN, NREG, iprint, &
+            nun, nreg, iprint, &
             keyflx_trk3, keycur_trk1, bc_index_trk1, sigal32(:,i), &
             STIS, child_ok)
         if (.not. child_ok) return
@@ -797,7 +819,7 @@ contains
     read(iftrak, iostat=ios) i, ispec, n2reg, n2sou, nalbg, ncor, &
         nangl_check, mxsub, mxseg
     if (ios /= 0) return
-    if (i /= NDIM .or. n2reg /= NREG .or. n2sou /= NSOUT) return
+    if (i /= NDIM .or. n2reg /= nreg .or. n2sou /= NSOUT) return
     if (ncor /= 1 .or. nangl_check /= nangl) return
     if (ispec < 0 .or. nalbg < 0 .or. mxsub <= 0 .or. mxseg <= 0) &
         return
@@ -807,14 +829,14 @@ contains
     end do
 
     call MCGFCF(MCGFFIR64_RANK_ADAPTER, MCGFFAR, MCGFFAL, MCGSCA, &
-        iftrak, nbtr, nmax, NDIM, KPN, NLONG, NREG, NBMIX, ngeff, &
+        iftrak, nbtr, nmax, NDIM, nun, nlong, nreg, nbmix, ngeff, &
         nangl, nmu, NANI, NFUNL, 4, NANI, NLIN, NFUNL, keyflx_trk3, &
         keycur_trk1, nzon_trk1, nconv, caz0_inactive64, caz1_track64, &
         caz2_track64, cpo32, zmu32, wzmu32, source64, sigal32, isgnr, &
         IDIR, NSOUT, nbatch, xsi_inactive64, response64)
     if (.not. all(ieee_is_finite(response64))) return
 
-    call MCGFST(ngeff, kpsys, nconv, KPN, NLONG, NREG, NANI, NFUNL, &
+    call MCGFST(ngeff, kpsys, nconv, nun, nlong, nreg, NANI, NFUNL, &
         NFUNL, keyflx_trk3(:,1,:), keycur_trk1, pjjind_trk2, &
         nzon_trk1, volume_trk32, source64, response64, IDIR)
     if (.not. all(ieee_is_finite(response64))) return
@@ -822,32 +844,32 @@ contains
     call SPOMOC_CAPTURE64(ngeff, ngind, nun, qfr64, phiin64, source64, &
         response64, nconv)
 
-    call MAP_INTEGER1(iptrk, 'IM$MCCG', NLONG+1, im, map_ok)
+    call MAP_INTEGER1(iptrk, 'IM$MCCG', nlong+1, im, map_ok)
     if (.not. map_ok) return
     call MAP_INTEGER1(iptrk, 'MCU$MCCG', lc, mcu, map_ok)
     if (.not. map_ok) return
-    call MAP_INTEGER1(iptrk, 'PI$MCCG', NLONG, iperm, map_ok)
+    call MAP_INTEGER1(iptrk, 'PI$MCCG', nlong, iperm, map_ok)
     if (.not. map_ok) return
-    call MAP_INTEGER1(iptrk, 'JU$MCCG', NLONG, ju, map_ok)
+    call MAP_INTEGER1(iptrk, 'JU$MCCG', nlong, ju, map_ok)
     if (.not. map_ok) return
 
-    allocate(diagq32(NLONG,ngeff), cq32(lc,ngeff))
-    allocate(iludf32(NLONG,ngeff), cf32(lc,ngeff))
-    allocate(diagf32(NLONG,ngeff))
+    allocate(diagq32(nlong,ngeff), cq32(lc,ngeff))
+    allocate(iludf32(nlong,ngeff), cf32(lc,ngeff))
+    allocate(diagf32(nlong,ngeff))
     do i = 1, ngeff
-      call MAP_REAL321(kpsys(i), 'DIAGQ$MCCG', NLONG, record32, map_ok)
+      call MAP_REAL321(kpsys(i), 'DIAGQ$MCCG', nlong, record32, map_ok)
       if (.not. map_ok) return
       diagq32(:,i) = record32
       call MAP_REAL321(kpsys(i), 'CQ$MCCG', lc, record32, map_ok)
       if (.not. map_ok) return
       cq32(:,i) = record32
-      call MAP_REAL321(kpsys(i), 'ILUDF$MCCG', NLONG, record32, map_ok)
+      call MAP_REAL321(kpsys(i), 'ILUDF$MCCG', nlong, record32, map_ok)
       if (.not. map_ok) return
       iludf32(:,i) = record32
       call MAP_REAL321(kpsys(i), 'CF$MCCG', lc, record32, map_ok)
       if (.not. map_ok) return
       cf32(:,i) = record32
-      call MAP_REAL321(kpsys(i), 'DIAGF$MCCG', NLONG, record32, map_ok)
+      call MAP_REAL321(kpsys(i), 'DIAGF$MCCG', nlong, record32, map_ok)
       if (.not. map_ok) return
       diagf32(:,i) = record32
     end do
@@ -861,7 +883,7 @@ contains
     do i = 1, ngeff
       leak_slot64(i) = leak1d64(ngind(i))
     end do
-    call MCGFCA64(NLONG, ngeff, KPN, NREG, NBMIX, lc, LFORW, PACA, &
+    call MCGFCA64(nlong, ngeff, nun, nreg, nbmix, lc, LFORW, PACA, &
         keyflx_trk3(:,1,:), keycur_trk1, nzon_trk1, nconv, MAXACC, &
         epsacc64, response64, phiin64, sc_by_group32, leak_slot64, &
         im, mcu, iperm, &
@@ -874,25 +896,27 @@ contains
   end subroutine MCGFL164
 
   subroutine MCGFLX64(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-      nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
+      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+      matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
       leak1d64, &
       qfr64, phiin64, epsi64, reps64, eps64, itst, nconv, lnconv, &
       cutoff_delta64, ok)
-    integer, intent(in) :: iftrak, iprint, ngeff, nun, nbtr, nmax
+    integer, intent(in) :: iftrak, iprint, ngeff, nun, nreg, nbmix
+    integer, intent(in) :: nlong, nbtr, nmax
     integer, intent(in) :: nmu, nangl, nbatch, lc
     real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
-    integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:NREG)
-    integer, intent(in) :: keyflx_trk3(NREG,NLIN,NFUNL)
-    integer, intent(in) :: keycur_trk1(NLONG-NREG), nzon_trk1(NLONG)
+    integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:nreg)
+    integer, intent(in) :: keyflx_trk3(nreg,NLIN,NFUNL)
+    integer, intent(in) :: keycur_trk1(nlong-nreg), nzon_trk1(nlong)
     integer, intent(out) :: itst(ngeff)
     integer, intent(inout) :: lnconv
-    real(real32), intent(in) :: volume_trk32(NLONG), cpo32(nmu)
+    real(real32), intent(in) :: volume_trk32(nlong), cpo32(nmu)
     real(real32), intent(in) :: zmu32(nmu), wzmu32(nmu)
-    real(real32), intent(in) :: sc_by_group32(0:NBMIX,1,ngeff)
-    real(real32), intent(in) :: sigal32(-NSOUT:NBMIX,ngeff)
+    real(real32), intent(in) :: sc_by_group32(0:nbmix,1,ngeff)
+    real(real32), intent(in) :: sigal32(-NSOUT:nbmix,ngeff)
     real(real64), intent(in) :: caz1_track64(nangl)
     real(real64), intent(in) :: caz2_track64(nangl)
     real(real64), intent(in) :: qfr64(nun,ngeff), epsi64
@@ -909,27 +933,30 @@ contains
 
     cutoff_delta64 = 0_int64
     ok = .false.
-    if (ngeff <= 0 .or. ngeff > NGRP .or. nun /= KPN) return
+    if (ngeff <= 0 .or. ngeff > NGRP .or. nun <= 0) return
+    if (nreg <= 0 .or. nbmix <= 0 .or. nlong <= 0) return
+    if (nlong /= nreg + NSOUT .or. nun /= nlong) return
     if (KRYL /= 10 .or. MAXI /= 20) return
     if (.not. ieee_is_finite(epsi64) .or. epsi64 <= 0.0_real64) return
     if (.not. all(ieee_is_finite(qfr64))) return
     if (.not. all(ieee_is_finite(phiin64))) return
     if (.not. any(nconv)) return
 
-    allocate(source64(KPN,ngeff), response64(KPN,ngeff))
+    allocate(source64(nun,ngeff), response64(nun,ngeff))
     SOURCE64 = 0.0_REAL64
     reps64 = +0.0_real64
     eps64 = +0.0_real64
     itst = 0
     if (iprint > 5) then
       do ii = 1, ngeff
-        call PRINDM('FI-0  ', phiin64(:,ii), KPN)
+        call PRINDM('FI-0  ', phiin64(:,ii), nun)
       end do
     end if
 
     child_delta64 = 0_int64
     call MCGMRE64(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-        nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
+        nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+        matalb_trk, keyflx_trk3, &
         keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
         caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
         leak1d64, &
@@ -941,24 +968,26 @@ contains
     ok = .true.
   end subroutine MCGFLX64
   subroutine MCGMRE64(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-      nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
+      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+      matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
       leak1d64, &
       qfr64, phiin64, source64, response64, epsi64, reps64, eps64, &
       itst, nconv, lnconv, cutoff_delta64, ok)
-    integer, intent(in) :: iftrak, iprint, ngeff, nun, nbtr, nmax
+    integer, intent(in) :: iftrak, iprint, ngeff, nun, nreg, nbmix
+    integer, intent(in) :: nlong, nbtr, nmax
     integer, intent(in) :: nmu, nangl, nbatch, lc
     real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
-    integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:NREG)
-    integer, intent(in) :: keyflx_trk3(NREG,NLIN,NFUNL)
-    integer, intent(in) :: keycur_trk1(NLONG-NREG), nzon_trk1(NLONG)
+    integer, intent(in) :: ngind(ngeff), matalb_trk(-NSOUT:nreg)
+    integer, intent(in) :: keyflx_trk3(nreg,NLIN,NFUNL)
+    integer, intent(in) :: keycur_trk1(nlong-nreg), nzon_trk1(nlong)
     integer, intent(inout) :: itst(ngeff), lnconv
-    real(real32), intent(in) :: volume_trk32(NLONG), cpo32(nmu)
+    real(real32), intent(in) :: volume_trk32(nlong), cpo32(nmu)
     real(real32), intent(in) :: zmu32(nmu), wzmu32(nmu)
-    real(real32), intent(in) :: sc_by_group32(0:NBMIX,1,ngeff)
-    real(real32), intent(in) :: sigal32(-NSOUT:NBMIX,ngeff)
+    real(real32), intent(in) :: sc_by_group32(0:nbmix,1,ngeff)
+    real(real32), intent(in) :: sigal32(-NSOUT:nbmix,ngeff)
     real(real64), intent(in) :: caz1_track64(nangl)
     real(real64), intent(in) :: caz2_track64(nangl)
     real(real64), intent(in) :: qfr64(nun,ngeff), epsi64
@@ -984,7 +1013,9 @@ contains
     ok = .false.
     response64 = +0.0_real64
     if (MAXI /= 20 .or. NSTART /= 10 .or. MAXIT /= 19) return
-    if (ngeff <= 0 .or. ngeff > NGRP .or. nun /= KPN) return
+    if (ngeff <= 0 .or. ngeff > NGRP .or. nun <= 0) return
+    if (nreg <= 0 .or. nbmix <= 0 .or. nlong <= 0) return
+    if (nlong /= nreg + NSOUT .or. nun /= nlong) return
     if (epsi64 <= 0.0_real64 .or. .not. ieee_is_finite(epsi64)) return
     if (.not. all(ieee_is_finite(qfr64))) return
     if (.not. all(ieee_is_finite(phiin64))) return
@@ -1019,7 +1050,8 @@ contains
       call SPOMOC_SET_ROLE(1, iter)
       child_delta64 = 0_int64
       call MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-          nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, keyflx_trk3, &
+          nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+          matalb_trk, keyflx_trk3, &
           keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
           caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
           leak1d64, &
@@ -1065,7 +1097,8 @@ contains
         call SPOMOC_SET_ROLE(2, iter)
         child_delta64 = 0_int64
         call MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-            nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, &
+            nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+            matalb_trk, &
             keyflx_trk3, keycur_trk1, nzon_trk1, volume_trk32, &
             caz1_track64, caz2_track64, cpo32, zmu32, wzmu32, &
             sc_by_group32, sigal32, leak1d64, qfr64, rhs64, source64, &
@@ -1087,7 +1120,8 @@ contains
         call SPOMOC_SET_ROLE(3, iter)
         child_delta64 = 0_int64
         call MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-            nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, &
+            nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+            matalb_trk, &
             keyflx_trk3, keycur_trk1, nzon_trk1, volume_trk32, &
             caz1_track64, caz2_track64, cpo32, zmu32, wzmu32, &
             sc_by_group32, sigal32, leak1d64, qfr64, gar64, source64, &

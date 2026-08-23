@@ -123,6 +123,18 @@ No rank increase, empirical coefficient, relaxation parameter, gate change
 or added model term was used.  See
 [the clean-replay result](validation/iterative/rank2_strict_leak64_clean_replay_result.md).
 
+## Second-case preparation
+
+The independent second case is the 132-region IRENA D4-A 1/12 assembly.
+No D4-A transport has been run.  The no-transport implementation now carries
+TRACK-authoritative runtime region, material and unknown counts through
+`SPOR64_B2B -> SPOR64_A9 -> SPOR64_A8` and through the `SPOR64_B2C`
+publication boundary.  Both the validated pin shape `(8,8,14)` and the
+manufactured D4-A-sized shape `(132,6,138)` pass the seconds-scale interface
+gate.  The remaining snapshot/source lifecycle must be generalized before a
+physical D4-A run is admissible.  See
+[the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md).
+
 ## Earlier rank-2 development history
 
 The latest standard AA(1) proposal

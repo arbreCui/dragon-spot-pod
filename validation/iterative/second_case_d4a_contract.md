@@ -2,7 +2,7 @@
 
 ## Status
 
-`B2C_DIMENSION_ADMISSION_PASSED_NO_TRANSPORT`.
+`RADIAL_RUNTIME_GEOMETRY_PASSED_NO_TRANSPORT`.
 
 No Dragon or OpenMC process was started for this case.  The purpose of this
 record is to choose the next independent geometry without changing the
@@ -45,14 +45,22 @@ not validate the current method: their logs are absent, they use five
 temperature snapshots, an `eps_pod=1e-3` cutoff, and an older scalar outer
 criterion.  None of those numerical choices is imported here.
 
-## Current incompatibility
+## Current implementation boundary
 
 The general core routines `SPOASM`, `SPOPOD` and `SPOT_LEAKAGE` already use
-runtime dimensions.  The strict REAL64 lifecycle is a pin-case validation
-route and does not yet do so:
+runtime dimensions.  The radial entrance, solver and publication boundary
+now do as well:
 
-- `SPOR64_A8/A9` assume eight radial regions;
-- `SPOR64_B2B/B2R/B2W` assume combinations of `NREG=8`, `NMAT=8`,
+- `SPOR64_B2B` obtains `NREG`, `NMAT` and `NUNKNO` from the actual TRACK
+  object and independently checks the long-vector records;
+- `SPOR64_A9/A8` carry those extents through the unchanged REAL64 radial
+  equations and MCCG call chain;
+- `SPOR64_B2C` publishes using the runtime region, material and unknown
+  counts.
+
+The remaining strict lifecycle is not yet D4-A ready:
+
+- `SPOR64_B2R/B2W` still assume combinations of `NREG=8`, `NMAT=8`,
   `NSNAP=3` and `NUNKNO=14`;
 - the directly connected `SPOR64_B2H/B2I/B2J/B2K/B2N/B2S` stages also
   retain pin-specific geometry dimensions and, in some cases, exact
@@ -62,7 +70,7 @@ route and does not yet do so:
 Consequently D4-A must not be run with the current strict chain.  A failure
 would be an interface-dimension failure, not a physical convergence result.
 
-## Completed first vertical slice
+## Completed vertical slices
 
 `SPOR64_B2C` now derives `NREG`, `NMAT` and `NUNKNO` from its actual arrays
 and allocates its publication staging accordingly.  The group count remains
@@ -91,20 +99,44 @@ make spot-b2c-dimensions
 The result is recorded in
 [the B2C runtime-dimension result](b2c_runtime_dimension_result.md).
 
-## Remaining implementation boundary
+At the radial solve boundary, `SPOR64_B2B` now treats `TRACK/STATE-VECTOR`
+as the geometry authority and requires the independently stored `V$MCCG`,
+`NZON$MCCG` and `KEYCUR$MCCG` extents to agree.  The current legacy MCCG
+kernels genuinely support six outer surfaces, so this route retains the
+strict relation
 
-The remaining code work is still dimension generalization only:
+```text
+NUNKNO = NLONG = NREG + 6
+```
 
-1. obtain `NREG`, `NMAT`, `NUNKNO`, `NSOUT` and `NLONG` from the actual
-   tracking and LCM records at the radial entrance;
-2. pass those dimensions through `B2B -> A9 -> A8` and allocate the same
-   numerical fields with those runtime dimensions;
-3. keep the current 370-group equations, fixed rank two, strict REAL64
+rather than claiming unsupported arbitrary surface counts.  `SPOR64_A9`
+and `SPOR64_A8` now derive the remaining geometry dimensions from their
+actual arrays and TRACK records.  They do not change the 370-group operator,
+iteration order, physical coefficients, tolerances or terminal predicates.
+
+A seconds-scale no-transport test admits both `(8,8,14)` and manufactured
+`(132,6,138)` shapes through the A8/A9 interfaces and verifies fail-closed
+entry with null transport handles:
+
+```sh
+make spot-a89-dimensions
+```
+
+The result is recorded in
+[the A8/A9 runtime-geometry result](a89_runtime_geometry_result.md).
+
+## Remaining work before a physical run
+
+The remaining code work is dimension generalization only:
+
+1. pass the same authoritative dimensions through the directly connected
+   snapshot/source/lifecycle stages without changing their equations;
+2. keep the current 370-group equations, fixed rank two, strict REAL64
    leakage lifecycle and unchanged three-defect `5e-7` gate;
-4. keep the current method's three snapshots for this second case; the
+3. keep the current method's three snapshots for this second case; the
    historical five-temperature campaign is not imported;
-5. require another no-transport 132-region admission and the existing
-   pin-cell boundary regression before any physical run.
+4. complete a full-chain no-transport 132-region admission and retain the
+   existing pin-cell regression before any physical run.
 
 Only after those five checks pass may a separately authorized D4-A physical
 run be prepared.  A new independent OpenMC reference will also be required;

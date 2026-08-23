@@ -39,12 +39,12 @@ to the existing OpenMC reference are summarized in
 [the clean-replay result](iterative/rank2_strict_leak64_clean_replay_result.md).
 
 The second physical case is frozen as the IRENA D4-A 1/12 assembly.  No
-transport has been run.  The first no-transport vertical slice now passes:
-`SPOR64_B2C` publishes both an 8-region pin object and a manufactured
-132-region object using runtime region, material and unknown counts, with
-bit-exact REAL64 authority and REAL32 mirrors.  This is publication-boundary
-admission only; the radial solver and the remaining strict lifecycle still
-contain pin-specific dimensions.  See
+transport has been run.  Two no-transport slices now pass: `SPOR64_B2C`
+publishes both pin and manufactured 132-region objects with runtime extents,
+and `SPOR64_B2B -> A9 -> A8` now carries TRACK-authoritative region, material
+and unknown counts through the REAL64 radial solver boundary.  The connected
+snapshot/source lifecycle still contains pin-specific dimensions, so this is
+not yet authorization for a D4-A physical run.  See
 [the D4-A case contract](iterative/second_case_d4a_contract.md).
 
 The generic continuation host is default-off. Enabling it evaluates one

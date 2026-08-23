@@ -24,14 +24,10 @@ module SPOR64_B2B
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
-  integer, parameter :: NMAT = 8
   integer, parameter :: NIFIS = 32
-  integer, parameter :: NUNKNO = 14
   integer, parameter :: NSOUT = 6
   integer, parameter :: MACRO_STORED_COMPONENTS = 3
   integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
-  integer, parameter :: MAX_SCAT = NMAT*NGRP
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   ! Axial lineage terminal of the r64dp route (solver_eps = 5.0E-8 in
   ! REAL32).  Seeds projected from dp-era axial states carry this value
@@ -76,37 +72,34 @@ contains
     integer :: flux_state(NSTATE), macro_state(NSTATE)
     integer :: system_state(NSTATE), track_state(NSTATE)
     integer :: mccg_state(NSTATE), source_state(NSTATE)
-    integer :: imerge_stage(NMAT), matcod(NREG), keyflx_base1(NREG)
-    integer :: seed_keyflx(NREG)
-    integer :: keycur(NSOUT), nzon(NUNKNO), matalb_surface(NSOUT)
-    integer :: njj_stage(NMAT), ijj_stage(NMAT), ipos_stage(NMAT)
-    integer :: njj_off(NMAT,NGRP), ijj_off(NMAT,NGRP)
-    integer :: ipos_off(NMAT,NGRP), nscat_off(NGRP)
+    integer, allocatable :: imerge_stage(:), matcod(:), keyflx_base1(:)
+    integer, allocatable :: seed_keyflx(:), nzon(:)
+    integer :: keycur(NSOUT), matalb_surface(NSOUT)
+    integer, allocatable :: njj_stage(:), ijj_stage(:), ipos_stage(:)
+    integer, allocatable :: njj_off(:,:), ijj_off(:,:), ipos_off(:,:)
+    integer :: nscat_off(NGRP)
     integer :: frozen_flag, iftrak, ig, ibm, ir, ilong, itylcm
     integer :: allocation_status
-    integer :: last_position
+    integer :: last_position, nreg, nmat, nunkno, nlong, max_scat
     integer(int32) :: volume_bits, track_volume_bits
     logical :: admission_complete, accepted, core_ok
     logical :: output_empty, output_lcm
-    logical :: seen_unknown(NUNKNO)
+    logical, allocatable :: seen_unknown(:)
     real(real32) :: eps_stage32(5), real_param32(4)
     real(real32) :: macro_keff32, source_keff32
-    real(real32) :: vol32(NREG), volume_track32(NUNKNO)
+    real(real32), allocatable :: vol32(:), volume_track32(:)
     real(real32) :: albedo32(NSOUT), surfac32(NSOUT)
     real(real32) :: leak1d_input32(NGRP), seed_leak1d32(NGRP), qint32(NGRP)
-    real(real32) :: s0phys_stage32(NMAT+1)
+    real(real32), allocatable :: s0phys_stage32(:)
     real(real64) :: leak1d64(NGRP)
     logical :: have_leak1d64
-    real(real32) :: flux_stage32(NUNKNO), source_stage32(NUNKNO)
-    real(real32) :: nusigf_stage32(NMAT*NIFIS)
-    real(real32) :: xstrc32(0:NMAT,NGRP)
-    real(real32) :: xsdia0_32(0:NMAT,NGRP)
+    real(real32), allocatable :: flux_stage32(:), source_stage32(:)
+    real(real32), allocatable :: nusigf_stage32(:)
+    real(real32), allocatable :: xstrc32(:,:), xsdia0_32(:,:)
     real(real32), allocatable :: scat_stage32(:)
     real(real32), allocatable :: scat_off32(:,:)
-    real(real64) :: fixed_source64(NUNKNO,NGRP)
-    real(real64) :: initial_flux64(NUNKNO,NGRP)
-    real(real64) :: terminal_flux64(NUNKNO,NGRP)
-    real(real64) :: terminal_source64(NUNKNO,NGRP)
+    real(real64), allocatable :: fixed_source64(:,:), initial_flux64(:,:)
+    real(real64), allocatable :: terminal_flux64(:,:), terminal_source64(:,:)
     real(real64) :: xcsou1
     type(c_ptr) :: ipflux, ipseed, ipmacr, iptrk, ipsys, ipsou
     type(c_ptr) :: seed_authority, source_authority
@@ -119,10 +112,16 @@ contains
 
     if (r64_mode /= SPOR64_B2B_BOOT .and. &
         r64_mode /= SPOR64_B2B_CONT) return
+    if (ngrp_host /= NGRP .or. nreg_host <= 0 .or. nmat_host <= 0) return
+    if (nifis_host /= NIFIS) return
+    if (int(nmat_host,int64)*int(NGRP,int64) > &
+        int(huge(max_scat),int64)) return
+    nreg = nreg_host
+    nmat = nmat_host
     if (nentry /= 7) return
     if (size(hentry) /= nentry .or. size(ientry) /= nentry) return
     if (size(jentry) /= nentry .or. size(kentry) /= nentry) return
-    if (size(imerg) /= NMAT) return
+    if (size(imerg) /= nmat) return
     if (hentry(1) /= 'FLUX') return
     if (hentry(2) /= 'MACRO0') return
     if (hentry(3) /= 'TRACK') return
@@ -168,8 +167,6 @@ contains
     if (transfer(epsunk32,0_int32) /= FROZEN_TOL_BITS) return
     if (transfer(epsinr32,0_int32) /= FROZEN_TOL_BITS) return
     if (imcaud /= 0 .or. SPOMOC_ACTIVE()) return
-    if (ngrp_host /= NGRP .or. nreg_host /= NREG) return
-    if (nmat_host /= NMAT .or. nifis_host /= NIFIS) return
     if (itpij_host /= 1 .or. itranc_host /= 2) return
     if (iphase_host /= 1 .or. leaksw_host .or. .not. lforw_host) return
 
@@ -184,6 +181,42 @@ contains
     if (.not. CHARACTER_RECORD_MATCHES(ipsou,'SIGNATURE',3,12, &
         'L_SOURCE')) return
 
+    ! TRACK is the sole geometry-dimension authority.  Host counts and every
+    ! other object below must agree with this immutable state record.
+    if (.not. RECORD_MATCHES(iptrk,'STATE-VECTOR',NSTATE,1)) return
+    call LCMGET(iptrk,'STATE-VECTOR',track_state)
+    nreg = track_state(1)
+    nunkno = track_state(2)
+    nmat = track_state(4)
+    if (nreg /= nreg_host .or. nunkno <= 0) return
+    if (track_state(3) /= 1 .or. nmat /= nmat_host) return
+    if (track_state(5) /= NSOUT .or. &
+        track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
+    if (nunkno /= nreg+NSOUT) return
+
+    ! The stored tracking payload must independently confirm the state-vector
+    ! dimensions before any geometry-sized allocation or read is attempted.
+    call LCMLEN(iptrk,'V$MCCG',nlong,itylcm)
+    if (nlong /= nunkno .or. itylcm /= 2) return
+    call LCMLEN(iptrk,'NZON$MCCG',ilong,itylcm)
+    if (ilong /= nlong .or. itylcm /= 1) return
+    call LCMLEN(iptrk,'KEYCUR$MCCG',ilong,itylcm)
+    if (ilong /= NSOUT .or. itylcm /= 1) return
+
+    max_scat = nmat*NGRP
+    allocate(imerge_stage(nmat),matcod(nreg),keyflx_base1(nreg), &
+        seed_keyflx(nreg),vol32(nreg),njj_stage(nmat),ijj_stage(nmat), &
+        ipos_stage(nmat),njj_off(nmat,NGRP),ijj_off(nmat,NGRP), &
+        ipos_off(nmat,NGRP),nusigf_stage32(nmat*NIFIS), &
+        s0phys_stage32(nmat+1),xstrc32(0:nmat,NGRP), &
+        xsdia0_32(0:nmat,NGRP),nzon(nlong),volume_track32(nlong), &
+        seen_unknown(nunkno), &
+        flux_stage32(nunkno),source_stage32(nunkno), &
+        fixed_source64(nunkno,NGRP),initial_flux64(nunkno,NGRP), &
+        terminal_flux64(nunkno,NGRP),terminal_source64(nunkno,NGRP), &
+        stat=allocation_status)
+    if (allocation_status /= 0) return
+
     if (.not. ABSENT_RECORD(ipseed,'B2  HETE')) return
     if (.not. ABSENT_RECORD(ipseed,'B2  B1HOM')) return
     if (r64_mode == SPOR64_B2B_BOOT) then
@@ -196,7 +229,7 @@ contains
     if (.not. ABSENT_RECORD(ipseed,'AFLUX')) return
     if (.not. ABSENT_RECORD(ipseed,'DFLUX')) return
     if (.not. ABSENT_RECORD(ipseed,'ADFLUX')) return
-    if (.not. RECORD_MATCHES(ipseed,'KEYFLX',NREG,1)) return
+    if (.not. RECORD_MATCHES(ipseed,'KEYFLX',nreg,1)) return
     call LCMGET(ipseed,'KEYFLX',seed_keyflx)
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'OPTION',1,4,'B0  ')) return
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
@@ -228,13 +261,13 @@ contains
     if (r64_mode == SPOR64_B2B_CONT .and. .not. have_leak1d64) return
     if (.not. RECORD_MATCHES(ipseed,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipseed,'STATE-VECTOR',flux_state)
-    if (flux_state(1) /= NGRP .or. flux_state(2) /= NUNKNO) return
+    if (flux_state(1) /= NGRP .or. flux_state(2) /= nunkno) return
     if (flux_state(3) /= 1) return
     if (flux_state(4) /= 0 .or. flux_state(5) /= 0) return
     if (flux_state(6) /= 0 .or. flux_state(7) /= 0) return
     if (flux_state(8) /= 3 .or. flux_state(9) /= 3) return
     if (flux_state(10) /= 1 .and. flux_state(10) /= 0) return
-    if (flux_state(17) /= NMAT) return
+    if (flux_state(17) /= nmat) return
     if (flux_state(11) /= 740 .or. flux_state(12) /= 500) return
     if (flux_state(18) /= 1) return
     if (.not. RECORD_MATCHES(ipseed,'EPS-CONVERGE',5,2)) return
@@ -248,13 +281,13 @@ contains
         transfer(eps_stage32(1),0_int32)) return
     if (abs(eps_stage32(4)) > 0.0_real32) return
     if (abs(eps_stage32(5)) > 0.0_real32) return
-    if (.not. RECORD_MATCHES(ipseed,'IMERGE-LEAK',NMAT,1)) return
+    if (.not. RECORD_MATCHES(ipseed,'IMERGE-LEAK',nmat,1)) return
     call LCMGET(ipseed,'IMERGE-LEAK',imerge_stage)
     if (any(imerge_stage /= 1)) return
 
     if (.not. RECORD_MATCHES(ipmacr,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipmacr,'STATE-VECTOR',macro_state)
-    if (macro_state(1) /= NGRP .or. macro_state(2) /= NMAT) return
+    if (macro_state(1) /= NGRP .or. macro_state(2) /= nmat) return
     if (macro_state(3) /= MACRO_STORED_COMPONENTS .or. &
         macro_state(4) /= NIFIS) return
     if (macro_state(6) /= 2 .or. macro_state(13) /= 0) return
@@ -273,7 +306,7 @@ contains
     if (.not. RECORD_MATCHES(ipsys,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipsys,'STATE-VECTOR',system_state)
     if (any(system_state(1:14) /= &
-        [1,1,1,0,1,1,4,NGRP,NUNKNO,NMAT,1,0,0,0])) return
+        [1,1,1,0,1,1,4,NGRP,nunkno,nmat,1,0,0,0])) return
     if (.not. RECORD_MATCHES(ipsys,'SPOT-LEAK1D',NGRP,2)) return
     call LCMGET(ipsys,'SPOT-LEAK1D',leak1d_input32)
     if (.not. all(ieee_is_finite(leak1d_input32))) return
@@ -286,12 +319,6 @@ contains
         'MCCG')) return
     if (.not. CHARACTER_RECORD_MATCHES(iptrk,'LINK.FTRACK',3,12, &
         'TRACK_f')) return
-    if (.not. RECORD_MATCHES(iptrk,'STATE-VECTOR',NSTATE,1)) return
-    call LCMGET(iptrk,'STATE-VECTOR',track_state)
-    if (track_state(1) /= NREG .or. track_state(2) /= NUNKNO) return
-    if (track_state(3) /= 1 .or. track_state(4) /= NMAT) return
-    if (track_state(5) /= NSOUT .or. &
-        track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
     if (track_state(9) /= 0 .or. track_state(14) /= 4) return
     if (track_state(16) /= 2 .or. track_state(22) /= 1) return
     if (track_state(27) /= 0 .or. track_state(39) /= 0) return
@@ -312,47 +339,47 @@ contains
     if (transfer(real_param32(1),0_int32) /= MCCG_EPSI_BITS) return
     if (any(abs(real_param32(2:4)) > 0.0_real32)) return
 
-    if (.not. RECORD_MATCHES(iptrk,'MATCOD',NREG,1)) return
+    if (.not. RECORD_MATCHES(iptrk,'MATCOD',nreg,1)) return
     call LCMGET(iptrk,'MATCOD',matcod)
-    if (.not. RECORD_MATCHES(iptrk,'VOLUME',NREG,2)) return
+    if (.not. RECORD_MATCHES(iptrk,'VOLUME',nreg,2)) return
     call LCMGET(iptrk,'VOLUME',vol32)
-    if (.not. RECORD_MATCHES(iptrk,'KEYFLX$ANIS',NREG,1)) return
+    if (.not. RECORD_MATCHES(iptrk,'KEYFLX$ANIS',nreg,1)) return
     call LCMGET(iptrk,'KEYFLX$ANIS',keyflx_base1)
     if (any(seed_keyflx /= keyflx_base1)) return
     if (.not. RECORD_MATCHES(iptrk,'KEYCUR$MCCG',NSOUT,1)) return
     call LCMGET(iptrk,'KEYCUR$MCCG',keycur)
-    if (.not. RECORD_MATCHES(iptrk,'NZON$MCCG',NUNKNO,1)) return
+    if (.not. RECORD_MATCHES(iptrk,'NZON$MCCG',nlong,1)) return
     call LCMGET(iptrk,'NZON$MCCG',nzon)
-    if (.not. RECORD_MATCHES(iptrk,'V$MCCG',NUNKNO,2)) return
+    if (.not. RECORD_MATCHES(iptrk,'V$MCCG',nlong,2)) return
     call LCMGET(iptrk,'V$MCCG',volume_track32)
     if (.not. RECORD_MATCHES(iptrk,'ALBEDO',NSOUT,2)) return
     call LCMGET(iptrk,'ALBEDO',albedo32)
 
-    if (any(matcod < 1) .or. any(matcod > NMAT)) return
-    if (any(nzon(1:NREG) /= matcod)) return
-    if (any(nzon(NREG+1:) < -NSOUT)) return
-    if (any(nzon(NREG+1:) > -1)) return
+    if (any(matcod < 1) .or. any(matcod > nmat)) return
+    if (any(nzon(1:nreg) /= matcod)) return
+    if (any(nzon(nreg+1:nlong) < -NSOUT)) return
+    if (any(nzon(nreg+1:nlong) > -1)) return
     if (.not. all(ieee_is_finite(vol32))) return
     if (.not. all(ieee_is_finite(volume_track32))) return
     if (any(vol32 <= 0.0_real32)) return
     if (any(volume_track32 <= 0.0_real32)) return
-    do ir = 1, NREG
+    do ir = 1, nreg
       volume_bits = transfer(vol32(ir),0_int32)
       track_volume_bits = transfer(volume_track32(ir),0_int32)
       if (volume_bits /= track_volume_bits) return
     end do
     if (.not. all(ieee_is_finite(albedo32))) return
-    matalb_surface = nzon(NREG+1:NUNKNO)
-    surfac32 = volume_track32(NREG+1:NUNKNO)
+    matalb_surface = nzon(nreg+1:nlong)
+    surfac32 = volume_track32(nreg+1:nlong)
 
     seen_unknown = .false.
-    do ir = 1, NREG
-      if (keyflx_base1(ir) < 1 .or. keyflx_base1(ir) > NUNKNO) return
+    do ir = 1, nreg
+      if (keyflx_base1(ir) < 1 .or. keyflx_base1(ir) > nunkno) return
       if (seen_unknown(keyflx_base1(ir))) return
       seen_unknown(keyflx_base1(ir)) = .true.
     end do
     do ir = 1, NSOUT
-      if (keycur(ir) < 1 .or. keycur(ir) > NUNKNO) return
+      if (keycur(ir) < 1 .or. keycur(ir) > nunkno) return
       if (seen_unknown(keycur(ir))) return
       seen_unknown(keycur(ir)) = .true.
     end do
@@ -362,7 +389,7 @@ contains
     if (.not. ABSENT_RECORD(ipsou,'NBS')) return
     if (.not. RECORD_MATCHES(ipsou,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipsou,'STATE-VECTOR',source_state)
-    if (source_state(1) /= NGRP .or. source_state(2) /= NUNKNO) return
+    if (source_state(1) /= NGRP .or. source_state(2) /= nunkno) return
     if (source_state(3) /= 1) return
     if (any(source_state(4:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(ipsou,'SPOT-FROZEN',1,1)) return
@@ -398,7 +425,7 @@ contains
       if (.not. c_associated(jpflux)) return
       do ig = 1, NGRP
         call LCMLEL(jpflux,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 2) return
+        if (ilong /= nunkno .or. itylcm /= 2) return
         call LCMGDL(jpflux,ig,flux_stage32)
         if (.not. all(ieee_is_finite(flux_stage32))) return
         initial_flux64(:,ig) = real(flux_stage32,real64)
@@ -413,7 +440,7 @@ contains
       if (.not. c_associated(kpsource)) return
       do ig = 1, NGRP
         call LCMLEL(kpsource,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 2) return
+        if (ilong /= nunkno .or. itylcm /= 2) return
         call LCMGDL(kpsource,ig,source_stage32)
         if (.not. all(ieee_is_finite(source_stage32))) return
         if (any(source_stage32 < 0.0_real32)) return
@@ -427,7 +454,7 @@ contains
       if (.not. c_associated(jpflux)) return
       do ig = 1, NGRP
         call LCMLEL(jpflux,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 4) return
+        if (ilong /= nunkno .or. itylcm /= 4) return
         call LCMGDL(jpflux,ig,initial_flux64(:,ig))
         if (.not. all(ieee_is_finite(initial_flux64(:,ig)))) return
       end do
@@ -439,7 +466,7 @@ contains
       if (.not. c_associated(jpsource)) return
       do ig = 1, NGRP
         call LCMLEL(jpsource,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 4) return
+        if (ilong /= nunkno .or. itylcm /= 4) return
         call LCMGDL(jpsource,ig,fixed_source64(:,ig))
         if (.not. all(ieee_is_finite(fixed_source64(:,ig)))) return
         if (any(fixed_source64(:,ig) < 0.0_real64)) return
@@ -447,7 +474,7 @@ contains
     end if
 
     xcsou1 = +0.0_real64
-    do ir = 1, NREG
+    do ir = 1, nreg
       xcsou1 = xcsou1 + fixed_source64(keyflx_base1(ir),1) * &
           real(vol32(ir),real64)
     end do
@@ -456,7 +483,7 @@ contains
     if (.not. RECORD_MATCHES(ipmacr,'GROUP',NGRP,10)) return
     jpmacr = LCMGID(ipmacr,'GROUP')
     if (.not. c_associated(jpmacr)) return
-    allocate(scat_off32(MAX_SCAT,NGRP),stat=allocation_status)
+    allocate(scat_off32(max_scat,NGRP),stat=allocation_status)
     if (allocation_status /= 0) return
     scat_off32 = +0.0_real32
     njj_off = 0
@@ -466,27 +493,27 @@ contains
     do ig = 1, NGRP
       kpmacr = LCMGIL(jpmacr,ig)
       if (.not. c_associated(kpmacr)) return
-      if (.not. RECORD_MATCHES(kpmacr,'NJJS01',NMAT,1)) return
-      if (.not. RECORD_MATCHES(kpmacr,'NJJS02',NMAT,1)) return
-      if (.not. RECORD_MATCHES(kpmacr,'NUSIGF',NMAT*NIFIS,2)) return
+      if (.not. RECORD_MATCHES(kpmacr,'NJJS01',nmat,1)) return
+      if (.not. RECORD_MATCHES(kpmacr,'NJJS02',nmat,1)) return
+      if (.not. RECORD_MATCHES(kpmacr,'NUSIGF',nmat*NIFIS,2)) return
       call LCMGET(kpmacr,'NUSIGF',nusigf_stage32)
       if (.not. all(ieee_is_finite(nusigf_stage32))) return
       if (any(abs(nusigf_stage32) > 0.0_real32)) return
-      if (.not. RECORD_MATCHES(kpmacr,'NJJS00',NMAT,1)) return
+      if (.not. RECORD_MATCHES(kpmacr,'NJJS00',nmat,1)) return
       call LCMGET(kpmacr,'NJJS00',njj_stage)
-      if (.not. RECORD_MATCHES(kpmacr,'IJJS00',NMAT,1)) return
+      if (.not. RECORD_MATCHES(kpmacr,'IJJS00',nmat,1)) return
       call LCMGET(kpmacr,'IJJS00',ijj_stage)
-      if (.not. RECORD_MATCHES(kpmacr,'IPOS00',NMAT,1)) return
+      if (.not. RECORD_MATCHES(kpmacr,'IPOS00',nmat,1)) return
       call LCMGET(kpmacr,'IPOS00',ipos_stage)
       call LCMLEN(kpmacr,'SCAT00',ilong,itylcm)
-      if (ilong < 0 .or. ilong > MAX_SCAT .or. itylcm /= 2) return
+      if (ilong < 0 .or. ilong > max_scat .or. itylcm /= 2) return
       if (ilong > 0) then
         allocate(scat_stage32(ilong),stat=allocation_status)
         if (allocation_status /= 0) return
         call LCMGET(kpmacr,'SCAT00',scat_stage32)
         if (.not. all(ieee_is_finite(scat_stage32))) return
       end if
-      do ibm = 1, NMAT
+      do ibm = 1, nmat
         if (njj_stage(ibm) < 0) return
         if (njj_stage(ibm) == 0) cycle
         if (ipos_stage(ibm) < 1) return
@@ -513,18 +540,18 @@ contains
     do ig = 1, NGRP
       kpsys = LCMGIL(jpsys,ig)
       if (.not. c_associated(kpsys)) return
-      if (.not. RECORD_MATCHES(kpsys,'DRAGON-TXSC',NMAT+1,2)) return
+      if (.not. RECORD_MATCHES(kpsys,'DRAGON-TXSC',nmat+1,2)) return
       call LCMGET(kpsys,'DRAGON-TXSC',xstrc32(:,ig))
       if (.not. all(ieee_is_finite(xstrc32(:,ig)))) return
-      if (.not. RECORD_MATCHES(kpsys,'DRAGON-S0XSC',NMAT+1,2)) return
+      if (.not. RECORD_MATCHES(kpsys,'DRAGON-S0XSC',nmat+1,2)) return
       call LCMGET(kpsys,'DRAGON-S0XSC',xsdia0_32(:,ig))
       if (.not. all(ieee_is_finite(xsdia0_32(:,ig)))) return
       if (have_leak1d64) then
         ! REAL64 leakage mode: the system must be UNREDUCED, i.e. the
         ! stored self-scattering must be bitwise the physical one.
-        if (.not. RECORD_MATCHES(kpsys,'SPOT-S0-PHYS',NMAT+1,2)) return
+        if (.not. RECORD_MATCHES(kpsys,'SPOT-S0-PHYS',nmat+1,2)) return
         call LCMGET(kpsys,'SPOT-S0-PHYS',s0phys_stage32)
-        do ibm = 1, NMAT
+        do ibm = 1, nmat
           if (transfer(xsdia0_32(ibm,ig),0_int32) /= &
               transfer(s0phys_stage32(ibm+1),0_int32)) return
         end do

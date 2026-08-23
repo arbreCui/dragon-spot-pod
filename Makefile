@@ -120,9 +120,11 @@ all :
 	spot-rank2-modal-aa2-map
 spot-fast :
 	sh validation/run_fast.sh
-.PHONY: spot-b2c-dimensions
+.PHONY: spot-b2c-dimensions spot-a89-dimensions
 spot-b2c-dimensions :
 	sh validation/iterative/run_b2c_runtime_dimensions.sh
+spot-a89-dimensions :
+	sh validation/iterative/run_a89_runtime_geometry.sh
 spot-rank-census :
 	sh validation/iterative/run_rank_census.sh
 spot-rank2-basis :

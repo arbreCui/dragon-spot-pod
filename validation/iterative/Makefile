@@ -26,12 +26,15 @@ TOOLS   := admit_candidate_radial close_r64_returned \
            check_convergence_gate check_one_map_xsm \
            prepare_r64_aa1_projected prepare_r64_next_projected
 
-.PHONY: all tools b2c-runtime-dimensions clean
+.PHONY: all tools b2c-runtime-dimensions a89-runtime-dimensions clean
 all: tools
 tools: $(TOOLS)
 
 b2c-runtime-dimensions:
 	sh run_b2c_runtime_dimensions.sh
+
+a89-runtime-dimensions:
+	sh run_a89_runtime_geometry.sh
 
 $(TOOLS): %: %.f90 $(DRAGON)/libDragon.a
 	$(FC) $(FFLAGS) $(INCLUDE) $< $(LIBS) -o $@

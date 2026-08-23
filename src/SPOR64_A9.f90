@@ -9,10 +9,6 @@ module SPOR64_A9
   private
 
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
-  integer, parameter :: NSOUT = 6
-  integer, parameter :: NUNKNO = 14
-  integer, parameter :: NMAT = 8
   integer, parameter :: NSLICE = 8
   integer, parameter :: MAXOUT = 500
   integer, parameter :: MAXINR = 740
@@ -55,32 +51,30 @@ contains
     type(c_ptr), intent(in) :: jpsys_group, iptrk
     integer, intent(in) :: iftrak, impx
     character(len=72), intent(in) :: title
-    integer, intent(in) :: keyflx_base1(NREG), matcod(NREG)
-    integer, intent(in) :: keycur(NSOUT), matalb_surface(NSOUT)
-    integer, intent(in) :: njj_off(NMAT,NGRP), ijj_off(NMAT,NGRP)
-    integer, intent(in) :: ipos_off(NMAT,NGRP), nscat_off(NGRP)
-    real(real32), intent(in) :: vol32(NREG)
-    real(real32), intent(in) :: xstrc32(0:NMAT,NGRP)
-    real(real32), intent(in) :: xsdia0_32(0:NMAT,NGRP)
-    real(real32), intent(in) :: albedo32(NSOUT), surfac32(NSOUT)
-    real(real32), intent(in) :: scat_off32(NMAT*NGRP,NGRP)
-    real(real64), intent(in) :: fixed_source64(NUNKNO,NGRP)
-    real(real64), intent(in) :: initial_flux64(NUNKNO,NGRP)
-    real(real64), intent(in) :: leak1d64(NGRP)
+    integer, intent(in) :: keyflx_base1(:), matcod(:)
+    integer, intent(in) :: keycur(:), matalb_surface(:)
+    integer, intent(in) :: njj_off(:,:), ijj_off(:,:)
+    integer, intent(in) :: ipos_off(:,:), nscat_off(:)
+    real(real32), intent(in) :: vol32(:)
+    real(real32), intent(in) :: xstrc32(0:,:), xsdia0_32(0:,:)
+    real(real32), intent(in) :: albedo32(:), surfac32(:)
+    real(real32), intent(in) :: scat_off32(:,:)
+    real(real64), intent(in) :: fixed_source64(:,:), initial_flux64(:,:)
+    real(real64), intent(in) :: leak1d64(:)
     real(real64), intent(in) :: epsinr64, epsunk64, epsout64
-    real(real64), intent(out) :: terminal_flux64(NUNKNO,NGRP)
-    real(real64), intent(out) :: terminal_source64(NUNKNO,NGRP)
+    real(real64), intent(out) :: terminal_flux64(:,:), terminal_source64(:,:)
     integer(int64), intent(out) :: cutoff_visit64
     logical, intent(out) :: accepted, ok
 
     integer :: akeep_index, allocation_status, ig, igdeb, igdeb_entry
     integer :: iinr_state
     integer :: ir, it, jt, jg, jnd, ibm, ind, p
+    integer :: nreg, nmat, nunkno, nsout
     integer :: npsys(NGRP)
     integer(int64) :: cutoff_delta64
     logical :: accel_ok, balance_ok, child_ok, inner_finished
     logical :: norm_ok, operator_ok
-    logical :: seen_unknown(NUNKNO)
+    logical, allocatable :: seen_unknown(:)
     real(real64) :: akeep64(NSLICE), einr64, einr_last64
     real(real64) :: eext64, eunk64, group_error64, zmu64
     real(real64), allocatable :: flux64(:,:,:)
@@ -91,6 +85,36 @@ contains
     cutoff_visit64 = 0_int64
     accepted = .false.
     ok = .false.
+
+    nreg = size(keyflx_base1)
+    nmat = size(njj_off,1)
+    nunkno = size(fixed_source64,1)
+    nsout = size(keycur)
+    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. nsout <= 0) return
+    if (nreg + nsout /= nunkno) return
+    if (size(fixed_source64,2) /= NGRP) return
+    if (size(initial_flux64,1) /= nunkno .or. &
+        size(initial_flux64,2) /= NGRP) return
+    if (size(terminal_flux64,1) /= nunkno .or. &
+        size(terminal_flux64,2) /= NGRP) return
+    if (size(terminal_source64,1) /= nunkno .or. &
+        size(terminal_source64,2) /= NGRP) return
+    if (size(matcod) /= nreg .or. size(vol32) /= nreg) return
+    if (size(keycur) /= nsout .or. size(matalb_surface) /= nsout) return
+    if (size(albedo32) /= nsout .or. size(surfac32) /= nsout) return
+    if (size(njj_off,2) /= NGRP .or. &
+        any(shape(ijj_off) /= [nmat,NGRP]) .or. &
+        any(shape(ipos_off) /= [nmat,NGRP])) return
+    if (size(nscat_off) /= NGRP) return
+    if (lbound(xstrc32,1) /= 0 .or. ubound(xstrc32,1) /= nmat .or. &
+        size(xstrc32,2) /= NGRP) return
+    if (lbound(xsdia0_32,1) /= 0 .or. ubound(xsdia0_32,1) /= nmat .or. &
+        size(xsdia0_32,2) /= NGRP) return
+    if (size(scat_off32,1) /= nmat*NGRP .or. &
+        size(scat_off32,2) /= NGRP) return
+    if (size(leak1d64) /= NGRP) return
+    allocate(seen_unknown(nunkno),stat=allocation_status)
+    if (allocation_status /= 0) return
 
     if (.not. c_associated(jpsys_group) .or. &
         .not. c_associated(iptrk)) return
@@ -111,18 +135,18 @@ contains
         any(surfac32 <= 0.0_real32)) return
 
     seen_unknown = .false.
-    do ir = 1, NREG
-      if (keyflx_base1(ir) < 1 .or. keyflx_base1(ir) > NUNKNO) return
+    do ir = 1, nreg
+      if (keyflx_base1(ir) < 1 .or. keyflx_base1(ir) > nunkno) return
       if (seen_unknown(keyflx_base1(ir))) return
       seen_unknown(keyflx_base1(ir)) = .true.
-      if (matcod(ir) < 1 .or. matcod(ir) > NMAT) return
+      if (matcod(ir) < 1 .or. matcod(ir) > nmat) return
     end do
-    do ir = 1, NSOUT
-      if (keycur(ir) < 1 .or. keycur(ir) > NUNKNO) return
+    do ir = 1, nsout
+      if (keycur(ir) < 1 .or. keycur(ir) > nunkno) return
       if (seen_unknown(keycur(ir))) return
       seen_unknown(keycur(ir)) = .true.
       if (matalb_surface(ir) > -1 .or. &
-          matalb_surface(ir) < -NSOUT) return
+          matalb_surface(ir) < -nsout) return
     end do
     if (.not. all(seen_unknown)) return
 
@@ -133,7 +157,7 @@ contains
     ! The owner storage is defined first.  Only the present outer flux is an
     ! ingress value; every other live slice is populated by the legacy copy
     ! order before it is used.
-    allocate(flux64(NUNKNO,NGRP,NSLICE),stat=allocation_status)
+    allocate(flux64(nunkno,NGRP,NSLICE),stat=allocation_status)
     if (allocation_status /= 0) return
     flux64 = +0.0_real64
     flux64(:,:,2) = initial_flux64
@@ -146,7 +170,7 @@ contains
       flux64(:,:,4) = fixed_source64
       xcsou64 = +0.0_real64
       do ig = 1, NGRP
-        do ir = 1, NREG
+        do ir = 1, nreg
           ind = keyflx_base1(ir)
           xcsou64(ig) = xcsou64(ig) + flux64(ind,ig,4) * &
               real(vol32(ir),real64)
@@ -178,7 +202,7 @@ contains
         ! and regions ascend; the packed source group descends exactly as in
         ! FLU2DR.  Self scattering is already represented inside MCCG.
         do ig = igdeb, NGRP
-          do ir = 1, NREG
+          do ir = 1, nreg
             ibm = matcod(ir)
             ind = keyflx_base1(ir)
             jg = ijj_off(ibm,ig)
@@ -199,7 +223,7 @@ contains
           npsys(ig) = ig
         end do
         cutoff_delta64 = 0_int64
-        call DOORFV64(jpsys_group,npsys,iptrk,iftrak,impx,NGRP,NUNKNO, &
+        call DOORFV64(jpsys_group,npsys,iptrk,iftrak,impx,NGRP,nunkno, &
             keyflx_base1,title,leak1d64,flux64(:,:,8),flux64(:,:,7), &
             cutoff_delta64,child_ok)
         if (cutoff_delta64 < 0_int64) return
@@ -215,7 +239,7 @@ contains
         if (.not. balance_ok) return
 
         if (mod(jt-1,NCTOT) >= NCPTM) then
-          call FLU2AC64(NGRP,NUNKNO,igdeb,flux64(:,:,5:7), &
+          call FLU2AC64(NGRP,nunkno,igdeb,flux64(:,:,5:7), &
               akeep64(5:7),zmu64,accel_ok)
           if (.not. accel_ok) return
         else
@@ -258,7 +282,7 @@ contains
       akeep64(3) = 1.0_real64
 
       if (mod(it-1,NCTOT) >= NCPTM) then
-        call FLU2AC64(NGRP,NUNKNO,1,flux64(:,:,1:3), &
+        call FLU2AC64(NGRP,nunkno,1,flux64(:,:,1:3), &
             akeep64(1:3),zmu64,accel_ok)
         if (.not. accel_ok) return
       else
@@ -304,27 +328,46 @@ contains
   subroutine FLUBAL64(matcod,vol32,keyflx_base1,xstrc32,xsdia0_32, &
       leak1d64,xcsou64,igdeb,keycur,matalb_surface,albedo32,surfac32, &
       njj_off,ijj_off,ipos_off,nscat_off,scat_off32,flux64,ok)
-    integer, intent(in) :: matcod(NREG), keyflx_base1(NREG), igdeb
-    integer, intent(in) :: keycur(NSOUT), matalb_surface(NSOUT)
-    integer, intent(in) :: njj_off(NMAT,NGRP), ijj_off(NMAT,NGRP)
-    integer, intent(in) :: ipos_off(NMAT,NGRP), nscat_off(NGRP)
-    real(real32), intent(in) :: vol32(NREG)
-    real(real32), intent(in) :: xstrc32(0:NMAT,NGRP)
-    real(real32), intent(in) :: xsdia0_32(0:NMAT,NGRP)
-    real(real64), intent(in) :: leak1d64(NGRP)
-    real(real32), intent(in) :: albedo32(NSOUT), surfac32(NSOUT)
-    real(real32), intent(in) :: scat_off32(NMAT*NGRP,NGRP)
-    real(real64), intent(in) :: xcsou64(NGRP)
+    integer, intent(in) :: matcod(:), keyflx_base1(:), igdeb
+    integer, intent(in) :: keycur(:), matalb_surface(:)
+    integer, intent(in) :: njj_off(:,:), ijj_off(:,:)
+    integer, intent(in) :: ipos_off(:,:), nscat_off(:)
+    real(real32), intent(in) :: vol32(:)
+    real(real32), intent(in) :: xstrc32(0:,:), xsdia0_32(0:,:)
+    real(real64), intent(in) :: leak1d64(:)
+    real(real32), intent(in) :: albedo32(:), surfac32(:)
+    real(real32), intent(in) :: scat_off32(:,:)
+    real(real64), intent(in) :: xcsou64(:)
     real(real64), contiguous, intent(inout) :: flux64(:,:)
     logical, intent(out) :: ok
 
     integer :: ier, ifscat, igr, ioff, ir, isur, jgr, ngreb
-    integer :: ibm, ind, p
+    integer :: ibm, ind, p, nreg, nmat, nunkno, nsout
     real(real64), allocatable :: rebal64(:,:)
 
     ok = .false.
+    nreg = size(matcod)
+    nmat = size(njj_off,1)
+    nunkno = size(flux64,1)
+    nsout = size(keycur)
+    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. nsout <= 0) return
+    if (nreg + nsout /= nunkno) return
     if (igdeb < 1 .or. igdeb > NGRP) return
-    if (size(flux64,1) /= NUNKNO .or. size(flux64,2) /= NGRP) return
+    if (size(flux64,2) /= NGRP) return
+    if (size(keyflx_base1) /= nreg .or. size(vol32) /= nreg) return
+    if (size(matalb_surface) /= nsout .or. size(albedo32) /= nsout .or. &
+        size(surfac32) /= nsout) return
+    if (size(njj_off,2) /= NGRP .or. &
+        any(shape(ijj_off) /= [nmat,NGRP]) .or. &
+        any(shape(ipos_off) /= [nmat,NGRP])) return
+    if (size(nscat_off) /= NGRP .or. size(leak1d64) /= NGRP .or. &
+        size(xcsou64) /= NGRP) return
+    if (lbound(xstrc32,1) /= 0 .or. ubound(xstrc32,1) /= nmat .or. &
+        size(xstrc32,2) /= NGRP) return
+    if (lbound(xsdia0_32,1) /= 0 .or. ubound(xsdia0_32,1) /= nmat .or. &
+        size(xsdia0_32,2) /= NGRP) return
+    if (size(scat_off32,1) /= nmat*NGRP .or. &
+        size(scat_off32,2) /= NGRP) return
     if (.not. all(ieee_is_finite(xcsou64))) return
     if (.not. all(ieee_is_finite(flux64))) return
     if (.not. all(ieee_is_finite(vol32))) return
@@ -341,20 +384,20 @@ contains
       ioff = igr - igdeb + 1
       rebal64(ioff,ngreb+1) = xcsou64(igr)
 
-      do isur = 1, NSOUT
+      do isur = 1, nsout
         if (-matalb_surface(isur) < 1 .or. &
-            -matalb_surface(isur) > NSOUT) return
-        if (keycur(isur) < 1 .or. keycur(isur) > NUNKNO) return
+            -matalb_surface(isur) > nsout) return
+        if (keycur(isur) < 1 .or. keycur(isur) > nunkno) return
         rebal64(ioff,ioff) = rebal64(ioff,ioff) + &
             (1.0_real64-real(albedo32(-matalb_surface(isur)),real64)) * &
             flux64(keycur(isur),igr) * real(surfac32(isur),real64)
       end do
 
-      do ir = 1, NREG
+      do ir = 1, nreg
         ibm = matcod(ir)
-        if (ibm < 1 .or. ibm > NMAT) return
+        if (ibm < 1 .or. ibm > nmat) return
         ind = keyflx_base1(ir)
-        if (ind < 1 .or. ind > NUNKNO) return
+        if (ind < 1 .or. ind > nunkno) return
         ifscat = ijj_off(ibm,igr) - njj_off(ibm,igr) + 1
 
         ! Already-converged groups contribute to the right-hand side.
@@ -395,7 +438,7 @@ contains
 
     do igr = igdeb, NGRP
       ioff = igr - igdeb + 1
-      do ind = 1, NUNKNO
+      do ind = 1, nunkno
         flux64(ind,igr) = flux64(ind,igr) * &
             rebal64(ioff,ngreb+1)
       end do
@@ -479,7 +522,7 @@ contains
     real(real64), contiguous, intent(in) :: state64(:,:,:)
     logical, intent(out) :: ok
 
-    ok = size(state64,1) == NUNKNO .and. size(state64,2) == NGRP .and. &
+    ok = size(state64,1) > 0 .and. size(state64,2) == NGRP .and. &
         size(state64,3) == NSLICE
     if (ok) ok = all(ieee_is_finite(state64))
   end subroutine SPOR64_A9_STATE_PROBE
@@ -501,20 +544,23 @@ contains
 
   subroutine SCALAR_GROUP_NORM64(present64,new64,keyflx_base1, &
       group_error64,ok)
-    real(real64), intent(in) :: present64(NUNKNO), new64(NUNKNO)
-    integer, intent(in) :: keyflx_base1(NREG)
+    real(real64), intent(in) :: present64(:), new64(:)
+    integer, intent(in) :: keyflx_base1(:)
     real(real64), intent(out) :: group_error64
     logical, intent(out) :: ok
 
-    integer :: ind, ir
+    integer :: ind, ir, nreg, nunkno
     real(real64) :: difference64, denominator64
 
     group_error64 = +0.0_real64
     denominator64 = +0.0_real64
     ok = .false.
-    do ir = 1, NREG
+    nreg = size(keyflx_base1)
+    nunkno = size(present64)
+    if (nreg <= 0 .or. nunkno <= 0 .or. size(new64) /= nunkno) return
+    do ir = 1, nreg
       ind = keyflx_base1(ir)
-      if (ind < 1 .or. ind > NUNKNO) return
+      if (ind < 1 .or. ind > nunkno) return
       difference64 = abs(present64(ind)-new64(ind))
       group_error64 = max(group_error64,difference64)
       denominator64 = max(denominator64,abs(new64(ind)))
@@ -529,21 +575,28 @@ contains
 
   subroutine VALIDATE_OFFGROUP32(njj_off,ijj_off,ipos_off,nscat_off, &
       scat_off32,ok)
-    integer, intent(in) :: njj_off(NMAT,NGRP), ijj_off(NMAT,NGRP)
-    integer, intent(in) :: ipos_off(NMAT,NGRP), nscat_off(NGRP)
-    real(real32), intent(in) :: scat_off32(NMAT*NGRP,NGRP)
+    integer, intent(in) :: njj_off(:,:), ijj_off(:,:)
+    integer, intent(in) :: ipos_off(:,:), nscat_off(:)
+    real(real32), intent(in) :: scat_off32(:,:)
     logical, intent(out) :: ok
 
-    integer :: ibm, ifscat, ig, last_position
+    integer :: ibm, ifscat, ig, last_position, nmat
 
     ok = .false.
+    nmat = size(njj_off,1)
+    if (nmat <= 0 .or. size(njj_off,2) /= NGRP) return
+    if (any(shape(ijj_off) /= [nmat,NGRP]) .or. &
+        any(shape(ipos_off) /= [nmat,NGRP])) return
+    if (size(nscat_off) /= NGRP) return
+    if (size(scat_off32,1) /= nmat*NGRP .or. &
+        size(scat_off32,2) /= NGRP) return
     do ig = 1, NGRP
-      if (nscat_off(ig) < 0 .or. nscat_off(ig) > NMAT*NGRP) return
+      if (nscat_off(ig) < 0 .or. nscat_off(ig) > nmat*NGRP) return
       if (nscat_off(ig) > 0) then
         if (.not. all(ieee_is_finite( &
             scat_off32(1:nscat_off(ig),ig)))) return
       end if
-      do ibm = 1, NMAT
+      do ibm = 1, nmat
         if (njj_off(ibm,ig) < 0) return
         if (njj_off(ibm,ig) == 0) cycle
         if (ipos_off(ibm,ig) < 1) return
