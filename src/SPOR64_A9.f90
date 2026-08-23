@@ -14,6 +14,7 @@ module SPOR64_A9
   integer, parameter :: MAXINR = 740
   integer, parameter :: NCTOT = 6
   integer, parameter :: NCPTM = 3
+  integer, parameter :: NALBEDO = 6
   integer, parameter :: IINR_STRICT = 1
   integer, parameter :: IINR_NEAR = 2
   integer, parameter :: IINR_CAP = 3
@@ -101,7 +102,7 @@ contains
         size(terminal_source64,2) /= NGRP) return
     if (size(matcod) /= nreg .or. size(vol32) /= nreg) return
     if (size(keycur) /= nsout .or. size(matalb_surface) /= nsout) return
-    if (size(albedo32) /= nsout .or. size(surfac32) /= nsout) return
+    if (size(albedo32) /= NALBEDO .or. size(surfac32) /= nsout) return
     if (size(njj_off,2) /= NGRP .or. &
         any(shape(ijj_off) /= [nmat,NGRP]) .or. &
         any(shape(ipos_off) /= [nmat,NGRP])) return
@@ -146,7 +147,7 @@ contains
       if (seen_unknown(keycur(ir))) return
       seen_unknown(keycur(ir)) = .true.
       if (matalb_surface(ir) > -1 .or. &
-          matalb_surface(ir) < -nsout) return
+          matalb_surface(ir) < -NALBEDO) return
     end do
     if (.not. all(seen_unknown)) return
 
@@ -355,8 +356,8 @@ contains
     if (igdeb < 1 .or. igdeb > NGRP) return
     if (size(flux64,2) /= NGRP) return
     if (size(keyflx_base1) /= nreg .or. size(vol32) /= nreg) return
-    if (size(matalb_surface) /= nsout .or. size(albedo32) /= nsout .or. &
-        size(surfac32) /= nsout) return
+    if (size(matalb_surface) /= nsout .or. &
+        size(albedo32) /= NALBEDO .or. size(surfac32) /= nsout) return
     if (size(njj_off,2) /= NGRP .or. &
         any(shape(ijj_off) /= [nmat,NGRP]) .or. &
         any(shape(ipos_off) /= [nmat,NGRP])) return
@@ -386,7 +387,7 @@ contains
 
       do isur = 1, nsout
         if (-matalb_surface(isur) < 1 .or. &
-            -matalb_surface(isur) > nsout) return
+            -matalb_surface(isur) > NALBEDO) return
         if (keycur(isur) < 1 .or. keycur(isur) > nunkno) return
         rebal64(ioff,ioff) = rebal64(ioff,ioff) + &
             (1.0_real64-real(albedo32(-matalb_surface(isur)),real64)) * &

@@ -15,7 +15,6 @@ module SPOR64_B2H
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NSOUT = 6
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -67,7 +66,7 @@ contains
     integer, allocatable :: keyflx(:), seed_keyflx(:), imerge(:)
     integer :: seed_epoch, output_epoch
     integer :: ig, ir, ilong, itylcm, allocation_status
-    integer :: nreg, nmat, nunkno
+    integer :: nreg, nmat, nsurf, nunkno
     logical, allocatable :: seen_unknown(:)
     real(real32) :: eps_converge(5), leak1d(NGRP)
     real(real64) :: leak1d64(NGRP)
@@ -93,8 +92,7 @@ contains
     if (.not. EMPTY_MEMORY_ROOT(ipout)) return
 
     ! TRACK is the sole authority for every radial geometry extent used by
-    ! this projection.  The present method remains the supported isotropic,
-    ! six-surface MCCG route; only its region/material counts are runtime.
+    ! this projection, including its numerical surface-current unknowns.
     if (.not. CHARACTER_RECORD_MATCHES(iptrack,'SIGNATURE',3,12, &
         'L_TRACK')) return
     if (.not. RECORD_MATCHES(iptrack,'STATE-VECTOR',NSTATE,1)) return
@@ -102,14 +100,16 @@ contains
     nreg = track_state(1)
     nunkno = track_state(2)
     nmat = track_state(4)
-    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
-    if (track_state(3) /= 1 .or. track_state(5) /= NSOUT) return
+    nsurf = track_state(5)
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0 .or. nsurf <= 0) &
+        return
+    if (track_state(3) /= 1) return
     if (track_state(6) /= 1) return
     if (int(nunkno,int64) /= &
-        int(nreg,int64)+int(NSOUT,int64)) return
+        int(nreg,int64)+int(nsurf,int64)) return
     if (.not. RECORD_MATCHES(iptrack,'V$MCCG',nunkno,2)) return
     if (.not. RECORD_MATCHES(iptrack,'NZON$MCCG',nunkno,1)) return
-    if (.not. RECORD_MATCHES(iptrack,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(iptrack,'KEYCUR$MCCG',nsurf,1)) return
     if (.not. RECORD_MATCHES(iptrack,'KEYFLX$ANIS',nreg,1)) return
 
     if (size(projected_region64,1) /= nreg) return

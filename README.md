@@ -126,19 +126,26 @@ or added model term was used.  See
 ## Second-case preparation
 
 The independent second case is the 132-region IRENA D4-A 1/12 assembly.
-No D4-A transport has been run.  The no-transport implementation now carries
-TRACK-authoritative runtime region, material and unknown counts through
+One bounded geometry-only TRACK build established the actual radial tuple
+`(NREG,NMAT,NSURF,NUNKNO,NCODE)=(132,6,12,144,6)`.  Here `NSURF=12` is the
+number of numerical surface-current unknowns, while `NCODE=6` remains the
+number of physical boundary/albedo code slots.  No D4-A transport has been
+run.  The no-transport implementation now carries these TRACK-authoritative
+runtime region, material, surface and unknown counts through
 `SPOR64_B2B -> SPOR64_A9 -> SPOR64_A8`, the `SPOR64_B2C` publication
 boundary, the assembled-to-close `B2K/B2N/B2S/B2R/B2W` lifecycle, and the
 next-epoch `B2H/B2I/B2J` projection lifecycle.
 `MXSEG` and the ACA connection count `LC` are also taken from TRACK rather
 than the pin case; `LC` now sizes `MCU/CF/CQ` and is not confused with the
 32-isotope fission dimension.  The pin replay remains byte-identical, while
-the manufactured structural shape `(132,6,138)` passes the seconds-scale
-publication, solver-interface and B2H projection gates.  A full lifecycle
-using the actual D4-A TRACK records and an independent D4-A reference still
-remain before a physical D4-A run is admissible.  See
-[the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md).
+the actual D4-A tuple `(132,6,12,144)` passes the seconds-scale structural
+publication, solver-interface and projection gates.  These tests manufacture
+payload values with the real extents; they do not manufacture a transport
+result.  The next required physical input is one current, hash-locked set of
+three D4-A snapshots.  An independent D4-A reference and the unchanged gate
+must then be frozen before any convergence claim.  See
+[the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md)
+and [the geometry-only TRACK result](validation/iterative/d4a_track_geometry_probe_result.md).
 
 ## Earlier rank-2 development history
 

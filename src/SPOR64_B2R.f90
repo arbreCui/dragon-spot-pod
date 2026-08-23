@@ -20,7 +20,6 @@ module SPOR64_B2R
   integer, parameter :: NSNAP = 3
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NSOUT = 6
   integer, parameter :: LIBRARY_NL = 3
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -36,7 +35,7 @@ contains
     integer, intent(out) :: status
 
     integer :: ip, jp, slot, plane, root_planes, root_epoch
-    integer :: nreg, nmat, nunkno
+    integer :: nreg, nmat, nunkno, nsurf
     integer :: allocation_status
     integer :: solved_slot(NSNAP), source_slot(NSNAP)
     integer :: solved_plane(NSNAP), source_plane(NSNAP)
@@ -149,14 +148,14 @@ contains
     end do
 
     if (.not. TRACK_GEOMETRY_IS_VALID(input_track(1),nreg,nunkno, &
-        nmat)) return
+        nmat,nsurf)) return
     allocate(track_key(nreg,NSNAP),solved_key(nreg,NSNAP), &
         stat=allocation_status)
     if (allocation_status /= 0) return
 
     ! Every plane must independently close the same TRACK geometry tuple.
     do ip = 1, NSNAP
-      if (.not. TRACK_IS_VALID(input_track(ip),nreg,nunkno,nmat, &
+      if (.not. TRACK_IS_VALID(input_track(ip),nreg,nunkno,nmat,nsurf, &
           track_key(:,ip))) return
       if (.not. LIBRARY_IS_VALID(input_library(ip),nmat)) return
       if (.not. SYSTEM_IS_VALID(input_system(ip),ip,root_rho64, &
@@ -277,9 +276,9 @@ contains
   end subroutine SPOR64_B2R_COLLECT
 
 
-  logical function TRACK_GEOMETRY_IS_VALID(track,nreg,nunkno,nmat)
+  logical function TRACK_GEOMETRY_IS_VALID(track,nreg,nunkno,nmat,nsurf)
     type(c_ptr), intent(in) :: track
-    integer, intent(out) :: nreg, nunkno, nmat
+    integer, intent(out) :: nreg, nunkno, nmat, nsurf
 
     integer :: state(NSTATE)
 
@@ -287,6 +286,7 @@ contains
     nreg = 0
     nunkno = 0
     nmat = 0
+    nsurf = 0
     if (.not. CHARACTER_RECORD_MATCHES(track,'SIGNATURE',3,12, &
         'L_TRACK')) return
     if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
@@ -294,26 +294,26 @@ contains
     nreg = state(1)
     nunkno = state(2)
     nmat = state(4)
-    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
-    if (state(5) /= NSOUT) return
-    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
+    nsurf = state(5)
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0 .or. nsurf <= 0) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
 
     ! Stored tracking payloads independently close each state-vector extent.
     if (.not. RECORD_MATCHES(track,'V$MCCG',nunkno,2)) return
     if (.not. RECORD_MATCHES(track,'NZON$MCCG',nunkno,1)) return
-    if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',nsurf,1)) return
     if (.not. RECORD_MATCHES(track,'KEYFLX',nreg,1)) return
     if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',nreg,1)) return
     TRACK_GEOMETRY_IS_VALID = .true.
   end function TRACK_GEOMETRY_IS_VALID
 
 
-  logical function TRACK_IS_VALID(track,nreg,nunkno,nmat,keyanis)
+  logical function TRACK_IS_VALID(track,nreg,nunkno,nmat,nsurf,keyanis)
     type(c_ptr), intent(in) :: track
-    integer, intent(in) :: nreg, nunkno, nmat
+    integer, intent(in) :: nreg, nunkno, nmat, nsurf
     integer, intent(out) :: keyanis(:)
 
-    integer :: ir, found_nreg, found_nunkno, found_nmat
+    integer :: ir, found_nreg, found_nunkno, found_nmat, found_nsurf
     integer :: allocation_status
     integer, allocatable :: keyflx(:), keycur(:)
     logical, allocatable :: seen(:)
@@ -321,10 +321,10 @@ contains
     TRACK_IS_VALID = .false.
     if (size(keyanis) /= nreg) return
     if (.not. TRACK_GEOMETRY_IS_VALID(track,found_nreg,found_nunkno, &
-        found_nmat)) return
+        found_nmat,found_nsurf)) return
     if (found_nreg /= nreg .or. found_nunkno /= nunkno .or. &
-        found_nmat /= nmat) return
-    allocate(keyflx(nreg),keycur(NSOUT),seen(nunkno), &
+        found_nmat /= nmat .or. found_nsurf /= nsurf) return
+    allocate(keyflx(nreg),keycur(nsurf),seen(nunkno), &
         stat=allocation_status)
     if (allocation_status /= 0) return
     call LCMGET(track,'KEYFLX',keyflx)
@@ -337,7 +337,7 @@ contains
       if (seen(keyanis(ir))) return
       seen(keyanis(ir)) = .true.
     end do
-    do ir = 1, NSOUT
+    do ir = 1, nsurf
       if (keycur(ir) < 1 .or. keycur(ir) > nunkno) return
       if (seen(keycur(ir))) return
       seen(keycur(ir)) = .true.

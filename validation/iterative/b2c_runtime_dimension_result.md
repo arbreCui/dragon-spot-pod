@@ -24,11 +24,12 @@ The short host test publishes two independent memory objects:
 | case | regions | materials | unknowns | groups |
 |---|---:|---:|---:|---:|
 | existing pin BOOT boundary | 8 | 8 | 14 | 370 |
-| D4-A-sized CONT structural boundary | 132 | 6 | 138 | 370 |
+| D4-A CONT structural boundary | 132 | 6 | 144 | 370 |
 
-The manufactured 138 unknowns are not a D4-A transport result.  They only
-ensure that the implementation does not silently equate the region and
-unknown dimensions.
+The 144-unknown extent is the real D4-A TRACK value: 132 region unknowns plus
+12 surface-current unknowns.  The array values are manufactured and are not a
+D4-A transport result.  They only ensure that the implementation does not
+silently equate the region and unknown dimensions.
 
 For every group and unknown the test requires:
 
@@ -49,7 +50,7 @@ Command and result:
 
 ```text
 $ make spot-b2c-dimensions
-B2C RUNTIME-DIMENSION PASS: pin-8 bits and manufactured-132 publication only.
+B2C RUNTIME-DIMENSION PASS: pin and D4-A 144-unknown structural publication only.
 ```
 
 The same test is part of `make spot-fast`, which passes without starting a

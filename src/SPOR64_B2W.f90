@@ -20,7 +20,6 @@ module SPOR64_B2W
   integer, parameter :: NSTATE = 40
   integer, parameter :: NSNAP = 3
   integer, parameter :: NGRP = 370
-  integer, parameter :: NSOUT = 6
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -35,8 +34,8 @@ contains
     integer, intent(out) :: status
 
     integer :: ip, ig, archive_planes, root_planes, root_epoch
-    integer :: nreg, nunkno, nmat
-    integer :: found_nreg, found_nunkno, found_nmat
+    integer :: nreg, nunkno, nmat, nsurf
+    integer :: found_nreg, found_nunkno, found_nmat, found_nsurf
     integer :: child_epoch(NSNAP), fs_marker(NSNAP)
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
@@ -102,12 +101,12 @@ contains
     end do
 
     if (.not. TRACK_GEOMETRY_IS_VALID(input_track(1),nreg,nunkno, &
-        nmat)) return
+        nmat,nsurf)) return
     do ip = 1, NSNAP
       if (.not. TRACK_GEOMETRY_IS_VALID(input_track(ip),found_nreg, &
-          found_nunkno,found_nmat)) return
+          found_nunkno,found_nmat,found_nsurf)) return
       if (found_nreg /= nreg .or. found_nunkno /= nunkno .or. &
-          found_nmat /= nmat) return
+          found_nmat /= nmat .or. found_nsurf /= nsurf) return
     end do
 
     do ip = 1, NSNAP
@@ -116,7 +115,7 @@ contains
           child_leakage32(:,ip),child_leakage64(:,ip))) return
       if (child_epoch(ip) /= root_epoch) return
       if (.not. RETURNED_SYSTEM_IS_VALID(input_system(ip),ip,nreg, &
-          nunkno,nmat,child_rho64(ip),child_epoch(ip), &
+          nunkno,nmat,nsurf,child_rho64(ip),child_epoch(ip), &
           system_leakage32(:,ip))) return
 
       ! ASM consumes child L0.  Bind it element by element to the L0 retained
@@ -146,8 +145,8 @@ contains
     integer, intent(out) :: status
 
     integer :: ip, ig, archive_planes, root_planes, root_epoch
-    integer :: nreg, nunkno, nmat
-    integer :: found_nreg, found_nunkno, found_nmat
+    integer :: nreg, nunkno, nmat, nsurf
+    integer :: found_nreg, found_nunkno, found_nmat, found_nsurf
     integer :: child_epoch(NSNAP), fs_marker(NSNAP)
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
@@ -243,12 +242,12 @@ contains
     ! The returned TRACK set is the sole radial geometry authority.  Close
     ! its common tuple before interpreting geometry-sized axial payloads.
     if (.not. TRACK_GEOMETRY_IS_VALID(input_track(1),nreg,nunkno, &
-        nmat)) return
+        nmat,nsurf)) return
     do ip = 1, NSNAP
       if (.not. TRACK_GEOMETRY_IS_VALID(input_track(ip),found_nreg, &
-          found_nunkno,found_nmat)) return
+          found_nunkno,found_nmat,found_nsurf)) return
       if (found_nreg /= nreg .or. found_nunkno /= nunkno .or. &
-          found_nmat /= nmat) return
+          found_nmat /= nmat .or. found_nsurf /= nsurf) return
     end do
 
     ! Recover the complete canonical axial bundle using the admitted radial
@@ -270,7 +269,7 @@ contains
           allow_fresh_leakage=.true.)) return
       if (child_epoch(ip) /= root_epoch) return
       if (.not. RETURNED_SYSTEM_IS_VALID(input_system(ip),ip,nreg, &
-          nunkno,nmat,child_rho64(ip),child_epoch(ip), &
+          nunkno,nmat,nsurf,child_rho64(ip),child_epoch(ip), &
           system_leakage32(:,ip))) return
       ! LEAK1D64 is the immutable radial-equation L0 authority.  SPOLEAK has
       ! replaced the child REAL32 record by fresh L1, so at close L0 binds to
@@ -387,9 +386,9 @@ contains
   end subroutine SPOR64_B2W_CLOSE
 
 
-  logical function TRACK_GEOMETRY_IS_VALID(track,nreg,nunkno,nmat)
+  logical function TRACK_GEOMETRY_IS_VALID(track,nreg,nunkno,nmat,nsurf)
     type(c_ptr), intent(in) :: track
-    integer, intent(out) :: nreg, nunkno, nmat
+    integer, intent(out) :: nreg, nunkno, nmat, nsurf
 
     integer :: state(NSTATE)
 
@@ -397,6 +396,7 @@ contains
     nreg = 0
     nunkno = 0
     nmat = 0
+    nsurf = 0
     if (.not. CHARACTER_RECORD_MATCHES(track,'SIGNATURE',3,12, &
         'L_TRACK')) return
     if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
@@ -404,14 +404,14 @@ contains
     nreg = state(1)
     nunkno = state(2)
     nmat = state(4)
-    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
-    if (state(5) /= NSOUT) return
-    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
+    nsurf = state(5)
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0 .or. nsurf <= 0) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
 
     ! Stored tracking payloads independently close each state-vector extent.
     if (.not. RECORD_MATCHES(track,'V$MCCG',nunkno,2)) return
     if (.not. RECORD_MATCHES(track,'NZON$MCCG',nunkno,1)) return
-    if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',nsurf,1)) return
     if (.not. RECORD_MATCHES(track,'KEYFLX',nreg,1)) return
     if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',nreg,1)) return
     TRACK_GEOMETRY_IS_VALID = .true.
@@ -543,9 +543,9 @@ contains
 
 
   logical function RETURNED_SYSTEM_IS_VALID(system,plane,nreg,nunkno, &
-      nmat,rho64,epoch,leakage32)
+      nmat,nsurf,rho64,epoch,leakage32)
     type(c_ptr), intent(in) :: system
-    integer, intent(in) :: plane, nreg, nunkno, nmat, epoch
+    integer, intent(in) :: plane, nreg, nunkno, nmat, nsurf, epoch
     real(real64), intent(in) :: rho64
     real(real32), intent(out) :: leakage32(NGRP)
 
@@ -556,7 +556,8 @@ contains
 
     RETURNED_SYSTEM_IS_VALID = .false.
     leakage32 = +0.0_real32
-    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
+    if (nsurf <= 0) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
     if (.not. RETURNED_SYSTEM_ROOT_IS_EXACT(system)) return
     if (.not. CHARACTER_RECORD_MATCHES(system,'SIGNATURE',3,12, &
         'L_PIJ')) return

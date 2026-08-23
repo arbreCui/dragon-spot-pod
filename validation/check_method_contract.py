@@ -165,6 +165,7 @@ for relative in formal_inputs:
 
 runtime_geometry_sources = (
     "src/SPOR64_A8.f90",
+    "src/SPOR64_A9.f90",
     "src/SPOR64_B2B.f90",
     "src/SPOR64_B2H.f90",
     "src/SPOR64_B2I.f90",
@@ -181,6 +182,7 @@ for relative in runtime_geometry_sources:
         (r"\bNREG\s*=\s*8\b", "fixed pin region count"),
         (r"\bNMAT\s*=\s*8\b", "fixed pin material count"),
         (r"\bNUNKNO\s*=\s*14\b", "fixed pin unknown count"),
+        (r"\bNSOUT\s*=\s*6\b", "fixed numerical surface count"),
         (r"mccg_state\(5\)\s*/=\s*17\b", "fixed pin MXSEG"),
         (r"mccg_state\(6\)\s*/=\s*32\b", "fixed pin ACA LC"),
         (r"\[NIFIS\s*,\s*nunkno\s*,\s*NIFIS", "NIFIS used as ACA LC"),

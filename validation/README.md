@@ -38,16 +38,19 @@ relaxation or empirical parameter.  The frozen receipt and the comparison
 to the existing OpenMC reference are summarized in
 [the clean-replay result](iterative/rank2_strict_leak64_clean_replay_result.md).
 
-The second physical case is frozen as the IRENA D4-A 1/12 assembly.  No
-transport has been run.  The seconds-scale slices cover `SPOR64_B2C`, the
+The second physical case is frozen as the IRENA D4-A 1/12 assembly.  A
+bounded geometry-only TRACK build independently verifies
+`(NREG,NMAT,NSURF,NUNKNO,NCODE)=(132,6,12,144,6)` and the existing production
+MCCG tolerance bits; no transport has been run.  The seconds-scale slices
+cover `SPOR64_B2C`, the
 `SPOR64_B2B -> A9 -> A8` REAL64 radial boundary, and runtime geometry through
 `B2K/B2N/B2S/B2R/B2W` and `B2H/B2I/B2J`.  The fast gate strictly compiles
 the latter three and runs a manufactured 132-region B2H projection; separate
 frozen pin-cell lifecycle replays remain byte-identical.  None of these is a
-physical D4-A result.  A full lifecycle built from the actual D4-A TRACK
-records and an independent D4-A reference still remain before transport is
-authorized.  See
-[the D4-A case contract](iterative/second_case_d4a_contract.md).
+physical D4-A result.  The next required input is a current hash-locked set of
+three physical D4-A snapshots, followed by an independent reference.  See
+[the D4-A case contract](iterative/second_case_d4a_contract.md) and
+[the TRACK result](iterative/d4a_track_geometry_probe_result.md).
 
 The generic continuation host is default-off. Enabling it evaluates one
 unchanged direct map from the hash-locked parent and requires a new result

@@ -1,0 +1,23 @@
+****************************************************************
+* D4-A geometry-only TRACK probe: SALT + MCCGT, no transport.  *
+****************************************************************
+
+SEQ_ASCII glow :: FILE './geometry.dat' ;
+SEQ_BINARY TRACK_f :: FILE './track.bin' ;
+XSM_FILE TRACK :: FILE './track.xsm' ;
+
+MODULE SALT: MCCGT: END: ;
+
+TRACK TRACK_f := SALT: glow ::
+  EDIT 0
+  BATCH 100
+  TISO 24 100.0 LONG
+  ;
+TRACK := MCCGT: TRACK TRACK_f ::
+  EDIT 0
+  GAUS 4 AAC 80 TMT STIS 1 EPSI 1.0E-5 MCU 10000
+  ;
+
+ECHO "D4A TRACK GEOMETRY PROBE COMPLETE" ;
+END: ;
+QUIT "LIST" .

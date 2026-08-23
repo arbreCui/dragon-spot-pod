@@ -20,7 +20,7 @@ module SPOR64_B2N
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
   integer, parameter :: NSNAP = 3
-  integer, parameter :: NSOUT = 6
+  integer, parameter :: NCODE = 6
   integer, parameter :: NIFIS = 32
   integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
@@ -52,7 +52,7 @@ contains
     integer, allocatable :: keyflx(:), keyanis(:), keycur(:)
     integer, allocatable :: imerge(:)
     integer :: ip, ir, ifis, h, g, im, iu, ilong, itylcm
-    integer :: allocation_status, nreg, nunkno, nmat
+    integer :: allocation_status, nreg, nunkno, nmat, nsurf, probe_nsurf
     integer(int32) :: volume_bits, track_volume_bits
     integer(int64) :: found64, expected64
     real(real32), allocatable :: volume32(:), track_volume32(:)
@@ -148,25 +148,27 @@ contains
       if (.not. RECORD_MATCHES(probe_track,'STATE-VECTOR',NSTATE,1)) &
           return
       call LCMGET(probe_track,'STATE-VECTOR',probe_track_state)
+      probe_nsurf = probe_track_state(5)
       if (probe_track_state(1) <= 0 .or. probe_track_state(2) <= 0 .or. &
-          probe_track_state(4) <= 0) return
+          probe_track_state(4) <= 0 .or. probe_nsurf <= 0) return
       if (probe_track_state(3) /= 1 .or. &
-          probe_track_state(5) /= NSOUT .or. &
           probe_track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
       if (int(probe_track_state(2),int64) /= &
-          int(probe_track_state(1),int64)+int(NSOUT,int64)) return
+          int(probe_track_state(1),int64)+int(probe_nsurf,int64)) return
       if (ip == 1) then
         archive_track_state = probe_track_state
+        nsurf = probe_nsurf
       else
         if (probe_track_state(1) /= archive_track_state(1) .or. &
             probe_track_state(2) /= archive_track_state(2) .or. &
-            probe_track_state(4) /= archive_track_state(4)) return
+            probe_track_state(4) /= archive_track_state(4) .or. &
+            probe_nsurf /= nsurf) return
       end if
       if (.not. RECORD_MATCHES(probe_track,'V$MCCG', &
           probe_track_state(2),2)) return
       if (.not. RECORD_MATCHES(probe_track,'NZON$MCCG', &
           probe_track_state(2),1)) return
-      if (.not. RECORD_MATCHES(probe_track,'KEYCUR$MCCG',NSOUT,1)) return
+      if (.not. RECORD_MATCHES(probe_track,'KEYCUR$MCCG',nsurf,1)) return
       if (.not. RECORD_MATCHES(probe_track,'MCCG-STATE',NSTATE,1)) return
       call LCMGET(probe_track,'MCCG-STATE',probe_mccg_state)
       if (probe_mccg_state(5) <= 0 .or. probe_mccg_state(6) <= 0) return
@@ -204,9 +206,9 @@ contains
         nmat /= archive_track_state(4)) return
     if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
     if (track_state(3) /= 1) return
-    if (track_state(5) /= NSOUT .or. &
+    if (track_state(5) /= nsurf .or. &
         track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
-    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
     if (int(nmat,int64)*int(NIFIS,int64) > &
         int(huge(nmat),int64)) return
     if (track_state(9) /= 0 .or. track_state(14) /= 4) return
@@ -231,9 +233,9 @@ contains
     if (.not. RECORD_MATCHES(input_track,'NZON$MCCG',nunkno,1)) return
     if (.not. RECORD_MATCHES(input_track,'KEYFLX',nreg,1)) return
     if (.not. RECORD_MATCHES(input_track,'KEYFLX$ANIS',nreg,1)) return
-    if (.not. RECORD_MATCHES(input_track,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(input_track,'KEYCUR$MCCG',nsurf,1)) return
     allocate(matcod(nreg),nzon(nunkno),keyflx(nreg),keyanis(nreg), &
-        keycur(NSOUT),imerge(nmat),volume32(nreg), &
+        keycur(nsurf),imerge(nmat),volume32(nreg), &
         track_volume32(nunkno),seen_unknown(nunkno), &
         stat=allocation_status)
     if (allocation_status /= 0) return
@@ -250,7 +252,7 @@ contains
     if (any(track_volume32 <= +0.0_real32)) return
     if (any(matcod < 1) .or. any(matcod > nmat)) return
     if (any(nzon(1:nreg) /= matcod)) return
-    if (any(nzon(nreg+1:nunkno) < -NSOUT)) return
+    if (any(nzon(nreg+1:nunkno) < -NCODE)) return
     if (any(nzon(nreg+1:nunkno) > -1)) return
     do ir = 1, nreg
       volume_bits = transfer(volume32(ir),0_int32)
@@ -265,7 +267,7 @@ contains
       if (seen_unknown(keyflx(ir))) return
       seen_unknown(keyflx(ir)) = .true.
     end do
-    do ir = 1, NSOUT
+    do ir = 1, nsurf
       if (seen_unknown(keycur(ir))) return
       seen_unknown(keycur(ir)) = .true.
     end do

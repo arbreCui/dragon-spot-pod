@@ -10,7 +10,8 @@ result.
 The unchanged method constraints are:
 
 - 370 energy groups;
-- six MCCG outer-surface unknowns, matching the current legacy kernels;
+- runtime MCCG numerical surface-current unknowns;
+- six fixed physical boundary/albedo code slots;
 - the existing REAL64 equations, loop order, iteration limits and strict
   terminal predicates;
 - no relaxation, fitted coefficient or empirical parameter.
@@ -19,10 +20,10 @@ The unchanged method constraints are:
 
 The test compiles the current A8/A9 sources and checks two shapes:
 
-| case | regions | materials | unknowns |
-|---|---:|---:|---:|
-| validated pin boundary | 8 | 8 | 14 |
-| manufactured D4-A-sized boundary | 132 | 6 | 138 |
+| case | regions | materials | numerical surfaces | unknowns |
+|---|---:|---:|---:|---:|
+| validated pin boundary | 8 | 8 | 6 | 14 |
+| manufactured real D4-A tuple | 132 | 6 | 12 | 144 |
 
 For each shape it checks the A8 tracking ranks, material/operator extents and
 the A9 REAL64 state extent.  It then calls the A9 core with null transport
@@ -38,9 +39,9 @@ make spot-a89-dimensions
 Expected terminal:
 
 ```text
-A8/A9 RUNTIME-GEOMETRY PASS: pin-8 and manufactured D4A-132; no transport.
+A8/A9 RUNTIME-GEOMETRY PASS: pin and D4-A (132,144,12) tuple; no transport.
 ```
 
-The manufactured 138-unknown case proves only runtime shape propagation.
-The real D4-A dimensions must still be read from its TRACK object when a
-separately authorized physical staging is eventually performed.
+The D4-A dimensions were read independently from its real TRACK object.  The
+test payload itself is manufactured and proves only runtime shape propagation;
+it is not a transport or convergence result.

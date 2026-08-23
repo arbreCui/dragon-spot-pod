@@ -12,10 +12,11 @@ program test_b2c_runtime_dimensions
   implicit none
 
   call run_case(8,8,14,'B2C-PIN8',.false.)
-  call run_case(132,6,138,'B2C-D4A132',.true.)
+  call run_case(132,6,144,'B2C-D4A132',.true.)
   call reject_duplicate_key()
   call reject_shape_mismatch()
-  write(*,'(A)') 'B2C RUNTIME-DIMENSION PASS: pin-8 bits and manufactured-132 publication only.'
+  write(*,'(A)') &
+      'B2C RUNTIME-DIMENSION PASS: pin and D4-A 144-unknown structural publication only.'
 
 contains
 

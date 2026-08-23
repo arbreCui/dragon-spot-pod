@@ -15,7 +15,6 @@ module SPOR64_B2I
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
   integer, parameter :: NSNAP = 3
-  integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
   integer, parameter :: BOOTSTRAP_EPOCH = 0
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
@@ -41,8 +40,8 @@ contains
     integer :: archive_planes, system_snapshot, fixb, ncoef
     integer :: total_basis, total_gram
     integer :: nfloor, ig, ip, ir, iu, a, b, nmode
-    integer :: nreg, nunkno, nmat
-    integer :: plane_nreg, plane_nunkno, plane_nmat
+    integer :: nreg, nsurf, nunkno, nmat
+    integer :: plane_nreg, plane_nsurf, plane_nunkno, plane_nmat
     integer :: index_a, index_b, index_g, ilong, itylcm
     integer :: allocation_status
     integer, allocatable :: rank(:), offset(:), gram_offset(:)
@@ -81,6 +80,7 @@ contains
     type(c_ptr) :: output_item, output_authority
 
     status = SPOR64_B2I_ADMISSION_FAILED
+    nsurf = 0
     nunkno = 0
     nmat = 0
 
@@ -329,16 +329,17 @@ contains
       plane_nreg = plane_track_state(1)
       plane_nunkno = plane_track_state(2)
       plane_nmat = plane_track_state(4)
+      plane_nsurf = plane_track_state(5)
       if (plane_nreg <= 0 .or. plane_nunkno <= 0 .or. &
-          plane_nmat <= 0) return
-      if (plane_track_state(5) /= NSOUT) return
+          plane_nmat <= 0 .or. plane_nsurf <= 0) return
       if (int(plane_nunkno,int64) /= &
-          int(plane_nreg,int64)+int(NSOUT,int64)) return
+          int(plane_nreg,int64)+int(plane_nsurf,int64)) return
       if (plane_track_state(6) /= 1 .or. &
           plane_track_state(9) /= 0) return
       if (plane_track_state(14) /= 4) return
       if (plane_nreg /= nreg) return
       if (ip == 1) then
+        nsurf = plane_nsurf
         nunkno = plane_nunkno
         nmat = plane_nmat
         allocate(plane_key(nreg),anis_key(nreg),seed_key(nreg), &
@@ -348,7 +349,8 @@ contains
             stat=allocation_status)
         if (allocation_status /= 0) return
       else
-        if (plane_nunkno /= nunkno .or. plane_nmat /= nmat) return
+        if (plane_nsurf /= nsurf .or. plane_nunkno /= nunkno .or. &
+            plane_nmat /= nmat) return
       end if
 
       if (.not. RECORD_MATCHES(input_library(ip),'STATE-VECTOR', &

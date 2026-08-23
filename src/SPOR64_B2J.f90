@@ -23,7 +23,6 @@ module SPOR64_B2J
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
   integer, parameter :: NSNAP = 3
-  integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -45,7 +44,7 @@ contains
     integer :: system_state(NSTATE)
     integer :: archive_planes, root_planes, axial_epoch, archive_epoch
     integer :: plane_epoch, projected_epoch, ncoef, total_basis
-    integer :: nreg, nunkno, nmat
+    integer :: nreg, nsurf, nunkno, nmat
     integer :: ig, ip, ir, a, nmode, b2h_status, allocation_status
     integer :: system_snapshot
     integer, allocatable :: plane_key(:), anis_key(:), seed_key(:)
@@ -95,7 +94,7 @@ contains
     ! The three immutable radial TRACK objects are the sole geometry
     ! authority for this transition.
     if (.not. ARCHIVE_TRACK_GEOMETRY_IS_VALID(iparchive,nreg,nunkno, &
-        nmat)) return
+        nmat,nsurf)) return
 
     ! Admit the fixed Synthesis-POD representation from the sealed AX root.
     if (.not. CHARACTER_RECORD_MATCHES(ipax,'SIGNATURE',3,12, &
@@ -321,7 +320,7 @@ contains
       if (plane_track_state(1) /= nreg .or. &
           plane_track_state(2) /= nunkno) return
       if (plane_track_state(4) /= nmat .or. &
-          plane_track_state(5) /= NSOUT) return
+          plane_track_state(5) /= nsurf) return
       if (plane_track_state(6) /= 1 .or. &
           plane_track_state(9) /= 0) return
       if (plane_track_state(14) /= 4) return
@@ -678,9 +677,9 @@ contains
 
 
   logical function ARCHIVE_TRACK_GEOMETRY_IS_VALID(iparchive,nreg, &
-      nunkno,nmat)
+      nunkno,nmat,nsurf)
     type(c_ptr), intent(in) :: iparchive
-    integer, intent(out) :: nreg, nunkno, nmat
+    integer, intent(out) :: nreg, nunkno, nmat, nsurf
 
     integer :: state(NSTATE), ip
     type(c_ptr) :: tracks, track
@@ -689,6 +688,7 @@ contains
     nreg = 0
     nunkno = 0
     nmat = 0
+    nsurf = 0
     if (.not. RECORD_MATCHES(iparchive,'TRACK',NSNAP,10)) return
     tracks = LCMGID(iparchive,'TRACK')
     if (.not. c_associated(tracks)) return
@@ -700,21 +700,22 @@ contains
           'L_TRACK')) return
       if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
       call LCMGET(track,'STATE-VECTOR',state)
-      if (state(1) <= 0 .or. state(2) <= 0 .or. state(4) <= 0) return
-      if (state(5) /= NSOUT) return
+      if (state(1) <= 0 .or. state(2) <= 0 .or. state(4) <= 0 .or. &
+          state(5) <= 0) return
       if (int(state(2),int64) /= &
-          int(state(1),int64)+int(NSOUT,int64)) return
+          int(state(1),int64)+int(state(5),int64)) return
       if (ip == 1) then
         nreg = state(1)
         nunkno = state(2)
         nmat = state(4)
+        nsurf = state(5)
       else
         if (state(1) /= nreg .or. state(2) /= nunkno .or. &
-            state(4) /= nmat) return
+            state(4) /= nmat .or. state(5) /= nsurf) return
       end if
       if (.not. RECORD_MATCHES(track,'V$MCCG',state(2),2)) return
       if (.not. RECORD_MATCHES(track,'NZON$MCCG',state(2),1)) return
-      if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+      if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',state(5),1)) return
       if (.not. RECORD_MATCHES(track,'VOLUME',state(1),2)) return
       if (.not. RECORD_MATCHES(track,'KEYFLX',state(1),1)) return
       if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',state(1),1)) return

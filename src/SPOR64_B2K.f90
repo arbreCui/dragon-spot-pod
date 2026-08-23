@@ -22,7 +22,7 @@ module SPOR64_B2K
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
   integer, parameter :: NSNAP = 3
-  integer, parameter :: NSOUT = 6
+  integer, parameter :: NCODE = 6
   integer, parameter :: NIFIS = 32
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
@@ -48,10 +48,10 @@ contains
     integer :: root_planes, root_epoch, plane_epoch
     integer :: library_state(NSTATE), macro_state(NSTATE)
     integer :: track_state(NSTATE), mccg_state(NSTATE)
-    integer :: keycur(NSOUT)
-    integer, allocatable :: keyflx(:), keyanis(:), matcod(:), nzon(:)
-    integer :: ip, ir, nreg, nmat, nunkno, mxseg, lc
-    integer :: plane_nreg, plane_nmat, plane_nunkno
+    integer, allocatable :: keycur(:), keyflx(:), keyanis(:), matcod(:)
+    integer, allocatable :: nzon(:)
+    integer :: ip, ir, nreg, nmat, nunkno, nsurf, mxseg, lc
+    integer :: plane_nreg, plane_nmat, plane_nunkno, plane_nsurf
     integer :: plane_mxseg, plane_lc, allocation_status
     integer(int64) :: found64, expected64
     integer(int32) :: volume_bits, track_volume_bits
@@ -157,12 +157,13 @@ contains
       plane_nreg = track_state(1)
       plane_nunkno = track_state(2)
       plane_nmat = track_state(4)
+      plane_nsurf = track_state(5)
       if (plane_nreg <= 0 .or. plane_nunkno <= 0 .or. &
-          plane_nmat <= 0) return
-      if (plane_nreg > huge(plane_nreg)-NSOUT) return
-      if (plane_nunkno /= plane_nreg+NSOUT) return
+          plane_nmat <= 0 .or. plane_nsurf <= 0) return
+      if (int(plane_nunkno,int64) /= int(plane_nreg,int64)+ &
+          int(plane_nsurf,int64)) return
       if (track_state(3) /= 1) return
-      if (track_state(5) /= NSOUT .or. track_state(6) /= 1) return
+      if (track_state(6) /= 1) return
       if (track_state(9) /= 0 .or. track_state(14) /= 4) return
       if (track_state(16) /= 2 .or. track_state(22) /= 1) return
       if (track_state(27) /= 0 .or. track_state(39) /= 0) return
@@ -171,9 +172,10 @@ contains
         nreg = plane_nreg
         nunkno = plane_nunkno
         nmat = plane_nmat
+        nsurf = plane_nsurf
       else
         if (plane_nreg /= nreg .or. plane_nunkno /= nunkno .or. &
-            plane_nmat /= nmat) return
+            plane_nmat /= nmat .or. plane_nsurf /= nsurf) return
       end if
       if (.not. RECORD_MATCHES(input_track(ip),'TITLE',18,3)) return
       title = ' '
@@ -207,7 +209,7 @@ contains
       call LCMLEN(input_track(ip),'NZON$MCCG',probe_ilong,probe_itylcm)
       if (probe_ilong /= nunkno .or. probe_itylcm /= 1) return
       call LCMLEN(input_track(ip),'KEYCUR$MCCG',probe_ilong,probe_itylcm)
-      if (probe_ilong /= NSOUT .or. probe_itylcm /= 1) return
+      if (probe_ilong /= nsurf .or. probe_itylcm /= 1) return
       if (.not. RECORD_MATCHES(input_track(ip),'VOLUME',nreg,2)) return
       if (.not. RECORD_MATCHES(input_track(ip),'V$MCCG',nunkno,2)) return
       if (.not. RECORD_MATCHES(input_track(ip),'MATCOD',nreg,1)) return
@@ -216,12 +218,13 @@ contains
       if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX',nreg,1)) return
       if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX$ANIS',nreg,1)) &
           return
-      if (.not. RECORD_MATCHES(input_track(ip),'KEYCUR$MCCG',NSOUT,1)) &
+      if (.not. RECORD_MATCHES(input_track(ip),'KEYCUR$MCCG',nsurf,1)) &
           return
       if (ip == 1) then
         allocate(keyflx(nreg),keyanis(nreg),matcod(nreg), &
-            nzon(nunkno),volume32(nreg),volume_track32(nunkno), &
-            seen_unknown(nunkno),stat=allocation_status)
+            nzon(nunkno),keycur(nsurf),volume32(nreg), &
+            volume_track32(nunkno),seen_unknown(nunkno), &
+            stat=allocation_status)
         if (allocation_status /= 0) return
       end if
       if (.not. allocated(seen_unknown)) return
@@ -238,7 +241,7 @@ contains
       if (any(volume_track32 <= +0.0_real32)) return
       if (any(matcod < 1) .or. any(matcod > nmat)) return
       if (any(nzon(1:nreg) /= matcod)) return
-      if (any(nzon(nreg+1:nunkno) < -NSOUT)) return
+      if (any(nzon(nreg+1:nunkno) < -NCODE)) return
       if (any(nzon(nreg+1:nunkno) > -1)) return
       do ir = 1, nreg
         volume_bits = transfer(volume32(ir),0_int32)
@@ -253,7 +256,7 @@ contains
         if (seen_unknown(keyflx(ir))) return
         seen_unknown(keyflx(ir)) = .true.
       end do
-      do ir = 1, NSOUT
+      do ir = 1, nsurf
         if (seen_unknown(keycur(ir))) return
         seen_unknown(keycur(ir)) = .true.
       end do
@@ -281,7 +284,7 @@ contains
       if (.not. RECORD_MATCHES(input_macro(ip),'GROUP',NGRP,10)) return
 
       if (.not. PROJECTED_PLANE_IS_EXACT(input_flux(ip),rho64, &
-          root_epoch,keyflx,nmat,nunkno,leakage32)) return
+          root_epoch,keyflx,nmat,nunkno,nsurf,leakage32)) return
       plane_authority = LCMGID(input_flux(ip),'SPOT-R64')
       call LCMGET(plane_authority,'RHO',plane_rho64)
       call LCMGET(plane_authority,'EPOCH',plane_epoch)
@@ -297,7 +300,7 @@ contains
       unreduced_mode = (probe_ilong == NGRP .and. probe_itylcm == 4)
       if (probe_ilong /= 0 .and. .not. unreduced_mode) return
       if (.not. SYSTEM_PAYLOAD_IS_VALID(ipsystems(ip),input_macro(ip), &
-          leakage32,ip,unreduced_mode,nreg,nmat,nunkno,lc)) return
+          leakage32,ip,unreduced_mode,nreg,nmat,nunkno,nsurf,lc)) return
     end do
 
     ! Preserve each complete host system in a private LCM stage.  Only the
@@ -327,7 +330,7 @@ contains
       end if
       if (.not. SYSTEM_PAYLOAD_IS_VALID(staged_system(ip), &
           input_macro(ip),leakage32,ip,unreduced_mode,nreg,nmat, &
-          nunkno,lc)) then
+          nunkno,nsurf,lc)) then
         call CLOSE_STAGES(staged_system)
         return
       end if
@@ -394,10 +397,10 @@ contains
 
 
   logical function PROJECTED_PLANE_IS_EXACT(ipflux,rho,epoch, &
-      expected_keyflx,nmat,nunkno,leakage)
+      expected_keyflx,nmat,nunkno,nsurf,leakage)
     type(c_ptr), intent(in) :: ipflux
     real(real64), intent(in) :: rho
-    integer, intent(in) :: epoch, nmat, nunkno
+    integer, intent(in) :: epoch, nmat, nunkno, nsurf
     integer, intent(in) :: expected_keyflx(:)
     real(real32), intent(out) :: leakage(NGRP)
 
@@ -413,9 +416,8 @@ contains
 
     PROJECTED_PLANE_IS_EXACT = .false.
     nreg = size(expected_keyflx)
-    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0) return
-    if (nreg > huge(nreg)-NSOUT) return
-    if (nunkno /= nreg+NSOUT) return
+    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. nsurf <= 0) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
     if (.not. PROJECTED_PLANE_ROOT_IS_EXACT(ipflux)) return
     if (.not. CHARACTER_RECORD_MATCHES(ipflux,'SIGNATURE',3,12, &
         'L_FLUX')) return
@@ -493,10 +495,10 @@ contains
 
 
   logical function SYSTEM_PAYLOAD_IS_VALID(ipsystem,ipmacro,leakage, &
-      plane,unreduced,nreg,nmat,nunkno,lc)
+      plane,unreduced,nreg,nmat,nunkno,nsurf,lc)
     type(c_ptr), intent(in) :: ipsystem, ipmacro
     real(real32), intent(in) :: leakage(NGRP)
-    integer, intent(in) :: plane, nreg, nmat, nunkno, lc
+    integer, intent(in) :: plane, nreg, nmat, nunkno, nsurf, lc
     logical, intent(in) :: unreduced
 
     integer :: state(NSTATE), expected_state(NSTATE)
@@ -510,9 +512,9 @@ contains
     type(c_ptr) :: macro_groups, system_groups, macro_group, system_group
 
     SYSTEM_PAYLOAD_IS_VALID = .false.
-    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. lc <= 0) return
-    if (nreg > huge(nreg)-NSOUT) return
-    if (nunkno /= nreg+NSOUT) return
+    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. &
+        nsurf <= 0 .or. lc <= 0) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
     if (.not. c_associated(ipsystem)) return
     if (.not. c_associated(ipmacro)) return
     if (plane < 1 .or. plane > NSNAP) return
@@ -556,7 +558,7 @@ contains
       if (.not. c_associated(system_group)) return
       if (.not. c_associated(macro_group)) return
       if (.not. RESPONSE_GROUP_IS_EXACT(system_group,nreg,nmat, &
-          nunkno,lc)) return
+          nunkno,nsurf,lc)) return
       if (.not. RECORD_MATCHES(macro_group,'NTOT0',nmat,2)) return
       if (.not. RECORD_MATCHES(macro_group,'SIGW00',nmat,2)) return
       call LCMGET(macro_group,'NTOT0',ntot32)
@@ -603,16 +605,17 @@ contains
   end function SYSTEM_PAYLOAD_IS_VALID
 
 
-  logical function RESPONSE_GROUP_IS_EXACT(group,nreg,nmat,nunkno,lc)
+  logical function RESPONSE_GROUP_IS_EXACT(group,nreg,nmat,nunkno, &
+      nsurf,lc)
     type(c_ptr), intent(in) :: group
-    integer, intent(in) :: nreg, nmat, nunkno, lc
+    integer, intent(in) :: nreg, nmat, nunkno, nsurf, lc
 
     integer :: response_lengths(size(SCHEMA_RESPONSE_GROUP)), i
 
     RESPONSE_GROUP_IS_EXACT = .false.
-    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. lc <= 0) return
-    if (nreg > huge(nreg)-NSOUT) return
-    if (nunkno /= nreg+NSOUT) return
+    if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. &
+        nsurf <= 0 .or. lc <= 0) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
     response_lengths = &
         [lc,nunkno,lc,nunkno,nreg,nreg,nreg,nreg,nreg,nreg,nreg, &
          nunkno]

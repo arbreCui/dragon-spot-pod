@@ -2,11 +2,13 @@
 
 ## Status
 
-`RUNTIME_GEOMETRY_CHAIN_COMPILED_PIN_REPLAYED_NO_D4_TRANSPORT`.
+`ACTUAL_TRACK_TOPOLOGY_ADMITTED_NO_D4_TRANSPORT`.
 
-No Dragon or OpenMC process was started for this case.  The purpose of this
-record is to choose the next independent geometry without changing the
-accepted SPOD equations or starting a long calculation prematurely.
+The accepted bounded Dragon run built only the radial tracking object from the frozen
+geometry.  It performed no library processing, eigenvalue solve, radial
+fixed-source solve, axial solve or Picard iteration.  No OpenMC process was
+started.  The purpose of this record is to admit the real geometry topology
+without changing the accepted SPOD equations or starting a long calculation.
 
 ## Why this case
 
@@ -32,6 +34,9 @@ assembly candidates.
 - `rnr_interpol.c2m` SHA-256:
   `b09f93be0655d5ac017b3dc33a3b9d38c5dfb7f12ba70060ec2a050223895c6a`.
 
+The bounded geometry-only TRACK build and its independent record checks are
+recorded in [the D4-A TRACK result](d4a_track_geometry_probe_result.md).
+
 Historical case specifications are recoverable from commit `470e0d7`:
 
 - `data/Snap1Ring.c2m`, Git blob `8883a419...`, content SHA-256
@@ -51,8 +56,8 @@ The general core routines `SPOASM`, `SPOPOD` and `SPOT_LEAKAGE` already use
 runtime dimensions.  The radial entrance, solver and publication boundary
 now do as well:
 
-- `SPOR64_B2B` obtains `NREG`, `NMAT` and `NUNKNO` from the actual TRACK
-  object and independently checks the long-vector records;
+- `SPOR64_B2B` obtains `NREG`, `NMAT`, `NSURF` and `NUNKNO` from the actual
+  TRACK object and independently checks the long-vector records;
 - `SPOR64_A9/A8` carry those extents through the unchanged REAL64 radial
   equations and MCCG call chain;
 - `SPOR64_B2C` publishes using the runtime region, material and unknown
@@ -70,8 +75,8 @@ The assembled-to-close strict lifecycle now uses the same runtime geometry:
 
 The next-epoch projection lifecycle now uses the same runtime geometry:
 
-- `SPOR64_B2H` obtains the region, material and unknown counts from its
-  immutable radial TRACK and preserves the six-surface MCCG relation;
+- `SPOR64_B2H` obtains the region, material, numerical-surface and unknown
+  counts from its immutable radial TRACK;
 - `SPOR64_B2I/B2J` require one common TRACK tuple across the three snapshots
   before bootstrap or CLOSED-to-PROJECTED publication;
 - their POD contraction order, 370-group equations, three snapshots,
@@ -89,15 +94,15 @@ and allocates its publication staging accordingly.  The group count remains
 the declared 370-group problem.  No tolerance, gate, equation, snapshot
 count or physical parameter changed.
 
-The no-transport manufactured test uses
+The no-transport manufactured test uses the actual D4-A extents
 
-- `FLUX64(138,370)` and `SOUR64(138,370)`;
+- `FLUX64(144,370)` and `SOUR64(144,370)`;
 - `KEYFLX(132)=1,...,132`;
 - `IMERGE(6)=1`.
 
-Here 138 is deliberately only a structural test dimension.  It is not a
-claim about D4-A's real number of transport unknowns; that value must later
-come from the actual `TRACK/STATE-VECTOR`.
+The value 144 comes from the real `TRACK/STATE-VECTOR`; the values carried by
+this particular host test remain manufactured.  It proves structural shape
+propagation, not D4-A transport physics.
 
 The test verifies the runtime state records, all 370 REAL64 list items, their
 bit-exact REAL32 mirrors and fail-before-write rejection of duplicate keys or
@@ -113,22 +118,24 @@ The result is recorded in
 
 At the radial solve boundary, `SPOR64_B2B` now treats `TRACK/STATE-VECTOR`
 as the geometry authority and requires the independently stored `V$MCCG`,
-`NZON$MCCG` and `KEYCUR$MCCG` extents to agree.  The current legacy MCCG
-kernels genuinely support six outer surfaces, so this route retains the
+`NZON$MCCG` and `KEYCUR$MCCG` extents to agree.  The MCCG route retains the
 strict relation
 
 ```text
-NUNKNO = NLONG = NREG + 6
+NUNKNO = NLONG = NREG + NSURF
 ```
 
-rather than claiming unsupported arbitrary surface counts.  `SPOR64_A9`
-and `SPOR64_A8` now derive the remaining geometry dimensions from their
-actual arrays and TRACK records.  They do not change the 370-group operator,
-iteration order, physical coefficients, tolerances or terminal predicates.
+For D4-A, `NSURF=12`.  These 12 numerical surfaces reference six physical
+boundary/albedo code slots, so their `MATALB/NZON` values remain in
+`[-6,-1]`; `ICODE`, `ALBEDO` and `SIGAL` retain their legacy six-slot
+semantics.  `SPOR64_A9` and `SPOR64_A8` derive the remaining geometry
+dimensions from their actual arrays and TRACK records.  They do not change
+the 370-group operator, iteration order, physical coefficients, tolerances
+or terminal predicates.
 
-A seconds-scale no-transport test admits both `(8,8,14)` and manufactured
-`(132,6,138)` shapes through the A8/A9 interfaces and verifies fail-closed
-entry with null transport handles:
+A seconds-scale no-transport test admits the pin tuple and the manufactured
+D4-A tuple `(NREG,NMAT,NSURF,NUNKNO)=(132,6,12,144)` through the A8/A9
+interfaces and verifies fail-closed entry with null transport handles:
 
 ```sh
 make spot-a89-dimensions
@@ -138,7 +145,7 @@ The result is recorded in
 [the A8/A9 runtime-geometry result](a89_runtime_geometry_result.md).
 
 At the projection boundary, a seconds-scale no-transport test admits the old
-pin shape and manufactured `(132,6,138)` shape through `SPOR64_B2H`.  It
+pin shape and manufactured D4-A `(132,6,12,144)` shape through `SPOR64_B2H`. It
 checks all 370 REAL64 projected list items and their exact REAL32 mirrors:
 
 ```sh
@@ -161,11 +168,11 @@ closes epoch 69 (`STATUS=2`); both CLOSED XSM files retain their exact
 SHA-256 hashes.  This proves backward compatibility and lifecycle/write
 ordering, not D4-A transport or D4-A convergence.
 
-## Remaining work before a physical run
+## Remaining work before a convergence census
 
-1. generate the actual D4-A radial TRACK and three-snapshot archive, then run
-   one full-chain no-transport admission with their authoritative dimensions;
-2. freeze an independent D4-A reference and the unchanged convergence gate;
+1. generate one current, hash-locked set of three physical D4-A snapshots;
+2. admit that archive through the existing lifecycle and freeze an independent
+   D4-A reference with the unchanged convergence gate;
 3. only then run one separately authorized, bounded physical convergence
    census with no empirical parameter or automatic retry.
 

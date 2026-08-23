@@ -22,7 +22,6 @@ module SPOR64_B2S
   integer, parameter :: NSTATE = 40
   integer, parameter :: NENTRY = 7
   integer, parameter :: NGRP = 370
-  integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer, parameter :: kind_guard = 1 / merge(1,0,kind(1.0) == real32)
@@ -47,7 +46,7 @@ contains
     integer, allocatable :: imerg(:)
     integer :: slot_for_plane(NSNAP), source_plane(NSNAP)
     integer :: plane, slot, seal_status, radial_status, collect_status
-    integer :: nreg, nmat, nunkno, allocation_status
+    integer :: nreg, nmat, nunkno, nsurf, plane_nsurf, allocation_status
     integer :: track_state(NSTATE)
     real(real32) :: frozen_tol32
     type(c_ptr) :: tracks, track
@@ -103,22 +102,24 @@ contains
       if (.not. c_associated(track)) return
       if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
       call LCMGET(track,'STATE-VECTOR',track_state)
-      if (track_state(3) /= 1 .or. track_state(5) /= NSOUT) return
+      plane_nsurf = track_state(5)
+      if (track_state(3) /= 1 .or. plane_nsurf <= 0) return
       if (track_state(6) /= 1) return
       if (plane == 1) then
         nreg = track_state(1)
         nunkno = track_state(2)
         nmat = track_state(4)
+        nsurf = plane_nsurf
         if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
         if (int(nunkno,int64) /= &
-            int(nreg,int64)+int(NSOUT,int64)) return
+            int(nreg,int64)+int(nsurf,int64)) return
       else
         if (track_state(1) /= nreg .or. track_state(2) /= nunkno) return
-        if (track_state(4) /= nmat .or. track_state(5) /= NSOUT) return
+        if (track_state(4) /= nmat .or. plane_nsurf /= nsurf) return
       end if
       if (.not. RECORD_MATCHES(track,'V$MCCG',nunkno,2)) return
       if (.not. RECORD_MATCHES(track,'NZON$MCCG',nunkno,1)) return
-      if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+      if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',nsurf,1)) return
       if (.not. RECORD_MATCHES(track,'MATCOD',nreg,1)) return
       if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',nreg,1)) return
     end do

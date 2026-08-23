@@ -1,6 +1,6 @@
 program test_b2h_runtime_geometry
   ! No-transport projection test.  The pin case locks the existing record
-  ! arithmetic; the manufactured 132-region case proves runtime sizing only.
+  ! arithmetic; the manufactured D4-A tuple proves runtime sizing only.
   use, intrinsic :: iso_c_binding, only : c_associated, c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use GANLIB
@@ -8,30 +8,30 @@ program test_b2h_runtime_geometry
       SPOR64_B2H_PROJECT
   implicit none
 
-  call run_case(8,8)
-  call run_case(132,6)
+  call run_case(8,8,6)
+  call run_case(132,6,12)
   write(*,'(A)') &
-      'B2H RUNTIME-GEOMETRY PASS: pin-8 and manufactured-132 projection only.'
+      'B2H RUNTIME-GEOMETRY PASS: pin and D4-A (132,144,12) tuple projection only.'
 
 contains
 
-  subroutine run_case(nreg,nmat)
-    integer, intent(in) :: nreg, nmat
-    integer, parameter :: ngrp=370, nsout=6, nstate=40
+  subroutine run_case(nreg,nmat,nsurf)
+    integer, intent(in) :: nreg, nmat, nsurf
+    integer, parameter :: ngrp=370, ncode=6, nstate=40
     integer(int32), parameter :: tol_bits=int(z'348637bd',int32)
     integer :: nunkno, ig, ir, status, ilong, itylcm
-    integer :: state(nstate), keyflx(nreg), keycur(nsout)
-    integer :: nzon(nreg+nsout), imerge(nmat), found_state(nstate)
-    real(real32) :: track_volume(nreg+nsout), eps(5), leakage(ngrp)
-    real(real64) :: rho64, phi(nreg+nsout), projected(nreg,ngrp)
-    real(real64) :: found64(nreg+nsout)
-    real(real32) :: found32(nreg+nsout)
+    integer :: state(nstate), keyflx(nreg), keycur(nsurf)
+    integer :: nzon(nreg+nsurf), imerge(nmat), found_state(nstate)
+    real(real32) :: track_volume(nreg+nsurf), eps(5), leakage(ngrp)
+    real(real64) :: rho64, phi(nreg+nsurf), projected(nreg,ngrp)
+    real(real64) :: found64(nreg+nsurf)
+    real(real32) :: found32(nreg+nsurf)
     character(len=12) :: name, text12
     character(len=4) :: option
     type(c_ptr) :: track, seed, output, authority
     type(c_ptr) :: flux, source, output_flux, legacy_flux
 
-    nunkno = nreg+nsout
+    nunkno = nreg+nsurf
     write(name,'("B2H-T",I3.3)') nreg
     call LCMOP(track,trim(name),0,1,0)
     if (.not. c_associated(track)) error stop 'TRACK CREATE'
@@ -45,20 +45,20 @@ contains
     text12 = 'L_TRACK'
     call LCMPTC(track,'SIGNATURE',12,text12)
     state = 0
-    state(1:6) = [nreg,nunkno,1,nmat,nsout,1]
+    state(1:6) = [nreg,nunkno,1,nmat,nsurf,1]
     call LCMPUT(track,'STATE-VECTOR',nstate,1,state)
     track_volume = 1.0_real32
     nzon = 1
     do ir = 1, nreg
       keyflx(ir) = ir
     end do
-    do ir = 1, nsout
+    do ir = 1, nsurf
       keycur(ir) = nreg+ir
-      nzon(nreg+ir) = -ir
+      nzon(nreg+ir) = -(1+mod(ir-1,ncode))
     end do
     call LCMPUT(track,'V$MCCG',nunkno,2,track_volume)
     call LCMPUT(track,'NZON$MCCG',nunkno,1,nzon)
-    call LCMPUT(track,'KEYCUR$MCCG',nsout,1,keycur)
+    call LCMPUT(track,'KEYCUR$MCCG',nsurf,1,keycur)
     call LCMPUT(track,'KEYFLX$ANIS',nreg,1,keyflx)
 
     text12 = 'L_FLUX'

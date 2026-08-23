@@ -25,7 +25,7 @@ module SPOR64_B2B
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
   integer, parameter :: NIFIS = 32
-  integer, parameter :: NSOUT = 6
+  integer, parameter :: NALBEDO = 6
   integer, parameter :: MACRO_STORED_COMPONENTS = 3
   integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
@@ -74,21 +74,21 @@ contains
     integer :: mccg_state(NSTATE), source_state(NSTATE)
     integer, allocatable :: imerge_stage(:), matcod(:), keyflx_base1(:)
     integer, allocatable :: seed_keyflx(:), nzon(:)
-    integer :: keycur(NSOUT), matalb_surface(NSOUT)
+    integer, allocatable :: keycur(:), matalb_surface(:)
     integer, allocatable :: njj_stage(:), ijj_stage(:), ipos_stage(:)
     integer, allocatable :: njj_off(:,:), ijj_off(:,:), ipos_off(:,:)
     integer :: nscat_off(NGRP)
     integer :: frozen_flag, iftrak, ig, ibm, ir, ilong, itylcm
     integer :: allocation_status
-    integer :: last_position, nreg, nmat, nunkno, nlong, max_scat
+    integer :: last_position, nreg, nmat, nsou, nunkno, nlong, max_scat
     integer(int32) :: volume_bits, track_volume_bits
     logical :: admission_complete, accepted, core_ok
     logical :: output_empty, output_lcm
     logical, allocatable :: seen_unknown(:)
     real(real32) :: eps_stage32(5), real_param32(4)
     real(real32) :: macro_keff32, source_keff32
-    real(real32), allocatable :: vol32(:), volume_track32(:)
-    real(real32) :: albedo32(NSOUT), surfac32(NSOUT)
+    real(real32), allocatable :: vol32(:), volume_track32(:), surfac32(:)
+    real(real32) :: albedo32(NALBEDO)
     real(real32) :: leak1d_input32(NGRP), seed_leak1d32(NGRP), qint32(NGRP)
     real(real32), allocatable :: s0phys_stage32(:)
     real(real64) :: leak1d64(NGRP)
@@ -188,11 +188,11 @@ contains
     nreg = track_state(1)
     nunkno = track_state(2)
     nmat = track_state(4)
+    nsou = track_state(5)
     if (nreg /= nreg_host .or. nunkno <= 0) return
     if (track_state(3) /= 1 .or. nmat /= nmat_host) return
-    if (track_state(5) /= NSOUT .or. &
-        track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
-    if (nunkno /= nreg+NSOUT) return
+    if (nsou <= 0 .or. track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(nsou,int64)) return
 
     ! The stored tracking payload must independently confirm the state-vector
     ! dimensions before any geometry-sized allocation or read is attempted.
@@ -201,11 +201,12 @@ contains
     call LCMLEN(iptrk,'NZON$MCCG',ilong,itylcm)
     if (ilong /= nlong .or. itylcm /= 1) return
     call LCMLEN(iptrk,'KEYCUR$MCCG',ilong,itylcm)
-    if (ilong /= NSOUT .or. itylcm /= 1) return
+    if (ilong /= nsou .or. itylcm /= 1) return
 
     max_scat = nmat*NGRP
     allocate(imerge_stage(nmat),matcod(nreg),keyflx_base1(nreg), &
-        seed_keyflx(nreg),vol32(nreg),njj_stage(nmat),ijj_stage(nmat), &
+        seed_keyflx(nreg),keycur(nsou),matalb_surface(nsou), &
+        surfac32(nsou),vol32(nreg),njj_stage(nmat),ijj_stage(nmat), &
         ipos_stage(nmat),njj_off(nmat,NGRP),ijj_off(nmat,NGRP), &
         ipos_off(nmat,NGRP),nusigf_stage32(nmat*NIFIS), &
         s0phys_stage32(nmat+1),xstrc32(0:nmat,NGRP), &
@@ -346,18 +347,18 @@ contains
     if (.not. RECORD_MATCHES(iptrk,'KEYFLX$ANIS',nreg,1)) return
     call LCMGET(iptrk,'KEYFLX$ANIS',keyflx_base1)
     if (any(seed_keyflx /= keyflx_base1)) return
-    if (.not. RECORD_MATCHES(iptrk,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(iptrk,'KEYCUR$MCCG',nsou,1)) return
     call LCMGET(iptrk,'KEYCUR$MCCG',keycur)
     if (.not. RECORD_MATCHES(iptrk,'NZON$MCCG',nlong,1)) return
     call LCMGET(iptrk,'NZON$MCCG',nzon)
     if (.not. RECORD_MATCHES(iptrk,'V$MCCG',nlong,2)) return
     call LCMGET(iptrk,'V$MCCG',volume_track32)
-    if (.not. RECORD_MATCHES(iptrk,'ALBEDO',NSOUT,2)) return
+    if (.not. RECORD_MATCHES(iptrk,'ALBEDO',NALBEDO,2)) return
     call LCMGET(iptrk,'ALBEDO',albedo32)
 
     if (any(matcod < 1) .or. any(matcod > nmat)) return
     if (any(nzon(1:nreg) /= matcod)) return
-    if (any(nzon(nreg+1:nlong) < -NSOUT)) return
+    if (any(nzon(nreg+1:nlong) < -NALBEDO)) return
     if (any(nzon(nreg+1:nlong) > -1)) return
     if (.not. all(ieee_is_finite(vol32))) return
     if (.not. all(ieee_is_finite(volume_track32))) return
@@ -378,7 +379,7 @@ contains
       if (seen_unknown(keyflx_base1(ir))) return
       seen_unknown(keyflx_base1(ir)) = .true.
     end do
-    do ir = 1, NSOUT
+    do ir = 1, nsou
       if (keycur(ir) < 1 .or. keycur(ir) > nunkno) return
       if (seen_unknown(keycur(ir))) return
       seen_unknown(keycur(ir)) = .true.

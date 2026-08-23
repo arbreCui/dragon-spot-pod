@@ -6,17 +6,18 @@ program test_a89_runtime_geometry
   use SPOR64_A9, only : FLU2DR64_CORE, SPOR64_A9_STATE_PROBE
   implicit none
 
-  call run_case(8,8,14,'PIN-8')
-  call run_case(132,6,138,'D4A-132')
-  write(*,'(A)') 'A8/A9 RUNTIME-GEOMETRY PASS: pin-8 and manufactured D4A-132; no transport.'
+  call run_case(8,8,6,'PIN-8')
+  call run_case(132,6,12,'D4A-132')
+  write(*,'(A)') &
+      'A8/A9 RUNTIME-GEOMETRY PASS: pin and D4-A (132,144,12) tuple; no transport.'
 
 contains
 
-  subroutine run_case(nreg,nmat,nunkno,label)
-    integer, intent(in) :: nreg, nmat, nunkno
+  subroutine run_case(nreg,nmat,nsurf,label)
+    integer, intent(in) :: nreg, nmat, nsurf
     character(len=*), intent(in) :: label
-    integer, parameter :: ngrp=370, nslice=8, nsout=6
-    integer :: i
+    integer, parameter :: ngrp=370, nslice=8, ncode=6
+    integer :: i, nunkno
     integer(int64) :: cutoff_visit64
     integer, allocatable :: keyflx(:), keyflx3(:,:,:), pjjind2(:,:)
     integer, allocatable :: matcod(:), keycur(:), matalb_surface(:)
@@ -33,7 +34,7 @@ contains
     logical :: accepted, core_ok, probe_ok
     character(len=72) :: title
 
-    call require(nunkno == nreg+nsout,trim(label)//' geometry relation')
+    nunkno = nreg+nsurf
 
     allocate(keyflx(nreg),keyflx3(nreg,1,1),pjjind2(1,2))
     keyflx = [(i,i=1,nreg)]
@@ -42,7 +43,7 @@ contains
     call SPOR64_A8_RANK_PROBE(keyflx,keyflx3,pjjind2,probe_ok)
     call require(probe_ok,trim(label)//' A8 rank probe')
 
-    allocate(sc32(0:nmat,1),sigal32(-nsout:nmat))
+    allocate(sc32(0:nmat,1),sigal32(-ncode:nmat))
     sc32 = 0.0_real32
     sigal32 = 0.0_real32
     call SPOR64_A8_OPERATOR_PROBE(sc32,sigal32,probe_ok)
@@ -53,11 +54,11 @@ contains
     call SPOR64_A9_STATE_PROBE(state64,probe_ok)
     call require(probe_ok,trim(label)//' A9 state probe')
 
-    allocate(matcod(nreg),keycur(nsout),matalb_surface(nsout))
+    allocate(matcod(nreg),keycur(nsurf),matalb_surface(nsurf))
     allocate(njj_off(nmat,ngrp),ijj_off(nmat,ngrp), &
         ipos_off(nmat,ngrp),nscat_off(ngrp))
     allocate(vol32(nreg),xstrc32(0:nmat,ngrp), &
-        xsdia0_32(0:nmat,ngrp),albedo32(nsout),surfac32(nsout))
+        xsdia0_32(0:nmat,ngrp),albedo32(ncode),surfac32(nsurf))
     allocate(scat_off32(nmat*ngrp,ngrp))
     allocate(fixed_source64(nunkno,ngrp),initial_flux64(nunkno,ngrp), &
         terminal_flux64(nunkno,ngrp),terminal_source64(nunkno,ngrp), &
@@ -66,8 +67,8 @@ contains
     do i = 1, nreg
       matcod(i) = 1 + mod(i-1,nmat)
     end do
-    keycur = [(nreg+i,i=1,nsout)]
-    matalb_surface = [(-i,i=1,nsout)]
+    keycur = [(nreg+i,i=1,nsurf)]
+    matalb_surface = [(-(1+mod(i-1,ncode)),i=1,nsurf)]
     njj_off = 0
     ijj_off = 0
     ipos_off = 0
