@@ -2,13 +2,13 @@
 
 ## Status
 
-`ACTUAL_TRACK_TOPOLOGY_ADMITTED_NO_D4_TRANSPORT`.
+`THREE_SNAPSHOT_INPUTS_FROZEN_AND_PREFLIGHTED_NO_D4_TRANSPORT`.
 
-The accepted bounded Dragon run built only the radial tracking object from the frozen
-geometry.  It performed no library processing, eigenvalue solve, radial
-fixed-source solve, axial solve or Picard iteration.  No OpenMC process was
-started.  The purpose of this record is to admit the real geometry topology
-without changing the accepted SPOD equations or starting a long calculation.
+The accepted bounded Dragon run built only the radial tracking object from the
+frozen geometry.  The current three-snapshot inputs now also pass a static,
+hash-locked material/library preflight.  No D4-A library processing,
+eigenvalue solve, radial fixed-source solve, axial solve or Picard iteration
+has been started.  No OpenMC process was started.
 
 ## Why this case
 
@@ -45,10 +45,75 @@ Historical case specifications are recoverable from commit `470e0d7`:
   content SHA-256
   `2c8ea2a2342ae54a78e5777858960190b8088c5fb6aa1865a1733285476b748b`.
 
-Those historical files define geometry/material plumbing only.  They do
-not validate the current method: their logs are absent, they use five
-temperature snapshots, an `eps_pod=1e-3` cutoff, and an older scalar outer
-criterion.  None of those numerical choices is imported here.
+Those historical files define geometry/material plumbing only.  They do not
+validate the current method: tracked run logs and physical archives are
+absent, they use five temperature snapshots, an `eps_pod=1e-3` cutoff, and an
+older scalar outer criterion.  None of those numerical choices is imported
+here.
+
+A separate local census found one untracked historical 750 C D4-A solve log,
+SHA-256
+`9f84d885de9526998409c498676aa89f12d60f1833039c5a79424dde1436b254`.
+It records the canonical geometry, completed TONE/ASM/FLU modules and
+`k=1.367208`, but its in-memory objects were deleted and no regional flux was
+exported.  It is provenance only: it is neither a current snapshot nor an
+acceptance reference.
+
+## Frozen three-snapshot definition
+
+The frozen D4-A archive recipe is defined to generate exactly three offline
+radial flux fields:
+
+| snapshot | fuel | cladding | sodium |
+|---:|---:|---:|---:|
+| 1 | 650 C | 620 C | 475 C |
+| 2 | 750 C | 620 C | 475 C |
+| 3 | 850 C | 620 C | 475 C |
+
+Temperature is the prescribed offline material sampling coordinate: it changes
+the microscopic-library temperature and, through `rnr_interpol/rnr_cc`, the
+material densities.  It is not an online reduced unknown.  Each entry will
+generate a complete 132-region, 370-group neutron-flux field, and POD is
+applied to those spatial fields.  The three temperatures are frozen a priori
+because they use the same thermophysical sampling schedule as the accepted
+three-plane pin baseline.  This holds snapshot sampling fixed while testing
+the assembly-scale D4-A radial configuration; it does not claim that geometry
+is the only physical difference or that these states are a coupled
+thermal-hydraulic prediction.  They are not adjusted from D4-A results and do
+not act as relaxation, closure or convergence coefficients.
+
+The remaining three media inherit those declared temperatures in the material
+model: EM10 follows sodium, central helium follows fuel, and gap helium follows
+cladding.  These assignments are frozen physical input assumptions, not fitted
+coefficients.
+
+The declared snapshot count is three, and the planned D4-A basis rank is fixed
+at two before generating the archive.  The rank is a declared spatial
+discretization order, not selected by a fitted singular-value cutoff.  The
+builder uses the admitted D4-A tracking settings and `solver_eps=5e-7`; this
+is the already declared numerical terminal for resolving each discrete radial
+eigenproblem, not a physical parameter.
+
+The minimal current inputs are:
+
+- `data/SpotD4Snap.c2m`, which builds one six-medium physical state;
+- `d4a_three_snapshots.x2m`, which builds and persists exactly three list
+  items (`TRACK`, `MICROLIB2`, `SYSTEM`, `FLUX`);
+- `d4a_snapshot_inputs.sha256`, which freezes the builder, driver, geometry
+  and material procedures;
+- `run_d4a_three_snapshots.sh`, which is default-off and refuses to run
+  unless both `RUN_D4A_SNAPSHOTS=1` and a new `RESULT_DIR` are supplied.
+
+The seconds-scale preflight checks all frozen hashes, the exact three states,
+the archive layout, absence of POD/coupling logic, the admitted TRACK settings
+and the SHEM-370 library hash.  It executes no Dragon transport:
+
+```sh
+sh validation/iterative/preflight_d4a_three_snapshots.sh
+```
+
+Its result is recorded in
+[the D4-A snapshot preflight result](d4a_snapshot_preflight_result.md).
 
 ## Current implementation boundary
 
@@ -170,9 +235,9 @@ ordering, not D4-A transport or D4-A convergence.
 
 ## Remaining work before a convergence census
 
-1. generate one current, hash-locked set of three physical D4-A snapshots;
-2. admit that archive through the existing lifecycle and freeze an independent
-   D4-A reference with the unchanged convergence gate;
+1. separately authorize and execute the one current three-snapshot deck;
+2. independently verify the resulting physical archive, admit it through the
+   existing lifecycle and freeze an independent D4-A reference;
 3. only then run one separately authorized, bounded physical convergence
    census with no empirical parameter or automatic retry.
 

@@ -47,10 +47,12 @@ cover `SPOR64_B2C`, the
 `B2K/B2N/B2S/B2R/B2W` and `B2H/B2I/B2J`.  The fast gate strictly compiles
 the latter three and runs a manufactured 132-region B2H projection; separate
 frozen pin-cell lifecycle replays remain byte-identical.  None of these is a
-physical D4-A result.  The next required input is a current hash-locked set of
-three physical D4-A snapshots, followed by an independent reference.  See
+physical D4-A result.  The three physical material states and their
+default-off archive generator are now hash-locked, and the no-transport input
+preflight passes.  The archive itself still requires a separately authorized
+physical run, followed by an independent reference.  See
 [the D4-A case contract](iterative/second_case_d4a_contract.md) and
-[the TRACK result](iterative/d4a_track_geometry_probe_result.md).
+[the snapshot preflight result](iterative/d4a_snapshot_preflight_result.md).
 
 The generic continuation host is default-off. Enabling it evaluates one
 unchanged direct map from the hash-locked parent and requires a new result

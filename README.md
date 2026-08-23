@@ -141,11 +141,19 @@ than the pin case; `LC` now sizes `MCU/CF/CQ` and is not confused with the
 the actual D4-A tuple `(132,6,12,144)` passes the seconds-scale structural
 publication, solver-interface and projection gates.  These tests manufacture
 payload values with the real extents; they do not manufacture a transport
-result.  The next required physical input is one current, hash-locked set of
-three D4-A snapshots.  An independent D4-A reference and the unchanged gate
-must then be frozen before any convergence claim.  See
+result.  The three snapshot material states are now frozen a priori at fuel
+temperatures 650/750/850 C with cladding/sodium at 620/475 C, matching the
+accepted pin baseline's thermophysical sampling schedule while testing the
+assembly-scale D4-A radial configuration.  Temperature is an offline material
+coordinate that changes cross sections and densities; it is not the online
+reduced unknown.  POD will be applied to the resulting 132-region, 370-group
+flux fields.  A hash-locked, default-off generation deck and a seconds-scale
+no-transport preflight pass.
+The physical archive has not yet been generated, and an independent D4-A
+reference and the unchanged gate must be frozen before any convergence claim.
+See
 [the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md)
-and [the geometry-only TRACK result](validation/iterative/d4a_track_geometry_probe_result.md).
+and [the snapshot preflight result](validation/iterative/d4a_snapshot_preflight_result.md).
 
 ## Earlier rank-2 development history
 
