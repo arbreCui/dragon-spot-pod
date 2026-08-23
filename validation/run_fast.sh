@@ -22,6 +22,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_state_math.py"
 sh "$ROOT/validation/iterative/run_b2c_runtime_dimensions.sh"
+sh "$ROOT/validation/iterative/run_b2h_runtime_geometry.sh"
 sh "$ROOT/validation/iterative/run_a89_runtime_geometry.sh"
 sh "$ROOT/validation/level1/run_level1.sh"
 sh "$ROOT/validation/level2/run_level2.sh"

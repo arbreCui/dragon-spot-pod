@@ -2,7 +2,7 @@
 
 ## Status
 
-`ASSEMBLED_TO_CLOSE_RUNTIME_GEOMETRY_PASSED_NO_TRANSPORT`.
+`RUNTIME_GEOMETRY_CHAIN_COMPILED_PIN_REPLAYED_NO_D4_TRANSPORT`.
 
 No Dragon or OpenMC process was started for this case.  The purpose of this
 record is to choose the next independent geometry without changing the
@@ -68,14 +68,19 @@ The assembled-to-close strict lifecycle now uses the same runtime geometry:
   `LC` sizes `MCU$MCCG`, `CF$MCCG` and `CQ$MCCG`; the independent
   fission-isotope dimension remains `NIFIS=32`.
 
-The remaining strict lifecycle is not yet D4-A ready:
+The next-epoch projection lifecycle now uses the same runtime geometry:
 
-- `SPOR64_B2H/B2I/B2J`, which form or bootstrap the next PROJECTED epoch,
-  still retain pin-specific geometry assumptions;
-- historical validation builders also assume the pin-cell dimensions.
+- `SPOR64_B2H` obtains the region, material and unknown counts from its
+  immutable radial TRACK and preserves the six-surface MCCG relation;
+- `SPOR64_B2I/B2J` require one common TRACK tuple across the three snapshots
+  before bootstrap or CLOSED-to-PROJECTED publication;
+- their POD contraction order, 370-group equations, three snapshots,
+  lifecycle states and bitwise REAL64/REAL32 boundary remain unchanged.
 
-Consequently D4-A must not be run with the current strict chain.  A failure
-would be an interface-dimension failure, not a physical convergence result.
+Historical full-lifecycle builders still assume pin-cell dimensions, so an
+actual D4-A archive has not yet crossed the complete chain.  D4-A transport
+therefore remains unauthorized; the current result is interface readiness,
+not D4-A convergence.
 
 ## Completed vertical slices
 
@@ -132,6 +137,23 @@ make spot-a89-dimensions
 The result is recorded in
 [the A8/A9 runtime-geometry result](a89_runtime_geometry_result.md).
 
+At the projection boundary, a seconds-scale no-transport test admits the old
+pin shape and manufactured `(132,6,138)` shape through `SPOR64_B2H`.  It
+checks all 370 REAL64 projected list items and their exact REAL32 mirrors:
+
+```sh
+make spot-b2h-dimensions
+```
+
+The B2I bootstrap retains its historical result of one commit and twelve
+fail-before-write rejections.  The B2J pin replay advances CLOSED/5 to
+PROJECTED/6, rejects an epoch mismatch, leaves its inputs unchanged and is
+byte-identical to the frozen pre-generalization output.  These are
+no-transport regressions, not a manufactured full D4-A lifecycle.  The
+permanent target above strictly compiles B2H/B2I/B2J and runs B2H; the B2I
+replay uses the historical harness at Git object `891e67c` and the B2J replay
+uses `prepare_r64_next_projected.f90` with the frozen pin artifacts.
+
 The connected `B2K/B2N/B2S/B2R/B2W` sources compile under the strict
 REAL64 flags with runtime region, material and unknown extents.  A frozen
 pin-cell no-Dragon replay independently admits RETURNED (`STATUS=3`) and
@@ -141,18 +163,12 @@ ordering, not D4-A transport or D4-A convergence.
 
 ## Remaining work before a physical run
 
-The remaining code work is dimension generalization and one structural
-fixture only:
+1. generate the actual D4-A radial TRACK and three-snapshot archive, then run
+   one full-chain no-transport admission with their authoritative dimensions;
+2. freeze an independent D4-A reference and the unchanged convergence gate;
+3. only then run one separately authorized, bounded physical convergence
+   census with no empirical parameter or automatic retry.
 
-1. pass the same authoritative dimensions through `B2H/B2I/B2J` without
-   changing their equations;
-2. keep the current 370-group equations, fixed rank two, strict REAL64
-   leakage lifecycle and unchanged three-defect `5e-7` gate;
-3. keep the current method's three snapshots for this second case; the
-   historical five-temperature campaign is not imported;
-4. complete a full-chain no-transport 132-region admission and retain the
-   existing pin-cell regression before any physical run.
-
-Only after those four checks pass may a separately authorized D4-A physical
-run be prepared.  A new independent OpenMC reference will also be required;
-none currently exists for this case.
+The method remains the same 370-group, fixed rank-two basis, three-snapshot
+Synthesis-POD iteration.  The historical five-temperature campaign is not
+imported, and no D4-A reference currently exists.

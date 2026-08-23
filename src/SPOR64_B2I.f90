@@ -14,10 +14,8 @@ module SPOR64_B2I
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
   integer, parameter :: NSNAP = 3
-  integer, parameter :: NUNKNO = 14
-  integer, parameter :: NMAT = 8
+  integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
   integer, parameter :: BOOTSTRAP_EPOCH = 0
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
@@ -39,28 +37,33 @@ contains
     integer :: plane_state(NSTATE), plane_track_state(NSTATE)
     integer :: library_state(NSTATE), macro_state(NSTATE)
     integer :: system_state(NSTATE)
-    integer :: state_dims(4), plane_key(NREG), anis_key(NREG)
-    integer :: seed_key(NREG), imerge(NMAT)
+    integer :: state_dims(4)
     integer :: archive_planes, system_snapshot, fixb, ncoef
     integer :: total_basis, total_gram
     integer :: nfloor, ig, ip, ir, iu, a, b, nmode
+    integer :: nreg, nunkno, nmat
+    integer :: plane_nreg, plane_nunkno, plane_nmat
     integer :: index_a, index_b, index_g, ilong, itylcm
     integer :: allocation_status
     integer, allocatable :: rank(:), offset(:), gram_offset(:)
     integer, allocatable :: basis_offset(:), mat1d(:)
+    integer, allocatable :: plane_key(:), anis_key(:), seed_key(:)
+    integer, allocatable :: imerge(:)
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
-    logical :: seen_unknown(NUNKNO)
+    logical, allocatable :: seen_unknown(:)
     real(real32) :: keff32
-    real(real32) :: eps_converge(5), area32(NREG), volume32(NREG)
+    real(real32) :: eps_converge(5)
     real(real32) :: plane_leak32(NGRP)
     real(real32) :: system_leak32(NGRP)
-    real(real32) :: mirror_flux32(NUNKNO), mirror_source32(NUNKNO)
+    real(real32), allocatable :: area32(:), volume32(:)
+    real(real32), allocatable :: mirror_flux32(:), mirror_source32(:)
     real(real32), allocatable :: dz32(:), basis32(:)
     real(real64) :: rho64, norm64, gram_error64, gram_error_check64
     real(real64) :: iter_keff64
     real(real64) :: weight_sum, gram_value
-    real(real64) :: authority_flux64(NUNKNO), authority_source64(NUNKNO)
+    real(real64), allocatable :: authority_flux64(:)
+    real(real64), allocatable :: authority_source64(:)
     real(real64), allocatable :: coordinates64(:), gram64(:)
     real(real64), allocatable :: leakage64(:), height64(:)
     real(real64), allocatable :: offspace64(:)
@@ -78,6 +81,8 @@ contains
     type(c_ptr) :: output_item, output_authority
 
     status = SPOR64_B2I_ADMISSION_FAILED
+    nunkno = 0
+    nmat = 0
 
     ! This is an exactly-once bootstrap seal.  It accepts no loose RHO,
     ! basis, epoch, or plane pointer: every value is recovered from the two
@@ -99,6 +104,28 @@ contains
     if (c_associated(ipaxtrack,iparchive)) return
     if (.not. EMPTY_MEMORY_ROOT(ipaxout)) return
     if (.not. EMPTY_MEMORY_ROOT(iparchiveout)) return
+
+    ! The axial TRACK owns the runtime radial-region extent used by the
+    ! stored POD basis.  Its independent plane tuple is closed below before
+    ! any output is mutated.
+    if (.not. CHARACTER_RECORD_MATCHES(ipaxtrack,'SIGNATURE',3,12, &
+        'L_TRACK')) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipaxtrack,'TRACK-TYPE',3,12, &
+        'SPOT')) return
+    if (.not. RECORD_MATCHES(ipaxtrack,'STATE-VECTOR',NSTATE,1)) return
+    call LCMGET(ipaxtrack,'STATE-VECTOR',axial_track_state)
+    nreg = axial_track_state(6)
+    nfloor = axial_track_state(7)
+    if (nreg <= 0 .or. nfloor <= 0) return
+    if (axial_track_state(8) /= NSNAP) return
+    if (int(axial_track_state(1),int64) /= &
+        int(nreg,int64)*int(nfloor,int64)) return
+    if (axial_track_state(11) < 0) return
+    if (int(axial_track_state(12),int64) /= &
+        int(nreg,int64)*(int(nfloor,int64)+1_int64)) return
+    if (int(axial_track_state(11),int64)+ &
+        int(axial_track_state(12),int64) > &
+        int(axial_track_state(2),int64)) return
 
     ! Canonical B/A/RHO/L are admitted only from one SPOSTATE-owned AX root.
     if (.not. CHARACTER_RECORD_MATCHES(ipax,'SIGNATURE',3,12, &
@@ -135,9 +162,13 @@ contains
     if (offset(1) /= 0 .or. gram_offset(1) /= 0) return
     if (basis_offset(1) /= 0 .or. offset(NGRP+1) /= ncoef) return
     do ig = 1, NGRP
-      if (offset(ig+1)-offset(ig) /= NSNAP*rank(ig)) return
-      if (gram_offset(ig+1)-gram_offset(ig) /= rank(ig)*rank(ig)) return
-      if (basis_offset(ig+1)-basis_offset(ig) /= NREG*rank(ig)) return
+      if (int(offset(ig+1),int64)-int(offset(ig),int64) /= &
+          int(NSNAP,int64)*int(rank(ig),int64)) return
+      if (int(gram_offset(ig+1),int64)-int(gram_offset(ig),int64) /= &
+          int(rank(ig),int64)*int(rank(ig),int64)) return
+      if (int(basis_offset(ig+1),int64)- &
+          int(basis_offset(ig),int64) /= &
+          int(nreg,int64)*int(rank(ig),int64)) return
     end do
     total_basis = basis_offset(NGRP+1)
     total_gram = gram_offset(NGRP+1)
@@ -186,26 +217,12 @@ contains
 
     ! Bind the stored POD bundle to the derived geometry identities retained
     ! by SPOSTATE.  These identities are not a hash of every axial-track row.
-    if (.not. CHARACTER_RECORD_MATCHES(ipaxtrack,'SIGNATURE',3,12, &
-        'L_TRACK')) return
-    if (.not. CHARACTER_RECORD_MATCHES(ipaxtrack,'TRACK-TYPE',3,12, &
-        'SPOT')) return
-    if (.not. RECORD_MATCHES(ipaxtrack,'STATE-VECTOR',NSTATE,1)) return
-    call LCMGET(ipaxtrack,'STATE-VECTOR',axial_track_state)
-    if (axial_track_state(1) /= NREG*axial_track_state(7)) return
     if (axial_state(2) /= axial_track_state(2)) return
-    if (axial_track_state(6) /= NREG) return
-    if (axial_track_state(7) <= 0 .or. axial_track_state(8) /= NSNAP) return
-    if (axial_track_state(11) < 0) return
-    if (axial_track_state(12) /= &
-        NREG*(axial_track_state(7)+1)) return
-    if (axial_track_state(11)+axial_track_state(12) > &
-        axial_track_state(2)) return
-    nfloor = axial_track_state(7)
-    if (.not. RECORD_MATCHES(ipaxtrack,'AREA2D',NREG,2)) return
+    if (.not. RECORD_MATCHES(ipaxtrack,'AREA2D',nreg,2)) return
     if (.not. RECORD_MATCHES(ipaxtrack,'MAT1D',nfloor,1)) return
     if (.not. RECORD_MATCHES(ipaxtrack,'VOL1D',nfloor,2)) return
-    allocate(mat1d(nfloor),dz32(nfloor),stat=allocation_status)
+    allocate(area32(nreg),mat1d(nfloor),dz32(nfloor), &
+        stat=allocation_status)
     if (allocation_status /= 0) return
     call LCMGET(ipaxtrack,'AREA2D',area32)
     call LCMGET(ipaxtrack,'MAT1D',mat1d)
@@ -235,9 +252,9 @@ contains
       do a = 1, nmode
         do b = 1, nmode
           gram_value = +0.0_real64
-          do ir = 1, NREG
-            index_a = basis_offset(ig)+(a-1)*NREG+ir
-            index_b = basis_offset(ig)+(b-1)*NREG+ir
+          do ir = 1, nreg
+            index_a = basis_offset(ig)+(a-1)*nreg+ir
+            index_b = basis_offset(ig)+(b-1)*nreg+ir
             gram_value = gram_value + real(area32(ir),real64)/ &
                 weight_sum*real(basis32(index_a),real64)* &
                 real(basis32(index_b),real64)
@@ -306,10 +323,38 @@ contains
       if (.not. CHARACTER_RECORD_MATCHES(input_flux(ip),'SIGNATURE', &
           3,12,'L_FLUX')) return
 
+      if (.not. RECORD_MATCHES(input_track(ip),'STATE-VECTOR', &
+          NSTATE,1)) return
+      call LCMGET(input_track(ip),'STATE-VECTOR',plane_track_state)
+      plane_nreg = plane_track_state(1)
+      plane_nunkno = plane_track_state(2)
+      plane_nmat = plane_track_state(4)
+      if (plane_nreg <= 0 .or. plane_nunkno <= 0 .or. &
+          plane_nmat <= 0) return
+      if (plane_track_state(5) /= NSOUT) return
+      if (int(plane_nunkno,int64) /= &
+          int(plane_nreg,int64)+int(NSOUT,int64)) return
+      if (plane_track_state(6) /= 1 .or. &
+          plane_track_state(9) /= 0) return
+      if (plane_track_state(14) /= 4) return
+      if (plane_nreg /= nreg) return
+      if (ip == 1) then
+        nunkno = plane_nunkno
+        nmat = plane_nmat
+        allocate(plane_key(nreg),anis_key(nreg),seed_key(nreg), &
+            imerge(nmat),volume32(nreg),seen_unknown(nunkno), &
+            mirror_flux32(nunkno),mirror_source32(nunkno), &
+            authority_flux64(nunkno),authority_source64(nunkno), &
+            stat=allocation_status)
+        if (allocation_status /= 0) return
+      else
+        if (plane_nunkno /= nunkno .or. plane_nmat /= nmat) return
+      end if
+
       if (.not. RECORD_MATCHES(input_library(ip),'STATE-VECTOR', &
           NSTATE,1)) return
       call LCMGET(input_library(ip),'STATE-VECTOR',library_state)
-      if (library_state(1) /= NMAT .or. library_state(2) <= 0) return
+      if (library_state(1) /= nmat .or. library_state(2) <= 0) return
       if (library_state(3) /= NGRP .or. library_state(4) /= 3) return
       if (.not. RECORD_MATCHES(input_library(ip),'MACROLIB',-1,0)) return
       library_macro = LCMGID(input_library(ip),'MACROLIB')
@@ -319,7 +364,7 @@ contains
       if (.not. RECORD_MATCHES(library_macro,'STATE-VECTOR', &
           NSTATE,1)) return
       call LCMGET(library_macro,'STATE-VECTOR',macro_state)
-      if (macro_state(1) /= NGRP .or. macro_state(2) /= NMAT) return
+      if (macro_state(1) /= NGRP .or. macro_state(2) /= nmat) return
       if (macro_state(3) /= 3 .or. macro_state(4) /= NIFIS) return
       if (macro_state(6) /= 2 .or. macro_state(13) /= 0) return
       if (.not. RECORD_MATCHES(library_macro,'GROUP',NGRP,10)) return
@@ -333,7 +378,7 @@ contains
           NSTATE,1)) return
       call LCMGET(input_system(ip),'STATE-VECTOR',system_state)
       if (any(system_state(1:14) /= &
-          [1,1,1,0,1,1,4,NGRP,NUNKNO,NMAT,1,0,0,0])) return
+          [1,1,1,0,1,1,4,NGRP,nunkno,nmat,1,0,0,0])) return
       if (any(system_state(15:NSTATE) /= 0)) return
       if (.not. RECORD_MATCHES(input_system(ip),'GROUP',NGRP,10)) return
       system_groups = LCMGID(input_system(ip),'GROUP')
@@ -357,35 +402,26 @@ contains
       call LCMGET(input_system(ip),'SPOT-L1-SNAP',system_snapshot)
       if (system_snapshot /= ip) return
 
-      if (.not. RECORD_MATCHES(input_track(ip),'STATE-VECTOR', &
-          NSTATE,1)) return
-      call LCMGET(input_track(ip),'STATE-VECTOR',plane_track_state)
-      if (plane_track_state(1) /= NREG .or. &
-          plane_track_state(2) /= NUNKNO) return
-      if (plane_track_state(4) /= NMAT .or. &
-          plane_track_state(5) /= 6) return
-      if (plane_track_state(6) /= 1 .or. &
-          plane_track_state(9) /= 0) return
-      if (plane_track_state(14) /= 4) return
       if (.not. CHARACTER_RECORD_MATCHES(input_track(ip),'TRACK-TYPE', &
           3,12,'MCCG')) return
       if (.not. CHARACTER_RECORD_MATCHES(input_track(ip),'LINK.FTRACK', &
           3,12,'TRACK_f')) return
-      if (.not. RECORD_MATCHES(input_track(ip),'VOLUME',NREG,2)) return
-      if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX',NREG,1)) return
+      if (.not. RECORD_MATCHES(input_track(ip),'VOLUME',nreg,2)) return
+      if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX',nreg,1)) return
       if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX$ANIS', &
-          NREG,1)) return
+          nreg,1)) return
       call LCMGET(input_track(ip),'VOLUME',volume32)
       call LCMGET(input_track(ip),'KEYFLX',plane_key)
       call LCMGET(input_track(ip),'KEYFLX$ANIS',anis_key)
       if (.not. all(ieee_is_finite(volume32))) return
       if (any(volume32 <= +0.0_real32)) return
+      if (.not. allocated(seen_unknown)) return
       seen_unknown = .false.
-      do ir = 1, NREG
+      do ir = 1, nreg
         if (transfer(volume32(ir),0_int32) /= &
             transfer(area32(ir),0_int32)) return
         if (plane_key(ir) /= anis_key(ir)) return
-        if (anis_key(ir) < 1 .or. anis_key(ir) > NUNKNO) return
+        if (anis_key(ir) < 1 .or. anis_key(ir) > nunkno) return
         if (seen_unknown(anis_key(ir))) return
         seen_unknown(anis_key(ir)) = .true.
       end do
@@ -393,10 +429,10 @@ contains
       if (.not. RECORD_MATCHES(input_flux(ip),'STATE-VECTOR', &
           NSTATE,1)) return
       call LCMGET(input_flux(ip),'STATE-VECTOR',plane_state)
-      if (plane_state(1) /= NGRP .or. plane_state(2) /= NUNKNO) return
+      if (plane_state(1) /= NGRP .or. plane_state(2) /= nunkno) return
       if (plane_state(3) /= 1 .or. any(plane_state(4:7) /= 0)) return
       if (plane_state(8) /= 3 .or. plane_state(9) /= 3) return
-      if (plane_state(10) /= 1 .or. plane_state(17) /= NMAT) return
+      if (plane_state(10) /= 1 .or. plane_state(17) /= nmat) return
       if (plane_state(11) /= 740 .or. plane_state(12) /= 500) return
       if (any(plane_state(13:16) /= 0)) return
       if (plane_state(18) /= 1 .or. &
@@ -408,7 +444,7 @@ contains
       if (transfer(eps_converge(2),0_int32) /= FROZEN_TOL_BITS) return
       if (transfer(eps_converge(3),0_int32) /= FROZEN_TOL_BITS) return
       if (any(abs(eps_converge(4:5)) > +0.0_real32)) return
-      if (.not. RECORD_MATCHES(input_flux(ip),'IMERGE-LEAK',NMAT,1)) return
+      if (.not. RECORD_MATCHES(input_flux(ip),'IMERGE-LEAK',nmat,1)) return
       call LCMGET(input_flux(ip),'IMERGE-LEAK',imerge)
       if (any(imerge /= 1)) return
       if (.not. CHARACTER_RECORD_MATCHES(input_flux(ip),'OPTION', &
@@ -419,7 +455,7 @@ contains
           3,12,'TRACK')) return
       if (.not. CHARACTER_RECORD_MATCHES(input_flux(ip),'LINK.SYSTEM', &
           3,12,'SYSTEM')) return
-      if (.not. RECORD_MATCHES(input_flux(ip),'KEYFLX',NREG,1)) return
+      if (.not. RECORD_MATCHES(input_flux(ip),'KEYFLX',nreg,1)) return
       call LCMGET(input_flux(ip),'KEYFLX',seed_key)
       if (any(seed_key /= anis_key)) return
       if (.not. RECORD_MATCHES(input_flux(ip),'SPOT-LEAK1D', &
@@ -456,13 +492,13 @@ contains
       if (.not. c_associated(mirror_source)) return
       do ig = 1, NGRP
         call LCMLEL(authority_flux,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 4) return
+        if (ilong /= nunkno .or. itylcm /= 4) return
         call LCMLEL(authority_source,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 4) return
+        if (ilong /= nunkno .or. itylcm /= 4) return
         call LCMLEL(mirror_flux,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 2) return
+        if (ilong /= nunkno .or. itylcm /= 2) return
         call LCMLEL(mirror_source,ig,ilong,itylcm)
-        if (ilong /= NUNKNO .or. itylcm /= 2) return
+        if (ilong /= nunkno .or. itylcm /= 2) return
         call LCMGDL(authority_flux,ig,authority_flux64)
         call LCMGDL(authority_source,ig,authority_source64)
         call LCMGDL(mirror_flux,ig,mirror_flux32)
@@ -473,7 +509,7 @@ contains
         if (.not. all(ieee_is_finite(mirror_source32))) return
         if (any(abs(authority_flux64) > REAL32_MAX64)) return
         if (any(abs(authority_source64) > REAL32_MAX64)) return
-        do iu = 1, NUNKNO
+        do iu = 1, nunkno
           found32 = transfer(mirror_flux32(iu),0_int32)
           expected32 = transfer(real(authority_flux64(iu),real32),0_int32)
           if (found32 /= expected32) return
@@ -481,7 +517,7 @@ contains
           expected32 = transfer(real(authority_source64(iu),real32),0_int32)
           if (found32 /= expected32) return
         end do
-        do ir = 1, NREG
+        do ir = 1, nreg
           if (authority_flux64(anis_key(ir)) <= +0.0_real64) return
         end do
       end do

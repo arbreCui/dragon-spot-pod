@@ -166,6 +166,9 @@ for relative in formal_inputs:
 runtime_geometry_sources = (
     "src/SPOR64_A8.f90",
     "src/SPOR64_B2B.f90",
+    "src/SPOR64_B2H.f90",
+    "src/SPOR64_B2I.f90",
+    "src/SPOR64_B2J.f90",
     "src/SPOR64_B2K.f90",
     "src/SPOR64_B2N.f90",
     "src/SPOR64_B2R.f90",

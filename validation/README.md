@@ -41,10 +41,12 @@ to the existing OpenMC reference are summarized in
 The second physical case is frozen as the IRENA D4-A 1/12 assembly.  No
 transport has been run.  The seconds-scale slices cover `SPOR64_B2C`, the
 `SPOR64_B2B -> A9 -> A8` REAL64 radial boundary, and runtime geometry through
-`B2K/B2N/B2S/B2R/B2W`.  The latter is compile-checked and preserves the
-byte-identical pin-cell RETURNED-to-CLOSED replay; it is not yet a physical
-D4-A result.  `B2H/B2I/B2J` and a full 132-region lifecycle fixture still
-remain before any D4-A transport is authorized.  See
+`B2K/B2N/B2S/B2R/B2W` and `B2H/B2I/B2J`.  The fast gate strictly compiles
+the latter three and runs a manufactured 132-region B2H projection; separate
+frozen pin-cell lifecycle replays remain byte-identical.  None of these is a
+physical D4-A result.  A full lifecycle built from the actual D4-A TRACK
+records and an independent D4-A reference still remain before transport is
+authorized.  See
 [the D4-A case contract](iterative/second_case_d4a_contract.md).
 
 The generic continuation host is default-off. Enabling it evaluates one

@@ -22,10 +22,8 @@ module SPOR64_B2J
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
   integer, parameter :: NSNAP = 3
-  integer, parameter :: NUNKNO = 14
-  integer, parameter :: NMAT = 8
+  integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -43,26 +41,28 @@ contains
     integer :: axial_state(NSTATE), axial_track_state(NSTATE)
     integer :: state_dims(4), rank(NGRP), offset(NGRP+1)
     integer :: basis_offset(NGRP+1), plane_track_state(NSTATE)
-    integer :: plane_key(NREG), anis_key(NREG), seed_key(NREG)
     integer :: library_state(NSTATE), macro_state(NSTATE)
     integer :: system_state(NSTATE)
     integer :: archive_planes, root_planes, axial_epoch, archive_epoch
     integer :: plane_epoch, projected_epoch, ncoef, total_basis
+    integer :: nreg, nunkno, nmat
     integer :: ig, ip, ir, a, nmode, b2h_status, allocation_status
     integer :: system_snapshot
+    integer, allocatable :: plane_key(:), anis_key(:), seed_key(:)
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
-    real(real32) :: keff32, area32(NREG), plane_volume32(NREG)
+    real(real32) :: keff32
     real(real64) :: axkeff64
     integer :: k64len, k64typ
     real(real32) :: plane_leakage32(NGRP), system_leakage32(NGRP)
+    real(real32), allocatable :: area32(:), plane_volume32(:)
     real(real64) :: rho64, root_rho64, plane_rho64, iter_keff64
-    real(real32), allocatable :: basis32(:)
+    real(real32), allocatable :: basis32(:), basis_slice32(:,:)
     real(real64), allocatable :: coordinates64(:), leakage64(:)
     real(real64), allocatable :: projected_region64(:,:,:)
-    real(real32) :: basis_slice32(NREG,NSNAP)
     real(real64) :: coordinate_slice64(NSNAP)
-    logical :: reconstruction_ok, seen_unknown(NUNKNO)
+    logical :: reconstruction_ok
+    logical, allocatable :: seen_unknown(:)
     character(len=12) :: lifecycle_state, signature
     character(len=12), parameter :: stage_name(NSNAP) = &
         ['B2J-STAGE-1','B2J-STAGE-2','B2J-STAGE-3']
@@ -91,6 +91,11 @@ contains
     if (c_associated(ipax,iparchive)) return
     if (c_associated(ipaxtrack,iparchive)) return
     if (.not. EMPTY_ROOT(iparchiveout)) return
+
+    ! The three immutable radial TRACK objects are the sole geometry
+    ! authority for this transition.
+    if (.not. ARCHIVE_TRACK_GEOMETRY_IS_VALID(iparchive,nreg,nunkno, &
+        nmat)) return
 
     ! Admit the fixed Synthesis-POD representation from the sealed AX root.
     if (.not. CHARACTER_RECORD_MATCHES(ipax,'SIGNATURE',3,12, &
@@ -126,8 +131,11 @@ contains
     if (offset(1) /= 0 .or. basis_offset(1) /= 0) return
     if (offset(NGRP+1) /= ncoef) return
     do ig = 1, NGRP
-      if (offset(ig+1)-offset(ig) /= NSNAP*rank(ig)) return
-      if (basis_offset(ig+1)-basis_offset(ig) /= NREG*rank(ig)) return
+      if (int(offset(ig+1),int64)-int(offset(ig),int64) /= &
+          int(NSNAP,int64)*int(rank(ig),int64)) return
+      if (int(basis_offset(ig+1),int64)- &
+          int(basis_offset(ig),int64) /= &
+          int(nreg,int64)*int(rank(ig),int64)) return
     end do
     total_basis = basis_offset(NGRP+1)
     if (total_basis <= 0) return
@@ -138,7 +146,10 @@ contains
     if (.not. RECORD_MATCHES(ipax,'K-EFFECTIVE',1,2)) return
     allocate(basis32(total_basis),coordinates64(ncoef), &
         leakage64(NGRP*NSNAP), &
-        projected_region64(NREG,NGRP,NSNAP), &
+        projected_region64(nreg,NGRP,NSNAP), &
+        plane_key(nreg),anis_key(nreg),seed_key(nreg), &
+        area32(nreg),plane_volume32(nreg), &
+        basis_slice32(nreg,NSNAP),seen_unknown(nunkno), &
         stat=allocation_status)
     if (allocation_status /= 0) return
     call LCMGET(ipax,'SPOT-X-BASIS',basis32)
@@ -170,11 +181,19 @@ contains
         'SPOT')) return
     if (.not. RECORD_MATCHES(ipaxtrack,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipaxtrack,'STATE-VECTOR',axial_track_state)
-    if (axial_track_state(6) /= NREG) return
+    if (axial_track_state(6) /= nreg) return
+    if (axial_track_state(7) <= 0) return
     if (axial_track_state(8) /= NSNAP) return
-    if (axial_track_state(1) /= NREG*axial_track_state(7)) return
+    if (int(axial_track_state(1),int64) /= &
+        int(nreg,int64)*int(axial_track_state(7),int64)) return
+    if (axial_track_state(11) < 0) return
+    if (int(axial_track_state(12),int64) /= &
+        int(nreg,int64)*(int(axial_track_state(7),int64)+1_int64)) return
+    if (int(axial_track_state(11),int64)+ &
+        int(axial_track_state(12),int64) > &
+        int(axial_track_state(2),int64)) return
     if (axial_state(2) /= axial_track_state(2)) return
-    if (.not. RECORD_MATCHES(ipaxtrack,'AREA2D',NREG,2)) return
+    if (.not. RECORD_MATCHES(ipaxtrack,'AREA2D',nreg,2)) return
     call LCMGET(ipaxtrack,'AREA2D',area32)
     if (.not. all(ieee_is_finite(area32))) return
     if (any(area32 <= +0.0_real32)) return
@@ -249,7 +268,7 @@ contains
       if (.not. RECORD_MATCHES(input_library(ip),'STATE-VECTOR', &
           NSTATE,1)) return
       call LCMGET(input_library(ip),'STATE-VECTOR',library_state)
-      if (library_state(1) /= NMAT .or. library_state(2) <= 0) return
+      if (library_state(1) /= nmat .or. library_state(2) <= 0) return
       if (library_state(3) /= NGRP .or. library_state(4) /= 3) return
       if (.not. RECORD_MATCHES(input_library(ip),'MACROLIB',-1,0)) return
       library_macro = LCMGID(input_library(ip),'MACROLIB')
@@ -259,7 +278,7 @@ contains
       if (.not. RECORD_MATCHES(library_macro,'STATE-VECTOR', &
           NSTATE,1)) return
       call LCMGET(library_macro,'STATE-VECTOR',macro_state)
-      if (macro_state(1) /= NGRP .or. macro_state(2) /= NMAT) return
+      if (macro_state(1) /= NGRP .or. macro_state(2) /= nmat) return
       if (macro_state(3) /= 3 .or. macro_state(4) /= NIFIS) return
       if (macro_state(6) /= 2 .or. macro_state(13) /= 0) return
       if (.not. RECORD_MATCHES(library_macro,'GROUP',NGRP,10)) return
@@ -275,7 +294,7 @@ contains
           NSTATE,1)) return
       call LCMGET(input_system(ip),'STATE-VECTOR',system_state)
       if (any(system_state(1:14) /= &
-          [1,1,1,0,1,1,4,NGRP,NUNKNO,NMAT,1,0,0,0])) return
+          [1,1,1,0,1,1,4,NGRP,nunkno,nmat,1,0,0,0])) return
       if (any(system_state(15:NSTATE) /= 0)) return
       if (.not. RECORD_MATCHES(input_system(ip),'GROUP',NGRP,10)) return
       system_groups = LCMGID(input_system(ip),'GROUP')
@@ -299,10 +318,10 @@ contains
       if (.not. RECORD_MATCHES(input_track(ip),'STATE-VECTOR', &
           NSTATE,1)) return
       call LCMGET(input_track(ip),'STATE-VECTOR',plane_track_state)
-      if (plane_track_state(1) /= NREG .or. &
-          plane_track_state(2) /= NUNKNO) return
-      if (plane_track_state(4) /= NMAT .or. &
-          plane_track_state(5) /= 6) return
+      if (plane_track_state(1) /= nreg .or. &
+          plane_track_state(2) /= nunkno) return
+      if (plane_track_state(4) /= nmat .or. &
+          plane_track_state(5) /= NSOUT) return
       if (plane_track_state(6) /= 1 .or. &
           plane_track_state(9) /= 0) return
       if (plane_track_state(14) /= 4) return
@@ -310,25 +329,25 @@ contains
           3,12,'MCCG')) return
       if (.not. CHARACTER_RECORD_MATCHES(input_track(ip),'LINK.FTRACK', &
           3,12,'TRACK_f')) return
-      if (.not. RECORD_MATCHES(input_track(ip),'VOLUME',NREG,2)) return
-      if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX',NREG,1)) return
-      if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX$ANIS',NREG,1)) &
+      if (.not. RECORD_MATCHES(input_track(ip),'VOLUME',nreg,2)) return
+      if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX',nreg,1)) return
+      if (.not. RECORD_MATCHES(input_track(ip),'KEYFLX$ANIS',nreg,1)) &
           return
       call LCMGET(input_track(ip),'VOLUME',plane_volume32)
       call LCMGET(input_track(ip),'KEYFLX',plane_key)
       call LCMGET(input_track(ip),'KEYFLX$ANIS',anis_key)
       if (.not. all(ieee_is_finite(plane_volume32))) return
       seen_unknown = .false.
-      do ir = 1, NREG
+      do ir = 1, nreg
         found32 = transfer(plane_volume32(ir),0_int32)
         expected32 = transfer(area32(ir),0_int32)
         if (found32 /= expected32) return
         if (plane_key(ir) /= anis_key(ir)) return
-        if (anis_key(ir) < 1 .or. anis_key(ir) > NUNKNO) return
+        if (anis_key(ir) < 1 .or. anis_key(ir) > nunkno) return
         if (seen_unknown(anis_key(ir))) return
         seen_unknown(anis_key(ir)) = .true.
       end do
-      if (.not. RECORD_MATCHES(input_flux(ip),'KEYFLX',NREG,1)) return
+      if (.not. RECORD_MATCHES(input_flux(ip),'KEYFLX',nreg,1)) return
       call LCMGET(input_flux(ip),'KEYFLX',seed_key)
       if (any(seed_key /= anis_key)) return
       if (.not. RECORD_MATCHES(input_flux(ip),'SPOT-R64',-1,0)) return
@@ -369,8 +388,8 @@ contains
       coordinate_slice64 = +0.0_real64
       do a = 1, nmode
         basis_slice32(:,a) = basis32( &
-            basis_offset(ig)+(a-1)*NREG+1: &
-            basis_offset(ig)+a*NREG)
+            basis_offset(ig)+(a-1)*nreg+1: &
+            basis_offset(ig)+a*nreg)
       end do
       do ip = 1, NSNAP
         coordinate_slice64(1:nmode) = coordinates64( &
@@ -396,7 +415,8 @@ contains
       if (b2h_status /= SPOR64_B2H_PROJECTED_COMMITTED) &
           call XABORT('SPOR64_B2J: UNKNOWN B2H STATUS.')
       if (.not. STAGED_PROJECTED_OBJECT_IS_COMMITTED(staged_flux(ip), &
-          rho64,projected_epoch,leakage64((ip-1)*NGRP+1:ip*NGRP))) then
+          rho64,projected_epoch,nunkno, &
+          leakage64((ip-1)*NGRP+1:ip*NGRP))) then
         call CLOSE_STAGES(staged_flux)
         return
       end if
@@ -657,6 +677,52 @@ contains
   end subroutine SPOR64_B2J_PROJECT_PROPOSAL
 
 
+  logical function ARCHIVE_TRACK_GEOMETRY_IS_VALID(iparchive,nreg, &
+      nunkno,nmat)
+    type(c_ptr), intent(in) :: iparchive
+    integer, intent(out) :: nreg, nunkno, nmat
+
+    integer :: state(NSTATE), ip
+    type(c_ptr) :: tracks, track
+
+    ARCHIVE_TRACK_GEOMETRY_IS_VALID = .false.
+    nreg = 0
+    nunkno = 0
+    nmat = 0
+    if (.not. RECORD_MATCHES(iparchive,'TRACK',NSNAP,10)) return
+    tracks = LCMGID(iparchive,'TRACK')
+    if (.not. c_associated(tracks)) return
+    do ip = 1, NSNAP
+      if (.not. LIST_ITEM_IS_DIRECTORY(tracks,ip)) return
+      track = LCMGIL(tracks,ip)
+      if (.not. c_associated(track)) return
+      if (.not. CHARACTER_RECORD_MATCHES(track,'SIGNATURE',3,12, &
+          'L_TRACK')) return
+      if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
+      call LCMGET(track,'STATE-VECTOR',state)
+      if (state(1) <= 0 .or. state(2) <= 0 .or. state(4) <= 0) return
+      if (state(5) /= NSOUT) return
+      if (int(state(2),int64) /= &
+          int(state(1),int64)+int(NSOUT,int64)) return
+      if (ip == 1) then
+        nreg = state(1)
+        nunkno = state(2)
+        nmat = state(4)
+      else
+        if (state(1) /= nreg .or. state(2) /= nunkno .or. &
+            state(4) /= nmat) return
+      end if
+      if (.not. RECORD_MATCHES(track,'V$MCCG',state(2),2)) return
+      if (.not. RECORD_MATCHES(track,'NZON$MCCG',state(2),1)) return
+      if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+      if (.not. RECORD_MATCHES(track,'VOLUME',state(1),2)) return
+      if (.not. RECORD_MATCHES(track,'KEYFLX',state(1),1)) return
+      if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',state(1),1)) return
+    end do
+    ARCHIVE_TRACK_GEOMETRY_IS_VALID = .true.
+  end function ARCHIVE_TRACK_GEOMETRY_IS_VALID
+
+
   subroutine CLOSE_STAGES(staged_flux)
     type(c_ptr), intent(inout) :: staged_flux(:)
     integer :: ip
@@ -696,25 +762,31 @@ contains
 
   logical function PROJECTED_PLANE_ROOT_IS_EXACT(iplist)
     type(c_ptr), intent(in) :: iplist
+    logical :: l64_exact, legacy_exact
 
-    PROJECTED_PLANE_ROOT_IS_EXACT = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT_L64) &
-        .or. EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT)
+    l64_exact = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT_L64)
+    legacy_exact = EXACT_INVENTORY(iplist,SCHEMA_PROJECTED_PLANE_ROOT)
+    PROJECTED_PLANE_ROOT_IS_EXACT = l64_exact .or. legacy_exact
   end function PROJECTED_PLANE_ROOT_IS_EXACT
   logical function STAGED_PROJECTED_OBJECT_IS_COMMITTED(iplist,rho,epoch, &
-      expected_leakage)
+      nunkno,expected_leakage)
     type(c_ptr), intent(in) :: iplist
     real(real64), intent(in) :: rho
-    integer, intent(in) :: epoch
+    integer, intent(in) :: epoch, nunkno
     real(real64), intent(in) :: expected_leakage(:)
     type(c_ptr) :: authority, authority_flux, mirror_flux
     real(real64) :: found_rho
-    real(real64) :: authority_flux64(NUNKNO)
     real(real32) :: found_leakage(NGRP)
-    real(real32) :: mirror_flux32(NUNKNO)
+    real(real64), allocatable :: authority_flux64(:)
+    real(real32), allocatable :: mirror_flux32(:)
     integer(int32) :: found32, expected32
-    integer :: found_epoch, ig, iu, ilong, itylcm
+    integer :: found_epoch, ig, iu, ilong, itylcm, allocation_status
 
     STAGED_PROJECTED_OBJECT_IS_COMMITTED = .false.
+    if (nunkno <= 0) return
+    allocate(authority_flux64(nunkno),mirror_flux32(nunkno), &
+        stat=allocation_status)
+    if (allocation_status /= 0) return
     if (.not. PROJECTED_PLANE_ROOT_IS_EXACT(iplist)) return
     if (.not. RECORD_MATCHES(iplist,'SPOT-R64',-1,0)) return
     authority = LCMGID(iplist,'SPOT-R64')
@@ -739,15 +811,15 @@ contains
     if (found_epoch /= epoch) return
     do ig = 1, NGRP
       call LCMLEL(authority_flux,ig,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 4) return
+      if (ilong /= nunkno .or. itylcm /= 4) return
       call LCMLEL(mirror_flux,ig,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 2) return
+      if (ilong /= nunkno .or. itylcm /= 2) return
       call LCMGDL(authority_flux,ig,authority_flux64)
       call LCMGDL(mirror_flux,ig,mirror_flux32)
       if (.not. all(ieee_is_finite(authority_flux64))) return
       if (.not. all(ieee_is_finite(mirror_flux32))) return
       if (any(abs(authority_flux64) > REAL32_MAX64)) return
-      do iu = 1, NUNKNO
+      do iu = 1, nunkno
         found32 = transfer(mirror_flux32(iu),0_int32)
         expected32 = transfer(real(authority_flux64(iu),real32),0_int32)
         if (found32 /= expected32) return

@@ -2,7 +2,7 @@ module SPOR64_B2H
   ! Projects one plane into the fixed POD space, and the
   ! reconstruction that inverts it.
   use, intrinsic :: iso_c_binding, only : c_associated, c_ptr
-  use, intrinsic :: iso_fortran_env, only : int32, real32, real64
+  use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
   use SPOR64_VERIFY, only : CHARACTER_RECORD_MATCHES, EMPTY_MEMORY_ROOT, &
@@ -15,9 +15,7 @@ module SPOR64_B2H
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
-  integer, parameter :: NMAT = 8
-  integer, parameter :: NUNKNO = 14
+  integer, parameter :: NSOUT = 6
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -66,10 +64,11 @@ contains
     integer, intent(out) :: status
 
     integer :: state_vector(NSTATE), track_state(NSTATE)
-    integer :: keyflx(NREG), seed_keyflx(NREG), imerge(NMAT)
+    integer, allocatable :: keyflx(:), seed_keyflx(:), imerge(:)
     integer :: seed_epoch, output_epoch
     integer :: ig, ir, ilong, itylcm, allocation_status
-    logical :: seen_unknown(NUNKNO)
+    integer :: nreg, nmat, nunkno
+    logical, allocatable :: seen_unknown(:)
     real(real32) :: eps_converge(5), leak1d(NGRP)
     real(real64) :: leak1d64(NGRP)
     logical :: have_leak1d64
@@ -92,7 +91,28 @@ contains
     if (c_associated(ipout,iptrack)) return
     if (c_associated(ipseed,iptrack)) return
     if (.not. EMPTY_MEMORY_ROOT(ipout)) return
-    if (size(projected_region64,1) /= NREG) return
+
+    ! TRACK is the sole authority for every radial geometry extent used by
+    ! this projection.  The present method remains the supported isotropic,
+    ! six-surface MCCG route; only its region/material counts are runtime.
+    if (.not. CHARACTER_RECORD_MATCHES(iptrack,'SIGNATURE',3,12, &
+        'L_TRACK')) return
+    if (.not. RECORD_MATCHES(iptrack,'STATE-VECTOR',NSTATE,1)) return
+    call LCMGET(iptrack,'STATE-VECTOR',track_state)
+    nreg = track_state(1)
+    nunkno = track_state(2)
+    nmat = track_state(4)
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
+    if (track_state(3) /= 1 .or. track_state(5) /= NSOUT) return
+    if (track_state(6) /= 1) return
+    if (int(nunkno,int64) /= &
+        int(nreg,int64)+int(NSOUT,int64)) return
+    if (.not. RECORD_MATCHES(iptrack,'V$MCCG',nunkno,2)) return
+    if (.not. RECORD_MATCHES(iptrack,'NZON$MCCG',nunkno,1)) return
+    if (.not. RECORD_MATCHES(iptrack,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(iptrack,'KEYFLX$ANIS',nreg,1)) return
+
+    if (size(projected_region64,1) /= nreg) return
     if (size(projected_region64,2) /= NGRP) return
     ! This boundary checks the scalar representation only.  A future host
     ! gate must prove that rho64 and projected_region64 came from the same
@@ -105,11 +125,11 @@ contains
         'L_FLUX')) return
     if (.not. RECORD_MATCHES(ipseed,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipseed,'STATE-VECTOR',state_vector)
-    if (state_vector(1) /= NGRP .or. state_vector(2) /= NUNKNO) return
+    if (state_vector(1) /= NGRP .or. state_vector(2) /= nunkno) return
     if (state_vector(3) /= 1) return
     if (any(state_vector(4:7) /= 0)) return
     if (state_vector(8) /= 3 .or. state_vector(9) /= 3) return
-    if (state_vector(10) /= 1 .or. state_vector(17) /= NMAT) return
+    if (state_vector(10) /= 1 .or. state_vector(17) /= nmat) return
     if (state_vector(11) /= 740 .or. state_vector(12) /= 500) return
     if (state_vector(18) /= 1) return
     if (any(state_vector(13:16) /= 0)) return
@@ -121,10 +141,13 @@ contains
     if (transfer(eps_converge(2),0_int32) /= FROZEN_TOL_BITS) return
     if (transfer(eps_converge(3),0_int32) /= FROZEN_TOL_BITS) return
     if (any(abs(eps_converge(4:5)) > +0.0_real32)) return
-    if (.not. RECORD_MATCHES(ipseed,'IMERGE-LEAK',NMAT,1)) return
+    allocate(keyflx(nreg),seed_keyflx(nreg),imerge(nmat), &
+        seen_unknown(nunkno),stat=allocation_status)
+    if (allocation_status /= 0) return
+    if (.not. RECORD_MATCHES(ipseed,'IMERGE-LEAK',nmat,1)) return
     call LCMGET(ipseed,'IMERGE-LEAK',imerge)
     if (any(imerge /= 1)) return
-    if (.not. RECORD_MATCHES(ipseed,'KEYFLX',NREG,1)) return
+    if (.not. RECORD_MATCHES(ipseed,'KEYFLX',nreg,1)) return
     call LCMGET(ipseed,'KEYFLX',seed_keyflx)
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'OPTION',1,4,'B0  ')) return
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
@@ -151,17 +174,11 @@ contains
       end do
     end if
 
-    if (.not. CHARACTER_RECORD_MATCHES(iptrack,'SIGNATURE',3,12, &
-        'L_TRACK')) return
-    if (.not. RECORD_MATCHES(iptrack,'STATE-VECTOR',NSTATE,1)) return
-    call LCMGET(iptrack,'STATE-VECTOR',track_state)
-    if (track_state(1) /= NREG .or. track_state(2) /= NUNKNO) return
-    if (.not. RECORD_MATCHES(iptrack,'KEYFLX$ANIS',NREG,1)) return
     call LCMGET(iptrack,'KEYFLX$ANIS',keyflx)
     if (any(seed_keyflx /= keyflx)) return
     seen_unknown = .false.
-    do ir = 1, NREG
-      if (keyflx(ir) < 1 .or. keyflx(ir) > NUNKNO) return
+    do ir = 1, nreg
+      if (keyflx(ir) < 1 .or. keyflx(ir) > nunkno) return
       if (seen_unknown(keyflx(ir))) return
       seen_unknown(keyflx(ir)) = .true.
     end do
@@ -186,8 +203,8 @@ contains
     if (.not. c_associated(seed_flux)) return
     if (.not. c_associated(seed_source)) return
 
-    allocate(seed_flux64(NUNKNO,NGRP),seed_source64(NUNKNO,NGRP), &
-        projected_flux64(NUNKNO,NGRP),flux_stage32(NUNKNO,NGRP), &
+    allocate(seed_flux64(nunkno,NGRP),seed_source64(nunkno,NGRP), &
+        projected_flux64(nunkno,NGRP),flux_stage32(nunkno,NGRP), &
         stat=allocation_status)
     if (allocation_status /= 0) then
       if (allocated(seed_flux64)) deallocate(seed_flux64)
@@ -198,18 +215,18 @@ contains
     end if
     do ig = 1, NGRP
       call LCMLEL(seed_flux,ig,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 4) return
+      if (ilong /= nunkno .or. itylcm /= 4) return
       call LCMGDL(seed_flux,ig,seed_flux64(:,ig))
       if (.not. all(ieee_is_finite(seed_flux64(:,ig)))) return
       call LCMLEL(seed_source,ig,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 4) return
+      if (ilong /= nunkno .or. itylcm /= 4) return
       call LCMGDL(seed_source,ig,seed_source64(:,ig))
       if (.not. all(ieee_is_finite(seed_source64(:,ig)))) return
     end do
 
     projected_flux64 = seed_flux64
     do ig = 1, NGRP
-      do ir = 1, NREG
+      do ir = 1, nreg
         projected_flux64(keyflx(ir),ig) = projected_region64(ir,ig)
       end do
     end do
@@ -231,7 +248,7 @@ contains
     if (.not. c_associated(output_flux)) &
         call XABORT('SPOR64_B2H: TYPE-4 FLUX LIST CREATION FAILED.')
     do ig = 1, NGRP
-      call LCMPDL(output_flux,ig,NUNKNO,4,projected_flux64(:,ig))
+      call LCMPDL(output_flux,ig,nunkno,4,projected_flux64(:,ig))
     end do
 
     ! The root FLUX is a write-only compatibility mirror derived from the
@@ -240,7 +257,7 @@ contains
     if (.not. c_associated(legacy_flux)) &
         call XABORT('SPOR64_B2H: TYPE-2 FLUX LIST CREATION FAILED.')
     do ig = 1, NGRP
-      call LCMPDL(legacy_flux,ig,NUNKNO,2,flux_stage32(:,ig))
+      call LCMPDL(legacy_flux,ig,nunkno,2,flux_stage32(:,ig))
     end do
     signature = 'L_FLUX'
     macro_name = 'MACRO0'
@@ -250,8 +267,8 @@ contains
     call LCMPTC(ipout,'SIGNATURE',12,signature)
     call LCMPUT(ipout,'STATE-VECTOR',NSTATE,1,state_vector)
     call LCMPUT(ipout,'EPS-CONVERGE',5,2,eps_converge)
-    call LCMPUT(ipout,'IMERGE-LEAK',NMAT,1,imerge)
-    call LCMPUT(ipout,'KEYFLX',NREG,1,keyflx)
+    call LCMPUT(ipout,'IMERGE-LEAK',nmat,1,imerge)
+    call LCMPUT(ipout,'KEYFLX',nreg,1,keyflx)
     call LCMPTC(ipout,'OPTION',4,option)
     call LCMPTC(ipout,'LINK.MACRO',12,macro_name)
     call LCMPTC(ipout,'LINK.TRACK',12,track_name)
