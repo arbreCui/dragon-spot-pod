@@ -2,7 +2,7 @@
 
 ## Status
 
-`INPUT_AUDIT_ONLY_NO_TRANSPORT`.
+`B2C_DIMENSION_ADMISSION_PASSED_NO_TRANSPORT`.
 
 No Dragon or OpenMC process was started for this case.  The purpose of this
 record is to choose the next independent geometry without changing the
@@ -48,27 +48,63 @@ criterion.  None of those numerical choices is imported here.
 ## Current incompatibility
 
 The general core routines `SPOASM`, `SPOPOD` and `SPOT_LEAKAGE` already use
-runtime dimensions.  The strict REAL64 lifecycle does not yet do so:
+runtime dimensions.  The strict REAL64 lifecycle is a pin-case validation
+route and does not yet do so:
 
 - `SPOR64_A8/A9` assume eight radial regions;
-- `SPOR64_B2B/B2C/B2R/B2W` assume combinations of `NREG=8`, `NMAT=8`,
+- `SPOR64_B2B/B2R/B2W` assume combinations of `NREG=8`, `NMAT=8`,
   `NSNAP=3` and `NUNKNO=14`;
+- the directly connected `SPOR64_B2H/B2I/B2J/B2K/B2N/B2S` stages also
+  retain pin-specific geometry dimensions and, in some cases, exact
+  pin-tracking state values;
 - historical validation builders also assume the pin-cell dimensions.
 
 Consequently D4-A must not be run with the current strict chain.  A failure
 would be an interface-dimension failure, not a physical convergence result.
 
-## Minimal next implementation
+## Completed first vertical slice
 
-The next code step is dimension generalization only:
+`SPOR64_B2C` now derives `NREG`, `NMAT` and `NUNKNO` from its actual arrays
+and allocates its publication staging accordingly.  The group count remains
+the declared 370-group problem.  No tolerance, gate, equation, snapshot
+count or physical parameter changed.
 
-1. obtain region, material, unknown and snapshot counts from the existing
-   LCM state records;
-2. allocate the same fields with those runtime dimensions;
+The no-transport manufactured test uses
+
+- `FLUX64(138,370)` and `SOUR64(138,370)`;
+- `KEYFLX(132)=1,...,132`;
+- `IMERGE(6)=1`.
+
+Here 138 is deliberately only a structural test dimension.  It is not a
+claim about D4-A's real number of transport unknowns; that value must later
+come from the actual `TRACK/STATE-VECTOR`.
+
+The test verifies the runtime state records, all 370 REAL64 list items, their
+bit-exact REAL32 mirrors and fail-before-write rejection of duplicate keys or
+mismatched arrays.  It repeats the same contract at the old pin dimensions
+`(NREG,NMAT,NUNKNO)=(8,8,14)`.  Run it with:
+
+```sh
+make spot-b2c-dimensions
+```
+
+The result is recorded in
+[the B2C runtime-dimension result](b2c_runtime_dimension_result.md).
+
+## Remaining implementation boundary
+
+The remaining code work is still dimension generalization only:
+
+1. obtain `NREG`, `NMAT`, `NUNKNO`, `NSOUT` and `NLONG` from the actual
+   tracking and LCM records at the radial entrance;
+2. pass those dimensions through `B2B -> A9 -> A8` and allocate the same
+   numerical fields with those runtime dimensions;
 3. keep the current 370-group equations, fixed rank two, strict REAL64
    leakage lifecycle and unchanged three-defect `5e-7` gate;
-4. compile and test manufactured 132-region admission without transport;
-5. require the accepted pin-cell outputs to remain bitwise unchanged.
+4. keep the current method's three snapshots for this second case; the
+   historical five-temperature campaign is not imported;
+5. require another no-transport 132-region admission and the existing
+   pin-cell boundary regression before any physical run.
 
 Only after those five checks pass may a separately authorized D4-A physical
 run be prepared.  A new independent OpenMC reference will also be required;

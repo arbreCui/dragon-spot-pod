@@ -19,9 +19,6 @@ module SPOR64_B2C
   integer, parameter :: ACCEPTED_UNPUBLISHED = 4
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
-  integer, parameter :: NMAT = 8
-  integer, parameter :: NUNKNO = 14
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1, 0, &
@@ -98,8 +95,10 @@ contains
 
     integer :: state_vector(NSTATE)
     integer :: ig, ir, allocation_status
+    integer :: nreg, nmat, nunkno
     integer :: lifecycle_plane, lifecycle_epoch
-    logical :: seen_unknown(NUNKNO), publish_solved
+    logical :: publish_solved
+    logical, allocatable :: seen_unknown(:)
     real(real32) :: eps_converge(5)
     real(real64) :: lifecycle_rho64
     real(real32), allocatable :: flux_stage32(:,:), source_stage32(:,:)
@@ -110,16 +109,19 @@ contains
 
     status = SPOR64_B2C_PREFLIGHT_FAILED
     publish_solved = present(ipseed_lifecycle)
+    nunkno = size(terminal_flux64,1)
+    nreg = size(keyflx_base1)
+    nmat = size(imerge_input)
 
     ! The complete no-write preflight is deliberately ahead of LCMDID/LCMLID.
     if (accepted_token /= ACCEPTED_UNPUBLISHED) return
     if (.not. c_associated(ipflux)) return
-    if (size(terminal_flux64,1) /= NUNKNO .or. &
-        size(terminal_flux64,2) /= NGRP) return
-    if (size(terminal_source64,1) /= NUNKNO .or. &
+    if (nunkno <= 0 .or. nreg <= 0 .or. nmat <= 0) return
+    if (nreg > nunkno) return
+    if (size(terminal_flux64,2) /= NGRP) return
+    if (size(terminal_source64,1) /= nunkno .or. &
         size(terminal_source64,2) /= NGRP) return
-    if (size(keyflx_base1) /= NREG) return
-    if (nmerg_input /= 1 .or. size(imerge_input) /= NMAT) return
+    if (nmerg_input /= 1) return
     if (any(imerge_input /= 1)) return
     if (size(leak1d_input32) /= NGRP) return
     if (.not. all(ieee_is_finite(terminal_flux64))) return
@@ -155,7 +157,7 @@ contains
       if (.not. RECORD_MATCHES(lifecycle_authority,'RHO',1,4)) return
       if (.not. RECORD_MATCHES(lifecycle_authority,'PLANE',1,1)) return
       if (.not. RECORD_MATCHES(lifecycle_authority,'FLUX',NGRP,10)) return
-      if (.not. REAL64_FLUX_IS_VALID(lifecycle_authority)) return
+      if (.not. REAL64_FLUX_IS_VALID(lifecycle_authority,nunkno)) return
       if (.not. CHARACTER_RECORD_MATCHES(lifecycle_authority,'STATE',3, &
           12,'PROJECTED')) return
       if (.not. RECORD_MATCHES(lifecycle_authority,'EPOCH',1,1)) return
@@ -169,17 +171,19 @@ contains
           lifecycle_epoch == huge(lifecycle_epoch)) return
     end if
 
+    allocate(seen_unknown(nunkno),stat=allocation_status)
+    if (allocation_status /= 0) return
     seen_unknown = .false.
-    do ir = 1, NREG
-      if (keyflx_base1(ir) < 1 .or. keyflx_base1(ir) > NUNKNO) return
+    do ir = 1, nreg
+      if (keyflx_base1(ir) < 1 .or. keyflx_base1(ir) > nunkno) return
       if (seen_unknown(keyflx_base1(ir))) return
       seen_unknown(keyflx_base1(ir)) = .true.
     end do
 
     if (.not. EMPTY_MEMORY_ROOT(ipflux)) return
 
-    allocate(flux_stage32(NUNKNO,NGRP), &
-        source_stage32(NUNKNO,NGRP),stat=allocation_status)
+    allocate(flux_stage32(nunkno,NGRP), &
+        source_stage32(nunkno,NGRP),stat=allocation_status)
     if (allocation_status /= 0) then
       if (allocated(flux_stage32)) deallocate(flux_stage32)
       if (allocated(source_stage32)) deallocate(source_stage32)
@@ -202,13 +206,13 @@ contains
     if (.not. c_associated(authority_flux)) &
         call XABORT('SPOR64_B2C: TYPE-4 FLUX LIST CREATION FAILED.')
     do ig = 1, NGRP
-      call LCMPDL(authority_flux,ig,NUNKNO,4,terminal_flux64(:,ig))
+      call LCMPDL(authority_flux,ig,nunkno,4,terminal_flux64(:,ig))
     end do
     authority_source = LCMLID(authority,'SOUR',NGRP)
     if (.not. c_associated(authority_source)) &
         call XABORT('SPOR64_B2C: TYPE-4 SOUR LIST CREATION FAILED.')
     do ig = 1, NGRP
-      call LCMPDL(authority_source,ig,NUNKNO,4,terminal_source64(:,ig))
+      call LCMPDL(authority_source,ig,nunkno,4,terminal_source64(:,ig))
     end do
 
     ! Compatibility publication follows type-4 authority; its REAL32 arrays
@@ -217,19 +221,19 @@ contains
     if (.not. c_associated(legacy_flux)) &
         call XABORT('SPOR64_B2C: TYPE-2 FLUX LIST CREATION FAILED.')
     do ig = 1, NGRP
-      call LCMPDL(legacy_flux,ig,NUNKNO,2,flux_stage32(:,ig))
+      call LCMPDL(legacy_flux,ig,nunkno,2,flux_stage32(:,ig))
     end do
     legacy_source = LCMLID(ipflux,'SOUR',NGRP)
     if (.not. c_associated(legacy_source)) &
         call XABORT('SPOR64_B2C: TYPE-2 SOUR LIST CREATION FAILED.')
     do ig = 1, NGRP
-      call LCMPDL(legacy_source,ig,NUNKNO,2,source_stage32(:,ig))
+      call LCMPDL(legacy_source,ig,nunkno,2,source_stage32(:,ig))
     end do
     status = SPOR64_B2C_CHILD_PUBLISHED
 
     state_vector = 0
     state_vector(1) = NGRP
-    state_vector(2) = NUNKNO
+    state_vector(2) = nunkno
     state_vector(3) = 1
     state_vector(6) = 0
     state_vector(7) = 0
@@ -238,7 +242,7 @@ contains
     state_vector(10) = 1
     state_vector(11) = 740
     state_vector(12) = 500
-    state_vector(17) = NMAT
+    state_vector(17) = nmat
     state_vector(18) = nmerg_input
     eps_converge = [epsinr32,epsunk32,epsout32, &
         0.0_real32,0.0_real32]
@@ -246,8 +250,8 @@ contains
     call LCMPTC(ipflux,'SIGNATURE',12,signature)
     call LCMPUT(ipflux,'STATE-VECTOR',NSTATE,1,state_vector)
     call LCMPUT(ipflux,'EPS-CONVERGE',5,2,eps_converge)
-    call LCMPUT(ipflux,'IMERGE-LEAK',NMAT,1,imerge_input)
-    call LCMPUT(ipflux,'KEYFLX',NREG,1,keyflx_base1)
+    call LCMPUT(ipflux,'IMERGE-LEAK',nmat,1,imerge_input)
+    call LCMPUT(ipflux,'KEYFLX',nreg,1,keyflx_base1)
     call LCMPTC(ipflux,'OPTION',4,coptio)
     status = SPOR64_B2C_DRIVER_COMMITTED
 
@@ -273,19 +277,22 @@ contains
   end function PROJECTED_AUTHORITY_IS_EXACT
 
 
-  logical function REAL64_FLUX_IS_VALID(ipauthority)
+  logical function REAL64_FLUX_IS_VALID(ipauthority,nunkno)
     type(c_ptr), intent(in) :: ipauthority
+    integer, intent(in) :: nunkno
     integer :: ig, actual_length, actual_type
-    real(real64) :: stage64(NUNKNO)
+    real(real64), allocatable :: stage64(:)
     type(c_ptr) :: ipflux
 
     REAL64_FLUX_IS_VALID = .false.
+    if (nunkno <= 0) return
     if (.not. c_associated(ipauthority)) return
     ipflux = LCMGID(ipauthority,'FLUX')
     if (.not. c_associated(ipflux)) return
+    allocate(stage64(nunkno))
     do ig = 1, NGRP
       call LCMLEL(ipflux,ig,actual_length,actual_type)
-      if (actual_length /= NUNKNO .or. actual_type /= 4) return
+      if (actual_length /= nunkno .or. actual_type /= 4) return
       call LCMGDL(ipflux,ig,stage64)
       if (.not. all(ieee_is_finite(stage64))) return
     end do

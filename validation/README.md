@@ -38,10 +38,13 @@ relaxation or empirical parameter.  The frozen receipt and the comparison
 to the existing OpenMC reference are summarized in
 [the clean-replay result](iterative/rank2_strict_leak64_clean_replay_result.md).
 
-The second physical case is frozen as an input-only audit of the IRENA D4-A
-1/12 assembly.  No transport has been run: the strict lifecycle must first
-replace its pin-cell dimension constants by runtime dimensions while keeping
-the equations and gate unchanged.  See
+The second physical case is frozen as the IRENA D4-A 1/12 assembly.  No
+transport has been run.  The first no-transport vertical slice now passes:
+`SPOR64_B2C` publishes both an 8-region pin object and a manufactured
+132-region object using runtime region, material and unknown counts, with
+bit-exact REAL64 authority and REAL32 mirrors.  This is publication-boundary
+admission only; the radial solver and the remaining strict lifecycle still
+contain pin-specific dimensions.  See
 [the D4-A case contract](iterative/second_case_d4a_contract.md).
 
 The generic continuation host is default-off. Enabling it evaluates one
