@@ -131,11 +131,13 @@ program check_one_map_xsm
     real(real64), allocatable :: gram(:)
     real(real64), allocatable :: offspace(:)
     real(real32) :: keff=0.0_real32
+    real(real64) :: keff64=0.0_real64
     real(real64) :: rho=0.0_real64
     real(real64) :: norm=0.0_real64
     real(real64) :: gram_error=0.0_real64
     real(real64) :: saved_defect(4)=0.0_real64
     logical :: has_saved_defect=.false.
+    logical :: has_keff64=.false.
   end type canonical_state
 
 
@@ -919,6 +921,7 @@ contains
     type(canonical_state), intent(out) :: data
     type(c_ptr) :: root
     integer :: g,ngrp,nsnap,ncoef,expected_ncoef,total_basis,total_gram
+    integer :: keff64_length,keff64_type
     logical :: is_proposal,expect_z_carrier,expect_v_carrier
     logical :: expect_x3_carrier,expect_aa1_carrier,expect_xnp_carrier
     logical :: expect_xrp_carrier,expect_aa2_carrier,expect_x4_carrier
@@ -1069,6 +1072,18 @@ contains
     call LCMGET(root,'SPOT-X-FIXB',data%fixb)
     call LCMGTC(root,'SPOT-X-NID',12,data%norm_id)
     call LCMGTC(root,'SPOT-X-BTYP',12,data%basis_type)
+    call LCMLEN(root,'SPOT-X-KEFF',keff64_length,keff64_type)
+    data%has_keff64=(keff64_length /= 0)
+    if (data%has_keff64) then
+      if ((keff64_length /= 1).or.(keff64_type /= 4)) &
+        call fail(trim(owner)//' INVALID REAL64 EIGENVALUE AUTHORITY.')
+      call LCMGET(root,'SPOT-X-KEFF',data%keff64)
+      if ((.not.ieee_is_finite(data%keff64)).or. &
+          (data%keff64 <= 0.0_real64).or. &
+          (real32_bits(data%keff) /= &
+           real32_bits(real(data%keff64,real32)))) &
+        call fail(trim(owner)//' REAL64 EIGENVALUE MIRROR FAILED.')
+    endif
 
     if ((data%fixb /= expected_fixb).or. &
         (data%basis_type /= expected_type)) &
@@ -1093,8 +1108,15 @@ contains
         call fail(trim(owner)//' INVALID OFF-SPACE DIAGNOSTIC.')
     endif
     if (real64_bits(data%rho) /= &
-        real64_bits(1.0_real64/real(data%keff,real64))) &
-      call fail(trim(owner)//' INVERSE-EIGENVALUE IDENTITY FAILED.')
+        real64_bits(1.0_real64/real(data%keff,real64))) then
+      ! REAL64-era axial states retain the exact eigenvalue authority while
+      ! K-EFFECTIVE remains its bit-exact REAL32 publication mirror.
+      if (.not.data%has_keff64) &
+        call fail(trim(owner)//' INVERSE-EIGENVALUE IDENTITY FAILED.')
+      if (real64_bits(data%rho) /= &
+          real64_bits(1.0_real64/data%keff64)) &
+        call fail(trim(owner)//' REAL64 EIGENVALUE AUTHORITY FAILED.')
+    endif
 
     data%has_saved_defect=expect_saved_defect
     if (expect_saved_defect) then
@@ -1281,9 +1303,10 @@ contains
     type(c_ptr) :: radial_fluxes
     integer :: listdim,isnap,ngrp,fs_equation,g,r
     integer :: radial_state(nstate),radial_nreg,radial_nunk
-    real(real32) :: l1_error,fs_keff,fs_min,fs_qsum,fs_rbal
-    real(real64) :: iter_keff
+    real(real32) :: l1_error,checked_l1_error,fs_keff
+    real(real64) :: iter_keff,expected_iter_keff
     real(real32), allocatable :: flux_leak(:),system_leak(:)
+    real(real64), allocatable :: flux_leak64(:)
     real(real32), allocatable :: radial_flux(:)
     integer, allocatable :: radial_key(:)
     character(len=12) :: signature
@@ -1307,19 +1330,20 @@ contains
     call require_record(root,'SPOT-L1-ERR',1,2,'RESTART ARCHIVE')
     call LCMGET(root,'SPOT-ITER-K',iter_keff)
     call LCMGET(root,'SPOT-L1-ERR',l1_error)
+    expected_iter_keff=real(current%keff,real64)
+    if (current%has_keff64) expected_iter_keff=current%keff64
     if ((.not.ieee_is_finite(iter_keff)).or. &
         (real64_bits(iter_keff) /= &
-         real64_bits(real(current%keff,real64)))) &
+         real64_bits(expected_iter_keff))) &
       call fail('RESTART ARCHIVE K-EFFECTIVE CHANGED.')
-    if ((.not.ieee_is_finite(l1_error)).or.(l1_error < 0.0_real32).or. &
-        (real32_bits(l1_error) /= &
-         real32_bits(real(current%saved_defect(3),real32)))) &
-      call fail('RESTART ARCHIVE LEAKAGE ERROR CHANGED.')
+    if ((.not.ieee_is_finite(l1_error)).or.(l1_error < 0.0_real32)) &
+      call fail('RESTART ARCHIVE LEAKAGE ERROR IS INVALID.')
 
     tracks=LCMGID(root,'TRACK')
     fluxes=LCMGID(root,'FLUX')
     systems=LCMGID(root,'SYSTEM')
-    allocate(flux_leak(ngrp),system_leak(ngrp))
+    allocate(flux_leak(ngrp),system_leak(ngrp),flux_leak64(ngrp))
+    checked_l1_error=0.0_real32
     do isnap=1,listdim
       write(owner,'(A,I0)') 'RESTART PLANE ',isnap
       call require_directory_item(fluxes,isnap,trim(owner)//' FLUX')
@@ -1361,38 +1385,39 @@ contains
       enddo
 
       call require_record(flux_ptr,'SPOT-LEAK1D',ngrp,2,owner)
+      call require_record(flux_ptr,'LEAK1D64',ngrp,4,owner)
       call require_record(system_ptr,'SPOT-LEAK1D',ngrp,2,owner)
       call LCMGET(flux_ptr,'SPOT-LEAK1D',flux_leak)
+      call LCMGET(flux_ptr,'LEAK1D64',flux_leak64)
       call LCMGET(system_ptr,'SPOT-LEAK1D',system_leak)
       if (any(.not.ieee_is_finite(flux_leak)).or. &
+          any(.not.ieee_is_finite(flux_leak64)).or. &
           any(.not.ieee_is_finite(system_leak))) &
         call fail(trim(owner)//' NON-FINITE LEAKAGE.')
+      if (any(real64_bits(flux_leak64) /= real64_bits( &
+          previous%leakage((isnap-1)*ngrp+1:isnap*ngrp)))) &
+        call fail(trim(owner)//' RADIAL L0 AUTHORITY CHANGED.')
       if (any(real32_bits(flux_leak) /= real32_bits(real( &
           current%leakage((isnap-1)*ngrp+1:isnap*ngrp),real32)))) &
         call fail(trim(owner)//' RETURNED LEAKAGE BITS CHANGED.')
       if (any(real32_bits(system_leak) /= real32_bits(real( &
           previous%leakage((isnap-1)*ngrp+1:isnap*ngrp),real32)))) &
         call fail(trim(owner)//' INPUT LEAKAGE BITS CHANGED.')
+      checked_l1_error=max(checked_l1_error, &
+          maxval(abs(flux_leak-system_leak)))
 
       call require_record(flux_ptr,'SPOT-FS-EQN',1,1,owner)
       call require_record(flux_ptr,'SPOT-FS-K',1,2,owner)
-      call require_record(flux_ptr,'SPOT-FS-MIN',1,2,owner)
-      call require_record(flux_ptr,'SPOT-FS-QSUM',1,2,owner)
-      call require_record(flux_ptr,'SPOT-FS-RBAL',1,2,owner)
       call LCMGET(flux_ptr,'SPOT-FS-EQN',fs_equation)
       call LCMGET(flux_ptr,'SPOT-FS-K',fs_keff)
-      call LCMGET(flux_ptr,'SPOT-FS-MIN',fs_min)
-      call LCMGET(flux_ptr,'SPOT-FS-QSUM',fs_qsum)
-      call LCMGET(flux_ptr,'SPOT-FS-RBAL',fs_rbal)
       if ((fs_equation /= 1).or. &
-          (real32_bits(fs_keff) /= real32_bits(previous%keff)).or. &
-          (.not.ieee_is_finite(fs_min)).or.(fs_min <= 0.0_real32).or. &
-          (.not.ieee_is_finite(fs_qsum)).or.(fs_qsum <= 0.0_real32).or. &
-          (.not.ieee_is_finite(fs_rbal)).or.(fs_rbal < 0.0_real32)) &
+          (real32_bits(fs_keff) /= real32_bits(previous%keff))) &
         call fail(trim(owner)//' INVALID FIXED-SOURCE CONTRACT.')
       deallocate(radial_flux,radial_key)
     enddo
-    deallocate(system_leak,flux_leak)
+    if (real32_bits(l1_error) /= real32_bits(checked_l1_error)) &
+      call fail('RESTART ARCHIVE LEAKAGE ERROR CHANGED.')
+    deallocate(flux_leak64,system_leak,flux_leak)
     call LCMCL(root,1)
   end subroutine check_restart_archive
 

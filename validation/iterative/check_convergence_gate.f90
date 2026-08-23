@@ -9,13 +9,9 @@ program check_convergence_gate
   ! closed axial state, compares the three gated ones against the
   ! threshold pinned below, and emits the receipt lines verbatim.
   !
-  ! It also reports what the rank-2 trial space can represent.  The gate
-  ! is a statement about the outer iteration's self-consistency; it says
-  ! nothing about how well the fixed POD space represents the radial
-  ! flux, and when the residuals fall below that representation error the
-  ! extra depth is numerical rather than physical.  The relation is
-  ! reported, not enforced: changing what the gate accepts is not this
-  ! program's business.
+  ! It also reports the fixed-space out-of-span diagnostic.  That quantity
+  ! and the outer stopping defects use different norms, so they are not
+  ! divided or ordered here; neither one proves rank adequacy.
   use GANLIB
   use, intrinsic :: iso_c_binding, only : c_ptr
   use, intrinsic :: iso_fortran_env, only : real64
@@ -32,8 +28,8 @@ program check_convergence_gate
   integer :: dims(4), ngrp, nsnap, ncoef, ilong, itylcm
   integer :: ig, is, a, b, nmode, ia, ib, ig_worst, is_worst
   integer, allocatable :: rank(:), off(:), goff(:)
-  real(real64) :: rrho, rleak, dleak, ra, gated_max
-  real(real64) :: nrm2, rel, rel_max, ratio
+  real(real64) :: rrho, rleak, dleak, ra
+  real(real64) :: nrm2, rel, rel_max
   real(real64), allocatable :: coeff(:), gram(:), perp(:)
   logical :: have_perp, pass_rho, pass_leak, pass_a
 
@@ -92,7 +88,7 @@ program check_convergence_gate
 
   ! SPOT-X-PERP is the volume-weighted RMS of the part of the radial flux
   ! the basis cannot represent, in the same norm the gram defines, so the
-  ! ratio below is a true relative representation error.
+  ! resulting ratio is a relative representation diagnostic in that norm.
   call LCMLEN(ax,'SPOT-X-PERP',ilong,itylcm)
   have_perp = (ilong == ngrp*nsnap .and. itylcm == 4)
   if (ilong /= 0 .and. .not.have_perp) error stop 'invalid SPOT-X-PERP'
@@ -126,8 +122,6 @@ program check_convergence_gate
   pass_rho  = rrho  <= GATE
   pass_leak = rleak <= GATE
   pass_a    = ra    <= GATE
-  gated_max = max(rrho,max(rleak,ra))
-
   write(*,'(A,ES24.16)') 'SPOT-GATE THRESHOLD      ', GATE
   write(*,'(A,ES24.16,1X,A)') 'SPOT-GATE RRHO           ', rrho, verdict(pass_rho)
   write(*,'(A,ES24.16,1X,A)') 'SPOT-GATE RLEAK          ', rleak, verdict(pass_leak)
@@ -137,12 +131,8 @@ program check_convergence_gate
     write(*,'(A,ES24.16,A,I0,A,I0)') 'SPOT-GATE REPRESENTATION ', &
       rel_max, ' max relative out-of-span at group ', ig_worst, &
       ' plane ', is_worst
-    ratio = gated_max/rel_max
-    write(*,'(A,ES16.8)') 'SPOT-GATE GATED/REPRESENTATION ', ratio
-    if (ratio < 1.0_real64) write(*,'(A)') 'SPOT-GATE NOTE '// &
-      'SUBSPACE-LIMITED: the gated residuals are already below the '// &
-      'rank-2 representation error, so the answer is defined by the '// &
-      'trial space, not by the residual.'
+    write(*,'(A)') 'SPOT-GATE REPRESENTATION DIAGNOSTIC-NOT-GATED; '// &
+      'NOT COMPARABLE TO OUTER DEFECTS WITHOUT A COMMON NORM'
   else
     write(*,'(A)') 'SPOT-GATE REPRESENTATION UNAVAILABLE (no SPOT-X-PERP)'
   end if

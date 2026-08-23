@@ -46,6 +46,7 @@ contains
     real(real32) :: system_leak(NGRP,NSNAP)
     real(real32) :: solved_leak(NGRP,NSNAP)
     real(real32) :: source_keff32(NSNAP)
+    real(real64) :: solved_leak64(NGRP,NSNAP)
     real(real32), allocatable :: qmirror32(:,:,:)
     real(real64) :: iter_keff64, root_rho64
     real(real64), allocatable :: qfiss64(:,:,:)
@@ -157,7 +158,8 @@ contains
     ! contain the exact label set {1,2,3}; duplicates imply an omission.
     do slot = 1, NSNAP
       if (.not. SOLVED_IS_VALID(ipsolved(slot),root_rho64,root_epoch, &
-          solved_plane(slot),solved_key(:,slot),solved_leak(:,slot))) return
+          solved_plane(slot),solved_key(:,slot),solved_leak(:,slot), &
+          solved_leak64(:,slot))) return
       plane = solved_plane(slot)
       if (solved_slot(plane) /= 0) return
       solved_slot(plane) = slot
@@ -341,12 +343,14 @@ contains
   end function SYSTEM_IS_VALID
 
 
-  logical function SOLVED_IS_VALID(solved,rho,epoch,plane,keyflx,leakage)
+  logical function SOLVED_IS_VALID(solved,rho,epoch,plane,keyflx, &
+      leakage,leakage64)
     type(c_ptr), intent(in) :: solved
     real(real64), intent(in) :: rho
     integer, intent(in) :: epoch
     integer, intent(out) :: plane, keyflx(NREG)
     real(real32), intent(out) :: leakage(NGRP)
+    real(real64), intent(out) :: leakage64(NGRP)
 
     integer :: state(NSTATE), imerge(NMAT), found_epoch
     integer :: ig, ir
@@ -391,8 +395,12 @@ contains
     if (.not. CHARACTER_RECORD_MATCHES(solved,'LINK.SYSTEM',3,12, &
         'SYSTEM')) return
     if (.not. RECORD_MATCHES(solved,'SPOT-LEAK1D',NGRP,2)) return
+    if (.not. RECORD_MATCHES(solved,'LEAK1D64',NGRP,4)) return
     call LCMGET(solved,'SPOT-LEAK1D',leakage)
+    call LCMGET(solved,'LEAK1D64',leakage64)
     if (.not. all(ieee_is_finite(leakage))) return
+    if (.not. all(ieee_is_finite(leakage64))) return
+    if (.not. SAME_REAL32_BITS(leakage,real(leakage64,real32))) return
     if (.not. RECORD_MATCHES(solved,'FLUX',NGRP,10)) return
     if (.not. RECORD_MATCHES(solved,'SOUR',NGRP,10)) return
     if (.not. RECORD_MATCHES(solved,'SPOT-R64',-1,0)) return

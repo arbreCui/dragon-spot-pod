@@ -44,6 +44,7 @@ contains
     real(real32) :: child_leakage32(NGRP,NSNAP)
     real(real32) :: system_leakage32(NGRP,NSNAP)
     real(real64) :: child_rho64(NSNAP)
+    real(real64) :: child_leakage64(NGRP,NSNAP)
     type(c_ptr) :: root_authority
     type(c_ptr) :: tracks, libraries, systems, fluxes
     type(c_ptr) :: input_system, input_flux
@@ -97,7 +98,7 @@ contains
       if (.not. c_associated(input_flux)) return
       if (.not. RETURNED_CHILD_IS_VALID(input_flux,child_rho64(ip), &
           fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
-          child_leakage32(:,ip))) return
+          child_leakage32(:,ip),child_leakage64(:,ip))) return
       if (child_epoch(ip) /= root_epoch) return
       if (.not. RETURNED_SYSTEM_IS_VALID(input_system,ip, &
           child_rho64(ip),child_epoch(ip),system_leakage32(:,ip))) return
@@ -136,6 +137,7 @@ contains
     real(real32) :: child_leakage32(NGRP,NSNAP)
     real(real32) :: system_leakage32(NGRP,NSNAP), checked_l1_error32
     real(real64) :: rho1, iter_keff64, child_rho64(NSNAP)
+    real(real64) :: child_leakage64(NGRP,NSNAP)
     real(real64) :: axial_leakage64(NGRP*NSNAP)
     character(len=12) :: signature, lifecycle_state
     type(c_ptr) :: root_authority
@@ -232,10 +234,16 @@ contains
       if (.not. c_associated(input_flux(ip))) return
       if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip), &
           child_rho64(ip),fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
-          child_leakage32(:,ip))) return
+          child_leakage32(:,ip),child_leakage64(:,ip), &
+          allow_fresh_leakage=.true.)) return
       if (child_epoch(ip) /= root_epoch) return
       if (.not. RETURNED_SYSTEM_IS_VALID(input_system(ip),ip, &
           child_rho64(ip),child_epoch(ip),system_leakage32(:,ip))) return
+      ! LEAK1D64 is the immutable radial-equation L0 authority.  SPOLEAK has
+      ! replaced the child REAL32 record by fresh L1, so at close L0 binds to
+      ! the lagged same-plane SYSTEM instead of to that mutable child record.
+      if (.not. REAL32_PROJECTION_MATCHES(system_leakage32(:,ip), &
+          child_leakage64(:,ip))) return
     end do
 
     ! The radial equation coefficient is plane-independent and is tied to
@@ -520,12 +528,15 @@ contains
 
 
   logical function RETURNED_CHILD_IS_VALID(child,rho64,fs_keff32,epoch, &
-      fs_marker,leakage32,iter_keff64_in)
+      fs_marker,leakage32,leakage64,iter_keff64_in, &
+      allow_fresh_leakage)
     type(c_ptr), intent(in) :: child
     real(real64), intent(out) :: rho64
     real(real32), intent(out) :: fs_keff32, leakage32(NGRP)
+    real(real64), intent(out) :: leakage64(NGRP)
     integer, intent(out) :: epoch, fs_marker
     real(real64), intent(in), optional :: iter_keff64_in
+    logical, intent(in), optional :: allow_fresh_leakage
 
     integer :: state(NSTATE), imerge(NMAT), keyflx(NREG)
     integer :: ig, ir
@@ -538,6 +549,7 @@ contains
     real(real64) :: authority_flux64(NUNKNO)
     real(real64) :: authority_source64(NUNKNO)
     real(real64) :: authority_qfiss64(NUNKNO)
+    logical :: fresh_leakage_allowed
     type(c_ptr) :: authority
     type(c_ptr) :: mirror_flux, mirror_source
     type(c_ptr) :: authority_flux, authority_source, authority_qfiss
@@ -549,6 +561,10 @@ contains
     epoch = 0
     fs_marker = 0
     leakage32 = +0.0_real32
+    leakage64 = +0.0_real64
+    fresh_leakage_allowed = .false.
+    if (present(allow_fresh_leakage)) &
+      fresh_leakage_allowed = allow_fresh_leakage
 
     if (.not. RETURNED_CHILD_ROOT_IS_EXACT(child)) return
     if (.not. CHARACTER_RECORD_MATCHES(child,'SIGNATURE',3,12, &
@@ -596,8 +612,14 @@ contains
     if (.not. ieee_is_finite(fs_keff32)) return
     if (fs_keff32 <= +0.0_real32) return
     if (.not. RECORD_MATCHES(child,'SPOT-LEAK1D',NGRP,2)) return
+    if (.not. RECORD_MATCHES(child,'LEAK1D64',NGRP,4)) return
     call LCMGET(child,'SPOT-LEAK1D',leakage32)
+    call LCMGET(child,'LEAK1D64',leakage64)
     if (.not. all(ieee_is_finite(leakage32))) return
+    if (.not. all(ieee_is_finite(leakage64))) return
+    if (.not. fresh_leakage_allowed) then
+      if (.not. REAL32_PROJECTION_MATCHES(leakage32,leakage64)) return
+    end if
 
     if (.not. RECORD_MATCHES(child,'FLUX',NGRP,10)) return
     if (.not. RECORD_MATCHES(child,'SOUR',NGRP,10)) return

@@ -19,6 +19,20 @@ fields = [
 flat = re.sub(r"\s+", "", "".join(fields).upper())
 violations: list[str] = []
 
+# The REAL64 flight solver owns a second, deeper terminal.  A8 must reject
+# any group that remains marked unconverged after its final GMRES update.
+a8_raw = (ROOT / "src/SPOR64_A8.f90").read_text(errors="strict")
+a8_match = re.search(
+    r"subroutine\s+MCGMRE64\b.*?end\s+subroutine\s+MCGMRE64",
+    a8_raw,
+    flags=re.IGNORECASE | re.DOTALL,
+)
+if a8_match is None:
+    violations.append("SPOR64_A8.f90: MCGMRE64 not found")
+    a8_flat = ""
+else:
+    a8_flat = re.sub(r"\s+", "", a8_match.group(0).upper())
+
 
 def require(token: str, description: str) -> None:
     if token not in flat:
@@ -66,6 +80,21 @@ for earlier, later, description in (
 ):
     if earlier not in flat or later not in flat or flat.index(earlier) > flat.index(later):
         violations.append(f"invalid order: {description}")
+
+if a8_flat:
+    final_count = a8_flat.rfind("LNCONV=COUNT(NCONV)")
+    terminal_guard = a8_flat.find("IF(LNCONV/=0)THEN", final_count)
+    final_success = a8_flat.rfind("OK=.TRUE.")
+    if final_count < 0:
+        violations.append("SPOR64_A8.f90: final unconverged-group count missing")
+    if terminal_guard < 0:
+        violations.append("SPOR64_A8.f90: strict GMRES fail-closed guard missing")
+    elif "RETURN" not in a8_flat[terminal_guard:final_success]:
+        violations.append("SPOR64_A8.f90: strict GMRES guard does not reject")
+    if not (0 <= final_count < terminal_guard < final_success):
+        violations.append(
+            "SPOR64_A8.f90: strict GMRES guard must precede final success"
+        )
 
 # Bind the selector to the existing production records and actual TYPE-S call.
 deck = re.sub(
@@ -128,5 +157,6 @@ if violations:
 
 print(
     "SPOT STRICT-INNER PASS: frozen-source TYPE-S MCCG solves use EPSINR "
-    "directly; unrelated FLU paths retain the legacy near-inner schedule."
+    "directly; REAL64 GMRES rejects every nonzero unconverged-group count; "
+    "unrelated FLU paths retain the legacy near-inner schedule."
 )

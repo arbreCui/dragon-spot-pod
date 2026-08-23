@@ -609,14 +609,11 @@ contains
         child_delta64, child_ok)
     cutoff_delta64 = cutoff_delta64 + child_delta64
     if (.not. child_ok) return
+    if (lnconv /= 0) return
 
     do i = 1, ngeff
       temp64 = eps64(i)
       if (.not. ieee_is_finite(temp64)) return
-      if (itst(i) == MAXI .and. temp64 > epsi64 .and. impx > 0) then
-        write(6,'(A,I0)') ' MCCGF64: INNER CAP REACHED FOR GROUP ', &
-            ngind(i)
-      end if
     end do
     if (impx > 1) call PRINDM('EPS64 ', eps64, ngeff)
     if (.not. all(ieee_is_finite(phiin64))) return
@@ -1186,6 +1183,13 @@ contains
     end do
 
     lnconv = count(nconv)
+    if (lnconv /= 0) then
+      write(6,'(A,I0,A,I0,A,1P,E13.5)') &
+          ' MCGMRE64: STRICT INNER TERMINAL FAILED; GROUPS=', lnconv, &
+          ' MAX-ITER=', maxval(itst,mask=nconv), &
+          ' MAX-EPS=', maxval(eps64,mask=nconv)
+      return
+    end if
     if (.not. all(ieee_is_finite(phiin64))) return
     if (.not. all(ieee_is_finite(source64))) return
     if (.not. all(ieee_is_finite(response64))) return

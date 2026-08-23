@@ -103,15 +103,14 @@ contains
   end function SPOLE2
 
   ! Double-precision twin of SPOLE2.  The state-dependent source and
-  ! flux arrive in double precision; the frozen REAL32 cross sections
-  ! and the REAL32 axial leakage are promoted at the point of use,
-  ! mirroring SPOLE1D's treatment of REAL32 inputs.  Same expression.
+  ! flux and axial leakage arrive in double precision; only the frozen
+  ! REAL32 cross sections are promoted at the point of use.  Same expression.
   elemental double precision function SPOLE2D(total,scatter0,qfixed, &
       phi,leak1d)
-    real, intent(in) :: total,scatter0,leak1d
-    double precision, intent(in) :: qfixed,phi
+    real, intent(in) :: total,scatter0
+    double precision, intent(in) :: qfixed,phi,leak1d
 
-    SPOLE2D=-dble(total)+dble(scatter0)+qfixed/phi-dble(leak1d)
+    SPOLE2D=-dble(total)+dble(scatter0)+qfixed/phi-leak1d
   end function SPOLE2D
 
   ! Precompute sum_h(nu*Sigma_f)_h*phi_h for every active cell and fission

@@ -1,4 +1,6 @@
 #!/bin/sh
+# Historical extended-development audit.  It retains the old continuation
+# and AA candidate contracts for archaeology and is not the active gate.
 set -eu
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)

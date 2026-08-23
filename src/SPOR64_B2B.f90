@@ -225,6 +225,7 @@ contains
             transfer(real(leak1d64(ig),real32),0_int32)) return
       end do
     end if
+    if (r64_mode == SPOR64_B2B_CONT .and. .not. have_leak1d64) return
     if (.not. RECORD_MATCHES(ipseed,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipseed,'STATE-VECTOR',flux_state)
     if (flux_state(1) /= NGRP .or. flux_state(2) /= NUNKNO) return
@@ -554,8 +555,8 @@ contains
         call SPOR64_B2C_PUBLISH_CONT(ipflux,ipseed, &
             SPOR64_B2B_ACCEPTED_UNPUBLISHED,terminal_flux64, &
             terminal_source64,keyflx_base1,nmerg,imerg,leak1d_input32, &
-            epsout32,epsunk32,epsinr32,coptio,hentry(2),hentry(3), &
-            hentry(5),status)
+            leak1d64,epsout32,epsunk32,epsinr32,coptio,hentry(2), &
+            hentry(3),hentry(5),status)
       else
         call SPOR64_B2C_PUBLISH(ipflux,SPOR64_B2B_ACCEPTED_UNPUBLISHED, &
             terminal_flux64,terminal_source64,keyflx_base1,nmerg,imerg, &

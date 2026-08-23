@@ -78,11 +78,11 @@ module SPOR64_SCHEMA
          'SPOT-LEAK1D ','SPOT-L1-SNAP','GROUP       ','SPOT-R64    ', &
          'SPOT-L1-RAW ']
 
-  character(len=12), parameter :: SCHEMA_SOLVED_ROOT(13) = &
+  character(len=12), parameter :: SCHEMA_SOLVED_ROOT(14) = &
         ['SPOT-R64    ','FLUX        ','SOUR        ','SIGNATURE   ', &
          'STATE-VECTOR','EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ', &
          'OPTION      ','LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ', &
-         'SPOT-LEAK1D ']
+         'SPOT-LEAK1D ','LEAK1D64    ']
 
   character(len=12), parameter :: SCHEMA_SOLVED_PLANE_AUTHORITY(6) = &
         ['RHO         ','PLANE       ','FLUX        ','SOUR        ', &
@@ -104,11 +104,12 @@ module SPOR64_SCHEMA
   character(len=12), parameter :: SCHEMA_RETURNED_ROOT_AUTHORITY(3) = &
         ['NPLANE      ','STATE       ','EPOCH       ']
 
-  character(len=12), parameter :: SCHEMA_RETURNED_CHILD_ROOT(16) = &
+  character(len=12), parameter :: SCHEMA_RETURNED_CHILD_ROOT(17) = &
         ['SPOT-R64    ','FLUX        ','SOUR        ','SIGNATURE   ', &
          'STATE-VECTOR','EPS-CONVERGE','IMERGE-LEAK ','KEYFLX      ', &
          'OPTION      ','LINK.MACRO  ','LINK.TRACK  ','LINK.SYSTEM ', &
-         'SPOT-LEAK1D ','SPOT-FS-EQN ','SPOT-FS-K   ','SPOT-QFISS  ']
+         'SPOT-LEAK1D ','LEAK1D64    ','SPOT-FS-EQN ','SPOT-FS-K   ', &
+         'SPOT-QFISS  ']
 
   character(len=12), parameter :: SCHEMA_RETURNED_CHILD_AUTHORITY(6) = &
         ['RHO         ','FLUX        ','SOUR        ','QFISS       ', &

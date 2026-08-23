@@ -15,7 +15,7 @@ LINKED_LIST SNAP AX_CURRENT ;
 MODULE FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK:
        GREP: UTL: END: ;
 
-REAL solver_eps := 2.5E-7 ;
+REAL solver_eps := 5.0E-8 ;
 REAL k_candidate leak_change gbal gbal_group ;
 DOUBLE rrho rleak dleak ra ;
 
@@ -34,7 +34,7 @@ AX_CURRENT := UTL: AX_CURRENT ::
   DEL 'SPOT-X-STATE'
   DEL 'SPOT-X-CARR' ;
 AX_CURRENT := FLU: AX_CURRENT MACROLIB3 TRACK_AX SYSTEM_NEXT ::
-  EDIT -3 TYPE K B1 SIGS EXTE 500 <<solver_eps>>
+  EDIT -3 TYPE K B1 SIGS EXTE 500 <<solver_eps>> REBA OFF ACCE 3 0
   UNKT <<solver_eps>> THER <<solver_eps>> ;
 AX_CURRENT := SPOGBAL:
   AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;

@@ -56,7 +56,8 @@ contains
 
   subroutine SPOR64_B2C_PUBLISH_CONT(ipflux,ipseed_lifecycle, &
       accepted_token,terminal_flux64,terminal_source64,keyflx_base1, &
-      nmerg_input,imerge_input,leak1d_input32,epsout32,epsunk32, &
+      nmerg_input,imerge_input,leak1d_input32,leak1d_input64, &
+      epsout32,epsunk32, &
       epsinr32,coptio,macro_name,track_name,system_name,status)
     type(c_ptr), intent(in) :: ipflux, ipseed_lifecycle
     integer, intent(in) :: accepted_token
@@ -64,6 +65,7 @@ contains
     integer, intent(in) :: keyflx_base1(:)
     integer, intent(in) :: nmerg_input, imerge_input(:)
     real(real32), intent(in) :: leak1d_input32(:)
+    real(real64), intent(in) :: leak1d_input64(:)
     real(real32), intent(in) :: epsout32, epsunk32, epsinr32
     character(len=4), intent(in) :: coptio
     character(len=12), intent(in) :: macro_name, track_name, system_name
@@ -72,14 +74,15 @@ contains
     call SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token,terminal_flux64, &
         terminal_source64,keyflx_base1,nmerg_input,imerge_input, &
         leak1d_input32,epsout32,epsunk32,epsinr32,coptio,macro_name, &
-        track_name,system_name,status,ipseed_lifecycle)
+        track_name,system_name,status,ipseed_lifecycle,leak1d_input64)
   end subroutine SPOR64_B2C_PUBLISH_CONT
 
 
   subroutine SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token, &
       terminal_flux64,terminal_source64,keyflx_base1,nmerg_input, &
       imerge_input,leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
-      macro_name,track_name,system_name,status,ipseed_lifecycle)
+      macro_name,track_name,system_name,status,ipseed_lifecycle, &
+      leak1d_input64)
     type(c_ptr), intent(in) :: ipflux
     integer, intent(in) :: accepted_token
     real(real64), intent(in) :: terminal_flux64(:,:), terminal_source64(:,:)
@@ -91,6 +94,7 @@ contains
     character(len=12), intent(in) :: macro_name, track_name, system_name
     integer, intent(out) :: status
     type(c_ptr), intent(in), optional :: ipseed_lifecycle
+    real(real64), intent(in), optional :: leak1d_input64(:)
 
     integer :: state_vector(NSTATE)
     integer :: ig, ir, allocation_status
@@ -135,6 +139,13 @@ contains
     ! is inherited from the already sealed PROJECTED seed object, never from
     ! independent caller scalars.  All reads remain in the no-write preflight.
     if (publish_solved) then
+      if (.not. present(leak1d_input64)) return
+      if (size(leak1d_input64) /= NGRP) return
+      if (.not. all(ieee_is_finite(leak1d_input64))) return
+      do ig = 1, NGRP
+        if (transfer(leak1d_input32(ig),0_int32) /= &
+            transfer(real(leak1d_input64(ig),real32),0_int32)) return
+      end do
       if (.not. c_associated(ipseed_lifecycle)) return
       if (c_associated(ipflux,ipseed_lifecycle)) return
       if (.not. RECORD_MATCHES(ipseed_lifecycle,'SPOT-R64',-1,0)) return
@@ -245,6 +256,7 @@ contains
     call LCMPTC(ipflux,'LINK.SYSTEM',12,system_name)
     call LCMPUT(ipflux,'SPOT-LEAK1D',NGRP,2,leak1d_input32)
     if (publish_solved) then
+      call LCMPUT(ipflux,'LEAK1D64',NGRP,4,leak1d_input64)
       authority_state = 'SOLVED'
       call LCMPTC(authority,'STATE',12,authority_state)
       ! EPOCH is the final mutation and commits this accepted local state.
