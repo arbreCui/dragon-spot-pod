@@ -19,24 +19,15 @@ module SPOR64_B2N
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
   integer, parameter :: NSNAP = 3
-  integer, parameter :: NUNKNO = 14
-  integer, parameter :: NMAT = 8
   integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
+  integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
-  integer, parameter :: TRACK_STATE_EXPECTED(NSTATE) = &
-      [NREG,NUNKNO,1,NMAT,6,1,4,0,0,0,48,1,-1,4,1,2, &
-       165,100000,11364,96, &
-       96,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   integer, parameter :: MCCG_STATE_EXPECTED(NSTATE) = &
-      [-1,4,10,0,17,32,80,0,0,4,0,0,20,1,1,1,0,0,1,1, &
-       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-  integer, parameter :: MACRO_STATE_EXPECTED(NSTATE) = &
-      [NGRP,NMAT,3,NIFIS,18,2,6,0,0,0,0,0,0,0,0,0,0,0,0,0, &
+      [-1,4,10,0,0,0,80,0,0,4,0,0,20,1,1,1,0,0,1,1, &
        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -52,28 +43,32 @@ contains
 
     integer :: root_planes, root_epoch, plane_epoch
     integer :: track_state(NSTATE), mccg_state(NSTATE)
+    integer :: archive_track_state(NSTATE), probe_track_state(NSTATE)
+    integer :: archive_mccg_state(NSTATE), probe_mccg_state(NSTATE)
     integer :: library_state(NSTATE), macro_state(NSTATE)
+    integer :: macro_state_expected(NSTATE)
     integer :: flux_state(NSTATE), source_state(NSTATE)
-    integer :: matcod(NREG), nzon(NUNKNO)
-    integer :: keyflx(NREG), keyanis(NREG), keycur(NSOUT)
-    integer :: imerge(NMAT)
+    integer, allocatable :: matcod(:), nzon(:)
+    integer, allocatable :: keyflx(:), keyanis(:), keycur(:)
+    integer, allocatable :: imerge(:)
     integer :: ip, ir, ifis, h, g, im, iu, ilong, itylcm
-    integer :: allocation_status
+    integer :: allocation_status, nreg, nunkno, nmat
     integer(int32) :: volume_bits, track_volume_bits
     integer(int64) :: found64, expected64
-    real(real32) :: volume32(NREG), track_volume32(NUNKNO)
+    real(real32), allocatable :: volume32(:), track_volume32(:)
     real(real32) :: real_param32(4), eps_converge32(5)
     real(real32) :: leakage32(NGRP)
     real(real32), allocatable :: nusigf32(:,:,:), chi32(:,:,:)
-    real(real32) :: q32(NUNKNO,NGRP), qint32(NGRP)
-    real(real32) :: zero_nusigf32(NMAT*NIFIS), keff32
+    real(real32), allocatable :: q32(:,:), zero_nusigf32(:)
+    real(real32) :: qint32(NGRP), keff32
     real(real64) :: iter_keff64, rho64, plane_rho64
-    real(real64) :: phi64(NUNKNO,NGRP), q64(NUNKNO,NGRP)
+    real(real64), allocatable :: phi64(:,:), q64(:,:)
     real(real64) :: qint64(NGRP), mirror_first_integral64
     real(real64) :: fis64, product64, contribution64
-    logical :: seen_unknown(NUNKNO)
+    logical, allocatable :: seen_unknown(:)
     character(len=12) :: signature, lifecycle_state
     type(c_ptr) :: tracks, libraries, fluxes
+    type(c_ptr) :: probe_track
     type(c_ptr) :: input_track, input_library, input_flux
     type(c_ptr) :: input_macro, input_groups, input_group
     type(c_ptr) :: root_authority, plane_authority, authority_flux
@@ -142,10 +137,47 @@ contains
     if (.not. c_associated(tracks)) return
     if (.not. c_associated(libraries)) return
     if (.not. c_associated(fluxes)) return
+    archive_track_state = 0
+    archive_mccg_state = 0
     do ip = 1, NSNAP
       if (.not. LIST_ITEM_IS_DIRECTORY(tracks,ip)) return
       if (.not. LIST_ITEM_IS_DIRECTORY(libraries,ip)) return
       if (.not. LIST_ITEM_IS_DIRECTORY(fluxes,ip)) return
+      probe_track = LCMGIL(tracks,ip)
+      if (.not. c_associated(probe_track)) return
+      if (.not. RECORD_MATCHES(probe_track,'STATE-VECTOR',NSTATE,1)) &
+          return
+      call LCMGET(probe_track,'STATE-VECTOR',probe_track_state)
+      if (probe_track_state(1) <= 0 .or. probe_track_state(2) <= 0 .or. &
+          probe_track_state(4) <= 0) return
+      if (probe_track_state(3) /= 1 .or. &
+          probe_track_state(5) /= NSOUT .or. &
+          probe_track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
+      if (int(probe_track_state(2),int64) /= &
+          int(probe_track_state(1),int64)+int(NSOUT,int64)) return
+      if (ip == 1) then
+        archive_track_state = probe_track_state
+      else
+        if (probe_track_state(1) /= archive_track_state(1) .or. &
+            probe_track_state(2) /= archive_track_state(2) .or. &
+            probe_track_state(4) /= archive_track_state(4)) return
+      end if
+      if (.not. RECORD_MATCHES(probe_track,'V$MCCG', &
+          probe_track_state(2),2)) return
+      if (.not. RECORD_MATCHES(probe_track,'NZON$MCCG', &
+          probe_track_state(2),1)) return
+      if (.not. RECORD_MATCHES(probe_track,'KEYCUR$MCCG',NSOUT,1)) return
+      if (.not. RECORD_MATCHES(probe_track,'MCCG-STATE',NSTATE,1)) return
+      call LCMGET(probe_track,'MCCG-STATE',probe_mccg_state)
+      if (probe_mccg_state(5) <= 0 .or. probe_mccg_state(6) <= 0) return
+      if (ip == 1) then
+        archive_mccg_state = probe_mccg_state
+      else
+        if (any(probe_mccg_state(5:6) /= &
+            archive_mccg_state(5:6))) return
+      end if
+      if (.not. RECORD_MATCHES(probe_track,'MCU$MCCG', &
+          probe_mccg_state(6),1)) return
     end do
     input_track = LCMGIL(tracks,plane_index)
     input_library = LCMGIL(libraries,plane_index)
@@ -164,22 +196,47 @@ contains
         'TRACK_f')) return
     if (.not. RECORD_MATCHES(input_track,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(input_track,'STATE-VECTOR',track_state)
-    if (any(track_state /= TRACK_STATE_EXPECTED)) return
+    nreg = track_state(1)
+    nunkno = track_state(2)
+    nmat = track_state(4)
+    if (nreg /= archive_track_state(1) .or. &
+        nunkno /= archive_track_state(2) .or. &
+        nmat /= archive_track_state(4)) return
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
+    if (track_state(3) /= 1) return
+    if (track_state(5) /= NSOUT .or. &
+        track_state(6) /= TRACK_ACTIVE_COMPONENTS) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
+    if (int(nmat,int64)*int(NIFIS,int64) > &
+        int(huge(nmat),int64)) return
+    if (track_state(9) /= 0 .or. track_state(14) /= 4) return
+    if (track_state(16) /= 2 .or. track_state(22) /= 1) return
+    if (track_state(27) /= 0 .or. track_state(39) /= 0) return
+    if (track_state(40) /= 0) return
     if (.not. RECORD_MATCHES(input_track,'MCCG-STATE',NSTATE,1)) return
     call LCMGET(input_track,'MCCG-STATE',mccg_state)
-    if (any(mccg_state /= MCCG_STATE_EXPECTED)) return
+    if (mccg_state(5) <= 0 .or. mccg_state(6) <= 0) return
+    if (any(mccg_state(5:6) /= archive_mccg_state(5:6))) return
+    if (any(mccg_state(1:4) /= MCCG_STATE_EXPECTED(1:4))) return
+    if (any(mccg_state(7:NSTATE) /= &
+        MCCG_STATE_EXPECTED(7:NSTATE))) return
     if (.not. RECORD_MATCHES(input_track,'REAL-PARAM',4,2)) return
     call LCMGET(input_track,'REAL-PARAM',real_param32)
     if (.not. all(ieee_is_finite(real_param32))) return
     if (transfer(real_param32(1),0_int32) /= MCCG_EPSI_BITS) return
     if (any(transfer(real_param32(2:4),0_int32,3) /= 0_int32)) return
-    if (.not. RECORD_MATCHES(input_track,'VOLUME',NREG,2)) return
-    if (.not. RECORD_MATCHES(input_track,'V$MCCG',NUNKNO,2)) return
-    if (.not. RECORD_MATCHES(input_track,'MATCOD',NREG,1)) return
-    if (.not. RECORD_MATCHES(input_track,'NZON$MCCG',NUNKNO,1)) return
-    if (.not. RECORD_MATCHES(input_track,'KEYFLX',NREG,1)) return
-    if (.not. RECORD_MATCHES(input_track,'KEYFLX$ANIS',NREG,1)) return
+    if (.not. RECORD_MATCHES(input_track,'VOLUME',nreg,2)) return
+    if (.not. RECORD_MATCHES(input_track,'V$MCCG',nunkno,2)) return
+    if (.not. RECORD_MATCHES(input_track,'MATCOD',nreg,1)) return
+    if (.not. RECORD_MATCHES(input_track,'NZON$MCCG',nunkno,1)) return
+    if (.not. RECORD_MATCHES(input_track,'KEYFLX',nreg,1)) return
+    if (.not. RECORD_MATCHES(input_track,'KEYFLX$ANIS',nreg,1)) return
     if (.not. RECORD_MATCHES(input_track,'KEYCUR$MCCG',NSOUT,1)) return
+    allocate(matcod(nreg),nzon(nunkno),keyflx(nreg),keyanis(nreg), &
+        keycur(NSOUT),imerge(nmat),volume32(nreg), &
+        track_volume32(nunkno),seen_unknown(nunkno), &
+        stat=allocation_status)
+    if (allocation_status /= 0) return
     call LCMGET(input_track,'VOLUME',volume32)
     call LCMGET(input_track,'V$MCCG',track_volume32)
     call LCMGET(input_track,'MATCOD',matcod)
@@ -191,20 +248,20 @@ contains
     if (.not. all(ieee_is_finite(track_volume32))) return
     if (any(volume32 <= +0.0_real32)) return
     if (any(track_volume32 <= +0.0_real32)) return
-    if (any(matcod < 1) .or. any(matcod > NMAT)) return
-    if (any(nzon(1:NREG) /= matcod)) return
-    if (any(nzon(NREG+1:NUNKNO) < -NSOUT)) return
-    if (any(nzon(NREG+1:NUNKNO) > -1)) return
-    do ir = 1, NREG
+    if (any(matcod < 1) .or. any(matcod > nmat)) return
+    if (any(nzon(1:nreg) /= matcod)) return
+    if (any(nzon(nreg+1:nunkno) < -NSOUT)) return
+    if (any(nzon(nreg+1:nunkno) > -1)) return
+    do ir = 1, nreg
       volume_bits = transfer(volume32(ir),0_int32)
       track_volume_bits = transfer(track_volume32(ir),0_int32)
       if (volume_bits /= track_volume_bits) return
     end do
     if (any(keyflx /= keyanis)) return
-    if (any(keyflx < 1) .or. any(keyflx > NUNKNO)) return
-    if (any(keycur < 1) .or. any(keycur > NUNKNO)) return
+    if (any(keyflx < 1) .or. any(keyflx > nunkno)) return
+    if (any(keycur < 1) .or. any(keycur > nunkno)) return
     seen_unknown = .false.
-    do ir = 1, NREG
+    do ir = 1, nreg
       if (seen_unknown(keyflx(ir))) return
       seen_unknown(keyflx(ir)) = .true.
     end do
@@ -221,7 +278,7 @@ contains
         'L_LIBRARY')) return
     if (.not. RECORD_MATCHES(input_library,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(input_library,'STATE-VECTOR',library_state)
-    if (library_state(1) /= NMAT) return
+    if (library_state(1) /= nmat) return
     if (library_state(2) <= 0) return
     if (library_state(3) /= NGRP) return
     if (library_state(4) /= 3) return
@@ -232,21 +289,25 @@ contains
         'L_MACROLIB')) return
     if (.not. RECORD_MATCHES(input_macro,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(input_macro,'STATE-VECTOR',macro_state)
-    if (any(macro_state /= MACRO_STATE_EXPECTED)) return
+    macro_state_expected = 0
+    macro_state_expected(1:7) = [NGRP,nmat,3,NIFIS,18,2,6]
+    if (any(macro_state /= macro_state_expected)) return
     if (.not. ABSENT_RECORD(input_macro,'SPOT-FROZEN')) return
     if (.not. ABSENT_RECORD(input_macro,'SPOT-KEFF')) return
     if (.not. RECORD_MATCHES(input_macro,'GROUP',NGRP,10)) return
     input_groups = LCMGID(input_macro,'GROUP')
     if (.not. c_associated(input_groups)) return
-    allocate(nusigf32(NMAT,NIFIS,NGRP),chi32(NMAT,NIFIS,NGRP), &
+    allocate(nusigf32(nmat,NIFIS,NGRP),chi32(nmat,NIFIS,NGRP), &
+        q32(nunkno,NGRP),zero_nusigf32(nmat*NIFIS), &
+        phi64(nunkno,NGRP),q64(nunkno,NGRP), &
         stat=allocation_status)
     if (allocation_status /= 0) return
     do g = 1, NGRP
       if (.not. LIST_ITEM_IS_DIRECTORY(input_groups,g)) return
       input_group = LCMGIL(input_groups,g)
       if (.not. c_associated(input_group)) return
-      if (.not. RECORD_MATCHES(input_group,'NUSIGF',NMAT*NIFIS,2)) return
-      if (.not. RECORD_MATCHES(input_group,'CHI',NMAT*NIFIS,2)) return
+      if (.not. RECORD_MATCHES(input_group,'NUSIGF',nmat*NIFIS,2)) return
+      if (.not. RECORD_MATCHES(input_group,'CHI',nmat*NIFIS,2)) return
       call LCMGET(input_group,'NUSIGF',nusigf32(:,:,g))
       call LCMGET(input_group,'CHI',chi32(:,:,g))
       if (.not. all(ieee_is_finite(nusigf32(:,:,g)))) return
@@ -263,7 +324,7 @@ contains
     if (.not. RECORD_MATCHES(input_flux,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(input_flux,'STATE-VECTOR',flux_state)
     if (any(flux_state(1:18) /= &
-        [NGRP,NUNKNO,1,0,0,0,0,3,3,1,740,500,0,0,0,0,NMAT,1])) return
+        [NGRP,nunkno,1,0,0,0,0,3,3,1,740,500,0,0,0,0,nmat,1])) return
     if (any(flux_state(19:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(input_flux,'EPS-CONVERGE',5,2)) return
     call LCMGET(input_flux,'EPS-CONVERGE',eps_converge32)
@@ -274,10 +335,10 @@ contains
     do g = 4, 5
       if (transfer(eps_converge32(g),0_int32) /= 0_int32) return
     end do
-    if (.not. RECORD_MATCHES(input_flux,'IMERGE-LEAK',NMAT,1)) return
+    if (.not. RECORD_MATCHES(input_flux,'IMERGE-LEAK',nmat,1)) return
     call LCMGET(input_flux,'IMERGE-LEAK',imerge)
     if (any(imerge /= 1)) return
-    if (.not. RECORD_MATCHES(input_flux,'KEYFLX',NREG,1)) return
+    if (.not. RECORD_MATCHES(input_flux,'KEYFLX',nreg,1)) return
     call LCMGET(input_flux,'KEYFLX',keyanis)
     if (any(keyanis /= keyflx)) return
     if (.not. CHARACTER_RECORD_MATCHES(input_flux,'OPTION',1,4, &
@@ -311,11 +372,11 @@ contains
     if (.not. c_associated(authority_flux)) return
     do h = 1, NGRP
       call LCMLEL(authority_flux,h,ilong,itylcm)
-      if (ilong /= NUNKNO .or. itylcm /= 4) return
+      if (ilong /= nunkno .or. itylcm /= 4) return
       call LCMGDL(authority_flux,h,phi64(:,h))
       if (.not. all(ieee_is_finite(phi64(:,h)))) return
     end do
-    do ir = 1, NREG
+    do ir = 1, nreg
       do h = 1, NGRP
         if (phi64(keyflx(ir),h) <= +0.0_real64) return
       end do
@@ -325,7 +386,7 @@ contains
     ! separates multiplication from addition, and never assumes FMA,
     ! reassociation, a reduction intrinsic, clipping, or normalization.
     q64 = +0.0_real64
-    do ir = 1, NREG
+    do ir = 1, nreg
       im = matcod(ir)
       iu = keyflx(ir)
       do ifis = 1, NIFIS
@@ -350,7 +411,7 @@ contains
 
     qint64 = +0.0_real64
     do g = 1, NGRP
-      do ir = 1, NREG
+      do ir = 1, nreg
         product64 = real(volume32(ir),real64) * q64(keyflx(ir),g)
         qint64(g) = qint64(g) + product64
       end do
@@ -370,7 +431,7 @@ contains
     if (any(qint32 < +0.0_real32)) return
     if (qint32(1) <= +0.0_real32) return
     mirror_first_integral64 = +0.0_real64
-    do ir = 1, NREG
+    do ir = 1, nreg
       product64 = real(volume32(ir),real64) * &
           real(q32(keyflx(ir),1),real64)
       mirror_first_integral64 = mirror_first_integral64 + product64
@@ -395,7 +456,7 @@ contains
       output_group = LCMGIL(output_groups,g)
       if (.not. c_associated(output_group)) &
           call XABORT('SPOR64_B2N: OUTPUT MACRO GROUP MISSING.')
-      call LCMPUT(output_group,'NUSIGF',NMAT*NIFIS,2,zero_nusigf32)
+      call LCMPUT(output_group,'NUSIGF',nmat*NIFIS,2,zero_nusigf32)
     end do
     call LCMPUT(ipmacro_out,'SPOT-FROZEN',1,1,1)
     call LCMPUT(ipmacro_out,'SPOT-KEFF',1,2,keff32)
@@ -403,7 +464,7 @@ contains
     signature = 'L_SOURCE'
     call LCMPTC(ipsource_out,'SIGNATURE',12,signature)
     source_state = 0
-    source_state(1:3) = [NGRP,NUNKNO,1]
+    source_state(1:3) = [NGRP,nunkno,1]
     call LCMPUT(ipsource_out,'STATE-VECTOR',NSTATE,1,source_state)
     call LCMPUT(ipsource_out,'SPOT-FROZEN',1,1,1)
     call LCMPUT(ipsource_out,'SPOT-KEFF',1,2,keff32)
@@ -415,7 +476,7 @@ contains
     if (.not. c_associated(source_inner)) &
         call XABORT('SPOR64_B2N: DSOUR INNER LIST CREATION FAILED.')
     do g = 1, NGRP
-      call LCMPDL(source_inner,g,NUNKNO,2,q32(:,g))
+      call LCMPDL(source_inner,g,nunkno,2,q32(:,g))
     end do
 
     source_authority = LCMDID(ipsource_out,'SPOT-R64')
@@ -429,7 +490,7 @@ contains
     if (.not. c_associated(qfiss_list)) &
         call XABORT('SPOR64_B2N: QFISS LIST CREATION FAILED.')
     do g = 1, NGRP
-      call LCMPDL(qfiss_list,g,NUNKNO,4,q64(:,g))
+      call LCMPDL(qfiss_list,g,nunkno,4,q64(:,g))
     end do
 
     ! EPOCH is the source-wide commit and the final output mutation.

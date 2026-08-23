@@ -326,8 +326,8 @@ contains
     if (.not. RECORD_MATCHES(iptrk,'MCCG-STATE',NSTATE,1)) return
     call LCMGET(iptrk,'MCCG-STATE',mccg_state)
     if (mccg_state(2) /= 4 .or. mccg_state(3) /= 10) return
-    if (mccg_state(4) /= 0 .or. mccg_state(5) /= 17) return
-    if (mccg_state(6) /= 32 .or. mccg_state(7) /= 80) return
+    if (mccg_state(4) /= 0 .or. mccg_state(5) <= 0) return
+    if (mccg_state(6) <= 0 .or. mccg_state(7) /= 80) return
     if (mccg_state(8) /= 0 .or. mccg_state(9) /= 0) return
     if (mccg_state(10) /= 4 .or. mccg_state(12) /= 0) return
     if (mccg_state(13) /= 20 .or. mccg_state(15) /= 1) return

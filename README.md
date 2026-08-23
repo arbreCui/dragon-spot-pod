@@ -128,11 +128,14 @@ or added model term was used.  See
 The independent second case is the 132-region IRENA D4-A 1/12 assembly.
 No D4-A transport has been run.  The no-transport implementation now carries
 TRACK-authoritative runtime region, material and unknown counts through
-`SPOR64_B2B -> SPOR64_A9 -> SPOR64_A8` and through the `SPOR64_B2C`
-publication boundary.  Both the validated pin shape `(8,8,14)` and the
-manufactured D4-A-sized shape `(132,6,138)` pass the seconds-scale interface
-gate.  The remaining snapshot/source lifecycle must be generalized before a
-physical D4-A run is admissible.  See
+`SPOR64_B2B -> SPOR64_A9 -> SPOR64_A8`, the `SPOR64_B2C` publication
+boundary, and the assembled-to-close `B2K/B2N/B2S/B2R/B2W` lifecycle.
+`MXSEG` and the ACA connection count `LC` are also taken from TRACK rather
+than the pin case; `LC` now sizes `MCU/CF/CQ` and is not confused with the
+32-isotope fission dimension.  The pin replay remains byte-identical, while
+the manufactured D4-A-sized shape `(132,6,138)` passes the seconds-scale
+interface gates.  `B2H/B2I/B2J` and a full 132-region lifecycle fixture
+remain before a physical D4-A run is admissible.  See
 [the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md).
 
 ## Earlier rank-2 development history

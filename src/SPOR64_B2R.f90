@@ -20,9 +20,8 @@ module SPOR64_B2R
   integer, parameter :: NSNAP = 3
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
-  integer, parameter :: NMAT = 8
-  integer, parameter :: NUNKNO = 14
+  integer, parameter :: NSOUT = 6
+  integer, parameter :: LIBRARY_NL = 3
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -37,10 +36,11 @@ contains
     integer, intent(out) :: status
 
     integer :: ip, jp, slot, plane, root_planes, root_epoch
+    integer :: nreg, nmat, nunkno
     integer :: allocation_status
     integer :: solved_slot(NSNAP), source_slot(NSNAP)
     integer :: solved_plane(NSNAP), source_plane(NSNAP)
-    integer :: track_key(NREG,NSNAP), solved_key(NREG,NSNAP)
+    integer, allocatable :: track_key(:,:), solved_key(:,:)
     integer :: fs_marker
     integer(int64) :: expected64
     real(real32) :: system_leak(NGRP,NSNAP)
@@ -133,6 +133,8 @@ contains
     if (.not. c_associated(projected_fluxes)) return
 
     ! The archive list index is the owner of TRACK/MICROLIB2/SYSTEM identity.
+    ! Map all three immutable tuples before taking the common geometry from
+    ! the first TRACK or allocating geometry-sized staging arrays.
     do ip = 1, NSNAP
       if (.not. LIST_ITEM_IS_DIRECTORY(tracks,ip)) return
       if (.not. LIST_ITEM_IS_DIRECTORY(libraries,ip)) return
@@ -144,28 +146,39 @@ contains
       if (.not. c_associated(input_track(ip))) return
       if (.not. c_associated(input_library(ip))) return
       if (.not. c_associated(input_system(ip))) return
-      if (.not. TRACK_IS_VALID(input_track(ip),track_key(:,ip))) return
-      if (.not. LIBRARY_IS_VALID(input_library(ip))) return
-      if (.not. SYSTEM_IS_VALID(input_system(ip),ip,root_rho64, &
-          root_epoch,system_leak(:,ip))) return
     end do
 
-    allocate(qfiss64(NUNKNO,NGRP,NSNAP), &
-        qmirror32(NUNKNO,NGRP,NSNAP),stat=allocation_status)
+    if (.not. TRACK_GEOMETRY_IS_VALID(input_track(1),nreg,nunkno, &
+        nmat)) return
+    allocate(track_key(nreg,NSNAP),solved_key(nreg,NSNAP), &
+        stat=allocation_status)
+    if (allocation_status /= 0) return
+
+    ! Every plane must independently close the same TRACK geometry tuple.
+    do ip = 1, NSNAP
+      if (.not. TRACK_IS_VALID(input_track(ip),nreg,nunkno,nmat, &
+          track_key(:,ip))) return
+      if (.not. LIBRARY_IS_VALID(input_library(ip),nmat)) return
+      if (.not. SYSTEM_IS_VALID(input_system(ip),ip,root_rho64, &
+          root_epoch,nunkno,nmat,system_leak(:,ip))) return
+    end do
+
+    allocate(qfiss64(nunkno,NGRP,NSNAP), &
+        qmirror32(nunkno,NGRP,NSNAP),stat=allocation_status)
     if (allocation_status /= 0) return
 
     ! Argument order has no meaning.  Each detached set must independently
     ! contain the exact label set {1,2,3}; duplicates imply an omission.
     do slot = 1, NSNAP
       if (.not. SOLVED_IS_VALID(ipsolved(slot),root_rho64,root_epoch, &
-          solved_plane(slot),solved_key(:,slot),solved_leak(:,slot), &
-          solved_leak64(:,slot))) return
+          nreg,nunkno,nmat,solved_plane(slot),solved_key(:,slot), &
+          solved_leak(:,slot),solved_leak64(:,slot))) return
       plane = solved_plane(slot)
       if (solved_slot(plane) /= 0) return
       solved_slot(plane) = slot
 
       if (.not. SOURCE_IS_VALID(ipsources(slot),root_rho64,root_epoch, &
-          iter_keff64,source_plane(slot),source_keff32(slot), &
+          iter_keff64,nunkno,source_plane(slot),source_keff32(slot), &
           qfiss64(:,:,slot),qmirror32(:,:,slot))) return
       plane = source_plane(slot)
       if (source_slot(plane) /= 0) return
@@ -231,7 +244,7 @@ contains
           call XABORT('SPOR64_B2R: OUTPUT QFISS AUTHORITY FAILED.')
       jp = source_slot(plane)
       do ip = 1, NGRP
-        call LCMPDL(output_qfiss,ip,NUNKNO,4,qfiss64(:,ip,jp))
+        call LCMPDL(output_qfiss,ip,nunkno,4,qfiss64(:,ip,jp))
       end do
 
       fs_marker = 1
@@ -244,7 +257,7 @@ contains
       if (.not. c_associated(legacy_inner)) &
           call XABORT('SPOR64_B2R: LEGACY QFISS INNER LIST FAILED.')
       do ip = 1, NGRP
-        call LCMPDL(legacy_inner,ip,NUNKNO,2,qmirror32(:,ip,jp))
+        call LCMPDL(legacy_inner,ip,nunkno,2,qmirror32(:,ip,jp))
       end do
       ! This rewrite is the final mutation of the returned child authority.
       call LCMPUT(output_authority,'EPOCH',1,1,root_epoch)
@@ -264,41 +277,98 @@ contains
   end subroutine SPOR64_B2R_COLLECT
 
 
-  logical function TRACK_IS_VALID(track,keyanis)
+  logical function TRACK_GEOMETRY_IS_VALID(track,nreg,nunkno,nmat)
     type(c_ptr), intent(in) :: track
-    integer, intent(out) :: keyanis(NREG)
-    integer :: ir, keyflx(NREG)
-    logical :: seen(NUNKNO)
+    integer, intent(out) :: nreg, nunkno, nmat
 
-    TRACK_IS_VALID = .false.
+    integer :: state(NSTATE)
+
+    TRACK_GEOMETRY_IS_VALID = .false.
+    nreg = 0
+    nunkno = 0
+    nmat = 0
     if (.not. CHARACTER_RECORD_MATCHES(track,'SIGNATURE',3,12, &
         'L_TRACK')) return
-    if (.not. RECORD_MATCHES(track,'KEYFLX',NREG,1)) return
-    if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',NREG,1)) return
+    if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
+    call LCMGET(track,'STATE-VECTOR',state)
+    nreg = state(1)
+    nunkno = state(2)
+    nmat = state(4)
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
+    if (state(5) /= NSOUT) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
+
+    ! Stored tracking payloads independently close each state-vector extent.
+    if (.not. RECORD_MATCHES(track,'V$MCCG',nunkno,2)) return
+    if (.not. RECORD_MATCHES(track,'NZON$MCCG',nunkno,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYFLX',nreg,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',nreg,1)) return
+    TRACK_GEOMETRY_IS_VALID = .true.
+  end function TRACK_GEOMETRY_IS_VALID
+
+
+  logical function TRACK_IS_VALID(track,nreg,nunkno,nmat,keyanis)
+    type(c_ptr), intent(in) :: track
+    integer, intent(in) :: nreg, nunkno, nmat
+    integer, intent(out) :: keyanis(:)
+
+    integer :: ir, found_nreg, found_nunkno, found_nmat
+    integer :: allocation_status
+    integer, allocatable :: keyflx(:), keycur(:)
+    logical, allocatable :: seen(:)
+
+    TRACK_IS_VALID = .false.
+    if (size(keyanis) /= nreg) return
+    if (.not. TRACK_GEOMETRY_IS_VALID(track,found_nreg,found_nunkno, &
+        found_nmat)) return
+    if (found_nreg /= nreg .or. found_nunkno /= nunkno .or. &
+        found_nmat /= nmat) return
+    allocate(keyflx(nreg),keycur(NSOUT),seen(nunkno), &
+        stat=allocation_status)
+    if (allocation_status /= 0) return
     call LCMGET(track,'KEYFLX',keyflx)
     call LCMGET(track,'KEYFLX$ANIS',keyanis)
+    call LCMGET(track,'KEYCUR$MCCG',keycur)
     if (any(keyflx /= keyanis)) return
     seen = .false.
-    do ir = 1, NREG
-      if (keyanis(ir) < 1 .or. keyanis(ir) > NUNKNO) return
+    do ir = 1, nreg
+      if (keyanis(ir) < 1 .or. keyanis(ir) > nunkno) return
       if (seen(keyanis(ir))) return
       seen(keyanis(ir)) = .true.
     end do
+    do ir = 1, NSOUT
+      if (keycur(ir) < 1 .or. keycur(ir) > nunkno) return
+      if (seen(keycur(ir))) return
+      seen(keycur(ir)) = .true.
+    end do
+    if (.not. all(seen)) return
     TRACK_IS_VALID = .true.
   end function TRACK_IS_VALID
 
 
-  logical function LIBRARY_IS_VALID(library)
+  logical function LIBRARY_IS_VALID(library,nmat)
     type(c_ptr), intent(in) :: library
+    integer, intent(in) :: nmat
 
-    LIBRARY_IS_VALID = CHARACTER_RECORD_MATCHES(library,'SIGNATURE', &
-        3,12,'L_LIBRARY')
+    integer :: state(NSTATE)
+
+    LIBRARY_IS_VALID = .false.
+    if (nmat <= 0) return
+    if (.not. CHARACTER_RECORD_MATCHES(library,'SIGNATURE', &
+        3,12,'L_LIBRARY')) return
+    if (.not. RECORD_MATCHES(library,'STATE-VECTOR',NSTATE,1)) return
+    call LCMGET(library,'STATE-VECTOR',state)
+    if (state(1) /= nmat .or. state(2) <= 0) return
+    if (state(3) /= NGRP .or. state(4) /= LIBRARY_NL) return
+    LIBRARY_IS_VALID = .true.
   end function LIBRARY_IS_VALID
 
 
-  logical function SYSTEM_IS_VALID(system,plane,rho,epoch,leakage)
+  logical function SYSTEM_IS_VALID(system,plane,rho,epoch,nunkno,nmat, &
+      leakage)
     type(c_ptr), intent(in) :: system
-    integer, intent(in) :: plane, epoch
+    integer, intent(in) :: plane, epoch, nunkno, nmat
     real(real64), intent(in) :: rho
     real(real32), intent(out) :: leakage(NGRP)
 
@@ -317,7 +387,7 @@ contains
     if (.not. RECORD_MATCHES(system,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(system,'STATE-VECTOR',state)
     if (any(state(1:14) /= &
-        [1,1,1,0,1,1,4,NGRP,NUNKNO,NMAT,1,0,0,0])) return
+        [1,1,1,0,1,1,4,NGRP,nunkno,nmat,1,0,0,0])) return
     if (any(state(15:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(system,'SPOT-LEAK1D',NGRP,2)) return
     if (.not. RECORD_MATCHES(system,'SPOT-L1-SNAP',1,1)) return
@@ -343,32 +413,40 @@ contains
   end function SYSTEM_IS_VALID
 
 
-  logical function SOLVED_IS_VALID(solved,rho,epoch,plane,keyflx, &
-      leakage,leakage64)
+  logical function SOLVED_IS_VALID(solved,rho,epoch,nreg,nunkno,nmat, &
+      plane,keyflx,leakage,leakage64)
     type(c_ptr), intent(in) :: solved
     real(real64), intent(in) :: rho
-    integer, intent(in) :: epoch
-    integer, intent(out) :: plane, keyflx(NREG)
+    integer, intent(in) :: epoch, nreg, nunkno, nmat
+    integer, intent(out) :: plane, keyflx(:)
     real(real32), intent(out) :: leakage(NGRP)
     real(real64), intent(out) :: leakage64(NGRP)
 
-    integer :: state(NSTATE), imerge(NMAT), found_epoch
-    integer :: ig, ir
+    integer :: state(NSTATE), found_epoch
+    integer :: ig, ir, allocation_status
+    integer, allocatable :: imerge(:)
     integer(int32) :: eps_bits(5)
-    real(real32) :: eps(5), mirror_flux(NUNKNO), mirror_source(NUNKNO)
-    real(real64) :: found_rho, auth_flux(NUNKNO), auth_source(NUNKNO)
-    logical :: seen(NUNKNO)
+    real(real32) :: eps(5)
+    real(real32), allocatable :: mirror_flux(:), mirror_source(:)
+    real(real64) :: found_rho
+    real(real64), allocatable :: auth_flux(:), auth_source(:)
+    logical, allocatable :: seen(:)
     type(c_ptr) :: authority, root_flux, root_source
     type(c_ptr) :: authority_flux, authority_source
 
     SOLVED_IS_VALID = .false.
+    if (size(keyflx) /= nreg) return
+    allocate(imerge(nmat),mirror_flux(nunkno),mirror_source(nunkno), &
+        auth_flux(nunkno),auth_source(nunkno),seen(nunkno), &
+        stat=allocation_status)
+    if (allocation_status /= 0) return
     if (.not. SOLVED_ROOT_IS_EXACT(solved)) return
     if (.not. CHARACTER_RECORD_MATCHES(solved,'SIGNATURE',3,12, &
         'L_FLUX')) return
     if (.not. RECORD_MATCHES(solved,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(solved,'STATE-VECTOR',state)
     if (any(state(1:18) /= &
-        [NGRP,NUNKNO,1,0,0,0,0,3,3,1,740,500,0,0,0,0,NMAT,1])) return
+        [NGRP,nunkno,1,0,0,0,0,3,3,1,740,500,0,0,0,0,nmat,1])) return
     if (any(state(19:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(solved,'EPS-CONVERGE',5,2)) return
     call LCMGET(solved,'EPS-CONVERGE',eps)
@@ -376,14 +454,14 @@ contains
     eps_bits = transfer(eps,0_int32,5)
     if (any(eps_bits(1:3) /= FROZEN_TOL_BITS)) return
     if (any(eps_bits(4:5) /= 0_int32)) return
-    if (.not. RECORD_MATCHES(solved,'IMERGE-LEAK',NMAT,1)) return
+    if (.not. RECORD_MATCHES(solved,'IMERGE-LEAK',nmat,1)) return
     call LCMGET(solved,'IMERGE-LEAK',imerge)
     if (any(imerge /= 1)) return
-    if (.not. RECORD_MATCHES(solved,'KEYFLX',NREG,1)) return
+    if (.not. RECORD_MATCHES(solved,'KEYFLX',nreg,1)) return
     call LCMGET(solved,'KEYFLX',keyflx)
     seen = .false.
-    do ir = 1, NREG
-      if (keyflx(ir) < 1 .or. keyflx(ir) > NUNKNO) return
+    do ir = 1, nreg
+      if (keyflx(ir) < 1 .or. keyflx(ir) > nunkno) return
       if (seen(keyflx(ir))) return
       seen(keyflx(ir)) = .true.
     end do
@@ -430,10 +508,10 @@ contains
     if (.not. c_associated(authority_flux)) return
     if (.not. c_associated(authority_source)) return
     do ig = 1, NGRP
-      if (.not. LIST_ITEM_MATCHES(root_flux,ig,NUNKNO,2)) return
-      if (.not. LIST_ITEM_MATCHES(root_source,ig,NUNKNO,2)) return
-      if (.not. LIST_ITEM_MATCHES(authority_flux,ig,NUNKNO,4)) return
-      if (.not. LIST_ITEM_MATCHES(authority_source,ig,NUNKNO,4)) return
+      if (.not. LIST_ITEM_MATCHES(root_flux,ig,nunkno,2)) return
+      if (.not. LIST_ITEM_MATCHES(root_source,ig,nunkno,2)) return
+      if (.not. LIST_ITEM_MATCHES(authority_flux,ig,nunkno,4)) return
+      if (.not. LIST_ITEM_MATCHES(authority_source,ig,nunkno,4)) return
       call LCMGDL(root_flux,ig,mirror_flux)
       call LCMGDL(root_source,ig,mirror_source)
       call LCMGDL(authority_flux,ig,auth_flux)
@@ -449,15 +527,15 @@ contains
   end function SOLVED_IS_VALID
 
 
-  logical function SOURCE_IS_VALID(source,rho,epoch,iter_keff,plane, &
-      source_keff,qfiss,qmirror)
+  logical function SOURCE_IS_VALID(source,rho,epoch,iter_keff,nunkno, &
+      plane,source_keff,qfiss,qmirror)
     type(c_ptr), intent(in) :: source
     real(real64), intent(in) :: rho, iter_keff
-    integer, intent(in) :: epoch
+    integer, intent(in) :: epoch, nunkno
     integer, intent(out) :: plane
     real(real32), intent(out) :: source_keff
-    real(real64), intent(out) :: qfiss(NUNKNO,NGRP)
-    real(real32), intent(out) :: qmirror(NUNKNO,NGRP)
+    real(real64), intent(out) :: qfiss(:,:)
+    real(real32), intent(out) :: qmirror(:,:)
 
     integer :: state(NSTATE), frozen, found_epoch, ig
     real(real32) :: qint(NGRP)
@@ -466,12 +544,14 @@ contains
     type(c_ptr) :: source_outer, source_inner
 
     SOURCE_IS_VALID = .false.
+    if (size(qfiss,1) /= nunkno .or. size(qfiss,2) /= NGRP) return
+    if (size(qmirror,1) /= nunkno .or. size(qmirror,2) /= NGRP) return
     if (.not. SOURCE_ROOT_IS_EXACT(source)) return
     if (.not. CHARACTER_RECORD_MATCHES(source,'SIGNATURE',3,12, &
         'L_SOURCE')) return
     if (.not. RECORD_MATCHES(source,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(source,'STATE-VECTOR',state)
-    if (any(state(1:3) /= [NGRP,NUNKNO,1])) return
+    if (any(state(1:3) /= [NGRP,nunkno,1])) return
     if (any(state(4:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(source,'SPOT-FROZEN',1,1)) return
     call LCMGET(source,'SPOT-FROZEN',frozen)
@@ -513,8 +593,8 @@ contains
     authority_qfiss = LCMGID(authority,'QFISS')
     if (.not. c_associated(authority_qfiss)) return
     do ig = 1, NGRP
-      if (.not. LIST_ITEM_MATCHES(source_inner,ig,NUNKNO,2)) return
-      if (.not. LIST_ITEM_MATCHES(authority_qfiss,ig,NUNKNO,4)) return
+      if (.not. LIST_ITEM_MATCHES(source_inner,ig,nunkno,2)) return
+      if (.not. LIST_ITEM_MATCHES(authority_qfiss,ig,nunkno,4)) return
       call LCMGDL(source_inner,ig,qmirror(:,ig))
       call LCMGDL(authority_qfiss,ig,qfiss(:,ig))
       if (.not. all(ieee_is_finite(qmirror(:,ig)))) return

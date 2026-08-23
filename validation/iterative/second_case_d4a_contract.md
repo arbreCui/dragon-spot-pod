@@ -2,7 +2,7 @@
 
 ## Status
 
-`RADIAL_RUNTIME_GEOMETRY_PASSED_NO_TRANSPORT`.
+`ASSEMBLED_TO_CLOSE_RUNTIME_GEOMETRY_PASSED_NO_TRANSPORT`.
 
 No Dragon or OpenMC process was started for this case.  The purpose of this
 record is to choose the next independent geometry without changing the
@@ -58,13 +58,20 @@ now do as well:
 - `SPOR64_B2C` publishes using the runtime region, material and unknown
   counts.
 
+The assembled-to-close strict lifecycle now uses the same runtime geometry:
+
+- `SPOR64_B2K/B2N` derive and close the three TRACK tuples before committing
+  the system archive or frozen fission source;
+- `SPOR64_B2S/B2R/B2W` pass those extents through the host solve, RETURNED
+  collection and epoch close without changing their public interfaces;
+- `MCCG-STATE(5:6)` are the runtime `MXSEG` and ACA connection count `LC`.
+  `LC` sizes `MCU$MCCG`, `CF$MCCG` and `CQ$MCCG`; the independent
+  fission-isotope dimension remains `NIFIS=32`.
+
 The remaining strict lifecycle is not yet D4-A ready:
 
-- `SPOR64_B2R/B2W` still assume combinations of `NREG=8`, `NMAT=8`,
-  `NSNAP=3` and `NUNKNO=14`;
-- the directly connected `SPOR64_B2H/B2I/B2J/B2K/B2N/B2S` stages also
-  retain pin-specific geometry dimensions and, in some cases, exact
-  pin-tracking state values;
+- `SPOR64_B2H/B2I/B2J`, which form or bootstrap the next PROJECTED epoch,
+  still retain pin-specific geometry assumptions;
 - historical validation builders also assume the pin-cell dimensions.
 
 Consequently D4-A must not be run with the current strict chain.  A failure
@@ -125,12 +132,20 @@ make spot-a89-dimensions
 The result is recorded in
 [the A8/A9 runtime-geometry result](a89_runtime_geometry_result.md).
 
+The connected `B2K/B2N/B2S/B2R/B2W` sources compile under the strict
+REAL64 flags with runtime region, material and unknown extents.  A frozen
+pin-cell no-Dragon replay independently admits RETURNED (`STATUS=3`) and
+closes epoch 69 (`STATUS=2`); both CLOSED XSM files retain their exact
+SHA-256 hashes.  This proves backward compatibility and lifecycle/write
+ordering, not D4-A transport or D4-A convergence.
+
 ## Remaining work before a physical run
 
-The remaining code work is dimension generalization only:
+The remaining code work is dimension generalization and one structural
+fixture only:
 
-1. pass the same authoritative dimensions through the directly connected
-   snapshot/source/lifecycle stages without changing their equations;
+1. pass the same authoritative dimensions through `B2H/B2I/B2J` without
+   changing their equations;
 2. keep the current 370-group equations, fixed rank two, strict REAL64
    leakage lifecycle and unchanged three-defect `5e-7` gate;
 3. keep the current method's three snapshots for this second case; the
@@ -138,6 +153,6 @@ The remaining code work is dimension generalization only:
 4. complete a full-chain no-transport 132-region admission and retain the
    existing pin-cell regression before any physical run.
 
-Only after those five checks pass may a separately authorized D4-A physical
+Only after those four checks pass may a separately authorized D4-A physical
 run be prepared.  A new independent OpenMC reference will also be required;
 none currently exists for this case.

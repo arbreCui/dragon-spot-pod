@@ -19,10 +19,10 @@ module SPOR64_B2S
   integer, parameter, public :: SPOR64_B2S_RETURNED = 2
 
   integer, parameter :: NSNAP = 3
+  integer, parameter :: NSTATE = 40
   integer, parameter :: NENTRY = 7
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
-  integer, parameter :: NMAT = 8
+  integer, parameter :: NSOUT = 6
   integer, parameter :: NIFIS = 32
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer, parameter :: kind_guard = 1 / merge(1,0,kind(1.0) == real32)
@@ -43,9 +43,12 @@ contains
     character(len=12), parameter :: hentry(NENTRY) = &
         [character(len=12) :: 'FLUX','MACRO0','TRACK','TRACK_f', &
          'SYSTEM','FSOURCE','FLUX_OLD']
-    integer :: ientry(NENTRY), jentry(NENTRY), imerg(NMAT)
+    integer :: ientry(NENTRY), jentry(NENTRY)
+    integer, allocatable :: imerg(:)
     integer :: slot_for_plane(NSNAP), source_plane(NSNAP)
     integer :: plane, slot, seal_status, radial_status, collect_status
+    integer :: nreg, nmat, nunkno, allocation_status
+    integer :: track_state(NSTATE)
     real(real32) :: frozen_tol32
     type(c_ptr) :: tracks, track
     type(c_ptr) :: sealed_seed(NSNAP), sealed_system(NSNAP)
@@ -88,6 +91,40 @@ contains
     end do
     if (.not. EMPTY_MEMORY_ROOT(ipout)) return
 
+    ! The ASSEMBLED TRACK list is the sole geometry authority for this host
+    ! bridge.  Establish one common runtime tuple before creating any private
+    ! object or entering a radial solve.
+    if (.not. RECORD_MATCHES(ipassembled,'TRACK',NSNAP,10)) return
+    tracks = LCMGID(ipassembled,'TRACK')
+    if (.not. c_associated(tracks)) return
+    do plane = 1, NSNAP
+      if (.not. LIST_ITEM_IS_DIRECTORY(tracks,plane)) return
+      track = LCMGIL(tracks,plane)
+      if (.not. c_associated(track)) return
+      if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
+      call LCMGET(track,'STATE-VECTOR',track_state)
+      if (track_state(3) /= 1 .or. track_state(5) /= NSOUT) return
+      if (track_state(6) /= 1) return
+      if (plane == 1) then
+        nreg = track_state(1)
+        nunkno = track_state(2)
+        nmat = track_state(4)
+        if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
+        if (int(nunkno,int64) /= &
+            int(nreg,int64)+int(NSOUT,int64)) return
+      else
+        if (track_state(1) /= nreg .or. track_state(2) /= nunkno) return
+        if (track_state(4) /= nmat .or. track_state(5) /= NSOUT) return
+      end if
+      if (.not. RECORD_MATCHES(track,'V$MCCG',nunkno,2)) return
+      if (.not. RECORD_MATCHES(track,'NZON$MCCG',nunkno,1)) return
+      if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+      if (.not. RECORD_MATCHES(track,'MATCOD',nreg,1)) return
+      if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',nreg,1)) return
+    end do
+    allocate(imerg(nmat),stat=allocation_status)
+    if (allocation_status /= 0) return
+
     sealed_seed = c_null_ptr
     sealed_system = c_null_ptr
     solved_by_plane = c_null_ptr
@@ -124,16 +161,6 @@ contains
       return
     end if
 
-    if (.not. RECORD_MATCHES(ipassembled,'TRACK',NSNAP,10)) then
-      call CLOSE_PRIVATE(sealed_seed,sealed_system,solved_by_plane)
-      return
-    end if
-    tracks = LCMGID(ipassembled,'TRACK')
-    if (.not. c_associated(tracks)) then
-      call CLOSE_PRIVATE(sealed_seed,sealed_system,solved_by_plane)
-      return
-    end if
-
     frozen_tol32 = transfer(FROZEN_TOL_BITS,0.0_real32)
     imerg = 1
     jentry = [0,2,2,2,2,2,2]
@@ -158,7 +185,7 @@ contains
           iptrack_file,sealed_system(slot),ipsources(slot),sealed_seed(slot)]
       call SPOR64_B2B_INGRESS(NENTRY,hentry,ientry,jentry,kentry, &
           0,500,740,frozen_tol32,frozen_tol32,frozen_tol32,1,3,3, &
-          'B0  ',0,1,1,imerg,0,.false.,0,.true.,NGRP,NREG,NMAT, &
+          'B0  ',0,1,1,imerg,0,.false.,0,.true.,NGRP,nreg,nmat, &
           NIFIS,1,2,1,.false.,.true.,SPOR64_B2B_CONT,radial_status, &
           cutoff_by_plane(plane))
       if (radial_status /= SPOR64_B2C_HOST_COMMITTED) then

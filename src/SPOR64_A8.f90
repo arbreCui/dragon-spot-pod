@@ -449,8 +449,8 @@ contains
     if (state_vector(27) /= 0 .or. state_vector(39) /= 0) return
     if (state_vector(40) /= 0) return
     if (mccg_state(2) /= 4 .or. mccg_state(3) /= KRYL) return
-    if (mccg_state(4) /= 0 .or. mccg_state(5) /= 17) return
-    if (mccg_state(6) /= 32 .or. mccg_state(7) /= IAAC) return
+    if (mccg_state(4) /= 0 .or. mccg_state(5) <= 0) return
+    if (mccg_state(6) <= 0 .or. mccg_state(7) /= IAAC) return
     if (mccg_state(8) /= ISCR .or. mccg_state(9) /= 0) return
     if (mccg_state(10) /= PACA .or. mccg_state(12) /= 0) return
     if (mccg_state(13) /= MAXI .or. mccg_state(15) /= STIS) return
@@ -498,7 +498,7 @@ contains
         nangl, mxsub, mxseg
     if (ios /= 0) return
     if (i /= NDIM .or. n2reg /= nreg .or. n2sou /= NSOUT) return
-    if (ncor /= 1 .or. nangl <= 0 .or. mxsub <= 0 .or. mxseg <= 0) &
+    if (ncor /= 1 .or. nangl <= 0 .or. mxsub <= 0 .or. mxseg /= nmax) &
         return
     if (nalbg < 0 .or. ispec < 0 .or. len_trim(text4) > 4) return
 
@@ -821,7 +821,7 @@ contains
     if (ios /= 0) return
     if (i /= NDIM .or. n2reg /= nreg .or. n2sou /= NSOUT) return
     if (ncor /= 1 .or. nangl_check /= nangl) return
-    if (ispec < 0 .or. nalbg < 0 .or. mxsub <= 0 .or. mxseg <= 0) &
+    if (ispec < 0 .or. nalbg < 0 .or. mxsub <= 0 .or. mxseg /= nmax) &
         return
     do icom = 1, 6
       read(iftrak, iostat=ios)

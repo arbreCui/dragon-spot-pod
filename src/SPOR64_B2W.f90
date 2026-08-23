@@ -20,9 +20,7 @@ module SPOR64_B2W
   integer, parameter :: NSTATE = 40
   integer, parameter :: NSNAP = 3
   integer, parameter :: NGRP = 370
-  integer, parameter :: NREG = 8
-  integer, parameter :: NUNKNO = 14
-  integer, parameter :: NMAT = 8
+  integer, parameter :: NSOUT = 6
   integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
@@ -37,6 +35,8 @@ contains
     integer, intent(out) :: status
 
     integer :: ip, ig, archive_planes, root_planes, root_epoch
+    integer :: nreg, nunkno, nmat
+    integer :: found_nreg, found_nunkno, found_nmat
     integer :: child_epoch(NSNAP), fs_marker(NSNAP)
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
@@ -47,7 +47,8 @@ contains
     real(real64) :: child_leakage64(NGRP,NSNAP)
     type(c_ptr) :: root_authority
     type(c_ptr) :: tracks, libraries, systems, fluxes
-    type(c_ptr) :: input_system, input_flux
+    type(c_ptr) :: input_track(NSNAP), input_system(NSNAP)
+    type(c_ptr) :: input_flux(NSNAP)
 
     status = SPOR64_B2W_PREFLIGHT_FAILED
     if (.not. c_associated(ipfeedback)) return
@@ -92,16 +93,31 @@ contains
       if (.not. LIST_ITEM_IS_DIRECTORY(libraries,ip)) return
       if (.not. LIST_ITEM_IS_DIRECTORY(systems,ip)) return
       if (.not. LIST_ITEM_IS_DIRECTORY(fluxes,ip)) return
-      input_system = LCMGIL(systems,ip)
-      input_flux = LCMGIL(fluxes,ip)
-      if (.not. c_associated(input_system)) return
-      if (.not. c_associated(input_flux)) return
-      if (.not. RETURNED_CHILD_IS_VALID(input_flux,child_rho64(ip), &
-          fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
+      input_track(ip) = LCMGIL(tracks,ip)
+      input_system(ip) = LCMGIL(systems,ip)
+      input_flux(ip) = LCMGIL(fluxes,ip)
+      if (.not. c_associated(input_track(ip))) return
+      if (.not. c_associated(input_system(ip))) return
+      if (.not. c_associated(input_flux(ip))) return
+    end do
+
+    if (.not. TRACK_GEOMETRY_IS_VALID(input_track(1),nreg,nunkno, &
+        nmat)) return
+    do ip = 1, NSNAP
+      if (.not. TRACK_GEOMETRY_IS_VALID(input_track(ip),found_nreg, &
+          found_nunkno,found_nmat)) return
+      if (found_nreg /= nreg .or. found_nunkno /= nunkno .or. &
+          found_nmat /= nmat) return
+    end do
+
+    do ip = 1, NSNAP
+      if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip),nreg,nunkno,nmat, &
+          child_rho64(ip),fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
           child_leakage32(:,ip),child_leakage64(:,ip))) return
       if (child_epoch(ip) /= root_epoch) return
-      if (.not. RETURNED_SYSTEM_IS_VALID(input_system,ip, &
-          child_rho64(ip),child_epoch(ip),system_leakage32(:,ip))) return
+      if (.not. RETURNED_SYSTEM_IS_VALID(input_system(ip),ip,nreg, &
+          nunkno,nmat,child_rho64(ip),child_epoch(ip), &
+          system_leakage32(:,ip))) return
 
       ! ASM consumes child L0.  Bind it element by element to the L0 retained
       ! by the same-index SYSTEM; a scalar norm cannot prove this identity.
@@ -130,6 +146,8 @@ contains
     integer, intent(out) :: status
 
     integer :: ip, ig, archive_planes, root_planes, root_epoch
+    integer :: nreg, nunkno, nmat
+    integer :: found_nreg, found_nunkno, found_nmat
     integer :: child_epoch(NSNAP), fs_marker(NSNAP)
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
@@ -164,11 +182,6 @@ contains
     if (.not. EMPTY_ROOT(ipaxout)) return
     if (.not. EMPTY_ROOT(iparchiveout)) return
 
-    ! Recover the complete canonical axial bundle.  The axial root also owns
-    ! ordinary solver records, so only the canonical records are prescribed.
-    if (.not. CANONICAL_AX_IS_VALID(ipax,keff32,rho1, &
-        axial_leakage64)) return
-
     ! The feedback root has exactly the seven returned-archive records plus
     ! the two records produced by the direct leakage update.
     if (.not. FEEDBACK_ROOT_IS_EXACT(ipfeedback)) return
@@ -184,13 +197,6 @@ contains
     if (archive_planes /= NSNAP) return
     if (.not. ieee_is_finite(iter_keff64)) return
     if (iter_keff64 <= +0.0_real64) return
-    found64 = transfer(iter_keff64,0_int64)
-    expected64 = transfer(real(keff32,real64),0_int64)
-    if (found64 /= expected64) then
-      found32 = transfer(real(iter_keff64,real32),0_int32)
-      expected32 = transfer(keff32,0_int32)
-      if (found32 /= expected32) return
-    end if
     if (.not. ieee_is_finite(l1_error32)) return
     if (l1_error32 < +0.0_real32) return
 
@@ -232,13 +238,40 @@ contains
       if (.not. c_associated(input_library(ip))) return
       if (.not. c_associated(input_system(ip))) return
       if (.not. c_associated(input_flux(ip))) return
-      if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip), &
+    end do
+
+    ! The returned TRACK set is the sole radial geometry authority.  Close
+    ! its common tuple before interpreting geometry-sized axial payloads.
+    if (.not. TRACK_GEOMETRY_IS_VALID(input_track(1),nreg,nunkno, &
+        nmat)) return
+    do ip = 1, NSNAP
+      if (.not. TRACK_GEOMETRY_IS_VALID(input_track(ip),found_nreg, &
+          found_nunkno,found_nmat)) return
+      if (found_nreg /= nreg .or. found_nunkno /= nunkno .or. &
+          found_nmat /= nmat) return
+    end do
+
+    ! Recover the complete canonical axial bundle using the admitted radial
+    ! region count.  The axial root's ordinary solver records stay opaque.
+    if (.not. CANONICAL_AX_IS_VALID(ipax,nreg,keff32,rho1, &
+        axial_leakage64)) return
+    found64 = transfer(iter_keff64,0_int64)
+    expected64 = transfer(real(keff32,real64),0_int64)
+    if (found64 /= expected64) then
+      found32 = transfer(real(iter_keff64,real32),0_int32)
+      expected32 = transfer(keff32,0_int32)
+      if (found32 /= expected32) return
+    end if
+
+    do ip = 1, NSNAP
+      if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip),nreg,nunkno,nmat, &
           child_rho64(ip),fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
           child_leakage32(:,ip),child_leakage64(:,ip), &
           allow_fresh_leakage=.true.)) return
       if (child_epoch(ip) /= root_epoch) return
-      if (.not. RETURNED_SYSTEM_IS_VALID(input_system(ip),ip, &
-          child_rho64(ip),child_epoch(ip),system_leakage32(:,ip))) return
+      if (.not. RETURNED_SYSTEM_IS_VALID(input_system(ip),ip,nreg, &
+          nunkno,nmat,child_rho64(ip),child_epoch(ip), &
+          system_leakage32(:,ip))) return
       ! LEAK1D64 is the immutable radial-equation L0 authority.  SPOLEAK has
       ! replaced the child REAL32 record by fresh L1, so at close L0 binds to
       ! the lagged same-plane SYSTEM instead of to that mutable child record.
@@ -354,8 +387,41 @@ contains
   end subroutine SPOR64_B2W_CLOSE
 
 
-  logical function CANONICAL_AX_IS_VALID(ipax,keff32,rho64,leakage64)
+  logical function TRACK_GEOMETRY_IS_VALID(track,nreg,nunkno,nmat)
+    type(c_ptr), intent(in) :: track
+    integer, intent(out) :: nreg, nunkno, nmat
+
+    integer :: state(NSTATE)
+
+    TRACK_GEOMETRY_IS_VALID = .false.
+    nreg = 0
+    nunkno = 0
+    nmat = 0
+    if (.not. CHARACTER_RECORD_MATCHES(track,'SIGNATURE',3,12, &
+        'L_TRACK')) return
+    if (.not. RECORD_MATCHES(track,'STATE-VECTOR',NSTATE,1)) return
+    call LCMGET(track,'STATE-VECTOR',state)
+    nreg = state(1)
+    nunkno = state(2)
+    nmat = state(4)
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
+    if (state(5) /= NSOUT) return
+    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
+
+    ! Stored tracking payloads independently close each state-vector extent.
+    if (.not. RECORD_MATCHES(track,'V$MCCG',nunkno,2)) return
+    if (.not. RECORD_MATCHES(track,'NZON$MCCG',nunkno,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYCUR$MCCG',NSOUT,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYFLX',nreg,1)) return
+    if (.not. RECORD_MATCHES(track,'KEYFLX$ANIS',nreg,1)) return
+    TRACK_GEOMETRY_IS_VALID = .true.
+  end function TRACK_GEOMETRY_IS_VALID
+
+
+  logical function CANONICAL_AX_IS_VALID(ipax,nreg,keff32,rho64, &
+      leakage64)
     type(c_ptr), intent(in) :: ipax
+    integer, intent(in) :: nreg
     real(real32), intent(out) :: keff32
     real(real64), intent(out) :: rho64, leakage64(NGRP*NSNAP)
 
@@ -376,6 +442,7 @@ contains
     rho64 = +0.0_real64
     leakage64 = +0.0_real64
 
+    if (nreg <= 0) return
     if (.not. CHARACTER_RECORD_MATCHES(ipax,'SIGNATURE',3,12, &
         'L_FLUX')) return
     if (.not. RECORD_MATCHES(ipax,'STATE-VECTOR',NSTATE,1)) return
@@ -417,7 +484,7 @@ contains
       if (gram_offset(ig+1)-gram_offset(ig) /= &
           rank(ig)*rank(ig)) return
       if (basis_offset(ig+1)-basis_offset(ig) /= &
-          NREG*rank(ig)) return
+          nreg*rank(ig)) return
     end do
     if (offset(NGRP+1) /= ncoef) return
     total_gram = gram_offset(NGRP+1)
@@ -475,10 +542,10 @@ contains
   end function CANONICAL_AX_IS_VALID
 
 
-  logical function RETURNED_SYSTEM_IS_VALID(system,plane,rho64,epoch, &
-      leakage32)
+  logical function RETURNED_SYSTEM_IS_VALID(system,plane,nreg,nunkno, &
+      nmat,rho64,epoch,leakage32)
     type(c_ptr), intent(in) :: system
-    integer, intent(in) :: plane, epoch
+    integer, intent(in) :: plane, nreg, nunkno, nmat, epoch
     real(real64), intent(in) :: rho64
     real(real32), intent(out) :: leakage32(NGRP)
 
@@ -489,6 +556,7 @@ contains
 
     RETURNED_SYSTEM_IS_VALID = .false.
     leakage32 = +0.0_real32
+    if (int(nunkno,int64) /= int(nreg,int64)+int(NSOUT,int64)) return
     if (.not. RETURNED_SYSTEM_ROOT_IS_EXACT(system)) return
     if (.not. CHARACTER_RECORD_MATCHES(system,'SIGNATURE',3,12, &
         'L_PIJ')) return
@@ -499,7 +567,7 @@ contains
     if (.not. RECORD_MATCHES(system,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(system,'STATE-VECTOR',state)
     if (any(state(1:14) /= &
-        [1,1,1,0,1,1,4,NGRP,NUNKNO,NMAT,1,0,0,0])) return
+        [1,1,1,0,1,1,4,NGRP,nunkno,nmat,1,0,0,0])) return
     if (any(state(15:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(system,'SPOT-LEAK1D',NGRP,2)) return
     if (.not. RECORD_MATCHES(system,'SPOT-L1-SNAP',1,1)) return
@@ -527,10 +595,11 @@ contains
   end function RETURNED_SYSTEM_IS_VALID
 
 
-  logical function RETURNED_CHILD_IS_VALID(child,rho64,fs_keff32,epoch, &
-      fs_marker,leakage32,leakage64,iter_keff64_in, &
+  logical function RETURNED_CHILD_IS_VALID(child,nreg,nunkno,nmat,rho64, &
+      fs_keff32,epoch,fs_marker,leakage32,leakage64,iter_keff64_in, &
       allow_fresh_leakage)
     type(c_ptr), intent(in) :: child
+    integer, intent(in) :: nreg, nunkno, nmat
     real(real64), intent(out) :: rho64
     real(real32), intent(out) :: fs_keff32, leakage32(NGRP)
     real(real64), intent(out) :: leakage64(NGRP)
@@ -538,17 +607,18 @@ contains
     real(real64), intent(in), optional :: iter_keff64_in
     logical, intent(in), optional :: allow_fresh_leakage
 
-    integer :: state(NSTATE), imerge(NMAT), keyflx(NREG)
-    integer :: ig, ir
+    integer :: state(NSTATE)
+    integer :: ig, ir, allocation_status
+    integer, allocatable :: imerge(:), keyflx(:)
     integer(int32) :: eps_bits(5)
     integer(int64) :: found64, expected64
-    logical :: seen(NUNKNO)
+    logical, allocatable :: seen(:)
     real(real32) :: eps32(5)
-    real(real32) :: mirror_flux32(NUNKNO), mirror_source32(NUNKNO)
-    real(real32) :: mirror_qfiss32(NUNKNO)
-    real(real64) :: authority_flux64(NUNKNO)
-    real(real64) :: authority_source64(NUNKNO)
-    real(real64) :: authority_qfiss64(NUNKNO)
+    real(real32), allocatable :: mirror_flux32(:), mirror_source32(:)
+    real(real32), allocatable :: mirror_qfiss32(:)
+    real(real64), allocatable :: authority_flux64(:)
+    real(real64), allocatable :: authority_source64(:)
+    real(real64), allocatable :: authority_qfiss64(:)
     logical :: fresh_leakage_allowed
     type(c_ptr) :: authority
     type(c_ptr) :: mirror_flux, mirror_source
@@ -565,6 +635,13 @@ contains
     fresh_leakage_allowed = .false.
     if (present(allow_fresh_leakage)) &
       fresh_leakage_allowed = allow_fresh_leakage
+    if (nreg <= 0 .or. nunkno <= 0 .or. nmat <= 0) return
+    allocate(imerge(nmat),keyflx(nreg),seen(nunkno), &
+        mirror_flux32(nunkno),mirror_source32(nunkno), &
+        mirror_qfiss32(nunkno),authority_flux64(nunkno), &
+        authority_source64(nunkno),authority_qfiss64(nunkno), &
+        stat=allocation_status)
+    if (allocation_status /= 0) return
 
     if (.not. RETURNED_CHILD_ROOT_IS_EXACT(child)) return
     if (.not. CHARACTER_RECORD_MATCHES(child,'SIGNATURE',3,12, &
@@ -572,7 +649,7 @@ contains
     if (.not. RECORD_MATCHES(child,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(child,'STATE-VECTOR',state)
     if (any(state(1:18) /= &
-        [NGRP,NUNKNO,1,0,0,0,0,3,3,1,740,500,0,0,0,0,NMAT,1])) &
+        [NGRP,nunkno,1,0,0,0,0,3,3,1,740,500,0,0,0,0,nmat,1])) &
         return
     if (any(state(19:NSTATE) /= 0)) return
 
@@ -584,14 +661,14 @@ contains
     eps_bits = transfer(eps32,0_int32,5)
     if (any(eps_bits(1:3) /= FROZEN_TOL_BITS)) return
     if (any(eps_bits(4:5) /= 0_int32)) return
-    if (.not. RECORD_MATCHES(child,'IMERGE-LEAK',NMAT,1)) return
+    if (.not. RECORD_MATCHES(child,'IMERGE-LEAK',nmat,1)) return
     call LCMGET(child,'IMERGE-LEAK',imerge)
     if (any(imerge /= 1)) return
-    if (.not. RECORD_MATCHES(child,'KEYFLX',NREG,1)) return
+    if (.not. RECORD_MATCHES(child,'KEYFLX',nreg,1)) return
     call LCMGET(child,'KEYFLX',keyflx)
     seen = .false.
-    do ir = 1, NREG
-      if (keyflx(ir) < 1 .or. keyflx(ir) > NUNKNO) return
+    do ir = 1, nreg
+      if (keyflx(ir) < 1 .or. keyflx(ir) > nunkno) return
       if (seen(keyflx(ir))) return
       seen(keyflx(ir)) = .true.
     end do
@@ -673,12 +750,12 @@ contains
     if (.not. c_associated(legacy_inner)) return
 
     do ig = 1, NGRP
-      if (.not. LIST_ITEM_MATCHES(mirror_flux,ig,NUNKNO,2)) return
-      if (.not. LIST_ITEM_MATCHES(mirror_source,ig,NUNKNO,2)) return
-      if (.not. LIST_ITEM_MATCHES(legacy_inner,ig,NUNKNO,2)) return
-      if (.not. LIST_ITEM_MATCHES(authority_flux,ig,NUNKNO,4)) return
-      if (.not. LIST_ITEM_MATCHES(authority_source,ig,NUNKNO,4)) return
-      if (.not. LIST_ITEM_MATCHES(authority_qfiss,ig,NUNKNO,4)) return
+      if (.not. LIST_ITEM_MATCHES(mirror_flux,ig,nunkno,2)) return
+      if (.not. LIST_ITEM_MATCHES(mirror_source,ig,nunkno,2)) return
+      if (.not. LIST_ITEM_MATCHES(legacy_inner,ig,nunkno,2)) return
+      if (.not. LIST_ITEM_MATCHES(authority_flux,ig,nunkno,4)) return
+      if (.not. LIST_ITEM_MATCHES(authority_source,ig,nunkno,4)) return
+      if (.not. LIST_ITEM_MATCHES(authority_qfiss,ig,nunkno,4)) return
       call LCMGDL(mirror_flux,ig,mirror_flux32)
       call LCMGDL(mirror_source,ig,mirror_source32)
       call LCMGDL(legacy_inner,ig,mirror_qfiss32)
