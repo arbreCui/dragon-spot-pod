@@ -54,6 +54,26 @@ binary hash).
   `m > 0` accelerates only nonterminal outers; the strict gate accepts
   only an unmodified Picard image.
 
+## Reference-side facts settled while the 3D ladder runs
+
+- **B1 SIGS is inert on this route.**  The rank-2 axial pair member gives
+  the same k (`1.362397` at the 5e-6 pair tolerance) with and without
+  `B1 SIGS`: every solve on this route runs at `BUCKLING = 0`, where the
+  B1 correction vanishes.  The 3D direct reference (plain `TYPE K`,
+  explicit vacuum leakage) is therefore configuration-comparable to the
+  route without further adjustment.
+- **OpenMP is a negative result on this build.**  An `openmp=1` copy of
+  the tree reproduces the 3D smoke k exactly but runs 2.8x SLOWER
+  (1827 s vs 660 s, 6 threads) — the MCGFCF parallel region loses to
+  its own synchronization on this problem.  The reference ladder stays
+  serial.
+- **Reference tolerance protocol.**  The decomposition needs k_3D to
+  ~pcm, and at 1e-5 solver terminals the iteration noise is already
+  below that; the expensive 5e-7/5e-6 terminals bought nothing.  The
+  declared ladder is: smoke (EQW4/25/SPLITZ2), rung2' (EQW8/200/SPLITZ5),
+  rung3' (EQW12/300/SPLITZ8), all at declared 1e-5 terminals; solver
+  noise <= 1-2 pcm, discretization uncertainty from the k sequence.
+
 ## Open front carried across the boundary
 
 The physical-full-rank lane
