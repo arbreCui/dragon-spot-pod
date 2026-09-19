@@ -45,7 +45,7 @@ make spot-fast
 The last command is transport-free.  Continue only after it ends with
 `SPOT ACTIVE FAST PASS`.
 
-## 2. Restore and verify the admitted input bundle
+## 2. Restore and verify the sealed CLOSED/0 runtime
 
 The large XSM files and canonical Dragon are deliberately not stored in Git.
 They must be published together as a hash-pinned project release asset before
@@ -55,6 +55,30 @@ artifact directory, set:
 ```sh
 ART=/absolute/path/to/d4a-corrected-material-three-snapshots-detached-20260904
 ```
+
+The release asset starts from the already sealed `CLOSED/0`; it does not
+rebuild the three snapshots from a raw nuclear-data library.  It contains
+exactly the 38 payload files named in
+`d4a_closed0_release.sha256`, plus that receipt itself.  Verify it before
+installing Dragon:
+
+```sh
+sh validation/iterative/check_d4a_closed0_release.sh --verify "$ART"
+```
+
+Release maintainers generate this inventory, without copying any data, from
+the admitted local CLOSED/0 directory and the canonical Dragon with
+`check_d4a_closed0_release.sh`:
+
+```sh
+sh validation/iterative/check_d4a_closed0_release.sh \
+  "$LOCAL_CLOSED0" "$CANONICAL_DRAGON" > d4a_closed0_release.sha256
+```
+
+The 769 MB `DLIB8R1_370` target and its absolute symbolic link are not release
+payloads.  Its hash remains inside `executed_inputs.sha256` as inert upstream
+provenance; the runtime manifest never dereferences it, and Picard and
+acceptance do not read it.
 
 Install and verify the release binary after the local source build:
 
@@ -76,59 +100,24 @@ Verification of a supplied bundle is read-only:
   cd "$ART"
   sha256sum -c admitted_snapshot_archive.sha256
   sha256sum -c d4a_rank2_admitted.sha256
-  sha256sum -c restored_radial_track.sha256
+  sha256sum -c d4a_bootstrap_result.sha256
   test "$(sha256sum d4a_snapshots.xsm | awk '{print $1}')" = \
     9c46b034a22235e1b410614579028f150588c17d9938f7591b3137327495d294
   test "$(sha256sum d4a_rank2_basis.xsm | awk '{print $1}')" = \
     b372e94165b68cc2ecf53768dfe5bb0c190b70908558e186ed74a297911aeab2
-  test "$(sha256sum TRACK_f | awk '{print $1}')" = \
-    d2bcd5c078e7b66772f44963039eb0505300e4d51d4661125823f6037d2d51d7
   rg -q '^D4A-SNAPSHOT ARCHIVE GANLIB-ONLY PASS$' snapshot_check.log
   rg -q '^D4A-RANK2 GANLIB-ONLY PASS$' d4a_rank2_check.log
+  rg -q '^SPOT-R64 B2I BOOTSTRAP COMMITTED CLOSED/0$' b2i_bootstrap.log
 )
 ```
 
-`TRACK_f` is the frozen geometry/discretization tracking companion.  Its
-receipt states that no flux, system, macrolib, eigenvalue, or material state
-was reused.
+## 3. Select the sealed map parent
 
-## 3. Prepare a fresh bootstrap directory
-
-Never bootstrap in the admitted archive itself.  The runner is fail-closed
-and refuses to overwrite partial products.  Copy only the admitted files and
-their receipts into a new directory:
+The runtime begins at the verified `CLOSED/0` state; no transport is rerun in
+this step:
 
 ```sh
-BOOT=/absolute/path/to/fresh-d4a-bootstrap
-test ! -e "$BOOT"
-mkdir "$BOOT"
-while read -r hash name; do
-  cp "$ART/$name" "$BOOT/$name"
-done < "$ART/admitted_snapshot_archive.sha256"
-while read -r hash name; do
-  cp "$ART/$name" "$BOOT/$name"
-done < "$ART/d4a_rank2_admitted.sha256"
-cp "$ART/admitted_snapshot_archive.sha256" "$BOOT/"
-cp "$ART/d4a_rank2_admitted.sha256" "$BOOT/"
-cp "$ART/TRACK_f" "$BOOT/"
-```
-
-To reproduce the admitted seal after the short gate passes, run one bounded
-bootstrap with explicit operational wall limits:
-
-```sh
-: "${AXIAL_LIMIT_SECONDS:?set the authorized axial wall limit}"
-: "${RADIAL_LIMIT_SECONDS:?set the authorized three-plane wall limit}"
-RESULT_DIR="$BOOT" \
-AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
-RADIAL_TIMEOUT_SECONDS="$RADIAL_LIMIT_SECONDS" \
-  sh validation/iterative/run_d4a_rank2_bootstrap.sh
-```
-
-Acceptance requires all of the following; a partial directory is not a
-restart or result:
-
-```sh
+BOOT="$ART"
 test -s "$BOOT/closed_axial.xsm"
 test -s "$BOOT/closed_snapshots.xsm"
 test -s "$BOOT/d4a_bootstrap_result.sha256"
@@ -139,7 +128,7 @@ rg -q '^SPOT-R64 B2I BOOTSTRAP COMMITTED CLOSED/0$' \
 
 ## 4. Run one direct Picard map
 
-Only after the bootstrap acceptance above:
+Only after the sealed `CLOSED/0` verification above:
 
 ```sh
 MAP1=/absolute/path/to/fresh-d4a-map1
@@ -297,7 +286,8 @@ At minimum, the clean-checkout revision must contain:
   `run_d4a_corrected_final_observables.sh`,
   `verify_d4a_corrected_observables.sh`,
   `test_d4a_corrected_observables_replay.sh`, and
-  `check_d4a_corrected_acceptance.sh`;
+  `check_d4a_corrected_acceptance.sh`, plus the runtime release checker
+  `check_d4a_closed0_release.sh`;
 - the independent CE route under `validation/d4_reference/`;
 - all current SPOR64/REAL64 production-source changes used by those decks,
   the regenerated `src/.dragon_deps.mk`, the iterative `Makefile`, and every
