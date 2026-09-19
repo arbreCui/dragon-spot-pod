@@ -22,6 +22,29 @@ FC=${FC:-gfortran}
   -O0 -g -std=gnu -Wall -Wextra -Wno-compare-reals \
   -fcheck=all -ffpe-trap=invalid,zero,overflow \
   -ffixed-line-length-none -ffree-line-length-none \
+  "$ROOT/Utilib/src/ALSBD.f" \
+  "$ROOT/src/SPOT1P.f90" \
+  "$ROOT/src/SPOT1P64.f90" \
+  "$ROOT/validation/level2/test_spot1p_basis_invariance.f90" \
+  -o "$BUILD_DIR/test_spot1p_basis_invariance"
+
+"$BUILD_DIR/test_spot1p_basis_invariance"
+
+"$FC" \
+  -O0 -g -std=gnu -Wall -Wextra -Wno-compare-reals \
+  -fcheck=all -ffpe-trap=invalid,zero,overflow \
+  -ffixed-line-length-none -ffree-line-length-none \
+  "$ROOT/Utilib/src/ALSBD.f" \
+  "$ROOT/src/SPOT1P64.f90" \
+  "$ROOT/validation/level2/test_spot1p64_cache.f90" \
+  -o "$BUILD_DIR/test_spot1p64_cache"
+
+"$BUILD_DIR/test_spot1p64_cache"
+
+"$FC" \
+  -O0 -g -std=gnu -Wall -Wextra -Wno-compare-reals \
+  -fcheck=all -ffpe-trap=invalid,zero,overflow \
+  -ffixed-line-length-none -ffree-line-length-none \
   "$ROOT/src/SPOT_LEAKAGE.f90" \
   "$ROOT/validation/level2/test_radial_closure.f90" \
   -o "$BUILD_DIR/test_radial_closure"

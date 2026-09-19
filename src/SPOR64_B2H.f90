@@ -5,6 +5,7 @@ module SPOR64_B2H
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : CHARACTER_RECORD_MATCHES, EMPTY_MEMORY_ROOT, &
       RECORD_MATCHES
   implicit none
@@ -15,7 +16,6 @@ module SPOR64_B2H
 
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -56,8 +56,9 @@ contains
 
 
   subroutine SPOR64_B2H_PROJECT(ipout,ipseed,iptrack,projected_region64, &
-      rho64,status)
+      rho64,contract,status)
     type(c_ptr), intent(in) :: ipout, ipseed, iptrack
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     real(real64), intent(in) :: projected_region64(:,:)
     real(real64), intent(in) :: rho64
     integer, intent(out) :: status
@@ -128,18 +129,23 @@ contains
     if (state_vector(1) /= NGRP .or. state_vector(2) /= nunkno) return
     if (state_vector(3) /= 1) return
     if (any(state_vector(4:7) /= 0)) return
-    if (state_vector(8) /= 3 .or. state_vector(9) /= 3) return
+    if (state_vector(8) /= contract%flu_acce_free .or. &
+        state_vector(9) /= contract%flu_acce_accel) return
     if (state_vector(10) /= 1 .or. state_vector(17) /= nmat) return
-    if (state_vector(11) /= 740 .or. state_vector(12) /= 500) return
+    if (state_vector(11) /= contract%flu_maxinr .or. &
+        state_vector(12) /= contract%flu_maxout) return
     if (state_vector(18) /= 1) return
     if (any(state_vector(13:16) /= 0)) return
     if (any(state_vector(19:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(ipseed,'EPS-CONVERGE',5,2)) return
     call LCMGET(ipseed,'EPS-CONVERGE',eps_converge)
     if (.not. all(ieee_is_finite(eps_converge))) return
-    if (transfer(eps_converge(1),0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(eps_converge(2),0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(eps_converge(3),0_int32) /= FROZEN_TOL_BITS) return
+    if (transfer(eps_converge(1),0_int32) /= &
+        contract%eps_radial_bits) return
+    if (transfer(eps_converge(2),0_int32) /= &
+        contract%eps_radial_bits) return
+    if (transfer(eps_converge(3),0_int32) /= &
+        contract%eps_radial_bits) return
     if (any(abs(eps_converge(4:5)) > +0.0_real32)) return
     allocate(keyflx(nreg),seed_keyflx(nreg),imerge(nmat), &
         seen_unknown(nunkno),stat=allocation_status)
@@ -149,7 +155,8 @@ contains
     if (any(imerge /= 1)) return
     if (.not. RECORD_MATCHES(ipseed,'KEYFLX',nreg,1)) return
     call LCMGET(ipseed,'KEYFLX',seed_keyflx)
-    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'OPTION',1,4,'B0  ')) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'OPTION',1,4, &
+        contract%flu_option)) return
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
         'MACRO0')) return
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.TRACK',3,12, &
@@ -263,7 +270,7 @@ contains
     macro_name = 'MACRO0'
     track_name = 'TRACK'
     system_name = 'SYSTEM'
-    option = 'B0  '
+    option = contract%flu_option
     call LCMPTC(ipout,'SIGNATURE',12,signature)
     call LCMPUT(ipout,'STATE-VECTOR',NSTATE,1,state_vector)
     call LCMPUT(ipout,'EPS-CONVERGE',5,2,eps_converge)

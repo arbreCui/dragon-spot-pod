@@ -1,5 +1,5 @@
 program check_d4a_track_geometry
-  ! Independent GANLIB-only check of the real D4-A geometry TRACK.
+  ! Independent GANLIB-only check of the historical D4-A geometry TRACK.
   use GANLIB
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use, intrinsic :: iso_c_binding, only : c_ptr
@@ -50,7 +50,7 @@ program check_d4a_track_geometry
     call fail('NON-FINITE MCCG REAL-PARAM.')
   if (transfer(real_param(1),0_int32) /= mccg_epsi_bits .or. &
       any(transfer(real_param(2:4),0_int32,3) /= 0_int32)) &
-    call fail('MCCG REAL-PARAM DOES NOT MATCH THE PRODUCTION CONTRACT.')
+    call fail('MCCG REAL-PARAM DOES NOT MATCH THE HISTORICAL PROBE ARTIFACT.')
 
   call require_record(track,'MATCOD',nreg,1)
   call require_record(track,'VOLUME',nreg,2)
@@ -112,7 +112,7 @@ program check_d4a_track_geometry
   write(*,'(A)') &
     'D4A-TRACK LENGTHS MATCOD=132 VOLUME=132 V$MCCG=144 ' // &
     'NZON$MCCG=144 KEYFLX=132 KEYCUR$MCCG=12 ICODE=6 ALBEDO=6 BC=12'
-  write(*,'(A)') 'D4A-TRACK GEOMETRY-ONLY PASS'
+  write(*,'(A)') 'D4A-TRACK HISTORICAL-GEOMETRY-ONLY PASS'
 
 contains
 

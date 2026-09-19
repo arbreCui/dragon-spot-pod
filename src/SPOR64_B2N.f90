@@ -5,6 +5,7 @@ module SPOR64_B2N
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_MEMORY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, &
       RECORD_MATCHES
@@ -23,11 +24,9 @@ module SPOR64_B2N
   integer, parameter :: NCODE = 6
   integer, parameter :: NIFIS = 32
   integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
-  integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: MCCG_STATE_EXPECTED(NSTATE) = &
-      [-1,4,10,0,0,0,80,0,0,4,0,0,20,1,1,1,0,0,1,1, &
+      [-1,4,10,0,0,0,80,0,0,0,0,0,20,1,1,1,0,0,1,1, &
        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -36,8 +35,10 @@ module SPOR64_B2N
 
 contains
 
-  subroutine SPOR64_B2N_BUILD(ipprojected,plane_index,ipmacro_out,ipsource_out,status)
+  subroutine SPOR64_B2N_BUILD(ipprojected,plane_index,ipmacro_out, &
+      ipsource_out,contract,status)
     type(c_ptr), intent(in) :: ipprojected, ipmacro_out, ipsource_out
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(in) :: plane_index
     integer, intent(out) :: status
 
@@ -172,11 +173,24 @@ contains
       if (.not. RECORD_MATCHES(probe_track,'MCCG-STATE',NSTATE,1)) return
       call LCMGET(probe_track,'MCCG-STATE',probe_mccg_state)
       if (probe_mccg_state(5) <= 0 .or. probe_mccg_state(6) <= 0) return
+      if (probe_mccg_state(10) /= 3 .and. &
+          probe_mccg_state(10) /= 4) return
+      if (probe_mccg_state(10) == 3) then
+        if (probe_mccg_state(17) <= 0) return
+        if (.not. RECORD_MATCHES(probe_track,'IM0$MCCG', &
+            probe_track_state(2)+1,1)) return
+        if (.not. RECORD_MATCHES(probe_track,'MCU0$MCCG', &
+            probe_mccg_state(17),1)) return
+      else
+        if (probe_mccg_state(17) /= 0) return
+        if (.not. ABSENT_RECORD(probe_track,'IM0$MCCG')) return
+        if (.not. ABSENT_RECORD(probe_track,'MCU0$MCCG')) return
+      end if
       if (ip == 1) then
         archive_mccg_state = probe_mccg_state
       else
-        if (any(probe_mccg_state(5:6) /= &
-            archive_mccg_state(5:6))) return
+        if (any(probe_mccg_state([5,6,10,17]) /= &
+            archive_mccg_state([5,6,10,17]))) return
       end if
       if (.not. RECORD_MATCHES(probe_track,'MCU$MCCG', &
           probe_mccg_state(6),1)) return
@@ -213,19 +227,24 @@ contains
         int(huge(nmat),int64)) return
     if (track_state(9) /= 0 .or. track_state(14) /= 4) return
     if (track_state(16) /= 2 .or. track_state(22) /= 1) return
-    if (track_state(27) /= 0 .or. track_state(39) /= 0) return
+    if (track_state(27) < 0 .or. track_state(39) /= 0) return
     if (track_state(40) /= 0) return
     if (.not. RECORD_MATCHES(input_track,'MCCG-STATE',NSTATE,1)) return
     call LCMGET(input_track,'MCCG-STATE',mccg_state)
     if (mccg_state(5) <= 0 .or. mccg_state(6) <= 0) return
     if (any(mccg_state(5:6) /= archive_mccg_state(5:6))) return
     if (any(mccg_state(1:4) /= MCCG_STATE_EXPECTED(1:4))) return
-    if (any(mccg_state(7:NSTATE) /= &
-        MCCG_STATE_EXPECTED(7:NSTATE))) return
+    if (any(mccg_state(7:9) /= MCCG_STATE_EXPECTED(7:9))) return
+    if (any(mccg_state(11:16) /= MCCG_STATE_EXPECTED(11:16))) return
+    if (any(mccg_state(18:NSTATE) /= &
+        MCCG_STATE_EXPECTED(18:NSTATE))) return
+    if (mccg_state(10) /= archive_mccg_state(10) .or. &
+        mccg_state(17) /= archive_mccg_state(17)) return
     if (.not. RECORD_MATCHES(input_track,'REAL-PARAM',4,2)) return
     call LCMGET(input_track,'REAL-PARAM',real_param32)
     if (.not. all(ieee_is_finite(real_param32))) return
-    if (transfer(real_param32(1),0_int32) /= MCCG_EPSI_BITS) return
+    if (transfer(real_param32(1),0_int32) /= &
+        contract%eps_mccg_bits) return
     if (any(transfer(real_param32(2:4),0_int32,3) /= 0_int32)) return
     if (.not. RECORD_MATCHES(input_track,'VOLUME',nreg,2)) return
     if (.not. RECORD_MATCHES(input_track,'V$MCCG',nunkno,2)) return
@@ -325,14 +344,21 @@ contains
         'L_FLUX')) return
     if (.not. RECORD_MATCHES(input_flux,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(input_flux,'STATE-VECTOR',flux_state)
-    if (any(flux_state(1:18) /= &
-        [NGRP,nunkno,1,0,0,0,0,3,3,1,740,500,0,0,0,0,nmat,1])) return
+    if (any(flux_state(1:7) /= [NGRP,nunkno,1,0,0,0,0])) return
+    if (flux_state(8) /= contract%flu_acce_free .or. &
+        flux_state(9) /= contract%flu_acce_accel) return
+    if (flux_state(10) /= 1) return
+    if (flux_state(11) /= contract%flu_maxinr .or. &
+        flux_state(12) /= contract%flu_maxout) return
+    if (any(flux_state(13:16) /= 0)) return
+    if (flux_state(17) /= nmat .or. flux_state(18) /= 1) return
     if (any(flux_state(19:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(input_flux,'EPS-CONVERGE',5,2)) return
     call LCMGET(input_flux,'EPS-CONVERGE',eps_converge32)
     if (.not. all(ieee_is_finite(eps_converge32))) return
     do g = 1, 3
-      if (transfer(eps_converge32(g),0_int32) /= FROZEN_TOL_BITS) return
+      if (transfer(eps_converge32(g),0_int32) /= &
+          contract%eps_radial_bits) return
     end do
     do g = 4, 5
       if (transfer(eps_converge32(g),0_int32) /= 0_int32) return
@@ -344,7 +370,7 @@ contains
     call LCMGET(input_flux,'KEYFLX',keyanis)
     if (any(keyanis /= keyflx)) return
     if (.not. CHARACTER_RECORD_MATCHES(input_flux,'OPTION',1,4, &
-        'B0  ')) return
+        contract%flu_option)) return
     if (.not. CHARACTER_RECORD_MATCHES(input_flux,'LINK.MACRO',3,12, &
         'MACRO0')) return
     if (.not. CHARACTER_RECORD_MATCHES(input_flux,'LINK.TRACK',3,12, &

@@ -5,16 +5,18 @@
 * Fresh FLUX is the sole target; FLUX_OLD is read-only.         *
 * BOOT is mandatory: this procedure is not a continuation host. *
 ****************************************************************
-PARAMETER SYSTEM FLUX SNAP MICROLIB2 TRACK TRACK_f FLUX_OLD ::
-  ::: LINKED_LIST SYSTEM FLUX SNAP MICROLIB2 TRACK FLUX_OLD ;
+PARAMETER SYSTEM FLUX SNAP MICROLIB2 TRACK TRACK_f FLUX_OLD
+          RCONTRACT ::
+  ::: LINKED_LIST SYSTEM FLUX SNAP MICROLIB2 TRACK FLUX_OLD RCONTRACT ;
   ::: SEQ_BINARY TRACK_f ; ;
 
 LINKED_LIST MACRO0 FSOURCE ;
 MODULE SPOFSRC: ASM: FLU: SPOFCHK: DELETE: END: ;
 
-INTEGER isnap ;
+INTEGER isnap maxout maxinr acce_free acce_accel ;
 REAL keff flu_eps ;
-:: >>isnap<< >>keff<< >>flu_eps<< ;
+:: >>isnap<< >>keff<< >>flu_eps<<
+   >>maxout<< >>maxinr<< >>acce_free<< >>acce_accel<< ;
 
 MACRO0 FSOURCE := SPOFSRC: MICROLIB2 TRACK FLUX_OLD ::
   KEFF <<keff>> ;
@@ -22,11 +24,11 @@ MACRO0 FSOURCE := SPOFSRC: MICROLIB2 TRACK FLUX_OLD ::
 SYSTEM := ASM: MACRO0 TRACK TRACK_f SNAP ::
   EDIT 0 ARM LK1D <<isnap>> ;
 
-FLUX := FLU: MACRO0 TRACK TRACK_f SYSTEM FSOURCE FLUX_OLD ::
+FLUX := FLU: MACRO0 TRACK TRACK_f SYSTEM FSOURCE FLUX_OLD RCONTRACT ::
   EDIT 0 TYPE S INIT ON REBA
-  EXTE 500 <<flu_eps>>
-  UNKT <<flu_eps>> THER 740 <<flu_eps>>
-  ACCE 3 3 R64 BOOT ;
+  EXTE <<maxout>> <<flu_eps>>
+  UNKT <<flu_eps>> THER <<maxinr>> <<flu_eps>>
+  ACCE <<acce_free>> <<acce_accel>> R64 BOOT ;
 
 FLUX := SPOFCHK: FLUX FLUX_OLD TRACK SYSTEM FSOURCE :: ;
 MACRO0 FSOURCE := DELETE: MACRO0 FSOURCE ;

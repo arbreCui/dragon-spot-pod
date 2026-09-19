@@ -1,0 +1,323 @@
+# Corrected D4-A minimal user path
+
+This page is the shortest reproducible route from a clean checkout to the
+corrected-material D4-A rank-two SPOD/Picard validation.  It does not change
+the physics, rank, tolerances, or iteration method.
+
+## Current release boundary
+
+The corrected 132-region, 370-group snapshot archive is admitted for the
+three frozen material states `(650,620,475)`, `(750,620,475)`, and
+`(850,620,475)` degrees C.  Its SHA-256 is
+`9c46b034a22235e1b410614579028f150588c17d9938f7591b3137327495d294`.
+The admitted rank-two basis SHA-256 is
+`b372e94165b68cc2ecf53768dfe5bb0c190b70908558e186ed74a297911aeab2`.
+
+Bootstrap is admitted.  The axial seed and all three REAL64 fixed-source
+radial refreshes completed, and the strict B2I seal published `CLOSED/0` with
+`closed_axial.xsm`, `closed_snapshots.xsm`, and
+`d4a_bootstrap_result.sha256`.  Corrected-material map 1 is currently running;
+it has not yet published a checked map or convergence classification, so no
+corrected-material fixed point may be claimed.
+
+## 1. Build and run the short gate
+
+The current scripts are macOS/arm64-specific and expect `gfortran`, `gcc`,
+Python 3, `rg`, `sha256sum`, and `shasum` on `PATH`.
+
+The scientific acceptance receipt also pins the exact Dragon executable used
+to build the corrected snapshots. A source rebuild is required for the local
+libraries and tests, but it is not expected to reproduce that Mach-O file
+byte-for-byte on another checkout path or toolchain. The corrected release
+asset must therefore supply the 9,147,176-byte canonical Dragon with SHA-256
+`2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db`.
+It requires the macOS arm64 Homebrew GCC 15.2.0 runtime at the standard
+`/opt/homebrew/opt/gcc` prefix. The binary and large XSM inputs remain outside
+Git; neither may be silently replaced by a locally different build.
+
+```sh
+cd /absolute/path/to/spot
+make -C src -j2
+make -C validation/iterative -j2
+make spot-fast
+```
+
+The last command is transport-free.  Continue only after it ends with
+`SPOT ACTIVE FAST PASS`.
+
+## 2. Restore and verify the admitted input bundle
+
+The large XSM files and canonical Dragon are deliberately not stored in Git.
+They must be published together as a hash-pinned project release asset before
+this is a portable clean-checkout path. After obtaining the frozen corrected
+artifact directory, set:
+
+```sh
+ART=/absolute/path/to/d4a-corrected-material-three-snapshots-detached-20260904
+```
+
+Install and verify the release binary after the local source build:
+
+```sh
+test "$(shasum -a 256 "$ART/Dragon" | awk '{print $1}')" = \
+  2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db
+install -m 755 "$ART/Dragon" bin/Darwin_arm64/Dragon
+test "$(shasum -a 256 bin/Darwin_arm64/Dragon | awk '{print $1}')" = \
+  2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db
+```
+
+At present the only known copies are local to the development machine under
+`validation/artifacts/`; no repository retrieval instruction exists yet. A
+clean checkout therefore stops here until that bundle is supplied.
+Verification of a supplied bundle is read-only:
+
+```sh
+(
+  cd "$ART"
+  sha256sum -c admitted_snapshot_archive.sha256
+  sha256sum -c d4a_rank2_admitted.sha256
+  sha256sum -c restored_radial_track.sha256
+  test "$(sha256sum d4a_snapshots.xsm | awk '{print $1}')" = \
+    9c46b034a22235e1b410614579028f150588c17d9938f7591b3137327495d294
+  test "$(sha256sum d4a_rank2_basis.xsm | awk '{print $1}')" = \
+    b372e94165b68cc2ecf53768dfe5bb0c190b70908558e186ed74a297911aeab2
+  test "$(sha256sum TRACK_f | awk '{print $1}')" = \
+    d2bcd5c078e7b66772f44963039eb0505300e4d51d4661125823f6037d2d51d7
+  rg -q '^D4A-SNAPSHOT ARCHIVE GANLIB-ONLY PASS$' snapshot_check.log
+  rg -q '^D4A-RANK2 GANLIB-ONLY PASS$' d4a_rank2_check.log
+)
+```
+
+`TRACK_f` is the frozen geometry/discretization tracking companion.  Its
+receipt states that no flux, system, macrolib, eigenvalue, or material state
+was reused.
+
+## 3. Prepare a fresh bootstrap directory
+
+Never bootstrap in the admitted archive itself.  The runner is fail-closed
+and refuses to overwrite partial products.  Copy only the admitted files and
+their receipts into a new directory:
+
+```sh
+BOOT=/absolute/path/to/fresh-d4a-bootstrap
+test ! -e "$BOOT"
+mkdir "$BOOT"
+while read -r hash name; do
+  cp "$ART/$name" "$BOOT/$name"
+done < "$ART/admitted_snapshot_archive.sha256"
+while read -r hash name; do
+  cp "$ART/$name" "$BOOT/$name"
+done < "$ART/d4a_rank2_admitted.sha256"
+cp "$ART/admitted_snapshot_archive.sha256" "$BOOT/"
+cp "$ART/d4a_rank2_admitted.sha256" "$BOOT/"
+cp "$ART/TRACK_f" "$BOOT/"
+```
+
+To reproduce the admitted seal after the short gate passes, run one bounded
+bootstrap with explicit operational wall limits:
+
+```sh
+: "${AXIAL_LIMIT_SECONDS:?set the authorized axial wall limit}"
+: "${RADIAL_LIMIT_SECONDS:?set the authorized three-plane wall limit}"
+RESULT_DIR="$BOOT" \
+AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
+RADIAL_TIMEOUT_SECONDS="$RADIAL_LIMIT_SECONDS" \
+  sh validation/iterative/run_d4a_rank2_bootstrap.sh
+```
+
+Acceptance requires all of the following; a partial directory is not a
+restart or result:
+
+```sh
+test -s "$BOOT/closed_axial.xsm"
+test -s "$BOOT/closed_snapshots.xsm"
+test -s "$BOOT/d4a_bootstrap_result.sha256"
+rg -q '^SPOT-R64 B2I BOOTSTRAP COMMITTED CLOSED/0$' \
+  "$BOOT/b2i_bootstrap.log"
+(cd "$BOOT" && sha256sum -c d4a_bootstrap_result.sha256)
+```
+
+## 4. Run one direct Picard map
+
+Only after the bootstrap acceptance above:
+
+```sh
+MAP1=/absolute/path/to/fresh-d4a-map1
+test ! -e "$MAP1"
+: "${RADIAL_LIMIT_SECONDS:?set the authorized radial wall limit}"
+: "${AXIAL_LIMIT_SECONDS:?set the authorized axial wall limit}"
+RADIAL_TIMEOUT_SECONDS="$RADIAL_LIMIT_SECONDS" \
+AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
+  sh validation/iterative/run_d4a_rank2_picard_map.sh "$BOOT" "$MAP1"
+```
+
+The runner evaluates one unchanged direct map and then runs the independent
+one-map checker and the three-defect convergence gate.  It introduces no
+relaxation, damping, fitted coefficient, clipping, or empirical parameter.
+
+## 5. Check and continue
+
+The result checker is already part of the one-map runner.  Accept a map only
+if these checks pass:
+
+```sh
+(
+  cd "$MAP1"
+  shasum -a 256 -c input_manifest.sha256
+  shasum -a 256 -c output_manifest.sha256
+  rg -q '^ONE-MAP-XSM COMPLETE$' independent_check.log
+  rg -q '^SPOT-GATE COMPLETE$' gate.log
+  rg '^CLASSIFICATION=VALID_(MET|NOT_MET)$' gate.log
+)
+```
+
+Stop on `VALID_MET`.  For `VALID_NOT_MET`, a subsequent direct Picard map has
+the previous map directory as its parent and a new, unused output directory:
+
+```sh
+MAP2=/absolute/path/to/fresh-d4a-map2
+RADIAL_TIMEOUT_SECONDS="$RADIAL_LIMIT_SECONDS" \
+AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
+  sh validation/iterative/run_d4a_rank2_picard_map.sh "$MAP1" "$MAP2"
+```
+
+Do not reuse a failed or partial directory, change the fixed basis, loosen a
+gate, or add a coefficient to force acceptance.
+
+## 6. Extract and independently replay the final observables
+
+Only the first `VALID_MET` map is a final state. Extract its eigenvalue and
+globally normalized bottom/middle/top nu-fission production without another
+transport solve:
+
+```sh
+FINAL=/absolute/path/to/the-first-valid-met-map
+OBS=/absolute/path/to/fresh-corrected-observables
+TIMEOUT_SECONDS=10 \
+  sh validation/iterative/run_d4a_corrected_final_observables.sh \
+  "$BOOT" "$FINAL" "$OBS"
+```
+
+Then rerun the complete lineage gate. Pass every map exactly once and in
+epoch order; the example below has three maps:
+
+```sh
+D4A_OBSERVABLES_DIR="$OBS" \
+  sh validation/iterative/check_d4a_corrected_acceptance.sh \
+  "$BOOT" "$MAP1" "$MAP2" "$FINAL"
+```
+
+Acceptance reruns the canonical read-only `GREP + SPORATE` extraction from
+the sealed XSM state with the corrected-build Dragon identity. The saved and
+replayed `k` and floor-power records must be byte-identical; a self-hashed
+edited log is not evidence.
+
+## 7. Freeze a completed map for transfer
+
+The map runner uses seven absolute input links to avoid duplicating large
+files while it runs.  After a map has completed, make a portable copy without
+rerunning either transport solver:
+
+```sh
+PORTABLE=/absolute/path/to/fresh-portable-map1
+sh validation/iterative/freeze_d4a_corrected_map.sh \
+  "$BOOT" "$MAP1" "$PORTABLE"
+(cd "$PORTABLE" && shasum -a 256 -c result.sha256)
+```
+
+The freezer first verifies the corrected bootstrap receipt, requires exactly
+the runner's eight input and six output receipt entries, and checks that the
+basis, route contract, radial tracking, axial tracking, and axial macrolib are
+byte-for-byte identical to that corrected bootstrap.  It also requires
+complete independent-check and convergence-gate logs.  It then copies the
+seven absolute linked inputs by value, refuses any remaining link, records
+their original paths in `symlink_provenance.tsv`, and seals every regular file
+in `result.sha256`.  The source map is read-only and the output directory must
+not exist.
+
+The freezer does not trust the copied checker text by itself.  With
+`CHECKER_DIR` defaulting to `validation/iterative`, it reruns
+`check_one_map_xsm --continued` and `check_convergence_gate` on the packaged
+map state and requires both outputs to match the source logs byte for byte.  It
+also requires the canonical, unique termination records in `prepare.log`,
+`admission.log`, and `close.log`.
+
+`portable_classification.txt` states the role of the copy.  A
+`VALID_NOT_MET` map is labelled `NEXT_MAP_PARENT_ONLY` and is not evidence of
+final convergence; it may only feed the next unchanged Picard map.  Only a
+`VALID_MET` map is labelled `CONVERGED_MAP`.
+
+## 8. Run the matching independent CE production
+
+After the corrected SPOD lineage reaches its first independently accepted
+`VALID_MET` map, use the sole production entry point. The wrapper owns the
+frozen statistical controls and process-group wall cap; do not invoke the
+builder's production mode directly:
+
+```sh
+CE_PRODUCTION=/absolute/path/to/fresh-ce-production
+/path/to/openmc-python validation/d4_reference/run_d4a_ce_production.py \
+  --output "$CE_PRODUCTION" \
+  --cross-sections /absolute/path/to/cross_sections.xml \
+  --openmc-exec /absolute/path/to/openmc
+```
+
+The production particle count, batches, inactive batches, seed, threads and
+OpenMC executable are frozen in
+`validation/d4_reference/d4a_ce_production_protocol.md`; they are execution
+and statistical controls, not fitted SPOD parameters. A production result is not
+accepted until its sealed statepoint, OpenMC runtime identity, continuous-
+energy mode, final batch, realization count and 651-cell tally all pass the
+independent receipt checker described in
+`validation/d4_reference/README.md`.
+
+## Files that must be published with the source revision
+
+At minimum, the clean-checkout revision must contain:
+
+- corrected snapshot inputs and guards: `data/SpotD4Snap.c2m`,
+  `data/SpotD4Tone.c2m`, `data/rnr_0burn_spot_proc/rnr_cc.c2m`,
+  `data/rnr_0burn_spot_proc/rnr_interpol.c2m`,
+  `validation/iterative/d4a_snapshot_inputs.sha256`,
+  `d4a_three_snapshots.x2m`, `preflight_d4a_three_snapshots.sh`,
+  `run_d4a_three_snapshots.sh`, `run_d4a_snapshot_check.sh`, and the two D4-A
+  snapshot/basis checker sources;
+- the fixed-basis/seed route: `d4a_rank2_basis.x2m`,
+  `run_d4a_rank2_basis.sh`, `d4a_axial_seed.x2m`, and
+  `run_d4a_axial_seed.sh`;
+- the bootstrap route: `data/SpotRefR64.c2m`,
+  `data/SpotPlaneR64.c2m`, `SPOR64_RCONTRACT.f90`,
+  `make_route_contract.f90`, `b2i_seal_bootstrap.f90`,
+  `d4a_refresh_r64.x2m`, and `run_d4a_rank2_bootstrap.sh`;
+- the one-map route: `data/SpotStepR64.c2m`,
+  `d4a_rank2_picard_radial.x2m`, `d4a_rank2_picard_axial.x2m`,
+  `d4a_rank2_checker_parent.x2m`, `run_d4a_rank2_picard_map.sh`, and the
+  `prepare`, `admit`, `close`, one-map, and convergence checker sources;
+- the final-result route: `d4a_corrected_final_observables.x2m`,
+  `run_d4a_corrected_final_observables.sh`,
+  `verify_d4a_corrected_observables.sh`,
+  `test_d4a_corrected_observables_replay.sh`, and
+  `check_d4a_corrected_acceptance.sh`;
+- the independent CE route under `validation/d4_reference/`;
+- all current SPOR64/REAL64 production-source changes used by those decks,
+  the regenerated `src/.dragon_deps.mk`, the iterative `Makefile`, and every
+  source/script newly referenced by `validation/run_fast.sh`.
+
+On the current worktree, several files in those groups are still untracked.
+In particular, a clean checkout would currently miss `SPOR64_RCONTRACT.f90`,
+both bootstrap host-tool sources, the bootstrap/Picard decks and runners,
+and the new sources/tests used by the fast gate.
+
+## Files that must remain outside Git
+
+- the hash-pinned canonical Dragon executable, published as release data;
+- locally compiled Dragon/Ganlib libraries and all other executables;
+- compiled iterative host tools, including `b2i_seal_bootstrap` and
+  `make_route_contract`;
+- XSM databases, `TRACK_f`, copied CLE-2000 procedures, logs, and map output
+  directories;
+- the complete corrected artifact bundle under `validation/artifacts/`.
+
+The first two new host-tool binaries need exact `.gitignore` entries; their
+`.f90` sources must be tracked.  Do not add a broad `*.xsm` rule: the existing
+`validation/artifacts/` rule is sufficient for the large validation bundle.

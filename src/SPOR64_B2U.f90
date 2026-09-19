@@ -19,8 +19,8 @@ subroutine SPOR64T(nentry,hentry,ientry,jentry,kentry)
 
   ! SPOR64T is deliberately a thin CLE-2000 adapter.  Selection of the
   ! enclosing SpotStepR64 procedure is the opt-in boundary before ASM.
-  if (nentry /= 6) then
-    call XABORT('SPOR64T: SIX ENTRIES EXPECTED.')
+  if (nentry /= 7) then
+    call XABORT('SPOR64T: SEVEN ENTRIES EXPECTED.')
     return
   end if
   if (hentry(1) /= 'RETURNED' .or. hentry(2) /= 'PROJECTED') then
@@ -36,11 +36,15 @@ subroutine SPOR64T(nentry,hentry,ientry,jentry,kentry)
     call XABORT('SPOR64T: TRACK_f INPUT EXPECTED.')
     return
   end if
-  if (any(ientry(1:5) /= 1) .or. ientry(6) /= 3) then
-    call XABORT('SPOR64T: FIVE LCM ENTRIES AND ONE BINARY FILE EXPECTED.')
+  if (hentry(7) /= 'RCONTRACT') then
+    call XABORT('SPOR64T: RCONTRACT INPUT EXPECTED.')
     return
   end if
-  if (jentry(1) /= 0 .or. any(jentry(2:6) /= 2)) then
+  if (any(ientry(1:5) /= 1) .or. ientry(6) /= 3 .or. ientry(7) /= 1) then
+    call XABORT('SPOR64T: SIX LCM ENTRIES AND ONE BINARY FILE EXPECTED.')
+    return
+  end if
+  if (jentry(1) /= 0 .or. any(jentry(2:6) /= 2) .or. jentry(7) /= 2) then
     call XABORT('SPOR64T: NEW OUTPUT AND READ-ONLY INPUTS EXPECTED.')
     return
   end if
@@ -54,7 +58,7 @@ subroutine SPOR64T(nentry,hentry,ientry,jentry,kentry)
 
   systems = kentry(3:5)
   call SPOR64_B2T_HOST_STEP(kentry(1),kentry(2),systems,kentry(6), &
-      status,cutoff_by_plane,.true.)
+      kentry(7),status,cutoff_by_plane,.true.)
   if (status /= SPOR64_B2T_RETURNED) then
     call XABORT('SPOR64T: B2T OWNED HOST STEP FAILED.')
     return

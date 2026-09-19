@@ -15,6 +15,8 @@ gfortran $FFLAGS -I "$DRAGON/modules" -I "$GANLIB/modules" \
 gfortran $FFLAGS -I "$TMP" -I "$DRAGON/modules" -I "$GANLIB/modules" \
   -J "$TMP" -c "$ROOT/src/SPOR64_VERIFY.f90" -o "$TMP/SPOR64_VERIFY.o"
 gfortran $FFLAGS -I "$TMP" -I "$DRAGON/modules" -I "$GANLIB/modules" \
+  -J "$TMP" -c "$ROOT/src/SPOR64_RCONTRACT.f90" -o "$TMP/SPOR64_RCONTRACT.o"
+gfortran $FFLAGS -I "$TMP" -I "$DRAGON/modules" -I "$GANLIB/modules" \
   -J "$TMP" -c "$ROOT/src/SPOR64_B2H.f90" -o "$TMP/SPOR64_B2H.o"
 gfortran $FFLAGS -I "$TMP" -I "$DRAGON/modules" -I "$GANLIB/modules" \
   -J "$TMP" -c "$ROOT/src/SPOR64_B2I.f90" -o "$TMP/SPOR64_B2I.o"
@@ -22,7 +24,7 @@ gfortran $FFLAGS -I "$TMP" -I "$DRAGON/modules" -I "$GANLIB/modules" \
   -J "$TMP" -c "$ROOT/src/SPOR64_B2J.f90" -o "$TMP/SPOR64_B2J.o"
 gfortran $FFLAGS -I "$TMP" -I "$DRAGON/modules" -I "$GANLIB/modules" \
   "$ROOT/validation/iterative/test_b2h_runtime_geometry.f90" \
-  "$TMP/SPOR64_B2H.o" "$TMP/SPOR64_VERIFY.o" \
+  "$TMP/SPOR64_B2H.o" "$TMP/SPOR64_VERIFY.o" "$TMP/SPOR64_RCONTRACT.o" \
   "$DRAGON/libDragon.a" "$GANLIB/libGanlib.a" -lstdc++ \
   -o "$TMP/test_b2h_runtime_geometry"
 "$TMP/test_b2h_runtime_geometry"

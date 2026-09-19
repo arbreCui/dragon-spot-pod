@@ -11,14 +11,14 @@
 
 XSM_FILE TRACK_AX :: FILE './d4a_axial_track.xsm' ;
 XSM_FILE MACROLIB3 :: FILE './d4a_axial_macrolib.xsm' ;
-XSM_FILE SYSTEM_IN :: FILE './d4a_rank2_basis.xsm' ;
+XSM_FILE BASIS_REF :: FILE './d4a_rank2_basis.xsm' ;
 XSM_FILE SNAP_IN :: FILE './d4a_snapshots.xsm' ;
 
 XSM_FILE SEED_AX :: FILE './d4a_seed_axial.xsm' ;
 XSM_FILE SEED_SNAP :: FILE './d4a_seed_snapshots.xsm' ;
 
-LINKED_LIST SNAP AX_CURRENT ;
-MODULE FLU: SPOGBAL: SPOSTATE: SPOLEAK: GREP: END: ;
+LINKED_LIST SNAP AX_CURRENT SYSTEM_FIX ;
+MODULE ASM: FLU: SPOGBAL: SPOSTATE: SPOLEAK: GREP: END: ;
 
 * Declared terminal, consistent with the snapshot-solve declaration
 * of 2026-08-26 (the D4-A flux-image channels floor near 1e-6).
@@ -30,17 +30,23 @@ ECHO "D4A-AXIAL-SEED-TOLERANCE" solver_eps ;
 
 SNAP := SNAP_IN ;
 
-AX_CURRENT := FLU: MACROLIB3 TRACK_AX SYSTEM_IN ::
+* The certified route is the frozen-basis discipline: the system that
+* mints the seed state is assembled in FIXB mode against the built
+* basis object, so B2I's fixed-basis admission holds from genesis.
+SYSTEM_FIX := ASM: MACROLIB3 TRACK_AX SNAP BASIS_REF ::
+  EDIT 1 SPOD 2 FIXB ;
+
+AX_CURRENT := FLU: MACROLIB3 TRACK_AX SYSTEM_FIX ::
   EDIT 1 TYPE K EXTE 500 <<solver_eps>> REBA OFF ACCE 3 3
   UNKT <<solver_eps>> THER <<solver_eps>> ;
 AX_CURRENT := SPOGBAL:
-  AX_CURRENT TRACK_AX SYSTEM_IN MACROLIB3 :: ;
+  AX_CURRENT TRACK_AX SYSTEM_FIX MACROLIB3 :: ;
 GREP: AX_CURRENT ::
   GETVAL 'K-EFFECTIVE' 1 >>k_seed<<
   GETVAL 'SPOT-GBAL' 1 >>gbal<<
   GETVAL 'SPOT-GBAL-MAX' 1 >>gbal_group<< ;
 AX_CURRENT := SPOSTATE:
-  AX_CURRENT TRACK_AX SYSTEM_IN MACROLIB3 :: ;
+  AX_CURRENT TRACK_AX SYSTEM_FIX MACROLIB3 :: ;
 ECHO "D4A-AXIAL-SEED-CANDIDATE" k_seed gbal gbal_group ;
 
 SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak_change<< ;

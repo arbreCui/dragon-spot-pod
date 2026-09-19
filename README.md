@@ -16,6 +16,69 @@ The active method is deliberately small:
 - no fitted closure, relaxation, damping, clipping, flux floor, CMFD
   correction, or empirical coupling coefficient.
 
+## Fast current-code physics gate
+
+Run one complete online-radial/reduced-axial pure-Picard map with the current
+binary and the sealed route contract:
+
+```sh
+sh validation/iterative/run_pin_current_picard.sh
+```
+
+The runner executes `B2J -> SpotStepR64 -> axial solve -> B2W`, followed by
+the independent one-map checker and the fixed three-defect convergence gate.
+It uses the repository-complete pre-Gram `CLOSED/69` pair only as a numerical
+seed and recomputes every physical response; it must not be cited as the
+current fixed point.  A 2026-08-28 replay completed in about 80 seconds with
+`CLASSIFICATION=VALID_MET` and defects
+`R_rho=3.44e-9`, `R_L=4.41e-8`, and `R_a=1.56e-8` against the unchanged
+`5e-7` gate.
+
+## D4-A status
+
+The 132-region IRENA D4-A legacy-input case reached a converged rank-two
+SPOD/Picard fixed point.  Direct Picard reached the unchanged three-component
+`5e-7` gate at map 8:
+
+```text
+k       = 1.2863778402485850
+R_rho   = 6.3952111273302137e-8
+R_L     = 3.4898525208435340e-7
+R_a     = 3.4971804373678926e-7
+status  = VALID_MET
+```
+
+The iteration contains no relaxation, damping, fitted closure, empirical
+coefficient, clipping, or model correction.  Its read-only normalized
+bottom/middle/top nu-fission production is
+`0.256479949 / 0.485561517 / 0.257958535`.
+
+This closes only a numerical regression.  A later audit found that the
+snapshots used the pre-2026-05-27 material model, whose bulk-density thermal
+expansion direction was physically inverted and whose MOX/EM10 bookkeeping
+was obsolete.  That legacy map 8 therefore remains a numerical regression,
+not a corrected-material result.  The recovered historical direct-3D ladder
+is an eight-region pin-cell problem, not the 132-region D4-A assembly, so its
+values remain excluded.  See
+[the map-8 result](validation/iterative/d4a_rank2_picard_maps6_to8_result.md)
+and [the accuracy boundary](validation/iterative/d4a_map8_accuracy_boundary.md).
+
+The corrected material route has now admitted all three physical snapshots
+at fuel temperatures 650/750/850 C with cladding/sodium at 620/475 C.  Their
+eigenvalues are `1.3707917928695679`, `1.3690495491027832`, and
+`1.3674149513244629`.  The fixed rank-two basis is admitted, and the unchanged
+axial-seed/three-radial-response chain has passed the strict B2I seal as
+`CLOSED/0`.  Corrected-material map 1 is currently running; it has not yet
+published a checked map or a convergence classification.  Consequently there
+is still no corrected-material fixed-point result.
+
+The shortest reproducible corrected-material build, bootstrap, Picard-map,
+and packaging path is the
+[corrected D4-A quickstart](validation/iterative/D4A_CORRECTED_QUICKSTART.md).
+The large frozen inputs and hash-pinned canonical Dragon are release data
+rather than Git source; until that release asset is published, a clean
+checkout cannot pass its restore step.
+
 ## Equations
 
 For energy group $g$, construct the fixed radial basis from snapshots:
@@ -123,6 +186,24 @@ No rank increase, empirical coefficient, relaxation parameter, gate change
 or added model term was used.  See
 [the clean-replay result](validation/iterative/rank2_strict_leak64_clean_replay_result.md).
 
+### Exact rank-3 enrichment check
+
+The same three frozen snapshots also generate a nested rank-3 space whose
+first two modes reproduce rank 2 bitwise.  A locally gate-passing rank-2
+CLOSED state was embedded exactly by retaining those coordinates and setting
+the third to positive zero; all 8880 reconstructed physical values remain
+bitwise unchanged.  Its temporary directory lacks the complete binary/source
+receipt of the canonical clean replay, so this is a diagnostic input rather
+than a replacement publication result.  One unchanged rank-3 map completed
+its radial half, but its pure-Picard axial solve produced no terminal before
+the single 600-second hard limit.  It was terminated and not retried.
+
+This bounded attempt supplies no rank-3 fixed-point defect and is not evidence
+that a rank-3 fixed point is mathematically absent.  Rank 2 therefore remains
+the only certified result for the precision-supported snapshot space; no
+rank-2/rank-3 fixed-point error is inferred.  See
+[the bounded rank-3 result](validation/iterative/rank3_zero_embed_one_map_result.md).
+
 ## Second-case preparation
 
 The independent second case is the 132-region IRENA D4-A 1/12 assembly.
@@ -131,8 +212,11 @@ One bounded geometry-only TRACK build established the actual radial tuple
 number of numerical surface-current unknowns, while `NCODE=6` remains the
 number of physical boundary/albedo code slots.  One first-state D4-A attempt
 was rejected because TONE reached its self-shielding iteration cap; it was
-stopped before publishing a snapshot.  No accepted D4-A transport result
-exists.  The no-transport implementation now carries these TRACK-authoritative
+stopped before publishing a snapshot.  After restoring the frozen TONE track,
+a dedicated 650 C TONE-only gate converged at iteration 4 with error
+`4.453e-6`, no cap warning and a normal Dragon end.  It executed no
+MCCGT/ASM/FLU and created no flux snapshot.  The no-transport implementation
+now carries these TRACK-authoritative
 runtime region, material, surface and unknown counts through
 `SPOR64_B2B -> SPOR64_A9 -> SPOR64_A8`, the `SPOR64_B2C` publication
 boundary, the assembled-to-close `B2K/B2N/B2S/B2R/B2W` lifecycle, and the
@@ -154,13 +238,55 @@ tracking density `100.0` into the separate TONE/MERGMIX track.  The builder
 now restores its historical density `50.0`, keeps production transport at
 `100.0`, and requires both absence of the TONE-cap warning and an explicit
 terminal for all three states.  No tolerance or physical input changed.  The
-corrected, hash-locked, default-off deck passes its seconds-scale preflight but
-has not been rerun.
-The physical archive has therefore not yet been generated, and an independent D4-A
-reference and the unchanged gate must be frozen before any convergence claim.
+corrected, hash-locked, default-off deck passes its seconds-scale preflight;
+its material/TONE prefix is now also verified by the accepted one-state gate.
+One zero-retry three-state attempt was then made with a fixed 7200 s process
+bound.  State 1 again passed TONE, but its strict full-rank `FLU TYPE K` solve
+produced no terminal before the bound.  Dragon was cleaned up and no snapshot,
+archive or success receipt was published.  This is a bounded no-result, not
+evidence that the discrete problem diverges.  At that stage the physical
+archive had not yet been generated. A 600 s passive trace first located the cost inside
+MCCGF/MCGMRE. Byte-identical 1300 s, 1500 s and final 1900 s replays then
+proved seven MCGMRE solves reached their unchanged local criterion. The first
+complete scheduled `3 free + 3 accelerated` thermal cycle decreased through
+`IN(4..6)=0.104,0.0558,0.0414`; the next free step reached
+`IN(7)=0.0208`. The FLU2AC factors were computed variationally, not fitted.
+This supports continuing the unchanged route, but `IN(7)` remains about
+`4.16e4` times the FLU target; all seven records remain inside `OUT(0)`, with
+no `OUT(1)`, terminal or snapshot. No operator, tolerance or empirical
+coefficient changed.  A subsequent four-hour `EDIT 0` attempt lost its host
+supervisor and was sealed honestly as `FAILED / NOT_RUN / NO_RESULT`; it does
+not establish convergence or divergence.
+
+On 2026-08-25 the prepared observable `EDIT 1` route was executed exactly once
+with a 14400 s wall limit and zero retries.  TONE passed, all 25 completed
+inner solves reached their unchanged criterion, and from `OUT(2)` onward
+`keff` stayed in `1.367861--1.367864`.  The best explicitly printed outer flux
+residual was nevertheless `1.69e-6` at `OUT(20)`, versus the unchanged
+`5e-7` target; it later rose to `1.82e-5`, and the last completed
+`OUT(25)` eigenvalue residual was `1.32e-6`.  The run ended at its wall limit
+without the strict outer gate, a normal end or a snapshot.  Its classification
+is therefore `TIMEOUT / NOT_RUN / NO_RESULT`, not convergence or divergence.
+All five provenance manifests pass and no process from this run remains.
+
+The follow-up source/artifact audit found no retained raw flux pair with which
+to recompute a REAL64 norm, and the 14 printed flux defects vary by a factor of
+11.18 rather than forming a demonstrated precision plateau.  It did expose a
+smaller, definite inconsistency: production MCCG/GMRES used `EPSI=1e-5` while
+FLU required `EXTE=UNKT=THER=5e-7`.  Actual diagnostic MCCG solves had been
+accepted between `9.43e-7` and `5.91e-6`, so the linear solve was allowed to
+stop above the requested outer accuracy.
+
+The current snapshot builder uses the same declared `solver_eps=2e-6` for
+production MCCG and all three FLU gates.  TONE remains at `1e-5`; the physical
+operator, 3+3 variational schedule, REBA, GMRES/ACA and material state are
+unchanged.  The subsequent corrected three-snapshot archive, fixed rank-two
+basis, and `CLOSED/0` bootstrap all passed their independent gates.  Map 1 is
+running from that sealed state; no corrected convergence or accuracy result
+exists until its independent checker and three-defect gate complete.
 See
 [the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md)
-and [the snapshot preflight result](validation/iterative/d4a_snapshot_preflight_result.md).
+and [the FLU diagnostic result](validation/iterative/d4a_flu650_diagnostic_result.md).
 
 ## Earlier rank-2 development history
 

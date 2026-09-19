@@ -12,7 +12,8 @@ program prepare_r64_aa1_projected
 
   integer, parameter :: nsnap = 3
   character(len=1024) :: proposal_path, archive_path, track_path, output_path
-  type(c_ptr) :: proposal, archive, track, output
+  character(len=1024) :: contract_path
+  type(c_ptr) :: proposal, archive, track, output, contract
   type(c_ptr) :: archive_authority, output_authority
   type(c_ptr) :: fluxes, plane, plane_authority
   integer :: status, template_epoch, output_epoch, plane_epoch, ip
@@ -20,12 +21,13 @@ program prepare_r64_aa1_projected
   real(real64) :: proposal_rho, output_rho, plane_rho
   logical :: exists
 
-  if (command_argument_count() /= 4) call fail( &
-      'EXPECTED PROPOSAL_AX CLOSED_ARCHIVE AXIAL_TRACK FRESH_OUTPUT.')
+  if (command_argument_count() /= 5) call fail( &
+      'EXPECTED PROPOSAL ARCHIVE TRACK RCONTRACT FRESH_OUTPUT.')
   call get_command_argument(1,proposal_path)
   call get_command_argument(2,archive_path)
   call get_command_argument(3,track_path)
-  call get_command_argument(4,output_path)
+  call get_command_argument(4,contract_path)
+  call get_command_argument(5,output_path)
   if (len_trim(proposal_path) == 0 .or. len_trim(archive_path) == 0 .or. &
       len_trim(track_path) == 0 .or. len_trim(output_path) == 0) &
     call fail('EMPTY PATH.')
@@ -38,6 +40,7 @@ program prepare_r64_aa1_projected
 
   call LCMOP(proposal,trim(proposal_path),2,2,0)
   call LCMOP(archive,trim(archive_path),2,2,0)
+  call LCMOP(contract,trim(contract_path),2,2,0)
   call LCMOP(track,trim(track_path),2,2,0)
   call require_character(proposal,'SPOT-X-STATE','PROPOSAL','PROPOSAL AX')
   call require_character(proposal,'SPOT-X-CARR','X4-RAW-FLUX', &
@@ -54,7 +57,8 @@ program prepare_r64_aa1_projected
     call fail('CLOSED TEMPLATE EPOCH CANNOT ADVANCE.')
 
   call LCMOP(output,trim(output_path),0,2,0)
-  call SPOR64_B2J_PROJECT_PROPOSAL(output,proposal,track,archive,status)
+  call SPOR64_B2J_PROJECT_PROPOSAL(output,proposal,track,archive, &
+      contract,status)
   if (status == SPOR64_B2J_ADMISSION_FAILED) &
     call fail('B2J REJECTED THE CHECKED AA1 PROPOSAL.')
   if (status /= SPOR64_B2J_ARCHIVE_PROJECTED) &

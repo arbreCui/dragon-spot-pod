@@ -18,20 +18,25 @@ subroutine SPOR64V(nentry,hentry,ientry,jentry,kentry)
 
   ! Read-only returned-object admission immediately before ASM.  This binds
   ! the child leakage actually consumed by ASM to the same-index SYSTEM L0.
-  if (nentry /= 1) then
-    call XABORT('SPOR64V: ONE ENTRY EXPECTED.')
+  ! The sealed route contract is a mandatory second read-only operand.
+  if (nentry /= 2) then
+    call XABORT('SPOR64V: TWO ENTRIES EXPECTED.')
     return
   end if
   if (hentry(1) /= 'FEEDBACK') then
     call XABORT('SPOR64V: FEEDBACK INPUT EXPECTED.')
     return
   end if
-  if (ientry(1) /= 1) then
-    call XABORT('SPOR64V: ONE LCM ENTRY EXPECTED.')
+  if (hentry(2) /= 'RCONTRACT') then
+    call XABORT('SPOR64V: RCONTRACT INPUT EXPECTED.')
     return
   end if
-  if (jentry(1) /= 2) then
-    call XABORT('SPOR64V: READ-ONLY INPUT EXPECTED.')
+  if (any(ientry /= 1)) then
+    call XABORT('SPOR64V: TWO LCM ENTRIES EXPECTED.')
+    return
+  end if
+  if (any(jentry /= 2)) then
+    call XABORT('SPOR64V: READ-ONLY INPUTS EXPECTED.')
     return
   end if
 
@@ -41,7 +46,7 @@ subroutine SPOR64V(nentry,hentry,ientry,jentry,kentry)
     return
   end if
 
-  call SPOR64_B2W_ADMIT_RETURNED(kentry(1),status)
+  call SPOR64_B2W_ADMIT_RETURNED(kentry(1),kentry(2),status)
   if (status /= SPOR64_B2W_RETURNED_ADMITTED) then
     call XABORT('SPOR64V: RETURNED ADMISSION FAILED.')
     return
@@ -68,8 +73,8 @@ subroutine SPOR64X(nentry,hentry,ientry,jentry,kentry)
   ! SpotCloseR64 procedure.  The procedure owns AX_NEXT and FEEDBACK from
   ! their creation through this call; the public B2W gate remains responsible
   ! for exact content admission and the final CLOSED/e commit.
-  if (nentry /= 4) then
-    call XABORT('SPOR64X: FOUR ENTRIES EXPECTED.')
+  if (nentry /= 5) then
+    call XABORT('SPOR64X: FIVE ENTRIES EXPECTED.')
     return
   end if
   if (hentry(1) /= 'AX_CLOSED' .or. hentry(2) /= 'ARCH_CLOSED') then
@@ -80,12 +85,17 @@ subroutine SPOR64X(nentry,hentry,ientry,jentry,kentry)
     call XABORT('SPOR64X: AX_NEXT/FEEDBACK INPUTS EXPECTED.')
     return
   end if
-  if (any(ientry /= 1)) then
-    call XABORT('SPOR64X: FOUR LCM ENTRIES EXPECTED.')
+  if (hentry(5) /= 'RCONTRACT') then
+    call XABORT('SPOR64X: RCONTRACT INPUT EXPECTED.')
     return
   end if
-  if (any(jentry(1:2) /= 0) .or. any(jentry(3:4) /= 2)) then
-    call XABORT('SPOR64X: TWO NEW OUTPUTS AND TWO READ-ONLY INPUTS EXPECTED.')
+  if (any(ientry /= 1)) then
+    call XABORT('SPOR64X: FIVE LCM ENTRIES EXPECTED.')
+    return
+  end if
+  if (any(jentry(1:2) /= 0) .or. any(jentry(3:5) /= 2)) then
+    call XABORT('SPOR64X: TWO NEW OUTPUTS AND THREE READ-ONLY INPUTS '// &
+      'EXPECTED.')
     return
   end if
 
@@ -96,7 +106,8 @@ subroutine SPOR64X(nentry,hentry,ientry,jentry,kentry)
     return
   end if
 
-  call SPOR64_B2W_CLOSE(kentry(1),kentry(2),kentry(3),kentry(4),status)
+  call SPOR64_B2W_CLOSE(kentry(1),kentry(2),kentry(3),kentry(4), &
+    kentry(5),status)
   if (status /= SPOR64_B2W_CLOSED) then
     call XABORT('SPOR64X: B2W RETURNED-CLOSE ADMISSION FAILED.')
     return

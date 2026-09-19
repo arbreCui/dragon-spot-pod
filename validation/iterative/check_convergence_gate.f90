@@ -25,9 +25,9 @@ program check_convergence_gate
 
   character(len=1024) :: path
   type(c_ptr) :: ax
-  integer :: dims(4), ngrp, nsnap, ncoef, ilong, itylcm
+  integer :: dims(4), ngrp, nsnap, ncoef, nreg, ilong, itylcm
   integer :: ig, is, a, b, nmode, ia, ib, ig_worst, is_worst
-  integer, allocatable :: rank(:), off(:), goff(:)
+  integer, allocatable :: rank(:), off(:), goff(:), boff(:)
   real(real64) :: rrho, rleak, dleak, ra
   real(real64) :: nrm2, rel, rel_max
   real(real64), allocatable :: coeff(:), gram(:), perp(:)
@@ -62,21 +62,32 @@ program check_convergence_gate
       dleak < 0.0_real64 .or. ra < 0.0_real64) &
     error stop 'negative stopping defect'
 
-  allocate(rank(ngrp),off(ngrp+1),goff(ngrp+1))
+  allocate(rank(ngrp),off(ngrp+1),goff(ngrp+1),boff(ngrp+1))
   call require(ax,'SPOT-X-RANK',ngrp,1)
   call require(ax,'SPOT-X-OFF',ngrp+1,1)
   call require(ax,'SPOT-X-GOFF',ngrp+1,1)
+  call require(ax,'SPOT-X-BOFF',ngrp+1,1)
   call LCMGET(ax,'SPOT-X-RANK',rank)
   call LCMGET(ax,'SPOT-X-OFF',off)
   call LCMGET(ax,'SPOT-X-GOFF',goff)
-  if (off(1) /= 0 .or. goff(1) /= 0) error stop 'invalid offsets'
+  call LCMGET(ax,'SPOT-X-BOFF',boff)
+  if (off(1) /= 0 .or. goff(1) /= 0 .or. boff(1) /= 0) &
+    error stop 'invalid offsets'
   if (off(ngrp+1) /= ncoef) error stop 'coordinate extent mismatch'
+  nreg = 0
   do ig = 1, ngrp
-    if (rank(ig) < 1 .or. rank(ig) > nsnap) error stop 'invalid rank'
+    if (rank(ig) < 1) error stop 'invalid rank'
     if (off(ig+1)-off(ig) /= nsnap*rank(ig)) error stop 'invalid stride'
     if (goff(ig+1)-goff(ig) /= rank(ig)*rank(ig)) &
       error stop 'invalid gram stride'
+    if (mod(boff(ig+1)-boff(ig),rank(ig)) /= 0) &
+      error stop 'invalid basis stride'
+    if (ig == 1) nreg = (boff(ig+1)-boff(ig))/rank(ig)
+    if (nreg <= 0 .or. boff(ig+1)-boff(ig) /= nreg*rank(ig)) &
+      error stop 'inconsistent radial extent'
+    if (rank(ig) > nreg) error stop 'rank exceeds radial dimension'
   end do
+  call require(ax,'SPOT-X-BASIS',boff(ngrp+1),2)
 
   allocate(coeff(ncoef),gram(goff(ngrp+1)))
   call require(ax,'SPOT-X-A',ncoef,4)

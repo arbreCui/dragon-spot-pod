@@ -52,10 +52,22 @@ module SPOR64_SCHEMA
          'PJJXI$MCCG  ','PJJYI$MCCG  ','PJJZI$MCCG  ','DRAGON-TXSC ', &
          'SPOT-S0-PHYS','DRAGON-S0XSC','DIAGF$MCCG  ']
 
+  character(len=12), parameter :: SCHEMA_RESPONSE_GROUP_PHYS_P3(16) = &
+        ['CF$MCCG     ','ILUDF$MCCG  ','CQ$MCCG     ','DIAGQ$MCCG  ', &
+         'PJJ$MCCG    ','PJJX$MCCG   ','PJJY$MCCG   ','PJJZ$MCCG   ', &
+         'PJJXI$MCCG  ','PJJYI$MCCG  ','PJJZI$MCCG  ','DRAGON-TXSC ', &
+         'SPOT-S0-PHYS','DRAGON-S0XSC','DIAGF$MCCG  ','ILUCF$MCCG  ']
+
   character(len=12), parameter :: SCHEMA_RESPONSE_GROUP(12) = &
         ['CF$MCCG     ','ILUDF$MCCG  ','CQ$MCCG     ','DIAGQ$MCCG  ', &
          'PJJ$MCCG    ','PJJX$MCCG   ','PJJY$MCCG   ','PJJZ$MCCG   ', &
          'PJJXI$MCCG  ','PJJYI$MCCG  ','PJJZI$MCCG  ','DIAGF$MCCG  ']
+
+  character(len=12), parameter :: SCHEMA_RESPONSE_GROUP_P3(13) = &
+        ['CF$MCCG     ','ILUDF$MCCG  ','CQ$MCCG     ','DIAGQ$MCCG  ', &
+         'PJJ$MCCG    ','PJJX$MCCG   ','PJJY$MCCG   ','PJJZ$MCCG   ', &
+         'PJJXI$MCCG  ','PJJYI$MCCG  ','PJJZI$MCCG  ','DIAGF$MCCG  ', &
+         'ILUCF$MCCG  ']
 
   character(len=12), parameter :: SCHEMA_PROJECTED_ARCHIVE_ROOT(7) = &
         ['SIGNATURE   ','LISTDIM     ','SPOT-ITER-K ','TRACK       ', &

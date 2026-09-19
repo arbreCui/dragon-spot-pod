@@ -143,7 +143,7 @@
       INTEGER INDD(3)
       DOUBLE PRECISION AKEEP(8),FISOUR,OLDBIL,AKEFF,AKEFFO,AFLNOR,
      1 BFLNOR,DDELN1,DDELD1,PROD,FLXIN
-      LOGICAL LSCAL,LEXAC,REBFLG,LSPOTFS
+      LOGICAL LSCAL,LEXAC,REBFLG,LSPOTFS,LSTRICTK
       REAL ALBEDO(6),FLUXC(NREG),B2(4),EINR_LAST,EUNK_LAST
 *
 ************************************************************************
@@ -221,6 +221,10 @@
             LSPOTFS=.TRUE.
          ENDIF
       ENDIF
+*     D4 full-order TYPE-K solves use the strict user-supplied inner gate.
+*     This identity is derived from the existing door and calculation type.
+      LSTRICTK=(CXDOOR.EQ.'MCCG').AND.(ITYPEC.GE.2).AND.
+     1 (ITYPEC.LE.3)
 *----
 *  RECOVER INDEX FOR THE CURRENTS IN FLUX, NUMERICAL SURFACES,
 *  ALBEDO IF NEEDED BY THE REBALANCING.
@@ -1084,10 +1088,9 @@
          IINR_STATE=1
          GOTO 280
       ENDIF
-*     For legacy paths, near convergence (eps < 10.0 criterion) starts a
-*     new outer iteration.  Frozen-source SPOT radial solves continue until
-*     the actual EPSINR threshold or the declared iteration cap.
-      IF((.NOT.LSPOTFS).AND.(IGDEB.GT.1).AND.
+*     Preserve the legacy near schedule outside strict SPOT fixed-source and
+*     MCCG TYPE-K solves.  Strict paths continue to the actual EPSINR gate.
+      IF((.NOT.LSPOTFS).AND.(.NOT.LSTRICTK).AND.(IGDEB.GT.1).AND.
      1   (EINN.LT.10.*EPSINR)) THEN
          IINR_STATE=2
          GOTO 281
@@ -1255,26 +1258,19 @@
       IEXTF=IT
       IF((ITYPEC.GT.1).AND.(ITYPEC.LT.5)) THEN
          IF(AKEFF.NE.0.0) AFLNOR=1.0D0/AKEFF
-         EEXT=REAL(ABS(AKEFF-AKEFFO)/AKEFF)
+*        AKEEP(2) is the actual input k, including a variational update.
+         EEXT=REAL(ABS(AKEFF-AKEEP(2))/AKEFF)
       ELSE
          EEXT=0.0
       ENDIF
       AKEEP(3)=AKEFF
-*----
-*  ACCELERATING INNER ITERATIONS CYCLICALLY DEPENDING ON PARAM.
-*----
-      IF(MOD(IT-1,NCTOT).GE.NCPTM) THEN
-         CALL FLU2AC(NGRP,NUNKNO,1,FLUX(1,1,1),AKEEP(1),ZMU)
-      ELSE
-         ZMU=1.0
-      ENDIF
-*
+      ZMU=1.0
       EINN=0.0
       EUNK_LAST=0.0
       IUNK_EVAL=0
       IF(IPRT.GT.0) WRITE(6,1090) IT,EEXT,EPSOUT,AKEFF,B2(4)
       IF(EEXT.LT.EPSOUT) THEN
-*        COMPARE FLUX FOR OUTER ITERATIONS
+*        Evaluate the unmodified Picard input/output defect.
          DO 370 IG=1,NGRP
          GINN=0.0
          FINN=0.0
@@ -1284,20 +1280,38 @@
          GINN=MAX(GINN,ABS(FLUX(IND,IG,2)-FLUX(IND,IG,3)))
          FINN=MAX(FINN,ABS(FLUX(IND,IG,3)))
   360    CONTINUE
-         FLUX(:NUNKNO,IG,1)=FLUX(:NUNKNO,IG,2)
-         FLUX(:NUNKNO,IG,2)=FLUX(:NUNKNO,IG,3)
          GINN=GINN/FINN
          EINN=MAX(EINN,GINN)
   370    CONTINUE
          EUNK_LAST=EINN
          IUNK_EVAL=1
-         IF(IPRT.GT.0) WRITE(6,1100) IT,EINN,EPSUNK,AFLNOR,ZMU
          CEXE=.TRUE.
+      ENDIF
+*     Accept only the unmodified Picard image at all three strict gates.
+      IF((EEXT.LT.EPSOUT).AND.(EINN.LT.EPSUNK).AND.
+     1   (EINR_LAST.LT.EPSINR).AND.(IINR_STATE.EQ.1).AND.
+     2   (IT.GE.2)) THEN
+*        Passive success audit; no iteration state is modified here.
+         IF(IPRT.GT.0) WRITE(6,1100) IT,EINN,EPSUNK,AFLNOR,ZMU
+         WRITE(6,1180) IEXTF,MAXOUT,AKEFF,EEXT,EPSOUT,EUNK_LAST,
+     1   EPSUNK,IUNK_EVAL
+         WRITE(6,1190) ITERF_LAST,MAXINR,EINR_LAST,EPSINR,
+     1   IGDEB_LAST,IINR_STATE,NGRP
+         GO TO 410
+      ENDIF
+*----
+*  ACCELERATE ONLY A NONTERMINAL OUTER ITERATE.
+*----
+      IF(MOD(IT-1,NCTOT).GE.NCPTM) THEN
+         CALL FLU2AC(NGRP,NUNKNO,1,FLUX(1,1,1),AKEEP(1),ZMU)
+      ENDIF
+      IF(EEXT.LT.EPSOUT) THEN
+         IF(IPRT.GT.0) WRITE(6,1100) IT,EINN,EPSUNK,AFLNOR,ZMU
       ELSE
-         FLUX(:NUNKNO,:NGRP,1)=FLUX(:NUNKNO,:NGRP,2)
-         FLUX(:NUNKNO,:NGRP,2)=FLUX(:NUNKNO,:NGRP,3)
          IF(IPRT.GT.0) WRITE(6,1110) IT,AFLNOR,ZMU
       ENDIF
+      FLUX(:NUNKNO,:NGRP,1)=FLUX(:NUNKNO,:NGRP,2)
+      FLUX(:NUNKNO,:NGRP,2)=FLUX(:NUNKNO,:NGRP,3)
       IF((ITYPEC.GE.2).AND.(AKEFF.NE.0.0)) THEN
          AFLNOR=(AKEFF/AKEEP(3))*AFLNOR
       ENDIF
@@ -1307,19 +1321,6 @@
 *  UPDATE KEFF
 *----
       AKEFFO=AKEFF
-*     Accept only when every user-supplied residual tolerance is met.
-*     The legacy near-inner branch may schedule another outer iteration,
-*     but it is not a convergence condition.
-      IF((EEXT.LT.EPSOUT).AND.(EINN.LT.EPSUNK).AND.
-     1   (EINR_LAST.LT.EPSINR).AND.(IINR_STATE.EQ.1).AND.
-     2   (IT.GE.2)) THEN
-*        Passive success audit; no iteration state is modified here.
-         WRITE(6,1180) IEXTF,MAXOUT,AKEFF,EEXT,EPSOUT,EUNK_LAST,
-     1   EPSUNK,IUNK_EVAL
-         WRITE(6,1190) ITERF_LAST,MAXINR,EINR_LAST,EPSINR,
-     1   IGDEB_LAST,IINR_STATE,NGRP
-         GO TO 410
-      ENDIF
   400 CONTINUE
       WRITE(6,1160) IEXTF,MAXOUT,AKEFF,EEXT,EPSOUT,EUNK_LAST,
      1 EPSUNK,IUNK_EVAL

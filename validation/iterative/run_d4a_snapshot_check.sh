@@ -35,9 +35,20 @@ test ! -L "$RESULT_DIR/d4a_snapshots.sha256" || fail "archive hash is a symlink"
 test -f "$RESULT_DIR/d4a_three_snapshots.log" || fail "Dragon log is missing"
 test ! -L "$RESULT_DIR/d4a_three_snapshots.log" || fail "Dragon log is a symlink"
 test -s "$RESULT_DIR/d4a_three_snapshots.log" || fail "Dragon log is empty"
-test -f "$RESULT_DIR/d4a_three_snapshots.err" || fail "Dragon stderr is missing"
-test ! -L "$RESULT_DIR/d4a_three_snapshots.err" || fail "Dragon stderr is a symlink"
-test ! -s "$RESULT_DIR/d4a_three_snapshots.err" || fail "Dragon stderr is not empty"
+for receipt in runner.out runner.err run_contract.txt executed_inputs.sha256 \
+  dragon_executable.sha256 frozen_repository_inputs.sha256 \
+  snapshot_build_result.sha256
+do
+  test -f "$RESULT_DIR/$receipt" || fail "$receipt is missing"
+  test ! -L "$RESULT_DIR/$receipt" || fail "$receipt is a symlink"
+done
+test ! -s "$RESULT_DIR/runner.out" || fail "bounded runner stdout is not empty"
+test ! -s "$RESULT_DIR/runner.err" || fail "bounded runner stderr is not empty"
+expect_count '^OMP_NUM_THREADS=1$' 1 "$RESULT_DIR/run_contract.txt"
+# The wall bound is an authorized run parameter (TIMEOUT_SECONDS env);
+# the receipt must record it, whatever its authorized value.
+expect_count '^WALL_LIMIT_SECONDS=[0-9]+$' 1 "$RESULT_DIR/run_contract.txt"
+expect_count '^RETRY=0$' 1 "$RESULT_DIR/run_contract.txt"
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/spot-d4a-snapshot-check.XXXXXX")
 trap 'rm -rf "$WORK"' EXIT HUP INT TERM
@@ -47,6 +58,7 @@ trap 'rm -rf "$WORK"' EXIT HUP INT TERM
   sha256sum -c executed_inputs.sha256 >/dev/null
   sha256sum -c dragon_executable.sha256 >/dev/null
   sha256sum -c d4a_snapshots.sha256 >/dev/null
+  sha256sum -c snapshot_build_result.sha256 >/dev/null
 )
 
 LOG="$RESULT_DIR/d4a_three_snapshots.log"
@@ -94,8 +106,11 @@ fi
 (
   cd "$RESULT_DIR"
   sha256sum "$CHECKER_SOURCE" > snapshot_checker_source.sha256
-  sha256sum d4a_snapshots.xsm snapshot_check.log \
-    snapshot_check.err > admitted_snapshot_archive.sha256
+  sha256sum d4a_snapshots.xsm d4a_three_snapshots.log \
+    snapshot_check.log snapshot_check.err runner.out runner.err \
+    run_contract.txt executed_inputs.sha256 dragon_executable.sha256 \
+    frozen_repository_inputs.sha256 snapshot_build_result.sha256 \
+    > admitted_snapshot_archive.sha256
 )
 
 echo "D4A PHYSICAL SNAPSHOT ARCHIVE ADMITTED: $RESULT_DIR/d4a_snapshots.xsm"

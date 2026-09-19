@@ -1,0 +1,65 @@
+****************************************************************
+* One physical-full-rank REAL64 direct-Picard axial response.   *
+****************************************************************
+
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE PARENT_AX :: FILE './parent_axial.xsm' ;
+XSM_FILE RADIAL_IN :: FILE './candidate_radial.xsm' ;
+XSM_FILE SYSTEM_NEXT :: FILE './candidate_system.xsm' ;
+
+XSM_FILE CANDIDATE_AX :: FILE './candidate_axial.xsm' ;
+XSM_FILE CAND_SNAP :: FILE './candidate_snapshots.xsm' ;
+
+LINKED_LIST SNAP AX_CURRENT ;
+MODULE FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK:
+       GREP: END: ;
+
+REAL solver_eps := 5.0E-8 ;
+* Pointwise-unknown floor, measured: with REAL32 operator records the
+* per-unknown relative successive change plateaus at 3.71E-7 (~3x the
+* REAL32 epsilon) while EEXT reaches 7.7E-11.  The unknown terminal is
+* predeclared above that floor; k and EEXT keep the 5E-8 discipline.
+REAL unkt_eps := 1.0E-6 ;
+REAL k_candidate leak_change gbal gbal_group ;
+DOUBLE rrho rleak dleak ra ;
+
+ECHO "FULL-RANK-PHYSICAL-AXIAL-BEGIN" ;
+ECHO "FULL-RANK-PHYSICAL-AXIAL-TOLERANCE" solver_eps ;
+
+SNAP := RADIAL_IN ;
+AX_CURRENT := PARENT_AX ;
+AX_CURRENT := FLU: AX_CURRENT MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+* The warm start sits ~1e-2 in k from the full-rank answer and the
+* full-rank dominance ratio is ~0.999.  Nonterminal outers are
+* accelerated; the strict gate still accepts only a raw Picard image.
+  EDIT -3 TYPE K B1 SIGS EXTE 3000 <<solver_eps>> REBA OFF ACCE 3 3
+  UNKT <<unkt_eps>> THER <<solver_eps>> ;
+AX_CURRENT := SPOGBAL:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+GREP: AX_CURRENT ::
+  GETVAL 'K-EFFECTIVE' 1 >>k_candidate<<
+  GETVAL 'SPOT-GBAL' 1 >>gbal<<
+  GETVAL 'SPOT-GBAL-MAX' 1 >>gbal_group<< ;
+AX_CURRENT := SPOSTATE:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+
+AX_CURRENT := SPOXCONV: AX_CURRENT PARENT_AX :: ;
+GREP: AX_CURRENT ::
+  GETVAL 'SPOT-X-RRHO' 1 >>rrho<<
+  GETVAL 'SPOT-X-RLEAK' 1 >>rleak<<
+  GETVAL 'SPOT-X-DLEAK' 1 >>dleak<<
+  GETVAL 'SPOT-X-RA' 1 >>ra<< ;
+ECHO "FULL-RANK-PHYSICAL-RAW-DEFECT" rrho rleak dleak ra ;
+ECHO "FULL-RANK-PHYSICAL-CANDIDATE"
+  k_candidate gbal gbal_group ;
+
+SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak_change<< ;
+ECHO "FULL-RANK-PHYSICAL-LEAKAGE" leak_change ;
+
+CANDIDATE_AX := AX_CURRENT ;
+CAND_SNAP := SNAP ;
+
+ECHO "FULL-RANK-PHYSICAL-AXIAL-COMPLETE" ;
+END: ;
+QUIT "LIST" .

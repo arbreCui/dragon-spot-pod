@@ -119,7 +119,7 @@ ENDIF ;
 
 EVALUATE coeff1 := yb ya - b a - / ;
 EVALUATE coeff2 := b ya * a yb * - b a - / ;
-REAL a_AIM1_Na := coeff1 T_clad * coeff2 + ;
+REAL a_AIM1_Na := coeff1 T_Na * coeff2 + ;
 
 *-----------------------------------------------------
 * CALCUL ACIER EM10                                  *

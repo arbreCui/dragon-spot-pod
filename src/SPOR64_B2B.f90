@@ -8,6 +8,7 @@ module SPOR64_B2B
   use SPOMOC_AUDIT, only : SPOMOC_ACTIVE
   use SPOR64_A9, only : FLU2DR64_CORE
   use SPOR64_B2C, only : SPOR64_B2C_PUBLISH, SPOR64_B2C_PUBLISH_CONT
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EXACT_INVENTORY, RECORD_MATCHES, SAME_REAL32_BITS
   use SPOR64_SCHEMA, only : SCHEMA_PLANE_SEED_AUTHORITY, &
@@ -28,12 +29,9 @@ module SPOR64_B2B
   integer, parameter :: NALBEDO = 6
   integer, parameter :: MACRO_STORED_COMPONENTS = 3
   integer, parameter :: TRACK_ACTIVE_COMPONENTS = 1
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   ! Axial lineage terminal of the r64dp route (solver_eps = 5.0E-8 in
   ! REAL32).  Seeds projected from dp-era axial states carry this value
   ! in EPS-CONVERGE(1:3) and IREBAL=0 (REBA OFF) in their state vector.
-  integer(int32), parameter :: DP_AXIAL_TOL_BITS = int(z'3356bf95',int32)
-  integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
   integer, parameter :: kind_guard = 1 / merge(1, 0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
 
@@ -50,10 +48,12 @@ contains
       itypec,maxout,maxinr,epsout32,epsunk32,epsinr32,irebal,ifritr, &
       iacitr,coptio,ileak,initfl,nmerg,imerg,iprint,rec,imcaud,limerg, &
       ngrp_host,nreg_host,nmat_host,nifis_host,itpij_host,itranc_host, &
-      iphase_host,leaksw_host,lforw_host,r64_mode,status,cutoff_visit64)
+      iphase_host,leaksw_host,lforw_host,r64_mode,contract,status, &
+      cutoff_visit64)
     integer, intent(in) :: nentry
     character(len=12), intent(in) :: hentry(:)
     integer, intent(in) :: ientry(:), jentry(:)
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     type(c_ptr), intent(in) :: kentry(:)
     integer, intent(in) :: itypec, maxout, maxinr, irebal, ifritr
     integer, intent(in) :: iacitr, ileak, initfl, nmerg, imerg(:)
@@ -81,6 +81,8 @@ contains
     integer :: frozen_flag, iftrak, ig, ibm, ir, ilong, itylcm
     integer :: allocation_status
     integer :: last_position, nreg, nmat, nsou, nunkno, nlong, max_scat
+    integer :: plane_index
+    integer :: lc0, paca
     integer(int32) :: volume_bits, track_volume_bits
     logical :: admission_complete, accepted, core_ok
     logical :: output_empty, output_lcm
@@ -90,7 +92,7 @@ contains
     real(real32), allocatable :: vol32(:), volume_track32(:), surfac32(:)
     real(real32) :: albedo32(NALBEDO)
     real(real32) :: leak1d_input32(NGRP), seed_leak1d32(NGRP), qint32(NGRP)
-    real(real32), allocatable :: s0phys_stage32(:)
+    real(real32), allocatable :: ilucf_stage32(:), s0phys_stage32(:)
     real(real64) :: leak1d64(NGRP)
     logical :: have_leak1d64
     real(real32), allocatable :: flux_stage32(:), source_stage32(:)
@@ -158,14 +160,16 @@ contains
     if (.not. output_lcm .or. ilong /= -1 .or. .not. output_empty) return
     if (trim(output_name) /= '/') return
     if (rec .or. .not. limerg) return
-    if (itypec /= 0 .or. maxout /= 500 .or. maxinr /= 740) return
-    if (irebal /= 1 .or. ifritr /= 3 .or. iacitr /= 3) return
-    if (coptio /= 'B0  ') return
+    if (itypec /= 0 .or. maxout /= contract%flu_maxout .or. &
+        maxinr /= contract%flu_maxinr) return
+    if (irebal /= 1 .or. ifritr /= contract%flu_acce_free .or. &
+        iacitr /= contract%flu_acce_accel) return
+    if (coptio /= contract%flu_option) return
     if (ileak /= 0 .or. initfl /= 1 .or. nmerg /= 1) return
     if (any(imerg /= 1)) return
-    if (transfer(epsout32,0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(epsunk32,0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(epsinr32,0_int32) /= FROZEN_TOL_BITS) return
+    if (transfer(epsout32,0_int32) /= contract%eps_radial_bits) return
+    if (transfer(epsunk32,0_int32) /= contract%eps_radial_bits) return
+    if (transfer(epsinr32,0_int32) /= contract%eps_radial_bits) return
     if (imcaud /= 0 .or. SPOMOC_ACTIVE()) return
     if (itpij_host /= 1 .or. itranc_host /= 2) return
     if (iphase_host /= 1 .or. leaksw_host .or. .not. lforw_host) return
@@ -232,9 +236,17 @@ contains
     if (.not. ABSENT_RECORD(ipseed,'ADFLUX')) return
     if (.not. RECORD_MATCHES(ipseed,'KEYFLX',nreg,1)) return
     call LCMGET(ipseed,'KEYFLX',seed_keyflx)
-    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'OPTION',1,4,'B0  ')) return
-    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
-        'MACRO0')) return
+    if (.not. CHARACTER_RECORD_MATCHES(ipseed,'OPTION',1,4, &
+        contract%flu_option)) return
+    if (r64_mode == SPOR64_B2B_BOOT) then
+      if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
+          'MACRO0') .and. &
+          .not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
+          'MICROLIB2')) return
+    else
+      if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.MACRO',3,12, &
+          'MACRO0')) return
+    end if
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.TRACK',3,12, &
         'TRACK')) return
     if (.not. CHARACTER_RECORD_MATCHES(ipseed,'LINK.SYSTEM',3,12, &
@@ -265,17 +277,28 @@ contains
     if (flux_state(1) /= NGRP .or. flux_state(2) /= nunkno) return
     if (flux_state(3) /= 1) return
     if (flux_state(4) /= 0 .or. flux_state(5) /= 0) return
-    if (flux_state(6) /= 0 .or. flux_state(7) /= 0) return
-    if (flux_state(8) /= 3 .or. flux_state(9) /= 3) return
+    if (r64_mode == SPOR64_B2B_BOOT) then
+      ! A raw TYPE-K snapshot is admitted only as the numerical initial
+      ! iterate of this TYPE-S BOOT solve.  The host equation above remains
+      ! ITYPEC=0 and the independently frozen FSOURCE remains authoritative.
+      if (flux_state(6) /= 0 .and. flux_state(6) /= 2) return
+    else
+      if (flux_state(6) /= 0) return
+    end if
+    if (flux_state(7) /= 0) return
+    if (flux_state(8) /= contract%flu_acce_free .or. &
+        flux_state(9) /= contract%flu_acce_accel) return
     if (flux_state(10) /= 1 .and. flux_state(10) /= 0) return
     if (flux_state(17) /= nmat) return
-    if (flux_state(11) /= 740 .or. flux_state(12) /= 500) return
+    if (flux_state(11) /= contract%flu_maxinr .or. &
+        flux_state(12) /= contract%flu_maxout) return
     if (flux_state(18) /= 1) return
     if (.not. RECORD_MATCHES(ipseed,'EPS-CONVERGE',5,2)) return
     call LCMGET(ipseed,'EPS-CONVERGE',eps_stage32)
     if (.not. all(ieee_is_finite(eps_stage32))) return
-    if (transfer(eps_stage32(1),0_int32) /= FROZEN_TOL_BITS .and. &
-        transfer(eps_stage32(1),0_int32) /= DP_AXIAL_TOL_BITS) return
+    if (transfer(eps_stage32(1),0_int32) /= contract%eps_radial_bits &
+        .and. transfer(eps_stage32(1),0_int32) /= &
+        contract%eps_axial_bits) return
     if (transfer(eps_stage32(2),0_int32) /= &
         transfer(eps_stage32(1),0_int32)) return
     if (transfer(eps_stage32(3),0_int32) /= &
@@ -322,7 +345,7 @@ contains
         'TRACK_f')) return
     if (track_state(9) /= 0 .or. track_state(14) /= 4) return
     if (track_state(16) /= 2 .or. track_state(22) /= 1) return
-    if (track_state(27) /= 0 .or. track_state(39) /= 0) return
+    if (track_state(27) < 0 .or. track_state(39) /= 0) return
     if (track_state(40) /= 0) return
     if (.not. RECORD_MATCHES(iptrk,'MCCG-STATE',NSTATE,1)) return
     call LCMGET(iptrk,'MCCG-STATE',mccg_state)
@@ -330,14 +353,29 @@ contains
     if (mccg_state(4) /= 0 .or. mccg_state(5) <= 0) return
     if (mccg_state(6) <= 0 .or. mccg_state(7) /= 80) return
     if (mccg_state(8) /= 0 .or. mccg_state(9) /= 0) return
-    if (mccg_state(10) /= 4 .or. mccg_state(12) /= 0) return
+    paca = mccg_state(10)
+    lc0 = mccg_state(17)
+    if (paca /= 3 .and. paca /= 4) return
+    if (mccg_state(12) /= 0) return
+    if (paca == 3) then
+      if (lc0 <= 0) return
+      if (.not. RECORD_MATCHES(iptrk,'IM0$MCCG',nlong+1,1)) return
+      if (.not. RECORD_MATCHES(iptrk,'MCU0$MCCG',lc0,1)) return
+      allocate(ilucf_stage32(lc0),stat=allocation_status)
+      if (allocation_status /= 0) return
+    else
+      if (lc0 /= 0) return
+      if (.not. ABSENT_RECORD(iptrk,'IM0$MCCG')) return
+      if (.not. ABSENT_RECORD(iptrk,'MCU0$MCCG')) return
+    end if
     if (mccg_state(13) /= 20 .or. mccg_state(15) /= 1) return
     if (mccg_state(16) /= 1 .or. mccg_state(18) /= 0) return
     if (mccg_state(19) /= 1 .or. mccg_state(20) /= 1) return
     if (.not. RECORD_MATCHES(iptrk,'REAL-PARAM',4,2)) return
     call LCMGET(iptrk,'REAL-PARAM',real_param32)
     if (.not. all(ieee_is_finite(real_param32))) return
-    if (transfer(real_param32(1),0_int32) /= MCCG_EPSI_BITS) return
+    if (transfer(real_param32(1),0_int32) /= &
+        contract%eps_mccg_bits) return
     if (any(abs(real_param32(2:4)) > 0.0_real32)) return
 
     if (.not. RECORD_MATCHES(iptrk,'MATCOD',nreg,1)) return
@@ -547,6 +585,13 @@ contains
       if (.not. RECORD_MATCHES(kpsys,'DRAGON-S0XSC',nmat+1,2)) return
       call LCMGET(kpsys,'DRAGON-S0XSC',xsdia0_32(:,ig))
       if (.not. all(ieee_is_finite(xsdia0_32(:,ig)))) return
+      if (paca == 3) then
+        if (.not. RECORD_MATCHES(kpsys,'ILUCF$MCCG',lc0,2)) return
+        call LCMGET(kpsys,'ILUCF$MCCG',ilucf_stage32)
+        if (.not. all(ieee_is_finite(ilucf_stage32))) return
+      else
+        if (.not. ABSENT_RECORD(kpsys,'ILUCF$MCCG')) return
+      end if
       if (have_leak1d64) then
         ! REAL64 leakage mode: the system must be UNREDUCED, i.e. the
         ! stored self-scattering must be bitwise the physical one.
@@ -564,13 +609,19 @@ contains
 
     admission_complete = .true.
     if (.not. admission_complete) return
+    if (r64_mode == SPOR64_B2B_CONT) then
+      call LCMGET(ipsys,'SPOT-L1-SNAP',plane_index)
+      write(6,'(A,I0)') ' SPOR64_B2B-CENSUS: PLANE=', plane_index
+      flush(6)
+    end if
     call XDRTA2
     call FLU2DR64_CORE(jpsys,iptrk,iftrak,iprint,title, &
         keyflx_base1,matcod,vol32,xstrc32,xsdia0_32,keycur, &
         matalb_surface,albedo32,surfac32,njj_off,ijj_off,ipos_off, &
         nscat_off,scat_off32,fixed_source64,initial_flux64, &
         leak1d64,real(epsinr32,real64),real(epsunk32,real64), &
-        real(epsout32,real64),terminal_flux64,terminal_source64, &
+        real(epsout32,real64),contract,terminal_flux64, &
+        terminal_source64, &
         cutoff_visit64,accepted,core_ok)
 
     if (.not. core_ok) then
@@ -584,12 +635,12 @@ contains
             SPOR64_B2B_ACCEPTED_UNPUBLISHED,terminal_flux64, &
             terminal_source64,keyflx_base1,nmerg,imerg,leak1d_input32, &
             leak1d64,epsout32,epsunk32,epsinr32,coptio,hentry(2), &
-            hentry(3),hentry(5),status)
+            hentry(3),hentry(5),contract,status)
       else
         call SPOR64_B2C_PUBLISH(ipflux,SPOR64_B2B_ACCEPTED_UNPUBLISHED, &
             terminal_flux64,terminal_source64,keyflx_base1,nmerg,imerg, &
             leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
-            hentry(2),hentry(3),hentry(5),status)
+            hentry(2),hentry(3),hentry(5),contract,status)
       end if
     end if
   end subroutine SPOR64_B2B_INGRESS

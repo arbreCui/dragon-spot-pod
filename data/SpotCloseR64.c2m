@@ -6,9 +6,10 @@
 * through the final B2W CLOSED/e commit.                        *
 ****************************************************************
 PARAMETER AX_CLOSED ARCH_CLOSED RETURNED PARENT_AX TRACK_AX MACROLIB3
+          RCONTRACT
           BASIS_REF ::
   ::: LINKED_LIST AX_CLOSED ARCH_CLOSED RETURNED PARENT_AX TRACK_AX
-                  MACROLIB3 BASIS_REF ; ;
+                  MACROLIB3 BASIS_REF RCONTRACT ; ;
 
 LINKED_LIST FEEDBACK SYSTEM_NEXT AX_NEXT ;
 MODULE SPOR64V: ASM: FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK:
@@ -23,7 +24,7 @@ FEEDBACK := RETURNED ;
 * Re-admit the detached RETURNED content under this procedure's custody.
 * The read-only gate proves child L0 == same-index SYSTEM L0 bit for bit;
 * no scalar norm or numerical tolerance substitutes for that identity.
-SPOR64V: FEEDBACK :: ;
+SPOR64V: FEEDBACK RCONTRACT :: ;
 
 * Rank two is the frozen reduced-space dimension.  FIXB reuses the supplied
 * offline basis and rebuilds only the current radial response.
@@ -52,7 +53,7 @@ AX_NEXT := SPOXCONV: AX_NEXT PARENT_AX :: ;
 * SPOLEAK writes the fresh undamped L1 only into the private feedback copy.
 FEEDBACK := SPOLEAK: FEEDBACK AX_NEXT TRACK_AX :: >>leak_change<< ;
 
-AX_CLOSED ARCH_CLOSED := SPOR64X: AX_NEXT FEEDBACK :: ;
+AX_CLOSED ARCH_CLOSED := SPOR64X: AX_NEXT FEEDBACK RCONTRACT :: ;
 
 FEEDBACK SYSTEM_NEXT AX_NEXT := DELETE:
   FEEDBACK SYSTEM_NEXT AX_NEXT ;

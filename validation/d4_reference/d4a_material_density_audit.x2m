@@ -1,0 +1,73 @@
+*----
+* D4-A material-density audit at the middle offline state.
+* Calls only rnr_interpol and rnr_cc.  No library or transport module runs.
+*----
+MODULE END: ;
+PROCEDURE rnr_cc rnr_interpol ;
+
+REAL p_Pu p_U := 0.21 0.79 ;
+REAL
+p_Pu38 p_Pu39 p_Pu40 p_Pu41 p_Pu42 p_Am p_U5 p_U8
+p_Fe_AIM1 p_Cr_AIM1 p_Ni_AIM1 p_Mn_AIM1
+p_Mo_AIM1 p_Si_AIM1 p_Ti_AIM1
+p_Fe_EM10 p_Cr_EM10 p_Ni_EM10 p_Mo_EM10
+p_Mn_EM10 p_C_EM10 p_Si_EM10 p_Ti_EM10
+T_comb T_clad T_Na
+:= 0.0259 0.552 0.2585 0.0727 0.0787 0.0122 0.002 0.998
+0.6575 0.145 0.155 0.015 0.015 0.0085 0.004
+0.8908 0.085 0.005 0.01 0.005 0.001 0.003 0.0002
+750.0 620.0 475.0 ;
+
+REAL a_comb a_AIM1 a_AIM1_Na a_EM10 a_F17 a_na a_B ;
+rnr_interpol :: <<T_comb>> <<T_clad>> <<T_Na>>
+  >>a_comb<< >>a_AIM1<< >>a_AIM1_Na<< >>a_EM10<<
+  >>a_F17<< >>a_na<< >>a_B<< ;
+
+REAL N_Na N_U5 N_U8 N_Pu38 N_Pu39 N_Pu40 N_Pu41 N_Pu42 N_Am N_O
+ N_U5_f N_U8_f N_O_f
+ N_Fe54_AIM1 N_Fe56_AIM1 N_Fe57_AIM1 N_Fe58_AIM1
+ N_Cr50_AIM1 N_Cr52_AIM1 N_Cr53_AIM1 N_Cr54_AIM1
+ N_Ni58_AIM1 N_Ni60_AIM1 N_Ni61_AIM1 N_Ni62_AIM1 N_Ni64_AIM1
+ N_Mn55_AIM1 N_Mo92_AIM1 N_Mo94_AIM1 N_Mo95_AIM1 N_Mo96_AIM1
+ N_Mo97_AIM1 N_Mo98_AIM1 N_Mo100_AIM1 N_Si_AIM1 N_Ti_AIM1
+ N_Fe54_EM10 N_Fe56_EM10 N_Fe57_EM10 N_Fe58_EM10
+ N_Cr50_EM10 N_Cr52_EM10 N_Cr53_EM10 N_Cr54_EM10
+ N_Ni58_EM10 N_Ni60_EM10 N_Ni61_EM10 N_Ni62_EM10 N_Ni64_EM10
+ N_Mn55_EM10 N_Mo92_EM10 N_Mo94_EM10 N_Mo95_EM10 N_Mo96_EM10
+ N_Mo97_EM10 N_Mo98_EM10 N_Mo100_EM10 N_C12_EM10 N_Si_EM10
+ N_Ti_EM10 N_He_1 N_He_2 ;
+
+rnr_cc ::
+  <<p_Pu38>> <<p_Pu39>> <<p_Pu40>> <<p_Pu41>> <<p_Pu42>>
+  <<p_Am>> <<p_U5>> <<p_U8>> <<p_Pu>> <<p_U>>
+  <<p_Fe_AIM1>> <<p_Cr_AIM1>> <<p_Ni_AIM1>> <<p_Mo_AIM1>>
+  <<p_Mn_AIM1>> <<p_Si_AIM1>> <<p_Ti_AIM1>>
+  <<p_Fe_EM10>> <<p_Cr_EM10>> <<p_Ni_EM10>> <<p_Mo_EM10>>
+  <<p_Mn_EM10>> <<p_C_EM10>> <<p_Si_EM10>> <<p_Ti_EM10>>
+  <<a_comb>> <<a_AIM1>> <<a_EM10>> <<a_na>>
+  <<T_comb>> <<T_clad>> <<T_Na>>
+  >>N_Na<< >>N_U5<< >>N_U8<< >>N_Pu38<< >>N_Pu39<< >>N_Pu40<<
+  >>N_Pu41<< >>N_Pu42<< >>N_Am<< >>N_O<<
+  >>N_U5_f<< >>N_U8_f<< >>N_O_f<<
+  >>N_Fe54_AIM1<< >>N_Fe56_AIM1<< >>N_Fe57_AIM1<< >>N_Fe58_AIM1<<
+  >>N_Cr50_AIM1<< >>N_Cr52_AIM1<< >>N_Cr53_AIM1<< >>N_Cr54_AIM1<<
+  >>N_Ni58_AIM1<< >>N_Ni60_AIM1<< >>N_Ni61_AIM1<< >>N_Ni62_AIM1<<
+  >>N_Ni64_AIM1<< >>N_Mn55_AIM1<< >>N_Mo92_AIM1<< >>N_Mo94_AIM1<<
+  >>N_Mo95_AIM1<< >>N_Mo96_AIM1<< >>N_Mo97_AIM1<< >>N_Mo98_AIM1<<
+  >>N_Mo100_AIM1<< >>N_Si_AIM1<< >>N_Ti_AIM1<<
+  >>N_Fe54_EM10<< >>N_Fe56_EM10<< >>N_Fe57_EM10<< >>N_Fe58_EM10<<
+  >>N_Cr50_EM10<< >>N_Cr52_EM10<< >>N_Cr53_EM10<< >>N_Cr54_EM10<<
+  >>N_Ni58_EM10<< >>N_Ni60_EM10<< >>N_Ni61_EM10<< >>N_Ni62_EM10<<
+  >>N_Ni64_EM10<< >>N_Mn55_EM10<< >>N_Mo92_EM10<< >>N_Mo94_EM10<<
+  >>N_Mo95_EM10<< >>N_Mo96_EM10<< >>N_Mo97_EM10<< >>N_Mo98_EM10<<
+  >>N_Mo100_EM10<< >>N_C12_EM10<< >>N_Si_EM10<< >>N_Ti_EM10<<
+  >>N_He_1<< >>N_He_2<< ;
+
+ECHO "D4A-NDENS-BEGIN" ;
+ECHO "N_Na=" N_Na ;
+ECHO "N_U8=" N_U8 ;
+ECHO "N_Pu39=" N_Pu39 ;
+ECHO "N_O=" N_O ;
+ECHO "N_Fe56_AIM1=" N_Fe56_AIM1 ;
+ECHO "D4A-NDENS-END" ;
+END: ;

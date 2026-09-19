@@ -1,0 +1,40 @@
+****************************************************************
+* D4-A bootstrap bridge: refresh the three leakage-carrying     *
+* snapshots with the frozen axial-seed fission source.          *
+* Existing SpotRefR64/SpotPlaneR64 perform three TYPE-S solves.  *
+****************************************************************
+SEQ_BINARY TRACK_f :: FILE './initial_radial_track.bin' ;
+XSM_FILE SNAP_IN :: FILE './d4a_seed_snapshots.xsm' ;
+XSM_FILE AX_IN :: FILE './d4a_seed_axial.xsm' ;
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE RCONTRACT_IN :: FILE './route_contract.xsm' ;
+XSM_FILE SNAP_OUT :: FILE './d4a_refreshed_snapshots.xsm' ;
+
+LINKED_LIST SNAP TRACK AX_CURRENT RCONTRACT ;
+MODULE RECOVER: GREP: SPOPROJ: END: ;
+PROCEDURE SpotRefR64 SpotPlaneR64 ;
+
+REAL solver_eps := 2.0E-6 ;
+REAL keff ;
+INTEGER maxout := 500 ;
+INTEGER maxinr := 740 ;
+INTEGER acce_free := 3 ;
+INTEGER acce_accel := 3 ;
+
+SNAP := SNAP_IN ;
+AX_CURRENT := AX_IN ;
+RCONTRACT := RCONTRACT_IN ;
+TRACK := RECOVER: SNAP :: ITEM 1 ;
+GREP: AX_CURRENT :: GETVAL 'K-EFFECTIVE' 1 >>keff<< ;
+
+ECHO "D4A-R64-REFRESH-BEGIN" keff solver_eps ;
+* Reconstruct the seed's fixed rank-2 field before freezing its fission
+* source.  The offline TYPE-K snapshot shapes are not the online seed state.
+SNAP := SPOPROJ: SNAP AX_CURRENT TRACK_AX :: FIXB ;
+SNAP := SpotRefR64 SNAP TRACK TRACK_f RCONTRACT ::
+  <<keff>> <<solver_eps>>
+  <<maxout>> <<maxinr>> <<acce_free>> <<acce_accel>> ;
+SNAP_OUT := SNAP ;
+ECHO "D4A-R64-REFRESH-COMPLETE" ;
+END: ;
+QUIT "LIST" .

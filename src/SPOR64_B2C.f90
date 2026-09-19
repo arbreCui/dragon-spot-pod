@@ -5,6 +5,7 @@ module SPOR64_B2C
   use, intrinsic :: iso_fortran_env, only : int32, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : CHARACTER_RECORD_MATCHES, EMPTY_MEMORY_ROOT, &
       EXACT_INVENTORY, RECORD_MATCHES
   use SPOR64_SCHEMA, only : SCHEMA_PLANE_SEED_AUTHORITY
@@ -19,7 +20,6 @@ module SPOR64_B2C
   integer, parameter :: ACCEPTED_UNPUBLISHED = 4
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1, 0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -32,8 +32,10 @@ contains
   subroutine SPOR64_B2C_PUBLISH(ipflux,accepted_token,terminal_flux64, &
       terminal_source64,keyflx_base1,nmerg_input,imerge_input, &
       leak1d_input32,epsout32, &
-      epsunk32,epsinr32,coptio,macro_name,track_name,system_name,status)
+      epsunk32,epsinr32,coptio,macro_name,track_name,system_name, &
+      contract,status)
     type(c_ptr), intent(in) :: ipflux
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(in) :: accepted_token
     real(real64), intent(in) :: terminal_flux64(:,:), terminal_source64(:,:)
     integer, intent(in) :: keyflx_base1(:)
@@ -47,7 +49,7 @@ contains
     call SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token,terminal_flux64, &
         terminal_source64,keyflx_base1,nmerg_input,imerge_input, &
         leak1d_input32,epsout32,epsunk32,epsinr32,coptio,macro_name, &
-        track_name,system_name,status)
+        track_name,system_name,contract,status)
   end subroutine SPOR64_B2C_PUBLISH
 
 
@@ -55,8 +57,9 @@ contains
       accepted_token,terminal_flux64,terminal_source64,keyflx_base1, &
       nmerg_input,imerge_input,leak1d_input32,leak1d_input64, &
       epsout32,epsunk32, &
-      epsinr32,coptio,macro_name,track_name,system_name,status)
+      epsinr32,coptio,macro_name,track_name,system_name,contract,status)
     type(c_ptr), intent(in) :: ipflux, ipseed_lifecycle
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(in) :: accepted_token
     real(real64), intent(in) :: terminal_flux64(:,:), terminal_source64(:,:)
     integer, intent(in) :: keyflx_base1(:)
@@ -71,16 +74,18 @@ contains
     call SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token,terminal_flux64, &
         terminal_source64,keyflx_base1,nmerg_input,imerge_input, &
         leak1d_input32,epsout32,epsunk32,epsinr32,coptio,macro_name, &
-        track_name,system_name,status,ipseed_lifecycle,leak1d_input64)
+        track_name,system_name,contract,status,ipseed_lifecycle, &
+        leak1d_input64)
   end subroutine SPOR64_B2C_PUBLISH_CONT
 
 
   subroutine SPOR64_B2C_PUBLISH_IMPL(ipflux,accepted_token, &
       terminal_flux64,terminal_source64,keyflx_base1,nmerg_input, &
       imerge_input,leak1d_input32,epsout32,epsunk32,epsinr32,coptio, &
-      macro_name,track_name,system_name,status,ipseed_lifecycle, &
-      leak1d_input64)
+      macro_name,track_name,system_name,contract,status, &
+      ipseed_lifecycle,leak1d_input64)
     type(c_ptr), intent(in) :: ipflux
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(in) :: accepted_token
     real(real64), intent(in) :: terminal_flux64(:,:), terminal_source64(:,:)
     integer, intent(in) :: keyflx_base1(:)
@@ -129,10 +134,10 @@ contains
     if (any(abs(terminal_flux64) > REAL32_MAX64)) return
     if (any(abs(terminal_source64) > REAL32_MAX64)) return
     if (.not. all(ieee_is_finite(leak1d_input32))) return
-    if (transfer(epsout32,0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(epsunk32,0_int32) /= FROZEN_TOL_BITS) return
-    if (transfer(epsinr32,0_int32) /= FROZEN_TOL_BITS) return
-    if (coptio /= 'B0  ') return
+    if (transfer(epsout32,0_int32) /= contract%eps_radial_bits) return
+    if (transfer(epsunk32,0_int32) /= contract%eps_radial_bits) return
+    if (transfer(epsinr32,0_int32) /= contract%eps_radial_bits) return
+    if (coptio /= contract%flu_option) return
     if (macro_name /= 'MACRO0') return
     if (track_name /= 'TRACK') return
     if (system_name /= 'SYSTEM') return
@@ -237,11 +242,11 @@ contains
     state_vector(3) = 1
     state_vector(6) = 0
     state_vector(7) = 0
-    state_vector(8) = 3
-    state_vector(9) = 3
+    state_vector(8) = contract%flu_acce_free
+    state_vector(9) = contract%flu_acce_accel
     state_vector(10) = 1
-    state_vector(11) = 740
-    state_vector(12) = 500
+    state_vector(11) = contract%flu_maxinr
+    state_vector(12) = contract%flu_maxout
     state_vector(17) = nmat
     state_vector(18) = nmerg_input
     eps_converge = [epsinr32,epsunk32,epsout32, &

@@ -4,6 +4,7 @@ module SPOR64_B2K
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_MEMORY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, &
       RECORD_MATCHES, SAME_REAL32_BITS
@@ -11,7 +12,8 @@ module SPOR64_B2K
       SCHEMA_CANDIDATE_SYSTEM_ROOT, SCHEMA_CANDIDATE_SYSTEM_ROOT_L1RAW, &
       SCHEMA_PROJECTED_ARCHIVE_ROOT, SCHEMA_PROJECTED_AUTHORITY, &
       SCHEMA_PROJECTED_PLANE_ROOT, SCHEMA_PROJECTED_PLANE_ROOT_L64, &
-      SCHEMA_RESPONSE_GROUP, SCHEMA_RESPONSE_GROUP_PHYS, &
+      SCHEMA_RESPONSE_GROUP, SCHEMA_RESPONSE_GROUP_P3, &
+      SCHEMA_RESPONSE_GROUP_PHYS, SCHEMA_RESPONSE_GROUP_PHYS_P3, &
       SCHEMA_SYSTEM_AUTHORITY, SCHEMA_SYSTEM_ROOT, SCHEMA_SYSTEM_ROOT_L1RAW
   implicit none
   private
@@ -24,11 +26,9 @@ module SPOR64_B2K
   integer, parameter :: NSNAP = 3
   integer, parameter :: NCODE = 6
   integer, parameter :: NIFIS = 32
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
-  integer(int32), parameter :: MCCG_EPSI_BITS = int(z'3727c5ac',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: MCCG_STATE_EXPECTED(NSTATE) = &
-      [-1,4,10,0,0,0,80,0,0,4,0,0,20,1,1,1,0,0,1,1, &
+      [-1,4,10,0,0,0,80,0,0,0,0,0,20,1,1,1,0,0,1,1, &
        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   integer, parameter :: MACRO_STATE_EXPECTED(NSTATE) = &
       [NGRP,0,3,NIFIS,18,2,6,0,0,0,0,0,0,0,0,0,0,0,0,0, &
@@ -41,8 +41,9 @@ module SPOR64_B2K
 contains
 
   subroutine SPOR64_B2K_COMMIT_SYSTEM_ARCHIVE(ipout,ipprojected, &
-      ipsystems,status)
+      ipsystems,contract,status)
     type(c_ptr), intent(in) :: ipout, ipprojected, ipsystems(NSNAP)
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(out) :: status
 
     integer :: root_planes, root_epoch, plane_epoch
@@ -50,9 +51,10 @@ contains
     integer :: track_state(NSTATE), mccg_state(NSTATE)
     integer, allocatable :: keycur(:), keyflx(:), keyanis(:), matcod(:)
     integer, allocatable :: nzon(:)
-    integer :: ip, ir, nreg, nmat, nunkno, nsurf, mxseg, lc
+    integer :: ip, ir, nreg, nmat, nunkno, nsurf, mxseg, lc, lc0, paca
     integer :: plane_nreg, plane_nmat, plane_nunkno, plane_nsurf
-    integer :: plane_mxseg, plane_lc, allocation_status
+    integer :: plane_mxseg, plane_lc, plane_lc0, plane_paca
+    integer :: allocation_status
     integer(int64) :: found64, expected64
     integer(int32) :: volume_bits, track_volume_bits
     real(real32), allocatable :: volume32(:), volume_track32(:)
@@ -73,6 +75,10 @@ contains
 
     status = SPOR64_B2K_ADMISSION_FAILED
     staged_system = c_null_ptr
+    mxseg = 0
+    lc = 0
+    lc0 = -1
+    paca = 0
 
     ! This boundary has no loose leakage, RHO, epoch, or numerical control.
     ! Every physical value is recovered from one committed B2j
@@ -166,7 +172,7 @@ contains
       if (track_state(6) /= 1) return
       if (track_state(9) /= 0 .or. track_state(14) /= 4) return
       if (track_state(16) /= 2 .or. track_state(22) /= 1) return
-      if (track_state(27) /= 0 .or. track_state(39) /= 0) return
+      if (track_state(27) < 0 .or. track_state(39) /= 0) return
       if (track_state(40) /= 0) return
       if (ip == 1) then
         nreg = plane_nreg
@@ -188,19 +194,39 @@ contains
       plane_lc = mccg_state(6)
       if (plane_mxseg <= 0 .or. plane_lc <= 0) return
       if (any(mccg_state(1:4) /= MCCG_STATE_EXPECTED(1:4))) return
-      if (any(mccg_state(7:NSTATE) /= &
-          MCCG_STATE_EXPECTED(7:NSTATE))) return
+      if (any(mccg_state(7:9) /= MCCG_STATE_EXPECTED(7:9))) return
+      if (any(mccg_state(11:16) /= MCCG_STATE_EXPECTED(11:16))) return
+      if (any(mccg_state(18:NSTATE) /= &
+          MCCG_STATE_EXPECTED(18:NSTATE))) return
+      plane_paca = mccg_state(10)
+      plane_lc0 = mccg_state(17)
+      if (plane_paca /= 3 .and. plane_paca /= 4) return
+      if (plane_paca == 3) then
+        if (plane_lc0 <= 0) return
+        if (.not. RECORD_MATCHES(input_track(ip),'IM0$MCCG', &
+            plane_nunkno+1,1)) return
+        if (.not. RECORD_MATCHES(input_track(ip),'MCU0$MCCG', &
+            plane_lc0,1)) return
+      else
+        if (plane_lc0 /= 0) return
+        if (.not. ABSENT_RECORD(input_track(ip),'IM0$MCCG')) return
+        if (.not. ABSENT_RECORD(input_track(ip),'MCU0$MCCG')) return
+      end if
       if (ip == 1) then
         mxseg = plane_mxseg
         lc = plane_lc
+        paca = plane_paca
+        lc0 = plane_lc0
       else
         if (plane_mxseg /= mxseg .or. plane_lc /= lc) return
+        if (plane_paca /= paca .or. plane_lc0 /= lc0) return
       end if
       if (.not. RECORD_MATCHES(input_track(ip),'MCU$MCCG',lc,1)) return
       if (.not. RECORD_MATCHES(input_track(ip),'REAL-PARAM',4,2)) return
       call LCMGET(input_track(ip),'REAL-PARAM',real_param32)
       if (.not. all(ieee_is_finite(real_param32))) return
-      if (transfer(real_param32(1),0_int32) /= MCCG_EPSI_BITS) return
+      if (transfer(real_param32(1),0_int32) /= &
+          contract%eps_mccg_bits) return
       if (any(transfer(real_param32(2:4),0_int32,3) /= 0_int32)) return
       if (.not. CHARACTER_RECORD_MATCHES(input_track(ip), &
           'LINK.FTRACK',3,12,'TRACK_f')) return
@@ -283,7 +309,7 @@ contains
           MACRO_STATE_EXPECTED(3:NSTATE))) return
       if (.not. RECORD_MATCHES(input_macro(ip),'GROUP',NGRP,10)) return
 
-      if (.not. PROJECTED_PLANE_IS_EXACT(input_flux(ip),rho64, &
+      if (.not. PROJECTED_PLANE_IS_EXACT(input_flux(ip),contract,rho64, &
           root_epoch,keyflx,nmat,nunkno,nsurf,leakage32)) return
       plane_authority = LCMGID(input_flux(ip),'SPOT-R64')
       call LCMGET(plane_authority,'RHO',plane_rho64)
@@ -300,7 +326,8 @@ contains
       unreduced_mode = (probe_ilong == NGRP .and. probe_itylcm == 4)
       if (probe_ilong /= 0 .and. .not. unreduced_mode) return
       if (.not. SYSTEM_PAYLOAD_IS_VALID(ipsystems(ip),input_macro(ip), &
-          leakage32,ip,unreduced_mode,nreg,nmat,nunkno,nsurf,lc)) return
+          leakage32,ip,unreduced_mode,nreg,nmat,nunkno,nsurf,lc,paca, &
+          lc0)) return
     end do
 
     ! Preserve each complete host system in a private LCM stage.  Only the
@@ -330,7 +357,7 @@ contains
       end if
       if (.not. SYSTEM_PAYLOAD_IS_VALID(staged_system(ip), &
           input_macro(ip),leakage32,ip,unreduced_mode,nreg,nmat, &
-          nunkno,nsurf,lc)) then
+          nunkno,nsurf,lc,paca,lc0)) then
         call CLOSE_STAGES(staged_system)
         return
       end if
@@ -396,9 +423,10 @@ contains
   end subroutine SPOR64_B2K_COMMIT_SYSTEM_ARCHIVE
 
 
-  logical function PROJECTED_PLANE_IS_EXACT(ipflux,rho,epoch, &
+  logical function PROJECTED_PLANE_IS_EXACT(ipflux,contract,rho,epoch, &
       expected_keyflx,nmat,nunkno,nsurf,leakage)
     type(c_ptr), intent(in) :: ipflux
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     real(real64), intent(in) :: rho
     integer, intent(in) :: epoch, nmat, nunkno, nsurf
     integer, intent(in) :: expected_keyflx(:)
@@ -423,9 +451,12 @@ contains
         'L_FLUX')) return
     if (.not. RECORD_MATCHES(ipflux,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(ipflux,'STATE-VECTOR',state)
-    expected_state = &
-        [NGRP,nunkno,1,0,0,0,0,3,3,1,740,500,0,0,0,0,nmat,1, &
-         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    expected_state = 0
+    expected_state(1:3) = [NGRP,nunkno,1]
+    expected_state(8:12) = [contract%flu_acce_free, &
+        contract%flu_acce_accel,1,contract%flu_maxinr, &
+        contract%flu_maxout]
+    expected_state(17:18) = [nmat,1]
     if (any(state /= expected_state)) return
     allocate(imerge(nmat),keyflx(nreg),mirror32(nunkno), &
         authority64(nunkno),stat=allocation_status)
@@ -435,7 +466,7 @@ contains
     if (.not. all(ieee_is_finite(eps_converge))) return
     do ig = 1, 3
       found32 = transfer(eps_converge(ig),0_int32)
-      if (found32 /= FROZEN_TOL_BITS) return
+      if (found32 /= contract%eps_radial_bits) return
     end do
     do ig = 4, 5
       found32 = transfer(eps_converge(ig),0_int32)
@@ -447,7 +478,8 @@ contains
     if (.not. RECORD_MATCHES(ipflux,'KEYFLX',nreg,1)) return
     call LCMGET(ipflux,'KEYFLX',keyflx)
     if (any(keyflx /= expected_keyflx)) return
-    if (.not. CHARACTER_RECORD_MATCHES(ipflux,'OPTION',1,4,'B0  ')) &
+    if (.not. CHARACTER_RECORD_MATCHES(ipflux,'OPTION',1,4, &
+        contract%flu_option)) &
         return
     if (.not. CHARACTER_RECORD_MATCHES(ipflux,'LINK.MACRO',3,12, &
         'MACRO0')) return
@@ -495,10 +527,11 @@ contains
 
 
   logical function SYSTEM_PAYLOAD_IS_VALID(ipsystem,ipmacro,leakage, &
-      plane,unreduced,nreg,nmat,nunkno,nsurf,lc)
+      plane,unreduced,nreg,nmat,nunkno,nsurf,lc,paca,lc0)
     type(c_ptr), intent(in) :: ipsystem, ipmacro
     real(real32), intent(in) :: leakage(NGRP)
     integer, intent(in) :: plane, nreg, nmat, nunkno, nsurf, lc
+    integer, intent(in) :: paca, lc0
     logical, intent(in) :: unreduced
 
     integer :: state(NSTATE), expected_state(NSTATE)
@@ -514,6 +547,9 @@ contains
     SYSTEM_PAYLOAD_IS_VALID = .false.
     if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. &
         nsurf <= 0 .or. lc <= 0) return
+    if (paca /= 3 .and. paca /= 4) return
+    if ((paca == 3 .and. lc0 <= 0) .or. &
+        (paca == 4 .and. lc0 /= 0)) return
     if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
     if (.not. c_associated(ipsystem)) return
     if (.not. c_associated(ipmacro)) return
@@ -558,7 +594,7 @@ contains
       if (.not. c_associated(system_group)) return
       if (.not. c_associated(macro_group)) return
       if (.not. RESPONSE_GROUP_IS_EXACT(system_group,nreg,nmat, &
-          nunkno,nsurf,lc)) return
+          nunkno,nsurf,lc,paca,lc0)) return
       if (.not. RECORD_MATCHES(macro_group,'NTOT0',nmat,2)) return
       if (.not. RECORD_MATCHES(macro_group,'SIGW00',nmat,2)) return
       call LCMGET(macro_group,'NTOT0',ntot32)
@@ -606,24 +642,37 @@ contains
 
 
   logical function RESPONSE_GROUP_IS_EXACT(group,nreg,nmat,nunkno, &
-      nsurf,lc)
+      nsurf,lc,paca,lc0)
     type(c_ptr), intent(in) :: group
-    integer, intent(in) :: nreg, nmat, nunkno, nsurf, lc
+    integer, intent(in) :: nreg, nmat, nunkno, nsurf, lc, paca, lc0
 
     integer :: response_lengths(size(SCHEMA_RESPONSE_GROUP)), i
 
     RESPONSE_GROUP_IS_EXACT = .false.
     if (nreg <= 0 .or. nmat <= 0 .or. nunkno <= 0 .or. &
         nsurf <= 0 .or. lc <= 0) return
+    if (paca /= 3 .and. paca /= 4) return
+    if ((paca == 3 .and. lc0 <= 0) .or. &
+        (paca == 4 .and. lc0 /= 0)) return
     if (int(nunkno,int64) /= int(nreg,int64)+int(nsurf,int64)) return
     response_lengths = &
         [lc,nunkno,lc,nunkno,nreg,nreg,nreg,nreg,nreg,nreg,nreg, &
          nunkno]
-    if (.not. EXACT_INVENTORY(group,SCHEMA_RESPONSE_GROUP_PHYS)) return
+    if (paca == 3) then
+      if (.not. EXACT_INVENTORY(group, &
+          SCHEMA_RESPONSE_GROUP_PHYS_P3)) return
+    else
+      if (.not. EXACT_INVENTORY(group,SCHEMA_RESPONSE_GROUP_PHYS)) return
+    end if
     do i = 1, size(SCHEMA_RESPONSE_GROUP)
       if (.not. FINITE_REAL32_RECORD(group,SCHEMA_RESPONSE_GROUP(i), &
           response_lengths(i))) return
     end do
+    if (paca == 3) then
+      if (.not. FINITE_REAL32_RECORD(group, &
+          SCHEMA_RESPONSE_GROUP_P3(size(SCHEMA_RESPONSE_GROUP_P3)), &
+          lc0)) return
+    end if
     if (.not. FINITE_REAL32_RECORD(group,'DRAGON-TXSC',nmat+1)) return
     if (.not. FINITE_REAL32_RECORD(group,'SPOT-S0-PHYS',nmat+1)) return
     if (.not. FINITE_REAL32_RECORD(group,'DRAGON-S0XSC',nmat+1)) return
@@ -754,6 +803,8 @@ end module SPOR64_B2K
 subroutine SPOR64K(nentry,hentry,ientry,jentry,kentry)
   use, intrinsic :: iso_c_binding, only : c_ptr
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT, &
+      SPOR64_RCONTRACT_LOAD
   use SPOR64_B2K, only : SPOR64_B2K_ARCHIVE_ASSEMBLED, &
       SPOR64_B2K_COMMIT_SYSTEM_ARCHIVE
   implicit none
@@ -766,8 +817,10 @@ subroutine SPOR64K(nentry,hentry,ientry,jentry,kentry)
   double precision :: dflott
   character(len=4) :: text4
   type(c_ptr) :: systems(3)
+  type(SPOR64_ROUTE_CONTRACT) :: contract
+  logical :: contract_loaded
 
-  if (nentry /= 5) call XABORT('SPOR64K: FIVE ENTRIES EXPECTED.')
+  if (nentry /= 6) call XABORT('SPOR64K: SIX ENTRIES EXPECTED.')
   if (hentry(1) /= 'ASSEMBLED') &
       call XABORT('SPOR64K: ASSEMBLED OUTPUT EXPECTED.')
   if (hentry(2) /= 'PROJECTED') &
@@ -775,9 +828,11 @@ subroutine SPOR64K(nentry,hentry,ientry,jentry,kentry)
   if (hentry(3) /= 'SYSTEM1' .or. hentry(4) /= 'SYSTEM2' .or. &
       hentry(5) /= 'SYSTEM3') &
       call XABORT('SPOR64K: SYSTEM1/2/3 INPUTS EXPECTED.')
+  if (hentry(6) /= 'RCONTRACT') &
+      call XABORT('SPOR64K: RCONTRACT INPUT EXPECTED.')
   if (any((ientry /= 1) .and. (ientry /= 2))) &
       call XABORT('SPOR64K: LCM ENTRIES EXPECTED.')
-  if (jentry(1) /= 0 .or. any(jentry(2:5) /= 2)) &
+  if (jentry(1) /= 0 .or. any(jentry(2:6) /= 2)) &
       call XABORT('SPOR64K: NEW OUTPUT AND READ-ONLY INPUTS EXPECTED.')
 
   ! Consume the empty option list before any caller-visible mutation.
@@ -785,9 +840,13 @@ subroutine SPOR64K(nentry,hentry,ientry,jentry,kentry)
   if (indic /= 3 .or. text4 /= ';') &
       call XABORT('SPOR64K: ; CHARACTER EXPECTED.')
 
+  call SPOR64_RCONTRACT_LOAD(kentry(6),contract,contract_loaded)
+  if (.not. contract_loaded) &
+      call XABORT('SPOR64K: ROUTE CONTRACT ADMISSION FAILED.')
+
   systems = kentry(3:5)
   call SPOR64_B2K_COMMIT_SYSTEM_ARCHIVE(kentry(1),kentry(2), &
-      systems,status)
+      systems,contract,status)
   if (status /= SPOR64_B2K_ARCHIVE_ASSEMBLED) &
       call XABORT('SPOR64K: B2K ARCHIVE ADMISSION FAILED.')
 end subroutine SPOR64K

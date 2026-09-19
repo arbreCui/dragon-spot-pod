@@ -24,7 +24,8 @@ fail() {
 }
 
 test -x "$DRAGON" || fail "canonical Dragon binary is missing"
-for tool in close_r64_returned prepare_r64_next_projected check_one_map_xsm
+for tool in close_r64_returned prepare_r64_next_projected \
+  check_one_map_xsm make_route_contract
 do
   test -x "$TOOLS/$tool" ||
     fail "$tool is not built; run make in validation/iterative"
@@ -41,11 +42,15 @@ cp "$BASIS/rank2_basis.xsm" basis_pod.xsm
 cp "$FIXED/candidate_axial_closed.xsm" parent_axial.xsm
 cp "$FIXED/candidate_axial_closed.xsm" parent_axial_closed.xsm
 cp "$FIXED/candidate_snapshots_closed.xsm" parent_snapshots_closed.xsm
-cp "$FIXED/SpotStepR64.c2m" .
+cp "$ROOT/data/SpotStepR64.c2m" .
 cp "$TOOLS/run_bounded_dragon.py" .
 cp "$TOOLS/full_rank_physical_reencode.x2m" .
 cp "$TOOLS/full_rank_physical_radial.x2m" .
 cp "$TOOLS/full_rank_physical_axial.x2m" .
+
+"$TOOLS/make_route_contract" route_contract.xsm PIN-R64 \
+  2.5e-7 5.0e-8 1.0e-5 500 740 3 3 B0 \
+  > route_contract.log 2>&1 || fail "route contract generation failed"
 
 run_deck() {
   deck=$1
@@ -70,7 +75,7 @@ test -s basis_physical.xsm || fail "physical basis was not produced"
 echo "== stage 2: B2J projection of the reencoded closed parent =="
 "$TOOLS/prepare_r64_next_projected" parent_axial_closed.xsm \
   parent_snapshots_closed.xsm initial_axial_track.xsm \
-  projected_parent.xsm > prepare.log 2>&1 ||
+  route_contract.xsm projected_parent.xsm > prepare.log 2>&1 ||
   { tail -3 prepare.log >&2; fail "projection was refused"; }
 rg -q "PROJECT PREPARATION COMPLETE" prepare.log ||
   fail "projection did not complete"
@@ -87,7 +92,8 @@ rg -q "FULL-RANK-PHYSICAL-AXIAL-COMPLETE" axial.log ||
 
 echo "== stage 5: B2W close of the returned pair =="
 "$TOOLS/close_r64_returned" candidate_axial.xsm candidate_snapshots.xsm \
-  closed_axial.xsm closed_snapshots.xsm > close.log 2>&1 ||
+  route_contract.xsm closed_axial.xsm closed_snapshots.xsm \
+  > close.log 2>&1 ||
   { tail -3 close.log >&2; fail "close was refused"; }
 rg -q "CLOSE PASS" close.log || fail "close did not pass"
 

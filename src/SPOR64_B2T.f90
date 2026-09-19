@@ -8,6 +8,8 @@ module SPOR64_B2T
   use SPOR64_B2N, only : SPOR64_B2N_COMMITTED, SPOR64_B2N_BUILD
   use SPOR64_B2S, only : SPOR64_B2S_RETURNED, &
       SPOR64_B2S_HOST_BRIDGE
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT, &
+      SPOR64_RCONTRACT_LOAD
   use SPOR64_VERIFY, only : EMPTY_MEMORY_ROOT
   implicit none
   private
@@ -23,14 +25,17 @@ module SPOR64_B2T
 contains
 
   subroutine SPOR64_B2T_HOST_STEP(ipout,ipprojected,ipsystems, &
-      iptrack_file,status,cutoff_by_plane,enable)
+      iptrack_file,ipcontract,status,cutoff_by_plane,enable)
     type(c_ptr), intent(in) :: ipout, ipprojected
     type(c_ptr), intent(in) :: ipsystems(NSNAP), iptrack_file
+    type(c_ptr), intent(in) :: ipcontract
     integer, intent(out) :: status
     integer(int64), intent(out) :: cutoff_by_plane(NSNAP)
     logical, intent(in), optional :: enable
 
     integer :: plane, other, assemble_status, source_status, bridge_status
+    type(SPOR64_ROUTE_CONTRACT) :: contract
+    logical :: contract_loaded
     type(c_ptr) :: assembled
     type(c_ptr) :: macros(NSNAP), sources(NSNAP)
 
@@ -43,6 +48,8 @@ contains
     if (.not. present(enable)) return
     if (.not. enable) return
     status = SPOR64_B2T_FAILED
+    call SPOR64_RCONTRACT_LOAD(ipcontract,contract,contract_loaded)
+    if (.not. contract_loaded) return
 
     ! One PROJECTED archive is the common parent of both the assembled
     ! operator archive and all three frozen-source pairs.  The public ABI has
@@ -81,7 +88,7 @@ contains
     ! proof that the candidates came from same-call host ASM remains the
     ! responsibility of the future outer host boundary.
     call SPOR64_B2K_COMMIT_SYSTEM_ARCHIVE(assembled,ipprojected, &
-        ipsystems,assemble_status)
+        ipsystems,contract,assemble_status)
     if (assemble_status /= SPOR64_B2K_ARCHIVE_ASSEMBLED) then
       call CLOSE_PRIVATE(assembled,macros,sources)
       return
@@ -92,7 +99,7 @@ contains
     ! or source after the build.
     do plane = 1, NSNAP
       call SPOR64_B2N_BUILD(ipprojected,plane,macros(plane), &
-          sources(plane),source_status)
+          sources(plane),contract,source_status)
       if (source_status /= SPOR64_B2N_COMMITTED) then
         call CLOSE_PRIVATE(assembled,macros,sources)
         return
@@ -103,7 +110,7 @@ contains
     ! external file handle; its identity is deliberately an outer-host receipt
     ! concern and is not inferred from the symbolic LINK.FTRACK record.
     call SPOR64_B2S_HOST_BRIDGE(ipout,assembled,macros,sources, &
-        iptrack_file,bridge_status,cutoff_by_plane,.true.)
+        iptrack_file,contract,bridge_status,cutoff_by_plane,.true.)
     if (bridge_status == SPOR64_B2S_RETURNED) &
       status = SPOR64_B2T_RETURNED
     call CLOSE_PRIVATE(assembled,macros,sources)

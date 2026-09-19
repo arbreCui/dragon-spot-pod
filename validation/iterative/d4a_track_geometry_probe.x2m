@@ -1,5 +1,6 @@
 ****************************************************************
-* D4-A geometry-only TRACK probe: SALT + MCCGT, no transport.  *
+* Historical D4-A geometry-only TRACK probe, no transport.     *
+* EPSI is artifact provenance, not the current solver contract. *
 ****************************************************************
 
 SEQ_ASCII glow :: FILE './geometry.dat' ;

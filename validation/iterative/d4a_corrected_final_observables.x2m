@@ -1,0 +1,14 @@
+****************************************************************
+* Read-only observables from a corrected D4-A final CLOSED state.*
+* No transport solve, state mutation, feedback, or fitted value. *
+****************************************************************
+XSM_FILE AX :: FILE './closed_axial.xsm' ;
+XSM_FILE TRK :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MAC :: FILE './initial_axial_macrolib.xsm' ;
+MODULE SPORATE: GREP: END: ;
+DOUBLE keff ;
+GREP: AX :: GETVAL 'SPOT-X-KEFF' 1 >>keff<< ;
+ECHO "D4A-CORRECTED-K-EFFECTIVE" keff ;
+SPORATE: AX TRK MAC ;
+END: ;
+QUIT "LIST" .

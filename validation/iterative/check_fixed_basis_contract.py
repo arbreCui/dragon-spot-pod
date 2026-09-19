@@ -10,12 +10,21 @@ import re
 root = Path(__file__).resolve().parents[2]
 asm_path = root / "src/ASM.f"
 spoasm_path = root / "src/SPOASM.f"
+state_path = root / "src/SPOSTATE.f90"
+b2i_path = root / "src/SPOR64_B2I.f90"
+b2j_path = root / "src/SPOR64_B2J.f90"
+b2w_path = root / "src/SPOR64_B2W.f90"
 
-if not asm_path.is_file() or not spoasm_path.is_file():
-    raise SystemExit("FIXED-BASIS CONTRACT FAIL: ASM/SPOASM source is missing")
+contract_paths = (asm_path, spoasm_path, state_path, b2i_path, b2j_path, b2w_path)
+if not all(path.is_file() for path in contract_paths):
+    raise SystemExit("FIXED-BASIS CONTRACT FAIL: required source is missing")
 
 asm = asm_path.read_text(errors="strict")
 spoasm = spoasm_path.read_text(errors="strict")
+state = state_path.read_text(errors="strict")
+b2i = b2i_path.read_text(errors="strict")
+b2j = b2j_path.read_text(errors="strict")
+b2w = b2w_path.read_text(errors="strict")
 violations: list[str] = []
 
 
@@ -63,8 +72,33 @@ for record in (
 
 require(spoasm, r"FIXED-BASIS VOLUME MISMATCH", "bitwise geometry gate")
 require(spoasm, r"FIXED-BASIS MODE COUNT DOES NOT MATCH RANK", "rank identity gate")
+require(
+    spoasm,
+    r"RANK_POD\.GT\.NREG2D.*FIXED BASIS RANK EXCEEDS RADIAL DIMENSION",
+    "fixed rank bounded by radial dimension",
+)
+require(
+    spoasm,
+    r"NBASCOL\s*=\s*RANK_POD.*ALLOCATE\s*\(\s*BASIS\s*\(\s*NREG2D\s*,\s*NBASCOL",
+    "fixed basis storage sized by requested rank",
+)
 require(spoasm, r"SPOT-FIXB", "fixed-basis state marker")
 require(spoasm, r"POD-FIXED", "fixed-basis type marker")
+
+require(
+    state,
+    r"rank\(igr\)\s*>\s*nreg2d",
+    "SPOSTATE radial-dimension rank bound",
+)
+for source, label in ((b2i, "B2I"), (b2j, "B2J"), (b2w, "B2W")):
+    require(source, r"any\(rank\s*>\s*nreg\)", f"{label} radial-dimension rank bound")
+    require(source, r"'POD-FIXED'", f"{label} fixed-basis provenance marker")
+require(b2j, r"max_rank\s*=\s*maxval\(rank\)", "B2J maximum-rank extent")
+require(
+    b2j,
+    r"basis_slice32\(nreg,max_rank\).*coordinate_slice64\(max_rank\)",
+    "B2J full-rank reconstruction scratch",
+)
 
 # RADIAL-OP must still come from the current DB2 reconstruction, outside the
 # fixed/dynamic POD selection. The fixed branch copies no reference response.

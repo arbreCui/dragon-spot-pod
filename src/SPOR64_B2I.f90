@@ -4,6 +4,8 @@ module SPOR64_B2I
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT, &
+      SPOR64_RCONTRACT_LOAD
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_MEMORY_ROOT, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES
   implicit none
@@ -17,7 +19,6 @@ module SPOR64_B2I
   integer, parameter :: NSNAP = 3
   integer, parameter :: NIFIS = 32
   integer, parameter :: BOOTSTRAP_EPOCH = 0
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -27,10 +28,14 @@ module SPOR64_B2I
 contains
 
   subroutine SPOR64_B2I_SEAL_BOOTSTRAP(ipaxout,iparchiveout,ipax, &
-      ipaxtrack,iparchive,status)
+      ipaxtrack,iparchive,ipcontract,status)
     type(c_ptr), intent(in) :: ipaxout, iparchiveout
     type(c_ptr), intent(in) :: ipax, ipaxtrack, iparchive
+    type(c_ptr), intent(in) :: ipcontract
     integer, intent(out) :: status
+
+    type(SPOR64_ROUTE_CONTRACT) :: contract
+    logical :: contract_loaded
 
     integer :: axial_state(NSTATE), axial_track_state(NSTATE)
     integer :: plane_state(NSTATE), plane_track_state(NSTATE)
@@ -43,6 +48,7 @@ contains
     integer :: nreg, nsurf, nunkno, nmat
     integer :: plane_nreg, plane_nsurf, plane_nunkno, plane_nmat
     integer :: index_a, index_b, index_g, ilong, itylcm
+    integer :: k64len, k64typ
     integer :: allocation_status
     integer, allocatable :: rank(:), offset(:), gram_offset(:)
     integer, allocatable :: basis_offset(:), mat1d(:)
@@ -59,7 +65,7 @@ contains
     real(real32), allocatable :: mirror_flux32(:), mirror_source32(:)
     real(real32), allocatable :: dz32(:), basis32(:)
     real(real64) :: rho64, norm64, gram_error64, gram_error_check64
-    real(real64) :: iter_keff64
+    real(real64) :: iter_keff64, admitted_keff64
     real(real64) :: weight_sum, gram_value
     real(real64), allocatable :: authority_flux64(:)
     real(real64), allocatable :: authority_source64(:)
@@ -83,6 +89,11 @@ contains
     nsurf = 0
     nunkno = 0
     nmat = 0
+
+    ! The sealed route contract supplies the case's declared solver
+    ! discipline; every pin below compares bitwise against it.
+    call SPOR64_RCONTRACT_LOAD(ipcontract,contract,contract_loaded)
+    if (.not. contract_loaded) return
 
     ! This is an exactly-once bootstrap seal.  It accepts no loose RHO,
     ! basis, epoch, or plane pointer: every value is recovered from the two
@@ -158,7 +169,7 @@ contains
     call LCMGET(ipax,'SPOT-X-OFF',offset)
     call LCMGET(ipax,'SPOT-X-GOFF',gram_offset)
     call LCMGET(ipax,'SPOT-X-BOFF',basis_offset)
-    if (any(rank < 1) .or. any(rank > NSNAP)) return
+    if (any(rank < 1) .or. any(rank > nreg)) return
     if (offset(1) /= 0 .or. gram_offset(1) /= 0) return
     if (basis_offset(1) /= 0 .or. offset(NGRP+1) /= ncoef) return
     do ig = 1, NGRP
@@ -211,8 +222,19 @@ contains
         gram_error64 < +0.0_real64) return
     if (.not. ieee_is_finite(keff32) .or. keff32 <= +0.0_real32) return
     if (.not. ieee_is_finite(rho64) .or. rho64 <= +0.0_real64) return
+    admitted_keff64 = real(keff32,real64)
+    call LCMLEN(ipax,'SPOT-X-KEFF',k64len,k64typ)
+    if (k64len /= 0) then
+      if (k64len /= 1 .or. k64typ /= 4) return
+      call LCMGET(ipax,'SPOT-X-KEFF',admitted_keff64)
+      if (.not. ieee_is_finite(admitted_keff64) .or. &
+          admitted_keff64 <= +0.0_real64) return
+      found32 = transfer(real(admitted_keff64,real32),0_int32)
+      expected32 = transfer(keff32,0_int32)
+      if (found32 /= expected32) return
+    end if
     found64 = transfer(rho64,0_int64)
-    expected64 = transfer(1.0_real64/real(keff32,real64),0_int64)
+    expected64 = transfer(1.0_real64/admitted_keff64,0_int64)
     if (found64 /= expected64) return
 
     ! Bind the stored POD bundle to the derived geometry identities retained
@@ -291,7 +313,7 @@ contains
     if (.not. ieee_is_finite(iter_keff64) .or. &
         iter_keff64 <= +0.0_real64) return
     if (transfer(iter_keff64,0_int64) /= &
-        transfer(real(keff32,real64),0_int64)) return
+        transfer(admitted_keff64,0_int64)) return
     tracks = LCMGID(iparchive,'TRACK')
     libraries = LCMGID(iparchive,'MICROLIB2')
     systems = LCMGID(iparchive,'SYSTEM')
@@ -433,24 +455,29 @@ contains
       call LCMGET(input_flux(ip),'STATE-VECTOR',plane_state)
       if (plane_state(1) /= NGRP .or. plane_state(2) /= nunkno) return
       if (plane_state(3) /= 1 .or. any(plane_state(4:7) /= 0)) return
-      if (plane_state(8) /= 3 .or. plane_state(9) /= 3) return
+      if (plane_state(8) /= contract%flu_acce_free .or. &
+          plane_state(9) /= contract%flu_acce_accel) return
       if (plane_state(10) /= 1 .or. plane_state(17) /= nmat) return
-      if (plane_state(11) /= 740 .or. plane_state(12) /= 500) return
+      if (plane_state(11) /= contract%flu_maxinr .or. &
+          plane_state(12) /= contract%flu_maxout) return
       if (any(plane_state(13:16) /= 0)) return
       if (plane_state(18) /= 1 .or. &
           any(plane_state(19:NSTATE) /= 0)) return
       if (.not. RECORD_MATCHES(input_flux(ip),'EPS-CONVERGE',5,2)) return
       call LCMGET(input_flux(ip),'EPS-CONVERGE',eps_converge)
       if (.not. all(ieee_is_finite(eps_converge))) return
-      if (transfer(eps_converge(1),0_int32) /= FROZEN_TOL_BITS) return
-      if (transfer(eps_converge(2),0_int32) /= FROZEN_TOL_BITS) return
-      if (transfer(eps_converge(3),0_int32) /= FROZEN_TOL_BITS) return
+      if (transfer(eps_converge(1),0_int32) /= &
+          contract%eps_radial_bits) return
+      if (transfer(eps_converge(2),0_int32) /= &
+          contract%eps_radial_bits) return
+      if (transfer(eps_converge(3),0_int32) /= &
+          contract%eps_radial_bits) return
       if (any(abs(eps_converge(4:5)) > +0.0_real32)) return
       if (.not. RECORD_MATCHES(input_flux(ip),'IMERGE-LEAK',nmat,1)) return
       call LCMGET(input_flux(ip),'IMERGE-LEAK',imerge)
       if (any(imerge /= 1)) return
       if (.not. CHARACTER_RECORD_MATCHES(input_flux(ip),'OPTION', &
-          1,4,'B0  ')) return
+          1,4,contract%flu_option)) return
       if (.not. CHARACTER_RECORD_MATCHES(input_flux(ip),'LINK.MACRO', &
           3,12,'MACRO0')) return
       if (.not. CHARACTER_RECORD_MATCHES(input_flux(ip),'LINK.TRACK', &
@@ -467,7 +494,15 @@ contains
         if (.not. ieee_is_finite(plane_leak32(ig))) return
         found64 = transfer(leakage64((ip-1)*NGRP+ig),0_int64)
         expected64 = transfer(real(plane_leak32(ig),real64),0_int64)
-        if (found64 /= expected64) return
+        if (found64 /= expected64) then
+          ! SPOT-LEAK1D is the legacy REAL32 publication of the canonical
+          ! axial REAL64 leakage.  Admit only its exact discrete projection;
+          ! never quantize the canonical authority and never use a tolerance.
+          found32 = transfer(real(leakage64((ip-1)*NGRP+ig),real32), &
+              0_int32)
+          expected32 = transfer(plane_leak32(ig),0_int32)
+          if (found32 /= expected32) return
+        end if
       end do
 
       if (.not. RECORD_MATCHES(input_flux(ip),'SPOT-R64',-1,0)) return

@@ -15,7 +15,15 @@ PROCEDURE SpotD4Snap rnr_cc rnr_interpol ;
 
 REAL T_clad := 620.0 ;
 REAL T_Na := 475.0 ;
-REAL solver_eps := 5.0E-7 ;
+* Declared terminal for the D4-A snapshot solves.  The 5.0E-7 gate is
+* measured unreachable on this 132-region system: a 17.5 h state-1 run
+* (51 strict outers) converged k to +-2e-6 while the raw outer-image
+* residual oscillates on an ~1e-5 envelope with dips to ~1e-6; every
+* prior 5e-7 attempt (both eras) timed out the same way.  The terminal
+* is declared above the measured floor with all four channels moved
+* consistently (EXTE/UNKT/THER and MCCG EPSI).  Evidence:
+* validation/artifacts/d4a-state1-outer-floor.
+REAL solver_eps := 2.0E-6 ;
 
 ECHO "D4A-SNAPSHOT-STATE" 1 650.0 T_clad T_Na ;
 MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotD4Snap glow_rnr ::

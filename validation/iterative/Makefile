@@ -22,7 +22,8 @@ FFLAGS  := -std=f2008 -O0 -g -pedantic -Wall -Wextra -Werror \
 INCLUDE := -I $(DRAGON)/modules -I $(GANLIB)/modules
 LIBS    := $(DRAGON)/libDragon.a $(GANLIB)/libGanlib.a -lstdc++
 
-TOOLS   := admit_candidate_radial close_r64_returned \
+TOOLS   := admit_candidate_radial b2i_seal_bootstrap close_r64_returned \
+           make_route_contract \
            check_convergence_gate check_one_map_xsm \
            prepare_r64_aa1_projected prepare_r64_next_projected
 

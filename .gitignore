@@ -29,7 +29,6 @@ __pycache__/
 /src/SPOFDEV.f90
 /src/SPOLEQA.f90
 /src/SPOMESH.f90
-/src/SPOPHYS.f90
 /data/SpotLibrary.c2m
 /data/SpotPlane.c2m
 /data/SpotRefresh.c2m
@@ -115,3 +114,5 @@ validation/iterative/check_convergence_gate
 validation/iterative/check_one_map_xsm
 validation/iterative/prepare_r64_aa1_projected
 validation/iterative/prepare_r64_next_projected
+validation/iterative/b2i_seal_bootstrap
+validation/iterative/make_route_contract

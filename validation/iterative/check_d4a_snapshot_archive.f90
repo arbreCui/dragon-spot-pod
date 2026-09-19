@@ -11,7 +11,10 @@ program check_d4a_snapshot_archive
   integer, parameter :: expected_reg=132,expected_unk=144
   integer, parameter :: expected_mat=6,expected_surf=12,ncode=6
   integer, parameter :: max_path=72
-  integer(int32), parameter :: mccg_epsi_bits=int(z'3727c5ac',int32)
+  ! Declared terminal 2.0E-6 (2026-08-26 contract correction); the
+  ! previous pin z'3727c5ac' (1.0E-5) predates even the EPSI-consistency
+  ! correction and never matched a published archive.
+  integer(int32), parameter :: mccg_epsi_bits=int(z'360637bd',int32)
 
   type(c_ptr) :: root,tracks,libraries,systems,fluxes
   type(c_ptr) :: track,library,macro,system,flux

@@ -13,6 +13,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_nonlinear_solver_contract.py"
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
+sh "$ROOT/validation/iterative/test_d4a_corrected_observables_replay.sh"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_source_identity.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
@@ -21,6 +22,9 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_state_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_state_math.py"
+sh "$ROOT/validation/iterative/run_spophys_smoke.sh"
+sh "$ROOT/validation/iterative/run_full_rank_picard_cycle.sh"
+sh "$ROOT/validation/iterative/run_b1hom64.sh"
 sh "$ROOT/validation/iterative/run_b2c_runtime_dimensions.sh"
 sh "$ROOT/validation/iterative/run_b2h_runtime_geometry.sh"
 sh "$ROOT/validation/iterative/run_a89_runtime_geometry.sh"

@@ -4,6 +4,8 @@ program test_b2h_runtime_geometry
   use, intrinsic :: iso_c_binding, only : c_associated, c_ptr
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT, &
+      SPOR64_RCONTRACT_LOAD
   use SPOR64_B2H, only : SPOR64_B2H_PROJECTED_COMMITTED, &
       SPOR64_B2H_PROJECT
   implicit none
@@ -15,6 +17,29 @@ program test_b2h_runtime_geometry
 
 contains
 
+  subroutine make_test_contract(contract_out)
+    type(SPOR64_ROUTE_CONTRACT), intent(out) :: contract_out
+    type(c_ptr) :: root
+    real(real32) :: eps32(3)
+    character(len=12) :: sig12, name12
+    character(len=4) :: option4
+    logical :: loaded
+    call LCMOP(root,'B2HRC',0,1,0)
+    sig12 = 'L_RCONTRACT'
+    name12 = 'B2H-TEST'
+    option4 = 'B0  '
+    eps32 = transfer(int(z'348637bd',int32),0.0_real32)
+    call LCMPTC(root,'SIGNATURE',12,sig12)
+    call LCMPTC(root,'CASE-NAME',12,name12)
+    call LCMPUT(root,'EPS-TERMINAL',3,2,eps32)
+    call LCMPUT(root,'FLU-CAPS',2,1,[500,740])
+    call LCMPUT(root,'FLU-ACCE',2,1,[3,3])
+    call LCMPTC(root,'FLU-OPTION',4,option4)
+    call SPOR64_RCONTRACT_LOAD(root,contract_out,loaded)
+    if (.not. loaded) error stop 'test contract failed to load'
+    call LCMCL(root,2)
+  end subroutine make_test_contract
+
   subroutine run_case(nreg,nmat,nsurf)
     integer, intent(in) :: nreg, nmat, nsurf
     integer, parameter :: ngrp=370, ncode=6, nstate=40
@@ -24,6 +49,7 @@ contains
     integer :: nzon(nreg+nsurf), imerge(nmat), found_state(nstate)
     real(real32) :: track_volume(nreg+nsurf), eps(5), leakage(ngrp)
     real(real64) :: rho64, phi(nreg+nsurf), projected(nreg,ngrp)
+    type(SPOR64_ROUTE_CONTRACT) :: test_contract
     real(real64) :: found64(nreg+nsurf)
     real(real32) :: found32(nreg+nsurf)
     character(len=12) :: name, text12
@@ -105,7 +131,9 @@ contains
       end do
     end do
 
-    call SPOR64_B2H_PROJECT(output,seed,track,projected,rho64,status)
+    call make_test_contract(test_contract)
+    call SPOR64_B2H_PROJECT(output,seed,track,projected,rho64, &
+        test_contract,status)
     if (status /= SPOR64_B2H_PROJECTED_COMMITTED) &
       error stop 'VALID RUNTIME CASE REJECTED'
     call LCMGET(output,'STATE-VECTOR',found_state)

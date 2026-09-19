@@ -185,6 +185,8 @@
             LNCONV=LNCONV-1
           ENDIF
         ENDDO
+        IF(IPRINT.GE.2) WRITE(6,300) ITER,'INITIAL ',LNCONV,ERROR,
+     1  ERRTOL
 *
 *       Test do termination on entry
         IF(LNCONV == 0) EXIT
@@ -217,6 +219,7 @@
           DO II=1,NGEFF
             IF(NCONV(II)) RHS(:,II)=REAL(FLOUT(:,II))
           ENDDO
+          IF(IPRINT.GE.2) WRITE(6,310) ITER,LNCONV
           RHSFLG=.FALSE.
         ENDIF
 *---
@@ -291,6 +294,8 @@
             ENDIF
             ERROR=MAX(ERROR,RHO(II)/DENOM(II))
           ENDDO
+          IF(IPRINT.GE.2) WRITE(6,300) ITER,'KRYLOV  ',LNCONV,
+     1    ERROR,ERRTOL
         ENDDO
 *---
 *   At this point either K > NSTART or RHOGRP < ERRTOL. It's time to
@@ -318,4 +323,8 @@
 *
   100 FORMAT(' MCGMRE: RHS CALCULATED WITH AAC-SCR : ',I2,1H-,I1)
   200 FORMAT(' MCGMRE: EPS Iteration ',I5,' Group ',I5,2X,1P,E16.7)
+  300 FORMAT(' MCGMRE-TRACE ITER=',I6,' PHASE=',A8,
+     1 ' ACTIVE-AFTER=',I6,' MAX-REPS=',1P,E16.8,' EPSI=',E16.8)
+  310 FORMAT(' MCGMRE-TRACE RHS-COMPLETE ITER=',I6,
+     1 ' ACTIVE=',I6)
       END

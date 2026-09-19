@@ -11,6 +11,7 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   ! independently reconstructed from the same scalar flux and face currents.
   use GANLIB
   use SPOT_LEAKAGE, only : SPOLE1, SPOLE1D
+  use, intrinsic :: iso_fortran_env, only : int64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   implicit none
 
@@ -24,6 +25,7 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   integer :: igr,ireg,ibm,ifis,ifloor,isnap,i,a,b,nmode
   integer :: ilong,itylcm,indic,nitma,total_coef,total_gram,total_basis,index
   integer :: fixb,version
+  integer(int64) :: next_coef64,next_gram64,next_basis64,layout_limit64
   integer, allocatable :: mat(:),keyflx(:),mat1d(:),rank(:)
   integer, allocatable :: offset(:),gram_offset(:),basis_offset(:)
   real :: flott,keff,projected_sp,weight_sp
@@ -107,9 +109,12 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   lr64=.false.
   keff64=real(keff,dp)
   call LCMLEN(kentry(1),'SPOT-KEFF64',ilong,itylcm)
-  if (ilong == 1) then
-    if (itylcm /= 4) call XABORT('SPOSTATE: INVALID SPOT-KEFF64.')
+  if (ilong /= 0) then
+    if ((ilong /= 1).or.(itylcm /= 4)) &
+      call XABORT('SPOSTATE: INVALID SPOT-KEFF64.')
     call LCMGET(kentry(1),'SPOT-KEFF64',keff64)
+    if ((.not.ieee_is_finite(keff64)).or.(keff64 <= 0.0_dp)) &
+      call XABORT('SPOSTATE: NONPOSITIVE SPOT-KEFF64.')
     if (transfer(real(keff64),0) /= transfer(keff,0)) &
       call XABORT('SPOSTATE: K-EFFECTIVE MIRROR MISMATCH.')
     rho=1.0_dp/keff64
@@ -291,17 +296,28 @@ subroutine SPOSTATE(nentry,hentry,ientry,jentry,kentry)
   offset(1)=0
   gram_offset(1)=0
   basis_offset(1)=0
+  layout_limit64=int(huge(total_coef),int64)
   do igr=1,ngrp
     kpsystem=LCMGIL(jpsystem,igr)
     call LCMLEN(kpsystem,'POD-NMODE',ilong,itylcm)
     if ((ilong /= 1).or.(itylcm /= 1)) &
       call XABORT('SPOSTATE: INVALID POD MODE RECORD.')
     call LCMGET(kpsystem,'POD-NMODE',rank(igr))
-    if ((rank(igr) <= 0).or.(rank(igr) > nsnap)) &
+    if ((rank(igr) <= 0).or.(rank(igr) > nreg2d)) &
       call XABORT('SPOSTATE: INVALID POD MODE COUNT.')
-    offset(igr+1)=offset(igr)+nsnap*rank(igr)
-    gram_offset(igr+1)=gram_offset(igr)+rank(igr)*rank(igr)
-    basis_offset(igr+1)=basis_offset(igr)+nreg2d*rank(igr)
+    next_coef64=int(offset(igr),int64)+ &
+      int(nsnap,int64)*int(rank(igr),int64)
+    next_gram64=int(gram_offset(igr),int64)+ &
+      int(rank(igr),int64)*int(rank(igr),int64)
+    next_basis64=int(basis_offset(igr),int64)+ &
+      int(nreg2d,int64)*int(rank(igr),int64)
+    if ((next_coef64 > layout_limit64).or. &
+        (next_gram64 > layout_limit64).or. &
+        (next_basis64 > layout_limit64)) &
+      call XABORT('SPOSTATE: POD LAYOUT LENGTH OVERFLOW.')
+    offset(igr+1)=int(next_coef64)
+    gram_offset(igr+1)=int(next_gram64)
+    basis_offset(igr+1)=int(next_basis64)
   enddo
   total_coef=offset(ngrp+1)
   total_gram=gram_offset(ngrp+1)

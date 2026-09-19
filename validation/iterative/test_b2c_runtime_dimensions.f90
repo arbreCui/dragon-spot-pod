@@ -8,9 +8,14 @@ program test_b2c_runtime_dimensions
   use SPOR64_B2C, only : SPOR64_B2C_HOST_COMMITTED, &
       SPOR64_B2C_PREFLIGHT_FAILED, SPOR64_B2C_PUBLISH, &
       SPOR64_B2C_PUBLISH_CONT
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT, &
+      SPOR64_RCONTRACT_LOAD
   use SPOR64_VERIFY, only : EMPTY_MEMORY_ROOT
   implicit none
 
+  type(SPOR64_ROUTE_CONTRACT) :: test_contract
+
+  call make_test_contract(test_contract)
   call run_case(8,8,14,'B2C-PIN8',.false.)
   call run_case(132,6,144,'B2C-D4A132',.true.)
   call reject_duplicate_key()
@@ -19,6 +24,29 @@ program test_b2c_runtime_dimensions
       'B2C RUNTIME-DIMENSION PASS: pin and D4-A 144-unknown structural publication only.'
 
 contains
+
+  subroutine make_test_contract(contract_out)
+    type(SPOR64_ROUTE_CONTRACT), intent(out) :: contract_out
+    type(c_ptr) :: root
+    real(real32) :: eps32(3)
+    character(len=12) :: sig12, name12
+    character(len=4) :: option4
+    logical :: loaded
+    call LCMOP(root,'B2CRC',0,1,0)
+    sig12 = 'L_RCONTRACT'
+    name12 = 'B2C-TEST'
+    option4 = 'B0  '
+    eps32 = transfer(int(z'348637bd',int32),0.0_real32)
+    call LCMPTC(root,'SIGNATURE',12,sig12)
+    call LCMPTC(root,'CASE-NAME',12,name12)
+    call LCMPUT(root,'EPS-TERMINAL',3,2,eps32)
+    call LCMPUT(root,'FLU-CAPS',2,1,[500,740])
+    call LCMPUT(root,'FLU-ACCE',2,1,[3,3])
+    call LCMPTC(root,'FLU-OPTION',4,option4)
+    call SPOR64_RCONTRACT_LOAD(root,contract_out,loaded)
+    if (.not. loaded) error stop 'test contract failed to load'
+    call LCMCL(root,2)
+  end subroutine make_test_contract
 
   subroutine run_case(nreg,nmat,nunkno,name,continuation)
     integer, intent(in) :: nreg, nmat, nunkno
@@ -82,11 +110,11 @@ contains
       call LCMPUT(seed_authority,'EPOCH',1,1,seed_epoch)
       call SPOR64_B2C_PUBLISH_CONT(root,seed,4,flux64,source64, &
           keyflx,1,imerge,leakage32,leakage64,tol32,tol32,tol32, &
-          'B0  ','MACRO0      ','TRACK       ','SYSTEM      ',status)
+          'B0  ','MACRO0      ','TRACK       ','SYSTEM      ',test_contract,status)
     else
       call SPOR64_B2C_PUBLISH(root,4,flux64,source64,keyflx,1,imerge, &
           leakage32,tol32,tol32,tol32,'B0  ','MACRO0      ', &
-          'TRACK       ','SYSTEM      ',status)
+          'TRACK       ','SYSTEM      ',test_contract,status)
     end if
     call require(status == SPOR64_B2C_HOST_COMMITTED, &
         trim(name)//' publication status')
@@ -191,7 +219,7 @@ contains
     call SPOR64_B2C_PUBLISH(root,4,flux64,source64,keyflx,1,imerge, &
         leakage32,tol32,tol32,tol32,'B0  ','MACRO0      ', &
         'TRACK       ','SYSTEM      ', &
-        status)
+        test_contract,status)
     call require(status == SPOR64_B2C_PREFLIGHT_FAILED, &
         'duplicate KEYFLX rejection')
     call require(EMPTY_MEMORY_ROOT(root),'duplicate KEYFLX no-write rule')
@@ -217,7 +245,7 @@ contains
     call SPOR64_B2C_PUBLISH(root,4,flux64,source64,keyflx,1,imerge, &
         leakage32,tol32,tol32,tol32,'B0  ','MACRO0      ', &
         'TRACK       ','SYSTEM      ', &
-        status)
+        test_contract,status)
     call require(status == SPOR64_B2C_PREFLIGHT_FAILED, &
         'mismatched terminal shape rejection')
     call require(EMPTY_MEMORY_ROOT(root),'mismatched shape no-write rule')

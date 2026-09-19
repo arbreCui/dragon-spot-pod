@@ -4,6 +4,7 @@ module SPOR64_B2R
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : CHARACTER_RECORD_MATCHES, EMPTY_MEMORY_ROOT, &
       EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES, &
       SAME_REAL32_BITS
@@ -21,7 +22,6 @@ module SPOR64_B2R
   integer, parameter :: NSTATE = 40
   integer, parameter :: NGRP = 370
   integer, parameter :: LIBRARY_NL = 3
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
 
@@ -29,8 +29,10 @@ module SPOR64_B2R
 
 contains
 
-  subroutine SPOR64_B2R_COLLECT(ipout,ipassembled,ipsolved,ipsources,status)
+  subroutine SPOR64_B2R_COLLECT(ipout,ipassembled,ipsolved,ipsources, &
+      contract,status)
     type(c_ptr), intent(in) :: ipout, ipassembled
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     type(c_ptr), intent(in) :: ipsolved(NSNAP), ipsources(NSNAP)
     integer, intent(out) :: status
 
@@ -169,7 +171,8 @@ contains
     ! Argument order has no meaning.  Each detached set must independently
     ! contain the exact label set {1,2,3}; duplicates imply an omission.
     do slot = 1, NSNAP
-      if (.not. SOLVED_IS_VALID(ipsolved(slot),root_rho64,root_epoch, &
+      if (.not. SOLVED_IS_VALID(ipsolved(slot),contract,root_rho64, &
+          root_epoch, &
           nreg,nunkno,nmat,solved_plane(slot),solved_key(:,slot), &
           solved_leak(:,slot),solved_leak64(:,slot))) return
       plane = solved_plane(slot)
@@ -413,9 +416,11 @@ contains
   end function SYSTEM_IS_VALID
 
 
-  logical function SOLVED_IS_VALID(solved,rho,epoch,nreg,nunkno,nmat, &
+  logical function SOLVED_IS_VALID(solved,contract,rho,epoch,nreg, &
+      nunkno,nmat, &
       plane,keyflx,leakage,leakage64)
     type(c_ptr), intent(in) :: solved
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     real(real64), intent(in) :: rho
     integer, intent(in) :: epoch, nreg, nunkno, nmat
     integer, intent(out) :: plane, keyflx(:)
@@ -445,14 +450,20 @@ contains
         'L_FLUX')) return
     if (.not. RECORD_MATCHES(solved,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(solved,'STATE-VECTOR',state)
-    if (any(state(1:18) /= &
-        [NGRP,nunkno,1,0,0,0,0,3,3,1,740,500,0,0,0,0,nmat,1])) return
+    if (any(state(1:7) /= [NGRP,nunkno,1,0,0,0,0])) return
+    if (state(8) /= contract%flu_acce_free .or. &
+        state(9) /= contract%flu_acce_accel) return
+    if (state(10) /= 1) return
+    if (state(11) /= contract%flu_maxinr .or. &
+        state(12) /= contract%flu_maxout) return
+    if (any(state(13:16) /= 0)) return
+    if (state(17) /= nmat .or. state(18) /= 1) return
     if (any(state(19:NSTATE) /= 0)) return
     if (.not. RECORD_MATCHES(solved,'EPS-CONVERGE',5,2)) return
     call LCMGET(solved,'EPS-CONVERGE',eps)
     if (.not. all(ieee_is_finite(eps))) return
     eps_bits = transfer(eps,0_int32,5)
-    if (any(eps_bits(1:3) /= FROZEN_TOL_BITS)) return
+    if (any(eps_bits(1:3) /= contract%eps_radial_bits)) return
     if (any(eps_bits(4:5) /= 0_int32)) return
     if (.not. RECORD_MATCHES(solved,'IMERGE-LEAK',nmat,1)) return
     call LCMGET(solved,'IMERGE-LEAK',imerge)
@@ -465,7 +476,8 @@ contains
       if (seen(keyflx(ir))) return
       seen(keyflx(ir)) = .true.
     end do
-    if (.not. CHARACTER_RECORD_MATCHES(solved,'OPTION',1,4,'B0  ')) return
+    if (.not. CHARACTER_RECORD_MATCHES(solved,'OPTION',1,4, &
+        contract%flu_option)) return
     if (.not. CHARACTER_RECORD_MATCHES(solved,'LINK.MACRO',3,12, &
         'MACRO0')) return
     if (.not. CHARACTER_RECORD_MATCHES(solved,'LINK.TRACK',3,12, &

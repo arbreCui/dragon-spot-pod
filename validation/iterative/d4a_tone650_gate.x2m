@@ -1,0 +1,23 @@
+****************************************************************
+* D4-A: one fixed 650 C LIB + SALT + TONE gate.                *
+* No persistent archive is created.                             *
+****************************************************************
+
+SEQ_ASCII glow_rnr :: FILE './geometry.dat' ;
+LINKED_LIST MICROLIB2 ;
+
+MODULE DELETE: END: ;
+PROCEDURE SpotD4Tone rnr_cc rnr_interpol ;
+
+REAL T_comb := 650.0 ;
+REAL T_clad := 620.0 ;
+REAL T_Na := 475.0 ;
+
+ECHO "D4A-TONE650-STATE" T_comb T_clad T_Na ;
+MICROLIB2 := SpotD4Tone glow_rnr ::
+  <<T_comb>> <<T_clad>> <<T_Na>> ;
+ECHO "D4A-TONE650-GATE-COMPLETE" ;
+
+MICROLIB2 := DELETE: MICROLIB2 ;
+END: ;
+QUIT "LIST" .

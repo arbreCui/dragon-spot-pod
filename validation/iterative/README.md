@@ -3,6 +3,67 @@
 This directory contains the direct fixed-space SPOD/Picard contracts and one
 generic, default-off continuation host.
 
+## Legacy D4-A rank-two regression
+
+The legacy-input D4-A archive and fixed rank-two basis crossed the full
+online-radial/reduced-axial lifecycle.  Direct Picard converged at map 8 with
+`k=1.2863778402485850` and
+`(Rrho,Rleak,Ra)=(6.3952111e-8,3.4898525e-7,3.4971804e-7)`, all below the
+unchanged `5e-7` gate.  The independent checker and manifests pass; no
+relaxation, fitted coefficient or model correction was used.  A later audit
+found physically inverted bulk-density expansion and obsolete MOX/EM10
+bookkeeping in the snapshot inputs.  Map 8 therefore remains a numerical
+convergence regression only.  The corrected physical epoch has now admitted
+the three 650/750/850 C snapshots (cladding/sodium 620/475 C), the fixed
+rank-two basis, and the strict B2I bootstrap as `CLOSED/0`.  Corrected map 1
+is currently running; it has not published a checked map or convergence
+classification, so there is no corrected-material fixed point yet.  See
+[d4a_rank2_picard_maps6_to8_result.md](d4a_rank2_picard_maps6_to8_result.md).
+
+Use [D4A_CORRECTED_QUICKSTART.md](D4A_CORRECTED_QUICKSTART.md) as the sole
+operator path for the corrected build, bootstrap, direct Picard maps,
+acceptance check, and portable freeze.  The frozen large-file bundle remains
+external release data and is not stored in Git.
+
+Accuracy remains a separate open question.  The recovered historical NXT
+3D ladder is an eight-region pin cell rather than the 132-region D4-A
+assembly and is excluded.  See
+[d4a_map8_accuracy_boundary.md](d4a_map8_accuracy_boundary.md).
+
+## Full-rank direct-Picard lifecycle smoke
+
+`run_full_rank_picard_cycle.sh` is a transport-free manufactured lifecycle
+test.  It uses 370 groups, three snapshots, and four radial regions, so the
+physical basis has `rank=4 > NSNAP=3`.  The executable calls
+`SPOPHYS -> SPOSTATE -> B2I -> B2J -> identity RETURNED -> B2W -> B2J` and
+requires the exact epoch sequence `CLOSED/0 -> PROJECTED/1 -> CLOSED/1 ->
+PROJECTED/2`.  Its non-REAL32-representable eigenvalue also verifies that the
+canonical state, bootstrap, and closed state retain the REAL64 `k` and `1/k`
+bits.  It runs no transport solve and is evidence for state-lifecycle closure,
+not for physical fixed-point convergence.
+
+## Current D4-A full-rank boundary
+
+The 650 C observable canonical route was run once on 2026-08-25 with
+`EDIT 1`, the unchanged three `5e-7` criteria, a 14400 s wall limit and no
+retry.  TONE converged at iteration 4, 25 inner solves completed strictly, and
+`keff` stabilized near `1.367862`.  The outer full-flux fixed point did not
+close: the best printed flux residual was `1.69e-6` at `OUT(20)`, it later
+rose to `1.82e-5`, and `OUT(25)` still had eigenvalue residual `1.32e-6`.
+The exact status is `TIMEOUT / NOT_RUN / NO_RESULT`; no snapshot was
+published.  Five provenance manifests pass and no process from the run
+remains.  See [the full diagnostic and canonical result](d4a_flu650_diagnostic_result.md).
+
+The subsequent audit could not recompute a raw norm because the timeout left
+no persistent outer flux pair.  It did find a prior numerical inconsistency:
+MCCG/GMRES used `EPSI=1e-5` while FLU required `5e-7`.  The current builder now
+ties production MCCG `EPSI` and all three FLU gates to the declared
+`solver_eps=2e-6`.  TONE remains at `1e-5`; no physical input, operator,
+acceleration schedule or empirical coefficient changed.  The later corrected
+three-snapshot archive, rank-two basis, and `CLOSED/0` bootstrap all passed.
+Map 1 is now running from that sealed state; no convergence result has been
+published.
+
 ## Current REAL64 continuation boundary
 
 The latest complete three-step cycle used the genuine map pairs
@@ -963,7 +1024,7 @@ successor and no second map were produced.  See
   strict physical map from that proposal and its final no-retry
   `VALID_NOT_MET` evidence boundary.
 - `run_bounded_dragon.py`, `test_bounded_dragon.py`: bounded process-group
-  handling.
+  handling with a kernel-pipe liveness watchdog after supervisor setup.
 - `continuation_radial.x2m`, `continuation_axial.x2m`,
   `run_continuation_short.sh`: one unchanged direct continuation.
 - `check_one_map_xsm.f90`: Ganlib-only one-map, continued-map, three-state
@@ -2010,3 +2071,22 @@ while $R_a$ decreased by 28.77%.  This local direction tradeoff is not proof
 of a cycle, convergence, or divergence.  No retry or successor was started.
 See [rank2_current_zrspt_decision_result.md](rank2_current_zrspt_decision_result.md)
 and [rank2_current_t_picard_map_result.md](rank2_current_t_picard_map_result.md).
+
+## Bounded exact rank-3 enrichment probe
+
+Rank 3 was rebuilt as the complete space of the same three frozen snapshots;
+its first two modes reproduce the rank-2 basis bitwise.  A locally
+gate-passing rank-2 CLOSED state was then embedded without projection: its
+first two coordinates were retained bitwise and the third coordinate was set
+to positive zero.  The independent checker confirms that all 8880
+reconstructed physical values are bitwise unchanged.  The temporary input
+lacks the complete producing-binary/source manifest of the canonical clean
+replay, so this probe does not supersede that publication receipt.
+
+One unchanged rank-3 map was attempted.  Its radial half completed normally,
+but its pure-Picard axial half remained inside `FLU` at the single 600-second
+hard limit.  It produced no axial terminal, fixed-point defect, CLOSED state,
+or convergence gate and was not retried.  This is a bounded no-result, not a
+claim that a rank-3 fixed point diverges or does not exist.  The certified
+precision-supported result remains rank 2.  See
+[rank3_zero_embed_one_map_result.md](rank3_zero_embed_one_map_result.md).

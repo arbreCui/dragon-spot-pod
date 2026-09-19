@@ -8,6 +8,8 @@ module SPOR64_B2J
   use SPOR64_B2H, only : SPOR64_B2H_ADMISSION_FAILED, &
       SPOR64_B2H_PROJECTED_COMMITTED, SPOR64_B2H_PROJECT, &
       SPOR64_B2H_RECONSTRUCT
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT, &
+      SPOR64_RCONTRACT_LOAD
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES
   use SPOR64_SCHEMA, only : SCHEMA_ARCHIVE_ROOT_AUTHORITY, &
@@ -33,9 +35,13 @@ module SPOR64_B2J
 contains
 
   subroutine SPOR64_B2J_PROJECT_ARCHIVE(iparchiveout,ipax,ipaxtrack, &
-      iparchive,status)
+      iparchive,ipcontract,status)
     type(c_ptr), intent(in) :: iparchiveout, ipax, ipaxtrack, iparchive
+    type(c_ptr), intent(in) :: ipcontract
     integer, intent(out) :: status
+
+    type(SPOR64_ROUTE_CONTRACT) :: contract
+    logical :: contract_loaded
 
     integer :: axial_state(NSTATE), axial_track_state(NSTATE)
     integer :: state_dims(4), rank(NGRP), offset(NGRP+1)
@@ -45,26 +51,29 @@ contains
     integer :: archive_planes, root_planes, axial_epoch, archive_epoch
     integer :: plane_epoch, projected_epoch, ncoef, total_basis
     integer :: nreg, nsurf, nunkno, nmat
-    integer :: ig, ip, ir, a, nmode, b2h_status, allocation_status
+    integer :: ig, ip, ir, a, nmode, max_rank
+    integer :: b2h_status, allocation_status
     integer :: system_snapshot
     integer, allocatable :: plane_key(:), anis_key(:), seed_key(:)
     integer(int32) :: found32, expected32
     integer(int64) :: found64, expected64
     real(real32) :: keff32
-    real(real64) :: axkeff64
+    real(real64) :: admitted_keff64
     integer :: k64len, k64typ
     real(real32) :: plane_leakage32(NGRP), system_leakage32(NGRP)
     real(real32), allocatable :: area32(:), plane_volume32(:)
     real(real64) :: rho64, root_rho64, plane_rho64, iter_keff64
     real(real32), allocatable :: basis32(:), basis_slice32(:,:)
     real(real64), allocatable :: coordinates64(:), leakage64(:)
+    real(real64), allocatable :: coordinate_slice64(:)
     real(real64), allocatable :: projected_region64(:,:,:)
-    real(real64) :: coordinate_slice64(NSNAP)
     logical :: reconstruction_ok
     logical, allocatable :: seen_unknown(:)
     character(len=12) :: lifecycle_state, signature
     character(len=12), parameter :: stage_name(NSNAP) = &
         ['B2J-STAGE-1','B2J-STAGE-2','B2J-STAGE-3']
+    character(len=12), parameter :: seed_name(NSNAP) = &
+        ['B2J-SEED-1 ','B2J-SEED-2 ','B2J-SEED-3 ']
     type(c_ptr) :: tracks, libraries, systems, fluxes
     type(c_ptr) :: output_tracks, output_libraries, output_fluxes
     type(c_ptr) :: input_track(NSNAP), input_library(NSNAP)
@@ -73,9 +82,13 @@ contains
     type(c_ptr) :: library_macro, macro_groups, system_groups
     type(c_ptr) :: output_item
     type(c_ptr) :: staged_flux(NSNAP)
+    type(c_ptr) :: normalized_seed(NSNAP)
 
     status = SPOR64_B2J_ADMISSION_FAILED
+    call SPOR64_RCONTRACT_LOAD(ipcontract,contract,contract_loaded)
+    if (.not. contract_loaded) return
     staged_flux = c_null_ptr
+    normalized_seed = c_null_ptr
 
     ! The only caller-supplied target is a fresh archive.  AX, axial track,
     ! and CLOSED archive are immutable members of one preceding epoch.
@@ -126,7 +139,9 @@ contains
     call LCMGET(ipax,'SPOT-X-RANK',rank)
     call LCMGET(ipax,'SPOT-X-OFF',offset)
     call LCMGET(ipax,'SPOT-X-BOFF',basis_offset)
-    if (any(rank < 1) .or. any(rank > NSNAP)) return
+    if (any(rank < 1) .or. any(rank > nreg)) return
+    max_rank = maxval(rank)
+    if (max_rank < 1 .or. max_rank > nreg) return
     if (offset(1) /= 0 .or. basis_offset(1) /= 0) return
     if (offset(NGRP+1) /= ncoef) return
     do ig = 1, NGRP
@@ -138,6 +153,10 @@ contains
     end do
     total_basis = basis_offset(NGRP+1)
     if (total_basis <= 0) return
+    if (int(nreg,int64)*int(max_rank,int64) > &
+        int(huge(total_basis),int64)) return
+    if (int(NSNAP,int64)*int(max_rank,int64) > &
+        int(huge(ncoef),int64)) return
     if (.not. RECORD_MATCHES(ipax,'SPOT-X-BASIS',total_basis,2)) return
     if (.not. RECORD_MATCHES(ipax,'SPOT-X-A',ncoef,4)) return
     if (.not. RECORD_MATCHES(ipax,'SPOT-X-RHO',1,4)) return
@@ -148,9 +167,13 @@ contains
         projected_region64(nreg,NGRP,NSNAP), &
         plane_key(nreg),anis_key(nreg),seed_key(nreg), &
         area32(nreg),plane_volume32(nreg), &
-        basis_slice32(nreg,NSNAP),seen_unknown(nunkno), &
+        basis_slice32(nreg,max_rank),coordinate_slice64(max_rank), &
+        seen_unknown(nunkno), &
         stat=allocation_status)
     if (allocation_status /= 0) return
+    if (size(basis_slice32,1) /= nreg .or. &
+        size(basis_slice32,2) /= max_rank) return
+    if (size(coordinate_slice64) /= max_rank) return
     call LCMGET(ipax,'SPOT-X-BASIS',basis32)
     call LCMGET(ipax,'SPOT-X-A',coordinates64)
     call LCMGET(ipax,'SPOT-X-RHO',rho64)
@@ -161,17 +184,19 @@ contains
     if (.not. all(ieee_is_finite(leakage64))) return
     if (.not. ieee_is_finite(rho64) .or. rho64 <= +0.0_real64) return
     if (.not. ieee_is_finite(keff32) .or. keff32 <= +0.0_real32) return
-    found64 = transfer(rho64,0_int64)
-    expected64 = transfer(1.0_real64/real(keff32,real64),0_int64)
-    if (found64 /= expected64) then
-      call LCMLEN(ipax,'SPOT-X-KEFF',k64len,k64typ)
+    admitted_keff64 = real(keff32,real64)
+    call LCMLEN(ipax,'SPOT-X-KEFF',k64len,k64typ)
+    if (k64len /= 0) then
       if (k64len /= 1 .or. k64typ /= 4) return
-      call LCMGET(ipax,'SPOT-X-KEFF',axkeff64)
-      if (transfer(rho64,0_int64) /= &
-          transfer(1.0_real64/axkeff64,0_int64)) return
-      if (transfer(real(axkeff64,real32),0_int32) /= &
+      call LCMGET(ipax,'SPOT-X-KEFF',admitted_keff64)
+      if (.not. ieee_is_finite(admitted_keff64) .or. &
+          admitted_keff64 <= +0.0_real64) return
+      if (transfer(real(admitted_keff64,real32),0_int32) /= &
           transfer(keff32,0_int32)) return
     end if
+    found64 = transfer(rho64,0_int64)
+    expected64 = transfer(1.0_real64/admitted_keff64,0_int64)
+    if (found64 /= expected64) return
 
     ! AREA2D fixes the row ordering used by every stored POD basis.
     if (.not. CHARACTER_RECORD_MATCHES(ipaxtrack,'SIGNATURE',3,12, &
@@ -210,11 +235,8 @@ contains
     if (.not. ieee_is_finite(iter_keff64) .or. &
         iter_keff64 <= +0.0_real64) return
     found64 = transfer(iter_keff64,0_int64)
-    expected64 = transfer(real(keff32,real64),0_int64)
-    if (found64 /= expected64) then
-      if (transfer(real(iter_keff64,real32),0_int32) /= &
-          transfer(keff32,0_int32)) return
-    end if
+    expected64 = transfer(admitted_keff64,0_int64)
+    if (found64 /= expected64) return
     if (.not. RECORD_MATCHES(iparchive,'SPOT-R64',-1,0)) return
     root_authority = LCMGID(iparchive,'SPOT-R64')
     if (.not. c_associated(root_authority)) return
@@ -400,14 +422,21 @@ contains
       end do
     end do
 
-    ! B2h stages each fresh plane privately.  A rejected plane is destroyed
-    ! and the caller's archive remains empty.  Only three successful staged
-    ! PROJECTED objects permit the archive commit below.
+    ! When present, CLOSED retains the preceding radial L0 in LEAK1D64 for
+    ! audit while SPOT-LEAK1D is the newly returned axial L1.  Build a private
+    ! next-equation seed from the admitted axial L1; the sealed input remains
+    ! unchanged.  B2h then stages each fresh plane privately.
     do ip = 1, NSNAP
+      call LCMOP(normalized_seed(ip),seed_name(ip),0,1,0)
+      call LCMEQU(input_flux(ip),normalized_seed(ip))
+      call LCMPUT(normalized_seed(ip),'LEAK1D64',NGRP,4, &
+          leakage64((ip-1)*NGRP+1:ip*NGRP))
       call LCMOP(staged_flux(ip),stage_name(ip),0,1,0)
-      call SPOR64_B2H_PROJECT(staged_flux(ip),input_flux(ip), &
-          input_track(ip),projected_region64(:,:,ip),rho64,b2h_status)
+      call SPOR64_B2H_PROJECT(staged_flux(ip),normalized_seed(ip), &
+          input_track(ip),projected_region64(:,:,ip),rho64,contract, &
+          b2h_status)
       if (b2h_status == SPOR64_B2H_ADMISSION_FAILED) then
+        call CLOSE_STAGES(normalized_seed)
         call CLOSE_STAGES(staged_flux)
         return
       end if
@@ -416,10 +445,12 @@ contains
       if (.not. STAGED_PROJECTED_OBJECT_IS_COMMITTED(staged_flux(ip), &
           rho64,projected_epoch,nunkno, &
           leakage64((ip-1)*NGRP+1:ip*NGRP))) then
+        call CLOSE_STAGES(normalized_seed)
         call CLOSE_STAGES(staged_flux)
         return
       end if
     end do
+    call CLOSE_STAGES(normalized_seed)
 
     ! This repeat is immediately before the first caller-visible mutation.
     if (.not. EMPTY_ROOT(iparchiveout)) then
@@ -475,9 +506,10 @@ contains
 
 
   subroutine SPOR64_B2J_PROJECT_PROPOSAL(iparchiveout,ipproposal, &
-      ipaxtrack,iptemplate,status)
+      ipaxtrack,iptemplate,ipcontract,status)
     type(c_ptr), intent(in) :: iparchiveout, ipproposal
     type(c_ptr), intent(in) :: ipaxtrack, iptemplate
+    type(c_ptr), intent(in) :: ipcontract
     integer, intent(out) :: status
 
     integer :: ip, template_epoch, template_planes, plane_epoch
@@ -666,7 +698,7 @@ contains
 
     projected_status = SPOR64_B2J_ADMISSION_FAILED
     call SPOR64_B2J_PROJECT_ARCHIVE(iparchiveout,staged_ax,ipaxtrack, &
-        staged_archive,projected_status)
+        staged_archive,ipcontract,projected_status)
     call LCMCL(staged_archive,2)
     staged_archive = c_null_ptr
     call LCMCL(staged_ax,2)

@@ -1,0 +1,39 @@
+****************************************************************
+* One D4 rank-2 axial half-step: pure Picard, alpha = 1.        *
+****************************************************************
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE PARENT_AX :: FILE './parent_axial_closed.xsm' ;
+XSM_FILE RADIAL_IN :: FILE './candidate_radial.xsm' ;
+XSM_FILE SYSTEM_NEXT :: FILE './candidate_system.xsm' ;
+XSM_FILE CANDIDATE_AX :: FILE './candidate_axial.xsm' ;
+XSM_FILE CAND_SNAP :: FILE './candidate_snapshots.xsm' ;
+
+LINKED_LIST SNAP AX_CURRENT ;
+MODULE FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK: UTL: END: ;
+
+REAL solver_eps := 2.0E-6 ;
+REAL leak_change ;
+
+SNAP := RADIAL_IN ;
+AX_CURRENT := PARENT_AX ;
+AX_CURRENT := UTL: AX_CURRENT ::
+EDIT 0
+  DEL 'SPOT-X-STATE'
+  DEL 'SPOT-X-EPOCH'
+  DEL 'SPOT-X-RRHO'
+  DEL 'SPOT-X-RLEAK'
+  DEL 'SPOT-X-DLEAK'
+  DEL 'SPOT-X-RA' ;
+AX_CURRENT := FLU: AX_CURRENT MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+  EDIT -3 TYPE K EXTE 500 <<solver_eps>> REBA OFF ACCE 3 3
+  UNKT <<solver_eps>> THER <<solver_eps>> ;
+AX_CURRENT := SPOGBAL: AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+AX_CURRENT := SPOSTATE: AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+AX_CURRENT := SPOXCONV: AX_CURRENT PARENT_AX :: ;
+SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak_change<< ;
+CANDIDATE_AX := AX_CURRENT ;
+CAND_SNAP := SNAP ;
+ECHO "D4A-PICARD-AXIAL-COMPLETE" leak_change ;
+END: ;
+QUIT "LIST" .

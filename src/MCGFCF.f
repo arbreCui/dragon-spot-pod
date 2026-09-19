@@ -97,6 +97,9 @@
      1 DFLUV
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: PHIV,DPHIV
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: STOT,DSTOT
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: T2DB,
+     1 OMEGA2B
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WEIGHTB
 *----
 *  SCRATCH STORAGE ALLOCATION
 *----
@@ -150,7 +153,8 @@
 *        ---
 *        2D calculation -> loop over the polar angle
 *        ---
-         ALLOCATE(T2D(NMAX))
+         ALLOCATE(T2DB(NMAX,NMU,NBATCH),OMEGA2B(3,NMU,NBATCH),
+     1            WEIGHTB(NMU,NBATCH))
          DO IBATCH=1,(NBTR-1)/NBATCH+1
          DO ILINE=(IBATCH-1)*NBATCH+1,MIN(IBATCH*NBATCH,NBTR)
            IL1=ILINE-(IBATCH-1)*NBATCH
@@ -158,25 +162,34 @@
      1     (NOM(I,IL1),I=1,NSEG(IL1)),(HTF(I,IL1),I=1,NSEG(IL1))
            IF(NSUB.NE.1) CALL XABORT('MCGFCF: NSUB.NE.1.')
          ENDDO
+         DO ILINE=(IBATCH-1)*NBATCH+1,MIN(IBATCH*NBATCH,NBTR)
+           IL1=ILINE-(IBATCH-1)*NBATCH
+           DO IMU=1,NMU
+             ZMUI=ZMU(IMU)
+             OMEGA2B(1,IMU,IL1)=
+     1         3.0D0*(CAZ1(IANG(IL1))/ZMUI)**2
+             OMEGA2B(2,IMU,IL1)=
+     1         3.0D0*(CAZ2(IANG(IL1))/ZMUI)**2
+             OMEGA2B(3,IMU,IL1)=3.0D0*(1.0-1.0/ZMUI**2)
+             WEIGHTB(IMU,IL1)=WEITF(IL1)*DBLE(WZMU(IMU))
+             DO I0=2,NSEG(IL1)-1
+               T2DB(I0,IMU,IL1)=HTF(I0,IL1)*ZMUI
+             ENDDO
+           ENDDO
+         ENDDO
 *$OMP  PARALLEL DO
-*$OMP1 PRIVATE(IL1,OMEGA2,ZMUI,WEIGHT,I0,T2D,FLUX,IMU,ILINE,B)
+*$OMP1 PRIVATE(IL1,FLUX,IMU,ILINE,B)
          DO II=1,NGEFF            
            IF(NCONV(II)) THEN
              FLUX(:KPN)=0.0D0
              DO ILINE=(IBATCH-1)*NBATCH+1,MIN(IBATCH*NBATCH,NBTR)
                IL1=ILINE-(IBATCH-1)*NBATCH
                DO IMU=1,NMU
-                 ZMUI=ZMU(IMU)
-                 OMEGA2(1)=3.0D0*(CAZ1(IANG(IL1))/ZMUI)**2
-                 OMEGA2(2)=3.0D0*(CAZ2(IANG(IL1))/ZMUI)**2
-                 OMEGA2(3)=3.0D0*(1.0-1.0/ZMUI**2)
-                 WEIGHT=WEITF(IL1)*DBLE(WZMU(IMU))
-                 DO I0=2,NSEG(IL1)-1
-                   T2D(I0)=HTF(I0,IL1)*ZMUI
-                 ENDDO
-                 CALL SUBFFI(SUBSCH,K,KPN,M,NSEG(IL1),T2D(1),NOM(1,IL1),
-     1                 NZON,SIGAL(0,II),S(1,II),NREG,KEYFLX,KEYCUR,
-     2                 FLUX,B,WEIGHT,OMEGA2,IDIR,NSOUT,XSI)
+                 CALL SUBFFI(SUBSCH,K,KPN,M,NSEG(IL1),
+     1                 T2DB(1,IMU,IL1),NOM(1,IL1),NZON,SIGAL(0,II),
+     2                 S(1,II),NREG,KEYFLX,KEYCUR,FLUX,B,
+     3                 WEIGHTB(IMU,IL1),OMEGA2B(1,IMU,IL1),IDIR,
+     4                 NSOUT,XSI)
                ENDDO
              ENDDO ! ILINE
              PHI(:KPN,II)=PHI(:KPN,II)+FLUX(:KPN)
@@ -184,7 +197,7 @@
          ENDDO ! II
 *$OMP END PARALLEL DO
          ENDDO ! IBATCH
-         DEALLOCATE(T2D)
+         DEALLOCATE(T2DB,OMEGA2B,WEIGHTB)
          ENDIF
          DEALLOCATE(B)
       ELSE IF(NLIN.EQ.1) THEN

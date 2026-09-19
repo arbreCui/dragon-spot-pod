@@ -133,6 +133,80 @@ class BoundedDragonTest(unittest.TestCase):
                     except ProcessLookupError:
                         pass
 
+    def test_sigkill_wrapper_watchdog_cleans_child_group(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            group_file = root / "group.pgid"
+            descendant_file = root / "descendant.pid"
+            stopped = root / "stopped"
+            dragon = self.make_executable(
+                root,
+                "trap 'printf stopped > \"$STOP_FILE\"; exit 0' "
+                "HUP INT TERM\n"
+                "sh -c 'trap \"\" HUP INT TERM; "
+                "while :; do sleep 1; done' &\n"
+                "descendant=$!\n"
+                'printf "%s\\n" "$$" > "$GROUP_FILE"\n'
+                'printf "%s\\n" "$descendant" > "$DESCENDANT_FILE"\n'
+                'wait "$descendant"\n',
+            )
+            deck = root / "case.x2m"
+            log = root / "case.log"
+            deck.write_text("ignored\n", encoding="ascii")
+            code = (
+                "import sys; from pathlib import Path; "
+                "import run_bounded_dragon as bounded; "
+                "bounded.TERM_GRACE_SECONDS = 0.1; "
+                "bounded.run(Path(sys.argv[1]), Path(sys.argv[2]), "
+                "Path(sys.argv[3]), 10.0)"
+            )
+            environment = os.environ.copy()
+            module_dir = str(Path(bounded.__file__).resolve().parent)
+            old_pythonpath = environment.get("PYTHONPATH")
+            environment["PYTHONPATH"] = module_dir + (
+                os.pathsep + old_pythonpath if old_pythonpath else ""
+            )
+            environment["GROUP_FILE"] = str(group_file)
+            environment["DESCENDANT_FILE"] = str(descendant_file)
+            environment["STOP_FILE"] = str(stopped)
+            wrapper = subprocess.Popen(
+                [sys.executable, "-c", code, str(dragon), str(deck), str(log)],
+                env=environment,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            pgid = None
+            try:
+                deadline = time.monotonic() + 2.0
+                while not (group_file.is_file() and descendant_file.is_file()):
+                    if wrapper.poll() is not None:
+                        self.fail("bounded wrapper exited before child startup")
+                    if time.monotonic() >= deadline:
+                        self.fail("fake child did not start")
+                    time.sleep(0.01)
+                pgid = int(group_file.read_text())
+                descendant = int(descendant_file.read_text())
+                self.assertEqual(os.getpgid(descendant), pgid)
+                os.kill(wrapper.pid, signal.SIGKILL)
+                self.assertNotEqual(wrapper.wait(timeout=2.0), 0)
+                deadline = time.monotonic() + 2.0
+                while bounded.process_group_exists(pgid):
+                    if time.monotonic() >= deadline:
+                        self.fail("watchdog left a fake Dragon process group")
+                    time.sleep(0.01)
+                self.assertTrue(stopped.is_file())
+            finally:
+                if wrapper.poll() is None:
+                    wrapper.kill()
+                    wrapper.wait(timeout=2.0)
+                if pgid is None and group_file.is_file():
+                    pgid = int(group_file.read_text())
+                if pgid is not None:
+                    try:
+                        os.killpg(pgid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+
     def test_cli_text_is_stable(self) -> None:
         stream = io.StringIO()
         with contextlib.redirect_stderr(stream):

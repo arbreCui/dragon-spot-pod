@@ -6,6 +6,7 @@ module SPOR64_A8
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use SPOR64_A8_ACA, only : MCGFCA64
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : RECORD_MATCHES
   implicit none
   private
@@ -22,23 +23,16 @@ module SPOR64_A8
   integer, parameter :: KRYL = 10
   integer, parameter :: IAAC = 80
   integer, parameter :: ISCR = 0
-  integer, parameter :: PACA = 4
   integer, parameter :: MAXI = 20
-  ! Deep inner terminal of the REAL64-leakage contract.  With the
-  ! legacy 1e-5 inner terminal the flight-iteration count varies with
-  ! the state and quantizes the effective swept operator; pinned far
-  ! below reach, the count pegs at the tracked MAXI and the operator
-  ! becomes a smooth deterministic function of the state.
+  ! Deep inner terminal of the REAL64-leakage contract.  KRYL and MAXI are
+  ! the tracked GMRES restart length and Arnoldi-work cap.  A projected
+  ! residual can only schedule a fresh TRUE check; it cannot accept a group.
   real(real64), parameter :: DP_MCCG_EPSI64 = 1.0e-13_real64
-  integer, parameter :: NSTART = 10
-  integer, parameter :: MAXIT = 19
   integer, parameter :: MAXACC = 200
   logical, parameter :: LFORW = .true.
 
   integer, parameter :: kind_guard = 1 / merge(1, 0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
-  integer, parameter :: epsi_bits_guard = 1 / merge(1, 0, &
-      transfer(1.0e-5_real32, 0_int32) == int(z'3727c5ac', int32))
 
   public :: DOORFV64, MCCGF64, MCGFLX64, MCGMRE64, MCGFL164, MCGFCS64
   public :: SPOR64_A8_MUTABLE_PROBE, SPOR64_A8_CAPTURE_PROBE
@@ -284,8 +278,9 @@ contains
 
   subroutine DOORFV64(ipsys, npsys, iptrk, iftrak, impx, ngrp, nun, &
       keyflx_base1, title, leak1d64, full_source64, full_flux64, &
-      cutoff_delta64, ok)
+      contract, cutoff_delta64, ok)
     type(c_ptr), intent(in) :: ipsys, iptrk
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(in) :: ngrp, nun, iftrak, impx
     real(real64), intent(in) :: leak1d64(:)
     integer, intent(in) :: npsys(ngrp), keyflx_base1(:)
@@ -359,7 +354,7 @@ contains
     child_delta64 = 0_int64
     call MCCGF64(kpsys_tail, iptrk, iftrak, impx, ngeff, ngind, nun, &
         keyflx_base1, leak1d64, qfr_tail64, phiin_tail64, title, &
-        child_delta64, child_ok)
+        contract, child_delta64, child_ok)
     cutoff_delta64 = cutoff_delta64 + child_delta64
     if (.not. child_ok) return
     if (.not. all(ieee_is_finite(phiin_tail64))) return
@@ -380,9 +375,11 @@ contains
   end subroutine DOORFV64
 
   subroutine MCCGF64(kpsys, iptrk, iftrak, impx, ngeff, ngind, nun, &
-      keyflx_base1, leak1d64, qfr64, phiin64, title, cutoff_delta64, &
+      keyflx_base1, leak1d64, qfr64, phiin64, title, contract, &
+      cutoff_delta64, &
       ok)
     integer, intent(in) :: iftrak, impx, ngeff, nun
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     integer, intent(in) :: ngind(ngeff), keyflx_base1(:)
     real(real64), intent(in) :: leak1d64(:)
@@ -395,7 +392,8 @@ contains
     character(len=4) :: text4
     integer :: i, icom, ifmt, ios, ispec, itylcm, j, nalbg, nalbp
     integer :: nangl, nbatch, nbtr, ncomnt, ncor, nmax, nmu
-    integer :: n2reg, n2sou, mxseg, mxsub, lc, lnconv
+    integer :: n2reg, n2sou, mxseg, mxsub, lc, lc0, lnconv, paca
+    integer :: history_capacity
     integer :: nbmix, nlong, nreg, nsou
     integer(int64) :: child_delta64
     integer, allocatable :: itst(:), matalb_trk(:)
@@ -447,13 +445,21 @@ contains
     if (nsou <= 0 .or. state_vector(6) /= NANI) return
     if (state_vector(9) /= 0 .or. state_vector(14) /= 4) return
     if (state_vector(16) /= 2 .or. state_vector(22) /= 1) return
-    if (state_vector(27) /= 0 .or. state_vector(39) /= 0) return
+    if (state_vector(27) < 0 .or. state_vector(39) /= 0) return
     if (state_vector(40) /= 0) return
     if (mccg_state(2) /= 4 .or. mccg_state(3) /= KRYL) return
     if (mccg_state(4) /= 0 .or. mccg_state(5) <= 0) return
     if (mccg_state(6) <= 0 .or. mccg_state(7) /= IAAC) return
     if (mccg_state(8) /= ISCR .or. mccg_state(9) /= 0) return
-    if (mccg_state(10) /= PACA .or. mccg_state(12) /= 0) return
+    paca = mccg_state(10)
+    lc0 = mccg_state(17)
+    if (paca /= 3 .and. paca /= 4) return
+    if (mccg_state(12) /= 0) return
+    if (paca == 3) then
+      if (lc0 <= 0) return
+    else
+      if (lc0 /= 0) return
+    end if
     if (mccg_state(13) /= MAXI .or. mccg_state(15) /= STIS) return
     if (mccg_state(16) /= NFUNL .or. mccg_state(18) /= 0) return
     if (mccg_state(19) /= NFUNL .or. mccg_state(20) /= NLIN) return
@@ -465,8 +471,8 @@ contains
     nbatch = state_vector(27)
     if (nbatch == 0) nbatch = 1
     if (nbatch < 1) return
-    if (transfer(real_param32(1), 0_int32) /= int(z'3727c5ac',int32)) &
-        return
+    if (transfer(real_param32(1), 0_int32) /= &
+        contract%eps_mccg_bits) return
     if (.not. all(ieee_is_finite(real_param32))) return
     if (transfer(real_param32(2), 0_int32) /= 0_int32) return
     if (transfer(real_param32(3), 0_int32) /= 0_int32) return
@@ -506,7 +512,7 @@ contains
 
     call SPOMOC_MCCGF_BEGIN(NGRP, ngeff, ngind, nun, NDIM, .false., &
         nlong, nreg, nsou, NANI, NLIN, NFUNL, KRYL, STIS, IAAC, ISCR, &
-        0, PACA, IDIR)
+        0, paca, IDIR)
 
     allocate(matalb_trk(-nsou:nreg))
     read(iftrak, iostat=ios)
@@ -608,7 +614,9 @@ contains
     call MCGSIG(iptrk, nbmix, ngeff, nalbp, kpsys, sigal32, lvoid)
     if (.not. all(ieee_is_finite(sigal32))) return
 
-    allocate(reps64(MAXI,ngeff), eps64(ngeff), itst(ngeff))
+    history_capacity = 2*MAXI + 1
+    if (history_capacity < 1) return
+    allocate(reps64(history_capacity,ngeff),eps64(ngeff),itst(ngeff))
     allocate(nconv(ngeff))
     reps64 = +0.0_real64
     eps64 = +0.0_real64
@@ -616,9 +624,14 @@ contains
     nconv = .true.
     lnconv = ngeff
 
+    write(6,'(A,A,A,I0,A,I0,A,I0,A,I0)') &
+        ' MCCGF64-CENSUS: BEGIN TITLE="', trim(title), '" NUN=', nun, &
+        ' NGEFF=', ngeff, ' KRYL=', KRYL, ' MAXI=', MAXI
+    flush(6)
     child_delta64 = 0_int64
     call MCGFLX64(kpsys, iptrk, iftrak, impx, ngeff, ngind, nun, nreg, &
-        nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, matalb_trk, &
+        nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, lc0, paca, &
+        matalb_trk, &
         keyflx_trk3, &
         keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
         caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
@@ -636,6 +649,8 @@ contains
     if (impx > 1) call PRINDM('EPS64 ', eps64, ngeff)
     if (.not. all(ieee_is_finite(phiin64))) return
     if (impx > 3) write(6,'(A,1X,A)') ' MCCGF64:', trim(title)
+    write(6,'(A,A,A)') ' MCCGF64-CENSUS: END TITLE="', trim(title), '"'
+    flush(6)
     ok = .true.
   end subroutine MCCGF64
 
@@ -695,7 +710,8 @@ contains
   end subroutine MCGFCS64
 
   subroutine MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, lc0, &
+      paca, &
       matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
@@ -704,7 +720,7 @@ contains
       cutoff_delta64, ok)
     integer, intent(in) :: iftrak, iprint, ngeff, nun, nreg, nbmix
     integer, intent(in) :: nlong, nbtr, nmax
-    integer, intent(in) :: nmu, nangl, nbatch, lc
+    integer, intent(in) :: nmu, nangl, nbatch, lc, lc0, paca
     real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     real(real64) :: leak_slot64(ngeff)
@@ -733,11 +749,13 @@ contains
     integer :: isgnr(4,NFUNL), keyani(NFUNL)
     integer(int64) :: child_delta64
     integer, contiguous, pointer :: bc_index_trk1(:), im(:), iperm(:)
-    integer, contiguous, pointer :: ju(:), mcu(:), pjjind_trk2(:,:)
+    integer, contiguous, pointer :: im0_view(:), ju(:), mcu(:)
+    integer, contiguous, pointer :: mcu0_view(:), pjjind_trk2(:,:)
+    integer, allocatable :: im0_data(:), mcu0_data(:)
     logical :: child_ok, map_ok
     real(real32), contiguous, pointer :: record32(:)
     real(real32), allocatable :: cf32(:,:), cq32(:,:), diagf32(:,:)
-    real(real32), allocatable :: diagq32(:,:), iludf32(:,:)
+    real(real32), allocatable :: diagq32(:,:), iludf32(:,:), ilucf32(:,:)
     real(real64), allocatable :: caz0_inactive64(:), xsi_inactive64(:)
 
     cutoff_delta64 = 0_int64
@@ -749,6 +767,12 @@ contains
     nsou = nlong - nreg
     if (nbtr <= 0 .or. nmax <= 0 .or. nmu <= 0 .or. nangl <= 0) return
     if (nbatch <= 0 .or. lc <= 0 .or. iftrak <= 0) return
+    if (paca /= 3 .and. paca /= 4) return
+    if (paca == 3) then
+      if (lc0 <= 0) return
+    else
+      if (lc0 /= 0) return
+    end if
     if (.not. c_associated(iptrk)) return
     do i = 1, ngeff
       if (.not. c_associated(kpsys(i))) return
@@ -857,9 +881,24 @@ contains
     call MAP_INTEGER1(iptrk, 'JU$MCCG', nlong, ju, map_ok)
     if (.not. map_ok) return
 
+    if (paca == 3) then
+      call MAP_INTEGER1(iptrk, 'IM0$MCCG', nlong+1, im0_view, map_ok)
+      if (.not. map_ok) return
+      call MAP_INTEGER1(iptrk, 'MCU0$MCCG', lc0, mcu0_view, map_ok)
+      if (.not. map_ok) return
+      allocate(im0_data(nlong+1),mcu0_data(lc0))
+      im0_data = im0_view
+      mcu0_data = mcu0_view
+    else
+      allocate(im0_data(nlong+1),mcu0_data(0))
+      im0_data = 0
+    end if
+
     allocate(diagq32(nlong,ngeff), cq32(lc,ngeff))
     allocate(iludf32(nlong,ngeff), cf32(lc,ngeff))
+    allocate(ilucf32(lc0,ngeff))
     allocate(diagf32(nlong,ngeff))
+    ilucf32 = +0.0_real32
     do i = 1, ngeff
       call MAP_REAL321(kpsys(i), 'DIAGQ$MCCG', nlong, record32, map_ok)
       if (.not. map_ok) return
@@ -870,6 +909,11 @@ contains
       call MAP_REAL321(kpsys(i), 'ILUDF$MCCG', nlong, record32, map_ok)
       if (.not. map_ok) return
       iludf32(:,i) = record32
+      if (paca == 3) then
+        call MAP_REAL321(kpsys(i), 'ILUCF$MCCG', lc0, record32, map_ok)
+        if (.not. map_ok) return
+        ilucf32(:,i) = record32
+      end if
       call MAP_REAL321(kpsys(i), 'CF$MCCG', lc, record32, map_ok)
       if (.not. map_ok) return
       cf32(:,i) = record32
@@ -880,6 +924,7 @@ contains
     if (.not. all(ieee_is_finite(diagq32))) return
     if (.not. all(ieee_is_finite(cq32))) return
     if (.not. all(ieee_is_finite(iludf32))) return
+    if (.not. all(ieee_is_finite(ilucf32))) return
     if (.not. all(ieee_is_finite(cf32))) return
     if (.not. all(ieee_is_finite(diagf32))) return
 
@@ -887,11 +932,12 @@ contains
     do i = 1, ngeff
       leak_slot64(i) = leak1d64(ngind(i))
     end do
-    call MCGFCA64(nlong, ngeff, nun, nreg, nbmix, lc, LFORW, PACA, &
+    call MCGFCA64(nlong, ngeff, nun, nreg, nbmix, lc, lc0, LFORW, &
+        paca, &
         keyflx_trk3(:,1,:), keycur_trk1, nzon_trk1, nconv, MAXACC, &
         epsacc64, response64, phiin64, sc_by_group32, leak_slot64, &
-        im, mcu, iperm, &
-        ju, diagq32, cq32, iludf32, cf32, diagf32, child_delta64, &
+        im, mcu, iperm, ju, im0_data, mcu0_data, diagq32, cq32, &
+        iludf32, ilucf32, cf32, diagf32, child_delta64, &
         child_ok)
     cutoff_delta64 = cutoff_delta64 + child_delta64
     if (.not. child_ok) return
@@ -900,7 +946,8 @@ contains
   end subroutine MCGFL164
 
   subroutine MCGFLX64(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, lc0, &
+      paca, &
       matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
@@ -909,7 +956,7 @@ contains
       cutoff_delta64, ok)
     integer, intent(in) :: iftrak, iprint, ngeff, nun, nreg, nbmix
     integer, intent(in) :: nlong, nbtr, nmax
-    integer, intent(in) :: nmu, nangl, nbatch, lc
+    integer, intent(in) :: nmu, nangl, nbatch, lc, lc0, paca
     real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     integer, intent(in) :: ngind(ngeff)
@@ -926,7 +973,7 @@ contains
     real(real64), intent(in) :: caz2_track64(nangl)
     real(real64), intent(in) :: qfr64(nun,ngeff), epsi64
     real(real64), intent(inout) :: phiin64(nun,ngeff)
-    real(real64), intent(out) :: reps64(MAXI,ngeff), eps64(ngeff)
+    real(real64), intent(out) :: reps64(:,:), eps64(ngeff)
     logical, intent(inout) :: nconv(ngeff)
     integer(int64), intent(out) :: cutoff_delta64
     logical, intent(out) :: ok
@@ -942,6 +989,8 @@ contains
     if (nreg <= 0 .or. nbmix <= 0 .or. nlong <= 0) return
     if (nlong <= nreg .or. nun /= nlong) return
     if (KRYL /= 10 .or. MAXI /= 20) return
+    if (size(reps64,1) /= 2*MAXI+1 .or. &
+        size(reps64,2) /= ngeff) return
     if (.not. ieee_is_finite(epsi64) .or. epsi64 <= 0.0_real64) return
     if (.not. all(ieee_is_finite(qfr64))) return
     if (.not. all(ieee_is_finite(phiin64))) return
@@ -960,7 +1009,8 @@ contains
 
     child_delta64 = 0_int64
     call MCGMRE64(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-        nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+        nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, lc0, &
+        paca, &
         matalb_trk, keyflx_trk3, &
         keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
         caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
@@ -973,7 +1023,8 @@ contains
     ok = .true.
   end subroutine MCGFLX64
   subroutine MCGMRE64(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
-      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
+      nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, lc0, &
+      paca, &
       matalb_trk, keyflx_trk3, &
       keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
       caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
@@ -982,7 +1033,7 @@ contains
       itst, nconv, lnconv, cutoff_delta64, ok)
     integer, intent(in) :: iftrak, iprint, ngeff, nun, nreg, nbmix
     integer, intent(in) :: nlong, nbtr, nmax
-    integer, intent(in) :: nmu, nangl, nbatch, lc
+    integer, intent(in) :: nmu, nangl, nbatch, lc, lc0, paca
     real(real64), intent(in) :: leak1d64(:)
     type(c_ptr), intent(in) :: kpsys(ngeff), iptrk
     integer, intent(in) :: ngind(ngeff)
@@ -1000,15 +1051,17 @@ contains
     real(real64), intent(inout) :: phiin64(nun,ngeff)
     real(real64), intent(inout) :: source64(nun,ngeff)
     real(real64), intent(out) :: response64(nun,ngeff)
-    real(real64), intent(inout) :: reps64(MAXI,ngeff), eps64(ngeff)
+    real(real64), intent(inout) :: reps64(:,:), eps64(ngeff)
     logical, intent(inout) :: nconv(ngeff)
     integer(int64), intent(out) :: cutoff_delta64
     logical, intent(out) :: ok
 
-    integer :: i, ii, iter, j, k, l
+    integer :: history_capacity, i, ii, iter, j, k, l, narnoldi
+    integer :: restart_dimension
     integer, allocatable :: kmax(:)
     integer(int64) :: child_delta64
     logical :: child_ok, rhs_pending
+    logical, allocatable :: krylov_active(:)
     real(real64) :: epsinto64, hr64, w1, w2, znu64
     real(real64), allocatable :: denom64(:), rho64(:)
     real(real64), allocatable :: rhs64(:,:), gar64(:,:), flout64(:,:)
@@ -1018,7 +1071,7 @@ contains
     cutoff_delta64 = 0_int64
     ok = .false.
     response64 = +0.0_real64
-    if (MAXI /= 20 .or. NSTART /= 10 .or. MAXIT /= 19) return
+    if (MAXI /= 20) return
     if (ngeff <= 0 .or. ngeff > NGRP .or. nun <= 0) return
     if (nreg <= 0 .or. nbmix <= 0 .or. nlong <= 0) return
     if (nlong <= nreg .or. nun /= nlong) return
@@ -1026,14 +1079,21 @@ contains
     if (.not. all(ieee_is_finite(qfr64))) return
     if (.not. all(ieee_is_finite(phiin64))) return
     if (.not. all(ieee_is_finite(source64))) return
+    restart_dimension = KRYL
+    history_capacity = 2*MAXI + 1
+    if (restart_dimension <= 0 .or. restart_dimension > nun) return
+    if (size(reps64,1) /= history_capacity .or. &
+        size(reps64,2) /= ngeff) return
 
     epsinto64 = epsi64 / 100.0_real64
     allocate(denom64(ngeff), rho64(ngeff), kmax(ngeff))
     allocate(rhs64(nun,ngeff), gar64(nun,ngeff), flout64(nun,ngeff))
-    allocate(residual64(nun,ngeff), g64(NSTART+1,ngeff))
-    allocate(c64(NSTART+1,ngeff), sn64(NSTART+1,ngeff))
-    allocate(v64(nun,ngeff,NSTART+1))
-    allocate(h64(NSTART+1,NSTART,ngeff))
+    allocate(residual64(nun,ngeff), g64(restart_dimension+1,ngeff))
+    allocate(c64(restart_dimension+1,ngeff))
+    allocate(sn64(restart_dimension+1,ngeff))
+    allocate(v64(nun,ngeff,restart_dimension+1))
+    allocate(h64(restart_dimension+1,restart_dimension,ngeff))
+    allocate(krylov_active(ngeff))
 
     rho64 = +0.0_real64
     do ii = 1, ngeff
@@ -1050,14 +1110,16 @@ contains
     end if
     rhs_pending = .true.
     iter = 0
+    narnoldi = 0
 
-    do while (lnconv /= 0 .and. iter < MAXIT)
+    do while (lnconv /= 0)
+      if (iter >= history_capacity) return
       iter = iter + 1
       call SPOMOC_SET_ROLE(1, iter)
       child_delta64 = 0_int64
       call MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
           nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
-          matalb_trk, keyflx_trk3, &
+          lc0, paca, matalb_trk, keyflx_trk3, &
           keycur_trk1, nzon_trk1, volume_trk32, caz1_track64, &
           caz2_track64, cpo32, zmu32, wzmu32, sc_by_group32, sigal32, &
           leak1d64, &
@@ -1083,7 +1145,15 @@ contains
             rho64(ii) >= epsi64 * denom64(ii)
       end do
       lnconv = count(nconv)
+      write(6,'(A,I0,A,I0,A,1P,E13.5)') &
+          ' MCGMRE64-CENSUS: TRUE ITER=', iter, ' GROUPS=', lnconv, &
+          ' MAX-EPS=', maxval(reps64(iter,:))
+      flush(6)
       if (lnconv == 0) exit
+      ! MAXI limits Arnoldi work only.  The check is deliberately after this
+      ! fresh residual so the last permitted update can still be accepted.
+      if (narnoldi >= MAXI) exit
+      krylov_active = nconv
 
       h64 = +0.0_real64
       v64 = +0.0_real64
@@ -1092,7 +1162,7 @@ contains
       g64 = +0.0_real64
       kmax = 0
       do ii = 1, ngeff
-        if (.not. nconv(ii)) cycle
+        if (.not. krylov_active(ii)) cycle
         if (rho64(ii) <= 0.0_real64) return
         g64(1,ii) = rho64(ii)
         v64(:,ii,1) = residual64(:,ii) / rho64(ii)
@@ -1104,34 +1174,37 @@ contains
         child_delta64 = 0_int64
         call MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
             nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
-            matalb_trk, &
+            lc0, paca, matalb_trk, &
             keyflx_trk3, keycur_trk1, nzon_trk1, volume_trk32, &
             caz1_track64, caz2_track64, cpo32, zmu32, wzmu32, &
             sc_by_group32, sigal32, leak1d64, qfr64, rhs64, source64, &
-            flout64, nconv, epsinto64, child_delta64, child_ok)
+            flout64, krylov_active, epsinto64, child_delta64, child_ok)
         cutoff_delta64 = cutoff_delta64 + child_delta64
         if (.not. child_ok) return
         if (.not. all(ieee_is_finite(flout64))) return
         do ii = 1, ngeff
-          if (nconv(ii)) rhs64(:,ii) = flout64(:,ii)
+          if (krylov_active(ii)) rhs64(:,ii) = flout64(:,ii)
         end do
         rhs_pending = .false.
       end if
 
       k = 0
-      do while (lnconv /= 0 .and. k < NSTART .and. iter < MAXIT)
+      do while (any(krylov_active) .and. k < restart_dimension .and. &
+          narnoldi < MAXI)
         k = k + 1
+        narnoldi = narnoldi + 1
+        if (iter >= history_capacity) return
         iter = iter + 1
         gar64 = v64(:,:,k)
         call SPOMOC_SET_ROLE(3, iter)
         child_delta64 = 0_int64
         call MCGFL164(kpsys, iptrk, iftrak, iprint, ngeff, ngind, nun, &
             nreg, nbmix, nlong, nbtr, nmax, nmu, nangl, nbatch, lc, &
-            matalb_trk, &
+            lc0, paca, matalb_trk, &
             keyflx_trk3, keycur_trk1, nzon_trk1, volume_trk32, &
             caz1_track64, caz2_track64, cpo32, zmu32, wzmu32, &
             sc_by_group32, sigal32, leak1d64, qfr64, gar64, source64, &
-            flout64, nconv, epsinto64, child_delta64, child_ok)
+            flout64, krylov_active, epsinto64, child_delta64, child_ok)
         cutoff_delta64 = cutoff_delta64 + child_delta64
         if (.not. child_ok) return
         if (.not. all(ieee_is_finite(flout64))) return
@@ -1139,7 +1212,7 @@ contains
 
         do ii = 1, ngeff
           reps64(iter,ii) = +0.0_real64
-          if (.not. nconv(ii)) cycle
+          if (.not. krylov_active(ii)) cycle
           kmax(ii) = k
 
           ! First modified Gram-Schmidt pass.
@@ -1195,10 +1268,9 @@ contains
           if (.not. ieee_is_finite(reps64(iter,ii))) return
           eps64(ii) = reps64(iter,ii)
           itst(ii) = iter
-          nconv(ii) = nconv(ii) .and. &
+          krylov_active(ii) = krylov_active(ii) .and. &
               rho64(ii) >= epsi64 * denom64(ii)
         end do
-        lnconv = count(nconv)
       end do
       do ii = 1, ngeff
         k = kmax(ii)
@@ -1220,14 +1292,18 @@ contains
         end do
         if (.not. all(ieee_is_finite(phiin64(:,ii)))) return
       end do
+      ! A Givens residual may stop work for one group inside this restart,
+      ! but only a freshly evaluated physical residual may retire it.
+      lnconv = count(nconv)
     end do
 
     lnconv = count(nconv)
     if (lnconv /= 0) then
       write(6,'(A,I0,A,I0,A,1P,E13.5)') &
           ' MCGMRE64: STRICT INNER TERMINAL FAILED; GROUPS=', lnconv, &
-          ' MAX-ITER=', maxval(itst,mask=nconv), &
+          ' ARNOLDI=', narnoldi, &
           ' MAX-EPS=', maxval(eps64,mask=nconv)
+      flush(6)
       return
     end if
     if (.not. all(ieee_is_finite(phiin64))) return

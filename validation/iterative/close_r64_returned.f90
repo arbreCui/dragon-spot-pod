@@ -8,20 +8,23 @@ program close_r64_returned
   use SPOR64_B2W, only : SPOR64_B2W_CLOSED, SPOR64_B2W_CLOSE
   implicit none
 
-  character(len=1024) :: ax_path, archive_path, ax_out_path, archive_out_path
-  type(c_ptr) :: ax, archive, ax_out, archive_out
+  character(len=1024) :: ax_path, archive_path, contract_path
+  character(len=1024) :: ax_out_path, archive_out_path
+  type(c_ptr) :: ax, archive, ax_out, archive_out, contract
   type(c_ptr) :: input_authority, output_authority
   integer :: close_status
   integer :: input_epoch, ax_epoch, archive_epoch
   character(len=12) :: marker
   logical :: exists
 
-  if (command_argument_count() /= 4) &
-    error stop 'expected candidate AX/archive and two fresh output paths'
+  if (command_argument_count() /= 5) error stop &
+    'expected candidate AX/archive, sealed route contract and two '// &
+    'fresh output paths'
   call get_command_argument(1,ax_path)
   call get_command_argument(2,archive_path)
-  call get_command_argument(3,ax_out_path)
-  call get_command_argument(4,archive_out_path)
+  call get_command_argument(3,contract_path)
+  call get_command_argument(4,ax_out_path)
+  call get_command_argument(5,archive_out_path)
   inquire(file=trim(ax_out_path),exist=exists)
   if (exists) error stop 'closed AX output already exists'
   inquire(file=trim(archive_out_path),exist=exists)
@@ -29,6 +32,7 @@ program close_r64_returned
 
   call LCMOP(ax,trim(ax_path),2,2,0)
   call LCMOP(archive,trim(archive_path),2,2,0)
+  call LCMOP(contract,trim(contract_path),2,2,0)
   input_authority = LCMGID(archive,'SPOT-R64')
   if (.not. c_associated(input_authority)) &
     error stop 'returned archive authority is missing'
@@ -38,9 +42,10 @@ program close_r64_returned
 
   call LCMOP(ax_out,trim(ax_out_path),0,2,0)
   call LCMOP(archive_out,trim(archive_out_path),0,2,0)
-  call SPOR64_B2W_CLOSE(ax_out,archive_out,ax,archive,close_status)
+  call SPOR64_B2W_CLOSE(ax_out,archive_out,ax,archive,contract, &
+      close_status)
   if (close_status /= SPOR64_B2W_CLOSED) &
-    error stop 'B2W rejected the rank-two feedback pair'
+    error stop 'B2W rejected the fixed-basis feedback pair'
 
   call LCMGTC(ax_out,'SPOT-X-STATE',12,marker)
   if (marker /= 'CLOSED') error stop 'closed AX marker differs'
@@ -60,6 +65,7 @@ program close_r64_returned
 
   call LCMCL(archive_out,1)
   call LCMCL(ax_out,1)
+  call LCMCL(contract,1)
   call LCMCL(archive,1)
   call LCMCL(ax,1)
 end program close_r64_returned

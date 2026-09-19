@@ -5,15 +5,12 @@ module SPOR64_A9
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use SPOR64_A8, only : DOORFV64
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   implicit none
   private
 
   integer, parameter :: NGRP = 370
   integer, parameter :: NSLICE = 8
-  integer, parameter :: MAXOUT = 500
-  integer, parameter :: MAXINR = 740
-  integer, parameter :: NCTOT = 6
-  integer, parameter :: NCPTM = 3
   integer, parameter :: NALBEDO = 6
   integer, parameter :: IINR_STRICT = 1
   integer, parameter :: IINR_NEAR = 2
@@ -21,12 +18,6 @@ module SPOR64_A9
 
   integer, parameter :: kind_guard = 1 / merge(1, 0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
-  real(real32), parameter :: FROZEN_TOL32 = &
-      transfer(int(z'348637bd',int32),0.0_real32)
-  real(real64), parameter :: FROZEN_TOL64 = &
-      real(FROZEN_TOL32,real64)
-  integer(int64), parameter :: FROZEN_TOL64_BITS = &
-      transfer(FROZEN_TOL64,0_int64)
 
   public :: FLU2DR64_CORE, FLUBAL64, FLU2AC64
   public :: SPOR64_A9_TERMINAL64
@@ -47,9 +38,10 @@ contains
       keyflx_base1,matcod,vol32,xstrc32,xsdia0_32,keycur, &
       matalb_surface,albedo32,surfac32,njj_off,ijj_off,ipos_off, &
       nscat_off,scat_off32,fixed_source64,initial_flux64, &
-      leak1d64,epsinr64,epsunk64,epsout64,terminal_flux64, &
+      leak1d64,epsinr64,epsunk64,epsout64,contract,terminal_flux64, &
       terminal_source64,cutoff_visit64,accepted,ok)
     type(c_ptr), intent(in) :: jpsys_group, iptrk
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(in) :: iftrak, impx
     character(len=72), intent(in) :: title
     integer, intent(in) :: keyflx_base1(:), matcod(:)
@@ -68,8 +60,10 @@ contains
     logical, intent(out) :: accepted, ok
 
     integer :: akeep_index, allocation_status, ig, igdeb, igdeb_entry
+    integer(int64) :: expected_tol64_bits
     integer :: iinr_state
     integer :: ir, it, jt, jg, jnd, ibm, ind, p
+    integer :: acceleration_cycle, acceleration_free
     integer :: nreg, nmat, nunkno, nsout
     integer :: npsys(NGRP)
     integer(int64) :: cutoff_delta64
@@ -120,9 +114,15 @@ contains
     if (.not. c_associated(jpsys_group) .or. &
         .not. c_associated(iptrk)) return
     if (iftrak <= 0) return
-    if (transfer(epsinr64,0_int64) /= FROZEN_TOL64_BITS) return
-    if (transfer(epsunk64,0_int64) /= FROZEN_TOL64_BITS) return
-    if (transfer(epsout64,0_int64) /= FROZEN_TOL64_BITS) return
+    if (contract%flu_maxout <= 0 .or. contract%flu_maxinr <= 0) return
+    acceleration_free = contract%flu_acce_free
+    acceleration_cycle = acceleration_free + contract%flu_acce_accel
+    if (acceleration_cycle <= 0) return
+    expected_tol64_bits = transfer(real(transfer( &
+        contract%eps_radial_bits,0.0_real32),real64),0_int64)
+    if (transfer(epsinr64,0_int64) /= expected_tol64_bits) return
+    if (transfer(epsunk64,0_int64) /= expected_tol64_bits) return
+    if (transfer(epsout64,0_int64) /= expected_tol64_bits) return
     if (.not. all(ieee_is_finite(leak1d64))) return
     if (.not. all(ieee_is_finite(initial_flux64))) return
     if (.not. all(ieee_is_finite(fixed_source64))) return
@@ -167,7 +167,7 @@ contains
       akeep64(akeep_index) = 1.0_real64
     end do
 
-    do it = 1, MAXOUT
+    do it = 1, contract%flu_maxout
       flux64(:,:,4) = fixed_source64
       xcsou64 = +0.0_real64
       do ig = 1, NGRP
@@ -195,7 +195,7 @@ contains
       einr_last64 = +0.0_real64
       inner_finished = .false.
 
-      do jt = 1, MAXINR
+      do jt = 1, contract%flu_maxinr
         flux64(:,igdeb:NGRP,7) = flux64(:,igdeb:NGRP,6)
         flux64(:,igdeb:NGRP,8) = flux64(:,igdeb:NGRP,4)
 
@@ -226,7 +226,7 @@ contains
         cutoff_delta64 = 0_int64
         call DOORFV64(jpsys_group,npsys,iptrk,iftrak,impx,NGRP,nunkno, &
             keyflx_base1,title,leak1d64,flux64(:,:,8),flux64(:,:,7), &
-            cutoff_delta64,child_ok)
+            contract,cutoff_delta64,child_ok)
         if (cutoff_delta64 < 0_int64) return
         if (cutoff_visit64 > huge(cutoff_visit64)-cutoff_delta64) return
         cutoff_visit64 = cutoff_visit64 + cutoff_delta64
@@ -239,7 +239,7 @@ contains
             flux64(:,:,7),balance_ok)
         if (.not. balance_ok) return
 
-        if (mod(jt-1,NCTOT) >= NCPTM) then
+        if (mod(jt-1,acceleration_cycle) >= acceleration_free) then
           call FLU2AC64(NGRP,nunkno,igdeb,flux64(:,:,5:7), &
               akeep64(5:7),zmu64,accel_ok)
           if (.not. accel_ok) return
@@ -282,26 +282,16 @@ contains
       eext64 = +0.0_real64
       akeep64(3) = 1.0_real64
 
-      if (mod(it-1,NCTOT) >= NCPTM) then
-        call FLU2AC64(NGRP,nunkno,1,flux64(:,:,1:3), &
-            akeep64(1:3),zmu64,accel_ok)
-        if (.not. accel_ok) return
-      else
-        zmu64 = 1.0_real64
-      end if
-
       eunk64 = +0.0_real64
       do ig = 1, NGRP
         call SCALAR_GROUP_NORM64(flux64(:,ig,2),flux64(:,ig,3), &
             keyflx_base1,group_error64,norm_ok)
         if (.not. norm_ok) return
-        flux64(:,ig,1) = flux64(:,ig,2)
-        flux64(:,ig,2) = flux64(:,ig,3)
         eunk64 = max(eunk64,group_error64)
       end do
-      akeep64(1) = akeep64(2)
-      akeep64(2) = akeep64(3)
 
+      ! Accept only the unmodified fixed-point image.  An extrapolated
+      ! state has not passed through the outer map and cannot be terminal.
       call SPOR64_A9_TERMINAL64(eext64,eunk64,einr_last64, &
           epsout64,epsunk64,epsinr64,iinr_state,it,accepted)
       if (accepted) then
@@ -318,6 +308,18 @@ contains
         ok = .true.
         return
       end if
+
+      if (mod(it-1,acceleration_cycle) >= acceleration_free) then
+        call FLU2AC64(NGRP,nunkno,1,flux64(:,:,1:3), &
+            akeep64(1:3),zmu64,accel_ok)
+        if (.not. accel_ok) return
+      else
+        zmu64 = 1.0_real64
+      end if
+      flux64(:,:,1) = flux64(:,:,2)
+      flux64(:,:,2) = flux64(:,:,3)
+      akeep64(1) = akeep64(2)
+      akeep64(2) = akeep64(3)
     end do
 
     ! Exhausting MAXOUT is a normal mathematical return.  It is not an
@@ -370,7 +372,7 @@ contains
     if (size(scat_off32,1) /= nmat*NGRP .or. &
         size(scat_off32,2) /= NGRP) return
     if (.not. all(ieee_is_finite(xcsou64))) return
-    if (.not. all(ieee_is_finite(flux64))) return
+    if (.not. all(ieee_is_finite(flux64(:,igdeb:NGRP)))) return
     if (.not. all(ieee_is_finite(vol32))) return
     if (.not. all(ieee_is_finite(xstrc32))) return
     if (.not. all(ieee_is_finite(xsdia0_32))) return
@@ -465,7 +467,7 @@ contains
     if (size(flux64,1) /= nun .or. size(flux64,2) /= ng .or. &
         size(flux64,3) /= 3) return
     if (size(akeep64) /= 3) return
-    if (.not. all(ieee_is_finite(flux64))) return
+    if (.not. all(ieee_is_finite(flux64(:,ig0:ng,:)))) return
     if (.not. all(ieee_is_finite(akeep64))) return
 
     nom64 = +0.0_real64
@@ -502,7 +504,7 @@ contains
       akeep64(3) = akeep64(2) + dmu64*(akeep64(3)-akeep64(2))
       akeep64(2) = akeep64(1) + dmu64*(akeep64(2)-akeep64(1))
     end if
-    if (.not. all(ieee_is_finite(flux64))) return
+    if (.not. all(ieee_is_finite(flux64(:,ig0:ng,:)))) return
     if (.not. all(ieee_is_finite(akeep64))) return
     ok = .true.
   end subroutine FLU2AC64

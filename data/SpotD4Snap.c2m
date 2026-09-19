@@ -9,8 +9,8 @@
 *                                                                *
 * At one declared material state, rebuild the six-medium         *
 * self-shielded library and solve the 132-region radial          *
-* eigenproblem. solver_eps is only the strict numerical FLU      *
-* stopping tolerance.                                            *
+* eigenproblem. solver_eps is the common production MCCG/FLU     *
+* numerical stopping tolerance; it is not a physical input.      *
 *                                                                *
 ****************************************************************
 PARAMETER  MICROLIB2 SYSTEM FLUX TRACK TRACK_f glow ::
@@ -35,7 +35,7 @@ REAL p_Pu38 p_Pu39 p_Pu40 p_Pu41 p_Pu42 p_Am p_U5 p_U8
      p_Mn_EM10 p_C_EM10 p_Si_EM10 p_Ti_EM10
   := 0.0259 0.552 0.2585 0.0727 0.0787 0.0122 0.002 0.998
      0.6575 0.145 0.155 0.015 0.015 0.0085 0.004
-     0.89 0.085 0.005 0.01 0.005 0.001 0.003 0.0002 ;
+     0.8908 0.085 0.005 0.01 0.005 0.001 0.003 0.0002 ;
 
 REAL a_comb a_AIM1 a_AIM1_Na a_EM10 a_F17 a_na a_B ;
 rnr_interpol :: <<T_comb>> <<T_clad>> <<T_Na>>
@@ -197,7 +197,7 @@ TRACK TRACK_f := SALT: glow ::
     ;
 TRACK := MCCGT: TRACK TRACK_f ::
     EDIT 0
-    GAUS 4 AAC 80 TMT STIS 1 EPSI 1.0E-5 MCU 10000
+    GAUS 4 AAC 80 TMT STIS 1 EPSI <<solver_eps>> MCU 10000
     ;
 
 ECHO "SpotD4Snap: ASM:ARM radial assembly" ;
@@ -205,7 +205,7 @@ SYSTEM := ASM: MICROLIB2 TRACK TRACK_f :: EDIT 0 ARM ;
 
 ECHO "SpotD4Snap: FLU TYPE K (no imposed axial leakage)" ;
 FLUX := FLU: SYSTEM MICROLIB2 TRACK TRACK_f ::
-    EDIT 0 TYPE K EXTE 500 <<solver_eps>>
+    EDIT 1 TYPE K EXTE 500 <<solver_eps>>
     UNKT <<solver_eps>> THER <<solver_eps>> ;
 
 REAL k_snap ;

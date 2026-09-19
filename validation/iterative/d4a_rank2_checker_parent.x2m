@@ -1,0 +1,12 @@
+XSM_FILE PARENT_IN :: FILE './parent_axial_closed.xsm' ;
+XSM_FILE PARENT_OUT :: FILE './parent_for_checker.xsm' ;
+LINKED_LIST AX ;
+MODULE UTL: END: ;
+AX := PARENT_IN ;
+AX := UTL: AX ::
+  EDIT 0
+  DEL 'SPOT-X-STATE'
+  DEL 'SPOT-X-EPOCH' ;
+PARENT_OUT := AX ;
+END: ;
+QUIT "LIST" .

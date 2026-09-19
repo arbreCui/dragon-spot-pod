@@ -4,6 +4,8 @@ module SPOR64_B2W
   use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   use GANLIB
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT, &
+      SPOR64_RCONTRACT_LOAD
   use SPOR64_VERIFY, only : ABSENT_RECORD, CHARACTER_RECORD_MATCHES, &
       EMPTY_ROOT, EXACT_INVENTORY, LIST_ITEM_IS_DIRECTORY, RECORD_MATCHES
   use SPOR64_SCHEMA, only : SCHEMA_FEEDBACK_ROOT, &
@@ -20,7 +22,6 @@ module SPOR64_B2W
   integer, parameter :: NSTATE = 40
   integer, parameter :: NSNAP = 3
   integer, parameter :: NGRP = 370
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   real(real64), parameter :: REAL32_MAX64 = real(huge(0.0_real32),real64)
   integer, parameter :: kind_guard = 1 / merge(1,0, &
       kind(1.0) == real32 .and. kind(0.0d0) == real64)
@@ -29,9 +30,13 @@ module SPOR64_B2W
 
 contains
 
-  subroutine SPOR64_B2W_ADMIT_RETURNED(ipfeedback,status)
+  subroutine SPOR64_B2W_ADMIT_RETURNED(ipfeedback,ipcontract,status)
     type(c_ptr), intent(in) :: ipfeedback
+    type(c_ptr), intent(in) :: ipcontract
     integer, intent(out) :: status
+
+    type(SPOR64_ROUTE_CONTRACT) :: contract
+    logical :: contract_loaded
 
     integer :: ip, ig, archive_planes, root_planes, root_epoch
     integer :: nreg, nunkno, nmat, nsurf
@@ -51,6 +56,8 @@ contains
 
     status = SPOR64_B2W_PREFLIGHT_FAILED
     if (.not. c_associated(ipfeedback)) return
+    call SPOR64_RCONTRACT_LOAD(ipcontract,contract,contract_loaded)
+    if (.not. contract_loaded) return
 
     ! Admit the exact object returned by B2R before any fresh axial work.
     ! This routine is read-only: no LCM mutation is possible on either path.
@@ -110,7 +117,7 @@ contains
     end do
 
     do ip = 1, NSNAP
-      if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip),nreg,nunkno,nmat, &
+      if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip),contract,nreg,nunkno,nmat, &
           child_rho64(ip),fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
           child_leakage32(:,ip),child_leakage64(:,ip))) return
       if (child_epoch(ip) /= root_epoch) return
@@ -140,9 +147,14 @@ contains
     status = SPOR64_B2W_RETURNED_ADMITTED
   end subroutine SPOR64_B2W_ADMIT_RETURNED
 
-  subroutine SPOR64_B2W_CLOSE(ipaxout,iparchiveout,ipax,ipfeedback,status)
+  subroutine SPOR64_B2W_CLOSE(ipaxout,iparchiveout,ipax,ipfeedback, &
+      ipcontract,status)
     type(c_ptr), intent(in) :: ipaxout, iparchiveout, ipax, ipfeedback
+    type(c_ptr), intent(in) :: ipcontract
     integer, intent(out) :: status
+
+    type(SPOR64_ROUTE_CONTRACT) :: contract
+    logical :: contract_loaded
 
     integer :: ip, ig, archive_planes, root_planes, root_epoch
     integer :: nreg, nunkno, nmat, nsurf
@@ -153,7 +165,8 @@ contains
     real(real32) :: keff32, l1_error32, fs_keff32(NSNAP)
     real(real32) :: child_leakage32(NGRP,NSNAP)
     real(real32) :: system_leakage32(NGRP,NSNAP), checked_l1_error32
-    real(real64) :: rho1, iter_keff64, child_rho64(NSNAP)
+    real(real64) :: rho1, iter_keff64, canonical_keff64
+    real(real64) :: child_rho64(NSNAP)
     real(real64) :: child_leakage64(NGRP,NSNAP)
     real(real64) :: axial_leakage64(NGRP*NSNAP)
     character(len=12) :: signature, lifecycle_state
@@ -166,6 +179,8 @@ contains
     type(c_ptr) :: output_item, output_authority
 
     status = SPOR64_B2W_PREFLIGHT_FAILED
+    call SPOR64_RCONTRACT_LOAD(ipcontract,contract,contract_loaded)
+    if (.not. contract_loaded) return
 
     ! The two targets and two immutable inputs are four distinct roots.
     if (.not. c_associated(ipaxout)) return
@@ -252,18 +267,14 @@ contains
 
     ! Recover the complete canonical axial bundle using the admitted radial
     ! region count.  The axial root's ordinary solver records stay opaque.
-    if (.not. CANONICAL_AX_IS_VALID(ipax,nreg,keff32,rho1, &
+    if (.not. CANONICAL_AX_IS_VALID(ipax,nreg,keff32,canonical_keff64,rho1, &
         axial_leakage64)) return
     found64 = transfer(iter_keff64,0_int64)
-    expected64 = transfer(real(keff32,real64),0_int64)
-    if (found64 /= expected64) then
-      found32 = transfer(real(iter_keff64,real32),0_int32)
-      expected32 = transfer(keff32,0_int32)
-      if (found32 /= expected32) return
-    end if
+    expected64 = transfer(canonical_keff64,0_int64)
+    if (found64 /= expected64) return
 
     do ip = 1, NSNAP
-      if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip),nreg,nunkno,nmat, &
+      if (.not. RETURNED_CHILD_IS_VALID(input_flux(ip),contract,nreg,nunkno,nmat, &
           child_rho64(ip),fs_keff32(ip),child_epoch(ip),fs_marker(ip), &
           child_leakage32(:,ip),child_leakage64(:,ip), &
           allow_fresh_leakage=.true.)) return
@@ -418,12 +429,13 @@ contains
   end function TRACK_GEOMETRY_IS_VALID
 
 
-  logical function CANONICAL_AX_IS_VALID(ipax,nreg,keff32,rho64, &
+  logical function CANONICAL_AX_IS_VALID(ipax,nreg,keff32,keff64,rho64, &
       leakage64)
     type(c_ptr), intent(in) :: ipax
     integer, intent(in) :: nreg
     real(real32), intent(out) :: keff32
-    real(real64), intent(out) :: rho64, leakage64(NGRP*NSNAP)
+    real(real64), intent(out) :: keff64, rho64
+    real(real64), intent(out) :: leakage64(NGRP*NSNAP)
 
     integer :: state(NSTATE), dims(4), fixb, ncoef
     integer :: rank(NGRP), offset(NGRP+1)
@@ -433,12 +445,12 @@ contains
     real(real32), allocatable :: basis32(:)
     real(real64), allocatable :: coordinates64(:), gram64(:)
     real(real64) :: height64(NSNAP), norm64
-    real(real64) :: keff64r
     integer :: lenk64, tylk64
     real(real64) :: offspace64(NGRP*NSNAP), gram_error64
 
     CANONICAL_AX_IS_VALID = .false.
     keff32 = +0.0_real32
+    keff64 = +0.0_real64
     rho64 = +0.0_real64
     leakage64 = +0.0_real64
 
@@ -452,6 +464,16 @@ contains
     call LCMGET(ipax,'K-EFFECTIVE',keff32)
     if (.not. ieee_is_finite(keff32)) return
     if (keff32 <= +0.0_real32) return
+    keff64 = real(keff32,real64)
+    call LCMLEN(ipax,'SPOT-X-KEFF',lenk64,tylk64)
+    if (lenk64 /= 0) then
+      if (lenk64 /= 1 .or. tylk64 /= 4) return
+      call LCMGET(ipax,'SPOT-X-KEFF',keff64)
+      if (.not. ieee_is_finite(keff64) .or. &
+          keff64 <= +0.0_real64) return
+      if (transfer(real(keff64,real32),0_int32) /= &
+          transfer(keff32,0_int32)) return
+    end if
     if (.not. ABSENT_RECORD(ipax,'SPOT-X-STATE')) return
     if (.not. ABSENT_RECORD(ipax,'SPOT-X-EPOCH')) return
 
@@ -476,15 +498,18 @@ contains
     call LCMGET(ipax,'SPOT-X-OFF',offset)
     call LCMGET(ipax,'SPOT-X-GOFF',gram_offset)
     call LCMGET(ipax,'SPOT-X-BOFF',basis_offset)
-    if (any(rank < 1) .or. any(rank > NSNAP)) return
+    if (any(rank < 1) .or. any(rank > nreg)) return
     if (offset(1) /= 0 .or. gram_offset(1) /= 0) return
     if (basis_offset(1) /= 0) return
     do ig = 1, NGRP
-      if (offset(ig+1)-offset(ig) /= NSNAP*rank(ig)) return
-      if (gram_offset(ig+1)-gram_offset(ig) /= &
-          rank(ig)*rank(ig)) return
-      if (basis_offset(ig+1)-basis_offset(ig) /= &
-          nreg*rank(ig)) return
+      if (int(offset(ig+1),int64)-int(offset(ig),int64) /= &
+          int(NSNAP,int64)*int(rank(ig),int64)) return
+      if (int(gram_offset(ig+1),int64)- &
+          int(gram_offset(ig),int64) /= &
+          int(rank(ig),int64)*int(rank(ig),int64)) return
+      if (int(basis_offset(ig+1),int64)- &
+          int(basis_offset(ig),int64) /= &
+          int(nreg,int64)*int(rank(ig),int64)) return
     end do
     if (offset(NGRP+1) /= ncoef) return
     total_gram = gram_offset(NGRP+1)
@@ -527,16 +552,8 @@ contains
     if (.not. ieee_is_finite(rho64)) return
     if (rho64 <= +0.0_real64) return
     found64 = transfer(rho64,0_int64)
-    expected64 = transfer(1.0_real64/real(keff32,real64),0_int64)
-    if (found64 /= expected64) then
-      call LCMLEN(ipax,'SPOT-X-KEFF',lenk64,tylk64)
-      if (lenk64 /= 1 .or. tylk64 /= 4) return
-      call LCMGET(ipax,'SPOT-X-KEFF',keff64r)
-      if (transfer(rho64,0_int64) /= &
-          transfer(1.0_real64/keff64r,0_int64)) return
-      if (transfer(real(keff64r,real32),0_int32) /= &
-          transfer(keff32,0_int32)) return
-    end if
+    expected64 = transfer(1.0_real64/keff64,0_int64)
+    if (found64 /= expected64) return
 
     CANONICAL_AX_IS_VALID = .true.
   end function CANONICAL_AX_IS_VALID
@@ -596,10 +613,12 @@ contains
   end function RETURNED_SYSTEM_IS_VALID
 
 
-  logical function RETURNED_CHILD_IS_VALID(child,nreg,nunkno,nmat,rho64, &
+  logical function RETURNED_CHILD_IS_VALID(child,contract,nreg,nunkno, &
+      nmat,rho64, &
       fs_keff32,epoch,fs_marker,leakage32,leakage64,iter_keff64_in, &
       allow_fresh_leakage)
     type(c_ptr), intent(in) :: child
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     integer, intent(in) :: nreg, nunkno, nmat
     real(real64), intent(out) :: rho64
     real(real32), intent(out) :: fs_keff32, leakage32(NGRP)
@@ -650,7 +669,9 @@ contains
     if (.not. RECORD_MATCHES(child,'STATE-VECTOR',NSTATE,1)) return
     call LCMGET(child,'STATE-VECTOR',state)
     if (any(state(1:18) /= &
-        [NGRP,nunkno,1,0,0,0,0,3,3,1,740,500,0,0,0,0,nmat,1])) &
+        [NGRP,nunkno,1,0,0,0,0,contract%flu_acce_free, &
+         contract%flu_acce_accel,1,contract%flu_maxinr, &
+         contract%flu_maxout,0,0,0,0,nmat,1])) &
         return
     if (any(state(19:NSTATE) /= 0)) return
 
@@ -660,7 +681,7 @@ contains
     call LCMGET(child,'EPS-CONVERGE',eps32)
     if (.not. all(ieee_is_finite(eps32))) return
     eps_bits = transfer(eps32,0_int32,5)
-    if (any(eps_bits(1:3) /= FROZEN_TOL_BITS)) return
+    if (any(eps_bits(1:3) /= contract%eps_radial_bits)) return
     if (any(eps_bits(4:5) /= 0_int32)) return
     if (.not. RECORD_MATCHES(child,'IMERGE-LEAK',nmat,1)) return
     call LCMGET(child,'IMERGE-LEAK',imerge)
@@ -673,7 +694,8 @@ contains
       if (seen(keyflx(ir))) return
       seen(keyflx(ir)) = .true.
     end do
-    if (.not. CHARACTER_RECORD_MATCHES(child,'OPTION',1,4,'B0  ')) &
+    if (.not. CHARACTER_RECORD_MATCHES(child,'OPTION',1,4, &
+        contract%flu_option)) &
         return
     if (.not. CHARACTER_RECORD_MATCHES(child,'LINK.MACRO',3,12, &
         'MACRO0')) return

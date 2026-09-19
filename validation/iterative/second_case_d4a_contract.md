@@ -2,7 +2,30 @@
 
 ## Status
 
-`TONE_INPUT_CORRECTED_AND_PREFLIGHTED_NO_ACCEPTED_D4_SNAPSHOT`.
+`CORRECTED_MATERIAL_EPOCH_PREFLIGHTED_REBUILD_REQUIRED`.
+
+## Material epoch correction (2026-09-04)
+
+A cross-code input audit found that the snapshot campaign still used the
+pre-2026-05-27 material procedures.  Those procedures multiplied bulk mass
+density by cubic thermal expansion, which makes a heated material denser.
+The active D4-A input now uses the independently reviewed physical convention
+
+```text
+rho(T) = rho(20 C) / (1 + alpha * (T - 20 C))^3
+```
+
+together with the benchmark MOX O/M ratio `1.98`, fuel compaction `0.955`,
+heavy-metal mass bookkeeping, the sodium-temperature interpolation fix and
+the exactly normalized EM10 Fe mass fraction `0.8908`.  These are material
+input corrections, not SPOD closure terms, convergence controls or fitted
+coefficients.  Geometry, three temperatures, rank two and direct Picard are
+unchanged.
+
+Consequently, every older D4-A map, including the converged map 8, is
+classified `LEGACY_MATERIAL_INPUT / NUMERICAL_REGRESSION_ONLY`.  The next
+physical result must rebuild the three snapshots, basis and fixed point from
+this material epoch before comparison with an independent reference.
 
 The accepted bounded Dragon run built only the radial tracking object from the
 frozen geometry.  A later first-state attempt reached the TONE self-shielding
@@ -10,10 +33,61 @@ iteration cap and was stopped before publishing a snapshot, so it is not an
 accepted physical result.  Comparison with the historical successful builder
 isolated an input-copy error: TONE/MERGMIX must retain tracking density `50.0`,
 while the separate production radial track uses `100.0`.  That distinction is
-now restored and the hash-locked static preflight passes.  No criterion,
-material state, empirical coefficient or physical equation changed.  The
-corrected transport has not been run; no radial archive, axial solve or Picard
-iteration has been accepted.  No OpenMC process was started.
+now restored and the hash-locked static preflight passes.  A dedicated
+TONE-only replay of the corrected 650 C state then converged at iteration 4
+with error `4.453e-6 < 1.0e-5`, without an iteration-cap warning.  Its TONE
+module took 326 s and Dragon ended normally.  No criterion, material state,
+empirical coefficient or physical equation changed.  The gate contains no
+MCCGT, ASM or FLU, so no radial archive, axial solve or Picard iteration has
+been accepted.  The subsequently authorized three-state campaign was run once
+with a 7200 s hard bound and no retry.  State 1 again passed TONE, but its
+strict `FLU TYPE K` solve produced no terminal before the bound; the runner
+cleaned up Dragon and published no snapshot, archive or success receipt.  No
+OpenMC process was started. A 600 s passive trace located the cost inside the
+first MCCGF/MCGMRE solve. Byte-identical 1300 s, 1500 s and final 1900 s
+replays then completed seven MCGMRE solves at their unchanged local criterion.
+The scheduled `IN(1..3)` free segment and `IN(4..6)` variationally accelerated
+segment form one complete thermal cycle; the next free step reached
+`IN(7)=0.0208`. Its value remains about `4.16e4` times the `5e-7` target, and
+all records are still within `OUT(0)`. This proves neither FLU, eigenvalue nor
+Picard convergence. See [the TONE gate
+result](d4a_tone650_gate_result.md) and [the bounded snapshot campaign
+result](d4a_three_snapshot_bounded_result.md), followed by [the FLU hierarchy
+diagnostic](d4a_flu650_diagnostic_result.md).
+
+The observable canonical `EDIT 1` route was subsequently executed once with
+the same operator and three `5e-7` criteria, a 14400 s wall limit and no retry.
+It completed 25 strict inner solves through `OUT(25)` and stabilized `keff`,
+but its best printed outer flux residual was `1.69e-6`; no strict outer
+terminal or snapshot was produced before timeout.  Its exact classification
+is `TIMEOUT / NOT_RUN / NO_RESULT`.
+
+A source/artifact audit then found no saved raw outer flux pair and no proof of
+a REAL32 floor.  It did find that the production MCCG linear solve used
+`EPSI=1e-5` while FLU required `5e-7`.  The current builder now takes MCCG
+`EPSI` from the same `solver_eps=2e-6` as `EXTE`, `UNKT` and `THER`.  This is a
+numerical consistency correction, not a material, operator or empirical-model
+change.  TONE remains at `1e-5`.  Static preflight passes; the corrected
+transport has not yet been run.
+
+## Declared terminal correction (2026-08-26)
+
+The `5e-7` four-channel strict terminal is **measured unreachable** on
+this system.  A 17.5 h bounded state-1 run (86400 s authorized, 51
+strict outers at ~19 min each) converged `keff` to `1.367864 +- 2e-6`
+(~0.1 pcm jitter) while the raw outer-image residual oscillates on an
+`~1e-5` envelope with occasional dips to `9.7e-7`/`2.4e-6`; later-half
+inner residuals reach `8.4e-8`.  Together with both earlier eras'
+attempts (25 outers to `1.69e-6`, then timeout; the `IN(7)=0.0208`
+diagnostic), every `5e-7` campaign has ended the same way: eigenvalue
+converged, flux-image channel on its floor, wall exhausted, nothing
+published.  Following the campaign's floor discipline (the pincell
+`UNKT` precedent), the snapshot terminal is **declared at `2e-6` with
+all four channels moved consistently** (`EXTE`/`UNKT`/`THER` and MCCG
+`EPSI`, preserving the EPSI-consistency correction).  No material,
+operator, or empirical parameter changed.  Evidence:
+`validation/artifacts/d4a-state1-outer-floor`;
+`d4a_three_snapshots.x2m` re-sealed in `d4a_snapshot_inputs.sha256`.
 
 ## Why this case
 
@@ -35,9 +109,9 @@ assembly candidates.
 - geometry SHA-256:
   `ca46ef77ea769059ddc612f1a78e4b565c32990401b21652c822bf2e11497a3e`;
 - `rnr_cc.c2m` SHA-256:
-  `3f7583449d279614eff3b1f1fe6b9a2ca0832612e3b90f4f68d1c2995ce71c03`;
+  `594e9e58aae950b003bd410440928c97b59cf67f70844033c69c05b78e8565b5`;
 - `rnr_interpol.c2m` SHA-256:
-  `b09f93be0655d5ac017b3dc33a3b9d38c5dfb7f12ba70060ec2a050223895c6a`.
+  `255ddfc61a61026e0f36aefe5ad4cee0b41871fdbd25e2b77c540bd9bccb8ed2`.
 
 The bounded geometry-only TRACK build and its independent record checks are
 recorded in [the D4-A TRACK result](d4a_track_geometry_probe_result.md).
@@ -95,13 +169,15 @@ coefficients.
 The declared snapshot count is three, and the planned D4-A basis rank is fixed
 at two before generating the archive.  The rank is a declared spatial
 discretization order, not selected by a fitted singular-value cutoff.  The
-builder uses the admitted D4-A tracking settings and `solver_eps=5e-7`; this
+builder uses the admitted D4-A tracking settings and `solver_eps=2e-6`; this
 is the already declared numerical terminal for resolving each discrete radial
 eigenproblem, not a physical parameter.
 
 The minimal current inputs are:
 
 - `data/SpotD4Snap.c2m`, which builds one six-medium physical state;
+- `data/SpotD4Tone.c2m` and `d4a_tone650_gate.x2m`, which reproduce only the
+  first state's material/TONE prefix and stop before production transport;
 - `d4a_three_snapshots.x2m`, which builds and persists exactly three list
   items (`TRACK`, `MICROLIB2`, `SYSTEM`, `FLUX`);
 - `d4a_snapshot_inputs.sha256`, which freezes the builder, driver, geometry
@@ -119,6 +195,43 @@ sh validation/iterative/preflight_d4a_three_snapshots.sh
 
 Its result is recorded in
 [the D4-A snapshot preflight result](d4a_snapshot_preflight_result.md).
+
+## Frozen validation boundary
+
+Three different questions must not be mixed:
+
+1. **Iteration convergence.**  A D4-A rank-two result is converged only if it
+   satisfies the existing raw strict residual gate with
+   `EPSOUT=EPSUNK=EPSINR=5e-7`.  No external reference and no fitted
+   coefficient enters that gate.
+2. **POD truncation difference.**  After both solutions satisfy the same
+   strict gate, compare rank two with a same-operator physical full-rank
+   solution.  Freeze the reported quantities as
+   `1e5*(1/k_full-1/k_rank2)` pcm and the RMS/maximum differences of normalized
+   three-floor and radial-region nu-fission production.  This isolates the
+   effect of the basis rank; it is not an independent physics validation.
+   No D4-A shape PASS threshold will be selected after seeing the result.
+3. **Independent physics comparison.**  An OpenMC reference must reproduce
+   the same 132-region assembly, the three declared axial material states,
+   axial mesh and boundary conditions.  Its frozen observables are `k` with
+   Monte Carlo uncertainty, normalized three-floor nu-fission production and
+   normalized radial-region nu-fission production.  The already predeclared
+   Level-4 statistical/keff rule is inherited unchanged: reference uncertainty
+   at most `50 pcm`, and absolute reactivity difference at most
+   `500 pcm + 3 sigma`.  This is an external validation rule only; it is never
+   used in SPOD, Picard iteration, basis construction or parameter selection.
+   Radial and floor shape differences are reported without a fitted PASS
+   threshold.
+
+No artifact currently implements that D4-A OpenMC problem, and the historical
+same-geometry `k=1.367208` is neither independent nor spatially complete.
+Therefore D4-A remains `NO_GO_FOR_ACCURACY_CLAIM`.  The corrected 650 C
+`LIB + SALT + TONE` prerequisite has passed.  The later observable canonical
+run completed 25 strict inner solves but timed out after `OUT(25)` without the
+outer gate or a snapshot.  This is a hard-bounded no-result, not a FLU
+divergence proof.  The external reference is not part of the iteration and is
+not required to test mathematical convergence; freezing its problem and
+observables here prevents later result-driven choices.
 
 ## Current implementation boundary
 
@@ -153,9 +266,10 @@ The next-epoch projection lifecycle now uses the same runtime geometry:
   lifecycle states and bitwise REAL64/REAL32 boundary remain unchanged.
 
 Historical full-lifecycle builders still assume pin-cell dimensions, so an
-actual D4-A archive has not yet crossed the complete chain.  D4-A transport
-therefore remains unauthorized; the current result is interface readiness,
-not D4-A convergence.
+actual D4-A archive has not yet crossed the complete chain.  The standalone
+strict 650 C transport has now been exercised, but it did not reach its outer
+terminal; D4-A snapshot publication therefore remains unauthorized.  The
+current result is transport evidence and interface readiness, not convergence.
 
 ## Completed vertical slices
 
@@ -240,13 +354,14 @@ ordering, not D4-A transport or D4-A convergence.
 
 ## Remaining work before a convergence census
 
-1. run only the corrected 650 C `LIB + SALT + TONE` gate once and reject any
-   TONE-cap warning;
-2. only if it passes, execute and independently verify the three-snapshot
-   archive, then build the fixed rank-two basis;
-3. only then run one bounded physical convergence census with no empirical
-   parameter or automatic retry.
+1. rebuild and independently verify the three snapshots with the corrected
+   material epoch and the declared common `2e-6` radial terminal;
+2. build the fixed rank-two basis and converge direct Picard under the unchanged
+   `5e-7` outer three-defect gate;
+3. compare that physical fixed point with the separately specified full-rank
+   and continuous-energy references.
 
 The method remains the same 370-group, fixed rank-two basis, three-snapshot
 Synthesis-POD iteration.  The historical five-temperature campaign is not
-imported, and no D4-A reference currently exists.
+imported.  The separately frozen D4-A OpenMC reference must be implemented
+before making an accuracy claim, but it does not feed back into convergence.

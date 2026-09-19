@@ -28,10 +28,15 @@ It also verifies positive finite measures, identical isotropic region-key
 records, complete non-duplicated coverage of all 144 unknowns, and surface
 boundary codes in `[-6,-1]`.  Thus 12 numerical surface-current unknowns
 reuse six physical boundary/albedo code slots; these are not interchangeable
-dimensions.  The checker also requires the exact existing production
+dimensions.  The checker also requires the exact probe-time
 `REAL-PARAM(1)=1.0e-5` bit pattern and zero remaining REAL-PARAM entries.  This
-is the frozen MCCG numerical tolerance already required by `SPOR64_B2B/A8`,
-not a fitted physical or coupling coefficient.
+is the frozen tolerance of this historical geometry artifact, not a fitted
+physical or coupling coefficient.  It is no longer the current canonical
+transport tolerance: after the nested-tolerance audit, `SpotD4Snap` uses the
+common `solver_eps=5e-7` for MCCG and FLU.  The topology result remains valid;
+this probe is not the current numerical-tolerance authority.  The separate
+legacy `SPOR64_B2B` admission still checks the old artifact bits and is not on
+the next canonical full-rank run path.
 
 The independent checker reads the XSM TRACK object.  It records the generated
 binary TRACK hash but does not parse that binary payload; the first physical
@@ -57,11 +62,11 @@ result.  In the first, Dragon completed but the harness incorrectly required
 an ECHO marker to occur exactly once; the input listing and output each
 contained it, so the TRACK checker was not run.  After that assertion alone
 was corrected, the topology checker passed, but independent review found that
-the probe deck's `EPSI=1e-6` did not match the current production TRACK gate.
-The deck was aligned to the existing `1e-5` value, the exact bit check was
-added, and the bounded invocation recorded above passed.  No physical solve
+the probe deck's `EPSI=1e-6` did not match the then-current production TRACK
+gate.  The deck was aligned to the then-existing `1e-5` value, the exact bit
+check was added, and the bounded invocation recorded above passed.  No physical solve
 or automatic scientific-result retry occurred.
 
 This result admits the real D4-A geometry topology only.  It is not evidence
-of a D4-A transport solution or convergence.  The next required physical
-input is one current, hash-locked set of three D4-A snapshots.
+of a D4-A transport solution or convergence.  The current next action is the
+single bounded canonical 650 C run defined by the updated case contract.

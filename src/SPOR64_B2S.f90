@@ -9,6 +9,7 @@ module SPOR64_B2S
   use SPOR64_B2O, only : SPOR64_B2O_SEALED, &
       SPOR64_B2O_SEAL_CONT_PAIR
   use SPOR64_B2R, only : SPOR64_B2R_RETURNED, SPOR64_B2R_COLLECT
+  use SPOR64_RCONTRACT, only : SPOR64_ROUTE_CONTRACT
   use SPOR64_VERIFY, only : EMPTY_MEMORY_ROOT, LIST_ITEM_IS_DIRECTORY, &
       RECORD_MATCHES
   implicit none
@@ -23,7 +24,6 @@ module SPOR64_B2S
   integer, parameter :: NENTRY = 7
   integer, parameter :: NGRP = 370
   integer, parameter :: NIFIS = 32
-  integer(int32), parameter :: FROZEN_TOL_BITS = int(z'348637bd',int32)
   integer, parameter :: kind_guard = 1 / merge(1,0,kind(1.0) == real32)
 
   public :: SPOR64_B2S_HOST_BRIDGE
@@ -31,8 +31,9 @@ module SPOR64_B2S
 contains
 
   subroutine SPOR64_B2S_HOST_BRIDGE(ipout,ipassembled,ipmacros, &
-      ipsources,iptrack_file,status,cutoff_by_plane,enable)
+      ipsources,iptrack_file,contract,status,cutoff_by_plane,enable)
     type(c_ptr), intent(in) :: ipout, ipassembled
+    type(SPOR64_ROUTE_CONTRACT), intent(in) :: contract
     type(c_ptr), intent(in) :: ipmacros(NSNAP), ipsources(NSNAP)
     type(c_ptr), intent(in) :: iptrack_file
     integer, intent(out) :: status
@@ -162,7 +163,7 @@ contains
       return
     end if
 
-    frozen_tol32 = transfer(FROZEN_TOL_BITS,0.0_real32)
+    frozen_tol32 = transfer(contract%eps_radial_bits,0.0_real32)
     imerg = 1
     jentry = [0,2,2,2,2,2,2]
 
@@ -185,9 +186,13 @@ contains
       kentry = [solved_by_plane(plane),ipmacros(slot),track, &
           iptrack_file,sealed_system(slot),ipsources(slot),sealed_seed(slot)]
       call SPOR64_B2B_INGRESS(NENTRY,hentry,ientry,jentry,kentry, &
-          0,500,740,frozen_tol32,frozen_tol32,frozen_tol32,1,3,3, &
-          'B0  ',0,1,1,imerg,0,.false.,0,.true.,NGRP,nreg,nmat, &
-          NIFIS,1,2,1,.false.,.true.,SPOR64_B2B_CONT,radial_status, &
+          0,contract%flu_maxout,contract%flu_maxinr, &
+          frozen_tol32,frozen_tol32,frozen_tol32,1, &
+          contract%flu_acce_free,contract%flu_acce_accel, &
+          contract%flu_option,0,1,1,imerg,0,.false.,0,.true., &
+          NGRP,nreg,nmat, &
+          NIFIS,1,2,1,.false.,.true.,SPOR64_B2B_CONT,contract, &
+          radial_status, &
           cutoff_by_plane(plane))
       if (radial_status /= SPOR64_B2C_HOST_COMMITTED) then
         call CLOSE_PRIVATE(sealed_seed,sealed_system,solved_by_plane)
@@ -198,7 +203,7 @@ contains
     ! The caller cannot substitute detached SOLVED objects: these three
     ! objects are still live from the immediately preceding B2B calls.
     call SPOR64_B2R_COLLECT(ipout,ipassembled,solved_by_plane, &
-        ipsources,collect_status)
+        ipsources,contract,collect_status)
     if (collect_status == SPOR64_B2R_RETURNED) status = SPOR64_B2S_RETURNED
     call CLOSE_PRIVATE(sealed_seed,sealed_system,solved_by_plane)
   end subroutine SPOR64_B2S_HOST_BRIDGE

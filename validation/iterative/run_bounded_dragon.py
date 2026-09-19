@@ -38,23 +38,76 @@ def process_group_exists(pgid: int) -> bool:
     return True
 
 
-def terminate_group(process: subprocess.Popen[bytes]) -> None:
-    pgid = process.pid
+def terminate_process_group(
+    pgid: int,
+    grace_seconds: float,
+    process: subprocess.Popen[bytes] | None = None,
+) -> None:
     try:
         os.killpg(pgid, signal.SIGTERM)
     except ProcessLookupError:
-        process.wait()
         return
-    deadline = time.monotonic() + TERM_GRACE_SECONDS
+    deadline = time.monotonic() + grace_seconds
     while process_group_exists(pgid) and time.monotonic() < deadline:
-        process.poll()
+        if process is not None:
+            process.poll()
         time.sleep(0.05)
     if process_group_exists(pgid):
         try:
             os.killpg(pgid, signal.SIGKILL)
-        except ProcessLookupError:
+        except (ProcessLookupError, PermissionError):
             pass
+
+
+def terminate_group(process: subprocess.Popen[bytes]) -> None:
+    terminate_process_group(process.pid, TERM_GRACE_SECONDS, process)
     process.wait()
+
+
+def watch_liveness(read_fd: int, pgid: int, grace_seconds: float) -> None:
+    """Kill one running child group if its supervising process disappears."""
+    try:
+        while os.read(read_fd, 1):
+            pass
+    finally:
+        os.close(read_fd)
+    if process_group_exists(pgid):
+        terminate_process_group(pgid, grace_seconds)
+
+
+def start_liveness_watchdog(
+    read_fd: int,
+    pgid: int,
+    grace_seconds: float,
+) -> subprocess.Popen[bytes]:
+    return subprocess.Popen(
+        [
+            sys.executable,
+            str(Path(__file__).resolve()),
+            "--watch-liveness",
+            str(read_fd),
+            str(pgid),
+            f"{grace_seconds:.17g}",
+        ],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        close_fds=True,
+        pass_fds=(read_fd,),
+        start_new_session=True,
+    )
+
+
+def finish_liveness_watchdog(
+    write_fd: int,
+    watchdog: subprocess.Popen[bytes],
+) -> None:
+    os.close(write_fd)
+    try:
+        watchdog.wait(timeout=TERM_GRACE_SECONDS + 1.0)
+    except subprocess.TimeoutExpired:
+        watchdog.kill()
+        watchdog.wait()
 
 
 def run(
@@ -88,17 +141,33 @@ def run(
                 stderr=subprocess.STDOUT,
                 start_new_session=True,
             )
+            read_fd, write_fd = os.pipe()
             try:
-                return_code = process.wait(timeout=timeout_seconds)
-            except subprocess.TimeoutExpired:
-                terminate_group(process)
-                fail(
-                    f"timeout after {timeout_seconds:g} seconds; "
-                    "no scientific result"
+                watchdog = start_liveness_watchdog(
+                    read_fd,
+                    process.pid,
+                    TERM_GRACE_SECONDS,
                 )
             except BaseException:
+                os.close(read_fd)
+                os.close(write_fd)
                 terminate_group(process)
                 raise
+            os.close(read_fd)
+            try:
+                try:
+                    return_code = process.wait(timeout=timeout_seconds)
+                except subprocess.TimeoutExpired:
+                    terminate_group(process)
+                    fail(
+                        f"timeout after {timeout_seconds:g} seconds; "
+                        "no scientific result"
+                    )
+                except BaseException:
+                    terminate_group(process)
+                    raise
+            finally:
+                finish_liveness_watchdog(write_fd, watchdog)
     finally:
         for item, handler in previous_handlers.items():
             signal.signal(item, handler)
@@ -108,12 +177,26 @@ def run(
 
 
 def main() -> None:
-    if len(sys.argv) != 4:
-        fail("expected DRAGON DECK LOG")
+    if len(sys.argv) == 5 and sys.argv[1] == "--watch-liveness":
+        read_fd = int(sys.argv[2])
+        pgid = int(sys.argv[3])
+        grace_seconds = float(sys.argv[4])
+        if read_fd < 0 or pgid <= 0 or grace_seconds < 0.0:
+            fail("invalid liveness-watchdog arguments")
+        watch_liveness(read_fd, pgid, grace_seconds)
+        return
+    if len(sys.argv) not in (4, 5):
+        fail("expected DRAGON DECK LOG [TIMEOUT_SECONDS]")
     dragon = Path(sys.argv[1])
     deck = Path(sys.argv[2])
     log = Path(sys.argv[3])
-    run(dragon, deck, log)
+    timeout_seconds = TIMEOUT_SECONDS
+    if len(sys.argv) == 5:
+        try:
+            timeout_seconds = float(sys.argv[4])
+        except ValueError:
+            fail("timeout must be a number")
+    run(dragon, deck, log, timeout_seconds)
     print("RAW-MOC-CAPTURE PROCESS PASS")
 
 

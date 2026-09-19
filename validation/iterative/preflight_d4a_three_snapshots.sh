@@ -29,7 +29,10 @@ grep -Fq 'ECHO "D4A-SNAPSHOT-STATE" 2 750.0 T_clad T_Na ;' "$DRIVER" ||
   fail "state 2 is not the frozen 750/620/475 C state"
 grep -Fq 'ECHO "D4A-SNAPSHOT-STATE" 3 850.0 T_clad T_Na ;' "$DRIVER" ||
   fail "state 3 is not the frozen 850/620/475 C state"
-grep -Fq 'REAL solver_eps := 5.0E-7 ;' "$DRIVER" ||
+# The declared terminal is 2.0E-6 (2026-08-26): the 5.0E-7 gate is
+# measured unreachable on this system; see the contract's "Declared
+# terminal correction" section and validation/artifacts/d4a-state1-outer-floor.
+grep -Fq 'REAL solver_eps := 2.0E-6 ;' "$DRIVER" ||
   fail "the strict snapshot solve tolerance changed"
 grep -Fq 'SNAP := BACKUP: TRACK :: LIST 3 ITEM 1 ;' "$DRIVER" ||
   fail "the archive is not initialized with exactly three planes"
@@ -52,9 +55,9 @@ test "$(grep -Fc 'TISO 24 100.0 LONG' "$BUILDER")" -eq 1 ||
   fail "the admitted production tracking discretization changed"
 grep -Fq 'EDIT 1 MXIT 20 EPS 1.0E-5 TRAN PIJ ;' "$BUILDER" ||
   fail "TONE no longer uses its frozen criterion with an explicit terminal"
-grep -Fq 'GAUS 4 AAC 80 TMT STIS 1 EPSI 1.0E-5 MCU 10000' "$BUILDER" ||
-  fail "the admitted MCCG settings changed"
-grep -Fq 'EDIT 0 TYPE K EXTE 500 <<solver_eps>>' "$BUILDER" ||
+grep -Fq 'GAUS 4 AAC 80 TMT STIS 1 EPSI <<solver_eps>> MCU 10000' "$BUILDER" ||
+  fail "the production MCCG linear tolerance is not tied to solver_eps"
+grep -Fq 'EDIT 1 TYPE K EXTE 500 <<solver_eps>>' "$BUILDER" ||
   fail "the radial eigenvalue solve is not strict and bounded"
 grep -Fq 'UNKT <<solver_eps>> THER <<solver_eps>> ;' "$BUILDER" ||
   fail "the radial inner tolerances are not tied to solver_eps"
@@ -69,5 +72,6 @@ test "$dlib_sha" = "$EXPECTED_DLIB_SHA" ||
 echo "D4A SNAPSHOT PREFLIGHT PASS"
 echo "D4A PHYSICAL STATES C: (650,620,475) (750,620,475) (850,620,475)"
 echo "D4A ARCHIVE: NSNAP=3 NGRP=370 NREG=132 NMAT=6 NSURF=12 NUNK=144"
+echo "D4A NUMERICAL CONTRACT: MCCG_EPSI=FLU_EXTE=FLU_UNKT=FLU_THER=2e-6"
 echo "D4A DLIB SHA256=$dlib_sha"
 echo "D4A TRANSPORT EXECUTED=0"

@@ -101,6 +101,7 @@ program check_one_map_xsm
     character(len=12) :: link_basis=''
     integer :: state(nstate)=0
     integer :: fixb=-1
+    integer :: physical=0
     integer :: fs_count=-1
     integer :: ngroup=0
     integer :: nsnap=0
@@ -150,6 +151,7 @@ program check_one_map_xsm
   type(canonical_state) :: aa1_history_state(4)
   integer :: i,argument_offset
   logical :: continued,reencoded,proposal_mode,proposal_z_mode
+  logical :: physical_mode
   logical :: proposal_v_mode,proposal_u_mode,proposal_x3_mode,proposal_x4_mode
   logical :: proposal_aa1_mode
   logical :: proposal_xnp_mode,proposal_xrp_mode,proposal_aa2_mode
@@ -163,6 +165,7 @@ program check_one_map_xsm
 
   continued=.false.
   reencoded=.false.
+  physical_mode=.false.
   proposal_mode=.false.
   proposal_z_mode=.false.
   proposal_v_mode=.false.
@@ -256,6 +259,8 @@ program check_one_map_xsm
       continued=.true.
     else if (trim(mode) == '--reencoded') then
       reencoded=.true.
+    else if (trim(mode) == '--physical') then
+      physical_mode=.true.
     else if (trim(mode) == '--proposal') then
       proposal_mode=.true.
     else if (trim(mode) == '--proposal-z') then
@@ -295,7 +300,7 @@ program check_one_map_xsm
           call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
       enddo
     else
-      call fail('ONLY --continued, --reencoded, --proposal, '// &
+      call fail('ONLY --continued, --reencoded, --physical, --proposal, '// &
         '--proposal-z, --proposal-v, --proposal-u, --proposal-x3, '// &
         '--proposal-x4, '// &
         '--proposal-aa1, '// &
@@ -335,7 +340,8 @@ program check_one_map_xsm
         call fail('XSM PATH ARGUMENT EXCEEDS GANLIB LIMIT.')
     enddo
   else
-    call fail('EXPECTED [--continued|--reencoded|--proposal|--proposal-z|'// &
+    call fail('EXPECTED [--continued|--reencoded|--physical|--proposal|'// &
+      '--proposal-z|'// &
       '--proposal-v|--proposal-u|--proposal-x3|--proposal-x4|'// &
       '--proposal-aa1|'// &
       '--proposal-xnp|'// &
@@ -615,11 +621,24 @@ program check_one_map_xsm
     stop
   endif
 
-  call load_system(trim(paths(1)),0,0,'POD-BUILT',.false., &
-    reference_system,'BASIS REFERENCE')
+  if (physical_mode) then
+    call load_system(trim(paths(1)),1,0,'POD-FIXED',.false., &
+      reference_system,'PHYSICAL BASIS REFERENCE')
+  else
+    call load_system(trim(paths(1)),0,0,'POD-BUILT',.false., &
+      reference_system,'BASIS REFERENCE')
+  endif
   call load_system(trim(paths(2)),1,3,'POD-FIXED',.true., &
     current_system,'CURRENT SYSTEM')
-  call compare_systems(reference_system,current_system)
+  call compare_systems(reference_system,current_system,physical_mode)
+  if (physical_mode) then
+    if ((reference_system%physical /= 1).or. &
+        (current_system%physical /= 1)) &
+      call fail('PHYSICAL BASIS PROVENANCE WAS NOT RETAINED.')
+    if (any(reference_system%rank_root /= 8).or. &
+        any(current_system%rank_root /= 8)) &
+      call fail('PHYSICAL BASIS IS NOT FULL RADIAL RANK.')
+  endif
 
   if (continued) then
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.true., &
@@ -627,6 +646,9 @@ program check_one_map_xsm
   else if (reencoded) then
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
       previous_state,'REENCODED PARENT STATE')
+  else if (physical_mode) then
+    call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
+      previous_state,'PHYSICAL PARENT STATE')
   else if (proposal_mode) then
     call load_canonical_state(trim(paths(3)),1,'POD-FIXED',.false., &
       previous_state,'MATERIALIZED PROPOSAL STATE',.true.,proposal_z_mode, &
@@ -643,11 +665,13 @@ program check_one_map_xsm
   call compare_state_to_system(current_state,current_system, &
     'CURRENT STATE')
   call compare_states_and_defects(previous_state,current_state,continued, &
-    reencoded.or.proposal_mode)
+    reencoded.or.proposal_mode.or.physical_mode)
   call check_restart_archive(trim(paths(5)),previous_state,current_state)
 
   if (reencoded) &
     write(6,'(A)') 'ONE-MAP-XSM REENCODED-PARENT NO-STALE-DEFECT PASS'
+  if (physical_mode) &
+    write(6,'(A)') 'ONE-MAP-XSM PHYSICAL-FULL-RANK PARENT PASS'
   if (proposal_mode) &
     write(6,'(A)') 'ONE-MAP-XSM MATERIALIZED-PROPOSAL INPUT PASS'
   if (proposal_z_mode) &
@@ -709,6 +733,14 @@ contains
     call LCMGTC(root,'SPOT-BTYPE',12,data%basis_type)
     if (data%basis_type /= expected_type) &
       call fail(trim(owner)//' SPOT-BTYPE MARKER IS INVALID.')
+    call LCMLEN(root,'SPOT-PHYS',length_found,type_found)
+    if (length_found /= 0) then
+      if ((length_found /= 1).or.(type_found /= 1)) &
+        call fail(trim(owner)//' SPOT-PHYS MARKER IS INVALID.')
+      call LCMGET(root,'SPOT-PHYS',data%physical)
+      if (data%physical /= 1) &
+        call fail(trim(owner)//' SPOT-PHYS MARKER IS INVALID.')
+    endif
     call require_record(root,'SPOT-FS-N',1,1,owner)
     call require_record(root,'SPOT-RBAL',1,4,owner)
     call require_record(root,'SPOT-Q-L2',1,4,owner)
@@ -769,8 +801,8 @@ contains
       call LCMGET(group_ptr,'NREG2D',nreg0)
       call LCMGET(group_ptr,'NSNAP',nsnap0)
       call LCMGET(group_ptr,'POD-NMODE',nmode0)
-      if ((nreg0 /= 8).or.(nsnap0 /= 3).or.(nmode0 <= 0).or. &
-          (nmode0 > nsnap0).or. &
+      if ((nreg0 <= 0).or.(nsnap0 /= 3).or.(nmode0 <= 0).or. &
+          (nmode0 > nreg0).or. &
           (data%rank_root(g) /= nmode0)) &
         call fail(trim(label)//' INVALID POD DIMENSIONS.')
       if (g == 1) then
@@ -829,8 +861,9 @@ contains
   end subroutine load_system
 
 
-  subroutine compare_systems(reference,current)
+  subroutine compare_systems(reference,current,physical_reference)
     type(system_data), intent(in) :: reference,current
+    logical, intent(in) :: physical_reference
     integer :: g
     logical :: radial_bits_changed,radial_value_changed
     character(len=128) :: label
@@ -838,11 +871,19 @@ contains
     if ((reference%signature /= current%signature).or. &
         (reference%signature /= 'L_PIJ')) &
       call fail('SYSTEM SIGNATURES DIFFER.')
-    if ((reference%fixb /= 0).or.(current%fixb /= 1)) &
-      call fail('SYSTEM FIXED-BASIS MARKERS ARE INVALID.')
-    if ((reference%basis_type /= 'POD-BUILT').or. &
-        (current%basis_type /= 'POD-FIXED')) &
-      call fail('SYSTEM BASIS-TYPE MARKERS ARE INVALID.')
+    if (physical_reference) then
+      if ((reference%fixb /= 1).or.(current%fixb /= 1)) &
+        call fail('PHYSICAL SYSTEM FIXED-BASIS MARKERS ARE INVALID.')
+      if ((reference%basis_type /= 'POD-FIXED').or. &
+          (current%basis_type /= 'POD-FIXED')) &
+        call fail('PHYSICAL SYSTEM BASIS-TYPE MARKERS ARE INVALID.')
+    else
+      if ((reference%fixb /= 0).or.(current%fixb /= 1)) &
+        call fail('SYSTEM FIXED-BASIS MARKERS ARE INVALID.')
+      if ((reference%basis_type /= 'POD-BUILT').or. &
+          (current%basis_type /= 'POD-FIXED')) &
+        call fail('SYSTEM BASIS-TYPE MARKERS ARE INVALID.')
+    endif
     if (len_trim(reference%link_basis) /= 0) &
       call fail('REFERENCE SYSTEM HAS A BASIS LINK.')
     if (len_trim(current%link_basis) == 0) &
@@ -1017,7 +1058,7 @@ contains
     call LCMGET(root,'SPOT-X-OFF',data%offset)
     call LCMGET(root,'SPOT-X-GOFF',data%gram_offset)
     call LCMGET(root,'SPOT-X-BOFF',data%basis_offset)
-    if (any(data%rank <= 0).or.any(data%rank > nsnap)) &
+    if (any(data%rank <= 0).or.any(data%rank > 8)) &
       call fail(trim(owner)//' INVALID CANONICAL LAYOUT.')
     expected_ncoef=nsnap*sum(data%rank)
     if ((ncoef /= expected_ncoef).or.(data%offset(1) /= 0).or. &

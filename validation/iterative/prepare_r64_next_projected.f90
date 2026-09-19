@@ -16,9 +16,10 @@ program prepare_r64_next_projected
 
   integer, parameter :: nsnap = 3
   character(len=1024) :: ax_path, archive_path, track_path, output_path
+  character(len=1024) :: contract_path
   character(len=72) :: object_file
   character(len=12) :: object_name
-  type(c_ptr) :: ax, archive, track, output
+  type(c_ptr) :: ax, archive, track, output, contract
   type(c_ptr) :: archive_authority, output_authority
   type(c_ptr) :: fluxes, plane, plane_authority
   type(c_ptr) :: bad_archive, bad_output, bad_authority
@@ -26,12 +27,14 @@ program prepare_r64_next_projected
   integer :: bad_epoch, status, ip, object_length
   logical :: exists, empty, memory_backed
 
-  if (command_argument_count() /= 4) call fail( &
-      'EXPECTED CLOSED_AX CLOSED_ARCHIVE AXIAL_TRACK FRESH_OUTPUT.')
+  if (command_argument_count() /= 5) call fail( &
+      'EXPECTED CLOSED_AX CLOSED_ARCHIVE AXIAL_TRACK RCONTRACT '// &
+      'FRESH_OUTPUT.')
   call get_command_argument(1,ax_path)
   call get_command_argument(2,archive_path)
   call get_command_argument(3,track_path)
-  call get_command_argument(4,output_path)
+  call get_command_argument(4,contract_path)
+  call get_command_argument(5,output_path)
   if (len_trim(ax_path) == 0 .or. len_trim(archive_path) == 0 .or. &
       len_trim(track_path) == 0 .or. len_trim(output_path) == 0) &
     call fail('EMPTY PATH.')
@@ -46,6 +49,7 @@ program prepare_r64_next_projected
   call LCMOP(ax,trim(ax_path),2,2,0)
   call LCMOP(archive,trim(archive_path),2,2,0)
   call LCMOP(track,trim(track_path),2,2,0)
+  call LCMOP(contract,trim(contract_path),2,2,0)
   call require_character(ax,'SPOT-X-STATE','CLOSED','AX')
   call require_integer(ax,'SPOT-X-EPOCH',ax_epoch,'AX')
   archive_authority = require_directory(archive,'SPOT-R64','ARCHIVE')
@@ -68,7 +72,8 @@ program prepare_r64_next_projected
   bad_epoch = archive_epoch+1
   call LCMPUT(bad_authority,'EPOCH',1,1,bad_epoch)
   call LCMOP(bad_output,'B2J-BAD-OUT',0,1,0)
-  call SPOR64_B2J_PROJECT_ARCHIVE(bad_output,ax,track,bad_archive,status)
+  call SPOR64_B2J_PROJECT_ARCHIVE(bad_output,ax,track,bad_archive, &
+      contract,status)
   if (status /= SPOR64_B2J_ADMISSION_FAILED) &
     call fail('B2J ACCEPTED THE MISMATCHED ARCHIVE EPOCH.')
   call LCMINF(bad_output,object_file,object_name,empty,object_length, &
@@ -81,7 +86,8 @@ program prepare_r64_next_projected
 
   ! Positive test and the only caller-visible output mutation.
   call LCMOP(output,trim(output_path),0,2,0)
-  call SPOR64_B2J_PROJECT_ARCHIVE(output,ax,track,archive,status)
+  call SPOR64_B2J_PROJECT_ARCHIVE(output,ax,track,archive, &
+      contract,status)
   if (status /= SPOR64_B2J_ARCHIVE_PROJECTED) &
     call fail('B2J REJECTED THE VALID CLOSED EPOCH.')
   output_authority = require_directory(output,'SPOT-R64', &

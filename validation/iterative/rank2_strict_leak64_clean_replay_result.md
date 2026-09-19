@@ -9,6 +9,10 @@ gate and is reproducible from an isolated source baseline.  No empirical
 coefficient, relaxation parameter, rank change, gate change or added model
 term was used.
 
+This clean replay is the canonical publication receipt.  Later temporary
+gate-passing directories without a producing-binary hash, source revision
+and complete input/result manifests do not supersede it.
+
 ## 1. Source isolation
 
 The replay started from detached commit
@@ -70,10 +74,20 @@ Against the hash-frozen OpenMC reference these give
 - maximum absolute floor-fraction difference: `8.130674535e-4`;
 - maximum relative floor-fraction difference: `3.019708538e-3`.
 
+These fractions are three floor-integrated, globally normalized
+nu-fission-production fractions.  They are not a scalar-flux distribution;
+the saved external evidence does not support a radial, energy-dependent or
+pointwise flux norm.
+
 No new comparison tolerance was introduced.  The reference artifact keeps
 its summary, inputs and run log under SHA-256, but not the OpenMC statepoint;
 therefore this is a hash-tied comparison to existing independent evidence,
 not a fresh OpenMC recomputation.
+
+The later exact rank-3 enrichment probe produced no admissible next axial
+state within its single hard bound, so it supplies no rank-3 fixed point and
+no POD-only error decomposition.  See
+[rank3_zero_embed_one_map_result.md](rank3_zero_embed_one_map_result.md).
 
 The full local receipt is
 `validation/artifacts/r2-leak64-clean-replay/`.
