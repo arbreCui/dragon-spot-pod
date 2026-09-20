@@ -16,11 +16,13 @@ The admitted rank-two basis SHA-256 is
 Bootstrap is admitted.  The axial seed and all three REAL64 fixed-source
 radial refreshes completed, and the strict B2I seal published `CLOSED/0` with
 `closed_axial.xsm`, `closed_snapshots.xsm`, and
-`d4a_bootstrap_result.sha256`.  Corrected-material map 1 completed both
-half-steps and passed its independent audit as `VALID_NOT_MET`, with
-`R_rho=9.34965e-3`, `R_L=5.37549e-2`, and `R_a=2.88176e-2`.  No
-corrected-material fixed point may yet be claimed.  Its recovery boundary and
-frozen hashes are in [the map-1 result](d4a_corrected_map1_result.md).
+`d4a_bootstrap_result.sha256`.  Corrected-material maps 1 and 2 completed both
+half-steps and passed their independent audits.  Map 2 is `VALID_NOT_MET`,
+with `R_rho=3.64594e-3`, `R_L=9.06106e-3`, and `R_a=9.62623e-3`.  All three
+defects decreased from map 1, but no corrected-material fixed point may yet
+be claimed.  Frozen evidence is in
+[the map-1 result](d4a_corrected_map1_result.md) and
+[the map-2 result](d4a_corrected_map2_result.md).
 
 ## 1. Build and run the short gate
 
