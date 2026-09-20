@@ -77,6 +77,12 @@ sh validation/iterative/check_d4a_closed0_release.sh \
   "$LOCAL_CLOSED0" "$CANONICAL_DRAGON" > d4a_closed0_release.sha256
 ```
 
+The frozen 38-payload manifest currently has SHA-256
+`47652f10fd946473d39ff74384caaf977d56655f12ddfff727229038988e1eaf`.
+Together with the manifest, the runtime bundle contains 39 regular files and
+no symbolic links or subdirectories.  A public retrieval location is still
+pending.
+
 The 769 MB `DLIB8R1_370` target and its absolute symbolic link are not release
 payloads.  Its hash remains inside `executed_inputs.sha256` as inert upstream
 provenance; the runtime manifest never dereferences it, and Picard and

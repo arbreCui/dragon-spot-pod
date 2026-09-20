@@ -20,6 +20,8 @@ Build the current source and run the transport-free contract and algebra
 suite from a clean checkout:
 
 ```sh
+make -C src -j2
+make -C validation/iterative -j2
 make spot-fast
 ```
 
