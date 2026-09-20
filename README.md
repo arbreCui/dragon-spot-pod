@@ -10,29 +10,22 @@ The active method is deliberately small:
 - one volume-weighted POD basis, fixed during the iteration;
 - online radial transport at every outer step;
 - one reduced axial solve;
-- direct Picard as the baseline, with standard unregularized full-Gram AA(1)
-  and, only when AA(1) fails the fixed direction screen, AA(2) formed from
-  the latest actual map residuals;
+- direct Picard with `alpha=1` as the validation method;
 - no fitted closure, relaxation, damping, clipping, flux floor, CMFD
   correction, or empirical coupling coefficient.
 
-## Fast current-code physics gate
+## Fast current-code gate
 
-Run one complete online-radial/reduced-axial pure-Picard map with the current
-binary and the sealed route contract:
+Build the current source and run the transport-free contract and algebra
+suite from a clean checkout:
 
 ```sh
-sh validation/iterative/run_pin_current_picard.sh
+make spot-fast
 ```
 
-The runner executes `B2J -> SpotStepR64 -> axial solve -> B2W`, followed by
-the independent one-map checker and the fixed three-defect convergence gate.
-It uses the repository-complete pre-Gram `CLOSED/69` pair only as a numerical
-seed and recomputes every physical response; it must not be cited as the
-current fixed point.  A 2026-08-28 replay completed in about 80 seconds with
-`CLASSIFICATION=VALID_MET` and defects
-`R_rho=3.44e-9`, `R_L=4.41e-8`, and `R_a=1.56e-8` against the unchanged
-`5e-7` gate.
+Success ends with `SPOT ACTIVE FAST PASS`.  The online D4-A transport path is
+the separately bounded workflow below; the fast gate does not claim a fixed
+point.
 
 ## D4-A status
 
@@ -68,9 +61,13 @@ at fuel temperatures 650/750/850 C with cladding/sodium at 620/475 C.  Their
 eigenvalues are `1.3707917928695679`, `1.3690495491027832`, and
 `1.3674149513244629`.  The fixed rank-two basis is admitted, and the unchanged
 axial-seed/three-radial-response chain has passed the strict B2I seal as
-`CLOSED/0`.  Corrected-material map 1 is currently running; it has not yet
-published a checked map or a convergence classification.  Consequently there
-is still no corrected-material fixed-point result.
+`CLOSED/0`.  Corrected-material map 1 has completed its online radial and
+reduced axial halves and passed the independent bitwise audit.  Its unchanged
+gate reports `VALID_NOT_MET`, with `R_rho=9.34965e-3`, `R_L=5.37549e-2`, and
+`R_a=2.88176e-2`.  Consequently the physical chain is executable, but there
+is still no corrected-material fixed-point result.  The recovery boundary and
+frozen hashes are recorded in
+[the corrected map-1 result](validation/iterative/d4a_corrected_map1_result.md).
 
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the
@@ -282,8 +279,9 @@ production MCCG and all three FLU gates.  TONE remains at `1e-5`; the physical
 operator, 3+3 variational schedule, REBA, GMRES/ACA and material state are
 unchanged.  The subsequent corrected three-snapshot archive, fixed rank-two
 basis, and `CLOSED/0` bootstrap all passed their independent gates.  Map 1 is
-running from that sealed state; no corrected convergence or accuracy result
-exists until its independent checker and three-defect gate complete.
+now a checked `VALID_NOT_MET` state; later direct Picard maps must reduce the
+same three raw defects to the unchanged `5e-7` gate before a corrected
+convergence or accuracy result exists.
 See
 [the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md)
 and [the FLU diagnostic result](validation/iterative/d4a_flu650_diagnostic_result.md).

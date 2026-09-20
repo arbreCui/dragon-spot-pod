@@ -5,7 +5,6 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT=$(CDPATH= cd -- "$HERE/../.." && pwd)
 TOOLS="$ROOT/validation/iterative"
 DRAGON="$ROOT/bin/Darwin_arm64/Dragon"
-CHECK_MODE=${CHECK_MODE:---continued}
 : "${RADIAL_TIMEOUT_SECONDS:?set an explicit bounded wall time for the radial half-step}"
 : "${AXIAL_TIMEOUT_SECONDS:?set an explicit bounded wall time for the axial half-step}"
 
@@ -13,11 +12,6 @@ if [ "$#" -ne 2 ]; then
   echo "usage: $0 parent-map-directory fresh-output-directory" >&2
   exit 2
 fi
-
-case "$CHECK_MODE" in
-  --continued|--reencoded) ;;
-  *) echo "CHECK_MODE must be --continued or --reencoded" >&2; exit 2 ;;
-esac
 
 PARENT=$(CDPATH= cd -- "$1" && pwd)
 WORK=$2
@@ -58,6 +52,15 @@ cd "$WORK"
   parent_axial_closed.xsm parent_snapshots_closed.xsm \
   initial_axial_track.xsm route_contract.xsm projected_proposal.xsm \
   > prepare.log
+if grep -Fxq 'SPOT-R64 B2J CLOSED/0 -> PROJECTED/1' prepare.log; then
+  CHECK_MODE=--reencoded
+elif grep -Eq '^SPOT-R64 B2J CLOSED/[1-9][0-9]* -> PROJECTED/[0-9]+$' \
+    prepare.log; then
+  CHECK_MODE=--continued
+else
+  echo "unable to classify the sealed parent epoch" >&2
+  exit 2
+fi
 
 OMP_NUM_THREADS=1 python3 "$TOOLS/run_bounded_dragon.py" \
   "$DRAGON" "$WORK/radial.x2m" "$WORK/radial.log" \

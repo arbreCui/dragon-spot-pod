@@ -16,9 +16,11 @@ The admitted rank-two basis SHA-256 is
 Bootstrap is admitted.  The axial seed and all three REAL64 fixed-source
 radial refreshes completed, and the strict B2I seal published `CLOSED/0` with
 `closed_axial.xsm`, `closed_snapshots.xsm`, and
-`d4a_bootstrap_result.sha256`.  Corrected-material map 1 is currently running;
-it has not yet published a checked map or convergence classification, so no
-corrected-material fixed point may be claimed.
+`d4a_bootstrap_result.sha256`.  Corrected-material map 1 completed both
+half-steps and passed its independent audit as `VALID_NOT_MET`, with
+`R_rho=9.34965e-3`, `R_L=5.37549e-2`, and `R_a=2.88176e-2`.  No
+corrected-material fixed point may yet be claimed.  Its recovery boundary and
+frozen hashes are in [the map-1 result](d4a_corrected_map1_result.md).
 
 ## 1. Build and run the short gate
 
@@ -143,6 +145,21 @@ AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
 The runner evaluates one unchanged direct map and then runs the independent
 one-map checker and the three-defect convergence gate.  It introduces no
 relaxation, damping, fitted coefficient, clipping, or empirical parameter.
+It selects the required `--reencoded` audit for `CLOSED/0` and `--continued`
+for later sealed epochs from the B2J receipt.
+
+If a bounded run has already completed and admitted its radial half-step but
+stops before publishing an axial candidate, preserve that directory and use
+a fresh directory for the narrow recovery path:
+
+```sh
+AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
+  sh validation/iterative/resume_d4a_rank2_picard_after_radial.sh \
+  /absolute/path/to/completed-radial-work /absolute/path/to/fresh-recovery
+```
+
+The recovery replays radial admission and runs only the axial, close,
+independent-check and gate stages.  It never retries radial transport.
 
 ## 5. Check and continue
 
@@ -226,8 +243,9 @@ not exist.
 
 The freezer does not trust the copied checker text by itself.  With
 `CHECKER_DIR` defaulting to `validation/iterative`, it reruns
-`check_one_map_xsm --continued` and `check_convergence_gate` on the packaged
-map state and requires both outputs to match the source logs byte for byte.  It
+`check_one_map_xsm` in the `--reencoded` or `--continued` mode sealed by the
+B2J epoch receipt, then reruns `check_convergence_gate` on the packaged map
+state and requires both outputs to match the source logs byte for byte.  It
 also requires the canonical, unique termination records in `prepare.log`,
 `admission.log`, and `close.log`.
 
@@ -280,8 +298,9 @@ At minimum, the clean-checkout revision must contain:
   `d4a_refresh_r64.x2m`, and `run_d4a_rank2_bootstrap.sh`;
 - the one-map route: `data/SpotStepR64.c2m`,
   `d4a_rank2_picard_radial.x2m`, `d4a_rank2_picard_axial.x2m`,
-  `d4a_rank2_checker_parent.x2m`, `run_d4a_rank2_picard_map.sh`, and the
-  `prepare`, `admit`, `close`, one-map, and convergence checker sources;
+  `d4a_rank2_checker_parent.x2m`, `run_d4a_rank2_picard_map.sh`,
+  `resume_d4a_rank2_picard_after_radial.sh`, and the `prepare`, `admit`,
+  `close`, one-map, and convergence checker sources;
 - the final-result route: `d4a_corrected_final_observables.x2m`,
   `run_d4a_corrected_final_observables.sh`,
   `verify_d4a_corrected_observables.sh`,
@@ -293,10 +312,10 @@ At minimum, the clean-checkout revision must contain:
   the regenerated `src/.dragon_deps.mk`, the iterative `Makefile`, and every
   source/script newly referenced by `validation/run_fast.sh`.
 
-On the current worktree, several files in those groups are still untracked.
-In particular, a clean checkout would currently miss `SPOR64_RCONTRACT.f90`,
-both bootstrap host-tool sources, the bootstrap/Picard decks and runners,
-and the new sources/tests used by the fast gate.
+The corrected D4-A source, decks, runners, host tools and fast-gate tests in
+those groups are tracked.  A clean checkout still needs the separately
+published sealed runtime asset described above; local historical diagnostics
+and map outputs are not part of the release source.
 
 ## Files that must remain outside Git
 

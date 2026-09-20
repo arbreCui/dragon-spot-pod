@@ -139,6 +139,18 @@ test "$(grep -Fxc 'SPOT-GATE COMPLETE' "$SOURCE/gate.log")" -eq 1 &&
   test "$(tail -n 1 "$SOURCE/gate.log")" = 'SPOT-GATE COMPLETE' ||
   fail "convergence gate has no complete terminus"
 
+test -f "$SOURCE/prepare.log" && test ! -L "$SOURCE/prepare.log" ||
+  fail "missing regular prepare.log"
+test "$(grep -Ec '^SPOT-R64 B2J CLOSED/[0-9]+ -> PROJECTED/[0-9]+$' \
+  "$SOURCE/prepare.log" || true)" -eq 1 ||
+  fail "prepare.log has no unique CLOSED-to-PROJECTED epoch receipt"
+if test "$(grep -Fxc 'SPOT-R64 B2J CLOSED/0 -> PROJECTED/1' \
+  "$SOURCE/prepare.log" || true)" -eq 1; then
+  CHECK_MODE=--reencoded
+else
+  CHECK_MODE=--continued
+fi
+
 # Do not trust copied text receipts. Re-read the XSM state with the same two
 # independent checkers used by the map runner, and require byte-identical logs.
 VERIFY=$(mktemp -d "${TMPDIR:-/tmp}/d4a-freezer-check.XXXXXX") ||
@@ -151,7 +163,7 @@ cleanup() {
 trap cleanup EXIT HUP INT TERM
 (
   cd "$SOURCE"
-  "$CHECKER_DIR/check_one_map_xsm" --continued \
+  "$CHECKER_DIR/check_one_map_xsm" "$CHECK_MODE" \
     basis_reference.xsm candidate_system.xsm parent_for_checker.xsm \
     candidate_axial.xsm candidate_snapshots.xsm \
     > "$VERIFY/independent_check.log"

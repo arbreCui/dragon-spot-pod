@@ -135,6 +135,7 @@ grep -q 'DLIB8R1_370' "$ROOT/validation/iterative/run_d4a_three_snapshots.sh" ||
 for route in \
   run_d4a_rank2_bootstrap.sh \
   run_d4a_rank2_picard_map.sh \
+  resume_d4a_rank2_picard_after_radial.sh \
   freeze_d4a_corrected_map.sh \
   check_d4a_corrected_acceptance.sh \
   run_d4a_corrected_final_observables.sh \

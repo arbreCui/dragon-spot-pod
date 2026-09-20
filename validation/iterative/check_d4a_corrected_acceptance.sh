@@ -176,10 +176,15 @@ else
 
     tmp_map=$(mktemp "${TMPDIR:-/tmp}/d4a-map-check.XXXXXX") || exit 2
     tmp_gate=$(mktemp "${TMPDIR:-/tmp}/d4a-gate-check.XXXXXX") || exit 2
+    if [ "$index" -eq 1 ]; then
+      check_mode=--reencoded
+    else
+      check_mode=--continued
+    fi
     if [ ! -x "$CHECKER_DIR/check_one_map_xsm" ] || \
        [ ! -x "$CHECKER_DIR/check_convergence_gate" ]; then
       map_ok=0
-    elif ! (cd "$directory" && "$CHECKER_DIR/check_one_map_xsm" --continued \
+    elif ! (cd "$directory" && "$CHECKER_DIR/check_one_map_xsm" "$check_mode" \
       basis_reference.xsm candidate_system.xsm parent_for_checker.xsm \
       candidate_axial.xsm candidate_snapshots.xsm > "$tmp_map" 2>/dev/null); then
       map_ok=0
