@@ -56,11 +56,17 @@ The last command is transport-free.  Continue only after it ends with
 
 The large XSM files and canonical Dragon are deliberately not stored in Git.
 They must be published together as a hash-pinned project release asset before
-this is a portable clean-checkout path. After obtaining the frozen corrected
-artifact directory, set:
+this is a portable clean-checkout path.  The prepared archive is named
+`d4a-corrected-closed0-runtime-release-20260920.tar`; its outer SHA-256 is
+`5469f564b47b7707491a96b61f75b847b7c5b086290dfff6c7085e3ddbe97296`.
+After obtaining it, verify the archive before extraction:
 
 ```sh
-ART=/absolute/path/to/d4a-corrected-material-three-snapshots-detached-20260904
+ARCHIVE=/absolute/path/to/d4a-corrected-closed0-runtime-release-20260920.tar
+test "$(shasum -a 256 "$ARCHIVE" | awk '{print $1}')" = \
+  5469f564b47b7707491a96b61f75b847b7c5b086290dfff6c7085e3ddbe97296
+tar -xf "$ARCHIVE" -C /absolute/path/to/extraction-parent
+ART=/absolute/path/to/extraction-parent/d4a-corrected-closed0-runtime-release-20260920
 ```
 
 The release asset starts from the already sealed `CLOSED/0`; it does not
