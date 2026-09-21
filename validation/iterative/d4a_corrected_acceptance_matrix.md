@@ -9,24 +9,27 @@ The legacy-material D4-A map sequence is never an admissible substitute. Each
 Picard map must be hash-linked to the corrected snapshot-derived rank-two
 basis and to the immediately preceding corrected `CLOSED/n` pair.
 
-| stage | required evidence | acceptance condition | current state (2026-09-21) |
+| stage | required evidence | acceptance condition | current state (2026-09-22) |
 |---|---|---|---|
 | material epoch | reviewed audit, frozen and executed `rnr_cc`/`rnr_interpol` hashes | both hashes equal the reviewed corrected epoch | **PASS** |
 | three snapshots | `admitted_snapshot_archive.sha256`, snapshot checker log | all hashes verify; `(NSNAP,NGRP,NREG)=(3,370,132)`; Ganlib-only PASS; three strict FLU terminals | **PASS** |
 | fixed rank two | `d4a_rank2_admitted.sha256`, rank checker log | manifest binds the admitted snapshots; `NMODE=2`; stored diagnostics and Ganlib-only checks pass | **PASS** |
 | bootstrap | `d4a_bootstrap_result.sha256`, B2I log | three TYPE-S refreshes; B2I commits the canonical corrected `CLOSED/0`; basis/track/macrolib hashes remain fixed | **PASS**: the existing three TYPE-S responses were admitted without recomputation; B2I committed `CLOSED/0` and the 14-file manifest verifies |
-| Picard maps | ordered map directories, input/output manifests and lifecycle logs | exact `CLOSED/(n-1) -> PROJECTED/n -> RETURNED/n -> CLOSED/n` lineage; hashes chain from corrected `CLOSED/0`; live one-map checker replay matches its receipt | **PASS THROUGH `CLOSED/4`; NOT FINAL**: maps 1 through 4 are frozen and independently checked; map 4 is `NEXT_MAP_PARENT_ONLY` |
-| final residuals | live replay of `check_convergence_gate` on final `closed_axial.xsm` | unchanged AND gate: `Rrho`, `Rleak`, `Ra` all `<=5e-7`; final classification `VALID_MET`; no later map | **FAIL**: map 4 has `(Rrho,Rleak,Ra)=(3.8371606671805392E-04,3.2229791058397219E-04,1.0513386117938293E-03)` and `VALID_NOT_MET` |
+| Picard maps | ordered map directories, input/output manifests and lifecycle logs | exact `CLOSED/(n-1) -> PROJECTED/n -> RETURNED/n -> CLOSED/n` lineage; hashes chain from corrected `CLOSED/0`; live one-map checker replay matches its receipt | **PASS THROUGH `CLOSED/5`; NOT FINAL**: maps 1 through 5 are frozen and independently checked; map 5 is `NEXT_MAP_PARENT_ONLY` |
+| final residuals | live replay of `check_convergence_gate` on final `closed_axial.xsm` | unchanged AND gate: `Rrho`, `Rleak`, `Ra` all `<=5e-7`; final classification `VALID_MET`; no later map | **FAIL**: map 5 has `(Rrho,Rleak,Ra)=(1.2008320856993215E-04,1.0779227410496446E-04,3.4736134630042396E-04)` and `VALID_NOT_MET` |
 | final k and power | sealed read-only observables directory | manifest binds final axial state/track/macrolib; one `D4A-CORRECTED-K-EFFECTIVE`; three normalized bottom/middle/top `SPORATE NU-FISSION-FRACTIONS`; normal Dragon end | **FAIL**: no corrected `VALID_MET` map, final observables, or CE comparison exists |
 
 Overall current classification: **`FAIL-CLOSED`**. The corrected offline
 snapshot/basis construction, coupled bootstrap, and direct maps through
-`CLOSED/4` are accepted.  Map 4 remains `VALID_NOT_MET`, so a corrected
+`CLOSED/5` are accepted.  Map 5 remains `VALID_NOT_MET`, so a corrected
 coupled fixed point and final `k`/power/CE result have not been produced.
 
-The serial controller has started the unchanged successor from
-`CLOSED/4 -> PROJECTED/5`.  Its series receipt still has no completed row or
-portable map, so that transient execution is excluded from this matrix.
+The former serial process ended after the complete map-5 raw outputs and
+checks, before portable packaging and its series row.  The existing freezer
+independently replayed and froze that map on 2026-09-22 without a transport
+rerun.  See [the map-5 receipt](d4a_corrected_map5_result.md).  A fresh serial
+continuation has started `CLOSED/5 -> PROJECTED/6`; an in-flight map does not
+count toward this matrix.
 
 ## Short deterministic check
 
@@ -40,10 +43,11 @@ sh validation/iterative/check_d4a_corrected_acceptance.sh \
   /absolute/path/to/portable-map1 \
   /absolute/path/to/portable-map2 \
   /absolute/path/to/portable-map3 \
-  /absolute/path/to/portable-map4
+  /absolute/path/to/portable-map4 \
+  /absolute/path/to/portable-map5
 ```
 
-Because map 4 is `VALID_NOT_MET`, this current-state invocation must exit
+Because map 5 is `VALID_NOT_MET`, this current-state invocation must exit
 nonzero at final-map acceptance.  Do not supply an observables directory
 until the first frozen `VALID_MET` map exists.
 
