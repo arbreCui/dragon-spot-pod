@@ -14,6 +14,14 @@ The active method is deliberately small:
 - no fitted closure, relaxation, damping, clipping, flux floor, CMFD
   correction, or empirical coupling coefficient.
 
+The current delivery target is the corrected D4-A component validation:
+the first accepted fixed point, an independent CE comparison, and a
+clean-checkout replay using the sealed runtime inputs. The reported floor
+power fractions are normalized nu-fission production, not absolute thermal
+power. Multi-assembly coupling and an IRENA full-core validation remain
+subsequent milestones. The [final-validation handoff](validation/iterative/d4a_final_validation_handoff.md)
+records the ordered inputs and existing commands to use after convergence.
+
 ## Fast current-code gate
 
 Build the current source and run the transport-free contract and algebra
