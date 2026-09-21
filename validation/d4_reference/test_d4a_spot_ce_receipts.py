@@ -34,6 +34,44 @@ def expect_refusal(module, callback, label: str) -> None:
     raise RuntimeError(f"{label} was not refused")
 
 
+def write_receipt(module, directory: Path, names: tuple[str, ...]) -> None:
+    (directory / "observables.sha256").write_text(
+        "".join(
+            f"{module.sha256(directory / name)}  {name}\n" for name in names
+        )
+    )
+
+
+def make_spot_observables(
+    module, directory: Path, *, trailer: str = "|>0011", abnormal: str = ""
+) -> None:
+    directory.mkdir()
+    for name in (
+        "closed_axial.xsm",
+        "initial_axial_track.xsm",
+        "initial_axial_macrolib.xsm",
+    ):
+        (directory / name).write_text(f"synthetic {name}\n")
+    (directory / "observables.x2m").write_text("synthetic deck\n")
+    (directory / "observables.log").write_text(
+        f">|D4A-CORRECTED-K-EFFECTIVE 1.2 {trailer}\n"
+        "SPORATE NU-FISSION-FRACTIONS 0.3 0.4 0.3\n"
+        "normal end of execution for dragon\n"
+        f"{abnormal}"
+    )
+    write_receipt(
+        module,
+        directory,
+        (
+            "closed_axial.xsm",
+            "initial_axial_track.xsm",
+            "initial_axial_macrolib.xsm",
+            "observables.x2m",
+            "observables.log",
+        ),
+    )
+
+
 def pin_rows():
     rows = []
     for floor in range(1, 4):
@@ -103,7 +141,7 @@ def test_fake_inputs(module, root: Path) -> None:
         (observables / name).write_text(f"synthetic {name}\n")
     (observables / "observables.x2m").write_text("synthetic deck\n")
     (observables / "observables.log").write_text(
-        ">|D4A-CORRECTED-K-EFFECTIVE 1.2\n"
+        ">|D4A-CORRECTED-K-EFFECTIVE 1.2 |>0011\n"
         "SPORATE NU-FISSION-FRACTIONS 0.3 0.4 0.3\n"
         "normal end of execution for dragon\n"
     )
@@ -119,6 +157,30 @@ def test_fake_inputs(module, root: Path) -> None:
         module,
         lambda: module.read_statepoint_result(fake_statepoint, pin_rows()),
         "text-only OpenMC statepoint",
+    )
+
+
+def test_spot_observables_receipt(module, root: Path) -> None:
+    good = root / "good-spot-observables"
+    make_spot_observables(module, good)
+    k_effective, power = module.read_spot(good)
+    if k_effective != 1.2 or power != [0.3, 0.4, 0.3]:
+        raise RuntimeError("canonical SPOT observables were parsed incorrectly")
+
+    wrong_trailer = root / "wrong-trailer-spot-observables"
+    make_spot_observables(module, wrong_trailer, trailer="|>0012")
+    expect_refusal(
+        module,
+        lambda: module.read_spot(wrong_trailer),
+        "re-sealed SPOT k record with wrong ECHO trailer",
+    )
+
+    abnormal = root / "abnormal-spot-observables"
+    make_spot_observables(module, abnormal, abnormal="SIGSEGV\n")
+    expect_refusal(
+        module,
+        lambda: module.read_spot(abnormal),
+        "re-sealed SPOT observables with abnormal signal",
     )
 
 
@@ -286,13 +348,14 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="d4a_receipt_checker_") as temp:
         root = Path(temp)
         test_fake_inputs(module, root)
+        test_spot_observables_receipt(module, root)
         test_runtime_provenance(module, root)
     test_statepoint_contract(module)
     print(
         "D4A SPOT-CE SYNTHETIC PASS: exact 651-bin reconstruction accepted; "
         "one-ULP JSON mismatch, provenance relocation/hash mismatch, "
         "statepoint metadata mismatch, duplicate mapping, text XSM lineage, "
-        "and text statepoint refused"
+        "wrong SPOT ECHO trailer, abnormal signal, and text statepoint refused"
     )
 
 

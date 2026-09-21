@@ -283,7 +283,7 @@ def read_spot(directory: Path) -> tuple[float, list[float]]:
     except OSError as exc:
         fail(f"cannot read SPOT observables log: {exc}")
     k_matches = re.findall(
-        rf"^>\|D4A-CORRECTED-K-EFFECTIVE\s+({FLOAT})\s*$",
+        rf"^>\|D4A-CORRECTED-K-EFFECTIVE\s+({FLOAT})\s+\|>0011\s*$",
         log,
         re.MULTILINE,
     )
@@ -297,7 +297,8 @@ def read_spot(directory: Path) -> tuple[float, list[float]]:
     if log.count("normal end of execution for dragon") != 1:
         fail("SPOT observables did not end normally")
     if re.search(
-        r"D4A-MAP8|LEGACY|XABORT|ABORT:|FATAL|fortran runtime error",
+        r"D4A-MAP8|LEGACY|XABORT|ABORT:|FATAL|"
+        r"SIG(?:SEGV|FPE|BUS|ILL|ABRT)|fortran runtime error",
         log,
         re.IGNORECASE,
     ):

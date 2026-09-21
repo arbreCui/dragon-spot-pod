@@ -185,27 +185,67 @@ if these checks pass:
 )
 ```
 
-Stop on `VALID_MET`.  For `VALID_NOT_MET`, a subsequent direct Picard map has
-the previous map directory as its parent and a new, unused output directory:
+Every completed raw map must be frozen before it can be used as a parent:
 
 ```sh
-MAP2=/absolute/path/to/fresh-d4a-map2
+MAP1_PORTABLE=/absolute/path/to/fresh-portable-d4a-map1
+sh validation/iterative/freeze_d4a_corrected_map.sh \
+  "$BOOT" "$MAP1" "$MAP1_PORTABLE"
+(cd "$MAP1_PORTABLE" && shasum -a 256 -c result.sha256)
+```
+
+Stop when the portable copy is labelled `CONVERGED_MAP`.  Only a
+`VALID_NOT_MET` copy labelled `NEXT_MAP_PARENT_ONLY` may feed the next direct
+Picard map.  The raw map directory must never be used as that parent:
+
+```sh
+rg -q '^MAP_CLASSIFICATION=VALID_NOT_MET$' \
+  "$MAP1_PORTABLE/portable_classification.txt"
+rg -q '^PORTABLE_ROLE=NEXT_MAP_PARENT_ONLY$' \
+  "$MAP1_PORTABLE/portable_classification.txt"
+MAP2_RAW=/absolute/path/to/fresh-d4a-map2-raw
 RADIAL_TIMEOUT_SECONDS="$RADIAL_LIMIT_SECONDS" \
 AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
-  sh validation/iterative/run_d4a_rank2_picard_map.sh "$MAP1" "$MAP2"
+  sh validation/iterative/run_d4a_rank2_picard_map.sh \
+  "$MAP1_PORTABLE" "$MAP2_RAW"
+MAP2_PORTABLE=/absolute/path/to/fresh-portable-d4a-map2
+sh validation/iterative/freeze_d4a_corrected_map.sh \
+  "$BOOT" "$MAP2_RAW" "$MAP2_PORTABLE"
 ```
 
 Do not reuse a failed or partial directory, change the fixed basis, loosen a
 gate, or add a coefficient to force acceptance.
 
-## 6. Extract and independently replay the final observables
+### Recommended serial controller
 
-Only the first `VALID_MET` map is a final state. Extract its eigenvalue and
-globally normalized bottom/middle/top nu-fission production without another
-transport solve:
+The thin serial controller performs exactly the one-map, check, freeze and
+continue sequence above:
 
 ```sh
-FINAL=/absolute/path/to/the-first-valid-met-map
+SERIES_ROOT=/absolute/path/to/fresh-picard-series
+: "${MAX_MAPS:?set a finite operational map bound}"
+RADIAL_TIMEOUT_SECONDS="$RADIAL_LIMIT_SECONDS" \
+AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
+  sh validation/iterative/run_d4a_rank2_picard_series.sh \
+  "$BOOT" "$BOOT" "$SERIES_ROOT" "$MAX_MAPS"
+```
+
+Its four arguments are `corrected-build`, `initial-parent`,
+`fresh-output-root`, and `max-maps`.  The initial parent may be the corrected
+`CLOSED/0` build or a sealed `NEXT_MAP_PARENT_ONLY` portable map.  `max-maps`
+is only a finite execution guard; it does not alter the Picard map, physics,
+rank, or convergence gate.  Exit status 3 means
+`MAX_MAPS_REACHED / NO_CONVERGENCE_CLAIM`.  The controller never retries a
+failed map and stops immediately at the first frozen `VALID_MET` map.
+
+## 6. Extract and independently replay the final observables
+
+Only the first frozen `VALID_MET` portable map is a final state. Extract its
+eigenvalue and globally normalized bottom/middle/top nu-fission production
+without another transport solve:
+
+```sh
+FINAL=/absolute/path/to/the-first-valid-met-portable-map
 OBS=/absolute/path/to/fresh-corrected-observables
 TIMEOUT_SECONDS=10 \
   sh validation/iterative/run_d4a_corrected_final_observables.sh \
@@ -218,13 +258,26 @@ epoch order; the example below has three maps:
 ```sh
 D4A_OBSERVABLES_DIR="$OBS" \
   sh validation/iterative/check_d4a_corrected_acceptance.sh \
-  "$BOOT" "$MAP1" "$MAP2" "$FINAL"
+  "$BOOT" "$MAP1_PORTABLE" "$MAP2_PORTABLE" "$FINAL"
 ```
 
 Acceptance reruns the canonical read-only `GREP + SPORATE` extraction from
 the sealed XSM state with the corrected-build Dragon identity. The saved and
 replayed `k` and floor-power records must be byte-identical; a self-hashed
 edited log is not evidence.
+
+After that acceptance passes, export the sealed machine-readable result and
+verify its receipt:
+
+```sh
+RESULT=/absolute/path/to/fresh-corrected-result
+python3 validation/iterative/export_d4a_corrected_result.py \
+  "$FINAL" "$OBS" "$RESULT"
+(cd "$RESULT" && shasum -a 256 -c export_result.sha256)
+```
+
+`export_result.sha256` seals `result.json` and `power.csv`.  The exporter is
+read-only and refuses a map that is not the frozen `VALID_MET/CONVERGED_MAP`.
 
 ## 7. Freeze a completed map for transfer
 
@@ -261,6 +314,23 @@ also requires the canonical, unique termination records in `prepare.log`,
 `VALID_NOT_MET` map is labelled `NEXT_MAP_PARENT_ONLY` and is not evidence of
 final convergence; it may only feed the next unchanged Picard map.  Only a
 `VALID_MET` map is labelled `CONVERGED_MAP`.
+
+After the complete ordered lineage has already ended with
+`D4A-CORRECTED-ACCEPT OVERALL PASS` and that first `VALID_MET` map has been
+frozen as `CONVERGED_MAP`, its existing values may be formatted for downstream
+tools without another solve:
+
+```sh
+FINAL_PORTABLE=/absolute/path/to/frozen-first-valid-met-map
+RESULT_EXPORT=/absolute/path/to/fresh-result-export
+python3 validation/iterative/export_d4a_corrected_result.py \
+  "$FINAL_PORTABLE" "$OBS" "$RESULT_EXPORT"
+(cd "$RESULT_EXPORT" && shasum -a 256 -c export_result.sha256)
+```
+
+This exporter only formats and seals the already accepted map and observables
+receipts as `result.json` and `power.csv`. It does not run transport and does
+not replace `check_d4a_corrected_acceptance.sh`.
 
 ## 8. Run the matching independent CE production
 
@@ -307,12 +377,15 @@ At minimum, the clean-checkout revision must contain:
 - the one-map route: `data/SpotStepR64.c2m`,
   `d4a_rank2_picard_radial.x2m`, `d4a_rank2_picard_axial.x2m`,
   `d4a_rank2_checker_parent.x2m`, `run_d4a_rank2_picard_map.sh`,
-  `resume_d4a_rank2_picard_after_radial.sh`, and the `prepare`, `admit`,
-  `close`, one-map, and convergence checker sources;
+  `run_d4a_rank2_picard_series.sh`, `freeze_d4a_corrected_map.sh`,
+  `test_d4a_picard_series.py`, `resume_d4a_rank2_picard_after_radial.sh`, and
+  the `prepare`, `admit`, `close`, one-map, and convergence checker sources;
 - the final-result route: `d4a_corrected_final_observables.x2m`,
   `run_d4a_corrected_final_observables.sh`,
   `verify_d4a_corrected_observables.sh`,
-  `test_d4a_corrected_observables_replay.sh`, and
+  `test_d4a_corrected_observables_replay.sh`,
+  `export_d4a_corrected_result.py`,
+  `test_export_d4a_corrected_result.py`, and
   `check_d4a_corrected_acceptance.sh`, plus the runtime release checker
   `check_d4a_closed0_release.sh`;
 - the independent CE route under `validation/d4_reference/`;

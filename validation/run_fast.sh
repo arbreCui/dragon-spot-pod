@@ -13,7 +13,13 @@ PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_nonlinear_solver_contract.py"
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
   python3 "$ROOT/validation/iterative/test_bounded_dragon.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_d4a_picard_series.py"
 sh "$ROOT/validation/iterative/test_d4a_corrected_observables_replay.sh"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_export_d4a_corrected_result.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/d4_reference/test_d4a_spot_ce_receipts.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/check_source_identity.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
