@@ -141,8 +141,29 @@ rates and expands them to 651 pin/floor records without renormalization.
 The corrected map-8 diagnostic reproduces the existing SPORATE floor output
 and passes the static/short synthetic checks. It is not a converged result:
 see [the diagnostic result and minimal commands](d4a_pin_diagnostic_result.md).
-Nu-fission rates are not absolute thermal power. Final-state extraction and
-a matching pinwise CE comparison remain to be completed.
+Nu-fission rates are not absolute thermal power. The saved-state tools also
+reproduced all eight diagnostic outputs byte-for-byte from a clean-source
+build of their actual dependency closure (Ganlib plus SPORATE, not a full
+Dragon product build).
+
+The read-only pin comparator is ready, with 14 synthetic tests passed:
+
+```sh
+python3 validation/d4_reference/compare_d4a_pin_rates.py \
+  /absolute/path/to/pin_rates.csv \
+  /absolute/path/to/reference_result.json \
+  /absolute/path/to/new-pin-comparison-directory
+python3 validation/d4_reference/test_compare_d4a_pin_rates.py
+```
+
+It joins all 651 records by `(floor,pin_index)` and reports absolute global
+fraction differences, their maximum location and RMS without renormalizing.
+Outputs are `DIAGNOSTIC_ONLY / REPORTED_ONLY`: the tool does not authenticate
+receipts, establish convergence, or apply a pin-accuracy criterion. Raw CE
+tally standard deviations do not supply normalized-fraction uncertainty,
+because the common denominator introduces covariance. No fraction sigma or
+sigma-based pin verdict is invented. Final-state extraction and a comparison
+against an actual accepted CE production result remain to be completed.
 
 Once both production receipts exist, perform the sealed, read-only comparison
 with the full corrected SPOT lineage and an explicit local location for the

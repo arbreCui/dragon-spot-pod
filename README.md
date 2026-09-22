@@ -75,8 +75,13 @@ axial-seed/three-radial-response chain has passed the strict B2I seal as
 radial and reduced axial halves and passed the independent bitwise audit.
 Map 8 advances the chain to `CLOSED/8` and remains `VALID_NOT_MET`, with
 `R_rho=1.0492739930256789E-06`, `R_L=3.1031397842917180E-06`, and
-`R_a=1.3106218716376795E-05`.  The following map 9 was interrupted and is not
-an accepted result. There is still no corrected-material fixed
+`R_a=1.3106218716376795E-05`.  The first map-9 attempt was interrupted and is
+not an accepted result. On 2026-09-23 a fresh continuation was stopped early
+after its implicit build changed the frozen executable identity. The exact
+canonical binary was restored; the runner now checks it without rebuilding.
+No new map completed and no automatic retry was started; see the
+[handoff](validation/iterative/d4a_final_validation_handoff.md).
+There is still no corrected-material fixed
 point, final `k`/power result, or CE comparison.  The frozen evidence is
 recorded in
 [the map-1 result](validation/iterative/d4a_corrected_map1_result.md),

@@ -20,7 +20,11 @@ radial refreshes completed, and the strict B2I seal published `CLOSED/0` with
 both half-steps and passed their independent audits.  Map 8 is `CLOSED/8` and
 `VALID_NOT_MET`, with `R_rho=1.0492739930256789E-06`,
 `R_L=3.1031397842917180E-06`, and `R_a=1.3106218716376795E-05`. The following
-map 9 was interrupted; its partial directory is not a restart parent. No
+map-9 attempt was interrupted; its partial directory is not a restart parent.
+A fresh series from frozen map 8 was stopped early on 2026-09-23 after its
+implicit build changed the frozen executable identity. The original binary
+was restored and runtime builds removed; no map completed or automatic retry
+started. The [handoff](d4a_final_validation_handoff.md) records the incident. No
 corrected-material fixed point, final `k`/power result, or CE comparison may
 yet be claimed.  Frozen evidence is in
 [the map-1 result](d4a_corrected_map1_result.md),

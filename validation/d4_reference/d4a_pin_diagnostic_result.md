@@ -102,7 +102,31 @@ python3 validation/iterative/test_d4a_region_rates.py
 python3 validation/d4_reference/test_expand_d4a_pin_rates.py
 ```
 
+## Independent clean-source replay and comparison readiness
+
+A clean `git archive af24a1d` replay built all Ganlib routines and the sole
+required Dragon library member, SPORATE, from that archive before building
+both optional hosts. No old object, module or static library was reused,
+and no Dragon executable was built. This is the tools' full dependency
+closure, not a full-product rebuild. Build time was 2.703 seconds; each
+extraction/test command was under 2 seconds. All eight outputs listed in the
+diagnostic directory reproduced byte-for-byte, including the three CSV
+hashes above; the source archive's 2016 tracked files remained unchanged.
+The replay is in `/private/tmp/d4a-pin-clean-af24a1d.hb4Z1B`, with
+`build.log` and `replay_verification.log`. Its observation of a changed main
+Dragon hash exposed the independent main-runner build incident recorded in
+[the handoff](../iterative/d4a_final_validation_handoff.md); it neither
+compiled nor executed that binary.
+
+`compare_d4a_pin_rates.py` now joins SPOT and CE by unique `(floor,pin_index)`
+and reports unmodified global-fraction differences. Its 14 synthetic tests
+pass, including shuffled order, zero bins, missing/duplicate IDs and one-ULP
+CE normalization inconsistencies. The tool does not authenticate either
+input's provenance or convergence. CE raw tally standard deviation is not
+converted into fraction uncertainty without the missing covariance.
+
 Remaining science boundary: rerun extraction on the first accepted fixed
-point, then compare matching CE pin observables. The existing CE comparison
-still reports floor differences only; this implementation does not add or
-relax a pin-power accuracy criterion.
+point, then compare matching accepted CE pin observables. No real CE result
+has been used here. The authoritative receipt comparison still reports floor
+differences only; neither diagnostic tool adds or relaxes a pin-power
+accuracy criterion.

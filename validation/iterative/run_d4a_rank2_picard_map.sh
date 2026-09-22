@@ -5,6 +5,9 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT=$(CDPATH= cd -- "$HERE/../.." && pwd)
 TOOLS="$ROOT/validation/iterative"
 DRAGON="$ROOT/bin/Darwin_arm64/Dragon"
+# This corrected route uses the executable already pinned by the CLOSED/0
+# release checker. Building belongs to setup, never to a frozen map run.
+EXPECTED_DRAGON_SHA=2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db
 : "${RADIAL_TIMEOUT_SECONDS:?set an explicit bounded wall time for the radial half-step}"
 : "${AXIAL_TIMEOUT_SECONDS:?set an explicit bounded wall time for the axial half-step}"
 
@@ -19,9 +22,6 @@ if [ -e "$WORK" ]; then
   echo "output directory must be fresh: $WORK" >&2
   exit 2
 fi
-mkdir -p "$WORK"
-WORK=$(CDPATH= cd -- "$WORK" && pwd)
-
 for name in closed_axial.xsm closed_snapshots.xsm \
   initial_radial_track.bin initial_axial_track.xsm \
   initial_axial_macrolib.xsm basis_reference.xsm route_contract.xsm
@@ -32,8 +32,25 @@ do
   fi
 done
 
-make -C "$ROOT/src" -j2 >/dev/null
-make -C "$TOOLS" -j2 >/dev/null
+if [ ! -f "$DRAGON" ] || [ -L "$DRAGON" ] || [ ! -x "$DRAGON" ]; then
+  echo "missing regular executable canonical Dragon" >&2
+  exit 2
+fi
+if [ "$(shasum -a 256 "$DRAGON" | awk '{print $1}')" != "$EXPECTED_DRAGON_SHA" ]; then
+  echo "canonical Dragon content hash differs; no map started" >&2
+  exit 2
+fi
+for name in prepare_r64_next_projected admit_candidate_radial \
+  close_r64_returned check_one_map_xsm check_convergence_gate
+do
+  if [ ! -f "$TOOLS/$name" ] || [ -L "$TOOLS/$name" ] || [ ! -x "$TOOLS/$name" ]; then
+    echo "missing regular executable host tool: $name; build during setup" >&2
+    exit 2
+  fi
+done
+
+mkdir -p "$WORK"
+WORK=$(CDPATH= cd -- "$WORK" && pwd)
 
 ln -s "$PARENT/closed_axial.xsm" "$WORK/parent_axial_closed.xsm"
 ln -s "$PARENT/closed_snapshots.xsm" "$WORK/parent_snapshots_closed.xsm"
