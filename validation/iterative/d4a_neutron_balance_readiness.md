@@ -133,8 +133,10 @@ in the fixed rank-2 basis. It is not obtained from q/u. Its saved index is
 `src/SPOT_LEAKAGE.f90:75` calculates floor leakage as
 `sum_i AREA_i*(Jright-Jleft) / sum_i AREA_i*height*phi`.
 
-Thus a short follow-up can audit actual axial current telescoping, vacuum-end
-outflow, and propagation into the saved leakage coefficient. It can also check
+The subsequent [saved axial-current audit](d4a_axial_current_result.md) checks
+current telescoping, vacuum-end outflow, and the saved leakage coefficient:
+all 1110 REAL64 coefficients reproduce bit for bit, without clipping signed
+layer inflow. A separate check could examine
 the projected axial discrete equation, but that operator contains radial
 coefficients inferred from the previous radial balance. It cannot by itself
 validate the full 3D local balance, missing radial interface currents, the POD
@@ -143,7 +145,8 @@ face-angle arrays are transient; a left-boundary angular block is retained
 at `LL4+LL5+1` (`src/SPOF64.f:180`),
 which does not replace complete angle-resolved currents at every interface.
 
-**Disposition:** field readiness and limitations established for map 8; no
-numerical neutron-balance result, no new tolerance, no convergence or acceptance
-decision. A later approved audit should report the four terms separately and
-retain the dependence/BC distinctions above.
+**Disposition:** field readiness and limitations established for map 8.
+The later [radial budget](d4a_radial_balance_result.md) and
+[axial current](d4a_axial_current_result.md) diagnostics provide numerical
+archive/operator consistency results, retaining the dependence/BC distinctions
+above. Neither introduces a tolerance or changes convergence/accuracy acceptance.

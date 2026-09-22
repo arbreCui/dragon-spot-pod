@@ -106,6 +106,10 @@ The subsequent [saved radial-balance diagnostic](validation/iterative/d4a_radial
 reports all 1110 plane/group budgets, with maximum normalized residual
 `9.47e-16`; this is consistency of the already rebalanced discrete fields,
 not a new convergence or physical-accuracy PASS.
+The [saved axial-current check](validation/iterative/d4a_axial_current_result.md)
+also reproduces all 1110 returned REAL64 leakage coefficients bit for bit;
+end currents point outward and internal-face cancellation is at roundoff.
+This verifies feedback consistency, not fixed-point convergence or 3D accuracy.
 
 The separately authorized early CE production finished in 111.22 seconds.
 Its CE-only replay now passes after an approved, exact-build compatibility
