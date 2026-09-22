@@ -122,7 +122,11 @@ reference, whereas its latest rho increment is about `0.105 pcm`.
 This is not a final comparison or an error bound. The three 50-cm diamond
 axial cells have no demonstrated mesh-convergence result; that is the first
 isolated sensitivity check to prepare, without tuning to CE or changing the
-running case. See [the active risk assessment](validation/iterative/d4a_final_validation_handoff.md).
+running case. An isolated short probe reproduced the 3-cell k with an unchanged
+radial package; the 6-cell solve reached its 30-second cap and was not retried,
+so no mesh-sensitivity result is available yet. See
+[the probe record](validation/iterative/d4a_axial_mesh_probe_result.md) and
+[the active risk assessment](validation/iterative/d4a_final_validation_handoff.md).
 
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the

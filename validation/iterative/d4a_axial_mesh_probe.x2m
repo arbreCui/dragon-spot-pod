@@ -1,0 +1,36 @@
+****************************************************************
+* Isolated frozen-radial axial mesh sensitivity, NOT a Picard map.
+* @NFLOOR@, @MESH@, @MIX@ are expanded by the bounded probe runner.
+****************************************************************
+XSM_FILE SNAP :: FILE './radial.xsm' ;
+XSM_FILE BASIS :: FILE './basis.xsm' ;
+XSM_FILE MAC :: FILE './macro.xsm' ;
+XSM_FILE SYS_OUT :: FILE './system.xsm' ;
+XSM_FILE TRK_OUT :: FILE './track.xsm' ;
+XSM_FILE AX_OUT :: FILE './axial.xsm' ;
+LINKED_LIST GEOM TRK SYS AX ;
+MODULE GEO: SPOT: ASM: FLU: SPOGBAL: SPOSTATE: SPORATE: GREP: END: ;
+DOUBLE keff ;
+REAL solver_eps := 2.0E-6 ;
+GEOM := GEO: :: CAR1D @NFLOOR@
+  X- VOID X+ VOID
+  MESHX @MESH@
+  MIX @MIX@ ;
+TRK := SPOT: GEOM SNAP ::
+  EDIT 1 MAXR 2500 TITL 'D4-A isolated axial mesh probe'
+  ALLG DIAM 0 SN 8 SCAT 3 ;
+SYS := ASM: MAC TRK SNAP BASIS :: EDIT 1 SPOD 2 FIXB ;
+AX := FLU: MAC TRK SYS ::
+  EDIT -3 TYPE K EXTE 500 <<solver_eps>> REBA OFF ACCE 3 3
+  UNKT <<solver_eps>> THER <<solver_eps>> ;
+AX := SPOGBAL: AX TRK SYS MAC :: ;
+AX := SPOSTATE: AX TRK SYS MAC :: ;
+GREP: AX :: GETVAL 'SPOT-X-KEFF' 1 >>keff<< ;
+ECHO "D4A-AXIAL-MESH-K" keff ;
+SPORATE: AX TRK MAC ;
+SYS_OUT := SYS ;
+TRK_OUT := TRK ;
+AX_OUT := AX ;
+ECHO "D4A-AXIAL-MESH-DIAGNOSTIC-COMPLETE" ;
+END: ;
+QUIT "LIST" .
