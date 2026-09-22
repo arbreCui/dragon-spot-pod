@@ -95,6 +95,14 @@ recorded in
 [the map-7 result](validation/iterative/d4a_corrected_map7_result.md), and
 [the corrected map-8 result](validation/iterative/d4a_corrected_map8_result.md).
 
+Read-only analysis of the actual online radial fields in corrected maps 6–8
+finds about 0.0312% outside the fixed rank-two space in the declared weighted
+flux norm. This is not an eigenvalue-error bound or rank-accuracy acceptance;
+see [the radial-shape diagnostic](validation/iterative/d4a_radial_offspace_result.md).
+The [neutron-balance field review](validation/iterative/d4a_neutron_balance_readiness.md)
+records what can be checked from map 8, and why neither a reflected-boundary
+identity nor the solver's own rebalance is an independent accuracy result.
+
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the
 [corrected D4-A quickstart](validation/iterative/D4A_CORRECTED_QUICKSTART.md).
