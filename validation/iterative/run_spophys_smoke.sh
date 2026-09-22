@@ -48,3 +48,19 @@ rg -F -x \
 rg -F -x \
   'SPOPHYS BEHAVIOR PASS: full physical fixed basis and metadata.' \
   "$BUILD_DIR/test_spophys.log" >/dev/null
+rg -F -x 'SPOASM FIXB AXIAL-EXTENT REUSE PASS: 7' \
+  "$BUILD_DIR/test_spophys.log" >/dev/null
+rg -F -x 'SPOASM FIXB AXIAL-EXTENT REUSE PASS: 14' \
+  "$BUILD_DIR/test_spophys.log" >/dev/null
+for mode in bad-old-extent bad-group-count bad-radial-volume; do
+  if (cd "$BUILD_DIR" && ./test_spophys "$mode" > "$mode.log" 2>&1); then
+    printf '%s\n' "SPOASM FIXB NEGATIVE FAIL: $mode was accepted" >&2
+    exit 1
+  fi
+  case "$mode" in
+    bad-radial-volume) expected='SPOASM: FIXED-BASIS VOLUME MISMATCH.' ;;
+    *) expected='SPOASM: FIXED-BASIS SYSTEM DIMENSION MISMATCH.' ;;
+  esac
+  rg -F "$expected" "$BUILD_DIR/$mode.log" >/dev/null
+  printf '%s\n' "SPOASM FIXB EXPECTED REJECTION: $mode"
+done

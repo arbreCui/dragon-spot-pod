@@ -22,6 +22,7 @@ program test_spophys
   real(real64) :: relative_error,weight64(nreg)
   character(len=12) :: signature,basis_type
   character(len=12) :: hentry(2)
+  character(len=32) :: negative_case
   type(c_ptr) :: input,output,groups,group,kentry(2)
 
   call LCMOP(input,'SPOPHYS-IN',0,1,0)
@@ -210,16 +211,36 @@ program test_spophys
 
   call LCMGTC(input,'SPOT-BTYPE',12,basis_type)
   call assert_true(basis_type == 'POD-BUILT','READ-ONLY INPUT UNCHANGED')
-  call exercise_spoasm_round_trip(output)
+  call get_command_argument(1,negative_case)
+  select case(trim(negative_case))
+  case('bad-old-extent','bad-group-count')
+    call LCMGET(output,'STATE-VECTOR',state_found)
+    if(negative_case == 'bad-old-extent') state_found(9)=0
+    if(negative_case == 'bad-group-count') state_found(8)=ngrp+1
+    call LCMPUT(output,'STATE-VECTOR',nstate,1,state_found)
+  case('bad-radial-volume')
+    groups=LCMGID(output,'GROUP')
+    group=LCMGIL(groups,1)
+    call LCMGET(group,'VOL2D',volume)
+    volume(1)=volume(1)*2.0_real32
+    call LCMPUT(group,'VOL2D',nreg,2,volume)
+  case('')
+    continue
+  case default
+    error stop 'UNKNOWN NEGATIVE TEST CASE'
+  end select
+  call exercise_spoasm_round_trip(output,7)
+  call exercise_spoasm_round_trip(output,14)
   call LCMCL(output,2)
   call LCMCL(input,2)
   write(*,'(A)') 'SPOPHYS BEHAVIOR PASS: full physical fixed basis and metadata.'
 
 contains
 
-  subroutine exercise_spoasm_round_trip(physical_basis)
+  subroutine exercise_spoasm_round_trip(physical_basis,axial_nunk)
     integer, parameter :: nunk=7,nmix2d=1,nfis=1,nanis=1
     type(c_ptr), intent(in) :: physical_basis
+    integer, intent(in) :: axial_nunk
     type(c_ptr) :: tracking,macrolib,snapshots,assembled
     type(c_ptr) :: tracks,fluxes,systems,libraries
     type(c_ptr) :: track_item,flux_item,system_item,library_item
@@ -229,7 +250,8 @@ contains
     type(c_ptr) :: system_groups,system_group
     type(c_ptr) :: physical_groups,physical_group,assembled_groups
     type(c_ptr) :: assembled_group
-    integer :: local_state(nstate),keyflx(nreg),matcod(nreg)
+    integer :: local_state(nstate),basis_state_before(nstate)
+    integer :: basis_state_after(nstate),keyflx(nreg),matcod(nreg)
     integer :: rank_old_ref(ngrp),rank_old_new(ngrp)
     integer :: rank_ref(ngrp),rank_new(ngrp),marker,nmode_new,nsnap_new
     integer :: isnap,jgrp
@@ -247,6 +269,7 @@ contains
     real(real64) :: root_phys_ref(4),root_phys_new(4)
     character(len=12) :: text12
 
+    call LCMGET(physical_basis,'STATE-VECTOR',basis_state_before)
     call LCMOP(tracking,'SPOASM-TRK',0,1,0)
     call LCMOP(macrolib,'SPOASM-MAC',0,1,0)
     call LCMOP(snapshots,'SPOASM-SNP',0,1,0)
@@ -259,7 +282,9 @@ contains
     call LCMPTC(tracking,'SIGNATURE',12,text12)
     local_state=0
     local_state(1)=nreg
-    local_state(2)=nunk
+    ! Only the target axial storage changes. Radial snapshot vectors and the
+    ! immutable radial basis keep their original extents and numerical data.
+    local_state(2)=axial_nunk
     local_state(4)=nmix2d*nsnap
     local_state(6)=nreg
     local_state(16)=1
@@ -365,6 +390,9 @@ contains
     text12='L_PIJ'
     call LCMPTC(assembled,'SIGNATURE',12,text12)
     call SPOASM(assembled,macrolib,tracking,snapshots,physical_basis,1,0,nreg)
+    call LCMGET(assembled,'STATE-VECTOR',local_state)
+    call assert_true(local_state(9) == axial_nunk, &
+      'SPOASM TARGET AXIAL STORAGE EXTENT')
 
     call require_record(assembled,'SIGNATURE',3,3, &
       'SPOASM ROUND-TRIP SIGNATURE')
@@ -466,12 +494,16 @@ contains
     call LCMGTC(physical_basis,'SPOT-BTYPE',12,text12)
     call assert_true(text12 == 'POD-FIXED', &
       'SPOASM ROUND-TRIP READ-ONLY BASIS')
+    call LCMGET(physical_basis,'STATE-VECTOR',basis_state_after)
+    call assert_true(all(basis_state_before == basis_state_after), &
+      'SPOASM BASIS HEADER UNCHANGED')
     call LCMCL(assembled,2)
     call LCMCL(snapshots,2)
     call LCMCL(macrolib,2)
     call LCMCL(tracking,2)
     write(*,'(A)') &
       'SPOPHYS SPOASM ROUND-TRIP PASS: full rank 3 exceeds 2 snapshots.'
+    write(*,'(A,I0)') 'SPOASM FIXB AXIAL-EXTENT REUSE PASS: ',axial_nunk
   end subroutine exercise_spoasm_round_trip
 
   subroutine require_record(root,name,expected_length,expected_type,label)

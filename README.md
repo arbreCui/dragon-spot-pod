@@ -116,6 +116,13 @@ Its CE-only replay now passes after an approved, exact-build compatibility
 fix for absent statepoint Git metadata: `k_CE=1.3030848883933903`, uncertainty
 `19.5504 pcm`. No transport retry occurred. This is not yet a SPOT--CE
 comparison PASS; see [the CE result and replay record](validation/d4_reference/d4a_ce_production_result_20260923.md).
+There is an important provisional accuracy risk: map 8's nonconverged
+`k=1.2721230284653975` is about `-1867.78 pcm` in reactivity relative to that
+reference, whereas its latest rho increment is about `0.105 pcm`.
+This is not a final comparison or an error bound. The three 50-cm diamond
+axial cells have no demonstrated mesh-convergence result; that is the first
+isolated sensitivity check to prepare, without tuning to CE or changing the
+running case. See [the active risk assessment](validation/iterative/d4a_final_validation_handoff.md).
 
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the
