@@ -1,8 +1,8 @@
 program export_d4a_region_rates
   ! Read-only diagnostic: no transport and no convergence/acceptance decision.
   ! Input FLUX is deliberately the REAL32 mirror used by SPORATE, not FLUX64.
-  ! Only SPORATE is called from the existing Dragon library, for a direct
-  ! printout comparison; all archive access is through GANLIB read-only XSM.
+  ! Only the existing SPORATE routine is linked for a direct printout
+  ! comparison; all archive access is through GANLIB read-only XSM.
   use GANLIB
   use, intrinsic :: iso_c_binding, only : c_ptr
   use, intrinsic :: iso_fortran_env, only : int64,real32,real64,error_unit

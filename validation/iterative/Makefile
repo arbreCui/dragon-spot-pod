@@ -1,6 +1,6 @@
 # Host tools for the SPOR64 iterative route.
 #
-# These host programs link the current Dragon/Ganlib libraries, so any
+# The lifecycle host programs link the current Dragon/Ganlib libraries, so any
 # change under ../../src leaves them stale.  A stale tool does not produce
 # a wrong answer -- the lifecycle boundaries are fail-closed and it will
 # hard-reject the archive instead -- but it costs a run to find out.
@@ -10,6 +10,8 @@
 # contraction and has been observed to shift recomputed defects by 1 ULP,
 # which breaks the bitwise receipts, so these tools are always -O0 with
 # -ffp-contract=off.
+# The optional pin-tools are separate: Ganlib plus the read-only SPORATE
+# source only, with no dependency on a Dragon solver build.
 
 ARCH    := $(shell uname -s)_$(shell uname -m)
 ROOT    := ../..
@@ -39,11 +41,17 @@ b2c-runtime-dimensions:
 a89-runtime-dimensions:
 	sh run_a89_runtime_geometry.sh
 
-$(TOOLS) export_d4a_region_rates: %: %.f90 $(DRAGON)/libDragon.a
+$(TOOLS): %: %.f90 $(DRAGON)/libDragon.a
 	$(FC) $(FFLAGS) $(INCLUDE) $< $(LIBS) -o $@
 
+# Optional read-only pin tools need no Dragon solver or full-product build.
+# SPORATE keeps the CLE module signature, including the unused hentry dummy.
+export_d4a_region_rates: export_d4a_region_rates.f90 $(ROOT)/src/SPORATE.f90 $(GANLIB)/libGanlib.a
+	$(FC) $(FFLAGS) -Wno-unused-dummy-argument -I $(GANLIB)/modules $< $(ROOT)/src/SPORATE.f90 \
+	$(GANLIB)/libGanlib.a -lstdc++ -o $@
+
 export_d4a_pin_geometry: export_d4a_pin_geometry.f90 $(GANLIB)/libGanlib.a
-	$(FC) $(FFLAGS) $(INCLUDE) $< $(GANLIB)/libGanlib.a -lstdc++ -o $@
+	$(FC) $(FFLAGS) -I $(GANLIB)/modules $< $(GANLIB)/libGanlib.a -lstdc++ -o $@
 
 clean:
 	rm -f $(TOOLS) $(PIN_TOOLS)

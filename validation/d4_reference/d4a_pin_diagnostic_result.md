@@ -58,7 +58,12 @@ The scored quantity is nu-fission production, not absolute thermal power.
 
 ## Reproduce without transport
 
-Build only the optional host tools; this does not rebuild Dragon:
+Build only the optional host tools; this does not rebuild Dragon. In a fresh
+source checkout first build Ganlib alone with
+`make -C Ganlib/src -j2 libGanlib.a`, then run `make -C validation/iterative pin-tools`.
+The pin target now directly links the existing SPORATE source and Ganlib,
+not `libDragon.a`. Use an isolated checkout for this setup while production
+is running; do not rebuild shared production libraries.
 
 ```sh
 set -eu
@@ -118,6 +123,17 @@ Dragon hash exposed the independent main-runner build incident recorded in
 [the handoff](../iterative/d4a_final_validation_handoff.md); it neither
 compiled nor executed that binary.
 
+The minimal dependency closure is now also the ordinary Makefile rule,
+not merely an ad-hoc clean-build exercise. A fresh source export of
+`a54ea87` plus the final Makefile/comment-only changes was tested in
+`/private/tmp/d4a-pin-minimal-build.KwgxPQ`. Only Ganlib was built before
+`make -C validation/iterative pin-tools`; no Dragon executable or Dragon
+library existed in that tree. The integer-reference region test, all 11
+invalid-input cases and overwrite refusal passed. Actual map-8 geometry,
+regional CSV and both host logs reproduced byte-for-byte. The one unused
+dummy-argument warning in SPORATE's unchanged CLE interface is explicitly
+suppressed for this target; numerical checking/arithmetic flags are retained.
+
 `compare_d4a_pin_rates.py` now joins SPOT and CE by unique `(floor,pin_index)`
 and reports unmodified global-fraction differences. Its 14 synthetic tests
 pass, including shuffled order, zero bins, missing/duplicate IDs and one-ULP
@@ -125,8 +141,61 @@ CE normalization inconsistencies. The tool does not authenticate either
 input's provenance or convergence. CE raw tally standard deviation is not
 converted into fraction uncertainty without the missing covariance.
 
+## First real CE pin comparison (still provisional)
+
+After the one authorized CE production completed, its unchanged files were
+again replayed through `read_ce()` in `check_d4a_spot_ce_receipts.py`:
+static inputs, nuclear-data/runtime identity, final statepoint, all 651 bins
+and the existing sigma limit passed. The frozen execution controls were
+checked separately (20,000 particles, 300 batches, 100 inactive, seed 731942,
+18 threads). No transport was launched. The three saved SPOT CSV hashes
+above were rechecked before using the existing comparator; its 14 synthetic
+tests also passed again.
+
+The new directory is
+`validation/artifacts/d4a-map8-ce-pin-comparison-20260923`.
+All 651 records join uniquely by `(floor,pin_index)`, not row position.
+Fractions were used unchanged, with no rescaling, clipping, or fitted factor.
+The reference is the accepted CE-only result under
+`validation/artifacts/d4a-corrected-ce-production-20260923`; SPOT is still
+the explicitly **nonconverged map 8** above.
+
+| temperature zone | SPOT global fraction | CE global fraction | SPOT−CE, percentage points |
+|---|---:|---:|---:|
+| bottom | 0.25976355211228924 | 0.26192486508860197 | −0.21613130 |
+| middle | 0.4841966529486634 | 0.4849344596237941 | −0.07378067 |
+| top | 0.2560397949390463 | 0.2531406752876039 | +0.28991197 |
+
+Maximum absolute global-fraction difference is `2.874340663687469e-5`
+at floor 2, pin index 16 (zero-based); RMS is `1.1166553753187574e-5`.
+For a second descriptive scale, define each relative difference as
+`100*(SPOT_fraction-CE_fraction)/CE_fraction` (all CE bins are positive).
+Its maximum magnitude is `1.8598648093461192%` at floor 3, pin 63;
+its unweighted RMS across all 651 bins is `0.8752204904351076%`.
+These are observed differences, including CE sampling noise, not proven
+deterministic errors, uncertainty-adjusted values or a new accuracy gate.
+Normalized-fraction covariance remains unavailable; no significance claim
+or fraction sigma is inferred from the raw tally standard deviations.
+
+Output SHA-256:
+
+- `pin_comparison.csv`: `1eedf33ed7cbd2138ce90977379ef76ca8c9abf73e3bef3ef2bc5a67de522dab`
+- `comparison_summary.json`: `d8be754bb3d64aed97a68d9e81d8e07a424aefb279ad3bce3cc414abdfb775c5`
+- input CE `reference_result.json`: `d883cc06d8f2a8ca3c60b964ea295115ceb2cf892a32f0be94dd025fc972f154`
+
+The comparator's summary honestly says `source_authentication=NOT_PERFORMED`:
+authentication is supplied by the separate CE replay and manifested SPOT
+extraction described above, not by the arithmetic comparator itself.
+Overall status remains **DIAGNOSTIC_ONLY / REPORTED_ONLY**. This closes the
+real-data postprocessing rehearsal, not convergence or pin-accuracy validation.
+An independent read-only review recomputed every difference using exact
+rational representations before rounding, confirmed max/RMS/floor summaries,
+and matched all integer lattice/ring and cell identities against the CE pin
+map. The maximum absolute difference is on the outermost pin ring (ring 8).
+
 Remaining science boundary: rerun extraction on the first accepted fixed
-point, then compare matching accepted CE pin observables. No real CE result
-has been used here. The authoritative receipt comparison still reports floor
-differences only; neither diagnostic tool adds or relaxes a pin-power
-accuracy criterion.
+point and compare that state against the same accepted CE observables.
+The authoritative receipt comparison still reports floor differences only;
+neither diagnostic tool adds or relaxes a pin-power accuracy criterion.
+All quantities here are globally normalized nu-fission production, not
+absolute thermal power.

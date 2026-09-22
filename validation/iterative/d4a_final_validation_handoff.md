@@ -112,6 +112,7 @@ OPENMC=/Users/wen/miniforge3/envs/openmc-dev/bin/openmc
 | 3 | 导出 `result.json`、`power.csv` 并验证 `export_result.sha256`；导出器不能替代步骤 2。 |
 | 4 | 使用 2026-09-23 单独获批提前执行的唯一 CE production 产物；不得因 SPOT 收敛而再次启动。若该次失败或超时，停止并请求处置，不自动重试。 |
 | 5 | 独立 CE checker 再验完整 SPOT lineage、CE 静态模型、核数据、运行身份和最终 statepoint；仅成功终止行 `D4A SPOT-CE RECEIPT COMPARISON PASS` 可作为现有比较门槛通过证据。 |
+| 6 | 对同一 FINAL 按现有 [逐针只读提取步骤](../d4_reference/d4a_pin_diagnostic_result.md) 生成 75 个区域率和 651 个针/温区 ν-fission 份额，再用 `compare_d4a_pin_rates.py` 与同一 CE `reference_result.json` 比较并冻结输出。记录 FINAL 清单、原始输入和输出 SHA；不得使用 map-8 诊断代替最终提取。逐针差异仍是 REPORTED_ONLY，不增加精度阈值或宣称热功率验证。 |
 
 ```sh
 # 1：对有序列表中的每个 portable 分别验证（P 为当前实际路径）
@@ -140,7 +141,13 @@ python3 validation/iterative/export_d4a_corrected_result.py "$FINAL" "$OBS" "$RE
 
 CE 冻结协议：每批 20,000 粒子、300 批、100 inactive、200 active、4,000,000 active histories，seed 731942、1 MPI、18 threads、900 秒上限。超时、非零退出、非最终 statepoint、realizations 不符或 `sigma_pcm = 1e5*sigma_k/k_CE² > 50` 都拒收，不拼接结果或根据 SPOT 值挑 seed/样本量。反应性门槛仅为 `1e5*abs(1/k_SPOT - 1/k_CE) <= 500 + 3*sigma_pcm`。
 
-当前 SPOT 导出仅含三层全局归一化 ν-fission 份额，不是逐针功率或绝对热功率。CE checker 重建 651 个 cell/floor/pin 的 ν-fission tally 以验证回执，但只报告三层差异且明确 `status=REPORTED_ONLY`；没有功率形状验收阈值、没有 SPOT 对 CE 的逐针功率通过判定。即使总体比较 PASS，也不得写成“针功率验证通过”。真实逐针功率验证仍需匹配的 SPOT 逐针观测量、全局归一化/映射及预先约定的验收准则，属于另行审定的边界，不在本交接中添加。
+当前主 `result.json/power.csv` 导出仅含三层全局归一化 ν-fission 份额，不是逐针功率或绝对热功率。CE checker 重建 651 个 cell/floor/pin 的 ν-fission tally 以验证回执，但只报告三层差异且明确 `status=REPORTED_ONLY`；没有功率形状验收阈值、没有 SPOT 对 CE 的逐针功率通过判定。即使总体比较 PASS，也不得写成“针功率验证通过”。真实逐针功率验证仍需最终固定点的匹配观测量及预先约定的验收准则；步骤 6 只交付既有全局归一化/映射下的差异报告，不增设判据。
+
+逐针后处理已用真实数据预演：map 8（NOT_MET）的 651 个份额与已重验的 CE
+生产结果全部唯一匹配，最大逐针相对差 1.8599%、RMS 0.8752%；这只是包含
+CE 统计噪声的暂态差异，不能作为最终功率验收。步骤 6 复用已实现的映射、
+导出和比较工具，不增加输运或新模型；主 `result.json/power.csv` 的原有三层
+格式保持不变，逐针文件另存独立目录。
 
 SPOT–CE 的反应性差异是两条计算链的总差异，不能全部归因于 rank-2/SPOD：SPOT 使用多群库、APOL 输运修正与 TONE 自屏蔽，CE 使用连续能量和温度插值；分别封存库身份不等于证明评价及处理链完全等价。源码核对未发现几何、边界、材料公式或三层映射的生产阻断不匹配。新的材料-only 短测试已逐项报告三温度各 59 个材料/核素密度，保留 750 C 旧锚点；最大相对 SPOT 打印值/CE 差异为 `6.02742707e-7`，仅报告差异，不增设容差或声称逐位相等。参见 [material audit](../d4_reference/material_epoch_audit_result.md)。
 

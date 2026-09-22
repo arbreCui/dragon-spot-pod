@@ -127,6 +127,11 @@ radial package; the 6-cell solve reached its 30-second cap and was not retried,
 so no mesh-sensitivity result is available yet. See
 [the probe record](validation/iterative/d4a_axial_mesh_probe_result.md) and
 [the active risk assessment](validation/iterative/d4a_final_validation_handoff.md).
+The read-only pin-rate path has also been exercised against the real CE
+result: all 651 pin/floor fractions align, with a provisional maximum
+relative difference of 1.8599% and relative RMS of 0.8752%. This is map 8,
+not a fixed point, and includes CE sampling noise; it is not a pin-accuracy
+PASS. See [the pin diagnostic](validation/d4_reference/d4a_pin_diagnostic_result.md).
 
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the

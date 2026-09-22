@@ -151,6 +151,9 @@ Nu-fission rates are not absolute thermal power. The saved-state tools also
 reproduced all eight diagnostic outputs byte-for-byte from a clean-source
 build of their actual dependency closure (Ganlib plus SPORATE, not a full
 Dragon product build).
+The ordinary `pin-tools` build now uses that same small dependency closure:
+in a fresh checkout, build `Ganlib/src`'s `libGanlib.a` target, then
+`make -C validation/iterative pin-tools`. No Dragon solver library is needed.
 
 The read-only pin comparator is ready, with 14 synthetic tests passed:
 
@@ -168,8 +171,12 @@ Outputs are `DIAGNOSTIC_ONLY / REPORTED_ONLY`: the tool does not authenticate
 receipts, establish convergence, or apply a pin-accuracy criterion. Raw CE
 tally standard deviations do not supply normalized-fraction uncertainty,
 because the common denominator introduces covariance. No fraction sigma or
-sigma-based pin verdict is invented. Final-state extraction and a comparison
-against an actual accepted CE production result remain to be completed.
+sigma-based pin verdict is invented. The first real-data comparison now
+joins the nonconverged map-8 diagnostic with the accepted CE-only production
+result: maximum relative pin-fraction difference is 1.8599%, and unweighted
+relative RMS is 0.8752%. These differences include CE sampling noise and have
+no accuracy verdict. See [the result](d4a_pin_diagnostic_result.md).
+Extraction/comparison on the first accepted SPOT fixed point remains pending.
 
 Once both production receipts exist, perform the sealed, read-only comparison
 with the full corrected SPOT lineage and an explicit local location for the
