@@ -134,13 +134,15 @@ of 6 pins, and the central pin, totaling 217. SAL preserves region labels
 when unfolding and accumulates expanded volumes by those labels. Do not
 multiply the saved volume or regional rate by another uniform factor of 12.
 
-The remaining concrete gap is a checked crosswalk from radial region through
-the saved SAL `GEOMETRY/IPAR/RPAR/NumMerge` topology to the CE integer lattice
-indices and `pin_index`, including each orbit's multiplicity and area.
-The next step is a Ganlib-only export and conservation check of these stored
-fields, not a new solve or nearest-coordinate matching. No such crosswalk or
-accepted SPOT pin-rate output has yet been produced. Nu-fission rates are
-not absolute thermal power.
+This static crosswalk and conservative rate expansion are now implemented.
+The saved SAL `GEOMETRY/IPAR/RPAR` and `NXTRecords/NumMerge` topology produce
+217 unique CE lattice indices; the rate exporter reads 75 fuel-region/floor
+rates and expands them to 651 pin/floor records without renormalization.
+The corrected map-8 diagnostic reproduces the existing SPORATE floor output
+and passes the static/short synthetic checks. It is not a converged result:
+see [the diagnostic result and minimal commands](d4a_pin_diagnostic_result.md).
+Nu-fission rates are not absolute thermal power. Final-state extraction and
+a matching pinwise CE comparison remain to be completed.
 
 Once both production receipts exist, perform the sealed, read-only comparison
 with the full corrected SPOT lineage and an explicit local location for the

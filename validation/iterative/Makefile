@@ -26,10 +26,12 @@ TOOLS   := admit_candidate_radial b2i_seal_bootstrap close_r64_returned \
            make_route_contract \
            check_convergence_gate check_one_map_xsm \
            prepare_r64_aa1_projected prepare_r64_next_projected
+PIN_TOOLS := export_d4a_pin_geometry export_d4a_region_rates
 
-.PHONY: all tools b2c-runtime-dimensions a89-runtime-dimensions clean
+.PHONY: all tools pin-tools b2c-runtime-dimensions a89-runtime-dimensions clean
 all: tools
 tools: $(TOOLS)
+pin-tools: $(PIN_TOOLS)
 
 b2c-runtime-dimensions:
 	sh run_b2c_runtime_dimensions.sh
@@ -37,8 +39,11 @@ b2c-runtime-dimensions:
 a89-runtime-dimensions:
 	sh run_a89_runtime_geometry.sh
 
-$(TOOLS): %: %.f90 $(DRAGON)/libDragon.a
+$(TOOLS) export_d4a_region_rates: %: %.f90 $(DRAGON)/libDragon.a
 	$(FC) $(FFLAGS) $(INCLUDE) $< $(LIBS) -o $@
 
+export_d4a_pin_geometry: export_d4a_pin_geometry.f90 $(GANLIB)/libGanlib.a
+	$(FC) $(FFLAGS) $(INCLUDE) $< $(GANLIB)/libGanlib.a -lstdc++ -o $@
+
 clean:
-	rm -f $(TOOLS)
+	rm -f $(TOOLS) $(PIN_TOOLS)

@@ -116,3 +116,5 @@ validation/iterative/prepare_r64_aa1_projected
 validation/iterative/prepare_r64_next_projected
 validation/iterative/b2i_seal_bootstrap
 validation/iterative/make_route_contract
+validation/iterative/export_d4a_pin_geometry
+validation/iterative/export_d4a_region_rates
