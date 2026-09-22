@@ -16,18 +16,21 @@ The admitted rank-two basis SHA-256 is
 Bootstrap is admitted.  The axial seed and all three REAL64 fixed-source
 radial refreshes completed, and the strict B2I seal published `CLOSED/0` with
 `closed_axial.xsm`, `closed_snapshots.xsm`, and
-`d4a_bootstrap_result.sha256`.  Corrected-material maps 1 through 6 completed
-both half-steps and passed their independent audits.  Map 6 is `CLOSED/6` and
-`VALID_NOT_MET`, with `R_rho=3.5088946733763393E-05`,
-`R_L=3.4738182352291766E-05`, and `R_a=1.1538196291776131E-04`.  No
+`d4a_bootstrap_result.sha256`.  Corrected-material maps 1 through 8 completed
+both half-steps and passed their independent audits.  Map 8 is `CLOSED/8` and
+`VALID_NOT_MET`, with `R_rho=1.0492739930256789E-06`,
+`R_L=3.1031397842917180E-06`, and `R_a=1.3106218716376795E-05`. The following
+map 9 was interrupted; its partial directory is not a restart parent. No
 corrected-material fixed point, final `k`/power result, or CE comparison may
 yet be claimed.  Frozen evidence is in
 [the map-1 result](d4a_corrected_map1_result.md),
 [the map-2 result](d4a_corrected_map2_result.md),
 [the map-3 result](d4a_corrected_map3_result.md),
 [the map-4 result](d4a_corrected_map4_result.md),
-[the map-5 result](d4a_corrected_map5_result.md), and
-[the map-6 result](d4a_corrected_map6_result.md).
+[the map-5 result](d4a_corrected_map5_result.md),
+[the map-6 result](d4a_corrected_map6_result.md),
+[the map-7 result](d4a_corrected_map7_result.md), and
+[the corrected map-8 result](d4a_corrected_map8_result.md).
 
 ## 1. Build and run the short gate
 

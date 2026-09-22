@@ -15,22 +15,22 @@ basis and to the immediately preceding corrected `CLOSED/n` pair.
 | three snapshots | `admitted_snapshot_archive.sha256`, snapshot checker log | all hashes verify; `(NSNAP,NGRP,NREG)=(3,370,132)`; Ganlib-only PASS; three strict FLU terminals | **PASS** |
 | fixed rank two | `d4a_rank2_admitted.sha256`, rank checker log | manifest binds the admitted snapshots; `NMODE=2`; stored diagnostics and Ganlib-only checks pass | **PASS** |
 | bootstrap | `d4a_bootstrap_result.sha256`, B2I log | three TYPE-S refreshes; B2I commits the canonical corrected `CLOSED/0`; basis/track/macrolib hashes remain fixed | **PASS**: the existing three TYPE-S responses were admitted without recomputation; B2I committed `CLOSED/0` and the 14-file manifest verifies |
-| Picard maps | ordered map directories, input/output manifests and lifecycle logs | exact `CLOSED/(n-1) -> PROJECTED/n -> RETURNED/n -> CLOSED/n` lineage; hashes chain from corrected `CLOSED/0`; live one-map checker replay matches its receipt | **PASS THROUGH `CLOSED/6`; NOT FINAL**: maps 1 through 6 are frozen and independently checked; map 6 is `NEXT_MAP_PARENT_ONLY` |
-| final residuals | live replay of `check_convergence_gate` on final `closed_axial.xsm` | unchanged AND gate: `Rrho`, `Rleak`, `Ra` all `<=5e-7`; final classification `VALID_MET`; no later map | **FAIL**: map 6 has `(Rrho,Rleak,Ra)=(3.5088946733763393E-05,3.4738182352291766E-05,1.1538196291776131E-04)` and `VALID_NOT_MET` |
+| Picard maps | ordered map directories, input/output manifests and lifecycle logs | exact `CLOSED/(n-1) -> PROJECTED/n -> RETURNED/n -> CLOSED/n` lineage; hashes chain from corrected `CLOSED/0`; live one-map checker replay matches its receipt | **PASS THROUGH `CLOSED/8`; NOT FINAL**: maps 1 through 8 are frozen and independently checked; map 8 is `NEXT_MAP_PARENT_ONLY` |
+| final residuals | live replay of `check_convergence_gate` on final `closed_axial.xsm` | unchanged AND gate: `Rrho`, `Rleak`, `Ra` all `<=5e-7`; final classification `VALID_MET`; no later map | **FAIL**: map 8 has `(Rrho,Rleak,Ra)=(1.0492739930256789E-06,3.1031397842917180E-06,1.3106218716376795E-05)` and `VALID_NOT_MET` |
 | final k and power | sealed read-only observables directory | manifest binds final axial state/track/macrolib; one `D4A-CORRECTED-K-EFFECTIVE`; three normalized bottom/middle/top `SPORATE NU-FISSION-FRACTIONS`; normal Dragon end | **FAIL**: no corrected `VALID_MET` map, final observables, or CE comparison exists |
 
 Overall current classification: **`FAIL-CLOSED`**. The corrected offline
 snapshot/basis construction, coupled bootstrap, and direct maps through
-`CLOSED/6` are accepted.  Map 6 remains `VALID_NOT_MET`, so a corrected
+`CLOSED/8` are accepted.  Map 8 remains `VALID_NOT_MET`, so a corrected
 coupled fixed point and final `k`/power/CE result have not been produced.
 
 The former serial process ended after the complete map-5 raw outputs and
 checks, before portable packaging and its series row.  The existing freezer
 independently replayed and froze that map on 2026-09-22 without a transport
 rerun.  See [the map-5 receipt](d4a_corrected_map5_result.md). The fresh serial
-continuation completed and froze map 6, then started
-`CLOSED/6 -> PROJECTED/7`; an in-flight map does not count toward this matrix.
-See [the map-6 receipt](d4a_corrected_map6_result.md).
+continuation completed and froze maps 6–8, then was interrupted in map 9.
+Its incomplete `map-004.raw` does not count toward this matrix or serve as a
+restart parent. See [the corrected map-8 receipt](d4a_corrected_map8_result.md).
 
 ## Short deterministic check
 
@@ -46,10 +46,12 @@ sh validation/iterative/check_d4a_corrected_acceptance.sh \
   /absolute/path/to/portable-map3 \
   /absolute/path/to/portable-map4 \
   /absolute/path/to/portable-map5 \
-  /absolute/path/to/portable-map6
+  /absolute/path/to/portable-map6 \
+  /absolute/path/to/portable-map7 \
+  /absolute/path/to/portable-map8
 ```
 
-Because map 6 is `VALID_NOT_MET`, this current-state invocation must exit
+Because map 8 is `VALID_NOT_MET`, this current-state invocation must exit
 nonzero at final-map acceptance.  Do not supply an observables directory
 until the first frozen `VALID_MET` map exists.
 

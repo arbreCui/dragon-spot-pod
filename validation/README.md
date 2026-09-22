@@ -23,11 +23,12 @@ bulk-density expansion and obsolete MOX/EM10 bookkeeping in its snapshot
 inputs.  It remains a numerical regression only.  The corrected material
 epoch has since admitted its three physical snapshots, fixed rank-two basis,
 and strict `CLOSED/0` bootstrap, but not a fixed point.  Corrected maps 1
-through 6 completed and passed their independent receipts; map 6 is
+through 8 completed and passed their independent receipts; map 8 is
 `VALID_NOT_MET` with
-`(Rrho,Rleak,Ra)=(3.5088946733763393e-5,3.4738182352291766e-5,`
-`1.1538196291776131e-4)`.  The unchanged serial
-Picard chain must therefore continue to its first `VALID_MET`.  The
+`(Rrho,Rleak,Ra)=(1.0492739930256789e-6,3.1031397842917180e-6,`
+`1.3106218716376795e-5)`. Map 9 was interrupted; the partial output is not
+an accepted map. A later unchanged continuation must start from sealed
+`CLOSED/8` and reach its first `VALID_MET`. The
 recovered direct-3D ladder is a pin-cell calculation and is not a D4-A reference; the exact
 accuracy boundary is recorded in
 [iterative/d4a_map8_accuracy_boundary.md](iterative/d4a_map8_accuracy_boundary.md).

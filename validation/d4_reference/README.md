@@ -20,8 +20,14 @@ The corrected procedures and a no-transport atom-density check are frozen in
 [material_epoch_audit_result.md](material_epoch_audit_result.md).  Run it with
 
 ```sh
-sh validation/d4_reference/run_material_epoch_audit.sh
+OPENMC_PYTHON=/path/to/openmc-python sh validation/d4_reference/run_material_epoch_audit.sh
 ```
+
+The short audit covers all three fuel temperatures and all 59 model
+material/nuclide densities per state. It preserves the 750 C legacy anchors
+and reports SPOT REAL32 printed values against CE binary64 formulas without
+adding a fitted agreement threshold. It needs the existing OpenMC Python
+package for material construction only; it does not launch OpenMC transport.
 
 ## Shortest admissible reference after the rebuild
 
@@ -112,6 +118,29 @@ two eigenvalues in reactivity using the frozen criterion
 
 The CE floor and pin nu-fission tallies remain globally normalized
 observables; they are not fitted to the SPOT result.
+
+### Read-only pin-rate readiness
+
+The final SPOT state already contains reconstructed physical-region flux.
+`SPORATE` integrates `VOLUME * FLUX[KEYFLX] * NUSIGF` before combining regions
+into floors. Retaining the radial-region index can therefore yield regional
+nu-fission rates without a new transport solve. The present accepted output
+uses the REAL32 `FLUX` mirror; a future extractor must state its precision
+explicitly and must not silently change that comparison convention.
+
+Source/topology inspection of the frozen 132-region geometry identifies
+25 fuel symmetry orbits: 12 interior orbits of 12 pins, 12 boundary orbits
+of 6 pins, and the central pin, totaling 217. SAL preserves region labels
+when unfolding and accumulates expanded volumes by those labels. Do not
+multiply the saved volume or regional rate by another uniform factor of 12.
+
+The remaining concrete gap is a checked crosswalk from radial region through
+the saved SAL `GEOMETRY/IPAR/RPAR/NumMerge` topology to the CE integer lattice
+indices and `pin_index`, including each orbit's multiplicity and area.
+The next step is a Ganlib-only export and conservation check of these stored
+fields, not a new solve or nearest-coordinate matching. No such crosswalk or
+accepted SPOT pin-rate output has yet been produced. Nu-fission rates are
+not absolute thermal power.
 
 Once both production receipts exist, perform the sealed, read-only comparison
 with the full corrected SPOT lineage and an explicit local location for the
