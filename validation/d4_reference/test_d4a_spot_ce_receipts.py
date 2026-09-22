@@ -341,6 +341,76 @@ def test_statepoint_contract(module) -> None:
             f"statepoint tally {attribute} mismatch",
         )
 
+    # Missing Git metadata is compatible only with the one audited runtime
+    # and HDF5 format; it never suppresses other statepoint checks.
+    class H5Handle(dict):
+        def __init__(self):
+            super().__init__()
+            self.attrs = {"version": [18, 2]}
+
+    known_runtime = {
+        "schema": "D4A_OPENMC_RUNTIME_PROVENANCE_V1",
+        "executable": copy.deepcopy(module.GITLESS_STATEPOINT_EXECUTABLE),
+        "python_package": {
+            "stable_python_tree_sha256": module.GITLESS_STATEPOINT_PYTHON_TREE,
+        },
+    }
+
+    def known_state():
+        state = valid_state()
+        state.version = (0, 15, 4)
+        state.git_sha1 = None
+        state._f = H5Handle()
+        return state
+
+    module.validate_statepoint_contract(
+        known_state(), valid_tally(), execution, known_runtime
+    )
+    present_sha = known_state()
+    present_sha.git_sha1 = known_runtime["executable"]["git_sha1"]
+    module.validate_statepoint_contract(
+        present_sha, valid_tally(), execution, known_runtime
+    )
+    for field, bad_value in (
+        ("sha256", "0" * 64),
+        ("git_sha1", "0" * 40),
+        ("version_text_sha256", "0" * 64),
+    ):
+        bad_runtime = copy.deepcopy(known_runtime)
+        bad_runtime["executable"][field] = bad_value
+        expect_refusal(module, lambda: module.validate_statepoint_contract(
+            known_state(), valid_tally(), execution, bad_runtime
+        ), f"missing Git with unknown runtime {field}")
+    bad_runtime = copy.deepcopy(known_runtime)
+    bad_runtime["python_package"]["stable_python_tree_sha256"] = "0" * 64
+    expect_refusal(module, lambda: module.validate_statepoint_contract(
+        known_state(), valid_tally(), execution, bad_runtime
+    ), "missing Git with unknown Python reader")
+    for attribute, bad_value in (
+        ("git_sha1", "0" * 40),
+        ("version", (0, 15, 3)),
+        ("current_batch", 99),
+        ("n_realizations", 79),
+        ("energy_mode", "multi-group"),
+    ):
+        state = known_state()
+        setattr(state, attribute, bad_value)
+        expect_refusal(module, lambda: module.validate_statepoint_contract(
+            state, valid_tally(), execution, known_runtime
+        ), f"audited build with wrong {attribute}")
+    for metadata in ([], [18, 1], [19, 2]):
+        state = known_state()
+        state._f.attrs["version"] = metadata
+        expect_refusal(module, lambda: module.validate_statepoint_contract(
+            state, valid_tally(), execution, known_runtime
+        ), "missing Git with unknown HDF5 format")
+    for value in ("0" * 40, ""):
+        state = known_state()
+        state._f.attrs["git_sha1"] = value
+        expect_refusal(module, lambda: module.validate_statepoint_contract(
+            state, valid_tally(), execution, known_runtime
+        ), "API None masking explicit HDF5 Git metadata")
+
 
 def main() -> None:
     module = load_checker()
@@ -354,7 +424,8 @@ def main() -> None:
     print(
         "D4A SPOT-CE SYNTHETIC PASS: exact 651-bin reconstruction accepted; "
         "one-ULP JSON mismatch, provenance relocation/hash mismatch, "
-        "statepoint metadata mismatch, duplicate mapping, text XSM lineage, "
+        "statepoint metadata mismatch, unknown gitless build/format, "
+        "duplicate mapping, text XSM lineage, "
         "wrong SPOT ECHO trailer, abnormal signal, and text statepoint refused"
     )
 

@@ -6,11 +6,12 @@ The converged map-8 state is not an accuracy parent.  It used the legacy
 material procedures and is retained only as a numerical SPOD/Picard
 regression.  The corrected physical epoch has now admitted its three radial
 snapshots, fixed rank-two basis and `CLOSED/0` bootstrap, but it has not yet
-published a corrected fixed point or an accepted independent CE result.
+published a corrected fixed point.
 The separately approved early CE run completed on 2026-09-23 in 111.22 s,
-but its identity audit rejects a missing statepoint Git attribute in this
-OpenMC build. The result is retained, not admitted or rerun; see the
-[production result and failure record](d4a_ce_production_result_20260923.md).
+and its CE-only replay now passes after the specifically approved format
+compatibility correction for the frozen OpenMC build. No transport rerun or
+SPOT--CE comparison has occurred; see the
+[production result and replay record](d4a_ce_production_result_20260923.md).
 
 The direct `MGXEXP` route is also fail-closed for the present D4-A MACROLIB.
 The export is complete and deterministic (`DIM 370 18 3 32`), but the P0
@@ -97,7 +98,8 @@ documented in
 only a fresh output directory, the nuclear-data index and the OpenMC
 executable. It fixes the statistical protocol and 900-second process-group
 wall cap internally, so production users do not invoke the builder's `--run`
-mode directly. No corrected CE production result has yet been accepted.
+mode directly. The single 2026-09-23 production result has passed CE-only
+replay; the full comparison still awaits corrected SPOD convergence.
 
 Before transport starts, the driver resolves the real OpenMC executable and
 seals its resolved path identifier, file SHA-256, exact `--version` text and

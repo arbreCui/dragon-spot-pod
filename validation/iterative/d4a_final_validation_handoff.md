@@ -1,6 +1,6 @@
 # Corrected D4-A：首个 VALID_MET 后最短交接表
 
-2026-09-23 执行顺序修订：用户明确批准将唯一一次 CE production 提前，与既有 Picard 接续并行。只改变先后顺序，保持冻结的模型、20,000 × 300 批、100 inactive、seed 731942、18 threads、900 秒硬上限；失败不自动重试。该次已正常完成（OpenMC 111.22 秒），产物在 `validation/artifacts/d4a-corrected-ce-production-20260923`；但独立身份审计因 statepoint 缺失 Git 属性而拒绝，尚未准入，见 [CE 结果与失败记录](../d4_reference/d4a_ce_production_result_20260923.md)。最终 SPOT–CE 比较仍必须等首个独立验收的 corrected `VALID_MET`、完整 lineage 和 CE 审计通过。已经执行过的 CE production 不得在收敛后再次启动。
+2026-09-23 执行顺序修订：用户明确批准将唯一一次 CE production 提前，与既有 Picard 接续并行。只改变先后顺序，保持冻结的模型、20,000 × 300 批、100 inactive、seed 731942、18 threads、900 秒硬上限；失败不自动重试。该次已正常完成（OpenMC 111.22 秒），产物在 `validation/artifacts/d4a-corrected-ce-production-20260923`。首次审计因 statepoint 缺失 Git 属性而拒绝；用户随后批准限于该封存构建的格式兼容修正，原文件 CE-only 重放现已通过，见 [CE 结果与重放记录](../d4_reference/d4a_ce_production_result_20260923.md)。最终 SPOT–CE 比较仍必须等首个独立验收的 corrected `VALID_MET` 和完整 lineage，并再次复验 CE。已经执行过的 CE production 不得在收敛后再次启动。
 
 最新启动记录（2026-09-23）：用户在修复提交 `70039e3` 后再次批准接续。新 `$CONT` 已通过启动前清单/身份检查，日志确认 `CLOSED/8 -> PROJECTED/9`，径向 Dragon 已启动；启动后两处 canonical SHA 均仍为原值。最多 maps 9–12，单轮径向 32400 秒、轴向 180 秒，首次 MET 即停，任何失败即停且不自动重试。启动不是完成或持续存活证明，接手时须核对实际进程、日志和封存回执；当前已验收结果仍只到 map 8。
 

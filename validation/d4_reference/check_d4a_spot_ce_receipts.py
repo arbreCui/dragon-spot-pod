@@ -42,6 +42,21 @@ REACTIVITY_BASE_LIMIT_PCM = 500.0
 SIGMA_MULTIPLIER = 3.0
 FLOAT = r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[EeDd][+-]?\d+)?"
 
+# The 2026-09-23 production build prints VERSION_COMMIT_HASH but its
+# statepoint writer guards the Git attribute with the undefined GIT_SHA1.
+# User-approved format compatibility, not a general missing-metadata rule.
+# read_ce still replays every runtime hash before inspecting the statepoint.
+GITLESS_STATEPOINT_EXECUTABLE = {
+    "sha256": "10a5d41fd8a1bf8dfed4c2779e3d782803e92c6a919f2a6acf4302878b2001af",
+    "git_sha1": "e542b2f035e397a647cc3ad0ae39946b1ad81e7b",
+    "openmc_version": [0, 15, 4],
+    "version_text_sha256":
+        "86521da0d1d03f1bae4ae7b063aad488c4eab5fa5b9d20d487667f6aea1e2e79",
+}
+GITLESS_STATEPOINT_PYTHON_TREE = (
+    "824e908bb39987d1e01e4cf452f49c7d48592ab3ce0119a0b757269182e3fca9"
+)
+
 
 class ComparisonFailure(RuntimeError):
     """A malformed, unsealed, or physically inadmissible receipt."""
@@ -516,6 +531,31 @@ def _statepoint_git_sha1(state) -> str | None:
     return None
 
 
+def _known_gitless_statepoint(state, runtime: dict) -> bool:
+    """Recognize only the audited runtime and its unmodified 18.2 format."""
+    if runtime.get("schema") != "D4A_OPENMC_RUNTIME_PROVENANCE_V1":
+        return False
+    executable = runtime.get("executable", {})
+    if any(executable.get(key) != value
+           for key, value in GITLESS_STATEPOINT_EXECUTABLE.items()):
+        return False
+    if (runtime.get("python_package", {}).get("stable_python_tree_sha256") !=
+            GITLESS_STATEPOINT_PYTHON_TREE):
+        return False
+    handle = getattr(state, "_f", None)
+    if handle is None:
+        return False
+    try:
+        # An explicit Git field, even empty, is not this known absent-field
+        # format. In particular an API None must not hide a wrong HDF5 SHA.
+        if any(name in handle.attrs or name in handle
+               for name in ("git_sha1", "git_sha")):
+            return False
+        return list(handle.attrs.get("version", [])) == [18, 2]
+    except (AttributeError, TypeError, ValueError):
+        return False
+
+
 def validate_statepoint_contract(state, tally, execution: dict, runtime: dict) -> None:
     executable = runtime.get("executable", {})
     expected_version = executable.get("openmc_version")
@@ -535,7 +575,11 @@ def validate_statepoint_contract(state, tally, execution: dict, runtime: dict) -
         fail("statepoint OpenMC version differs from production executable")
     expected_git = executable.get("git_sha1")
     state_git = _statepoint_git_sha1(state)
-    if state_git != expected_git:
+    if state_git is None:
+        if not _known_gitless_statepoint(state, runtime):
+            fail("statepoint Git SHA is missing outside the audited build/format")
+        print("D4A CE STATEPOINT GIT: ABSENT_IN_AUDITED_BUILD_FORMAT")
+    elif state_git != expected_git:
         fail("statepoint OpenMC git SHA differs from production executable")
     if _statepoint_energy_mode(state) != "continuous-energy":
         fail("statepoint energy_mode is not continuous-energy")

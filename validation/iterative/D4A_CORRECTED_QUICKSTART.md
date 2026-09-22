@@ -393,9 +393,9 @@ not replace `check_d4a_corrected_acceptance.sh`.
 ## 8. Run the matching independent CE production
 
 Current run: the user separately authorized early production on 2026-09-23.
-That single run has completed but is not yet admitted because the existing
-identity check rejects missing statepoint Git metadata; see the
-[result and failure record](../d4_reference/d4a_ce_production_result_20260923.md).
+That single run has completed and passed CE-only replay after the approved
+exact-build compatibility fix for missing statepoint Git metadata; see the
+[result and replay record](../d4_reference/d4a_ce_production_result_20260923.md).
 Do not execute the following launch again for the current continuation.
 Final SPOT--CE comparison still requires the first corrected `VALID_MET`
 and an admitted CE receipt.

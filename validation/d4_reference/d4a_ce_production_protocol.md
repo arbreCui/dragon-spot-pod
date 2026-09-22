@@ -27,10 +27,11 @@ sampling controls, uncertainty gate and wall cap are unchanged. No
 automatic retry is authorized. SPOT--CE comparison still requires the first
 independently accepted corrected `VALID_MET` map and its complete lineage.
 
-That one run has now completed; its identity audit remains rejected because
-this OpenMC build omits the statepoint Git attribute. See the
-[production result and failure record](d4a_ce_production_result_20260923.md).
-Do not launch it again while resolving this metadata issue.
+That one run has completed and passed CE-only replay after a separately
+approved, exact-build format compatibility correction for its absent
+statepoint Git attribute. The original failure remains recorded. See the
+[production result and replay record](d4a_ce_production_result_20260923.md).
+Do not launch it again for the current SPOD continuation.
 
 It is one production run, not a scan:
 the seed, batch counts, result, or stopping point must not be selected using

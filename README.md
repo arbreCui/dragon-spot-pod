@@ -104,9 +104,10 @@ records what can be checked from map 8, and why neither a reflected-boundary
 identity nor the solver's own rebalance is an independent accuracy result.
 
 The separately authorized early CE production finished in 111.22 seconds.
-It is **not yet admitted**: the existing identity audit rejects a missing
-statepoint Git attribute in the frozen OpenMC build. No comparison PASS or
-transport retry is claimed; see [the CE result and failure record](validation/d4_reference/d4a_ce_production_result_20260923.md).
+Its CE-only replay now passes after an approved, exact-build compatibility
+fix for absent statepoint Git metadata: `k_CE=1.3030848883933903`, uncertainty
+`19.5504 pcm`. No transport retry occurred. This is not yet a SPOT--CE
+comparison PASS; see [the CE result and replay record](validation/d4_reference/d4a_ce_production_result_20260923.md).
 
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the
