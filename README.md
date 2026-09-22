@@ -103,6 +103,11 @@ The [neutron-balance field review](validation/iterative/d4a_neutron_balance_read
 records what can be checked from map 8, and why neither a reflected-boundary
 identity nor the solver's own rebalance is an independent accuracy result.
 
+The separately authorized early CE production finished in 111.22 seconds.
+It is **not yet admitted**: the existing identity audit rejects a missing
+statepoint Git attribute in the frozen OpenMC build. No comparison PASS or
+transport retry is claimed; see [the CE result and failure record](validation/d4_reference/d4a_ce_production_result_20260923.md).
+
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the
 [corrected D4-A quickstart](validation/iterative/D4A_CORRECTED_QUICKSTART.md).

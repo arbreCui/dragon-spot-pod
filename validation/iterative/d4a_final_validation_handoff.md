@@ -1,5 +1,7 @@
 # Corrected D4-A：首个 VALID_MET 后最短交接表
 
+2026-09-23 执行顺序修订：用户明确批准将唯一一次 CE production 提前，与既有 Picard 接续并行。只改变先后顺序，保持冻结的模型、20,000 × 300 批、100 inactive、seed 731942、18 threads、900 秒硬上限；失败不自动重试。该次已正常完成（OpenMC 111.22 秒），产物在 `validation/artifacts/d4a-corrected-ce-production-20260923`；但独立身份审计因 statepoint 缺失 Git 属性而拒绝，尚未准入，见 [CE 结果与失败记录](../d4_reference/d4a_ce_production_result_20260923.md)。最终 SPOT–CE 比较仍必须等首个独立验收的 corrected `VALID_MET`、完整 lineage 和 CE 审计通过。已经执行过的 CE production 不得在收敛后再次启动。
+
 最新启动记录（2026-09-23）：用户在修复提交 `70039e3` 后再次批准接续。新 `$CONT` 已通过启动前清单/身份检查，日志确认 `CLOSED/8 -> PROJECTED/9`，径向 Dragon 已启动；启动后两处 canonical SHA 均仍为原值。最多 maps 9–12，单轮径向 32400 秒、轴向 180 秒，首次 MET 即停，任何失败即停且不自动重试。启动不是完成或持续存活证明，接手时须核对实际进程、日志和封存回执；当前已验收结果仍只到 map 8。
 
 此前事件（保留）：maps 1–8 均为 `VALID_NOT_MET / NEXT_MAP_PARENT_ONLY`。旧 series 已封存 `map-001.portable` 至 `map-003.portable`（全局 maps 6–8），随后 map 9 中断。上次获批接续又在径向第 1 平面即主动停止：旧 one-map runner 的隐式构建重新链接了已冻结的 Dragon，且硬链接同时改动了 release 副本。未完成任何新 map，不能作为数值不收敛证据或接续父态。
@@ -27,7 +29,7 @@ CONT="$A/d4a-corrected-material-rank2-series-from-map8-restart-20260923"
 FINAL='<实际首个 VALID_MET 的完整 portable 路径>'
 OBS='<不存在的新 observables 目录绝对路径>'
 RESULT='<不存在的新 result-export 目录绝对路径>'
-CE='<不存在的新 CE-production 目录绝对路径>'
+CE="$A/d4a-corrected-ce-production-20260923"
 PY=/Users/wen/miniforge3/envs/openmc-dev/bin/python
 XS=/Users/wen/openmc-workspace/data/endfb-viii.1-hdf5/cross_sections.xml
 OPENMC=/Users/wen/miniforge3/envs/openmc-dev/bin/openmc
@@ -53,7 +55,7 @@ OPENMC=/Users/wen/miniforge3/envs/openmc-dev/bin/openmc
 | 1 | 在后续获批 continuation 到首个冻结 `VALID_MET / CONVERGED_MAP` 并停止后，核对每个 portable 的 `result.sha256`、分类与连续 epoch。三缺陷均须 `<= 5e-7`，固定 rank 2、α=1、无经验系数不变。 |
 | 2 | 从 FINAL 提取 k 与底/中/顶全局归一化 ν-fission 份额，再完整回放 lineage；必须得到 `D4A-CORRECTED-ACCEPT OVERALL PASS`。提取及验收会调用 canonical Dragon 的只读 GREP + SPORATE，不是新的输运求解，但仍属于进程启动。 |
 | 3 | 导出 `result.json`、`power.csv` 并验证 `export_result.sha256`；导出器不能替代步骤 2。 |
-| 4 | 仅步骤 2 通过后，执行一次既有 CE production wrapper；不得直接运行 builder 的生产模式。 |
+| 4 | 使用 2026-09-23 单独获批提前执行的唯一 CE production 产物；不得因 SPOT 收敛而再次启动。若该次失败或超时，停止并请求处置，不自动重试。 |
 | 5 | 独立 CE checker 再验完整 SPOT lineage、CE 静态模型、核数据、运行身份和最终 statepoint；仅成功终止行 `D4A SPOT-CE RECEIPT COMPARISON PASS` 可作为现有比较门槛通过证据。 |
 
 ```sh
@@ -66,9 +68,8 @@ D4A_OBSERVABLES_DIR="$OBS" sh validation/iterative/check_d4a_corrected_acceptanc
 # 3
 python3 validation/iterative/export_d4a_corrected_result.py "$FINAL" "$OBS" "$RESULT"
 (cd "$RESULT" && shasum -a 256 -c export_result.sha256)
-# 4
-"$PY" validation/d4_reference/run_d4a_ce_production.py \
-  --output "$CE" --cross-sections "$XS" --openmc-exec "$OPENMC"
+# 4：只核验提前获批的唯一 CE 产物，禁止在收敛后重跑。
+(cd "$CE" && shasum -a 256 -c result_receipt.sha256)
 # 5
 "$PY" validation/d4_reference/check_d4a_spot_ce_receipts.py \
   --corrected-build "$BOOT" --spot-map "$M1" --spot-map "$M2" \

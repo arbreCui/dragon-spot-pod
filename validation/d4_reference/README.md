@@ -6,7 +6,11 @@ The converged map-8 state is not an accuracy parent.  It used the legacy
 material procedures and is retained only as a numerical SPOD/Picard
 regression.  The corrected physical epoch has now admitted its three radial
 snapshots, fixed rank-two basis and `CLOSED/0` bootstrap, but it has not yet
-published a corrected fixed point or an independent CE result.
+published a corrected fixed point or an accepted independent CE result.
+The separately approved early CE run completed on 2026-09-23 in 111.22 s,
+but its identity audit rejects a missing statepoint Git attribute in this
+OpenMC build. The result is retained, not admitted or rerun; see the
+[production result and failure record](d4a_ce_production_result_20260923.md).
 
 The direct `MGXEXP` route is also fail-closed for the present D4-A MACROLIB.
 The export is complete and deterministic (`DIM 370 18 3 32`), but the P0

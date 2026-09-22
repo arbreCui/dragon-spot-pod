@@ -19,8 +19,20 @@ OpenMP threads      = 18
 operational wall cap = 900 seconds
 ```
 
-The run is authorized only after the corrected SPOD lineage reaches its first
-independently accepted `VALID_MET` map. It is one production run, not a scan:
+On 2026-09-23 the user explicitly authorized advancing this one production
+run before the corrected SPOD lineage reaches `VALID_MET`, to overlap the
+independent reference with the already running Picard continuation. This
+supersedes only the earlier execution-order restriction. The physical model,
+sampling controls, uncertainty gate and wall cap are unchanged. No
+automatic retry is authorized. SPOT--CE comparison still requires the first
+independently accepted corrected `VALID_MET` map and its complete lineage.
+
+That one run has now completed; its identity audit remains rejected because
+this OpenMC build omits the statepoint Git attribute. See the
+[production result and failure record](d4a_ce_production_result_20260923.md).
+Do not launch it again while resolving this metadata issue.
+
+It is one production run, not a scan:
 the seed, batch counts, result, or stopping point must not be selected using
 the SPOD eigenvalue or power distribution. A timeout, nonfinal statepoint, or
 reactivity uncertainty above 50 pcm is a rejected production result, not a
