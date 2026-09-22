@@ -43,6 +43,13 @@ yet be claimed.  Frozen evidence is in
 The current scripts are macOS/arm64-specific and expect `gfortran`, `gcc`,
 Python 3, `rg`, `sha256sum`, and `shasum` on `PATH`.
 
+This is a setup-only step, before restoring the canonical executable and
+before starting any Picard series. Do not run these build/setup commands
+while the main calculation is active. The safe order is: finish setup,
+restore and verify the independent canonical binary, run the non-compiling
+series/one-map route, stop at the first `VALID_MET`, then independently
+accept the result.
+
 The scientific acceptance receipt also pins the exact Dragon executable used
 to build the corrected snapshots. A source rebuild is required for the local
 libraries and tests, but it is not expected to reproduce that Mach-O file
@@ -67,17 +74,26 @@ The last command is transport-free.  Continue only after it ends with
 
 The large XSM files and canonical Dragon are deliberately not stored in Git.
 They must be published together as a hash-pinned project release asset before
-this is a portable clean-checkout path.  The prepared archive is named
-`d4a-corrected-closed0-runtime-release-20260920.tar`; its outer SHA-256 is
-`5469f564b47b7707491a96b61f75b847b7c5b086290dfff6c7085e3ddbe97296`.
-After obtaining it, verify the archive before extraction:
+this is a portable clean-checkout path. The locally verified replacement
+archive is `d4a-corrected-closed0-runtime-repacked-20260923-9c59ef8.tar`,
+with outer SHA-256
+`2d50b1647184293657cff95c2b69ad5874e60622cb8d3ed136ef8dcc1fdc4649`.
+It preserves the original payload and inner manifests; the old temporary
+20260920 tar is no longer available, so its outer hash must not be used for
+this new archive. The replacement contains 39 **flat top-level files**, not
+an enclosing directory. Verify it before extracting into a fresh directory:
 
 ```sh
-ARCHIVE=/absolute/path/to/d4a-corrected-closed0-runtime-release-20260920.tar
+ARCHIVE=/absolute/path/to/d4a-corrected-closed0-runtime-repacked-20260923-9c59ef8.tar
+ART=/absolute/path/to/fresh-closed0-runtime
+(
+set -eu
 test "$(shasum -a 256 "$ARCHIVE" | awk '{print $1}')" = \
-  5469f564b47b7707491a96b61f75b847b7c5b086290dfff6c7085e3ddbe97296
-tar -xf "$ARCHIVE" -C /absolute/path/to/extraction-parent
-ART=/absolute/path/to/extraction-parent/d4a-corrected-closed0-runtime-release-20260920
+  2d50b1647184293657cff95c2b69ad5874e60622cb8d3ed136ef8dcc1fdc4649
+test ! -e "$ART" && test ! -L "$ART"
+mkdir "$ART"
+tar -xf "$ARCHIVE" -C "$ART"
+)
 ```
 
 The release asset starts from the already sealed `CLOSED/0`; it does not
@@ -105,19 +121,42 @@ Together with the manifest, the runtime bundle contains 39 regular files and
 no symbolic links or subdirectories.  A public retrieval location is still
 pending.
 
+The replacement tar and checksum are currently local under
+`validation/artifacts/d4a-runtime-restore-rehearsal-20260923/`.
+The independent restore rehearsal verified all 39 files, separate inodes
+without source hard links, and byte-identical read-only map-8 checker logs
+from a separate checkout. Five prebuilt host tools were copied separately
+for that rehearsal; they are not archive members and do not replace the
+source-build setup in step 1. This proves local binary/data restoration on
+the stated macOS/Homebrew environment, not a new clean-source build,
+cross-platform portability, final convergence, or a public release. Detailed
+evidence is in that directory's `restore_rehearsal.md` and `verification.log`.
+
 The 769 MB `DLIB8R1_370` target and its absolute symbolic link are not release
 payloads.  Its hash remains inside `executed_inputs.sha256` as inert upstream
 provenance; the runtime manifest never dereferences it, and Picard and
 acceptance do not read it.
 
-Install and verify the release binary after the local source build:
+Install and verify the release binary after the local source build and only
+when no main calculation is running. The working binary must be an
+independent regular copy, not a symbolic link or hard link to the release
+copy. Use `install` (or an independent copy); never use `ln` for this restore.
+The alias checks below fail closed if the destination is already linked to
+the published binary:
 
 ```sh
+(
+set -eu
 test "$(shasum -a 256 "$ART/Dragon" | awk '{print $1}')" = \
   2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db
+test ! -L bin/Darwin_arm64/Dragon
+test ! "$ART/Dragon" -ef bin/Darwin_arm64/Dragon
 install -m 755 "$ART/Dragon" bin/Darwin_arm64/Dragon
+test ! -L bin/Darwin_arm64/Dragon
+test ! "$ART/Dragon" -ef bin/Darwin_arm64/Dragon
 test "$(shasum -a 256 bin/Darwin_arm64/Dragon | awk '{print $1}')" = \
   2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db
+)
 ```
 
 At present the only known copies are local to the development machine under
@@ -174,20 +213,18 @@ The runner evaluates one unchanged direct map and then runs the independent
 one-map checker and the three-defect convergence gate.  It introduces no
 relaxation, damping, fitted coefficient, clipping, or empirical parameter.
 It selects the required `--reencoded` audit for `CLOSED/0` and `--continued`
-for later sealed epochs from the B2J receipt.
+for later sealed epochs from the B2J receipt. The current one-map runner
+checks the canonical binary and prebuilt host tools without compiling them.
+Missing tools must be prepared during setup, not during an active series.
 
-If a bounded run has already completed and admitted its radial half-step but
-stops before publishing an axial candidate, preserve that directory and use
-a fresh directory for the narrow recovery path:
-
-```sh
-AXIAL_TIMEOUT_SECONDS="$AXIAL_LIMIT_SECONDS" \
-  sh validation/iterative/resume_d4a_rank2_picard_after_radial.sh \
-  /absolute/path/to/completed-radial-work /absolute/path/to/fresh-recovery
-```
-
-The recovery replays radial admission and runs only the axial, close,
-independent-check and gate stages.  It never retries radial transport.
+The historical `resume_d4a_rank2_picard_after_radial.sh` is not available for
+this run and is not a recommended recovery entry point. Unlike the current
+one-map runner, it still automatically builds `src` and the host tools and
+can replace the hash-locked canonical executable. Its source is retained
+for history only. If a run stops after the radial half-step, preserve its
+partial directory as evidence; do not invoke that legacy script or use the
+partial directory as a restart parent. This quickstart provides no new
+partial-run recovery branch.
 
 ## 5. Check and continue
 
@@ -239,7 +276,8 @@ gate, or add a coefficient to force acceptance.
 ### Recommended serial controller
 
 The thin serial controller performs exactly the one-map, check, freeze and
-continue sequence above:
+continue sequence above, using the prebuilt tools and hash-locked canonical
+binary. It does not compile at runtime; do not rerun setup while it is active:
 
 ```sh
 SERIES_ROOT=/absolute/path/to/fresh-picard-series
@@ -398,7 +436,7 @@ At minimum, the clean-checkout revision must contain:
   `d4a_rank2_picard_radial.x2m`, `d4a_rank2_picard_axial.x2m`,
   `d4a_rank2_checker_parent.x2m`, `run_d4a_rank2_picard_map.sh`,
   `run_d4a_rank2_picard_series.sh`, `freeze_d4a_corrected_map.sh`,
-  `test_d4a_picard_series.py`, `resume_d4a_rank2_picard_after_radial.sh`, and
+  `test_d4a_picard_series.py`, and
   the `prepare`, `admit`, `close`, one-map, and convergence checker sources;
 - the final-result route: `d4a_corrected_final_observables.x2m`,
   `run_d4a_corrected_final_observables.sh`,
@@ -417,6 +455,10 @@ The corrected D4-A source, decks, runners, host tools and fast-gate tests in
 those groups are tracked.  A clean checkout still needs the separately
 published sealed runtime asset described above; local historical diagnostics
 and map outputs are not part of the release source.
+
+The tracked `resume_d4a_rank2_picard_after_radial.sh` remains a historical
+source file, not an enabled entry point in the current release route; its
+automatic builds make it unavailable for the hash-locked run described here.
 
 ## Files that must remain outside Git
 
