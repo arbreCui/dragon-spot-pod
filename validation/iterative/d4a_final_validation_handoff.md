@@ -1,6 +1,6 @@
 # Corrected D4-A：首个 VALID_MET 后最短交接表
 
-2026-09-22 只读核对：下列已有目录、回执及命令入口均存在；maps 1–5 均为 `VALID_NOT_MET / NEXT_MAP_PARENT_ONLY`。当前 series 只有 `map-001.raw` 和表头，尚无后续 portable；本页不宣称固定点、最终 k 或 CE 结果，也未启动、停止或重启求解器。
+2026-09-22 只读核对：下列已有目录、回执及命令入口均存在；maps 1–6 均为 `VALID_NOT_MET / NEXT_MAP_PARENT_ONLY`。当前 series 已封存 `map-001.portable`（全局 map 6），`map-002.raw`（全局 map 7）正在计算；本页不宣称固定点、最终 k 或 CE 结果。
 
 ## 路径与严格顺序
 
@@ -27,9 +27,9 @@ OPENMC=/Users/wen/miniforge3/envs/openmc-dev/bin/openmc
 
 验收参数必须依次为 **M1、M2、M3、M4、M5，再接当前 series 的全部已封存 portable，直到且包括 FINAL，每个仅一次**。以 `picard_series.tsv` 的 `epoch`、`portable` 和封存回执为准；不可遗漏中间 map，不可加入首个 MET 后的 map，不可用 `.raw` 替代。
 
-| 当前 series 局部路径（未来输出，尚未存在） | 全局 epoch |
+| 当前 series 局部路径 | 全局 epoch |
 |---|---|
-| `$SERIES/map-001.portable` | map 6 |
+| `$SERIES/map-001.portable` | map 6，已封存，`VALID_NOT_MET` |
 | `$SERIES/map-002.portable` 至 `$SERIES/map-007.portable` | maps 7–12，按局部编号递增；只取实际存在且到首个 MET 为止 |
 
 下列命令模板中的 `<SERIES_PORTABLES_IN_ORDER_THROUGH_FINAL>` 应展开为上述实际路径的逐项引用列表；`<REPEATED_SERIES_SPOT_MAP_ARGS>` 则对同一列表逐项写 `--spot-map "绝对路径"`。不得猜测首个 MET 的 map 号，FINAL 不另重复追加。

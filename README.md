@@ -71,18 +71,19 @@ at fuel temperatures 650/750/850 C with cladding/sodium at 620/475 C.  Their
 eigenvalues are `1.3707917928695679`, `1.3690495491027832`, and
 `1.3674149513244629`.  The fixed rank-two basis is admitted, and the unchanged
 axial-seed/three-radial-response chain has passed the strict B2I seal as
-`CLOSED/0`.  Corrected-material maps 1 through 5 have completed their online
+`CLOSED/0`.  Corrected-material maps 1 through 6 have completed their online
 radial and reduced axial halves and passed the independent bitwise audit.
-Map 5 advances the chain to `CLOSED/5` and remains `VALID_NOT_MET`, with
-`R_rho=1.2008320856993215E-04`, `R_L=1.0779227410496446E-04`, and
-`R_a=3.4736134630042396E-04`.  There is still no corrected-material fixed
+Map 6 advances the chain to `CLOSED/6` and remains `VALID_NOT_MET`, with
+`R_rho=3.5088946733763393E-05`, `R_L=3.4738182352291766E-05`, and
+`R_a=1.1538196291776131E-04`.  There is still no corrected-material fixed
 point, final `k`/power result, or CE comparison.  The frozen evidence is
 recorded in
 [the map-1 result](validation/iterative/d4a_corrected_map1_result.md),
 [the map-2 result](validation/iterative/d4a_corrected_map2_result.md),
 [the map-3 result](validation/iterative/d4a_corrected_map3_result.md),
-[the map-4 result](validation/iterative/d4a_corrected_map4_result.md), and
-[the map-5 result](validation/iterative/d4a_corrected_map5_result.md).
+[the map-4 result](validation/iterative/d4a_corrected_map4_result.md),
+[the map-5 result](validation/iterative/d4a_corrected_map5_result.md), and
+[the map-6 result](validation/iterative/d4a_corrected_map6_result.md).
 
 The shortest reproducible corrected-material build, bootstrap, Picard-map,
 and packaging path is the
