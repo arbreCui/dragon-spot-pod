@@ -1,8 +1,10 @@
 # Corrected D4-A：首个 VALID_MET 后最短交接表
 
-2026-09-23 核对：maps 1–8 均为 `VALID_NOT_MET / NEXT_MAP_PARENT_ONLY`。旧 series 已封存 `map-001.portable` 至 `map-003.portable`（全局 maps 6–8），随后 map 9 中断。用户批准从封存 `CLOSED/8` 恢复，但本次新 series 在径向第 1 平面即主动停止：旧 one-map runner 的隐式构建重新链接了已冻结的 Dragon，且硬链接同时改动了 release 副本。未完成任何新 map，不能作为数值不收敛证据或接续父态。
+最新启动记录（2026-09-23）：用户在修复提交 `70039e3` 后再次批准接续。新 `$CONT` 已通过启动前清单/身份检查，日志确认 `CLOSED/8 -> PROJECTED/9`，径向 Dragon 已启动；启动后两处 canonical SHA 均仍为原值。最多 maps 9–12，单轮径向 32400 秒、轴向 180 秒，首次 MET 即停，任何失败即停且不自动重试。启动不是完成或持续存活证明，接手时须核对实际进程、日志和封存回执；当前已验收结果仍只到 map 8。
 
-已从另一份 SHA 完全一致的冻结副本恢复原 binary，分离工作/release 两个 inode，38 项 release 清单复验通过。运行时构建已删除，改为预检既有 canonical hash 与现成 host 工具；本次不自动重试。两次不完整 map-9 目录（旧 `map-004.raw` 和本次 `CONT/map-001.raw`）都不作输入；仍从 `CLOSED/8` 接续。本页不宣称固定点、最终 k 或 CE 结果。
+此前事件（保留）：maps 1–8 均为 `VALID_NOT_MET / NEXT_MAP_PARENT_ONLY`。旧 series 已封存 `map-001.portable` 至 `map-003.portable`（全局 maps 6–8），随后 map 9 中断。上次获批接续又在径向第 1 平面即主动停止：旧 one-map runner 的隐式构建重新链接了已冻结的 Dragon，且硬链接同时改动了 release 副本。未完成任何新 map，不能作为数值不收敛证据或接续父态。
+
+已从另一份 SHA 完全一致的冻结副本恢复原 binary，分离工作/release 两个 inode，38 项 release 清单复验通过。运行时构建已删除，改为预检既有 canonical hash 与现成 host 工具；当时未自动重试。两次不完整 map-9 目录（旧 `map-004.raw` 和 `FAILED_CONT/map-001.raw`）都不作输入；仍从 `CLOSED/8` 接续。本页不宣称固定点、最终 k 或 CE 结果。
 
 7 项启动预检短测与现有 10 项 series 短测通过，均不启动输运。map 8 的完整清单再次通过，当前 host 重放的独立检查与三缺陷 gate 日志逐字节一致。恢复源为 `validation/artifacts/iterative-d4a-rank2-picard-map8/frozen_runtime/Dragon`，只是取回同一 binary，不采用该历史物理态。`resume_d4a_rank2_picard_after_radial.sh` 等历史旁路不用于本次接续；修复范围限于活动 one-map runner。
 
@@ -20,7 +22,8 @@ M3="$A/d4a-corrected-material-rank2-map3-portable-detached-20260921"
 M4="$A/d4a-corrected-material-rank2-map4-portable-detached-20260921"
 M5="$A/d4a-corrected-material-rank2-map5-portable-detached-20260922"
 SERIES="$A/d4a-corrected-material-rank2-series-from-map5-20260922"
-CONT="$A/d4a-corrected-material-rank2-series-from-map8-20260923"
+FAILED_CONT="$A/d4a-corrected-material-rank2-series-from-map8-20260923"
+CONT="$A/d4a-corrected-material-rank2-series-from-map8-restart-20260923"
 FINAL='<实际首个 VALID_MET 的完整 portable 路径>'
 OBS='<不存在的新 observables 目录绝对路径>'
 RESULT='<不存在的新 result-export 目录绝对路径>'
@@ -37,11 +40,11 @@ OPENMC=/Users/wen/miniforge3/envs/openmc-dev/bin/openmc
 | `$SERIES/map-001.portable` | map 6，已封存，`VALID_NOT_MET` |
 | `$SERIES/map-002.portable` | map 7，已封存，`VALID_NOT_MET` |
 | `$SERIES/map-003.portable` | map 8，已封存，`VALID_NOT_MET` |
-| 后续另行获批的新 series portable | 从 map 9 连续到首个 MET；本次 `$CONT` 已停止且没有 portable，不能纳入 |
+| `$CONT/map-001.portable` 起的实际封存结果 | 从 map 9 连续到首个 MET，最多 map 12；尚未完成，不可提前纳入 |
 
 下列命令模板中的 `<SERIES_PORTABLES_IN_ORDER_THROUGH_FINAL>` 应展开为上述实际路径的逐项引用列表；`<REPEATED_SERIES_SPOT_MAP_ARGS>` 则对同一列表逐项写 `--spot-map "绝对路径"`。不得猜测首个 MET 的 map 号，FINAL 不另重复追加。
 
-本次停止记录为 `$CONT.runner.log`，结果表 `$CONT/picard_series.tsv` 没有已完成 map。改动后的 binary 保留为 `$CONT/interrupted_solver_Dragon`（SHA `0019568a653b81cebeaad742948adedc984a766a2c9ed25629abd1b23f75f67d`）；原 canonical SHA 仍是 `2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db`，未重签任何收据。批准的运行界限曾为最多 maps 9–12、单轮径向 32400 秒、轴向 180 秒；失败即停的约定已执行。后续恢复必须用新目录，不能复用本次目录。
+当前日志为 `$CONT.runner.log`，完成结果以 `$CONT/picard_series.tsv` 及实际 portable 回执为准。此前停止记录为 `$FAILED_CONT.runner.log`，其结果表没有已完成 map。改动后的 binary 保留为 `$FAILED_CONT/interrupted_solver_Dragon`（SHA `0019568a653b81cebeaad742948adedc984a766a2c9ed25629abd1b23f75f67d`）；原 canonical SHA 仍是 `2908cf383be163cb0534847fe7115d42c9deed97684c28abdd9c29f24c6722db`，未重签任何收据。新启动使用独立目录，不复用失败现场。
 
 ## 执行顺序（由主代理在前置门槛成立后执行）
 

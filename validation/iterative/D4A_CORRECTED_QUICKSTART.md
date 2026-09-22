@@ -23,8 +23,10 @@ both half-steps and passed their independent audits.  Map 8 is `CLOSED/8` and
 map-9 attempt was interrupted; its partial directory is not a restart parent.
 A fresh series from frozen map 8 was stopped early on 2026-09-23 after its
 implicit build changed the frozen executable identity. The original binary
-was restored and runtime builds removed; no map completed or automatic retry
-started. The [handoff](d4a_final_validation_handoff.md) records the incident. No
+was restored and runtime builds removed. A separately approved continuation
+has now started from map 8 with the unchanged binary, bounded to maps 9–12,
+first MET or failure. No new map has completed. The
+[handoff](d4a_final_validation_handoff.md) records both attempts. No
 corrected-material fixed point, final `k`/power result, or CE comparison may
 yet be claimed.  Frozen evidence is in
 [the map-1 result](d4a_corrected_map1_result.md),

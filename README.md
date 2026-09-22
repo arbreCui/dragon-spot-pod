@@ -79,7 +79,9 @@ Map 8 advances the chain to `CLOSED/8` and remains `VALID_NOT_MET`, with
 not an accepted result. On 2026-09-23 a fresh continuation was stopped early
 after its implicit build changed the frozen executable identity. The exact
 canonical binary was restored; the runner now checks it without rebuilding.
-No new map completed and no automatic retry was started; see the
+After a separate user approval, a fresh maps-9–12 continuation started with
+the corrected runner and unchanged binary hash; no new map is accepted yet.
+It stops at the first MET or any failure, without automatic retry; see the
 [handoff](validation/iterative/d4a_final_validation_handoff.md).
 There is still no corrected-material fixed
 point, final `k`/power result, or CE comparison.  The frozen evidence is
