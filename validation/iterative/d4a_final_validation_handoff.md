@@ -74,4 +74,6 @@ CE 冻结协议：每批 20,000 粒子、300 批、100 inactive、200 active、4
 
 当前 SPOT 导出仅含三层全局归一化 ν-fission 份额，不是逐针功率或绝对热功率。CE checker 重建 651 个 cell/floor/pin 的 ν-fission tally 以验证回执，但只报告三层差异且明确 `status=REPORTED_ONLY`；没有功率形状验收阈值、没有 SPOT 对 CE 的逐针功率通过判定。即使总体比较 PASS，也不得写成“针功率验证通过”。真实逐针功率验证仍需匹配的 SPOT 逐针观测量、全局归一化/映射及预先约定的验收准则，属于另行审定的边界，不在本交接中添加。
 
+SPOT–CE 的反应性差异是两条计算链的总差异，不能全部归因于 rank-2/SPOD：SPOT 使用多群库、APOL 输运修正与 TONE 自屏蔽，CE 使用连续能量和温度插值；分别封存库身份不等于证明评价及处理链完全等价。本轮源码核对未发现几何、边界、材料公式或三层映射的生产阻断不匹配，但没有重跑输运；既有直接原子密度锚点审计仅覆盖 `750/620/475 C`，不宣称已逐项验证全部三温度运行时密度相等。参见 [material audit](../d4_reference/material_epoch_audit_result.md)。
+
 依据：[quickstart](D4A_CORRECTED_QUICKSTART.md)、[CE protocol](../d4_reference/d4a_ce_production_protocol.md)、[CE README](../d4_reference/README.md)及上述现有脚本。
