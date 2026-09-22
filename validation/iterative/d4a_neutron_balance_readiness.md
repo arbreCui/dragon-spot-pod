@@ -4,6 +4,10 @@
 No transport, tracing, Dragon/OpenMC execution, production rebuild, or numerical
 balance calculation was performed. The active continuation was not touched.
 
+Subsequent numerical follow-up: the saved map-8 radial four-term calculation
+has now been completed in [the balance diagnostic](d4a_radial_balance_result.md).
+The readiness review below retains its original scope and limitations.
+
 ## Actual inspection
 
 The short GANLIB-only inventory inspected map 8 (`map-003.portable`) of
@@ -62,8 +66,11 @@ nonidentity pairings or different track conventions was tested here.
 
 The saved schema has no complete angle-resolved radial boundary history or
 internal region-to-region face currents. `SOUR` is not such an independent
-boundary record: `src/SPOR64_A9.f90:172` sets its terminal source slice from the
-frozen source. Therefore an independent **local** radial current-divergence
+boundary record: `src/SPOR64_A9.f90:172` initializes slice 4 from the frozen
+source, but line 281 replaces it with slice 8 after off-group source assembly.
+The published terminal `SOUR` therefore includes the last off-group source
+and is not generally equal to `QFISS`; `src/SPOR64_B2R.f90:241` explicitly
+retains QFISS separately. Therefore an independent **local** radial current-divergence
 test, or a sweep-level incoming-versus-outgoing conservation test, is not ready
 from these saved fields alone. Do not reconstruct those missing currents from
 the balance residual.

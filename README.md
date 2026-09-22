@@ -102,6 +102,10 @@ see [the radial-shape diagnostic](validation/iterative/d4a_radial_offspace_resul
 The [neutron-balance field review](validation/iterative/d4a_neutron_balance_readiness.md)
 records what can be checked from map 8, and why neither a reflected-boundary
 identity nor the solver's own rebalance is an independent accuracy result.
+The subsequent [saved radial-balance diagnostic](validation/iterative/d4a_radial_balance_result.md)
+reports all 1110 plane/group budgets, with maximum normalized residual
+`9.47e-16`; this is consistency of the already rebalanced discrete fields,
+not a new convergence or physical-accuracy PASS.
 
 The separately authorized early CE production finished in 111.22 seconds.
 Its CE-only replay now passes after an approved, exact-build compatibility
