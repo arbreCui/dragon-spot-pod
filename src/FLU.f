@@ -399,8 +399,10 @@
          NLF=ISTATE(15)
          NANI=MAX(1,ISTATE(16))
       ELSE IF(CXDOOR.EQ.'SPOT') THEN
-         NLF=ISTATE(9)
-         NANI=MAX(1,ISTATE(10))
+*        9/10 ARE THE SPATIAL ELEMENT/SCHEME, NOT ANGULAR ORDERS.
+         NLF=ISTATE(15)
+         NANI=MAX(1,ISTATE(16))
+         NANIS=MIN(NANIS,NANI-1)
       ELSE
          NLF=1
          NANI=1

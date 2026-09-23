@@ -52,13 +52,19 @@ rg -F -x 'SPOASM FIXB AXIAL-EXTENT REUSE PASS: 7' \
   "$BUILD_DIR/test_spophys.log" >/dev/null
 rg -F -x 'SPOASM FIXB AXIAL-EXTENT REUSE PASS: 14' \
   "$BUILD_DIR/test_spophys.log" >/dev/null
-for mode in bad-old-extent bad-group-count bad-radial-volume; do
+for mode in bad-old-extent bad-group-count bad-radial-volume \
+  bad-radial-s0-length bad-radial-s0-type bad-axial-xs-length \
+  bad-axial-xs-type bad-p0-total; do
   if (cd "$BUILD_DIR" && ./test_spophys "$mode" > "$mode.log" 2>&1); then
     printf '%s\n' "SPOASM FIXB NEGATIVE FAIL: $mode was accepted" >&2
     exit 1
   fi
   case "$mode" in
     bad-radial-volume) expected='SPOASM: FIXED-BASIS VOLUME MISMATCH.' ;;
+    bad-radial-s0-length) expected='SPOASM: INVALID RADIAL S0XSC LENGTH.' ;;
+    bad-radial-s0-type) expected='SPOASM: INVALID RADIAL S0XSC RECORD.' ;;
+    bad-axial-xs-length|bad-axial-xs-type) expected='SPOASM: INVALID AXIAL SIGW RECORD.' ;;
+    bad-p0-total) expected='SPOASM: ANISOTROPIC P0_TOTAL NOT SUPPORTED.' ;;
     *) expected='SPOASM: FIXED-BASIS SYSTEM DIMENSION MISMATCH.' ;;
   esac
   rg -F "$expected" "$BUILD_DIR/$mode.log" >/dev/null

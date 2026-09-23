@@ -851,7 +851,9 @@
                JG=IJJ(IBM)
                DO 90 JND=1,NJJ(IBM)
                IF(JG.NE.IG) THEN
-                  FLUX(IND,IG,8)=FLUX(IND,IG,8)+REAL(2*IAL+1)*
+*                 SPOT STORES RAW LEGENDRE MOMENTS. ITS ANGULAR
+*                 KERNEL APPLIES (2*IAL+1)/2 WHEN RECONSTRUCTING Q.
+                  FLUX(IND,IG,8)=FLUX(IND,IG,8)+
      >            XSCAT(IPOS(IBM)+JND-1)*FLUX(IND,JG,7)
                ENDIF
                JG=JG-1
@@ -993,7 +995,7 @@
                JG=IJJ(IBM)
                DO 170 JND=1,NJJ(IBM)
                IF(JG.NE.IG) THEN
-                  FLUX(IND,IG,8)=FLUX(IND,IG,8)+REAL(2*IAL+1)*
+                  FLUX(IND,IG,8)=FLUX(IND,IG,8)+
      >            XSCAT(IPOS(IBM)+JND-1)*FLUX(IND,JG,7)
                ENDIF
                JG=JG-1

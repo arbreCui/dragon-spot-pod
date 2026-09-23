@@ -39,6 +39,21 @@ point.
 
 ## D4-A status
 
+**2026-09-23 validation hold:** an audit found that the frozen axial
+implementation omitted the declared higher scattering moments: radial P0
+records underfilled a three-column array, and FLU read spatial fields as
+angular orders. Saved maps 8/9 have zero P1 diagonals despite 6660 nonzero
+macrolib values. Existing receipts remain historical software evidence,
+not validation of the declared SCAT3 physics. Do not continue or accept the
+old runtime as the corrected release. A minimal source repair and isolated
+short tests are underway; no convergence/accuracy result is claimed for the
+repair. See the [current handoff](validation/iterative/d4a_final_validation_handoff.md).
+The [repair record](validation/iterative/d4a_scattering_fix_result.md) separates
+passed source/kernel and real-assembly checks from the 30-second axial
+probe, which timed out without a new accepted k.
+
+The following numbers describe the superseded implementation:
+
 The 132-region IRENA D4-A legacy-input case reached a converged rank-two
 SPOD/Picard fixed point.  Direct Picard reached the unchanged three-component
 `5e-7` gate at map 8:
@@ -71,20 +86,23 @@ at fuel temperatures 650/750/850 C with cladding/sodium at 620/475 C.  Their
 eigenvalues are `1.3707917928695679`, `1.3690495491027832`, and
 `1.3674149513244629`.  The fixed rank-two basis is admitted, and the unchanged
 axial-seed/three-radial-response chain has passed the strict B2I seal as
-`CLOSED/0`.  Corrected-material maps 1 through 8 have completed their online
+`CLOSED/0`.  Corrected-material maps 1 through 9 have completed their online
 radial and reduced axial halves and passed the independent bitwise audit.
-Map 8 advances the chain to `CLOSED/8` and remains `VALID_NOT_MET`, with
-`R_rho=1.0492739930256789E-06`, `R_L=3.1031397842917180E-06`, and
-`R_a=1.3106218716376795E-05`.  The first map-9 attempt was interrupted and is
+Map 9 advances the chain to `CLOSED/9` and remains `VALID_NOT_MET`, with
+`R_rho=6.7427401995168168E-08`, `R_L=8.9211010879356053E-07`, and
+`R_a=3.5292261241480969E-06`. Only the first of the three defects passes the
+unchanged `5e-7` AND gate. The earlier map-9 attempt was interrupted and is
 not an accepted result. On 2026-09-23 a fresh continuation was stopped early
 after its implicit build changed the frozen executable identity. The exact
 canonical binary was restored; the runner now checks it without rebuilding.
 After a separate user approval, a fresh maps-9–12 continuation started with
-the corrected runner and unchanged binary hash; no new map is accepted yet.
+the corrected runner and unchanged binary hash. Its map 9 has now sealed;
+parent identity, the complete manifest, and byte-identical independent/gate
+replays pass. Map 10 has started under the same approved budget.
 It stops at the first MET or any failure, without automatic retry; see the
 [handoff](validation/iterative/d4a_final_validation_handoff.md).
 There is still no corrected-material fixed
-point, final `k`/power result, or CE comparison.  The frozen evidence is
+point, final `k`/power result, or final CE comparison. The frozen evidence is
 recorded in
 [the map-1 result](validation/iterative/d4a_corrected_map1_result.md),
 [the map-2 result](validation/iterative/d4a_corrected_map2_result.md),

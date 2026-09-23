@@ -813,8 +813,14 @@
                JG=IJJ(IBM)
                DO 90 JND=1,NJJ(IBM)
                IF(JG.NE.IG) THEN
+                  IF(CXDOOR.EQ.'SPOT') THEN
+*                    SPOT RECONSTRUCTS (2*IAL+1)/2 IN ITS KERNEL.
+                     FLUX(IND,IG,8)=FLUX(IND,IG,8)+
+     >               XSCAT(IPOS(IBM)+JND-1)*FLUX(IND,JG,7)
+                  ELSE
                   FLUX(IND,IG,8)=FLUX(IND,IG,8)+REAL(2*IAL+1)*
      >            XSCAT(IPOS(IBM)+JND-1)*FLUX(IND,JG,7)
+                  ENDIF
                ENDIF
                JG=JG-1
   90           CONTINUE
@@ -956,8 +962,13 @@
                JG=IJJ(IBM)
                DO 170 JND=1,NJJ(IBM)
                IF(JG.NE.IG) THEN
+                  IF(CXDOOR.EQ.'SPOT') THEN
+                     FLUX(IND,IG,8)=FLUX(IND,IG,8)+
+     >               XSCAT(IPOS(IBM)+JND-1)*FLUX(IND,JG,7)
+                  ELSE
                   FLUX(IND,IG,8)=FLUX(IND,IG,8)+REAL(2*IAL+1)*
      >            XSCAT(IPOS(IBM)+JND-1)*FLUX(IND,JG,7)
+                  ENDIF
                ENDIF
                JG=JG-1
   170          CONTINUE

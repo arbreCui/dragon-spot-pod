@@ -1,8 +1,62 @@
 # Corrected D4-A：首个 VALID_MET 后最短交接表
 
+## 最高优先级更新：散射实现缺陷，旧链暂停验收（2026-09-23）
+
+下文的“首个 MET 后验收”流程目前禁用，直到修复版通过短测并建立新链。
+审查发现 `SPOASM` 从只有 P0 的径向截面记录读入三列数组后，写出未初始化
+P1/P2；`FLU` 将 TRACK 的空间字段 9/10 当作角阶，漏掉跨群高阶散射。
+真实 map 8、9 的轴向 P1 列均全零，而宏库 6660 个正混合物 P1 对角项全部
+非零。源码缺陷早于冻结 binary；旧的逐位审计没有覆盖物理散射语义。
+证据在 `validation/artifacts/d4a-scattering-audit-20260923`，输入清单读前后
+一致。旧 sealed 文件及分类不改写，但不再具有声明 SCAT3 方法的物理验证资格。
+
+最小修复：轴向显式各向异性使用原宏库 NTOT0/SIGW，各向同性路径保留原
+径向 transport-corrected 截面；径向闭包仍使用原径向权威数据，公式不变。
+FLU 读取 15/16 并按声明散射阶截断；SPOT 跨群源用原始 Legendre 矩，
+`(2l+1)/2` 只在轴向 kernel 展开一次。未加经验参数或放宽阈值。
+目前显式各向异性 `NW>0 / P0_TOTAL` 不在修复支持范围，明确拒绝而非猜测。
+
+已通过：带非零 P1、负 P2 的 SPOASM 合成回环，正负泄漏及预扣/未扣泄漏
+P0 数据；8 个畸形/来源负例拒绝；32/64 SPOT 下散/热循环、标量/向量源组装
+共 8 例，以及非 SPOT 4 例原行为回归。源测试替换最终求解入口，不能冒充
+实际输运测试。原 level-2 kernel/换基/闭包测试也通过。
+
+主线程尝试仅终止本次专用监督进程 PID 54771，被沙箱以 operation not
+permitted 拒绝；不能宣称进程已停，也不能尝试绕过权限。其后旧控制器自行
+完成 map 10（仍 NOT_MET）并进入 map 11；这些旧实现产物一律不用于修复版
+验收。54771 已不存在，不得再按旧 PID 操作。最后实际核对：控制器 17661、
+map-11 专用监督 74248、Dragon 74249；操作前必须重新确认命令/父子关系。
+用户已收到更新的停止请求。旧控制会话为 24596；确认终止前不改 canonical、
+库或活动 runner。其他项目进程不属于本线程，禁止操作。旧链自动验收已暂停。
+
+下一步先完成修复版独立短测试和审查；只允许隔离新二进制。原 90 秒 6-cell
+诊断仍未获用户答复，不执行。不得自动从旧 CLOSED/9 接成新物理链，不得
+重跑 CE。下方先前状态仅保留作历史追踪。
+
+更新：隔离修复版已完成真实 D4 组装；370 群轴向各阶截面与原宏库逐位一致，
+4070 条 POD/径向记录（含 RADIAL-OP64）逐位不变。但其唯一一次 3-cell
+轴向试算在 30 秒硬上限停止，无有效 k/通量、未重试。已另行请求一次 90 秒
+修复版 **3-cell** 验证，尚无用户答复。原 6-cell 请求仍不执行。
+详见[散射修复记录](d4a_scattering_fix_result.md)。新增实际 kernel 制造解已验证
+反射/周期边界下 raw P0/P1/P2 归一化；完整快速回归及本轮短测通过。
+
+## 以下为散射缺陷发现前的历史状态
+
 2026-09-23 执行顺序修订：用户明确批准将唯一一次 CE production 提前，与既有 Picard 接续并行。只改变先后顺序，保持冻结的模型、20,000 × 300 批、100 inactive、seed 731942、18 threads、900 秒硬上限；失败不自动重试。该次已正常完成（OpenMC 111.22 秒），产物在 `validation/artifacts/d4a-corrected-ce-production-20260923`。首次审计因 statepoint 缺失 Git 属性而拒绝；用户随后批准限于该封存构建的格式兼容修正，原文件 CE-only 重放现已通过，见 [CE 结果与重放记录](../d4_reference/d4a_ce_production_result_20260923.md)。最终 SPOT–CE 比较仍必须等首个独立验收的 corrected `VALID_MET` 和完整 lineage，并再次复验 CE。已经执行过的 CE production 不得在收敛后再次启动。
 
-最新启动记录（2026-09-23）：用户在修复提交 `70039e3` 后再次批准接续。新 `$CONT` 已通过启动前清单/身份检查，日志确认 `CLOSED/8 -> PROJECTED/9`，径向 Dragon 已启动；启动后两处 canonical SHA 均仍为原值。最多 maps 9–12，单轮径向 32400 秒、轴向 180 秒，首次 MET 即停，任何失败即停且不自动重试。启动不是完成或持续存活证明，接手时须核对实际进程、日志和封存回执；当前已验收结果仍只到 map 8。
+最新结果（2026-09-23）：用户在修复提交 `70039e3` 后再次批准的 `$CONT` 已完成 map 9，封存为 `CLOSED/9 / VALID_NOT_MET / NEXT_MAP_PARENT_ONLY`。完整 `result.sha256`、input/output 清单和 map-8 父态身份核验通过；现成独立检查器与 gate 的只读重放均与封存日志逐字节相同。求解日志的 REAL64 `k=1.2721229193478445`，相对 map 8 的反应性变化为 `-0.006742740199516817 pcm`。这不是最终固定点或独立精度验收。
+
+| 外迭代缺陷 | map 9 | 与 `5e-7` 门槛之比 | 状态 |
+|---|---:|---:|---|
+| Rrho | 6.7427401995168168e-8 | 0.134855 | PASS |
+| Rleak | 8.9211010879356053e-7 | 1.784220 | NOT MET |
+| Ra | 3.5292261241480969e-6 | 7.058452 | NOT MET |
+
+三项分别为 map-8 值的约 `0.06426 / 0.28749 / 0.26928`，仅报告这一次实测下降，不外推固定收敛率或剩余步数。map-9 `result.sha256` 的 SHA 为 `598e517ec7c4f011556ec071b812de0620079105f7939fef5e0d5324fa4d9b7c`。原接续控制器已启动 map 10，并进入径向 plane 1；启动本身不能作为此后持续存活的证明。仍最多 maps 9–12，单轮径向 32400 秒、轴向 180 秒，首次 MET 或任何失败即停、不自动重试。两处 canonical SHA 核验仍为原值；未重新编译、改 rank、α 或阈值。接手时继续核对实际会话、日志和封存回执。
+
+只读耗时排查未发现“每轮清零冷启动”：`SPOR64_B2H` 以既有 SOLVED 通量为底，替换标量区域为本轮 POD 投影、保留其他未知量；`SPOR64_B2B` 的 CONT 分支读取该 PROJECTED 态的 REAL64 FLUX；`SPOR64_A9` 将其作为当前外迭代初值，`SPOR64_A8` 传入并更新该初值。GMRES 清零的是 Krylov 工作数组，不是物理初值。这个静态核查不等于运行时性能剖析，也不证明当前初值最优；没有据此修改生产求解器或新增缓存/参数。
+
+map-9 原日志的 `cle2000_c: cpu time` 分别为径向 `18021.00 second`、轴向 `1.00 second`，即约 5 小时 CPU 时间对 1 秒。这是已完成这一次调用的计时，不是墙钟、后续轮次耗时保证或细粒度性能剖析；主要计算成本在径向半步，不能把等待都归于验收工作。
 
 此前事件（保留）：maps 1–8 均为 `VALID_NOT_MET / NEXT_MAP_PARENT_ONLY`。旧 series 已封存 `map-001.portable` 至 `map-003.portable`（全局 maps 6–8），随后 map 9 中断。上次获批接续又在径向第 1 平面即主动停止：旧 one-map runner 的隐式构建重新链接了已冻结的 Dragon，且硬链接同时改动了 release 副本。未完成任何新 map，不能作为数值不收敛证据或接续父态。
 
@@ -56,6 +110,12 @@ CE 六个外侧面为 white、两端 vacuum，总高 150 cm，三个温度层顺
    `-0.1307531197 pcm`。6-cell 在预声明的 30 秒上限停止，没有结果、没有重试，
    12-cell 未启动；**网格敏感性仍未完成**。见 [实验记录](d4a_axial_mesh_probe_result.md)。
    不能将该不完整实验加入生产 lineage，接续任务不得自动重跑。
+   后续只读比对已有 CE 原生 global leakage tally，得到每单位裂变源的两端
+   泄漏：map 8 为 `k*L/F=0.08964776528619689`，CE 为
+   `0.062301665075948254 +/- 0.00012926235482585316`（批均值标准误）。
+   SPOT 高出约 2.735 个百分点；这使轴向离散检查有了直接物理观测依据，
+   但不证明网格是唯一原因，也不是反应性差的因果分解。F 使用既有 REAL32
+   镜像积分，map 8 尚未 MET；详见[同态泄漏诊断](d4a_axial_current_result.md#saved-ce-leakage-comparison-a-concrete-accuracy-diagnostic)。
 2. **核数据处理与闭包。** APOL、ANIS3、TONE/370 群链与 CE 连续能量温度插值
    的差异，以及 2D/1D 闭包与 POD 误差，尚未分离。
    DLIB 目标目录同样标记 ENDF/B-VIII.1，不能说已证实评价库不同，更不能将
@@ -97,7 +157,8 @@ OPENMC=/Users/wen/miniforge3/envs/openmc-dev/bin/openmc
 | `$SERIES/map-001.portable` | map 6，已封存，`VALID_NOT_MET` |
 | `$SERIES/map-002.portable` | map 7，已封存，`VALID_NOT_MET` |
 | `$SERIES/map-003.portable` | map 8，已封存，`VALID_NOT_MET` |
-| `$CONT/map-001.portable` 起的实际封存结果 | 从 map 9 连续到首个 MET，最多 map 12；尚未完成，不可提前纳入 |
+| `$CONT/map-001.portable` | map 9，已封存，`VALID_NOT_MET` |
+| `$CONT/map-002.portable` 起的实际封存结果 | 从 map 10 连续到首个 MET，最多 map 12；尚未完成，不可提前纳入 |
 
 下列命令模板中的 `<SERIES_PORTABLES_IN_ORDER_THROUGH_FINAL>` 应展开为上述实际路径的逐项引用列表；`<REPEATED_SERIES_SPOT_MAP_ARGS>` 则对同一列表逐项写 `--spot-map "绝对路径"`。不得猜测首个 MET 的 map 号，FINAL 不另重复追加。
 

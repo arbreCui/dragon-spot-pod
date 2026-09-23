@@ -19,3 +19,16 @@ Run:
 ```sh
 sh validation/level2/run_level2.sh
 ```
+
+The transport-free source regression additionally exercises the real
+FLU2DR/FLU2DR64 assembly on a two-group P0/P1/P2 macrolib. Only normalization
+and the final transport call are test doubles. Raw SPOT source moments are
+checked exactly; the angular kernel applies `(2*l+1)/2` once. Scalar/vector,
+downscatter/thermal paths and the unchanged non-SPOT convention are covered:
+
+```sh
+python3 validation/level2/run_spot_source_moments.py
+```
+
+This test is part of `spot-fast`. It neither runs a production transport
+case nor establishes D4-A physical accuracy.

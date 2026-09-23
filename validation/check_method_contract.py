@@ -242,6 +242,14 @@ for token in ("GATED/REPRESENTATION", "SUBSPACE-LIMITED"):
         )
 
 r64_driver = texts.get("src/FLU2DR64.f", "")
+flu_driver = texts.get("src/FLU.f", "")
+if re.search(
+    r"ELSE IF\(CXDOOR\.EQ\.'SPOT'\) THEN\s*"
+    r"(?:\*[^\n]*\n\s*)?NLF=ISTATE\(15\)\s*"
+    r"NANI=MAX\(1,ISTATE\(16\)\)\s*NANIS=MIN\(NANIS,NANI-1\)",
+    flu_driver,
+) is None:
+    violations.append("FLU.f: SPOT angular orders must come from TRACK 15/16")
 if re.search(r"CALL\s+B1HOM\s*\(", r64_driver, re.IGNORECASE):
     violations.append(
         "FLU2DR64.f: live B1 flux/source pair falls through the REAL32 B1HOM ABI"

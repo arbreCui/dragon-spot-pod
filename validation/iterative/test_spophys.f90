@@ -224,23 +224,27 @@ program test_spophys
     call LCMGET(group,'VOL2D',volume)
     volume(1)=volume(1)*2.0_real32
     call LCMPUT(group,'VOL2D',nreg,2,volume)
-  case('')
+  case('','bad-radial-s0-length','bad-radial-s0-type', &
+       'bad-axial-xs-length','bad-axial-xs-type','bad-p0-total')
     continue
   case default
     error stop 'UNKNOWN NEGATIVE TEST CASE'
   end select
-  call exercise_spoasm_round_trip(output,7)
-  call exercise_spoasm_round_trip(output,14)
+  call exercise_spoasm_round_trip(output,7,1,0)
+  call exercise_spoasm_round_trip(output,14,1,0)
+  call exercise_spoasm_round_trip(output,7,3,0)
+  call exercise_spoasm_round_trip(output,7,3,1)
+  call exercise_spoasm_round_trip(output,7,3,2)
   call LCMCL(output,2)
   call LCMCL(input,2)
   write(*,'(A)') 'SPOPHYS BEHAVIOR PASS: full physical fixed basis and metadata.'
 
 contains
 
-  subroutine exercise_spoasm_round_trip(physical_basis,axial_nunk)
-    integer, parameter :: nunk=7,nmix2d=1,nfis=1,nanis=1
+  subroutine exercise_spoasm_round_trip(physical_basis,axial_nunk,nanis,leak_mode)
+    integer, parameter :: nunk=7,nmix2d=1,nfis=1
     type(c_ptr), intent(in) :: physical_basis
-    integer, intent(in) :: axial_nunk
+    integer, intent(in) :: axial_nunk,nanis,leak_mode
     type(c_ptr) :: tracking,macrolib,snapshots,assembled
     type(c_ptr) :: tracks,fluxes,systems,libraries
     type(c_ptr) :: track_item,flux_item,system_item,library_item
@@ -254,20 +258,23 @@ contains
     integer :: basis_state_after(nstate),keyflx(nreg),matcod(nreg)
     integer :: rank_old_ref(ngrp),rank_old_new(ngrp)
     integer :: rank_ref(ngrp),rank_new(ngrp),marker,nmode_new,nsnap_new
-    integer :: isnap,jgrp
+    integer :: isnap,jgrp,ilm
     integer :: map_zero(1),map_one(1)
     real(real32) :: flux_vector(nunk),source_vector(nunk)
     real(real32) :: volume_local(nreg),tx_snapshot(nmix2d+1)
-    real(real32) :: s0_snapshot((nmix2d+1)*nanis)
+    real(real32) :: s0_snapshot(nmix2d+1),s0_physical(nmix2d+1)
+    real(real32) :: leakage(ngrp),leak_value,expected_radial(nreg*nsnap)
+    real(real32) :: axial_total(maxmix),axial_scatter(maxmix,3)
     real(real32) :: xs_zero(1),basis_ref(nreg,nreg),basis_new(nreg,nreg)
     real(real32) :: coeff_ref(nreg,nsnap),coeff_new(nreg,nsnap)
     real(real32) :: radial_ref(nreg*nsnap),radial_new(nreg*nsnap)
-    real(real32) :: tx_new(maxmix+1),s0_new((maxmix+1)*nanis)
+    real(real32) :: tx_new(maxmix+1),s0_new(maxmix+1,nanis)
     real(real64) :: sigma_ref(nsnap),sigma_new(nsnap)
     real(real64) :: sigma_root_ref(nsnap*ngrp),sigma_root_new(nsnap*ngrp)
     real(real64) :: pod_ref(2),pod_new(2),phys_ref(4),phys_new(4)
     real(real64) :: root_phys_ref(4),root_phys_new(4)
     character(len=12) :: text12
+    character(len=2) :: moment
 
     call LCMGET(physical_basis,'STATE-VECTOR',basis_state_before)
     call LCMOP(tracking,'SPOASM-TRK',0,1,0)
@@ -287,7 +294,7 @@ contains
     local_state(2)=axial_nunk
     local_state(4)=nmix2d*nsnap
     local_state(6)=nreg
-    local_state(16)=1
+    local_state(16)=nanis
     call LCMPUT(tracking,'STATE-VECTOR',nstate,1,local_state)
 
     text12='L_MACROLIB'
@@ -296,7 +303,29 @@ contains
     local_state(1)=ngrp
     local_state(2)=maxmix
     local_state(3)=nanis
+    if (negative_case == 'bad-p0-total'.and.nanis > 1) local_state(10)=1
     call LCMPUT(macrolib,'STATE-VECTOR',nstate,1,local_state)
+    if (nanis > 1) then
+      ! The corresponding radial APOL values below are T'=2, s0'=0.5.
+      ! Different nonzero transport corrections leave removal = 1.5.
+      axial_total=[2.25_real32,2.5_real32]
+      axial_scatter(:,1)=[0.75_real32,1.0_real32]
+      axial_scatter(:,2)=[0.125_real32,0.375_real32]
+      axial_scatter(:,3)=[-0.25_real32,-0.125_real32]
+      macro_groups=LCMLID(macrolib,'GROUP',ngrp)
+      do jgrp=1,ngrp
+        macro_group=LCMDIL(macro_groups,jgrp)
+        call LCMPUT(macro_group,'NTOT0',maxmix,2,axial_total)
+        do ilm=1,nanis
+          write(moment,'(I2.2)') ilm-1
+          call LCMPUT(macro_group,'SIGW'//moment,maxmix,2,axial_scatter(:,ilm))
+        enddo
+        if (negative_case == 'bad-axial-xs-length') &
+          call LCMPUT(macro_group,'SIGW01',1,2,axial_scatter(:,2))
+        if (negative_case == 'bad-axial-xs-type') &
+          call LCMPUT(macro_group,'SIGW01',maxmix,1,[1,2])
+      enddo
+    endif
 
     text12='L_SNAP'
     call LCMPTC(snapshots,'SIGNATURE',12,text12)
@@ -314,11 +343,15 @@ contains
     volume_local=[1.0_real32,2.0_real32,3.0_real32]
     tx_snapshot=[0.0_real32,2.0_real32]
     s0_snapshot=[0.0_real32,0.5_real32]
+    s0_physical=s0_snapshot
     map_zero=0
     map_one=1
     xs_zero=0.0_real32
 
     do isnap=1,nsnap
+      leak_value=0.0_real32
+      if (leak_mode /= 0) leak_value=real(3-2*isnap,real32)*0.125_real32
+      expected_radial((isnap-1)*nreg+1:isnap*nreg)=-1.25_real32-leak_value
       track_item=LCMDIL(tracks,isnap)
       local_state=0
       local_state(1)=nreg
@@ -343,6 +376,10 @@ contains
       marker=1
       call LCMPUT(flux_item,'SPOT-FS-EQN',1,1,marker)
       call LCMPUT(flux_item,'SPOT-FS-K',1,2,1.0_real32)
+      if (leak_mode /= 0) then
+        leakage=leak_value
+        call LCMPUT(flux_item,'SPOT-LEAK1D',ngrp,2,leakage)
+      endif
       do jgrp=1,ngrp
         do i=1,nunk
           flux_vector(i)=1.0_real32+ &
@@ -363,8 +400,16 @@ contains
       do jgrp=1,ngrp
         system_group=LCMDIL(system_groups,jgrp)
         call LCMPUT(system_group,'DRAGON-TXSC',nmix2d+1,2,tx_snapshot)
+        s0_snapshot=s0_physical
+        if (leak_mode == 2) s0_snapshot=s0_snapshot-leak_value
         call LCMPUT(system_group,'DRAGON-S0XSC', &
-          (nmix2d+1)*nanis,2,s0_snapshot)
+          nmix2d+1,2,s0_snapshot)
+        if (leak_mode /= 0) &
+          call LCMPUT(system_group,'SPOT-S0-PHYS',nmix2d+1,2,s0_physical)
+        if (negative_case == 'bad-radial-s0-length') &
+          call LCMPUT(system_group,'DRAGON-S0XSC',1,2,s0_snapshot)
+        if (negative_case == 'bad-radial-s0-type') &
+          call LCMPUT(system_group,'DRAGON-S0XSC',nmix2d+1,1,[0,1])
       enddo
 
       library_item=LCMDIL(libraries,isnap)
@@ -477,18 +522,31 @@ contains
 
       call LCMGET(physical_group,'RADIAL-OP',radial_ref)
       call LCMGET(assembled_group,'RADIAL-OP',radial_new)
-      call assert_true(all(radial_new == -1.25_real32), &
+      call assert_true(same_real32_bits(radial_new,expected_radial), &
         'SPOASM ROUND-TRIP REBUILT RADIAL OPERATOR')
       call assert_true(.not.same_real32_bits(radial_new,radial_ref), &
         'SPOASM ROUND-TRIP DID NOT COPY RADIAL OPERATOR')
       call LCMGET(assembled_group,'DRAGON-TXSC',tx_new)
+      call require_record(assembled_group,'DRAGON-S0XSC', &
+        (maxmix+1)*nanis,2,'SPOASM AXIAL SCATTER MOMENT EXTENT')
       call LCMGET(assembled_group,'DRAGON-S0XSC',s0_new)
+      if (nanis == 1) then
       call assert_true(same_real32_bits(tx_new, &
         [0.0_real32,2.0_real32,2.0_real32]), &
         'SPOASM ROUND-TRIP REBUILT TOTAL XS')
-      call assert_true(same_real32_bits(s0_new, &
+      call assert_true(same_real32_bits(s0_new(:,1), &
         [0.0_real32,0.5_real32,0.5_real32]), &
         'SPOASM ROUND-TRIP REBUILT SCATTER XS')
+      else
+        call assert_true(tx_new(1) == 0.0_real32.and. &
+          all(s0_new(1,:) == 0.0_real32),'SPOASM VOID XS')
+        call assert_true(same_real32_bits(tx_new(2:),axial_total), &
+          'SPOASM PHYSICAL AXIAL TOTAL; NO APOL DOUBLE COUNT')
+        do ilm=1,nanis
+          call assert_true(same_real32_bits(s0_new(2:,ilm),axial_scatter(:,ilm)), &
+            'SPOASM PHYSICAL AXIAL SCATTER MOMENT')
+        enddo
+      endif
     enddo
 
     call LCMGTC(physical_basis,'SPOT-BTYPE',12,text12)
@@ -504,6 +562,8 @@ contains
     write(*,'(A)') &
       'SPOPHYS SPOASM ROUND-TRIP PASS: full rank 3 exceeds 2 snapshots.'
     write(*,'(A,I0)') 'SPOASM FIXB AXIAL-EXTENT REUSE PASS: ',axial_nunk
+    if (nanis > 1) write(*,'(A,I0)') &
+      'SPOASM AXIAL P2 FROM MACROLIB; RADIAL P0 UNCHANGED PASS: ',leak_mode
   end subroutine exercise_spoasm_round_trip
 
   subroutine require_record(root,name,expected_length,expected_type,label)

@@ -151,6 +151,9 @@ program test_spot1p_basis_invariance
   call assert_true('SPOT1P64 sweep is basis-transform invariant', &
                    err_sweep64 < 5.0e-11_dp,failures)
 
+  call check_angular_moments(2)
+  call check_angular_moments(4)
+
   if (failures /= 0) then
     write(error_unit,'(a,i0)') 'LEVEL2 FAILURES: ',failures
     error stop 1
@@ -159,6 +162,61 @@ program test_spot1p_basis_invariance
     err_boundary,err_boundary64,err_sweep,err_sweep64
 
 contains
+  subroutine check_angular_moments(boundary)
+    ! Uniform manufactured angular solution. Reflective ends use an even
+    ! polynomial; paired periodic ends also retain a nonzero P1 moment.
+    ! Form q_l from the discrete SN collision equation, not by comparison
+    ! with another call to the same transport kernel.
+    integer, intent(in) :: boundary
+    integer :: bc(2),m(2,1),map(2),l,z
+    real :: h(2),t(0:1),s(0:1,3),b(1,1),v(1),zb(2),pol(3,nq),d(1,1)
+    real :: q(1,3,2,1),f(1,3,2,1),j(3,1),edge(nq,1)
+    real(dp) :: q64(1,3,2,1),f64(1,3,2,1),j64(3,1),edge64(nq,1)
+    real(dp) :: coefficients(3),angular(nq),moments(3),source_moment(3)
+    real(dp) :: e32,e64
+    h=[0.5,1.5]
+    t=[0.0,1.5]
+    s=0.0
+    s(1,:)=[0.25,0.125,-0.0625]
+    b=1.0
+    v=1.0
+    d=0.0
+    bc=boundary
+    zb=1.0
+    m=1
+    map=1
+    pol(1,:)=1.0
+    pol(2,:)=mu
+    pol(3,:)=0.5*(3.0*mu*mu-1.0)
+    coefficients=[1.0_dp,0.0_dp,0.0625_dp]
+    if (boundary==4) coefficients(2)=0.125_dp
+    angular=matmul(transpose(real(pol,dp)),coefficients)
+    do l=1,3
+      moments(l)=sum(real(sn_weight,dp)*real(pol(l,:),dp)*angular)
+      source_moment(l)=2.0_dp*real(t(1),dp)*coefficients(l)/real(2*l-1,dp) &
+        -real(s(1,l),dp)*moments(l)
+    enddo
+    do z=1,2
+      q64(1,:,z,1)=source_moment
+    enddo
+    q=real(q64)
+    call SPOT1P(1,2,1,1,1,1,1,nq,3,.false.,map,h,m,t,s,b,v,d,bc,zb, &
+      q,mu,sn_weight,pol,f,j,edge)
+    call SPOT1P64(1,1,2,1,1,1,1,1,nq,3,.false.,map,h,m,t,s,b,v, &
+      real(d,dp),bc,zb,q64,mu,sn_weight,pol,f64,j64,edge64)
+    e32=0.0_dp
+    e64=0.0_dp
+    do z=1,2
+      e32=max(e32,maxval(abs(real(f(1,:,z,1),dp)-moments)))
+      e64=max(e64,maxval(abs(f64(1,:,z,1)-moments)))
+    enddo
+    call assert_true('SPOT1P manufactured raw P0/P1/P2 moments', &
+      e32 <= 64.0_dp*real(epsilon(1.0),dp)*maxval(abs(moments)),failures)
+    call assert_true('SPOT1P64 manufactured raw P0/P1/P2 moments', &
+      e64 <= 64.0_dp*epsilon(1.0_dp)*maxval(abs(moments)),failures)
+    write(*,'(A,I0,A,2ES12.4)') 'ANGULAR MOMENT BC=',boundary,' ERRORS=',e32,e64
+  end subroutine check_angular_moments
+
   subroutine assert_true(label,condition,failures)
     character(*), intent(in) :: label
     logical, intent(in) :: condition

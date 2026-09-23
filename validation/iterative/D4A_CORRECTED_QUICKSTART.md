@@ -6,6 +6,16 @@ the physics, rank, tolerances, or iteration method.
 
 ## Current release boundary
 
+**HOLD — 2026-09-23 scattering audit supersedes the execution instructions
+below.** The frozen runtime does not implement its declared SCAT3 axial
+scattering. Existing bootstrap/map receipts cannot validate the repaired
+method; do not launch or accept another old-runtime map. Keep the snapshots,
+basis and raw evidence, but require a newly verified axial implementation
+and an explicitly budgeted new chain. The source repair is undergoing short
+isolated checks, not a new production rollout. See the
+[current handoff](d4a_final_validation_handoff.md) and
+[scattering repair evidence](d4a_scattering_fix_result.md).
+
 The corrected 132-region, 370-group snapshot archive is admitted for the
 three frozen material states `(650,620,475)`, `(750,620,475)`, and
 `(850,620,475)` degrees C.  Its SHA-256 is
@@ -16,18 +26,20 @@ The admitted rank-two basis SHA-256 is
 Bootstrap is admitted.  The axial seed and all three REAL64 fixed-source
 radial refreshes completed, and the strict B2I seal published `CLOSED/0` with
 `closed_axial.xsm`, `closed_snapshots.xsm`, and
-`d4a_bootstrap_result.sha256`.  Corrected-material maps 1 through 8 completed
-both half-steps and passed their independent audits.  Map 8 is `CLOSED/8` and
-`VALID_NOT_MET`, with `R_rho=1.0492739930256789E-06`,
-`R_L=3.1031397842917180E-06`, and `R_a=1.3106218716376795E-05`. The following
+`d4a_bootstrap_result.sha256`. Corrected-material maps 1 through 9 completed
+both half-steps and passed their independent audits. Map 9 is `CLOSED/9` and
+`VALID_NOT_MET`, with `R_rho=6.7427401995168168E-08`,
+`R_L=8.9211010879356053E-07`, and `R_a=3.5292261241480969E-06`.
+Only R_rho passes the unchanged three-defect `5e-7` AND gate. An earlier
 map-9 attempt was interrupted; its partial directory is not a restart parent.
 A fresh series from frozen map 8 was stopped early on 2026-09-23 after its
 implicit build changed the frozen executable identity. The original binary
 was restored and runtime builds removed. A separately approved continuation
-has now started from map 8 with the unchanged binary, bounded to maps 9–12,
-first MET or failure. No new map has completed. The
-[handoff](d4a_final_validation_handoff.md) records both attempts. No
-corrected-material fixed point, final `k`/power result, or CE comparison may
+has now completed map 9 with the unchanged binary and advanced to map 10,
+still bounded to maps 9–12, first MET or failure. The complete map-9 manifest,
+parent identity and byte-identical read-only checker/gate replays pass. The
+[handoff](d4a_final_validation_handoff.md) records this result and the earlier
+attempts. No corrected-material fixed point, final `k`/power result, or final CE comparison may
 yet be claimed.  Frozen evidence is in
 [the map-1 result](d4a_corrected_map1_result.md),
 [the map-2 result](d4a_corrected_map2_result.md),
