@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "classification": "VALID_SNAPSHOTS",
+  "runtime_sha256": "873ad14272a2f0765d95e6de067194a01708ccf9aa88d58cd782049e6d331fef",
+  "inputs_manifest_sha256": "935223ea827afe403a1ad5cdc8198fc38f9276d487839d7efa4a159f5c374916",
+  "states": {
+    "A": {
+      "snapshots": 1,
+      "groups": 370,
+      "regions": 8,
+      "fission_components": 32,
+      "archive_sha256": "bfa69cde92cc7ec6a3f3e81215d737293ce8846addb272b0bac7f8c68a63f936",
+      "radial_track_sha256": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8",
+      "snapshot_log_sha256": "baa988e8905f36b3c4427e1cba84b3327d085f59beeb24858894cdae31e52852",
+      "material_audit_sha256": "c85252e6520469d6c55bd83119dfc82d2e10680cc26def751712e3dde170830a",
+      "snapshot_record_outputs": {
+        "snapshot_record.log": "4de3de78453ba71061db85ddeeaa6a7c633844734e734ccda945d1b9fdb62f00",
+        "snapshot_record.flux.csv": "d2f903432bafb651288be78ef56aa55010c2eff672a523e5b5de7b9c15489081",
+        "snapshot_record.geometry.csv": "7fea753849504c118dd22809dcc14161cc22e1364fa14cc4b927e8f776d6bcd1"
+      },
+      "snapshot_terminal": {
+        "status": "NORMAL_COMPLETED_SNAPSHOT_LOG_ONLY",
+        "printed_keff": 1.428007,
+        "archive_dimensions": "REQUIRE_INDEPENDENT_ARCHIVE_READER; log/deck text is not a dimension proof"
+      }
+    },
+    "B": {
+      "snapshots": 1,
+      "groups": 370,
+      "regions": 8,
+      "fission_components": 32,
+      "archive_sha256": "e3167a8371c27fed794e97aad2c94f549e1497fe191d6f95fe082d3d4ac87da1",
+      "radial_track_sha256": "f7b27cb4a5d37f903b93e49610e2daa2290d55c164e2ca0e73ccb8d22fe486b8",
+      "snapshot_log_sha256": "e5b3f300a46395cceecca27efe33e180c06315b5cc6510640af96e9814cb35dc",
+      "material_audit_sha256": "1c45e10e83427afed7137751e05c96b7f4fe27cb6230427ec72012c5813f720e",
+      "snapshot_record_outputs": {
+        "snapshot_record.log": "e15c2cbc5b3e67dd262ced1fa06da2ccb546b44eeecd74c6fc13325afb19257f",
+        "snapshot_record.flux.csv": "0144ae200a3538df71d33d629aff3dd7ba7924dfa172d00440571e26f2e28b50",
+        "snapshot_record.geometry.csv": "7fea753849504c118dd22809dcc14161cc22e1364fa14cc4b927e8f776d6bcd1"
+      },
+      "snapshot_terminal": {
+        "status": "NORMAL_COMPLETED_SNAPSHOT_LOG_ONLY",
+        "printed_keff": 1.539089,
+        "archive_dimensions": "REQUIRE_INDEPENDENT_ARCHIVE_READER; log/deck text is not a dimension proof"
+      }
+    }
+  },
+  "scientific_scope": "Qualified material records and converged independent radial snapshots, not coupled/CE accuracy",
+  "retained_material_limit": "Native TONE masked criterion; SPH boundary factor not saved, not independently replayed",
+  "physical_accuracy_accepted": false,
+  "snapshot_inspector": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-tools-20261003/inspect_snapshot",
+    "sha256": "a6a17ab5fd874f3029a9d966de512e41b95f4ed7eb3275b6242298be3b2fd028"
+  }
+}

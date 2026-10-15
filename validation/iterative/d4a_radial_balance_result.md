@@ -1,4 +1,51 @@
-# Corrected D4-A map 8: saved radial operator balance
+# D4-A saved radial operator balance
+
+## Repaired 12-cell CLOSED/6: current-epoch saved-data check
+
+2026-09-28. A transport-free read of
+`validation/artifacts/d4a-scattering-mesh12-picard-map6-20260927/candidate_radial.xsm`
+checks its RETURNED/6 radial fixed-source equation. No input, production code,
+active map-7 file, physical coefficient or acceptance threshold was changed.
+
+The existing GANLIB-only reader was used without recompilation, followed by
+the existing independent arithmetic checker. Both calls had 10-second caps;
+extraction, replay and after-hash checks took 0.202 seconds. All 1110 unique
+plane/group rows replay exactly in binary64; the five pinned source/reader
+files are unchanged. The reader used authoritative REAL64 FLUX/QFISS/LEAK1D64,
+not terminal SOUR or the closed archive's relabelled source.
+
+| Plane | Frozen source F | Operator net removal M | Imposed axial loss Z | sum(abs(R_g))/sum(F_g) |
+| --- | ---: | ---: | ---: | ---: |
+| bottom | 4.077267141478e-3 | 3.751211920091e-3 | 3.260552213865e-4 | 1.33976e-14 |
+| middle | 7.497946972335e-3 | 6.926848633936e-3 | 5.710983383991e-4 | 1.37403e-14 |
+| top | 3.992094869458e-3 | 3.683654746159e-3 | 3.084401232991e-4 | 1.23068e-14 |
+
+Here `R=M+Z+B-F`, with `B=0` from the stored conservative identity-paired
+white boundary condition. The largest individual `abs(R)/S` is
+`9.015471944903435e-16`; the largest difference between component-wise and
+local-first summation is `3.131285591374586e-18`. Values use the archive's
+native planar normalization, not absolute thermal power.
+
+**Scope:** this establishes repaired-epoch archive/operator consistency.
+`FLUBAL64` already enforces group-integrated balance, so this is not an
+independent reaction-channel or 3D local-current conservation test and does
+not resolve the remaining CE k discrepancy. CLOSED/6 remains NOT_MET.
+
+Evidence: `validation/artifacts/d4a-mesh12-map6-radial-balance-20260928`.
+Its six-file result manifest verifies, with SHA-256
+`a4c7550000ba69d82d9b6d8ad51e5d11465977c0c41d2f3baf60edd3addd9608`;
+the CSV hash is
+`adb63ea1fe992f10d5a0bccc2f7636d9e1572c3d24d5c3c6218232c31e3e06d3`.
+The wrapper refuses existing outputs and records the unchanged source pins.
+
+## Historical pre-repair map 8
+
+**Historical / superseded physical state.** This map belongs to the old
+pre-scattering-repair maps 1–11. Its numerical results are retained without
+alteration, but cannot validate the repaired runtime or the current 12-cell
+chain. The separate repaired CLOSED/6 calculation above and the boundary
+cross-check in [the scope review](d4a_neutron_balance_readiness.md) do not
+transfer this historical result into the repaired epoch.
 
 2026-09-23. **DIAGNOSTIC_ONLY / REPORTED_ONLY.** No transport was run and no
 physics, rank, coefficient or convergence threshold changed. This checks the

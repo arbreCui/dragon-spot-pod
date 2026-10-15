@@ -1,0 +1,90 @@
+def caller_integrity_snapshot(value):
+    """Strict caller identity/type/order/value/floatbits, including str attrs.
+
+    This caller-only witness does not relax exact_value for output JSON. The
+    base str encoder below observes the underlying text without __str__.
+    """
+    def visit(part):
+        kind = type(part)
+        typename = kind.__module__ + "." + kind.__qualname__
+        if kind is dict:
+            return ["dict", id(part), [[visit(key), visit(child)] for key, child in part.items()]]
+        if kind is list:
+            return ["list", id(part), [visit(child) for child in part]]
+        if isinstance(part, str):
+            text_hex = str.encode(part, "utf-8", "surrogatepass").hex()
+            attributes = getattr(part, "__dict__", None) if kind is not str else None
+            return ["str", typename, id(part), text_hex,
+                    visit(attributes) if attributes is not None else None]
+        if kind is float:
+            return ["float", struct.pack(">d", part).hex()]
+        require(kind in (int, bool, type(None)), "unexpected accepted caller fixture type")
+        return [typename, part]
+
+    return visit(value)
+
+
+def accepted_str_subclass_controls(g, kwargs, artifacts):
+    """Two original-accepted string subtype groups; strict complete outputs."""
+    class PlainAcceptedStr(str):
+        pass
+
+    class OverrideAcceptedStr(str):
+        def __str__(self):
+            return "OVERRIDE_MUST_NOT_REPLACE_UNDERLYING_JSON_TEXT"
+
+    results = []
+    for name, subtype in [("plain_accepted_str", PlainAcceptedStr),
+                          ("accepted_str_with_str_override", OverrideAcceptedStr)]:
+        arguments = copy.deepcopy(kwargs)
+
+        def foreign(text):
+            require(type(text) is str, "subclass fixture starts with builtin underlying text")
+            value = subtype(text)
+            value.caller_marker = {"case": name, "kept": [None, True, 1, "1", -0.0]}
+            require(str.encode(value) == str.encode(text), "subclass underlying text changed")
+            return value
+
+        first = arguments["owners"][0]
+        for field in ("owner", "category", "path", "sha256"):
+            first[field] = foreign(first[field])
+        new_inputs = arguments["newly_declared_input_paths"]
+        arguments["newly_declared_input_paths"] = {
+            foreign(path): {field: foreign(text) for field, text in descriptor.items()}
+            for path, descriptor in new_inputs.items()}
+        for alias in arguments["aliases"]:
+            for field in ("path", "text", "target", "kind"):
+                alias[field] = foreign(alias[field])
+        arguments["namespaces"][0]["owner"] = foreign(arguments["namespaces"][0]["owner"])
+        arguments["typed_snapshot"]["accepted_subclass_text"] = foreign("underlying snapshot text")
+        arguments["read_trace"]["records"][0]["fixture_extra_descriptor"]["accepted_subclass_text"] = foreign("underlying trace text")
+        before = caller_integrity_snapshot(arguments)
+        original = g.create_wire_graph(**arguments)
+        exact_value(before, caller_integrity_snapshot(arguments), name + "/caller_after_original")
+        fresh = g.create_fresh_complete_wire_graph(**arguments)
+        exact_value(before, caller_integrity_snapshot(arguments), name + "/caller_after_fresh")
+        exact_value(original, fresh, name + "/complete_values_types_order_floatbits")
+        require(compact_pin(original) == compact_pin(fresh), name + "/complete canonical bytes differ")
+        require(original["content_sha256"] == fresh["content_sha256"]
+                and original["wire_encoding"]["decoded_content_sha256"]
+                == fresh["wire_encoding"]["decoded_content_sha256"],
+                name + "/wire or legacy semantic SHA differs")
+        require(not (mutable_ids(arguments) & mutable_ids(fresh)), name + "/fresh borrows caller mutable containers")
+        artifacts.write_json("accepted_subclass_" + name + "_original_wire_graph.json", original)
+        artifacts.write_json("accepted_subclass_" + name + "_fresh_wire_graph.json", fresh)
+        artifacts.write_json("accepted_subclass_" + name + "_caller_witness.json", {
+            "case": name, "complete_caller_identity_type_order_value_floatbit_snapshot": before,
+            "class": subtype.__module__ + "." + subtype.__qualname__,
+            "str_override_output": (str(first["owner"]) if name == "accepted_str_with_str_override" else None),
+            "underlying_owner_text_hex": str.encode(first["owner"]).hex(),
+            "complete_original_and_fresh_outputs_exact": True,
+            "caller_before_after_all_values_types_order_ids_attrs_and_floatbits_exact": True,
+        })
+        results.append({"case": name, "producer_canonical_pin": compact_pin(fresh),
+                        "wire_content_sha256": fresh["content_sha256"],
+                        "legacy_semantic_sha256": fresh["wire_encoding"]["decoded_content_sha256"],
+                        "complete_builtin_output_values_types_order_floatbits_equal": True,
+                        "complete_caller_identity_type_order_value_attrs_floatbits_unchanged": True})
+    return results
+
+

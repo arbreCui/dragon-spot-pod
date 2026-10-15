@@ -1,0 +1,12 @@
+第七批旧文件清理完成
+
+用户授权先清理旧无用文件、保留结果文档。已精确删除关闭失败pipeline v4的6个自有input/PACK副本，共970096676B（约0.903GiB）。未把此前已经清理的native_A1/A2/A3重复计数。
+真实删除工具fae41a/session90845→8e91b9 EXIT0；独立只读后验5f79c9/session6172→38c058 EXIT0，完整核验3970个文件4011563234B，6个候选路径均消失。164个其他普通文件、全部报告日志Source、当前原输入和诊断所需旧v3 PACK保持；只有AAA父目录条目自然减少6（nlink82→76、size2624→2432），其余22目录身份不变。没有重跑删除。
+累计本轮七批实际删除68文件9358182596B（约8.72GiB）；旧已删副本不能从原路径重放，结果文档及当前有效科学输入保留。
+原96GiB历史、fresh2GiB、free8GiB、stage600s、whole1800s、SELF/own child各512MiB限制保持；删除后完整冷运行、元数据及fresh预留余2040828916B，每次新运行仍重新实际测量。
+此清理不授GLOBAL/BOOT、AAA精度、耦合参考或ABA资格。
+
+凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/ACTUAL_EXACT_SIX_FAILED_V4_RELEASE_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/independent_postverify/INDEPENDENT_ACTUAL_EXACT_SIX_POSTVERIFY.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/ROOT_TRUE_CLOSED_EXACT_SIX_RELEASE_TOOL_RETURNS.json

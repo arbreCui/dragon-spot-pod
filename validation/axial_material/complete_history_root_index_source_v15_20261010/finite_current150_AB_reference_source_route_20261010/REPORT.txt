@@ -1,0 +1,26 @@
+当前150 cm同温A/B同数据未降阶参考：有限SOURCE路线（未运行任何业务或数值）
+
+结论
+已有当前材料的完整原始导出和泛型散射/裂变导出源码；不存在可直接拿来认证当前150 cm模型的已合格完整耦合参考。最小第一步是整理已保存A/B MACROLIB的无损数据合同，随后先做全8区域同模型控制，再补独立有限高度输运参考。无需换材料、温度或重新TONE。
+
+真实输入入口
+1. validation/axial_material/material_inputs.py:164-192 的 material.x2m 把同一次MICROLIB2/MACROLIB写为 material.xsm、microlib.ascii、macro.ascii、metadata.ascii。原生保存来源是 validation/artifacts/axial-material-inputs-20261003/{A,B}/material.xsm 和 macro.ascii；本次只查看文件存在性/大小，不读取这四个数值payload。两态素材均仍在：每个material.xsm 76,594,248 B，每个macro.ascii 39,546,544 B。小型material_results.json记录370群/8区/32组件及材料审查，且明确不赋耦合/CE精度；当前qualified离线快照另由prepare_qualified_AB_production.py:15-36映射。
+2. src/MGXEXP.f90:56 泛型 L_MACROLIB → ASCII 的 PN 2 保留P0/P1/P2（nanis=3时）及全部nfis独立NU_SIGF/CHI，SCAT记录输出明确为source,destination，矩为raw Legendre，由接收方应用唯一角向因子。validation/d4_reference/export_map8_macrolib.x2m 是调用语法例子，但其旧18 mixture数据不进入当前实验。入口源码可适配当前8 mixture材料或SPOLIB的24 mixture三槽宏库，实际运行和数据转移尚需新绑定。
+3. MGXEXP不是完整无损数据/物理平衡合同：ABSORPTION在94-109行由NTOT0−SIGS00+N2N+2N3N+3N4N合成；没有TRANC、完整反应字段及FISSIONINDEX/所有原GROUP字段/稀疏原记录。不能将该合成式当真实吸收，不能把SIGS00强迫等于P0列和。material_audit.py:249-273只独立重放P0/P1，不能将其材料证书扩大为已验证P2或角向核采样。
+4. audit_r64_snapshot.f90:78-140输出P0、32个裂变组件及系统修正截面，但只做独立径向冻结源镜像，不含完整3矩的耦合参考。旧probe_native_multigroup/export_native_fission及20cm S2-DD不能替代当前A/B。
+
+按顺序的最少必要任务
+A. 冻结一个当前输入转移包。直接读已经保存的两态MACROLIB；逐条保留370原能群序、8区域映射、3个原始散射矩的IJJS/NJJS/IPOS/SCAT/SIGS/SIGW、NTOT0、TRANC、全部32 NU_SIGF/CHI/FISSIONINDEX、所有存在的裂变和反应记录。保存原始typed字节与完整记录清单，两个独立读取/稀疏展开路径核对source→destination与zero-row/未引用padding；REAL32原值直接提升，不裁剪、不逐群缩放、不重新归一CHI。核对A/B各8 mixture与三物理区24 mixture映射以及transport correction和reaction multiplicity语义。若当前原数据不能满足一个中立物理转移合同，应保留失败并停止，不能修改截面救场。
+B. 先完成同数据、同离散、同2D/1D闭合的全8区域控制。现成入口是src/SPOPHYS.f90，构造B(i,a)=delta(i,a)/sqrt(Vi/sumV)，LCMEQU保留系统且替换POD坐标；src/SPOT1P64.f90支持nmode=nreg2d的显式路径。当前ProductionConfig只接受rank<=2，不能把rank参数改成8冒充同一生产实验；需独立声明的新诊断系统/执行入口。用当前AAA保存的实际48cell/SN32/SCAT3等冻结参数与rank1对照，不倒退成旧12cell/SN8。所有370群/8区/32组件必须完成多群裂变耦合本征固定点，重建final-state源，保留全角/共享faces、所有bin及单个全局nu-fission归一。核对Gram/原权重，不能假定REAL32的B严格单位Gram。它能给同模型径向截断的对照；仍有RADIAL-OP和constant DIAM，不能称无闭合真值。
+C. 若要把POD与轴向/径向合成闭合真正区分，再实现独立同MG、全区域有限高度耦合输运。可复用已经验证的特征线primitive和几何测度设计，但native_layered_full_action.py仅选定group51/61/98的碰撞固定源及白闭合，8个polar/sign状态并不自动等于完整3矩各向异性多群算子。必须给实际全部planar/polar方向的3矩角向散射源、全32组件裂变反馈、区域/轴向共享faces以及径向白反照1和端部真空；不得把预投影H逆、rank1源、旧D4宏库或径向leakage项当独立输运方程。先与零散射/对角吸收/固定源/白边界解析和独立方程控制核对，然后才有本征参考资格。迭代加速仅为预条件器，原算子与源账目不得被替换。
+D. 给独立参考自身的有效性证据，再比较观测量。保存全部多群方程/共享face/白边界/真空残差、真实k和final源固定点、全局归一后幅度唯一性与不同初猜一致性、非负角通量/正scalar和outgoing白振幅；高阶Legendre系数有符号不等于非法负截面，不允许flux fixup。物理中子账目要独立保留裂变出生/移除、真实反应多重性、入射/出射及所有49面有符号电流；由实际记录验证source与loss合同，不能将Σt减生产散射列和直接命名吸收，不能用电流望远镜恒等式宣称真实平衡。保持物理边界不变，对轴向、planar/polar角向以及track/source空间细化分别声明并检查收敛；固定源满分不能替代裂变本征收敛。将剩余离散误差报告到比较尺度，事先冻结容差，不事后修改3%。
+E. 先只完成AAA诊断和原验收，之后依原门槛决定ABA。所有新执行与Root当前业务串行，1个数值child、1线程、原资源/无重试合同不变；新参考执行前需明确完整工作量和cap，不能借SOURCE审查预测时间/RSS或暗中开始算。
+
+可区分的误差与不可推断
+- rank1与SPOPHYS全8区域控制：在相同MG/闭合/网格/角向/源合同成立且两者真实fixed point有效时，差值可界定该同模型径向降阶的影响；不能归因其他物理，也不能保证差值单调变小。
+- 同模型全8控制与独立全MG有限高度输运：在raw-data transfer与离散误差受控后，可观察2D/1D合成/闭合的影响；若网格/角向或自散射transport correction一起改变，则必须分别控制，不能直接称闭合的单独误差。
+- 独立同MG参考与原独立CE：仍包含MG处理/自屏蔽/数据路线等差异，不能将残差全部叫核数据误差；相同记录路线排除了比较对象之间的数据改变，不等于处理本身无误。三个归一化profile对照不能把不同最大bin或百分比直接相加作误差预算。
+- 当前3.9525259224%来自独立连续能OpenMC，总方法+数据误差；原统计95%上限4.6963660269%、参考统计充分。仅nu_fission FAIL，7个PASS里currents_balance_symmetry明确是电流账目/对称性，assessment仍说full neutron balance NOT_ASSESSED。源相位软件一致性不能完成上述任一步科学资格。
+
+保持的目标与判据
+150cm，区界0/50/100/150，8径向区域，原pin几何；每区fuel/hole750°C、clad/gap620°C、Na475°C，A Pu/U=.21/.79，B=.2436/.7564，原corrected density law/同位素/库路线。径向white isotropic albedo1；上下真空。一次全局nu-fission归一，保留所有燃料bin；原scalar L2<=1%、最大nu-fission相对差<=3%、原k准则和原至少20块/95%bootstrap/块长敏感性/源收敛及统计充分规则均保持。精度证据必须回到原CE完整统计/观测比较，AAA未合格前不进入完整ABA。此次仅SOURCE路线建议，没有任何新科学、INPUT、native、构建、平衡或goal资格。

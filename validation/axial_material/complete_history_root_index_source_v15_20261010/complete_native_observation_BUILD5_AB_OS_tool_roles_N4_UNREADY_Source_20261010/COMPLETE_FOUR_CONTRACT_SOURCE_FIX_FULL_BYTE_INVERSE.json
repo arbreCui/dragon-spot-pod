@@ -1,0 +1,581 @@
+{
+  "schema": "COMPLETE_OBSERVATION_NATIVE_ORIGINAL_RECIPE_AND_PHYSICAL_LOGICAL_ROOT_CONTRACT_FIX_SOURCE_INVERSE_V1",
+  "source_only": true,
+  "original_frozen_manifest_sha256": "2a1c950bcf036e1534901333af2f50c2f53ab12105502e247445e9a8fe9c066a",
+  "source_derivations": [
+    {
+      "source_member": "complete_observation_BUILD5_AB_runtime.UNREADY.py",
+      "original_sha256": "20fa6b41b0ea9d6773a22f7ef813cde4f481ec95eb02cbd7e47964a1f23bfd29",
+      "fixed_sha256": "d067360e54b7da0a326fa6e26e9da21c39088bd2e63df11bf5416899dbd6c40d",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "insert",
+          "old_start0": 24,
+          "old_end0": 24,
+          "new_start0": 24,
+          "new_end0": 52,
+          "old_full_lines": [],
+          "new_full_lines": [
+            "# Complete selected original Makefile variables, preserving empty/undefined\n",
+            "# variables rather than inventing common flags. Original Darwin/arm64, GNU\n",
+            "# compilers, openmp/mpi/hdf5/intel/nvidia/llvm disabled. Relative INCLUDE is\n",
+            "# evaluated from each original component src directory in the fresh tree.\n",
+            "ORIGINAL_DARWIN_ARM64_NATIVE_RECIPES = {\n",
+            "    'Ganlib': {'C':'c','CFLAGS':['-Wall','-fPIC'],'FLAGS':['-DLinux','-DUnix'],\n",
+            "        'F90':'fortran','FFLAGS':['-fPIC','-Wall','-Wno-maybe-uninitialized','-ffpe-summary=none'],\n",
+            "        'FFLAG77':['-fPIC','-Wall','-frecord-marker=4','-ffpe-summary=none'],\n",
+            "        'INCLUDE':[], 'PREPRO':'cpp','FMPI':[], 'opt':['-O','-g'], 'COMP':[], 'LFLAGS':[],\n",
+            "        'lib_module':'Ganlib/lib/Darwin_arm64/modules','module_copy':True},\n",
+            "    'Utilib': {'C':'c','CFLAGS':['-Wall','-fPIC'],'FLAGS':[],\n",
+            "        'F90':'fortran','FFLAGS':['-fPIC','-Wall','-ffpe-summary=none'],\n",
+            "        'FFLAG77':['-fPIC','-Wall','-frecord-marker=4','-ffpe-summary=none'],\n",
+            "        'INCLUDE':[], 'PREPRO':None,'FMPI':[], 'opt':['-O','-g'], 'COMP':[], 'LFLAGS':[],\n",
+            "        'lib_module':'Utilib/lib/Darwin_arm64/modules','module_copy':True},\n",
+            "    'Trivac': {'C':None,'CFLAGS':[],'FLAGS':[],\n",
+            "        'F90':'fortran','FFLAGS':['-fPIC','-ffpe-summary=none'],\n",
+            "        'FFLAG77':['-fPIC','-frecord-marker=4','-ffpe-summary=none'],\n",
+            "        'INCLUDE':['-I../../Ganlib/lib/Darwin_arm64/modules/'], 'PREPRO':None,'FMPI':[],\n",
+            "        'opt':['-O','-g'], 'COMP':[], 'LFLAGS':[], 'lib_module':None,'module_copy':False},\n",
+            "    'Dragon': {'C':'c','CFLAGS':['-Wall','-fPIC'],'FLAGS':['-DLinux','-DUnix'],\n",
+            "        'F90':'fortran','FFLAGS':['-fPIC','-Wall','-ffpe-summary=none'],\n",
+            "        'FFLAG77':['-fPIC','-Wall','-frecord-marker=4','-ffpe-summary=none'],\n",
+            "        'INCLUDE':['-I../../Ganlib/lib/Darwin_arm64/modules/'], 'PREPRO':'cpp','FMPI':[],\n",
+            "        'opt':['-O','-g'], 'COMP':[], 'LFLAGS':[],\n",
+            "        'lib_module':'Dragon/lib/Darwin_arm64/modules','module_copy':True},\n",
+            "}\n",
+            "\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 116,
+          "old_end0": 117,
+          "new_start0": 144,
+          "new_end0": 145,
+          "old_full_lines": [
+            "    require(Path(b['tool_pins']['fortran']['path']).name.startswith('gfortran')and Path(b['tool_pins']['c']['path']).name.startswith(('gcc','clang')),'original GNU Fortran and Darwin C recipe required')\n"
+          ],
+          "new_full_lines": [
+            "    require(Path(b['tool_pins']['fortran']['path']).name.startswith('gfortran')and Path(b['tool_pins']['c']['path']).name.startswith('gcc'),'original GNU Fortran and Darwin C recipe required')\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 181,
+          "old_end0": 182,
+          "new_start0": 209,
+          "new_end0": 211,
+          "old_full_lines": [
+            "    sources={r['relative_path']:r['input_pin']for r in original};stages=[];archives={};all_objects=[];modules=native/'Ganlib/lib/Darwin_arm64/modules';modules.mkdir(parents=True)\n"
+          ],
+          "new_full_lines": [
+            "    sources={r['relative_path']:r['input_pin']for r in original};stages=[];archives={};all_objects=[]\n",
+            "    require(list(ORIGINAL_DARWIN_ARM64_NATIVE_RECIPES)==['Ganlib','Utilib','Trivac','Dragon'],'all original component-specific recipe variables')\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 183,
+          "old_end0": 184,
+          "new_start0": 212,
+          "new_end0": 215,
+          "old_full_lines": [
+            "        started=time.monotonic();deadline=started+600;folder=native/component/'src'\n"
+          ],
+          "new_full_lines": [
+            "        started=time.monotonic();deadline=started+600;folder=native/component/'src';recipe=ORIGINAL_DARWIN_ARM64_NATIVE_RECIPES[component]\n",
+            "        library_dir=native/component/'lib/Darwin_arm64';library_dir.mkdir(parents=True)\n",
+            "        if recipe['lib_module']is not None:(native/recipe['lib_module']).mkdir(parents=True)\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 185,
+          "old_end0": 186,
+          "new_start0": 216,
+          "new_end0": 217,
+          "old_full_lines": [
+            "        c=sorted(folder.glob('*.c'));f90=sorted([*folder.glob('*.f90'),*folder.glob('*.F90')]);f77=sorted([*folder.glob('*.f'),*folder.glob('*.F')])\n"
+          ],
+          "new_full_lines": [
+            "        c=sorted(folder.glob('*.c'));f90=[*sorted(folder.glob('*.f90')),*sorted(folder.glob('*.F90'))];f77_lower=sorted(folder.glob('*.f'));f77_upper=sorted(folder.glob('*.F'));f77=[*f77_lower,*f77_upper]\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 201,
+          "old_end0": 202,
+          "new_start0": 232,
+          "new_end0": 236,
+          "old_full_lines": [
+            "                argv=[tools['cpp']['path'],'-P','-W','-traditional','-DLinux','-DUnix',str(p),str(src)]\n"
+          ],
+          "new_full_lines": [
+            "                require(recipe['PREPRO']is not None,'original selected Makefile PREPRO undefined for this suffix; no invented tool')\n",
+            "                argv=[tools[recipe['PREPRO']]['path'],'-P','-W','-traditional',*recipe['FLAGS']]\n",
+            "                if p.suffix=='.F':argv+=recipe['FMPI']\n",
+            "                argv+=[str(p),str(src)]\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 204,
+          "old_end0": 205,
+          "new_start0": 238,
+          "new_end0": 241,
+          "old_full_lines": [
+            "            if p.suffix=='.c':argv=[tools['c']['path'],'-Wall','-fPIC','-DLinux','-DUnix','-O','-g','-c',str(src),'-o',str(obj)]\n"
+          ],
+          "new_full_lines": [
+            "            if p.suffix=='.c':\n",
+            "                require(recipe['C']is not None,'original selected Makefile C undefined, no invented compiler')\n",
+            "                argv=[tools[recipe['C']]['path'],*recipe['CFLAGS'],*recipe['FLAGS'],*recipe['opt'],*recipe['COMP'],'-c',str(src),'-o',str(obj)]\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 206,
+          "old_end0": 211,
+          "new_start0": 242,
+          "new_end0": 244,
+          "old_full_lines": [
+            "                argv=[tools['fortran']['path'],'-fPIC','-Wall']\n",
+            "                if p.suffix in('.f','.F'):argv+=['-frecord-marker=4']\n",
+            "                argv+=['-ffpe-summary=none','-O','-g']\n",
+            "                if p.suffix in('.f90','.F90')or component!='Ganlib':argv+=['-I'+str(modules)]\n",
+            "                argv+=['-c',str(src),'-o',str(obj)]\n"
+          ],
+          "new_full_lines": [
+            "                flags=recipe['FFLAG77']if p.suffix in('.f','.F')else recipe['FFLAGS']\n",
+            "                argv=[tools[recipe['F90']]['path'],*flags,*recipe['opt'],*recipe['COMP'],*recipe['INCLUDE'],'-c',str(src),'-o',str(obj)]\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 219,
+          "old_end0": 223,
+          "new_start0": 252,
+          "new_end0": 265,
+          "old_full_lines": [
+            "        for p in folder.glob('*.mod'):\n",
+            "            target=modules/p.name\n",
+            "            if target.exists():require(fullpin(target,budget)['sha256']==fullpin(p,budget)['sha256'],'module collision must preserve exact bytes')\n",
+            "            else:shutil.copy2(p,target)\n"
+          ],
+          "new_full_lines": [
+            "        # Original ar emits src/lib*.a, then original cp places the same fresh\n",
+            "        # archive into each component's own lib directory used by final link.\n",
+            "        library_copy=library_dir/archive.name;require(not os.path.lexists(library_copy),'fresh original recipe library copy')\n",
+            "        shutil.copy2(archive,library_copy);library_copy_pin=fullpin(library_copy,budget)\n",
+            "        require(library_copy_pin['sha256']==ap['sha256']and library_copy_pin['size_bytes']==ap['size_bytes'],'original library copy full bytes equal actual fresh ar output')\n",
+            "        module_copy_pins=[]\n",
+            "        if recipe['module_copy']:\n",
+            "            modules=native/recipe['lib_module'];generated_modules=list(folder.glob('*.mod'))\n",
+            "            require(component!='Utilib'or bool(generated_modules),'original Utilib unguarded cp *.mod requires actual modules')\n",
+            "            for p in generated_modules:\n",
+            "                target=modules/p.name;require(not os.path.lexists(target),'original per-library module namespace fresh')\n",
+            "                shutil.copy2(p,target);module_copy_pins.append(dict(original_generated_module_pin=fullpin(p,budget),original_recipe_module_copy_pin=fullpin(target,budget)))\n",
+            "        # Trivac's original library recipe never copies module files.\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 224,
+          "old_end0": 225,
+          "new_start0": 266,
+          "new_end0": 267,
+          "old_full_lines": [
+            "        archives[component]=ap;stages.append(dict(component=component,stage_wall_cap_seconds=600,elapsed_seconds=time.monotonic()-started,all_object_inputs_in_original_archive_order=[r for p in objects_order for r in objects if r['new_object_pin']['path']==str(p)],all_commands=commands,actual_archive_command=archive_stage,new_archive_pin=ap))\n"
+          ],
+          "new_full_lines": [
+            "        archives[component]=library_copy_pin;stages.append(dict(component=component,exact_original_selected_recipe=recipe,original_recipe_library_copy_pin=library_copy_pin,original_recipe_module_copy_pins=module_copy_pins,archive_object_source_suffix_group_order=['.c','original_dependency_order(.f90_then_.F90)','.f','.F'],stage_wall_cap_seconds=600,elapsed_seconds=time.monotonic()-started,all_object_inputs_in_original_archive_order=[r for p in objects_order for r in objects if r['new_object_pin']['path']==str(p)],all_commands=commands,actual_archive_command=archive_stage,new_archive_pin=ap))\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 228,
+          "old_end0": 229,
+          "new_start0": 270,
+          "new_end0": 271,
+          "old_full_lines": [
+            "    argv=[tools['fortran']['path'],'-O','-g',*[p['path']for p in link_inputs],'-o',str(exe)];link=guarded(runner,support,resources,native/'Dragon/src','Dragon_link',argv,link_started+600,budget)\n"
+          ],
+          "new_full_lines": [
+            "    link_recipe=ORIGINAL_DARWIN_ARM64_NATIVE_RECIPES['Dragon'];argv=[tools[link_recipe['F90']]['path'],*link_recipe['opt'],*link_recipe['COMP'],*[p['path']for p in link_inputs],*link_recipe['LFLAGS'],'-o',str(exe)];link=guarded(runner,support,resources,native/'Dragon/src','Dragon_link',argv,link_started+600,budget)\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 253,
+          "old_end0": 254,
+          "new_start0": 295,
+          "new_end0": 296,
+          "old_full_lines": [
+            "                snapshot=fullpin(files[n],budget);all_observer_names.add(n);snapshots.append(dict(event=event,role=role,root_prefix=[]if role=='final-complete-micro'else['MACROLIB'],input_pin=snapshot))\n"
+          ],
+          "new_full_lines": [
+            "                snapshot=fullpin(files[n],budget);all_observer_names.add(n);snapshots.append(dict(event=event,role=role,root_prefix=[],logical_prefix=[]if role=='final-complete-micro'else['MACROLIB'],input_pin=snapshot))\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 256,
+          "old_end0": 257,
+          "new_start0": 298,
+          "new_end0": 299,
+          "old_full_lines": [
+            "        events.append(dict(event=event,libmix=libmix,label=label,complete_context_pin=pp,snapshot_role=role,actual_snapshot_pin=snapshot,actual_old_macro_absent_at_event=(role is not None and snapshot is None)))\n"
+          ],
+          "new_full_lines": [
+            "        events.append(dict(event=event,libmix=libmix,label=label,complete_context_pin=pp,snapshot_role=role,actual_snapshot_pin=snapshot,actual_native_snapshot_root_prefix=[]if snapshot is not None else None,snapshot_logical_prefix=([]if role=='final-complete-micro'else['MACROLIB'])if snapshot is not None else None,actual_old_macro_absent_at_event=(role is not None and snapshot is None)))\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 264,
+          "old_end0": 265,
+          "new_start0": 306,
+          "new_end0": 307,
+          "old_full_lines": [
+            "    return dict(state=state,actual_material_deck_pin=deck_pin,actual_executable_pin=exe_pin,actual_genuine_material_stage=stage,actual_material_product_pins=outputs,actual_all_event_headers_in_original_execution_order=events,complete_context_pins=contexts,complete_state_snapshot_inputs=snapshots,selected_last_libmix_number=last_libmix,all_actual_events_and_snapshots_saved=True,actual_material_child_closed_before_manifest=True,all_producer_file_handles_closed_before_next_state=True,new_final_micro_from_actual_TONDRV_observer=True,native_snapshot_api_or_memory_bits_qualified=False,**FUTURE)\n"
+          ],
+          "new_full_lines": [
+            "    return dict(state=state,actual_material_deck_pin=deck_pin,actual_executable_pin=exe_pin,actual_genuine_material_stage=stage,actual_material_product_pins=outputs,actual_all_event_headers_in_original_execution_order=events,complete_context_pins=contexts,complete_state_snapshot_inputs=snapshots,legacy_context_source_snapshot_request_rows=[dict(event=item['event'],role=item['role'],root_prefix=item['logical_prefix'],input_pin=item['input_pin'])for item in snapshots],legacy_context_root_prefix_semantics='output_pool_logical_path_prefix_only_not_native_directory_lookup',actual_native_snapshot_root_prefix=[],selected_last_libmix_number=last_libmix,all_actual_events_and_snapshots_saved=True,actual_material_child_closed_before_manifest=True,all_producer_file_handles_closed_before_next_state=True,new_final_micro_from_actual_TONDRV_observer=True,native_snapshot_api_or_memory_bits_qualified=False,**FUTURE)\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 322,
+          "old_end0": 323,
+          "new_start0": 364,
+          "new_end0": 365,
+          "old_full_lines": [
+            "        manifest=dict(schema='ACTUAL_COMPLETE_AXOBSCTXv2_AB_OBSERVATION_MANIFEST_V1',source_only=False,state_order=['A','B'],states=states,complete_state_snapshot_inputs={k:v['complete_state_snapshot_inputs']for k,v in states.items()},complete_context_inputs={k:v['complete_context_pins']for k,v in states.items()},all_A_handles_closed_before_B=True,actual_Source_binary_link_evidence_pin=bp,actual_observer_executable_pin=ep,independent_observation_Source_admission_pin=b['independent_observation_Source_admission_pin'],actual_Source_scope_coupling=scope,original_caps=CAPS,actual_material_build_and_observation_executed=True,Root_observed_tool_terminal=None,Root_postclose_coverage_contract=None,new_native_walker_controls_actual_run=None,new_complete_aggregation_controls_actual_run=None,actual_frozen_native_Source_object_link_exe_evidence_saved=True,**FUTURE)\n"
+          ],
+          "new_full_lines": [
+            "        manifest=dict(schema='ACTUAL_COMPLETE_AXOBSCTXv2_AB_OBSERVATION_MANIFEST_V1',source_only=False,state_order=['A','B'],states=states,complete_state_snapshot_inputs={k:v['complete_state_snapshot_inputs']for k,v in states.items()},complete_context_inputs={k:v['complete_context_pins']for k,v in states.items()},legacy_context_source_snapshot_request_rows={k:v['legacy_context_source_snapshot_request_rows']for k,v in states.items()},legacy_context_root_prefix_semantics='output_pool_logical_path_prefix_only_not_native_directory_lookup',actual_native_snapshot_root_prefix=[],all_A_handles_closed_before_B=True,actual_Source_binary_link_evidence_pin=bp,actual_observer_executable_pin=ep,independent_observation_Source_admission_pin=b['independent_observation_Source_admission_pin'],actual_Source_scope_coupling=scope,original_caps=CAPS,actual_material_build_and_observation_executed=True,Root_observed_tool_terminal=None,Root_postclose_coverage_contract=None,new_native_walker_controls_actual_run=None,new_complete_aggregation_controls_actual_run=None,actual_frozen_native_Source_object_link_exe_evidence_saved=True,**FUTURE)\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    },
+    {
+      "source_member": "Root_observation_postclose_META_writer.UNREADY.py",
+      "original_sha256": "f408be3e11ce2f5e75a0dbe02051a7e3e4fa350fb3c1e46bca527797c9a74525",
+      "fixed_sha256": "c88e70e43b64c8d4954ea36504346d217f63a758e80eae76fa158bd3607d918a",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "replace",
+          "old_start0": 67,
+          "old_end0": 68,
+          "new_start0": 67,
+          "new_end0": 69,
+          "old_full_lines": [
+            "        require(stage['component']in('Ganlib','Utilib','Trivac','Dragon')and 0<=stage['elapsed_seconds']<600,'all real group wall cap');check(stage['new_archive_pin'])\n"
+          ],
+          "new_full_lines": [
+            "        require(stage['component']in('Ganlib','Utilib','Trivac','Dragon')and 0<=stage['elapsed_seconds']<600,'all real group wall cap');check(stage['new_archive_pin']);check(stage['original_recipe_library_copy_pin'])\n",
+            "        for module in stage['original_recipe_module_copy_pins']:check(module['original_generated_module_pin']);check(module['original_recipe_module_copy_pin'])\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 81,
+          "old_end0": 82,
+          "new_start0": 82,
+          "new_end0": 85,
+          "old_full_lines": [
+            "        for p in row['complete_state_snapshot_inputs']:check(p['input_pin'])\n"
+          ],
+          "new_full_lines": [
+            "        for p in row['complete_state_snapshot_inputs']:\n",
+            "            require(set(p)=={'event','role','root_prefix','logical_prefix','input_pin'}and p['root_prefix']==[]and p['logical_prefix']==([]if p['role']=='final-complete-micro'else['MACROLIB']),'explicit native root[] and original pool logical prefix');check(p['input_pin'])\n",
+            "        require(row['legacy_context_source_snapshot_request_rows']==[dict(event=p['event'],role=p['role'],root_prefix=p['logical_prefix'],input_pin=p['input_pin'])for p in row['complete_state_snapshot_inputs']]and row['legacy_context_root_prefix_semantics']=='output_pool_logical_path_prefix_only_not_native_directory_lookup'and row['actual_native_snapshot_root_prefix']==[],'explicit legacy logical-prefix-only handoff; no nonexistent MACROLIB child')\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 85,
+          "old_end0": 86,
+          "new_start0": 88,
+          "new_end0": 89,
+          "old_full_lines": [
+            "    roots=[Path(b['namespaces'][k])for k in('host','output','control','source','receipts')];total=sum(q.stat().st_size for root in roots for q in root.rglob('*')if q.is_file());require(total<2*2**30,'complete actual postclose joint archive before receipt')\n"
+          ],
+          "new_full_lines": [
+            "    namespace_keys=('host','output','control','source','receipts');roots=[Path(b['namespaces'][k])for k in namespace_keys]\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 90,
+          "old_end0": 93,
+          "new_start0": 93,
+          "new_end0": 115,
+          "old_full_lines": [
+            "    result=dict(m);result.update(schema='ROOT_ACTUAL_COMPLETE_AXOBSCTXv2_AB_OBSERVATION_POSTCLOSE_MANIFEST_V1',Root_observed_tool_terminal=terminal_pin,Root_actual_host_result_pin=host_pin,Root_actual_binding_pin=binding_pin,Root_checked_full_Input_Source_D_E_freeze=True,Root_checked_all_whole_event_snapshot_and_new_executable_fullpins=True,actual_raw_observation_manifest_pin=h['actual_observation_manifest_pin'],Root_postclose_joint_HOCDE_bytes_before_receipt=total,Root_postclose_original_dynamic_history_resource_before=resource_before,Root_postclose_external_Source_D_receipt_E_bytes=outside,Root_postclose_coverage_contract=dict(schema='ROOT_ACTUAL_COMPLETE_AXOBSCTXv2_OBSERVATION_COVERAGE_V1',state_order=['A','B'],all_complete_observer_events_and_snapshots_saved=True,native_snapshot_API_bit_equivalence_qualified=False,independent_observation_Source_admission_pin=b['independent_observation_Source_admission_pin'],new_native_walker_controls_actual_run=None,new_complete_aggregation_controls_actual_run=None,**FUTURE))\n",
+            "    write_new(out,result);resource_after=resource_checker.check();outside_after=sum(q.stat().st_size for root in roots[3:]for q in root.rglob('*')if q.is_file());require(resource_after['artifact_bytes']+outside_after<96*2**30,'postclose receipt itself counts in history96GiB/free8GiB');require(sum(q.stat().st_size for root in roots for q in root.rglob('*')if q.is_file())<2*2**30,'postclose receipt itself counts in joint archive')\n",
+            "    print(json.dumps(dict(status='ACTUAL_COMPLETE_OBSERVATION_POSTCLOSE_META_ONLY_NO_NATIVE_OR_SCIENCE_QUALIFICATION',actual_observation_manifest_pin=fullpin(out),raw_observation_manifest_pin=h['actual_observation_manifest_pin'],independent_observation_Source_admission_pin=b['independent_observation_Source_admission_pin'],complete_state_snapshot_inputs=m['complete_state_snapshot_inputs'],complete_context_inputs=m['complete_context_inputs'],**FUTURE),allow_nan=False),flush=True)\n"
+          ],
+          "new_full_lines": [
+            "    # Full EOF views cover every regular file, not only known Source/build/event\n",
+            "    # pins. E is deliberately captured before appending this manifest; a JSON\n",
+            "    # manifest cannot contain its own complete hash/identity recursively.\n",
+            "    namespace_views={key:tree(Path(b['namespaces'][key]))for key in namespace_keys}\n",
+            "    require(namespace_views['source']==h['complete_Source_D_freeze']and namespace_views['receipts']==h['complete_receipt_E_freeze'],'complete D remains frozen; complete E captured before this single append')\n",
+            "    total=sum(p['size_bytes']for view in namespace_views.values()for p in view['files']);outside=sum(p['size_bytes']for key in('source','receipts')for p in namespace_views[key]['files'])\n",
+            "    require(total<2*2**30 and resource_before['artifact_bytes']+outside<96*2**30,'all complete namespace fullpins counted before append')\n",
+            "\n",
+            "    result=dict(m);result.update(schema='ROOT_ACTUAL_COMPLETE_AXOBSCTXv2_AB_OBSERVATION_POSTCLOSE_MANIFEST_V1',Root_observed_tool_terminal=terminal_pin,Root_actual_host_result_pin=host_pin,Root_actual_binding_pin=binding_pin,Root_checked_full_Input_Source_D_E_freeze=True,Root_checked_all_whole_event_snapshot_and_new_executable_fullpins=True,actual_raw_observation_manifest_pin=h['actual_observation_manifest_pin'],Root_postclose_joint_HOCDE_bytes_before_receipt=total,Root_postclose_original_dynamic_history_resource_before=resource_before,Root_postclose_external_Source_D_receipt_E_bytes=outside,Root_complete_postclose_HOCDE_namespace_views=namespace_views,Root_complete_postclose_HOCDE_namespace_view_contract=dict(schema='ROOT_COMPLETE_HOCDE_POSTCLOSE_FULL_EOF_VIEWS_BEFORE_OWN_E_APPEND_V1',namespace_order=list(namespace_keys),all_directories_and_regular_files_saved=True,all_regular_file_full_EOF_sha256_size_and_7_identity_saved=True,E_view_before_this_manifest_append=True,this_manifest_not_self_pinned_in_its_content=True,this_manifest_actual_fullpin_is_in_actual_Root_stdout=True,this_manifest_append_counts_in_joint_history_free_caps=True,D_namespace_never_appended=True),Root_postclose_coverage_contract=dict(schema='ROOT_ACTUAL_COMPLETE_AXOBSCTXv2_OBSERVATION_COVERAGE_V1',state_order=['A','B'],all_complete_observer_events_and_snapshots_saved=True,native_snapshot_API_bit_equivalence_qualified=False,independent_observation_Source_admission_pin=b['independent_observation_Source_admission_pin'],new_native_walker_controls_actual_run=None,new_complete_aggregation_controls_actual_run=None,**FUTURE))\n",
+            "    write_new(out,result)\n",
+            "    # Re-read all five complete views after the append. H/O/C/D must be byte\n",
+            "    # and identity stable. E may gain exactly this new receipt and only its\n",
+            "    # containing directory metadata may change. No D Source is appended.\n",
+            "    after_views={key:tree(Path(b['namespaces'][key]))for key in namespace_keys};out_pin=fullpin(out)\n",
+            "    require(all(after_views[key]==namespace_views[key]for key in namespace_keys[:-1]),'postclose H/O/C/D full views unchanged across own E append')\n",
+            "    require(sorted(after_views['receipts']['files'],key=lambda p:p['path'])==sorted([*namespace_views['receipts']['files'],out_pin],key=lambda p:p['path'])and set(after_views['receipts']['directories'])==set(namespace_views['receipts']['directories']),'E gains exactly own manifest with complete full EOF pin and no extra directory')\n",
+            "    for directory,identity in namespace_views['receipts']['directories'].items():\n",
+            "        current=after_views['receipts']['directories'][directory]\n",
+            "        require((current[:3]==identity[:3])if directory==str(out.parent)else current==identity,'only E own append directory nlink/size/timestamps may change; dev/inode/mode stay identical')\n",
+            "    resource_after=resource_checker.check();outside_after=sum(p['size_bytes']for key in('source','receipts')for p in after_views[key]['files']);joint_after=sum(p['size_bytes']for view in after_views.values()for p in view['files'])\n",
+            "    require(resource_after['artifact_bytes']+outside_after<96*2**30,'postclose receipt itself counts in history96GiB/free8GiB');require(joint_after<2*2**30,'postclose receipt itself counts in joint archive')\n",
+            "    print(json.dumps(dict(status='ACTUAL_COMPLETE_OBSERVATION_POSTCLOSE_META_ONLY_NO_NATIVE_OR_SCIENCE_QUALIFICATION',actual_observation_manifest_pin=out_pin,Root_postclose_complete_namespace_views_saved_before_own_E_append=True,Root_postclose_joint_HOCDE_bytes_including_own_manifest=joint_after,Root_postclose_original_dynamic_history_resource_after=resource_after,Root_postclose_external_Source_D_receipt_E_bytes_including_own_manifest=outside_after,raw_observation_manifest_pin=h['actual_observation_manifest_pin'],independent_observation_Source_admission_pin=b['independent_observation_Source_admission_pin'],complete_state_snapshot_inputs=m['complete_state_snapshot_inputs'],complete_context_inputs=m['complete_context_inputs'],**FUTURE),allow_nan=False),flush=True)\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    },
+    {
+      "source_member": "bind_complete_observation_SOURCE_only.UNREADY.py",
+      "original_sha256": "f7e6443c3bd3c520bf4da6d5f11041f3f55768a2362a9bcb8b364fe82eb076f9",
+      "fixed_sha256": "71e809301a5a9bfa053667aa5d210a8f462a4c3c6097a37433dc8dd810846285",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "replace",
+          "old_start0": 17,
+          "old_end0": 18,
+          "new_start0": 17,
+          "new_end0": 18,
+          "old_full_lines": [
+            "ROLES={'qualified_source_manifest':'MANIFEST.json','host_template':'complete_observation_genuine_host.UNREADY.py','runtime_template':'complete_observation_BUILD5_AB_runtime.UNREADY.py','binder':'bind_complete_observation_SOURCE_only.UNREADY.py','postclose_writer':'Root_observation_postclose_META_writer.UNREADY.py','native_Source_archive':'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz','native_Source_index':'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json','observer_module':'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90','context_extractor':'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py','original_complete_native_walker':'PARENT_SOURCE/Root_bound_complete_native_checker.py','original_material_seed_contract':'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json','material_blueprint_Source':'GUARD_SOURCE/material_inputs.py','request_preparer':'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py'}\n"
+          ],
+          "new_full_lines": [
+            "ROLES={'qualified_source_manifest':'MANIFEST.json','host_template':'complete_observation_genuine_host.UNREADY.py','runtime_template':'complete_observation_BUILD5_AB_runtime.UNREADY.py','binder':'bind_complete_observation_SOURCE_only.UNREADY.py','postclose_writer':'Root_observation_postclose_META_writer.UNREADY.py','native_Source_archive':'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz','native_Source_index':'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json','observer_module':'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90','context_extractor':'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py','original_complete_native_walker':'PARENT_SOURCE/Root_bound_complete_native_checker.py','original_material_seed_contract':'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json','material_blueprint_Source':'GUARD_SOURCE/material_inputs.py','request_preparer':'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py','legacy_context_old_XSM_extractor':'COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py'}\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    },
+    {
+      "source_member": "Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+      "original_sha256": "916ad1a9102fa9b765a31d31551d1bc5a1e402453a2789be8cebe39ea5147c11",
+      "fixed_sha256": "f245de872d38c87dc233e51c1efd8edb338d3227cf0323bee08df3ac494a9ca4",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "replace",
+          "old_start0": 18,
+          "old_end0": 19,
+          "new_start0": 18,
+          "new_end0": 19,
+          "old_full_lines": [
+            "ROLES={'qualified_source_manifest':'MANIFEST.json','host_template':'complete_observation_genuine_host.UNREADY.py','runtime_template':'complete_observation_BUILD5_AB_runtime.UNREADY.py','binder':'bind_complete_observation_SOURCE_only.UNREADY.py','postclose_writer':'Root_observation_postclose_META_writer.UNREADY.py','native_Source_archive':'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz','native_Source_index':'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json','observer_module':'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90','context_extractor':'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py','original_complete_native_walker':'PARENT_SOURCE/Root_bound_complete_native_checker.py','original_material_seed_contract':'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json','material_blueprint_Source':'GUARD_SOURCE/material_inputs.py','request_preparer':'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py'}\n"
+          ],
+          "new_full_lines": [
+            "ROLES={'qualified_source_manifest':'MANIFEST.json','host_template':'complete_observation_genuine_host.UNREADY.py','runtime_template':'complete_observation_BUILD5_AB_runtime.UNREADY.py','binder':'bind_complete_observation_SOURCE_only.UNREADY.py','postclose_writer':'Root_observation_postclose_META_writer.UNREADY.py','native_Source_archive':'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz','native_Source_index':'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json','observer_module':'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90','context_extractor':'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py','original_complete_native_walker':'PARENT_SOURCE/Root_bound_complete_native_checker.py','original_material_seed_contract':'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json','material_blueprint_Source':'GUARD_SOURCE/material_inputs.py','request_preparer':'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py','legacy_context_old_XSM_extractor':'COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py'}\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    },
+    {
+      "source_member": "EXPECTED_INDEPENDENT_REVIEW_SOURCE_SCOPE_CONTRACT.json",
+      "original_sha256": "bd541040b038e23db02a90fd834a3323d6a35489ef3d6da6c378995ee856cbb9",
+      "fixed_sha256": "d8e3bb3cbabbb061d21866b5b0cee6eabc210cfbbc7c9bf875039161ac8badfe",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "replace",
+          "old_start0": 30,
+          "old_end0": 31,
+          "new_start0": 30,
+          "new_end0": 32,
+          "old_full_lines": [
+            "    \"request_preparer\": \"Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py\"\n"
+          ],
+          "new_full_lines": [
+            "    \"request_preparer\": \"Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py\",\n",
+            "    \"legacy_context_old_XSM_extractor\": \"COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py\"\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    },
+    {
+      "source_member": "ROOT_OBSERVATION_SOURCE_REQUEST_TEMPLATE.UNREADY.json",
+      "original_sha256": "0be74961771997aad847e753af5dadb226d20c7667962c3be019da0b53d748cd",
+      "fixed_sha256": "83fd64d1775a56d38375aa622985ec8361a6894ca6e386e04a7f1f8436c9d159",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "replace",
+          "old_start0": 42,
+          "old_end0": 43,
+          "new_start0": 42,
+          "new_end0": 44,
+          "old_full_lines": [
+            "    \"request_preparer\": null\n"
+          ],
+          "new_full_lines": [
+            "    \"request_preparer\": null,\n",
+            "    \"legacy_context_old_XSM_extractor\": null\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    },
+    {
+      "source_member": "ROOT_OBSERVATION_SOURCE_ADMISSION_TEMPLATE.UNREADY.json",
+      "original_sha256": "748d2f5f158d924f4316edf1a8efe3d1223e42d4df15376fd278f91f964ab606",
+      "fixed_sha256": "24b511d170efe2da7e7d7dbd27e71cc6b319cd18d60532fd62e5a5a367a52367",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "replace",
+          "old_start0": 18,
+          "old_end0": 19,
+          "new_start0": 18,
+          "new_end0": 20,
+          "old_full_lines": [
+            "    \"request_preparer\": null\n"
+          ],
+          "new_full_lines": [
+            "    \"request_preparer\": null,\n",
+            "    \"legacy_context_old_XSM_extractor\": null\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    },
+    {
+      "source_member": "ROOT_NEXT_BIND_BUILD_CAPTURE_POSTCLOSE_CONTEXT_STEPS.Source_ONLY.json",
+      "original_sha256": "aacde45879db0ca6830d207c9fda337631b3fda6ce6fae120b5d86419bc84cc3",
+      "fixed_sha256": "d6c1062f0bb38712348045661aa489ee6687efd2852b4e6a4531166f59f43830",
+      "complete_full_inverse_hunks": [
+        {
+          "tag": "replace",
+          "old_start0": 16,
+          "old_end0": 17,
+          "new_start0": 16,
+          "new_end0": 17,
+          "old_full_lines": [
+            "        \"/private/tmp/axmat_complete_native_observation_BUILD5_AB_UNREADY_Source_yxzl8twq/Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py\",\n"
+          ],
+          "new_full_lines": [
+            "        \"/private/tmp/axmat_complete_native_observation_BUILD5_AB_E_fullpin_same_sort_finite_UNREADY_Source_fix_pb5gkdac/Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py\",\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 56,
+          "old_end0": 57,
+          "new_start0": 56,
+          "new_end0": 57,
+          "old_full_lines": [
+            "        \"/private/tmp/axmat_complete_native_observation_BUILD5_AB_UNREADY_Source_yxzl8twq/bind_complete_observation_SOURCE_only.UNREADY.py\",\n"
+          ],
+          "new_full_lines": [
+            "        \"/private/tmp/axmat_complete_native_observation_BUILD5_AB_E_fullpin_same_sort_finite_UNREADY_Source_fix_pb5gkdac/bind_complete_observation_SOURCE_only.UNREADY.py\",\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 91,
+          "old_end0": 92,
+          "new_start0": 91,
+          "new_end0": 92,
+          "old_full_lines": [
+            "        \"/private/tmp/axmat_complete_native_observation_BUILD5_AB_UNREADY_Source_yxzl8twq/Root_observation_postclose_META_writer.UNREADY.py\",\n"
+          ],
+          "new_full_lines": [
+            "        \"/private/tmp/axmat_complete_native_observation_BUILD5_AB_E_fullpin_same_sort_finite_UNREADY_Source_fix_pb5gkdac/Root_observation_postclose_META_writer.UNREADY.py\",\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 113,
+          "old_end0": 114,
+          "new_start0": 113,
+          "new_end0": 114,
+          "old_full_lines": [
+            "      \"complete_state_snapshot_inputs\": \"from exact Root postclose manifest top-level A/B ordered rows, all snapshots\",\n"
+          ],
+          "new_full_lines": [
+            "      \"complete_state_snapshot_inputs\": \"Use exact legacy_context_source_snapshot_request_rows from new postclose manifest for the existing admitted V2 Source request: its root_prefix equals canonical logical_prefix and is only an emitted pool path, never native directory lookup. Canonical complete_state_snapshot_inputs explicitly stores five fields event/role/root_prefix=[]/logical_prefix/input_pin.\",\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 118,
+          "old_end0": 119,
+          "new_start0": 118,
+          "new_end0": 124,
+          "old_full_lines": [
+            "      \"new_complete_aggregation_controls_actual_run\": null\n"
+          ],
+          "new_full_lines": [
+            "      \"new_complete_aggregation_controls_actual_run\": null,\n",
+            "      \"real_native_root_prefix\": [],\n",
+            "      \"legacy_macro_logical_pool_prefix\": [\n",
+            "        \"MACROLIB\"\n",
+            "      ],\n",
+            "      \"existing_native_walker_entry\": \"native.walk_table(native.root, tuple(prefix), ()) traverses native.root; prefix is output row path namespace only\"\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "old_start0": 152,
+          "old_end0": 153,
+          "new_start0": 157,
+          "new_end0": 169,
+          "old_full_lines": [
+            "  \"complete_context_aggregation_qualified\": false\n"
+          ],
+          "new_full_lines": [
+            "  \"complete_context_aggregation_qualified\": false,\n",
+            "  \"whole_original_per_library_recipe_flags_archive_order_and_module_paths_preserved\": true,\n",
+            "  \"postclose_complete_namespace_views\": \"Root_complete_postclose_HOCDE_namespace_views includes all five actual directory and regular-file full EOF 7-ID views. E is captured before this manifest append; actual Root stdout pins this manifest and reports caps including its own bytes. D is never appended.\",\n",
+            "  \"true_original_Source_blockers_fixed\": [\n",
+            "    \"per_component_original_compiler_flags\",\n",
+            "    \"original_suffix_group_archive_object_order\",\n",
+            "    \"original_per_component_module_include_namespace\",\n",
+            "    \"full_actual_postclose_five_namespace_views\"\n",
+            "  ],\n",
+            "  \"snapshot_prefix_clarification_is_not_an_old_execution_blocker\": true,\n",
+            "  \"postclose_E_append_parent_directory_identity_contract\": \"Darwin/APFS append may change directory st_nlink/size/mtime/ctime; dev/inode/mode remain exactly stable. E exact files gain own manifest only, complete directory set unchanged, all other E dirs full7ID unchanged. H/O/C/D views stay exact.\",\n",
+            "  \"postclose_E_fullpin_compare_sort\": \"Both actual after-E fullpin list and complete expected original-E plus own-manifest fullpin list use exact same full-string path key for comparison. Original tree fullpin views retain original Path traversal order. No snapshot, event, native record or physics ordering changed.\"\n"
+          ]
+        }
+      ],
+      "whole_Source_inverse_to_original_frozen_member_equal": true
+    }
+  ],
+  "original_native_compile_Source_archive1365members_unchanged": true,
+  "original_physical_four_Fortran_observer_derivatives_unchanged": true,
+  "original_observer_module_unchanged": true,
+  "original_caps_and_genuine_executor_classes_MRO_unchanged": true,
+  "actual_execution": null,
+  "actual_Root_admission": null,
+  "actual_independent_peer": null,
+  "scientific_qualification_created": false,
+  "true_blockers": [
+    "per_component_original_compiler_flags",
+    "original_suffix_group_archive_object_order",
+    "original_per_component_module_include_namespace",
+    "full_actual_postclose_five_namespace_views"
+  ],
+  "nonblocking_clarifications": [
+    "explicit_physical_native_root_and_logical_pool_prefix_legacy_exact4_mapping"
+  ],
+  "snapshot_prefix_old_runtime_failure_claim_withdrawn": true,
+  "E_append_directory_identity_Source_correction": true,
+  "previous_sealed_manifest_sha256": "1d408b8b4b2f422a163d1a1467168baf11edf99ce12b4f6b5f9772b18dec86a6",
+  "E_postclose_actual_expected_complete_fullpin_same_path_sort_Source_correction": true,
+  "previous_sealed_E_append_manifest_sha256": "864fd7b9c1640a547cd636574b944eb89f4715cd22cea12f30e77f1de71f86d1"
+}

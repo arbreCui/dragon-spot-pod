@@ -1,0 +1,10 @@
+仅有限保存 META 复核，不执行项目、helper、guard、构建或数值，也不轮询已关闭会话。
+49 个显式保存文件、23 个完整 Source、全部显式 prelaunch pins 与当前完整图均 fresh EOF SHA256/七项 OS identity 相同；图只哈希不解码。
+真实 Root 935ded/session92323 → 622265 → 054e28，严格整数 EXIT1，CLOSED，0 retry。
+实际 child 29.261444209 s / 332.359375 MiB，原 600 s / 512 MiB 内，limit_failure null，own-child cleanup true。
+新 verify_graph 已返回，但完整返回比较在 fresh_reader_contract 字典键顺序处失败。未验证完整返回等价，未保存完整实际 return/trace，无 ACTUAL_REPORT、host result 或三项 gzip，无新 helper Q。
+四项小私有 trace 正控、三项拒绝有保存 PASS 证据，不能替代当前完整图资格。
+原 whole1800/stage600/RSS512/64MiB/history96GiB/free8GiB/1 thread/1 child/0 retry 保持。
+Root 首次 META freeze 9b6117 EXIT1 是 OUT 文件名单少了实际 FAILED_REPORT；保存纠正 a083cf EXIT0，无项目重跑。
+manifest 是增加自身和后续 Root META 前的有限快照；E 根目录条目计数、大小和时间变化据此明确披露，不声称其前后七项全相等。其余八个显式目录完整七项一致。
+本审查不授完整 INPUT、构建、native、AAA、ABA 或物理准确性资格；下一步只能先源码审查 expected 旧 parent oracle 的顺序，再决定新目录的一次完整验证。

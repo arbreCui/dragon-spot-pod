@@ -1,0 +1,7 @@
+V17 实际纯元数据控制证据审查通过，无阻塞。
+
+Root 实际 d1734f / session 59994 → e2794c 整数 EXIT0、会话关闭、零重试。5 个完整 checkpoint，两种字符串子类型的全部输出及 caller 完整性，63379 条新 trace、旧图 62332 条 trace / 237767 条 requirements / 36776 个 canonical files，默认完整逆变换与两种 strict 入口均有实际断言和结果一致证据。
+旧图实际压缩存储 45300566 字节、新 trace 8488204 字节，两者均保存；没有用新 trace 替换旧图 trace。
+实际 whole 16.507847333 秒、子进程 15.391886166995391 秒、峰值 392.140625 MiB；完整 HOST+SOURCE+OUT 59130306 字节，低于原 64 MiB。60 秒、512 MiB、历史 96 GiB / 余量 8 GiB、单线程、单子进程、零重试保持。
+独立审查完整重新读取并核验 namespace 所有普通文件的 SHA 和 7 项身份、目录、符号链接与前后不变；所有 host 输入 pin、原 2 个固定 metadata、实际输出 pin 均匹配。9 + 14 个有限 host delta 精确还原原 host；helper / driver 有限源码还原和原 guard class / 控制文件一致。
+这只准入纯 helper 控制证据；没有生成或准入新 production graph、完整 INPUT、native RSS、AAA 精度或 ABA。审查器未导入或运行 helper / business。

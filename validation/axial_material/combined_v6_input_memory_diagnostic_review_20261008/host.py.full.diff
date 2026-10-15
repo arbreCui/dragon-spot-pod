@@ -1,0 +1,38 @@
+--- frozen_V5/host.py
++++ stopped_V6/host.py
+@@ -15,7 +15,7 @@
+ payload=Path(args.config).read_bytes()
+ if hashlib.sha256(payload).hexdigest()!=args.config_sha256:raise ValueError('external diagnostic config SHA differs')
+ config=json.loads(payload);del payload
+-if config['schema']!='AXMAT_TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC_CONFIG_V1'or config['status']!='READY_ROOT_REVIEWED_INPUT_DIAGNOSTIC_ONLY':raise ValueError('UNREADY: source-only stopped diagnostic')
++if config['schema']!='AXMAT_TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC_CONFIG_V1'or config['status']!='READY_ROOT_REVIEWED_INPUT_DIAGNOSTIC_ONLY':raise ValueError('UNREADY: source-only stopped diagnostic')
+ if config['caps']!=dict(total_wall_seconds=1800,stage_wall_seconds=600,rss_mib=512,archive_bytes=2*2**30,history_bytes=96*2**30,min_free_bytes=8*2**30,threads=1,children=1,retries=0):raise ValueError('original diagnostic caps differ')
+ PYTHON=config['python_executable'];FACTORY=Path(config['factory']['path']);FACTORY_SHA=config['factory']['sha256']
+ OUT=Path(config['declaration']['path']).parent;TERM=Path(config['actual_PREP']['path']).parent
+@@ -39,7 +39,7 @@
+  raise ValueError('original direct supervisor/parent sources differ')
+ if d['genuine_supervisor_source']!=config['supervisor_source']or d['genuine_parent_class_source']!=config['parent_source']:raise ValueError('config genuine fixed source binding differs')
+ resources=f.resources_for(d['resource_roots'],c.ResourceFailure);before=resources.check()
+-if BASE.parent!=f.ART or not BASE.name.startswith('axial-material-')or FAMILY!='TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC':raise ValueError('exclusive diagnostic axial family required')
++if BASE.parent!=f.ART or not BASE.name.startswith('axial-material-')or FAMILY!='TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC':raise ValueError('exclusive diagnostic axial family required')
+ f.absent(BASE);BASE.mkdir();(BASE/'runtime').mkdir();(BASE/'diagnostic').mkdir();(BASE/FAMILY).mkdir()
+ shutil.copy2(f.require(OUT/'runtime/run_bounded_dragon.py',f.BOUNDED_SHA),BASE/'runtime/run_bounded_dragon.py')
+ if f.BOUNDED_SHA!=config['bounded_helper_sha256']:raise ValueError('actual bc4 helper binding differs')
+@@ -51,7 +51,7 @@
+ log=BASE/'diagnostic/declaration-input.log'
+ # The complete merged log is raw evidence. It is deliberately not parsed as one API JSON.
+ body=f.read(Path(config['result_path']))
+-if (body['schema']!='AXMAT_TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC_CHILD_V1'
++if (body['schema']!='AXMAT_TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC_CHILD_V1'
+  or body['classification']!='COMPLETE_INPUT_ADMISSION_ALLOCATION_DIAGNOSTIC_ONLY'
+  or body['factory']!=config['factory']or body['declaration']!=config['declaration']or body['actual_PREP']!=config['actual_PREP']
+  or body['actual_input_admission_returned']is not True or body['actual_true_build_interpreter_branch']is not True
+@@ -66,7 +66,7 @@
+  or watch['own_child_only']is not True or watch['liveness_group_cleanup']is not True or not elapsed<1800):raise ValueError('actual complete guarded diagnostic child required')
+ archive_bytes=sum(path.stat().st_size for path in BASE.rglob('*')if path.is_file()and not path.is_symlink())
+ if archive_bytes>=2*2**30:raise ValueError('diagnostic SOURCEOUT2GiB limit exceeded')
+-result=dict(schema='AXMAT_TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC_ACTUAL_HOST_V1',
++result=dict(schema='AXMAT_TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC_ACTUAL_HOST_V1',
+  classification='COMPLETE_GUARDED_INPUT_ALLOCATION_DIAGNOSTIC_ONLY',
+  producer=f.pin(FACTORY),declaration=f.pin(OUT/'declaration.json'),actual_PREP=f.pin(TERM/'declaration_terminal_return.json'),
+  diagnostic_config=dict(path=str(Path(args.config).resolve()),sha256=args.config_sha256),

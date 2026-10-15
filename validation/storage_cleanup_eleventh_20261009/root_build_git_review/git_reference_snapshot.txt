@@ -1,0 +1,9 @@
+refs/codex/turn-diffs/captures/1791498197791/e5e043df-0974-4c7a-a285-bc36cbc6d4eb/base tree 591dd9134d0e44a040267e67926348cf1c2d6bd3
+refs/codex/turn-diffs/checkpoints/565b10291f2402ed74dac0fc72ca2ca6/685cb3c95ac8810eedf0f4e40c84c5d9/1790986898853/6c2c05a1-505d-418b-9ba1-c6a6ee830b6f tree 5123416bada1650700ab70a82b7ea15fbc9dce75
+refs/codex/turn-diffs/checkpoints/8d14311ad3d2756d1021c8035d18ae19/dd4aecc0ed728349fdf520ab1855b3eb/1791470844364/9e0bb668-a43d-4022-b820-8663859f98d2 tree 41c3a611f3f638ed366f4d69e96aa503d014e11a
+refs/heads/main commit 765eb32e9165bc0062439dcecabead1e61d64e3d
+refs/heads/variant3-prime commit cf469c8563494ce929ebae1f9f2459e66fce298f
+refs/remotes/origin/HEAD commit 5e84bb39f6945eb25a4798ca07d45ab38d76bf85
+refs/remotes/origin/main commit 5e84bb39f6945eb25a4798ca07d45ab38d76bf85
+refs/remotes/origin/variant3-prime commit 3a116d0a70ea5ad8a03cd16bd094d8d8adf5578d
+refs/tags/archive-pre-lean-20260814 tag 19edb71de10ff3098e702bbabe0a40bf825e9cd5

@@ -1,0 +1,11 @@
+v10 CLE 卡片换行修正 — 有限独立 Source-only 审查，2026-10-13
+
+真实审核 f70e7c/session46040 → da142b exit 0。审核仅读取文件及对保存的 Source 进行受限 AST 字符串重建，没有 import 候选、编译、运行 CLE 或任何数值业务。
+HF SHA256 aa75076e2ff7819eb164cecfd927b9485559b2282b0f7ac5ea9c8a5d9ead6861；CLI SHA256 6114a646a30e3ec0599e96f631e8262a146ef360289ca78f24f927f878219c36。全部 HF host +278依赖完整 EOF SHA/七字段严格相同，原 v9 的全257依赖各完整行原样保留；外 CLI7参数族准确匹配 current fullpins，纳秒身份用 Python 整数解析。
+Host 完整 byte inverse 仅有3项：fresh OUT v10、HF schema V10、一处 viewops 在 GRCON 后插入空白换行；其余完整字节与 v9 一致。三份 reader/mutator/direct probe helper 完整字节相同。独立从 AST重建五 negative CLE、两 lifecycle CLE 和一 positive BOOT完整卡片，所有 token 与原v9相同、每个原abort oracle相同，全部行≤120列；新最大67列。另一个 view_system_alias 是独立 Fortran direct控制，未虚称其生成 CLE 卡片。三组 MICROLIB2 := DELETE和MACRO0 TRACK := DELETE 共六条完整不变。原50阶段/17 positive/33 exact-negative与所有数值输入/算法/原阈值和资源限制保持。
+额外逐行完整 EOF 核验全 current catalog 3,040行及 Common binding 2,012行；不把重复行去重个数误当原行数。全3,113去重文件、3,126,591,743 B、84,344项检查。实际唯一 immutable compiler 的 nlink2原PF保留；不擅自要求其nlink1。审查终态前全部身份不变，v10输出目录仍不存在。
+审查 JSON INDEPENDENT_FINITE_SOURCE_REVIEW.json
+SHA256 01b7558f22f0efd30368ee8c93139b61bfb49fd12d68c683c8584641b312f895
+七字段 [16777229,50013955,33188,1,8517,1791870623522945517,1791870623522945517]
+真实工具返回 ACTUAL_INDEPENDENT_SOURCE_REVIEW_TRUE_TOOL_RETURNS.json。
+此 PASS 只证明有限 Source 修改和实际当前依赖一致；不能证明业务工程、online BOOT、AAA精度、独立耦合参考、ABA或完整目标完成。Root须亲自执行真实业务并按原阈值核验真正终态。

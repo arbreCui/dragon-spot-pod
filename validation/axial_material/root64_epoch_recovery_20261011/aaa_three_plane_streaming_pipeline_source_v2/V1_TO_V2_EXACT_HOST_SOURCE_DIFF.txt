@@ -1,0 +1,118 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v1/run_actual_three_plane_pipeline.py
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v2/run_actual_three_plane_pipeline.py
+@@ -22,7 +22,7 @@
+ spec=importlib.util.spec_from_file_location('pipeline_original_common',COMMON)
+ c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+ HERE=Path(__file__).resolve().parent
+-OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v1'
++OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v2'
+ WORK=OUT/'AAA'
+ MI=2**20
+ ROOT_NAMES={'AX':'ax_current.xsm','AXTRACK':'axial_track.xsm','AXSYSTEM':'initial_system.xsm',
+@@ -129,7 +129,7 @@
+         for suffix in ['summary','sha256','seven-id']:p.add_argument('--'+prefix+'-'+suffix,required=True)
+     args=p.parse_args();start=time.monotonic()
+     hf,phf=ext(args,'host_freeze')
+-    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V1' or \
++    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V2' or \
+        Path(hf['host_source']['path']).resolve()!=Path(__file__).resolve():
+         raise RuntimeError('exact owning complete Host Source freeze')
+     c.same_pin(__file__,hf['host_source']);c.verify_rows(hf['dependencies'])
+@@ -166,7 +166,7 @@
+     runner=full.OwnRSSSerialExecutor(OUT,1800-(time.monotonic()-start),'AAA3-streaming',resources)
+     if type(runner)is not full.OwnRSSSerialExecutor or runner.resources is not resources:raise RuntimeError('genuine original supervisor')
+     ledger=[];proofs=[];cases=[];failure=None;after_error=None;result=None
+-    new_storage_cases=[];lifecycle_cases=[]
++    new_storage_cases=[];lifecycle_cases=[];scratch_ledger=[]
+     def stable():
+         c.check_full_current(fixed,owned);resources.check()
+         if time.monotonic()-start>=1800:raise RuntimeError('original whole1800 elapsed cap')
+@@ -201,14 +201,66 @@
+                            exact_intermediate_XSM_raw_replay_retained=False,original_producer_files_retained=True))
+         receipt=OUT/('Root_actual_private_release_'+str(len(ledger)).zfill(3)+'.json')
+         c.write(receipt,ledger[-1]);retain(receipt);stable()
++    def clean_driver_scratch_before():
++        for name in ('_main001','_DUMMY'):
++            target=WORK/name
++            if target.exists()or target.is_symlink():
++                raise RuntimeError('fresh actual CLE scratch paths required before each Dragon; no overwrite or retry')
++    def stash_closed_driver_scratch(label):
++        # Ganlib creates these only after the verified pre-launch absence. An
++        # XABORT exit1 bypasses normal CLE teardown. Preserve exact raw bytes;
++        # no deletion, no shared/producer object, no altered refusal oracle.
++        if not label.replace('_','').isalnum():raise RuntimeError('finite literal driver label')
++        record=runner.records[-1];wp=WORK/(label+'.watchdog.json');lp=WORK/(label+'.log')
++        w=json.loads(wp.read_text());logpin=c.pin(lp);watchpin=c.pin(wp)
++        if record['label']!='AAA/'+label or record['status']not in ('PASS','FAILED')or \
++           w['command']!=record['command']or w['command']!=[str(OUT/'runtime/Dragon')]or \
++           type(w.get('pid'))is not int or w['pid']<=0 or type(w['returncode'])is not int or \
++           w['limit_failure']is not None or w['rss_cap_mib']!=512 or w['own_child_only']is not True or \
++           w['liveness_group_cleanup']is not True or \
++           not 0<w['elapsed_seconds']<w['wall_cap_seconds']<=record['wall_cap_seconds']<=600 or \
++           not 0<=w['sampled_peak_rss_mib']<512:
++            raise RuntimeError('only genuine completed guarded Dragon permits scratch archival')
++        if (record['status']=='PASS')!=(w['returncode']==0):raise RuntimeError('actual child closure status differs')
++        receipt=dict(actual_stage_index=len(runner.records)-1,actual_stage_label=record['label'],
++          actual_pid=w['pid'],actual_returncode=w['returncode'],actual_log_full_pin=logpin,
++          actual_watchdog_full_pin=watchpin,exact_preserved_scratch_files=[],
++          scratch_protocol_sources=hf['scratch_protocol_sources'],no_qualification_from_archival=True)
++        folder=OUT/'cle_scratch_archive'/(str(len(runner.records)).zfill(3)+'_'+label)
++        for name in ('_main001','_DUMMY'):
++            source=WORK/name
++            if not source.exists()and not source.is_symlink():continue
++            before_pin=c.pin(source)
++            if source.parent!=WORK or source.is_symlink()or before_pin['identity'][3]!=1 or \
++               any(before_pin['identity'][:2]==row['identity'][:2]for row in fixed+owned):
++                raise RuntimeError('scratch must be distinct exclusively owned regular single-link file')
++            stable();folder.mkdir(parents=True,exist_ok=True)
++            if folder.is_symlink()or folder.parent.is_symlink():raise RuntimeError('own scratch archive directories only')
++            target=folder/name
++            if target.exists()or target.is_symlink():raise RuntimeError('fresh archival target; no overwrite')
++            c.same_pin(source,before_pin);source.rename(target);after_pin=retain(target)
++            if after_pin['sha256']!=before_pin['sha256']or after_pin['size_bytes']!=before_pin['size_bytes']or \
++               after_pin['identity'][:6]!=before_pin['identity'][:6]or source.exists()or source.is_symlink():
++                raise RuntimeError('same physical scratch inode and complete raw bytes required after rename')
++            receipt['exact_preserved_scratch_files'].append(dict(before_full_pin=before_pin,after_full_pin=after_pin,
++              ctime_may_change_during_rename=True,exact_physical_raw_replay_retained=True))
++            stable()
++        clean_driver_scratch_before();scratch_ledger.append(receipt)
++        rp=OUT/('Root_actual_closed_CLE_scratch_stash_'+str(len(runner.records)).zfill(3)+'.json')
++        c.write(rp,receipt);retain(rp);stable()
+     def run(label,deck,marker=None):
+-        f=WORK/(label+'.x2m');f.write_text(deck);retain(f);stable()
+-        runner.execute(WORK,label,[str(OUT/'runtime/Dragon')],600,marker=marker,deck=f.name)
++        f=WORK/(label+'.x2m');f.write_text(deck);retain(f);stable();clean_driver_scratch_before()
++        error=None
++        try:runner.execute(WORK,label,[str(OUT/'runtime/Dragon')],600,marker=marker,deck=f.name)
++        except BaseException as exc:error=exc
++        stash_closed_driver_scratch(label)
++        if error is not None:raise error
+         helper.check_watch(OUT,runner.records[-1]);stable()
+     def refuse(label,deck,message):
+-        f=WORK/(label+'.x2m');f.write_text(deck);retain(f);stable();error=None
++        f=WORK/(label+'.x2m');f.write_text(deck);retain(f);stable();clean_driver_scratch_before();error=None
+         try:runner.execute(WORK,label,[str(OUT/'runtime/Dragon')],600,deck=f.name)
+         except RuntimeError as exc:error=str(exc)
++        stash_closed_driver_scratch(label)
+         record=runner.records[-1];wp=WORK/(label+'.watchdog.json');lp=WORK/(label+'.log')
+         w=json.loads(wp.read_text());text=lp.read_text()
+         if error!='own-child stage failed; no retry'or record['status']!='FAILED'or type(w['returncode'])is not int or w['returncode']!=1 or w['limit_failure']is not None:
+@@ -421,7 +473,8 @@
+     raw=dict(schema='ACTUAL_AAA3_COMPLETE_EXECUTION_PREPUBLICATION_RECORD_V1',
+       failure=failure,after_check_error=after_error,records=runner.records,fixed_current_pins=fixed,
+       owned_runtime_pins=owned,actual_operator_refusals=cases,actual_complete_readback_proofs=proofs,
+-      actual_terminal=result,actual_private_release_ledger=ledger,private_release_ledger_scope='HOST_OWNED_UNLINK_ONLY',
++      actual_terminal=result,actual_private_release_ledger=ledger,actual_closed_CLE_scratch_archival_ledger=scratch_ledger,
++      private_release_ledger_scope='HOST_OWNED_UNLINK_ONLY',
+       frozen_Fortran_internal_disposal=dict(names=['BOOT-MAC-1/2/3.xsm','BOOT-Q-1/2/3.xsm','BOOT-SOLVED-STAGE.xsm'],
+          source='aaa_three_plane_streaming_source_v1/SPOBOOX64.f90',
+          complete_logical_readback_before_disposal_required_by_frozen_source=True,
+@@ -446,7 +499,7 @@
+     report=dict(schema='ACTUAL_INDEPENDENT_AAA3_INITIAL_GLOBAL_PROJECT_BOOT_ENGINEERING_ROOT_V1',
+       status='ACTUAL_THREE_PLANE_ENGINEERING_CLOSED0_ONLY'if closed else 'FAILED_UNQUALIFIED_NO_RETRY',
+       output_pins=output_pins,physical_EOF_hashes_separate_from_logical_tree_digests=True,
+-      complete_unmodified_execution_records_pin=rawpin,
++      complete_unmodified_execution_records_pin=rawpin,actual_closed_CLE_scratch_archival_ledger=scratch_ledger,
+       failure=failure,after_check_error=after_error,records=compact_records,fixed_current_pins=fixed,
+       owned_runtime_pins=owned,actual_terminal=result,
+       actual_operator_refusals=[{k:v for k,v in case.items()if k!='record'}for case in cases],

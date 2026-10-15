@@ -1,0 +1,100 @@
+import hashlib
+import json
+import math
+import os
+import stat
+from pathlib import Path
+BASE=Path('/private/tmp/axmat_v9_actual_prep_independent_review_20261009')
+W=Path('/private/tmp/spot_v9_actual_PREP_source_witness_independent_review_20261009')
+T=Path('/private/tmp/axmat-last-cprime-trim-combined-live-resource-v9-root-execution-20261009')
+PINS={}
+def identity(p):
+ s=Path(p).lstat();return [s.st_dev,s.st_ino,s.st_mode,s.st_size,s.st_mtime_ns,s.st_ctime_ns,s.st_nlink]
+def pin(p,expected=None):
+ p=Path(p);before=identity(p);assert stat.S_ISREG(before[2]) and p.parent.resolve(strict=True)==p.parent
+ h=hashlib.sha256()
+ with p.open('rb') as f:
+  s=os.fstat(f.fileno());assert [s.st_dev,s.st_ino]==before[:2]
+  while b:=f.read(4*1024**2):h.update(b)
+ assert identity(p)==before
+ result=dict(path=str(p),sha256=h.hexdigest(),size_bytes=before[3],identity=before)
+ if expected:assert result['sha256']==expected,str(p)
+ PINS[str(p)]=result;return result
+def obj(p,expected=None):
+ record=pin(p,expected)
+ def pairs(rows):
+  d={}
+  for k,v in rows:assert k not in d;d[k]=v
+  return d
+ def floating(s):
+  v=float(s);assert math.isfinite(v);return v
+ def reject(s):raise ValueError(s)
+ d=json.loads(Path(p).read_text(encoding='utf-8'),object_pairs_hook=pairs,parse_float=floating,parse_constant=reject)
+ assert identity(p)==record['identity'];return d
+
+g=obj(BASE/'complete_graph_actual_PREP_review.json','f7e439130d3e97cd55063cd4901fe2e827742d505f772e76e9d23b4abccd9e46')
+gt=obj(BASE/'actual_complete_graph_review_tool_return.json','c247db08f1c34461080bade9c739654fcce39cc86e4a06c3116910506c4aae1a')
+delta=obj(BASE/'canonical_delta_removed_paths_preservation.json','f9f2d9ee59b7465595103f1bb317a2c69dc39fc6c5eef725cf775124adad1909')
+w=obj(W/'REPORT.json','22498a7e2e1eedc0aaa3709d1b8e851e3345a14d87f41626907a37492f9abe57')
+wt=obj(W/'actual_readonly_review_tool_return.json','e7c7b1a0ecbc1b69c0a1295d6555b4b6b0b321c12035b9dd39f80540dec324e5')
+assert g['status']==delta['status']==w['status']==wt['status']=='PASS'
+assert type(gt['exit_code'])is int and gt['exit_code']==0 and gt['closed']is True and gt['terminal_chunk_id']=='d00d0f'
+assert type(wt['observed_tool']['exit_code'])is int and wt['observed_tool']['exit_code']==0 and wt['closed']is True and wt['observed_tool']['chunk_id']=='041f51'
+assert wt['report_sha256']==PINS[str(W/'REPORT.json')]['sha256']
+assert gt['report']['sha256']==PINS[str(BASE/'complete_graph_actual_PREP_review.json')]['sha256']
+for x in w['full_fresh_reviewed_pins']:
+ assert identity(x['path'])==x['identity'],x['path']
+for x in delta['retained_old_paths']:
+ assert identity(x['path'])==x['identity'],x['path']
+for k in ['SOURCE_all11_fresh_full_SHA_and_complete_names','PREP_all4_witnesses_fresh_full_SHA','fullraw_stdout_stderr_exact','original65_factory_definitions_byte_AST_exact','original_parser_retained','whole_original_seven_BODY_full_typed_equal','whole_original_trim_fed209_full74key_typed_equal','actual_trim_input_3arg_call_preserved_source_AST','all445_exact_declaredcache_absence_paths_current_absent','all_source_formal_helpers_and_copy_exact','genuine705_38de_bc4_MROsource_pins','original_sender_selector_physical_trim_production_objects_full_SHA','whole_original92_link_token_inverse','singlethread_fivekeys_and_true_ctor_MRO_guards_source_unchanged','no_new_numeric_or_compiled_stage_started','no_seal_driver_binary_tails_RUN_rootreceipt','all_RUN_outcomes_None']:
+ assert w[k]is True,k
+assert w['scientific_or_combined_native_RSS_credit']is False
+assert w['local_immutable_pool_candidate_adopted']is False
+config=obj(T/'config.json')
+source,out,term,r=(Path(config[k])for k in ('SOURCE','OUT','TERM','R'))
+F='44789bc288715c34d08dbfa91b9c05dfc78166c2b8fa048bbe0207b273419a46'
+D='7bc3d176f58ad6ee92d640c799b3f8d79923c65b2bf27c3b545c511e282b53e0'
+P='0297aa6543c36ca3f452b1948e0d034e218f71c253b08cd671c3c83cb01262fb'
+O='c5f622740e5a7e554993ec51dd12b7ae4b7fb5bfd0cf5b0c3834cb023d4ec7a7'
+assert (config['factorySha'],config['declarationSha'],config['prepSha'])==(F,D,P)
+assert all(config[k]is None for k in ('sealSha','terminalSha','terminalPath','failed_terminal_sha'))
+assert (w['manifest_source_sha256'],w['declaration_sha256'],w['preflight_prepare_terminal_sha256'],w['Root_actual_prepare_tool_observation_sha256'])==(F,D,P,O)
+pin(config['F'],F)
+d=obj(out/'declaration.json',D)
+p=obj(term/'declaration_terminal_return.json',P)
+raw_observation=obj(r/'prepare_terminal_tool_return.json',O)
+assert type(raw_observation['exit_code'])is int and raw_observation['exit_code']==0 and raw_observation['closed']is True
+assert raw_observation['initial_chunk_id']=='ef22f4' and raw_observation['terminal_chunk_id']=='f4b055' and raw_observation['session_id']==60763
+assert raw_observation==p['actual_root_tool_observation']
+assert all(p[k]is None for k in ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources'))
+assert p['build_seal']is None
+assert d['stages']==['build/link','metadata/objects','metadata/executable','metadata/dependencies','audit/audit']
+assert pin(out/'input_graph.json','0e365ebbaafa0d9e9b3a34eee89cc9c3e1de3ee47812d985135b8201bd001be3')['size_bytes']==64644869
+assert pin(T/'prepare.stdout')['size_bytes']==295 and pin(T/'prepare.stderr')['size_bytes']==0
+for path in (out/'seal.json',out/'result.json',out/'runtime/Dragon',term/'terminal_return.json'):
+ assert not os.path.lexists(path),str(path)
+assert all(v is False for k,v in d.items() if k in ('mathematical_controls_newly_executed','native_transport_executed','combined_runtime_native_RSS_proved','actual_full_FLU_entry_executed','AAA_accuracy_qualified','ABA_admitted'))
+assert g['live_resource_roots']['current_count']==231 and g['live_resource_roots']['old_roots_missing']==[]
+assert g['full_history_resources']['independent_before']==g['full_history_resources']['independent_after']
+assert all(x['sha256']==pin(x['path'],x['sha256'])['sha256'] for x in (gt['source'],gt['stdout'],gt['stderr']))
+for path,record in PINS.items():assert identity(path)==record['identity']
+report=dict(schema='AXMAT_V9_ACTUAL_ROOT_PREP_FULL_INDEPENDENT_REVIEW_V1',status='PASS',classification='ACTUAL_PREP_AND_COMPLETE_FRESH_INPUT_METADATA_ONLY',
+ factory_sha256=F,declaration_sha256=D,root_prep_sha256=P,graph_sha256=g['graph_pin']['sha256'],graph_content_sha256=g['wire_content_sha256'],same_V9_decoded_legacy_content_sha256=g['same_V9_decoded_legacy_content_sha256'],
+ actual_root_PREP_terminal_return=raw_observation,actual_true_prepare_recorder_invocation='fc1b03 EXIT0; source/witness reviewer independently pins the true after-int0 PREP receipt and complete Root stdout/stderr rather than rerunning the recorder',
+ source_inventory_exhaustive=d['source_inventory'],source11_actual_fresh_sha_verified=True,actual_four_PREP_witnesses_verified=True,
+ historical_full_seven_input_sha256=w['historical_whole_19356767_bytes_copied_SHA'],whole_seven_body_canonical_sha256=w['whole_seven_canonical_value_sha256'],whole_seven_historical_declaration_dict_and_types_equal=True,
+ original_complete_trim_return_sha256='fed2090ee0db4bb718c6c3fbbc9ed520ed9eeddda3fca6b2cadc2f4623edb114',whole_trim_74_key_dict_and_types_equal=True,whole_trim_dict_canonical_sha256=w['trim_current_canonical_value_sha256'],actual_trim_open_attempt_trace=w['trim_open_trace'],
+ full_fresh_graph_verification=g['full_fresh_verification'],every_saved_row_and_symbol_column_checked=True,canonical_wire_and_same_V9_legacy_semantics_recomputed_equal=True,canonical_delta_from_V8=g['canonical_delta_from_V8'],all_14_prior_bindings_fresh_verified_still_present=True,old_formal_bindings_outside_ART_retained=delta['retained_old_formal_SRC_binding_paths'],old_V8_graph_semantic_hash_claimed_equal=False,
+ live_resource_roots=g['live_resource_roots'],actual_independent_full_history_resources=g['full_history_resources'],stored_graph_bytes=g['stored_json_bytes'],original_64MiB_cap=67108864,original_cap_slack_bytes=g['remaining_original_cap_bytes'],original_resource_caps=w['caps'],
+ current_real_DECL_PREP_plus_four_future_None_config_fields={k:config[k]for k in ('declarationSha','prepSha','sealSha','terminalSha','terminalPath','failed_terminal_sha')},four_future_tails={k:p[k]for k in ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')},
+ RUN_seal_result_and_native_runtime_absent=True,compiled_or_numeric_stages_started=0,planned_original_stages=5,
+ business_factory_or_scientific_module_imported=False,scientific_API_or_constructor_or_PREP_or_RUN_executed_by_review=False,pure_metadata_helper_usage=dict(path=g['metadata_helper_pin']['path'],sha256=g['metadata_helper_pin']['sha256'],function='verify_graph; fresh complete input metadata only, no business API'),
+ native_transport_executed=False,combined_runtime_native_RSS_proved=False,actual_full_FLU_entry_executed=False,AAA_accuracy_qualified=False,ABA_admitted=False,mathematical_controls_newly_executed=False,scientific_qualification=False,successful_combined_RUN_observed=False,old_failure_or_capture_RSS_credit_transferred=False,
+ review_blockers=[],next_step='User has switched to storage review; no V9 RUN is started in this review or requested now. If Root later resumes the science goal, this frozen complete PREP evidence allows only one original-five-stage RUN under unchanged 1800/600/512/one-child/zero-retry caps, whose actual terminal/seal/all five watches/four tails need separate review. No native, full FLU, AAA or ABA qualification is created.',
+ full_graph_subreview=dict(report=PINS[str(BASE/'complete_graph_actual_PREP_review.json')],actual_terminal=PINS[str(BASE/'actual_complete_graph_review_tool_return.json')],real_handle='97738d/session64664 -> d00d0f EXIT0 CLOSED',full_canonical_bytes=35803098221),
+ source_witness_subreview=dict(report=PINS[str(W/'REPORT.json')],actual_terminal=PINS[str(W/'actual_readonly_review_tool_return.json')],real_handle='041f51 EXIT0 CLOSED',prior_review_harness_failure_preserved=wt['prior_actual_readonly_failed_tool'],failure_was_wrong_TMP_stage_label_assertion_corrected_without_business_source_change=True),
+ removed_old_binding_preservation=PINS[str(BASE/'canonical_delta_removed_paths_preservation.json')],final_metadata_source_pins=list(PINS.values()),audit_source_pin=pin(Path(__file__)),files_deleted=0,formal_or_ART_writes=False,review_write_scope='Own TMP only')
+with (BASE/'independent_actual_PREP_review.json').open('x')as f:json.dump(report,f,indent=2,allow_nan=False);f.write('\n')
+with (BASE/'REPORT.txt').open('x')as f:
+ f.write('PASS：V9 实际 PREP 完整独审。Root ef22f4/session60763→f4b055 int0 CLOSED；全 35,647 canonical /35,803,098,221B 已真实鲜读；235,528 rows、86 namespaces、186 aliases、445 absence、完整 owner/coverage/trace 验证通过。SOURCE11/TERM4/2cad七组完整字段与类型/fed209完整74字段及原源码/监督器绑定独立通过。231历史资源根完整保留旧228+新3，完整当前资源身份前后稳定。graph64,644,869B，原64MiB限额/原1800/600/512/onechild/0retry/2GiB/96GiB/free8均保留。当前只有DECL/PREP绑定，四未来RUN配置/四tail None，无seal/driver/新RUN。用户现已转存储审计，本轮不启动V9 RUN；将来恢复科学目标后才可交Root一次原五阶段RUN。并无combinedRSS/native/fullFLU/AAA/ABA科学信用。\n')
+print(json.dumps(dict(status='PASS',report=str(BASE/'independent_actual_PREP_review.json'),sha256=hashlib.sha256((BASE/'independent_actual_PREP_review.json').read_bytes()).hexdigest(),complete_canonical=35647,full_bytes=35803098221,roots=231,scientific_credit=False)))

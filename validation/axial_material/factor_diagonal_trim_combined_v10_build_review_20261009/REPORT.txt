@@ -1,0 +1,14 @@
+V10 完整程序构建结果（2026-10-09）
+
+新的因子缓存优化组件已通过45阶段验证。完整程序的新准备步骤实际退出0，完整输入图和新组件记录已准入。随后5阶段链接/对象/可执行文件/依赖/统一审计全部PASS，实际运行退出0；完整程序正式runtime-input-only复核也实际退出0。
+
+本次完整构建用时311.540676917秒，SOURCE+OUT占154329907字节，均在原预算内。新程序已可作为下一轮计算输入；尚未运行新原生输运、未证明完整计算满足512MiB、未获得AAA独立精度资格、未准入ABA。所有相关科学资格均保持false。
+
+下一步先做新的有界输入核验，再准备新AAA并实测，之后通过原独立参考精度验收才进入ABA。
+
+证据：
+/Users/wen/spot/validation/axial_material/factor_diagonal_trim_combined_v10_build_review_20261009/Root_actual_prepare_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/factor_diagonal_trim_combined_v10_build_review_20261009/Root_actual_build_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/factor_diagonal_trim_combined_v10_build_review_20261009/Root_actual_admission_tool_terminal_return.json
+/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009/audit/result.json
+/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json

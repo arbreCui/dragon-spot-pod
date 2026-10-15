@@ -1,0 +1,12 @@
+V9 完整构建准备与实际验证（2026-10-09）
+
+最终源码44789已正式安装，原解析器和65个函数体保持。已审fd3 helper只释放两份私有临时声明的最终引用。
+源码独审真实4741bd EXIT0，Root正式安装真实fe61a3 EXIT0。
+Root唯一完整PREP实际ef22f4/session60763 → f4b055 EXIT0 CLOSED；严格真实0后，fc1b03 EXIT0记录本次外部Root PREP收据。
+原1800/600秒、512 MiB、线程1、单子进程、零重试、2 GiB归档、96 GiB历史、8 GiB空闲限额保持。
+实际构建、native RSS、AAA物理精度与ABA尚未通过；主goal仍active。
+
+DECL SHA 7bc3d176f58ad6ee92d640c799b3f8d79923c65b2bf27c3b545c511e282b53e0
+PREP SHA 0297aa6543c36ca3f452b1948e0d034e218f71c253b08cd671c3c83cb01262fb
+完整历史图全文件及来源见证独立复核仍在执行；当前计数35,647规范文件、235,528关系、86命名空间、186别名、445缺席条件、231动态历史资源根，不将计数当成核验通过。
+完整RUN尚未启动；seal和成功terminal绑定仍None，四尾字段为空。

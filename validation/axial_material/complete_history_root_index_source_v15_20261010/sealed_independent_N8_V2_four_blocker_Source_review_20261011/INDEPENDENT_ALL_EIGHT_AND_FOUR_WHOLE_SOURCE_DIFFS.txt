@@ -1,0 +1,932 @@
+ROLE Root_observation_postclose_META_writer.UNREADY.py
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/Root_observation_postclose_META_writer.UNREADY.py
++++ Root_observation_postclose_META_writer.UNREADY.py
+@@ -109,7 +109,7 @@
+     diagnostic=h['actual_failure_only_monitor_evidence']
+     require(diagnostic['actual_required_new_monitor_controls_scope']==b['actual_required_monitor_controls_scope'] and diagnostic['actual_owner_scope_state']['unknown']==[],'actual required monitor Q and no unknown ownership in successful host result')
+     require(diagnostic['schema']=='ACTUAL_N8_FAILURE_ONLY_MONITOR_SUMMARY_V1'and type(diagnostic['failure_event_count'])is int and diagnostic['failure_event_count']==0 and diagnostic['journal_pin']is None and diagnostic['additional_recording_errors']==[] and diagnostic['unpersisted_complete_events']==[],'actual successful instrumented host has no hidden monitor/cleanup failure or recording error')
+-    require(diagnostic['original_PS_lsof_argv_timeout_and_PID_parent_chain_unchanged']is True and diagnostic['original_bounded_Source_bytes_and_supervisor_classes_unchanged']is True and diagnostic['original_watchdog_cleanup_flag_not_actual_cleanup_proof']is True and diagnostic['new_instrumented_runtime_controls_actual']is None and diagnostic['new_native_runtime_qualification']is None and diagnostic['original_caps']==CAPS,'failure-only diagnostic scope does not qualify guard/native/science or treat legacy cleanup flag as proof')
++    require(diagnostic['original_lsof_argv_and_single_strict_zero_timeout_unchanged']is True and diagnostic['full_PS_pid_ppid_pgid_state_and_captured_union_explicitly_new']is True and diagnostic['original_parent_chain_never_reduced_except_individually_proven_closed_owned_PIDs']is True and diagnostic['three_bounded_callable_objects_and_two_private_methods_per_actual_owned_Popen_declared']is True and diagnostic['original_bounded_Source_bytes_and_supervisor_classes_unchanged']is True and diagnostic['original_watchdog_cleanup_flag_not_actual_cleanup_proof']is True and diagnostic['diagnostic_source_contract_is_not_runtime_qualification']is True and diagnostic['new_native_runtime_qualification']is None and diagnostic['original_caps']==CAPS,'truthfully declared monitor Source scope does not qualify guard/native/science or treat legacy cleanup flag as proof')
+     require(t['exit_code']==0,'actual success coverage requires Root typed zero, nonzero is retained failure only')
+     stdout=strict_json(t['output']);require(stdout['status']==h['status']and stdout['actual_host_result_pin']==host_pin and stdout['actual_observation_manifest_pin']==h['actual_observation_manifest_pin']and stdout['actual_build_evidence_pin']==h['actual_build_evidence_pin'],'actual Root stdout fullpin matches host result and all raw evidence')
+     for k,v in FUTURE.items():require(h[k]is v,'future qualifications must remain unknown/false')
+
+
+ROLE N8_genuine_integrated_controls_driver.UNREADY.py
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/N8_genuine_integrated_controls_driver.UNREADY.py
++++ N8_genuine_integrated_controls_driver.UNREADY.py
+@@ -113,7 +113,7 @@
+     monitor.install_bounded_wrappers(runner);deadline=time.monotonic()+600;monitor.stage_deadline=deadline
+     observer=runtime.attach_exact_owner_observer(runner,resources,monitor,b['actual_stdlib_subprocess_Source_pin'],started,lambda:monitor.stage_deadline,author['owner_scope_helper'],support,control_mode=True)
+     selected_case={1:'live_descendant',2:'closed_after_PS',3:'nonzero',4:'closed_leader_group',5:'external_reaper',6:'late_descendant_exit',7:'byte_producer',9:'late_descendant_exit',10:'closed_after_PS'}.get(case_index,'closed_after_PS')
+-    fixture=Path(author['monitor_control_child_Source']['path']);case_folder=host/'CONTROLS';gate_events=[];barrier_used=False;expected_failure=case_index in(3,5,6,9)
++    fixture=Path(author['monitor_control_child_Source']['path']);case_folder=host/'CONTROLS';gate_events=[];barrier_used=False;strict_lsof_refusal_target=None;expected_failure=case_index in(3,5,6,9)
+     actual_scans=[]
+     def scan_sink(joint,scan,state):
+         require(observer.control_mode is True,'actual controls-only full raw sink')
+@@ -127,7 +127,7 @@
+     resources._actual_control_scan_sink=scan_sink
+     original_signal=signal.getsignal(signal.SIGCHLD);actual_error=None;after=None;command=[str(support.PYTHON),'-B',str(fixture),selected_case,str(out),repr(deadline)]
+     def barrier(rows,selected):
+-        nonlocal barrier_used
++        nonlocal barrier_used,strict_lsof_refusal_target
+         if barrier_used:return
+         business=[o for o in observer.owners.values()if o['role']=='business' and o['closed_wait'] is None]
+         if not business or not(out/'leader_ready.json').exists():return
+@@ -139,9 +139,15 @@
+         gate_events.append(dict(event='actual_full_PS_before_control_transition',complete_rows=rows,selected_original_parentchain=sorted(selected),actual_owner_pid=pid,actual_ready=ready))
+         if selected_case=='live_descendant':return
+         if selected_case=='late_descendant_exit':
++            descendant_ready=strict_json((out/'descendant_ready.json').read_bytes())
++            require(all(type(descendant_ready[k])is int and descendant_ready[k]>0 for k in('pid','ppid','pgid')) and type(ready['descendant_pid'])is int and ready['descendant_pid']>0,'exact positive actual ready descendant identity')
++            target=descendant_ready['pid'];descendant_row=rows.get(target)
++            require(target==ready['descendant_pid'] and descendant_ready['ppid']==pid and descendant_ready['pgid']==owner['pgid'] and target in selected and descendant_row is not None and all(descendant_row[k]==descendant_ready[k]for k in('pid','ppid','pgid')) and not descendant_row['state'].startswith('Z'),'ready non-zombie descendant must be actually selected in saved fullPS before release')
++            strict_lsof_refusal_target=dict(actual_ready=descendant_ready,actual_selected_full_PS_row=descendant_row)
++            gate_events.append(dict(event='actual_non_zombie_descendant_selected_before_release',**strict_lsof_refusal_target))
+             (out/'descendant_release').touch(exist_ok=False)
+             closed=wait_small_file(out/'descendant_real_wait.json',min(deadline,time.monotonic()+2))
+-            require(closed['pid']==ready['descendant_pid'] and closed['exited'] is True and closed['exitcode']==0,'real compiler-descendant parent wait, never a fake closed row')
++            require(type(closed['pid'])is int and closed['pid']==ready['descendant_pid'] and closed['exited'] is True and type(closed['exitcode'])is int and closed['exitcode']==0,'real compiler-descendant parent wait, never a fake closed row')
+             gate_events.append(dict(event='actual_descendant_closed_by_its_own_parent',actual_wait=closed))
+             return
+         if selected_case=='external_reaper':
+@@ -190,7 +196,30 @@
+         if case_index==3:
+             require(any(o['closed_wait'] is not None and o['closed_wait']['actual_exit_code']==7 for o in observer.owners.values() if o['role']=='business'),'actual nonzero original exit tuple remains 7')
+         if case_index in(6,9):
+-            require(monitor.events>0 and monitor.journal is not None,'actual failed strict scan and cleanup propagation complete raw recorded')
++            require(strict_lsof_refusal_target is not None and monitor.events>0 and monitor.journal is not None and monitor.recording_errors==[] and monitor.unpersisted==[],'actual selected-descendant strict refusal requires complete persisted original failure evidence')
++            journal_pin=fullpin(monitor.journal);failure_events=[strict_json(line)for line in monitor.journal.read_bytes().splitlines()]
++            require(fullpin(monitor.journal)==journal_pin,'complete original failure journal unchanged across strict refusal check')
++            target=strict_lsof_refusal_target['actual_ready']['pid'];specific_refusals=[]
++            for event in failure_events:
++                if event.get('event')!='original_joint_bytes_failure':continue
++                ps=event['original_ps'];scan=event['original_lsof'];selected_pids=event['original_parent_chain_selected_PIDs']
++                if target not in selected_pids:continue
++                require(type(ps['actual_returncode'])is int and ps['actual_returncode']==0 and ps['streams_complete']is True and type(ps['actual_stdout'])is str,'specific refusal originates from a real complete strict fullPS')
++                ps_target=[]
++                for line in ps['actual_stdout'].splitlines():
++                    words=line.split();require(len(words)==4 and all(w.isdigit()for w in words[:3]),'saved original strict refusal fullPS rows')
++                    if int(words[0])==target:ps_target.append(dict(pid=int(words[0]),ppid=int(words[1]),pgid=int(words[2]),state=words[3]))
++                require(ps_target==[strict_lsof_refusal_target['actual_selected_full_PS_row']],'strict refusal uses the saved selected non-zombie descendant census')
++                expected_argv=[b['tool_pins']['lsof']['path'],'-nP','-F','pfnsiDt','-a','-p',','.join(map(str,sorted(selected_pids)))]
++                require(scan['source_argv_for_actual_selected_PIDs']==expected_argv and scan['actual_returned_argv']==expected_argv and scan['streams_complete']is True and type(scan['actual_returncode'])is int and type(scan['actual_stdout'])is str and type(scan['actual_stderr'])is str,'actual single canonical lsof invocation and complete raw refusal streams')
++                returned_pids=[]
++                for line in scan['actual_stdout'].splitlines():
++                    if line.startswith('p'):require(line[1:].isdigit(),'saved actual lsof PID field');returned_pids.append(int(line[1:]))
++                error=event['original_error'];nonzero=scan['actual_returncode']!=0 and error['type']=='builtins.ValueError' and error['repr']==repr(ValueError('full live own process file scan required'))
++                missing_target=scan['actual_returncode']==0 and target not in returned_pids and error['type']=='builtins.ValueError' and error['repr']==repr(ValueError('single strict lsof0 complete selected PID coverage; no absent-PID acceptance'))
++                if nonzero or missing_target:specific_refusals.append(dict(actual_failure_event_sequence=event['sequence'],actual_selected_descendant_PID=target,actual_canonical_lsof_returncode=scan['actual_returncode'],actual_lsof_returned_PIDs=returned_pids,canonical_nonzero_refused=nonzero,selected_descendant_coverage_missing_refused=missing_target))
++            require(bool(specific_refusals),'complete passing lsof or unrelated later error cannot satisfy strict-refusal control')
++            gate_events.append(dict(event='actual_specific_canonical_strict_lsof_refusal_verified',actual_failure_journal_pin=journal_pin,actual_refusals=specific_refusals))
+         if case_index==7:
+             require((case_folder/'actual_private_control.log').stat().st_size==8*2**20,'actual private 8MiB producer only; no canonical tool oversize claim')
+         # An ECHILD negative leaves original Popen cache unknown by design.
+
+
+ROLE N8_Root_controls_postclose_META.UNREADY.py
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/N8_Root_controls_postclose_META.UNREADY.py
++++ N8_Root_controls_postclose_META.UNREADY.py
+@@ -24,7 +24,7 @@
+             require(type(value['identity'])is list and len(value['identity'])==7 and all(type(x)is int and x>=0 for x in value['identity']),'typed complete metadata integer7ID')
+             if 'size_bytes'in value:require(type(value['size_bytes'])is int and value['size_bytes']>=0 and value['size_bytes']==value['identity'][4],'typed complete metadata size')
+         for k,v in value.items():
+-            if k=='original_caps':require(type(v)is dict and set(v)==set(CAPS)and all(type(x)is int for x in v.values())and v==CAPS,'typed unchanged original nine caps')
++            if k in('original_caps','actual_original_caps'):require(type(v)is dict and set(v)==set(CAPS)and all(type(x)is int for x in v.values())and v==CAPS,'typed unchanged original nine caps')
+             if k=='directories':require(type(v)is dict and all(type(row)is list and len(row)==7 and all(type(x)is int and x>=0 for x in row)for row in v.values()),'typed complete directory7IDs')
+             validate_saved_metadata_types(v)
+     elif type(value)is list:
+@@ -67,6 +67,17 @@
+     with p.open('x')as f:json.dump(value,f,indent=2,allow_nan=False);f.write('\n')
+     return fullpin(p)
+ 
++def recheck_saved_regular_file_pins(pins,allow_empty=False):
++    require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:validate_saved_metadata_types(p);require(fullpin(p['path'])==p,'all declared complete raw/Source/META file pins unchanged')
++
++def recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
++
+ def case_mode(a):
+     fp,f=read_actual(a.facts);binding_pin,b=read_actual(a.binding)
+     require(f['schema']=='ACTUAL_N8_GENUINE_MONITOR_CONTROL_CASE_FACTS_V1'and f['case_id']in CASE_IDS and f['actual_controls_Source_binding_pin']==binding_pin and f['actual_author_Source_contract']==b['actual_author_Source_contract'],'actual case Source binding and complete owners')
+@@ -78,10 +89,14 @@
+     rows={}
+     for line in g['actual_full_PS_stdout'].splitlines():
+         w=line.split();require(len(w)==4 and all(x.isdigit()for x in w[:3]),'real complete closure pid/ppid/pgid/state table');p,pp,pg=map(int,w[:3]);require(p>0 and p not in rows,'unique closure PID');rows[p]=(pp,pg,w[3])
+-    owners=f['actual_exact_owner_state']['owners'];targets={f['actual_host_PID']}|{o['pid']for o in owners};groups={o['pgid']for o in owners}
++    owners=f['actual_exact_owner_state']['owners']
++    require(type(f['actual_host_PID'])is int and f['actual_host_PID']>0 and type(owners)is list and all(type(o)is dict and type(o['pid'])is int and o['pid']>0 and type(o['pgid'])is int and o['pgid']>0 for o in owners),'exact positive actual host/owner PID and PGID')
++    targets={f['actual_host_PID']}|{o['pid']for o in owners};groups={o['pgid']for o in owners}
+     for event in f['actual_gate_events']:
+         ready=event.get('actual_ready')
+-        if ready is not None and type(ready.get('descendant_pid'))is int:targets.add(ready['descendant_pid'])
++        if ready is not None and 'descendant_pid'in ready and ready['descendant_pid']is not None:
++            require(type(ready['descendant_pid'])is int and ready['descendant_pid']>0,'exact positive actual ready descendant PID');targets.add(ready['descendant_pid'])
++    require(all(type(g[k])is list and len(g[k])==len(set(g[k])) and all(type(p)is int and p>0 for p in g[k])for k in('actual_target_PIDs','actual_target_PGIDs')),'exact positive actual target PID/PGID lists')
+     require(g['actual_target_PIDs']==sorted(targets) and g['actual_target_PGIDs']==sorted(groups),'complete actual owner/host/descendant/group targets, no omission')
+     require(not any(p in targets or pp in targets or pg in groups for p,(pp,pg,state)in rows.items()),'current full PS no owned target/group/parent remnants')
+     rp,r=read_actual(a.postclose_resources);rt,rout=actual_zero(a.postclose_resource_terminal,'ROOT_ACTUAL_N8_CONTROL_POSTCLOSE_RESOURCE_TOOL_TERMINAL_RETURN_V1')
+@@ -92,6 +107,7 @@
+     total=sum(p['size_bytes']for v in views.values()for p in v['files']);external=sum(p['size_bytes']for k in('source','receipts')for p in views[k]['files'])
+     require(type(r['artifact_bytes'])is int and type(r['disk_free_bytes'])is int and total<2*2**30 and r['artifact_bytes']+external<=96*2**30 and r['disk_free_bytes']>=8*2**30,'actual closed full HOCDE/history/free original bounds')
+     require(f['actual_original_caps']==CAPS and f['actual_original_guard_classes_MRO_modified']is False and f['canonical_OS_nonzero_timeout_oversize_or_EPERM_manufactured']is False,'original guards and no manufactured canonical OS failures')
++    for view in views.values():recheck_saved_regular_file_pins(view['files'],allow_empty=True)
+     value=dict(schema='ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_POSTCLOSE_V1',case_id=f['case_id'],passed=True,actual_author_Source_contract=b['actual_author_Source_contract'],actual_controls_Source_binding_pin=binding_pin,actual_control_case_facts_pin=fp,actual_Root_case_tool_terminal_return_pin=tp,actual_current_group_closure_pin=gp,actual_current_group_tool_terminal_pin=gt,actual_Root_postclose_resource_pin=rp,actual_Root_postclose_resource_terminal_pin=rt,actual_complete_postclose_namespace_views=views,actual_complete_joint_bytes=total,actual_genuine_runner_used=True,actual_shared_resource_factory_used=True,actual_exact_owner_observer_used=True,synthetic_PS_or_lsof_or_cleanup_error_used_for_qualification=False,actual_complete_raw_evidence_saved=True,actual_Source_D_and_receipt_E_frozen=True,actual_original_caps_verified=True,actual_remaining_owned_groups_absent_after_Root_closure=True,actual_complete_evidence_pins=[fp,tp,gp,gt,rp,rt],actual_native_or_scientific_qualification_created=False)
+     # This append is explicitly before its own fullpin. Caller must place it
+     # under case H/O/C and reserve its bytes in the same unchanged cap account.
+@@ -120,6 +136,7 @@
+     cases=[]
+     for path,case_id in zip(a.case_final,CASE_IDS):
+         pin,c=read_actual(path);require(c['schema']=='ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_POSTCLOSE_V1'and c['case_id']==case_id and c['passed']is True and c['actual_author_Source_contract']==b['actual_author_Source_contract']and c['actual_controls_Source_binding_pin']==bp,'ordered actual twelve case closure facts')
++        recheck_complete_saved_case(c)
+         c['actual_complete_evidence_pins'].append(pin);cases.append(c)
+     value=dict(schema='ACTUAL_N8_TWELVE_GENUINE_MONITOR_CONTROLS_MANIFEST_V1',source_only=False,actual_author_Source_contract=b['actual_author_Source_contract'],actual_controls_Source_binding_pin=bp,original_caps=CAPS,cases=cases,all_required_controls_passed=True,blockers=[],actual_monitor_controls_qualification=None,actual_native_or_scientific_qualification_created=False)
+     return write_new(Path(a.output),account_combined_append(a,b,value))
+@@ -129,6 +146,8 @@
+     root_pin,root_out=actual_zero(a.controls_terminal,'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
+     require(root_out['actual_controls_manifest_pin']==mp and root_out['all_required_controls_passed']is True,'Root actual complete controls output pin')
+     require(m['schema']=='ACTUAL_N8_TWELVE_GENUINE_MONITOR_CONTROLS_MANIFEST_V1'and m['actual_controls_Source_binding_pin']==bp and m['actual_author_Source_contract']==b['actual_author_Source_contract']and m['all_required_controls_passed']is True and m['blockers']==[] and [c['case_id']for c in m['cases']]==list(CASE_IDS),'complete actual controls before qualification')
++    for case in m['cases']:recheck_complete_saved_case(case)
++    recheck_saved_regular_file_pins(m['actual_complete_controls_regular_file_pins_before_own_append'])
+     require(peer['schema']=='INDEPENDENT_ACTUAL_N8_SAVED_GENUINE_MONITOR_CONTROLS_REVIEW_V1'and peer['status']=='PASS_ACTUAL_SAVED_TWELVE_GENUINE_MONITOR_CONTROLS_NO_NATIVE_OR_SCIENCE'and peer['qualified_actual_controls_manifest_pin']==mp and peer['qualified_actual_controls_Source_binding_pin']==bp and peer['qualified_actual_Root_controls_tool_terminal_return_pin']==root_pin and peer['actual_author_Source_contract']==b['actual_author_Source_contract']and peer['all_checks_passed']is True and peer['blockers']==[],'independent actual saved controls mandatory')
+     value=dict(schema='ROOT_ACTUAL_N8_EXACT_OWNER_MONITOR_CONTROLS_QUALIFICATION_V1',status='ACTUAL_TWELVE_GENUINE_MONITOR_CONTROLS_QUALIFIED_NO_NATIVE_OR_SCIENCE',source_only=False,actual_monitor_controls_qualified=True,actual_author_Source_contract=b['actual_author_Source_contract'],original_caps=CAPS,actual_controls_Source_binding_pin=bp,actual_controls_manifest_pin=mp,actual_Root_controls_tool_terminal_return_pin=root_pin,actual_independent_saved_controls_review_pin=peer_pin,actual_stdlib_subprocess_Source_pin=b['actual_stdlib_subprocess_Source_pin'],actual_native_build_or_AB_executed=False,native_transport_executed=False,scientific_qualification_created=False,scientific_accuracy_qualified=False,physical_neutron_balance_qualified=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+     return write_new(Path(a.output),account_combined_append(a,b,value))
+
+
+ROLE N8_actual_controls_qualification_gate.Source_META_only.py
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/N8_actual_controls_qualification_gate.Source_META_only.py
++++ N8_actual_controls_qualification_gate.Source_META_only.py
+@@ -66,6 +66,17 @@
+     require(type(terminal) is dict and type(terminal['exit_code']) is int and terminal['exit_code']==0 and 'session_id' not in terminal and type(terminal['chunk_id']) is str and bool(terminal['chunk_id']) and wrapper['actual_terminal_chunk']==terminal['chunk_id'],'actual typed zero, exact terminal chunk and no live session')
+     return wrapper,strict_json(terminal['output'])
+ 
++def recheck_saved_regular_file_pins(pins,allow_empty=False):
++    require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:recheck_pinned(p)
++
++def recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
++
+ def validate_actual_N8_monitor_controls(qualification_pin,qualification_terminal_pin,author):
+     q=read_pinned(qualification_pin)
+     require(q['schema']=='ROOT_ACTUAL_N8_EXACT_OWNER_MONITOR_CONTROLS_QUALIFICATION_V1' and q['status']=='ACTUAL_TWELVE_GENUINE_MONITOR_CONTROLS_QUALIFIED_NO_NATIVE_OR_SCIENCE' and q['source_only'] is False and q['actual_monitor_controls_qualified'] is True,'actual Root monitor controls qualification required')
+@@ -84,7 +95,9 @@
+         require(case['actual_complete_raw_evidence_saved'] is True and case['actual_Source_D_and_receipt_E_frozen'] is True and case['actual_original_caps_verified'] is True and case['actual_remaining_owned_groups_absent_after_Root_closure'] is True,'complete raw, frozen Source, original caps and actual residual-group closure')
+         actual_closed_zero(case['actual_Root_case_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_TOOL_TERMINAL_RETURN_V1')
+         require(type(case['actual_complete_evidence_pins']) is list and bool(case['actual_complete_evidence_pins']),'actual complete Source/small-META raw evidence, no empty case')
+-        for p in case['actual_complete_evidence_pins']:recheck_pinned(p)
++        recheck_complete_saved_case(case)
++    recheck_saved_regular_file_pins(manifest['actual_complete_controls_regular_file_pins_before_own_append'])
++    recheck_saved_regular_file_pins(q['actual_complete_controls_regular_file_pins_before_own_append'])
+     _,controls_output=actual_closed_zero(q['actual_Root_controls_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
+     require(controls_output['actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and controls_output['all_required_controls_passed'] is True,'actual Root complete controls zero output coupling')
+     peer=read_pinned(q['actual_independent_saved_controls_review_pin'])
+
+
+ROLE complete_observation_BUILD5_AB_runtime.UNREADY.py
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/complete_observation_BUILD5_AB_runtime.UNREADY.py
++++ complete_observation_BUILD5_AB_runtime.UNREADY.py
+@@ -177,6 +177,17 @@
+     n8_require(type(terminal) is dict and type(terminal['exit_code']) is int and terminal['exit_code']==0 and 'session_id' not in terminal and type(terminal['chunk_id']) is str and bool(terminal['chunk_id']) and wrapper['actual_terminal_chunk']==terminal['chunk_id'],'actual typed zero, exact terminal chunk and no live session')
+     return wrapper,n8_strict_json(terminal['output'])
+ 
++def n8_recheck_saved_regular_file_pins(pins,allow_empty=False):
++    n8_require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    n8_require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:n8_recheck_pinned(p)
++
++def n8_recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    n8_require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():n8_recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    n8_recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
++
+ def validate_actual_N8_monitor_controls(qualification_pin,qualification_terminal_pin,author):
+     q=n8_read_pinned(qualification_pin)
+     n8_require(q['schema']=='ROOT_ACTUAL_N8_EXACT_OWNER_MONITOR_CONTROLS_QUALIFICATION_V1' and q['status']=='ACTUAL_TWELVE_GENUINE_MONITOR_CONTROLS_QUALIFIED_NO_NATIVE_OR_SCIENCE' and q['source_only'] is False and q['actual_monitor_controls_qualified'] is True,'actual Root monitor controls qualification required')
+@@ -195,7 +206,9 @@
+         n8_require(case['actual_complete_raw_evidence_saved'] is True and case['actual_Source_D_and_receipt_E_frozen'] is True and case['actual_original_caps_verified'] is True and case['actual_remaining_owned_groups_absent_after_Root_closure'] is True,'complete raw, frozen Source, original caps and actual residual-group closure')
+         n8_actual_closed_zero(case['actual_Root_case_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_TOOL_TERMINAL_RETURN_V1')
+         n8_require(type(case['actual_complete_evidence_pins']) is list and bool(case['actual_complete_evidence_pins']),'actual complete Source/small-META raw evidence, no empty case')
+-        for p in case['actual_complete_evidence_pins']:n8_recheck_pinned(p)
++        n8_recheck_complete_saved_case(case)
++    n8_recheck_saved_regular_file_pins(manifest['actual_complete_controls_regular_file_pins_before_own_append'])
++    n8_recheck_saved_regular_file_pins(q['actual_complete_controls_regular_file_pins_before_own_append'])
+     _,controls_output=n8_actual_closed_zero(q['actual_Root_controls_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
+     n8_require(controls_output['actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and controls_output['all_required_controls_passed'] is True,'actual Root complete controls zero output coupling')
+     peer=n8_read_pinned(q['actual_independent_saved_controls_review_pin'])
+
+
+ROLE Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py
++++ Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py
+@@ -105,6 +105,17 @@
+     n8_require(type(terminal) is dict and type(terminal['exit_code']) is int and terminal['exit_code']==0 and 'session_id' not in terminal and type(terminal['chunk_id']) is str and bool(terminal['chunk_id']) and wrapper['actual_terminal_chunk']==terminal['chunk_id'],'actual typed zero, exact terminal chunk and no live session')
+     return wrapper,n8_strict_json(terminal['output'])
+ 
++def n8_recheck_saved_regular_file_pins(pins,allow_empty=False):
++    n8_require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    n8_require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:n8_recheck_pinned(p)
++
++def n8_recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    n8_require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():n8_recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    n8_recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
++
+ def validate_actual_N8_monitor_controls(qualification_pin,qualification_terminal_pin,author):
+     q=n8_read_pinned(qualification_pin)
+     n8_require(q['schema']=='ROOT_ACTUAL_N8_EXACT_OWNER_MONITOR_CONTROLS_QUALIFICATION_V1' and q['status']=='ACTUAL_TWELVE_GENUINE_MONITOR_CONTROLS_QUALIFIED_NO_NATIVE_OR_SCIENCE' and q['source_only'] is False and q['actual_monitor_controls_qualified'] is True,'actual Root monitor controls qualification required')
+@@ -123,7 +134,9 @@
+         n8_require(case['actual_complete_raw_evidence_saved'] is True and case['actual_Source_D_and_receipt_E_frozen'] is True and case['actual_original_caps_verified'] is True and case['actual_remaining_owned_groups_absent_after_Root_closure'] is True,'complete raw, frozen Source, original caps and actual residual-group closure')
+         n8_actual_closed_zero(case['actual_Root_case_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_TOOL_TERMINAL_RETURN_V1')
+         n8_require(type(case['actual_complete_evidence_pins']) is list and bool(case['actual_complete_evidence_pins']),'actual complete Source/small-META raw evidence, no empty case')
+-        for p in case['actual_complete_evidence_pins']:n8_recheck_pinned(p)
++        n8_recheck_complete_saved_case(case)
++    n8_recheck_saved_regular_file_pins(manifest['actual_complete_controls_regular_file_pins_before_own_append'])
++    n8_recheck_saved_regular_file_pins(q['actual_complete_controls_regular_file_pins_before_own_append'])
+     _,controls_output=n8_actual_closed_zero(q['actual_Root_controls_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
+     n8_require(controls_output['actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and controls_output['all_required_controls_passed'] is True,'actual Root complete controls zero output coupling')
+     peer=n8_read_pinned(q['actual_independent_saved_controls_review_pin'])
+
+
+ROLE bind_complete_observation_SOURCE_only.UNREADY.py
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/bind_complete_observation_SOURCE_only.UNREADY.py
++++ bind_complete_observation_SOURCE_only.UNREADY.py
+@@ -120,6 +120,17 @@
+     n8_require(wrapper['schema']==expected_schema and wrapper['closed'] is True and wrapper['observed_terminal'] is True and wrapper['session_repolled_after_close'] is False,'actual observed CLOSED controls terminal')
+     n8_require(type(terminal) is dict and type(terminal['exit_code']) is int and terminal['exit_code']==0 and 'session_id' not in terminal and type(terminal['chunk_id']) is str and bool(terminal['chunk_id']) and wrapper['actual_terminal_chunk']==terminal['chunk_id'],'actual typed zero, exact terminal chunk and no live session')
+     return wrapper,n8_strict_json(terminal['output'])
++
++def n8_recheck_saved_regular_file_pins(pins,allow_empty=False):
++    n8_require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    n8_require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:n8_recheck_pinned(p)
++
++def n8_recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    n8_require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():n8_recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    n8_recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
+ 
+ def validate_actual_N8_monitor_controls(qualification_pin,qualification_terminal_pin,author):
+     q=n8_read_pinned(qualification_pin)
+@@ -139,7 +150,9 @@
+         n8_require(case['actual_complete_raw_evidence_saved'] is True and case['actual_Source_D_and_receipt_E_frozen'] is True and case['actual_original_caps_verified'] is True and case['actual_remaining_owned_groups_absent_after_Root_closure'] is True,'complete raw, frozen Source, original caps and actual residual-group closure')
+         n8_actual_closed_zero(case['actual_Root_case_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_TOOL_TERMINAL_RETURN_V1')
+         n8_require(type(case['actual_complete_evidence_pins']) is list and bool(case['actual_complete_evidence_pins']),'actual complete Source/small-META raw evidence, no empty case')
+-        for p in case['actual_complete_evidence_pins']:n8_recheck_pinned(p)
++        n8_recheck_complete_saved_case(case)
++    n8_recheck_saved_regular_file_pins(manifest['actual_complete_controls_regular_file_pins_before_own_append'])
++    n8_recheck_saved_regular_file_pins(q['actual_complete_controls_regular_file_pins_before_own_append'])
+     _,controls_output=n8_actual_closed_zero(q['actual_Root_controls_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
+     n8_require(controls_output['actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and controls_output['all_required_controls_passed'] is True,'actual Root complete controls zero output coupling')
+     peer=n8_read_pinned(q['actual_independent_saved_controls_review_pin'])
+
+
+ROLE N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json
+--- PREVIOUS_SEALED_N8_FOUR_BLOCKER_FAILURE_PROVENANCE/ORIGINAL_COMPLETE_CHANGED_ROLE_SOURCE/N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json
++++ N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json
+@@ -74,7 +74,7 @@
+     {
+       "case_id": "07_actual_late_descendant_exit_strict_lsof_failure",
+       "evidence_scope": "new_late_descendant_refusal",
+-      "source_required_behavior": "Real untracked descendant is selected in fullPS then closed/reaped by its own parent during the one-shot transition. The single canonical lsof must be rejected on nonzero or incomplete selected-PID coverage. A fully complete passing scan instead fails this expected-refusal control, with no retry or whitelist.",
++      "source_required_behavior": "Real untracked descendant is selected in fullPS then closed/reaped by its own parent during the one-shot transition. The single canonical lsof must be rejected on nonzero or incomplete selected-PID coverage. A fully complete passing scan instead fails this expected-refusal control, with no retry or whitelist. Driver requires the exact ready PID/PPID/PGID and its non-zombie row in the actual selected fullPS before release, then the persisted original_joint_bytes_failure must show that canonical lsof nonzero or this selected descendant absent from its PID fields; unrelated errors cannot satisfy this case.",
+       "actual_execution": null,
+       "actual_root_closed_terminal": null,
+       "actual_group_resource_closure": null,
+@@ -101,7 +101,7 @@
+     {
+       "case_id": "10_original_cleanup_exceptions_and_group_evidence",
+       "evidence_scope": "new_error_propagation_plus_unchanged_cleanup",
+-      "source_required_behavior": "Actual strict scan refusal exercises new wait/scope with original active guard exception and original cleanup delegate. Both actual exceptions and original streams are saved when raised; no EPERM is fabricated. Existing N7 actual EPERM is Source/old-failure regression only.",
++      "source_required_behavior": "Actual strict scan refusal exercises new wait/scope with original active guard exception and original cleanup delegate. Both actual exceptions and original streams are saved when raised; no EPERM is fabricated. Existing N7 actual EPERM is Source/old-failure regression only. The same exact non-zombie selected descendant and specific persisted canonical lsof refusal are mandatory; any later unrelated error after a complete passing lsof is refused as a control result.",
+       "actual_execution": null,
+       "actual_root_closed_terminal": null,
+       "actual_group_resource_closure": null,
+
+
+ROLE complete_observation_BUILD5_AB_runtime.UNREADY.py
+--- PREVIOUS_SEALED_N7_SOURCE_PROVENANCE/complete_observation_BUILD5_AB_runtime.UNREADY.py
++++ complete_observation_BUILD5_AB_runtime.UNREADY.py
+@@ -124,8 +124,106 @@
+     require(all_source==set(expected),'full compile Source namespace coverage; no skipped extra Source')
+     return actual
+ 
++N8_CASE_IDS=('01_exact_environment_and_sole_wait_owner','02_actual_live_business_and_descendants','03_actual_closed_after_live_PS_census','04_actual_nonzero_exit_preserves_stage_failure','05_actual_closed_leader_and_reparented_group','06_unknown_owner_ECHILD_and_PID_reuse_refusals','07_actual_late_descendant_exit_strict_lsof_failure','08_actual_strict_stream_nonzero_timeout_oversize','09_original_resource_caps_and_frozen_Source','10_original_cleanup_exceptions_and_group_evidence','11_actual_watchdog_pipe_and_group_closure','12_actual_Root_and_independent_saved_control_closure')
++
++def n8_require(value,message):
++    if type(value) is not bool or not value:raise ValueError(message)
++
++def n8_validate_saved_metadata_types(value):
++    if type(value)is dict:
++        if set(value) in ({'path','sha256','identity'},{'path','sha256','size_bytes','identity'}):
++            n8_require(type(value['path'])is str and Path(value['path']).is_absolute()and '..'not in Path(value['path']).parts and type(value['sha256'])is str and len(value['sha256'])==64 and all(c in '0123456789abcdef'for c in value['sha256']),'typed complete metadata pin path/SHA')
++            n8_require(type(value['identity'])is list and len(value['identity'])==7 and all(type(x)is int and x>=0 for x in value['identity']),'typed complete metadata integer7ID')
++            if 'size_bytes'in value:n8_require(type(value['size_bytes'])is int and value['size_bytes']>=0 and value['size_bytes']==value['identity'][4],'typed complete metadata size')
++        for k,v in value.items():
++            if k=='original_caps':n8_require(type(v)is dict and set(v)==set(CAPS)and all(type(x)is int for x in v.values())and v==CAPS,'typed unchanged original nine caps')
++            if k=='directories':n8_require(type(v)is dict and all(type(row)is list and len(row)==7 and all(type(x)is int and x>=0 for x in row)for row in v.values()),'typed complete directory7IDs')
++            n8_validate_saved_metadata_types(v)
++    elif type(value)is list:
++        for v in value:n8_validate_saved_metadata_types(v)
++    elif type(value)is float:n8_require(value-value==0,'finite saved metadata float')
++    return value
++
++def n8_strict_json(raw):
++    def pairs(items):
++        result={}
++        for key,value in items:
++            n8_require(key not in result,'duplicate controls metadata key');result[key]=value
++        return result
++    return n8_validate_saved_metadata_types(json.loads(raw,object_pairs_hook=pairs,parse_constant=lambda v:(_ for _ in ()).throw(ValueError(v))))
++
++def n8_fullpin(path):
++    p=Path(path);s=p.lstat();before=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    n8_require(p.is_absolute() and all(not q.is_symlink() for q in (p,*p.parents)) and stat.S_ISREG(s.st_mode) and s.st_nlink==1,'complete Source/META nonalias singlelink')
++    with p.open('rb') as stream:
++        n8_require(list((lambda t:(t.st_dev,t.st_ino,t.st_mode,t.st_nlink,t.st_size,t.st_mtime_ns,t.st_ctime_ns))(os.fstat(stream.fileno())))==before,'opened Source/META identity')
++        digest=hashlib.file_digest(stream,'sha256').hexdigest()
++    t=p.lstat();n8_require([t.st_dev,t.st_ino,t.st_mode,t.st_nlink,t.st_size,t.st_mtime_ns,t.st_ctime_ns]==before,'complete Source/META EOF unchanged')
++    return dict(path=str(p),sha256=digest,size_bytes=s.st_size,identity=before)
++
++def n8_recheck_pinned(pin):
++    n8_require(type(pin) is dict and set(pin)=={'path','sha256','size_bytes','identity'} and type(pin['path']) is str and Path(pin['path']).is_absolute() and type(pin['sha256']) is str and re.fullmatch('[0-9a-f]{64}',pin['sha256']) is not None,'actual controls exact n8_fullpin required; None refused')
++    n8_require(type(pin['size_bytes']) is int and pin['size_bytes']>=0 and type(pin['identity']) is list and len(pin['identity'])==7 and all(type(x) is int and x>=0 for x in pin['identity']) and pin['identity'][3]==1 and pin['identity'][4]==pin['size_bytes'],'controls typed integer7ID/size')
++    n8_require(n8_fullpin(pin['path'])==pin,'actual controls Source/META full EOF pin unchanged')
++    return pin
++
++def n8_read_pinned(pin):
++    n8_recheck_pinned(pin)
++    return n8_strict_json(Path(pin['path']).read_bytes())
++
++def n8_actual_closed_zero(pin,expected_schema):
++    wrapper=n8_read_pinned(pin);terminal=wrapper['terminal_tool_return']
++    n8_require(wrapper['schema']==expected_schema and wrapper['closed'] is True and wrapper['observed_terminal'] is True and wrapper['session_repolled_after_close'] is False,'actual observed CLOSED controls terminal')
++    n8_require(type(terminal) is dict and type(terminal['exit_code']) is int and terminal['exit_code']==0 and 'session_id' not in terminal and type(terminal['chunk_id']) is str and bool(terminal['chunk_id']) and wrapper['actual_terminal_chunk']==terminal['chunk_id'],'actual typed zero, exact terminal chunk and no live session')
++    return wrapper,n8_strict_json(terminal['output'])
++
++def n8_recheck_saved_regular_file_pins(pins,allow_empty=False):
++    n8_require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    n8_require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:n8_recheck_pinned(p)
++
++def n8_recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    n8_require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():n8_recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    n8_recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
++
++def validate_actual_N8_monitor_controls(qualification_pin,qualification_terminal_pin,author):
++    q=n8_read_pinned(qualification_pin)
++    n8_require(q['schema']=='ROOT_ACTUAL_N8_EXACT_OWNER_MONITOR_CONTROLS_QUALIFICATION_V1' and q['status']=='ACTUAL_TWELVE_GENUINE_MONITOR_CONTROLS_QUALIFIED_NO_NATIVE_OR_SCIENCE' and q['source_only'] is False and q['actual_monitor_controls_qualified'] is True,'actual Root monitor controls qualification required')
++    n8_require(q['actual_author_Source_contract']==author and q['original_caps']==CAPS and all(type(x) is int for x in q['original_caps'].values()),'complete actual controls Source owner contract and original caps')
++    for key in ('actual_native_build_or_AB_executed','native_transport_executed','scientific_qualification_created','scientific_accuracy_qualified','physical_neutron_balance_qualified','AAA_accuracy_qualified','ABA_admitted'):
++        n8_require(q[key] is False,'control qualification cannot create native/science fact: '+key)
++    binding=n8_read_pinned(q['actual_controls_Source_binding_pin'])
++    n8_require(binding['schema']=='ROOT_ACTUAL_N8_MONITOR_CONTROLS_SOURCE_BINDING_V1' and binding['source_only'] is True and binding['actual_author_Source_contract']==author and binding['actual_control_execution'] is None,'actual Source-bound monitor controls roles, not guessed execution')
++    manifest=n8_read_pinned(q['actual_controls_manifest_pin'])
++    n8_require(manifest['schema']=='ACTUAL_N8_TWELVE_GENUINE_MONITOR_CONTROLS_MANIFEST_V1' and manifest['actual_author_Source_contract']==author and manifest['source_only'] is False and manifest['all_required_controls_passed'] is True and manifest['blockers']==[],'complete actual controls manifest, not a Source protocol')
++    n8_require(manifest['actual_controls_Source_binding_pin']==q['actual_controls_Source_binding_pin'] and manifest['original_caps']==CAPS,'controls Source binding and unchanged limits')
++    cases=manifest['cases']
++    n8_require(type(cases) is list and len(cases)==len(N8_CASE_IDS) and [c['case_id'] for c in cases]==list(N8_CASE_IDS),'all twelve genuine controls; no filtering unknown cases')
++    for case in cases:
++        n8_require(case['passed'] is True and case['actual_genuine_runner_used'] is True and case['actual_shared_resource_factory_used'] is True and case['actual_exact_owner_observer_used'] is True and case['synthetic_PS_or_lsof_or_cleanup_error_used_for_qualification'] is False,'actual same monitoring implementation, no mock qualification')
++        n8_require(case['actual_complete_raw_evidence_saved'] is True and case['actual_Source_D_and_receipt_E_frozen'] is True and case['actual_original_caps_verified'] is True and case['actual_remaining_owned_groups_absent_after_Root_closure'] is True,'complete raw, frozen Source, original caps and actual residual-group closure')
++        n8_actual_closed_zero(case['actual_Root_case_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_TOOL_TERMINAL_RETURN_V1')
++        n8_require(type(case['actual_complete_evidence_pins']) is list and bool(case['actual_complete_evidence_pins']),'actual complete Source/small-META raw evidence, no empty case')
++        n8_recheck_complete_saved_case(case)
++    n8_recheck_saved_regular_file_pins(manifest['actual_complete_controls_regular_file_pins_before_own_append'])
++    n8_recheck_saved_regular_file_pins(q['actual_complete_controls_regular_file_pins_before_own_append'])
++    _,controls_output=n8_actual_closed_zero(q['actual_Root_controls_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
++    n8_require(controls_output['actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and controls_output['all_required_controls_passed'] is True,'actual Root complete controls zero output coupling')
++    peer=n8_read_pinned(q['actual_independent_saved_controls_review_pin'])
++    n8_require(peer['schema']=='INDEPENDENT_ACTUAL_N8_SAVED_GENUINE_MONITOR_CONTROLS_REVIEW_V1' and peer['status']=='PASS_ACTUAL_SAVED_TWELVE_GENUINE_MONITOR_CONTROLS_NO_NATIVE_OR_SCIENCE' and peer['actual_author_Source_contract']==author and peer['qualified_actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and peer['qualified_actual_controls_Source_binding_pin']==q['actual_controls_Source_binding_pin'] and peer['qualified_actual_Root_controls_tool_terminal_return_pin']==q['actual_Root_controls_tool_terminal_return_pin'] and peer['all_checks_passed'] is True and peer['blockers']==[],'independent review of these actual saved controls required')
++    checks=peer['checks']
++    n8_require(type(checks) is list and type(peer['check_count']) is int and peer['check_count']==len(checks)>0 and len({c['check'] for c in checks})==len(checks) and all(type(c) is dict and set(c)=={'check','passed'} and type(c['check']) is str and bool(c['check']) and c['passed'] is True for c in checks),'unique typed independent actual controls checks')
++    _,q_output=n8_actual_closed_zero(qualification_terminal_pin,'ROOT_ACTUAL_N8_MONITOR_CONTROLS_QUALIFICATION_TOOL_TERMINAL_RETURN_V1')
++    n8_require(q_output['actual_monitor_controls_qualification_pin']==qualification_pin and q_output['actual_monitor_controls_qualified'] is True and q_output['native_or_scientific_qualification_created'] is False,'actual Root qualification output coupled to this immutable Q')
++    return dict(schema='ACTUAL_N8_REQUIRED_MONITOR_CONTROLS_SCOPE_COUPLING_V1',actual_monitor_controls_qualification_pin=qualification_pin,actual_Root_qualification_tool_terminal_return_pin=qualification_terminal_pin,actual_complete_controls_manifest_pin=q['actual_controls_manifest_pin'],actual_independent_saved_controls_review_pin=q['actual_independent_saved_controls_review_pin'],actual_stdlib_subprocess_Source_pin=q['actual_stdlib_subprocess_Source_pin'],all_twelve_actual_controls_required=True,native_or_scientific_qualification_created=False)
++
++
+ def actual_scope(request,author):
+     expected=request['actual_author_Source_contract']
++    monitor_scope=validate_actual_N8_monitor_controls(request['actual_monitor_controls_qualification_pin'],request['actual_monitor_controls_qualification_terminal_pin'],author)
++    require(request['actual_required_monitor_controls_scope']==monitor_scope,'actual monitor controls complete Source coupling before native action')
+     require(type(expected)is dict and expected==author,'exact whole observer author Source roles')
+     for p in expected.values():recheck(p)
+     peer=strict_json(Path(request['independent_observation_Source_review_pin']['path']).read_bytes())
+@@ -141,11 +239,11 @@
+     return dict(schema='ACTUAL_COMPLETE_OBSERVATION_SOURCE_SCOPE_COUPLING_V1',source_only=True,actual_author_Source_contract=expected,independent_Source_review_pin=request['independent_observation_Source_review_pin'],independent_observation_Source_admission_pin=request['independent_observation_Source_admission_pin'],actual_Root_admission_tool_return_pin=request['actual_Root_observation_Source_admission_tool_return_pin'],independent_aggregate_check_count=len(checks),**FUTURE)
+ 
+ SHARED_INPUT_LIBRARY_LAYOUT = {'schema': 'COMPLETE_AB_SINGLE_COPY_ORIGINAL_SHARED_LIBRARIES_AND_EXACT_PROCEDURE_FILE_LITERALS_V1', 'shared_directory': 'shared_input_libraries', 'state_order': ['A', 'B'], 'seed_destination_order': ['material.x2m', 'AxMatTone.c2m', 'geometry.dat', 'rnr_cc.c2m', 'rnr_interpol.c2m', 'DLIB_ACTUAL', 'DLIB8R1_370'], 'original_procedure_copy_name': 'AxMatTone.c2m.original', 'literal_replacements': [{'original': "FIL: 'DLIB_ACTUAL'", 'derived': "FIL: '../shared_input_libraries/DLIB_ACTUAL'", 'count': 2}, {'original': "FIL: 'DLIB8R1_370'", 'derived': "FIL: '../shared_input_libraries/DLIB8R1_370'", 'count': 1}]}
+-REQUIRED_N7_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_receipts'}
++REQUIRED_N8_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_receipts'}
+ 
+ def validate_request(b,author):
+     require(b.get('material_input_layout')==SHARED_INPUT_LIBRARY_LAYOUT and all(type(row['count'])is int for row in b['material_input_layout']['literal_replacements']),'exact shared-library/procedure Source layout; no implicit old duplicate layout')
+-    require(b['namespaces']==REQUIRED_N7_FRESH_NAMESPACES,'new fixed v7 namespaces only; no N4/N5 reuse')
++    require(b['namespaces']==REQUIRED_N8_FRESH_NAMESPACES,'new fixed v8 namespaces only; no N4/N5 reuse')
+     require(b['schema']=='ROOT_ACTUAL_COMPLETE_NATIVE_OBSERVATION_BUILD_BINDING_V1'and b['source_only']is True and b['Root_only_actual_execution']is True and b['scientific_qualification_created']is False,'strict Root observer Source binding')
+     require(type(b['original_caps'])is dict and set(b['original_caps'])==set(CAPS)and all(type(v)is int for v in b['original_caps'].values())and b['original_caps']==CAPS,'unchanged typed caps')
+     require(b['state_order']==['A','B']and b['build_stage_order']==['Ganlib','Utilib','Trivac','Dragon','Dragon_link']and b['SPOT_AXMAT_OBSERVATION']=='ADMITTED_SOURCE_ONLY','actual full ordered A then B/5groups')
+@@ -154,6 +252,8 @@
+     extra=b['additional_actual_evidence_input_pins'];require(type(extra)is list and bool(extra)and len({p['path']for p in extra})==len(extra),'nonempty whole additional input list')
+     allpins={p['path']:p for p in rows+extra}
+     require(len(allpins)==len(rows+extra),'original129 and extra disjoint')
++    for p in (b['actual_monitor_controls_qualification_pin'],b['actual_monitor_controls_qualification_terminal_pin']):
++        require(allpins.get(p['path'])==p,'actual required monitor Q inputs protected completely before native action')
+     require(type(b['tool_pins'])is dict and set(b['tool_pins'])==set(CANONICAL_OS_TOOL_PATHS),'complete fixed six OS tool roles before extra input shapes')
+     for role,p in b['tool_pins'].items():pinshape(p,tool_role=role)
+     tool_roles_by_path={p['path']:role for role,p in b['tool_pins'].items()}
+@@ -177,7 +277,7 @@
+             else:require(row['input_pin']['path']==seed_contract['libraries'][destination]['path']and row['input_pin']['sha256']==seed_contract['libraries'][destination]['generation_sha256'],'original material library path and generation SHA')
+     return actual_scope(b,author)
+ 
+-def joint_bytes(roots,lsof_tool,ps_tool,monitor=None):
++def joint_bytes(roots,lsof_tool,ps_tool,monitor=None,owner_observer=None,control_barrier=None):
+     monitor_scan_started=None if monitor is None else time.monotonic()
+     try:
+         total=0;seen=set()
+@@ -189,7 +289,10 @@
+                 require(stat.S_ISREG(s.st_mode)and s.st_nlink==1,'joint regular singlelink scope');key=(s.st_dev,s.st_ino);require(key not in seen,'joint hardlink aliases forbidden');seen.add(key);total+=s.st_size
+         # Diagnostic scans have the same status as the original guard's /bin/ps:
+         # they do not constitute additional material/build business children.
+-        ps_argv=[ps_tool,'-axo','pid=,ppid=']
++        require(control_barrier is None or (owner_observer is not None and owner_observer.control_mode is True),'no controls barrier in production scope')
++        if owner_observer is not None:owner_observer.poll_for_snapshot()
++        ps_started_monotonic=time.monotonic()
++        ps_argv=[ps_tool,'-axo','pid=,ppid=,pgid=,stat=']
+         with subprocess.Popen(ps_argv,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)as ps_process:
+             ps_diagnostic_pid=ps_process.pid
+             try:
+@@ -202,7 +305,12 @@
+             if ps_returncode:
+                 raise subprocess.CalledProcessError(ps_returncode,ps_process.args,output=ps_stdout,stderr=ps_stderr)
+         require(type(ps_diagnostic_pid)is int and ps_diagnostic_pid>0 and type(ps_returncode)is int and ps_returncode==0,'exact actual PS diagnostic closed EXIT0 before PID exclusion')
+-        parents={int(a):int(b)for a,b in(line.split()for line in ps_stdout.splitlines())}
++        require(len(ps_stdout)<8*2**20 and len(ps_stderr)<8*2**20,'complete bounded fullPS raw streams, never truncated')
++        ps_rows={}
++        for line in ps_stdout.splitlines():
++            words=line.split();require(len(words)==4 and all(w.isdigit()for w in words[:3])and bool(words[3]),'full actual PS pid/ppid/pgid/state rows')
++            pid,ppid,pgid=map(int,words[:3]);require(pid>0 and pid not in ps_rows,'unique positive fullPS PID');ps_rows[pid]=dict(pid=pid,ppid=ppid,pgid=pgid,state=words[3])
++        parents={pid:r['ppid']for pid,r in ps_rows.items()}
+         selected={os.getpid()}
+         while True:
+             new={p for p,parent in parents.items()if parent in selected};expanded=selected|new
+@@ -211,9 +319,17 @@
+         # Exclude only this captured, already reaped EXIT0 diagnostic child.
+         # Every actual own business descendant remains in the same full closure.
+         selected.discard(ps_diagnostic_pid)
++        if control_barrier is not None:control_barrier(ps_rows,selected)
++        if owner_observer is not None:
++            owner_observer.poll_for_snapshot()
++            selected=owner_observer.expand_selection(ps_rows,selected,ps_diagnostic_pid,ps_started_monotonic)
+         observed=subprocess.run([lsof_tool,'-nP','-F','pfnsiDt','-a','-p',','.join(map(str,sorted(selected)))],capture_output=True,text=True,timeout=2)
+         require(observed.returncode==0,'full live own process file scan required')
+-        require(len(observed.stdout)<8*2**20,'finite complete lsof output; never truncated')
++        require(len(observed.stdout)<8*2**20 and len(observed.stderr)<8*2**20,'finite complete lsof streams; never truncated')
++        returned_pids=[]
++        for line in observed.stdout.splitlines():
++            if line.startswith('p'):require(line[1:].isdigit(),'actual lsof PID field');returned_pids.append(int(line[1:]))
++        require(set(returned_pids)==selected and len(returned_pids)==len(set(returned_pids)),'single strict lsof0 complete selected PID coverage; no absent-PID acceptance')
+         records=[];row={}
+         for line in observed.stdout.splitlines():
+             if line.startswith('f'):
+@@ -479,7 +595,7 @@
+     def record(self,event):
+         appended=False
+         self.events+=1
+-        event=dict(schema='ACTUAL_N7_FAILURE_ONLY_MONITOR_EVENT_V1',sequence=self.events,
++        event=dict(schema='ACTUAL_N8_FAILURE_ONLY_MONITOR_EVENT_V1',sequence=self.events,
+             actual_host_PID=os.getpid(),clock=self.clock(),**event)
+         try:
+             if not self.host.exists():
+@@ -646,13 +762,16 @@
+             bounded.terminate_group=original_terminate_group
+             bounded.finish_liveness_watchdog=original_finish_liveness_watchdog
+     def summary(self,include_unpersisted=False):
+-        return dict(schema='ACTUAL_N7_FAILURE_ONLY_MONITOR_SUMMARY_V1',failure_event_count=self.events,
++        return dict(schema='ACTUAL_N8_FAILURE_ONLY_MONITOR_SUMMARY_V1',failure_event_count=self.events,
+             journal_pin=None if self.journal is None else fullpin(self.journal),
+             additional_recording_errors=list(self.recording_errors),
+             unpersisted_complete_events=list(self.unpersisted)if include_unpersisted else [],
+             original_successful_scan_raw_history_not_persisted=True,
+-            original_PS_lsof_argv_timeout_and_PID_parent_chain_unchanged=True,
+-            only_two_bounded_callable_objects_wrapped_for_failure_evidence=True,
++            original_lsof_argv_and_single_strict_zero_timeout_unchanged=True,
++            full_PS_pid_ppid_pgid_state_and_captured_union_explicitly_new=True,
++            original_parent_chain_never_reduced_except_individually_proven_closed_owned_PIDs=True,
++            three_bounded_callable_objects_and_two_private_methods_per_actual_owned_Popen_declared=True,
++            actual_owner_scope_state=None if getattr(self.resources,'_exact_owner_observer',None)is None else self.resources._exact_owner_observer.summary(),
+             original_bounded_Source_bytes_and_supervisor_classes_unchanged=True,
+             original_exceptions_never_accepted_or_replaced_by_instrumentation=True,
+             complete_failed_event_journal_persistence_verified=(self.recording_errors==[] and self.unpersisted==[]),
+@@ -660,8 +779,39 @@
+             host_created_only_for_failure_evidence=self.host_created_only_for_failure,
+             original_caps=CAPS,actual_clock=self.clock(),
+             diagnostic_source_contract_is_not_runtime_qualification=True,
+-            new_instrumented_runtime_controls_actual=None,new_native_runtime_qualification=None,
++            actual_required_new_monitor_controls_scope=getattr(self.resources,'_required_monitor_controls_scope',None),new_native_runtime_qualification=None,
+             N6_original_failed_lsof_raw_remains_unknown=True)
++
++def build_exact_owner_resources(support,roots5,tools,started,dfreeze,efreeze,history,genuine_modules):
++    resource,full,production=genuine_modules
++    require(full.OwnRSSSerialExecutor.__bases__==(production.SerialExecutor,)and Path(full.__file__).resolve()==support.FULL and Path(production.__file__).resolve()==support.PARENT,'same actual original classes/MRO for production and controls')
++    archive,receipts=map(Path,roots5[3:]);monitor=None
++    class JointHistoryResources(resource.DynamicHistoryResources):
++        def check(self):
++            value=super().check()
++            joint=joint_bytes(roots5,tools['lsof']['path'],tools['ps']['path'],monitor,getattr(self,'_exact_owner_observer',None),getattr(self,'_actual_control_barrier',None));require(joint['complete_joint_HOCDE_bytes']<2*2**30,'live full jointHOCDE including open-unlinked2GiB')
++            require(tree(archive)==dfreeze and tree(receipts)==efreeze,'complete D/E and all directory/fullSource identities frozen while live')
++            require(value['artifact_bytes']+sum(p['size_bytes']for p in dfreeze['files']+efreeze['files'])+joint['open_unlinked_bytes']<=96*2**30,'complete history plus external D/E')
++            if monitor is not None:monitor.latest_joint=dict(joint)
++            sink=getattr(self,'_actual_control_scan_sink',None)
++            if sink is not None:
++                require(self._exact_owner_observer is not None and self._exact_owner_observer.control_mode is True,'full raw sink only in actual controls mode')
++                sink(joint,monitor.latest_original_scan,self._exact_owner_observer.summary())
++            value.update(joint);return value
++    resources=JointHistoryResources(support.ART,history,8*2**30,96*2**30,production.ResourceFailure)
++    resources._genuine_full=full;resources._exact_owner_observer=None;resources._actual_control_barrier=None;resources._actual_control_scan_sink=None
++    monitor=FailureOnlyMonitorEvidence(roots5,tools,started,resources,resource.DynamicHistoryResources.check,dfreeze,efreeze)
++    resources._failure_only_monitor=monitor
++    return resources,monitor
++
++def attach_exact_owner_observer(runner,resources,monitor,stdlib_pin,started,deadline_getter,helper_source_pin,support,control_mode=False):
++    recheck(helper_source_pin)
++    module,actual=support.load(Path(helper_source_pin['path']),helper_source_pin['sha256'],'axmat_N8_exact_owner_scope_Source')
++    require(actual=={k:helper_source_pin[k]for k in actual},'complete actual owner helper Source pin')
++    observer=module.ExactOwnerScopeObserver(runner,resources,monitor,resources._genuine_full,stdlib_pin,started,deadline_getter,control_mode)
++    observer.install_original_start_capture();resources._exact_owner_observer=observer
++    return observer
++
+ 
+ def run(host_module,support,b,author,started):
+     require(SOURCE_STATUS=='READY_SOURCE_REVIEWED_ROOT_ACTUAL_BINDING_REQUIRED','UNREADY observation runtime refuses native action')
+@@ -677,18 +827,8 @@
+     require(full.OwnRSSSerialExecutor.__bases__==(production.SerialExecutor,)and Path(full.__file__).resolve()==support.FULL and Path(production.__file__).resolve()==support.PARENT,'genuine unchanged supervisor classes/MRO/modules')
+     genuine=[support.pin(support.FULL,support.FULL_SHA),support.pin(support.PARENT,support.PARENT_SHA),support.pin(support.BOUNDED,support.BOUNDED_SHA)]
+     history=resource.history_roots([str(p)for p in(host,out,control,Path(support.OUT),Path(support.TERMINAL))],support.ART)
+-    monitor=None
+-    class JointHistoryResources(resource.DynamicHistoryResources):
+-        def check(self):
+-            value=super().check()
+-            joint=joint_bytes(roots5,b['tool_pins']['lsof']['path'],b['tool_pins']['ps']['path'],monitor);require(joint['complete_joint_HOCDE_bytes']<2*2**30,'live full jointHOCDE including open-unlinked2GiB')
+-            require(tree(archive)==dfreeze and tree(receipts)==efreeze,'complete D/E and all directory/fullSource identities frozen while live')
+-            require(value['artifact_bytes']+sum(p['size_bytes']for p in dfreeze['files']+efreeze['files'])+joint['open_unlinked_bytes']<=96*2**30,'complete history plus external D/E')
+-            if monitor is not None:monitor.latest_joint=dict(joint)
+-            value.update(joint);return value
+-    resources=JointHistoryResources(support.ART,history,8*2**30,96*2**30,production.ResourceFailure);runner=None
+-    monitor=FailureOnlyMonitorEvidence(roots5,b['tool_pins'],started,resources,resource.DynamicHistoryResources.check,dfreeze,efreeze)
+-    resources._failure_only_monitor=monitor
++    resources,monitor=build_exact_owner_resources(support,roots5,b['tool_pins'],started,dfreeze,efreeze,history,(resource,full,production));runner=None;owner_observer=None
++    resources._required_monitor_controls_scope=b['actual_required_monitor_controls_scope']
+     def budget():require(time.monotonic()-started<1800,'whole observation build+A/B+closure1800 cap')
+     try:
+         before=resources.check();require(before['artifact_bytes']+2*2**30<96*2**30 and before['disk_free_bytes']-2*2**30>=8*2**30,'original history/free complete reserve')
+@@ -696,6 +836,7 @@
+         runner=full.OwnRSSSerialExecutor(host,1800-(time.monotonic()-started),'OBSERVATION_BUILD',resources)
+         require(type(runner)is full.OwnRSSSerialExecutor and runner.resources is resources and Path(runner.bounded.__file__).resolve()==host/'runtime/run_bounded_dragon.py','original genuine guarded runner')
+         monitor.install_bounded_wrappers(runner)
++        owner_observer=attach_exact_owner_observer(runner,resources,monitor,b['actual_required_monitor_controls_scope']['actual_stdlib_subprocess_Source_pin'],started,lambda:monitor.stage_deadline,author['owner_scope_helper'],support,control_mode=False)
+         require(all(runner.env.get(k)=='1'for k in THREAD_KEYS),'all five actual one-thread env')
+         runner.env['SPOT_AXMAT_OBSERVATION']='ADMITTED_SOURCE_ONLY'
+         native=host/'native';native.mkdir();index=strict_json((archive/'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json').read_bytes());index['_path']=str(archive/'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json');members={r['relative_path']:r for r in index['members']}
+@@ -743,4 +884,6 @@
+             monitor.write_failure_result(host/'failed_host_result.json',dict(schema='FAILED_COMPLETE_NATIVE_OBSERVATION_BUILD_HOST_RESULT_V1',status='FAILED_NO_RETRY_NO_QUALIFICATION',error=repr(error),complete_input_pins_before=inputs,complete_input_pins_after_failure=after_inputs,complete_D_E_freeze_before=dict(Source=dfreeze,receipts=efreeze),complete_D_E_freeze_after_failure=after_D_E,full_postfailure_freeze_errors=freeze_errors,full_postfailure_freeze_checked=(freeze_errors==[]),actual_resources_after_failure=after_resources,all_stage_records=[]if runner is None else runner.records,actual_observation_manifest_pin_if_saved=fullpin(out/'ACTUAL_AB_AXOBSCTXv2_OBSERVATION_MANIFEST.json')if (out/'ACTUAL_AB_AXOBSCTXv2_OBSERVATION_MANIFEST.json').is_file()else None,whole_seconds=time.monotonic()-started,original_caps=CAPS,actual_Root_observed_terminal=None,actual_failure_only_monitor_evidence=monitor.summary(include_unpersisted=True),**FUTURE))
+         raise
+     finally:
+-        monitor.restore_bounded_objects()
++        try:
++            if owner_observer is not None:owner_observer.restore_original_objects()
++        finally:monitor.restore_bounded_objects()
+
+
+ROLE Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py
+--- PREVIOUS_SEALED_N7_SOURCE_PROVENANCE/Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py
++++ Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py
+@@ -16,7 +16,7 @@
+ P=Path(__file__).resolve().parent
+ CAPS=dict(whole_seconds=1800,stage_seconds=600,rss_mib=512,joint_archive_bytes=2*2**30,history_bytes=96*2**30,free_floor_bytes=8*2**30,threads=1,children_at_once=1,retries=0)
+ FUTURE=dict(actual_runtime_qualification_sha256=None,actual_observer_native_controls_run=None,actual_native_Source_binary_linkage_qualification_sha256=None,actual_scientific_qualification_sha256=None,scientific_accuracy_qualified=False,physical_neutron_balance_qualified=False,AAA_accuracy_qualified=False,ABA_admitted=False,native_transport_executed=False,complete_context_aggregation_qualified=False)
+-ROLES={'qualified_source_manifest':'MANIFEST.json','host_template':'complete_observation_genuine_host.UNREADY.py','runtime_template':'complete_observation_BUILD5_AB_runtime.UNREADY.py','binder':'bind_complete_observation_SOURCE_only.UNREADY.py','postclose_writer':'Root_observation_postclose_META_writer.UNREADY.py','native_Source_archive':'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz','native_Source_index':'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json','observer_module':'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90','context_extractor':'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py','original_complete_native_walker':'PARENT_SOURCE/Root_bound_complete_native_checker.py','original_material_seed_contract':'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json','material_blueprint_Source':'GUARD_SOURCE/material_inputs.py','request_preparer':'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py','legacy_context_old_XSM_extractor':'COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py'}
++ROLES={'qualified_source_manifest': 'MANIFEST.json', 'host_template': 'complete_observation_genuine_host.UNREADY.py', 'runtime_template': 'complete_observation_BUILD5_AB_runtime.UNREADY.py', 'binder': 'bind_complete_observation_SOURCE_only.UNREADY.py', 'postclose_writer': 'Root_observation_postclose_META_writer.UNREADY.py', 'native_Source_archive': 'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz', 'native_Source_index': 'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json', 'observer_module': 'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90', 'context_extractor': 'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py', 'original_complete_native_walker': 'PARENT_SOURCE/Root_bound_complete_native_checker.py', 'original_material_seed_contract': 'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json', 'material_blueprint_Source': 'GUARD_SOURCE/material_inputs.py', 'request_preparer': 'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py', 'legacy_context_old_XSM_extractor': 'COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py', 'owner_scope_helper': 'N8_exact_owner_scope_observer.UNREADY.py', 'monitor_controls_gate': 'N8_actual_controls_qualification_gate.Source_META_only.py', 'monitor_controls_protocol': 'N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json', 'monitor_control_driver': 'N8_genuine_integrated_controls_driver.UNREADY.py', 'monitor_control_child_Source': 'N8_private_control_child.UNREADY.py', 'monitor_control_Source_binder': 'N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py', 'monitor_controls_postclose_qualifier': 'N8_Root_controls_postclose_META.UNREADY.py'}
+ 
+ CANONICAL_OS_TOOL_PATHS = {'fortran': '/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15', 'c': '/usr/bin/gcc', 'cpp': '/usr/bin/cpp', 'ar': '/usr/bin/ar', 'lsof': '/usr/sbin/lsof', 'ps': '/bin/ps'}
+ 
+@@ -50,16 +50,114 @@
+     return json.loads(raw,object_pairs_hook=pairs,parse_constant=lambda v:(_ for _ in ()).throw(ValueError(v)))
+ 
+ SHARED_INPUT_LIBRARY_LAYOUT = {'schema': 'COMPLETE_AB_SINGLE_COPY_ORIGINAL_SHARED_LIBRARIES_AND_EXACT_PROCEDURE_FILE_LITERALS_V1', 'shared_directory': 'shared_input_libraries', 'state_order': ['A', 'B'], 'seed_destination_order': ['material.x2m', 'AxMatTone.c2m', 'geometry.dat', 'rnr_cc.c2m', 'rnr_interpol.c2m', 'DLIB_ACTUAL', 'DLIB8R1_370'], 'original_procedure_copy_name': 'AxMatTone.c2m.original', 'literal_replacements': [{'original': "FIL: 'DLIB_ACTUAL'", 'derived': "FIL: '../shared_input_libraries/DLIB_ACTUAL'", 'count': 2}, {'original': "FIL: 'DLIB8R1_370'", 'derived': "FIL: '../shared_input_libraries/DLIB8R1_370'", 'count': 1}]}
+-REQUIRED_N7_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_receipts'}
++REQUIRED_N8_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_receipts'}
++
++N8_CASE_IDS=('01_exact_environment_and_sole_wait_owner','02_actual_live_business_and_descendants','03_actual_closed_after_live_PS_census','04_actual_nonzero_exit_preserves_stage_failure','05_actual_closed_leader_and_reparented_group','06_unknown_owner_ECHILD_and_PID_reuse_refusals','07_actual_late_descendant_exit_strict_lsof_failure','08_actual_strict_stream_nonzero_timeout_oversize','09_original_resource_caps_and_frozen_Source','10_original_cleanup_exceptions_and_group_evidence','11_actual_watchdog_pipe_and_group_closure','12_actual_Root_and_independent_saved_control_closure')
++
++def n8_require(value,message):
++    if type(value) is not bool or not value:raise ValueError(message)
++
++def n8_validate_saved_metadata_types(value):
++    if type(value)is dict:
++        if set(value) in ({'path','sha256','identity'},{'path','sha256','size_bytes','identity'}):
++            n8_require(type(value['path'])is str and Path(value['path']).is_absolute()and '..'not in Path(value['path']).parts and type(value['sha256'])is str and len(value['sha256'])==64 and all(c in '0123456789abcdef'for c in value['sha256']),'typed complete metadata pin path/SHA')
++            n8_require(type(value['identity'])is list and len(value['identity'])==7 and all(type(x)is int and x>=0 for x in value['identity']),'typed complete metadata integer7ID')
++            if 'size_bytes'in value:n8_require(type(value['size_bytes'])is int and value['size_bytes']>=0 and value['size_bytes']==value['identity'][4],'typed complete metadata size')
++        for k,v in value.items():
++            if k=='original_caps':n8_require(type(v)is dict and set(v)==set(CAPS)and all(type(x)is int for x in v.values())and v==CAPS,'typed unchanged original nine caps')
++            if k=='directories':n8_require(type(v)is dict and all(type(row)is list and len(row)==7 and all(type(x)is int and x>=0 for x in row)for row in v.values()),'typed complete directory7IDs')
++            n8_validate_saved_metadata_types(v)
++    elif type(value)is list:
++        for v in value:n8_validate_saved_metadata_types(v)
++    elif type(value)is float:n8_require(value-value==0,'finite saved metadata float')
++    return value
++
++def n8_strict_json(raw):
++    def pairs(items):
++        result={}
++        for key,value in items:
++            n8_require(key not in result,'duplicate controls metadata key');result[key]=value
++        return result
++    return n8_validate_saved_metadata_types(json.loads(raw,object_pairs_hook=pairs,parse_constant=lambda v:(_ for _ in ()).throw(ValueError(v))))
++
++def n8_fullpin(path):
++    p=Path(path);s=p.lstat();before=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    n8_require(p.is_absolute() and all(not q.is_symlink() for q in (p,*p.parents)) and stat.S_ISREG(s.st_mode) and s.st_nlink==1,'complete Source/META nonalias singlelink')
++    with p.open('rb') as stream:
++        n8_require(list((lambda t:(t.st_dev,t.st_ino,t.st_mode,t.st_nlink,t.st_size,t.st_mtime_ns,t.st_ctime_ns))(os.fstat(stream.fileno())))==before,'opened Source/META identity')
++        digest=hashlib.file_digest(stream,'sha256').hexdigest()
++    t=p.lstat();n8_require([t.st_dev,t.st_ino,t.st_mode,t.st_nlink,t.st_size,t.st_mtime_ns,t.st_ctime_ns]==before,'complete Source/META EOF unchanged')
++    return dict(path=str(p),sha256=digest,size_bytes=s.st_size,identity=before)
++
++def n8_recheck_pinned(pin):
++    n8_require(type(pin) is dict and set(pin)=={'path','sha256','size_bytes','identity'} and type(pin['path']) is str and Path(pin['path']).is_absolute() and type(pin['sha256']) is str and re.fullmatch('[0-9a-f]{64}',pin['sha256']) is not None,'actual controls exact n8_fullpin required; None refused')
++    n8_require(type(pin['size_bytes']) is int and pin['size_bytes']>=0 and type(pin['identity']) is list and len(pin['identity'])==7 and all(type(x) is int and x>=0 for x in pin['identity']) and pin['identity'][3]==1 and pin['identity'][4]==pin['size_bytes'],'controls typed integer7ID/size')
++    n8_require(n8_fullpin(pin['path'])==pin,'actual controls Source/META full EOF pin unchanged')
++    return pin
++
++def n8_read_pinned(pin):
++    n8_recheck_pinned(pin)
++    return n8_strict_json(Path(pin['path']).read_bytes())
++
++def n8_actual_closed_zero(pin,expected_schema):
++    wrapper=n8_read_pinned(pin);terminal=wrapper['terminal_tool_return']
++    n8_require(wrapper['schema']==expected_schema and wrapper['closed'] is True and wrapper['observed_terminal'] is True and wrapper['session_repolled_after_close'] is False,'actual observed CLOSED controls terminal')
++    n8_require(type(terminal) is dict and type(terminal['exit_code']) is int and terminal['exit_code']==0 and 'session_id' not in terminal and type(terminal['chunk_id']) is str and bool(terminal['chunk_id']) and wrapper['actual_terminal_chunk']==terminal['chunk_id'],'actual typed zero, exact terminal chunk and no live session')
++    return wrapper,n8_strict_json(terminal['output'])
++
++def n8_recheck_saved_regular_file_pins(pins,allow_empty=False):
++    n8_require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    n8_require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:n8_recheck_pinned(p)
++
++def n8_recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    n8_require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():n8_recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    n8_recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
++
++def validate_actual_N8_monitor_controls(qualification_pin,qualification_terminal_pin,author):
++    q=n8_read_pinned(qualification_pin)
++    n8_require(q['schema']=='ROOT_ACTUAL_N8_EXACT_OWNER_MONITOR_CONTROLS_QUALIFICATION_V1' and q['status']=='ACTUAL_TWELVE_GENUINE_MONITOR_CONTROLS_QUALIFIED_NO_NATIVE_OR_SCIENCE' and q['source_only'] is False and q['actual_monitor_controls_qualified'] is True,'actual Root monitor controls qualification required')
++    n8_require(q['actual_author_Source_contract']==author and q['original_caps']==CAPS and all(type(x) is int for x in q['original_caps'].values()),'complete actual controls Source owner contract and original caps')
++    for key in ('actual_native_build_or_AB_executed','native_transport_executed','scientific_qualification_created','scientific_accuracy_qualified','physical_neutron_balance_qualified','AAA_accuracy_qualified','ABA_admitted'):
++        n8_require(q[key] is False,'control qualification cannot create native/science fact: '+key)
++    binding=n8_read_pinned(q['actual_controls_Source_binding_pin'])
++    n8_require(binding['schema']=='ROOT_ACTUAL_N8_MONITOR_CONTROLS_SOURCE_BINDING_V1' and binding['source_only'] is True and binding['actual_author_Source_contract']==author and binding['actual_control_execution'] is None,'actual Source-bound monitor controls roles, not guessed execution')
++    manifest=n8_read_pinned(q['actual_controls_manifest_pin'])
++    n8_require(manifest['schema']=='ACTUAL_N8_TWELVE_GENUINE_MONITOR_CONTROLS_MANIFEST_V1' and manifest['actual_author_Source_contract']==author and manifest['source_only'] is False and manifest['all_required_controls_passed'] is True and manifest['blockers']==[],'complete actual controls manifest, not a Source protocol')
++    n8_require(manifest['actual_controls_Source_binding_pin']==q['actual_controls_Source_binding_pin'] and manifest['original_caps']==CAPS,'controls Source binding and unchanged limits')
++    cases=manifest['cases']
++    n8_require(type(cases) is list and len(cases)==len(N8_CASE_IDS) and [c['case_id'] for c in cases]==list(N8_CASE_IDS),'all twelve genuine controls; no filtering unknown cases')
++    for case in cases:
++        n8_require(case['passed'] is True and case['actual_genuine_runner_used'] is True and case['actual_shared_resource_factory_used'] is True and case['actual_exact_owner_observer_used'] is True and case['synthetic_PS_or_lsof_or_cleanup_error_used_for_qualification'] is False,'actual same monitoring implementation, no mock qualification')
++        n8_require(case['actual_complete_raw_evidence_saved'] is True and case['actual_Source_D_and_receipt_E_frozen'] is True and case['actual_original_caps_verified'] is True and case['actual_remaining_owned_groups_absent_after_Root_closure'] is True,'complete raw, frozen Source, original caps and actual residual-group closure')
++        n8_actual_closed_zero(case['actual_Root_case_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_TOOL_TERMINAL_RETURN_V1')
++        n8_require(type(case['actual_complete_evidence_pins']) is list and bool(case['actual_complete_evidence_pins']),'actual complete Source/small-META raw evidence, no empty case')
++        n8_recheck_complete_saved_case(case)
++    n8_recheck_saved_regular_file_pins(manifest['actual_complete_controls_regular_file_pins_before_own_append'])
++    n8_recheck_saved_regular_file_pins(q['actual_complete_controls_regular_file_pins_before_own_append'])
++    _,controls_output=n8_actual_closed_zero(q['actual_Root_controls_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
++    n8_require(controls_output['actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and controls_output['all_required_controls_passed'] is True,'actual Root complete controls zero output coupling')
++    peer=n8_read_pinned(q['actual_independent_saved_controls_review_pin'])
++    n8_require(peer['schema']=='INDEPENDENT_ACTUAL_N8_SAVED_GENUINE_MONITOR_CONTROLS_REVIEW_V1' and peer['status']=='PASS_ACTUAL_SAVED_TWELVE_GENUINE_MONITOR_CONTROLS_NO_NATIVE_OR_SCIENCE' and peer['actual_author_Source_contract']==author and peer['qualified_actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and peer['qualified_actual_controls_Source_binding_pin']==q['actual_controls_Source_binding_pin'] and peer['qualified_actual_Root_controls_tool_terminal_return_pin']==q['actual_Root_controls_tool_terminal_return_pin'] and peer['all_checks_passed'] is True and peer['blockers']==[],'independent review of these actual saved controls required')
++    checks=peer['checks']
++    n8_require(type(checks) is list and type(peer['check_count']) is int and peer['check_count']==len(checks)>0 and len({c['check'] for c in checks})==len(checks) and all(type(c) is dict and set(c)=={'check','passed'} and type(c['check']) is str and bool(c['check']) and c['passed'] is True for c in checks),'unique typed independent actual controls checks')
++    _,q_output=n8_actual_closed_zero(qualification_terminal_pin,'ROOT_ACTUAL_N8_MONITOR_CONTROLS_QUALIFICATION_TOOL_TERMINAL_RETURN_V1')
++    n8_require(q_output['actual_monitor_controls_qualification_pin']==qualification_pin and q_output['actual_monitor_controls_qualified'] is True and q_output['native_or_scientific_qualification_created'] is False,'actual Root qualification output coupled to this immutable Q')
++    return dict(schema='ACTUAL_N8_REQUIRED_MONITOR_CONTROLS_SCOPE_COUPLING_V1',actual_monitor_controls_qualification_pin=qualification_pin,actual_Root_qualification_tool_terminal_return_pin=qualification_terminal_pin,actual_complete_controls_manifest_pin=q['actual_controls_manifest_pin'],actual_independent_saved_controls_review_pin=q['actual_independent_saved_controls_review_pin'],actual_stdlib_subprocess_Source_pin=q['actual_stdlib_subprocess_Source_pin'],all_twelve_actual_controls_required=True,native_or_scientific_qualification_created=False)
++
+ 
+ def main():
+     ap=argparse.ArgumentParser()
+-    for name in('independent-review','Source-admission','actual-admission-terminal','fortran','c','cpp','ar','lsof','ps','host','output','control','source','receipts','request-output'):ap.add_argument('--'+name,required=True)
+-    a=ap.parse_args();require({k:getattr(a,k)for k in REQUIRED_N7_FRESH_NAMESPACES}==REQUIRED_N7_FRESH_NAMESPACES,'new fixed v7 Rootrequest namespaces only');deadline=time.monotonic()+600;require(not sys_optimized(),'unprofiled nonoptimized Root metadata pin preparation')
++    for name in('independent-review','Source-admission','actual-admission-terminal','fortran','c','cpp','ar','lsof','ps','host','output','control','source','receipts','request-output','monitor-controls-qualification','monitor-controls-qualification-terminal'):ap.add_argument('--'+name,required=True)
++    a=ap.parse_args();require({k:getattr(a,k)for k in REQUIRED_N8_FRESH_NAMESPACES}==REQUIRED_N8_FRESH_NAMESPACES,'new fixed v8 Rootrequest namespaces only');deadline=time.monotonic()+600;require(not sys_optimized(),'unprofiled nonoptimized Root metadata pin preparation')
+     seed=strict_json((P/'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json').read_bytes());review=pin(a.independent_review,deadline);admission=pin(a.Source_admission,deadline);terminal=pin(a.actual_admission_terminal,deadline);author={k:pin(P/v,deadline)for k,v in ROLES.items()};ad=strict_json(Path(a.Source_admission).read_bytes());peer=strict_json(Path(a.independent_review).read_bytes())
+     require(ad['schema']=='ROOT_ACTUAL_COMPLETE_NATIVE_OBSERVATION_SOURCE_ADMISSION_V1'and ad['status']=='SOURCE_ONLY_ADMITTED_NOT_RUNTIME_OR_SCIENCE'and ad['source_only']is True and ad['actual_author_Source_contract']==author and ad['independent_Source_review_pin']==review,'actual independently admitted complete observer Source required before input hashing')
+     require(peer['schema']=='INDEPENDENT_COMPLETE_NATIVE_OBSERVATION_BUILD_HOST_BINDER_SOURCE_REVIEW_V1'and peer['status']=='SOURCE_ONLY_PASS_NO_EXECUTION_OR_SCIENCE'and peer['source_only']is True and peer['actual_author_Source_contract']==author and peer['all_checks_passed']is True and peer['blockers']==[],'real whole Source peer pass exact source')
+     for k,v in FUTURE.items():require(ad[k]is v,'actual future still unknown/false')
++    monitor_q=pin(a.monitor_controls_qualification,deadline);monitor_q_terminal=pin(a.monitor_controls_qualification_terminal,deadline)
++    monitor_scope=validate_actual_N8_monitor_controls(monitor_q,monitor_q_terminal,author)
+     require(all(getattr(a,k)==v for k,v in CANONICAL_OS_TOOL_PATHS.items()),'all six original canonical OS tool CLI paths unchanged')
+     tools={k:pin(getattr(a,k),deadline,tool_role=k)for k in('fortran','c','cpp','ar','lsof','ps')};libraries={}
+     for name,value in seed['libraries'].items():
+@@ -69,9 +167,9 @@
+         rows=[dict(destination=name,input_pin=seed['states'][state][name])for name in('material.x2m','AxMatTone.c2m','geometry.dat','rnr_cc.c2m','rnr_interpol.c2m')]+[dict(destination=name,input_pin=libraries[name])for name in('DLIB_ACTUAL','DLIB8R1_370')]
+         states[state]=dict(original_material_deck_pin=seed['states'][state]['material.x2m'],native_stage_inputs=rows)
+     original=seed['original129_input_pins'];extra=[];seen={r['path']for r in original}
+-    for p in[review,admission,terminal,*tools.values(),*libraries.values()]:
++    for p in[review,admission,terminal,monitor_q,monitor_q_terminal,*tools.values(),*libraries.values()]:
+         require(p['path']not in seen,'all additional actual Source/tool/library pins disjoint from original129');seen.add(p['path']);extra.append(p)
+-    request=dict(schema='ROOT_ACTUAL_COMPLETE_NATIVE_OBSERVATION_BUILD_BINDING_REQUEST_V1',source_only=True,Root_only_actual_execution=True,scientific_qualification_created=False,original_caps=CAPS,state_order=['A','B'],build_stage_order=['Ganlib','Utilib','Trivac','Dragon','Dragon_link'],SPOT_AXMAT_OBSERVATION='ADMITTED_SOURCE_ONLY',actual_author_Source_contract=author,independent_observation_Source_review_pin=review,independent_observation_Source_admission_pin=admission,actual_Root_observation_Source_admission_tool_return_pin=terminal,original129_input_pins=original,additional_actual_evidence_input_pins=extra,tool_pins=tools,states=states,material_input_layout=SHARED_INPUT_LIBRARY_LAYOUT,namespaces={k:getattr(a,k)for k in('host','output','control','source','receipts')},actual_observation_manifest=None,actual_Root_observed_runtime_terminal=None,actual_runtime_observer_executable=None,**FUTURE)
++    request=dict(schema='ROOT_ACTUAL_COMPLETE_NATIVE_OBSERVATION_BUILD_BINDING_REQUEST_V1',source_only=True,Root_only_actual_execution=True,scientific_qualification_created=False,original_caps=CAPS,state_order=['A','B'],build_stage_order=['Ganlib','Utilib','Trivac','Dragon','Dragon_link'],SPOT_AXMAT_OBSERVATION='ADMITTED_SOURCE_ONLY',actual_author_Source_contract=author,actual_monitor_controls_qualification_pin=monitor_q,actual_monitor_controls_qualification_terminal_pin=monitor_q_terminal,actual_required_monitor_controls_scope=monitor_scope,independent_observation_Source_review_pin=review,independent_observation_Source_admission_pin=admission,actual_Root_observation_Source_admission_tool_return_pin=terminal,original129_input_pins=original,additional_actual_evidence_input_pins=extra,tool_pins=tools,states=states,material_input_layout=SHARED_INPUT_LIBRARY_LAYOUT,namespaces={k:getattr(a,k)for k in('host','output','control','source','receipts')},actual_observation_manifest=None,actual_Root_observed_runtime_terminal=None,actual_runtime_observer_executable=None,**FUTURE)
+     output=Path(a.request_output);require(output.is_absolute()and output.parent.is_dir()and not os.path.lexists(output),'fresh Rootrequest file')
+     with output.open('x')as f:json.dump(request,f,indent=2,allow_nan=False);f.write('\n')
+     print(json.dumps(dict(status='ACTUAL_ROOT_OBSERVATION_REQUEST_META_ONLY_NO_BUILD_OR_MATERIAL_RUN',source_only=True,actual_request_pin=pin(output,deadline),native_build_or_API_or_material_execution=False,all_runtime_and_observations_unknown=True,**FUTURE),allow_nan=False),flush=True)
+
+
+ROLE bind_complete_observation_SOURCE_only.UNREADY.py
+--- PREVIOUS_SEALED_N7_SOURCE_PROVENANCE/bind_complete_observation_SOURCE_only.UNREADY.py
++++ bind_complete_observation_SOURCE_only.UNREADY.py
+@@ -15,7 +15,7 @@
+ P=Path(__file__).resolve().parent
+ CAPS=dict(whole_seconds=1800,stage_seconds=600,rss_mib=512,joint_archive_bytes=2*2**30,history_bytes=96*2**30,free_floor_bytes=8*2**30,threads=1,children_at_once=1,retries=0)
+ FUTURE=dict(actual_runtime_qualification_sha256=None,actual_observer_native_controls_run=None,actual_native_Source_binary_linkage_qualification_sha256=None,actual_scientific_qualification_sha256=None,scientific_accuracy_qualified=False,physical_neutron_balance_qualified=False,AAA_accuracy_qualified=False,ABA_admitted=False,native_transport_executed=False,complete_context_aggregation_qualified=False)
+-ROLES={'qualified_source_manifest':'MANIFEST.json','host_template':'complete_observation_genuine_host.UNREADY.py','runtime_template':'complete_observation_BUILD5_AB_runtime.UNREADY.py','binder':'bind_complete_observation_SOURCE_only.UNREADY.py','postclose_writer':'Root_observation_postclose_META_writer.UNREADY.py','native_Source_archive':'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz','native_Source_index':'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json','observer_module':'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90','context_extractor':'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py','original_complete_native_walker':'PARENT_SOURCE/Root_bound_complete_native_checker.py','original_material_seed_contract':'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json','material_blueprint_Source':'GUARD_SOURCE/material_inputs.py','request_preparer':'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py','legacy_context_old_XSM_extractor':'COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py'}
++ROLES={'qualified_source_manifest': 'MANIFEST.json', 'host_template': 'complete_observation_genuine_host.UNREADY.py', 'runtime_template': 'complete_observation_BUILD5_AB_runtime.UNREADY.py', 'binder': 'bind_complete_observation_SOURCE_only.UNREADY.py', 'postclose_writer': 'Root_observation_postclose_META_writer.UNREADY.py', 'native_Source_archive': 'COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz', 'native_Source_index': 'COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json', 'observer_module': 'OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90', 'context_extractor': 'OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py', 'original_complete_native_walker': 'PARENT_SOURCE/Root_bound_complete_native_checker.py', 'original_material_seed_contract': 'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json', 'material_blueprint_Source': 'GUARD_SOURCE/material_inputs.py', 'request_preparer': 'Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py', 'legacy_context_old_XSM_extractor': 'COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py', 'owner_scope_helper': 'N8_exact_owner_scope_observer.UNREADY.py', 'monitor_controls_gate': 'N8_actual_controls_qualification_gate.Source_META_only.py', 'monitor_controls_protocol': 'N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json', 'monitor_control_driver': 'N8_genuine_integrated_controls_driver.UNREADY.py', 'monitor_control_child_Source': 'N8_private_control_child.UNREADY.py', 'monitor_control_Source_binder': 'N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py', 'monitor_controls_postclose_qualifier': 'N8_Root_controls_postclose_META.UNREADY.py'}
+ 
+ CANONICAL_OS_TOOL_PATHS = {'fortran': '/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15', 'c': '/usr/bin/gcc', 'cpp': '/usr/bin/cpp', 'ar': '/usr/bin/ar', 'lsof': '/usr/sbin/lsof', 'ps': '/bin/ps'}
+ 
+@@ -66,7 +66,103 @@
+     return result,hunks
+ 
+ SHARED_INPUT_LIBRARY_LAYOUT = {'schema': 'COMPLETE_AB_SINGLE_COPY_ORIGINAL_SHARED_LIBRARIES_AND_EXACT_PROCEDURE_FILE_LITERALS_V1', 'shared_directory': 'shared_input_libraries', 'state_order': ['A', 'B'], 'seed_destination_order': ['material.x2m', 'AxMatTone.c2m', 'geometry.dat', 'rnr_cc.c2m', 'rnr_interpol.c2m', 'DLIB_ACTUAL', 'DLIB8R1_370'], 'original_procedure_copy_name': 'AxMatTone.c2m.original', 'literal_replacements': [{'original': "FIL: 'DLIB_ACTUAL'", 'derived': "FIL: '../shared_input_libraries/DLIB_ACTUAL'", 'count': 2}, {'original': "FIL: 'DLIB8R1_370'", 'derived': "FIL: '../shared_input_libraries/DLIB8R1_370'", 'count': 1}]}
+-REQUIRED_N7_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_receipts'}
++REQUIRED_N8_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_receipts'}
++
++N8_CASE_IDS=('01_exact_environment_and_sole_wait_owner','02_actual_live_business_and_descendants','03_actual_closed_after_live_PS_census','04_actual_nonzero_exit_preserves_stage_failure','05_actual_closed_leader_and_reparented_group','06_unknown_owner_ECHILD_and_PID_reuse_refusals','07_actual_late_descendant_exit_strict_lsof_failure','08_actual_strict_stream_nonzero_timeout_oversize','09_original_resource_caps_and_frozen_Source','10_original_cleanup_exceptions_and_group_evidence','11_actual_watchdog_pipe_and_group_closure','12_actual_Root_and_independent_saved_control_closure')
++
++def n8_require(value,message):
++    if type(value) is not bool or not value:raise ValueError(message)
++
++def n8_validate_saved_metadata_types(value):
++    if type(value)is dict:
++        if set(value) in ({'path','sha256','identity'},{'path','sha256','size_bytes','identity'}):
++            n8_require(type(value['path'])is str and Path(value['path']).is_absolute()and '..'not in Path(value['path']).parts and type(value['sha256'])is str and len(value['sha256'])==64 and all(c in '0123456789abcdef'for c in value['sha256']),'typed complete metadata pin path/SHA')
++            n8_require(type(value['identity'])is list and len(value['identity'])==7 and all(type(x)is int and x>=0 for x in value['identity']),'typed complete metadata integer7ID')
++            if 'size_bytes'in value:n8_require(type(value['size_bytes'])is int and value['size_bytes']>=0 and value['size_bytes']==value['identity'][4],'typed complete metadata size')
++        for k,v in value.items():
++            if k=='original_caps':n8_require(type(v)is dict and set(v)==set(CAPS)and all(type(x)is int for x in v.values())and v==CAPS,'typed unchanged original nine caps')
++            if k=='directories':n8_require(type(v)is dict and all(type(row)is list and len(row)==7 and all(type(x)is int and x>=0 for x in row)for row in v.values()),'typed complete directory7IDs')
++            n8_validate_saved_metadata_types(v)
++    elif type(value)is list:
++        for v in value:n8_validate_saved_metadata_types(v)
++    elif type(value)is float:n8_require(value-value==0,'finite saved metadata float')
++    return value
++
++def n8_strict_json(raw):
++    def pairs(items):
++        result={}
++        for key,value in items:
++            n8_require(key not in result,'duplicate controls metadata key');result[key]=value
++        return result
++    return n8_validate_saved_metadata_types(json.loads(raw,object_pairs_hook=pairs,parse_constant=lambda v:(_ for _ in ()).throw(ValueError(v))))
++
++def n8_fullpin(path):
++    p=Path(path);s=p.lstat();before=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    n8_require(p.is_absolute() and all(not q.is_symlink() for q in (p,*p.parents)) and stat.S_ISREG(s.st_mode) and s.st_nlink==1,'complete Source/META nonalias singlelink')
++    with p.open('rb') as stream:
++        n8_require(list((lambda t:(t.st_dev,t.st_ino,t.st_mode,t.st_nlink,t.st_size,t.st_mtime_ns,t.st_ctime_ns))(os.fstat(stream.fileno())))==before,'opened Source/META identity')
++        digest=hashlib.file_digest(stream,'sha256').hexdigest()
++    t=p.lstat();n8_require([t.st_dev,t.st_ino,t.st_mode,t.st_nlink,t.st_size,t.st_mtime_ns,t.st_ctime_ns]==before,'complete Source/META EOF unchanged')
++    return dict(path=str(p),sha256=digest,size_bytes=s.st_size,identity=before)
++
++def n8_recheck_pinned(pin):
++    n8_require(type(pin) is dict and set(pin)=={'path','sha256','size_bytes','identity'} and type(pin['path']) is str and Path(pin['path']).is_absolute() and type(pin['sha256']) is str and re.fullmatch('[0-9a-f]{64}',pin['sha256']) is not None,'actual controls exact n8_fullpin required; None refused')
++    n8_require(type(pin['size_bytes']) is int and pin['size_bytes']>=0 and type(pin['identity']) is list and len(pin['identity'])==7 and all(type(x) is int and x>=0 for x in pin['identity']) and pin['identity'][3]==1 and pin['identity'][4]==pin['size_bytes'],'controls typed integer7ID/size')
++    n8_require(n8_fullpin(pin['path'])==pin,'actual controls Source/META full EOF pin unchanged')
++    return pin
++
++def n8_read_pinned(pin):
++    n8_recheck_pinned(pin)
++    return n8_strict_json(Path(pin['path']).read_bytes())
++
++def n8_actual_closed_zero(pin,expected_schema):
++    wrapper=n8_read_pinned(pin);terminal=wrapper['terminal_tool_return']
++    n8_require(wrapper['schema']==expected_schema and wrapper['closed'] is True and wrapper['observed_terminal'] is True and wrapper['session_repolled_after_close'] is False,'actual observed CLOSED controls terminal')
++    n8_require(type(terminal) is dict and type(terminal['exit_code']) is int and terminal['exit_code']==0 and 'session_id' not in terminal and type(terminal['chunk_id']) is str and bool(terminal['chunk_id']) and wrapper['actual_terminal_chunk']==terminal['chunk_id'],'actual typed zero, exact terminal chunk and no live session')
++    return wrapper,n8_strict_json(terminal['output'])
++
++def n8_recheck_saved_regular_file_pins(pins,allow_empty=False):
++    n8_require(type(pins)is list and (allow_empty is True or bool(pins)) and all(type(p)is dict and set(p)=={'path','sha256','size_bytes','identity'}for p in pins),'declared complete regular-file fullpins, no missing or filtered evidence')
++    n8_require(len({p['path']for p in pins})==len(pins),'unique declared complete regular-file paths')
++    for p in pins:n8_recheck_pinned(p)
++
++def n8_recheck_complete_saved_case(case):
++    views=case['actual_complete_postclose_namespace_views']
++    n8_require(type(views)is dict and set(views)=={'host','output','control','source','receipts'},'all five declared postclose namespace views retained')
++    for view in views.values():n8_recheck_saved_regular_file_pins(view['files'],allow_empty=True)
++    n8_recheck_saved_regular_file_pins(case['actual_complete_evidence_pins'])
++
++def validate_actual_N8_monitor_controls(qualification_pin,qualification_terminal_pin,author):
++    q=n8_read_pinned(qualification_pin)
++    n8_require(q['schema']=='ROOT_ACTUAL_N8_EXACT_OWNER_MONITOR_CONTROLS_QUALIFICATION_V1' and q['status']=='ACTUAL_TWELVE_GENUINE_MONITOR_CONTROLS_QUALIFIED_NO_NATIVE_OR_SCIENCE' and q['source_only'] is False and q['actual_monitor_controls_qualified'] is True,'actual Root monitor controls qualification required')
++    n8_require(q['actual_author_Source_contract']==author and q['original_caps']==CAPS and all(type(x) is int for x in q['original_caps'].values()),'complete actual controls Source owner contract and original caps')
++    for key in ('actual_native_build_or_AB_executed','native_transport_executed','scientific_qualification_created','scientific_accuracy_qualified','physical_neutron_balance_qualified','AAA_accuracy_qualified','ABA_admitted'):
++        n8_require(q[key] is False,'control qualification cannot create native/science fact: '+key)
++    binding=n8_read_pinned(q['actual_controls_Source_binding_pin'])
++    n8_require(binding['schema']=='ROOT_ACTUAL_N8_MONITOR_CONTROLS_SOURCE_BINDING_V1' and binding['source_only'] is True and binding['actual_author_Source_contract']==author and binding['actual_control_execution'] is None,'actual Source-bound monitor controls roles, not guessed execution')
++    manifest=n8_read_pinned(q['actual_controls_manifest_pin'])
++    n8_require(manifest['schema']=='ACTUAL_N8_TWELVE_GENUINE_MONITOR_CONTROLS_MANIFEST_V1' and manifest['actual_author_Source_contract']==author and manifest['source_only'] is False and manifest['all_required_controls_passed'] is True and manifest['blockers']==[],'complete actual controls manifest, not a Source protocol')
++    n8_require(manifest['actual_controls_Source_binding_pin']==q['actual_controls_Source_binding_pin'] and manifest['original_caps']==CAPS,'controls Source binding and unchanged limits')
++    cases=manifest['cases']
++    n8_require(type(cases) is list and len(cases)==len(N8_CASE_IDS) and [c['case_id'] for c in cases]==list(N8_CASE_IDS),'all twelve genuine controls; no filtering unknown cases')
++    for case in cases:
++        n8_require(case['passed'] is True and case['actual_genuine_runner_used'] is True and case['actual_shared_resource_factory_used'] is True and case['actual_exact_owner_observer_used'] is True and case['synthetic_PS_or_lsof_or_cleanup_error_used_for_qualification'] is False,'actual same monitoring implementation, no mock qualification')
++        n8_require(case['actual_complete_raw_evidence_saved'] is True and case['actual_Source_D_and_receipt_E_frozen'] is True and case['actual_original_caps_verified'] is True and case['actual_remaining_owned_groups_absent_after_Root_closure'] is True,'complete raw, frozen Source, original caps and actual residual-group closure')
++        n8_actual_closed_zero(case['actual_Root_case_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROL_CASE_TOOL_TERMINAL_RETURN_V1')
++        n8_require(type(case['actual_complete_evidence_pins']) is list and bool(case['actual_complete_evidence_pins']),'actual complete Source/small-META raw evidence, no empty case')
++        n8_recheck_complete_saved_case(case)
++    n8_recheck_saved_regular_file_pins(manifest['actual_complete_controls_regular_file_pins_before_own_append'])
++    n8_recheck_saved_regular_file_pins(q['actual_complete_controls_regular_file_pins_before_own_append'])
++    _,controls_output=n8_actual_closed_zero(q['actual_Root_controls_tool_terminal_return_pin'],'ROOT_ACTUAL_N8_MONITOR_CONTROLS_TOOL_TERMINAL_RETURN_V1')
++    n8_require(controls_output['actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and controls_output['all_required_controls_passed'] is True,'actual Root complete controls zero output coupling')
++    peer=n8_read_pinned(q['actual_independent_saved_controls_review_pin'])
++    n8_require(peer['schema']=='INDEPENDENT_ACTUAL_N8_SAVED_GENUINE_MONITOR_CONTROLS_REVIEW_V1' and peer['status']=='PASS_ACTUAL_SAVED_TWELVE_GENUINE_MONITOR_CONTROLS_NO_NATIVE_OR_SCIENCE' and peer['actual_author_Source_contract']==author and peer['qualified_actual_controls_manifest_pin']==q['actual_controls_manifest_pin'] and peer['qualified_actual_controls_Source_binding_pin']==q['actual_controls_Source_binding_pin'] and peer['qualified_actual_Root_controls_tool_terminal_return_pin']==q['actual_Root_controls_tool_terminal_return_pin'] and peer['all_checks_passed'] is True and peer['blockers']==[],'independent review of these actual saved controls required')
++    checks=peer['checks']
++    n8_require(type(checks) is list and type(peer['check_count']) is int and peer['check_count']==len(checks)>0 and len({c['check'] for c in checks})==len(checks) and all(type(c) is dict and set(c)=={'check','passed'} and type(c['check']) is str and bool(c['check']) and c['passed'] is True for c in checks),'unique typed independent actual controls checks')
++    _,q_output=n8_actual_closed_zero(qualification_terminal_pin,'ROOT_ACTUAL_N8_MONITOR_CONTROLS_QUALIFICATION_TOOL_TERMINAL_RETURN_V1')
++    n8_require(q_output['actual_monitor_controls_qualification_pin']==qualification_pin and q_output['actual_monitor_controls_qualified'] is True and q_output['native_or_scientific_qualification_created'] is False,'actual Root qualification output coupled to this immutable Q')
++    return dict(schema='ACTUAL_N8_REQUIRED_MONITOR_CONTROLS_SCOPE_COUPLING_V1',actual_monitor_controls_qualification_pin=qualification_pin,actual_Root_qualification_tool_terminal_return_pin=qualification_terminal_pin,actual_complete_controls_manifest_pin=q['actual_controls_manifest_pin'],actual_independent_saved_controls_review_pin=q['actual_independent_saved_controls_review_pin'],actual_stdlib_subprocess_Source_pin=q['actual_stdlib_subprocess_Source_pin'],all_twelve_actual_controls_required=True,native_or_scientific_qualification_created=False)
++
+ 
+ def main():
+     cli=argparse.ArgumentParser();cli.add_argument('--source-manifest-sha256',required=True);cli.add_argument('--request',required=True);cli.add_argument('--request-sha256',required=True);cli.add_argument('--output-source-dir',required=True);a=cli.parse_args()
+@@ -81,6 +177,8 @@
+     require(b['schema']=='ROOT_ACTUAL_COMPLETE_NATIVE_OBSERVATION_BUILD_BINDING_REQUEST_V1'and b['source_only']is True and b['Root_only_actual_execution']is True and b['scientific_qualification_created']is False,'actual Root request scope')
+     require(b['actual_author_Source_contract']==author and b['original_caps']==CAPS and all(type(v)is int for v in b['original_caps'].values())and b['state_order']==['A','B']and b['build_stage_order']==['Ganlib','Utilib','Trivac','Dragon','Dragon_link']and b['SPOT_AXMAT_OBSERVATION']=='ADMITTED_SOURCE_ONLY','full Source/caps/order/env exact')
+     for k,v in FUTURE.items():require(b[k]is v,'future actual facts unknown/false')
++    monitor_scope=validate_actual_N8_monitor_controls(b['actual_monitor_controls_qualification_pin'],b['actual_monitor_controls_qualification_terminal_pin'],author)
++    require(b['actual_required_monitor_controls_scope']==monitor_scope,'actual required monitor Q coupling before Source binding')
+     seed_contract=strict_json((P/'ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json').read_bytes());require(b['original129_input_pins']==seed_contract['original129_input_pins'],'original129 fullpins cannot be silently refreshed/replaced');rows=b['original129_input_pins'];extra=b['additional_actual_evidence_input_pins'];require(type(rows)is list and len(rows)==129 and type(extra)is list and bool(extra)and len({p['path']for p in rows+extra})==len(rows+extra),'all original129 plus unique nonempty actual extra inputs')
+     require(type(b['tool_pins'])is dict and set(b['tool_pins'])==set(CANONICAL_OS_TOOL_PATHS),'complete fixed six OS tool roles before extra pin shapes')
+     for role,p in b['tool_pins'].items():shape(p,tool_role=role)
+@@ -88,6 +186,7 @@
+     for p in rows:shape(p)
+     for p in extra:shape(p,tool_role=tool_roles_by_path.get(p['path']))
+     allpins={p['path']:p for p in rows+extra}
++    for p in (b['actual_monitor_controls_qualification_pin'],b['actual_monitor_controls_qualification_terminal_pin']):require(allpins.get(p['path'])==p,'actual monitor Q evidence protected in whole input list')
+     peer=metadata(b['independent_observation_Source_review_pin']);ad=metadata(b['independent_observation_Source_admission_pin']);truth=metadata(b['actual_Root_observation_Source_admission_tool_return_pin'])
+     require(peer['schema']=='INDEPENDENT_COMPLETE_NATIVE_OBSERVATION_BUILD_HOST_BINDER_SOURCE_REVIEW_V1'and peer['status']=='SOURCE_ONLY_PASS_NO_EXECUTION_OR_SCIENCE'and peer['source_only']is True and peer['all_checks_passed']is True and peer['blockers']==[] and peer['actual_author_Source_contract']==author,'actual independent observer Source pass exact scope')
+     checks=peer['checks'];require(type(checks)is list and type(peer['check_count'])is int and peer['check_count']==len(checks)>0 and all(type(c)is dict and set(c)=={'check','passed'}and type(c['check'])is str and bool(c['check'])and c['passed']is True for c in checks)and len({c['check']for c in checks})==len(checks),'actual aggregate checks true/count/unique')
+@@ -99,7 +198,7 @@
+     require(type(b['tool_pins'])is dict and set(b['tool_pins'])=={'fortran','c','cpp','ar','lsof','ps'},'all actual tool Source request pins')
+     for role,p in b['tool_pins'].items():shape(p,tool_role=role);require(allpins.get(p['path'])==p,'all actual toolpins protected')
+     require(b.get('material_input_layout')==SHARED_INPUT_LIBRARY_LAYOUT and all(type(row['count'])is int for row in b['material_input_layout']['literal_replacements']),'exact shared-library/procedure Source layout; no implicit old duplicate layout')
+-    require(b['namespaces']==REQUIRED_N7_FRESH_NAMESPACES,'new fixed v7 binding namespaces only')
++    require(b['namespaces']==REQUIRED_N8_FRESH_NAMESPACES,'new fixed v8 binding namespaces only')
+     needed={'material.x2m','AxMatTone.c2m','geometry.dat','rnr_cc.c2m','rnr_interpol.c2m','DLIB_ACTUAL','DLIB8R1_370'};require(type(b['states'])is dict and list(b['states'])==['A','B'],'ordered full A/B native input shape')
+     for state in('A','B'):
+         stage=b['states'][state]['native_stage_inputs'];require(type(stage)is list and len(stage)==7 and [r['destination']for r in stage]==SHARED_INPUT_LIBRARY_LAYOUT['seed_destination_order']and {r['destination']for r in stage}==needed,'complete original material seed mapping')
+
+
+ROLE Root_observation_postclose_META_writer.UNREADY.py
+--- PREVIOUS_SEALED_N7_SOURCE_PROVENANCE/Root_observation_postclose_META_writer.UNREADY.py
++++ Root_observation_postclose_META_writer.UNREADY.py
+@@ -60,10 +60,10 @@
+     return dict(files=files,directories=dirs)
+ 
+ SHARED_INPUT_LIBRARY_LAYOUT = {'schema': 'COMPLETE_AB_SINGLE_COPY_ORIGINAL_SHARED_LIBRARIES_AND_EXACT_PROCEDURE_FILE_LITERALS_V1', 'shared_directory': 'shared_input_libraries', 'state_order': ['A', 'B'], 'seed_destination_order': ['material.x2m', 'AxMatTone.c2m', 'geometry.dat', 'rnr_cc.c2m', 'rnr_interpol.c2m', 'DLIB_ACTUAL', 'DLIB8R1_370'], 'original_procedure_copy_name': 'AxMatTone.c2m.original', 'literal_replacements': [{'original': "FIL: 'DLIB_ACTUAL'", 'derived': "FIL: '../shared_input_libraries/DLIB_ACTUAL'", 'count': 2}, {'original': "FIL: 'DLIB8R1_370'", 'derived': "FIL: '../shared_input_libraries/DLIB8R1_370'", 'count': 1}]}
+-REQUIRED_N7_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v7-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v7_receipts'}
++REQUIRED_N8_FRESH_NAMESPACES = {'host': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-host-20261010', 'output': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-runtime-20261010', 'control': '/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-control-20261010', 'source': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_sources', 'receipts': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_receipts'}
+ 
+ def verify_complete_shared_library_and_procedure_evidence(b,m):
+-    require(b['namespaces']==REQUIRED_N7_FRESH_NAMESPACES,'new fixed v7 actual observation namespaces only')
++    require(b['namespaces']==REQUIRED_N8_FRESH_NAMESPACES,'new fixed v8 actual observation namespaces only')
+     require(b.get('material_input_layout')==SHARED_INPUT_LIBRARY_LAYOUT and m.get('material_input_layout')==SHARED_INPUT_LIBRARY_LAYOUT,'exact bound and actual shared-library/procedure contract')
+     shared=m['actual_shared_input_library_evidence'];out=Path(b['namespaces']['output']);directory=out/SHARED_INPUT_LIBRARY_LAYOUT['shared_directory']
+     require(shared['schema']=='ACTUAL_AB_SINGLE_COPY_COMPLETE_ORIGINAL_LIBRARY_EVIDENCE_V1'and shared['material_input_layout']==SHARED_INPUT_LIBRARY_LAYOUT and shared['shared_library_directory']==str(directory)and shared['all_library_bytes_preserved_without_symlinks_or_hardlinks']is True,'actual original two libraries once with no aliases')
+@@ -107,8 +107,9 @@
+     b=strict_json(Path(a.binding).read_bytes());h=strict_json(Path(a.host_result).read_bytes());require(b['schema']=='ROOT_ACTUAL_COMPLETE_NATIVE_OBSERVATION_BUILD_BINDING_V1'and b['source_only']is True and b['original_caps']==CAPS and all(type(v)is int for v in b['original_caps'].values()),'actual whole observation Source binding')
+     require(h['schema']=='ACTUAL_COMPLETE_NATIVE_OBSERVATION_BUILD_GENUINE_HOST_RESULT_V1'and h['status']=='ACTUAL_COMPLETE_FIVE_STAGE_BUILD_AND_AB_OBSERVATION_EVIDENCE_ONLY_EXTERNAL_ROOT_CLOSURE_REQUIRED'and h['source_only']is False and h['original_caps']==CAPS and h['supervisor_class_or_MRO_modified']is False and h['own_child_RSS_scope_only']is True and h['compiler_descendant_RSS_scope_not_certified']is True,'complete genuinely saved host result only')
+     diagnostic=h['actual_failure_only_monitor_evidence']
+-    require(diagnostic['schema']=='ACTUAL_N7_FAILURE_ONLY_MONITOR_SUMMARY_V1'and type(diagnostic['failure_event_count'])is int and diagnostic['failure_event_count']==0 and diagnostic['journal_pin']is None and diagnostic['additional_recording_errors']==[] and diagnostic['unpersisted_complete_events']==[],'actual successful instrumented host has no hidden monitor/cleanup failure or recording error')
+-    require(diagnostic['original_PS_lsof_argv_timeout_and_PID_parent_chain_unchanged']is True and diagnostic['original_bounded_Source_bytes_and_supervisor_classes_unchanged']is True and diagnostic['original_watchdog_cleanup_flag_not_actual_cleanup_proof']is True and diagnostic['new_instrumented_runtime_controls_actual']is None and diagnostic['new_native_runtime_qualification']is None and diagnostic['original_caps']==CAPS,'failure-only diagnostic scope does not qualify guard/native/science or treat legacy cleanup flag as proof')
++    require(diagnostic['actual_required_new_monitor_controls_scope']==b['actual_required_monitor_controls_scope'] and diagnostic['actual_owner_scope_state']['unknown']==[],'actual required monitor Q and no unknown ownership in successful host result')
++    require(diagnostic['schema']=='ACTUAL_N8_FAILURE_ONLY_MONITOR_SUMMARY_V1'and type(diagnostic['failure_event_count'])is int and diagnostic['failure_event_count']==0 and diagnostic['journal_pin']is None and diagnostic['additional_recording_errors']==[] and diagnostic['unpersisted_complete_events']==[],'actual successful instrumented host has no hidden monitor/cleanup failure or recording error')
++    require(diagnostic['original_lsof_argv_and_single_strict_zero_timeout_unchanged']is True and diagnostic['full_PS_pid_ppid_pgid_state_and_captured_union_explicitly_new']is True and diagnostic['original_parent_chain_never_reduced_except_individually_proven_closed_owned_PIDs']is True and diagnostic['three_bounded_callable_objects_and_two_private_methods_per_actual_owned_Popen_declared']is True and diagnostic['original_bounded_Source_bytes_and_supervisor_classes_unchanged']is True and diagnostic['original_watchdog_cleanup_flag_not_actual_cleanup_proof']is True and diagnostic['diagnostic_source_contract_is_not_runtime_qualification']is True and diagnostic['new_native_runtime_qualification']is None and diagnostic['original_caps']==CAPS,'truthfully declared monitor Source scope does not qualify guard/native/science or treat legacy cleanup flag as proof')
+     require(t['exit_code']==0,'actual success coverage requires Root typed zero, nonzero is retained failure only')
+     stdout=strict_json(t['output']);require(stdout['status']==h['status']and stdout['actual_host_result_pin']==host_pin and stdout['actual_observation_manifest_pin']==h['actual_observation_manifest_pin']and stdout['actual_build_evidence_pin']==h['actual_build_evidence_pin'],'actual Root stdout fullpin matches host result and all raw evidence')
+     for k,v in FUTURE.items():require(h[k]is v,'future qualifications must remain unknown/false')

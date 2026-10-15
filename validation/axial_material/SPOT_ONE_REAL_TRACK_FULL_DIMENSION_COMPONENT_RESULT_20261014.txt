@@ -1,0 +1,18 @@
+SPOT 真实轨迹全维度组件控制结果 — 2026-10-14
+
+真实 track 0 的原顺序 16 个角向动作（4 polar × 2 sign × 2 orientation）完成控制。维度为 H150、NZ48、370 群、9 矩、offset32。材料总截面来自当前完整 A 观测，角向输入来自原 A1；九系数源是独立带符号测试输入，不是假造已观测混合矩。
+
+实际 Root 运行返回 0：6f2314/session71538 → f64aeb。耗时 216.56363775 秒。新原生 ABI 与保留的原逐群传输/白边界 ABI 比较，共 47,360 条比较、543,260,640 个值；逐位差异 0，最大绝对与相对差异均 0。全部九矩投影与加权 T/L/D 也在比较范围内。
+
+子进程 SELF 峰值 475,938,816 字节，低于原 512 MiB；原 600 秒阶段上限、1800 秒整段上限、单线程/单子进程及累计 2 GiB 保持。没有创建完整白边界缓存。
+
+独立后验 bb87a3 返回 0，核验全部 6 个新文件、74 个固定输入，以及 16×370 的全部比较记录和摘要。原 v5 因严格 Python bool 检查误拒 NumPy 布尔量而失败的返回、报告、日志和后验完整保留。新 v6 仅接受真 Python bool/np.bool_；假值及整数、浮点、列表和数组仍拒绝，计算字节未改变。
+
+本项仅控制一个真实轨迹。没有执行全 11,364 条轨迹/181,824 动作，没有声明原生角向规则与 SN32 等价、独立耦合参考、物理精度、AAA 或 ABA 通过。
+
+实际结果：
+/Users/wen/spot/validation/artifacts/axial-material-one-actual-track-H150-NZ48-full370-component-20261014-v2/Root_actual_one_actual_track_component_summary.json
+SHA256 e2dbded484da358fe2c7b3495bcba81e692a14df04f03a685a8293db8a98e4b9
+独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/one_actual_track_H150_NZ48_full370_component_source_v1_20261014/v6/actual_postverify_20261014/REVIEW.json
+SHA256 38e115f7d572153df9af4adb2e654a645a388909befffe556cc6c12a6422f2c6

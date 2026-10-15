@@ -1,0 +1,15 @@
+import hashlib,json,pathlib
+D=pathlib.Path('/private/tmp/spot_storage_review_eighteenth_graph_20261009');R=pathlib.Path('/private/tmp/spot_storage_eighteenth_root_readonly_20261009')
+def pin(p):
+ b=p.read_bytes();s=p.lstat();return {'path':str(p),'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest(),'identity':[s.st_dev,s.st_ino,s.st_mode,s.st_size,s.st_mtime_ns,s.st_ctime_ns,s.st_nlink]}
+stdout=json.loads((D/'actual_post_retirement.stdout').read_bytes());assert stdout['status']=='PASS'and (D/'actual_post_retirement.stderr').stat().st_size==0
+r={'schema':'SPOT_R18_ACTUAL_POST_RETIREMENT_READONLY_TOOL_RETURN_V1','status':'PASS','actual_tool_result':{'initial_chunk_id':'931783','session_id':15391,'terminal_chunk_id':'b58f51','exit_code':0,'closed':True},'executed_source':pin(D/'review_actual_post_retirement_readonly.py'),'stdout':pin(D/'actual_post_retirement.stdout'),'stderr':pin(D/'actual_post_retirement.stderr'),'report':pin(D/'ACTUAL_POST_RETIREMENT_REPORT.json'),'text_report':pin(D/'ACTUAL_POST_RETIREMENT_REPORT.txt'),'files_deleted_by_this_reader':0,'project_written':False,'business_executed':False,'new_scientific_credit':False}
+p=D/'actual_post_retirement_tool_return.json'
+with p.open('x')as f:json.dump(r,f,indent=2);f.write('\n')
+a=json.loads((R/'protected_before.json').read_bytes());b=json.loads((R/'protected_after.json').read_bytes())
+assert a['counts']==b['counts']=={'regular':160363,'symlinks':687,'directories':7058}
+assert a['metadata_identity_sha256']==b['metadata_identity_sha256']and a['document_sha256']==b['document_sha256']
+s={'schema':'SPOT_R18_ACTUAL_POST_RETIREMENT_FINAL_SMALL_EVIDENCE_BINDING_V1','status':'PASS','independent_graph_retained_post_report':r['report'],'independent_true_reader_receipt':pin(p),'Root_protected_before':pin(R/'protected_before.json'),'Root_protected_after':pin(R/'protected_after.json'),'Root_protected_after_true_tool_as_observed_by_Root':{'initial_chunk_id':'b37a8f','session_id':29496,'terminal_chunk_id':'fd3e7d','exit_code':0,'closed':True},'Root_whole_other_files_metadata_identity_equal':True,'Root_original_README_progress_R9_ten_fullSHA_equal':True,'whole_protected_counts':a['counts'],'all_original_audit_evidence_unchanged':True,'new_scientific_credit':False,'only_TMP_written':True}
+q=D/'ACTUAL_POST_RETIREMENT_FINAL_BINDING.json'
+with q.open('x')as f:json.dump(s,f,indent=2);f.write('\n')
+print(json.dumps({'status':'PASS','actual_reader':'931783/session15391→b58f51 EXIT0 CLOSED','report':r['report'],'receipt':pin(p),'binding':pin(q)}))

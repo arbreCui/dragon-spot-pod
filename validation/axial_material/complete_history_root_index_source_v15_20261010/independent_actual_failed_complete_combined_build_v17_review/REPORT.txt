@@ -1,0 +1,5 @@
+V17 完整五阶段构建失败，证据有限审查通过，不能记作 build PASS。
+Outer canonical Python controller 原512 MiB上限触发：峰值515.078125 MiB，child -15，耗时166.13799912505783秒，cleanup true；Root已报告 fa8f3b / session72256 → d03f21 整数EXIT1 CLOSED。
+仅 build/link 与 metadata/objects 两个inner stage真实PASS；第三stage未启动，无driver_result、seal、audit、raw closeout。
+H/SOURCE/OUT/TERM/buildSource 全部普通文件完整SHA/7项身份、目录与链接前后冻结；17个原prepare source输入及原完整图/声明/trace保持。完整归档147323851字节<原2GiB。
+该失败不授予完整build、whole INPUT、native、AAA或ABA资格，也不继承PREP或组件RSS信用。下一步只修必要last-use lifetimes、保留全部原fresh验证与阈值，再用新namespace执行；本轮不运行、不profiling、不读numeric。

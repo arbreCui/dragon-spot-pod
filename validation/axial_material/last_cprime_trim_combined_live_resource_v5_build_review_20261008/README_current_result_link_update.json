@@ -1,0 +1,13 @@
+{
+  "path": "/Users/wen/spot/validation/README.md",
+  "before_sha256": "7d709288d4177cc1209cb73c1bc2fa8266657f232f0fc69a6f440297d75abe73",
+  "after_sha256": "7f7b38783e5d94e8bc474f81911514a44c8158717b4085948726ca6275c6a5af",
+  "only_named_edit": {
+    "before": "last_cprime_trim_combined_live_resource_v4_build_review_20261008/REPORT.txt",
+    "after": "last_cprime_trim_combined_live_resource_v5_build_review_20261008/REPORT.txt"
+  },
+  "actual_latest_V5_failure_linked": true,
+  "does_not_convert_PREP_or_four_stage_pass_into_combined_input_admission": true,
+  "historical_seals_not_written": true,
+  "observed_utc": "2026-10-08T15:10:26.475168+00:00"
+}

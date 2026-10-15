@@ -1,0 +1,158 @@
+"""Static source-driven cold old-input presence/SHA review. No business import or execution."""
+from pathlib import Path
+import ast,collections,hashlib,json,os,stat,time
+ROOT=Path('/Users/wen/spot');ART=ROOT/'validation/artifacts';OUT=Path('/private/tmp/spot_cold_business_read_scope_postcleanup_review_20261009')
+TMP=Path('/private/tmp/axmat-last-cprime-trim-cold-v7-input-v5-draft-20261009')
+BASE=ART/'axial-material-production-qualified-AB-rank1-factor-cache-20261007';OLD=ART/'axial-material-production-qualified-AB-white-trace-refined-envpin-20261005'
+REQUIRED={};PINS={};RAW={};SOURCES=[];STAT_ONLY=[];START=time.monotonic()
+def require(x,m):
+ if not x:raise ValueError(m)
+def identity(p):
+ s=Path(p).lstat();return[s.st_dev,s.st_ino,s.st_mode,s.st_size,s.st_mtime_ns,s.st_ctime_ns,s.st_nlink]
+def fullpin(p,expected=None,keep=False):
+ p=Path(p);k=str(p)
+ if k in PINS:
+  require(expected is None or PINS[k]['sha256']==expected,'expected SHA conflict '+k);return PINS[k],RAW.get(k)
+ before=identity(p);h=hashlib.sha256();parts=[]
+ require(stat.S_ISREG(before[2]),'required metadata/source not regular '+k)
+ with p.open('rb')as f:
+  s=os.fstat(f.fileno());require([s.st_dev,s.st_ino]==before[:2],'opened different inode '+k)
+  while True:
+   b=f.read(8*1024**2)
+   if not b:break
+   h.update(b)
+   if keep:parts.append(b)
+ require(identity(p)==before,'changed during full read '+k)
+ r=dict(path=k,sha256=h.hexdigest(),size=before[3],identity=before,stable_full_read=True)
+ require(expected is None or r['sha256']==expected,'required metadata/source SHA mismatch '+k);PINS[k]=r
+ if keep:RAW[k]=b''.join(parts)
+ return r,RAW.get(k)
+def jload(p,expected=None):
+ r,b=fullpin(p,expected,True)
+ def pairs(items):
+  d={}
+  for k,v in items:require(k not in d,'duplicate JSON key');d[k]=v
+  return d
+ return json.loads(b,object_pairs_hook=pairs,parse_constant=lambda x:(_ for _ in()).throw(ValueError('nonfinite JSON')))
+def save(n,d):(OUT/n).write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+def add(p,sha,owner,source,selector,gate='digest/read'):
+ p=str(Path(p));require(Path(p).is_absolute(),'nonabsolute business read '+p);require(isinstance(sha,str)and len(sha)==64,'not bound SHA '+p)
+ if p not in REQUIRED:REQUIRED[p]=dict(path=p,expected_sha256=sha,owners=[])
+ require(REQUIRED[p]['expected_sha256']==sha,'conflicting owner SHA '+p)
+ REQUIRED[p]['owners'].append(dict(owner=owner,source=source,selector=selector,gate=gate))
+def item(x,owner,source,selector,gate='pinned/digest'):add(x['path'],x['sha256'],owner,source,selector,gate)
+def defs(p,expected,names):
+ r,b=fullpin(p,expected,True);s=b.decode();t=ast.parse(s);ds=[]
+ for n in t.body:
+  if isinstance(n,(ast.FunctionDef,ast.ClassDef))and n.name in names:
+   v=ast.get_source_segment(s,n);ds.append(dict(name=n.name,line=n.lineno,end_line=n.end_lineno,source=v,source_sha256=hashlib.sha256(v.encode()).hexdigest()))
+ SOURCES.append(dict(**r,definitions=ds));return s,t
+F=TMP/'prepare_historical_input_owned_specs_physical_last_cprime_trim_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak.py';C=TMP/'cold_component_input_consumer_last_cprime_trim_own_pid_peak.py'
+fs,ft=defs(F,'ceaf7f8e0c876fd3ecee5e171a706db5b0af794526c7f74232f3c5b650b3dd0f',{'producer_environment','verify_baseline_package','declare','prepare','render_controller','normal_runtime_preload'})
+cs,ct=defs(C,'39e114aa2304b08e504a9803f7d12dda7bcb335fcc1341cd0c3814a80c53c3f8',{'current_cold_binding','complete_input_phase','consume_metadata'})
+bp=BASE/'prepared.json';op=OLD/'prepared.json'
+base=jload(bp,'7d2154e9c722eab23f4411c9a8588ed8250da658ae880298c24dfb53308656b5');old=jload(op,'024ffb9263e3d3b6cf10301d6fe2bac5a87a9b368008440e01038982291a6d53')
+controller=BASE/'runtime/production_runner.py'
+rs,rt=defs(controller,'844fe18738a2232d2947a8c65dc13afebcfbfd2e2afc9f0743c1c94c06fd0f7d',{'prepare','preflight','verify_prepared','pinned_runtime_files','check_material_manifest','require_file'})
+ingest=BASE/'runtime/qualified_snapshot_ingestion.py'
+isrc,it=defs(ingest,base['local_files']['runtime/qualified_snapshot_ingestion.py'],{'pinned','admit_snapshots','verify_offline_state','audit_payload'})
+layout=OLD/'runtime/numerical_layout_admission.py'
+ls,lt=defs(layout,old['local_files']['runtime/numerical_layout_admission.py'],{'admit_layout_variant','verify_analysis_dependencies','verify_analysis_environment','verify_common_basis'})
+# Core exact source loops. Merge only equal-SHA owners of the SAME absolute path.
+for root,d in[(BASE,base),(OLD,old)]:
+ item(d['declaration'],'prepared declaration byte admission',str(root/'prepared.json'),'declaration')
+ add(root/'prepared.json',PINS[str(root/'prepared.json')]['sha256'],'cold factory baseline/producer_environment',str(F),'prepared.json','require')
+ for n,s in d['local_files'].items():add(root/n,s,'cold factory baseline/producer_environment local_files',str(F),'local_files/'+n,'require')
+ for n,x in d['inputs'].items():item(x,'cold old-input preflight',str(controller),'inputs/'+n,'require_file')
+ for n in['case_spec','rank_addendum']:item(d[n],'cold old spec/rank contract',str(controller),n,'require_file')
+ manifest=jload(d['inputs']['material_manifest']['path'],d['inputs']['material_manifest']['sha256'])
+ item(manifest['source_files']['geometry.dat'],'check_material_manifest direct geometry read',str(controller),'material_manifest/source_files/geometry.dat','require_file/read_text')
+ receipt=jload(d['inputs']['material_results']['path'],d['inputs']['material_results']['sha256'])
+ for n in['producer_runtime','receiver_source']:item(receipt[n],'admit_snapshots producer/receiver direct read',str(ingest),n)
+ for letter,state in receipt['states'].items():
+  for n in['execution','snapshot_run_status','archive','audit_status','moments','track','material']:item(state[n],'verify_offline_state '+letter,str(ingest),n)
+  execution=jload(state['execution']['path'],state['execution']['sha256'])
+  for n,s in execution['files'].items():add(n,s,'verify_offline_state '+letter+' execution.files',str(ingest),'execution/files/'+n)
+  run=jload(state['snapshot_run_status']['path'],state['snapshot_run_status']['sha256']);directory=Path(state['archive']['path']).parent
+  for n,s in run['outputs'].items():add(directory/n,s,'verify_offline_state '+letter+' run.outputs',str(ingest),'run/outputs/'+n)
+  audit=jload(state['audit_status']['path'],state['audit_status']['sha256']);ad=Path(state['audit_status']['path']).parent
+  add(ad/'protocol.json',audit['protocol_sha256'],'verify_offline_state '+letter+' audit protocol',str(ingest),'audit/protocol_sha256')
+  protocol=jload(ad/'protocol.json',audit['protocol_sha256'])
+  for n,s in protocol['files'].items():add(n,s,'verify_offline_state '+letter+' audit.protocol.files',str(ingest),'audit/protocol/files/'+n)
+  for n,s in audit['outputs'].items():add(ad/n,s,'verify_offline_state '+letter+' audit.outputs',str(ingest),'audit/outputs/'+n)
+  # Explicit secondary reads are required even though each is already in audit outputs.
+  for n in['audit.bin','observations.json','volume64.bin','volume_normalization_check.json','negative_controls.json','normalization_negative_controls.json']:
+   require(n in audit['outputs'],'direct audit read not bound in audit outputs '+n)
+   add(ad/n,audit['outputs'][n],'verify_offline_state '+letter+' independent read/replay input',str(ingest),'direct_secondary_read/'+n)
+core_count=len(REQUIRED)
+# The future factory copies OLD parent variant, not BASE variant.files (5517).
+vp=OLD/'runtime/conditional_white_receiver_variant.json';v=jload(vp,old['local_files']['runtime/conditional_white_receiver_variant.json'])
+add(vp,PINS[str(vp)]['sha256'],'cold factory declare reads and copies parent variant',str(F),'OLD/runtime/conditional_white_receiver_variant.json','require/read')
+for p,s in v['files'].items():add(p,s,'future inherited OLD variant.files actual require loop',str(layout),'variant/files/'+p)
+for n in['candidate_runtime','parent_compensated_variant','cold_controller_result','saved_state_original_accounting_audit','white_tracking_host']:
+ item(v[n],'pinned_runtime_files explicit variant descriptor',str(controller),'variant/'+n)
+parent=jload(v['parent_compensated_variant']['path'],v['parent_compensated_variant']['sha256'])
+item(parent['replay_admission'],'pinned_runtime_files parent replay descriptor',str(controller),'parent_compensated_variant/replay_admission')
+# Actual layout read blocks, not recursive metadata path collection.
+co=ART/'axial-material-AAA-white-trace-angular-closeout-20261005'
+seal=jload(co/'seal.json','a5b26a331d3b2dd1d3ebb12b80e63ffb0ca9e9a4aefe65aac244b38eb65a33dc')
+add(co/'seal.json',PINS[str(co/'seal.json')]['sha256'],'admit_layout_variant closeout seal',str(layout),'CLOSEOUT/seal.json')
+for n,s in seal['files'].items():add(co/n,s,'admit_layout_variant complete closeout.files',str(layout),'closeout/files/'+n)
+cold=ART/'axial-material-AAA-white-trace-angular-convergence-20261005';cr=jload(cold/'result.json','275b542018d35940159777b57f5f5269b206c3b2f685d0e46e181564b386e0df')
+add(cold/'result.json',PINS[str(cold/'result.json')]['sha256'],'admit_layout_variant cold result',str(layout),'COLD/result.json')
+for case in['cold48_sn16','cold48_sn32']:
+ for n in['saved_state_admission.json','kernel_receipt.json']:
+  p=cold/case/n;pp,_=fullpin(p);add(p,pp['sha256'],'admit_layout_variant original direct saved JSON read',str(layout),case+'/'+n,'read_text (source has no independent expected SHA)')
+# Exact offline environment files are actually iterated by verify_analysis_dependencies.
+envs=[]
+for node in lt.body:
+ if isinstance(node,ast.Assign)and any(isinstance(x,ast.Name)and x.id=='ANALYSIS_ENVIRONMENT'for x in node.targets):envs.append(ast.literal_eval(node.value))
+require(len(envs)==1,'ambiguous static ANALYSIS_ENVIRONMENT literal')
+for p,s in envs[0]['files'].items():add(p,s,'verify_analysis_environment exact dependency bytes',str(layout),'ANALYSIS_ENVIRONMENT/files/'+p,'require (external read only)')
+# Source-side producer_environment independently verifies these same original fields.
+envp=ART/'axial-material-qualified-AB-white-trace-refined-envpin-admission-20261005/analysis_environment.json';env=jload(envp)
+add(envp,PINS[str(envp)]['sha256'],'cold producer_environment JSON read',str(F),'PARENT_SOURCE/analysis_environment.json','require/read no fixed SHA here; fresh pin')
+for p,s in env['files'].items():add(p,s,'cold producer_environment files',str(F),'analysis_environment/files/'+p)
+# Simple stat screening precedes large full reads.
+missing=[];nonregular=[];stats=[]
+for p,row in REQUIRED.items():
+ try:i=identity(p)
+ except FileNotFoundError:missing.append(row);continue
+ if not stat.S_ISREG(i[2]):nonregular.append(dict(**row,identity=i));continue
+ stats.append(dict(**row,identity=i,size=i[3]))
+save('derived_required_path_SHA_owners.json',list(REQUIRED.values()))
+save('initial_fresh_presence_screen.json',dict(required_count=len(REQUIRED),core_offline_prepared_count=core_count,present_regular=len(stats),missing=missing,nonregular=nonregular,total_regular_bytes=sum(x['size']for x in stats)))
+print(json.dumps(dict(stage='source_derived_fresh_stat',required=len(REQUIRED),core=core_count,present_regular=len(stats),missing=len(missing),nonregular=len(nonregular),full_read_bytes_forecast=sum(x['size']for x in stats))),flush=True)
+verified=[];mismatch=[]
+for row in stats:
+ r,_=fullpin(row['path']);entry=dict(**row,observed_sha256=r['sha256'],stable_full_read=r['stable_full_read'])
+ if r['sha256']!=row['expected_sha256']:mismatch.append(entry)
+ else:verified.append(entry)
+# Missing required path mapping is exact path+SHA to actual retirement ledger, not global duplicate inference.
+retirement=[]
+if missing:
+ for roundname in['seventh','eighth']:
+  rd=ROOT/('validation/storage_cleanup_'+roundname+'_20261009');mp=rd/'manifest.json';rp=rd/'cleanup_result.json';lp=rd/'retirement_ledger.jsonl'
+  m=jload(mp);actual=jload(rp);lr,lb=fullpin(lp,keep=True);ledger=[json.loads(x)for x in lb.splitlines()];ledgerby={x['path']:x for x in ledger}
+  for needed in missing:
+   c=next((x for x in m['candidates']if x['path']==needed['path']and x['sha256']==needed['expected_sha256']),None)
+   if c is None:continue
+   require(needed['path']in ledgerby and ledgerby[needed['path']]['deleted']is True,'manifest but no actual deleted ledger')
+   retirement.append(dict(required=needed,round=roundname,manifest_pin=PINS[str(mp)],actual_result_pin=PINS[str(rp)],ledger_pin=lr,actual_ledger_entry=ledgerby[needed['path']],restoration_recipe=c,restored=False))
+protectedpath=ROOT/'validation/storage_cleanup_eighth_20261009/cold_dynamic/current_cold_dynamic_protected_files.json'
+protected=jload(protectedpath,'11f9f07e92ca6c11ccb90ed4bf58b9d98a0e726bf2893a40e457c32edbc9e161')
+allmap=protected['current_cold_dynamic_protected_files']
+# No presence or SHA assertion for the rest of the 6194 protection-map entries.
+basevar=jload(BASE/'runtime/conditional_white_receiver_variant.json',base['local_files']['runtime/conditional_white_receiver_variant.json'])
+limits=dict(protection_map_recorded_count=protected['current_cold_dynamic_protected_count'],protection_map_is_not_business_presence_admission=True,actual_required_scope=sorted(REQUIRED),BASE_variant_files_count=len(basevar['files']),BASE_variant_files_not_used_as_future_OLD_parent_variant=True,all_unread_metadata_paths_not_presence_checked=True,
+ symbolic_metadata_fields=['resource_roots: directory resource accounting, not per-file existence/SHA admission','reference_analysis_recipe and complete active_statepoint name recipes: symbolic descriptors, future reference work separately gated','BASE variant.files original 5517 records: BASE variant bytes required in local_files, but future factory copies OLD variant.files; do not expand BASE map as cold PREP read requirements','all non-read descriptors in original receipts: retained object equality does not by itself invoke digest/pinned','future cold SOURCE/OUTPUT/declaration/component-intake success descriptors: UNREADY/None, not yet generated and not counted as missing historical input'],
+ future_current_component_and_SciPy_admission_separately_pending=True,full_future_cold_ready_or_PREP_or_physics_or_512MiB_qualification=False,
+ direct_saved_JSON_reads_without_frozen_SHA_have_fresh_pins_but_not_historical_expected_identity_credit=True)
+for p,r in PINS.items():require(identity(p)==r['identity'],'file changed after full read '+p)
+save('actual_source_pins_and_function_definitions.json',SOURCES)
+save('all_required_present_complete_fresh_SHA_identity.json',verified)
+save('missing_or_changed_required_paths_and_retirement_mapping.json',dict(missing=missing,nonregular=nonregular,SHA_mismatch=mismatch,actual_retirement_mappings=retirement,restore_executed=False))
+save('nonbusiness_metadata_and_scope_limits.json',limits)
+save('all_source_and_receipt_fresh_pins.json',list(PINS.values()))
+result=dict(schema='SPOT_COLD_OLD_BUSINESS_READ_SCOPE_POSTCLEANUP_REVIEW_V1',status='PASS_SCOPED_OLD_INPUT_PRESENCE_AND_SHA_ONLY'if not missing and not nonregular and not mismatch else'REQUIRED_OLD_INPUT_MISSING_OR_CHANGED',required_unique_absolute_path_SHA_count=len(REQUIRED),core_offline_prepared_count=core_count,required_present_fresh_full_SHA_count=len(verified),required_bytes_complete_full_read=sum(x['size']for x in verified),external_required_count=sum(not Path(p).is_relative_to(ROOT)for p in REQUIRED),missing_count=len(missing),nonregular_count=len(nonregular),SHA_mismatch_count=len(mismatch),restorable_actual_retired_missing_count=len(retirement),source_or_receipt_pin_count=len(PINS),owner_requirement_rows=sum(len(x['owners'])for x in REQUIRED.values()),original_protected_6194_map_not_used_as_presence_proof=True,business_import_or_API_or_solver_or_PREP_RUN=False,restore_executed=False,formal_or_ART_write=False,new_scientific_RSS_or_cold_ready_credit=False,elapsed_seconds=time.monotonic()-START)
+save('independent_scoped_business_read_review.json',result);print(json.dumps(result,indent=2),flush=True)

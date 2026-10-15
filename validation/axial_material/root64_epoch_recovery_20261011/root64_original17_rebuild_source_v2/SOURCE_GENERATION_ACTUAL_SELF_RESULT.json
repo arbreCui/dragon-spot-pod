@@ -1,0 +1,35 @@
+{
+  "Source_writer_completed": true,
+  "source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/root64_original17_rebuild_source_v2/test_ROOT64_full_connected17_v2.f90",
+    "size_bytes": 57702,
+    "sha256": "28e229ff6d1eb3d9f0b4d3ee0c1e96b207d5b1d417876f2f2653947bade45273",
+    "identity": [
+      16777234,
+      49769198,
+      33188,
+      1,
+      57702,
+      1791739100087754676,
+      1791739100087754676
+    ]
+  },
+  "mother_unchanged": true,
+  "full_byte_inverse_matches": true,
+  "proof": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/root64_original17_rebuild_source_v2/COMPLETE_FORTRAN_MOTHER_EXACT_BYTE_INVERSE.json",
+    "size_bytes": 31144,
+    "sha256": "4d74ec2ea13f7f83a49c8ecf497d995c5ba79727c1b3c138404f1ea83d6284e1",
+    "identity": [
+      16777234,
+      49769201,
+      33188,
+      1,
+      31144,
+      1791739100088504385,
+      1791739100088504385
+    ]
+  },
+  "elapsed_seconds": 0.0013792079989798367,
+  "compiler_CLE_parser_native_or_transport_executed": false
+}

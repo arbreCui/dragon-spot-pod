@@ -1,0 +1,200 @@
+SPOT cold 准备、监督器控制与 AAA 进度记录（2026-10-08）
+
+当前结论
+
+physical-basis/own-pid 第三版已实际 DECL/PREP/BIND EXIT0，
+三项新监督器控制实际 EXIT0，完整四项收尾通过。
+正常进程 live/kernel峰值36.53125/36.546875 MiB；
+短进程 live抽样0，但实际 own-PID wait4 内核峰值36.609375 MiB，rc0；
+超限进程 live峰值596.828125 MiB，触发原512 MiB保护，rc-15。
+三组均完成真实进程组清理。整体85.055380666秒，小于原120秒；
+控制归档51,480,463字节，小于原64 MiB；原96 GiB/free8 GiB收尾通过。
+控制Root收据SHA256：143ef499020ca9294be6f34cb30cf8df5e9f0ec2bce3ba1273ffc215d568b6f4。
+控制seal SHA256：2a3e2d0d9385ae9cb9971a186975f9c68e55fa877213c9b9a495bf4826325302。
+cold准备封存实际EXIT0；本版AAA随后实际EXIT1，未完成bootstrap。
+六项实际准备步骤PASS：pack/common_basis/rank_precision/case_setup/white_tracking/route_contract。
+完整公共基物理来源门已实际PASS：4456记录，3716原字不变、740按同A/B/A宏库逐位重构。
+短native common_basis/rank_precision虽然live抽样0，其自身PID内核峰值100.53125/2.984375 MiB，
+实测回执均rc0、无超限并完成清理，未补写抽样值。
+第七步bootstrap_axial实际触发原512 MiB保护，实测512.015625 MiB，
+监督过程105.778100458秒，rc-15，真实进程组清理完成。
+整次执行364.969090458秒。完成maps为0，不授完整map、AAA精度、独立CE或ABA资格。
+Root真实失败收据SHA256：261447290b74726d3b79095a6bed0bdde1df84ae477be2c85c79fcd17027845f。
+全stdout/stderr、阶段记录、watchdog和实际公共基核验结果保留。
+源码、SOURCE、WORK和原失败记录冻结，不重试同一目录。
+下一步只定位驻留内存来源、准备不改变物理与算术的独立优化版本，原512 MiB门保持。
+prepared_cold SHA256：c924c869fc61a7af35ce6d6da2f1954d706edbb10c331531763daf0a187e1847。
+FINALIZE Root收据SHA256：b9e85f7f4d42fb87a0b797d87f34c0b739ae4bb631134b4bb0ee8d327906475c。
+实际run-AAA工具ea77a3/session81518→99a4e2，EXIT1；完整输出已独立保存在本版COLD_TERMINAL。
+整体43200秒/最多100maps、原阶段墙钟/RSS512 MiB/单线程/单子进程/零重试保持。
+只修正私有读取器的真实监督器源路径与SHA、真实文件名及复制/导入名称；
+全部原科学函数、材料输入、阈值、资源上限与旧INPUT证据保持。
+formal source SHA256：84147eab5332454a1849c68eda3da0354eac6dca0f6453d9a0288839284d1ebd。
+prepared SHA256：6fd4f4b86b6dab72b6a9f2b9e7f6f59867ab1c0e0c496f2f167a4c497d7e9590。
+PREP Root 收据 SHA256：4049a8c74c21d9d8b23111b7a3c850966849059b90f6bbe470a2dbd27bc22851。
+已完成本版监督器控制；AAA在启动阶段内存超限，尚未通过精度验收。
+
+此前 physical-basis/own-pid 第二版声明与准备已实际 EXIT0。
+prepared SHA256：b70d956743ad725e82d5f49507a8aa3db35712d1fb701be926192f17c0424338。
+PREP Root 收据 SHA256：76d593e3594e7a7bb7e7eff29b19d44334300d05727173979026fd18e9be32c2。
+实际文件/模块绑定 EXIT1：私有 INPUT 读取器先载入旧705监督程序，
+与同名新ac51程序的正常导入冲突。新三项控制、native 与 AAA 尚未执行。
+BIND失败 Root 收据 SHA256：
+71aac4433c2c0c503aefad8f72742c1864fb0d3a1127a254fd12cd5e0cfe282d。
+本版源码、SOURCE、WORK 与完整失败输出保留，不重试同一目录。
+源修正保持原科学阈值与所有原资源上限，不授物理精度资格。
+
+此前 canonical-code 独立版本的实际结果
+
+新 cold 的真实声明、准备、完整文件/模块绑定和监督器正负控制已完成。
+随后实际启动一次 AAA；三个原生准备步骤完成，但公共基一致性检查拒绝了本次试验。
+尚未执行 bootstrap 轴向输运或 Picard 迭代，没有新 AAA 精度资格或 ABA 准入。
+原失败试验和封存内容保留，不改写为成功，不重试同一试验目录。
+
+保留原 Python 3.14.4 / NumPy 2.4.4，补齐独立 SciPy 1.17.1 依赖。
+完整官方安装包、解包内容和依赖清单已核验并计入原资源预算。
+绑定检查覆盖 30,866 个文件归属与 390 个实际模块归属。
+Python 代码身份改为完整递归字段核验，保留原文件、全源编译、模块和全局归属要求；
+此前 marshal 引用标志造成的绑定失败保持为真实失败记录。
+
+实际监督器控制
+
+使用原 d098 控制程序和原 120 秒整体、64 MiB 控制归档限制。
+正常测试真实完成，实测峰值 36.59375 MiB；
+超限测试实测峰值 596.46875 MiB，触发原 512 MiB RSS 保护，真实返回 -15。
+两组测试均完成进程组清理；超限测试的 FAILED 是预期保护结果。
+完整四项收尾通过，整体 81.602817 秒，归档 51,344,333 字节。
+外部实际工具返回 0；独立审查通过，仅授监督器控制资格。
+
+新 prepared_cold 保留原 prepared 全部字段，只增加 own_child_supervision。
+prepared_cold SHA256：44ccb291d96369209521240ce0bc9efcb0c8711555953e1f13b188af67c89688。
+控制 seal SHA256：71bdd814c01521e259377cd602f71ff8b798cc2e09bc1b1db7e71a12c1c7c3fc。
+控制实际 Root 收据 SHA256：7a3f585d9744c725e8f1fa1fc39b55c9f56649eece6d973bafea75c2eb786afb。
+
+实际 AAA 准备失败
+
+真实执行 run-AAA：初始工具 2287ed、session 77022，终态 61e612，退出码 1。
+cold 入口至失败耗时 200.248624 秒；完成 map 数为 0。
+archives/pack_archives、training/common_basis、training/rank_precision 三阶段状态 PASS。
+实际失败：refined common basis words changed: DRAGON-TXSC。
+完整标准输出、错误输出、run_status、stages、watchdog 和后置 Root 失败收据均保留。
+
+pack_archives 实测子进程峰值 337.0625 MiB。
+common_basis 和 rank_precision 的实际 RSS 样本峰值为 0，不能视为完整内存测量证明。
+原监督器在首次 RSS 采样前进行资源扫描，短进程可能已结束；
+原冷收尾仍要求每阶段具有真实非零峰值，不能伪填数值或放宽 512 MiB 限制。
+
+公共基差异诊断
+
+独立只读遍历了完整 4,827 个树条目、4,456 个叶记录。
+记录名称、类型和长度均完全相同；只有 370 个 DRAGON-TXSC 和
+370 个 DRAGON-S0XSC 记录发生变化，其余 3,716 个叶记录逐位完全一致。
+所有整数、REAL64 和字符记录不变，未见 NaN 或 Inf。
+总截面最大绝对差 0.2994813323；散射截面最大绝对差 32.07216644。
+该差异不是舍入微差，完整逐记录诊断保存在 scipy_dependency_evidence/。
+
+旧基来自修复前 SPOASM 的保存状态；当前 A/B 快照和径向 track 使用相同路径和 SHA。
+已通过组件控制的物理修复改为读取原宏库 NTOT0 与 SIGW00..02，
+因此旧全记录相等检查与截面修复存在冲突。独立物理重构随后通过：
+新 740 个截面记录的全部 37,000 个 REAL32 数据字，逐位等于
+同一 A/B/A 原快照宏库 NTOT0、SIGW00..02 的直接块复制。
+原快照至训练包的 4,440 个物理记录逐位相同；26,640 个自散射数据字
+逐位对应原 packed SCAT 存储，1,480 个 void 数据字为原 +0 位表示。
+没有额外 2l+1、归一化、求和或容差；核对尚不授 AAA/ABA 科学资格。
+
+下一步
+
+将已完成的严格物理来源核对接入独立新版本的公共基检查：
+保持其余所有原记录逐位相等，截面必须与同一 A/B/A 宏库物理记录逐位相等。
+同时修正短进程的内存观测次序，保留真实 RSS、墙钟、磁盘和进程组清理要求。
+完成独立审查和新实际控制后才能准备下一次独立 AAA。
+原八项独立精度门、完整参考统计、AAA 在 ABA 之前的顺序均保持。
+
+证据入口
+
+控制与源审：本目录 scipy_dependency_evidence/。
+AAA Root 失败收据：
+validation/artifacts/axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-file-snapshot-terminal-scipy-env-canonical-code-20261008/cold_failure_terminal_return.json
+其 SHA256：6654c38ad41f074aeeff05da8f9d4d8d11017051fc451317f0fb0af52567caf5。
+实际工作目录：
+validation/artifacts/axial-material-production-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-file-snapshot-scipy-env-canonical-code-20261008/
+
+旧文件清理结果另见 validation/storage_cleanup_20261008/REPORT.txt 和
+validation/storage_cleanup_more_20261008/REPORT.txt。
+两轮共清理约 57.55 GiB，清理后项目约 194.11 GiB；
+结果文档、日志、参数、源码、最终材料库、主要终态和当前完整输入均保留。
+这些容量是清理完成时的实测结果，后续新试验产物会增加项目占用。
+
+2026-10-08 后续实际进度（独立 physical-basis/own-pid 版本）
+
+第一版声明实际 EXIT0；准备实际 EXIT1，原因是生成的读取模板仍要求
+original_controls_and_gates_unchanged，而声明已经拆为具体原科学阈值、
+原资源上限、严格物理来源与真实短子进程控制四个字段。
+失败发生在 WORK 创建之前：没有执行内存控制、native 或求解。
+失败记录完整保留，SHA256：
+c0bc6c0cd6df5b057467029e90b6376716cc16aeedc5dd9ddc0432b866db24d1。
+
+第二版仅修正该声明与读取接口，完整源逆向和独立源审通过。
+新版本原科学阈值、512 MiB/96 GiB/free8 GiB 等上限仍保持。
+声明实际 EXIT0，源 SHA256：
+ef216ef58c201df31c661c7f7828ff7f2d201444b55c5f2418d96d6f68d96cf5。
+新 DECL Root 收据 SHA256：
+da5253606eabbea9a3b86ba2495d5fe130dd9471f9a3237d46f9051535500174。
+准备流程随后实际 EXIT0；新控制、AAA 物理求解和精度资格仍待验证。
+
+内存来源诊断的已知范围
+
+bootstrap原始日志的PROGRESS最后一项为rank1_peak：缓存内部计账峰值，
+不是current/resident值，也不是操作系统RSS。其固定315,549,432字节不能证明RSS不增长。
+built固定18,130（370×49），只能说明这些日志未显示新的因子块建造。
+本次仍处于FLU，bootstrap的SNAP复制尚未执行；不能把失败归因为该后续复制。
+旧485.3125 MiB是Python只读输入/二进制审计进程的峰值，不可与本次native FLU作同物比较。
+增长的确定根因尚未找到。源级最小候选是移除从未被回代读取的末端cprime缓存槽；
+预计逻辑payload减少2.890625 MiB，但不保证真实RSS同幅下降或通过512 MiB。
+下一独立版本须保留原实际计算、operator身份与计数门，重跑全部原组件控制及真实512 MiB启动。
+
+独立小证据复核补充
+
+本次ea77a3/session81518→99a4e2真实EXIT1、512.015625 MiB、rc-15与cleanup均复核一致。
+旧450.25 MiB试验的native阶段实际41.7265秒，1517秒是整体；
+它是旧operator的温启动回放，终态hits34907；当前修复物理cold在IT5/JT1已hits142780。
+两者执行范围不同，不能直接拿旧峰值预测本次冷启动。
+源码中已检查的hit/outer临时数组存在配对释放；没有RSS时间序列，
+不能证明单调增长、确定泄漏或LCM registry的因果。
+独审报告SHA256：e5bc7e73a2388ef3efcce7d5169fdb2ebb105d9b9c5c1a05a7005763b6bde1ec。
+下一观测应保留当前计账值与带时刻的实际own-PID RSS，全部原预算仍保持。
+
+下一独立版本的编译前源准备记录（实际执行结果见下一节）
+
+纯源helper已生成，普通rank1的末端cprime块改为不持久化；
+最后block的完整SOLVE64、全部因子/pivots、dprime、Schur与回代算术、49块计数保持。
+legacy/uncached/translation分支保留原shape与运算。
+普通rank1实际cache-hit增加先allocated再shape的显式检查；lower-only primitives不被误拒。
+FACTORS与LOWER_VALIDATE的独立计账均减少单块8*nstate^2；原512 MiB计账/RSS上限保持。
+helper纯源SHA256：7a625a87f797e59f30c61408fe50012fee8b718cd0b487d76005118ce5302836。
+新kernel纯源SHA256：343e731fa190d80f8d390831185aef11dabcab32f51a229a5761c827a4aeb1e1。
+5处改动全源逆回50071、连同原dedup改动全源逆回c0均已实际验证；
+FACTOR64/SOLVE64两个数学函数逐字不变。所有原40控制、1152逐位pairs仍要求实际重新执行。
+上述源准备本身不授予组件控制、真实RSS或AAA/ABA资格。
+
+末端cprime缓存组件已完成实际控制与准入
+
+新组件现已真实完成全部40阶段，1,152逐位对照和378独立dense比较通过。
+826.533秒内真实EXIT0，四项资源收尾通过，完整SOURCE+OUT为474,479,990字节。
+Root终态收据076565db2dc0048db70166d37bd6e81107d30acb9a72b14945b436a473094a88。
+随后真实三参数production_admission也EXIT0，完整返回及独立复核已保存。
+详见validation/axial_material/last_cprime_trim_build_review_20261008/REPORT.txt。
+本次只取得新组件输入资格；2.890625 MiB逻辑缓存节省不等于RSS实测。
+新的组合构建、cold绑定和实际512 MiB原生启动仍待执行；AAA/ABA科学状态不变。
+
+新组件组合v3：实际准备EXIT0、独立复核通过；RUN前四阶段PASS，
+第五Python输入审计实测524.734375 MiB超原512 MiB，Root真实EXIT1、原进程清理通过。
+没有seal/完整四尾/组合准入；没有执行新trim原生transport，不能把本失败归成新原生RSS失败。
+详见last_cprime_trim_combined_live_resource_v3_build_review_20261008/REPORT.txt。
+新的临时JSON对象生命周期helper已独立源审通过并正式保存，
+完整读取/摘要/别名/owner/64 MiB/512 MiB及科学门保持，实际新v4尚待执行。
+
+组合构建v4最新真实终态（2026-10-08）：PREP退出0，RUN退出1；前四阶段PASS，
+第五Python完整输入审计采样峰519.90625 MiB越过原512 MiB上限，监控清理通过。
+无新的组合准入或原生物理资格；完整失败收据在last_cprime_trim_combined_live_resource_v4_build_review_20261008。
+当前按用户要求复核旧文件存储并保留结果文档，未启动下一项求解。

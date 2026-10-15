@@ -1,0 +1,15 @@
+V7 standalone bounded runtime-input intake — source-only STOPPED handoff
+
+Status: STOPPED_SOURCE_ONLY_UNREADY. This author review is not an independent review.
+
+The candidate host has 7 changed identity lines and the recorder has 8 changed identity lines. They retarget only V7 family paths, 20261009 path dates, the reviewed formal producer SHA and the exact candidate host source SHA. Both complete inverse proofs return byte-for-byte to the unmodified V5 parents. Separate complete proofs return byte-for-byte to the original canonical host and wrapped-stages Root recorder. All files in the V5 mother directory were hashed before and after and remain unchanged.
+
+The original inline binding ABI is retained; no configuration-file ABI was invented. The host uses the ordinary formal factory admit CLI with the existing three production-admission arguments. The producer's original canonical module loaders and identity checks remain in the producer; no module stem, sys.modules alias, supervisor class, MRO, API body, child wrapper, bound, negative predicate or retained historical INPUT is changed here.
+
+Guard contract: total 1800 seconds; stage 600 seconds; own child RSS strictly below 512 MiB; retained archive 2 GiB/history 96 GiB/free floor 8 GiB; five environment thread keys at 1; one child; zero retries; the original 705/38de/bc4 sources, class and MRO. Full combined child stdout/stderr is retained as a single JSON log. No separate child stderr claim is introduced. The final recorder preserves nine complete payloads and writes the independent tenth Root terminal receipt only after an observed successful host exit supplied via its original CLI.
+
+All future declaration/PREP/RUN/seal/API/graph fingerprints and actual host tool/exit/Root receipt values remain None. The candidate host SHA in the recorder is a static source identity only. Both candidates still reject at their UNREADY guard. The independent-review handoff field remains None, for a separate reviewer to fill by a separate reviewed report rather than modifying this frozen author handoff.
+
+No candidate host/recorder, business module/API, constructor, PREP, RUN, compiler, native transport, cold producer or physics test was executed. No ART or formal project source was written. Static parsing, pure file hashing, JSON proof validation and TMP source generation only were performed. Nothing here proves successful build, production input admission, 512 MiB native transport, AAA accuracy or ABA admission.
+
+The required next binding sequence is written in STOPPED_handoff.json: genuine V7 five-stage/four-tail RUN 0 and actual four build witnesses; exact bound-host source review; a single genuine monitored API child and full JSON byte pin; exact postterminal-only recorder source review; observed Root tool facts and the complete durable ten-file family.

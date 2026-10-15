@@ -1,0 +1,230 @@
+{
+  "schema": "B55_B2_COMPARISON_V2_MINIMAL_CONTRACT_SOURCE_INVERSE_V1",
+  "source_only": true,
+  "candidate_executed": false,
+  "old_contract_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v1_UNREADY/B55_B2_compare_Source_contract.UNREADY.py",
+    "sha256": "8fd12eaa26aab70ec30b71d291004032051f9a4489b224ad673676a3a3d2f934",
+    "size_bytes": 14806,
+    "identity": [
+      16777229,
+      50882554,
+      33188,
+      1,
+      14806,
+      1792066766795384464,
+      1792066766795384464
+    ]
+  },
+  "new_contract_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/B55_B2_compare_Source_contract.UNREADY.py",
+    "sha256": "1df80e99ad8d66d40417479e9a918218a8dfb67a7da909efdc031ec1c904fb42",
+    "size_bytes": 21037,
+    "identity": [
+      16777229,
+      50884076,
+      33188,
+      1,
+      21037,
+      1792068052896941642,
+      1792068052896941642
+    ]
+  },
+  "literal_replacements": [
+    {
+      "old": "OUT=ART/'axial-material-current-B55-nativeWarmB2-complete-typed-macro-compare-20261015-v1'",
+      "new": "OUT=ART/'axial-material-current-B55-nativeWarmB2-complete-typed-macro-compare-20261015-v2'"
+    },
+    {
+      "old": "OUTPUT_BOUND=32*2**20;SOURCE_BOUND=16*2**20",
+      "new": "OUTPUT_BOUND=24*2**20;SOURCE_BOUND=16*2**20"
+    },
+    {
+      "old": "def own_bytes(root):\n total=0\n if Path(root).exists():\n  for q in Path(root).rglob('*'):\n   s=q.lstat();need(not stat.S_ISLNK(s.st_mode),'no owning output/Source alias')\n   if stat.S_ISREG(s.st_mode):total+=s.st_size\n return total\n",
+      "new": "def own_bytes(root):\n root=os.fspath(root)\n try:s=os.lstat(root)\n except FileNotFoundError:return 0\n need(stat.S_ISDIR(s.st_mode)and not stat.S_ISLNK(s.st_mode),'no owning output/Source root alias')\n def scan(directory):\n  total=0\n  with os.scandir(directory)as entries:\n   for entry in entries:\n    s=entry.stat(follow_symlinks=False)\n    need(not stat.S_ISLNK(s.st_mode),'no owning output/Source alias')\n    if stat.S_ISDIR(s.st_mode):total+=scan(entry.path)\n    elif stat.S_ISREG(s.st_mode):total+=s.st_size\n  return total\n return scan(root)\n"
+    },
+    {
+      "old": "def admit(packet,child=False):\n",
+      "new": "def admit_failed_v1(packet,extractplan):\n pp=packet['actual_failed_v1_plan_pin'];previous=metadata(pp)\n ph=packet['actual_failed_v1_Host_report_pin'];h=metadata(ph);raw=metadata(packet['actual_failed_v1_Root_tools_pin'])\n postpin=packet['actual_failed_v1_post_pin'];post=metadata(postpin)\n genuine(metadata(packet['actual_failed_v1_post_tools_pin']),'actual_review_return',postpin,'review_pin')\n cli=metadata(packet['actual_failed_v1_final_CLI_pin']);terminal=raw['actual_terminal_return']\n need(raw['observed_closed']is True and type(raw['original_integer_exit_code'])is int and raw['original_integer_exit_code']==1 and type(terminal['exit_code'])is int and terminal['exit_code']==1 and terminal.get('session_id')is None and raw['actual_execution_permission_mode']=='require_escalated'and raw['actual_retried']is False and raw['failed_Host_report_pin']==ph and raw['exact_executed_command']==cli['command'],'genuine prior comparisonRoot1, original command/failure preserved; no success stdout invented')\n need(previous['schema']=='CURRENT_B55_B2_COMPLETE_COMPARISON_SOURCE_ONLY_PLAN_V1'and previous['original_caps']==CAPS and len(previous['complete_joint_roots'])==78 and previous['complete_joint_roots'][:-1]==extractplan['complete_joint_roots']and previous['bounded_new_output_reservation_bytes']==32*2**20 and previous['bounded_new_Source_metadata_reservation_bytes']==SOURCE_BOUND,'entire actual failed v1 original78 prefix and original32+Source16 stage retained')\n need(h['schema']=='ACTUAL_CURRENT_B55_NATIVEWARM_B2_COMPLETE_COMPARISON_GUARDED_ROOT_REPORT_V1'and h['status']=='FAILED_CURRENT_B55_NATIVEWARM_B2_COMPLETE_COMPARISON_NO_RETRY'and h['failure']is not None and h['complete_typed_word_comparison_completed']is False and h['actual_child_report_pin']is None and h['actual_child_receipt']is None and type(h['actual_child_integer_exit_code'])is int and h['actual_child_integer_exit_code']==-15 and h['original_runner_error']=='own-child wall cap reached'and h['control_plan_pin']==pp and h['complete_joint_roots']==previous['complete_joint_roots']and h['original_caps']==CAPS,'prior timeout did not complete comparison, produce counts, or establish equality; no retry of original namespace')\n watch=metadata(h['actual_watchdog_full_pin']);need(watch==h['actual_watchdog']and type(watch['returncode'])is int and watch['returncode']==-15 and watch['limit_failure']==\"RuntimeError('own-child wall cap reached')\"and 0<watch['wall_cap_seconds']<=watch['elapsed_seconds']and watch['wall_cap_seconds']<=600 and watch['own_child_only']is True and watch['liveness_group_cleanup']is True and watch['rss_cap_mib']==512 and 0<=watch['sampled_peak_rss_mib']<512,'original independent watchdog child-15/wallcap, not an expected evidencechild2')\n need(post['schema']=='RECORDED_CURRENT_B55_NATIVEWARM_B2_COMPLETE_COMPARISON_FAILURE_METADATA_POSTVERIFY_V1'and post['status']=='PASS_RECORDED_ACTUAL_CURRENT_B55_B2_COMPARISON_FAILURE_FACTS_METADATA_ONLY'and post['failure']is None and post['metadata_only']is True and post['actual_Host_report_pin']==ph and post['actual_Root_tools_pin']==packet['actual_failed_v1_Root_tools_pin']and type(post['actual_Root_integer_exit_code'])is int and post['actual_Root_integer_exit_code']==1 and type(post['actual_child_integer_exit_code'])is int and post['actual_child_integer_exit_code']==-15 and post['actual_watchdog']==watch and post['original_Host_failure']==h['failure']and post['original_Host_status']==h['status']and post['original_records']==h['records']and post['original_runner_error']==h['original_runner_error']and post['complete_typed_word_comparison_completed']is False and post['actual_comparison_counts']is None and post['actual_exact_inventory_metadata_and_all_words_equal']is None and post['control_plan_pin']==pp and post['source_freeze_pin']==h['source_freeze_pin']and post['host_freeze_pin']==h['host_freeze_pin']and post['complete_joint_roots']==previous['complete_joint_roots']and post['original_caps']==CAPS and post['retained_roles_current7_verified_twice']is True and post['no_payload_body_hashed_by_failure_post']is True,'genuine independent failure-facts post0 preserves Root1/child-15 and unknown counts/equality')\n rows=packet['retained_failed_v1_current7_only_pins'];failedroot=Path(previous['planned_actual_output_root']);observed={}\n need(failedroot==Path(previous['complete_joint_roots'][-1])and failedroot!=OUT and failedroot.is_dir()and not failedroot.is_symlink(),'separate retained failed-v1 owning root')\n for q in sorted(failedroot.rglob('*')):\n  s=q.lstat();need(not stat.S_ISLNK(s.st_mode),'no alias in entire failed-v1 output')\n  if stat.S_ISREG(s.st_mode):observed[str(q)]=dict(path=str(q),size_bytes=s.st_size,identity=identity(s))\n need(type(rows)is list and rows and all(type(p)is dict and set(p)=={'path','size_bytes','identity'}for p in rows)and {p['path']:p for p in rows}==observed and len(rows)==len(observed),'all failed-v1 files preserved by exact current7-only rows, no body SHA/fullPF/completion claimed or generic missing skip')\n for p in rows:current(p)\n hf=metadata(h['host_freeze_pin']);proofs=[packet[k]for k in('actual_failed_v1_plan_pin','actual_failed_v1_Host_report_pin','actual_failed_v1_Root_tools_pin','actual_failed_v1_post_pin','actual_failed_v1_post_tools_pin','actual_failed_v1_final_CLI_pin')]+[h[k]for k in('source_freeze_pin','host_freeze_pin','actual_watchdog_full_pin','actual_log_full_pin','actual_execution_request_pin')]\n need(packet['explicit_cumulative_metadata_file_pins']==unique(previous['explicit_cumulative_metadata_file_pins']+hf['explicit_cumulative_metadata_file_pins']+proofs),'all original metadata roles plus actual failed-v1 metadata proof table, no cold body or partial result in metadata fullPF roles')\n return previous\n\ndef admit(packet,child=False):\n"
+    },
+    {
+      "old": "'only full typed19620/all-original-word comparison32+Source16; no decode or reduced output reservation'",
+      "new": "'only full typed19620/all-original-word comparison24+Source16; no decode or reduced scope'"
+    },
+    {
+      "old": " roots=packet['complete_joint_roots'];need(roots[:-1]==extractplan['complete_joint_roots']==host['complete_joint_roots']and len(roots)==78 and roots[-1]==str(OUT)and len(roots)==len(set(roots))and not any(Path(a).is_relative_to(Path(b))for a in roots for b in roots if a!=b)and any(BASE.is_relative_to(Path(r))for r in roots[:-1]),'full original77 prefix plus exactly one fresh comparison78, FTOP counted')",
+      "new": " failed=admit_failed_v1(packet,extractplan)\n roots=packet['complete_joint_roots'];need(roots[:-1]==failed['complete_joint_roots']and roots[:-2]==extractplan['complete_joint_roots']==host['complete_joint_roots']and len(roots)==79 and roots[-1]==str(OUT)and len(roots)==len(set(roots))and not any(Path(a).is_relative_to(Path(b))for a in roots for b in roots if a!=b)and any(BASE.is_relative_to(Path(r))for r in roots[:-1]),'entire failed-v1 original78 prefix plus exactly one fresh v2comparison79, FTOP counted')"
+    },
+    {
+      "old": "packet['retained_current7_pins']==unique(extractplan['retained_current7_pins']+extraction['all_output_file_pins'])",
+      "new": "packet['retained_current7_pins']==unique(extractplan['retained_current7_pins']+extraction['all_output_file_pins']+packet['retained_failed_v1_current7_only_pins'])"
+    },
+    {
+      "old": "'all previous outputs/archived presence/B4/native and all three B2 extraction outputs retained'",
+      "new": "'all previous outputs/archived presence/B4/native/B2 extraction plus entire failed-v1 stat-only output retained'"
+    },
+    {
+      "old": "'complete typed comparison output32MiB and all own Source16MiB hard boundaries'",
+      "new": "'complete typed comparison output24MiB and all own Source16MiB hard boundaries'"
+    },
+    {
+      "old": "'actual full77 inherited prefix plus entire comparison32 and Source16 fits original2GiB before new output'",
+      "new": "'actual full78 inherited failed-v1 prefix plus entire v2comparison24 and Source16 fits original2GiB before new output'"
+    }
+  ],
+  "reverse_order_replacements_restore_entire_original_v1_contract": true,
+  "six_other_Source_files_wholebytes_equal": true,
+  "checks": {
+    "B55_B2_compare_Source_contract.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": [],
+      "whole_v1_equal": false
+    },
+    "compare_complete_B55_to_nativeWarmB2_typed_original_words.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": [],
+      "whole_v1_equal": true
+    },
+    "prepare_complete_B55_B2_compare_Source.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": [],
+      "whole_v1_equal": true
+    },
+    "publish_complete_B55_B2_compare_CLI.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": [],
+      "whole_v1_equal": true
+    },
+    "run_complete_B55_B2_typed_comparison_child.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": [],
+      "whole_v1_equal": true
+    },
+    "run_guarded_complete_B55_B2_typed_compare.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": [],
+      "whole_v1_equal": true
+    },
+    "saved_native_data_access_adapter.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": [],
+      "whole_v1_equal": true
+    }
+  },
+  "whole_Source_file_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/B55_B2_compare_Source_contract.UNREADY.py",
+      "sha256": "1df80e99ad8d66d40417479e9a918218a8dfb67a7da909efdc031ec1c904fb42",
+      "size_bytes": 21037,
+      "identity": [
+        16777229,
+        50884076,
+        33188,
+        1,
+        21037,
+        1792068052896941642,
+        1792068052896941642
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/compare_complete_B55_to_nativeWarmB2_typed_original_words.UNREADY.py",
+      "sha256": "8bf41758be358707c736e52d29fb726f512743bc04777687cced2a9eff77bbd5",
+      "size_bytes": 7445,
+      "identity": [
+        16777229,
+        50884077,
+        33188,
+        1,
+        7445,
+        1792068052897210267,
+        1792068052897210267
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/prepare_complete_B55_B2_compare_Source.UNREADY.py",
+      "sha256": "7d95e32c0439ccfd7458026f9fd622a9f7b58758005c8d2f27e333784e730d97",
+      "size_bytes": 2942,
+      "identity": [
+        16777229,
+        50884078,
+        33188,
+        1,
+        2942,
+        1792068052897357101,
+        1792068052897357101
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/publish_complete_B55_B2_compare_CLI.UNREADY.py",
+      "sha256": "99285df55696f5badc6f9977c361dadd08bab6ca3d2e8b4e33db348fde8aa078",
+      "size_bytes": 3684,
+      "identity": [
+        16777229,
+        50884079,
+        33188,
+        1,
+        3684,
+        1792068052897481893,
+        1792068052897481893
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/run_complete_B55_B2_typed_comparison_child.UNREADY.py",
+      "sha256": "7f1f1ff0b8a9251c596936bc4e22648c5d160b725641b88fbdb692c611882748",
+      "size_bytes": 6774,
+      "identity": [
+        16777229,
+        50884080,
+        33188,
+        1,
+        6774,
+        1792068052897621351,
+        1792068052897621351
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/run_guarded_complete_B55_B2_typed_compare.UNREADY.py",
+      "sha256": "42a3c242d5d588cc2639580c6c52ebe278aa2bce9dbc8ef54b57be9f487434cd",
+      "size_bytes": 11484,
+      "identity": [
+        16777229,
+        50884081,
+        33188,
+        1,
+        11484,
+        1792068052897770602,
+        1792068052897770602
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/saved_native_data_access_adapter.UNREADY.py",
+      "sha256": "e4dc78c1bd84799c38c0ec05102e0555d243de8ae438c9c08a2296c3601ab742",
+      "size_bytes": 15624,
+      "identity": [
+        16777229,
+        50884082,
+        33188,
+        1,
+        15624,
+        1792068052897924727,
+        1792068052897924727
+      ]
+    }
+  ],
+  "NULL_template_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_vs_nativeWarmB2_full_macro_compare_source_v2_UNREADY/NULL_V2_PACKET_PENDING_TRUE_FAILED_V1_BINDING_AND_FRESH_24MIB_BUDGET.json",
+    "sha256": "a8a93ab78b9929bc5aa71cb917400b21bfd6b647b9716794dcedf79aab76269a",
+    "size_bytes": 19497,
+    "identity": [
+      16777229,
+      50884083,
+      33188,
+      1,
+      19497,
+      1792068052901222734,
+      1792068052901222734
+    ]
+  },
+  "actual_failedpost_binding_not_yet_written": true,
+  "actual_resource_or_GEN_or_worker_executed": false
+}

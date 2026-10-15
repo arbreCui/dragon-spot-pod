@@ -1,0 +1,11 @@
+V17 完整图/trace无损存储helper实际验证（2026-10-10）
+
+真实Root d1734f/session59994→e2794c整数退出0、关闭；外部原监督器16.507847秒，实际child15.391886秒、采样峰392.140625 MiB。HOST/SOURCE/OUT完整归档59130306字节，低于原64 MiB；原60秒/512 MiB/96 GiB历史/free8/1线程1child零重试保持。
+
+原完整旧图36776文件、237767要求、86namespace、186alias、449absence、62332trace/181554attempts全部保留。完整value/type/order/floatbits、旧semantic SHA、default roundtrip和同文件两个正常strict入口一致；新存储45300566B。另完整63379创建trace/175886attempts独立验证，35211756B compact→8488204B无损存储，没有把它替换到旧图。
+
+两种原accepted字符串子类（含__str__覆盖）输出和调用者类型/属性/对象身份均完整一致；61codec拒绝控制通过。完整fresh SHA及七项身份、源码inverse、原监督器/MRO/资源门独立实际审查通过。只授予helper协议资格，不授新production graph、combined prepare/build/INPUT、native内存、AAA或ABA。
+
+下一步：将新helper和临时元数据last-use释放方案接入完整V17新整套准备，沿用所有原控制和预算，失败目录不重跑。
+
+Root资格：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_complete_graph_helper_controls_admission_v17.json

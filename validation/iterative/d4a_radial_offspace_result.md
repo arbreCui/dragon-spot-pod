@@ -1,5 +1,11 @@
 # Corrected D4-A: online radial projection diagnostic
 
+**Historical, pre-scattering-repair evidence: not repaired-SPOD acceptance.**
+The old maps 6–8 below belong to the invalidated maps 1–11 epoch. Their numerical
+values must not be used to validate the repaired implementation. A new read-only
+projection of repaired 12-cell CLOSED/3 is documented in
+[the repaired map-3 result](d4a_scattering_mesh12_picard_map3_result.md).
+
 2026-09-23. **DIAGNOSTIC_ONLY / REPORTED_ONLY.** The saved corrected
 maps 6–8 are all `VALID_NOT_MET`. This calculation does not advance Picard,
 qualify a rank, or establish physical accuracy.

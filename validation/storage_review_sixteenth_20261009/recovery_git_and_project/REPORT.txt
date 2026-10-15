@@ -1,0 +1,15 @@
+第十六轮恢复/Git/非validation只读结论：新增可安全删除项0，批准回收量0。仅TMP报告，无删除/压缩/恢复/Git维护/科学业务。
+
+R15后增量：Root fresh真实39e207/42958→a21d0d EXIT0，项目155,866,632KiB，R15after155,781,444KiB，观测增加85,188KiB（83.1914MiB）。不同轮preservation counts排除目录不同，不把count差当新增文件审计，也不从总占用推断新内容原因。README/current_progress已按本轮before的全文SHA复核，未写这些文档。Root当前159缓存path/size/allocated与R15完整相等，逐159身份与fresh before相等；没有新clear cache。非validation3016 regular/uniqueinode，logical/allocated详见JSON（allocated146,280,448B），逐7field与R15 reader所用metadata完全相同，新增/缺席/变化均0。.ruff_cache无普通文件。
+
+Git：.git2,943,612KiB，objects2,712,712KiB，lost-found230,372KiB；相比R15统计增432KiB，loose3026→3089（+63），3packs/6890packed和garbage0/prune-packable0保持。只读du/count和lost-found metadata，不读取大object/历史/reflog内容，不查敏感配置，不执行fsck/gc/repack/prune。HOLD .git/objects、refs、logs、index、lost-found/other。lost-found79独有inode，235,627,205 logical/235,900,928allocated B；最大5351fb9cb8f5cbbfc53a2c961fad91117c1a3db6为228,676,484logical/228,679,680allocated B，次大2fbe5be57a931a24545f265cc8b54d184dce03d3为6,530,116/6,533,120B。未提交工作及恢复对象没有准确外部替代证明，不能清空。R9旧REPORT说明历史大归档捕获来源；本次新增63对象原因不推断。
+
+旧清理/恢复：14个目录仍873普通文件，97永久gzip；准确现存logical/allocated和97路径写入REPORT.json。R15小恢复control全部fresh全文SHA保持，R14退休9JSON和5旧runtime路径仍absent，保护R1 baseline原路径仍present，8 metadata archives及V9 runtime唯一恢复master仍present。没有再解压/全hash2.39GiB永久档案；原R9/R14完整无损证明和restore映射必须保留。R9 packed_material_intermediates/89材料gzip恢复已退役raw及更早工作副本；R14 metadata_archives/8gzip恢复9旧清单，不是过期报告副本。R13/R14已退休程序不重复列为本轮候选。
+
+大审计JSON继续HOLD，准确bytes见JSON：storage_cleanup_20261008/preservation_baseline.json（43,033,170B，旧protected index）；R9 all_eight_rounds_explicit_restoration_source_paths_and_fresh_stat.json（16,485,047B，cross_prior recovery reader）；R9 fresh_metadata_scan.json（12,237,350B，候选边界证据）；build_cache_metadata_screen.json（9,405,989B）和compiled_exact_screen_and_holds.json（5,572,118B，原full compiled review）；T10/T11 result_document_full_sha_baseline.json（12,686,315/9,093,035B，原清理reader绑定）。不能因metadata-only直接unlink已封存reader输入。
+
+项目非validation .o1383条35,663,872allocated B；.a8条65,978,368B。8静态库准确路径，以及src/Dragon、bin/Darwin_arm64/Dragon、Trivac/Ganlib各src/bin程序准确size/alloc见JSON。原V9factory:291、trimproducer:552、auditor:181以及Makefiles继续直接读取root库/object/原目标。相同size不是SHA重复证明；本轮没有新的内容相等和完整依赖排除证据，不解锁旧compiled HOLD。核心总量仅139.5MiB，删除全部也不是多GiB大项，且会破坏源码构建/当前校核/恢复能力。
+
+保留结果与失败：全部原REPORT、结果正文、图表、日志、失败收据、stdout/stderr、源码/reader、seal/manifest/retirementledger/restore入口、保护索引继续原路径保留。V8真实RUN失败、旧coldV3 RSS失败、旧nu-fission精度FAIL不能因新INPUT/新declare成功改写。V9 runtime/wholeINPUT+Rootreceipt以及新cold declaration source/receipt仍是当前完整证据，不能当旧临时复制资料删。结果摘要不能替代唯一原始数据、恢复primary或完整失败观察。selected small docs/真实失败收据freshSHA在JSON；没有重新科学验收或运行任何阶段。
+
+本轮limited root概览+873cleanup metadata+3016core metadata+selected small controlSHA，无新多MBbaseline或全项目walk；不hash35GB科学输入，不读Git大历史，不改任何项目路径。文件allocated与APFS即时独占空闲不同；以上新增安全回收为0。

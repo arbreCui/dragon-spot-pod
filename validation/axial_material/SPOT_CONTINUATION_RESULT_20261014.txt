@@ -1,0 +1,23 @@
+SPOT 本轮继续执行汇报 — 2026-10-14
+
+已完成并留下实际运行、独立核验和结果文档：
+
+• 11 份已保存 GENDF / MT5 核数据成功提取，保留完整 370 群、158 个反应数据段、79 个网格与 58,460 个有限 P0 数值。
+• 速度倒数项的原 Fortran 程序、独立整数舍入模型与当前保存观测的 2,960 个字值完全一致。
+• 三份独立平面材料档案与当前材料构造的完整宏观记录逐字一致：各 19,620 条记录、2,264,152 个字，合计 58,860 条记录、6,792,456 个字，原始字和类型差异全部为 0。实际主过程退出 0；独立后验通过。
+• 修正了首次比较按遍历序号错配字段的问题，首次退出 1、空间失败和原错误差异报告作为失败证据保留。
+• 精准删除两份完全相同的本轮私有结构记录副本，释放 68,743,634 字节（65.6 MiB），保留完整一份，以及三份不同的索引、原始字池和全部报告日志。
+
+后验完成后，累计新增产物加已知外部证据仍在原 2 GiB 限额内，约余 27,000,205 字节；没有提高内存、时长或科学验收阈值。
+
+整体目标仍未完成。AAA ν裂变与角向物理精度仍未通过，反应多重性权威、中子平衡、正式独立全群耦合参考与 ABA 尚未完成。下一步按保存的顺序补齐反应多重性与实际传输核来源/控制；先 A/AAA，之后补 B 完整上下文和 ABA。
+
+结果文档索引：
+/Users/wen/spot/validation/axial_material/SPOT_GENDF_EXTRACTION_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_OVERV_CURRENT_CONTROL_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_THREE_PLANE_MATERIAL_RAW_COMPARISON_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_COMPARE_DUPLICATE_RELEASE_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_NEXT_EXECUTION_SEQUENCE_AFTER_MATERIAL_MATCH_20261014.txt
+
+三档案比较最终独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_three_macro_exact_typed_path_join_source_v1_20261014/actual_postverify_20261014/REVIEW.json

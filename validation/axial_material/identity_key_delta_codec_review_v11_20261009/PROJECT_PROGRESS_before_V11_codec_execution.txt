@@ -1,0 +1,23 @@
+SPOT 当前进展（2026-10-09）
+
+目标：完成同温轴向材料对照。先通过 AAA 同质控制与独立精度验收，再做 ABA（中间区域换为 B 材料）。目前处在组件与完整程序验证阶段，材料对照尚未完成。
+
+已经完成：
+1. 径向—轴向耦合组件已有数值收敛结果；A/B 双精度快照及相关输入核验已有结果。
+2. 新 V10 内存优化的45阶段组件构建与控制全部 PASS，输出逐位一致。
+3. 新完整程序5阶段构建、链接、对象/可执行文件/依赖及审计全部 PASS，正式输入复核实际退出0。
+4. 新有界输入核验、AAA运行包准备和自身进程监控控制全部完成。监控正例、短任务和超限负例独立复核通过。
+
+最新实际结果：新 AAA 已实际执行并退出1、作业关闭。前6阶段 PASS，第7阶段轴向启动因自身进程采样峰值514.203125 MiB超过原512 MiB上限而停止，0个完整耦合map。实际缓存记账峰值为308086008字节，低于旧版记账峰值；不能据此声称整个进程内存达标或真实RSS节省。
+
+尚未完成：完整程序512 MiB资格、新AAA完整耦合验收、独立物理精度资格、ABA材料对照。历史独立参考的燃料裂变率分布误差仍超过原3%门槛；数值收敛不等于物理精度通过。
+
+接下来顺序：定位并减少完整轴向启动的剩余内存峰值；保持既定输入、计算次序、精度和资源门槛做新的AAA验证；通过原独立参考验收后，执行ABA。清理暂缓，不提高资源上限，不把失败结果计作完成。
+
+实际作业：2e0f6d/session25027 → 59152c，EXIT1，CLOSED，无重试。
+
+证据：
+/Users/wen/spot/validation/axial_material/factor_diagonal_trim_cold_v10_review_20261009/Root_actual_AAA_tool_terminal_return.json
+/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-terminal-scipy-env-physical-basis-own-pid-peak-v10-20261009/cold_failed_terminal_return.json
+/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-scipy-env-physical-basis-own-pid-peak-v10-20261009/AAA/bootstrap/bootstrap_axial.watchdog.json
+/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json

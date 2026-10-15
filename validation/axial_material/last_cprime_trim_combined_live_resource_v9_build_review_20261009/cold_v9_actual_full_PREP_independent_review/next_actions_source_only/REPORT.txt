@@ -1,0 +1,19 @@
+纯源码 next-actions 复核完成；只读源/小 JSON，仅 TMP 写报告。没有执行 factory/helper/import/API/constructor/controls/native/Root writer。本表不提供 fixture、live MRO、RSS 或科学信用。
+
+1 prepare-binding：当前 canonical F59d0、consumer2fa0、bindingb37 与真实 prepared35f / declaration6d937 / Root声明DTd0一致。以精确CLI进入P14普通导入的 -c execve，先copied当前controller再frozen supervisor；完整原prepared/source/INPUT环境/资源/所有expected owners验真，形成own_rss_binding.json及真实MRO/source proof。无需新业务源或新supervisor。成功原返回仍INPUT_ONLY_NO_FIXTURE_CREDIT；Root真实0与全stdout/stderr后记录binding终态，未来bindingSHA仍None。
+
+2 run-controls：F只execve copied controls脚本，实际positive→oversize→short，共3子进程顺序运行。16MiB正例PASS、576MiB原512 RSS分支拒绝FAILED(-15/-9)、16MiB短进程PASS，全部实际group清理、独立PID/原日志/watchdog/完整seal。正常ownPID峰值=max(livePS,kernelwait4)<512MiB；Darwin wait4原BYTES不可拿累积RUSAGE_CHILDREN代替，short ownPID kernel峰值>=16MiB。oversize应liveRSS>=512触原错误，不能墙钟失败冒充；预期拒绝允许kernelreceipt缺失None，不能伪造0。每stage<=60s/whole<120s/archive<64MiB/thread1/child1/retry0，原动态history96GiB/free8及reservation保留。
+
+controls Rootterminal必须在独立CT sibling，不在WORK里；command是实际copied controls argv，另留F启动CLI。actual_tool_result恰四keys(initial_chunk_id,session_id,terminal_chunk_id,exit_code)，builtin int0；closed留独立observation字段。旧DTd0实际5keys含closed不能整包直接克隆到controls receipt。完整stdout=result+四tail exact，seal和全三个实际control/wait4/原budget资源验真后才finalize。
+
+3 finalize-cold：真正qualified binding+control seal+Rootcontrols terminal+declreceipt重新验真；只为原prepared增加own_child_supervision={binding,controls:{seal,terminal_evidence}}。删除这个key必须deep-equal全部原prepared。真实0后Root记录prepared_cold和finalization stdout；所有未来pins仍None。本阶段无AAA精度资格。
+
+4 run-AAA：新prepared_cold实际pin、declreceipt、全新AAA/archives/training不存在guard，P14 canonical normal execve再次完整环境/INPUT/resource/MRO/controls查验，调用原 c.run(prepared_cold.json,sha,'AAA',None,None)。不要用hardcoded prepared.json的host.launch()。setup120/bootstrap axial4200/radial600/maps radial300/axial4200/host120/max100/whole43200保持；所有native/host原ownPID512MiB/thread1/child1/retry0，stage真0、原marker/selector/cache/P0-P2/物理basis和whole sealed namespaces必须实际通过。返回WAITING_REFERENCE/AAA VALID_MET、连续1..N<=100首MET，四tail+完整cold closeout seal；失败冻结no retry并保留真实failedtool/完整输出。
+
+仅真实cold工具EXIT0及原完整门后Root可封外部冷终态（CLI与完整 -c handoff argv都必须exact）。既有f14d纯Rootwriter可沿用，原normal_factory_command字节+AST与F完全一致，transport_started只有实际cold为True，其余False；所有science/AAAaccuracy/ABA仍False。writer未执行，future observations/SHAs全部None。prepared Rootreceipt正由Root完成，本表不预填其未知pin。
+
+静态完整性：factory55个函数(53top+2nested)+consumer25=80全部byte+AST与UNREADY母本exact；copied host/controls/consumer均formal/SOURCE/prepared localfiles同pin。controller67ae4全源码逆向回BASE844fe exact；除prepare/run外全部定义byte+AST exact；run只有真正constructor替换；SerialExecutor/resource_monitor/qualify_aba完整原源码保持。host未来live admission要求canonical production_runner、OwnRSSSerialExecutor继承原SerialExecutor、真实globals/module owners/compiled callable和DynamicHistoryResources，禁止overlay。本审静态未制造这些live通过。
+
+当前case_spec reference.active_batches确为250 legacy原native contract，未override；另F原declare读取components['original92']['future_contract']，强制retained_reference.active_batches==2000及完整statepoints0101..2100，声明原八门及完整2000active required/reference_reassessment_pending，inheritedCE/qualification均False。这是现有actual original92合同层，与legacy native字段分层保持。cold真完成仍WAITING_REFERENCE，独立完整2000active及input_equivalence/source_convergence/block_stability/statistical_resolution/keff/scalar_flux/nu_fission/currents_balance_symmetry八门必须另外真实准入。旧nu-fission3.798223%>3% FAIL不复用；old250/source-only或build INPUT都不提供solver/精度信用。完整权威引用在既有gate report及本次evidence内，35GB未读。
+
+精确argv：next_actions_exact_argv_templates_and_future_None.json。prepare-binding的CLI/-c程序已由真实已有pin完整形成；controls/finalize/cold明确null slots，不能当已运行argv，Root按实际qualified新pin逐项填。源码函数行及全受限来源freshSHA：source_scope_evidence.json。独立terminal根与SOURCE/WORK均distinct。

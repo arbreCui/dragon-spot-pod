@@ -1,0 +1,8 @@
+V18 READY factory 与 genuine PREP host 有限源码审查通过。
+仅 doc/status 两处变化；70 个函数/类逐字节保持 ecfd；其余顶层源码保持。
+最终 host 9 项完整反向还原到 37d，再按 11 项完整反向还原到 310dd。
+原 genuine guard/class/MRO/resource/固定 prepare-build argv/API 全保持。资源仍 whole 1800 秒、prepare child 600 秒、512 MiB、2 GiB、history 96 GiB/free 8 GiB、1 thread/1 child/0 retry。
+SOURCE_ARCHIVE 全输入前后 pin 与 HOST+SOURCE+OUT+SOURCE_ARCHIVE 两次完整计数保留。TERMINAL 准备前后必须不存在。
+bcd/d490 保持原组件 INPUT-only 资格，6 项未来业务成功 pin 全 None。
+本审查只用标准库读取源码/JSON元数据并做 AST、全字节反向还原、全 SHA/7ID 前后检查；不 import 项目模块、不调用 API、不执行准备/构建/数值、不改 canonical/ART。
+没有阻塞；这是源码审查通过，不能视为新的 PREP、whole INPUT、build、native、AAA 或 ABA 成功，也不预测实际 RSS/运行通过。

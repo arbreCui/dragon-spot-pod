@@ -1,0 +1,40 @@
+SPOT 当前A三份文本导出退役：实际清理及独立后验通过
+日期：2026-10-15
+
+本轮实际结果
+限定退役microlib.ascii、macro.ascii、metadata.ascii三份已完成文本导出。
+实际释放文件字节346,861,973（约346.86MB/330.79MiB）。
+完整盲SHA及七项文件身份核对通过；删除前lsof返回1且stdout/stderr均空，表示三文件无当前打开者。
+原XSM、最终55 SQL/数据池、14个仍需新聚合的早期临时输入、55个上下文、9个XSM身份角色和43份结果JSONL全部保留。
+这些文本导出未被完整XSM提取使用，未声称它们与二进制文件字节相同或已有实际逐字节再生成证明。未来消费旧路径必须承认明确退役凭证。
+
+真实执行链
+v1只读b3f004/1因原production_inputs加载步骤遗漏，FAILED_BEFORE_UNLINK；没有删除，没有执行旧入口。
+v2只增加原模块完整凭证预载及失败历史绑定，代码完整逆向还原v1。
+v2独立Source审阅a1b675/0，只读检查b8cd2f/0；实际execute ef0657/0；独立后验2e6e5f/0。
+原失败、原Source/日志/报告未改写。实际执行使用require_escalated供当前打开者核验，无额外科学或native运行。
+
+资源
+所有既定资源上限保留：完整62目录、累计2GiB、历史96GiB、SELF512MiB、单阶段600秒、全程1800秒、8GiB空闲底线及原冷备预留。
+原退役receipt.resources_after受0.25秒采样节流影响，未刷新到删除后状态，该字段如实保留并标记限制。
+随后真正新原资源类核验3a86ef/0记录：joint1,586,739,941字节＋外部元数据8,540,858字节＋3200字节已解除链接但仍打开的工具文件＝1,595,283,999字节。
+该真实工具返回因未及时存对象而按显示的真实返回逐字转录，文档明确标记verbatim_tool_response_transcription；不伪称自动捕获，真实执行与文件凭证保留。
+独立后验再次统计当前62目录1,586,759,869字节，仍符合原2GiB上限。
+
+目标状态与下一步
+A旧聚合报告仍为evidence-only、child2、all_context_or_operand_issues=1；后来的OVERV单独控制通过不等于旧聚合报告已更新。
+14个早期SQL/数据池必须保留到新的完整A聚合真正闭合，不能为腾空间提前删除。
+新Source将显式绑定同final55/原ENERGY与OVERV描述符的已通过原算术控制，再完整核验8快照、55事件、六阶段和全部比较；原数学及历史失败事实不变。
+B-only完整观测Source草稿已形成，尚未编译或运行；原配方与完整输出范围保留，缓存/临时文件及观测输出使用全新IO目录。
+B完整捕获＋提取的历史同范围参考约1,008MB，尚未证明整流水线fit；需分阶段准入，并可考虑有界无损结果归档，保存完整解压字节证明及所有结果文档。
+P1/原processing分支/温度插值/全370群控制、B、AAA、独立耦合参考及ABA仍有缺口。整体goal未完成，physics/AAA/ABA未准入。
+
+实际退役凭证：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_literal3_ASCII_export_retirement_source_v2/EXECUTION_RECEIPT.json
+SHA256 62d3b14ee7f97799b206fd16f894f95990a1744b850b49f3dd3d6e7cc04d80ea
+真实执行返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_literal3_ASCII_export_retirement_source_v2/ROOT_EXECUTION_TRUE_TOOL_RETURNS.json
+SHA256 90b31a24cb4aa66a85527d61dada2c0f6197a64e09c0a107995e9ddf84619fd8
+独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_literal3_ASCII_export_retirement_source_v2/actual_postverify_20261015/corrected_fresh_original_resources_v2/REVIEW.json
+SHA256 2c946d04f1e4e51271ed3e3932b28f4bde3c1c99eca729736c7ac3c77a84852e

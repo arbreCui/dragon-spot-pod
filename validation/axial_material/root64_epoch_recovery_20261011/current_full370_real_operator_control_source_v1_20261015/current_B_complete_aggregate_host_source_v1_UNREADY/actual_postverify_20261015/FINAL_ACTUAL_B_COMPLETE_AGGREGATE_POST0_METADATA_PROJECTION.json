@@ -1,0 +1,178 @@
+{
+  "schema": "ACTUAL_CURRENT_B_COMPLETE_SIXPHASE_ROOT0_POST0_RECORDED_METADATA_PROJECTION_V1",
+  "status": "PASS_ACTUAL_CURRENT_B_FULL8_SNAPSHOT55_CONTEXT_SIXPHASE_CONSTRUCTION_EVIDENCE_CHILD2_METADATA_ONLY",
+  "metadata_only": true,
+  "actual_Root_tools_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json",
+    "sha256": "2474019c0e08af0968e0abc7b9b103bfae228b16ac162718ff60d462bbda3b35",
+    "size_bytes": 2992,
+    "identity": [
+      16777229,
+      50876956,
+      33188,
+      1,
+      2992,
+      1792063704268945097,
+      1792063704268945097
+    ]
+  },
+  "actual_Host_report_pin": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-current-B-complete-sixphase-aggregate-after-B55-and-exactB4-retirement-20261015-v1/Root_actual_current_B_complete_aggregate_summary.json",
+    "sha256": "bfd2d3ed693665bde32adc79f37ebca47768883296defbcd19d9aa634c7247bb",
+    "size_bytes": 778074,
+    "identity": [
+      16777229,
+      50876929,
+      33188,
+      1,
+      778074,
+      1792063662651233891,
+      1792063662651233891
+    ]
+  },
+  "actual_Root_integer_exit_code": 0,
+  "actual_child_integer_exit_code": 2,
+  "actual_post_report_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/actual_postverify_20261015/REVIEW.json",
+    "sha256": "e757ae1e9018fe80b9ac1d694138e81378dcb1b47b23ecbd907507c97011244a",
+    "size_bytes": 969270,
+    "identity": [
+      16777229,
+      50877124,
+      33188,
+      1,
+      969270,
+      1792063751764595195,
+      1792063751764595195
+    ]
+  },
+  "actual_post_tools_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/actual_postverify_20261015/TRUE_TOOL_RETURNS.json",
+    "sha256": "e4d7200eba738ffe58da6cd69f44467740ff3c9f5db4129c4f4a6b6ac995d5a2",
+    "size_bytes": 3256,
+    "identity": [
+      16777229,
+      50877191,
+      33188,
+      1,
+      3256,
+      1792063766354996598,
+      1792063766354996598
+    ]
+  },
+  "actual_post_integer_exit_code": 0,
+  "actual_post_terminal_chunk_id": "ad1875",
+  "actual_child_report_pin": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-current-B-complete-sixphase-aggregate-after-B55-and-exactB4-retirement-20261015-v1/evidence/aggregate/ACTUAL_COMPLETE_FINAL_MICRO_MACRO_CONSTRUCTION_REPORT.json",
+    "sha256": "ca91cdcbd5a4596778e50982d94786c88a0b14d99dfa0b7cd05e720f4f8cd55a",
+    "size_bytes": 555853,
+    "identity": [
+      16777229,
+      50876922,
+      33188,
+      1,
+      555853,
+      1792063653653159879,
+      1792063653653159879
+    ]
+  },
+  "actual_state_report_pin": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-current-B-complete-sixphase-aggregate-after-B55-and-exactB4-retirement-20261015-v1/evidence/aggregate/B/ACTUAL_COMPLETE_STATE_CONSTRUCTION_REPORT.json",
+    "sha256": "a71a606ed74e5fc8e35c2f98589a648a071d44288cfb67fc38f0f45f8a121aa4",
+    "size_bytes": 261069,
+    "identity": [
+      16777229,
+      50876921,
+      33188,
+      1,
+      261069,
+      1792063653645698865,
+      1792063653645698865
+    ]
+  },
+  "actual_engine_reported_counters": {
+    "all_original_records": 23895,
+    "complete_MACROLIB_records": 19620,
+    "complete_source_field_comparisons": 19249,
+    "compared_known_elements": 1829421,
+    "all_mismatching_elements": 0,
+    "all_context_or_operand_issues": 0,
+    "unknown_macro_producers": 0,
+    "original_context_event_count": 55,
+    "all_original_snapshot_count": 8
+  },
+  "actual_six_phase_results": [
+    {
+      "phase": "scattering",
+      "computation_finished": true
+    },
+    {
+      "phase": "scalar",
+      "computation_finished": true
+    },
+    {
+      "phase": "fission",
+      "computation_finished": true
+    },
+    {
+      "phase": "extras",
+      "computation_finished": true
+    },
+    {
+      "phase": "overv_fallback",
+      "computation_finished": true
+    },
+    {
+      "phase": "metadata",
+      "computation_finished": true
+    }
+  ],
+  "actual_snapshot_pair_count": 8,
+  "actual_context_event_count": 55,
+  "actual_B55_consumed_current_control_counts": {
+    "actual_current_energy_words_observed": 371,
+    "actual_current_overv_words_compared": 2960,
+    "actual_current_overv_groups": 370,
+    "actual_current_overv_mixtures": 8,
+    "actual_native_vs_integer_model_and_saved_word_mismatches": 0,
+    "actual_constant64_words_compared": 3,
+    "actual_constant64_word_mismatches": 0
+  },
+  "first_B_aggregate_executed_with_no_prior_B_issue_invention": true,
+  "issue_count_adjustment_performed": false,
+  "original_FAILED_error2_record_retained": true,
+  "original_runner_error": "own-child stage failed; no retry",
+  "original_record_resource_after_absent_preserved": true,
+  "B4_strict1_plus3_union_exactly_original4": true,
+  "B4_fragment_excluded_from_original4": true,
+  "B4_all4_archive_current7_retained_count": 4,
+  "B4_all4_entry_current7_retained_count": 4,
+  "all8_native_tree_SQL_pool_pairs_and55_contexts_retained": true,
+  "complete_prefix_root_count": 75,
+  "actual_new_output_files_independently_blind_SHA_twice": 17,
+  "actual_new_output_logical_bytes": 236442718,
+  "current_joint_bytes_at_post": 1965143628,
+  "current_external_metadata_bytes_at_post": 8826437,
+  "current_post_open_unlinked_bytes": 0,
+  "original_caps": {
+    "whole_seconds": 1800,
+    "stage_seconds": 600,
+    "rss_mib": 512,
+    "fresh_bytes": 2147483648,
+    "history_bytes": 103079215104,
+    "cold_reserve_bytes": 20971764748,
+    "metadata_reserve_bytes": 67108864,
+    "free_floor_bytes": 8589934592,
+    "threads": 1,
+    "children_at_once": 1,
+    "retries": 0
+  },
+  "Source_GEN_pub_worker_native_compiler_or_cleanup_executed_by_post": false,
+  "new_JSONL_values_decoded": false,
+  "old_scientific_payload_body_opened": false,
+  "scientific_arrays_recomputed": false,
+  "physics_qualified": false,
+  "AAA_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false
+}

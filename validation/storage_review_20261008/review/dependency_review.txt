@@ -1,0 +1,163 @@
+# SPOT 轴向材料存储依赖审查（2026-10-08）
+
+本次只读读取源代码、JSON/日志型元数据和文件大小/分配块，没有读取或重新计算 35.31 GB 数值载荷的哈希，没有调用 PREP、业务 API、运输或校验流程，没有删除、移动、压缩、改写任何原证据。本文保存的是静态依赖审查结果，不是清理后的实际 INPUT admission。
+
+## 结论
+
+当前存储问题包含两件事：最新输入合同确实需要一套很大的历史图；此外大量旧输出仅计入 96 GiB 历史预算。可先从后者中退役少量中间二进制输出，避免改动当前输入门。
+
+推荐供用户审阅的最小方案：只退役 `/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-rank1-factor-cache-20261007/AAA/map001` 至 `map006` 内的 48 个普通 `.xsm` 文件，共 **5,886,495,640 bytes = 5.482 GiB**。保留目录、软链接、所有日志/JSON/deck、bootstrap、map007–map012、archives、training、runtime、declaration 和 prepared。当前图、API descriptor、alias target、exhaustive namespace、历史 length map、negative member sets 和 baseline local_files 对这 48 个文件的交集都为空。
+
+这些文件属于已经结束的旧试验，并非新 cold AAA 的输入。退役后，该六次旧迭代的原始 `result.json` seal 不能再逐字节重验；旧 map007 指回 map006 的软链接也可能成为悬空链接。这是明确退役旧中间状态的重放能力，不能将旧证据链继续描述为完整。现有 seal 和数值报告应原样保留，并另留退役清单；不能删完再重写旧 seal 为 PASS。
+
+## 计量与预算
+
+| 范围 | 只读元数据计量 | 含义 |
+| --- | ---: | --- |
+| 当前 direct axial-material 目录 | 87,188,443,161 bytes / 81.201 GiB；43,073 普通文件 | 与原动态历史账本相同的 apparent-byte/no-follow 范围 |
+| 完整 fresh graph | 35,310,152,108 bytes / 32.885 GiB；29,141 文件 | 包括工具环境及项目外依赖；不能与目录总量直接相减 |
+| 图内 validation/artifacts 数据 | 32.680 GiB | 当前 canonical graph bytes |
+| 历史目录中未进入此 graph 的数据 | 48.520 GiB | 是候选范围，不是全部可删；还包括成功 build、intake 证据和 CE reference |
+| 完全无 graph pin 的历史目录 | 10.546 GiB | 仍应保留当前 intake/独立审查和科学报告 |
+| 原 full cold 预约 | 20,971,764,748 bytes / 19.531 GiB | 保持原 12-map 来源公式；不是 max100 maps 上界 |
+| 当前历史 + 预约超出 96 GiB | 5,080,992,805 bytes / 4.732 GiB | 104 GiB 提案仍未批准/未启用 |
+| 推荐 48 文件方案后的预计历史 + 原预约 | 102,273,712,269 bytes / 95.250 GiB | 比 96 GiB 低 0.750 GiB；只是当前快照推算 |
+
+这里的 GB 为十进制，GiB 为 2^30 bytes；输出释放量以普通文件长度和 st_blocks 各给一份，APFS 的真实回收空间仍应清理后实际观察。48 文件 nlink 都为 1；其分配块总量为 5.482 GiB。
+
+## 当前链为何仍需要历史数据
+
+最新入口是 `prepare_historical_input_owned_specs_combined_physical_dedup_file_snapshot_runtime_build.py`，其 INPUT_REUSE 是完整历史输入重用。它不重新执行祖先 component API，但每次 admission 的 `complete_input_phase` 仍 fresh 验证整个 canonical union、75 exhaustive namespaces、186 aliases 和全部 196,284 logical owner edges，并保持原 ordinary path、环境和资源谓词。
+
+该链保留失败历史是为了身份、失败事实和控制证据；失败 PREP/RUN 不授予成功 credit。`combined_runtime_complete_historical_input_specs_20261007.json` 不是可以任意裁剪的文件表；其整文件 SHA 和 typed body 都被固定。删除图内文件、改变 namespace 内容/目录或软链接会直接破坏当前 INPUT admission。
+
+新的 cold consumer 也显式拒绝 consumer_scope：仍验证完整 graph，并 fresh 验证成功 combined build、SOURCE、真实 intake 的额外输入。最新 saved API 有 29,169 descriptor_files。build OUT 大部分成功文件不在原 graph 中，是由 seal 和 API descriptor 后续保护；因此不能只用“图内为 0”判定可删。
+
+当前只证明 combined runtime 的 link/identity 和 INPUT 验证资源；尚未证明修正后的完整 cold transport RSS、AAA accuracy，也未获得 ABA admission。`validation/README.md` 当前段和停止版 cold 源都明确保持这些限制。
+
+## 大目录的依赖等级
+
+| validation/artifacts 下目录 | 总 GiB | graph GiB / 文件 | 建议 |
+| --- | ---: | ---: | --- |
+| `axial-material-production-qualified-AB-rank1-factor-cache-20261007` | 12.361 | 0.728 / 53 | 仅选前六次 map 的普通 .xsm 退役；保留末两次 capture 输入和全部 runtime/deck 元数据 |
+| `axial-material-production-qualified-AB-source-factor-20261006` | 12.355 | 12.355 / 359 | 整目录被多个 preserved_predecessors exhaustive namespace 保留；当前链不可删 |
+| `axial-material-production-qualified-AB-white-trace-refined-envpin-20261005` | 12.354 | 12.354 / 360 | 整目录被多个 preserved_predecessors exhaustive namespace 保留；同时是新 cold 预约和生产配置来源 |
+| `axial-material-production-qualified-AB-white-trace-20261004` | 11.181 | 0.258 / 11 | 前十次 map 的普通 .xsm 可作为第二批候选；保留末次、bootstrap、archives/training 和运行源码 |
+| `axial-material-production-qualified-AB-compensated-20261004` | 4.939 | 0.000 / 2 | 仅两个 runtime 源被当前图引用；其它旧结果可另立保留合同后退役，保留历史结论/最终态 |
+| `axial-material-inputs-20261003` | 2.773 | 0.000 / 0 | 无 graph pin；主要是旧 DLIB/microlib/初始快照，优先核对旧科学重放需求 |
+| `axial-material-production-qualified-AB-storage-20261004` | 2.480 | 0.000 / 0 | 旧 FAILED_NO_RETRY、1 map；无 graph pin；保留失败收据后可退役旧大输出 |
+| `axial-material-AAA-white-trace-refined-layered-full-20261005` | 2.030 | 0.000 / 8 | 当前只需 declaration、live_guard 原始控制和 cached.dylib；其它输出是旧有限高度诊断 |
+| `axial-material-rank1-cache-memory-dedup-file-snapshot-native-angular-capture-20261007` | 1.508 | 1.508 / 2639 | 完整当前成功捕获 namespace；保留 |
+| `axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007` | 1.107 | 1.107 / 2263 | 完整原失败 namespace/length map；当前 INPUT-only 合同保留，不能直接删 |
+| `axial-material-rank1-cache-memory-dedup-native-angular-capture-20261007` | 0.829 | 0.829 / 1472 | 完整原失败 namespace/length map；当前 INPUT-only 合同保留，不能直接删 |
+| `axial-material-ce-qualified-AAA-white-trace-precision-specpin-20261004` | 0.424 | 0.002 / 9 | 虽然图内很少，future reference 合同仍要求 2000 consecutive active statepoints 和完整 histories，保留整个当前 CE 样本 |
+
+## 48 文件推荐方案的确切清单
+
+根目录：`/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-rank1-factor-cache-20261007/AAA/`。对 `map001`、`map002`、`map003`、`map004`、`map005`、`map006`，每个 map 仅候选下面 8 个**普通文件**：
+
+```text
+candidate_axial.xsm
+candidate_radial.xsm
+candidate_snapshots.xsm
+candidate_system.xsm
+closed_axial.xsm
+closed_snapshots.xsm
+parent_for_checker.xsm
+projected_proposal.xsm
+```
+
+| map | 候选文件数 | 普通文件 bytes | GiB |
+| --- | ---: | ---: | ---: |
+| map001 | 8 | 981,082,580 | 0.914 |
+| map002 | 8 | 981,082,612 | 0.914 |
+| map003 | 8 | 981,082,612 | 0.914 |
+| map004 | 8 | 981,082,612 | 0.914 |
+| map005 | 8 | 981,082,612 | 0.914 |
+| map006 | 8 | 981,082,612 | 0.914 |
+
+每个文件的绝对路径、bytes、分配块、nlink、原 stage seal 的 expected SHA、各依赖交集和“未重新哈希/未删除”标记见 [48 文件逐项元数据清单](/private/tmp/spot_storage_runtime_safe_candidate_20261008.json)。
+
+## 两个部分引用大目录的扩大候选
+
+如希望更明显释放空间，可以在用户确认退役旧中间状态后，按相同 8 文件名扩大至两套试验的 map001–map010；保持所有目录、软链接、日志/JSON/deck、末次状态、bootstrap、archives/training 和源码。
+
+| 路径 | 文件数 | 可释放普通文件 GiB | 当前 INPUT 交集 |
+| --- | ---: | ---: | --- |
+| `/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-rank1-factor-cache-20261007/AAA/map001`–`map010` 上述 8 文件 | 80 | 9.137 | graph / API / alias targets / exhaustive namespace 均 0 |
+| `/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-20261004/AAA/map001`–`map010` 上述 8 文件 | 80 | 8.915 | graph / API / alias targets / exhaustive namespace 均 0 |
+
+两套合计 18.052 GiB。完整 160 项只读候选见 [扩大候选元数据](/private/tmp/spot_storage_retirable_intermediate_xsm_candidates_20261008.json)。不是建议直接删除两个整个 production 目录；尤其 rank1 的 map011/map012 多个快照与结果是当前 capture 输入。
+
+## 原输入门逐项检查
+
+| 门 | 此 48/160 文件候选是否被要求 | 审查依据 |
+| --- | --- | --- |
+| 完整 canonical SHA / 29,169 API descriptor | 无交集 | 当前 graph canonical_files 和实际保存的 intake/admit.log descriptor_files 逐路径比对 |
+| exhaustive namespace / directory exactness | 无祖先 namespace 覆盖这两个 production root 或其 map 子树 | graph 75 rows；原 71 namespace 及补充 namespace 也不覆盖这些生产 root；候选不删目录 |
+| 186 alias targets | 无交集 | 每个 graph file alias target 必须有 typed canonical owner；候选未命中 |
+| 4 failed historical length maps | 无交集 | 都在 dedup-native / dedup-deferred 捕获的 SOURCE 与 OUT，文件长度逐项要求保持 |
+| 79 exact negative folders | 无交集 | 只位于 original92、memory、dedup、physical serial guarded 4 个 build 的 controls/negative_* |
+| current path / absence / environment / working snapshot | 无交集 | 原 current predicates 只检查当前声明文件、命名失败 absence、当前独立 working snapshot、原解释器/库/threads/资源；候选不改变它们 |
+| rank1 baseline prepared.local_files | 无交集 | 37 项只含 runtime/deck/declaration；新 cold verify_baseline_package 和 dependencies 保留全部项；inputs、case_spec、rank、配置和预算都保持 |
+| producer/新 cold pipeline identity | 原 runtime 来源、SOURCE inverse、OLD refined prepared 和离线 A/B 输入均保持 | producer_environment 检查完整 OLD refined local_files，verify_baseline_package 检查 BASE_WORK local_files；当前 ROOT 并无额外逐旧中间 map 全目录 identity 门 |
+| 原 12-map cold reservation | 保持 | reservation 基准是 OLD refined-envpin 整目录 13,265,348,616 bytes；该目录全部保留，不从 rank1/white 候选计算预约 |
+| 历史 resource gate | 只使资源统计变小 | DynamicHistoryResources 统计所有现存 ordinary bytes，不要求旧预算 root 必须存在；此方案仍保留root/目录，所有原 caps/门保持 |
+| 旧 map 的 stage seals / 逐图完整重放 | 会断链 | old map result.json 的 SHA 字段确实列出了这些候选；这是退役其二进制重放能力的明确代价 |
+
+审查只覆盖当前 AAA→ABA 的 maintained source/INPUT 合同；其它人为调用的老实验脚本当然可能重读被退役旧输出。此次不运行任何 API 来证明删除后状态，也不把元数据交集为零冒充全项目数值回归证明。
+
+## 应保留的核心资料
+
+1. 当前所有 graph canonical_files、75 namespaces、186 aliases，及其现有绝对路径/普通路径语义。尤其两个 12.35 GiB 的全量 predecessor 归档；组件 original92/memory/dedup/physical build；当前成功 file-snapshot capture 和当前合同仍保留的 dedup-native/deferred 失败捕获。
+2. 当前 combined runtime 的完整 OUT/SOURCE/seal/declaration/input_graph/read trace、Root PREP/RUN terminal/full stdout/full stderr、bounded intake 证据、private complete input consumer 的成功与失败证据、停止版 consumer/cold factory/source inverse/独立审查。成功 OUT 不全在原 graph，它仍是 API 和成功 namespace 的必需资料。
+3. 离线 A/B 快照、radial tracks、solve logs、material manifest/producer receipt/analysis environment；runtime Dragon、实际四个生产 objects 和链接/ABI 身份材料。
+4. 当前 2000-batch CE precision reference 的完整 statepoints、native_result、统计/entropy/generation histories、原八个门及参考分析 recipe。仅保留最终均值不能维持现有 source-history、block stability 和统计分辨率判断。
+5. 科学结果和限制的 REPORT、comparison/assessment、run_status、完整 native logs、每 map 的小 result/defect/资源 receipts、失败分类和 ABA rejection；本次选中 6 旧map仅退役大二进制。
+
+当前 graph 还有以下 6 个 `/private/tmp` 正式 canonical inputs，总 62,800,741 bytes，不能“顺手清空临时目录”：
+
+- `/private/tmp/axmat_combined_remaining_source_owned_input_specs_20261007.json` — 2,224,990 bytes
+- `/private/tmp/axmat_combined_runtime_source_owned_input_reuse_plan_corrected_20261007.json` — 185,340 bytes
+- `/private/tmp/axmat_combined_source_owned_input_closure_conditional_conclusion_20261007.json` — 6,047 bytes
+- `/private/tmp/axmat_historical_PREP_graph_mechanics_doc_only_independent_review_20261007.json` — 10,454 bytes
+- `/private/tmp/combined_runtime_declared_namespace_metadata_plan_v3_result_20261007.json` — 18,374,507 bytes
+- `/private/tmp/combined_runtime_source_owned_typed_input_specs_draft_20261007.json` — 41,999,403 bytes
+
+## 若以后希望缩小完整历史图
+
+可以新建一个精简保留/INPUT 合同，但那是新证据体系：明确保留生产物理输入、运行二进制和源码/链接身份、成功控制与关键失败事实、最终状态和完整参考统计资料；把逐旧中间图重放正式退役，给新目录/文件门和独立 fresh verification。旧合同、seal、报告不能改写成通过新精简图的结论。
+
+科学结果本身和原失败/未资格结论可以保留；删除某旧中间二进制不改变已保存的数值，但会失去其完全复核能力。若新合同不再保留当前全量 predecessor namespace，就不能声称“原完整历史 INPUT 保持不变”。这两件事必须分清。
+
+眼前 48 文件方案不需要改 35.31 GB 图、原 namespace、输入 SHA、科学阈值或 96 GiB cap，已经能在当前快照下消除预约缺口。随后真正启动新 cold 前仍需做原实际 fresh storage admission；现有冷入口 binding/fixtures 仍未完成，清理不能替代它们。
+
+## 非轴向旧 replay：现 reader 不读，旧自验会失效
+
+下面两套旧实验整个 root 和 replay 子树，对当前 owned-specs graph、API descriptors、75 namespaces、186 aliases、4 length maps、79 negative folders、extra namespace/current absence requirements 都没有交集。其路径也不在当前 declared resource_roots 中。当前正式 AAA reader 不读取这些重放 payload；仅因老 result.sha256 或 verification 收据引用了旧数组，不能把每个数组归为当前必需输入。
+
+| replay 路径 | 普通文件数 | apparent GiB | allocated GiB |
+| --- | ---: | ---: | ---: |
+| `/Users/wen/spot/validation/artifacts/native-oblique-full-response-20260930/replay` | 7,590 | 11.010 | 11.029 |
+| `/Users/wen/spot/validation/artifacts/native-segment-composition-compact-20260929/replay` | 2,948 | 2.633 | 2.639 |
+
+保守退役方式是仅列 `replay/**/*.npz`，保留小 JSON、log、plan、源码/收据和 root 下 primary 全量数据。oblique 的 4,643 个 .npz 共 11,776,006,588 bytes（10.967 GiB）；segment 的 2,896 个 .npz 共 2,637,109,090 bytes（2.456 GiB）；两者共 13.423 GiB。整个 replay 目录两套合计 13.643 GiB apparent / 13.668 GiB allocated；若选择整个目录，先在新的退役记录保留它的小型收据元数据。这里仍未执行任何删除或复制。
+
+代价确实存在：`verify_native_oblique_full_response.py` 从第 218 行检查 root 与 replay，并在第 240/241 行要求逐文件 hash 和 bytes 一致；`verify_native_segment_composition.py` 第 38/45/65 行要求相同 replay inventory、hash 和 native arrays。这些旧验证器在退役 replay arrays 后会失效；旧 result.sha256 也将不能完整重验。primary 数值、旧判据和保存的失败/通过结论保持可读，但不能再宣称两份完整逐字重放仍可复核。
+
+**这两套 legacy 不在 axial-material 的 96 GiB 历史账本内。** 删除它们可以增加实际磁盘剩余空间，不能减少 axial 的 4.73 GiB 预约缺口；要在不放宽 96 GiB 原门的前提下推进原 AAA 预约，仍需要上面的 axial 48 文件方案或同类轴向历史退役。
+
+逐文件 stat 和当前依赖交集见 [legacy replay 当前输入交集](/private/tmp/spot_storage_legacy_replay_dependency_intersection_20261008.json)。
+
+## 阅读来源
+
+- [validation 当前说明](/Users/wen/spot/validation/README.md:33)
+- [最新 owned-specs factory 入口](/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_combined_physical_dedup_file_snapshot_runtime_build.py:756)
+- [完整 fresh graph phase](/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_combined_physical_dedup_file_snapshot_runtime_build.py:958)
+- [完整 graph 门](/Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph.py:1014)
+- [cold consumer 整图与额外成功输入](/Users/wen/spot/validation/axial_material/cold_owned_specs_input_intake_stopped_review_20261007/cold_component_input_consumer.py:456)
+- [cold baseline 和预约门](/Users/wen/spot/validation/axial_material/cold_owned_specs_input_intake_stopped_review_20261007/prepare_historical_input_owned_specs_physical_dedup_file_snapshot_cold_AAA_full_draft_20261007.py:565)
+- [原动态历史资源实现](/Users/wen/spot/validation/axial_material/prepare_qualified_AB_moment_order_production.py:98)
+- [原 baseline prepared 和 qualification 规则](/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-rank1-factor-cache-20261007/runtime/production_runner.py:619)
+- [原 retained reference 重读策略](/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-white-trace-refined-envpin-admission-20261005/refined_reference_analysis_recipe.json)
+- [本次目录/图元数据统计](/private/tmp/spot_storage_dependency_metadata_20261008.json)

@@ -1,0 +1,198 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/root64_connected17_compile_namespace_repair_v3/test_ROOT64_full_connected17_namespace_repair_v3.f90
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/public_read_compact_bq_admission_controls_source_v1_20261013/test_public_read_compact_bq_admission_v1.f90
+@@ -1,4 +1,4 @@
+-program test_ROOT64_full_connected17_v2
++program test_public_read_compact_bq_admission_v1
+   ! NEW SOURCE: all seventeen connected controls on current complete modules.
+   ! Old /tmp seventeen fixture bytes were lost; no old PASS is inherited.
+   ! Synthetic protocol values are never a genuine solver or physics result.
+@@ -106,6 +106,10 @@
+   narg=command_argument_count()
+   call insist(narg==1.or.narg==2,'one case and optional coherent phase')
+   call get_command_argument(1,selected_case)
++  if(index(trim(selected_case),'public_read_')==1)then
++    call run_public_read_admission(trim(selected_case),narg)
++    stop
++  endif
+   selected_index=0
+   do i=1,size(CONNECTED_CASES)
+     if(selected_case==CONNECTED_CASES(i)) selected_index=i
+@@ -147,6 +151,172 @@
+   flush(output_unit)
+ 
+ contains
++
++  ! Seven controls call the genuine public entry through the unchanged
++  ! current factory read_q helper. The private matcher is never a test oracle.
++  subroutine run_public_read_admission(name,narg)
++    character(len=*),intent(in) :: name
++    integer,intent(in) :: narg
++    character(len=40),parameter :: names(7)=[character(len=40) :: &
++        'public_read_positive_all3','public_read_GLOBAL64_lowbit', &
++        'public_read_SEED_lowbit','public_read_GLOBAL64_extra_inventory', &
++        'public_read_SEED_extra_inventory','public_read_stale_BQ_SRC', &
++        'public_read_stale_BQ_MAC']
++    character(len=40) :: control_phase,stale_case
++    character(len=11) :: stale_name,other_name
++    type(connected_fixture) :: f
++    type(c_ptr) :: auth,child,list,bundle,stale
++    real(real64),allocatable :: q(:,:)
++    real(real64) :: rho,expected_rho,value,values(NU)
++    integer :: which,p,g,rs,before_reads,control_reads,base_reads
++    logical :: exists,other_exists
++    which=0
++    do p=1,size(names)
++      if(name==names(p))which=p
++    enddo
++    call insist(which>0,'one exact public READ admission case')
++    control_phase='single'
++    if(which>=6)then
++      call insist(narg==2,'stale control needs prepare/read phase')
++      call get_command_argument(2,control_phase)
++      call insist(control_phase=='prepare'.or.control_phase=='read','exact stale prepare/read phase')
++      if(which==6)then
++        stale_name='BQ64-SRC-ST';other_name='BQ64-MAC-ST'
++      else
++        stale_name='BQ64-MAC-ST';other_name='BQ64-SRC-ST'
++      endif
++      inquire(file=other_name,exist=other_exists)
++      call insist(.not.other_exists,'other private stage absent before stale control')
++      if(control_phase=='prepare')then
++        inquire(file=stale_name,exist=exists)
++        call insist(.not.exists,'stale sentinel must be newly owned')
++        inquire(file='coherent_complete_context.xsm',exist=exists)
++        call insist(.not.exists,'persisted fixture must be fresh')
++        call build_connected(f,.false.)
++        call export_and_readback(f,.false.)
++        call insist(actual_q_read_calls==6,'six actual baseline public reads before stale creation')
++        call close_connected(f)
++        stale=c_null_ptr
++        call LCMOP(stale,stale_name,0,2,0)
++        call LCMPUT(stale,'SENTINEL',4,1,[17,370,6,1])
++        stale_case=name
++        call LCMPTC(stale,'CASE',40,stale_case)
++        call LCMCL(stale,1)
++        ! No public READ is called after the sentinel is created in this phase.
++        control_reads=0;base_reads=actual_q_read_calls;rs=0
++      else
++        inquire(file=stale_name,exist=exists)
++        call insist(exists,'Host-pinned stale sentinel required')
++        inquire(file='coherent_complete_context.xsm',exist=exists)
++        call insist(exists,'Host-pinned persisted full fixture required')
++        ! The second process only opens existing authority read-only. It never
++        ! rebuilds a baseline while the stale file is present.
++        bundle=c_null_ptr
++        call LCMOP(bundle,'coherent_complete_context.xsm',2,2,0)
++        call public_read_load_saved_fixture(bundle,f)
++        call insist(actual_q_read_calls==0,'no factory baseline reads in stale read phase')
++        before_reads=actual_q_read_calls
++        call read_q(f,1,q,rho,rs)
++        call insist(actual_q_read_calls==before_reads+1,'genuine public READ called once after owning Native gate')
++        call insist(rs==SPOR64_BOOTQ64_PREFLIGHT_FAILED,'genuine public READ refuses preexisting private stage')
++        call insist(.not.allocated(q),'stale refusal returns no REAL64 array')
++        call insist(same64([rho],[0.0_real64]),'stale refusal returns unchanged positive-zero rho')
++        call LCMCL(bundle,1)
++        ! Never close/delete daughter pointers of the read-only owning bundle.
++        control_reads=1;base_reads=0
++      endif
++      inquire(file=stale_name,exist=exists)
++      inquire(file=other_name,exist=other_exists)
++      call insist(exists.and..not.other_exists,'stale retained;other stage never created')
++    else
++      call insist(narg==1,'non-stale public READ controls have exactly one argument')
++      inquire(file='BQ64-SRC-ST',exist=exists)
++      inquire(file='BQ64-MAC-ST',exist=other_exists)
++      call insist(.not.exists.and..not.other_exists,'fresh private stage names before valid factory')
++      call build_connected(f,.false.)
++      call insist(actual_q_read_calls==3,'three genuine baseline public READ calls')
++      base_reads=actual_q_read_calls;before_reads=actual_q_read_calls
++      if(which==1)then
++        do p=1,NP
++          call read_q(f,p,q,rho,rs)
++          call insist(rs==SPOR64_BOOTQ64_LOADED.and.allocated(q),'genuine all3 public READ positive')
++          call insist(all(shape(q)==[NU,NG]),'positive all370 complete REAL64 shape')
++          list=LCMGID(f%sources(p),'ROOT-QFISS64')
++          do g=1,NG
++            call LCMGDL(list,g,values)
++            call insist(same64(q(:,g),values),'all370 complete public q raw words match independent stored oracle')
++          enddo
++          auth=LCMGID(f%sources(p),'SPOT-R64');call LCMGET(auth,'RHO',expected_rho)
++          call insist(same64([rho],[expected_rho]),'public rho raw bits equal independent stored oracle')
++          deallocate(q)
++        enddo
++        call insist(actual_q_read_calls==before_reads+NP,'exact three direct positive public calls')
++        control_reads=NP
++      else
++        auth=LCMGID(f%sources(1),'SPOT-R64')
++        if(which==2.or.which==4)then
++          child=LCMGID(auth,'GLOBAL64')
++        else
++          child=LCMGID(auth,'SEED')
++        endif
++        select case(which)
++        case(2)
++          call insist(RECORD_MATCHES(child,'NORM64',1,4),'genuine copied GLOBAL64 scalar metadata')
++          call LCMGET(child,'NORM64',value);value=bump64(value)
++          call LCMPUT(child,'NORM64',1,4,value)
++        case(3)
++          call insist(RECORD_MATCHES(child,'ROOT-FLUX64',NG,10),'genuine copied SEED native full list')
++          list=LCMGID(child,'ROOT-FLUX64');call LCMGDL(list,NG,values)
++          values(1)=bump64(values(1));call LCMPDL(list,NG,NU,4,values)
++        case(4,5)
++          call LCMPUT(child,'UNKNOWN',1,1,991)
++        end select
++        call read_q(f,1,q,rho,rs)
++        call insist(actual_q_read_calls==before_reads+1,'genuine public READ reached after owning Native gate')
++        call insist(rs==SPOR64_BOOTQ64_PREFLIGHT_FAILED,'genuine public READ refuses full authority tamper')
++        call insist(.not.allocated(q),'authority refusal has no REAL64 output')
++        call insist(same64([rho],[0.0_real64]),'authority refusal preserves positive-zero rho')
++        control_reads=1
++      endif
++      call close_connected(f)
++      inquire(file='BQ64-SRC-ST',exist=exists)
++      inquire(file='BQ64-MAC-ST',exist=other_exists)
++      call insist(.not.exists.and..not.other_exists,'ordinary private stage handles closed/deleted at original boundary')
++    endif
++    write(output_unit,'(A,I0,A,I0,A,I0,A)') &
++        '{"case":"'//trim(name)//'","phase":"'//trim(control_phase)// &
++        '","schema":"GENUINE_PUBLIC_READ_COMPACT_BQ_ADMISSION_CONTROL_V1",'// &
++        '"actual_public_read_status":',rs,',"actual_control_public_read_calls":',control_reads, &
++        ',"actual_baseline_public_read_calls":',base_reads, &
++        ',"all_actual_assertions_completed":true,"synthetic_fixture":true,'// &
++        '"private_matcher_used_as_assertion_oracle":false,"physics_qualified":false,'// &
++        '"reader_qualified":false,"AAA_qualified":false,"ABA_admitted":false}'
++    flush(output_unit)
++  end subroutine run_public_read_admission
++
++  subroutine public_read_load_saved_fixture(bundle,saved)
++    type(c_ptr),intent(in) :: bundle
++    type(connected_fixture),intent(out) :: saved
++    type(c_ptr) :: list
++    integer :: p
++    saved%radial%flux=LCMGID(bundle,'NATIVE')
++    saved%radial%track=LCMGID(bundle,'TRACK')
++    saved%radial%system=LCMGID(bundle,'SYSTEM')
++    saved%radial%material=LCMGID(bundle,'MATERIAL')
++    saved%radial%route=LCMGID(bundle,'RCON')
++    saved%ax=LCMGID(bundle,'AX');saved%axtrack=LCMGID(bundle,'AXTRACK')
++    saved%axsystem=LCMGID(bundle,'AXSYSTEM');saved%axmacro=LCMGID(bundle,'AXMACRO')
++    saved%archive=LCMGID(bundle,'ARCHIVE');saved%global=LCMGID(bundle,'GLOBAL64')
++    saved%projected=LCMGID(bundle,'PROJECTED')
++    list=LCMGID(bundle,'MACROS')
++    do p=1,NP
++      saved%macros(p)=LCMGIL(list,p)
++    enddo
++    list=LCMGID(bundle,'SOURCES')
++    do p=1,NP
++      saved%sources(p)=LCMGIL(list,p)
++    enddo
++  end subroutine public_read_load_saved_fixture
+ 
+   subroutine build_connected(f,rewrite)
+     type(connected_fixture), intent(out) :: f
+@@ -1200,4 +1370,4 @@
+     compare_words=all(words1==words2)
+   end function compare_words
+ 
+-end program test_ROOT64_full_connected17_v2
++end program test_public_read_compact_bq_admission_v1

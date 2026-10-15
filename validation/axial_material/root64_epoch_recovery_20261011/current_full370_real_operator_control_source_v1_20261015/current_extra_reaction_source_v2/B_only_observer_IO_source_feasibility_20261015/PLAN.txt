@@ -1,0 +1,26 @@
+B-only薄输入/observer输出IO：可审阅Source规划，未生成/发布/准入（2026-10-15）
+
+AST inventory先于规划：AST_INVENTORY.json只解析现Source，不import执行；记录各文件与函数完整Source段SHA。科学解码器、context解析器、saved-native adapter、context六phase模型整文件保持；不是新科学结果或运行准入。
+
+已核实输入与工作目录
+原两库都在 /Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A，短名 DLIB_ACTUAL / DLIB8R1_370 均11字节，可保留原AxMatTone三处FIL及NAMFIL(:12)。两文件完整当前7ID与冻结B seed metadata匹配，目录和祖先无symlink；此核查未打开或hash库体。准确v10旧输出根从其exact CLI读取，两项s/A、s/B均不存在，不能复用已释放副本。
+child CWD可候选为此原库目录，但现material.xsm、microlib.ascii、macro.ascii、metadata.ascii四个旧输出均存在；必须另指向fresh B输出目录，不能覆盖。现CWD没有axobs-*只是stat事实，不是允许在原CWD直接写旧名。
+当前snapshot60中没有包含此输入目录的joint根。未来只能从rawreplay0/post0后的最新完整前缀取得账本；若选择输入目录内新owned B短子目录，只加入其输出子目录本身并校验与全部前缀根不重叠。不能把整个原SCI输入目录加入输出joint去双算或重置历史，也不能遗落新目录外的临时/未链接输出。可用空间和B全部输出/提取spool reserve尚未准入。
+
+最小IO候选
+1. 新的ordinary、独占fresh B观测输出短子目录位于原库CWD内，组件长度预先不超过12字节；名称待Root最新prefix、空间和collision检查后决定，本轮不创建实际输出目录。此选择使现observer filename64缓冲和原短库名无需为长绝对路径改变宽度。
+2. 新observer模块显式读取Root绑定的 SPOT_AXMAT_OBSERVATION_DIRECTORY（仅单个fresh短目录组件），enabled时缺失/不符即失败。保持原enabled()及所有事件counter、label、libmix序列、字段、维度、字节顺序检查和payload WRITE全部原bytes。仅在原start_event第34行与snapshot第56行生成原basename后，将filename加“目录/”前缀；open status='new'、snapshot exists拒绝、LCMOP/LCMEQU/LCMCL原序保留。输入SCI的LIBLIC/LIBSUB路径不改，不建link或copy。
+3. 以原B material.x2m为源，仅将四个FILE输出literal改为该短目录内相应名字；geometry输入、0.2436/0.7564、750/620/475、GREP断言、B完成marker和所有运算/调用tokens保持原bytes。完全反向恢复四处output替换须等于原B deck bytes。原A目录中geometry及三个procedure的声明SHA与B角色相同；必须分别记录B原输入PF和实际从A目录消费的PF，不能假报二者物理7ID相同。
+4. 只形成新的Source候选目录，不改原永久Source。四个原LIBMIX/LIBDEN/TONDRV/TONSPH观测Hook文件及所有科学payload/math函数整bytes保持；observer仅上述输出IO edit map，新B wrapper仅state与输入/输出布线。newbuild必须有完整whole-source inverse、原数学块copy proof、真实工具返回、new object/executable绑定及原OwnRSS/PID/资源guard证明。现observer75实际build证据可作原来源，不宣称新IO runtime已等于/已取代旧binary。
+5. 新薄host不调用prepare_shared_libraries/copy两库，也不调用979740136 release函数或制造copy-release receipt。Root在原SCI PF上做真实只读完整EOF/7ID前后核查；所有Science体读取仅Root。所有新材料输出、55个context目标事件、8棵完整old/post/final树目标scope及后续完整SQL/pool/spool都纳入同一512MiB/600s/1800s/2GiB/96GiB/current-prefix账本。Root独占claim在EOF或业务前，所有真非零返回、intentional evidence-only child2与未知字段按原义保留，不自动retry。
+
+显式B状态绑定及提取布线
+新的当前B输入binding须固定current CASE fbe336、原B七输入PF、原B deck及仅output-path派生deck逆向、实际消耗的同bytes A目录procedure/geometry PF、原两库PF、原短CWD、fresh observation_directory、exact new observer runtime/build PF、B marker、完整当前温度62-slot/34NU预期Source结构和最新全前缀/caps。它不是warm-B plane2 archive或A1/A2/A3 producer-plan重标。
+producer原collect_state(115–143)可整函数保留，以新的observation_directory及state='B'调用；实际native stage cwd仍记录原库目录，二者不能混淆。需另记录所有文件输出/临时文件路径，不容native往原目录旧名字写入。
+请求器main第73–80行的A-only schema/order/status按这个新B binding严格检查state角色；原A continuation Root1与979740136 release的第82–113行历史gate不移植到B，不造B失败/释放历史。新B采用其真正fresh owning-stage闭合与只读输入lifecycle。
+child.extract第195–198、261行、aggregate第275–277、301行从显式单一observation_state取['B']/B状态键和B scope。extract第205–208、230行改用实际observation_directory而不是native stage cwd。原连续事件解析、每棵XSM完整遍历、types/words/原序保存以及所有pair coverage循环原body保持；真正解码仅Root执行。
+请求器131、139–168行的states['A']与A coverage dictionary改为同一经过binding验证的角色；六phasecontext_state_check整函数和模型不改，只传state='B'。对protected A1/A2/A3三物理producer的compare_raw_macro不做全局“A→B”替换，也不把B观测冒成新三平面历史。
+
+开放gate与停止点
+还须确认实际CLE/LCM输出路径长度与所有native scratch/临时文件不会覆盖原目录、与原guard输出命名空间记录一致；新IO build/Source review/Root publication目前均不存在。完整B空间reserve、六phase结束、55event/8tree实际范围和所有context/operand/multiplicity/正式kernel-control gate仍待真返回，不预测PASS。
+等Root rawreplay61及其post0后才重取最新prefix、形成候选GEN/发布流程；本轮到Source可行性规划为止，不GEN/pub/admit、compile或native。保持B→AAA→reference→ABA顺序，全部广泛资格False。

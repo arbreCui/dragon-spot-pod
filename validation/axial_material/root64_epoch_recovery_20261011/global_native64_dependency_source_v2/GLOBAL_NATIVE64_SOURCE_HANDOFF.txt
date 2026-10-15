@@ -1,0 +1,40 @@
+完整 SPOT native dynamic Source 候选 v2
+
+这是新的完整 Source 与静态接口交付，不是实际全局输运、producer、17 控制、在线 BOOT 或下一 epoch 的通过证据。原 src、先前 v1 和 B1 独立冻结目录未被覆盖。
+
+实际入口：SPOT_GLOBAL_NATIVE_DRIVER64。
+显式接口模块：SPOT_GLOBAL_NATIVE_DRIVER_API。
+原 47 参数以及 v1 8 typed 参数全部同序保留，最后新增 5 参数，总 60：
+INITIAL_BUCKLING64(4) 输入；TERMINAL_BUCKLING64(4)、TERMINAL_DIFHET64(NMERG,NGRP)、TERMINAL_DHOM64(NGRP)、TERMINAL_GAMMA64(NGRP) 输出。
+全部新增参数为真实 REAL64。TYPE3 初始 B2 从实际 typed caller 数组进入，TYPE2 按原数学规则为零。
+
+本目录完整八个待编译 Source：
+driver_source/SPOT_GLOBAL_NATIVE_DRIVER_API.f90
+driver_source/SPOT_GLOBAL_NATIVE_DRIVER64.f
+driver_source/SPOT_FLUKEF_NATIVE64.f
+driver_source/SPOT_FLULPN_NATIVE64.f
+driver_source/SPOT_SPOF_NATIVE64.f
+b1_source/SPOT_B1HOM_NATIVE64.f90
+b1_source/SPOT_B1HXS2_NATIVE64.f
+b1_source/SPOT_B1DIF_NATIVE64.f
+
+实际依赖：GANLIB、SPOMOC_AUDIT、SPOR64_A9 的 FLU2AC64、SPOT1P64_CACHE_MOD/SPOT1P64；原 B1HXS1 的静态整数目录；原 DP B1BETA、B1GAMA、B1SOL、ALSBD，完整 DIF TYPE L 还保留 ALEIGD/ALINVD。原 Source 全 EOF pins 在各 manifest 中；对象/module/lib/compiler 的当前绑定仍由真正 guarded build 完成。
+先编译现有 module prerequisites 与新 API，再编译各完整外部 callee 和 global driver。这些新名字不替换原 src 符号。旧 MCCG native producer 的 55 参数 API 不能调用这个 60 参数全局入口，不能用其固定 8/14/370 尺寸或 publisher 代替 SPOT global 调用者。
+
+修补的实际动态路径：
+全量 INITIAL_FLUX64 -> SPOT driver；首次和 TYPE2 k 更新使用原 FLUKEF 同公式 DP 通量/DP B2/DP DIFHET。
+TYPE3 B1HOM -> B1HXS2 -> B1DIF：flux、weighted XS/scattering、phi、B2、DHOM、GAMMA、LEAK1D 完整 DP，没有迭代场先 REAL 再 DP。
+原 eligible LEAKSW 初始化中的 Todorova FLULPN 也保存完整新 native body；FLXIN/FLTOT/coeffs 全 DP，原静态材料 ST/SCAT1 和求和次序保留。
+private SPOT SIGS correction 的 B2/DIFHET ABI 全 DP。
+SPOT-DIF64(type4) 是每轮保存/重新读取的 authority；DIFFHET(type2) 仅逐 bit demote mirror，缺失 type4 不能从旧 mirror 提升。
+SPOT-B2H64(4)、SPOT-GAM64(NGRP)、SPOT-DHM64(NGRP) 为新 type4 字段。新增字段属于独立协议边界，不继承或篡改旧 21 项 ROOT64-SEAL inventory。
+完整 POD door 仍调用原 SPOT1P64；新 native door 要求真实 RADIAL-OP64 及原 exact type2 mirror 校验，拒绝 legacy-only operator promotion。
+
+终态仍由原 strict 分支实际捕获 flux/source/k/residual/counters，保持原完整 normalization、EPS 和 caps；所有 outputs 入口清空/valid=false，全部原正常写入与新增输出完成后 valid 最后 true。
+DHOM 终态输出在 NMERG=1 时取实际 DIFHET 第一分区；多分区按原 FLULPN integrated-flux 公式及次序从完整最终 normalized flux 求出，只作为输出，不反馈改变原迭代。
+原 EPS=1e-6/MAXIT=50 的 B1DIF 和 ALEIGD MMAX=1000 都保留。
+源内仍保留原非 SPOT、ITYPEC1 GPT、ILEAK>=7 FLUBLN 等正文；它们由原 SPOT/TYPE2or3/ILEAK0or3 门拒绝，不能把这些未准入路径声明为 native64。
+
+真实检查：原文完整 forward/inverse、所有步骤 SHA 与 exact byte offsets、当前 full EOF/7ID、60 参数同序、原 FORMAT Hollerith 正文以及独立交叉 Source 审核。FLULPN 初版未冻结 Source 的 diagnostic token rename 问题已实际修正，原始错误候选与旧 proof/manifest 保存在 Source_repair_history，未编译或运行；最终采用 corrected Source pin，不能使用旧 SHA65b730...。
+
+下一步：新独立真实 SPOT global owning caller，冷启动按原数学初始化，CONT 要全量 native flux 与 native B2 输入；完整 current material/geometry/route/context/Source/tool/input pins；有界编译与实际调用；真实严格 global 结果、原 headers/links 完成、独立 full EOF 当前输出 pins；然后新的 GLOBAL64/source producer 控制和 online BOOT。内部 type4/mirror 一致性不能代替外部 pins，Source-only 没有授上述运行资格。

@@ -1,0 +1,30 @@
+--- 
++++ 
+@@ -98,16 +98,23 @@
+ 
+ 
+ def digest(path):
+-    path=normal(path);fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
++    path=normal(path);endpoint_before=path.lstat()
++    if not stat.S_ISREG(endpoint_before.st_mode):raise ValueError('regular byte input required')
++    keys=('st_dev','st_ino','st_mode','st_size','st_mtime_ns','st_ctime_ns','st_nlink')
++    signature=lambda info:tuple(getattr(info,k)for k in keys)
++    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+     try:
+         first=os.fstat(fd)
+-        if not stat.S_ISREG(first.st_mode):raise ValueError('regular byte input required')
++        if not stat.S_ISREG(first.st_mode)or signature(endpoint_before)!=signature(first):
++            raise ValueError('pathname identity changed before opened byte input')
+         h=hashlib.sha256();size=0
+         while raw:=os.read(fd,8*2**20):h.update(raw);size+=len(raw)
+         last=os.fstat(fd)
+-        keys=('st_dev','st_ino','st_size','st_mtime_ns','st_ctime_ns')
+-        if tuple(getattr(first,k)for k in keys)!=tuple(getattr(last,k)for k in keys)or size!=first.st_size:
++        if signature(first)!=signature(last)or size!=first.st_size:
+             raise ValueError('input changed during fresh byte read')
++        normal(path);endpoint_after=path.lstat()
++        if not stat.S_ISREG(endpoint_after.st_mode)or signature(endpoint_after)!=signature(last):
++            raise ValueError('pathname identity changed during fresh byte read')
+         return h.hexdigest(),size
+     finally:os.close(fd)
+ 

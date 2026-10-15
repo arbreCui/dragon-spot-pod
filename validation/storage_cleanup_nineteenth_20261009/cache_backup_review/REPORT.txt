@@ -1,0 +1,5 @@
+第十九轮普通缓存/备份有限只读复查：NOOP，新可安全删除项0；未删除或修改项目，无业务/编译/native。
+R18后已退役1372份core产物仍缺席，不重复列收益。剩余15个.o与R18 frozen/current source引用保留集合和七身份一致；根build/target/dist/vendor/tmp等没有新增。
+现存159个已知Python缓存七身份与R18完整记录相同：logical4,254,785B、allocated4,534,272B。全部命中当前冻结读取、完整历史资源根或明确current canonical源衍生缓存位置，严格排除，不因可生成便移除。
+非ART显式含ignored的常见.bak/.orig/~/.tmp/.temp/.backup/.log.bak/.pyc/.pyo筛选只出现2个原frozen_AAA衍生.pyc：validation/axial_material/__pycache__/frozen_AAA_axial_sensitivities.cpython-312.pyc和frozen_AAA_axial_sensitivities_metadata.cpython-312.pyc；它们原已明确HOLD，配套源仍在当前canonical集合。无新增常见备份或临时文件。
+R18约55KiB的5份旧审计源码支持副本继续保留；收益低且有来源/恢复说明价值。所有结果/失败/日志/永久恢复资料和当前37,395读集、35,647主本、声明环境及源码缓存位置均保留。没有重复扫描整个artifacts/Git历史或读取35GB科学内容；本结论仅覆盖上述有限常见缓存/备份范围，不宣称全部旧数据不可精简。

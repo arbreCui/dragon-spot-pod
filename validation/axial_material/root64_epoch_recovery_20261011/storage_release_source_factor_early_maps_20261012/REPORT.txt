@@ -1,0 +1,64 @@
+第三批：source-factor branch 早期六个中间 raw 的精确释放审查，2026-10-12
+
+本包只准备和实际只读验证；实际删除结果以
+ACTUAL_EXACT_SIX_RELEASE_EXECUTION_RECEIPT.json 为准。
+
+EXACT_6_SOURCE_FACTOR_EARLY_MAP_RAW_MANIFEST.json
+SHA256: 1ac420e7ae426a30b0d10f906e24e5fb58b63b5996291d5b4662b41d5261549c
+7ID: [16777234,49790964,33188,1,1944956,1791753055906001491,1791753055906001491]
+
+目标仅为 /Users/wen/spot/validation/artifacts/
+axial-material-production-qualified-AB-source-factor-20261006/
+AAA/map001 和 AAA/map002 各自的 closed_snapshots.xsm、
+candidate_snapshots.xsm、candidate_radial.xsm，共六个普通、nlink=1 文件。
+完整绝对路径、完整 EOF SHA256 和 7ID 已逐项固定。
+精确合计 1,427,734,232 B。没有目录删除、map003 或后续 map 匹配。
+
+该 branch 实际完成 12 maps，最终数值状态 VALID_MET，整体
+WAITING_REFERENCE；两早期阶段 result.json 为 SEALED_STAGE_OUTPUTS。
+这些是已被后续 map 替代的早期中间 raw，不能称为失败运行输出。
+其结果、性能、accuracy、日志和来源全部保留；map003 至 map012、
+bootstrap、training、runtime 和其他内容均保留。完整固定保留 branch
+另外 353 个普通文件的完整 EOF SHA/7ID、89 个 symlink 及完整目录清点。
+六 raw 消失后将失去这两早期阶段的部分原 raw 回放输入；保存结果
+文档不等于能够重放所删 raw。最终 raw 及成功科学基线仍保留。
+
+保护 3,638 个唯一完整 pins，包含此前 3,429 项、当前 A2/A3 实际
+fixed/owned/output 与报告、A23 Source freeze，全部 saved-data AAA
+1129 输入和源码，及新的正式 rank1/三独立 producer 输入计划与
+九份 Fortran Source freeze。A2/A3 9427 条 fixed 输入中有大量重复，
+仅合并完全相同的 full pin，不丢弃唯一依赖。六目标路径和 dev/inode
+均与这些当前/计划依赖排除；实际完整 EOF 核验通过。
+
+没有仅凭 pins 不重合断言引用消失。已读九份实际新 Fortran：
+APACKX64 的七 operands 是四 fresh outputs 和三原 A1/A2/A3 只读归档，
+分别检查 own case、plane/e0、LISTDIM1、full370x14 NativeREAD，
+再对全部六 lists 逐 item LCMEQU 和 whole-tree readback。
+SPOBOOX64 的相对文件构造仅为 BOOT-SOLVED-STAGE.xsm、BOOT-MAC-1..3.xsm
+和 BOOT-Q-1..3.xsm，拒绝 existing 文件后创建 private outputs；
+当前 context/system 通过只读 kentry operands 传入。
+新 Source 中无旧 branch 绝对路径及所选三个 raw 文件名。
+
+PROTECTED_FORMAL_AND_PRODUCER_INPUTS.json（SHA3948281d4f69755af3b1ab2ee8d14fa6ab444e2450db17adc51e21be7aedffab）
+明确 formal 为 rank1-factor-cache-20261007 的 training/bootstrap 与
+正式 admission；原 A1/A2/A3 report/raw/rays 独立固定。旧 source-factor
+中间 raw used=false。COMPLETE_FORTRAN_SOURCE_FREEZE.json（SHA5bb9e5c9cd8f41a6985a3b61b23ee56db61aa94af0f1d0d1ff8fb906d0aa426b）
+为 Source-only freeze：未编译、未输运，完整 host 当时尚未实现。
+不能把此引用排除审查扩大成未实现 host 已运行/物理通过的证明。
+
+实际准备 c51047/session51057 -> f03224 EXIT0。
+实际执行前只读验证 dea84a/session5370 -> 9b2cfb EXIT0。
+ACTUAL_READONLY_EXACT_SIX_VERIFICATION_RECEIPT.json
+SHA256: a72151feb8ee2bc6a641537415df540f62380f308727d6b0b0f2221b42425b5c
+7ID: [16777234,49791026,33188,1,175340,1791753106832041999,1791753106832041999]
+没有由准备或只读验证程序删除文件或启动科学计算。
+
+执行程序默认只读；--execute 才按外部 Root 精确 manifest SHA/7ID
+执行。先完整核验 Source、branch/stage 结果、当前/计划依赖、六目标、
+353 保留文件及目录/symlink 清点；每个 unlink 前再次完整核验单一
+目标，记录逐文件删除结果。删除后完整核验所有保留和保护 pins，
+要求历史逻辑字节精确减少 1,427,734,232 B、普通文件数精确少六。
+任一偏差停止且不自动重试。Root 应串行执行，不与 artifact 写入重叠。
+原历史 96 GiB、cold reserve、metadata/fresh 预留和 free floor 不改。
+流式读取块 1 MiB、SELF 限制 512 MiB、全程 1800 秒。
+释放不构成三平面、在线 BOOT、AAA、ABA 或整个 goal 完成。

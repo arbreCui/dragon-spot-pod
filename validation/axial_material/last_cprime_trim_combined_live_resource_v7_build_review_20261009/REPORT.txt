@@ -1,0 +1,23 @@
+SPOT V7组合实际构建失败记录（2026-10-09）
+
+真实RUN 04bc80/session22133 → 039869退出1，已关闭。
+前四个link/objects/executable/dependencies阶段PASS，第五Python审计失败：
+PID 95651，实采峰值516.78125 MiB触原512门；
+child 8.433607915998437秒，stage 9.486855000024661秒，
+真实整driver 250.95634183299262秒；return -15，own-child/group清理True。
+完整STDOUT 0 B / STDERR 1212 B保存，
+原driver、五stage、watch、日志及Root失败receipt保留。没有seal或审计result，
+四项成功tail均None，不能发布组合/在线API/冷启动或AAA/ABA通过。
+Root失败receipt保存在对应TERM/terminal_return.json；原driver_result.json另有完整metadata。终态pin：
+7f555a40cc7867e99537a550b1d94d70d116afd35b56a17625d37a8cc17f8679
+
+本轮实际PREP退出0且独审PASS_INPUT_ONLY；图67104987 B余3877 B，225完整roots；
+原七项INPUT及所有物理数据/限额完整，不继承V6失败的成功信用。
+855519私有owner生命周期tiny/source证明不足以证明真正运行RSS适合。
+现有记录只定位Python audit-child超限，不足以定位原失败代码行或函数。
+V7 bounded入口与cold脚本source-only独审PASS但未来真实success字段None；
+暂不执行它们，不重试同一V7失败family。原native/fullFLU/AAA/ABA仍False。
+下一步核对实际audit-build前缀和临时分配，再建立必要的有界独立诊断。
+
+实际失败终态独审PASS（不等于构建PASS）：independent_actual_failure_review.json
+SHA 33bc79cf6c604c1f51efa60eb79e138fac718ec6bb1903dd944d65fe8995da00。

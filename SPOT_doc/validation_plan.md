@@ -1,535 +1,266 @@
-# SPOT validation plan
-
-Validation follows the dependencies of the method. A later benchmark cannot
-repair an incorrect source, state, map, or unconverged inner solve.
-
-## 1. Algebra and interface gate
-
-Without transport execution, verify:
-
-- volume-weighted POD construction, reconstruction and rank behavior;
-- $p=Ba$ and the stored Gram metric;
-- frozen fission source $\mathcal F(Ba)/k$;
-- final off-group scattering with no second fission evaluation;
-- radial-response and leakage signs;
-- canonical state $x=(a,1/k,L)$;
-- separate $(R_\rho,R_L,R_a)$ defects;
-- direct substitution and the three-component AND stopping rule;
-- fail-closed radial and axial inner iteration caps.
-
-Status: PASS. Run with `make spot-fast`.
-
-## 2. One real map
-
-For one frozen input, evaluate $x^+=G(x)$. Require:
-
-- strict radial and axial inner terminals;
-- finite positive physical flux;
-- radial source identity and balance;
-- unchanged POD basis and rank;
-- independently recomputed defects;
-- consistent restart leakage ordering.
-
-Status: PASS for the accepted real-map records through the final x8. The x8
-classification is `VALID_NOT_MET`; its independent checker and publication
-receipt both pass.
-
-## 3. Fixed-point iteration
-
-Run direct updates
-
-$$
-x_{m+1}=G(x_m)
-$$
-
-without relaxation or parameter changes. At every step report all three
-defects. If any inner solve fails its strict terminal, $G(x_m)$ was not
-evaluated and the run fails closed. If all three outer defects do not pass,
-the last state is not a converged solution.
-
-Status: DIRECT CENSUS COMPLETE, NOT CONVERGED through x8. The final result is
-
-$$
-(R_\rho,R_L,R_a)=
-(6.4057635\times10^{-8},\,
-3.7849612\times10^{-4},\,
-2.6731298\times10^{-7})
-$$
-
-at an outer tolerance of $5\times10^{-7}$.
-
-A single real leakage-Anderson candidate worsened the leakage and modal
-defects relative to direct $x_6$; that rank-1 candidate is rejected. It does
-not reject Anderson methods in general.
-
-Next: stop direct Picard. The predeclared x8 endpoint was evaluated once and
-no x9 is defined. The no-transport x6--x8 direction audit is complete: the
-latest leakage residuals are nearly opposite in a separately labelled
-height-$L_2$ diagnostic, and their unique production infinity hotspot stays
-at plane 3/group 325 while reversing sign and growing. This motivates but
-does not select a solver or prove a cycle. Any nonlinear-solver study must be
-declared separately for the same $F(x)=G(x)-x$ and may not alter the physical
-map.
-
-The separately declared rank-2 sensitivity route has since produced two
-valid maps. The second map reduced all three defects but remains
-`VALID_NOT_MET`. Its full modal updates are strongly opposed and shrink only
-to `0.864118`, while the leakage update shrinks to `0.024606`. These are
-local two-update diagnostics, not convergence factors or cycle evidence, and
-no third direct rank-2 map is defined.
-
-The selected next study is therefore one offline modal-projected Anderson(1)
-proposal in the full Gram-height metric. The unique minimizer of that stated
-scalar least-squares problem gives latest-state weight
-`0.5388643265136009`. The same scalar would
-act on the complete state, but no mixed-unit whole-state norm is formed and
-no empirical relaxation factor is prescribed. The publication-aware proposal
-has now been materialized deterministically. Its independent Ganlib-only
-audit passes the fixed-basis, binary publication, x2 carrier and 8880-point
-strict-positivity checks. That publication stage remains correctly classified
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; it did not itself evaluate `G_2(y)`.
-See
-[../validation/iterative/rank2_solver_decision.md](../validation/iterative/rank2_solver_decision.md)
-and
-[../validation/iterative/rank2_modal_aa1_candidate_result.md](../validation/iterative/rank2_modal_aa1_candidate_result.md).
-
-The proposal has now been followed by one separately authorized fresh strict
-evaluation $z=G_2(y_{\rm pub})$. The physical chain and all independent
-validity checks pass, but the result is `VALID_NOT_MET`:
-
-\[
-(R_\rho,R_L,R_a)=
-(6.5763515\times10^{-5},\,2.2656585\times10^{-3},\,
-4.6646819\times10^{-4}),
-\]
-
-so every stopping component remains above $5\times10^{-7}$. Each is smaller
-than in the direct second rank-2 map for this one frozen comparison. That is
-useful local response evidence, not an asymptotic factor, solver ranking,
-rank qualification or physical-accuracy result. The run had no retry and
-defines no next map. See
-[../validation/iterative/rank2_modal_aa1_map_result.md](../validation/iterative/rank2_modal_aa1_map_result.md).
-
-The next depth-one history update has now been checked offline using the two
-actual evaluated pairs $x_1\to x_2$ and $y_{\rm pub}\to z$. The unique
-full-Gram modal coefficient gives weight `0.9302745506696768` to $z$, and the
-possible next raw affine state formula is
-$(1-\beta_z)x_2+\beta_z z$. Its canonical publication preflight is finite and
-all 8880 reconstructed points remain strictly positive. The proposal has now
-been deterministically materialized and independently verified with the
-audited `z` raw-flux/snapshot carrier. It is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no fresh map or stopping defect has
-been generated. See
-[../validation/iterative/rank2_modal_aa1_next_history_result.md](../validation/iterative/rank2_modal_aa1_next_history_result.md)
-and
-[../validation/iterative/rank2_modal_aa1_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_next_candidate_result.md).
-
-The separately authorized single map from that `Z-RAW-FLUX` proposal has now
-completed without retry. The decks, rank, tolerance and physics remained
-unchanged; the carrier preflight, strict terminals, independent audit and
-receipt pass. Its classification is `VALID_NOT_MET`, with
-\((R_\rho,R_L,R_a)=(8.34905\times10^{-7},8.67273\times10^{-4},
-4.44166\times10^{-5})\). No subsequent map was started; see
-[../validation/iterative/rank2_modal_aa1_next_map_result.md](../validation/iterative/rank2_modal_aa1_next_map_result.md).
-
-The latest solver decision is again read-only. From the two actual proposal
-maps \(y_{\rm pub}\to z\) and \(w_{\rm pub}\to v\), the same full modal
-Gram-height least-squares formula gives the unique unclipped weight
-`0.956973882871698711` on \(v\). The publication and strict-positivity
-preflights pass. The proposal has now been deterministically materialized by
-copying the latest returned \(v\) carrier and publishing only the affine
-state fields. Its independent audit binds all other AX and snapshot payload
-bitwise to \(v\), apart from the explicitly published fields and declared
-stale-record removals; it verifies the lagged \(w_{\rm pub}\to v\) lifecycle
-and passes strict positivity. The classification is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no map or Dragon run exists. See
-[../validation/iterative/rank2_modal_aa1_u_history_result.md](../validation/iterative/rank2_modal_aa1_u_history_result.md)
-and
-[../validation/iterative/rank2_modal_aa1_u_candidate_result.md](../validation/iterative/rank2_modal_aa1_u_candidate_result.md).
-
-The exact `V-RAW-FLUX` entry was then used for one separately authorized
-\(G_2(u_{\rm pub})\) evaluation. The unchanged four solves, independent audit
-and receipt pass, but the map is `VALID_NOT_MET`:
-\((R_\rho,R_L,R_a)=(8.34905\times10^{-7},4.03982\times10^{-4},
-1.43357\times10^{-5})\). The leakage and modal defects decreased locally,
-while \(R_\rho\) increased very slightly; this is not evidence of asymptotic
-convergence, rank adequacy or physical accuracy. There was no retry, and no
-successor was started automatically; see
-[../validation/iterative/rank2_modal_aa1_u_map_result.md](../validation/iterative/rank2_modal_aa1_u_map_result.md).
-
-A later separately authorized direct Picard continuation from the returned
-state completed exactly once. It is valid but `VALID_NOT_MET`, with
-\((R_\rho,R_L,R_a)=(6.42235\times10^{-7},5.21752\times10^{-4},
-7.24633\times10^{-6})\). Relative to the preceding map, \(R_\rho\) and
-\(R_a\) decreased while \(R_L\) increased by about 29.2%. This mixed trend is
-not evidence of convergence, divergence, rank adequacy or physical accuracy.
-No successor map was started; see
-[../validation/iterative/rank2_modal_aa1_u_next_map_result.md](../validation/iterative/rank2_modal_aa1_u_next_map_result.md).
-
-A read-only REAL64 localization subsequently showed that the two adjacent
-\(R_L\) denominators are identical. The 29.1523% rebound therefore comes from
-the larger \(D_L\): its unique hotspot moved from snapshot 1/group 328 with a
-positive increment to snapshot 1/group 326 with a larger negative increment.
-This is evidence of a local oscillatory tendency, not proof of a two-cycle or
-its cause. No Dragon or new map was run; see
-[../validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md](../validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md).
-
-The two genuinely consecutive returned maps now support one short offline
-standard Anderson(1) publication. In the unchanged Gram-height modal metric,
-the unique latest-output weight is `0.6723407962072613`; no clipping or fitted
-coefficient is used. The same scalar publishes `(A,rho,L)`, while the raw AX
-and snapshot payload remain the complete latest returned \(x_3\) carrier,
-explicitly marked `X3-RAW-FLUX`. The independent no-Dragon checker passes
-the affine identities, actual \(x_2\to x_3\) lagged lifecycle and 8880/8880
-strictly positive reconstructions. This stage is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; it supplies no new stopping residual
-or convergence conclusion. See
-[../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](../validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).
-
-The corresponding default-off physical-map host was then executed once under
-separate authorization, with no retry. Its strict `proposal-x3` preflight,
-three radial terminals, axial terminal, independent audit and receipt all
-pass. The result is `VALID_NOT_MET`:
-
-\[
-(R_\rho,R_L,R_a)=
-(1.2844695\times10^{-7},\,4.2083074\times10^{-4},\,
-1.6578761\times10^{-6}).
-\]
-
-Only $R_\rho$ passes the unchanged `5.0e-7` gate. The lower defects relative
-to the immediately preceding direct Picard map are a cross-input comparison,
-not a convergence factor, contraction proof or solver ranking; relative to
-an earlier proposal map, $R_L$ is about 4.17% higher. No successor map was
-started. See
-[../validation/iterative/rank2_modal_aa1_consecutive_map_result.md](../validation/iterative/rank2_modal_aa1_consecutive_map_result.md).
-
-The following step is again offline. From the two evaluated pairs
-$x_2\to x_3$ and
-$x_{\mathrm{AA1}}\to x_{\mathrm{AA1}}^+$, the standard depth-one modal
-formula gives the unique unclipped weight `0.8591556991759952` on
-$x_{\mathrm{AA1}}^+$. The resulting proposal is
-
-\[
-x_{\mathrm{next}}=
-0.1408443008240048x_3+
-0.8591556991759952x_{\mathrm{AA1}}^+.
-\]
-
-Its independent publication and carrier audit passes, including 8880/8880
-positive reconstructions. The classification is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no physical map, stopping defect or
-convergence conclusion was produced. See
-[../validation/iterative/rank2_modal_aa1_post_candidate_result.md](../validation/iterative/rank2_modal_aa1_post_candidate_result.md).
-
-The dedicated default-off host was then authorized exactly once, with no
-retry. Its `AA1-RAW-FLUX` preflight, three radial terminals, axial terminal,
-independent audit and receipt all pass. The result is `VALID_NOT_MET`:
-
-\[
-(R_\rho,R_L,R_a)=
-(6.4223481\times10^{-8},\,4.5636753\times10^{-4},\,
-1.3428559\times10^{-6}).
-\]
-
-Only $R_\rho$ passes the unchanged `5.0e-7` gate. Relative to the preceding
-evaluated proposal map, $R_L$ and $D_L$ rose about 8.44%; this mixed
-cross-input response is not a convergence factor or proof of Anderson
-superiority. No successor map was started. See
-[../validation/iterative/rank2_modal_aa1_post_map_result.md](../validation/iterative/rank2_modal_aa1_post_map_result.md).
-
-The two latest valid map pairs subsequently define one standard rolling
-depth-one proposal without another solve:
-
-\[
-x_{\mathrm{roll}}=
-0.4392205811942803x_{\mathrm{AA1}}^+
-+0.5607794188057197x_{\mathrm{next}}^+.
-\]
-
-The Gram-height coefficient is unique, naturally convex and unmodified. Its
-independent no-Dragon checker passes the complete `XNP-RAW-FLUX` carrier,
-the actual \(x_{\mathrm{next}}\to x_{\mathrm{next}}^+\) snapshot lifecycle
-and 8880/8880 positive reconstructions. The classification is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; its offline modal residual prediction
-is not a real stopping defect, and no physical-map host or successor map was
-created. See
-[../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).
-
-The dedicated host was subsequently activated exactly once, with no retry.
-The strict `XNP-RAW-FLUX` preflight, all three radial terminals, the axial
-terminal, independent audit and receipt pass. The result is
-`VALID_NOT_MET`:
-
-\[
-(R_\rho,R_L,R_a)=
-(0,\ 3.6004863\times10^{-4},\ 1.4537807\times10^{-6}).
-\]
-
-Only $R_\rho$ passes `5.0e-7`. Relative to the preceding evaluated map,
-$R_L$ and diagnostic $D_L$ fell about 21.1%, while $R_a$ rose about 8.26%.
-This is a different-parent comparison, not a convergence factor or monotone
-convergence evidence. No successor proposal or map was started; see
-[../validation/iterative/rank2_modal_aa1_rolling_map_result.md](../validation/iterative/rank2_modal_aa1_rolling_map_result.md).
-
-The latest two valid map pairs were then used in one further no-Dragon,
-standard depth-one update:
-
-\[
-x_{\mathrm{roll2}}=
-0.79412955189905154x_{\mathrm{next}}^+
-+0.20587044810094848x_{\mathrm{roll}}^+.
-\]
-
-The coefficient was neither clipped nor tuned. The independent checker passes
-the fixed rank-two publication, complete latest `XRP-RAW-FLUX` carrier, true
-\(x_{\mathrm{roll}}\to x_{\mathrm{roll}}^+\) snapshot lifecycle and
-8880/8880 positive reconstructions. The classification is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; this stage produced no new stopping
-defect, map or convergence conclusion. See
-[../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](../validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).
-
-The dedicated default-off host was subsequently activated exactly once, with
-no retry. The `XRP-RAW-FLUX` preflight, three radial terminals, axial
-terminal, independent audit and 21-entry receipt all pass. The unchanged
-three-component gate gives
-
-\[
-(R_\rho,R_L,R_a)=
-(1.2844695063\times10^{-7},
-4.1544793332\times10^{-4},
-7.7744806612\times10^{-7}),
-\]
-
-so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
-remains the dominant failure. The mixed comparison with the preceding
-different-parent map is not a convergence factor or monotonicity evidence.
-No retry or successor map was started; see
-[../validation/iterative/rank2_modal_aa1_rolling_next_map_result.md](../validation/iterative/rank2_modal_aa1_rolling_next_map_result.md).
-
-The latest three valid fixed-rank map residuals were subsequently used in one
-standard, unregularized AA(2) solve in the unchanged Gram-height metric. It
-materialized
-
-\[
-x_{\mathrm{AA2}}=
-0.7766427453x_{\mathrm{next}}^+
--0.5452141528x_{\mathrm{roll}}^+
-+0.7685714076x_{\mathrm{roll2}}^+.
-\]
-
-The two-by-two determinant is finite and strictly positive. No condition
-threshold, pseudoinverse, nonnegativity constraint or lower-depth fallback was
-used. The independent checker passes fixed rank two, exact publication,
-latest returned carrier and 8880/8880 positive reconstructions. The result is
-`MATERIALIZED_PROPOSAL_NOT_EVALUATED`; no Dragon calculation, map or stopping
-defect was produced. See
-[../validation/iterative/rank2_modal_aa2_candidate_result.md](../validation/iterative/rank2_modal_aa2_candidate_result.md).
-
-The dedicated host was subsequently activated exactly once, with no retry.
-The `AA2-RAW-FLUX` preflight, three radial terminals, axial terminal,
-independent audit and 21-entry receipt all pass. The unchanged
-three-component gate gives
-
-\[
-(R_\rho,R_L,R_a)=
-(6.4223480867\times10^{-8},
-5.0408972648\times10^{-4},
-1.0079586253\times10^{-6}),
-\]
-
-so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
-remains the dominant failure. The comparison with the preceding
-different-parent map is not a convergence factor or monotonicity evidence.
-No retry or successor was started as part of that map evaluation; see
-[../validation/iterative/rank2_modal_aa2_map_result.md](../validation/iterative/rank2_modal_aa2_map_result.md).
-
-The three-pair window was then shifted forward once, offline, to
-\((x_{\mathrm{roll}},x_{\mathrm{roll2}},x_{\mathrm{AA2}})\). The same exact
-AA(2) system materialized
-
-\[
-x_{\mathrm{rAA2}}=
--1.2827949098x_{\mathrm{roll}}^+
-+0.2370041391x_{\mathrm{roll2}}^+
-+2.0457907708x_{\mathrm{AA2}}^+.
-\]
-
-The determinant is finite and positive. No condition threshold,
-regularization, pseudoinverse, clipping or fallback was used; the independent
-checker passes exact publication and 8880/8880 positive reconstructions. The
-classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map,
-stopping defect or map host was produced as part of that offline stage. See
-[../validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md).
-
-The dedicated host was subsequently activated exactly once. The strict
-carrier preflight, three radial terminals, axial terminal, independent audit
-and 21-entry receipt pass. The unchanged gate gives
-
-\[
-(R_\rho,R_L,R_a)=
-(1.2844697306\times10^{-7},
-1.1701447564\times10^{-3},
-1.7994707454\times10^{-6}),
-\]
-
-so the classification is `VALID_NOT_MET`. Only \(R_\rho\) passes; leakage
-remains the dominant failure. All three stopping defects are higher than in
-the preceding different-parent map. This is not a convergence factor,
-stability result or general Anderson(2) comparison. No retry or successor was
-started as part of that map evaluation; see
-[../validation/iterative/rank2_modal_aa2_rolling_next_map_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_map_result.md).
-
-The complete returned state was then used directly as the parent of exactly
-one Picard successor, with no mixing or retry. All four strict solve
-terminals, the independent continued-state audit and the 21-entry receipt
-pass. The unchanged gate gives
-
-\[
-(R_\rho,R_L,R_a)=
-(6.4223469765\times10^{-8},
-6.2880209149\times10^{-4},
-1.4780076244\times10^{-6}),
-\]
-
-so the classification is `VALID_NOT_MET`: only \(R_\rho\) passes. Relative
-to its direct parent, the three stopping defects decreased by approximately
-50.0%, 46.26% and 17.86%. This single local componentwise improvement is not
-a convergence factor, contraction result, convergence-order measurement or
-future prediction. No retry or further successor was started; see
-[../validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md](../validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md).
-
-A subsequent Ganlib-only three-state audit reproduced both adjacent maps'
-raw defects bit for bit. Their unique \(D_L\) hotspot is the same snapshot
-1/group 327 component, where the signed update changes from
-`+1.7144775e-6` to `-9.2131086e-7 cm^-1`. Both \(R_L\) values use the same
-leakage scale, so the local 46.26% decrease is an absolute-update decrease,
-not a normalization effect. The height-\(L_2\) leakage cosine is
-`-0.713236`; this is locally damped oscillatory evidence, not contraction.
-The inner terminal contract passes and the outer map remains unclosed, but
-without a same-parent tighter solve or rank-three counterfactual the audit
-does not assign the cause to finite inner error or rank two. No Dragon or new
-map was run as part of that audit; see
-[../validation/iterative/rank2_latest_picard_direction_result.md](../validation/iterative/rank2_latest_picard_direction_result.md).
-
-The complete latest returned state was subsequently used for exactly one
-further direct Picard map. All strict solve terminals, the independent audit
-and the 21-entry receipt pass. The unchanged gate gives
-
-\[
-(R_\rho,R_L,R_a)=
-(6.4223469765\times10^{-8},
-4.7549513628\times10^{-4},
-2.9019323645\times10^{-6}),
-\]
-
-so the result is `VALID_NOT_MET`. Relative to its direct parent, \(R_L\)
-falls about 24.38%, while \(R_a\) rises about 96.34%. This mixed update is
-not evidence of convergence, divergence, a cycle or contraction. No retry or
-further map was started; see
-[../validation/iterative/rank2_latest_picard_next_map_result.md](../validation/iterative/rank2_latest_picard_next_map_result.md).
-
-The latest two direct modal residuals were then compared offline in the
-unchanged Gram-height metric. Their cosine is `-0.985084` and their norm ratio
-is `1.963408`, so the smallest parameter-free next proposal is standard
-modal Anderson(1):
-
-\[
-y=0.6636421413x_3+0.3363578587x_4.
-\]
-
-The unique coefficient was not clipped or prescribed. The publication-aware
-state \(Q(y)\) has been materialized and independently checked; all 8880
-reconstructed rank-two points are positive and the complete \(x_4\) raw
-carrier is retained. This is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no
-Dragon, map, stopping defect or map host was produced. See
-[../validation/iterative/rank2_latest_modal_aa1_candidate_result.md](../validation/iterative/rank2_latest_modal_aa1_candidate_result.md).
-
-The unchanged physical map was subsequently evaluated from \(Q(y)\) exactly
-once. Its strict X4-carrier preflight, three online radial solves, one axial
-solve, independent audit and 21-entry receipt pass. The original AND gate
-gives
-
-\[
-(R_\rho,R_L,R_a)=
-(6.4223469765\times10^{-8},
-6.5357267459\times10^{-4},
-8.4905089528\times10^{-7}),
-\]
-
-so the result is `VALID_NOT_MET`: only \(R_\rho\) passes. Relative to the
-historical direct \(x_4=G_2(x_3)\) map, \(R_a\) falls by about 70.74% while
-\(R_L\) rises by about 37.45%. This mixed response establishes neither
-convergence nor an AA(1) verdict. No retry or successor was started; see
-[../validation/iterative/rank2_latest_modal_aa1_map_result.md](../validation/iterative/rank2_latest_modal_aa1_map_result.md).
-
-The latest direct and proposal-map residuals were then audited offline with
-the same standard modal Anderson(1) formula. The unique unclipped weight on
-the latest returned state is `0.7766660303945517`, giving
-
-\[
-t=0.2233339696054483x_4+0.7766660303945517z.
-\]
-
-The fixed-rank publication $Q(t)$ was materialized without Dragon. Its
-independent `Z-RAW-FLUX` carrier audit and 8880/8880 positivity preflight
-pass. This offline stage itself generated no stopping defect.
-
-The unchanged $G_2(Q(t))$ was subsequently attempted exactly once with no
-retry. The carrier preflight and all three online radial strict terminals
-passed. The axial route reached the `AX_CURRENT := FLU` invocation but
-produced neither a FLU begin marker nor a strict terminal before the
-predeclared 80-second process bound, so the only valid classification is
-`INVALID_MAP / TIMEOUT_BEFORE_TERMINAL`. No candidate, $R_\rho$, $R_L$,
-$D_L$, or $R_a$ was published. A process timeout is not evidence of physical
-nonconvergence; see
-[../validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md](../validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md).
-A no-Dragon timing census found 14 strict historical completions with the
-identical axial deck under the established 420-second process cap. Their CPU
-records span 132--141 seconds, but exact wall times are unavailable; the
-census therefore supports only that 80 seconds was insufficient for this
-attempt, not a minimum safe bound or a completion prediction.
-
-The solver-independent proposal and acceptance contract is now frozen and
-passes exact-arithmetic manufactured tests. A full exact-Newton step is used
-only as a parameter-free algebraic reference. Real SPOT has no validated
-exact Jacobian, so no Newton/JFNK production path or new transport run is
-authorized by this result.
-
-A no-transport finite-difference entry probe also passes. It shows that the
-same linear manufactured direction can be hidden or distorted by binary32
-state publication. This is a local counterexample to assuming a smooth
-binary64 $Jv$, not a proof that JFNK is impossible; Krylov implementation
-remains out of scope.
-
-## 4. Numerical qualification
-
-Only after a reproducible fixed point exists, vary one choice at a time:
-
-1. POD rank;
-2. radial and axial meshes;
-3. angular quadrature;
-4. energy groups;
-5. inner solver tolerances.
-
-Rank is accepted only when the self-consistent state and declared observables
-are stable under rank increase. It is never calibrated to a desired answer.
-
-Prequalification diagnostic: the frozen three-snapshot spectra have been
-read without transport. The worst optimal within-group reconstruction error
-is 1.5004% at rank 1 and 0.03408% at rank 2; all groups have numerical rank
-3. This does not qualify rank 2 or identify the cause of Picard failure. It
-only establishes that a later rank-increase study is scientifically
-motivated.
-
-## 5. Reference validation
-
-Compare the numerically qualified SPOT fixed point with an independent
-higher-fidelity transport reference using predeclared observables such as
-eigenvalue, plane power, axial shape and reaction rates. Keep equation and
-iteration errors separate from model-to-reference differences.
-
-The concise current evidence is
-[../validation/iterative/current_result.md](../validation/iterative/current_result.md).
-Historical diagnostics are preserved at Git tag
-`archive-pre-lean-20260814`.
+# SPOT validation and research plan
+
+The research question is: **what accuracy and total computational cost can a
+fixed radial POD space achieve in an iterative 2D/1D neutron-transport method?**
+The immediate case is the repaired D4-A component. Extending to a full core is
+a later milestone. The method and its closure approximations are defined in
+[rederivation.md](rederivation.md).
+
+[Live execution status](../validation/iterative/d4a_final_validation_handoff.md),
+[operator commands](../validation/iterative/D4A_CORRECTED_QUICKSTART.md), and
+[release acceptance](../validation/iterative/d4a_corrected_acceptance_matrix.md)
+have distinct owners. This plan does not duplicate their changing map numbers.
+The [saved-evidence report](../validation/d4_reference/d4a_evidence_report.md)
+provides a dated numerical baseline and can be regenerated without transport.
+
+## Evidence already available
+
+Weighted POD algebra, frozen-source identities, the Gram metric, source moments,
+strict inner stopping, state lifecycle and the outer AND gate have software
+checks. Real repaired coupled maps and independently replayed NOT_MET results
+exist. The completed CE reference provides k, leakage and normalized nu-fission
+fractions. It has no direct flux or heating tally.
+
+Material and scattering repairs are prerequisites for the current chain.
+Historical pin-cell fixed points and superseded D4 MET records cannot fill
+current physical-validation gaps. A smaller update or projection residual is
+not an eigenvalue-error bound.
+
+## Finite experiment matrix
+
+Run comparisons on isolated copies. Hold geometry, material state, nuclear data,
+boundaries and all unlisted settings fixed. Each experiment produces differences
+and a conclusion about its stated hypothesis, not a fitted correction.
+Preparation and read-only analysis can proceed while the current baseline runs.
+
+| Priority / question | Comparison and controlled change | What it resolves | Stop / decision |
+| --- | --- | --- | --- |
+| A. Does the declared coupled map have a reproducible fixed point? | Continue the existing bounded baseline with unchanged rank, runtime and thresholds. Independently replay all three defects. | Iteration error for this discretization. | Stop at the first MET or invalid inner solve/budget boundary; MET alone does not close accuracy. |
+| B. Can the saved cross sections support a same-data reference? | Audit current raw `MGXEXP` P0 sums versus SIGS00 by mixture and incident group; then trace discrepant isotope records through the library/TONE/macrolib path. | Locates the obstacle to a matched multigroup reference before launching another transport study. | Do not normalize away mismatches or clip negative probabilities. If MC cannot represent the operator, use a deterministic same-operator reference. |
+| C. Does the axial inner solve depend materially on the initial guess? | Same saved SYSTEM/TRACK/MACRO and executable; restart from a saved terminal and compare with a cold solve at the same tolerance. A later tolerance study changes only that tolerance. | Terminal repeatability and finite inner-solve effects. | Report k, normalized modal/physical flux and leakage changes; this is not a mesh experiment. Existing three-cell cold/warm difference is 0.48144 pcm. |
+| D. How much is axial spatial/angular discretization contributing? | Frozen-radial 12 versus 24 cells at S8; separately S8 versus S16 at one fixed mesh and unchanged scattering order. | Local spatial or angular sensitivity, one factor at a time. | Existing 3/6/12 changes are 784.49/156.82 pcm; do not extrapolate an error correction. Carry a selected refinement through a separate coupled convergence study before claiming coupled mesh accuracy. |
+| E. How much is POD truncation contributing? | First qualify a full-coordinate reference: positive active flux, determined amplitudes after normalization, physical radial exchange and balance. Then compare reduced and full states under declared identical equations/data. Scope frozen or rank-2/rank-3 comparisons as local sensitivities when admissible. | Separates reference-closure limitations from projection and coupled-rank differences. | Full coordinates and refreshed radial response alone do not guarantee a unique reference. Rank 3 of three snapshots is not physical full rank. Failed enrichment gives no truncation-error estimate. Do not select rank by matching CE. |
+| F. Which approximation explains the remaining CE difference? | Compare a numerically resolved same-data full-order 2D/1D result with an independently resolved same-data 3D result, then examine MG/CE data-processing differences. | Separates POD, synthesis closure and reference-data effects along a declared comparison path. | No additive attribution of all CE error to POD. Report interactions and unavailable comparisons explicitly. |
+| G. Is the reduced method computationally useful? | Measure total wall time, CPU/core-hours, peak memory, snapshot setup and online solve separately for reduced and full-order calculations at comparable observable accuracy. | End-to-end benefit and offline amortization. | Current radial cost dominates. Profile it and test inner precision only on isolated copies; do not change the active `1e-13` path. No speedup claim from unmatched thread counts or one axial solve. |
+
+B now has a [current-input Fe56 localization](../validation/d4_reference/d4a_scattering_data_audit.md):
+the selected steel/group discrepancies already exist in saved microscopic data.
+The same note links the dragon project's completed Fe56 P3 and TONE-path
+reviews. Reuse those records; the remaining extension is the D4 G25/G26
+SCAT00/SIGS00 relation after matching library lineage, not another processing
+or G140 capture audit.
+C has a [12-cell terminal repeat](../validation/iterative/d4a_map6_axial_repeat_result.md):
+one further inner solve moved modal flux by 5.61237e-7 with unchanged thresholds.
+The subsequent [cold/warm and tighter-inner comparison](../validation/iterative/d4a_map6_axial_repeatability_result.md)
+is complete: at 2e-7 the cold/warm reactivity difference is 0.02254 pcm, while the
+modal and leakage differences still exceed the outer accuracy scale.
+D now has a [map-6 frozen 12/24-cell comparison](../validation/iterative/d4a_map6_axial_mesh24_result.md):
+at the same 2e-7 settings, refinement changes reactivity by +39.23943 pcm
+and source-normalized axial leakage by -0.05186812 percentage points.
+The old 3/6/12 study used a different frozen radial operator; do not combine
+these increments to infer a convergence order.
+E's [physical-coordinate attempt](../validation/iterative/d4a_map6_physical_basis_result.md)
+passed operator and initial-field equivalence checks, but reached its
+1,200-second cap without a terminal. It provides no rank-error estimate.
+The [passive follow-up](../validation/iterative/d4a_map6_physical_column_trace_result.md)
+reproduces 2,615 numerical log lines and shows collapse of the 107 fission-free
+columns. The original runtime directly rejects the raw-10 checkpoint for
+nonpositive active scalar flux. The frozen full-coordinate operator splits
+into radial columns; its admissibility as a reference is therefore an open
+question separate from its iteration budget.
+The [exact coupled small-model check](../validation/iterative/coupled_reference_nullspace_result.md)
+then retains radial and shared-leakage feedback and still finds one free
+non-fission amplitude after global normalization in two S2 vacuum examples.
+The exact Jacobian ranks are 6/7 and 12/13. Identical k can accompany different
+physical balance defects; explicit-exchange controls remove this null direction.
+This qualifies the reference question, not actual D4 Jacobian rank or CE error.
+These findings do not repair cross sections or advance the D4 coupled chain.
+
+The [six-case heterogeneous/multigroup extension](../validation/iterative/coupled_reference_heterogeneous_result.md)
+is complete. Positive amplitude freedom survives axial material variation
+and an asymmetric two-group exact check. Three other configurations approach
+zero-reflector roots with full numerical rank and physical balance defects
+of 19–21%. One has only 0.224 pcm k discrepancy from its explicit-exchange
+control. All six conservative-exchange controls pass local reference checks;
+none of these numbers estimates D4 error or proves absence of other roots.
+
+The [same-operator POD comparison](../validation/iterative/exchange_projection_result.md)
+now covers eight networks and forty reduced eigenproblems. Full spaces recover
+the conservative references. Constant-enriched spaces preserve global balance
+at truncated rank, but their coarsest approximations can still be inaccurate.
+For the four-region layered example, enriched rank 3 has 0.096344% scalar-flux
+error and balance at numerical precision; ordinary rank 3 has 0.037405% flux
+error and a 0.021148% balance defect. These are descriptive network results,
+not D4 criteria or a basis/rank selection for the live chain.
+
+The [native flight-response study](../validation/iterative/native_radial_response_result.md)
+now qualifies nonlocal collision response and boundary elimination in three
+groups on an eight-region historical pin mesh. Independent and fresh
+boundary-closed sweeps agree below 7.4e-15; raw current-balance defects remain
+of order 1e-7. The native radial action must not be replaced with the toy graph
+Laplacian or a diagonal ratio fitted to one field.
+
+The [native multigroup/POD extension](../validation/iterative/native_multigroup_pod_result.md)
+has completed that fixed-source comparison on all 370 groups. Embedded leakage
+is applied once, signed scattering is retained, four full references are positive,
+and full POD recovers the same operator. The 64 reduced cases distinguish weighted
+equation conservation from raw native current balance and local positivity:
+constant-enriched rank 2 has negative flux despite sub-1% global flux error.
+
+The [small native radial/axial candidate](../validation/iterative/native_axial_coupling_result.md)
+now passes its three full-coordinate eigenreference checks, with restored
+physical self scattering and matched original fission data. All 48 fixed POD
+comparisons recover the reference at full rank. Twenty-five reduced cases have
+negative outgoing angles; positive scalar flux and weighted conservation are
+insufficient.
+
+The [completed axial refinement](../validation/iterative/native_axial_refinement_result.md)
+finds negative outgoing angles in the full space on every 4–64-cell grid.
+The last k change is also above its declared convergence threshold. An exact
+nodal reformulation is calibrated against the earlier dense problems; signed
+source diagnostics identify negative effective angular sources with nonnegative
+attenuation at vacuum inflows. The full candidate is therefore not a qualified
+refined reference. Prioritize a consistent radial/angular source-current
+coupling and test it against these failures before new POD training or rank
+selection. Keep changes in axial discretization separate from projection comparisons.
+
+The [source/current follow-up](../validation/iterative/native_source_current_result.md)
+finds the implemented ledgers consistent, but a direction-wise H extension also
+has negative exact propagators in every group. It therefore cannot be accepted
+as a positivity repair from scalar data alone. The next bounded milestone is
+the [native directional-response interface](../validation/iterative/native_angular_reference_contract.md):
+audit direction/sign conventions and source isolation, recover the native
+scalar and boundary response by aggregation, and identify the odd/current
+response before a new coupled eigenproblem. Existing raw signed coefficients
+and failures remain unchanged.
+The [planar extraction](../validation/iterative/native_directional_response_result.md)
+has now passed native aggregation and paired x-current checks for groups 51,
+61 and 98. Its positive external-input track states, exact PJJ reconstruction
+and independent native replay are verified. The 2D interface excludes axial
+odd harmonics, requiring the explicit
+[signed axial-state extension](../validation/iterative/native_signed_axial_contract.md)
+with explicit sign weights and white-boundary mixing, initially at zero axial
+variation. This result does not reopen POD training or admit an axial model.
+That [signed-state experiment](../validation/iterative/native_signed_axial_result.md)
+now passes 648 native flight checks and recovers all 93 previous P0 cases.
+Separate-sign returns change axial current by 44–181% despite unchanged scalar
+flux; common white return and the measured odd response must be preserved.
+The [retained-state axial-streaming result](../validation/iterative/native_axial_streaming_result.md)
+now passes positive prescribed-input, native constant-mode and raw even/odd
+balance checks in 3,384 finite-mesh cases. It fails its 1% spatial gate:
+4-to-8-cell axial escape changes by 1.88–6.11%. Exact-versus-native kernel
+differences are much smaller than these mesh changes. The completed
+[same-operator 16/32/64-cell refinement](../validation/iterative/native_streaming_refinement_result.md)
+passes coarse recalibration, positivity and balance but still fails its
+spatial gate: last-pair white-boundary escape changes by 2.64–5.03%, while
+scalar changes are below 1%. The first resource-limited execution is sealed;
+compact direct application completes under the unchanged memory cap.
+The completed [analytic slab check](../validation/iterative/analytic_axial_slab_result.md)
+now measures two false admissions under the adjacent-grid 1% comparison:
+true fine-grid scalar errors remain 1.28–1.40%. At 256 cells, conservative
+strong scattering retains 11.09% scalar error despite correct escape.
+All 78 algebra/balance/positivity checks pass. The completed
+[cell-characteristic comparison](../validation/iterative/axial_cell_characteristic_result.md)
+passes the fixed 256-cell target for all 13 analytic slabs: scalar error is
+at most 0.565% and total-escape error at most 0.270%. Its 13,260 additional
+directional-volume/boundary unit responses are nonnegative; raw balance,
+periodic controls, 22 tests and full replay pass. The completed
+[native segment-composition audit](../validation/iterative/native_segment_composition_result.md)
+recovers all native whole-segment B/D exactly, but subdivision changes the
+tabulated response by up to 2.96e-5 relative. All strict unchanged-action
+comparisons fail; exact composition, positivity and raw balance pass. The
+first resource-limited attempt remains sealed; compact execution and full
+replay complete under the unchanged caps. The completed
+[exact-kernel full-flight comparison](../validation/iterative/exact_native_flight_result.md)
+passes native recovery, full-flight partition, positivity, raw balance and
+common-white checks. Its weighted scalar change is at most 2.488 ppm for
+fixed input and 1.194 ppm after reclosure. Sixteen tests and full replay pass.
+The completed [oblique-strip geometry experiment](../validation/iterative/oblique_strip_geometry_result.md)
+passes real axial-plane crossing checks on manufactured strips: 101,632
+unit responses are nonnegative, shared-face contributions match exactly,
+and order-16 analytic errors are below 1.12e-14. Order-2 face-current errors
+reach 2.54% despite near-roundoff balance. Nineteen tests and all 8,181 replay
+files pass. The completed [native-track pilot](../validation/iterative/native_oblique_track_pilot_result.md)
+qualifies eleven deterministic original paths with all polar/sign states and
+931,584 nonnegative unit responses. Whole-track integral/outgoing recovery is
+within 3.45e-15; geometry/reflection errors stay below 1.72e-12. Thirty-one
+tests and all 39,777 replay files pass. A storage-blocked initial preflight
+remains sealed; compact execution retains every case and source coordinate.
+The completed [full-native geometry preflight](../validation/iterative/native_oblique_full_preflight_result.md)
+audits every original path, with maximum local measure error 1.88e-12 and
+complete independent count/replay agreement. Its first audit exceeded memory;
+the failed output is preserved and the bounded audit passes. The
+[streaming implementation calibration](../validation/iterative/native_oblique_streaming_calibration_result.md)
+now passes. The completed
+[full response stage](../validation/iterative/native_oblique_full_response_result.md)
+qualifies all 91,639,296 original-coordinate responses in the zero-gradient
+subspace. Complete recovery and common-white reclosure pass; eleven tests,
+six independent raw audits and all 5,246 replay files agree. The maximum
+order-16 field difference from the exact companion is 1.03e-14. No full-native
+source response was solved in the earlier geometry preflight. The
+[layered physical-source calibration](../validation/iterative/native_layered_transport_result.md)
+now passes ten tests, 24 independent audits and 643 byte-identical replay files.
+It retains every layered input coordinate on 204 selected original tracks and
+checks 18 manufactured physical-white cases. A geometric precision failure
+was corrected without changing the gates; independent order-32 errors are
+below 1.19e-14. The [full physical-boundary stage](../validation/iterative/native_oblique_physical_boundary_contract.md)
+has a [completed, sealed isolated result](../validation/iterative/native_layered_full_result.md)
+covering the complete prior regression and all 11,364 native tracks. All 2,191
+jobs and 16,200 scientific replay files pass, with 24 independent audits,
+288 full-field traces and 18 layer-local geometric-white cases. The final
+verifier and independent seal check pass; 303 frozen identities, 997 protected
+inputs and 29 prior seals remain unchanged. Independent field error is below
+1.68e-14 and physical white balance defect below 2.66e-14. The separate
+stored-normalizer comparison retains a 1.56e-7 physical defect. Acceptance is
+limited to the declared fixed-source operator and geometric white boundary;
+coupled eigenproblem, POD and production qualification remain outside this stage.
+Slab qualification does not qualify an axial bridge or erase the failed
+native spatial gate. Do not use last-pair changes alone as a true-error bound.
+No coupled reference, POD training or production readiness is admitted here.
+Keep the measured raw balance defect and signed flux explicit, following the
+[coupled-reference contract](../validation/iterative/frozen_response_reference_contract.md).
+Do not insert an unqualified candidate into the running D4 chain. Compare any closure change
+separately from projection error. Extra mean-matching constraints are not a production repair:
+the layered one-group family would require different amplitudes in its two
+planes. A longer budget or a new nonlinear solver alone does not qualify
+the current full-coordinate reference.
+B still needs matched library lineage; C's observable-repeatability
+limit remains open; D still needs angular and separately coupled refinement.
+These studies use standalone prepared inputs and do not splice into the
+current chain. F depends on the operator audit and numerical qualification.
+G starts with existing timing logs and later uses matched configurations.
+
+The observed negative angular/endpoint values remain signed. Use the same
+controlled D/E comparisons to locate their origin and measure their integrated
+contribution; their existence does not by itself explain the CE discrepancy.
+
+## Quantities and decisions
+
+- Keep the original outer AND gate: Rrho, Rleak and Ra each <= 5e-7.
+- Keep the existing CE k criterion: absolute reactivity difference <=
+  500 + 3 sigma_pcm, with sigma_pcm = 1e5 sigma_k / k_CE^2 <= 50.
+- Record three-zone and 651 pin-zone normalized nu-fission differences as
+  descriptive shape data. Do not call them absolute thermal power or attach
+  significance without the needed covariance.
+- Use one normalization and one spatial mapping in each comparison. Report
+  k, signed source-normalized leakage, shape differences and solve cost together.
+- Preserve failed and incomplete experiments; an iteration cap is not a terminal.
+- Specify each numerical comparison before execution. Do not derive tolerances,
+  clipping or model coefficients from the desired reference answer.
+
+## Delivery checkpoint
+
+A distributable research release needs source and build instructions, the
+repaired runtime identity, snapshot/basis/macrolib/tracking provenance, the
+repaired initial state, the accepted map chain and observables, the existing
+reference and comparison, and a fresh-location replay. Nuclear-data licensing
+and availability must be stated rather than silently substituting data.
+
+The existing standalone map-1 copy/replay proves a portion of this route.
+Until the first repaired MET and accuracy studies are completed, packages must
+be labelled diagnostic or continuation inputs. Final delivery must not inherit
+physical validity from an older material/scattering epoch.
+
+The [previous validation plan](validation_plan_HISTORY.md) preserves the old
+rank-1/2 and Anderson development record. Its per-attempt next-step directions
+are historical and are superseded by this finite experiment matrix.

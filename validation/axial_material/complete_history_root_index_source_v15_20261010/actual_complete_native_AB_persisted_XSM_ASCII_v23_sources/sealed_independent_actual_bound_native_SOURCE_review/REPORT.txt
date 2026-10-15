@@ -1,0 +1,4 @@
+SOURCE-only PASS: actual bound complete native v23, 274 files including manifest.
+11,449 typed checks; complete original 268-file mother Source copied and preserved; host 11 + checker 2 global hunks reverse entire bytes and AST; every function unchanged.
+All original 129 saved declarations retained exactly; original material payloads not freshly read or hashed. Real Source admission748877 EXIT0, binderf73f14 EXIT0 and prior BUILD65203e EXIT1 retained.
+No native, binder, guard, helper, reader, API, compile or numerical operation executed. No native bytes, RSS, full BUILD/INPUT or scientific qualification created.

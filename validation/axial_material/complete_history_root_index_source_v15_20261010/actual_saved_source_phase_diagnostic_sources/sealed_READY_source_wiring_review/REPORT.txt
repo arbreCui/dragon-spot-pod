@@ -1,0 +1,5 @@
+下一次保存源阶段诊断 SOURCE 接线已有限确认。canonical driver只需单行SOURCE_STATUS UNREADY→READY；原15个函数/类、1140固定输入SHA、完整370×1800/384/392/3moments、REAL64/REAL32逐字比较、阈值和固定OUT全部不变。完整inverse恢复原58d1 SHA，READY候选是静态待Root准入，不是actual evaluator success。
+
+正常host可从95fd父源有限改TARGET/SHA/HOST/OUT/SOURCE/FAMILY和固定argv及诊断结果核验；使用原619/705/38de/bc/ebbb支持、真实OwnRSS/MRO，不做替代监督。60s whole含全部host活动，60s stage、512MiB RSS、64MiB必须联合HOST+OUT+所有SOURCE与Root凭证计数；原96GiB历史/8GiB空闲、1线程/1 child/0retry。所有source pins before/after、child完整1140 EOF SHA和literal/target/fd7ID、symlink text before/after必须真实核验。
+
+固定OUT在本次metadata观察中不存在。精确CLI、12个完整payload文件、11个manifest成员、19,820,160B完整数组和原严格result classification/true/false字段均见WIRING_PLAN.json。运行只授保存态工作RHS与源阶段字一致；compiled source完整身份、构源分项、reaction multiplicity、balance、AAA、ABA和same-MG参考仍false。只读SOURCE/JSON与stat，不读numeric payload，不import/运行driver/helper，不写canonical。

@@ -1,0 +1,20 @@
+Source-only independent review passed for the complete fixed author package.
+Author manifest: /private/tmp/axmat_native_host_BINDER_STRICT_SCOPE_UNREADY_SOURCE_20261010_gs2tnzvo/MANIFEST.json
+Author manifest SHA256: f1b5cd5fc1b01077b1fc181c5da1199020570ff7c9ba569355f875c0f5bd4ffa
+Independent report: REVIEW.json in this package; schema INDEPENDENT_COMPLETE_NATIVE_GENUINE_HOST_BINDER_SOURCE_REVIEW_V1, status SOURCE_ONLY_PASS_NO_EXECUTION_OR_SCIENCE.
+
+Root must use the report's complete real four Source pins and its actual report pin. If the peer report is archived elsewhere, obtain its fresh full pin at that archived path; a byte-identical copy has a different inode/ctime. Source admission must reference that same actual peer pin and the same complete author manifest/host/checker/binder full pins.
+
+Actual Root Source admission schema ROOT_ACTUAL_COMPLETE_NATIVE_HOST_BINDER_SOURCE_ADMISSION_V1; status SOURCE_ONLY_ADMITTED_NOT_RUNTIME_OR_SCIENCE; Source-only true; scientific qualification false; byte/science Q SHA None. Preserve all four Source pins and independent_Source_review_pin. Actual tool stdout must include source_only true, status ACTUAL_COMPLETE_NATIVE_SOURCE_ADMISSION_ONLY_NOT_RUNTIME_OR_SCIENCE, and source_admission_pin equal that saved actual full pin.
+
+Actual Root Source admission terminal wrapper schema ROOT_ACTUAL_COMPLETE_NATIVE_SOURCE_ADMISSION_TOOL_TERMINAL_RETURN_V1: closed and observed_terminal true, session_repolled_after_close false, actual_terminal_chunk exactly terminal_tool_return.chunk_id; actual integer exit zero and no session_id. The original real tool output is retained, not rewritten.
+
+Separate future actual V22 BUILD receipt schema ROOT_V22_ACTUAL_COMPLETE_BUILD_TOOL_TERMINAL_RETURN_V1, with the same genuine observed CLOSED structure. Its honest integer exit is preserved, including failure; this native persisted-byte read does not claim complete-build success. The actual PREP receipt copied into the author Source package is shape context only and is explicitly rejected as BUILD. No actual BUILD/native receipt exists in this Source review.
+
+Root-only metadata binding command, after all actual records exist:
+/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B /private/tmp/axmat_native_host_BINDER_STRICT_SCOPE_UNREADY_SOURCE_20261010_gs2tnzvo/bind_complete_native_SOURCE_only.UNREADY.py --source-manifest-sha256 f1b5cd5fc1b01077b1fc181c5da1199020570ff7c9ba569355f875c0f5bd4ffa --request <actual Root request path> --request-sha256 <actual request SHA> --output-source-dir <fresh absolute /private/tmp directory>
+The angle-bracket arguments are future true records, not installed values. This independent review does not run this command.
+
+After genuine Source-only binding, review the full actual bound Source and complete inventory; Root alone may install full fresh D and freeze D/E. Only after the separate actual BUILD is CLOSED may Root run the genuine normal native host, once and serially. Original caps remain whole1800/stage600/RSS512MiB/joint H/O/C/D/E2GiB/history96GiB/free8GiB/thread1/child1/retry0. All129 inputs and all additional Source/receipt pins are checked before/after, complete D/E files/directories remain frozen, all retained logs/spools/db/journal/temp outputs count jointly. New walker malformed controls are unexecuted None; the old raw protocol is a different saved scope.
+
+Complete native/ASCII value, type, physical-order or float-bit loss remains FAIL; no tolerance or replay. Persisted bytes do not certify original historical memory bits, Source-binary linkage, reaction balance, transport, complete INPUT, reference, AAA or ABA. Actual RSS/disk/free/guard qualification requires the future genuine run and saved evidence review.

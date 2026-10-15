@@ -1,0 +1,4 @@
+V19完整SOURCE独立有限复核：SOURCE_PASS_COMPLETE_V19_UNREADY_LAST_USE_ONLY_NO_RUNTIME_CREDIT
+完整候选585e /180475B与proof c392固定。整文件逆变换逐字恢复实际V18 5c4b；只有require_ready的V19门牌和create_complete_input_graph的真实caller last-use更改，其余68定义、prepare_build和已有V18完整INPUT阶段修正逐字不变。所有原If/Assert/Raise与非minimal调用序列、3个原gc边界、完整两阶段fullEOF、codec相等、全owner/namespace/alias/trace/9closure、原长度/current控制均保留。
+释放依据见源码现场：requirements无caller读取；完整codec相等后fresh/new_pins结束；actual在两长度检查后结束；audit snapshot完整独立clone且退出_ACTIVE_TRACES；trim/failed flat-map只在全normalize owner/namespace创建后结束，所需binding和完整failed namespace义务保留。minimal四字段保持原值引用，所有后续helper只读保留的三个字段。
+只SOURCE_PASS；候选仍UNREADY，未安装/调用helper/API/业务/数值载荷/资源检查，未读写ART或写规范源码。未观测V18 RSS具体源行原因，未证明或预测V19内存通过。原512MiB及1800/600/2GiB/history96/free8上限、6futureNone、bcd/d490均未改变；AAA/ABA/native/物理平衡及目标完成flag仍false。

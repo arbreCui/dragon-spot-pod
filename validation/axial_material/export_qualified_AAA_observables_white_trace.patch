@@ -1,0 +1,51 @@
+--- validation/axial_material/export_qualified_AAA_observables_compensated.py
++++ validation/axial_material/export_qualified_AAA_observables_white_trace.py
+@@ -4,14 +4,18 @@
+ import shutil
+ import subprocess
+ 
+-from production_runner import ROOT,DiskResources,SerialExecutor,dump_json,require_file,sha256,verify_sealed_directory
++import sys
++ROOT=Path('/Users/wen/spot')
++sys.path.insert(0,str(ROOT/'validation/artifacts/axial-material-production-qualified-AB-white-trace-20261004/runtime'))
++from production_runner import ROOT,DiskResources,SerialExecutor,dump_json,require_file,sha256,verify_prepared,verify_sealed_directory
+ from qualified_snapshot_ingestion import descriptor
+ 
+ 
+ def main():
+     art=ROOT/'validation/artifacts'
+-    production=art/'axial-material-production-qualified-AB-compensated-20261004'
+-    prepared=json.loads(require_file(production/'prepared.json','2992e4475e0794a6505517fb252c4ee8dac281e7aefafb0f808792813cb1a0d7').read_text())
++    production=art/'axial-material-production-qualified-AB-white-trace-20261004'
++    prepared=json.loads(require_file(production/'prepared.json','88640bfd32cbca03d4e527b99760f99288528bb0ff5720c81f758bca60beffbf').read_text())
++    verify_prepared(production/'prepared.json','88640bfd32cbca03d4e527b99760f99288528bb0ff5720c81f758bca60beffbf')
+     status_path=production/'AAA/run_status.json'
+     status=json.loads(status_path.read_text())
+     if status['classification']!='WAITING_REFERENCE' or status['cases']['AAA']['classification']!='VALID_MET':
+@@ -23,7 +27,7 @@
+     tools=art/'axial-material-tools-20261003'
+     exporter=require_file(tools/'export_observables','81da2ac2ea98009181cc54a1ab254c99d1cb362b4e89c468fe7bc44ea14e7524',True)
+     require_file(ROOT/'validation/axial_material/export_observables.f90','fdfb6204a9661a38ba120387311136e0eba2959d54bd0bac6b594723b586ee35')
+-    out=art/'axial-material-qualified-AAA-observables-20261004'
++    out=art/'axial-material-qualified-AAA-white-trace-observables-20261004'
+     out.mkdir(exist_ok=False)
+     (out/'AAA').mkdir();(out/'runtime').mkdir()
+     bounded=production/'runtime/run_bounded_dragon.py'
+@@ -36,6 +40,7 @@
+     spec=json.loads(Path(prepared['case_spec']['path']).read_text())
+     resources=DiskResources(art,roots,8*2**30,spec['resource_caps']['new_case_artifact_budget_GiB']*2**30)
+     protocol=dict(schema='AXMAT_SAVED_MET_REAL64_OBSERVABLE_EXPORT_V1',
++        implementation=descriptor(Path(__file__).resolve()),
+         production_prepared=descriptor(production/'prepared.json'),AAA_status=descriptor(status_path),
+         final_stage_seal=descriptor(final/'result.json'),exporter=descriptor(exporter),
+         exporter_source=descriptor(ROOT/'validation/axial_material/export_observables.f90'),
+@@ -52,7 +57,8 @@
+     dump_json(out/'export_receipt.json',dict(classification='SAVED_MET_REAL64_OBSERVABLES_EXPORTED',
+         protocol=descriptor(out/'protocol.json'),inputs_unchanged=True,
+         outputs={p.name:sha256(p) for p in out.glob('observables.*')},
+-        independent_accuracy_qualified=False,resources=resources.check()))
++        implementation_unchanged=sha256(Path(__file__).resolve())==protocol['implementation']['sha256'],
++        independent_accuracy_qualified=False,ABA_admitted=False,resources=resources.check()))
+     print(json.dumps(descriptor(out/'export_receipt.json'),indent=2))
+ 
+ 

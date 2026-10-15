@@ -1,0 +1,29 @@
+SPOT last-cprime 精简组件组合构建v3（2026-10-08）
+
+本版仅新建执行身份；所有65函数逐字保持v2，独立源审通过。
+8处完整逆向差异恢复正式14ca版本，原完整输入、五阶段及预算与科学门保留。
+正式源码SHA：8514897a80e0c2a5d6be8016e6dc998a1f75bfb9256db4cfa3f09750295036e8
+
+原v2准备EXIT0，实际RUN因本机ps和killpg权限限制EXIT1，未授构建或科学资格。
+自身子进程检查4ac7df EXIT0、无遗留。旧v2 SOURCE/OUT/PREP及失败输出保持原字节。
+本v3要独立生成真实PREP，RUN使用用户已授权的原监控权限，不能转用旧通过项。
+
+本版真实PREP EXIT0：af8016/session89894 → e17a62，完整stdout295B、stderr0B。
+声明SHA：1f90c632a025050207e04c710db4dbe4c07dd356b047ad1c4bf3a4b4e8d5fd55
+Root准备凭证SHA：88a876747bd8df81703bef78a0039564424eecc3f51d384dad533709ffae857d
+完整图：35646项canonical文件、86项命名空间，210项目录资源roots，与原声明一致。
+图实际67077562B<原67108864B限制。
+本版RUN ea6c60/session27818已在自动批准的原监控权限下启动，仍无组合通过或科学资格。
+
+本v3正式PREP独立增量复核通过，报告eb395863...3253c66已保存。
+未来cold TMP源的SOURCE/WORK消费者文件名已一致，独立增量审查6085a64e...4f611通过。
+纯源草稿及完整逆向留存在future_cold_source_UNREADY，所有未知实际成功pins仍None；
+不能导入、执行或赋予原生内存/AAA/ABA资格。
+
+本版实际RUN最终EXIT1：ea6c60/session27818 → 6b7122。前四阶段PASS；
+第五Python audit-build被原512 MiB上限终止，实测524.734375 MiB，PID79277，
+实际child返回-15，watch7.55583秒，原进程组清理成功。audit.log空；
+audit/result、binary_identity和seal均未生成，整个组合没有准入资格。
+这是Python完整输入核验进程的内存失败，未运行trim物理transport，不能用来判断
+新组件的原生RSS或AAA/ABA精度。原日志与失败Root记录保持，当前无试验子进程。
+当前下一步：独立诊断67MB JSON完整核验的bytes/text/结构副本峰值，在原门限下减少副本。

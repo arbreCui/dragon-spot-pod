@@ -1,0 +1,41 @@
+新 ROOT64 组件源码候选，2026-10-11
+
+本轮产物只有完整SPOR64_BOOT64.f90模块和SPOBOOT64.f90入口，以及其来源/契约表。它们是新写的审查候选，不是丢失5f88/2a05等旧源码的同字节恢复；没有继承旧五编译/十七控制通过，没有编译或执行Native、数值计算，也没有改变原src。
+
+新源码已确定实现的功能：
+SPOR64_BOOT64_PUBLISH_NATIVE：校验原caller提供的REAL64 terminal_flux与原driver已保存FLUX64逐位相同、每组FLUX的REAL32 mirror逐位正确、SPOT-KEFF64与K-EFFECTIVE mirror正确；原三残差均严格低于route原eps_radial，原outer/inner caps和strict inner_state必须有效。先完成拒绝检查，再保存ROOT-FLUX64 type4完整370群以及最后提交的ROOT64-SEAL/PRODUCED。不从REAL32 FLUX重建数值权威。
+SPOR64_BOOT64_READ_NATIVE：只从ROOT-FLUX64读取数值；全部370项必须type4且nunk精确相等。其原生FLUX64、内部ROOT-REF64、REAL32 FLUX mirror全部逐位检查；没有缺失type4时的fallback、numeric tolerance、clip或fit。输出只在全部核验之后move_alloc。
+SPOR64_BOOT64_IMPORT_NATIVE：先完整读取核验，再向fresh memory root进行LCMEQU，原输入对象不改动。
+SPOR64_BOOT64_SAME_TREE：遍历每个目录名、每项list index、记录type/length与raw int32 words；type4/complex使用两个words，其余原LCM类型使用一个。名字顺序不要求相同，完整inventory必须相同。所有TRACK、SYSTEM、完整MATERIAL及RCONTRACT逐树比较；record内signed zero保留。
+READ_CONTEXT：由MCCG TRACK确定nreg/nunk/nmat/nsurface，要求完整scalar/current key不重复并覆盖unknown，原MATCOD有效且VOLUME为正有限。8mix等具体物理库存保持由原host完整pin负责；新模块不重新生成核数据。MATERIAL接受L_LIBRARY的完整MICROLIB2或L_MACROLIB，实际macro必须370群、3 moments、32 fission slots。volume64由原REAL32几何体积精确提升，weight=volume64/sum(volume64)，随后均作为type4封存与逐位复核；这是几何元数据提升，不是flux精度降级。
+原route case/option、EPS-CONVERGE原bits、caps/acceleration、TYPE-K2、link与merge合同保持。没有调用SVD、训练或改变rank；原rank2比值严格门9.5367431640625e-7仍由原生产/训练检查器执行，17失败没有改判。
+
+新入口ABI（明确不声称已丢失旧SPOBOOT64 ABI相同）：
+SPOBOOT64(nentry,hentry,ientry,jentry,kentry)，nentry=7。
+顺序FLUX、FLUX_OLD、TRACK、SYSTEM、MICROLIB2、RCONTRACT、BOOT_BIND。
+FLUX为fresh memory output（ientry1/jentry0）；其余为readonly LCM inputs（ientry1或2，jentry2）。
+BOOT_BIND是由原host独立固定的当前输入；完整inventory仅SIGNATURE='L_BOOTBIND'、PLANE、EPOCH。PLANE必须1..3，EPOCH非负，且与producer seal相同。CLE只接受终止分号；不允许临时降低门槛的关键词。
+
+沿用的外部原host持有职责：
+原host已经对实际producer snapshot、完整物理context、route和Source做独立fullEOF SHA及七字段identity before/open/EOF/after检查，并对在线输入再读回。新module沿用这一边界，不额外添加复制witness或扩大运行资源契约。
+ROOT-REF64是同一producer内的一致性副本，不能独立证明终态被求解，不能独立鉴别同时修改所有副本/镜像的coherent tamper。此类变更必须由保存于对象外的原host expected full-file SHA/7ID拒绝。物理求解来源必须由真正已审查producer call site和原strict terminal真实运行证明；metadata STATE字段不自证来源。
+可修改内存中的孤立调用没有文件来源认证。本轮不声明旧coherent_source_tamper控制已覆盖该新边界，更不能把自复制内部副本算作第二次独立终态求解。
+
+仍需补齐，当前不能计作连续双精度/在线资格：
+1. 将publisher实际接入driver严格终态分支后且FLUDRV完整STATE-VECTOR/EPS/links已写好，绑定实际residual/counters；目前只有确定的完整publisher功能，原AXMAT driver没有改动。原driver初始化仍读取REAL32，连续双精度kernel起点尚未修复。
+2. B2B的BOOT初态和冻结source改为真正type4。新module当前只实现原生TYPE-K flux，未实现GLOBAL64投影、ROOT-QFISS64/frozen-source producer及其epoch生命周期。原BOOT还会promotion REAL32；新入口尚未由KDR dispatcher/production decks调用。
+3. 新SPOPROJ64全局到平面projection与既有B2I seal不在本轮两文件内；不可用IMPORT clone代替真正global projection/源形成。
+4. 使用原固定5 compile命令原则和17正反cases内容重新建立当前Source绑定后真实有界编译/执行。原旧fixture源码已丢失，新真实控制尚未执行。missing_global64、uncommitted_source、wrong_source_epoch、wrong_source_dimensions、qfiss32_disguised与coherent_source_tamper均涉及本轮未实现的global/source边界，不宣称已由该flux模块完成。
+5. record word上限16777216、tree depth64/nodes2000000是新纯结构拒绝边界，不是原科学阈值；是否覆盖全部实际记录须由新controls/实际输入核验。真实512MiB/stage600/whole1800及joint/history/free/cold资源控制仍由原host负责；未测量新的Native RSS。
+
+来源（完整当前pins保存在NEW_SOURCE_CURRENT_INPUT_OUTPUT_PINS.json）：
+src/SPOR64_VERIFY.f90：沿用LCMLEN/type/length/character/empty-root/exact-inventory原语。
+src/SPOR64_RCONTRACT.f90：沿用原sealed route加载及exact eps bit合同。
+src/SPOR64_B2B.f90：沿用370/40/32、MCCG geometry/key/mat/volume与原BOOT/CONT实际数据布局；没有修改其旧promotion。
+src/SPOR64_SCHEMA.f90、SPOR64_B2I.f90：参考现存typed生命周期和完整record inventory，但没有冒称新模块已经接入它们。
+src/SPOPROJ.f90、SPOSTATE.f90：参考actualvolume/固定空间与global normalization边界，本轮不改其REAL32输出。
+原system-normalization AXMAT_SNAPSHOT_DRIVER64.f：参考实际FLUX64/SOUR64/SPOT-KEFF64保存和strict native gate的位置，未改原物理kernel。
+Ganlib/src/LCMAUX.f90、lcmmod.f90：核对LCM tree API与raw GET实际拷贝语义。
+原ROOT64-connected typed fixture的binding/summary/true-tools：保留原5命令和17case描述，不恢复已丢失控制本体、不继承旧PASS。
+
+源码检查范围：本轮仅做实际文本行长/完整输入输出EOF pin及手工接口审查。当前fparser未安装，没有Fortran parser或compiler的语法PASS；Root后续真实编译才可给出编译结果。

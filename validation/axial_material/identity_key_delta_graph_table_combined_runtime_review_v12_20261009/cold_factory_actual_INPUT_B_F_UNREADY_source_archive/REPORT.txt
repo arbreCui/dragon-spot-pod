@@ -1,0 +1,9 @@
+V12 冷入口实际 INPUT 源绑定：PASS_SOURCE_ONLY，F 保持 UNREADY
+
+依据 Root 正式 whole INPUT 准入 c47dfa，已将真实 durable10/1完整namespace/3目录、graph4ba5/ee2cab、原3helpers、最终C6688及完整30控制计数绑定到B。descriptor36804、alias186、payload9均来自实际完整返回，不采用旧45阶段计数。B没有 own binding_descriptor 或 selfSHA。
+
+F仅16个顶层 None 赋值变为真实事实，完整逆向回194137；全部55defs、AST、四生成模板、MRO、物理输入和预算逐字未改。COMBINED1f0/396/8328、V11六个实际pins、PREPf431正确，C/B新SHA精确。DRAFT_STATUS UNREADY，FORMAL_FACTORY_SHA 与 BINDING_CONTROLS_ACTUAL 及7个futurecold字段仍 None，外部AXMAT_COLD_FACTORY_SHA256机制未动。
+
+纯source binder 真5d4e71 EXIT0 CLOSED；完整namespace双观察与C/F facts兼容补审真16f308 EXIT0 CLOSED。未运行业务、fixture、科学或cold。新source待Root独立源审及唯一READY转换安装，本报告不授native/AAA/ABA信用。
+
+REPORT.json、source_inverse_proof.json、actual_binder_tool_terminal_return.json、namespace_and_fact_compatibility_supplement.json、actual_supplement_tool_terminal_return.json 及 evidence_file_manifest.json 为全部小证据入口。

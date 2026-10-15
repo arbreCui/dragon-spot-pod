@@ -6,15 +6,17 @@ program diagnose_d4a_axial_current
   use, intrinsic :: iso_fortran_env, only: real32,real64,int64,error_unit
   use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
   implicit none
-  integer, parameter :: nr=132,nf=3,ng=370,nreg=nr*nf,nrow=nf*ng
+  integer, parameter :: nr=132,ns=3,ng=370,nrow=ns*ng
   type(c_ptr) :: track,axial,flux64
   character(len=1024) :: paths(3)
-  integer :: ts(40),fs(40),key(nreg),axkey(nreg),mat1d(nf)
-  integer :: nunk,ll4,ll5,i,p,g,s,base,ireg,index,n,t,ios,out,epoch
-  integer :: equal(nf,ng),nonpositive(nf,ng),negative_bottom(ng),negative_top(ng)
-  real(real32) :: area(nr),height(nf)
+  integer :: ts(40),fs(40),nf,nreg,first(ns),last(ns),snapshot(ns)
+  integer, allocatable :: key(:),axkey(:),mat1d(:)
+  integer :: nunk,ll4,ll5,i,p,g,s,q,base,ireg,index,n,t,ios,out,epoch
+  integer :: equal(ns,ng),nonpositive(ns,ng),negative_bottom(ng),negative_top(ng)
+  real(real32) :: area(nr)
+  real(real32), allocatable :: height(:)
   real(real64), allocatable :: unknown(:)
-  real(real64) :: saved(nrow),value(8,nf,ng),whole(4,ng)
+  real(real64) :: saved(nrow),value(8,ns,ng),whole(4,ng)
   real(real64) :: a,lo,hi,phi
   logical :: exists
 
@@ -42,15 +44,20 @@ program diagnose_d4a_axial_current
   nunk=ts(2)
   ll4=ts(11)
   ll5=ts(12)
-  if(ts(1)/=nreg.or.ts(6)/=nr.or.ts(7)/=nf.or.ts(8)/=nf.or.fs(1)/=ng.or.fs(2)/=nunk) &
+  nf=ts(7)
+  nreg=ts(1)
+  if(int(nf,int64)*nr/=nreg.or.nf<ns.or.mod(nf,ns)/=0.or.ts(6)/=nr.or. &
+      ts(8)/=ns.or.fs(1)/=ng.or.fs(2)/=nunk) &
     call fail('INCONSISTENT D4-A TRACK/AXIAL DIMENSIONS.')
-  if(nunk<=0.or.ll4<0.or.ll4>nunk.or.ll5/=nr*(nf+1)) call fail('INVALID CURRENT BLOCK LAYOUT.')
+  if(nunk<=0.or.ll4<0.or.ll4>nunk.or.int(ll5,int64)/=nr*(int(nf,int64)+1)) &
+    call fail('INVALID CURRENT BLOCK LAYOUT.')
   if(ll5>nunk-ll4) call fail('CURRENT BLOCK EXCEEDS UNKNOWN VECTOR.')
   call record(track,'KEYFLX',nreg,1)
   call record(axial,'KEYFLX',nreg,1)
   call record(track,'MAT1D',nf,1)
   call record(track,'AREA2D',nr,2)
   call record(track,'VOL1D',nf,2)
+  allocate(key(nreg),axkey(nreg),mat1d(nf),height(nf))
   call LCMGET(track,'KEYFLX',key)
   call LCMGET(axial,'KEYFLX',axkey)
   call LCMGET(track,'MAT1D',mat1d)
@@ -61,9 +68,16 @@ program diagnose_d4a_axial_current
   do i=1,nreg
     if(any(key(:i-1)==key(i))) call fail('DUPLICATE SCALAR FLUX INDEX.')
   enddo
-  if(any(mat1d<1).or.any(mat1d>nf)) call fail('MAT1D INDEX OUT OF RANGE.')
-  do s=1,nf
-    if(count(mat1d==s)/=1) call fail('D4-A REQUIRES A ONE-TO-ONE FLOOR/SNAPSHOT MAP.')
+  if(any(mat1d<1).or.any(mat1d>ns)) call fail('MAT1D INDEX OUT OF RANGE.')
+  do q=1,ns
+    first(q)=(q-1)*(nf/ns)+1
+    last(q)=q*(nf/ns)
+    snapshot(q)=mat1d(first(q))
+    if(any(mat1d(first(q):last(q))/=snapshot(q))) &
+      call fail('D4-A REQUIRES THREE CONTIGUOUS EQUAL CELL BLOCKS.')
+  enddo
+  do s=1,ns
+    if(count(snapshot==s)/=1) call fail('D4-A REQUIRES EACH SNAPSHOT IN EXACTLY ONE CELL BLOCK.')
   enddo
   if(.not.all(ieee_is_finite(area)).or..not.all(ieee_is_finite(height))) call fail('NONFINITE GEOMETRY.')
   if(any(area<=0).or.any(height<=0)) call fail('NONPOSITIVE AREA2D OR VOL1D.')
@@ -89,8 +103,10 @@ program diagnose_d4a_axial_current
     if(n/=nunk.or.t/=4) call fail('FLUX64 ITEM MUST BE NUNK REAL64 VALUES.')
     call LCMGDL(flux64,g,unknown)
     if(.not.all(ieee_is_finite(unknown))) call fail('NONFINITE FLUX64 FIELD.')
-    ! SPOSTATE:236-279 / SPOLE1D: floor then region, without reassociation.
+    ! SPOSTATE / SPOLE1D: cell then region, directly into the physical-zone
+    ! accumulator. No cellwise division or intermediate cell-sum reassociation.
     do p=1,nf
+      q=1+(p-1)/(nf/ns)
       do i=1,nr
         ireg=(i-1)*nf+p
         base=ll4+(i-1)*(nf+1)
@@ -98,28 +114,30 @@ program diagnose_d4a_axial_current
         hi=unknown(base+p+1)
         phi=unknown(key(ireg))
         a=real(area(i),real64)
-        value(1,p,g)=value(1,p,g)+a*lo
-        value(2,p,g)=value(2,p,g)+a*hi
-        value(3,p,g)=value(3,p,g)+a*(hi-lo)
-        value(4,p,g)=value(4,p,g)+a*real(height(p),real64)*phi
-        if(phi<=0) nonpositive(p,g)=nonpositive(p,g)+1
+        if(p==first(q)) value(1,q,g)=value(1,q,g)+a*lo
+        if(p==last(q)) value(2,q,g)=value(2,q,g)+a*hi
+        value(3,q,g)=value(3,q,g)+a*(hi-lo)
+        value(4,q,g)=value(4,q,g)+a*real(height(p),real64)*phi
+        if(phi<=0) nonpositive(q,g)=nonpositive(q,g)+1
         if(p==1.and.lo>0) negative_bottom(g)=negative_bottom(g)+1
         if(p==nf.and.hi<0) negative_top(g)=negative_top(g)+1
       enddo
-      if(.not.all(ieee_is_finite(value(1:4,p,g)))) call fail('NONFINITE CURRENT/FLUX INTEGRAL.')
-      if(value(4,p,g)==0.0_real64) call fail('ZERO DENOMINATOR; LEAKAGE IS UNDEFINED.')
-      value(5,p,g)=value(3,p,g)/value(4,p,g)
-      index=(mat1d(p)-1)*ng+g
-      value(6,p,g)=saved(index)
-      value(7,p,g)=value(5,p,g)-value(6,p,g)
-      value(8,p,g)=(value(2,p,g)-value(1,p,g))-value(3,p,g)
-      if(.not.all(ieee_is_finite(value(:,p,g)))) call fail('NONFINITE LEAKAGE DIAGNOSTIC.')
-      equal(p,g)=merge(1,0,transfer(value(5,p,g),0_int64)==transfer(value(6,p,g),0_int64))
-      whole(1,g)=whole(1,g)+value(3,p,g)
+    enddo
+    do q=1,ns
+      if(.not.all(ieee_is_finite(value(1:4,q,g)))) call fail('NONFINITE CURRENT/FLUX INTEGRAL.')
+      if(value(4,q,g)==0.0_real64) call fail('ZERO DENOMINATOR; LEAKAGE IS UNDEFINED.')
+      value(5,q,g)=value(3,q,g)/value(4,q,g)
+      index=(snapshot(q)-1)*ng+g
+      value(6,q,g)=saved(index)
+      value(7,q,g)=value(5,q,g)-value(6,q,g)
+      value(8,q,g)=(value(2,q,g)-value(1,q,g))-value(3,q,g)
+      if(.not.all(ieee_is_finite(value(:,q,g)))) call fail('NONFINITE LEAKAGE DIAGNOSTIC.')
+      equal(q,g)=merge(1,0,transfer(value(5,q,g),0_int64)==transfer(value(6,q,g),0_int64))
+      whole(1,g)=whole(1,g)+value(3,q,g)
     enddo
     ! +z current at both faces; bottom outward flux has the opposite sign.
     whole(2,g)=-value(1,1,g)
-    whole(3,g)=value(2,nf,g)
+    whole(3,g)=value(2,ns,g)
     whole(4,g)=whole(1,g)-(whole(2,g)+whole(3,g))
     if(.not.all(ieee_is_finite(whole(:,g)))) call fail('NONFINITE TELESCOPING DIAGNOSTIC.')
   enddo
@@ -132,10 +150,10 @@ program diagnose_d4a_axial_current
     'group_numerator,bottom_outflow,top_outflow,telescoping_difference,'// &
     'bottom_negative_outflow_regions,top_negative_outflow_regions,nonpositive_flux_regions'
   if(ios/=0) call fail('CSV HEADER WRITE FAILED.')
-  do p=1,nf
+  do p=1,ns
     do g=1,ng
       write(out,'(I0,A,I0,6(A,ES25.17E3),2(A,I0),6(A,ES25.17E3),3(A,I0))',iostat=ios) &
-        p,',',g,(',',value(i,p,g),i=1,6),',',equal(p,g),',',mat1d(p), &
+        p,',',g,(',',value(i,p,g),i=1,6),',',equal(p,g),',',snapshot(p), &
         ',',value(7,p,g),',',value(8,p,g),(',',whole(i,g),i=1,4), &
         ',',negative_bottom(g),',',negative_top(g),',',nonpositive(p,g)
       if(ios/=0) call fail('CSV ROW WRITE FAILED.')

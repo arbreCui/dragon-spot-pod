@@ -1,0 +1,24 @@
+{
+  "candidate_sha256": "36a4c3bfb1fe3e6ed7a1f13d9092289a6aae8e43dc09a6bb19f83726db09149b",
+  "full_byte_inverse_exact": true,
+  "parent_sha256": "d1bbb899e5ccc6ccfb937706816e07a5b7738d4b2dbad7d92f26bbb28966d21c",
+  "regions": [
+    {
+      "candidate_end": 485,
+      "candidate_start": 484,
+      "candidate_text": "5",
+      "parent_end": 485,
+      "parent_start": 484,
+      "parent_text": "4"
+    },
+    {
+      "candidate_end": 5886,
+      "candidate_start": 5885,
+      "candidate_text": "5",
+      "parent_end": 5886,
+      "parent_start": 5885,
+      "parent_text": "4"
+    }
+  ],
+  "schema": "AXMAT_V5_DIAGNOSTIC_CONFIG_COMPLETE_SOURCE_INVERSE_V1"
+}

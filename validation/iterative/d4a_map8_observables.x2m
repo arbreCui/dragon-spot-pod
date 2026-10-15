@@ -1,0 +1,14 @@
+****************************************************************
+* Read-only observables from the converged D4-A rank-2 map8.    *
+* No transport solve and no state mutation.                     *
+****************************************************************
+XSM_FILE AX :: FILE './closed_axial.xsm' ;
+XSM_FILE TRK :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MAC :: FILE './initial_axial_macrolib.xsm' ;
+MODULE SPORATE: GREP: END: ;
+DOUBLE keff ;
+GREP: AX :: GETVAL 'SPOT-X-KEFF' 1 >>keff<< ;
+ECHO "D4A-MAP8-K-EFFECTIVE" keff ;
+SPORATE: AX TRK MAC ;
+END: ;
+QUIT "LIST" .

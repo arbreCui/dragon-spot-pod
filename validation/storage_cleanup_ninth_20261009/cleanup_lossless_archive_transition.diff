@@ -1,0 +1,40 @@
+--- ninth_before_archive
++++ ninth_lossless_archive
+@@ -1,4 +1,4 @@
+-import argparse, collections, hashlib, json, os, shutil, stat, subprocess, time
++import argparse, collections, gzip, hashlib, json, os, shutil, stat, subprocess, time
+ from pathlib import Path
+ from datetime import datetime, timezone
+ if not __debug__:
+@@ -77,11 +77,21 @@
+    assert c['restoration_recipe_sha256']==pin(OUT/'tar/candidate.json')['sha256']
+    proc=subprocess.run(['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12',str(OUT/'restore_retired_tar.py')],check=True,capture_output=True,text=True)
+    proof=json.loads(proc.stdout);assert proof['status']=='PASS' and proof['restored'] is False and proof['archive_sha256']==fresh['sha256']
+-  elif c['category']=='TERMINAL_OLD_INTERMEDIATE_PAYLOAD':
++  elif c['category'] in ('TERMINAL_OLD_INTERMEDIATE_PAYLOAD','GZIP_ARCHIVED_OLD_MATERIAL_INTERMEDIATE'):
+    relative=p.relative_to(ROOT/'validation/artifacts')
+    allowed_map=(relative.parts[0]=='axial-material-production-qualified-AB-compensated-20261004' and relative.parts[1]=='AAA' and relative.parts[2] in ('map001','map002','map003') and len(relative.parts)==4 and relative.name in ('candidate_radial.xsm','candidate_snapshots.xsm','projected_proposal.xsm'))
+    allowed_tape=(relative.parts[0] in ('d4a-final-four-fuel-temperature-run-20261002','d4a-remaining-fuel-temperature-run-20261001','d4a-remaining-temperature-run-20261001') and relative.name=='tape30' and relative.parent.name in ('pendf','groupr'))
+    assert allowed_map or allowed_tape,str(p)
++   if allowed_tape:
++    assert c['category']=='GZIP_ARCHIVED_OLD_MATERIAL_INTERMEDIATE'
++    backup=c['compressed_backup'];packed=Path(backup['path'])
++    assert packed==OUT/'packed_material_intermediates'/(str(relative)+'.gz') and packed.parent.resolve(strict=True)==packed.parent
++    saved=expected(backup);digest=hashlib.sha256();length=0
++    with gzip.open(packed,'rb') as stream:
++     while block:=stream.read(4*1024**2):
++      length+=len(block);assert length<=fresh['size'];digest.update(block)
++    assert length==fresh['size'] and digest.hexdigest()==fresh['sha256'] and identity(packed)==saved['identity']
++   else:assert c['category']=='TERMINAL_OLD_INTERMEDIATE_PAYLOAD'
+    proof=c['historical_payload_proof'];historic=pin(proof['path']);assert historic['sha256']==proof['sha256']
+    record=json.loads(Path(proof['path']).read_text())
+    if proof['format']=='JSON_SHA256_MAP':
+@@ -109,7 +119,7 @@
+  assert sum(c['allocated_bytes'] for c in m['candidates'])==m['allocated_bytes']
+  assert sum(c['size'] for c in m['candidates'])==m['logical_bytes']
+  assert pin(Path(__file__))['sha256']==m['cleanup_source_sha256']
+- for c in m['candidates']:assert c['category'] in ('EXACT_DUPLICATE_OLD_WORK_COPY','EXACT_RECONSTRUCTIBLE_REHEARSAL_TAR','TERMINAL_OLD_INTERMEDIATE_PAYLOAD')
++ for c in m['candidates']:assert c['category'] in ('EXACT_DUPLICATE_OLD_WORK_COPY','EXACT_RECONSTRUCTIBLE_REHEARSAL_TAR','TERMINAL_OLD_INTERMEDIATE_PAYLOAD','GZIP_ARCHIVED_OLD_MATERIAL_INTERMEDIATE')
+  for p in m['source_and_review_pins']:expected(p)
+  kept=[expected(p) for p in m['retained_primaries']]
+  close=closure(m,selected);link=links(selected)

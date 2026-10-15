@@ -1,0 +1,72 @@
+{
+  "schema": "STANDALONE_ROOT_ADMISSION_WRITER_COMPLETE_CONTRACT_SOURCE_INVERSE_V1",
+  "source_only": true,
+  "qualified_binder_path": "/private/tmp/axmat_rawrecord_fixed_historical_auditor_retention_SOURCE_20261010_tl856qp8/generate_ROOT_actual_rawrecord_binding.py",
+  "qualified_binder_sha256": "52b8665a6505c0965f3af5c9f42fa440a9dd6df2dcbca1d1f00e3146472fe58f",
+  "new_writer_sha256": "01c6914d898939af63677d2f7aefa2ff3c5ccc66cfbec095219fd7e2f518ddd7",
+  "primitive_exact_definitions": [
+    "require",
+    "ordinary",
+    "pin",
+    "actual_pin",
+    "strict_json",
+    "read_meta",
+    "write_new",
+    "closed_source_return",
+    "historical_material_auditor_retention"
+  ],
+  "definition_adaptations": [
+    {
+      "original_definition": "source_admission",
+      "hunks": [
+        {
+          "old": "def source_admission(entry):",
+          "new": "def validate_source_value(value):"
+        },
+        {
+          "old": "    value=read_meta(entry);require(value['schema']",
+          "new": "    require(value['schema']"
+        },
+        {
+          "old": "pin(Path(__file__).absolute())['sha256']",
+          "new": "pin(HERE/'generate_ROOT_actual_rawrecord_binding.py')['sha256']"
+        },
+        {
+          "old": "    return value,[entry,manifest_pin,review_entry,terminal_entry],manifest",
+          "new": "    return value,[manifest_pin,review_entry,terminal_entry],manifest"
+        }
+      ],
+      "complete_byte_inverse_equals_qualified_binder_definition": true,
+      "complete_AST_inverse_equals_qualified_binder_definition": true
+    },
+    {
+      "original_definition": "material_admission",
+      "hunks": [
+        {
+          "old": "def material_admission(entry):",
+          "new": "def validate_material_value(value):"
+        },
+        {
+          "old": "    value=read_meta(entry);require(value['schema']",
+          "new": "    require(value['schema']"
+        },
+        {
+          "old": "    return value,[entry,*p.values(),*audit_entries.values(),*macro_entries.values(),*provenance,*history_pins],macro_entries,p['python']",
+          "new": "    return value,[*p.values(),*audit_entries.values(),*macro_entries.values(),*provenance,*history_pins],macro_entries,p['python']"
+        }
+      ],
+      "complete_byte_inverse_equals_qualified_binder_definition": true,
+      "complete_AST_inverse_equals_qualified_binder_definition": true
+    }
+  ],
+  "original_source_contract_complete": true,
+  "original_material_contract_complete": true,
+  "historical_exception_contract_complete": true,
+  "ROOT_actual_precheck_sha256": "689fd702c8cdc530c8be8398c1e7e18857cc09b88e534fc36e16134cb6f1e7a7",
+  "ROOT_actual_material_terminal_sha256": "efe5854af938d40d7973b14aae9dc0547a850f094e4e71052dfdf760d7cf4590",
+  "independent_actual_Source_review_sha256": "85514d32a0052678f72f7fc23b9f1729eeca7b7a44ee5912da467408f42d3e2d",
+  "writer_executed": false,
+  "actual_admissions_created": false,
+  "actual_transfer_qualification_sha256": null,
+  "actual_scientific_reference_sha256": null
+}

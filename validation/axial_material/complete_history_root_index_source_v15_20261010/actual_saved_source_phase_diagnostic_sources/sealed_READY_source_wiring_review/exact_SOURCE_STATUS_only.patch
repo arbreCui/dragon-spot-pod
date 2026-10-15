@@ -1,0 +1,11 @@
+--- complete_saved_S2_source_phase_consistency.UNREADY.py
++++ complete_saved_S2_source_phase_consistency.READY.CANDIDATE.py
+@@ -14,7 +14,7 @@
+ import struct
+ import sys
+ import time
+-SOURCE_STATUS = 'UNREADY'
++SOURCE_STATUS = 'READY'
+ ROOT=Path('/Users/wen/spot')
+ DEFAULT_OUTPUT=ROOT/'validation/artifacts/axial-material-AAA-refined-all-group-saved-source-phase-consistency-20261010'
+ WALL_SECONDS=60.0

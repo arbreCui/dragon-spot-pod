@@ -1,0 +1,32 @@
+--- /private/tmp/axmat_v11_standalone_bounded_whole_input_intake_source_only_20261009/host.UNREADY.py
++++ /private/tmp/axmat_v12_graph_table_standalone_bounded_whole_input_intake_source_only_20261009/host.UNREADY.py
+@@ -8,22 +8,22 @@
+ """
+ import sys,os,time,json,hashlib,importlib.util,shutil
+ from pathlib import Path
+-DRAFT_STATUS='UNREADY_SOURCE_ONLY_V11_STANDALONE_WHOLE_INPUT_DRAFT'
+-if DRAFT_STATUS!="READY_REVIEWED_CROSS_GROUP_IDENTITY_KEY_DELTA_V11_STANDALONE_INPUT_ONLY":raise ValueError("UNREADY: no actual new intake or component evidence")
++DRAFT_STATUS='UNREADY_SOURCE_ONLY_GRAPH_TABLE_V12_STANDALONE_WHOLE_INPUT_DRAFT'
++if DRAFT_STATUS!="READY_REVIEWED_GRAPH_TABLE_V12_STANDALONE_INPUT_ONLY":raise ValueError("UNREADY: no actual new intake or component evidence")
+ STARTED=time.monotonic()
+ if sys.flags.optimize!=0 or os.environ.get('PYTHONOPTIMIZE'):raise ValueError('nonoptimized Python required')
+ THREAD_KEYS=('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ if any(os.environ.get(k)!='1'for k in THREAD_KEYS):raise ValueError('single-thread environment required')
+ sys.dont_write_bytecode=True
+ PYTHON='/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12'
+-FACTORY=Path('/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py')
+-FACTORY_SHA='66d09b9c8a818e25c7c12acf10ba7551256d71f5fd60bde1c80da6d35d0d9481'
+-OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009')
+-TERM=Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009')
++FACTORY=Path('/Users/wen/spot/validation/axial_material/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.py')
++FACTORY_SHA='5af1feebc7d40549750e1daec6148ae073a4c85c1eb3242485e6d9e80826861b'
++OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009')
++TERM=Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-terminal-v12-20261009')
+ SEAL_SHA=None
+ RUN_SHA=None
+ PREP_SHA=None
+-BASE=Path('/private/tmp/axmat-cross-group-identity-key-delta-v11-standalone-bounded-runtime-api-intake-20261009')
++BASE=Path('/private/tmp/axmat-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-20261009')
+ FAMILY='STANDALONE_BOUNDED_RUNTIME_API_INTAKE'
+ DECL_SHA=None
+ for value in (DECL_SHA,SEAL_SHA,RUN_SHA,PREP_SHA):

@@ -1,0 +1,39 @@
+实际保存态全部能群源/反应诊断：有限只读证据审查（2026-10-10）
+
+审查结论：本次实际执行、保存产物及诊断账本证据完整；完整物理中子平衡未合格。
+fresh临时报告：同目录REVIEW.json；本审查不修改项目、不导入或执行业务模块、不调用NumPy、不解码raw数组、不计算transport，也不访问任何Root运行句柄或扫描完整历史资源。
+
+真实执行绑定
+Root原始回执21844c/session17312→b763a2，终端exit_code为整数0，session_closed=true。host stdout绑定当前host result、child stdout、result/manifest及watchdog；stderr为空。实际whole 2.2995669579831883秒，child 1.1678048750036396秒，stage 1.5828585409908555秒，own child采样peak RSS 139.03125 MiB，limit_failure=null。
+原whole/stage 60秒、RSS512 MiB、archive64 MiB、单线程/单child/零重试、未profile的约束满足；这些是保存态Python诊断执行证据，不授予native transport RSS资格。
+
+完整字节和身份核验
+当前原始payload精确83文件：77 raw arrays + 5 metadata + manifest本身。77数组总48,553,420字节；manifest前54,353,509字节；完整payload 54,366,387字节。所有文件fresh完整EOF SHA及literal/target/fd七字段身份在读取前后稳定，所有82 manifest成员逐项匹配，数组shape/dtype/字节数/SHA与layout一致。
+固定11源输入合计40,612,931字节；fresh完整SHA及六组7ID字典与保存的before/after记录逐字段一致。此审查仅对XSM读取字节哈希，不解释其数值。
+READY源SHA 4851d9151dfe5682a36f450fff8d0acb42c69865e177affe81c4b703119f7874。相对UNREADY仅改一项SOURCE_STATUS常量，剩余整个文件逐字节一致；23函数源码一致。host的15项有限替换逆变换还原原parent host，全文逐字节一致。
+原619 helper、705 OwnRSS source、38de production runner、bc bounded runner、ebbb history factory及support固定SHA fresh核验通过。原live guard的6固定文件SHA通过，tested driver与当前OwnRSS class一致；SerialExecutor基类的AST检查与host实际MRO/runner/resource绑定检查一致。
+
+归档和资源
+最终host+payload+source archive cap scope=54,990,259字节，小于67,108,864字节。另计外置READY与当前Root receipts目录48,153字节，当前完整实际证据包55,038,412字节。外置Root展示报告明确计入外部回执附件，未混入child manifest。
+实际host保留完整history资源检查：after artifact_bytes=74,081,758,524，预算103,079,215,104字节（96 GiB）；after free=207,796,994,048，下限8,589,934,592字节（8 GiB）。本审查核保存的资源证据和小归档字节，不重新扫描历史或全artifacts。
+
+完整覆盖与原导出
+维度370群、24 mixtures、32 fission components、384细胞、392细面、8径向区域、48轴向细胞、每群1800未知量一致。全部370 scatter coverage记录保留；全部12命名反应通道保留。
+原CSV的384细胞和392细面键完整且唯一；全部原列均在replay记录内：细胞9数值列、面4数值列，每列记录max_abs_delta=0。源码遍历每行每列并强制完整键集，面0..48完整保留；使用同一个全局归一化分母1.4064839777046068，保留4→1的原96单元观察与13平面视图。此审查没有重新运行物理replay。
+
+可支持的物理解读
+保存的SOUR为REAL32最后工作缓存投影。其标量投影与以最终phi重建的Qf+Qoff之间最大相对差1.3413243042088778e-7（逐项尺度max(abs(saved),abs(rebuilt))），支持这份保存态内两者数值很接近。缺少最终轴向权威REAL64工作RHS与ITPIJ/LSCAL/ILEAK、S2/SIGS源分区和相位证据，不能把此近似一致提升为完整源等价。
+shared total/self transport correction的绝对和6.471867109013756e-7，而裂变源积分1.0000000025192153。修正实测非零；结果不能授予“修正严格为零”假设或据此构造物理吸收率。
+with closure残差绝对和0.0006564854561199579，signed sum=-3.544405277894619e-7；without closure绝对和3.1422361959516816。横向闭合项大幅抵消保存态账本残差，群/单元项带符号聚合的强抵消使signed sum远小于绝对和；signed sum不能替代完整逐项残差或授予full physical neutron balance PASS。
+transfer row/column identity差0，以及很小的correction/closure subtraction identity，支持该重建账本的代数记账一致性。全部反应通道虽保存，NX/NNP/N2A等的出射中子多重性及处理后的transfer语义尚未证明，net total minus transfer不能直接叫物理吸收。
+scientific_accuracy、AAA、ABA、same MG unreduced reference、reaction raw/transfer equivalence、full physical neutron balance、transport_launched及basis/rank/white coefficients modified均为false。
+
+历史结论仍成立
+固定原REPORT.txt fresh核验：原八项7 PASS、nu_fission FAIL，AAA_REFERENCE_NOT_QUALIFIED；端部裂变份额最大偏差3.9525%，原3%标准未改变，ABA未准入。本诊断未建立其因果解释。
+固定newcombined failed_terminal_return.json fresh SHA d0ceba77e4bf2395b3da686cd0297f941965932dd99be09ad98201574430895c：exit1，原512 MiB约束下own child peak513.40625 MiB，零重试；无完整graph、成功new runtime build或新科学资格。保存态诊断成功不改变这项失败。
+
+下一项严谨证据行动
+优先准备源级、可绑定历史Dragon51b可执行文件及处理合同的证据方案，确定并捕获最终收敛相位的权威轴向REAL64工作RHS，记录每群每单元以及ITPIJ/LSCAL/ILEAK和guarded S2/SIGS的源分区。不能用当前源码替代历史可执行算术来源证明。并行补全全部保留通道、尤其NX/NNP/N2A的规范出射中子多重性与transfer语义，再决定完整物理吸收和中子平衡公式。本审查不进行捕获或transport；后续数值执行应单独按既有准入与资源监督进行。
+
+透明保留的一次审查中断
+首次严格文件集断言发现84文件：Root后处理展示REPORT.txt暂放在payload中。初次Traceback/84文件清单及精确失败断言片段保存在INITIAL_STRICT_FILESET_CHECK_FAILED_NOTE.json、INITIAL_STRICT_FILESET_CHECK_SOURCE.py，完整初次工具输入保留在本agent对话工具记录。Root随后把自己的展示报告移至receipts（SHA da8da235663c3c96b1de80e909168955fcedd8a2ead3d240e28b75f19d2da73b），原82 manifest成员和manifest未改；本审查fresh重核当前83文件通过。随后加强whole-source字节等价及CSV全列检查，最终实际审查工具7fef7d整数exit0，无pending handle。这些只读字节审查不构成业务或数值重试。

@@ -1,0 +1,93 @@
+{
+  "schema": "AXMAT_V14B_COMPLETE_COMPONENT_UNREADY_SOURCE_ONLY_DRAFT_STATUS_V1",
+  "status": "UNREADY_SOURCE_ONLY",
+  "candidate": {
+    "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/prepare_qualified_AB_sender_contiguous_flux_window_streaming_sha_production_v14b.py",
+    "sha256": "b6fb702ca9a8d803722d17a1082df74a2bd693aead99b691899d9335cc40bb4f",
+    "bytes": 309204
+  },
+  "inverse_e1": {
+    "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/COMPLETE_INVERSE_PROOF.json",
+    "sha256": "59258932f9abdf1555a19c40a46468ebaeab88a97879008b0ef2c18c7715ae01",
+    "bytes": 9138
+  },
+  "inverse_d2": {
+    "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/COMPLETE_INVERSE_TO_D2_PROOF.json",
+    "sha256": "03f29cf7f6ed2b8161f90011c6220da68654fd9851c9615a57b4e832c436779a",
+    "bytes": 160490
+  },
+  "files": {
+    "COMPLETE_INVERSE_PROOF.json": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/COMPLETE_INVERSE_PROOF.json",
+      "sha256": "59258932f9abdf1555a19c40a46468ebaeab88a97879008b0ef2c18c7715ae01",
+      "bytes": 9138
+    },
+    "COMPLETE_INVERSE_TO_D2_PROOF.json": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/COMPLETE_INVERSE_TO_D2_PROOF.json",
+      "sha256": "03f29cf7f6ed2b8161f90011c6220da68654fd9851c9615a57b4e832c436779a",
+      "bytes": 160490
+    },
+    "GENERATION_TOOL0_RECEIPT.json": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/GENERATION_TOOL0_RECEIPT.json",
+      "sha256": "b86376aa281f4abcc54b8ca877057332ef42148b1463179db6c641182ffa21a4",
+      "bytes": 3513
+    },
+    "READONLY_SOURCE_REVIEW.json": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/READONLY_SOURCE_REVIEW.json",
+      "sha256": "b41394a14f9e5b72b6901903de48c50b17474f46a8c8e0ebf3eb6fac10a4b6f3",
+      "bytes": 3052
+    },
+    "READONLY_TOOL0_RECEIPT.json": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/READONLY_TOOL0_RECEIPT.json",
+      "sha256": "820a2be7781fd05f081ba7ba42e7faebf5ea9f132b5502d50025d8abefbd72f8",
+      "bytes": 3402
+    },
+    "generate_source_only.py": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/generate_source_only.py",
+      "sha256": "3fe8108661c660dc437daee0b5dbf3de37ae7e99ef41e45e0fac594ff6678591",
+      "bytes": 10078
+    },
+    "prepare_qualified_AB_sender_contiguous_flux_window_streaming_sha_production_v14b.py": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/prepare_qualified_AB_sender_contiguous_flux_window_streaming_sha_production_v14b.py",
+      "sha256": "b6fb702ca9a8d803722d17a1082df74a2bd693aead99b691899d9335cc40bb4f",
+      "bytes": 309204
+    },
+    "readonly_source_review.py": {
+      "path": "/private/tmp/axmat_v14b_streaming_sha_complete_component_source_draft_20261010/readonly_source_review.py",
+      "sha256": "1770ff8e1e03f105e37489cba9f8afd386ec32a6c0711905df74174e05b01c2f",
+      "bytes": 8514
+    }
+  },
+  "source_derivation_parent_is_archived_e1_not_formal_installed_factory": true,
+  "helper_source_physical_parent_remains_canonical619_and_d2": true,
+  "three_new_helper_source_proof_actual_controls_pins_all_None": true,
+  "three_future_actual_component_pins_all_None": true,
+  "source_generation_actual_tool": {
+    "chunk_id": "6fd505",
+    "exit_code": 0,
+    "wall_time_seconds": 0.350668833
+  },
+  "readonly_review_actual_tool": {
+    "chunk_id": "82890c",
+    "exit_code": 0,
+    "wall_time_seconds": 0.528708417
+  },
+  "helper_source_and_actual_control_protocols_V14_unchanged": true,
+  "original21_helper_protocol_groups_required": true,
+  "newhelper_added_def_inventory_fully_dynamic": true,
+  "source_scope": "Only active component version/namespace/schema names and future new H14b canonical helper/proof/control paths plus helper SOURCE copy filename.",
+  "future_SOURCE": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-sender-contiguous-flux-window-streaming-sha-build-admission-v14b-20261010",
+  "future_OUT": "/Users/wen/spot/validation/artifacts/axial-material-sender-contiguous-flux-window-streaming-sha-build-v14b-20261010",
+  "future_TERM": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-sender-contiguous-flux-window-streaming-sha-build-terminal-v14b-20261010",
+  "actual_H14b_proof_controls_or_benchmark_read": false,
+  "business_imports": false,
+  "business_calls": false,
+  "helper_calls": false,
+  "fixture_execution": false,
+  "compile": false,
+  "component_execution": false,
+  "project_write": false,
+  "native_RSS_verified": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false
+}

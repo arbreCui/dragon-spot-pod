@@ -1,0 +1,101 @@
+--- /private/tmp/axmat_v11_cold_component_input_consumer_source_only_20261009/prepare_historical_input_owned_specs_physical_cross_group_identity_key_delta_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak_v11.py
++++ /private/tmp/axmat_v12_graph_table_cold_source_only_20261009/prepare_owned_specs_identity_key_delta_graph_table_cold_runtime_v12.py
+@@ -1,4 +1,4 @@
+-'UNREADY V11 cold source-only integration candidate.\n\nOriginal P14 producer/P12 analysis and complete fresh INPUT, physical basis, decks, controller, OwnRSS MRO, budgets and closeout gates are retained. New combined/intake/component/cold success witnesses and observed counts remain absent. No controller, fixture or numerical execution is authorized by these source-only files.'
++'UNREADY V12 graph-table cold source-only identity candidate. The frozen V11 component0800 and5e/343e ancestor contract is retained. Complete historical INPUT, producerP14/analysisP12, physical basis, decks, genuine OwnRSS MRO/constructors, budgets and original closeout gates are unchanged. New combined/intake/cold success and counts are absent. Source identities alone do not authorize declaration or numerical work.'
+ import argparse
+ import ast
+ import copy
+@@ -22,8 +22,8 @@
+ ART = ROOT / "validation/artifacts"
+ OLD = ART / "axial-material-production-qualified-AB-white-trace-refined-envpin-20261005"
+ PARENT_SOURCE = ART / "axial-material-qualified-AB-white-trace-refined-envpin-admission-20261005"
+-SOURCE = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-admission-scipy-env-physical-basis-own-pid-peak-v11-20261009'
+-OUTPUT = ART/'axial-material-production-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-scipy-env-physical-basis-own-pid-peak-v11-20261009'
++SOURCE = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-cold-source-v12-20261009')
++OUTPUT = Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-cold-runtime-v12-20261009')
+ BUILD_FACTORY = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_cache_production.py"
+ BUILD = ART / "axial-material-rank1-factor-cache-build-20261007"
+ BUILD_FACTORY_SHA = "92d73658e349ea2b2816b2b770549ca22378c2595f2c9e5c9331bbf91c6abf8a"
+@@ -37,7 +37,7 @@
+ PREPARED_SHA = "024ffb9263e3d3b6cf10301d6fe2bac5a87a9b368008440e01038982291a6d53"
+ CAPTURE_SEAL = "16f67ec74e41d3282a7e90fe342e0165c81a8fb97a6cfc1cd72615e6a9ac9c0a"
+ OLD_RUNTIME_SHA = "51b2d3ff947daa3ea523932bcc28276b054632f0bfc6cf76fa21ac458a4f7be4"
+-EXPERIMENT = 'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-scipy-env-physical-basis-own-pid-peak-v11-20261009'
++EXPERIMENT = 'axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-cold-source-v12-20261009'
+ OBSERVER_PREFIX = "AXMAT-MOMENT-ORDER SELECTOR "
+ OBSERVER_EXPECTED = [32, 3, 2, 3, 1]
+ HISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"
+@@ -68,25 +68,25 @@
+ CONTROLS_SHA = 'd4da69dbf099f8527e50d837c27ec9fc94aa105e37530ccfe8c11d68a7767393'
+ DECK_HELPER = ROOT/'validation/axial_material/combined_cold_file_snapshot_decks.py'
+ DECK_HELPER_SHA = '6606ff241ae98ca193bd1e1c002ac066661fbba76a151c42ea2f62f8b979aee0'
+-FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_physical_cross_group_identity_key_delta_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak_v11.py'
++FORMAL_FACTORY = Path('/Users/wen/spot/validation/axial_material/prepare_owned_specs_identity_key_delta_graph_table_cold_runtime_v12.py')
+ FORMAL_FACTORY_SHA = None  # Documentary unknown; external AXMAT_COLD_FACTORY_SHA256 avoids a self-hash cycle.
+-COMBINED_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py'
+-COMBINED_FACTORY_SHA = None
+-COMBINED_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
++COMBINED_FACTORY = Path('/Users/wen/spot/validation/axial_material/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.py')
++COMBINED_FACTORY_SHA = '5af1feebc7d40549750e1daec6148ae073a4c85c1eb3242485e6d9e80826861b'
++COMBINED_BUILD = Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009')
+ COMBINED_BUILD_SEAL = None
+-COMBINED_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'/'terminal_return.json'
++COMBINED_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-terminal-v12-20261009/terminal_return.json')
+ COMBINED_TERMINAL_SHA = None
+-COMBINED_RUNTIME = '/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009/runtime/Dragon'
++COMBINED_RUNTIME = '/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009/runtime/Dragon'
+ COMBINED_RUNTIME_SHA = None
+-COMBINED_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V11_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++COMBINED_SCHEMA = 'AXMAT_OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_COMBINED_RUNTIME_V12_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+ COMBINED_ADMISSION = 'COMBINED_RUNTIME_INPUT_ONLY'
+-PRIVATE_INPUT_CONSUMER = ROOT/'validation/axial_material/cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py'
++PRIVATE_INPUT_CONSUMER = Path('/Users/wen/spot/validation/axial_material/cold_component_input_consumer_identity_key_delta_graph_table_own_pid_peak_v12.py')
+ PRIVATE_INPUT_CONSUMER_SHA = None
+-COMPONENT_INTAKE_DESCRIPTOR = ROOT/'validation/axial_material/cold_owned_specs_cross_group_identity_key_delta_component_input_intake_binding_v11_20261009.json'
++COMPONENT_INTAKE_DESCRIPTOR = Path('/Users/wen/spot/validation/axial_material/cold_owned_specs_identity_key_delta_graph_table_component_input_intake_binding_v12_20261009.json')
+ COMPONENT_INTAKE_DESCRIPTOR_SHA = None
+-INPUT_REUSE_SCHEMA = 'AXMAT_COLD_COMPLETE_CROSS_GROUP_IDENTITY_KEY_DELTA_COMPONENT_INPUT_INTAKE_V1'
++INPUT_REUSE_SCHEMA = 'AXMAT_COLD_COMPLETE_IDENTITY_KEY_DELTA_GRAPH_TABLE_COMPONENT_INPUT_INTAKE_V12'
+ INPUT_REUSE_SEMANTICS = 'COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION'
+-CALLBACK_METADATA_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_INPUT_ADMISSION_V1'
++CALLBACK_METADATA_SCHEMA = 'AXMAT_OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_SCIPY_ENV_COLD_INPUT_ADMISSION_V12'
+ SCIPY_HELPER = ROOT/'validation/axial_material/cold_scipy_environment_admission_namespace_v3_20261008.py'
+ SCIPY_HELPER_SHA = '35a9aca4355d577395a5bf73fb79caa24b457c7a31febc7547de93b5a1e49557'
+ SCIPY_DEPENDENCY_ROOT = ART/'axial-material-cold-cp314-scipy-dependency-20261008'
+@@ -122,12 +122,12 @@
+ OWN_PID_SUPERVISOR_SHA = 'ac51e68866f96547fa620fd971a911f93841a824412c3fe0a050bdbce00ae76b'
+ FROZEN_CANONICAL_COLD_FAILURE = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-file-snapshot-terminal-scipy-env-canonical-code-20261008/cold_failure_terminal_return.json'
+ FROZEN_CANONICAL_COLD_FAILURE_SHA = '6654c38ad41f074aeeff05da8f9d4d8d11017051fc451317f0fb0af52567caf5'
+-COLD_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-terminal-scipy-env-physical-basis-own-pid-peak-v11-20261009'
+-CONTROL_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-own-rss-terminal-scipy-env-physical-basis-own-pid-peak-v11-20261009'
++COLD_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-cold-terminal-v12-20261009')
++CONTROL_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-cold-controls-terminal-v12-20261009')
+ DRAFT_STATUS = 'UNREADY'
+-SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_FACTORY_V1'
+-DECL_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_DECLARATION_ACTUAL_TERMINAL_V1'
+-COLD_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_ACTUAL_TERMINAL_V1'
++SCHEMA = 'AXMAT_OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_SCIPY_ENV_COLD_FACTORY_V12'
++DECL_TERMINAL_SCHEMA = 'AXMAT_OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_SCIPY_ENV_COLD_DECLARATION_ACTUAL_TERMINAL_V12'
++COLD_TERMINAL_SCHEMA = 'AXMAT_OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_SCIPY_ENV_COLD_ACTUAL_TERMINAL_V12'
+ COLD_TAIL = ('full_closeout_tail_gate','actual_elapsed_seconds','actual_archive_bytes','actual_resources')
+ ORIGINAL_COMPLETE_12_MAP_CASE_BYTES = 13265348616
+ ORIGINAL_COLD_RESERVE_BYTES = 20971764748
+@@ -601,7 +601,7 @@
+     change(anchor,anchor+'\n    shutil.copy2(Path(__file__).with_name("combined_cold_own_rss_host.py"), runtime / "combined_cold_own_rss_host.py")'
+         +'\n    shutil.copy2(Path(__file__).with_name("combined_cold_own_rss_controls.py"), runtime / "combined_cold_own_rss_controls.py")'
+         +'\n    shutil.copy2(Path(__file__).with_name("combined_cold_file_snapshot_decks.py"), runtime / "combined_cold_file_snapshot_decks.py")'
+-        +'\n    shutil.copy2(Path(__file__).with_name("cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py"), runtime / "cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py")'
++        +'\n    shutil.copy2(Path(__file__).with_name("cold_component_input_consumer_identity_key_delta_graph_table_own_pid_peak_v12.py"), runtime / "cold_component_input_consumer_identity_key_delta_graph_table_own_pid_peak_v12.py")'
+         +'\n    shutil.copy2(Path(__file__).with_name("physical_common_basis_admission.py"), runtime / "physical_common_basis_admission.py")')
+     change('    write_inputs(output / "decks", config)\n','    write_inputs(output / "decks", config)\n'+DECK_HOOK)
+     change(CONSTRUCTOR_BEFORE,CONSTRUCTOR_AFTER)
+@@ -754,7 +754,7 @@
+     for src, wanted, name in ((HOST, HOST_SHA, "combined_cold_own_rss_host.py"),
+         (CONTROLS, CONTROLS_SHA, "combined_cold_own_rss_controls.py"),
+         (DECK_HELPER, DECK_HELPER_SHA, "combined_cold_file_snapshot_decks.py"),
+-        (PRIVATE_INPUT_CONSUMER, PRIVATE_INPUT_CONSUMER_SHA, "cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py"),
++        (PRIVATE_INPUT_CONSUMER, PRIVATE_INPUT_CONSUMER_SHA, "cold_component_input_consumer_identity_key_delta_graph_table_own_pid_peak_v12.py"),
+         (PHYSICAL_BASIS_HELPER, PHYSICAL_BASIS_HELPER_SHA, "physical_common_basis_admission.py"),
+         (SCIPY_HELPER, SCIPY_HELPER_SHA, "cold_scipy_environment_admission_namespace_v3_20261008.py")):
+         shutil.copy2(require(src, wanted), SOURCE / name)

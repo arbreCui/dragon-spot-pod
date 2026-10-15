@@ -1,0 +1,71 @@
+--- /Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v3.py
++++ prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v4.py
+@@ -1,14 +1,9 @@
+-"""Reviewed v3 identity for the independently admitted trim combined link.
+-
+-The original2cad seven-key historical INPUT body and original48ffa capture
+-remain complete and unchanged. A separately recorded real trim3arg return
+-selects kernel343e; it grants no native RSS, FLU or scientific eligibility.
+-Each subsequent phase freshly reads the complete canonical union, including
+-the full new component SOURCE/OUT/terminal and preserved INPUT namespaces.
+-No parent API is relabelled as reexecuted by a fresh input-graph phase.
+-All five stages and original1800/600/512/2GiB/96/free8/1/1/0 remain.
+-Actual component pins and reviewed canonical formalization are required
+-before any action; this TMP draft cannot execute a business action.
++"""UNREADY independent combined-runtime low-peak JSON metadata source.
++
++Derived from frozen v3; no result or RSS credit is inherited from its failed
++Python audit. Only helper lifetime representation and new family identity change.
++The full regular-byte union, old seven-key body, actual trim input, all namespaces
++and every original wall/RSS/disk/thread/child/terminal gate remain required.
+ """
+ import argparse
+ import gc
+@@ -31,11 +26,11 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT/'validation/artifacts'
+-SOURCE = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-last-cprime-trim-live-resource-scopes-v3-20261008'
+-OUT = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v3-20261008'
+-TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v3-20261008'
+-FAMILY = 'HISTORICAL_INPUT_TRIM_COMBINED_RUNTIME_LINK_V3'
+-DRAFT_STATUS = 'READY_REVIEWED_TRIM_COMPONENT_INPUT_REUSE_FORMAL_FACTORY'
++SOURCE = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-last-cprime-trim-live-resource-scopes-v4-20261008'
++OUT = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v4-20261008'
++TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v4-20261008'
++FAMILY = 'HISTORICAL_INPUT_TRIM_COMBINED_RUNTIME_LINK_V4'
++DRAFT_STATUS = 'UNREADY_LOW_PEAK_JSON_FACTORY_SOURCE_REVIEW_PENDING'
+ CAPTURE_SEAL_SHA = '12756df88672c4438149119026edba0b2ef78780dffa5dcc522bcd06771d5296'
+ CAPTURE_TERMINAL_SHA = 'd5496707eb1ad08826eec599dbf6035b9e39df67cf68a92e84db62bcbb753e63'
+ CAPTURE_FACTORY = ROOT/'validation/axial_material/prepare_rank1_cache_memory_dedup_file_snapshot_native_angular_capture.py'
+@@ -77,11 +72,11 @@
+ HISTORY_POLICY = 'AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1'
+ THREAD_KEYS = ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ TAIL_FIELDS = ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')
+-PREFIX = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V3'
++PREFIX = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V4'
+ TERMINAL_SCHEMA = PREFIX+'_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1'
+ 
+ PREP_TERMINAL_SCHEMA = PREFIX+'_ACTUAL_EXTERNAL_PREP_RETURN_V1'
+-FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v3.py'
++FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v4.py'
+ HISTORICAL_FACTORY = ROOT/'validation/axial_material/prepare_combined_physical_dedup_file_snapshot_runtime_build.py'
+ HISTORICAL_FACTORY_SHA = 'bf4692a57209ace55e22f85c6e9ffabf80850dcb1b610348e7dc97b74a80040c'
+ HISTORICAL_DECL = ART/'axial-material-physical-dedup-combined-runtime-build-20261007/declaration.json'
+@@ -91,7 +86,7 @@
+ INPUT_SPECS = ROOT/'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+ INPUT_SPECS_SHA = '2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa'
+ INPUT_HELPERS = {
+- 'graph': (ROOT/'validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph.py','ac3fb3bc6a3d67a685482183ee01c9b0bc0df6f71528a3a895416519db687cf4'),
++ 'graph': (ROOT/'validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_low_peak_json_20261008.py','158b237e427e58f8d19fd872db6caf2f0549611e0a8e1131f2416f82c57f246e'),
+  'codec': (ROOT/'validation/axial_material/combined_runtime_typed_specs_codec.py','758c6d39ecb4c37e5ff5b3d6639ab8404447719e7cfd3ff72336276a94bb2e69'),
+  'current': (ROOT/'validation/axial_material/combined_runtime_current_predicates.py','0e7423bb39c6a6c5c55e2ba12dede62d3d779dd1805342eedc39e6bf40e5c779'),
+  'checks': (ROOT/'validation/axial_material/combined_runtime_historical_input_checks.py','86e7d6340da59c74abcff57fa52bb07d690f51cc33fe76f330ece2e0d158258e'),
+@@ -151,6 +146,7 @@
+         raise ValueError('TMP draft cannot perform a business action')
+     if any(os.environ.get(key)!='1' for key in THREAD_KEYS):
+         raise ValueError('single-thread environment required before project import')
++    nonzero_sha(INPUT_HELPERS['graph'][1])  # Reject the new unbound helper before any project input load.
+     nonzero_sha(CAPTURE_SEAL_SHA);nonzero_sha(CAPTURE_TERMINAL_SHA)
+     for value in (TRIM_DECL_SHA,TRIM_SEAL_SHA,TRIM_TERMINAL_SHA,TRIM_SOURCE_ADMISSION_SHA,TRIM_OBJECT_SHA,TRIM_RUNTIME_SHA):
+         nonzero_sha(value)

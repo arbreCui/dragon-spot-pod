@@ -1,0 +1,158 @@
+def private_owner_consume_controls(g, small_graph):
+    """New metadata controls; all original protocol fixtures/controls stay whole."""
+    # Borrow the already-created original small graph; create no new files.
+    expanded = g._expand_owner_table(small_graph["owners"], small_graph["requirements"])
+    require(type(expanded) is list and len(expanded) >= 2,
+            "complete original expanded small owner fixture required")
+
+    def descriptor_signature(value):
+        """Every value/type/order/str attrs/float bit; output mutable ids may differ."""
+        kind = type(value)
+        typename = kind.__module__ + "." + kind.__qualname__
+        if kind is dict:
+            return ["dict", [[descriptor_signature(k), descriptor_signature(v)]
+                             for k, v in value.items()]]
+        if kind in (list, tuple):
+            return [typename, [descriptor_signature(v) for v in value]]
+        if isinstance(value, str):
+            attributes = getattr(value, "__dict__", None) if kind is not str else None
+            return ["str", typename, str.encode(value, "utf-8", "surrogatepass").hex(),
+                    descriptor_signature(attributes) if attributes is not None else None]
+        if kind is float:
+            return ["float", struct.pack(">d", value).hex()]
+        require(kind in (int, bool, type(None)), "unexpected owner descriptor fixture type")
+        return [typename, value]
+
+    def caller_snapshot(values):
+        return {"outer_type": type(values).__module__ + "." + type(values).__qualname__,
+                "outer_identity": id(values),
+                "complete_rows": [caller_integrity_snapshot(row) for row in values]}
+
+    baseline_input = copy.deepcopy(expanded)
+    baseline_before = caller_snapshot(baseline_input)
+    baseline = g._owners(baseline_input)
+    exact_value(baseline_before, caller_snapshot(baseline_input), "owner baseline default caller")
+    baseline_signature = descriptor_signature(baseline)
+    positives = []
+    for label, caller, explicit in [
+            ("default_list", copy.deepcopy(expanded), False),
+            ("default_tuple", tuple(copy.deepcopy(expanded)), False),
+            ("explicit_False_list", copy.deepcopy(expanded), True)]:
+        before = caller_snapshot(caller)
+        result = g._owners(caller, _consume=False) if explicit else g._owners(caller)
+        after = caller_snapshot(caller)
+        exact_value(before, after, label + "/complete owner caller identity/attrs/floatbits")
+        signature = descriptor_signature(result)
+        exact_value(baseline_signature, signature, label + "/complete normalized descriptors")
+        positives.append({"case": label,
+                          "caller_full_identity_type_order_value_attrs_floatbits_unchanged": True,
+                          "full_normalized_descriptor_types_order_values_attrs_floatbits_equal_default": True,
+                          "expected_complete_descriptor_signature": baseline_signature,
+                          "actual_complete_descriptor_signature": signature})
+    owned = copy.deepcopy(expanded)
+    require(type(owned) is list, "fresh exclusively owned builtin owner list required")
+    result = g._owners(owned, _consume=True)
+    require(owned == [], "successful private owner normalization must clear the source list")
+    signature = descriptor_signature(result)
+    exact_value(baseline_signature, signature, "owned True complete normalized descriptors")
+    positives.append({"case": "owned_builtin_list_True",
+                      "owned_list_completely_cleared_after_success": True,
+                      "full_normalized_descriptor_types_order_values_attrs_floatbits_equal_default": True,
+                      "expected_complete_descriptor_signature": baseline_signature,
+                      "actual_complete_descriptor_signature": signature})
+
+    class PlainAcceptedStr(str):
+        pass
+
+    class OverrideAcceptedStr(str):
+        def __str__(self):
+            return "OVERRIDE_MUST_NOT_REPLACE_UNDERLYING_OWNER_TEXT"
+
+    subtypes = []
+    for label, subtype in [("plain_accepted_str", PlainAcceptedStr),
+                            ("accepted_str_with_str_override", OverrideAcceptedStr)]:
+        rows = copy.deepcopy(expanded)
+
+        def foreign(value):
+            require(type(value) is str, "owner subtype starts with builtin underlying text")
+            part = subtype(value)
+            part.caller_marker = {"case": label, "bits": [-0.0, 1e-300, 1.25],
+                                  "types": [None, True, False, 0, "0"]}
+            return part
+
+        row = rows[0]
+        row["owner"] = foreign(row["owner"])
+        row["category"] = foreign(row["category"])
+        row["expected_files"] = {foreign(path): foreign(digest)
+                                 for path, digest in row["expected_files"].items()}
+        if "newly_declared_input_paths" in row:
+            row["newly_declared_input_paths"] = [foreign(path)
+                                                 for path in row["newly_declared_input_paths"]]
+        before = caller_snapshot(rows)
+        subtype_default = g._owners(rows)
+        exact_value(before, caller_snapshot(rows), label + "/default full owner caller")
+        owned = copy.deepcopy(rows)
+        subtype_result = g._owners(owned, _consume=True)
+        require(owned == [], label + "/successful owned list completely cleared")
+        expected_signature = descriptor_signature(subtype_default)
+        actual_signature = descriptor_signature(subtype_result)
+        exact_value(expected_signature, actual_signature, label + "/owner types attrs bits")
+        exact_value(before, caller_snapshot(rows), label + "/original default caller preserved")
+        subtypes.append({"case": label,
+                         "default_caller_full_identity_type_order_value_attrs_floatbits_unchanged": True,
+                         "owned_list_completely_cleared_after_success": True,
+                         "complete_normalized_descriptor_types_order_value_strattrs_floatbits_equal_default": True,
+                         "expected_complete_descriptor_signature": expected_signature,
+                         "actual_complete_descriptor_signature": actual_signature})
+
+    class ListSubclass(list):
+        pass
+
+    negatives = []
+    for label, caller, consume in [
+            ("nonbool_consume", copy.deepcopy(expanded), 1),
+            ("tuple_True", tuple(copy.deepcopy(expanded)), True),
+            ("list_subclass_True", ListSubclass(copy.deepcopy(expanded)), True)]:
+        before = caller_snapshot(caller)
+        case = rejection(g, label, lambda: g._owners(caller, _consume=consume), negatives,
+                         expected_message="private owner consume needs a bool and an exclusively owned builtin list")
+        exact_value(before, caller_snapshot(caller), label + "/rejected owner caller unchanged")
+        case["caller_full_identity_type_order_value_attrs_floatbits_unchanged"] = True
+
+    default_partial = [copy.deepcopy(expanded[0]), {}]
+    default_before = caller_snapshot(default_partial)
+    partial_records = []
+    left = rejection(g, "invalid_second_owner_default",
+                     lambda: g._owners(default_partial), partial_records,
+                     expected_message="missing file owner")
+    exact_value(default_before, caller_snapshot(default_partial), "invalid default caller unchanged")
+    first, invalid = copy.deepcopy(expanded[0]), {}
+    first_before, invalid_before = caller_integrity_snapshot(first), caller_integrity_snapshot(invalid)
+    owned_partial = [first, invalid]
+    right = rejection(g, "invalid_second_owner_owned_True",
+                      lambda: g._owners(owned_partial, _consume=True), partial_records,
+                      expected_message="missing file owner")
+    require(len(owned_partial) == 2 and owned_partial[0] is None and owned_partial[1] is invalid,
+            "valid first row must be consumed only after append; invalid second row stays original")
+    exact_value(first_before, caller_integrity_snapshot(first), "consumed row descriptor not mutated")
+    exact_value(invalid_before, caller_integrity_snapshot(invalid), "invalid row not consumed or mutated")
+    require((left["class"], left["message"]) == (right["class"], right["message"]),
+            "original invalid owner rejection class/order/message must be preserved")
+    require(len(positives) == 4 and len(negatives) == 3 and len(subtypes) == 2
+            and len(partial_records) == 2, "complete new private owner control set required")
+    return {"schema": "AXMAT_V22_PRIVATE_OWNER_CONSUME_ACTUAL_CONTROL_V1",
+            "status": "ACTUAL_PRIVATE_OWNER_CONTROLS_RETURNED_METADATA_ONLY",
+            "positive_controls": positives, "private_guard_rejections": negatives,
+            "accepted_str_subclass_equivalence_controls": subtypes,
+            "partial_invalid_second_owner_rejections": partial_records,
+            "first_valid_slot_None_after_original_validate_and_append": True,
+            "invalid_second_slot_original_identity_and_value_unchanged": True,
+            "default_partial_caller_unchanged": True,
+            "original_owner_rejection_class_order_message_preserved": True,
+            "original_protocol_controls_fixtures_and_caps_unchanged": True,
+            "no_new_fixture_file_or_IO_created": True,
+            "new_helper_qualification_created": False,
+            "business_or_science_qualification_created": False}
+
+
+

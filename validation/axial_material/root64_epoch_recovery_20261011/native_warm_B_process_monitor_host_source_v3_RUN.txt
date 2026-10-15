@@ -1,0 +1,36 @@
+B v3 Source-only delivery. No business was executed during preparation.
+
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_warm_B_process_monitor_host_source_v3
+
+Only the main OUT literal changes from frozen v2; common, entry and Fortran probe are byteexact v2. The original four Sources and complete Source freeze are unchanged. The main retains the V2 freeze filename/schema and six complete package rows. Its existing admission still requires fullEOF SHA plus all seven identity fields for the current17, entry report, and Source freeze.
+
+Root must independently review the Source package before running it in an authorized environment where the unchanged original OwnRSSSerialExecutor can call /bin/ps to sample its owned compiler and solver child. No guard, monitor, class/MRO, physics formula, threshold, 370-group/type4 input rule, resources check, stage600, whole1800, SELF/child512MiB, history96GiB, cold20971764748B, metadata64MiB, fresh2GiB, free8GiB, one-thread/one-child or zero-retry rule is patched. PermissionError remains a true failure; zero sampling grants no RSS qualification.
+
+Exact future argv (JSON array, no command has been executed):
+[
+  "/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12",
+  "-B",
+  "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_warm_B_process_monitor_host_source_v3/run_current_native_warm_B.py",
+  "--seventeen-summary",
+  "/Users/wen/spot/validation/artifacts/axial-material-new-ROOT64-full-connected17-expected-planes-v4-20261012/Root_actual_compile_only_summary.json",
+  "--seventeen-sha256",
+  "12702c844a5b76b15a6331d0059003ad945ef8695402c60c9dd00a182ed90dcc",
+  "--seventeen-seven-id",
+  "[16777234,49772671,33188,1,7605333,1791741987612469808,1791741987612469808]",
+  "--entry-controls-summary",
+  "/Users/wen/spot/validation/artifacts/axial-material-current-warm-B-CLE-entry-controls-20261012-v1/Root_actual_entry_controls_summary.json",
+  "--entry-controls-sha256",
+  "a0acac4ded2b78a9f24a78521a30a5a2213ef377d80a1f99ef2a14044584b5b4",
+  "--entry-controls-seven-id",
+  "[16777234,49777307,33188,1,7388028,1791744814192388888,1791744814192388888]",
+  "--source-freeze-summary",
+  "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_warm_B_process_monitor_host_source_v3/COMPLETE_WARM_B_INITIAL_STORAGE_SOURCE_FREEZE.json",
+  "--source-freeze-sha256",
+  "bfd9083e5ab967ea4290d3112eddbf9adc6edf454e58fe72ca74baedf9cf324f",
+  "--source-freeze-seven-id",
+  "[16777234,49785976,33188,1,6426,1791750642081593950,1791750642081593950]"
+]
+
+Required original environment: unset PYTHONOPTIMIZE; OMP_NUM_THREADS=OPENBLAS_NUM_THREADS=MKL_NUM_THREADS=VECLIB_MAXIMUM_THREADS=NUMEXPR_NUM_THREADS=1; original exact Python, nonoptimized/unprofiled host. Fresh output: /Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v3-process-monitor-access. Once only, no automatic retry or output reuse. Entry support is imported to compare actual saved controls; its entry main is not called again.
+
+Frozen v2 original actual tool f58cab/session72971 -> 6f7617 EXIT1 failed at compile_0 monitor PermissionError, compiler returncode0, sampled_peak0. Transport was not executed. Its entire closed Source and result remain untouched. No old v1 physical producer qualification is inherited. This Source preparation grants no B producer, three-plane, GLOBAL, rank, online BOOT, AAA, ABA or goal qualification.

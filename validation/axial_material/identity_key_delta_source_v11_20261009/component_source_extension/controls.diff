@@ -1,0 +1,94 @@
+--- /Users/wen/spot/validation/axial_material/rank1_factor_cache_factor_diagonal_trim_controls.f90
++++ /private/tmp/axmat-rank1-cross-group-identity-key-delta-source-v11-20261009/component_source_only_extension/rank1_factor_cache_cross_group_identity_key_delta_controls.f90
+@@ -580,6 +580,7 @@
+       '"built":'//number(built)//',"reused":'//number(reused)//',"hits":'//number(hits)// &
+       ',"live":'//number(live)//',"peak":'//number(peak)//',"cap":'//number(cap)//'}'
+     flush(memory_manifest)
++    call archive_dense_identity_keys(name,logical_group)
+   end subroutine archive_dense
+ 
+   subroutine archive_packed(name,logical_group,directions)
+@@ -638,8 +639,83 @@
+         ',"cprime_shape":['//number(int(cprime_dims(1),int64))//','// &
+         number(int(cprime_dims(2),int64))//','//number(int(cprime_dims(3),int64))//']}'
+       flush(memory_manifest)
++      if (plan%ready) call archive_candidate_identity_keys(name,logical_group)
+     end associate
+   end subroutine archive_packed
++
++  ! Observation-only identity archives. Original numerical files are intact.
++  subroutine archive_dense_identity_keys(name,logical_group)
++    character(len=*), intent(in) :: name
++    integer, intent(in) :: logical_group
++    integer :: out
++    integer(int64) :: h(12),bb,rr,hh,ll,pp,cc,nraw,noperator
++    character(len=:), allocatable :: stem
++    ! archive_dense is reached only for a genuine completed rank1 c017 run.
++    if (nm /= 1 .or. nr <= 1 .or. any(ncode == 4)) return
++    associate(plan=>DENSE_PLAN(1)%mode(1))
++      nraw=size(plan%rank1_raw_bits,kind=int64)
++      noperator=size(plan%rank1_operator_bits,kind=int64)
++      call DENSE_STATS(bb,rr,hh,ll,pp,cc)
++      h=[1_int64,int(logical_group,int64),1_int64,nraw,noperator,bb,rr,hh,ll,pp,cc,0_int64]
++      stem=trim(name)//'_g'//number(int(logical_group,int64))//'_dense_keys'
++      open(newunit=out,file=stem//'.bin',status='new',action='write', &
++        form='unformatted',access='stream',convert='little_endian')
++      write(out) h,plan%rank1_raw_bits,plan%rank1_operator_bits
++      close(out)
++      write(memory_manifest,'(A)') '{"kind":"dense_identity_keys","case":"'//trim(name)// &
++        '","group":'//number(int(logical_group,int64))//',"runtime_group":1,"file":"'// &
++        stem//'.bin","raw_key_words":'//number(nraw)//',"operator_key_words":'//number(noperator)//'}'
++      flush(memory_manifest)
++    end associate
++  end subroutine archive_dense_identity_keys
++
++  subroutine archive_candidate_identity_keys(name,logical_group)
++    character(len=*), intent(in) :: name
++    integer, intent(in) :: logical_group
++    integer :: out,phase,owner
++    integer(int64) :: h(16),bb,rr,hh,ll,pp,cc,nkey,words,positions,base_words
++    integer(int64), allocatable :: decoded_key(:)
++    logical :: compressed
++    character(len=:), allocatable :: stem
++    if (.not.SPOT1P64_RANK1_ENABLED()) return
++    if (nm /= 1 .or. nr <= 1 .or. any(ncode == 4)) return
++    associate(plan=>SPOT1P64_PLAN(logical_group)%mode(1))
++      if (.not.plan%ready) return
++      stem=trim(name)//'_g'//number(int(logical_group,int64))//'_identity_keys'
++      open(newunit=out,file=stem//'.bin',status='new',action='write', &
++        form='unformatted',access='stream',convert='little_endian')
++      do phase=1,2
++        call SPOT1P64_RANK1_KEY_STATS(logical_group,phase,owner,nkey,compressed,words,positions)
++        allocate(decoded_key(nkey))
++        call SPOT1P64_RANK1_KEY_LOAD(logical_group,phase,decoded_key)
++        call SPOT1P64_RANK1_STATS(bb,rr,hh,ll,pp,cc)
++        associate(base=>SPOT1P64_PLAN(owner)%mode(1))
++          if (phase == 1) then
++            base_words=size(base%rank1_raw_bits,kind=int64)
++          else
++            base_words=size(base%rank1_operator_bits,kind=int64)
++          endif
++          h=[1_int64,int(logical_group,int64),int(phase,int64),int(owner,int64),nkey, &
++            merge(1_int64,0_int64,compressed),words,positions,base_words,bb,rr,hh,ll,pp,cc,0_int64]
++          write(out) h
++          if (phase == 1) then
++            write(out) plan%rank1_raw_bits
++            if (allocated(plan%rank1_raw_positions)) write(out) plan%rank1_raw_positions
++            write(out) base%rank1_raw_bits,decoded_key
++          else
++            write(out) plan%rank1_operator_bits
++            if (allocated(plan%rank1_operator_positions)) write(out) plan%rank1_operator_positions
++            write(out) base%rank1_operator_bits,decoded_key
++          endif
++        end associate
++        deallocate(decoded_key)
++      enddo
++      close(out)
++      write(memory_manifest,'(A)') '{"kind":"candidate_identity_keys","case":"'//trim(name)// &
++        '","group":'//number(int(logical_group,int64))//',"file":"'//stem//'.bin","phases":[1,2]}'
++      flush(memory_manifest)
++    end associate
++  end subroutine archive_candidate_identity_keys
+ 
+   subroutine primitive_setup()
+     call SPOT1P64_CACHE_BEGIN(1,.false.,.true.)

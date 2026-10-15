@@ -1,0 +1,31 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v4/run_actual_three_plane_pipeline.py
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v5/run_actual_three_plane_pipeline.py
+@@ -22,7 +22,7 @@
+ spec=importlib.util.spec_from_file_location('pipeline_original_common',COMMON)
+ c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+ HERE=Path(__file__).resolve().parent
+-OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v4'
++OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v5'
+ WORK=OUT/'AAA'
+ MI=2**20
+ ROOT_NAMES={'AX':'ax_current.xsm','AXTRACK':'axial_track.xsm','AXSYSTEM':'initial_system.xsm',
+@@ -129,7 +129,7 @@
+         for suffix in ['summary','sha256','seven-id']:p.add_argument('--'+prefix+'-'+suffix,required=True)
+     args=p.parse_args();start=time.monotonic()
+     hf,phf=ext(args,'host_freeze')
+-    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V4' or \
++    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V5' or \
+        Path(hf['host_source']['path']).resolve()!=Path(__file__).resolve():
+         raise RuntimeError('exact owning complete Host Source freeze')
+     c.same_pin(__file__,hf['host_source']);c.verify_rows(hf['dependencies'])
+@@ -459,7 +459,9 @@
+             if mutated['identity'][:2]!=control_pin['identity'][:2]or mutated['sha256']==control_pin['sha256']:
+                 raise RuntimeError('actual declared mutation must change the same independent owned clone')
+             stable()
+-            refuse('initial_'+mutation,initial(pack='negative_pack.xsm'),'SPOASMP64: GENUINE COMPLETE NATIVE INPUT REQUIRED.')
++            expected_message=('SPOASM: INVALID OFFLINE REAL64 SOURCE ITEM.'if mutation=='source32'else
++                              'SPOASMP64: GENUINE COMPLETE NATIVE INPUT REQUIRED.')
++            refuse('initial_'+mutation,initial(pack='negative_pack.xsm'),expected_message)
+             if(WORK/'negative_system.xsm').exists():release('negative_system.xsm','unqualified initial operator negative output',cases[-1])
+             release('negative_pack.xsm','one finite exact private control clone; original18 trees retained',cases[-1])
+         run('initial_positive',initial(out='initial_system.xsm').replace('END: ; QUIT "LIST" .','ECHO "ACTUAL-AAA3-INITIAL-OPERATOR-COMPLETE" ;\nEND: ; QUIT "LIST" .'),

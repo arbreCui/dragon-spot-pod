@@ -1,0 +1,14 @@
+PASS: independent saved evidence review of ACTUAL FAILED ec6 PREP only.
+Actual launch9696a8/session62951 closed0f2c97 EXIT1; all7 genuine observations and empty redirected terminal stdout retained.
+Observed rejection: /private/tmp/SPOT_INSTALLED6A_NEW_Q_FACTORY_SOURCE_ONLY_V29_wbh7cowp/__pycache__/installed6a_closed_metadata_admission_contract.cpython-312.pyc
+The exact child trace records unavailable/unowned bytecode read. This does not establish coverage of other read paths.
+35 original H/S/O/T/D/E files,88,139,403 B, full frozen namespaces including T absence held; E only has its2 explicit later Root metadata additions.
+All353 original fixed refs checked twice to raw EOF SHA/7ID;11 immutable D files and canonical new7ID held. All20 actual host input paths reconstructed from Source have complete before/after pins.
+Original5 guard Sources, complete original D/E21file namespace, and prior d19 failure unchanged. Failedhost final success-input checks were not reached; no saved success receipt was fabricated.
+Actual two outer streams and childmerged stream fully bound; final stages match under original sorted-dict JSON encoding; exact types/list order/float bits preserved.
+Actual failed metadata-stage watchdog:287.59398704208434s,485.8125MiB sampled own-child peak, limit_failure=None, returncode1, cleanup=true.
+Original caps1800host/600stage/512MiB/thread1/child1/retry0,96GiB history/free8GiB/joint2GiB retained. Original postaccount precedes its ledger write:240,936B postledger+32,321B freeze+4,660B tools=277,917B covered by original1MiB reserve.
+Original sampled joint/history plus these exact outputs:444041923/80655438184B. This arithmetic extends the frozen scope; it is not a fresh full live-history check.
+No T/declaration/seal/INPUT/success result exists. PREP remains FAILED; whole build, whole INPUT, NativeRSS, AAA, ABA, physical balance, science/BOOT and goal-complete remain false.
+Own audit only: no reviewed code import, helper execution, Native/solver/PS, array read, gzip/graph/trace decode, history scan, or ART/project write.
+Full input/check evidence:/private/tmp/SPOT_ec6_failed_PREP_independent_saved_review_V3_w54wvket/INDEPENDENT_FAILED_PREP_SAVED_RESULT.json

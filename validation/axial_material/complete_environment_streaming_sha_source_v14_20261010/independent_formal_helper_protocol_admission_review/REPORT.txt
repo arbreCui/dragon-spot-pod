@@ -1,0 +1,3 @@
+正式辅助协议凭证独立只读核验通过：117个完整字节引脚、两完整命名空间、21控制与真实Root/独审退出闭环均保持；两hardlink字面独立hash，故意broken link保持。
+e1cb仅对真实stdout/stderr的path+sha投影并校验size，完整逆回c505及V13，数学/86原控制未改；三个新pin仍None，工厂仍UNREADY且未执行门。
+仅helper协议资格，无明显计时收益，RSS0.0不是实测进程峰；不授86/native/AAA/ABA。

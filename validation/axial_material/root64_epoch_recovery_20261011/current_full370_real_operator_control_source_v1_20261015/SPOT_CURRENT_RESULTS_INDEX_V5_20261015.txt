@@ -1,0 +1,23 @@
+SPOT 最新结果入口（2026-10-15，A/B完整六阶段均已独立核验）
+
+最新实测进展：
+1. A完整字段构造已核验：8快照、55上下文、6阶段、19249字段、1829421已知元素，不匹配/上下文问题/未知宏观量来源均0。
+   SPOT_CURRENT_A_FULL_AGGREGATE_OVERV_RESOLVED_VERIFIED_RESULT_20261015.txt
+2. B完整捕获与提取已核验：4原始产品、55上下文、8原生树/8组完整SQL及字节池；B55控制371 ENERGY、2960 OVERV、3常量零差异。
+   SPOT_CURRENT_B_FULL_CAPTURE_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B_FULL_EXTRACTION_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B55_OVERV_NATIVE_INTEGER_CONTROL_VERIFIED_RESULT_20261015.txt
+3. B完整六阶段已实际完成并独立核验：8快照、55上下文、19249字段、1829421已知元素，不匹配/上下文问题/未知宏观量来源均0。实际消费本次B55控制，未虚构旧B问题数。原evidence-only child2/FAILED记录保留。
+   SPOT_CURRENT_B_FULL_SIXPHASE_VERIFIED_RESULT_20261015.txt
+4. B四产品原始423456221字节已无损归档为4份gzip共90356033字节，完整索引/条目/结果文档保留。原文副本全部退役，另清除25099039字节失败残片；这两次回收动作共移除448555260字节，为删除量，未扣除新归档与元数据。
+   SPOT_CURRENT_B4_COMPLETE_LOSSLESS_ARCHIVE_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B4_ALL_ORIGINAL_COPIES_RETIRED_VERIFIED_RESULT_20261015.txt
+5. 更早阶段已核验回收：14个旧SQL/字节池149659264字节；48份原文805236925字节在完整无损归档后回收，结果与对应文档保留。此两项不重复计入上面的B回收量。
+   SPOT_CURRENT_A_EARLY14_TEMPORARY_SPOOL_RETIREMENT_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT48_RESULTS_LOSSLESS_ARCHIVE_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT48_PLAINTEXT_RETIREMENT_VERIFIED_RESULT_20261015.txt
+
+下一顺序：A/B快照真实在线读取/消费凭证→AAA同质控制精度→独立耦合参考准入→ABA。完整构造与归档通过不代表物理验收完成。
+仍需解决：AAA既有ν裂变偏差3.9525259224%高于3%阈值；完整反应处理及多重性来源、温度插值、完整370群算子控制与独立耦合参考仍有未完成项。原阈值、失败及未知项均保留，总goal继续active。
+
+本文为最新导航。每项结果说明均指向实际回执、完整文件凭证和独立核验；旧导航保留作历史记录。

@@ -1,0 +1,6 @@
+PASS：真实finalization a76002/session47736→195dc5 EXIT0 CLOSED；本独审2dd716真0，仅TMP只读，无业务重跑。
+完整源码31/环境1860/391模块源码拥有者/43旧localfiles/runtime31/原8方法保留；2079来源fresh全SHA和七字段身份保持。
+prepared_cold1290（107746B）仅新增own_child_supervision，删后全部类型、字典与列表顺序、IEEE float64位及原序列化106577B/35f完全相同；cold peer另独立验证namespace与whole逆向。
+Root receipt ea33与observer8cf6、stdout846/stderr0完整同值；原15token CLI/5位置参数sourcehandoff/f14 Root before-after只finalization绑定保持。完整cold未来结构保留，所有叶字段仍None。
+两次TMP审查器1（原caps跨排序边界、future字典holder误当None）均保留原source/streams/真实收据，只修审查器。Root单独929f8b辅助显示语法1也鲜pin明确，不是业务失败。
+本报告继承原完整科学图与实际controls来源，不重复35GB数值读取；未新增live MRO introspection，无原生/输运/2000active取样/AAA/ABA/精度信用。

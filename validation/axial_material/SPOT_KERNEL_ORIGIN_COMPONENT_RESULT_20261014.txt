@@ -1,0 +1,15 @@
+SPOT 独立全群传输核来源与组件实际验证 — 2026-10-14
+
+一次完成原编译选项下的私有传输核编译，以及两组共 12 项组件测试；三个阶段 PASS，主过程真实退出 0，约 8.78 秒。原编译来源和递归本地 C++ 引用源已记录，测试显式加载当前 v2 模块。
+
+角向组件测试保留完整 370 群、九矩及 32 个裂变分量的代数控制；多群组件测试包括旧 zonal ABI 逐字一致、AAA/ABA 合成固定源的局部与整体账本、跨层解析对照、符号叠加、空介质与非法输入。角向测试峰值约 202.03 MiB，多群约 80.72 MiB，保持原 512 MiB / 600 秒 / 1800 秒 / 单线程 / 单子进程 / 零重试限制。
+
+范围仍为组件验证：角向测试 8 个方位角、128 个方向状态；层状测试 H150、NZ3。未执行正式 H150/NZ48、11,364 条真实 tracks、181,824 次 action 的完整耦合控制。没有将合成组件测试认作真实材料 AAA 精度或 ABA 验收。
+
+已生成 ACTUAL_FULL370_WHITE_ACCUMULATOR_LIBRARY_ORIGIN_V1，绑定真实编译命令、实际库与完整本地工程源、真实报告及 watchdog。系统 C++ 标准头文件未宣称全部逐字闭包校验。科学精度、反应多重性与正式独立全群参考资格仍为 false。
+
+证据：
+/Users/wen/spot/validation/artifacts/axial-material-current-full370-kernel-origin-component-controls-20261014-v1/Root_actual_full370_kernel_origin_component_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-current-full370-kernel-origin-component-controls-20261014-v1/ACTUAL_FULL370_WHITE_ACCUMULATOR_LIBRARY_ORIGIN.json
+
+后续：唯一实际结果独立核验；核对全部 79 温度的 NX 原生成字值；继续完整反应与正式传输范围验证。

@@ -1,0 +1,11 @@
+--- /private/tmp/axmat_v12_owned_specs_identity_key_delta_graph_table_combined_source_only_20261009/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.UNREADY.py
++++ /private/tmp/axmat_v12_graph_table_final_helper_pin_unready_source_only_20261009/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.UNREADY.py
+@@ -80,7 +80,7 @@
+ INPUT_SPECS = ROOT/'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+ INPUT_SPECS_SHA = '2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa'
+ INPUT_HELPERS = {
+- 'graph': (ROOT/'validation/axial_material/combined_runtime_complete_input_graph_canonical_file_table_storage_20261009.py',None),
++ 'graph': (ROOT/'validation/axial_material/combined_runtime_complete_input_graph_canonical_file_table_storage_20261009.py','e8f142bef9dede08e9e43eba995203dea17e0e48b6f383502ed18b89808a5c28'),
+  'codec': (ROOT/'validation/axial_material/combined_runtime_typed_specs_codec.py','758c6d39ecb4c37e5ff5b3d6639ab8404447719e7cfd3ff72336276a94bb2e69'),
+  'current': (ROOT/'validation/axial_material/combined_runtime_current_predicates_final_private_last_uses_20261009.py','fd3bdb5543044fc71f0acb9799b1c6fcf7709cbbf22342f0931a299af59cee19'),
+  'checks': (ROOT/'validation/axial_material/combined_runtime_historical_input_checks.py','86e7d6340da59c74abcff57fa52bb07d690f51cc33fe76f330ece2e0d158258e'),

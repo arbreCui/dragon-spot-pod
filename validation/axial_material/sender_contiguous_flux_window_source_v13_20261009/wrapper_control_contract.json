@@ -1,0 +1,1188 @@
+{
+  "schema": "AXMAT_FLUSP64_WINDOW_WRAPPER_CONTROL_CONTRACT_V1",
+  "status": "SOURCE_ONLY_UNREADY",
+  "runtime_auditor_interface": "audit_sender_controls(controls_root, contract) -> dict",
+  "source_driver": {
+    "path": "/private/tmp/axmat_v13_flusp64_window_wrapper_control_source_draft_20261009/flusp64_window_observer_controls.UNREADY.f90",
+    "sha256": "053747437865119be4fdd5d8eb466c96a85d8cf22f6d9cdcceebe19bc47352bb",
+    "size_bytes": 15604,
+    "identity": {
+      "st_dev": 16777229,
+      "st_ino": 49312871,
+      "st_mode": 33188,
+      "st_nlink": 1,
+      "st_size": 15604,
+      "st_mtime_ns": 1791557749419352869,
+      "st_ctime_ns": 1791557749419352869
+    }
+  },
+  "reference_unit": {
+    "path": "/private/tmp/axmat_v13_flusp64_window_wrapper_control_source_draft_20261009/FLUSP64_REFERENCE.f",
+    "sha256": "52b1db5a5ea73de548e437386798099cdb28b7c28cd98f0de21e949973266043",
+    "size_bytes": 1958,
+    "identity": {
+      "st_dev": 16777229,
+      "st_ino": 49313379,
+      "st_mode": 33188,
+      "st_nlink": 1,
+      "st_size": 1958,
+      "st_mtime_ns": 1791557775808106562,
+      "st_ctime_ns": 1791557775808106562
+    }
+  },
+  "candidate_unit": "link actual fullsender object; do not add or replace candidate wrapper source",
+  "compiler_or_control_execution_performed": false,
+  "actual_outputs": null,
+  "original_68_controls_must_remain_unmodified": true,
+  "all_four_negative_modes_required": true,
+  "cases": [
+    {
+      "name": "all",
+      "args": [
+        "all"
+      ],
+      "case_id": 1,
+      "expected_returncode": 0,
+      "ngrp": 370,
+      "nun": 1800,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 0,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 370,
+          "expected_route": 1,
+          "each_raw_size_bytes": 47970208,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 370,
+          "expected_route": 1,
+          "each_raw_size_bytes": 47970208,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        }
+      ],
+      "coverage": [
+        "production NUN1800/NGRP370 all groups; ILEAK=0; system IDs reverse energy-group indices"
+      ],
+      "raw_files": [
+        {
+          "name": "all.s1.input.bin",
+          "size_bytes": 47970208,
+          "who": "input"
+        },
+        {
+          "name": "all.s1.reference.bin",
+          "size_bytes": 47970208,
+          "who": "reference"
+        },
+        {
+          "name": "all.s1.candidate.bin",
+          "size_bytes": 47970208,
+          "who": "candidate"
+        },
+        {
+          "name": "all.s2.input.bin",
+          "size_bytes": 47970208,
+          "who": "input"
+        },
+        {
+          "name": "all.s2.reference.bin",
+          "size_bytes": 47970208,
+          "who": "reference"
+        },
+        {
+          "name": "all.s2.candidate.bin",
+          "size_bytes": 47970208,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "all.s1.input.bin",
+        "all.s1.reference.bin",
+        "all.s1.candidate.bin",
+        "all.s2.input.bin",
+        "all.s2.reference.bin",
+        "all.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "suffix",
+      "args": [
+        "suffix"
+      ],
+      "case_id": 2,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 3,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 6,
+          "expected_route": 1,
+          "each_raw_size_bytes": 7520,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 6,
+          "expected_route": 1,
+          "each_raw_size_bytes": 7520,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        }
+      ],
+      "coverage": [
+        "groups 3..8; nonzero B1; skip KEY/MAT/IMERG; duplicate KEY accumulation"
+      ],
+      "raw_files": [
+        {
+          "name": "suffix.s1.input.bin",
+          "size_bytes": 7520,
+          "who": "input"
+        },
+        {
+          "name": "suffix.s1.reference.bin",
+          "size_bytes": 7520,
+          "who": "reference"
+        },
+        {
+          "name": "suffix.s1.candidate.bin",
+          "size_bytes": 7520,
+          "who": "candidate"
+        },
+        {
+          "name": "suffix.s2.input.bin",
+          "size_bytes": 7520,
+          "who": "input"
+        },
+        {
+          "name": "suffix.s2.reference.bin",
+          "size_bytes": 7520,
+          "who": "reference"
+        },
+        {
+          "name": "suffix.s2.candidate.bin",
+          "size_bytes": 7520,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "suffix.s1.input.bin",
+        "suffix.s1.reference.bin",
+        "suffix.s1.candidate.bin",
+        "suffix.s2.input.bin",
+        "suffix.s2.reference.bin",
+        "suffix.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "interior",
+      "args": [
+        "interior"
+      ],
+      "case_id": 3,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 0,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 4,
+          "expected_route": 1,
+          "each_raw_size_bytes": 7296,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 4,
+          "expected_route": 1,
+          "each_raw_size_bytes": 7296,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        }
+      ],
+      "coverage": [
+        "groups 2..5; unchanged columns before AND after window"
+      ],
+      "raw_files": [
+        {
+          "name": "interior.s1.input.bin",
+          "size_bytes": 7296,
+          "who": "input"
+        },
+        {
+          "name": "interior.s1.reference.bin",
+          "size_bytes": 7296,
+          "who": "reference"
+        },
+        {
+          "name": "interior.s1.candidate.bin",
+          "size_bytes": 7296,
+          "who": "candidate"
+        },
+        {
+          "name": "interior.s2.input.bin",
+          "size_bytes": 7296,
+          "who": "input"
+        },
+        {
+          "name": "interior.s2.reference.bin",
+          "size_bytes": 7296,
+          "who": "reference"
+        },
+        {
+          "name": "interior.s2.candidate.bin",
+          "size_bytes": 7296,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "interior.s1.input.bin",
+        "interior.s1.reference.bin",
+        "interior.s1.candidate.bin",
+        "interior.s2.input.bin",
+        "interior.s2.reference.bin",
+        "interior.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "scalar_first",
+      "args": [
+        "scalar_first"
+      ],
+      "case_id": 4,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 3,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 1,
+          "expected_route": 1,
+          "each_raw_size_bytes": 6960,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 1,
+          "expected_route": 1,
+          "each_raw_size_bytes": 6960,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        }
+      ],
+      "coverage": [
+        "group 1; B2(4) raw negative zero; correction skipped"
+      ],
+      "raw_files": [
+        {
+          "name": "scalar_first.s1.input.bin",
+          "size_bytes": 6960,
+          "who": "input"
+        },
+        {
+          "name": "scalar_first.s1.reference.bin",
+          "size_bytes": 6960,
+          "who": "reference"
+        },
+        {
+          "name": "scalar_first.s1.candidate.bin",
+          "size_bytes": 6960,
+          "who": "candidate"
+        },
+        {
+          "name": "scalar_first.s2.input.bin",
+          "size_bytes": 6960,
+          "who": "input"
+        },
+        {
+          "name": "scalar_first.s2.reference.bin",
+          "size_bytes": 6960,
+          "who": "reference"
+        },
+        {
+          "name": "scalar_first.s2.candidate.bin",
+          "size_bytes": 6960,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "scalar_first.s1.input.bin",
+        "scalar_first.s1.reference.bin",
+        "scalar_first.s1.candidate.bin",
+        "scalar_first.s2.input.bin",
+        "scalar_first.s2.reference.bin",
+        "scalar_first.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "scalar_last",
+      "args": [
+        "scalar_last"
+      ],
+      "case_id": 5,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 3,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 1,
+          "expected_route": 1,
+          "each_raw_size_bytes": 6960,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 1,
+          "expected_route": 1,
+          "each_raw_size_bytes": 6960,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        }
+      ],
+      "coverage": [
+        "group 8; negative nonzero B2; one-column direct sequence association"
+      ],
+      "raw_files": [
+        {
+          "name": "scalar_last.s1.input.bin",
+          "size_bytes": 6960,
+          "who": "input"
+        },
+        {
+          "name": "scalar_last.s1.reference.bin",
+          "size_bytes": 6960,
+          "who": "reference"
+        },
+        {
+          "name": "scalar_last.s1.candidate.bin",
+          "size_bytes": 6960,
+          "who": "candidate"
+        },
+        {
+          "name": "scalar_last.s2.input.bin",
+          "size_bytes": 6960,
+          "who": "input"
+        },
+        {
+          "name": "scalar_last.s2.reference.bin",
+          "size_bytes": 6960,
+          "who": "reference"
+        },
+        {
+          "name": "scalar_last.s2.candidate.bin",
+          "size_bytes": 6960,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "scalar_last.s1.input.bin",
+        "scalar_last.s1.reference.bin",
+        "scalar_last.s1.candidate.bin",
+        "scalar_last.s2.input.bin",
+        "scalar_last.s2.reference.bin",
+        "scalar_last.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "scalar_one",
+      "args": [
+        "scalar_one"
+      ],
+      "case_id": 6,
+      "expected_returncode": 0,
+      "ngrp": 1,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 0,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 1,
+          "expected_route": 1,
+          "each_raw_size_bytes": 1360,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 1,
+          "expected_route": 1,
+          "each_raw_size_bytes": 1360,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        }
+      ],
+      "coverage": [
+        "NGRP=1 boundary"
+      ],
+      "raw_files": [
+        {
+          "name": "scalar_one.s1.input.bin",
+          "size_bytes": 1360,
+          "who": "input"
+        },
+        {
+          "name": "scalar_one.s1.reference.bin",
+          "size_bytes": 1360,
+          "who": "reference"
+        },
+        {
+          "name": "scalar_one.s1.candidate.bin",
+          "size_bytes": 1360,
+          "who": "candidate"
+        },
+        {
+          "name": "scalar_one.s2.input.bin",
+          "size_bytes": 1360,
+          "who": "input"
+        },
+        {
+          "name": "scalar_one.s2.reference.bin",
+          "size_bytes": 1360,
+          "who": "reference"
+        },
+        {
+          "name": "scalar_one.s2.candidate.bin",
+          "size_bytes": 1360,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "scalar_one.s1.input.bin",
+        "scalar_one.s1.reference.bin",
+        "scalar_one.s1.candidate.bin",
+        "scalar_one.s2.input.bin",
+        "scalar_one.s2.reference.bin",
+        "scalar_one.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "sparse",
+      "args": [
+        "sparse"
+      ],
+      "case_id": 7,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 3,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 3,
+          "expected_route": 2,
+          "each_raw_size_bytes": 7184,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 3,
+          "expected_route": 2,
+          "each_raw_size_bytes": 7184,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        }
+      ],
+      "coverage": [
+        "groups 1,3,8; nonzero B1; original F2 fallback"
+      ],
+      "raw_files": [
+        {
+          "name": "sparse.s1.input.bin",
+          "size_bytes": 7184,
+          "who": "input"
+        },
+        {
+          "name": "sparse.s1.reference.bin",
+          "size_bytes": 7184,
+          "who": "reference"
+        },
+        {
+          "name": "sparse.s1.candidate.bin",
+          "size_bytes": 7184,
+          "who": "candidate"
+        },
+        {
+          "name": "sparse.s2.input.bin",
+          "size_bytes": 7184,
+          "who": "input"
+        },
+        {
+          "name": "sparse.s2.reference.bin",
+          "size_bytes": 7184,
+          "who": "reference"
+        },
+        {
+          "name": "sparse.s2.candidate.bin",
+          "size_bytes": 7184,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "sparse.s1.input.bin",
+        "sparse.s1.reference.bin",
+        "sparse.s1.candidate.bin",
+        "sparse.s2.input.bin",
+        "sparse.s2.reference.bin",
+        "sparse.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "empty_ileak0",
+      "args": [
+        "empty_ileak0"
+      ],
+      "case_id": 8,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 0,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 0,
+          "expected_route": 0,
+          "each_raw_size_bytes": 6848,
+          "reference_observer_calls": 0,
+          "candidate_observer_calls": 0
+        },
+        {
+          "step": 2,
+          "active_groups": 0,
+          "expected_route": 0,
+          "each_raw_size_bytes": 6848,
+          "reference_observer_calls": 0,
+          "candidate_observer_calls": 0
+        }
+      ],
+      "coverage": [
+        "zero active; no observer; full caller unchanged"
+      ],
+      "raw_files": [
+        {
+          "name": "empty_ileak0.s1.input.bin",
+          "size_bytes": 6848,
+          "who": "input"
+        },
+        {
+          "name": "empty_ileak0.s1.reference.bin",
+          "size_bytes": 6848,
+          "who": "reference"
+        },
+        {
+          "name": "empty_ileak0.s1.candidate.bin",
+          "size_bytes": 6848,
+          "who": "candidate"
+        },
+        {
+          "name": "empty_ileak0.s2.input.bin",
+          "size_bytes": 6848,
+          "who": "input"
+        },
+        {
+          "name": "empty_ileak0.s2.reference.bin",
+          "size_bytes": 6848,
+          "who": "reference"
+        },
+        {
+          "name": "empty_ileak0.s2.candidate.bin",
+          "size_bytes": 6848,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "empty_ileak0.s1.input.bin",
+        "empty_ileak0.s1.reference.bin",
+        "empty_ileak0.s1.candidate.bin",
+        "empty_ileak0.s2.input.bin",
+        "empty_ileak0.s2.reference.bin",
+        "empty_ileak0.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "empty_ileak3",
+      "args": [
+        "empty_ileak3"
+      ],
+      "case_id": 9,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 3,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 0,
+          "expected_route": 0,
+          "each_raw_size_bytes": 6848,
+          "reference_observer_calls": 0,
+          "candidate_observer_calls": 0
+        },
+        {
+          "step": 2,
+          "active_groups": 0,
+          "expected_route": 0,
+          "each_raw_size_bytes": 6848,
+          "reference_observer_calls": 0,
+          "candidate_observer_calls": 0
+        }
+      ],
+      "coverage": [
+        "zero active; nonzero B2; return before correction/observer"
+      ],
+      "raw_files": [
+        {
+          "name": "empty_ileak3.s1.input.bin",
+          "size_bytes": 6848,
+          "who": "input"
+        },
+        {
+          "name": "empty_ileak3.s1.reference.bin",
+          "size_bytes": 6848,
+          "who": "reference"
+        },
+        {
+          "name": "empty_ileak3.s1.candidate.bin",
+          "size_bytes": 6848,
+          "who": "candidate"
+        },
+        {
+          "name": "empty_ileak3.s2.input.bin",
+          "size_bytes": 6848,
+          "who": "input"
+        },
+        {
+          "name": "empty_ileak3.s2.reference.bin",
+          "size_bytes": 6848,
+          "who": "reference"
+        },
+        {
+          "name": "empty_ileak3.s2.candidate.bin",
+          "size_bytes": 6848,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 2,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "empty_ileak3.s1.input.bin",
+        "empty_ileak3.s1.reference.bin",
+        "empty_ileak3.s1.candidate.bin",
+        "empty_ileak3.s2.input.bin",
+        "empty_ileak3.s2.reference.bin",
+        "empty_ileak3.s2.candidate.bin"
+      ]
+    },
+    {
+      "name": "transition",
+      "args": [
+        "transition"
+      ],
+      "case_id": 10,
+      "expected_returncode": 0,
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 3,
+      "steps": [
+        {
+          "step": 1,
+          "active_groups": 6,
+          "expected_route": 1,
+          "each_raw_size_bytes": 7520,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 2,
+          "active_groups": 1,
+          "expected_route": 1,
+          "each_raw_size_bytes": 6960,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 3,
+          "active_groups": 3,
+          "expected_route": 2,
+          "each_raw_size_bytes": 7184,
+          "reference_observer_calls": 1,
+          "candidate_observer_calls": 1
+        },
+        {
+          "step": 4,
+          "active_groups": 0,
+          "expected_route": 0,
+          "each_raw_size_bytes": 6848,
+          "reference_observer_calls": 0,
+          "candidate_observer_calls": 0
+        }
+      ],
+      "coverage": [
+        "same live arrays: suffix -> scalar -> sparse -> empty; no reset between steps"
+      ],
+      "raw_files": [
+        {
+          "name": "transition.s1.input.bin",
+          "size_bytes": 7520,
+          "who": "input"
+        },
+        {
+          "name": "transition.s1.reference.bin",
+          "size_bytes": 7520,
+          "who": "reference"
+        },
+        {
+          "name": "transition.s1.candidate.bin",
+          "size_bytes": 7520,
+          "who": "candidate"
+        },
+        {
+          "name": "transition.s2.input.bin",
+          "size_bytes": 6960,
+          "who": "input"
+        },
+        {
+          "name": "transition.s2.reference.bin",
+          "size_bytes": 6960,
+          "who": "reference"
+        },
+        {
+          "name": "transition.s2.candidate.bin",
+          "size_bytes": 6960,
+          "who": "candidate"
+        },
+        {
+          "name": "transition.s3.input.bin",
+          "size_bytes": 7184,
+          "who": "input"
+        },
+        {
+          "name": "transition.s3.reference.bin",
+          "size_bytes": 7184,
+          "who": "reference"
+        },
+        {
+          "name": "transition.s3.candidate.bin",
+          "size_bytes": 7184,
+          "who": "candidate"
+        },
+        {
+          "name": "transition.s4.input.bin",
+          "size_bytes": 6848,
+          "who": "input"
+        },
+        {
+          "name": "transition.s4.reference.bin",
+          "size_bytes": 6848,
+          "who": "reference"
+        },
+        {
+          "name": "transition.s4.candidate.bin",
+          "size_bytes": 6848,
+          "who": "candidate"
+        }
+      ],
+      "manifest_lines": 4,
+      "negative": false,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "transition.s1.input.bin",
+        "transition.s1.reference.bin",
+        "transition.s1.candidate.bin",
+        "transition.s2.input.bin",
+        "transition.s2.reference.bin",
+        "transition.s2.candidate.bin",
+        "transition.s3.input.bin",
+        "transition.s3.reference.bin",
+        "transition.s3.candidate.bin",
+        "transition.s4.input.bin",
+        "transition.s4.reference.bin",
+        "transition.s4.candidate.bin"
+      ]
+    },
+    {
+      "name": "unsupported_reference_active",
+      "args": [
+        "unsupported_reference_active"
+      ],
+      "case_id": 11,
+      "expected_returncode": 1,
+      "expected_message": "FLUSP64: UNSUPPORTED LEAKAGE MODEL.",
+      "message_stream": "actual stdout/stderr retained; require exact message in combined text",
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 2,
+      "negative": true,
+      "target": "reference",
+      "target_wrapper_calls": 1,
+      "observer_calls": 0,
+      "raw_files": [
+        {
+          "name": "unsupported_reference_active.s1.input.bin",
+          "size_bytes": 7744,
+          "who": "input"
+        }
+      ],
+      "manifest_lines": 0,
+      "manifest_size_bytes": 0,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "unsupported_reference_active.s1.input.bin"
+      ]
+    },
+    {
+      "name": "unsupported_candidate_active",
+      "args": [
+        "unsupported_candidate_active"
+      ],
+      "case_id": 12,
+      "expected_returncode": 1,
+      "expected_message": "FLUSP64: UNSUPPORTED LEAKAGE MODEL.",
+      "message_stream": "actual stdout/stderr retained; require exact message in combined text",
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 2,
+      "negative": true,
+      "target": "candidate",
+      "target_wrapper_calls": 1,
+      "observer_calls": 0,
+      "raw_files": [
+        {
+          "name": "unsupported_candidate_active.s1.input.bin",
+          "size_bytes": 7744,
+          "who": "input"
+        }
+      ],
+      "manifest_lines": 0,
+      "manifest_size_bytes": 0,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "unsupported_candidate_active.s1.input.bin"
+      ]
+    },
+    {
+      "name": "unsupported_reference_empty",
+      "args": [
+        "unsupported_reference_empty"
+      ],
+      "case_id": 13,
+      "expected_returncode": 1,
+      "expected_message": "FLUSP64: UNSUPPORTED LEAKAGE MODEL.",
+      "message_stream": "actual stdout/stderr retained; require exact message in combined text",
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 2,
+      "negative": true,
+      "target": "reference",
+      "target_wrapper_calls": 1,
+      "observer_calls": 0,
+      "raw_files": [
+        {
+          "name": "unsupported_reference_empty.s1.input.bin",
+          "size_bytes": 6848,
+          "who": "input"
+        }
+      ],
+      "manifest_lines": 0,
+      "manifest_size_bytes": 0,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "unsupported_reference_empty.s1.input.bin"
+      ]
+    },
+    {
+      "name": "unsupported_candidate_empty",
+      "args": [
+        "unsupported_candidate_empty"
+      ],
+      "case_id": 14,
+      "expected_returncode": 1,
+      "expected_message": "FLUSP64: UNSUPPORTED LEAKAGE MODEL.",
+      "message_stream": "actual stdout/stderr retained; require exact message in combined text",
+      "ngrp": 8,
+      "nun": 12,
+      "nreg": 7,
+      "nmat": 4,
+      "nmerg": 3,
+      "ileak": 2,
+      "negative": true,
+      "target": "candidate",
+      "target_wrapper_calls": 1,
+      "observer_calls": 0,
+      "raw_files": [
+        {
+          "name": "unsupported_candidate_empty.s1.input.bin",
+          "size_bytes": 6848,
+          "who": "input"
+        }
+      ],
+      "manifest_lines": 0,
+      "manifest_size_bytes": 0,
+      "strict_case_namespace": [
+        "execute.log",
+        "execute.watchdog.json",
+        "wrapper_manifest.jsonl",
+        "unsupported_candidate_empty.s1.input.bin"
+      ]
+    }
+  ],
+  "planned_counts_not_actual": {
+    "positive_cases": 10,
+    "negative_cases": 4,
+    "positive_steps": 22,
+    "positive_reference_wrapper_calls": 22,
+    "positive_candidate_wrapper_calls": 22,
+    "negative_reference_wrapper_calls": 2,
+    "negative_candidate_wrapper_calls": 2,
+    "positive_reference_observer_calls": 17,
+    "positive_candidate_observer_calls": 17,
+    "negative_observer_calls": 0,
+    "wrapper_calls_total": 48,
+    "observer_calls_total": 34,
+    "positive_raw_files": 66,
+    "negative_raw_files": 4,
+    "raw_files_total": 70,
+    "raw_bytes_total": 288241824,
+    "manifest_files": 14
+  },
+  "raw_schema": {
+    "schema": "AXMAT_FLUSP64_WINDOW_OBSERVER_RAW_V1",
+    "byte_order": "little",
+    "word_type": "signed int64",
+    "magic_hex": "41584657494E3133",
+    "version": 1,
+    "exact_eof_required": true,
+    "header_words": [
+      "magic",
+      "version",
+      "case_id",
+      "who:0input/1reference/2candidate",
+      "step",
+      "NUN",
+      "NGRP",
+      "NREG",
+      "NMAT",
+      "NMERG",
+      "NGEFF",
+      "observer_calls",
+      "ILEAK",
+      "expected_route:0empty/1direct/2fallback",
+      "caller_FUN_first_LOC",
+      "observer_FUNKNO_first_LOC",
+      "expected_direct",
+      "observed_direct"
+    ],
+    "body_in_order": [
+      {
+        "field": "NPSYS",
+        "words": "NGRP",
+        "kind": "int32 value sign-extended to int64"
+      },
+      {
+        "field": "MAT",
+        "words": "NREG",
+        "kind": "int32 value sign-extended to int64"
+      },
+      {
+        "field": "KEYFLX",
+        "words": "NREG",
+        "kind": "int32 value sign-extended to int64"
+      },
+      {
+        "field": "IMERG",
+        "words": "NMAT",
+        "kind": "int32 value sign-extended to int64"
+      },
+      {
+        "field": "VOL",
+        "words": "NREG",
+        "kind": "raw float32 bits as signed int32 sign-extended to int64"
+      },
+      {
+        "field": "B2",
+        "words": 4,
+        "kind": "raw float32 bits as signed int32 sign-extended to int64"
+      },
+      {
+        "field": "DIFHET",
+        "words": "NMERG*NGRP",
+        "kind": "raw float32 bits as signed int32 sign-extended to int64; column major"
+      },
+      {
+        "field": "TITR",
+        "bytes": 72,
+        "kind": "exact blank-padded ASCII"
+      },
+      {
+        "field": "all_caller_FLUX",
+        "words": "8*NUN*NGRP",
+        "kind": "raw float64 int64 bits; Fortran column major; planes 2/8/7 are old/source/output"
+      },
+      {
+        "field": "energy_group_map",
+        "words": "NGEFF",
+        "kind": "int64"
+      },
+      {
+        "field": "LCM_read_system_IDs",
+        "words": "NGEFF",
+        "kind": "int64"
+      },
+      {
+        "field": "S2_observed_source",
+        "words": "NUN*NGEFF",
+        "kind": "raw float64 int64 bits; column major"
+      }
+    ],
+    "generic_bytes_formula": "8*(18+NGRP+2*NREG+NMAT+NREG+4+NMERG*NGRP+8*NUN*NGRP+2*NGEFF+NUN*NGEFF)+72",
+    "small_fixture_formula": "8*(56+100*NGRP+14*NGEFF)",
+    "all_production_shape_formula": "8*(56+14404*370+1802*370)=47970208 bytes per raw file; 6 files",
+    "input_address_fields": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "reference_address_rule": "active => both addresses positive and unequal, expected_direct=observed_direct=0; empty => all 0",
+    "candidate_address_rule": "contiguous active => both addresses positive and equal, flags1; sparse => positive unequal flags0; empty => all0",
+    "comparisons": "all body fields reference==candidate exact bytes; inputs unchanged except active plane7 output; S2 independently computed original B1 expression/order; output finite bit transform from source; no tolerance",
+    "no_hidden_copy_credit": "LOC proves actual observer pointer relation only; F2 non-allocation requires fullsender source inverse, not measured RSS"
+  },
+  "fixture_model": {
+    "MAT": [
+      1,
+      2,
+      0,
+      3,
+      4,
+      2,
+      1
+    ],
+    "KEYFLX": "[1,0,4,5,1,NUN,NUN-1]",
+    "IMERG": [
+      1,
+      0,
+      2,
+      3
+    ],
+    "VOL": "float32 i/8, i=1..7",
+    "DIFHET": "float32 (-1)^(i+g)*(i/4+g/128), i=1..3",
+    "FLUX": "float64 (-1)^(i+g+p)*(p+g/32+i/1024); raw -0 when mod(i+g+p,17)=0; 1<=p<=8",
+    "NPSYS": "active IG receives NGRP+1-IG; inactive0",
+    "B2": "all +0 except suffix/sparse/empty3/transition B2(4)=1.25; scalar_last=-0.75; scalar_first raw float32 -0",
+    "S2": "ascending groups; copy SUN plane8, then original IR-ordered DBLE(DIFHET)*DBLE(B2)*FLUOLD plane2 subtraction; skip KEY0/MAT0/IMERG0",
+    "output": "SPOF observer never reads initial FUN; mantissa/sign bitxor of S2 with (IG<<20)+row, exponent0x3ff; raw -0 when mod(row+column,11)=0",
+    "readonly": "all other FLUX planes plus inactive plane7, NPSYS/MAT/KEY/IMERG/VOL/B2/DIFHET/TITR and GANLIB marker data unchanged"
+  },
+  "scope_limits": [
+    "Only observer-wrapper routing/alias/dataflow eligibility; no real SPOF/SPOT numerical result",
+    "No runtime/compiler/fixture has run; planned counts and raw bytes are not measurements",
+    "Original public ABI and production real GANLIB+real SPOF linkage remain unchanged",
+    "Direct write can leave partial FUN on fatal SPOF failure; no resumed/reused failed state allowed",
+    "Current production four callers have disjoint FLUX2/8/7; external aliased callers are not newly admitted",
+    "Original512MiB/4200/43200/thread/cap/zero-retry unchanged; no RSS benefit or native/AAA/ABA credit"
+  ]
+}

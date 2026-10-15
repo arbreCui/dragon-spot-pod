@@ -1,0 +1,10 @@
+SPOT 完整输入JSON临时对象生命周期修订（2026-10-08）
+
+独立源审及微型语义边界检查通过；整源7处逆向精确恢复ac3原helper。
+保留原完整鲜读、SHA/size/stat/alias、64 MiB JSON、9闭包类与全部普通文件owner门。
+修改仅在已验证完整字节解码后释放原byte缓冲，解析后清strings/ints辅助池。
+返回值、mutable独立及重复键、非finite、UTF8、深度fallback、浮点正负零门保持。
+正式helper SHA：158b237e427e58f8d19fd872db6caf2f0549611e0a8e1131f2416f82c57f246e
+
+本源修订不授予512 MiB实际内存或组合构建、AAA/ABA资格。
+真实v3组合最终核验524.734375 MiB超限，后续新独立v4仍必须原门限真实执行。

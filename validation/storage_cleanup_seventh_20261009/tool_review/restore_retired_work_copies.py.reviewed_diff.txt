@@ -1,0 +1,42 @@
+--- initial/restore_retired_work_copies.py
++++ final/restore_retired_work_copies.py
+@@ -8,6 +8,13 @@
+ from pathlib import Path
+ 
+ BASE = Path(__file__).resolve().parent
++
++def safe_art_path(raw):
++    path = Path(raw)
++    project = BASE.parents[1]
++    if not path.is_absolute() or str(path) != raw or '..' in path.parts or not path.is_relative_to(project / 'validation/artifacts') or path.parent.resolve(strict=True) != path.parent:
++        raise ValueError('noncanonical artifact path')
++    return path
+ 
+ def digest(path):
+     value = hashlib.sha256()
+@@ -34,7 +41,7 @@
+             raise ValueError('path is not an exact retired work copy')
+     project = BASE.parents[1]
+     for row in rows:
+-        target, primary = Path(row['path']), Path(row['retained_primary'])
++        target, primary = safe_art_path(row['path']), safe_art_path(row['retained_primary'])
+         if not target.is_relative_to(project / 'validation/artifacts') or not primary.is_relative_to(project / 'validation/artifacts'):
+             raise ValueError('unexpected project path')
+         if target.is_symlink() or primary.is_symlink():
+@@ -46,7 +53,7 @@
+             raise ValueError(f'existing target differs: {target}')
+     restored = []
+     for row in rows:
+-        target, primary = Path(row['path']), Path(row['retained_primary'])
++        target, primary = safe_art_path(row['path']), safe_art_path(row['retained_primary'])
+         if target.exists():
+             continue
+         value = hashlib.sha256(); length = 0
+@@ -60,6 +67,7 @@
+                 output.flush(); os.fsync(output.fileno())
+             except BaseException:
+                 output.close(); target.unlink(); raise
++        safe_art_path(str(target))
+         os.chmod(target, stat.S_IMODE(row['identity'][2]))
+         os.utime(target, ns=(row['identity'][4], row['identity'][4]))
+         restored.append(str(target))

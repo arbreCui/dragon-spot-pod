@@ -1,0 +1,367 @@
+--- /Users/wen/spot/validation/axial_material/prepare_qualified_AB_sender_contiguous_flux_window_streaming_sha_production_v14b.py
++++ /Users/wen/spot/validation/axial_material/prepare_qualified_AB_sender_contiguous_flux_window_root_index_production_v15.py
+@@ -1,4 +1,4 @@
+-'Source-only V14b complete sender window component with an isolated environment SHA context.\n\nThe original complete86 build, raw numerical controls, mathematical source and\ngenuine original helper/runner/resource MRO remain intact. Only per-environment\nsame-literal SHA memoization and a bounded streaming buffer use the separately\npinned canonical private helper. Every unique literal in each environment call\nstill receives complete SHA bytes and fresh full identity/alias checks.\n\nUNREADY: the new helper, source proof and true Root helper-control admission\npins are unknown. This TMP source cannot declare, import business modules, run\nfixtures, compile, admit a component or confer native/AAA/ABA qualification.'
++'Source-only V15 complete sender component with a normally imported, separately qualified root-index resource module.\nAll original86 mathematical stages, original helper H14b protocol, physics inputs, process MRO and original caps remain intact. Historical ancestors are immutable. Only the current component resource constructor and root validator use the new canonical resource module.\nUNREADY: actual Root resource-module admission SHA remains unknown. No declaration, build, controls, native/AAA/ABA qualification is granted by this source draft.'
+ 
+ import argparse
+ import ast
+@@ -21,9 +21,9 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT / "validation/artifacts"
+-SOURCE = ART / "axial-material-qualified-AB-sender-contiguous-flux-window-streaming-sha-build-admission-v14b-20261010"
+-OUT = ART / "axial-material-sender-contiguous-flux-window-streaming-sha-build-v14b-20261010"
+-TERMINAL = ART / "axial-material-qualified-AB-sender-contiguous-flux-window-streaming-sha-build-terminal-v14b-20261010"
++SOURCE = ART / "axial-material-qualified-AB-sender-contiguous-flux-window-root-index-build-admission-v15-20261010"
++OUT = ART / "axial-material-sender-contiguous-flux-window-root-index-build-v15-20261010"
++TERMINAL = ART / "axial-material-qualified-AB-sender-contiguous-flux-window-root-index-build-terminal-v15-20261010"
+ PARENT = ART / "axial-material-rank1-factor-cache-build-20261007"
+ PARENT_SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-build-admission-20261007"
+ PARENT_TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-build-terminal-20261007"
+@@ -67,12 +67,12 @@
+ TOTAL_WALL, STAGE_WALL, RSS_CAP = 1800, 600, 512
+ ARCHIVE_RESERVE = 2 * 2**30
+ HISTORY_CAP, FREE_FLOOR = 96 * 2**30, 8 * 2**30
+-FAMILY = 'SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_V14B'
++FAMILY = 'SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_V15'
+ HISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"
+ OBSERVER_EXPECTED = [32, 3, 2, 3, 1]
+-TERMINAL_SCHEMA = 'AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V14B'
++TERMINAL_SCHEMA = 'AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V15'
+ TAIL_FIELDS = ("actual_tail_check", "actual_elapsed_seconds", "actual_archive_bytes", "actual_resources")
+-SOURCE_STATUS = 'READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_STREAMING_SHA_COMPONENT_EXECUTION_V14B'
++SOURCE_STATUS = 'SOURCE_ONLY_UNREADY_PENDING_ROOT_RESOURCE_MODULE_ADMISSION_V15'
+ PATCH_HELPER_SHA = "733855513a81ead79f797dc0843b061f1604ab61b6db9684613a06a067387300"
+ CONTROL_SOURCE_SHA = "eab3a7790e9f499282017cc37581be5acb07f8a4170e8fcaae95b0de47305d52"
+ FACTORY_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_factor_cache_last_cprime_trim_production.py"
+@@ -128,7 +128,7 @@
+ KEYCODEC_ABORT_BYTES = 1000
+ KEYCODEC_MANIFEST_ROWS = 213  # 33 positive + 20 * 9 negative JSONL rows.
+ # All new operational SOURCE pins are intentionally unknown.
+-FORMAL_STREAM_FACTORY = ROOT / "validation/axial_material/prepare_qualified_AB_sender_contiguous_flux_window_streaming_sha_production_v14b.py"
++FORMAL_STREAM_FACTORY = ROOT / "validation/axial_material/prepare_qualified_AB_sender_contiguous_flux_window_root_index_production_v15.py"
+ STREAM_ENVIRONMENT_PARENT_HELPER = ROOT / "validation/axial_material/prepare_qualified_AB_source_factor_production.py"
+ STREAM_ENVIRONMENT_PARENT_HELPER_SHA = "619ed1e3115e0f9f25fd20cc259d384891f2fff52d913acebd5d9ca8f39d5743"
+ STREAM_ENVIRONMENT_COMPONENT_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_sender_contiguous_flux_window_production_v13.py"
+@@ -139,6 +139,13 @@
+ STREAM_ENVIRONMENT_SOURCE_PROOF_SHA = '1809278680379d2ef6ee5c76218d4614abbbc1c9cbcf379674e7540485db86f2'
+ STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS = STREAM_ENVIRONMENT_SOURCE_PROOF.parent / "Root_actual_helper_controls_admission.json"
+ STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS_SHA = '16d4548b1cc4ffe935bd8d28219e99a6e9da9af949e7577a82eb758e99d7f568'
++
++ROOT_INDEX_RESOURCE_MODULE = ROOT / "validation/axial_material/moment_order_complete_history_resource_trie_20261010.py"
++ROOT_INDEX_RESOURCE_MODULE_SHA = "ebbb0235ca5eaf7f7d896c225925f6705d2ba32f70295d957206548571575022"
++ROOT_INDEX_RESOURCE_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_moment_order_production.py"
++ROOT_INDEX_RESOURCE_SOURCE_PARENT_SHA = "fe81150fbf270cac44e241ad64f352cf2f623fa65f7ccb4a9b0ded0a4f2c2d41"
++ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION = ROOT / "validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_resource_module_admission.json"
++ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA = None
+ 
+ FUTURE_ACTUAL_BUILD_TERMINAL_SHA = None
+ FUTURE_ACTUAL_BUILD_SEAL_SHA = None
+@@ -927,7 +934,7 @@
+ COMPLETE_STAGE_COUNT = 86
+ 
+ def require_ready():
+-    if SOURCE_STATUS != "READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_STREAMING_SHA_COMPONENT_EXECUTION_V14B":
++    if SOURCE_STATUS != "READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_ROOT_INDEX_COMPONENT_EXECUTION_V15":
+         raise ValueError("source-only cprime-trim draft is UNREADY; no declaration/API/child allowed")
+     if not all(re.fullmatch(r"[0-9a-f]{64}", value or "") for value in (PATCH_HELPER_SHA, CONTROL_SOURCE_SHA, KEYCODEC_AUDITOR_SHA)):
+         raise ValueError("independently frozen helper/control source pins are mandatory")
+@@ -938,7 +945,10 @@
+     if type(SENDER_CONTROL_LAYOUT) is not dict:
+         raise ValueError("the complete frozen sender raw layout must be bound; no inferred defaults")
+     if Path(__file__).resolve() != FORMAL_STREAM_FACTORY:
+-        raise ValueError("TMP source-only V14b draft is not the formal component factory")
++        raise ValueError("TMP source-only V15 draft is not the formal component factory")
++    for value in (ROOT_INDEX_RESOURCE_MODULE_SHA, ROOT_INDEX_RESOURCE_SOURCE_PARENT_SHA, ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA):
++        if not isinstance(value, str) or re.fullmatch("[0-9a-f]{64}", value) is None or value == "0"*64:
++            raise ValueError("actual separately qualified root-index resource module pins remain unknown")
+     for value in (STREAM_ENVIRONMENT_HELPER_SHA, STREAM_ENVIRONMENT_SOURCE_PROOF_SHA,
+                   STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS_SHA):
+         if not isinstance(value, str) or re.fullmatch("[0-9a-f]{64}", value) is None or value == "0"*64:
+@@ -1011,13 +1021,97 @@
+     return parent_factory().history_roots(declared, artifacts_root)
+ 
+ 
++def root_index_resource_source_admission():
++    """Read the Root-qualified resource-only envelope and every full pinned input."""
++    if (not isinstance(ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA, str)
++            or re.fullmatch('[0-9a-f]{64}', ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA) is None
++            or ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA == '0'*64):
++        raise ValueError('UNREADY: genuine resource-module admission pin is unknown')
++    module_pin = dict(path=str(require(ROOT_INDEX_RESOURCE_MODULE, ROOT_INDEX_RESOURCE_MODULE_SHA)),
++        sha256=ROOT_INDEX_RESOURCE_MODULE_SHA)
++    parent_pin = dict(path=str(require(ROOT_INDEX_RESOURCE_SOURCE_PARENT, ROOT_INDEX_RESOURCE_SOURCE_PARENT_SHA)),
++        sha256=ROOT_INDEX_RESOURCE_SOURCE_PARENT_SHA)
++    admission_pin = dict(path=str(require(ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION, ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA)),
++        sha256=ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA)
++    value = read(admission_pin['path'])
++    caps = dict(history_bytes=96*2**30, free_floor_bytes=8*2**30, host_wall_seconds=120,
++        rss_mib=512, archive_bytes=64*2**20, threads=1, children=1, retries=0)
++    if (value['schema'] != 'AXMAT_COMPLETE_HISTORY_ROOT_INDEX_RESOURCE_MODULE_ADMISSION_V15'
++            or value['status'] != 'PASS_RESOURCE_MODULE_ONLY'
++            or value['canonical_resource_module'] != module_pin or value['source_parent'] != parent_pin
++            or type(value['qualified_caps']) is not dict or set(value['qualified_caps']) != set(caps)
++            or any(type(value['qualified_caps'][key]) is not int or value['qualified_caps'][key] != expected
++                   for key, expected in caps.items())
++            or any(value[key] is not True for key in ('original_resource_class_check_init_MRO_source_unchanged',
++                'no_old_module_or_class_monkeypatch', 'fresh_complete_history_checks'))
++            or any(value[key] is not False for key in ('full86_component_qualified',
++                'native_RSS_verified', 'AAA_accuracy_qualified', 'ABA_admitted'))):
++        raise ValueError('complete resource-only qualification with unchanged original caps and source required')
++    files = value['full_input_pins']
++    if type(files) is not list or not files:
++        raise ValueError('complete resource qualification input pins required')
++    expected = {}
++    for row in files:
++        if (type(row) is not dict or set(row) != {'path','sha256','size_bytes','identity'}
++                or type(row['path']) is not str or not Path(row['path']).is_absolute() or '..' in Path(row['path']).parts
++                or type(row['sha256']) is not str or re.fullmatch('[0-9a-f]{64}', row['sha256']) is None
++                or row['sha256'] == '0'*64 or type(row['size_bytes']) is not int or row['size_bytes'] < 0
++                or type(row['identity']) is not list or len(row['identity']) != 7
++                or any(type(word) is not int for word in row['identity']) or row['identity'][4] != row['size_bytes']
++                or row['path'] in expected):
++            raise ValueError('typed distinct full resource qualification literal pins required')
++        path = Path(row['path']); before = path.lstat()
++        observed = [before.st_dev,before.st_ino,before.st_mode,before.st_nlink,before.st_size,before.st_mtime_ns,before.st_ctime_ns]
++        if not stat.S_ISREG(before.st_mode) or observed != row['identity']:
++            raise ValueError('resource qualification input full identity differs')
++        require(path, row['sha256'])
++        after = path.lstat()
++        if [after.st_dev,after.st_ino,after.st_mode,after.st_nlink,after.st_size,after.st_mtime_ns,after.st_ctime_ns] != observed:
++            raise ValueError('resource qualification input changed during full SHA read')
++        expected[row['path']] = row['sha256']
++    for key in ('Root_actual_terminal','actual_host_result','actual_control_result'):
++        item = value[key]
++        if (type(item) is not dict or set(item) != {'path','sha256'}
++                or expected.get(item['path']) != item['sha256']):
++            raise ValueError('actual Root/host/control document must belong to complete resource input ownership')
++    if any(expected.get(item['path']) != item['sha256'] for item in (module_pin,parent_pin)):
++        raise ValueError('original and new genuine resource modules must have complete input ownership')
++    terminal = read(value['Root_actual_terminal']['path'])
++    if type(terminal['terminal_result']['exit_code']) is not int or terminal['terminal_result']['exit_code'] != 0 or terminal['session_closed'] is not True:
++        raise ValueError('actual integer0 closed Root resource comparison receipt required')
++    # No self-pin cycle: the external frozen admission is added only after its
++    # own independently sealed complete input list has been verified.
++    if admission_pin['path'] in expected:
++        raise ValueError('resource qualification admission may not contain a self-pinning cycle')
++    expected[admission_pin['path']] = admission_pin['sha256']
++    return dict(schema='AXMAT_ROOT_INDEX_RESOURCE_SOURCE_ADMISSION_V15',
++        actual_resource_module_admission=admission_pin, complete_actual_resource_module_admission=value,
++        actual_resource_class_factory=dict(path=module_pin['path'], sha256=module_pin['sha256'],
++            class_name='DynamicHistoryResources', genuine_class_not_overlay=True),
++        original_factory_ancestry_descriptor=dict(path=parent_pin['path'], sha256=parent_pin['sha256'],
++            class_name='DynamicHistoryResources', genuine_class_not_overlay=True),
++        source_inputs=expected, resource_module_only=True, full86_component_qualified=False,
++        native_RSS_verified=False, AAA_accuracy_qualified=False, ABA_admitted=False)
++
++
++def root_index_resource_factory():
++    """Normally import the qualified immutable new source; no old-module patch."""
++    if (not isinstance(ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA, str)
++            or re.fullmatch('[0-9a-f]{64}', ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA) is None
++            or ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA == '0'*64):
++        raise ValueError('UNREADY: root-index resource module lacks actual qualification')
++    require(ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION, ROOT_INDEX_ACTUAL_RESOURCE_ADMISSION_SHA)
++    return load(require(ROOT_INDEX_RESOURCE_MODULE, ROOT_INDEX_RESOURCE_MODULE_SHA),
++        'sender_root_index_actual_resource_module_v15')
++
++
+ def validate_history_roots(values, artifacts_root):
+-    return parent_factory().validate_history_roots(values, artifacts_root)
++    return root_index_resource_factory().validate_history_roots(values, artifacts_root)
+ 
+ 
+ def DynamicHistoryResources(artifacts_root, roots, min_free_bytes, max_bytes, failure_type=None):
+     """Lazy public constructor; return the genuine inherited resource class."""
+-    return parent_factory().DynamicHistoryResources(
++    return root_index_resource_factory().DynamicHistoryResources(
+         artifacts_root, roots, min_free_bytes, max_bytes, failure_type)
+ 
+ 
+@@ -1828,6 +1922,12 @@
+         if existing is not None and existing != wanted:
+             raise ValueError("whole stream helper/control INPUT owner conflict")
+         expected[path] = wanted
++    root_index_admission = root_index_resource_source_admission()
++    for path, wanted in root_index_admission["source_inputs"].items():
++        existing = expected.get(path, expected.get(Path(path)))
++        if existing is not None and existing != wanted:
++            raise ValueError("whole root-index resource INPUT owner conflict")
++        expected[path] = wanted
+     for path,wanted in expected.items():
+         require(path,wanted)
+     old = read(require(PARENT / "declaration.json"))
+@@ -2164,6 +2264,7 @@
+     memory_parent=memory_predecessor_admission(memory_seal,memory_terminal,memory_terminal_sha,parent)
+     memory_failed=failed_memory_capture_admission(failed_memory_capture_terminal_sha)
+     old,originals=source_inputs(); changed,c=patch_admission(patch_sha,controls_sha)
++    root_index_admission = root_index_resource_source_admission()
+     sender=sender_source_admission(); sender_contract=sender_control_contract()
+     stream_admission=stream_environment_helper_source_admission()
+     forecast=complete_archive_forecast(c,changed,sender,sender_contract); shape=production_cache_shape_forecast(parent,c)
+@@ -2265,7 +2366,7 @@
+     files[str(OUT/'runtime/run_bounded_dragon.py')]=digest(OUT/'runtime/run_bounded_dragon.py')
+     (SOURCE/'SPOT1P64.patch').write_text(''.join(difflib.unified_diff(MEMORY_KERNEL_SOURCE.read_text().splitlines(True),
+         changed['kernel'].splitlines(True),fromfile=str(MEMORY_KERNEL_SOURCE),tofile=str(SOURCE/'SPOT1P64.f90'))))
+-    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_SOURCE_ADMISSION_V14B',
++    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_SOURCE_ADMISSION_V15',
+         actual_original_source_objects=originals,source_patch_proof=changed['proof'],dense_reference_proof=changed['dense_reference_proof'],
+         inherited_completed_memory_source_admission=memory_parent['source_admission'],
+         actual_dictionary_parent_source=pin(MEMORY_KERNEL_SOURCE),dictionary_parent_is_not_dense_reference=True,
+@@ -2276,14 +2377,16 @@
+         original_reference_proof=changed['original_reference_proof'],control_source_proof=changed['control_source_proof'],sole_new_production_objects=['SPOT1P64.o','FLU2DR64.o'],
+         sender_window_source_admission=sender, sender_wrapper_control_contract=sender_contract,
+         stream_environment_helper_admission=stream_admission,
++        root_index_resource_source_admission=root_index_admission,
+         full_component_factory_source_parent=pin(require(SENDER_FACTORY_SOURCE_PARENT,SENDER_FACTORY_SOURCE_PARENT_SHA)),
+         original_sender_ancestry=pin(SENDER_OBJECT),actual_new_sender_source=pin(SOURCE/'FLU2DR64.f'),unchanged_Flu_selector_object=parent['compiled_selector'],
+         unchanged_white_object=pin(WHITE_OBJECT),whole_link_inverse_restoration_exact=True,control_contract=c,
+         reference_objects_unit_only=True,actual_full_FLU_entry_executed=False,native_RSS_proof_obtained=False,
+         fresh_512MiB_native_capture_required=True,scientific_qualification=False))
+     inv=h.inventory(SOURCE);files.update({str(SOURCE/name):sha for name,sha in inv['files'].items()})
+-    d=dict(schema='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_DECLARATION_V14B',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
++    d=dict(schema='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_DECLARATION_V15',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
+         files=files,build_commands=commands,production_link_command=commands[2],
++        root_index_resource_source_admission=root_index_admission,
+         stream_environment_helper_admission=stream_admission,
+         sender_source_admission=sender,sender_control_contract=sender_contract,original_stage_count=68,complete_stage_count=86,inherited_rank1_factor_cache_admission=parent,
+         inherited_rank1_factor_cache_memory_admission=memory_parent,actual_failed_compact_memory_native_capture_evidence=memory_failed,
+@@ -2304,7 +2407,7 @@
+     if archive_bytes()>=ARCHIVE_RESERVE:raise ValueError('complete SOURCE plus OUT exceeded original 2GiB reservation')
+     resources.check()
+     print(json.dumps(dict(declaration=str(OUT/'declaration.json'),declaration_sha256=digest(OUT/'declaration.json'),
+-        source_root=str(SOURCE),classification='DECLARED_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_ONLY_V14B'),allow_nan=False))
++        source_root=str(SOURCE),classification='DECLARED_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_ONLY_V15'),allow_nan=False))
+ 
+ 
+ def environment(d, require_build_interpreter=True):
+@@ -2319,7 +2422,7 @@
+ def declaration_admission(expected,require_build_interpreter=True):
+     require_ready()
+     d=read(require(OUT/'declaration.json',expected))
+-    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_DECLARATION_V14B'
++    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_DECLARATION_V15'
+             or d['family']!=FAMILY or d['source_root']!=str(SOURCE) or d['total_wall_seconds']!=1800 or d['stage_wall_seconds']!=600
+             or d['rss_cap_mib']!=512 or d['archive_reserve_bytes']!=2*2**30 or d['artifact_budget_bytes']!=96*2**30
+             or d['min_free_bytes']!=8*2**30 or d['threads']!=1 or d['numeric_children_at_once']!=1 or d['retries']!=0
+@@ -2331,6 +2434,12 @@
+         raise ValueError('immutable original caps and memory-only input scope differ')
+     if d['production_link_command']!=d['build_commands'][2]:raise ValueError('explicit actual production link command differs')
+     stream_admission=stream_environment_helper_source_admission()
++    root_index_admission = root_index_resource_source_admission()
++    if d["root_index_resource_source_admission"] != root_index_admission:
++        raise ValueError("whole actual resource-module qualification changed")
++    for path, wanted in root_index_admission["source_inputs"].items():
++        if d["files"].get(path) != wanted:
++            raise ValueError("complete resource qualification INPUT ownership missing")
+     if d["stream_environment_helper_admission"] != stream_admission:
+         raise ValueError("entire actual helper SOURCE/control admission changed")
+     for original_path, copied_name, wanted in (
+@@ -2340,8 +2449,9 @@
+         if require(SOURCE/copied_name,wanted).read_bytes()!=require(original_path,wanted).read_bytes():
+             raise ValueError("actual SOURCE helper evidence copies differ; never import the copy")
+     source_admission=read(require(SOURCE/"source_admission.json"))
+-    if (source_admission["schema"] != "AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_SOURCE_ADMISSION_V14B"
+-            or source_admission["stream_environment_helper_admission"] != stream_admission):
++    if (source_admission["schema"] != "AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_SOURCE_ADMISSION_V15"
++            or source_admission["stream_environment_helper_admission"] != stream_admission
++            or source_admission["root_index_resource_source_admission"] != root_index_admission):
+         raise ValueError("whole source admission must bind exact helper controls independently")
+     if not 0 < d["complete_archive_forecast"]["forecast_complete_with_sender_and_stream_helper_bytes"] < ARCHIVE_RESERVE:
+         raise ValueError("complete three-copy streaming helper forecast must fit original2GiB")
+@@ -3350,7 +3460,7 @@
+     write_new(OUT / "audit/controls.json", controls)
+     binary = binary_audit(d)
+     write_new(OUT / "audit/binary_identity.json", binary)
+-    write_new(OUT / "audit/result.json", dict(classification="PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_CONTROLS_ONLY_V14B",
++    write_new(OUT / "audit/result.json", dict(classification="PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_CONTROLS_ONLY_V15",
+         declaration_sha256=expected, control_status=controls["status"], binary_status=binary["status"],
+         factor_diagonal_codec_controls_passed=controls["codec_controls"]["status"]=="PASS",
+         cross_group_identity_controls_passed=controls["keycodec_controls"]["status"]=="PASS",
+@@ -3396,7 +3506,7 @@
+     if remaining <= 0:
+         raise ValueError("whole build budget already exhausted before the first real compilation")
+     runner = full.OwnRSSSerialExecutor(OUT, remaining, FAMILY, resources)
+-    result = dict(classification="FAILED_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_NO_RETRY_V14B", error=None,
++    result = dict(classification="FAILED_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_NO_RETRY_V15", error=None,
+         stream_environment_helper_admission=d["stream_environment_helper_admission"],
+         actual_full_FLU_entry_executed=False, transport_launched=False, AAA_accuracy_qualified=False, ABA_admitted=False)
+     try:
+@@ -3486,7 +3596,7 @@
+                 or audit['original_68_control_counts']['total_declared_stages']!=68
+                 or audit['control_counts']['total_declared_stages']!=86 or audit['sender_wrapper_observer_real_SPOT_credit']!=0):
+             raise ValueError('complete original68 and14 new actual fullsender wrapper controls required')
+-        if (audit["classification"] != "PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_CONTROLS_ONLY_V14B"
++        if (audit["classification"] != "PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_CONTROLS_ONLY_V15"
+                 or audit["control_status"] != "PASS" or audit["binary_status"] != "PASS"
+                 or any(audit[key] is not True for key in ("rank1_factor_cache_controls_passed",
+                     "all_new_cache_outputs_bitwise_equal_to_uncached", "operator_identity_guard_negative_controls_passed",
+@@ -3495,7 +3605,7 @@
+                     "canonical_dictionary_signed_zero_and_all_unique_fallback_verified",
+                     "dictionary_dimensions_indices_canonical_and_release_negative_controls_passed","factor_diagonal_codec_controls_passed"))):
+             raise ValueError("actual complete raw cache controls and compiled override identity must pass")
+-        result.update(classification="COMPLETE_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_CONTROLS_ONLY_V14B", watchdogs=[check_watch(row) for row in stages],
++        result.update(classification="COMPLETE_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_CONTROLS_ONLY_V15", watchdogs=[check_watch(row) for row in stages],
+             control_counts=audit["control_counts"],original_68_control_counts=audit['original_68_control_counts'],
+             sender_window_control_counts=audit['sender_window_control_counts'],sender_window_controls_passed=True,
+             actual_new_sender_compiled_and_linked=True,sender_wrapper_observer_real_SPOT_credit=0,
+@@ -3515,12 +3625,12 @@
+                 raise ValueError("complete SOURCE plus OUT or whole build wall budget exceeded")
+             result.update(elapsed_seconds=elapsed, archive_bytes_before_closeout=actual_size)
+         except BaseException as error:
+-            result.update(classification="FAILED_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_NO_RETRY_V14B", error=repr(error),
++            result.update(classification="FAILED_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_NO_RETRY_V15", error=repr(error),
+                 elapsed_seconds=time.monotonic()-started)
+             write_new(OUT / "driver_result.json", result)
+             raise
+         write_new(OUT / "driver_result.json", result)
+-    write_new(OUT / "seal.json", dict(schema="AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_SEAL_V14B", directories=exact_directories(OUT), files={
++    write_new(OUT / "seal.json", dict(schema="AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_SEAL_V15", directories=exact_directories(OUT), files={
+         str(path.relative_to(OUT)):digest(path) for path in OUT.rglob("*") if path.is_file() and not path.is_symlink()}))
+     try:
+         final_resources = resources.check()
+@@ -3647,7 +3757,7 @@
+     if not re.fullmatch(r"[0-9a-f]{64}", build_seal_sha or ""):
+         raise ValueError("the actual new rank-one-cache build seal hash is mandatory")
+     seal = read(require(OUT / "seal.json", build_seal_sha))
+-    if seal["schema"] != "AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_SEAL_V14B":
++    if seal["schema"] != "AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_SEAL_V15":
+         raise ValueError("the actual complete new rank-one-cache build seal is required")
+     if exact_directories(OUT)!=seal["directories"]:raise ValueError("complete final directory namespace changed")
+     actual = {}
+@@ -3671,8 +3781,8 @@
+         raise ValueError("actual complete86 component must retain whole stream helper/control INPUT")
+     flags = ("rank1_factor_cache_controls_passed", "all_new_cache_outputs_bitwise_equal_to_uncached",
+         "operator_identity_guard_negative_controls_passed", "rank1_factor_cache_math_and_rhs_order_unchanged", "fresh_cold_AAA_required")
+-    if (result["classification"] != "COMPLETE_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_CONTROLS_ONLY_V14B" or result["error"] is not None
+-            or audit["classification"] != "PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_CONTROLS_ONLY_V14B"
++    if (result["classification"] != "COMPLETE_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_CONTROLS_ONLY_V15" or result["error"] is not None
++            or audit["classification"] != "PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_CONTROLS_ONLY_V15"
+             or audit["declaration_sha256"] != declared_sha or audit["control_status"] != "PASS" or audit["binary_status"] != "PASS"
+             or any(audit[key] is not True for key in flags)
+             or audit["inherited_rank1_factor_cache_admission"] != d["inherited_rank1_factor_cache_admission"]
+@@ -3751,8 +3861,8 @@
+     # runtime identity that a consuming pipeline must compare exactly.
+     resources_for(d["resource_roots"]).check()
+     prior = d["inherited_rank1_factor_cache_admission"]
+-    return dict(schema="AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V14B",
+-        admission="SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_RUNTIME_INPUT_ONLY_V14B", build_root=str(OUT), source_root=str(SOURCE),
++    return dict(schema="AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_PRODUCTION_RUNTIME_INPUT_ADMISSION_V15",
++        admission="SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_RUNTIME_INPUT_ONLY_V15", build_root=str(OUT), source_root=str(SOURCE),
+         build_seal_sha256=build_seal_sha, corrected_runtime=pin(OUT / "runtime/Dragon"),
+         compiled_kernel_source=pin(SOURCE / "SPOT1P64.f90"),
+         compiled_sender_source=pin(SOURCE/'FLU2DR64.f'),compiled_sender=pin(OUT/'build/FLU2DR64.o'),
+@@ -3803,8 +3913,11 @@
+         production_link_command=d["production_link_command"],
+         compiled_kernel=pin(OUT / "build/SPOT1P64.o"),
+         source_patch_proof=pin(SOURCE / "source_admission.json"),
+-        actual_resource_class_factory=dict(path=str(parent_factory().PARENT_FACTORY), sha256=parent_factory().PARENT_FACTORY_SHA,
++        actual_resource_class_factory=dict(path=str(ROOT_INDEX_RESOURCE_MODULE), sha256=ROOT_INDEX_RESOURCE_MODULE_SHA,
+             class_name="DynamicHistoryResources", genuine_class_not_overlay=True),
++        original_factory_ancestry_descriptor=dict(path=str(parent_factory().PARENT_FACTORY), sha256=parent_factory().PARENT_FACTORY_SHA,
++            class_name="DynamicHistoryResources", genuine_class_not_overlay=True),
++        root_index_resource_source_admission=d["root_index_resource_source_admission"],
+         corrected_sender_transport_math_retained=True,sender_output_storage_window_changed=True,
+         original_sender_ancestry=pin(SENDER_OBJECT),white_closure_unchanged=True, collision_self_operator_unchanged=True,
+         angle_grid_unchanged=True, radial_arithmetic_unchanged=True, physical_data_unchanged=True,

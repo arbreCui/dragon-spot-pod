@@ -1,0 +1,28 @@
+"""One finite revised SOURCE seal; no witness/graph/ART directory/API reads."""
+import hashlib
+import json
+from pathlib import Path
+import stat
+OUT=Path(__file__).parent
+returns=[
+ dict(action='new independent SOURCE namespace verified copy from unchanged0057',actual_return=dict(chunk_id='76ef78',wall_time_seconds=0.000009,exit_code=0,original_token_count=87,output='{"status": "FRESH_SOURCE_FIX_COPY_ONLY_NO_API", "path": "/private/tmp/axmat_v21_complete_fresh_verifier_ART_roots_SOURCE_fix_20261010_angular_ws815t4g", "previous_manifest_SHA": "005722cf51b0f3869f7c621caa5617a751c3314fd52f4ea13dc59a0d0eb1c672", "all_original_members_full_SHA7identity_checked": true, "Root_witness_graph_ART_numeric_read": false}\n')),
+ dict(action='only history-root block SOURCE derivation with complete original inverse',actual_return=dict(chunk_id='c90697',wall_time_seconds=0.000007125,exit_code=0,original_token_count=82,output='{"status": "DERIVED_SOURCE_TEMPLATES_UNREADY", "host_inverse_hunks": 23, "host_complete_bytes_AST_inverse": true, "host_sha256": "c43052504e34238a25746aa41d8a7120d9a4d48fdda090d98735322acd0e3150", "driver_sha256": "41d49ac418b6bfe9403a600edc111ff9faa2abd4b146edfce759ffcbbe9cb327", "helper_API_guard_business_executed": false}\n')),
+ dict(action='original complete77 static checks retained',actual_return=dict(chunk_id='fff3ad',wall_time_seconds=0.000006667,exit_code=0,original_token_count=76,output='{"status": "FINITE_SOURCE_PASS_DRIVER_HOST_GENERATOR_UNREADY_NOT_EXECUTED", "all_checks_typed_true": true, "checks": 77, "host_complete_original_bytes_AST_inverse": true, "inverse_hunks": 23, "install_witness_read": false, "current37k_graph_read": false, "helper_guard_API_generator_main_called": false}\n')),
+ dict(action='finite previouspack inverse and strictART/dynamicunion SOURCE proof',actual_return=dict(chunk_id='94e834',wall_time_seconds=0.000007834,exit_code=0,original_token_count=73,output='{"status": "SOURCE_FIX_ONLY_UNREADY_NOT_EXECUTED", "all_checks_typed_true": true, "checks": 38, "full_previous0057_bytes_AST_inverse": true, "driver_binder_unchanged": true, "all_five_declared_roots_static_strict_ART_descendants": true, "resource_guard_API_graph_ART_directory_read": false}\n'))]
+for r in returns:
+ if type(r['actual_return']['exit_code']) is not int or r['actual_return']['exit_code']!=0 or 'session_id' in r['actual_return']:raise AssertionError('actual completed SOURCE tools typed0 required')
+ r.update(actual_exit_type_int=True,actual_completed_return_no_live_session=True)
+(OUT/'ACTUAL_SOURCE_TOOL_RETURNS.json').write_text(json.dumps(dict(schema='AXMAT_V21_HISTORY_ROOT_SCOPE_FIX_ACTUAL_SOURCE_TOOL_RETURNS_V1',returns=returns,old0057_preserved_and_blocked=True,actual_generator_driver_host_API_called=False,witness_graph_ART_directory_numeric_read=False),indent=2)+'\n')
+manifest=OUT/'MANIFEST.json'
+if manifest.exists():raise ValueError('one new finite SOURCE seal; no retry')
+members=[]
+for path in sorted(OUT.iterdir()):
+ if path==manifest:continue
+ s=path.lstat()
+ if not stat.S_ISREG(s.st_mode) or s.st_nlink!=1:raise ValueError('flat single-link regular SOURCE members required')
+ id7=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns];raw=path.read_bytes();a=path.lstat()
+ if id7!=[a.st_dev,a.st_ino,a.st_mode,a.st_nlink,a.st_size,a.st_mtime_ns,a.st_ctime_ns] or len(raw)!=s.st_size:raise ValueError('SOURCE package EOF7identity changed')
+ members.append(dict(name=path.name,sha256=hashlib.sha256(raw).hexdigest(),size_bytes=len(raw),identity=id7))
+value=dict(schema='AXMAT_V21_FRESH_VERIFIER_BINDING_SOURCE_PACKAGE_MANIFEST_V1',status='SEALED_UNREADY_STRICT_ART_HISTORY_ROOT_SCOPE_SOURCE_FIX_ONLY',root=str(OUT),members=members,manifest_self_excluded=True,source_only=True,runtime_executed=False,helper_guard_API_called=False,Root_install_witness_or_current37k_graph_ART_directory_read=False,all_members_complete_EOF_SHA7identity=True,member_count=len(members),member_bytes=sum(m['size_bytes'] for m in members),previous_blocked0057_manifest_sha256='005722cf51b0f3869f7c621caa5617a751c3314fd52f4ea13dc59a0d0eb1c672',previous0057_pack_preserved_and_not_runnable=True,complete_previous0057_host_inverse=True,host_complete_original_SOURCE_inverse_hunks=23,driver_complete_original_UNREADY_SOURCE_inverse_hunks=2,original_static_checks_typed_true=77,new_finite_root_fix_checks_typed_true=38,driver_binder_and_controls_byte_exact_unchanged=True,five_declared_history_roots_static_strict_ART_descendants=True,original_dynamic_axial_family_union_unmodified=True,outsideART_SOURCE_receipts_still_joint64MiB=True,original_preflight_resource_reserve_unmodified=True,separate_before_joint_archive_check_not_added=True,actual_helper_pin=None,actual_helper_bytes=None,UNKNOWN_Q=None,UNKNOWN_BUSINESS_PINS=None,helper_metadata_qualified=False,whole_business_INPUT=False,native=False,AAA=False,ABA=False,physics_balance=False,actual_RSS_compliance_proven=False)
+manifest.write_text(json.dumps(value,indent=2)+'\n');raw=manifest.read_bytes()
+print(json.dumps(dict(status=value['status'],path=str(OUT),manifest_sha256=hashlib.sha256(raw).hexdigest(),manifest_bytes=len(raw),member_count=len(members),member_bytes=value['member_bytes'],host_sha256=next(m['sha256'] for m in members if m['name']=='fresh_verifier_host.UNREADY.py'),driver_sha256=next(m['sha256'] for m in members if m['name']=='fresh_verifier_controls.UNREADY.py'),binder_sha256=next(m['sha256'] for m in members if m['name']=='bind_fresh_verifier_sources.py'),original77_and_new38_Source_checks_typed_true=True,source_only_actual_tool_returns_typed0=True,actual_binder_driver_host_guard_API_not_called=True)))

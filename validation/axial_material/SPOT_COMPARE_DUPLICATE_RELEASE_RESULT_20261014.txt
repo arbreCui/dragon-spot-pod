@@ -1,0 +1,11 @@
+SPOT 本轮材料比较重复副本精准释放 — 2026-10-14
+
+仅删除本轮 A2/physical.jsonl 与 A3/physical.jsonl 两份私有重复物理记录，共 68,743,634 字节（约 65.6 MiB）。三份副本在独立后验和实际删除前均完成完整 SHA256 与身份核查，内容相同；A1/physical.jsonl 完整保留。删除前逐文件确认无进程占用。
+
+三份不同的 SQLite 索引和原始字池、三份原比较 JSONL、全部报告、日志及科学原始输入继续保留。实际清理主过程退出 0。首次比较 Root 退出 1 和累计空间失败仍保留，没有修改旧报告。
+
+证据：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/literal2_new_compare_duplicate_physical_release_source_20261014/ACTUAL_EXACT_LITERAL2_DUPLICATE_PHYSICAL_RELEASE_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/literal2_new_compare_duplicate_physical_release_source_20261014/ROOT_V3_ACTUAL_RELEASE_TRUE_TOOL_RETURNS.json
+
+后续按路径的正式材料比较将复用已保存的索引与原始字池；整体物理验收和独立耦合参考仍未完成。

@@ -1,0 +1,16 @@
+SPOT 当前 B 完整捕获结果（2026-10-15）
+
+结果：使用已核验的新B可执行文件完成真实材料计算，并完整保存4个导出、55个上下文及8棵原生快照。Root实际返回22e3ab/0；独立后验核验cda129/0。80个新输出已做完整字节SHA核验。
+
+计算子进程真实返回0，监控时间9.760909秒，采样内存峰值190.4375MiB，无超限；Root包含文件核验与收尾约326秒，SELF峰值117899264字节。最终捕获目录572129822字节。原输入目录31项标识保持完整，无SCI复制、链接或旧输入覆写，未重跑计算。
+
+完整范围保留：4个产品、55个按原执行顺序保存的上下文、8棵整树；尚未进行全字段提取和六阶段重建，不把已保存文件视为字段精度通过。后续B55 ENERGY/OVERV控制必须来自本次B快照，不能沿用A凭证。
+
+实际报告：/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/b63/Root_actual_current_B_complete_capture_summary.json
+完整清单：/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/b63/CURRENT_FORMAL_COMPLETE_B_MATERIAL_OBSERVATION_MANIFEST.json
+独立核验：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_capture_host_source_v2_UNREADY/actual_postverify_20261015/REVIEW.json
+真实工具返回：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_capture_host_source_v2_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+
+准备检查中的原v1变量传递错误与GEN1保留；v2仅修正两处返回/接收，其他7个Source文件保持原字节，独立Source核验后运行一次。
+
+接下来按顺序完成：全55上下文/8快照提取→本次B55 OVERV控制→六阶段聚合→A/B在线读取凭证与AAA→独立耦合参考及ABA。物理输入、原验收阈值及资源上限均未放宽。总目标尚未完成。

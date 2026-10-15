@@ -1,0 +1,15 @@
+Cr52/Fe56有限稀释P0实际结果
+日期：2026-10-15
+
+实际Root20fed6退出0，状态ACTUAL_REMAINING_CR52_FE56_14T_FINITE9_P0_WORDS_CLOSED0_ONLY。两个串行子进程均PASS，最终资源检查通过。
+2核、2原始档案、14个温度档、126个有限稀释节点、378个SCAT00/NJJS00/IJJS00记录，共471,655个原始字，逐字差异0。
+分核计数：[{"nuclide": "Cr52", "leaves": 189, "words": 103770, "mismatches": 0}, {"nuclide": "Fe56", "leaves": 189, "words": 367885, "mismatches": 0}]
+实际整体耗时21.694686334秒；阶段耗时7.029124917/7.256574292秒；监控采样峰值127.453125/126MiB。
+使用允许原/bin/ps监控器工作的运行权限，原guard、数学算法、材料、输入和SELF512/stage600/host1800/累计2GiB等限额保持。累计59个路径，无旧入口重试。
+第一入口Root1/child-15的权限失败、失败事实复核0、旧Light与审阅器错误记录全部保留。
+
+独立实际后验尚在进行，暂不声明后验通过。
+本结果是原P0 producer字一致；P1、插值、生产反应完整性、当前SPH/MASK应用、物理精度、独立耦合参考、AAA/ABA仍未因此通过。
+
+实际返回：remaining_Cr52_Fe56_source_v2/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+实际Host：validation/artifacts/axial-material-current-remaining-Cr52-Fe56-finite9-SCAT-producer-20261015-v2/Root_actual_remaining_Cr52_Fe56_finite9_SCAT_summary.json

@@ -1,0 +1,1204 @@
+ROLE canonical
+--- ORIGINAL_PARENT_SOURCE/canonical.full.py
++++ canonical.V25.UNREADY.full.py
+@@ -1,6 +1,7 @@
+ 'UNREADY complete V25 poststage-temporaries Source. Only the run_build last-use stages/audit/commands locals are released after all five complete stage/audit/watchdog checks. All original PREP, five-stage build, whole INPUT, physical and resource gates remain. Root must rebind the existing actual c6 helper-only Q/proofs and this new canonical Source, independently review/install, then freshly execute complete PREP and BUILD in disjoint namespaces. No new business or science success is provided; all six business pins remain None. RSS reduction is not predicted.'
+ import argparse
+ import gc
++import resource
+ import ast
+ import hashlib
+ import importlib.util
+@@ -204,6 +205,70 @@
+ TRIM_INPUT_SEMANTICS = 'ACTUAL_TRIM_3ARG_RETURN_IN_THIS_PREP_THEN_COMPLETE_FRESH_INPUT_REUSE_NO_API_REEXECUTION'
+ 
+ 
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++FUTURE_ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS_PIN = None
++_BUILD_MEMORY_JOURNAL = None
++
++class BuildMemoryDiagnosticJournal:
++    """Output-only parent high-water markers; no input reads or subprocess."""
++    def __init__(self):
++        if sys.platform!='darwin':raise ValueError('Darwin native-byte ru_maxrss semantics required')
++        self.fd=None;self.rows=0;self.bytes=0;self.last_time=None;self.last_high_water=None;self.deferred=None
++        self.fd=os.open(OUT/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path'],os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
++        try:
++            s=os.fstat(self.fd)
++            if not stat.S_ISREG(s.st_mode) or s.st_nlink!=1 or s.st_size!=0 or stat.S_IMODE(s.st_mode)!=0o600:
++                raise ValueError('fresh ordinary single-link private diagnostic descriptor required')
++        except BaseException:
++            os.close(self.fd);self.fd=None;raise
++    def point(self,phase,point):
++        if self.fd is None:raise ValueError('diagnostic was closed; no post-inventory append permitted')
++        contract=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++        if phase not in contract['phases'] or point not in contract['points']:raise ValueError('fixed diagnostic phase/point required')
++        now=time.monotonic();peak=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
++        if type(peak) is not int or peak<0 or not math.isfinite(now):raise ValueError('exact native historical ru_maxrss bytes and finite monotonic clock required')
++        if self.last_time is not None and (now<self.last_time or peak<self.last_high_water):raise ValueError('monotonic clock and historical high-water must not decrease')
++        row=dict(schema=contract['row_schema'],sequence_exact_int=self.rows,pid_exact_int=os.getpid(),phase_fixed_enum=phase,point_fixed_enum=point,monotonic_seconds_finite=now,self_ru_maxrss_native_bytes_exact_int=peak,ru_maxrss_semantics=contract['ru_maxrss_semantics'])
++        payload=(json.dumps(row,separators=(',',':'),allow_nan=False)+'\n').encode('ascii')
++        if self.rows>=contract['max_rows'] or len(payload)>contract['max_line_bytes_including_newline'] or self.bytes+len(payload)>contract['max_bytes']:
++            raise ValueError('fixed output diagnostic byte/line/row bounds exceeded')
++        offset=0
++        while offset<len(payload):
++            written=os.write(self.fd,payload[offset:])
++            if type(written) is not int or written<=0:raise OSError('diagnostic short write without progress')
++            offset+=written
++        os.fsync(self.fd)
++        self.rows+=1;self.bytes+=len(payload);self.last_time=now;self.last_high_water=peak
++    def close(self):
++        fd=self.fd;self.fd=None
++        if fd is not None:os.close(fd)
++        if self.deferred is not None:raise self.deferred
++
++def memory_diagnostic_point(phase,point):
++    journal=_BUILD_MEMORY_JOURNAL
++    if journal is None:return
++    if journal.deferred is not None:return
++    try:journal.point(phase,point)
++    except BaseException as error:
++        if phase!='run_finally':raise
++        # Defer only this diagnostic failure until ALL original finally gates
++        # have completed or raised; close() then raises it, preserving context.
++        journal.deferred=error
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
++
+ def nonzero_sha(value):
+     if not isinstance(value,str) or re.fullmatch('[0-9a-f]{64}',value) is None or value=='0'*64:
+         raise ValueError('actual nonplaceholder SHA256 required')
+@@ -213,6 +278,7 @@
+ def require_ready():
+     if sys.flags.optimize != 0 or os.environ.get('PYTHONOPTIMIZE'):
+         raise ValueError('nonoptimized Python required before project input read')
++    if FUTURE_ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS_PIN is None:raise ValueError('UNREADY diagnostic resource environment witness')
+     if DRAFT_STATUS != 'READY_REVIEWED_V25_ROOT_INDEX_SENDER_COMPONENT_FULL_GRAPH_TRACE_TABLE_FORMAL_FACTORY':
+         raise ValueError('UNREADY: source-only new contract, no new business Root witness or constructor')
+     if Path(__file__).absolute()!=FORMAL_FACTORY:
+@@ -1682,6 +1748,7 @@
+ 
+ 
+ def environment(d,require_build_interpreter=True,phase='environment'):
++    memory_diagnostic_point(phase,'environment_enter')
+     require_ready()
+     if d['historical_whole_component_body']!=BODY_BINDING:
+         raise ValueError('unfiltered historical INPUT-only component body binding changed')
+@@ -1689,6 +1756,7 @@
+         raise ValueError('original family96/globalfree8 contract differs')
+     observed=verify_inputs(d,phase,require_build_interpreter)
+     resources_for(d['resource_roots']).check()
++    memory_diagnostic_point(phase,'environment_return')
+     return observed
+ 
+ 
+@@ -1774,7 +1842,8 @@
+         full_graph_and_creation_trace_bound=256*2**20,
+         combined_runtime_and_link_transient_bound=2*linked_input_bytes,
+         complete_raw_tools_and_closeout_bound=128*2**20,
+-        total_bound=16*input_metadata_bytes+32*2**20+256*2**20+2*linked_input_bytes+128*2**20+trim_metadata_bound,
++        diagnostic_max_bytes=BUILD_MEMORY_DIAGNOSTIC_CONTRACT['max_bytes'],
++        total_bound=16*input_metadata_bytes+32*2**20+256*2**20+2*linked_input_bytes+128*2**20+trim_metadata_bound+BUILD_MEMORY_DIAGNOSTIC_CONTRACT['max_bytes'],
+         original_cold_reservation_bytes=20971764748,cold_reservation_reduced=False,
+         measured_native_RSS=False,mathematical_controls_newly_executed=False)
+     if forecast['total_bound']>=RESERVE:raise ValueError('SOURCE+OUT forecast exceeds unchanged 2GiB')
+@@ -1815,6 +1884,7 @@
+         actual_supervisor_constructor_preflight=constructor,resource_roots=roots,resource_scope_contract=b.resource_scope_contract(),resource_scope_policy=HISTORY_POLICY,
+         actual_resource_class_factory=dict(path=str(ROOT_INDEX_RESOURCE_MODULE),sha256=ROOT_INDEX_RESOURCE_MODULE_SHA,class_name='DynamicHistoryResources',genuine_class_not_overlay=True),
+         original_factory_ancestry_descriptor=dict(path=str(ROOT_INDEX_RESOURCE_SOURCE_PARENT),sha256=ROOT_INDEX_RESOURCE_SOURCE_PARENT_SHA,class_name='DynamicHistoryResources',genuine_class_not_overlay=True),
++        build_memory_diagnostic_output_contract=BUILD_MEMORY_DIAGNOSTIC_CONTRACT,
+         complete_archive_forecast=forecast,resources_before=before,total_wall_seconds=TOTAL_WALL,stage_wall_seconds=STAGE_WALL,rss_cap_mib=RSS,
+         threads=1,numeric_children_at_once=1,retries=0,archive_reserve_bytes=RESERVE,
+         complete_archive_scope_roots=[str(SOURCE),str(OUT)],artifact_budget_bytes=HISTORY_CAP,min_free_bytes=FREE_FLOOR,
+@@ -1848,6 +1918,7 @@
+         original_historical_seven_key_body_unchanged=True,old_capture_RSS_transferred=False,trim_native_RSS_proof_obtained=False)
+     if d['actual_last_cprime_trim_component_INPUT']!=trim_binding or d['trim_component_API_executed_in_this_PREP']is not True:
+         raise ValueError('true new trim return input binding differs')
++    memory_diagnostic_declaration(d)
+     if d['complete_archive_forecast']['total_bound']>=RESERVE:raise ValueError('unchanged reserve exceeded')
+     proof=prepare_terminal_admission(d,expected,nonzero_sha(prep_sha256))
+     environment(d,require_build_interpreter,phase='declaration_admission')
+@@ -1986,56 +2057,76 @@
+ 
+ 
+ def run_build(expected,prep_sha256):
+-    require_ready();started=time.monotonic();d=declaration_admission(expected,prep_sha256=prep_sha256);b,h,full,c=modules()
+-    resources=resources_for(d['resource_roots'],c.ResourceFailure);resources.check()
+-    absent(OUT/'execution_claim.json')
+-    write_new(OUT/'execution_claim.json',dict(parent_pid=os.getpid(),declaration_sha256=expected,started_monotonic=started,retries=0,prep_terminal_evidence=dict(path=str(TERMINAL/PREP_NAME),sha256=prep_sha256)))
+-    remaining=TOTAL_WALL-(time.monotonic()-started)
+-    if remaining<=0:raise ValueError('whole link budget exhausted')
+-    runner=full.OwnRSSSerialExecutor(OUT,remaining,FAMILY,resources)
+-    result=dict(classification='FAILED_COMBINED_RUNTIME_LINK_NO_RETRY',error=None,native_transport_executed=False,
+-        mathematical_controls_newly_executed=False,combined_runtime_native_RSS_proved=False,
+-        actual_full_FLU_entry_executed=False,AAA_accuracy_qualified=False,ABA_admitted=False)
++    global _BUILD_MEMORY_JOURNAL
++    require_ready();started=time.monotonic()
++    if _BUILD_MEMORY_JOURNAL is not None:raise ValueError('exclusive parent diagnostic lifecycle')
++    journal=BuildMemoryDiagnosticJournal();_BUILD_MEMORY_JOURNAL=journal
+     try:
+-        commands=stage_commands(d,expected)
++        memory_diagnostic_point('run_build','declaration_enter')
++        d=declaration_admission(expected,prep_sha256=prep_sha256)
++        memory_diagnostic_point('run_build','declaration_return')
++        b,h,full,c=modules()
++        resources=resources_for(d['resource_roots'],c.ResourceFailure);resources.check()
++        absent(OUT/'execution_claim.json')
++        write_new(OUT/'execution_claim.json',dict(parent_pid=os.getpid(),declaration_sha256=expected,started_monotonic=started,retries=0,prep_terminal_evidence=dict(path=str(TERMINAL/PREP_NAME),sha256=prep_sha256)))
++        remaining=TOTAL_WALL-(time.monotonic()-started)
++        if remaining<=0:raise ValueError('whole link budget exhausted')
++        runner=full.OwnRSSSerialExecutor(OUT,remaining,FAMILY,resources)
++        result=dict(classification='FAILED_COMBINED_RUNTIME_LINK_NO_RETRY',error=None,native_transport_executed=False,
++            mathematical_controls_newly_executed=False,combined_runtime_native_RSS_proved=False,
++            actual_full_FLU_entry_executed=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+         try:
+-            for label,command in zip(stage_labels()[:4],commands[:4]):
+-                environment(d,phase='before_'+label.replace('/','_'));directory,stem=label.split('/')
+-                runner.execute(OUT/directory,stem,command,STAGE_WALL)
++            commands=stage_commands(d,expected)
++            memory_diagnostic_point('run_build','commands_constructed')
++            try:
++                for label,command in zip(stage_labels()[:4],commands[:4]):
++                    environment(d,phase='before_'+label.replace('/','_'));directory,stem=label.split('/')
++                    memory_diagnostic_point('before_'+label.replace('/','_'),'execute_enter')
++                    runner.execute(OUT/directory,stem,command,STAGE_WALL)
++                    memory_diagnostic_point('before_'+label.replace('/','_'),'execute_return')
++            finally:
++                raw={label+'.log':digest(OUT/(label+'.log')) for label in stage_labels()[:4] if (OUT/(label+'.log')).is_file()}
++                write_new(OUT/'raw_metadata_receipt.json',dict(files=raw,before_binary_identity_gates=True,complete_raw_tools_and_link_stdout=True))
++            memory_diagnostic_point('run_build','execute_enter')
++            runner.execute(OUT/'audit','audit',commands[-1],STAGE_WALL,'AXMAT-COMBINED-RUNTIME-LINK-AUDITED')
++            memory_diagnostic_point('run_build','execute_return')
++            stages=read(OUT/FAMILY/'stages.json')['stages']
++            if (len(stages)!=5 or [s['label'] for s in stages]!=stage_labels()
++                or [s['command'] for s in stages]!=commands or any(s['status']!='PASS' for s in stages)):raise ValueError('exact five supervised stages must pass once')
++            audit=read(OUT/'audit/result.json')
++            if (audit['classification']!='PASS_COMBINED_RUNTIME_LINK_IDENTITY_ONLY' or audit['binary_status']!='PASS'
++                or audit['historical_whole_component_body']!=d['historical_whole_component_body']
++                or audit['actual_last_cprime_trim_component_INPUT']!=d['actual_last_cprime_trim_component_INPUT']):
++                raise ValueError('only actual complete identity audit accepted')
++            result.update(classification='COMPLETE_COMBINED_RUNTIME_LINK_IDENTITY_ONLY',watchdogs=[check_watch(s) for s in stages],
++                corrected_runtime=pin(OUT/'runtime/Dragon'),fresh_cold_AAA_required=True)
++            del stages,audit,commands;gc.collect()
++        except BaseException as error:
++            result['error']=repr(error);raise
+         finally:
+-            raw={label+'.log':digest(OUT/(label+'.log')) for label in stage_labels()[:4] if (OUT/(label+'.log')).is_file()}
+-            write_new(OUT/'raw_metadata_receipt.json',dict(files=raw,before_binary_identity_gates=True,complete_raw_tools_and_link_stdout=True))
+-        runner.execute(OUT/'audit','audit',commands[-1],STAGE_WALL,'AXMAT-COMBINED-RUNTIME-LINK-AUDITED')
+-        stages=read(OUT/FAMILY/'stages.json')['stages']
+-        if (len(stages)!=5 or [s['label'] for s in stages]!=stage_labels()
+-            or [s['command'] for s in stages]!=commands or any(s['status']!='PASS' for s in stages)):raise ValueError('exact five supervised stages must pass once')
+-        audit=read(OUT/'audit/result.json')
+-        if (audit['classification']!='PASS_COMBINED_RUNTIME_LINK_IDENTITY_ONLY' or audit['binary_status']!='PASS'
+-            or audit['historical_whole_component_body']!=d['historical_whole_component_body']
+-            or audit['actual_last_cprime_trim_component_INPUT']!=d['actual_last_cprime_trim_component_INPUT']):
+-            raise ValueError('only actual complete identity audit accepted')
+-        result.update(classification='COMPLETE_COMBINED_RUNTIME_LINK_IDENTITY_ONLY',watchdogs=[check_watch(s) for s in stages],
+-            corrected_runtime=pin(OUT/'runtime/Dragon'),fresh_cold_AAA_required=True)
+-        del stages,audit,commands;gc.collect()
+-    except BaseException as error:
+-        result['error']=repr(error);raise
++            try:
++                environment(d,phase='run_finally');size=archive_bytes();snapshot=resources.check();elapsed=time.monotonic()-started
++                if size>=RESERVE or elapsed>=TOTAL_WALL:raise ValueError('complete source/out or whole-link budget exceeded')
++                result.update(elapsed_seconds=elapsed,archive_bytes_before_closeout=size,resources=snapshot)
++                memory_diagnostic_point('run_finally','archive_resources_return')
++            except BaseException as error:
++                result.update(classification='FAILED_COMBINED_RUNTIME_LINK_NO_RETRY',error=repr(error),elapsed_seconds=time.monotonic()-started)
++                write_new(OUT/'driver_result.json',result);raise
++            write_new(OUT/'driver_result.json',result)
++        if journal.deferred is not None:raise journal.deferred
++        memory_diagnostic_point('run_build','normal_pre_inventory')
++        journal.close();_BUILD_MEMORY_JOURNAL=None
++        complete=inventory(OUT);write_new(OUT/'seal.json',dict(schema=PREFIX+'_BUILD_SEAL_V1',**complete))
++        try:
++            snapshot=resources.check();size=archive_bytes();elapsed=time.monotonic()-started
++            if size>=RESERVE or elapsed>=TOTAL_WALL:raise ValueError('mandatory complete post-seal tail failed')
++            print(json.dumps(dict(result=result,actual_tail_check='PASS',actual_elapsed_seconds=elapsed,
++                actual_archive_bytes=size,actual_resources=snapshot),allow_nan=False),flush=True)
++        except BaseException as error:
++            write_new(OUT/'closeout_failure.json',dict(error=repr(error),complete=False,AAA_accuracy_qualified=False,ABA_admitted=False));raise
+     finally:
+-        try:
+-            environment(d,phase='run_finally');size=archive_bytes();snapshot=resources.check();elapsed=time.monotonic()-started
+-            if size>=RESERVE or elapsed>=TOTAL_WALL:raise ValueError('complete source/out or whole-link budget exceeded')
+-            result.update(elapsed_seconds=elapsed,archive_bytes_before_closeout=size,resources=snapshot)
+-        except BaseException as error:
+-            result.update(classification='FAILED_COMBINED_RUNTIME_LINK_NO_RETRY',error=repr(error),elapsed_seconds=time.monotonic()-started)
+-            write_new(OUT/'driver_result.json',result);raise
+-        write_new(OUT/'driver_result.json',result)
+-    complete=inventory(OUT);write_new(OUT/'seal.json',dict(schema=PREFIX+'_BUILD_SEAL_V1',**complete))
+-    try:
+-        snapshot=resources.check();size=archive_bytes();elapsed=time.monotonic()-started
+-        if size>=RESERVE or elapsed>=TOTAL_WALL:raise ValueError('mandatory complete post-seal tail failed')
+-        print(json.dumps(dict(result=result,actual_tail_check='PASS',actual_elapsed_seconds=elapsed,
+-            actual_archive_bytes=size,actual_resources=snapshot),allow_nan=False),flush=True)
+-    except BaseException as error:
+-        write_new(OUT/'closeout_failure.json',dict(error=repr(error),complete=False,AAA_accuracy_qualified=False,ABA_admitted=False));raise
++        _BUILD_MEMORY_JOURNAL=None
++        journal.close()
+ 
+ 
+ def terminal_file(path,sha):
+@@ -2327,24 +2418,36 @@
+ 
+ 
+ def complete_input_phase(d,phase,require_build_interpreter):
++    memory_diagnostic_point(phase,'complete_input_enter')
+     helpers=input_modules();g=helpers['graph'];checks=helpers['checks']
++    memory_diagnostic_point(phase,'specs1_enter')
+     encoded=g.strict_json(str(INPUT_SPECS),INPUT_SPECS_SHA);specs=minimal_live_specs(encoded);del encoded;gc.collect()
++    memory_diagnostic_point(phase,'specs1_return')
+     original_aliases={row['path']:row['binding']for row in specs['aliases']
+         if row['expected_metadata']==dict(path=str(HISTORICAL_DECL),sha256=HISTORICAL_DECL_SHA)}
+     if len(original_aliases)!=2 or d['aliases']!=original_aliases:
+         raise ValueError('complete original two literal alias obligations differ')
+     # New implementation/copy endpoints have ordinary path semantics. The old
+     # 16f weak-alias inputs keep their original separate source-owned rights.
++    memory_diagnostic_point(phase,'owned1_enter')
+     current_new_owned_paths(d)
++    memory_diagnostic_point(phase,'owned1_return')
++    memory_diagnostic_point(phase,'current_before_enter')
+     before=current_input_predicates(helpers,specs,require_build_interpreter)
++    memory_diagnostic_point(phase,'current_before_return')
+     # All current-before and two-literal-alias checks above have completed.
+     # Re-read the whole fixed specs only when current-after actually needs them.
+     del specs,original_aliases
++    memory_diagnostic_point(phase,'verify_graph_enter')
+     with g.ReadOpenAudit()as audit:
+         verified=g.verify_graph(d['input_graph']['path'],expected_sha256=d['input_graph']['sha256'],phase=phase)
++    memory_diagnostic_point(phase,'verify_graph_return')
+     if verified['consumer_scope']is not None or verified['graph_content_sha256']!=d['input_graph']['content_sha256']:
+         raise ValueError('whole immutable INPUT graph identity changed')
++    memory_diagnostic_point(phase,'snapshot_enter')
+     trace=audit.snapshot(_consume=True);graph_path=d['input_graph']['path']
++    memory_diagnostic_point(phase,'snapshot_return')
++    memory_diagnostic_point(phase,'trace_digest_enter')
+     regular=[x for x in trace['records']if x['kind']=='path'and x['path']!=graph_path]
+     paths={row['path']for row in regular}
+     graph_reads=[row for row in trace['records']if row['kind']=='path'and row['path']==graph_path]
+@@ -2353,20 +2456,30 @@
+         or len(graph_reads)!=1 or graph_reads[0]['attempt_count']!=1):
+         raise ValueError('every canonical input and the external graph must be freshly opened once')
+     trace_digest=g._content_digest(trace);del trace,audit,regular,graph_reads;gc.collect()
++    memory_diagnostic_point(phase,'trace_digest_return')
+     # This is this phase's real verifier return; only its four used scalar counts
+     # survive. No public verifier result or graph is filtered or modified.
+     fresh_counts=(verified['canonical_files_read'],verified['actual_bytes_read'],
+         verified['logical_owner_requirements'],verified['exhaustive_namespaces_checked'])
+     del verified
+     # Full fresh EOF/SHA/identity/strict parsing occurs again, without a cache.
++    memory_diagnostic_point(phase,'specs2_enter')
+     encoded=g.strict_json(str(INPUT_SPECS),INPUT_SPECS_SHA);specs=minimal_live_specs(encoded);del encoded
++    memory_diagnostic_point(phase,'specs2_return')
++    memory_diagnostic_point(phase,'current_after_enter')
+     after=current_input_predicates(helpers,specs,require_build_interpreter)
++    memory_diagnostic_point(phase,'current_after_return')
++    memory_diagnostic_point(phase,'owned2_enter')
+     current_new_owned_paths(d)
++    memory_diagnostic_point(phase,'owned2_return')
+     # Original current-after predicates consume all four fields. The remaining
+     # original length/negative-byte checker reads this complete field alone.
+     length_specs={'remaining_source_owned_requirements':specs['remaining_source_owned_requirements']}
+     del specs
++    memory_diagnostic_point(phase,'graph2_enter')
+     graph=g.strict_json(d['input_graph']['path'],d['input_graph']['sha256'])
++    memory_diagnostic_point(phase,'graph2_return')
++    memory_diagnostic_point(phase,'bindings_enter')
+     expected_snapshot=dict(semantics='HISTORICAL_PREP_INPUT_ONLY_REUSE_NO_API_REEXECUTION',
+         historical_whole_component_body=BODY_BINDING,historical_PREP=dict(path=str(HISTORICAL_PREP),sha256=HISTORICAL_PREP_SHA),
+         failed_historical_combined_RUN_promoted=False,original_component_APIs_executed_now=False,
+@@ -2381,11 +2494,15 @@
+         raise ValueError('declaration full canonical SHA/alias union or actual path opens differ')
+     # Full canonical union/alias comparisons above have completed.
+     del files,complete_aliases,paths,expected_snapshot
++    memory_diagnostic_point(phase,'bindings_return')
++    memory_diagnostic_point(phase,'lengths_enter')
+     pins={row['path']:row for row in graph['canonical_files']}
+     lengths=checks.check_failed_lengths_and_owned_negative_bytes(g,length_specs,g._alias_map(graph['aliases']),pins)
+     failed_lengths=check_failed_prepare_phase(failed_prepare_input(g),graph['namespaces'],pins)
+     # No full historical body or expanded complete graph survives this helper.
+     del graph,pins,length_specs;gc.collect()
++    memory_diagnostic_point(phase,'lengths_return')
++    memory_diagnostic_point(phase,'complete_input_return')
+     return dict(phase=phase,canonical_files=fresh_counts[0],bytes=fresh_counts[1],
+         logical_edges=fresh_counts[2],namespaces=fresh_counts[3],
+         trace_content_sha256=trace_digest,current_before=before,current_after=after,original_failed_lengths=lengths,prior_failed_PREP_lengths=failed_lengths,
+
+
+ROLE prepare_binder
+--- ORIGINAL_PARENT_SOURCE/prepare_binder.full.py
++++ bind_actual_V25_Q_to_complete_PREP_SOURCE.UNREADY.py
+@@ -30,6 +30,42 @@
+ INPUT_HELPERS={'graph':(ROOT/'validation/axial_material/combined_runtime_complete_input_graph_private_inactive_audit_snapshot_consume_20261010.py','3b181f6366d5084fd6ccc87c1a6e7b757b706b7ba38cdf9156e1381cdb010092')}
+ BUSINESS=('FUTURE_ACTUAL_COMBINED_DECLARATION_SHA','FUTURE_ACTUAL_COMBINED_PREP_TERMINAL_SHA','FUTURE_ACTUAL_COMBINED_SEAL_SHA','FUTURE_ACTUAL_COMBINED_TERMINAL_SHA','FUTURE_ACTUAL_COMBINED_RUNTIME_SHA','FUTURE_ACTUAL_NATIVE_TERMINAL_SHA')
+ READ_PINS={}
++
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def diagnostic_resource_environment_witness(path,sha256):
++    # Root creates this genuine small META witness before SOURCE binding.
++    # It is a SOURCE/prelaunch dependency, never an active graph-audit input.
++    wanted=source_pin(require(path,sha256));body=read(wanted['path'])
++    if body.get('schema')!='ROOT_ACTUAL_DARWIN_RESOURCE_SELF_RUSAGE_DIAGNOSTIC_ENVIRONMENT_WITNESS_V1' or body.get('diagnostic_dependency_verified') is not True or body.get('source_only') is not True or body.get('platform')!='darwin':raise ValueError('actual independent diagnostic environment witness required')
++    for field in ('actual_python_fullpin','actual_resource_module_fullpin','actual_environment_tool_terminal_fullpin'):
++        q=helper_Q_fullpin(body[field])
++        if field=='actual_resource_module_fullpin':
++            if q['path']!='/Users/wen/miniforge3/envs/openmc-dev/lib/python3.12/lib-dynload/resource.cpython-312-darwin.so' or type(q['identity'][3]) is not int or q['identity'][3]<1 or q['sha256']!='cbd0358d5dfb6a5271a7e645118a36d0537b49e84452a2bcd7d26a73eb131164' or q['size_bytes']!=53552:raise ValueError('exclusive actual canonical resource dependency role with truthful positive nlink')
++        actual=source_pin(require(q['path'],q['sha256']))
++        if actual!=q:raise ValueError('diagnostic environment witness complete fullpin differs')
++    if body['actual_python_fullpin']['path']!='/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12':raise ValueError('unchanged exact Python endpoint')
++    terminal=read(body['actual_environment_tool_terminal_fullpin']['path']);tr=terminal['terminal_tool_return']
++    if terminal.get('observed_terminal') is not True or terminal.get('closed') is not True or terminal.get('session_repolled_after_close',False) is not False or type(tr.get('exit_code')) is not int or tr['exit_code']!=0 or 'session_id' in tr:raise ValueError('actual diagnostic environment closed terminal required')
++    observed=json.loads(tr['output'])
++    for field in ('actual_python_fullpin','actual_resource_module_fullpin','self_ru_maxrss_native_bytes_observed','ru_maxrss_semantics','platform'):
++        if json.dumps(observed[field],sort_keys=True,allow_nan=False)!=json.dumps(body[field],sort_keys=True,allow_nan=False):raise ValueError('actual environment terminal output and witness differ')
++    if type(body.get('self_ru_maxrss_native_bytes_observed')) is not int or body['self_ru_maxrss_native_bytes_observed']<0 or body.get('ru_maxrss_semantics')!=BUILD_MEMORY_DIAGNOSTIC_CONTRACT['ru_maxrss_semantics']:raise ValueError('actual raw native-byte diagnostic observation required')
++    if any(body.get(k) is not False for k in ('whole_BUILD_qualified','whole_INPUT_qualified','native_or_science_qualified')):raise ValueError('diagnostic dependency cannot grant business or science')
++    return wanted
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
+ 
+ def identity(p):
+     s=Path(p).lstat();return [s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+@@ -552,7 +588,7 @@
+ def main():
+     global FUTURE_ACTUAL_COMPLETE_GRAPH_HELPER_CONTROLS_ADMISSION_SHA,FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN,FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN,FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN
+     if sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE')or sys.getprofile()is not None:raise ValueError('original nonoptimized unprofiled Source binder required')
+-    parser=argparse.ArgumentParser();parser.add_argument('actual_Q_path');parser.add_argument('actual_Q_sha256');parser.add_argument('fresh_TMP_output');parser.add_argument('--actual-new-Q-writer-terminal',required=True);parser.add_argument('--actual-new-Q-writer-terminal-sha256',required=True);parser.add_argument('--actual-Q-saved-peer',required=True);parser.add_argument('--actual-Q-saved-peer-sha256',required=True);parser.add_argument('--actual-Q-saved-peer-retention',required=True);parser.add_argument('--actual-Q-saved-peer-retention-sha256',required=True);args=parser.parse_args()
++    parser=argparse.ArgumentParser();parser.add_argument('actual_Q_path');parser.add_argument('actual_Q_sha256');parser.add_argument('fresh_TMP_output');parser.add_argument('--actual-new-Q-writer-terminal',required=True);parser.add_argument('--actual-new-Q-writer-terminal-sha256',required=True);parser.add_argument('--actual-Q-saved-peer',required=True);parser.add_argument('--actual-Q-saved-peer-sha256',required=True);parser.add_argument('--actual-Q-saved-peer-retention',required=True);parser.add_argument('--actual-Q-saved-peer-retention-sha256',required=True);parser.add_argument('--actual-diagnostic-resource-environment-witness',required=True);parser.add_argument('--actual-diagnostic-resource-environment-witness-sha256',required=True);args=parser.parse_args()
+     if Path(args.actual_Q_path)!=ACTUAL_HELPER_Q_PATH:raise ValueError('fixed actual V25 Q path')
+     FUTURE_ACTUAL_COMPLETE_GRAPH_HELPER_CONTROLS_ADMISSION_SHA=nonzero_sha(args.actual_Q_sha256)
+     output=normal(args.fresh_TMP_output,missing=True)
+@@ -561,6 +597,7 @@
+     FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN=source_pin(require(args.actual_new_Q_writer_terminal,args.actual_new_Q_writer_terminal_sha256))
+     FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN=source_pin(require(args.actual_Q_saved_peer,args.actual_Q_saved_peer_sha256))
+     FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN=source_pin(require(args.actual_Q_saved_peer_retention,args.actual_Q_saved_peer_retention_sha256))
++    resource_environment_pin=diagnostic_resource_environment_witness(args.actual_diagnostic_resource_environment_witness,args.actual_diagnostic_resource_environment_witness_sha256)
+     deps=helper_Q_admission();qpin=source_pin(ACTUAL_HELPER_Q_PATH)
+     proof=read(HERE/'COMPLETE_SOURCE_INVERSES.json');templates={
+         'canonical':(HERE/'canonical.V25.UNREADY.full.py').read_text(),
+@@ -568,11 +605,12 @@
+         'prepare_writer':(HERE/'host_and_postclose_templates/prepare_writer.V25.UNREADY.full.py').read_text()}
+     edits={k:[]for k in templates};text=templates['canonical']
+     doc=ast.get_source_segment(text,ast.parse(text).body[0])
+-    text=source_replace(text,edits['canonical'],doc,repr('READY Source binding only for V25 poststage-temporaries complete sender/root-index flow. Existing actual c6 full pure/fresh helper metadata Q and all original Q terminal/saved peer/install proofs were re-read. All original complete PREP, five-stage build, whole INPUT, physical and resource gates remain required. This Source binding supplies no new PREP/build/INPUT/native/science success; all six business pins remain None. Private last-use local release does not predict RSS qualification.'),'actual_Q_READY_truthful_doc')
++    text=source_replace(text,edits['canonical'],doc,repr('READY Source binding only for V25 memory-observation complete sender/root-index flow, with separately observed Darwin resource environment witness. Existing actual c6 full pure/fresh helper metadata Q and all original Q terminal/saved peer/install proofs were re-read. All original complete PREP, five-stage build, whole INPUT, physical and resource gates remain required. This Source binding supplies no new PREP/build/INPUT/native/science success; all six business pins remain None. Private last-use local release does not predict RSS qualification.'),'actual_Q_READY_truthful_doc')
+     text=source_replace(text,edits['canonical'],"DRAFT_STATUS = 'UNREADY_V25_COMPLETE_INACTIVE_AUDIT_ACTUAL_Q_UNBOUND'","DRAFT_STATUS = 'READY_REVIEWED_V25_ROOT_INDEX_SENDER_COMPONENT_FULL_GRAPH_TRACE_TABLE_FORMAL_FACTORY'",'actual_Q_READY_status')
+     text=source_replace(text,edits['canonical'],'FUTURE_ACTUAL_COMPLETE_GRAPH_HELPER_CONTROLS_ADMISSION_SHA = None','FUTURE_ACTUAL_COMPLETE_GRAPH_HELPER_CONTROLS_ADMISSION_SHA = '+repr(args.actual_Q_sha256),'actual_Q_SHA')
+     for key,value in (('FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN',FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN),('FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN',FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN),('FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN',FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN)):
+         text=source_replace(text,edits['canonical'],key+' = None',key+' = '+repr(value),'actual_external_new_Q_fullpin_'+key)
++    text=source_replace(text,edits['canonical'],'FUTURE_ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS_PIN = None','FUTURE_ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS_PIN = '+repr(resource_environment_pin),'actual_diagnostic_dependency_fullpin')
+     bound={'canonical':text};canonical_sha=hashlib.sha256(text.encode()).hexdigest()
+     for role in ('prepare_host','prepare_writer'):
+         text=source_future_bind(templates[role],{'FUTURE_V25_ACTUAL_Q_SHA':args.actual_Q_sha256,'FUTURE_V25_CANONICAL_SHA':canonical_sha},edits[role])
+@@ -591,7 +629,10 @@
+     output.mkdir();filenames={'canonical':'prepare_sender_window_root_index_graph_trace_table_combined_runtime_v25_memory_observation.py','prepare_host':'combined_prepare_host.py','prepare_writer':'write_actual_prepare_terminal.py'}
+     for role,text in bound.items():(output/filenames[role]).write_text(text)
+     (output/'ACTUAL_V25_HELPER_ONLY_JOINT_Q.byte_exact.json').write_bytes(ACTUAL_HELPER_Q_PATH.read_bytes())
++    (output/'ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS.byte_exact.json').write_bytes(Path(resource_environment_pin['path']).read_bytes())
++    resource_environment_body=read(resource_environment_pin['path'])
++    (output/'ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS_TOOL_TERMINAL.byte_exact.json').write_bytes(Path(resource_environment_body['actual_environment_tool_terminal_fullpin']['path']).read_bytes())
+     source_dump(output/'Root_actual_Q_bound_complete_PREP_Source_inverse.json',dict(schema='V25_ROOT_ACTUAL_Q_BOUND_COMPLETE_PREP_SOURCE_INVERSE_V1',source_only=True,actual_Q=qpin,complete_original_source_inverses=inverses,all_Q_and_proof_explicit_typed_owner_expected_files=deps,all_read_Source_META_fullpins=list(READ_PINS.values()),all_six_future_business_pins={k:None for k in BUSINESS},candidate_guard_API_compiler_or_numeric_executed=False,installed=False))
+-    print(json.dumps(dict(source_only=True,actual_Q=qpin,canonical=source_pin(output/filenames['canonical']),host=source_pin(output/filenames['prepare_host']),writer=source_pin(output/filenames['prepare_writer']),manifest=source_manifest(output,'V25_ROOT_ACTUAL_Q_BOUND_COMPLETE_PREP_SOURCE_PACKAGE_V1'),business_or_science_executed=False)))
++    print(json.dumps(dict(source_only=True,actual_diagnostic_resource_environment_witness=resource_environment_pin,actual_Q=qpin,canonical=source_pin(output/filenames['canonical']),host=source_pin(output/filenames['prepare_host']),writer=source_pin(output/filenames['prepare_writer']),manifest=source_manifest(output,'V25_ROOT_ACTUAL_Q_BOUND_COMPLETE_PREP_SOURCE_PACKAGE_V1'),business_or_science_executed=False)))
+ 
+ if __name__=='__main__':main()
+
+
+ROLE build_binder
+--- ORIGINAL_PARENT_SOURCE/build_binder.full.py
++++ bind_actual_V25_closed_PREP_to_complete_BUILD_SOURCE.UNREADY.py
+@@ -30,6 +30,42 @@
+ INPUT_HELPERS={'graph':(ROOT/'validation/axial_material/combined_runtime_complete_input_graph_private_inactive_audit_snapshot_consume_20261010.py','3b181f6366d5084fd6ccc87c1a6e7b757b706b7ba38cdf9156e1381cdb010092')}
+ BUSINESS=('FUTURE_ACTUAL_COMBINED_DECLARATION_SHA','FUTURE_ACTUAL_COMBINED_PREP_TERMINAL_SHA','FUTURE_ACTUAL_COMBINED_SEAL_SHA','FUTURE_ACTUAL_COMBINED_TERMINAL_SHA','FUTURE_ACTUAL_COMBINED_RUNTIME_SHA','FUTURE_ACTUAL_NATIVE_TERMINAL_SHA')
+ READ_PINS={}
++
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def diagnostic_resource_environment_witness(path,sha256):
++    # Root creates this genuine small META witness before SOURCE binding.
++    # It is a SOURCE/prelaunch dependency, never an active graph-audit input.
++    wanted=source_pin(require(path,sha256));body=read(wanted['path'])
++    if body.get('schema')!='ROOT_ACTUAL_DARWIN_RESOURCE_SELF_RUSAGE_DIAGNOSTIC_ENVIRONMENT_WITNESS_V1' or body.get('diagnostic_dependency_verified') is not True or body.get('source_only') is not True or body.get('platform')!='darwin':raise ValueError('actual independent diagnostic environment witness required')
++    for field in ('actual_python_fullpin','actual_resource_module_fullpin','actual_environment_tool_terminal_fullpin'):
++        q=helper_Q_fullpin(body[field])
++        if field=='actual_resource_module_fullpin':
++            if q['path']!='/Users/wen/miniforge3/envs/openmc-dev/lib/python3.12/lib-dynload/resource.cpython-312-darwin.so' or type(q['identity'][3]) is not int or q['identity'][3]<1 or q['sha256']!='cbd0358d5dfb6a5271a7e645118a36d0537b49e84452a2bcd7d26a73eb131164' or q['size_bytes']!=53552:raise ValueError('exclusive actual canonical resource dependency role with truthful positive nlink')
++        actual=source_pin(require(q['path'],q['sha256']))
++        if actual!=q:raise ValueError('diagnostic environment witness complete fullpin differs')
++    if body['actual_python_fullpin']['path']!='/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12':raise ValueError('unchanged exact Python endpoint')
++    terminal=read(body['actual_environment_tool_terminal_fullpin']['path']);tr=terminal['terminal_tool_return']
++    if terminal.get('observed_terminal') is not True or terminal.get('closed') is not True or terminal.get('session_repolled_after_close',False) is not False or type(tr.get('exit_code')) is not int or tr['exit_code']!=0 or 'session_id' in tr:raise ValueError('actual diagnostic environment closed terminal required')
++    observed=json.loads(tr['output'])
++    for field in ('actual_python_fullpin','actual_resource_module_fullpin','self_ru_maxrss_native_bytes_observed','ru_maxrss_semantics','platform'):
++        if json.dumps(observed[field],sort_keys=True,allow_nan=False)!=json.dumps(body[field],sort_keys=True,allow_nan=False):raise ValueError('actual environment terminal output and witness differ')
++    if type(body.get('self_ru_maxrss_native_bytes_observed')) is not int or body['self_ru_maxrss_native_bytes_observed']<0 or body.get('ru_maxrss_semantics')!=BUILD_MEMORY_DIAGNOSTIC_CONTRACT['ru_maxrss_semantics']:raise ValueError('actual raw native-byte diagnostic observation required')
++    if any(body.get(k) is not False for k in ('whole_BUILD_qualified','whole_INPUT_qualified','native_or_science_qualified')):raise ValueError('diagnostic dependency cannot grant business or science')
++    return wanted
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
+ 
+ def identity(p):
+     s=Path(p).lstat();return [s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+@@ -368,13 +404,14 @@
+ def main():
+     global FUTURE_ACTUAL_COMPLETE_GRAPH_HELPER_CONTROLS_ADMISSION_SHA,FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN,FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN,FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN
+     if sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE')or sys.getprofile()is not None:raise ValueError('original nonoptimized Source binder')
+-    a=argparse.ArgumentParser();a.add_argument('--saved-prep-peer-report',required=True);a.add_argument('--saved-prep-peer-report-sha256',required=True);a.add_argument('--actual-Q-sha256',required=True);a.add_argument('--actual-canonical-sha256',required=True);a.add_argument('--destination',required=True);a.add_argument('--actual-new-Q-writer-terminal',required=True);a.add_argument('--actual-new-Q-writer-terminal-sha256',required=True);a.add_argument('--actual-Q-saved-peer',required=True);a.add_argument('--actual-Q-saved-peer-sha256',required=True);a.add_argument('--actual-Q-saved-peer-retention',required=True);a.add_argument('--actual-Q-saved-peer-retention-sha256',required=True);args=a.parse_args()
++    a=argparse.ArgumentParser();a.add_argument('--saved-prep-peer-report',required=True);a.add_argument('--saved-prep-peer-report-sha256',required=True);a.add_argument('--actual-Q-sha256',required=True);a.add_argument('--actual-canonical-sha256',required=True);a.add_argument('--destination',required=True);a.add_argument('--actual-new-Q-writer-terminal',required=True);a.add_argument('--actual-new-Q-writer-terminal-sha256',required=True);a.add_argument('--actual-Q-saved-peer',required=True);a.add_argument('--actual-Q-saved-peer-sha256',required=True);a.add_argument('--actual-Q-saved-peer-retention',required=True);a.add_argument('--actual-Q-saved-peer-retention-sha256',required=True);a.add_argument('--actual-diagnostic-resource-environment-witness',required=True);a.add_argument('--actual-diagnostic-resource-environment-witness-sha256',required=True);args=a.parse_args()
+     output=normal(args.destination,missing=True)
+     if not output.is_relative_to(Path('/private/tmp'))or os.path.lexists(output):raise ValueError('fresh complete build Source namespace')
+     source_package();FUTURE_ACTUAL_COMPLETE_GRAPH_HELPER_CONTROLS_ADMISSION_SHA=nonzero_sha(args.actual_Q_sha256)
+     FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN=source_pin(require(args.actual_new_Q_writer_terminal,args.actual_new_Q_writer_terminal_sha256))
+     FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN=source_pin(require(args.actual_Q_saved_peer,args.actual_Q_saved_peer_sha256))
+     FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN=source_pin(require(args.actual_Q_saved_peer_retention,args.actual_Q_saved_peer_retention_sha256))
++    resource_environment_pin=diagnostic_resource_environment_witness(args.actual_diagnostic_resource_environment_witness,args.actual_diagnostic_resource_environment_witness_sha256)
+     deps=helper_Q_admission()
+     E=BASE/'actual_complete_combined_prepare_v25_memory_observation_receipts';TARGET=ROOT/'validation/axial_material/prepare_sender_window_root_index_graph_trace_table_combined_runtime_v25_memory_observation.py'
+     peerpath=require(args.saved_prep_peer_report,args.saved_prep_peer_report_sha256);peer=read(peerpath)
+@@ -397,11 +434,14 @@
+     for name,row in outrefs.items():
+         root=T if name=='prep'else S if name=='source_admission'else O
+         helper_Q_check(row['path']==str(root/({'declaration':'declaration.json','prep':'declaration_terminal_return.json','graph':'input_graph.json','trace':'input_creation_python_open_trace.json','source_admission':'source_admission.json'}[name])) and helper_Q_fullpin(ns[str(root)]['files'][str(Path(row['path']).relative_to(root))])==row,'whole PREP actual output full namespace binding')
++    declaration_body=read(outrefs['declaration']['path']);memory_diagnostic_declaration(declaration_body)
++    if os.path.lexists(O/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path']):raise ValueError('new journal absent before genuine BUILD')
+     cp=source_pin(require(TARGET,args.actual_canonical_sha256));helper_Q_check(helper_Q_fullpin(namespace['canonical_factory'])==cp,'actual installed canonical full Source')
+     source_text=TARGET.read_text();assignments={n.targets[0].id:n.value for n in ast.parse(source_text).body if isinstance(n,ast.Assign)and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+     helper_Q_check(ast.literal_eval(assignments['DRAFT_STATUS'])=='READY_REVIEWED_V25_ROOT_INDEX_SENDER_COMPONENT_FULL_GRAPH_TRACE_TABLE_FORMAL_FACTORY' and ast.literal_eval(assignments['FUTURE_ACTUAL_COMPLETE_GRAPH_HELPER_CONTROLS_ADMISSION_SHA'])==args.actual_Q_sha256,'same actual Q wired canonical')
+     for key,value in (('FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN',FUTURE_ACTUAL_NEW_Q_WRITER_TERMINAL_PIN),('FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN',FUTURE_ACTUAL_NEW_Q_SAVED_PEER_PIN),('FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN',FUTURE_ACTUAL_NEW_Q_SAVED_PEER_RETENTION_PIN)):
+         helper_Q_check(helper_Q_fullpin(ast.literal_eval(assignments[key]))==helper_Q_fullpin(value),'same actual new-Q external proof Source bindings')
++    helper_Q_check(helper_Q_fullpin(ast.literal_eval(assignments['FUTURE_ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS_PIN']))==resource_environment_pin,'same actual SOURCE/prelaunch environment witness')
+     for k in BUSINESS:helper_Q_check(isinstance(assignments[k],ast.Constant)and assignments[k].value is None,'all six future business pins unknown')
+     proof=read(HERE/'COMPLETE_SOURCE_INVERSES.json');roles=('build_host','build_writer');templates={role:(HERE/'host_and_postclose_templates'/(role+'.V25.UNREADY.full.py')).read_text()for role in roles};bound={};edits={role:[]for role in roles}
+     values={'FUTURE_V25_ACTUAL_Q_SHA':args.actual_Q_sha256,'FUTURE_V25_CANONICAL_SHA':cp['sha256'],'FUTURE_V25_DECLARATION_SHA':outrefs['declaration']['sha256'],'FUTURE_V25_PREP_SHA':outrefs['prep']['sha256'],'FUTURE_V25_GRAPH_SHA':outrefs['graph']['sha256'],'FUTURE_V25_TRACE_SHA':outrefs['trace']['sha256'],'FUTURE_V25_PREP_SUMMARY_SHA':sp['sha256']}
+
+
+ROLE prepare_host
+--- ORIGINAL_PARENT_SOURCE/prepare_host.full.py
++++ host_and_postclose_templates/prepare_host.V25.UNREADY.full.py
+@@ -1,4 +1,7 @@
+ """One normal complete combined preparation under the unchanged genuine guard."""
++import hashlib
++import math
++import stat
+ import importlib.util
+ import json
+ import os
+@@ -25,6 +28,102 @@
+ SOURCE_BINDING_STATUS='UNREADY_V25_ACTUAL_Q_AND_TARGET_SOURCE_UNBOUND'
+ ACTUAL_HELPER_Q_PATH=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_complete_graph_private_inactive_audit_helper_admission_v25.json')
+ ACTUAL_HELPER_Q_SHA=FUTURE_V25_ACTUAL_Q_SHA
++
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def memory_diagnostic_pin(path):
++    path=Path(path);s=path.lstat()
++    ident=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    if path.is_symlink() or not stat.S_ISREG(s.st_mode) or s.st_nlink!=1:raise ValueError('ordinary single-link diagnostic required')
++    bound=BUILD_MEMORY_DIAGNOSTIC_CONTRACT['max_bytes']
++    if type(bound) is not int or bound!=1048576 or type(s.st_size) is not int or not 0<=s.st_size<=bound:raise ValueError('diagnostic pre-open size exceeds reserved byte bound')
++    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++    try:
++        opened=os.fstat(fd);opened_ident=[opened.st_dev,opened.st_ino,opened.st_mode,opened.st_nlink,opened.st_size,opened.st_mtime_ns,opened.st_ctime_ns]
++        if not stat.S_ISREG(opened.st_mode) or opened.st_nlink!=1 or opened_ident!=ident:raise ValueError('diagnostic no-follow descriptor differs from pre-open identity')
++        with os.fdopen(fd,'rb',buffering=0,closefd=False) as stream:raw=stream.read(bound+1)
++        if len(raw)>bound or len(raw)!=ident[4]:raise ValueError('diagnostic bounded full EOF bytes differ from exact stat size')
++        finished=os.fstat(fd);finished_ident=[finished.st_dev,finished.st_ino,finished.st_mode,finished.st_nlink,finished.st_size,finished.st_mtime_ns,finished.st_ctime_ns]
++        if finished_ident!=ident:raise ValueError('diagnostic descriptor changed during bounded full EOF pin')
++    finally:
++        os.close(fd)
++    s=path.lstat();after=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    if after!=ident:raise ValueError('full EOF diagnostic changed during pin')
++    return dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),size_bytes=ident[4],identity=ident)
++
++def memory_diagnostic_rows(path,expected_pid=None,success=False):
++    contract=BUILD_MEMORY_DIAGNOSTIC_CONTRACT;path=Path(path)
++    if not os.path.lexists(path):
++        if success:raise ValueError('successful build requires complete saved diagnostic')
++        return dict(parse_status='ABSENT',journal_if_present=None,saved_complete_rows=[],trailing_fragment=None,final_marker_observed=False,diagnostic_credit=False)
++    before=memory_diagnostic_pin(path)
++    output=dict(parse_status='INVALID_DIAGNOSTIC',journal_if_present=before,saved_complete_rows=[],trailing_fragment=None,final_marker_observed=False,diagnostic_credit=False,fsync_or_close_proved_by_rows_alone=False,ru_maxrss_is_original_guard_peak=False)
++    try:
++        if type(before['size_bytes']) is not int or not 0<=before['size_bytes']<=contract['max_bytes']:raise ValueError('diagnostic exceeds reserved byte bound')
++        current=path.lstat();current_ident=[current.st_dev,current.st_ino,current.st_mode,current.st_nlink,current.st_size,current.st_mtime_ns,current.st_ctime_ns]
++        if path.is_symlink() or not stat.S_ISREG(current.st_mode) or current.st_nlink!=1 or current_ident!=before['identity']:raise ValueError('diagnostic pre-open parser identity changed')
++        fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++        try:
++            opened=os.fstat(fd);opened_ident=[opened.st_dev,opened.st_ino,opened.st_mode,opened.st_nlink,opened.st_size,opened.st_mtime_ns,opened.st_ctime_ns]
++            if not stat.S_ISREG(opened.st_mode) or opened.st_nlink!=1 or opened_ident!=before['identity']:raise ValueError('diagnostic parser no-follow descriptor identity changed')
++            with os.fdopen(fd,'rb',buffering=0,closefd=False) as stream:raw=stream.read(contract['max_bytes']+1)
++            if len(raw)>contract['max_bytes'] or len(raw)!=before['size_bytes']:raise ValueError('diagnostic bounded read differs from full pin')
++            finished=os.fstat(fd);finished_ident=[finished.st_dev,finished.st_ino,finished.st_mode,finished.st_nlink,finished.st_size,finished.st_mtime_ns,finished.st_ctime_ns]
++            if finished_ident!=before['identity']:raise ValueError('diagnostic parser descriptor changed during read')
++        finally:
++            os.close(fd)
++        current=path.lstat();current_ident=[current.st_dev,current.st_ino,current.st_mode,current.st_nlink,current.st_size,current.st_mtime_ns,current.st_ctime_ns]
++        if current_ident!=before['identity'] or hashlib.sha256(raw).hexdigest()!=before['sha256']:raise ValueError('diagnostic parser full SHA or exact identity changed')
++        pieces=raw.split(b'\n');fragment=pieces.pop()
++        if fragment:
++            output['trailing_fragment']=dict(size_bytes=len(fragment),sha256=hashlib.sha256(fragment).hexdigest())
++        if len(pieces)>contract['max_rows']:raise ValueError('diagnostic row count exceeds bound')
++        rows=output['saved_complete_rows'];last_time=None;last_high_water=None;parent=expected_pid
++        keys={'schema','sequence_exact_int','pid_exact_int','phase_fixed_enum','point_fixed_enum','monotonic_seconds_finite','self_ru_maxrss_native_bytes_exact_int','ru_maxrss_semantics'}
++        def pairs(items):
++            out={}
++            for key,value in items:
++                if key in out:raise ValueError('duplicate diagnostic JSON key')
++                out[key]=value
++            return out
++        def bad_constant(value):raise ValueError('nonfinite diagnostic JSON constant '+value)
++        for index,line in enumerate(pieces):
++            if len(line)+1>contract['max_line_bytes_including_newline']:raise ValueError('diagnostic line exceeds bound')
++            row=json.loads(line.decode('ascii'),object_pairs_hook=pairs,parse_constant=bad_constant)
++            if type(row) is not dict or set(row)!=keys:raise ValueError('exact eight diagnostic fields required')
++            if row['schema']!=contract['row_schema'] or row['ru_maxrss_semantics']!=contract['ru_maxrss_semantics']:raise ValueError('diagnostic schema/native-byte semantics changed')
++            if type(row['sequence_exact_int']) is not int or row['sequence_exact_int']!=index:raise ValueError('strict consecutive diagnostic sequence')
++            pid=row['pid_exact_int'];peak=row['self_ru_maxrss_native_bytes_exact_int'];clock=row['monotonic_seconds_finite']
++            if type(pid) is not int or pid<=0 or type(peak) is not int or peak<0 or type(clock) not in (int,float) or not math.isfinite(clock):raise ValueError('strict PID/high-water integers and finite clock')
++            if parent is None:parent=pid
++            if type(parent) is not int or parent<=0 or pid!=parent:raise ValueError('single actual canonical parent PID required')
++            if row['phase_fixed_enum'] not in contract['phases'] or row['point_fixed_enum'] not in contract['points']:raise ValueError('fixed phase/point required')
++            if last_time is not None and (clock<last_time or peak<last_high_water):raise ValueError('diagnostic clock/high-water decreased')
++            rows.append(row);last_time=clock;last_high_water=peak
++        if fragment and len(fragment)>=contract['max_line_bytes_including_newline']:raise ValueError('trailing fragment exceeds line bound')
++        output['parse_status']='PARTIAL_TRAILING_FRAGMENT' if fragment else 'COMPLETE_LINES'
++        output['final_marker_observed']=bool(rows and rows[-1]['phase_fixed_enum']=='run_build' and rows[-1]['point_fixed_enum']=='normal_pre_inventory')
++        if success and (fragment or not rows or not output['final_marker_observed'] or any(r['point_fixed_enum']=='normal_pre_inventory' for r in rows[:-1])):
++            raise ValueError('successful diagnostic requires unique final pre-inventory marker and no fragment')
++    except (ValueError, TypeError, KeyError, OverflowError) as error:
++        output['parse_status']='INVALID_DIAGNOSTIC';output['validation_error']=repr(error)
++        if success:raise
++    after=memory_diagnostic_pin(path)
++    if after!=before:raise ValueError('saved diagnostic changed during bounded postclose read')
++    return output
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
+ 
+ def main():
+     if SOURCE_BINDING_STATUS!='READY_V25_ACTUAL_Q_AND_TARGET_SOURCE_BOUND' or TARGET_SHA is None or ACTUAL_HELPER_Q_PATH is None or ACTUAL_HELPER_Q_SHA is None:
+@@ -65,7 +164,7 @@
+         runner.execute(HOST/'run','prepare',command,STAGE_CAP)
+         log=HOST/'run/prepare.log';watch_path=HOST/'run/prepare.watchdog.json'
+         admission=json.loads(log.read_text());watch=json.loads(watch_path.read_text())
+-        declaration=OUT/'declaration.json';d=json.loads(declaration.read_text())
++        declaration=OUT/'declaration.json';d=json.loads(declaration.read_text());memory_diagnostic_declaration(d)
+         if admission!=dict(declaration=str(declaration),declaration_sha256=support.pin(declaration)['sha256']):raise ValueError('normal complete combined prepare return required')
+         if d['schema']!='AXMAT_SENDER_WINDOW_ROOT_INDEX_GRAPH_TRACE_TABLE_COMBINED_RUNTIME_V25_DECLARATION_V1' or len(d['stages'])!=5 or (d['total_wall_seconds'],d['stage_wall_seconds'],d['rss_cap_mib'],d['archive_reserve_bytes'])!=(1800,600,512,2*2**30):raise ValueError('original complete five stages and caps required')
+         if any(d[k] is not False for k in ('native_transport_executed','mathematical_controls_newly_executed','combined_runtime_native_RSS_proved','actual_full_FLU_entry_executed','AAA_accuracy_qualified','ABA_admitted','production_pipeline_prepared')):raise ValueError('combined prepare INPUT only boundaries required')
+@@ -76,6 +175,7 @@
+         if not elapsed<WHOLE_CAP or not archived<ARCHIVE_CAP:raise ValueError('unchanged admission host caps exceeded')
+         for entry in inputs+[hpin,rpin]:
+             if support.pin(entry['path'],entry['sha256'])!=entry:raise ValueError('normal complete pinned inputs changed')
++        if os.path.lexists(OUT/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path']):raise ValueError('BUILD-only diagnostic must remain absent after PREP')
+         value=dict(schema='AXMAT_V25_GENUINE_COMPLETE_COMBINED_PREPARE_HOST_V1',status='ACTUAL_COMPLETE_COMBINED_PREPARE_EXTERNAL_ROOT_REQUIRED',input_sources=inputs,original_helper=hpin,resource_factory=rpin,actual_canonical_command=command,actual_prepare_stdout=support.pin(log),actual_declaration=support.pin(declaration),actual_source_admission=support.pin(SOURCE/'source_admission.json'),actual_watchdog=support.pin(watch_path),watchdog=watch,stage_records=runner.records,resources_before=before,resources_after=after,whole_seconds=elapsed,archive_before_result_bytes=archived,whole_wall_cap_seconds=WHOLE_CAP,stage_wall_cap_seconds=STAGE_CAP,rss_cap_mib=RSS_CAP,archive_cap_bytes=ARCHIVE_CAP,threads=1,children_at_once=1,retries=0,profile_used=False,supervisor_class_or_MRO_modified=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+         support.write_new(HOST/'result.json',value)
+         if support.archive_bytes((HOST,SOURCE,OUT,SOURCE_ARCHIVE))>=ARCHIVE_CAP or time.monotonic()-started>=WHOLE_CAP:raise ValueError('final admission host caps exceeded')
+
+
+ROLE prepare_writer
+--- ORIGINAL_PARENT_SOURCE/prepare_writer.full.py
++++ host_and_postclose_templates/prepare_writer.V25.UNREADY.full.py
+@@ -19,6 +19,21 @@
+ FACTORY=Path('/Users/wen/spot/validation/axial_material/prepare_sender_window_root_index_graph_trace_table_combined_runtime_v25_memory_observation.py')
+ FACTORY_SHA=FUTURE_V25_CANONICAL_SHA
+ SOURCE_BINDING_STATUS='UNREADY_V25_ACTUAL_Q_AND_CANONICAL_SOURCE_UNBOUND'
++
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
+ 
+ def identity(p):
+     s=Path(p).lstat()
+@@ -70,7 +85,8 @@
+         raise ValueError('Root actual typed EXIT0 closed tool return required')
+     h=json.loads((H/'result.json').read_text())
+     w=json.loads((H/'run/prepare.watchdog.json').read_text())
+-    d=json.loads((O/'declaration.json').read_text())
++    d=json.loads((O/'declaration.json').read_text());memory_diagnostic_declaration(d)
++    if os.path.lexists(O/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path']):raise ValueError('BUILD-only diagnostic absent after PREP')
+     cp=d['actual_external_prepare_terminal_contract']
+     if pin(FACTORY)['sha256']!=FACTORY_SHA or cp['root']!=str(T) or cp['schema']!='AXMAT_SENDER_WINDOW_ROOT_INDEX_GRAPH_TRACE_TABLE_COMBINED_RUNTIME_V25_ACTUAL_EXTERNAL_PREP_RETURN_V1':
+         raise ValueError('fixed new formal source required')
+
+
+ROLE build_host
+--- ORIGINAL_PARENT_SOURCE/build_host.full.py
++++ host_and_postclose_templates/build_host.V25.UNREADY.full.py
+@@ -1,4 +1,7 @@
+ """One normal whole five-stage combined build under the unchanged genuine guard."""
++import hashlib
++import math
++import stat
+ import importlib.util
+ import json
+ import os
+@@ -35,6 +38,102 @@
+ 
+ SOURCE_BINDING_STATUS='UNREADY_V25_ACTUAL_COMPLETE_PREP_AND_SOURCE_UNBOUND'
+ 
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def memory_diagnostic_pin(path):
++    path=Path(path);s=path.lstat()
++    ident=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    if path.is_symlink() or not stat.S_ISREG(s.st_mode) or s.st_nlink!=1:raise ValueError('ordinary single-link diagnostic required')
++    bound=BUILD_MEMORY_DIAGNOSTIC_CONTRACT['max_bytes']
++    if type(bound) is not int or bound!=1048576 or type(s.st_size) is not int or not 0<=s.st_size<=bound:raise ValueError('diagnostic pre-open size exceeds reserved byte bound')
++    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++    try:
++        opened=os.fstat(fd);opened_ident=[opened.st_dev,opened.st_ino,opened.st_mode,opened.st_nlink,opened.st_size,opened.st_mtime_ns,opened.st_ctime_ns]
++        if not stat.S_ISREG(opened.st_mode) or opened.st_nlink!=1 or opened_ident!=ident:raise ValueError('diagnostic no-follow descriptor differs from pre-open identity')
++        with os.fdopen(fd,'rb',buffering=0,closefd=False) as stream:raw=stream.read(bound+1)
++        if len(raw)>bound or len(raw)!=ident[4]:raise ValueError('diagnostic bounded full EOF bytes differ from exact stat size')
++        finished=os.fstat(fd);finished_ident=[finished.st_dev,finished.st_ino,finished.st_mode,finished.st_nlink,finished.st_size,finished.st_mtime_ns,finished.st_ctime_ns]
++        if finished_ident!=ident:raise ValueError('diagnostic descriptor changed during bounded full EOF pin')
++    finally:
++        os.close(fd)
++    s=path.lstat();after=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    if after!=ident:raise ValueError('full EOF diagnostic changed during pin')
++    return dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),size_bytes=ident[4],identity=ident)
++
++def memory_diagnostic_rows(path,expected_pid=None,success=False):
++    contract=BUILD_MEMORY_DIAGNOSTIC_CONTRACT;path=Path(path)
++    if not os.path.lexists(path):
++        if success:raise ValueError('successful build requires complete saved diagnostic')
++        return dict(parse_status='ABSENT',journal_if_present=None,saved_complete_rows=[],trailing_fragment=None,final_marker_observed=False,diagnostic_credit=False)
++    before=memory_diagnostic_pin(path)
++    output=dict(parse_status='INVALID_DIAGNOSTIC',journal_if_present=before,saved_complete_rows=[],trailing_fragment=None,final_marker_observed=False,diagnostic_credit=False,fsync_or_close_proved_by_rows_alone=False,ru_maxrss_is_original_guard_peak=False)
++    try:
++        if type(before['size_bytes']) is not int or not 0<=before['size_bytes']<=contract['max_bytes']:raise ValueError('diagnostic exceeds reserved byte bound')
++        current=path.lstat();current_ident=[current.st_dev,current.st_ino,current.st_mode,current.st_nlink,current.st_size,current.st_mtime_ns,current.st_ctime_ns]
++        if path.is_symlink() or not stat.S_ISREG(current.st_mode) or current.st_nlink!=1 or current_ident!=before['identity']:raise ValueError('diagnostic pre-open parser identity changed')
++        fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++        try:
++            opened=os.fstat(fd);opened_ident=[opened.st_dev,opened.st_ino,opened.st_mode,opened.st_nlink,opened.st_size,opened.st_mtime_ns,opened.st_ctime_ns]
++            if not stat.S_ISREG(opened.st_mode) or opened.st_nlink!=1 or opened_ident!=before['identity']:raise ValueError('diagnostic parser no-follow descriptor identity changed')
++            with os.fdopen(fd,'rb',buffering=0,closefd=False) as stream:raw=stream.read(contract['max_bytes']+1)
++            if len(raw)>contract['max_bytes'] or len(raw)!=before['size_bytes']:raise ValueError('diagnostic bounded read differs from full pin')
++            finished=os.fstat(fd);finished_ident=[finished.st_dev,finished.st_ino,finished.st_mode,finished.st_nlink,finished.st_size,finished.st_mtime_ns,finished.st_ctime_ns]
++            if finished_ident!=before['identity']:raise ValueError('diagnostic parser descriptor changed during read')
++        finally:
++            os.close(fd)
++        current=path.lstat();current_ident=[current.st_dev,current.st_ino,current.st_mode,current.st_nlink,current.st_size,current.st_mtime_ns,current.st_ctime_ns]
++        if current_ident!=before['identity'] or hashlib.sha256(raw).hexdigest()!=before['sha256']:raise ValueError('diagnostic parser full SHA or exact identity changed')
++        pieces=raw.split(b'\n');fragment=pieces.pop()
++        if fragment:
++            output['trailing_fragment']=dict(size_bytes=len(fragment),sha256=hashlib.sha256(fragment).hexdigest())
++        if len(pieces)>contract['max_rows']:raise ValueError('diagnostic row count exceeds bound')
++        rows=output['saved_complete_rows'];last_time=None;last_high_water=None;parent=expected_pid
++        keys={'schema','sequence_exact_int','pid_exact_int','phase_fixed_enum','point_fixed_enum','monotonic_seconds_finite','self_ru_maxrss_native_bytes_exact_int','ru_maxrss_semantics'}
++        def pairs(items):
++            out={}
++            for key,value in items:
++                if key in out:raise ValueError('duplicate diagnostic JSON key')
++                out[key]=value
++            return out
++        def bad_constant(value):raise ValueError('nonfinite diagnostic JSON constant '+value)
++        for index,line in enumerate(pieces):
++            if len(line)+1>contract['max_line_bytes_including_newline']:raise ValueError('diagnostic line exceeds bound')
++            row=json.loads(line.decode('ascii'),object_pairs_hook=pairs,parse_constant=bad_constant)
++            if type(row) is not dict or set(row)!=keys:raise ValueError('exact eight diagnostic fields required')
++            if row['schema']!=contract['row_schema'] or row['ru_maxrss_semantics']!=contract['ru_maxrss_semantics']:raise ValueError('diagnostic schema/native-byte semantics changed')
++            if type(row['sequence_exact_int']) is not int or row['sequence_exact_int']!=index:raise ValueError('strict consecutive diagnostic sequence')
++            pid=row['pid_exact_int'];peak=row['self_ru_maxrss_native_bytes_exact_int'];clock=row['monotonic_seconds_finite']
++            if type(pid) is not int or pid<=0 or type(peak) is not int or peak<0 or type(clock) not in (int,float) or not math.isfinite(clock):raise ValueError('strict PID/high-water integers and finite clock')
++            if parent is None:parent=pid
++            if type(parent) is not int or parent<=0 or pid!=parent:raise ValueError('single actual canonical parent PID required')
++            if row['phase_fixed_enum'] not in contract['phases'] or row['point_fixed_enum'] not in contract['points']:raise ValueError('fixed phase/point required')
++            if last_time is not None and (clock<last_time or peak<last_high_water):raise ValueError('diagnostic clock/high-water decreased')
++            rows.append(row);last_time=clock;last_high_water=peak
++        if fragment and len(fragment)>=contract['max_line_bytes_including_newline']:raise ValueError('trailing fragment exceeds line bound')
++        output['parse_status']='PARTIAL_TRAILING_FRAGMENT' if fragment else 'COMPLETE_LINES'
++        output['final_marker_observed']=bool(rows and rows[-1]['phase_fixed_enum']=='run_build' and rows[-1]['point_fixed_enum']=='normal_pre_inventory')
++        if success and (fragment or not rows or not output['final_marker_observed'] or any(r['point_fixed_enum']=='normal_pre_inventory' for r in rows[:-1])):
++            raise ValueError('successful diagnostic requires unique final pre-inventory marker and no fragment')
++    except (ValueError, TypeError, KeyError, OverflowError) as error:
++        output['parse_status']='INVALID_DIAGNOSTIC';output['validation_error']=repr(error)
++        if success:raise
++    after=memory_diagnostic_pin(path)
++    if after!=before:raise ValueError('saved diagnostic changed during bounded postclose read')
++    return output
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
++
+ def main():
+     if SOURCE_BINDING_STATUS!='READY_V25_ACTUAL_COMPLETE_PREP_AND_SOURCE_BOUND':
+         raise ValueError('UNREADY: actual new Q, complete PREP saved peer and bound Source required before any I/O')
+@@ -51,7 +150,7 @@
+         raise ValueError('original single-thread Python required')
+     if os.path.lexists(HOST):raise ValueError('fresh one-use whole build host required; no retry')
+     if not all(p.is_dir() for p in (SOURCE,OUT,TERMINAL)):raise ValueError('actual prepared SOURCE/OUT/TERMINAL required')
+-    if any(os.path.lexists(OUT/p) for p in ('execution_claim.json','seal.json','driver_result.json','closeout_failure.json','raw_metadata_receipt.json','audit/binary_identity.json','audit/result.json',INNER_FAMILY+'/stages.json','runtime/Dragon')):raise ValueError('no prior build execution or build retry allowed')
++    if any(os.path.lexists(OUT/p) for p in ('execution_claim.json','seal.json','driver_result.json','closeout_failure.json','raw_metadata_receipt.json','build_memory_diagnostic.jsonl','audit/binary_identity.json','audit/result.json',INNER_FAMILY+'/stages.json','runtime/Dragon')):raise ValueError('no prior build execution or build retry allowed')
+     inputs=[support_pin,support.pin(TARGET,TARGET_SHA),support.pin(support.TARGET,support.TARGET_SHA),support.pin(support.OUT/'seal.json',SEAL_SHA),support.pin(support.TERMINAL/'terminal_return.json',TERM_SHA)]+[support.pin(Path('/Users/wen/spot/validation/axial_material/combined_runtime_complete_input_graph_private_inactive_audit_snapshot_consume_20261010.py'),'3b181f6366d5084fd6ccc87c1a6e7b757b706b7ba38cdf9156e1381cdb010092'),support.pin(Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_complete_graph_private_inactive_audit_helper_admission_v25.json'),FUTURE_V25_ACTUAL_Q_SHA)]+[support.pin(p) for p in sorted(SOURCE_ARCHIVE.rglob('*')) if p.is_file()]
+     inputs += [support.pin(OUT/'declaration.json',DECLARATION_SHA),support.pin(TERMINAL/'declaration_terminal_return.json',PREP_SHA),support.pin(OUT/'input_graph.json',FUTURE_V25_GRAPH_SHA),support.pin(OUT/'input_creation_python_open_trace.json',FUTURE_V25_TRACE_SHA)]
+     inputs += [support.pin(p) for root in (SOURCE,TERMINAL) for p in sorted(root.rglob('*')) if p.is_file()]
+@@ -79,7 +178,7 @@
+         runner.execute(HOST/'run','build',command,WHOLE_CAP)
+         log=HOST/'run/build.log';watch_path=HOST/'run/build.watchdog.json'
+         admission=json.loads(log.read_text());watch=json.loads(watch_path.read_text())
+-        declaration=OUT/'declaration.json';d=json.loads(declaration.read_text())
++        declaration=OUT/'declaration.json';d=json.loads(declaration.read_text());memory_diagnostic_declaration(d)
+         if support.pin(declaration)['sha256']!=DECLARATION_SHA:raise ValueError('immutable declaration changed')
+         if d['schema']!='AXMAT_SENDER_WINDOW_ROOT_INDEX_GRAPH_TRACE_TABLE_COMBINED_RUNTIME_V25_DECLARATION_V1' or d['stages']!=EXPECTED_LABELS or (d['total_wall_seconds'],d['stage_wall_seconds'],d['rss_cap_mib'],d['archive_reserve_bytes'])!=(1800,600,512,2*2**30):raise ValueError('original complete five stages and caps required')
+         if set(admission)!=set(('result','actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')):raise ValueError('full whole-build return and four actual tails required')
+@@ -118,7 +217,9 @@
+         if not elapsed<WHOLE_CAP or not archived<ARCHIVE_CAP:raise ValueError('unchanged admission host caps exceeded')
+         for entry in inputs+[hpin,rpin]:
+             if support.pin(entry['path'],entry['sha256'])!=entry:raise ValueError('normal complete pinned inputs changed')
+-        value=dict(schema='AXMAT_V25_GENUINE_COMPLETE_COMBINED_BUILD_HOST_V1',status='ACTUAL_COMPLETE_COMBINED_BUILD_EXTERNAL_ROOT_REQUIRED',input_sources=inputs,original_helper=hpin,resource_factory=rpin,actual_canonical_command=command,actual_build_stdout=support.pin(log),actual_build_seal=support.pin(OUT/'seal.json'),actual_driver_result=support.pin(OUT/'driver_result.json'),actual_inner_stages=inner,actual_inner_watchdogs=inner_watches,actual_tail_fields={k:admission[k] for k in ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')},outer_command_wall_cap_seconds=WHOLE_CAP,inner_original_stage_wall_cap_seconds=STAGE_CAP,whole_combined_INPUT_admitted=False,actual_declaration=support.pin(declaration),actual_source_admission=support.pin(SOURCE/'source_admission.json'),actual_watchdog=support.pin(watch_path),watchdog=watch,stage_records=runner.records,resources_before=before,resources_after=after,whole_seconds=elapsed,archive_before_result_bytes=archived,whole_wall_cap_seconds=WHOLE_CAP,stage_wall_cap_seconds=STAGE_CAP,rss_cap_mib=RSS_CAP,archive_cap_bytes=ARCHIVE_CAP,threads=1,children_at_once=1,retries=0,profile_used=False,supervisor_class_or_MRO_modified=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False)
++        diagnostic=memory_diagnostic_rows(OUT/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path'],json.loads((OUT/'execution_claim.json').read_text())['parent_pid'],success=True)
++        if diagnostic['journal_if_present']['sha256']!=seal['files'][BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path']]:raise ValueError('saved diagnostic matches whole OUT seal')
++        value=dict(actual_build_memory_diagnostic=diagnostic,schema='AXMAT_V25_GENUINE_COMPLETE_COMBINED_BUILD_HOST_V1',status='ACTUAL_COMPLETE_COMBINED_BUILD_EXTERNAL_ROOT_REQUIRED',input_sources=inputs,original_helper=hpin,resource_factory=rpin,actual_canonical_command=command,actual_build_stdout=support.pin(log),actual_build_seal=support.pin(OUT/'seal.json'),actual_driver_result=support.pin(OUT/'driver_result.json'),actual_inner_stages=inner,actual_inner_watchdogs=inner_watches,actual_tail_fields={k:admission[k] for k in ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')},outer_command_wall_cap_seconds=WHOLE_CAP,inner_original_stage_wall_cap_seconds=STAGE_CAP,whole_combined_INPUT_admitted=False,actual_declaration=support.pin(declaration),actual_source_admission=support.pin(SOURCE/'source_admission.json'),actual_watchdog=support.pin(watch_path),watchdog=watch,stage_records=runner.records,resources_before=before,resources_after=after,whole_seconds=elapsed,archive_before_result_bytes=archived,whole_wall_cap_seconds=WHOLE_CAP,stage_wall_cap_seconds=STAGE_CAP,rss_cap_mib=RSS_CAP,archive_cap_bytes=ARCHIVE_CAP,threads=1,children_at_once=1,retries=0,profile_used=False,supervisor_class_or_MRO_modified=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+         support.write_new(HOST/'result.json',value)
+         if support.archive_bytes((HOST,SOURCE,OUT,TERMINAL,SOURCE_ARCHIVE))>=ARCHIVE_CAP or time.monotonic()-started>=WHOLE_CAP:raise ValueError('final admission host caps exceeded')
+         print(json.dumps(dict(status=value['status'],actual_host_result=support.pin(HOST/'result.json'),actual_build_stdout=support.pin(log),actual_external_Root_terminal_required=True),allow_nan=False),flush=True)
+
+
+ROLE build_writer
+--- ORIGINAL_PARENT_SOURCE/build_writer.full.py
++++ host_and_postclose_templates/build_writer.V25.UNREADY.full.py
+@@ -55,6 +55,102 @@
+     'actual_build_external_host_stderr.txt','actual_build_external_Root_tool_terminal.json',
+     'terminal_return.json','failed_build_terminal_return.json')
+ 
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def memory_diagnostic_pin(path):
++    path=Path(path);s=path.lstat()
++    ident=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    if path.is_symlink() or not stat.S_ISREG(s.st_mode) or s.st_nlink!=1:raise ValueError('ordinary single-link diagnostic required')
++    bound=BUILD_MEMORY_DIAGNOSTIC_CONTRACT['max_bytes']
++    if type(bound) is not int or bound!=1048576 or type(s.st_size) is not int or not 0<=s.st_size<=bound:raise ValueError('diagnostic pre-open size exceeds reserved byte bound')
++    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++    try:
++        opened=os.fstat(fd);opened_ident=[opened.st_dev,opened.st_ino,opened.st_mode,opened.st_nlink,opened.st_size,opened.st_mtime_ns,opened.st_ctime_ns]
++        if not stat.S_ISREG(opened.st_mode) or opened.st_nlink!=1 or opened_ident!=ident:raise ValueError('diagnostic no-follow descriptor differs from pre-open identity')
++        with os.fdopen(fd,'rb',buffering=0,closefd=False) as stream:raw=stream.read(bound+1)
++        if len(raw)>bound or len(raw)!=ident[4]:raise ValueError('diagnostic bounded full EOF bytes differ from exact stat size')
++        finished=os.fstat(fd);finished_ident=[finished.st_dev,finished.st_ino,finished.st_mode,finished.st_nlink,finished.st_size,finished.st_mtime_ns,finished.st_ctime_ns]
++        if finished_ident!=ident:raise ValueError('diagnostic descriptor changed during bounded full EOF pin')
++    finally:
++        os.close(fd)
++    s=path.lstat();after=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
++    if after!=ident:raise ValueError('full EOF diagnostic changed during pin')
++    return dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),size_bytes=ident[4],identity=ident)
++
++def memory_diagnostic_rows(path,expected_pid=None,success=False):
++    contract=BUILD_MEMORY_DIAGNOSTIC_CONTRACT;path=Path(path)
++    if not os.path.lexists(path):
++        if success:raise ValueError('successful build requires complete saved diagnostic')
++        return dict(parse_status='ABSENT',journal_if_present=None,saved_complete_rows=[],trailing_fragment=None,final_marker_observed=False,diagnostic_credit=False)
++    before=memory_diagnostic_pin(path)
++    output=dict(parse_status='INVALID_DIAGNOSTIC',journal_if_present=before,saved_complete_rows=[],trailing_fragment=None,final_marker_observed=False,diagnostic_credit=False,fsync_or_close_proved_by_rows_alone=False,ru_maxrss_is_original_guard_peak=False)
++    try:
++        if type(before['size_bytes']) is not int or not 0<=before['size_bytes']<=contract['max_bytes']:raise ValueError('diagnostic exceeds reserved byte bound')
++        current=path.lstat();current_ident=[current.st_dev,current.st_ino,current.st_mode,current.st_nlink,current.st_size,current.st_mtime_ns,current.st_ctime_ns]
++        if path.is_symlink() or not stat.S_ISREG(current.st_mode) or current.st_nlink!=1 or current_ident!=before['identity']:raise ValueError('diagnostic pre-open parser identity changed')
++        fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++        try:
++            opened=os.fstat(fd);opened_ident=[opened.st_dev,opened.st_ino,opened.st_mode,opened.st_nlink,opened.st_size,opened.st_mtime_ns,opened.st_ctime_ns]
++            if not stat.S_ISREG(opened.st_mode) or opened.st_nlink!=1 or opened_ident!=before['identity']:raise ValueError('diagnostic parser no-follow descriptor identity changed')
++            with os.fdopen(fd,'rb',buffering=0,closefd=False) as stream:raw=stream.read(contract['max_bytes']+1)
++            if len(raw)>contract['max_bytes'] or len(raw)!=before['size_bytes']:raise ValueError('diagnostic bounded read differs from full pin')
++            finished=os.fstat(fd);finished_ident=[finished.st_dev,finished.st_ino,finished.st_mode,finished.st_nlink,finished.st_size,finished.st_mtime_ns,finished.st_ctime_ns]
++            if finished_ident!=before['identity']:raise ValueError('diagnostic parser descriptor changed during read')
++        finally:
++            os.close(fd)
++        current=path.lstat();current_ident=[current.st_dev,current.st_ino,current.st_mode,current.st_nlink,current.st_size,current.st_mtime_ns,current.st_ctime_ns]
++        if current_ident!=before['identity'] or hashlib.sha256(raw).hexdigest()!=before['sha256']:raise ValueError('diagnostic parser full SHA or exact identity changed')
++        pieces=raw.split(b'\n');fragment=pieces.pop()
++        if fragment:
++            output['trailing_fragment']=dict(size_bytes=len(fragment),sha256=hashlib.sha256(fragment).hexdigest())
++        if len(pieces)>contract['max_rows']:raise ValueError('diagnostic row count exceeds bound')
++        rows=output['saved_complete_rows'];last_time=None;last_high_water=None;parent=expected_pid
++        keys={'schema','sequence_exact_int','pid_exact_int','phase_fixed_enum','point_fixed_enum','monotonic_seconds_finite','self_ru_maxrss_native_bytes_exact_int','ru_maxrss_semantics'}
++        def pairs(items):
++            out={}
++            for key,value in items:
++                if key in out:raise ValueError('duplicate diagnostic JSON key')
++                out[key]=value
++            return out
++        def bad_constant(value):raise ValueError('nonfinite diagnostic JSON constant '+value)
++        for index,line in enumerate(pieces):
++            if len(line)+1>contract['max_line_bytes_including_newline']:raise ValueError('diagnostic line exceeds bound')
++            row=json.loads(line.decode('ascii'),object_pairs_hook=pairs,parse_constant=bad_constant)
++            if type(row) is not dict or set(row)!=keys:raise ValueError('exact eight diagnostic fields required')
++            if row['schema']!=contract['row_schema'] or row['ru_maxrss_semantics']!=contract['ru_maxrss_semantics']:raise ValueError('diagnostic schema/native-byte semantics changed')
++            if type(row['sequence_exact_int']) is not int or row['sequence_exact_int']!=index:raise ValueError('strict consecutive diagnostic sequence')
++            pid=row['pid_exact_int'];peak=row['self_ru_maxrss_native_bytes_exact_int'];clock=row['monotonic_seconds_finite']
++            if type(pid) is not int or pid<=0 or type(peak) is not int or peak<0 or type(clock) not in (int,float) or not math.isfinite(clock):raise ValueError('strict PID/high-water integers and finite clock')
++            if parent is None:parent=pid
++            if type(parent) is not int or parent<=0 or pid!=parent:raise ValueError('single actual canonical parent PID required')
++            if row['phase_fixed_enum'] not in contract['phases'] or row['point_fixed_enum'] not in contract['points']:raise ValueError('fixed phase/point required')
++            if last_time is not None and (clock<last_time or peak<last_high_water):raise ValueError('diagnostic clock/high-water decreased')
++            rows.append(row);last_time=clock;last_high_water=peak
++        if fragment and len(fragment)>=contract['max_line_bytes_including_newline']:raise ValueError('trailing fragment exceeds line bound')
++        output['parse_status']='PARTIAL_TRAILING_FRAGMENT' if fragment else 'COMPLETE_LINES'
++        output['final_marker_observed']=bool(rows and rows[-1]['phase_fixed_enum']=='run_build' and rows[-1]['point_fixed_enum']=='normal_pre_inventory')
++        if success and (fragment or not rows or not output['final_marker_observed'] or any(r['point_fixed_enum']=='normal_pre_inventory' for r in rows[:-1])):
++            raise ValueError('successful diagnostic requires unique final pre-inventory marker and no fragment')
++    except (ValueError, TypeError, KeyError, OverflowError) as error:
++        output['parse_status']='INVALID_DIAGNOSTIC';output['validation_error']=repr(error)
++        if success:raise
++    after=memory_diagnostic_pin(path)
++    if after!=before:raise ValueError('saved diagnostic changed during bounded postclose read')
++    return output
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
++
+ def identity(p):
+     s=Path(p).lstat()
+     return [s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+@@ -244,6 +340,7 @@
+             d['artifact_budget_bytes'],d['min_free_bytes'],d['threads'],d['numeric_children_at_once'],d['retries'])
+         !=(WHOLE,STAGE,RSS,ARCHIVE,HISTORY,FREE,1,1,0)):
+         raise ValueError('complete original declaration scope/caps required')
++    memory_diagnostic_declaration(d)
+     command=[d['python_command'],str(FACTORY),'run-build','--sha256',DECL_SHA,'--prep-sha256',PREP_SHA]
+     if h['actual_canonical_command']!=command or h['watchdog']!=watch or h['actual_watchdog']!=pin(H/'run/build.watchdog.json'):
+         raise ValueError('actual canonical outer command/watch mismatch')
+@@ -291,6 +388,8 @@
+         or actual['directories']!=seal['directories'] or set(actual['files'])!=set(seal['files'])|{'seal.json'}
+         or any(actual['files'][k]!=v for k,v in seal['files'].items())):
+         raise ValueError('whole OUT files/dirs/raw/watch/runtime exact seal required')
++    diagnostic=memory_diagnostic_rows(O/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path'],read(O/'execution_claim.json')['parent_pid'],success=True)
++    if h['actual_build_memory_diagnostic']!=diagnostic or diagnostic['journal_if_present']['sha256']!=seal['files'][BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path']]:raise ValueError('actual host/full OUT sealed diagnostic coupling')
+     if result['corrected_runtime']!=short(O/'runtime/Dragon'): raise ValueError('full runtime identity differs')
+     if any(h[field]!=pin(path) for field,path in (
+         ('actual_build_stdout',H/'run/build.log'),('actual_build_seal',O/'seal.json'),
+@@ -462,7 +561,8 @@
+         exact_formal_terminal=pin(receipt),all_saved_files_full_EOF_SHA7ID=True,
+         no_business_or_numeric_API_called_by_writer=True,no_whole_INPUT_native_science_credit=True)
+     write_new(E/manifest_name,manifest)
+-    summary=dict(schema='ROOT_V25_ACTUAL_COMPLETE_COMBINED_BUILD_POSTCLOSE_SUMMARY_V1',
++    diagnostic=memory_diagnostic_rows(O/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path'],success=False)
++    summary=dict(actual_build_memory_diagnostic=diagnostic,schema='ROOT_V25_ACTUAL_COMPLETE_COMBINED_BUILD_POSTCLOSE_SUMMARY_V1',
+         status='ACTUAL_COMPLETE_FIVE_STAGE_LINK_IDENTITY_BUILD_EXIT0_CLOSED_ONLY' if checks is not None else proof['status'],
+         actual_Root_terminal=metadata['root-terminal'],actual_terminal_exit_code=terminal['exit_code'],
+         actual_tool_session_closed=True,formal_build_terminal=pin(receipt),namespace_manifest=pin(E/manifest_name),
+
+
+ROLE Root_complete_SOURCE_install_writer.py
+
+
+ROLE Root_complete_PREP_prelaunch.py
+
+
+ROLE Root_complete_PREP_E_snapshot.py
+
+
+ROLE Root_prepare_poststage_REQUEST.Source_META_only.py
+
+
+ROLE Root_source_installer.py
+--- ORIGINAL_PARENT_SOURCE/Root_source_installer.py.full.py
++++ utilities/Root_source_installer.py
+@@ -36,7 +36,22 @@
+ C_SHA=None  # UNREADY until actual finite request
+ FAMILY='SENDER_WINDOW_ROOT_INDEX_GRAPH_TRACE_TABLE_COMBINED_RUNTIME_LINK_V25'
+ THREAD_KEYS=('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+-OUTPUTS=('execution_claim.json','seal.json','driver_result.json','closeout_failure.json','raw_metadata_receipt.json','audit/binary_identity.json','audit/result.json',FAMILY+'/stages.json','runtime/Dragon')
++OUTPUTS=('execution_claim.json','seal.json','driver_result.json','closeout_failure.json','raw_metadata_receipt.json','build_memory_diagnostic.jsonl','audit/binary_identity.json','audit/result.json',FAMILY+'/stages.json','runtime/Dragon')
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
++
+ def identity(p):
+     s=p.lstat()
+     return [s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+
+
+ROLE Root_prelaunch_checker.py
+--- ORIGINAL_PARENT_SOURCE/Root_prelaunch_checker.py.full.py
++++ utilities/Root_prelaunch_checker.py
+@@ -25,7 +25,22 @@
+ C_SHA=None  # UNREADY until installed actual finite request
+ FAMILY='SENDER_WINDOW_ROOT_INDEX_GRAPH_TRACE_TABLE_COMBINED_RUNTIME_LINK_V25'
+ THREAD_KEYS=('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+-OUTPUTS=('execution_claim.json','seal.json','driver_result.json','closeout_failure.json','raw_metadata_receipt.json','audit/binary_identity.json','audit/result.json',FAMILY+'/stages.json','runtime/Dragon')
++OUTPUTS=('execution_claim.json','seal.json','driver_result.json','closeout_failure.json','raw_metadata_receipt.json','build_memory_diagnostic.jsonl','audit/binary_identity.json','audit/result.json',FAMILY+'/stages.json','runtime/Dragon')
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
++
+ def ident(p):
+     v=p.lstat();return [v.st_dev,v.st_ino,v.st_mode,v.st_nlink,v.st_size,v.st_mtime_ns,v.st_ctime_ns]
+ def pin(p,wanted=None):
+
+
+ROLE Root_poststage_Source_META_contract.py
+--- ORIGINAL_PARENT_SOURCE/Root_poststage_Source_META_contract.py.full.py
++++ utilities/Root_poststage_Source_META_contract.py
+@@ -21,16 +21,16 @@
+ S=A/'axial-material-qualified-AB-sender-window-root-index-graph-trace-table-combined-source-v25-memory-observation-20261010'
+ O=A/'axial-material-sender-window-root-index-graph-trace-table-combined-runtime-v25-memory-observation-20261010'
+ T=A/'axial-material-qualified-AB-sender-window-root-index-graph-trace-table-combined-terminal-v25-memory-observation-20261010'
+-AUTHOR=Path('/private/tmp/axmat_V25_poststage_temporaries_complete_UNREADY_Source_v2ept7ev')
+-AUTHOR_SHA='9085afa282c04c927118323d101c9d23ffce51ebcdd2f2ddda7e4b8d0500d6bd'
+-AUTHOR_PEER=Path('/private/tmp/axmat_V25_poststage_temporaries_complete_Source_independent_V2_20261010')
+-AUTHOR_PEER_SHA='6e1627dae76811f4f2c845a10520c5fb5decee9adcbd0b5f03359c800b4b4367'
+-AUTHOR_PEER_SEAL=Path(str(AUTHOR_PEER)+'_seal_receipt/ACTUAL_SOURCE_SEAL_TOOL_RETURN.json')
+-AUTHOR_PEER_SEAL_SHA='64cfd24fbcb261e24e889d4254719bf6c21c5a4dc1580d658db2eb3dbd4783e3'
+-PREP_BOUND=Path('/private/tmp/spot_V25_poststage_temporaries_ACTUAL_READY_PREP_Source_ROOT_20261010')
+-PREP_BOUND_SHA='531b0b25f527f3f96767d6629ede54df3bac98ac205e762db859bb5ffe7507ef'
+-PREP_BINDING=B/'Root_actual_V25_poststage_PREP_Source_binding_tool_terminal_return.json'
+-PREP_BINDING_SHA='c3cb0eb7ec35e33f83f64bd0f2f2adcddb35eb4112fab4a686b7353345cb39c2'
++AUTHOR=None  # UNREADY: actual new Source proof required
++AUTHOR_SHA=None  # UNREADY: actual new Source proof required
++AUTHOR_PEER=None  # UNREADY: actual new Source proof required
++AUTHOR_PEER_SHA=None  # UNREADY: actual new Source proof required
++AUTHOR_PEER_SEAL=None  # UNREADY: actual new Source proof required
++AUTHOR_PEER_SEAL_SHA=None  # UNREADY: actual new Source proof required
++PREP_BOUND=None  # UNREADY: actual new Source proof required
++PREP_BOUND_SHA=None  # UNREADY: actual new Source proof required
++PREP_BINDING=None  # UNREADY: actual new Source proof required
++PREP_BINDING_SHA=None  # UNREADY: actual new Source proof required
+ Q=B/'Root_actual_complete_graph_private_inactive_audit_helper_admission_v25.json'
+ QSHA='c6efd7accfdc897642853a286bd0c0fa7caac91879a02aaf34dae2d3e2162d9b'
+ HELPER=R/'validation/axial_material/combined_runtime_complete_input_graph_private_inactive_audit_snapshot_consume_20261010.py'
+@@ -41,6 +41,40 @@
+ CAPS=dict(whole_seconds=1800,stage_seconds=600,rss_mib=512,joint_HSOTDE_bytes=2*2**30,history_bytes=96*2**30,free_floor_bytes=8*2**30,threads=1,children=1,retries=0)
+ REQUEST_SCHEMA='ROOT_V25_POSTSTAGE_FINITE_ACTUAL_SOURCE_META_INSTALL_REQUEST_V1'
+ NEW_BUSINESS_PINS=dict(declaration=None,PREP_terminal=None,graph=None,trace=None,PREP_summary=None,BUILD_seal=None,BUILD_terminal=None,runtime=None,host_final_input_PASS=None)
++
++BUILD_MEMORY_DIAGNOSTIC_CONTRACT = {'schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_OUTPUT_CONTRACT_V1', 'relative_path': 'build_memory_diagnostic.jsonl', 'row_schema': 'AXMAT_V25_BUILD_MEMORY_DIAGNOSTIC_ROW_V1', 'phases': ['run_build', 'declaration_admission', 'before_build_link', 'before_metadata_objects', 'before_metadata_executable', 'before_metadata_dependencies', 'run_finally'], 'points': ['declaration_enter', 'declaration_return', 'commands_constructed', 'execute_enter', 'execute_return', 'environment_enter', 'environment_return', 'complete_input_enter', 'specs1_enter', 'specs1_return', 'owned1_enter', 'owned1_return', 'current_before_enter', 'current_before_return', 'verify_graph_enter', 'verify_graph_return', 'snapshot_enter', 'snapshot_return', 'trace_digest_enter', 'trace_digest_return', 'specs2_enter', 'specs2_return', 'current_after_enter', 'current_after_return', 'owned2_enter', 'owned2_return', 'graph2_enter', 'graph2_return', 'bindings_enter', 'bindings_return', 'lengths_enter', 'lengths_return', 'complete_input_return', 'archive_resources_return', 'normal_pre_inventory'], 'max_rows': 256, 'max_line_bytes_including_newline': 4096, 'max_bytes': 1048576, 'open_flags': 'O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW', 'mode_octal': '0600', 'one_parent_descriptor': True, 'write_only': True, 'read_during_active_input_audit': False, 'last_normal_marker': 'normal_pre_inventory', 'close_before_original_OUT_inventory': True, 'no_append_after_close': True, 'ru_maxrss_semantics': 'DARWIN_RUSAGE_SELF_NATIVE_BYTES_PROCESS_HISTORICAL_HIGH_WATER_NOT_CURRENT_RSS_OR_GUARD_PEAK', 'diagnostic_runtime_dependency_provenance': 'FUTURE_ROOT_SOURCE_BIND_AND_PRELAUNCH_ENVIRONMENT_WITNESS_REQUIRED', 'actual_runtime_pin': None, 'current_RSS_qualified': False, 'whole_INPUT_build_native_or_science_qualified': False}
++
++def memory_resource_environment_binding(canonical_path):
++    q=literal_values(canonical_path)['FUTURE_ACTUAL_DIAGNOSTIC_RESOURCE_ENVIRONMENT_WITNESS_PIN']
++    q=exact(q);body,actual=read(q['path'],q['sha256']);assert q==actual
++    assert body['schema']=='ROOT_ACTUAL_DARWIN_RESOURCE_SELF_RUSAGE_DIAGNOSTIC_ENVIRONMENT_WITNESS_V1' and body['source_only'] is True and body['platform']=='darwin' and body['diagnostic_dependency_verified'] is True
++    for field in ('actual_python_fullpin','actual_environment_tool_terminal_fullpin'):exact(body[field])
++    resource_pin=body['actual_resource_module_fullpin']
++    assert type(resource_pin) is dict and set(resource_pin)=={'path','sha256','size_bytes','identity'} and resource_pin['path']=='/Users/wen/miniforge3/envs/openmc-dev/lib/python3.12/lib-dynload/resource.cpython-312-darwin.so'
++    assert type(resource_pin['identity']) is list and len(resource_pin['identity'])==7 and all(type(n) is int for n in resource_pin['identity']) and resource_pin['identity'][3]>=1 and type(resource_pin['size_bytes']) is int and resource_pin['size_bytes']==resource_pin['identity'][4]==53552 and resource_pin['sha256']=='cbd0358d5dfb6a5271a7e645118a36d0537b49e84452a2bcd7d26a73eb131164'
++    resource_path=Path(resource_pin['path']);assert resource_path.resolve()==resource_path and stat.S_ISREG(resource_pin['identity'][2]) and identity(resource_path)==resource_pin['identity']
++    with resource_path.open('rb') as stream:resource_sha=hashlib.file_digest(stream,'sha256').hexdigest()
++    assert resource_sha==resource_pin['sha256'] and identity(resource_path)==resource_pin['identity']
++    assert body['actual_python_fullpin']['path']=='/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12'
++    observed,tp,tr=terminal(body['actual_environment_tool_terminal_fullpin']['path'],body['actual_environment_tool_terminal_fullpin']['sha256']);assert tp==body['actual_environment_tool_terminal_fullpin']
++    actual_observation=json.loads(tr['output'])
++    for field in ('actual_python_fullpin','actual_resource_module_fullpin','self_ru_maxrss_native_bytes_observed','ru_maxrss_semantics','platform'):assert json.dumps(actual_observation[field],sort_keys=True,allow_nan=False)==json.dumps(body[field],sort_keys=True,allow_nan=False)
++    assert type(body['self_ru_maxrss_native_bytes_observed']) is int and body['self_ru_maxrss_native_bytes_observed']>=0 and body['ru_maxrss_semantics']==BUILD_MEMORY_DIAGNOSTIC_CONTRACT['ru_maxrss_semantics']
++    assert all(body[k] is False for k in ('whole_BUILD_qualified','whole_INPUT_qualified','native_or_science_qualified'))
++    return q
++
++def memory_diagnostic_declaration(d):
++    expected=BUILD_MEMORY_DIAGNOSTIC_CONTRACT
++    actual=d.get('build_memory_diagnostic_output_contract')
++    if json.dumps(actual,sort_keys=True,allow_nan=False)!=json.dumps(expected,sort_keys=True,allow_nan=False):
++        raise ValueError('exact declared write-only bounded output diagnostic contract required')
++    forecast=d['complete_archive_forecast']
++    fields=('copied_SOURCE_metadata_bound','trim_whole_component_metadata_and_trace_bound','full_graph_and_creation_trace_bound','combined_runtime_and_link_transient_bound','complete_raw_tools_and_closeout_bound','diagnostic_max_bytes','total_bound')
++    if any(type(forecast[k]) is not int or forecast[k]<0 for k in fields):
++        raise ValueError('exact integer complete forecast and diagnostic reservation required')
++    if forecast['diagnostic_max_bytes']!=expected['max_bytes'] or forecast['total_bound']!=sum(forecast[k] for k in fields[:-1]) or forecast['total_bound']>=2*2**30:
++        raise ValueError('all original complete forecast components plus diagnostic remain below original 2GiB')
++    return actual
+ 
+ def identity(p):
+     v=Path(p).lstat();return [v.st_dev,v.st_ino,v.st_mode,v.st_nlink,v.st_size,v.st_mtime_ns,v.st_ctime_ns]
+@@ -104,10 +138,11 @@
+ def contract():
+     return read(Path(__file__).parent/'FIXED_SOURCE_OWNER_AND_FUTURE_FACT_CONTRACT.UNREADY.json')[0]
+ def author_facts():
++    if any(v is None for v in (AUTHOR,AUTHOR_SHA,AUTHOR_PEER,AUTHOR_PEER_SHA,AUTHOR_PEER_SEAL,AUTHOR_PEER_SEAL_SHA)):raise ValueError('UNREADY new complete Source author/peer binding')
+     am,ap,av=package(AUTHOR/'MANIFEST.json',AUTHOR_SHA)
+-    pp,r=peer(AUTHOR_PEER/'MANIFEST.json',AUTHOR_PEER_SHA,AUTHOR_PEER_SEAL,AUTHOR_PEER_SEAL_SHA,'INDEPENDENT_V25_POSTSTAGE_TEMPORARIES_COMPLETE_SOURCE_REVIEW_V1','PASS_COMPLETE_POSTSTAGE_TEMPORARIES_SOURCE_ONLY_UNREADY_NO_EXECUTION')
+-    assert r['qualified_complete_Source_manifest_pin']==ap and r['check_count']==658
+-    expected=contract()['seven_author_role_Source_pins']
++    pp,r=peer(AUTHOR_PEER/'MANIFEST.json',AUTHOR_PEER_SHA,AUTHOR_PEER_SEAL,AUTHOR_PEER_SEAL_SHA,'INDEPENDENT_V25_COMPLETE_BUILD_MEMORY_OBSERVATION_SOURCE_REVIEW_V1','PASS_COMPLETE_BUILD_MEMORY_OBSERVATION_SOURCE_ONLY_UNREADY_NO_EXECUTION')
++    assert r['qualified_complete_Source_manifest_pin']==ap and type(r['check_count']) is int and r['check_count']==len(r['checks']) and r['check_count']>0
++    expected={name:pin(AUTHOR/rel) for name,rel in {'canonical': 'canonical.V25.UNREADY.full.py', 'prepare_host': 'host_and_postclose_templates/prepare_host.V25.UNREADY.full.py', 'prepare_writer': 'host_and_postclose_templates/prepare_writer.V25.UNREADY.full.py', 'build_host': 'host_and_postclose_templates/build_host.V25.UNREADY.full.py', 'build_writer': 'host_and_postclose_templates/build_writer.V25.UNREADY.full.py', 'prepare_binder': 'bind_actual_V25_Q_to_complete_PREP_SOURCE.UNREADY.py', 'build_binder': 'bind_actual_V25_closed_PREP_to_complete_BUILD_SOURCE.UNREADY.py'}.items()}
+     assert r['qualified_role_Source_pins']==expected
+     for q in expected.values():exact(q)
+     return dict(manifest=ap,view=av,peer=pp)
+@@ -121,31 +156,35 @@
+     assert len(v['files'])==c['original_file_count'] and len(v['directories'])==c['original_directory_count_including_root']
+     return dict(freeze=fp,view=v)
+ def utility_facts(root,a):
+-    um,up,uv=package(Path(root)/'MANIFEST.json',a.utility_manifest_sha256)
+-    pp,r=peer(a.utility_peer_manifest,a.utility_peer_manifest_sha256,a.utility_peer_seal,a.utility_peer_seal_sha256,'INDEPENDENT_V25_POSTSTAGE_COMPLETE_UTILITIES_SOURCE_REVIEW_V1','PASS_COMPLETE_POSTSTAGE_UTILITIES_SOURCE_ONLY_UNREADY_NO_EXECUTION')
+-    assert r['qualified_complete_utility_manifest_pin']==up
+-    expected={name:uv['files'][name] for name in UTILITY_ROLES}
+-    assert r['qualified_role_Source_pins']==expected and set(expected)==set(UTILITY_ROLES)
++    root=Path(root);package_root=root.parent if root.name=='utilities' else root
++    um,up,uv=package(package_root/'MANIFEST.json',a.utility_manifest_sha256)
++    pp,r=peer(a.utility_peer_manifest,a.utility_peer_manifest_sha256,a.utility_peer_seal,a.utility_peer_seal_sha256,"INDEPENDENT_V25_COMPLETE_BUILD_MEMORY_OBSERVATION_SOURCE_REVIEW_V1","PASS_COMPLETE_BUILD_MEMORY_OBSERVATION_SOURCE_ONLY_UNREADY_NO_EXECUTION")
++    assert r['qualified_complete_Source_manifest_pin']==up
++    expected={name:uv['files']['utilities/'+name] for name in UTILITY_ROLES}
++    assert r['qualified_utility_Source_pins']==expected and set(expected)==set(UTILITY_ROLES)
+     return dict(manifest=up,view=uv,peer=pp,roles=expected)
+ def bound_facts(phase,a):
+     bm,bp,bv=package(a.bound_manifest,a.bound_manifest_sha256);root=Path(a.bound_manifest).parent
+     bd,bip,tr=terminal(a.binding_terminal,a.binding_terminal_sha256);actual=json.loads(tr['output'])
+     assert bd['source_only'] is True and actual['manifest']==bp and actual.get('business_or_science_executed',False) is False
+     if phase=='PREP':
+-        assert root==PREP_BOUND and bp['sha256']==PREP_BOUND_SHA and bip['path']==str(PREP_BINDING) and bip['sha256']==PREP_BINDING_SHA and tr['chunk_id']=='91304c'
++        if PREP_BOUND is None or PREP_BOUND_SHA is None or PREP_BINDING is None or PREP_BINDING_SHA is None:raise ValueError('UNREADY new actual bound PREP Source pins')
++        assert root==PREP_BOUND and bp['sha256']==PREP_BOUND_SHA and bip['path']==str(PREP_BINDING) and bip['sha256']==PREP_BINDING_SHA
+         roles={'canonical':pin(root/C.name),'prepare_host':pin(root/'combined_prepare_host.py'),'prepare_writer':pin(root/'write_actual_prepare_terminal.py')}
+-        assert (roles['canonical']['sha256'],roles['prepare_host']['sha256'],roles['prepare_writer']['sha256'])==('6693fb03a8c39d76e85719aec813ddee624cce2c6389218314b11efd76ac1649','9475d42436aa242e834d8388ee018d3217f8b0bf2326d2384258b3c50b610e0c','e5144866b187ead27dab8b3441d0dcce9dd2c53f94429d22300daec0873d53f0')
++        assert all(type(q['sha256']) is str and len(q['sha256'])==64 for q in roles.values())
+         assert actual['canonical']==roles['canonical'] and actual['host']==roles['prepare_host'] and actual['writer']==roles['prepare_writer'] and actual['actual_Q']['sha256']==QSHA
+-        pp,r=peer(a.bound_peer_manifest,a.bound_peer_manifest_sha256,a.bound_peer_seal,a.bound_peer_seal_sha256,'INDEPENDENT_ACTUAL_V25_POSTSTAGE_COMPLETE_PREP_BOUND_SOURCE_REVIEW_V1','PASS_ACTUAL_Q_BOUND_COMPLETE_PREP_SOURCE_ONLY_NOT_INSTALLED_OR_EXECUTED')
++        pp,r=peer(a.bound_peer_manifest,a.bound_peer_manifest_sha256,a.bound_peer_seal,a.bound_peer_seal_sha256,'INDEPENDENT_ACTUAL_V25_MEMORY_OBSERVATION_COMPLETE_PREP_BOUND_SOURCE_REVIEW_V1','PASS_ACTUAL_Q_BOUND_COMPLETE_PREP_MEMORY_OBSERVATION_SOURCE_ONLY_NOT_INSTALLED_OR_EXECUTED')
+         assert r['actual_complete_bound_Source_manifest_pin']==bp and r['actual_ready_role_Source_pins']==roles
+     else:
+         assert root.is_relative_to(Path('/private/tmp')) and root!=PREP_BOUND
+         roles={'build_host':pin(root/'combined_build_host.py'),'build_writer':pin(root/'write_actual_build_postclose_META.py')}
+         assert actual['host']==roles['build_host'] and actual['writer']==roles['build_writer']
+-        pp,r=peer(a.bound_peer_manifest,a.bound_peer_manifest_sha256,a.bound_peer_seal,a.bound_peer_seal_sha256,'INDEPENDENT_V25_ACTUAL_BOUND_FULL_BUILD_POSTCLOSE_META_SOURCE_REVIEW_V1','PASS_ACTUAL_BOUND_FULL_BUILD_AND_POSTCLOSE_META_SOURCE_ONLY')
++        pp,r=peer(a.bound_peer_manifest,a.bound_peer_manifest_sha256,a.bound_peer_seal,a.bound_peer_seal_sha256,'INDEPENDENT_V25_ACTUAL_BOUND_FULL_BUILD_MEMORY_OBSERVATION_POSTCLOSE_META_SOURCE_REVIEW_V1','PASS_ACTUAL_BOUND_FULL_BUILD_MEMORY_OBSERVATION_AND_POSTCLOSE_META_SOURCE_ONLY')
+         expected={'qualified_actual_bound_Source_manifest_pin':bp,'actual_bound_build_host_pin':roles['build_host'],'actual_postclose_META_writer_pin':roles['build_writer'],'actual_Root_Source_binding_tool_receipt_pin':bip}
+         for field,q in expected.items():assert r[field]==q
+-    return dict(manifest=bp,view=bv,roles=roles,binding_terminal=bip,peer=pp)
++    diagnostic_environment=memory_resource_environment_binding(roles['canonical']['path'] if phase=='PREP' else C)
++    if phase=='PREP':assert actual['actual_diagnostic_resource_environment_witness']==diagnostic_environment
++    return dict(manifest=bp,view=bv,roles=roles,binding_terminal=bip,peer=pp,diagnostic_resource_environment_witness=diagnostic_environment)
+ def host_pin(q):
+     return {k:q[k] for k in ('path','sha256','identity')}
+ def literal_values(path):
+@@ -186,18 +225,25 @@
+     pp,r=peer(a.saved_prep_peer_manifest,a.saved_prep_peer_manifest_sha256,a.saved_prep_peer_seal,a.saved_prep_peer_seal_sha256,'INDEPENDENT_V25_ACTUAL_COMPLETE_PREP_SAVED_META_REVIEW_V1','PASS_ACTUAL_COMPLETE_PREP_ONLY')
+     for field,q in [('actual_Root_PREP_summary_pin',sp),('actual_Root_PREP_terminal_pin',tp),('actual_complete_namespace_manifest_pin',np)]:assert r[field]==q
+     for field,path in [('actual_declaration',O/'declaration.json'),('formal_PREP_terminal',T/'declaration_terminal_return.json'),('actual_complete_input_graph',O/'input_graph.json'),('actual_complete_creation_trace',O/'input_creation_python_open_trace.json')]:assert exact(summary[field])['path']==str(path)
+-    assert pin(C)['sha256']=='6693fb03a8c39d76e85719aec813ddee624cce2c6389218314b11efd76ac1649'
++    declaration,_=read(O/'declaration.json');memory_diagnostic_declaration(declaration)
++    assert not os.path.lexists(O/BUILD_MEMORY_DIAGNOSTIC_CONTRACT['relative_path'])
++    assert pin(C)==exact(ns['canonical_factory'])
+     return dict(summary=sp,namespace=np,host_result=hp,terminal=tp,writer_terminal=wp,peer=pp,input_scope=scope,current_complete_PREP_E=view(PE),complete_new_PREP_Source=view(PD))
+ def write(p,d):
+     with Path(p).open('x') as f:json.dump(d,f,ensure_ascii=False,indent=2,allow_nan=False);f.write('\n')
+ def request_main():
++    global AUTHOR,AUTHOR_SHA,AUTHOR_PEER,AUTHOR_PEER_SHA,AUTHOR_PEER_SEAL,AUTHOR_PEER_SEAL_SHA,PREP_BOUND,PREP_BOUND_SHA,PREP_BINDING,PREP_BINDING_SHA
+     assert not sys.flags.optimize and not os.environ.get('PYTHONOPTIMIZE') and sys.getprofile() is None
+     ap=argparse.ArgumentParser();ap.add_argument('--phase',required=True,choices=('PREP','BUILD'));ap.add_argument('--fresh-TMP-output',required=True)
+     keys=('utility-manifest-sha256','utility-peer-manifest','utility-peer-manifest-sha256','utility-peer-seal','utility-peer-seal-sha256','bound-manifest','bound-manifest-sha256','binding-terminal','binding-terminal-sha256','bound-peer-manifest','bound-peer-manifest-sha256','bound-peer-seal','bound-peer-seal-sha256')
+     for key in keys:ap.add_argument('--'+key,required=True)
+     business=('prep-summary-sha256','prep-namespace-sha256','prep-terminal-sha256','prep-writer-terminal-sha256','saved-prep-peer-manifest','saved-prep-peer-manifest-sha256','saved-prep-peer-seal','saved-prep-peer-seal-sha256')
+     for key in business:ap.add_argument('--'+key)
+-    a=ap.parse_args();out=Path(a.fresh_TMP_output);assert out.is_absolute() and out.parent.resolve()==out.parent and out.is_relative_to(Path('/private/tmp')) and not os.path.lexists(out)
++    for key in ('author-manifest','author-manifest-sha256','author-peer-manifest','author-peer-manifest-sha256','author-peer-seal','author-peer-seal-sha256'):ap.add_argument('--'+key,required=True)
++    a=ap.parse_args()
++    AUTHOR=Path(a.author_manifest).parent;AUTHOR_SHA=a.author_manifest_sha256;AUTHOR_PEER=Path(a.author_peer_manifest).parent;AUTHOR_PEER_SHA=a.author_peer_manifest_sha256;AUTHOR_PEER_SEAL=Path(a.author_peer_seal);AUTHOR_PEER_SEAL_SHA=a.author_peer_seal_sha256
++    if a.phase=='PREP':PREP_BOUND=Path(a.bound_manifest).parent;PREP_BOUND_SHA=a.bound_manifest_sha256;PREP_BINDING=Path(a.binding_terminal);PREP_BINDING_SHA=a.binding_terminal_sha256
++    out=Path(a.fresh_TMP_output);assert out.is_absolute() and out.parent.resolve()==out.parent and out.is_relative_to(Path('/private/tmp')) and not os.path.lexists(out)
+     assert all(getattr(a,k.replace('-','_')) is None for k in business) if a.phase=='PREP' else all(getattr(a,k.replace('-','_')) is not None for k in business)
+     author=author_facts();utility=utility_facts(Path(__file__).parent,a);bound=bound_facts(a.phase,a);parent=parent_facts(a.phase)
+     qp=pin(Q);hp=pin(HELPER);assert qp['sha256']==QSHA and hp['sha256']==HELPER_SHA
+@@ -206,7 +252,11 @@
+     record=dict(schema=REQUEST_SCHEMA,status='ACTUAL_SOURCE_FACTS_BOUND_NO_INSTALL_OR_BUSINESS',phase=a.phase,source_only=True,author=author,utility=utility,bound=bound,parent=parent,actual_helper_Q=qp,installed_helper=hp,original_canonical_Source=old_c,actual_new_PREP=facts,new_business_results=(NEW_BUSINESS_PINS if a.phase=='PREP' else {**NEW_BUSINESS_PINS,'PREP_summary':facts['summary'],'PREP_terminal':facts['terminal']}),original_caps=CAPS,whole_build_INPUT_native_or_science_qualified=False,installation_executed=False)
+     write(out,record);print(json.dumps(dict(request=pin(out),phase=a.phase,source_only=True,business_or_science_executed=False)))
+ def load_request(path,sha,phase):
+-    d,p=read(path,sha);assert d['schema']==REQUEST_SCHEMA and d['phase']==phase and d['source_only'] is True and d['original_caps']==CAPS and d['installation_executed'] is False and d['whole_build_INPUT_native_or_science_qualified'] is False
++    global AUTHOR,AUTHOR_SHA,AUTHOR_PEER,AUTHOR_PEER_SHA,AUTHOR_PEER_SEAL,AUTHOR_PEER_SEAL_SHA,PREP_BOUND,PREP_BOUND_SHA,PREP_BINDING,PREP_BINDING_SHA
++    d,p=read(path,sha)
++    AUTHOR=Path(d['author']['manifest']['path']).parent;AUTHOR_SHA=d['author']['manifest']['sha256'];AUTHOR_PEER=Path(d['author']['peer']['manifest']['path']).parent;AUTHOR_PEER_SHA=d['author']['peer']['manifest']['sha256'];AUTHOR_PEER_SEAL=Path(d['author']['peer']['seal']['path']);AUTHOR_PEER_SEAL_SHA=d['author']['peer']['seal']['sha256']
++    if phase=='PREP':PREP_BOUND=Path(d['bound']['manifest']['path']).parent;PREP_BOUND_SHA=d['bound']['manifest']['sha256'];PREP_BINDING=Path(d['bound']['binding_terminal']['path']);PREP_BINDING_SHA=d['bound']['binding_terminal']['sha256']
++    assert d['schema']==REQUEST_SCHEMA and d['phase']==phase and d['source_only'] is True and d['original_caps']==CAPS and d['installation_executed'] is False and d['whole_build_INPUT_native_or_science_qualified'] is False
+     assert d['author']==author_facts()
+     u=d['utility'];b=d['bound']
+     a=argparse.Namespace(utility_manifest_sha256=u['manifest']['sha256'],utility_peer_manifest=u['peer']['manifest']['path'],utility_peer_manifest_sha256=u['peer']['manifest']['sha256'],utility_peer_seal=u['peer']['seal']['path'],utility_peer_seal_sha256=u['peer']['seal']['sha256'],bound_manifest=b['manifest']['path'],bound_manifest_sha256=b['manifest']['sha256'],binding_terminal=b['binding_terminal']['path'],binding_terminal_sha256=b['binding_terminal']['sha256'],bound_peer_manifest=b['peer']['manifest']['path'],bound_peer_manifest_sha256=b['peer']['manifest']['sha256'],bound_peer_seal=b['peer']['seal']['path'],bound_peer_seal_sha256=b['peer']['seal']['sha256'])

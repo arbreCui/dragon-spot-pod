@@ -1,0 +1,31 @@
+SPOT 最新结果入口（2026-10-15，最终A/B派生索引与数据池回收核验后）
+
+1. A/B完整六阶段各8快照、55上下文、19249字段、1829421已知元素；差异、上下文问题、未知来源均0。原evidence-only child2/FAILED记录保持。
+   SPOT_CURRENT_A_FULL_AGGREGATE_OVERV_RESOLVED_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B_FULL_SIXPHASE_VERIFIED_RESULT_20261015.txt
+2. B2选定9个旧只读角色完成当前epoch完整字节桥接；完整物理提取62798记录/7958目录/8766extent/19620宏记录。
+   SPOT_CURRENT_NATIVE_B2_EPOCH_BYTES_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B2_COMPLETE_PHYSICAL_TREE_EXTRACTION_VERIFIED_RESULT_20261015.txt
+3. B55/B2完整typed宏观树比较19620记录、2264152个32位原字；双向路径一致，原字差异0、元数据差异0。首版超时及部分结果保留。
+   SPOT_CURRENT_B55_B2_FULL_TYPED_WORD_COMPARISON_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B55_B2_COMPLETE_COMPARE_V1_TIMEOUT_VERIFIED_FACTS_20261015.txt
+4. 最新已完成：A/B最终55号四份派生SQL/pool回收183,292,696字节，六组已完成消费者真实0/独立post0核齐；独立Source0、Root只读0/独立post0、Root执行0/独立post0闭合。两份对应canonical原生快照及全部结果/文档/归档保留。未来若需临时pair，必须从原始native重新提取并独立准入，不承诺旧SQLite/pool文件字节相同；旧“最终pair原位保留”的历史说明由本步更新。
+   SPOT_CURRENT_A_B_FINAL55_EXACT4_TEMPORARY_RETIREMENT_VERIFIED_RESULT_20261015.txt
+5. B完整28份非空明细249,929,878字节归档为24,003,048字节gzip，逐份完整恢复SHA/长度通过；独立盲SHA复核0后原文精确回收0及独立post0闭合。全28gzip、条目、完整恢复索引与空差异文件保留，未来按索引恢复原文字节及准入当前身份。
+   SPOT_CURRENT_B_COMPLETE28_JSONL_ARCHIVE_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B_COMPLETE28_JSONL_PLAINTEXT_RETIREMENT_VERIFIED_RESULT_20261015.txt
+6. B早期14临时索引/池+B2已消费pool+失败残片，精确16项回收367,026,207字节，真实只读0/独立post0/执行0/独立post0闭合。原生快照和完整结果留存。
+   SPOT_CURRENT_B_COMPLETED_EXACT16_TEMPORARY_RETIREMENT_VERIFIED_RESULT_20261015.txt
+7. 本轮三批实际删除总量800,248,781字节，未扣新归档及新增Source/核验凭证，不是净空间变化。更早各轮回收、SQL单成员恢复、两次pool归档失败的真实状态、所有失败现场和结果凭证继续保留。
+   SPOT_CURRENT_RESULTS_INDEX_V10_20261015.txt
+   SPOT_CURRENT_B2_SQL_MEMBER0_AND_EXACT2_RECOVERY_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B2_SQL_POOL_ARCHIVE_V2_CAP_FAILURE_VERIFIED_FACTS_20261015.txt
+   SPOT_CURRENT_B2_POOL_SOURCE8_CAP64_FAILURE_VERIFIED_FACTS_20261015.txt
+
+当前83目录累计实存在第4项独立post写前约1.359GB，另有约16.4MB外部元数据；磁盘总可用空间充足，约束仍是原累计2GiB额度。新B在线运行预算仍须另行闭合，不能据此直接启动。
+
+下一顺序：对重复原始native进行精确只读审计；只有保留完整相同字节的原生副本或完整可恢复归档、执行Root完整字节控制及独立复核后，才另行回收指定冗余路径。原始native不能套用临时SQL/pool生命周期理由。继续无损保存已完成旧结果，腾出足够原累计额度，再准备真正含B2的PROJECT/GLOBAL/ARCHIVE、完整18树/6GLOBAL上下文并实测B在线consumer；之后AAA物理控制→独立耦合参考准入→ABA。
+
+仍未完成：B在线消费、AAA物理精度、完整反应处理与多重性来源、温度插值、完整370群算子控制、独立耦合参考。AAA既有ν裂变偏差3.9525259224%仍超过原3%阈值。字节等价或清理完成不代表物理验收通过，总goal保持active。
+
+这是最新导航。V10及以前入口、所有失败现场和完整结果凭证保留为历史。

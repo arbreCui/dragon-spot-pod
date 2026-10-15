@@ -1,0 +1,7 @@
+canonical_files显式三列无损存储已在TMP pure codec验证，helper仍UNREADY。
+真实旧graph=67624825B；透明诊断storage=66558451B；节省1066374B，原64MiB门余550413B。
+实际36776个canonical pin全部3字段/值/型/行序保持；整个decoded JSON typed-order/IEEE浮点位及content_sha逐项全遍历摘要相同。
+普通JSON保持原入口结果及异常；新strict_json和fresh parent payload wrapper都仅exact新storage schema decode，原parse_text/verify_graph/_phase/consumer_lineage/所有数学和原bound逐字不改。
+41项必要pure roundtrip/reject/ordinary兼容控制通过，坏列/坏行/bool尺寸/缺行/多行/坏header/content/truncatedEOF被拒绝。
+encode新浅storage view不改producer的原graph；decode保留完整其他data且新canonical pin dict独立。不复制整graph，不维护globalcache。
+未写项目，未导入业务/调用phase/API/控制器/编译器；诊断fixture不作为正式V12图或成功凭据。新真实V12图仍须原限额内完整PREP与5stage独立审查。

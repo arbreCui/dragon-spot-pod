@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_combined_prepare_sources/combined_prepare_host.py", line 78, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_combined_prepare_sources/combined_prepare_host.py", line 56, in main
+    runner.execute(HOST/'run','prepare',command,STAGE_CAP)
+  File "/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime/production_runner.py", line 700, in execute
+    self._process(command, directory, subprocess.DEVNULL, out, process_limit)
+  File "/Users/wen/spot/validation/axial_material/qualify_refined_AAA_layered_full.py", line 59, in _process
+    if peak>=512:raise RuntimeError('own-child 512 MiB RSS cap reached')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: own-child 512 MiB RSS cap reached

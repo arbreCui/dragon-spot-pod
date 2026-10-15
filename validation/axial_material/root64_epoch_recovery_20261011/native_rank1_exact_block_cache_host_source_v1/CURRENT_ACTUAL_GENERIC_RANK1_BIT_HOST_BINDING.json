@@ -1,0 +1,1061 @@
+{
+  "schema": "CURRENT_FULL7ID_GENERIC_RANK1_BIT_HOST_BINDING_V1",
+  "Source_only": true,
+  "planned_output_root": "/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1",
+  "original_caps": {
+    "stage_seconds": 600,
+    "whole_seconds": 1800,
+    "SELF_and_child_RSS_bytes": 536870912,
+    "fresh_bytes": 2147483648,
+    "history_bytes": 103079215104,
+    "cold_reserve_bytes": 20971764748,
+    "metadata_reserve_bytes": 67108864,
+    "free_floor_bytes": 8589934592,
+    "threads": 1,
+    "children_at_once": 1,
+    "retries": 0
+  },
+  "actual_current_input_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/COMPLETE_NATIVE_RANK1_EXACT_BLOCK_CACHE_SOURCE_FREEZE.json",
+      "sha256": "c8be0de885e792c09cddf4d168a095f7410e674e3c47c33208ef58a2969e8843",
+      "size_bytes": 4922,
+      "identity": [
+        16777229,
+        49813819,
+        33188,
+        1,
+        4922,
+        1791764429005552867,
+        1791764429005552867
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-global-native64-handle-lifetime-complete69-build-only-20261012-v1/Root_actual_build_only_summary.json",
+      "sha256": "5088fa1cc144f391f09dbc04566b8b466b5b5d72b514e6337179216f7d96ec6b",
+      "size_bytes": 1968465,
+      "identity": [
+        16777229,
+        49807627,
+        33188,
+        1,
+        1968465,
+        1791761240264235275,
+        1791761240264235275
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_host_source_v1/test_generic_rank1_exact_cache_bits_with_abort.f90",
+      "sha256": "f68bfb28cdc6a9e1c37d54dd1ad19ddf9013372354cca13495b12c56c43a6261",
+      "size_bytes": 7224,
+      "identity": [
+        16777229,
+        49924136,
+        33188,
+        1,
+        7224,
+        1791804987712666769,
+        1791804987712666769
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_native_rank1_cache_source_review_20261012/INDEPENDENT_SOURCE_REVIEW.json",
+      "sha256": "d3e72e3ea29feda673bfe4a9359da2d777183725264e140feac41ddc01414f6d",
+      "size_bytes": 17549,
+      "identity": [
+        16777229,
+        49923192,
+        33188,
+        1,
+        17549,
+        1791804203055418966,
+        1791804203055418966
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_prepare_sources/prepare_cli_host_v15.py",
+      "sha256": "3c1856f8ec16414d4f07fe4d88b3be2b859b1eb64d0c2624c9c7015c1b9a52a7",
+      "size_bytes": 11458,
+      "identity": [
+        16777229,
+        49347846,
+        33188,
+        1,
+        11458,
+        1791572772309959033,
+        1791572772309959033
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/prepare_qualified_AB_source_factor_production.py",
+      "sha256": "619ed1e3115e0f9f25fd20cc259d384891f2fff52d913acebd5d9ca8f39d5743",
+      "size_bytes": 61606,
+      "identity": [
+        16777229,
+        48505241,
+        33188,
+        1,
+        61606,
+        1791221930905555745,
+        1791221930905555745
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/moment_order_complete_history_resource_trie_20261010.py",
+      "sha256": "ebbb0235ca5eaf7f7d896c225925f6705d2ba32f70295d957206548571575022",
+      "size_bytes": 67755,
+      "identity": [
+        16777229,
+        49346381,
+        33188,
+        1,
+        67755,
+        1791571124018610806,
+        1791571124018610806
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/qualify_refined_AAA_layered_full.py",
+      "sha256": "70516d764e05cffa6e82e780a991ff64e56b9c29bc99f3f1b18bcb0ff63195c6",
+      "size_bytes": 27295,
+      "identity": [
+        16777229,
+        48412797,
+        33188,
+        1,
+        27295,
+        1791178916200089060,
+        1791178916200089060
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime/production_runner.py",
+      "sha256": "38de03ed0f5b3e2d82b4153a45d1e548d58a34747f526f8bcd51bbe01e935128",
+      "size_bytes": 57831,
+      "identity": [
+        16777229,
+        48394944,
+        33188,
+        1,
+        57831,
+        1791160028306226270,
+        1791160113744998562
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime/run_bounded_dragon.py",
+      "sha256": "bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09",
+      "size_bytes": 6019,
+      "identity": [
+        16777229,
+        48394937,
+        33261,
+        1,
+        6019,
+        1787952565114585932,
+        1791160113743448178
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/Utilib/src/ALSBD.f",
+      "sha256": "b0544742d85154b426f4aa5d6f762b5e2e4d9599988f57929dfe11e51c90d5f5",
+      "size_bytes": 2223,
+      "identity": [
+        16777229,
+        913123,
+        33188,
+        1,
+        2223,
+        1778159901648361800,
+        1778159901648361800
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT1P64.f90",
+      "sha256": "c097c482e2d9ab17b5252508cbe496091e9d2fa87628b8500981b86b14e49d21",
+      "size_bytes": 44109,
+      "identity": [
+        16777229,
+        49811242,
+        33188,
+        1,
+        44109,
+        1791763608122535675,
+        1791763608122535675
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+      "sha256": "fe79796879678cc30294332e5bb8a0c7fece713ac33004e525f2c94f291540e1",
+      "size_bytes": 71094,
+      "identity": [
+        16777229,
+        49811243,
+        33188,
+        1,
+        71094,
+        1791763608122824426,
+        1791763608122824426
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/src/SPOT1P64.f90",
+      "sha256": "2ef1520ab8f405b07927ea444a9529c2a25d138da4c7ff7613299eb56ea0ae6f",
+      "size_bytes": 31076,
+      "identity": [
+        16777229,
+        35164083,
+        33188,
+        1,
+        31076,
+        1787548430292572036,
+        1787548430292572036
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/global_native64_handle_lifetime_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+      "sha256": "3f91601a9a8b8cc5fb3eb6da113f7798e70e4e1e9f08d36adf6ddc9e356b0eff",
+      "size_bytes": 70774,
+      "identity": [
+        16777229,
+        49807098,
+        33188,
+        1,
+        70774,
+        1791760645163324930,
+        1791760645163324930
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/COMPLETE_NATIVE_RANK1_EXACT_CACHE_SOURCE_BYTE_INVERSE.json",
+      "sha256": "96225ab515ae81e7908b9cd9c0c562f77c8c23c4100ecae3e4b5e5bb1cbf5693",
+      "size_bytes": 20532,
+      "identity": [
+        16777229,
+        49811244,
+        33188,
+        1,
+        20532,
+        1791763608123274802,
+        1791763608123274802
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/controls/test_generic_rank1_exact_cache_bits.f90",
+      "sha256": "40acdb6c62e3f64c03aa512837055aa66c7fb913ff3f6fa0a9358f0b4e880b53",
+      "size_bytes": 7007,
+      "identity": [
+        16777229,
+        49812500,
+        33188,
+        1,
+        7007,
+        1791764077543602066,
+        1791764077543602066
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/CURRENT_GENERIC_RANK1_COMPONENT_BIT_CONTROL_SOURCE_PLAN.json",
+      "sha256": "49a1bad945af726f2706b15541928c8a62b3802396c4f222e2b772dba0dfc60e",
+      "size_bytes": 2296,
+      "identity": [
+        16777229,
+        49813817,
+        33188,
+        1,
+        2296,
+        1791764429005045865,
+        1791764429005045865
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/CURRENT_GENERIC_RANK1_LOGICAL_MEMORY_AND_EXACT_KEY_CONTRACT.json",
+      "sha256": "8dc914ec66622c1a06c7bdd2b6fbff62a9c807c5b1bc68f7d5bee8b71695058c",
+      "size_bytes": 2526,
+      "identity": [
+        16777229,
+        49813818,
+        33188,
+        1,
+        2526,
+        1791764429005196074,
+        1791764429005196074
+      ]
+    },
+    {
+      "path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+      "sha256": "0784ca5eb133cde6a2112eddb4000eb36c9d60eae1b18df1c1ba52fe97737492",
+      "size_bytes": 2648040,
+      "identity": [
+        16777229,
+        1171728,
+        33133,
+        2,
+        2648040,
+        1754637485000000000,
+        1778162641926218060
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/Utilib/lib/Darwin_arm64/libUtilib.a",
+      "sha256": "a6c5cca8825691fd1da7554acabe542ba9986aabdbc935ecc46d1993240244ca",
+      "size_bytes": 1073776,
+      "identity": [
+        16777229,
+        2725832,
+        33188,
+        1,
+        1073776,
+        1784900476030113399,
+        1784900476030212150
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-layered-full-20261005/preflight/live_guard/guard_controls.json",
+      "sha256": "ae4d7e86423a187c29efd5bf87d54053081d7b7fcf18ac88cd9e49639cb07454",
+      "size_bytes": 666,
+      "identity": [
+        16777229,
+        48427936,
+        33188,
+        1,
+        666,
+        1791178808613193830,
+        1791178948677664537
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-layered-full-20261005/preflight/live_guard/positive.log",
+      "sha256": "ec0afc5e197cabac3c13a56fc633dbb9c0cf59de42241ef0bc24b588aa29f822",
+      "size_bytes": 19,
+      "identity": [
+        16777229,
+        48427938,
+        33188,
+        1,
+        19,
+        1791178807981512279,
+        1791178948678021872
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-layered-full-20261005/preflight/live_guard/memorycap.watchdog.json",
+      "sha256": "0bf132372a4f7b54e7b0e1d22779676b022484a5183f1610eba29a277e5f0626",
+      "size_bytes": 465,
+      "identity": [
+        16777229,
+        48427939,
+        33188,
+        1,
+        465,
+        1791178808607675892,
+        1791178948678177914
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-layered-full-20261005/preflight/live_guard/positive.watchdog.json",
+      "sha256": "f67da2d2b7e30f9be83bd0259c653126a438363ad34839195d5d8dd33b539f8e",
+      "size_bytes": 381,
+      "identity": [
+        16777229,
+        48427940,
+        33188,
+        1,
+        381,
+        1791178808187305443,
+        1791178948678310123
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-layered-full-20261005/preflight/live_guard/memorycap.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "identity": [
+        16777229,
+        48427941,
+        33188,
+        1,
+        0,
+        1791178808389861012,
+        1791178948678412623
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-layered-full-20261005/preflight/live_guard/tested_driver_source.py",
+      "sha256": "c194e958d080585abb82a2affee4e6974c44d2d9e8527b599ed648dd49c52285",
+      "size_bytes": 25619,
+      "identity": [
+        16777229,
+        48427937,
+        33188,
+        1,
+        25619,
+        1791178916154109583,
+        1791178948677859788
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/probe_refined_AAA_white_odd_response.py",
+      "sha256": "304a3111081e9ce5085eafb350716c5684e4bd4b19c2d9888604bbfc59e6d2bf",
+      "size_bytes": 22998,
+      "identity": [
+        16777229,
+        48401779,
+        33188,
+        1,
+        22998,
+        1791168252059285759,
+        1791168252059285759
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/white_side_trace_kernel.py",
+      "sha256": "999b28a3f2b9ccc2adda075f421f85478b669efb22af4681881111883a69087b",
+      "size_bytes": 3713,
+      "identity": [
+        16777229,
+        48284493,
+        33188,
+        1,
+        3713,
+        1791064220984178394,
+        1791064220984178394
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/qualified_snapshot_ingestion.py",
+      "sha256": "35661e6d087128191c51b0d4e4e197867fb83b728cb45b01d2eb37d59da0f0ee",
+      "size_bytes": 9086,
+      "identity": [
+        16777229,
+        48252803,
+        33188,
+        1,
+        9086,
+        1791046238138647341,
+        1791046238138647341
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/snapshot_control_preflight.py",
+      "sha256": "f60309e54947de8dc43e7080fd19ca6255652d840493db23b37ff7003c6a0819",
+      "size_bytes": 6441,
+      "identity": [
+        16777229,
+        48049272,
+        33188,
+        1,
+        6441,
+        1790978313788594462,
+        1790978313788594462
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/check_r64_normalization_rejections.py",
+      "sha256": "04a33e0f1bf99774c6f24f6cbf632f9de2c465755c2d81bc8d3ca09246659846",
+      "size_bytes": 2471,
+      "identity": [
+        16777229,
+        48232774,
+        33188,
+        1,
+        2471,
+        1791018922120743269,
+        1791018922120743269
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/analyze_r64_tracking_moments.py",
+      "sha256": "5af25744aad2b5c40113d249c3b0a13a56cdb9e5df63faeae5cd33317eaed93d",
+      "size_bytes": 4946,
+      "identity": [
+        16777229,
+        48232362,
+        33188,
+        1,
+        4946,
+        1791018634819391679,
+        1791018634819391679
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/check_r64_audit_rejections.py",
+      "sha256": "c0e0bd68494eec2311f85867c7b50821d04982f40f658d4c99f36cf4ea7ff017",
+      "size_bytes": 2789,
+      "identity": [
+        16777229,
+        48228642,
+        33188,
+        1,
+        2789,
+        1791016472193577611,
+        1791016472193577611
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/analyze_r64_snapshot.py",
+      "sha256": "e3e140a86a5d858fc22661c19eed35a61bf59a5f7497d10200d8584b97153978",
+      "size_bytes": 4864,
+      "identity": [
+        16777229,
+        48226034,
+        33188,
+        1,
+        4864,
+        1791013420499526086,
+        1791013420499526086
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/production_inputs.py",
+      "sha256": "92bf4e8955fda48e9547cc29afb7aad7cc262ba91ffbd536cb94df02d735346e",
+      "size_bytes": 13023,
+      "identity": [
+        16777229,
+        47994054,
+        33188,
+        1,
+        13023,
+        1790968006817187630,
+        1790968006817187630
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/qualify_refined_AAA_layered_input_pilot.py",
+      "sha256": "f0477135df43bbfaf02403f389c27b8ee2d47f79d85437a7b3c97eb829ea5061",
+      "size_bytes": 16719,
+      "identity": [
+        16777229,
+        48410420,
+        33188,
+        1,
+        16719,
+        1791169672402220389,
+        1791169672402220389
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/measure_refined_AAA_native_angular_response.py",
+      "sha256": "a4c28d6b26dcd79f53b65f8b44e9d1256ce392e5028423349fd842f40baf882e",
+      "size_bytes": 19510,
+      "identity": [
+        16777229,
+        48407956,
+        33188,
+        1,
+        19510,
+        1791169112004510720,
+        1791169112004510720
+      ]
+    }
+  ],
+  "actual_module_Source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT1P64.f90",
+    "sha256": "c097c482e2d9ab17b5252508cbe496091e9d2fa87628b8500981b86b14e49d21",
+    "size_bytes": 44109,
+    "identity": [
+      16777229,
+      49811242,
+      33188,
+      1,
+      44109,
+      1791763608122535675,
+      1791763608122535675
+    ]
+  },
+  "actual_original_control_Source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/controls/test_generic_rank1_exact_cache_bits.f90",
+    "sha256": "40acdb6c62e3f64c03aa512837055aa66c7fb913ff3f6fa0a9358f0b4e880b53",
+    "size_bytes": 7007,
+    "identity": [
+      16777229,
+      49812500,
+      33188,
+      1,
+      7007,
+      1791764077543602066,
+      1791764077543602066
+    ]
+  },
+  "actual_derived_control_Source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_host_source_v1/test_generic_rank1_exact_cache_bits_with_abort.f90",
+    "sha256": "f68bfb28cdc6a9e1c37d54dd1ad19ddf9013372354cca13495b12c56c43a6261",
+    "size_bytes": 7224,
+    "identity": [
+      16777229,
+      49924136,
+      33188,
+      1,
+      7224,
+      1791804987712666769,
+      1791804987712666769
+    ]
+  },
+  "actual_compiler_pin": {
+    "path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+    "sha256": "0784ca5eb133cde6a2112eddb4000eb36c9d60eae1b18df1c1ba52fe97737492",
+    "size_bytes": 2648040,
+    "identity": [
+      16777229,
+      1171728,
+      33133,
+      2,
+      2648040,
+      1754637485000000000,
+      1778162641926218060
+    ]
+  },
+  "actual_Utilib_archive_pin": {
+    "path": "/Users/wen/spot/Utilib/lib/Darwin_arm64/libUtilib.a",
+    "sha256": "a6c5cca8825691fd1da7554acabe542ba9986aabdbc935ecc46d1993240244ca",
+    "size_bytes": 1073776,
+    "identity": [
+      16777229,
+      2725832,
+      33188,
+      1,
+      1073776,
+      1784900476030113399,
+      1784900476030212150
+    ]
+  },
+  "historical_Fortran_Source_freeze_current_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/COMPLETE_NATIVE_RANK1_EXACT_BLOCK_CACHE_SOURCE_FREEZE.json",
+    "sha256": "c8be0de885e792c09cddf4d168a095f7410e674e3c47c33208ef58a2969e8843",
+    "size_bytes": 4922,
+    "identity": [
+      16777229,
+      49813819,
+      33188,
+      1,
+      4922,
+      1791764429005552867,
+      1791764429005552867
+    ]
+  },
+  "historical_control_plan_current_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/CURRENT_GENERIC_RANK1_COMPONENT_BIT_CONTROL_SOURCE_PLAN.json",
+    "sha256": "49a1bad945af726f2706b15541928c8a62b3802396c4f222e2b772dba0dfc60e",
+    "size_bytes": 2296,
+    "identity": [
+      16777229,
+      49813817,
+      33188,
+      1,
+      2296,
+      1791764429005045865,
+      1791764429005045865
+    ]
+  },
+  "historical_current69_report_current_pin": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-global-native64-handle-lifetime-complete69-build-only-20261012-v1/Root_actual_build_only_summary.json",
+    "sha256": "5088fa1cc144f391f09dbc04566b8b466b5b5d72b514e6337179216f7d96ec6b",
+    "size_bytes": 1968465,
+    "identity": [
+      16777229,
+      49807627,
+      33188,
+      1,
+      1968465,
+      1791761240264235275,
+      1791761240264235275
+    ]
+  },
+  "historical_current69_report_consumed_as_qualification": false,
+  "historical_device_only_provenance_comparisons": [
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT1P64.f90",
+        "sha256": "c097c482e2d9ab17b5252508cbe496091e9d2fa87628b8500981b86b14e49d21",
+        "size_bytes": 44109,
+        "identity": [
+          16777234,
+          49811242,
+          33188,
+          1,
+          44109,
+          1791763608122535675,
+          1791763608122535675
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT1P64.f90",
+        "sha256": "c097c482e2d9ab17b5252508cbe496091e9d2fa87628b8500981b86b14e49d21",
+        "size_bytes": 44109,
+        "identity": [
+          16777229,
+          49811242,
+          33188,
+          1,
+          44109,
+          1791763608122535675,
+          1791763608122535675
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+        "sha256": "fe79796879678cc30294332e5bb8a0c7fece713ac33004e525f2c94f291540e1",
+        "size_bytes": 71094,
+        "identity": [
+          16777234,
+          49811243,
+          33188,
+          1,
+          71094,
+          1791763608122824426,
+          1791763608122824426
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+        "sha256": "fe79796879678cc30294332e5bb8a0c7fece713ac33004e525f2c94f291540e1",
+        "size_bytes": 71094,
+        "identity": [
+          16777229,
+          49811243,
+          33188,
+          1,
+          71094,
+          1791763608122824426,
+          1791763608122824426
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/src/SPOT1P64.f90",
+        "sha256": "2ef1520ab8f405b07927ea444a9529c2a25d138da4c7ff7613299eb56ea0ae6f",
+        "size_bytes": 31076,
+        "identity": [
+          16777234,
+          35164083,
+          33188,
+          1,
+          31076,
+          1787548430292572036,
+          1787548430292572036
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/src/SPOT1P64.f90",
+        "sha256": "2ef1520ab8f405b07927ea444a9529c2a25d138da4c7ff7613299eb56ea0ae6f",
+        "size_bytes": 31076,
+        "identity": [
+          16777229,
+          35164083,
+          33188,
+          1,
+          31076,
+          1787548430292572036,
+          1787548430292572036
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/global_native64_handle_lifetime_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+        "sha256": "3f91601a9a8b8cc5fb3eb6da113f7798e70e4e1e9f08d36adf6ddc9e356b0eff",
+        "size_bytes": 70774,
+        "identity": [
+          16777234,
+          49807098,
+          33188,
+          1,
+          70774,
+          1791760645163324930,
+          1791760645163324930
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/global_native64_handle_lifetime_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+        "sha256": "3f91601a9a8b8cc5fb3eb6da113f7798e70e4e1e9f08d36adf6ddc9e356b0eff",
+        "size_bytes": 70774,
+        "identity": [
+          16777229,
+          49807098,
+          33188,
+          1,
+          70774,
+          1791760645163324930,
+          1791760645163324930
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/COMPLETE_NATIVE_RANK1_EXACT_CACHE_SOURCE_BYTE_INVERSE.json",
+        "sha256": "96225ab515ae81e7908b9cd9c0c562f77c8c23c4100ecae3e4b5e5bb1cbf5693",
+        "size_bytes": 20532,
+        "identity": [
+          16777234,
+          49811244,
+          33188,
+          1,
+          20532,
+          1791763608123274802,
+          1791763608123274802
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/COMPLETE_NATIVE_RANK1_EXACT_CACHE_SOURCE_BYTE_INVERSE.json",
+        "sha256": "96225ab515ae81e7908b9cd9c0c562f77c8c23c4100ecae3e4b5e5bb1cbf5693",
+        "size_bytes": 20532,
+        "identity": [
+          16777229,
+          49811244,
+          33188,
+          1,
+          20532,
+          1791763608123274802,
+          1791763608123274802
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/controls/test_generic_rank1_exact_cache_bits.f90",
+        "sha256": "40acdb6c62e3f64c03aa512837055aa66c7fb913ff3f6fa0a9358f0b4e880b53",
+        "size_bytes": 7007,
+        "identity": [
+          16777234,
+          49812500,
+          33188,
+          1,
+          7007,
+          1791764077543602066,
+          1791764077543602066
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/controls/test_generic_rank1_exact_cache_bits.f90",
+        "sha256": "40acdb6c62e3f64c03aa512837055aa66c7fb913ff3f6fa0a9358f0b4e880b53",
+        "size_bytes": 7007,
+        "identity": [
+          16777229,
+          49812500,
+          33188,
+          1,
+          7007,
+          1791764077543602066,
+          1791764077543602066
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/CURRENT_GENERIC_RANK1_COMPONENT_BIT_CONTROL_SOURCE_PLAN.json",
+        "sha256": "49a1bad945af726f2706b15541928c8a62b3802396c4f222e2b772dba0dfc60e",
+        "size_bytes": 2296,
+        "identity": [
+          16777234,
+          49813817,
+          33188,
+          1,
+          2296,
+          1791764429005045865,
+          1791764429005045865
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/CURRENT_GENERIC_RANK1_COMPONENT_BIT_CONTROL_SOURCE_PLAN.json",
+        "sha256": "49a1bad945af726f2706b15541928c8a62b3802396c4f222e2b772dba0dfc60e",
+        "size_bytes": 2296,
+        "identity": [
+          16777229,
+          49813817,
+          33188,
+          1,
+          2296,
+          1791764429005045865,
+          1791764429005045865
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/CURRENT_GENERIC_RANK1_LOGICAL_MEMORY_AND_EXACT_KEY_CONTRACT.json",
+        "sha256": "8dc914ec66622c1a06c7bdd2b6fbff62a9c807c5b1bc68f7d5bee8b71695058c",
+        "size_bytes": 2526,
+        "identity": [
+          16777234,
+          49813818,
+          33188,
+          1,
+          2526,
+          1791764429005196074,
+          1791764429005196074
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/CURRENT_GENERIC_RANK1_LOGICAL_MEMORY_AND_EXACT_KEY_CONTRACT.json",
+        "sha256": "8dc914ec66622c1a06c7bdd2b6fbff62a9c807c5b1bc68f7d5bee8b71695058c",
+        "size_bytes": 2526,
+        "identity": [
+          16777229,
+          49813818,
+          33188,
+          1,
+          2526,
+          1791764429005196074,
+          1791764429005196074
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+        "sha256": "0784ca5eb133cde6a2112eddb4000eb36c9d60eae1b18df1c1ba52fe97737492",
+        "size_bytes": 2648040,
+        "identity": [
+          16777234,
+          1171728,
+          33133,
+          2,
+          2648040,
+          1754637485000000000,
+          1778162641926218060
+        ]
+      },
+      "current_pin": {
+        "path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+        "sha256": "0784ca5eb133cde6a2112eddb4000eb36c9d60eae1b18df1c1ba52fe97737492",
+        "size_bytes": 2648040,
+        "identity": [
+          16777229,
+          1171728,
+          33133,
+          2,
+          2648040,
+          1754637485000000000,
+          1778162641926218060
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    },
+    {
+      "historical_pin": {
+        "path": "/Users/wen/spot/Utilib/lib/Darwin_arm64/libUtilib.a",
+        "sha256": "a6c5cca8825691fd1da7554acabe542ba9986aabdbc935ecc46d1993240244ca",
+        "size_bytes": 1073776,
+        "identity": [
+          16777234,
+          2725832,
+          33188,
+          1,
+          1073776,
+          1784900476030113399,
+          1784900476030212150
+        ]
+      },
+      "current_pin": {
+        "path": "/Users/wen/spot/Utilib/lib/Darwin_arm64/libUtilib.a",
+        "sha256": "a6c5cca8825691fd1da7554acabe542ba9986aabdbc935ecc46d1993240244ca",
+        "size_bytes": 1073776,
+        "identity": [
+          16777229,
+          2725832,
+          33188,
+          1,
+          1073776,
+          1784900476030113399,
+          1784900476030212150
+        ]
+      },
+      "complete_SHA_and_remaining_six_fields_equal": true,
+      "full_seven_fields_equal": false
+    }
+  ],
+  "explicit_control_XABORT_append": "\nsubroutine XABORT(message)\n  use, intrinsic :: iso_fortran_env, only : error_unit\n  implicit none\n  character(len=*),intent(in) :: message\n  write(error_unit,'(A)') trim(message)\n  error stop 1\nend subroutine XABORT\n",
+  "original_control_7007_byte_prefix_exact": true,
+  "planned_four_stage_commands": [
+    [
+      "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+      "-O2",
+      "-march=native",
+      "-ffp-contract=off",
+      "-fcheck=all",
+      "-fbacktrace",
+      "-g",
+      "-fPIC",
+      "-frecord-marker=4",
+      "-ffixed-line-length-none",
+      "-I/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build",
+      "-J/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build",
+      "-c",
+      "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT1P64.f90",
+      "-o",
+      "/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build/SPOT1P64.o"
+    ],
+    [
+      "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+      "-O2",
+      "-march=native",
+      "-ffp-contract=off",
+      "-fcheck=all",
+      "-fbacktrace",
+      "-g",
+      "-fPIC",
+      "-frecord-marker=4",
+      "-ffixed-line-length-none",
+      "-I/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build",
+      "-J/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build",
+      "-c",
+      "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_host_source_v1/test_generic_rank1_exact_cache_bits_with_abort.f90",
+      "-o",
+      "/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build/test_generic_rank1_exact_cache_bits.o"
+    ],
+    [
+      "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+      "-O2",
+      "-ffp-contract=off",
+      "/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build/SPOT1P64.o",
+      "/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/build/test_generic_rank1_exact_cache_bits.o",
+      "/Users/wen/spot/Utilib/lib/Darwin_arm64/libUtilib.a",
+      "-o",
+      "/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/runtime/test_generic_rank1_exact_cache_bits"
+    ],
+    [
+      "/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/runtime/test_generic_rank1_exact_cache_bits"
+    ]
+  ],
+  "original_nine_compile_flags": [
+    "-O2",
+    "-march=native",
+    "-ffp-contract=off",
+    "-fcheck=all",
+    "-fbacktrace",
+    "-g",
+    "-fPIC",
+    "-frecord-marker=4",
+    "-ffixed-line-length-none"
+  ],
+  "future_objects_runtime_and_result_pins": null,
+  "compiler_executed": false,
+  "component_controls_executed": false,
+  "primitive_bit_control_scope_only": true,
+  "formal_SN32_quadrature_equivalence": false,
+  "full370_qualified": false,
+  "physics_qualified": false,
+  "AAA_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false
+}

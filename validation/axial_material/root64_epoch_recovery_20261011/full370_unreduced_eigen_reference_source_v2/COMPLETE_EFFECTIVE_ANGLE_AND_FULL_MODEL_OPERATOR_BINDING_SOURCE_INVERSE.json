@@ -1,0 +1,659 @@
+{
+  "schema": "SOURCE_ONLY_FULL370_EFFECTIVE_ANGLE_AND_FULL_MODEL_OPERATOR_BINDING_INVERSE_V2",
+  "files": [
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/COMPLETE_MATHEMATICAL_DEPENDENCY_SOURCE_COPY_PROOF.json",
+        "sha256": "6484240e781e2427a4a6db33620c6f9f1deb7e0c5d34e779c0c7468ea3aa7eec",
+        "size_bytes": 10662,
+        "identity": [
+          16777234,
+          49794099,
+          33188,
+          1,
+          10662,
+          1791755222493940471,
+          1791755222493940471
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/COMPLETE_MATHEMATICAL_DEPENDENCY_SOURCE_COPY_PROOF.json",
+        "sha256": "6484240e781e2427a4a6db33620c6f9f1deb7e0c5d34e779c0c7468ea3aa7eec",
+        "size_bytes": 10662,
+        "identity": [
+          16777234,
+          49804098,
+          33188,
+          1,
+          10662,
+          1791758849395235083,
+          1791758849395235083
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/CURRENT_FORMAL_FULL370_INPUT_PLAN_SOURCE_ONLY.json",
+        "sha256": "d176e1e2c092718ca23eef322825ca4ed1da3bea48644e812e1b4060c511c039",
+        "size_bytes": 3349,
+        "identity": [
+          16777234,
+          49794098,
+          33188,
+          1,
+          3349,
+          1791755222493797388,
+          1791755222493797388
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/CURRENT_FORMAL_FULL370_INPUT_PLAN_SOURCE_ONLY.json",
+        "sha256": "d176e1e2c092718ca23eef322825ca4ed1da3bea48644e812e1b4060c511c039",
+        "size_bytes": 3349,
+        "identity": [
+          16777234,
+          49804097,
+          33188,
+          1,
+          3349,
+          1791758849394977249,
+          1791758849394977249
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/current_formal_full370_ray_operator.py",
+        "sha256": "2e69a3630a4fb8a4eba3d2b353bc267acda1a10207eeaefe3a41351216318da3",
+        "size_bytes": 16623,
+        "identity": [
+          16777234,
+          49792510,
+          33188,
+          1,
+          16623,
+          1791754969637808281,
+          1791754969637808281
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/current_formal_full370_ray_operator.py",
+        "sha256": "731b921e0c5f64955c0f4b358b03bfbd70e88f7c1eeaf644c7ff275517ef02f5",
+        "size_bytes": 16666,
+        "identity": [
+          16777234,
+          49804110,
+          33188,
+          1,
+          16666,
+          1791758948683316837,
+          1791758948683316837
+        ]
+      },
+      "complete_byte_changes": [
+        {
+          "old_begin": 3091,
+          "old_end": 3165,
+          "new_begin": 3091,
+          "new_end": 3208,
+          "old_hex": "202020202020202073656c662e6c696272617279203d2050617468286c696272617279293b2073656c662e72617973203d207261795f696e76656e746f72795b27747261636b73275d0a",
+          "new_hex": "202020202020202073656c662e6c696272617279203d2050617468286c696272617279293b2073656c662e7261795f696e76656e746f7279203d207261795f696e76656e746f72790a202020202020202073656c662e72617973203d207261795f696e76656e746f72795b27747261636b73275d0a"
+        }
+      ],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/current_formal_input_authority.py",
+        "sha256": "2ba2450a89f883a2bbc1508d2cff37620f9cb135085c84bceb5bcab282951693",
+        "size_bytes": 20441,
+        "identity": [
+          16777234,
+          49793926,
+          33188,
+          1,
+          20441,
+          1791755200290462385,
+          1791755200290462385
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/current_formal_input_authority.py",
+        "sha256": "a88b5e7408732fb5995acdb6f746e52b123954f60af81fb15084e1c4167aaa06",
+        "size_bytes": 24351,
+        "identity": [
+          16777234,
+          49804100,
+          33188,
+          1,
+          24351,
+          1791759029009241978,
+          1791759029009241978
+        ]
+      },
+      "complete_byte_changes": [
+        {
+          "old_begin": 4139,
+          "old_end": 4139,
+          "new_begin": 4139,
+          "new_end": 6318,
+          "old_hex": "",
+          "new_hex": "0a0a64656620636f6d706c6574655f76616c75655f6469676573742876616c7565293a0a2020202022222253747265616d20616c6c20747970656420726179206d6574616461746120696e746f206f6e65206861736820776974686f75742061207365636f6e642072617920747265652e2222220a202020206469676573743d686173686c69622e73686132353628290a2020202064656620656d6974287461672c7061796c6f61643d622727293a0a20202020202020206469676573742e75706461746528737472286c656e2874616729292e656e636f646528292b62273a272b7461672b0a20202020202020202020202020202020202020202020737472286c656e287061796c6f616429292e656e636f646528292b62273a272b7061796c6f6164290a202020206465662077616c6b286974656d293a0a20202020202020206966206973696e7374616e6365286974656d2c6e702e6e646172726179293a0a202020202020202020202020656d69742862276e646172726179272c6a736f6e2e64756d70732861727261795f646967657374286974656d292c736f72745f6b6579733d54727565292e656e636f64652829290a2020202020202020656c69662074797065286974656d29697320646963743a0a2020202020202020202020206966206e6f7420616c6c2874797065286b65792969732073747220666f72206b657920696e206974656d293a0a202020202020202020202020202020207261697365205265666572656e63654661696c75726528277479706564206f726967696e616c20726179206d65746164617461206b65797327290a202020202020202020202020656d697428622764696374272c737472286c656e286974656d29292e656e636f64652829290a202020202020202020202020666f72206b657920696e20736f72746564286974656d293a656d69742862276b6579272c6b65792e656e636f64652829293b77616c6b286974656d5b6b65795d290a2020202020202020656c69662074797065286974656d29696e286c6973742c7475706c65293a0a202020202020202020202020656d69742874797065286974656d292e5f5f6e616d655f5f2e656e636f646528292c737472286c656e286974656d29292e656e636f64652829290a202020202020202020202020666f72206368696c6420696e206974656d3a77616c6b286368696c64290a2020202020202020656c69662074797065286974656d2969732062797465733a0a202020202020202020202020656d69742862276279746573272c737472286c656e286974656d29292e656e636f646528292b62273a272b686173686c69622e736861323536286974656d292e6469676573742829290a2020202020202020656c6966206974656d206973204e6f6e653a0a202020202020202020202020656d69742862274e6f6e655479706527290a2020202020202020656c69662074797065286974656d296973207374723a0a202020202020202020202020656d6974286227737472272c6974656d2e656e636f64652829290a2020202020202020656c69662074797065286974656d29696e28696e742c666c6f61742c626f6f6c296f72206973696e7374616e6365286974656d2c6e702e67656e65726963293a0a202020202020202020202020656d69742862277363616c6172272c6a736f6e2e64756d70732861727261795f646967657374286974656d292c736f72745f6b6579733d54727565292e656e636f64652829290a2020202020202020656c73653a0a2020202020202020202020207261697365205265666572656e63654661696c7572652827756e737570706f72746564206f726967696e616c20726179206d65746164617461207479706527290a2020202077616c6b2876616c7565290a2020202072657475726e2064696374286b696e643d27636f6d706c6574655f74797065645f74726565272c7368613235363d6469676573742e6865786469676573742829290a0a0a64656620636f6d706c6574655f7374617465735f64696765737428737461746573293a0a202020206669656c64733d28276b657973272c27646972656374696f6e73272c2773747265616d696e675f646972656374696f6e73272c276861726d6f6e696373272c27786d75272c277a6d75272c0a20202020202020202020202027777a6d75272c276e61746976655f696e5f706c616e65272c27617a696d7574685f636f756e7427290a2020202072657475726e207b6b65793a636f6d706c6574655f76616c75655f6469676573742867657461747472287374617465732c6b6579292920666f72206b657920696e206669656c64737d0a0a0a64656620636f6d706c6574655f6d6f64656c5f646967657374286d6f64656c293a0a202020206669656c64733d28276d6174657269616c5f696473272c27736361747465723634272c276e75736967663634272c276368693634272c27746f74616c3634272c27766f6c756d653634272c0a2020202020202020202020202773746f7265645f737572666163653634272c277472616e633634272c27666f726d616c5f534e33325f55272c27666f726d616c5f534e33325f57272c27666f726d616c5f534e33325f504c27290a2020202072657475726e2064696374286172726179733d7b6b65793a61727261795f646967657374286d6f64656c5b6b65795d2920666f72206b657920696e206669656c64737d2c0a202020202020202020202020202020206576656e74733d636f6d706c6574655f76616c75655f646967657374286d6f64656c5b276576656e74733634275d292c0a20202020202020202020202020202020726179733d636f6d706c6574655f76616c75655f646967657374286d6f64656c5b2772617973275d292c0a202020202020202020202020202020207374617465733d636f6d706c6574655f7374617465735f646967657374286d6f64656c5b27737461746573275d29290a"
+        },
+        {
+          "old_begin": 18487,
+          "old_end": 18659,
+          "new_begin": 20666,
+          "new_end": 20715,
+          "old_hex": "202020202020202073656c662e6469676573743d7b6b65793a61727261795f646967657374286d6f64656c5b6b65795d2920666f72206b657920696e0a20202020202020202020202028276d6174657269616c5f696473272c27736361747465723634272c276e75736967663634272c276368693634272c27746f74616c3634272c27766f6c756d653634272c2773746f7265645f737572666163653634272c277472616e63363427297d0a",
+          "new_hex": "202020202020202073656c662e6469676573743d636f6d706c6574655f6d6f64656c5f646967657374286d6f64656c290a"
+        },
+        {
+          "old_begin": 19139,
+          "old_end": 19319,
+          "new_begin": 21195,
+          "new_end": 21353,
+          "old_hex": "2020202020202020666f72206b65792c77616e74656420696e2073656c662e6469676573742e6974656d7328293a0a20202020202020202020202069662061727261795f646967657374286d6f64656c5b6b65795d2920213d2077616e7465643a0a202020202020202020202020202020207261697365205265666572656e63654661696c7572652827626f756e642066756c6c206e756d65726963616c20696e707574206368616e67656420272b6b6579290a",
+          "new_hex": "2020202020202020696620636f6d706c6574655f6d6f64656c5f646967657374286d6f64656c2920213d2073656c662e6469676573743a0a2020202020202020202020207261697365205265666572656e63654661696c7572652827626f756e6420636f6d706c657465206d6174657269616c2f726179732f7374617465732f666f726d616c20552f572f504c20696e707574206368616e67656427290a"
+        },
+        {
+          "old_begin": 19379,
+          "old_end": 19379,
+          "new_begin": 21413,
+          "new_end": 23270,
+          "old_hex": "",
+          "new_hex": "0a0a20202020646566207665726966795f6f70657261746f722873656c662c6d6f64656c2c6f70657261746f72293a0a202020202020202066726f6d2063757272656e745f666f726d616c5f66756c6c3337305f7261795f6f70657261746f7220696d706f72742057686f6c655261794f70657261746f720a202020202020202069662074797065286f70657261746f7229206973206e6f742057686f6c655261794f70657261746f72206f722073656c662e646967657374206973204e6f6e653a0a2020202020202020202020207261697365205265666572656e6365556e72656164792827636f6e63726574652066756c6c2063757272656e7420726179206f70657261746f7220616e64206c6f61646564206d6f64656c27290a20202020202020206966202861727261795f646967657374286f70657261746f722e746f74616c2920213d2073656c662e6469676573745b27617272617973275d5b27746f74616c3634275d206f720a20202020202020202020202061727261795f646967657374286f70657261746f722e766f6c756d652920213d2073656c662e6469676573745b27617272617973275d5b27766f6c756d653634275d206f720a20202020202020202020202061727261795f646967657374286f70657261746f722e73746f7265645f737572666163652920213d2073656c662e6469676573745b27617272617973275d5b2773746f7265645f737572666163653634275d206f720a202020202020202020202020636f6d706c6574655f76616c75655f646967657374286f70657261746f722e7261795f696e76656e746f72792920213d2073656c662e6469676573745b2772617973275d206f720a202020202020202020202020636f6d706c6574655f76616c75655f646967657374286f70657261746f722e726179732920213d20636f6d706c6574655f76616c75655f646967657374286d6f64656c5b2772617973275d5b27747261636b73275d29206f720a202020202020202020202020636f6d706c6574655f7374617465735f646967657374286f70657261746f722e7374617465732920213d2073656c662e6469676573745b27737461746573275d293a0a2020202020202020202020207261697365205265666572656e63654661696c757265282761637475616c206f70657261746f72206d6174657269616c2f766f6c756d652f737572666163652f726179732f616e67756c6172206669656c6473206469666665722066726f6d20626f756e64206d6f64656c27290a2020202020202020696620286f70657261746f722e6f7264657220213d2073656c662e706c616e5b276f66667365745f6f72646572275d206f720a2020202020202020202020206f70657261746f722e6368756e6b20213d2073656c662e706c616e5b27776f726b696e675f67726f75705f6368756e6b275d206f720a2020202020202020202020206f70657261746f722e626f756e646172795f6d6f64656c20213d2073656c662e706c616e5b27626f756e646172795f6d6f64656c275d206f720a2020202020202020202020206f70657261746f722e636865636b7320213d2073656c662e706c616e5b27706879736963616c5f636865636b73275d293a0a2020202020202020202020207261697365205265666572656e6365556e7265616479282761637475616c206f70657261746f72206f726967696e616c206f726465722f7768697465206d6f64656c2f636865636b73206469666665722066726f6d2063757272656e7420706c616e27290a202020202020202062696e64696e673d6f70657261746f722e6b65726e656c5f62696e64696e670a20202020202020206966202873656c662e6b65726e656c5f636f6e74726f6c735b2761637475616c5f6b65726e656c5f6f726967696e5f70696e275d20213d2062696e64696e672e6f726967696e5f70696e206f720a20202020202020202020202073656c662e6b65726e656c5f636f6e74726f6c735b2761637475616c5f6b65726e656c5f6c6962726172795f70696e275d20213d2062696e64696e672e6c6962726172795f70696e206f720a20202020202020202020202073656c662e6b65726e656c5f636f6e74726f6c735b2761637475616c5f6b65726e656c5f6275696c645f7265706f72745f70696e275d20213d2062696e64696e672e7265706f72745f70696e206f720a20202020202020202020202073656c662e6b65726e656c5f636f6e74726f6c735b27636f6d706c6574655f6b65726e656c5f736f757263655f70696e73275d20213d2062696e64696e672e736f757263655f70696e73293a0a2020202020202020202020207261697365205265666572656e6365556e7265616479282761637475616c206f70657261746f72206c6962726172792f636f6d706c65746520536f75726365206f726967696e20646966666572732066726f6d207265616c206b65726e656c20636f6e74726f6c7327290a202020202020202062696e64696e672e766572696679286f70657261746f722e6c696272617279290a"
+        },
+        {
+          "old_begin": 19914,
+          "old_end": 19983,
+          "new_begin": 23805,
+          "new_end": 23893,
+          "old_hex": "2020202020202020776569676874203d20666c6f6174287374617465732e777a6d755b6b65795b305d5d2f28342a7374617465732e617a696d7574685f636f756e7429290a",
+          "new_hex": "2020202020202020776569676874203d20666c6f6174287374617465732e777a6d755b6b65795b305d5d2a7374617465732e7a6d755b6b65795b305d5d2f28342a7374617465732e617a696d7574685f636f756e7429290a"
+        }
+      ],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/current_full370_white_accumulate.cpp",
+        "sha256": "7fdfb4c0d4119539fe851e3754a691e52662e03d1d02c43fbe64b4d7abc3957c",
+        "size_bytes": 4382,
+        "identity": [
+          16777234,
+          49792623,
+          33188,
+          1,
+          4382,
+          1791754419206937581,
+          1791754419206937581
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/current_full370_white_accumulate.cpp",
+        "sha256": "7fdfb4c0d4119539fe851e3754a691e52662e03d1d02c43fbe64b4d7abc3957c",
+        "size_bytes": 4382,
+        "identity": [
+          16777234,
+          49804096,
+          33188,
+          1,
+          4382,
+          1791758849394824249,
+          1791758849394824249
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/full370_unreduced_eigen.py",
+        "sha256": "32f5c5378e06c6ec7b952e16de9a349ec02ba7a231b71fec1d6692536c2c9217",
+        "size_bytes": 11131,
+        "identity": [
+          16777234,
+          49792291,
+          33188,
+          1,
+          11131,
+          1791754969655929549,
+          1791754969655929549
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/full370_unreduced_eigen.py",
+        "sha256": "079aff165be0216a29f2e6ec667e994f6437203a159cdb69b3f2e5b9a2ab226d",
+        "size_bytes": 11308,
+        "identity": [
+          16777234,
+          49804107,
+          33188,
+          1,
+          11308,
+          1791758948699241374,
+          1791758948699241374
+        ]
+      },
+      "complete_byte_changes": [
+        {
+          "old_begin": 3729,
+          "old_end": 3877,
+          "new_begin": 3729,
+          "new_end": 3952,
+          "old_hex": "202020205468697320697320746865204e44494d33206e696e652d6861726d6f6e696320636f6e76656e74696f6e206f66204d4f434348522f464c55534f552e20497420646f65730a202020206e6f7420737562737469747574652053504f54204e44494d31277320646966666572656e74206f66662d67726f757020616e67756c6172206e6f726d616c697a6174696f6e2e0a",
+          "new_hex": "20202020546869732069732074686520696e646570656e64656e742066756c6c20706879736963616c205032206e696e652d6861726d6f6e696320636f6e76656e74696f6e206f660a202020204d4f434348522e20464c55534f55204e44494d332075736573206120646966666572656e742072656374616e67756c61722033783320696e6465783b207468697320646f65730a202020206e6f7420636c61696d2074686174206e617469766520726570726573656e746174696f6e206f722053504f5420534e333220616e67756c6172206571756976616c656e63652e0a"
+        },
+        {
+          "old_begin": 6178,
+          "old_end": 6178,
+          "new_begin": 6253,
+          "new_end": 6300,
+          "old_hex": "",
+          "new_hex": "20202020617574686f726974792e7665726966795f6f70657261746f72286d6f64656c2c206f70657261746f72290a"
+        },
+        {
+          "old_begin": 9948,
+          "old_end": 9948,
+          "new_begin": 10070,
+          "new_end": 10125,
+          "old_hex": "",
+          "new_hex": "202020202020202020202020617574686f726974792e7665726966795f6f70657261746f72286d6f64656c2c206f70657261746f72290a"
+        }
+      ],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_full_angular_p2.py",
+        "sha256": "dfffb797817885cc798efd377065372c04e02894db787d3390803886bed3eb31",
+        "size_bytes": 14816,
+        "identity": [
+          16777234,
+          49794090,
+          33188,
+          1,
+          14816,
+          1791755222491702797,
+          1791755222491710131
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_full_angular_p2.py",
+        "sha256": "a841c2d31e2aecc7702b9e05810c51ca64f102266ed9cd2bacaec35a437871f5",
+        "size_bytes": 14900,
+        "identity": [
+          16777234,
+          49804109,
+          33188,
+          1,
+          14900,
+          1791758948715150661,
+          1791758948715150661
+        ]
+      },
+      "complete_byte_changes": [
+        {
+          "old_begin": 648,
+          "old_end": 710,
+          "new_begin": 648,
+          "new_end": 794,
+          "old_hex": "7372632f4d4f43494b332e663a35312d373720287061726974696573293b207372632f464c55534f552e6639303a3130342d3133352028326c2b31293b0a",
+          "new_hex": "7372632f4d4f43494b332e663a35312d373720287061726974696573293b20696e646570656e64656e742066756c6c20706879736963616c2050322028326c2b31292e0a464c55534f552e663930204e44494d3320757365732072656374616e67756c617233783320696e646963657320616e64206973206e6f7420616e206571756976616c656e63652070726f6f663b0a"
+        }
+      ],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_layered_geometry.hpp",
+        "sha256": "28eaefa04e3f53dfaa3d473e61700755118b3f2991670d0239198b755785b13b",
+        "size_bytes": 2780,
+        "identity": [
+          16777234,
+          49794092,
+          33188,
+          1,
+          2780,
+          1791755222492135132,
+          1791755222492142465
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_layered_geometry.hpp",
+        "sha256": "28eaefa04e3f53dfaa3d473e61700755118b3f2991670d0239198b755785b13b",
+        "size_bytes": 2780,
+        "identity": [
+          16777234,
+          49804104,
+          33188,
+          1,
+          2780,
+          1791758849396477086,
+          1791758849396477086
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_layered_multigroup.cpp",
+        "sha256": "3490d2fbcaa31da4430686c56ba6f1f98b01802df3aa28a944fef3822ccdf5ac",
+        "size_bytes": 6225,
+        "identity": [
+          16777234,
+          49794094,
+          33188,
+          1,
+          6225,
+          1791755222492614592,
+          1791755222492622800
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_layered_multigroup.cpp",
+        "sha256": "3490d2fbcaa31da4430686c56ba6f1f98b01802df3aa28a944fef3822ccdf5ac",
+        "size_bytes": 6225,
+        "identity": [
+          16777234,
+          49804106,
+          33188,
+          1,
+          6225,
+          1791758849396903545,
+          1791758849396903545
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_layered_multigroup.py",
+        "sha256": "dfd67db6e697f699240f718943f763e787cca964d32a7274aa0a1146fbfcd7b7",
+        "size_bytes": 4384,
+        "identity": [
+          16777234,
+          49794088,
+          33188,
+          1,
+          4384,
+          1791755222491301963,
+          1791755222491309296
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_layered_multigroup.py",
+        "sha256": "dfd67db6e697f699240f718943f763e787cca964d32a7274aa0a1146fbfcd7b7",
+        "size_bytes": 4384,
+        "identity": [
+          16777234,
+          49804105,
+          33188,
+          1,
+          4384,
+          1791758849396673586,
+          1791758849396673586
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_layered_transport.cpp",
+        "sha256": "2186706a66dff0629faa4efbdb26b8e0f6fe6fedebde0608f143ed7d040cccea",
+        "size_bytes": 7013,
+        "identity": [
+          16777234,
+          49794093,
+          33188,
+          1,
+          7013,
+          1791755222492328549,
+          1791755222492335508
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_layered_transport.cpp",
+        "sha256": "2186706a66dff0629faa4efbdb26b8e0f6fe6fedebde0608f143ed7d040cccea",
+        "size_bytes": 7013,
+        "identity": [
+          16777234,
+          49804108,
+          33188,
+          1,
+          7013,
+          1791758849397272213,
+          1791758849397272213
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_layered_transport.py",
+        "sha256": "09eafc292b84ab0f2eeb37b1d56433eead5fc79f1889eded5d336088d0130609",
+        "size_bytes": 5865,
+        "identity": [
+          16777234,
+          49794087,
+          33188,
+          1,
+          5865,
+          1791755222491051295,
+          1791755222491060587
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_layered_transport.py",
+        "sha256": "09eafc292b84ab0f2eeb37b1d56433eead5fc79f1889eded5d336088d0130609",
+        "size_bytes": 5865,
+        "identity": [
+          16777234,
+          49804099,
+          33188,
+          1,
+          5865,
+          1791758849395485125,
+          1791758849395485125
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_layered_white_transfer.cpp",
+        "sha256": "1e44833e394b5cf2072e9309ae6f07f74b74917425a8da5150a394e8115f5cdc",
+        "size_bytes": 4209,
+        "identity": [
+          16777234,
+          49794095,
+          33188,
+          1,
+          4209,
+          1791755222492834051,
+          1791755222492841634
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_layered_white_transfer.cpp",
+        "sha256": "1e44833e394b5cf2072e9309ae6f07f74b74917425a8da5150a394e8115f5cdc",
+        "size_bytes": 4209,
+        "identity": [
+          16777234,
+          49804101,
+          33188,
+          1,
+          4209,
+          1791758849395871751,
+          1791758849395871751
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_oblique_geometry_core.hpp",
+        "sha256": "8fc4fae592bb70fcad9429913438742c922b3d3d825b7e994cf30c14ae70e987",
+        "size_bytes": 3135,
+        "identity": [
+          16777234,
+          49794091,
+          33188,
+          1,
+          3135,
+          1791755222491949340,
+          1791755222491956465
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_oblique_geometry_core.hpp",
+        "sha256": "8fc4fae592bb70fcad9429913438742c922b3d3d825b7e994cf30c14ae70e987",
+        "size_bytes": 3135,
+        "identity": [
+          16777234,
+          49804111,
+          33188,
+          1,
+          3135,
+          1791758849397764131,
+          1791758849397764131
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/native_oblique_streaming.py",
+        "sha256": "dabb6dbd1373f8c12f27ccb02c4d60b22cc5ba6852ce8341664322faf7805f53",
+        "size_bytes": 5884,
+        "identity": [
+          16777234,
+          49794089,
+          33188,
+          1,
+          5884,
+          1791755222491508963,
+          1791755222491516047
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/native_oblique_streaming.py",
+        "sha256": "dabb6dbd1373f8c12f27ccb02c4d60b22cc5ba6852ce8341664322faf7805f53",
+        "size_bytes": 5884,
+        "identity": [
+          16777234,
+          49804102,
+          33188,
+          1,
+          5884,
+          1791758849396123335,
+          1791758849396123335
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/snapshot_control_preflight.py",
+        "sha256": "f60309e54947de8dc43e7080fd19ca6255652d840493db23b37ff7003c6a0819",
+        "size_bytes": 6441,
+        "identity": [
+          16777234,
+          49794097,
+          33188,
+          1,
+          6441,
+          1791755222493273719,
+          1791755222493281219
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/snapshot_control_preflight.py",
+        "sha256": "f60309e54947de8dc43e7080fd19ca6255652d840493db23b37ff7003c6a0819",
+        "size_bytes": 6441,
+        "identity": [
+          16777234,
+          49804112,
+          33188,
+          1,
+          6441,
+          1791758849397969631,
+          1791758849397969631
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v1/terminal_AB_and_current_track_inputs.py",
+        "sha256": "fd51657a6fc60e7863186e1d3d37894be1252c571ee405a15ac7485e02c311e2",
+        "size_bytes": 13518,
+        "identity": [
+          16777234,
+          49794096,
+          33188,
+          1,
+          13518,
+          1791755222493397845,
+          1791755222493397845
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/terminal_AB_and_current_track_inputs.py",
+        "sha256": "fd51657a6fc60e7863186e1d3d37894be1252c571ee405a15ac7485e02c311e2",
+        "size_bytes": 13518,
+        "identity": [
+          16777234,
+          49804103,
+          33188,
+          1,
+          13518,
+          1791758849396268544,
+          1791758849396268544
+        ]
+      },
+      "complete_byte_changes": [],
+      "whole_forward_inverse_byte_exact": true
+    }
+  ],
+  "complete_python_AST_count": 9,
+  "changed_source_files": [
+    "current_formal_full370_ray_operator.py",
+    "current_formal_input_authority.py",
+    "full370_unreduced_eigen.py",
+    "native_full_angular_p2.py"
+  ],
+  "original_v1_package_unchanged": true,
+  "changes": [
+    "Initial isotropic quadrature uses actual declared WZMU*ZMU measure, unchanged original azimuth count/order and one initial amplitude normalization",
+    "Bind every original ray field/byte, complete angular states, formal U/W/PL and all original material/events/volumes to loaded model using bounded typed stream hashes",
+    "Bind actual operator totals/volume/surface/rays/states/order/white/checks to current model and actual library/build/source origin recorded in controls",
+    "Remove rectangular FLUSOU NDIM3 native-equivalence claim; independent physical full P2 formula remains"
+  ],
+  "all_original_caps_unchanged": true,
+  "all_original_physics_tolerances_unchanged": true,
+  "candidate_imported_or_executed": false,
+  "compiler_executed": false,
+  "numerical_job_executed": false,
+  "formal_SN32_angular_equivalence_proven": false,
+  "reference_kernel_controls_passed": false,
+  "current_reaction_multiplicity_qualified": false,
+  "scientific_accuracy_qualified": false,
+  "AAA_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false
+}

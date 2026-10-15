@@ -1,0 +1,15 @@
+SPOT 材料一致性完成后的执行顺序 — 2026-10-14
+
+1. 关闭三份材料按路径逐字比较的唯一实际后验。实际运行已退出 0，三组共 6,792,456 个字与 58,860 条记录差异为 0。
+
+2. 补齐反应多重性权威。11 份 GENDF / MT5 / P0 提取是诊断性前置，不能代替原 MF6、DRAGR 压缩字回放与当前 SPH/MASK 反应语义。保留原 ν 裂变与角向精度失败，不设 ν=1、不拟合截面或改温度。
+
+3. 生产独立全群传输核的真实来源与组件控制证据。原守护下可先执行私有编译 current_full370_white_accumulate.cpp → native_full_angular_p2 六项组件测试 → native_layered_multigroup 六项组件测试。原 512 MiB、单阶段 600 秒、总时长 1800 秒、单线程单子进程零重试保持，全部新产物继续累计原 2 GiB。
+
+4. 组件控制通过后仍须正式范围控制：H150、NZ48、11,364 条真实 tracks、181,824 次 action、370 群、9 个矩、offset32，原 white 和物理阈值；绑定同一编译库与来源。当前测试的 8 azimuth / 128 angular states 与 NZ3 fixture 不能改名充当正式全范围控制。现有 4 polar × 96 azimuth 的 1,536 个 native states 尚不能认定等价 formal SN32。
+
+5. 实际材料 lineage、kernel control、kernel origin 三个准入凭证完整后，运行 AAA 独立未约化全群参考。参考从独立各向同性初值迭代九矩；不为六个未捕获历史 mixed moments 补零或伪造原观测。
+
+6. AAA 在原阈值通过后，补 B 的完整材料上下文并运行 ABA。AAA 参考当前只需要现有 A 材料，不应提前换材料以回避精度问题。
+
+当前整体目标仍 active，AAA 物理精度、反应多重性、中子平衡、独立耦合参考及 ABA 尚未完成。

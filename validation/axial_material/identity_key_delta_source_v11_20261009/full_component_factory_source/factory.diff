@@ -1,0 +1,890 @@
+--- /Users/wen/spot/validation/axial_material/prepare_qualified_AB_rank1_factor_cache_factor_diagonal_trim_production.py
++++ /private/tmp/axmat_v11_full_component_factory_source_draft_20261009/prepare_qualified_AB_rank1_factor_cache_cross_group_identity_key_delta_production.py
+@@ -1,10 +1,11 @@
+-"""Independent ordinary-rank1 dead factor-diagonal storage component.
+-
+-The complete 92d rank1 build and actual Root exit-zero witness are compulsory.
+-Only SPOT1P64.o changes in production; sender/SPOASM/white/all other inputs stay
+-exact. All original controls reexecute, with independently archived dense c017
+-lower/packed/full decode comparisons. Unit success cannot prove native RSS or
+-AAA/ABA accuracy. Root alone supplies actual exit-zero/full stdout/stderr proof.
++"""Source-only complete V11 cross-group integer identity storage component.
++
++The original 45 stages, dense c017 comparisons, all physical inputs and thresholds
++remain compulsory. Two driver build stages and 21 independently audited keycodec
++stages are additional. Expected persistent fees derive from archived original
++dense full keys, never from candidate compressed output. No native RSS, AAA or ABA
++qualification follows from component controls. Root's actual terminal is external.
++This draft cannot execute until its complete source admission is reviewed.
+ """
+ 
+ import argparse
+@@ -28,9 +29,9 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT / "validation/artifacts"
+-SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-admission-20261009"
+-OUT = ART / "axial-material-rank1-factor-cache-factor-diagonal-trim-build-20261009"
+-TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-terminal-20261009"
++SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-admission-v11-20261009"
++OUT = ART / "axial-material-rank1-factor-cache-cross-group-identity-key-delta-build-v11-20261009"
++TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-terminal-v11-20261009"
+ PARENT = ART / "axial-material-rank1-factor-cache-build-20261007"
+ PARENT_SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-build-admission-20261007"
+ PARENT_TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-build-terminal-20261007"
+@@ -65,8 +66,8 @@
+ SENDER_SOURCE_SHA = "bb901bfed9a4199a5b4c98c58c93bf3b3dda597fd2047bfed6d267c8dcadac81"
+ SENDER_OBJECT = PARENT / "build/FLU2DR64.o"
+ SENDER_OBJECT_SHA = "74b22d403667e78686aef52b97933478779d4dfeb250b1cd1cb86343c930cfb9"
+-PATCH_HELPER = ROOT / "validation/axial_material/rank1_factor_cache_factor_diagonal_trim_patch.py"
+-CONTROL_SOURCE = ROOT / "validation/axial_material/rank1_factor_cache_factor_diagonal_trim_controls.f90"
++PATCH_HELPER = ROOT / "validation/axial_material/rank1_factor_cache_cross_group_identity_key_delta_patch.py"
++CONTROL_SOURCE = ROOT / "validation/axial_material/rank1_factor_cache_cross_group_identity_key_delta_controls.f90"
+ ORIGINAL_PATCH = ROOT / "validation/axial_material/rank1_factor_cache_patch.py"
+ ORIGINAL_PATCH_SHA = "c309a37bad260ebdf377370689b3295476c31fefde8269257c597666f6f78f3e"
+ ORIGINAL_CONTROL = ROOT / "validation/axial_material/rank1_factor_cache_controls.f90"
+@@ -74,14 +75,14 @@
+ TOTAL_WALL, STAGE_WALL, RSS_CAP = 1800, 600, 512
+ ARCHIVE_RESERVE = 2 * 2**30
+ HISTORY_CAP, FREE_FLOOR = 96 * 2**30, 8 * 2**30
+-FAMILY = "RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD"
++FAMILY = "RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_V11"
+ HISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"
+ OBSERVER_EXPECTED = [32, 3, 2, 3, 1]
+-TERMINAL_SCHEMA = "AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1"
++TERMINAL_SCHEMA = "AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1"
+ TAIL_FIELDS = ("actual_tail_check", "actual_elapsed_seconds", "actual_archive_bytes", "actual_resources")
+-SOURCE_STATUS = "READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_COMPONENT_EXECUTION"
+-PATCH_HELPER_SHA = "d849ebbbe4dd7e59b17bd67e60a07f950aa7a2fc33f22011431c83c46cff1b6e"
+-CONTROL_SOURCE_SHA = "82b19974518f44952f829ef388a9b5fdbf58e2b4b7df2d7f7d61f7839038def4"
++SOURCE_STATUS = "UNREADY"
++PATCH_HELPER_SHA = "733855513a81ead79f797dc0843b061f1604ab61b6db9684613a06a067387300"
++CONTROL_SOURCE_SHA = "eab3a7790e9f499282017cc37581be5acb07f8a4170e8fcaae95b0de47305d52"
+ FACTORY_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_factor_cache_last_cprime_trim_production.py"
+ FACTORY_SOURCE_PARENT_SHA = "8f6947392a087cd722fc2cbc3075db54c256c73bcf9dab72cac708392b5ef92a"
+ DELEGATED_DEDUP_PATCH = ROOT / "validation/axial_material/rank1_factor_cache_memory_dedup_patch.py"
+@@ -107,10 +108,41 @@
+ FACTOR_CODEC_PLAN_SHA = "7026f91f2098f9bf9d14f2d34f455473a654000ace6e3864b53d9a20bbb14373"
+ 
+ 
++V10_FACTORY = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_factor_cache_factor_diagonal_trim_production.py"
++V10_FACTORY_SHA = "d82d89daa779c8e1f3087e5c49f05279d35a9b3320ea1ae0257f7eaa586ebc8e"
++V10_CONTROL_SOURCE = ROOT / "validation/axial_material/rank1_factor_cache_factor_diagonal_trim_controls.f90"
++V10_CONTROL_SOURCE_SHA = "82b19974518f44952f829ef388a9b5fdbf58e2b4b7df2d7f7d61f7839038def4"
++V10_PATCH_HELPER = ROOT / "validation/axial_material/rank1_factor_cache_factor_diagonal_trim_patch.py"
++V10_PATCH_HELPER_SHA = "d849ebbbe4dd7e59b17bd67e60a07f950aa7a2fc33f22011431c83c46cff1b6e"
++IDENTITY_KERNEL_SOURCE = ROOT / "validation/axial_material/identity_key_delta_source_v11_20261009/SPOT1P64.f90"
++IDENTITY_KERNEL_SHA = "0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5"
++IDENTITY_CONTRACT = ROOT / "validation/axial_material/identity_key_delta_source_v11_20261009/component_source_extension/identity_key_delta_contract.json"
++IDENTITY_CONTRACT_SHA = "4bc48ab443cbd7e9b1253a5cc4e758db2e9a877f2603f0a9833b5b92332ffcfb"
++IDENTITY_SOURCE_ADMISSION = ROOT / "validation/axial_material/identity_key_delta_source_v11_20261009/Root_complete_component_source_extension_admission.json"
++IDENTITY_SOURCE_ADMISSION_SHA = "cbe2ab7e81073ac1d8e65d3aad377deba986c2e88342c7e7d9e41174def00832"
++KEYCODEC_CONTROL_SOURCE = ROOT / "validation/axial_material/identity_key_delta_source_v11_20261009/keycodec_controls.f90"
++KEYCODEC_CONTROL_SHA = "3f59d94d49c049b206419b49c3a3ac437aa3d980548ab8fb27632ba4dfd472f7"
++KEYCODEC_AUDITOR = ROOT / "validation/axial_material/rank1_cross_group_identity_key_codec_controls_audit.py"
++KEYCODEC_AUDITOR_SHA = "8ecf321ed137de883160dade3b33f95765d5e5e71c54747ef2e49de8bd150903"
++PRIMITIVE_ABI_REVIEW = ROOT / "validation/axial_material/identity_key_delta_codec_review_v11_20261009/independent_raw_review/REPORT.json"
++PRIMITIVE_ABI_REVIEW_SHA = "7caee2f7e52180aa8d26f864168dab01e1aeb633d79349cabdb25b9fa40e8ce1"
++KEYCODEC_MUTATIONS = ('unchanged_word','difference_word','stored_difference_word','base_word',
++    'input_length','load_length','ineligible_existing','corrupt_index_zero','corrupt_index_high','missing_anchor')
++KEYCODEC_CASES = tuple(dict(name=mutation+'_p'+str(phase),args=['negative',mutation,str(phase)],
++    expected_returncode=23,expected_message='SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')
++    for phase in (1,2) for mutation in KEYCODEC_MUTATIONS)
++KEYCODEC_RAW_BINARY_BYTES = 70792
++KEYCODEC_JSONL_BYTES = 26930
++KEYCODEC_ABORT_BYTES = 1000
++KEYCODEC_MANIFEST_ROWS = 213  # 33 positive + 20 * 9 negative JSONL rows.
++FUTURE_ACTUAL_BUILD_TERMINAL_SHA = None
++FUTURE_ACTUAL_BUILD_SEAL_SHA = None
++FUTURE_ACTUAL_NATIVE_TERMINAL_SHA = None
++
+ def require_ready():
+     if SOURCE_STATUS != "READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_COMPONENT_EXECUTION":
+         raise ValueError("source-only cprime-trim draft is UNREADY; no declaration/API/child allowed")
+-    if not all(re.fullmatch(r"[0-9a-f]{64}", value or "") for value in (PATCH_HELPER_SHA, CONTROL_SOURCE_SHA)):
++    if not all(re.fullmatch(r"[0-9a-f]{64}", value or "") for value in (PATCH_HELPER_SHA, CONTROL_SOURCE_SHA, KEYCODEC_AUDITOR_SHA)):
+         raise ValueError("independently frozen helper/control source pins are mandatory")
+ 
+ 
+@@ -306,7 +338,12 @@
+         FACTOR_DIAGONAL_PROOF:FACTOR_DIAGONAL_PROOF_SHA,
+         COMPLETE_C0_FACTOR_PROOF:COMPLETE_C0_FACTOR_PROOF_SHA,
+         FACTOR_DIAGONAL_CONTROL_CONTRACT:FACTOR_DIAGONAL_CONTROL_CONTRACT_SHA,
+-        FACTOR_CODEC_PLAN:FACTOR_CODEC_PLAN_SHA}
++        FACTOR_CODEC_PLAN:FACTOR_CODEC_PLAN_SHA,
++        V10_FACTORY:V10_FACTORY_SHA,V10_CONTROL_SOURCE:V10_CONTROL_SOURCE_SHA,V10_PATCH_HELPER:V10_PATCH_HELPER_SHA,
++        IDENTITY_KERNEL_SOURCE:IDENTITY_KERNEL_SHA,IDENTITY_CONTRACT:IDENTITY_CONTRACT_SHA,
++        IDENTITY_SOURCE_ADMISSION:IDENTITY_SOURCE_ADMISSION_SHA,
++        KEYCODEC_CONTROL_SOURCE:KEYCODEC_CONTROL_SHA,KEYCODEC_AUDITOR:KEYCODEC_AUDITOR_SHA,
++        PRIMITIVE_ABI_REVIEW:PRIMITIVE_ABI_REVIEW_SHA}
+     for path,wanted in expected.items():
+         require(path,wanted)
+     old = read(require(PARENT / "declaration.json"))
+@@ -359,6 +396,20 @@
+     require(CONTROL_SOURCE,controls_sha)
+     source = require(MEMORY_KERNEL_SOURCE,MEMORY_KERNEL_SOURCE_SHA).read_text()
+     changed = patch.patch_kernel(source)
++    composed_proof = copy.deepcopy(changed['proof'])
++    identity = composed_proof['cross_group_identity_key_delta']
++    inverse_v10 = changed['kernel']
++    for edit in reversed(identity['edits']):
++        if inverse_v10.count(edit['new']) != 1:
++            raise ValueError('identity patch region not uniquely invertible')
++        inverse_v10 = inverse_v10.replace(edit['new'],edit['old'],1)
++    if (composed_proof['inherited_v10_complete_proof'] != read(require(COMPLETE_C0_FACTOR_PROOF,COMPLETE_C0_FACTOR_PROOF_SHA))
++            or inverse_v10.encode() != require(FACTOR_DIAGONAL_SOURCE,FACTOR_DIAGONAL_KERNEL_SHA).read_bytes()
++            or changed['kernel'].encode() != require(IDENTITY_KERNEL_SOURCE,IDENTITY_KERNEL_SHA).read_bytes()
++            or composed_proof['candidate_kernel_sha256'] != IDENTITY_KERNEL_SHA
++            or composed_proof['scope'] != 'ORDINARY_RANK1_LOWER_DICTIONARY_TERMINAL_CPRIME_DEAD_FACTOR_DIAGONAL_AND_CROSS_GROUP_INTEGER_IDENTITY_STORAGE_ONLY'
++            or composed_proof['complete_inverse_byteexact'] is not True):
++        raise ValueError('entire original V10 proof and complete c0 inverse must survive new integer key storage')
+     dense = patch.dense_reference_kernel(require(KERNEL_SOURCE,KERNEL_SOURCE_SHA).read_text())
+     original = load(require(ORIGINAL_PATCH,ORIGINAL_PATCH_SHA),"rank1_factor_diagonal_trim_actual_original_patch")
+     # This genuine 754421 original is independently recompiled for uncached
+@@ -367,8 +418,8 @@
+         require(ART / "axial-material-source-factor-build-20261006/build/FLU2DR64.f",
+         "15b0a314886ed224204a53dc77e52fe79114ef00eee81230f80d28eaed4a8316").read_text())
+     c = copy.deepcopy(original.control_contract())
+-    c["schema"] = "AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_CONTROL_CONTRACT_V1"
+-    c["experiment"] = "rank1-factor-cache-factor-diagonal-trim-20261009"
++    c["schema"] = "AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_CONTROL_CONTRACT_V1"
++    c["experiment"] = "rank1-factor-cache-cross-group-identity-key-delta-v11-20261009"
+     c["positive_cases"].append("permuted_angles")
+     c["inherited_dense_key_accounting_description"] = c["key_accounting"]
+     c["key_accounting"] = "Raw/projected key bytes and 4096/group descriptor unchanged. FACTORS keeps the original full packed bound plus4*nblock map bytes minus8*nstate^2 for terminal cprime before RESERVE. LOWER_STORE duplicate release8*npositive*nstate*(nblock-nunique) is unchanged. After every original full33-column build SOLVE, ordinary-rank1 PACK reserves P=8*nstate*(nstate-1)*nblock while full factor F=8*nstate^2*nblock remains allocated, then move_alloc releases F; permanent diagonal reduction D=8*nstate*nblock. Ready retained factors=(16*nstate^2+12*nstate)*nblock+4*npositive+4*nblock+8*npositive*nstate*nunique-8*nstate^2-D; actual ready factor shape[nstate-1,nstate,nblock], cprime[nstate,nstate,nblock-1]. Each build peak includes prior_live+raw_key+projected_key+postLOWER_prePACK_factors+P, along with unchanged raw/projected temporary-key and worst FACTORS reservations. Hit factor decode reuses the existing full-shape8*nstate^2 lower workspace after lower RHS use; public square FACTOR64/SOLVE64 and pivots/pivot_value are unchanged. Lower-only primitives with no allocated ready factor retain original reservation/accounting and zero factor shape. Reservation/storage saving is not RSS; legacy/dense/uncached arithmetic and all original40 stages/thresholds remain exact."
+@@ -376,7 +427,25 @@
+     c["inherited_literal_control_source"] = dict(path=str(ORIGINAL_CONTROL),sha256=ORIGINAL_CONTROL_SHA)
+     c["positive_fixtures"].append(dict(name="permuted_angles",groups=2,nrhs=3,nreg2d=8,nfloor=48,
+         npq=32,nsct=3,nmode=1,white=True,rank1=True))
+-    memory = patch.control_contract()
++    memory = copy.deepcopy(patch.control_contract())
++    identity_contract = memory.pop('cross_group_identity_key_delta')
++    if identity_contract != read(require(IDENTITY_CONTRACT,IDENTITY_CONTRACT_SHA)):
++        raise ValueError('complete independent identity storage contract differs')
++    c['cross_group_identity_key_delta'] = identity_contract
++    c['inherited_factor_diagonal_key_accounting_description'] = c['key_accounting']
++    c['key_accounting'] += ' V11 changes only retained raw/projected integer key fees to full8*n or strict12*ndiff, based on first same-size complete c017 dense keys per phase; full temporary8*n, FACTORS/LOWER/PACK coexisting allocations, all counters and all old arithmetic remain required.'
++    c['keycodec_positive_command_args'] = ['positive']
++    c['keycodec_negative_cases'] = copy.deepcopy(list(KEYCODEC_CASES))
++    c['original45_required'] = True
++    c['total_planned_stage_count'] = 68
++    abi=read(require(PRIMITIVE_ABI_REVIEW,PRIMITIVE_ABI_REVIEW_SHA))
++    dims=abi['actual_descriptor_bytes']
++    if (abi['status']!='PASS_PRIMITIVE_CODEC_ONLY' or any(type(dims[k]) is not int or dims[k]<=0 for k in ('mode','group'))
++            or dims['mode']+dims['group']>4096 or abi['original45_controls_completed'] is not False
++            or not any(item['sha256']==IDENTITY_KERNEL_SHA and Path(item['path']).name=='SPOT1P64.f90' for item in abi['source_pins'])):
++        raise ValueError('real identical-source ABI descriptor witness must fit existing4096, without replacing full controls')
++    c['identity_descriptor_abi_witness']=dict(review=pin(PRIMITIVE_ABI_REVIEW),descriptor_bytes=dims,
++        applies_to_identical_candidate_source=True,does_not_replace_new68_stages=True)
+     if memory != read(require(FACTOR_DIAGONAL_CONTROL_CONTRACT,FACTOR_DIAGONAL_CONTROL_CONTRACT_SHA)):
+         raise ValueError("entire inherited control contract plus factor storage addendum differs")
+     trim_contract = dict(schema=TRIM_SCHEMA,ordinary_rank1_only=True,
+@@ -391,7 +460,7 @@
+         raise ValueError("explicit factor physical shape/public square solve/accounted pack contract required")
+     c["factor_diagonal_trim"] = copy.deepcopy(factor_contract)
+     codec=read(require(FACTOR_CODEC_PLAN,FACTOR_CODEC_PLAN_SHA))
+-    if codec["controls_source"] != pin(CONTROL_SOURCE) or codec["total_planned_stage_count"] != 45 or codec["additional_stage_count"] != 5 or codec["original40_required"] is not True:
++    if codec["controls_source"] != pin(require(V10_CONTROL_SOURCE,V10_CONTROL_SOURCE_SHA)) or codec["total_planned_stage_count"] != 45 or codec["additional_stage_count"] != 5 or codec["original40_required"] is not True:
+         raise ValueError("complete original40 plus5 explicit factor codec controls required")
+     c["factor_codec_control_contract"] = codec
+     c["factor_positive_command_args"] = codec["positive"]["args"]
+@@ -427,7 +496,7 @@
+         original_memory_primitive_shape=[4,3],additional_dictionary_primitive_shapes=[[4,6],[4,6],[4,49]],
+         raw_numeric_PASSED_by_Fortran_driver=False, all_actual_raw_must_be_archived_before_finite_or_bitwise_audit=True)
+     control_proof=control_source_equivalence()
+-    proof=changed["proof"]
++    proof=composed_proof['inherited_v10_complete_proof']
+     if (proof["parent_kernel_sha256"] != MEMORY_KERNEL_SOURCE_SHA or proof["complete_inverse_byteexact"] is not True
+             or proof['scope']!='ORDINARY_RANK1_LOWER_DICTIONARY_TERMINAL_CPRIME_AND_DEAD_FACTOR_DIAGONAL_STORAGE_ONLY'
+             or proof['dense_parent_kernel_sha256']!=KERNEL_SOURCE_SHA
+@@ -443,7 +512,7 @@
+     if (trim.get("schema")!=TRIM_SCHEMA or trim.get("parent_dedup_kernel_sha256")!=PARENT_DEDUP_KERNEL_SHA
+             or trim.get("candidate_kernel_sha256")!=TRIMMED_KERNEL_SHA
+             or proof.get("candidate_kernel_sha256")!=FACTOR_DIAGONAL_KERNEL_SHA
+-            or hashlib.sha256(changed["kernel"].encode()).hexdigest()!=FACTOR_DIAGONAL_KERNEL_SHA
++            or hashlib.sha256(inverse_v10.encode()).hexdigest()!=FACTOR_DIAGONAL_KERNEL_SHA
+             or trim.get("complete_inverse_to_dedup_byteexact") is not True
+             or trim.get("inverse_kernel_sha256")!=PARENT_DEDUP_KERNEL_SHA
+             or trim.get("ordinary_rank1_only") is not True or trim.get("full_33_rhs_solve_unchanged") is not True
+@@ -458,10 +527,10 @@
+             or factor!=read(require(FACTOR_DIAGONAL_PROOF,FACTOR_DIAGONAL_PROOF_SHA))
+             or proof!=read(require(COMPLETE_C0_FACTOR_PROOF,COMPLETE_C0_FACTOR_PROOF_SHA))
+             or proof.get("delegated_last_cprime_helper")!=dict(path=str(LAST_CPRIME_PATCH_HELPER),sha256=LAST_CPRIME_PATCH_HELPER_SHA)
+-            or changed["kernel"].encode()!=require(FACTOR_DIAGONAL_SOURCE,FACTOR_DIAGONAL_KERNEL_SHA).read_bytes()):
++            or inverse_v10.encode()!=require(FACTOR_DIAGONAL_SOURCE,FACTOR_DIAGONAL_KERNEL_SHA).read_bytes()):
+         raise ValueError("complete c0->dedup->343e->factor diagonal source lineage differs")
+     return dict(kernel=changed["kernel"],reference_kernel=ref["reference_kernel"],dense_reference_kernel=dense["kernel"],
+-        proof=proof,dense_reference_proof=dense["proof"],original_reference_proof=ref["proof"],control_source_proof=control_proof),c
++        proof=composed_proof,dense_reference_proof=dense["proof"],original_reference_proof=ref["proof"],control_source_proof=control_proof),c
+ 
+ 
+ def archive_forecast(contract, changed):
+@@ -470,7 +539,7 @@
+         nr,nh,nq,nl,nm=[f[k] for k in ('nreg2d','nfloor','npq','nsct','nmode')]
+         nm=nm if modes is None else modes
+         return 96+4*(nh+nh*nr+nh+4+4*nl+nr*nm+nr+4+2*nq+nl*nq)+8*(nr*3+1)
+-    total=0; variable_dictionary_upper=0; parts=[]; rows=0
++    total=0; variable_dictionary_upper=0; variable_identity_upper=0; parts=[]; rows=0
+     for f in contract['positive_fixtures']:
+         nr,nh,nq,nl=[f[k] for k in ('nreg2d','nfloor','npq','nsct')]
+         calls=f['groups']*f['nrhs']*2
+@@ -481,6 +550,11 @@
+             amount+=f['groups']*(4*(nh+1)+4)
+             variable_dictionary_upper+=f['groups']*(100+4*(nq//2)+4*(nh+1)+8*(nq//2)*nq*(nh+1))
+             rows+=3*f['groups']
++            key_bytes=cache_accounting(f)['raw_key_bytes']+cache_accounting(f)['projected_key_bytes']
++            # Original full dense key + candidate two headers/base/decode fixed;
++            # encoded part is independently variable, never above full fallback.
++            amount+=f['groups']*(352+3*key_bytes+key_bytes)
++            variable_identity_upper+=f['groups']*key_bytes;rows+=2*f['groups']
+         total+=amount; rows+=calls+1
+         parts.append(dict(name=f['name'],complete_binary_bytes_upper_bound=amount))
+     prime=contract['positive_fixtures'][0]
+@@ -490,6 +564,8 @@
+         total+=dictionary_upper+96+8*32*32*49
+         variable_dictionary_upper+=dictionary_upper
+         total+=len((c['expected_message']+'\n').encode()); rows+=3
++    total+=len(contract['negative_cases'])*(256+3*(cache_accounting(prime)['raw_key_bytes']+cache_accounting(prime)['projected_key_bytes']))
++    rows+=len(contract['negative_cases'])
+     for c in contract['cap_negative_cases']:
+         total+=96+len((c['expected_message']+'\n').encode()); rows+=1
+     # V2 original memory primitives retain every original lower/DU field.
+@@ -511,15 +587,20 @@
+     codec=contract["factor_codec_control_contract"]
+     total+=codec["positive"]["total_binary_bytes"]+sum(case["total_binary_bytes"]+len((case["expected_message"]+"\n").encode()) for case in codec["negative"])
+     rows+=codec["positive"]["manifest_rows"]+len(codec["negative"])
++    total+=KEYCODEC_RAW_BINARY_BYTES+KEYCODEC_ABORT_BYTES
++    rows+=KEYCODEC_MANIFEST_ROWS
+     source_bytes=sum(len(changed[k].encode()) for k in ('kernel','reference_kernel','dense_reference_kernel'))
+     source_bytes+=require(CONTROL_SOURCE).stat().st_size+require(PARENT/'runtime/run_bounded_dragon.py').stat().st_size
++    source_bytes+=require(KEYCODEC_CONTROL_SOURCE,KEYCODEC_CONTROL_SHA).stat().st_size
+     allowance=1*2**30; manifest_allowance=rows*2048
+     forecast=total+source_bytes+manifest_allowance+allowance
+     if forecast>=ARCHIVE_RESERVE:
+         raise ValueError('complete exact raw archive and all build/source allowances exceed original 2GiB')
+-    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_COMPLETE_ARCHIVE_FORECAST_V1',
++    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_COMPLETE_ARCHIVE_FORECAST_V1',
+         complete_scope_roots=[str(SOURCE),str(OUT)],complete_control_raw_binary_and_abort_message_bytes_upper_bound=total,
+-        fixed_control_raw_binary_and_abort_message_bytes=total-variable_dictionary_upper,
++        fixed_control_raw_binary_and_abort_message_bytes=total-variable_dictionary_upper-variable_identity_upper,
++        variable_identity_encoded_bytes_upper_bound=variable_identity_upper,
++        standalone_keycodec_exact_jsonl_bytes=KEYCODEC_JSONL_BYTES,standalone_keycodec_exact_binary_and_abort_bytes=KEYCODEC_RAW_BINARY_BYTES+KEYCODEC_ABORT_BYTES,
+         variable_dictionary_raw_bytes_upper_bound=variable_dictionary_upper,
+         variable_dictionary_forecast_uses_all_blocks_unique=True,
+         exact_copied_source_bytes=source_bytes,declared_manifest_rows_upper_bound=rows,
+@@ -559,11 +640,13 @@
+         all370_unused_factor_diagonal_payload_bytes_removed=f['groups']*physical['factor_diagonal_bytes_released_per_group'],
+         factor_diagonal_payload_saving_is_not_RSS_or_512MiB_proof=True,
+         dictionary_cardinality_not_inferred_from_prior_partial_capture=True,
++        identity_full_fallback_is_conservative_upper_bound=True,actual_cross_group_differences_not_predicted=True,
+         forecast_is_not_actual_production_RSS_measurement=True,fresh_native_RSS_under_512_required=True)
+ 
+ 
+ def stage_commands(d,expected):
+     exe=str(OUT/'runtime/rank1_factor_cache_last_cprime_trim_controls')
++    keyexe=str(OUT/'runtime/keycodec_controls')
+     return [*d['build_commands'],[exe,*d['control_contract']['positive_command_args']],
+         *[[exe,*c['args']] for c in [*d['control_contract']['negative_cases'],*d['control_contract']['cap_negative_cases']]],
+         [exe,*d['control_contract']['memory_positive_command_args']],
+@@ -572,6 +655,8 @@
+         *[[exe,*c['args']] for c in d['control_contract']['dedup_negative_cases']],
+         [exe,*d['control_contract']['factor_positive_command_args']],
+         *[[exe,*c['args']] for c in d['control_contract']['factor_negative_cases']],
++        [keyexe,*d['control_contract']['keycodec_positive_command_args']],
++        *[[keyexe,*case['args']] for case in d['control_contract']['keycodec_negative_cases']],
+         [d['build_python_executable'],str(Path(__file__).resolve()),'audit-build','--sha256',expected]]
+ 
+ 
+@@ -581,7 +666,8 @@
+         ]+['controls/memory_positive/execute']+['controls/memory_negative_'+c['name']+'/execute'
+         for c in d['control_contract']['memory_negative_cases']]+['controls/dedup_positive/execute']+[
+         'controls/dedup_negative_'+c['name']+'/execute' for c in d['control_contract']['dedup_negative_cases']]+['controls/factor_positive/execute']+[
+-        'controls/factor_negative_'+c['name']+'/execute' for c in d['control_contract']['factor_negative_cases']]+['audit/audit']
++        'controls/factor_negative_'+c['name']+'/execute' for c in d['control_contract']['factor_negative_cases']]+['controls/keycodec_positive/execute']+[
++        'controls/keycodec_negative_'+case['name']+'/execute' for case in d['control_contract']['keycodec_negative_cases']]+['audit/audit']
+ 
+ 
+ def prepare_build(parent_seal,parent_terminal,parent_terminal_sha,failed_capture_terminal_sha,patch_sha,controls_sha,
+@@ -612,6 +698,12 @@
+         str(WHITE_OBJECT),str(ROOT/'lib/Darwin_arm64/libDragon.a'),str(ROOT/'Trivac/lib/Darwin_arm64/libTrivac.a'),
+         str(ROOT/'Utilib/lib/Darwin_arm64/libUtilib.a'),str(ROOT/'Ganlib/lib/Darwin_arm64/libGanlib.a'),
+         '-o',str(OUT/'runtime/rank1_factor_cache_last_cprime_trim_controls')]]
++    commands.extend([
++        [*common,'-c',str(SOURCE/'keycodec_controls.f90'),'-o',str(OUT/'build/keycodec_controls.o')],
++        [compiler,'-O2','-march=native','-ffp-contract=off','-g',str(OUT/'build/keycodec_controls.o'),
++         str(OUT/'build/SPOT1P64.o'),str(WHITE_OBJECT),str(ROOT/'lib/Darwin_arm64/libDragon.a'),
++         str(ROOT/'Trivac/lib/Darwin_arm64/libTrivac.a'),str(ROOT/'Utilib/lib/Darwin_arm64/libUtilib.a'),
++         str(ROOT/'Ganlib/lib/Darwin_arm64/libGanlib.a'),'-o',str(OUT/'runtime/keycodec_controls')]])
+     files=dict(old['files']); files.update(originals)
+     memory_decl=read(require(MEMORY_ROOT/'declaration.json'))
+     for path,wanted in memory_decl['files'].items():
+@@ -649,22 +741,26 @@
+         'memory_positive',*["memory_negative_"+x['name'] for x in c['memory_negative_cases']],
+         'dedup_positive',*["dedup_negative_"+x['name'] for x in c['dedup_negative_cases']],
+         'factor_positive',*["factor_negative_"+x['name'] for x in c['factor_negative_cases']]]
+-    if len(commands)+len(names)+1!=45:raise ValueError('all original40 and5 new factor codec guarded stages must remain declared')
++    names.extend(['keycodec_positive',*['keycodec_negative_'+case['name'] for case in KEYCODEC_CASES]])
++    if len(commands)!=8 or len(commands)+len(names)+1!=68:
++        raise ValueError('all original45 plus2 driver build and21 codec execute stages required')
+     for name in names:(OUT/'controls'/name).mkdir()
+     for name,key in (('SPOT1P64.f90','kernel'),('SPOT1P64.original_reference.f90','reference_kernel'),
+             ('SPOT1P64.dense_reference.f90','dense_reference_kernel')):(SOURCE/name).write_text(changed[key])
+     shutil.copy2(require(CONTROL_SOURCE,controls_sha),SOURCE/'rank1_factor_cache_last_cprime_trim_controls.f90')
++    shutil.copy2(require(KEYCODEC_CONTROL_SOURCE,KEYCODEC_CONTROL_SHA),SOURCE/'keycodec_controls.f90')
+     runner=require(PARENT/'runtime/run_bounded_dragon.py');shutil.copy2(runner,OUT/'runtime/run_bounded_dragon.py')
+     if (OUT/'runtime/run_bounded_dragon.py').read_bytes()!=runner.read_bytes():raise ValueError('actual runtime constructor input copy must be byteexact')
+     files[str(OUT/'runtime/run_bounded_dragon.py')]=digest(OUT/'runtime/run_bounded_dragon.py')
+     (SOURCE/'SPOT1P64.patch').write_text(''.join(difflib.unified_diff(MEMORY_KERNEL_SOURCE.read_text().splitlines(True),
+         changed['kernel'].splitlines(True),fromfile=str(MEMORY_KERNEL_SOURCE),tofile=str(SOURCE/'SPOT1P64.f90'))))
+-    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_SOURCE_ADMISSION_V1',
++    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_SOURCE_ADMISSION_V1',
+         actual_original_source_objects=originals,source_patch_proof=changed['proof'],dense_reference_proof=changed['dense_reference_proof'],
+         inherited_completed_memory_source_admission=memory_parent['source_admission'],
+         actual_dictionary_parent_source=pin(MEMORY_KERNEL_SOURCE),dictionary_parent_is_not_dense_reference=True,
+         source_factory_parent=dict(path=str(FACTORY_SOURCE_PARENT),sha256=FACTORY_SOURCE_PARENT_SHA),
+         delegated_dedup_patch=dict(path=str(DELEGATED_DEDUP_PATCH),sha256=DELEGATED_DEDUP_PATCH_SHA),
++        cross_group_identity_key_delta=c['cross_group_identity_key_delta'],keycodec_source=pin(KEYCODEC_CONTROL_SOURCE),keycodec_auditor=pin(KEYCODEC_AUDITOR),
+         last_cprime_trim=c['last_cprime_trim'],factor_diagonal_trim=c['factor_diagonal_trim'],factor_codec_control_contract=c['factor_codec_control_contract'],
+         original_reference_proof=changed['original_reference_proof'],control_source_proof=changed['control_source_proof'],sole_new_production_objects=['SPOT1P64.o'],
+         unchanged_sender_object=pin(SENDER_OBJECT),unchanged_Flu_selector_object=parent['compiled_selector'],
+@@ -672,7 +768,7 @@
+         reference_objects_unit_only=True,actual_full_FLU_entry_executed=False,native_RSS_proof_obtained=False,
+         fresh_512MiB_native_capture_required=True,scientific_qualification=False))
+     inv=h.inventory(SOURCE);files.update({str(SOURCE/name):sha for name,sha in inv['files'].items()})
+-    d=dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_DECLARATION_V1',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
++    d=dict(schema='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_DECLARATION_V1',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
+         files=files,build_commands=commands,production_link_command=commands[1],inherited_rank1_factor_cache_admission=parent,
+         inherited_rank1_factor_cache_memory_admission=memory_parent,actual_failed_compact_memory_native_capture_evidence=memory_failed,
+         actual_failed_cold_AAA_evidence=parent['actual_failed_cold_AAA_evidence'],actual_failed_native_capture_evidence=failed,
+@@ -692,7 +788,7 @@
+     if archive_bytes()>=ARCHIVE_RESERVE:raise ValueError('complete SOURCE plus OUT exceeded original 2GiB reservation')
+     resources.check()
+     print(json.dumps(dict(declaration=str(OUT/'declaration.json'),declaration_sha256=digest(OUT/'declaration.json'),
+-        source_root=str(SOURCE),classification='DECLARED_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_ONLY'),allow_nan=False))
++        source_root=str(SOURCE),classification='DECLARED_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_ONLY'),allow_nan=False))
+ 
+ 
+ def environment(d, require_build_interpreter=True):
+@@ -705,7 +801,7 @@
+ def declaration_admission(expected,require_build_interpreter=True):
+     require_ready()
+     d=read(require(OUT/'declaration.json',expected))
+-    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_DECLARATION_V1'
++    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_DECLARATION_V1'
+             or d['family']!=FAMILY or d['source_root']!=str(SOURCE) or d['total_wall_seconds']!=1800 or d['stage_wall_seconds']!=600
+             or d['rss_cap_mib']!=512 or d['archive_reserve_bytes']!=2*2**30 or d['artifact_budget_bytes']!=96*2**30
+             or d['min_free_bytes']!=8*2**30 or d['threads']!=1 or d['numeric_children_at_once']!=1 or d['retries']!=0
+@@ -736,10 +832,15 @@
+     for name,key in (('SPOT1P64.f90','kernel'),('SPOT1P64.original_reference.f90','reference_kernel'),('SPOT1P64.dense_reference.f90','dense_reference_kernel')):
+         if (SOURCE/name).read_text()!=changed[key]:raise ValueError('actual new complete source differs from reversible source proof')
+     if (SOURCE/'rank1_factor_cache_last_cprime_trim_controls.f90').read_bytes()!=CONTROL_SOURCE.read_bytes():raise ValueError('actual controls source differs')
++    if (SOURCE/'keycodec_controls.f90').read_bytes()!=require(KEYCODEC_CONTROL_SOURCE,KEYCODEC_CONTROL_SHA).read_bytes():
++        raise ValueError('fresh independent keycodec source differs')
++    if d['control_contract']['original45_required'] is not True or len(stage_labels(d))!=68:
++        raise ValueError('old complete45 and new independent23 stages mandatory')
+     return d
+ 
+ 
+ def check_watch(stage):
++    if expected_stage_exit(stage)==23:return check_keycodec_negative_watch(stage)
+     item = helper().check_watch(OUT, stage)
+     watch = read(item["path"])
+     if (watch["command"] != stage["command"] or watch["rss_cap_mib"] != RSS_CAP
+@@ -851,7 +952,7 @@
+     return rows
+ 
+ 
+-def cache_accounting(fixture,nmat=3,unique_count=None):
++def cache_accounting(fixture,nmat=3,unique_count=None,identity_cost=None):
+     nr,nh,nq,nl,nm=[fixture[k] for k in ('nreg2d','nfloor','npq','nsct','nmode')]
+     raw=17+nh+nh*nr+nh+nmat+1+(nmat+1)*nl+nr*nm+nr+nr*3+2*nq+nl*nq+2
+     projected=2+nr+nm*nm+2*nm*nm*nh+nm*nm*nl*nh+2*nq*nl
+@@ -869,31 +970,39 @@
+     packed=8*nq*(nq-1)*blocks if ordinary_rank1 else 0
+     full=8*nq*nq*blocks if ordinary_rank1 else 0
+     factors=prepack-dead
++    raw_stored,operator_stored=raw*8,projected*8
++    if identity_cost is not None:
++        if not ordinary_rank1 or type(identity_cost) is not dict or set(identity_cost)!={'raw','operator'}:
++            raise ValueError('independent complete dense identity fee requires ordinary rank1')
++        raw_stored,operator_stored=identity_cost['raw'],identity_cost['operator']
++        if any(type(x) is not int or x<0 for x in (raw_stored,operator_stored)) or raw_stored>raw*8 or operator_stored>projected*8:
++            raise ValueError('independent stored key cost outside lossless full fallback bound')
+     return dict(descriptor_bytes=fixture['groups']*4096,raw_key_bytes=raw*8,projected_key_bytes=projected*8,
+-        factor_bytes_per_group=factors,persistent_bytes_per_group=(raw+projected)*8+factors,
+-        final_retained_bytes=fixture['groups']*(4096+(raw+projected)*8+factors),hit_workspace_bytes=8*nq*nq,
++        factor_bytes_per_group=factors,persistent_bytes_per_group=raw_stored+operator_stored+factors,
++        final_retained_bytes=fixture['groups']*(4096+raw_stored+operator_stored+factors),hit_workspace_bytes=8*nq*nq,
+         dictionary_unique_count=unique_count,dictionary_bytes=8*rows*nq*unique_count,block_map_bytes=4*blocks,
+         worst_factor_reservation_bytes_per_group=worst,duplicate_unallocated_bytes_released=worst-prepack,
+         post_lower_pre_factor_pack_bytes_per_group=prepack,
+         factor_pack_reservation_bytes_per_group=packed,
+         factor_pack_full_allocation_release_bytes_per_group=full,
+         factor_diagonal_bytes_released_per_group=dead,
+-        reservation_peak_is_not_actual_RSS=True)
+-
+-
+-def check_counters(record, state, fixture, update, unique_count=None):
++        stored_raw_key_bytes=raw_stored,stored_projected_key_bytes=operator_stored,
++        full_temporary_key_bytes_unchanged=True,reservation_peak_is_not_actual_RSS=True)
++
++
++def check_counters(record, state, fixture, update, unique_count=None,identity_cost=None):
+     keys = ("built", "reused", "hits", "live", "peak", "cap", "legacy_built", "legacy_reused")
+     if any(type(record[key]) is not int or record[key] < 0 for key in keys):
+         raise ValueError("actual cache counters must be nonnegative integers")
+-    account = cache_accounting(fixture,unique_count=unique_count)
++    account = cache_accounting(fixture,unique_count=unique_count,identity_cost=identity_cost)
+     if fixture["rank1"]:
+         if update:
+             if record["rhs"] == 1:
+                 before = state["live"]
+-                first = before+2*account["raw_key_bytes"]
+-                second = before+account["raw_key_bytes"]+2*account["projected_key_bytes"]
+-                worst = before+account["raw_key_bytes"]+account["projected_key_bytes"]+account["worst_factor_reservation_bytes_per_group"]
+-                pack = before+account["raw_key_bytes"]+account["projected_key_bytes"]+\
++                first = before+account["raw_key_bytes"]+account["stored_raw_key_bytes"]
++                second = before+account["stored_raw_key_bytes"]+account["projected_key_bytes"]+account["stored_projected_key_bytes"]
++                worst = before+account["stored_raw_key_bytes"]+account["stored_projected_key_bytes"]+account["worst_factor_reservation_bytes_per_group"]
++                pack = before+account["stored_raw_key_bytes"]+account["stored_projected_key_bytes"]+\
+                     account["post_lower_pre_factor_pack_bytes_per_group"]+account["factor_pack_reservation_bytes_per_group"]
+                 state["live"] += account["persistent_bytes_per_group"]
+                 state["peak"] = max(state["peak"], first, second, worst, pack, state["live"])
+@@ -922,6 +1031,114 @@
+         raise ValueError("actual cache allocation/build/reuse/identity counters do not match independent accounting")
+     if not record["live"] <= record["peak"] <= record["cap"]:
+         raise ValueError("cache retained/peak accounted bytes exceed their explicitly new 512MiB cap")
++
++
++def independent_key_encoding(full,base,is_owner):
++    """Integer byte model from c017 only; never consumes candidate encoding."""
++    if type(full) is not bytes or type(base) is not bytes or len(full)%8 or len(base)%8:
++        raise ValueError('complete original identity keys must be integer64 bytes')
++    positions=tuple(index+1 for index in range(len(full)//8)
++        if full[8*index:8*index+8]!=base[8*index:8*index+8]) if len(full)==len(base) else ()
++    compressed=not is_owner and len(full)==len(base) and 12*len(positions)<len(full)
++    values=b''.join(full[8*(p-1):8*p] for p in positions) if compressed else full
++    indices=struct.pack('<'+str(len(positions))+'i',*positions) if compressed else b''
++    return dict(compressed=compressed,words=len(values)//8,positions=len(indices)//4,
++        values=values,indices=indices,cost=len(values)+len(indices))
++
++
++def dense_identity_record(folder,stem,fixture,group,expected_stats):
++    raw=control_file(folder,stem+'_dense_keys.bin').read_bytes()
++    a=cache_accounting(fixture);nr,no=a['raw_key_bytes']//8,a['projected_key_bytes']//8
++    header=(1,group,1,nr,no,*expected_stats,0)
++    if len(raw)!=96+8*(nr+no) or struct.unpack('<12q',raw[:96])!=header:
++        raise ValueError('c017 original full integer keys/header/EOF differ')
++    return (raw[96:96+8*nr],raw[96+8*nr:])
++
++
++def candidate_identity_record(folder,stem,fixture,group,original_keys,base_keys,expected_stats):
++    raw=control_file(folder,stem+'_identity_keys.bin').read_bytes();cursor=0;cost={};encoded_bytes=0
++    for phase,(full,base) in enumerate(zip(original_keys,base_keys),1):
++        expected=independent_key_encoding(full,base,group==1)
++        n=len(full)//8;bn=len(base)//8
++        header=(1,group,phase,1,n,int(expected['compressed']),expected['words'],expected['positions'],bn,*expected_stats,0)
++        if len(raw)-cursor<128 or struct.unpack('<16q',raw[cursor:cursor+128])!=header:
++            raise ValueError('candidate identity canonical owner/shape/format or counters differ from independent c017')
++        cursor+=128
++        wanted=expected['values']+expected['indices']+base+full
++        if raw[cursor:cursor+len(wanted)]!=wanted:
++            raise ValueError('actual stored full/delta words/indices/base/KEY_LOAD are not byte-exact original c017 keys')
++        cursor+=len(wanted);encoded_bytes+=expected['cost']
++        cost['raw' if phase==1 else 'operator']=expected['cost']
++    if cursor!=len(raw):raise ValueError('candidate identity raw trailing/missing bytes')
++    return cost,encoded_bytes
++
++
++def prime_identity_record(folder,stem,fixture,prime):
++    """Group1 must store full keys. Original fourteen mutation gates remain.
++
++    No dense negative key file exists: the standalone two-phase codec controls
++    plus original production-shape mutation guards are independent obligations.
++    This parser does not claim an external dense-byte baseline for these14 primes.
++    """
++    raw=control_file(folder,stem+'_identity_keys.bin').read_bytes();cursor=0;a=cache_accounting(fixture)
++    stats=tuple(prime[k] for k in ('built','reused','hits','live','peak','cap'))
++    for phase,n in ((1,a['raw_key_bytes']//8),(2,a['projected_key_bytes']//8)):
++        header=(1,1,phase,1,n,0,n,0,n,*stats,0)
++        if len(raw)-cursor<128 or struct.unpack('<16q',raw[cursor:cursor+128])!=header:
++            raise ValueError('first-group negative priming full keys/owner/shape/counters differ')
++        cursor+=128;full=raw[cursor:cursor+8*n];cursor+=8*n
++        if len(full)!=8*n or raw[cursor:cursor+16*n]!=full+full:
++            raise ValueError('full negative prime stored/base/decoded byte representation differs')
++        cursor+=16*n
++    if cursor!=len(raw):raise ValueError('negative identity prime whole EOF differs')
++    return dict(kind='candidate_identity_keys',case=stem.split('_g')[0],group=1,file=stem+'_identity_keys.bin',phases=[1,2])
++
++
++def keycodec_controls_audit(d):
++    require(KEYCODEC_AUDITOR,KEYCODEC_AUDITOR_SHA)
++    module=load(KEYCODEC_AUDITOR,'rank1_cross_group_identity_key_codec_controls_audit')
++    result=module.audit_keycodec_controls(OUT/'controls')
++    if (result['actual_codec_controls_passed'] is not True or result['raw_binary_bytes']!=KEYCODEC_RAW_BINARY_BYTES
++            or result['raw_manifest_jsonl_bytes']!=KEYCODEC_JSONL_BYTES or result['raw_xabort_bytes']!=KEYCODEC_ABORT_BYTES
++            or result['raw_total_bytes']!=98722 or result['standalone_control_count']!=21
++            or result['positive_key_count']!=27 or result['positive_stats_count']!=6
++            or result['expected_negative_actual_rejection_count']!=20
++            or any(result[k] is not True for k in ('complete_input_encoded_positions_anchor_decoded_wordwise_equal',
++                'canonical_strict_cost_fallback_zero_delta_two_phase_lifecycle_and_hits_verified','exact_EOF_verified',
++                'all_fresh_seven_identity_before_after_equal'))
++            or any(result[k] is not False for k in ('original45_controls_completion_claimed',
++                'full_component_build_admission_claimed','actual_full_FLU_entry_executed','native_RSS_verified',
++                'AAA_accuracy_qualified','ABA_admitted'))):
++        raise ValueError('all fresh21 independent full raw codec cases/precise bytes must pass')
++    result=dict(status='PASS',**result)
++    return result
++
++
++def expected_stage_exit(stage):
++    prefix='controls/keycodec_negative_'
++    if stage['label'].startswith(prefix):
++        names={case['name'] for case in KEYCODEC_CASES}
++        if stage['label'] not in {prefix+name+'/execute' for name in names}:
++            raise ValueError('undeclared expected-negative stage')
++        return 23
++    return 0
++
++
++def stage_outcome_valid(stage):
++    return stage['status']==('FAILED' if expected_stage_exit(stage)==23 else 'PASS')
++
++
++def check_keycodec_negative_watch(stage):
++    path=OUT/(stage['label']+'.watchdog.json');watch=read(require(path))
++    if (type(watch['returncode']) is not int or watch['returncode']!=23 or type(watch['pid']) is not int or watch['pid']<=0
++            or watch['command']!=stage['command'] or expected_stage_exit(stage)!=23
++            or stage['status']!='FAILED' or watch['limit_failure'] is not None
++            or watch['own_child_only'] is not True or watch['liveness_group_cleanup'] is not True
++            or watch['rss_cap_mib']!=512 or not 0<=watch['sampled_peak_rss_mib']<512
++            or not 0<watch['wall_cap_seconds']<=stage['wall_cap_seconds']<=600
++            or not 0<=watch['elapsed_seconds']<watch['wall_cap_seconds']):
++        raise ValueError('expected23 is accepted only from genuine own child without resource failure')
++    return pin(path)
+ 
+ 
+ def input_fixture_audit(folder, fixture):
+@@ -972,7 +1189,7 @@
+         raise ValueError('complete actual codec control contract changed')
+     if (plan['schema']!='AXMAT_RANK1_FACTOR_DIAGONAL_CODEC_CONTROL_CONTRACT_V1'
+             or plan['original40_required'] is not True or plan['additional_stage_count']!=5
+-            or plan['total_planned_stage_count']!=45 or plan['controls_source']!=pin(CONTROL_SOURCE)):
++            or plan['total_planned_stage_count']!=45 or plan['controls_source']!=pin(require(V10_CONTROL_SOURCE,V10_CONTROL_SOURCE_SHA))):
+         raise ValueError('exact codec source, original40 plus five stages required')
+     cap=536870912
+ 
+@@ -1149,6 +1366,7 @@
+         *d["control_contract"]["cap_negative_cases"]]],*["memory_negative_"+c["name"] for c in d["control_contract"]["memory_negative_cases"]],
+         *["dedup_negative_"+c["name"] for c in d["control_contract"]["dedup_negative_cases"]]}
+     dirs.update({"factor_positive",*["factor_negative_"+case["name"] for case in d["control_contract"]["factor_negative_cases"]]})
++    dirs.update({'keycodec_positive',*{'keycodec_negative_'+case['name'] for case in KEYCODEC_CASES}})
+     if {p.name for p in (OUT / "controls").iterdir()}!=dirs:raise ValueError("complete declared controls root namespace differs")
+     receipt = read(require(OUT / "raw_controls_receipt.json"))
+     if receipt["before_numeric_gates"] is not True or receipt["files"] != raw_inventory(OUT / "controls"):
+@@ -1161,6 +1379,8 @@
+         raise ValueError("actual complete independently interpretable raw control protocol differs")
+     memory = memory_controls_audit(d)
+     codec = codec_controls_audit(d)
++    keycodec = keycodec_controls_audit(d)
++    key_cost_by_group={(row['case'],row['group']):row['independent_dense_key_cost'] for row in memory['independent_dense_identity_accounting']}
+     unique_by_group={(row['case'],row['group']):row['unique_count'] for row in memory['actual_group_dictionary_accounting']}
+     folder = OUT / "controls/positive"
+     rows = json_lines(control_file(folder, "manifest.jsonl"))
+@@ -1192,7 +1412,8 @@
+                             or record["input_file"] != name+"_g"+str(group)+".inputs.bin"):
+                         raise ValueError("actual all-group/all-RHS/original-build-hit manifest order differs")
+                     check_counters(record, state, fixture, update,
+-                        unique_by_group[(name,group)] if fixture['rank1'] else None)
++                        unique_by_group[(name,group)] if fixture['rank1'] else None,
++                        key_cost_by_group[(name,group)] if fixture['rank1'] else None)
+                     seen_files.update((record["file"], record["q_file"]))
+                 reference_raw, reference_q = field_record(folder, original, fixture)
+                 cached_raw, cached_q = field_record(folder, cached, fixture)
+@@ -1211,7 +1432,7 @@
+         cursor += 1
+         if clear != dict(kind="clear", case=name, built=0, reused=0, hits=0, live=0, peak=0):
+             raise ValueError("actual lifecycle CLEAR must reset all new counters and all retained cache bytes")
+-        actual_retained=(account['descriptor_bytes']+sum(cache_accounting(fixture,unique_count=unique_by_group[(name,g)])['persistent_bytes_per_group']
++        actual_retained=(account['descriptor_bytes']+sum(cache_accounting(fixture,unique_count=unique_by_group[(name,g)],identity_cost=key_cost_by_group[(name,g)])['persistent_bytes_per_group']
+             for g in range(1,fixture['groups']+1))) if fixture['rank1'] else 0
+         if fixture["rank1"] and final_state["live"] != actual_retained:
+             raise ValueError("all actually filled group plans must equal independent complete allocation accounting")
+@@ -1324,10 +1545,11 @@
+         if message != case["expected_message"]+"\n" or "RAW_ACTUAL_UNIT_XABORT "+case["expected_message"] not in (folder / "execute.log").read_text():
+             raise ValueError("the actual kernel guard must refuse through the exact archived expected unit XABORT")
+         expected_files = {"manifest.jsonl", "memory_manifest.jsonl", "execute.log", "execute.watchdog.json", "actual_XABORT.txt",
+-            prime["file"], prime["q_file"], stem+"_prime.inputs.bin", stem+"_mutated.inputs.bin",stem+'_g1_packed.bin',stem+'_g1_decoded.bin'}
++            prime["file"], prime["q_file"], stem+"_prime.inputs.bin", stem+"_mutated.inputs.bin",stem+'_g1_packed.bin',stem+'_g1_decoded.bin',stem+'_g1_identity_keys.bin'}
+         if {path.name for path in folder.iterdir()} != expected_files:
+             raise ValueError("each negative must preserve exactly its raw prime/mutation/rejection archive, with no normal return")
+-        if json_lines(folder/'memory_manifest.jsonl')!=[packed_row]:raise ValueError('actual identity-negative raw dictionary/full-decode observation missing or changed')
++        identity_row=prime_identity_record(folder,stem+'_g1',prime_fixture,prime)
++        if json_lines(folder/'memory_manifest.jsonl')!=[packed_row,identity_row]:raise ValueError('actual identity-negative raw dictionary/full-decode observation missing or changed')
+         negative_results.append(dict(name=name, actual_message=message.rstrip("\n"),
+             raw_prime=pin(folder / (stem+"_prime.inputs.bin")), raw_mutation=pin(folder / (stem+"_mutated.inputs.bin")),
+             archived_actual_XABORT=pin(folder / "actual_XABORT.txt"), expected_rejection=True))
+@@ -1362,19 +1584,21 @@
+             actual_XABORT=pin(folder / "actual_XABORT.txt"), expected_rejection=True,
+             cache_accounting_preallocation_guard=True, actual_OwnRSS_oversize_child_test=False))
+     actual_raw_bytes = sum(require(OUT / name).stat().st_size for name in receipt["files"]
+-        if name.endswith(".bin") or Path(name).name == "actual_XABORT.txt")
++        if name.endswith(".bin") or Path(name).name in ("actual_XABORT.txt","actual_xabort.txt"))
+     forecast=d['complete_archive_forecast']
+     variable_paths=[OUT/'controls/positive'/(row['case']+'_g'+str(row['group'])+'_packed.bin') for row in memory['actual_group_dictionary_accounting']]
+     variable_paths.extend(OUT/'controls'/('negative_'+case['name'])/('negative_'+case['name']+'_g1_packed.bin') for case in c['negative_cases'])
+     actual_variable_bytes=sum(require(path).stat().st_size for path in variable_paths)
+-    if (actual_variable_bytes>forecast['variable_dictionary_raw_bytes_upper_bound'] or actual_raw_bytes!=
+-            forecast['fixed_control_raw_binary_and_abort_message_bytes']+actual_variable_bytes
++    actual_identity_bytes=memory['actual_identity_encoded_bytes']
++    if (actual_identity_bytes>forecast['variable_identity_encoded_bytes_upper_bound'] or actual_variable_bytes>forecast['variable_dictionary_raw_bytes_upper_bound'] or actual_raw_bytes!=
++            forecast['fixed_control_raw_binary_and_abort_message_bytes']+actual_variable_bytes+actual_identity_bytes
+             or actual_raw_bytes>forecast['complete_control_raw_binary_and_abort_message_bytes_upper_bound']):
+         raise ValueError('complete fixed raw bytes and actual complete dictionaries must satisfy their independently declared exact/upper-bound forecast')
+-    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_FULL_RAW_CONTROLS_AUDIT_V1", status="PASS",
++    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_FULL_RAW_CONTROLS_AUDIT_V1", status="PASS",
+         counts=dict(fixtures=8, inherited_bitwise_source_pairs_reexecuted=1146, additional_permutation_source_pairs=6,
+             dense_reference_kernel_calls=memory["dense_reference_calls"], memory_module_negative_calls=6,
+-            dictionary_positive_primitives=3,dictionary_module_negative_calls=8,original_stages_retained=31,total_declared_stages=45,
++            dictionary_positive_primitives=3,dictionary_module_negative_calls=8,original_stages_retained=31,total_declared_stages=68,original_factor_diagonal_45_stages_retained=45,
++            additional_keycodec_driver_build_stages=2,additional_keycodec_execute_stages=21,
+             inherited_last_cprime_stages_retained=40, factor_codec_positive_fixtures=3, factor_codec_module_negative_calls=4,
+             factor_codec_public_factor_calls=codec["actual_public_factor_calls"],factor_codec_public_solve_calls=codec["actual_public_full_square_solve_calls"],
+             actual_returned_unit_kernel_calls=pairs*2+14+memory["dense_reference_calls"],
+@@ -1382,10 +1606,11 @@
+             independent_pivot_rhs=3, negative_calls=14, cache_cap_negative_calls=2, production_groups=370,
+             production_layers=48, production_angles=32, source_moments=3,
+             bitwise_compared_output_scalars=scalar_fields, compared_actual_field_and_source_bytes=data_bytes),
+-        memory_controls=memory,dictionary_controls=memory['dictionary_controls'],codec_controls=codec,fixtures=fixture_results, negative_controls=negative_results, cache_cap_negative_controls=cap_results,
++        memory_controls=memory,dictionary_controls=memory['dictionary_controls'],codec_controls=codec,keycodec_controls=keycodec,fixtures=fixture_results, negative_controls=negative_results, cache_cap_negative_controls=cap_results,
+         actual_first_tie_pivot=pivot_rows[0], actual_complete_raw_binary_and_abort_message_bytes=actual_raw_bytes,
+         actual_cache_terminal_observer_rows=terminal_rows,
+-        actual_variable_dictionary_raw_bytes=actual_variable_bytes,variable_dictionary_raw_upper_bound_verified=True,
++        actual_variable_dictionary_raw_bytes=actual_variable_bytes,actual_identity_encoded_bytes=actual_identity_bytes,
++        all_c017_full_identity_keys_bitwise_equal_to_candidate_decode=True,variable_dictionary_raw_upper_bound_verified=True,
+         complete_raw_receipt=pin(OUT / "raw_controls_receipt.json"),
+         all_actual_outputs_finite=True, all_flux_cour_xnei_bitwise_equal=True,
+         all_sources_independently_reconstructed=True, all370_plans_retained_and_accounted=True,
+@@ -1401,7 +1626,8 @@
+ def binary_audit(d):
+     paths={'new_kernel':OUT/'build/SPOT1P64.o','reference_kernel':OUT/'build/SPOT1P64.original_reference.o',
+         'dense_reference_kernel':OUT/'build/SPOT1P64.dense_reference.o','unit_executable':OUT/'runtime/rank1_factor_cache_last_cprime_trim_controls',
+-        'actual_Dragon':OUT/'runtime/Dragon'}
++        'actual_Dragon':OUT/'runtime/Dragon','keycodec_driver_object':OUT/'build/keycodec_controls.o',
++        'keycodec_executable':OUT/'runtime/keycodec_controls'}
+     raw={}
+     for name,path in paths.items():
+         require(path)
+@@ -1416,6 +1642,10 @@
+         if symbols(name).count(symbol)!=1:raise ValueError('actual uniquely renamed separately compiled routine missing/duplicate')
+     for symbol in ('_spot1p64_','_spot1p64_original_','_spot1p64_dense_'):
+         if symbols('unit_executable').count(symbol)!=1:raise ValueError('all three actual unit-only kernels need unique linked symbols')
++    if (symbols('keycodec_executable').count('_spot1p64_')!=1
++            or any(sym in symbols('keycodec_executable') for sym in ('_spot1p64_original_','_spot1p64_dense_'))
++            or str(SOURCE/'keycodec_controls.f90') not in Path(raw['keycodec_driver_object_debug']['path']).read_text()):
++        raise ValueError('fresh independent keycodec driver must compile actual source and link only candidate routine')
+     for symbol in ('_spot1p64_','_flu2dr64_','_flu_'):
+         if symbols('actual_Dragon').count(symbol)!=1:raise ValueError('actual normal production override definition missing/duplicate')
+     if any(symbol in symbols('actual_Dragon') for symbol in ('_spot1p64_original_','_spot1p64_dense_')):
+@@ -1447,7 +1677,7 @@
+     if (claim["parent_pid"] != os.getppid() or claim["declaration_sha256"] != expected
+             or len(stages) != len(labels) or [row["label"] for row in stages] != labels
+             or [row["command"] for row in stages] != commands or stages[-1]["command"] != [sys.executable, *sys.argv]
+-            or stages[-1]["status"] != "RUNNING" or any(row["status"] != "PASS" for row in stages[:-1])):
++            or stages[-1]["status"] != "RUNNING" or any(not stage_outcome_valid(row) for row in stages[:-1])):
+         raise ValueError("only the actual serial last audit child may accept complete previous stages")
+     watches = [check_watch(row) for row in stages[:-1]]
+     raw = read(require(OUT / "raw_controls_receipt.json"))
+@@ -1459,9 +1689,10 @@
+     write_new(OUT / "audit/controls.json", controls)
+     binary = binary_audit(d)
+     write_new(OUT / "audit/binary_identity.json", binary)
+-    write_new(OUT / "audit/result.json", dict(classification="PASS_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_CONTROLS_ONLY",
++    write_new(OUT / "audit/result.json", dict(classification="PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY",
+         declaration_sha256=expected, control_status=controls["status"], binary_status=binary["status"],
+         factor_diagonal_codec_controls_passed=controls["codec_controls"]["status"]=="PASS",
++        cross_group_identity_controls_passed=controls["keycodec_controls"]["status"]=="PASS",
+         rank1_factor_cache_controls_passed=True, all_new_cache_outputs_bitwise_equal_to_uncached=True,
+         operator_identity_guard_negative_controls_passed=True, rank1_factor_cache_math_and_rhs_order_unchanged=True,
+         control_counts=controls["counts"], previous_stage_watchdogs=watches,
+@@ -1500,14 +1731,15 @@
+     if remaining <= 0:
+         raise ValueError("whole build budget already exhausted before the first real compilation")
+     runner = full.OwnRSSSerialExecutor(OUT, remaining, FAMILY, resources)
+-    result = dict(classification="FAILED_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_NO_RETRY", error=None,
++    result = dict(classification="FAILED_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_NO_RETRY", error=None,
+         actual_full_FLU_entry_executed=False, transport_launched=False, AAA_accuracy_qualified=False, ABA_admitted=False)
+     try:
+         for index, command in enumerate(d["build_commands"]):
+             environment(d)
+             runner.execute(OUT / "build", f"build_{index:02d}", command, STAGE_WALL)
+         names = ("runtime/Dragon", "runtime/rank1_factor_cache_last_cprime_trim_controls", "build/SPOT1P64.o", "build/SPOT1P64.dense_reference.o",
+-            "build/SPOT1P64.original_reference.o", "build/rank1_factor_cache_last_cprime_trim_controls.o")
++            "build/SPOT1P64.original_reference.o", "build/rank1_factor_cache_last_cprime_trim_controls.o",
++            "build/keycodec_controls.o","runtime/keycodec_controls")
+         write_new(OUT / "runtime/build_identity.json", dict(files={name:digest(require(OUT / name)) for name in names},
+             sole_new_production_overrides=["SPOT1P64.o"], inherited_sender_override=pin(SENDER_OBJECT),
+             inherited_Flu_override=read(PARENT / "runtime/build_identity.json")["inherited_Flu_override"]))
+@@ -1540,6 +1772,20 @@
+                 environment(d)
+                 runner.execute(OUT / "controls" / ("factor_negative_" + case["name"]), "execute",
+                     [str(OUT / "runtime/rank1_factor_cache_last_cprime_trim_controls"), *case["args"]], STAGE_WALL)
++            environment(d)
++            runner.execute(OUT/'controls/keycodec_positive','execute',
++                [str(OUT/'runtime/keycodec_controls'),*d['control_contract']['keycodec_positive_command_args']],STAGE_WALL)
++            for case in d['control_contract']['keycodec_negative_cases']:
++                environment(d)
++                try:
++                    runner.execute(OUT/'controls'/('keycodec_negative_'+case['name']),'execute',
++                        [str(OUT/'runtime/keycodec_controls'),*case['args']],STAGE_WALL)
++                except RuntimeError:
++                    stage=read(OUT/FAMILY/'stages.json')['stages'][-1]
++                    if stage['label']!='controls/keycodec_negative_'+case['name']+'/execute':raise
++                    check_keycodec_negative_watch(stage)
++                else:
++                    raise ValueError('keycodec negative unexpectedly returned success; no retry')
+         finally:
+             # Preserve all returned/partial raw files and actual stdout before
+             # any independent finite/bitwise or expected-negative-message gate.
+@@ -1550,10 +1796,10 @@
+         stages = read(OUT / FAMILY / "stages.json")["stages"]
+         if (len(stages) != len(stage_labels(d)) or [row["label"] for row in stages] != stage_labels(d)
+                 or [row["command"] for row in stages] != stage_commands(d, expected)
+-                or any(row["status"] != "PASS" for row in stages)):
++                or any(not stage_outcome_valid(row) for row in stages)):
+             raise ValueError("all declared build/control/audit stages must actually pass exactly once")
+         audit = read(OUT / "audit/result.json")
+-        if (audit["classification"] != "PASS_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_CONTROLS_ONLY"
++        if (audit["classification"] != "PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY"
+                 or audit["control_status"] != "PASS" or audit["binary_status"] != "PASS"
+                 or any(audit[key] is not True for key in ("rank1_factor_cache_controls_passed",
+                     "all_new_cache_outputs_bitwise_equal_to_uncached", "operator_identity_guard_negative_controls_passed",
+@@ -1562,10 +1808,10 @@
+                     "canonical_dictionary_signed_zero_and_all_unique_fallback_verified",
+                     "dictionary_dimensions_indices_canonical_and_release_negative_controls_passed","factor_diagonal_codec_controls_passed"))):
+             raise ValueError("actual complete raw cache controls and compiled override identity must pass")
+-        result.update(classification="COMPLETE_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_CONTROLS_ONLY", watchdogs=[check_watch(row) for row in stages],
++        result.update(classification="COMPLETE_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY", watchdogs=[check_watch(row) for row in stages],
+             control_counts=audit["control_counts"], runtime_sha256=digest(OUT / "runtime/Dragon"),
+             rank1_factor_cache_budget_bytes=536870912, source_root=str(SOURCE),
+-            all_new_cache_outputs_bitwise_equal_to_uncached=True, fresh_cold_AAA_required=True, factor_diagonal_codec_controls_passed=True)
++            all_new_cache_outputs_bitwise_equal_to_uncached=True, fresh_cold_AAA_required=True, factor_diagonal_codec_controls_passed=True,cross_group_identity_controls_passed=True)
+     except BaseException as error:
+         result["error"] = repr(error)
+         raise
+@@ -1579,12 +1825,12 @@
+                 raise ValueError("complete SOURCE plus OUT or whole build wall budget exceeded")
+             result.update(elapsed_seconds=elapsed, archive_bytes_before_closeout=actual_size)
+         except BaseException as error:
+-            result.update(classification="FAILED_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_NO_RETRY", error=repr(error),
++            result.update(classification="FAILED_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_NO_RETRY", error=repr(error),
+                 elapsed_seconds=time.monotonic()-started)
+             write_new(OUT / "driver_result.json", result)
+             raise
+         write_new(OUT / "driver_result.json", result)
+-    write_new(OUT / "seal.json", dict(schema="AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_SEAL_V1", directories=exact_directories(OUT), files={
++    write_new(OUT / "seal.json", dict(schema="AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_SEAL_V1", directories=exact_directories(OUT), files={
+         str(path.relative_to(OUT)):digest(path) for path in OUT.rglob("*") if path.is_file() and not path.is_symlink()}))
+     try:
+         final_resources = resources.check()
+@@ -1711,7 +1957,7 @@
+     if not re.fullmatch(r"[0-9a-f]{64}", build_seal_sha or ""):
+         raise ValueError("the actual new rank-one-cache build seal hash is mandatory")
+     seal = read(require(OUT / "seal.json", build_seal_sha))
+-    if seal["schema"] != "AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_SEAL_V1":
++    if seal["schema"] != "AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_SEAL_V1":
+         raise ValueError("the actual complete new rank-one-cache build seal is required")
+     if exact_directories(OUT)!=seal["directories"]:raise ValueError("complete final directory namespace changed")
+     actual = {}
+@@ -1729,8 +1975,8 @@
+     audit = read(require(OUT / "audit/result.json"))
+     flags = ("rank1_factor_cache_controls_passed", "all_new_cache_outputs_bitwise_equal_to_uncached",
+         "operator_identity_guard_negative_controls_passed", "rank1_factor_cache_math_and_rhs_order_unchanged", "fresh_cold_AAA_required")
+-    if (result["classification"] != "COMPLETE_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_CONTROLS_ONLY" or result["error"] is not None
+-            or audit["classification"] != "PASS_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_CONTROLS_ONLY"
++    if (result["classification"] != "COMPLETE_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY" or result["error"] is not None
++            or audit["classification"] != "PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY"
+             or audit["declaration_sha256"] != declared_sha or audit["control_status"] != "PASS" or audit["binary_status"] != "PASS"
+             or any(audit[key] is not True for key in flags)
+             or audit["inherited_rank1_factor_cache_admission"] != d["inherited_rank1_factor_cache_admission"]
+@@ -1757,6 +2003,9 @@
+     controls = control_audit(d)
+     if audit.get("factor_diagonal_codec_controls_passed") is not True or result.get("factor_diagonal_codec_controls_passed") is not True or controls["codec_controls"]["status"] != "PASS":
+         raise ValueError("new actual full factor codec controls must pass independently")
++    if (audit.get('cross_group_identity_controls_passed') is not True or result.get('cross_group_identity_controls_passed') is not True
++            or controls['keycodec_controls']['status']!='PASS' or controls['counts']['total_declared_stages']!=68):
++        raise ValueError('all original45 plus actual21 independent codec cases must pass, without native qualification')
+     if controls != read(OUT / "audit/controls.json") or controls["counts"] != result["control_counts"]:
+         raise ValueError("actual full raw finite/bitwise/coverage/allocation audit differs from its sealed result")
+     binary = read(require(OUT / "audit/binary_identity.json"))
+@@ -1776,7 +2025,7 @@
+     stages = read(require(OUT / FAMILY / "stages.json"))["stages"]
+     if (len(stages) != len(stage_labels(d)) or [row["label"] for row in stages] != stage_labels(d)
+             or [row["command"] for row in stages] != stage_commands(d, declared_sha)
+-            or any(row["status"] != "PASS" for row in stages)):
++            or any(not stage_outcome_valid(row) for row in stages)):
+         raise ValueError("all actual original serial guarded build/control/audit stages must pass once")
+     watches = [check_watch(row) for row in stages]
+     if watches != result["watchdogs"] or watches[:-1] != audit["previous_stage_watchdogs"]:
+@@ -1788,7 +2037,7 @@
+     # runtime identity that a consuming pipeline must compare exactly.
+     resources_for(d["resource_roots"]).check()
+     prior = d["inherited_rank1_factor_cache_admission"]
+-    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1",
++    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1",
+         admission="RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY", build_root=str(OUT), source_root=str(SOURCE),
+         build_seal_sha256=build_seal_sha, corrected_runtime=pin(OUT / "runtime/Dragon"),
+         compiled_kernel_source=pin(SOURCE / "SPOT1P64.f90"),
+@@ -2144,7 +2393,7 @@
+     """One group at a time; raw receipt already pins every partial/returned byte."""
+     c=d['control_contract'];folder=OUT/'controls/positive'
+     rows=json_lines(control_file(folder,'memory_manifest.jsonl'))
+-    cursor=0;extra_files={'memory_manifest.jsonl'};dense_calls=0;lower_bits=0;dictionary_groups=[]
++    cursor=0;extra_files={'memory_manifest.jsonl'};dense_calls=0;lower_bits=0;dictionary_groups=[];identity_groups=[];identity_encoded_bytes=0
+     field_rows=json_lines(control_file(folder,'manifest.jsonl'))
+     fields={(r['case'],r['group'],r['rhs'],r['role']):r for r in field_rows if r['kind']=='field'}
+     for f in c['positive_fixtures']:
+@@ -2155,8 +2404,9 @@
+         dense_account=parent_factory().cache_accounting(dense_fixture)
+         dense_live=dense_account['final_retained_bytes']
+         dense_peak=max(4096+2*dense_account['raw_key_bytes'],4096+dense_account['raw_key_bytes']+2*dense_account['projected_key_bytes'],dense_live)
++        base_keys=None
+         for group in range(1,f['groups']+1):
+-            dense,clear,packed=rows[cursor:cursor+3];cursor+=3
++            dense,dense_keys_row,clear,packed,key_row=rows[cursor:cursor+5];cursor+=5
+             stem=f['name']+'_g'+str(group)
+             expected_dense=dict(kind='dense',case=f['name'],group=group,file=stem+'_dense.bin',runtime_group=1,
+                 built=b,reused=0,hits=0,live=dense_live,peak=dense_peak,cap=536870912)
+@@ -2169,6 +2419,20 @@
+             full=raw[96:96+8*n*n*b];unpack_finite(full,'d',n*n*b)
+             actual_original=control_file(folder,fields[(f['name'],group,1,'original')]['file']).read_bytes()
+             if raw[96+8*n*n*b:]!=actual_original[96:]:raise ValueError('same dense source-compiled full fields must be bitwise equal to original uncached fields')
++            original_keys=dense_identity_record(folder,stem,f,group,(b,0,0,dense_live,dense_peak,536870912))
++            if group==1:base_keys=original_keys
++            if dense_keys_row!=dict(kind='dense_identity_keys',case=f['name'],group=group,runtime_group=1,
++                    file=stem+'_dense_keys.bin',raw_key_words=len(original_keys[0])//8,operator_key_words=len(original_keys[1])//8):
++                raise ValueError('complete dense identity observation row differs')
++            actual_key_stats=tuple(fields[(f['name'],group,3,'reuse')][k] for k in ('built','reused','hits','live','peak','cap'))
++            identity_cost,encoded_bytes=candidate_identity_record(folder,stem,f,group,original_keys,base_keys,actual_key_stats)
++            if key_row!=dict(kind='candidate_identity_keys',case=f['name'],group=group,file=stem+'_identity_keys.bin',phases=[1,2]):
++                raise ValueError('complete candidate identity observation row differs')
++            identity_groups.append(dict(case=f['name'],group=group,independent_dense_key_cost=identity_cost,
++                original_key_sha256=[hashlib.sha256(k).hexdigest() for k in original_keys],base_key_sha256=[hashlib.sha256(k).hexdigest() for k in base_keys],
++                derived_from_c017_full_keys=True,candidate_all_integer_bytes_compared=True))
++            identity_encoded_bytes+=encoded_bytes
++            extra_files.update((dense_keys_row['file'],key_row['file']))
+             stored=dictionary_record(control_file(folder,stem+'_packed.bin'));ph=stored['header']
+             primitive=input_record(control_file(folder,stem+'.inputs.bin'))
+             expected_rows=tuple(i+1 for i,v in enumerate(primitive['values']['du']) if v>0)
+@@ -2258,9 +2522,10 @@
+             raise ValueError('actual row/dim/+0/-0 guard must reject exactly, with no normal return')
+         negatives.append(dict(name=name,actual_message=message.rstrip(),actual_XABORT=pin(folder/'actual_XABORT.txt')))
+     dedup=dedup_controls_audit(d)
+-    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RAW_AUDIT_V1',status='PASS',
++    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_RAW_AUDIT_V1',status='PASS',
+         dense_reference_calls=dense_calls,complete_lower_IEEE64_elements_compared=lower_bits,
+         actual_group_dictionary_accounting=dictionary_groups,dictionary_controls=dedup,
++        independent_dense_identity_accounting=identity_groups,actual_identity_encoded_bytes=identity_encoded_bytes,
+         positive_extra_files=sorted(extra_files),rowmap_dimension_omitted_zero_negative_controls=negatives,
+         all_dense_reference_groups_cleared=True,all_packed_lower_decode_bitwise_equal=True,
+         persistent_account_and_full_workspace_reserve_release_verified=True,primitive_signed_zero_bits_retained=True,

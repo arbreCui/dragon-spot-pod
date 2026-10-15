@@ -1,0 +1,19 @@
+SPOT 18点有限稀释首次有界运行结果 — 2026-10-15
+
+结论：本次未通过，有限稀释原始字比较是否一致仍未知。
+v4 Source准备、独立Source检查、一次凭证发布和最终执行前检查均通过；随后唯一实际执行触及原单子任务600秒上限。监控终止自己的子进程，实际Root返回1、子进程返回-15均按原样保留。
+父任务604.254秒；子任务记录约600.131秒；监控采样峰值53.234375MiB，父任务峰值109,461,504字节。没有产生数值比较完成报告，不能把计划的8核素/64温度/1152节点/3456条记录计为完成。
+独立失败事实核验通过，确认6个保留输出的完整EOF哈希、417个固定输入的两次身份检查、原资源限制和仅结束自己的子进程。该核验只确认失败事实，不把实际失败改写为成功。
+
+保留结果：
+/Users/wen/spot/validation/artifacts/axial-material-current-eight-fuel-finite18-SCAT-producer-20261015-v1/Root_actual_eight_fuel_finite18_SCAT_summary.json
+SHA256 6242e5652e6017d44fd2d1d8016d837917219f4c4a0c342816cdcd80f8e5f001；1,010,379字节。
+实际返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_eight_fuel_finite18_SCAT_producer_source_v1_20261015/v4/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+独立失败事实核验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_eight_fuel_finite18_SCAT_producer_source_v1_20261015/v4/actual_failure_metadata_assessment_20261015/REVIEW.json
+SHA256 b3be7137f95db1dea417c744b42ad69d42c794206b88d6688408c9ebc6dc3f34。
+原始数据、失败日志、首次输出、Source v1–v4和全部结果文档均保留，没有重跑同一实际调用。
+
+后续修改仅针对执行粒度：分别处理8个核素，每个核素的low/high原数据单独串行执行并保存完成报告；仍保持单任务600秒、整个任务1800秒、512MiB、单线程、最多一个子进程、无重试和累计2GiB限额。原数值函数与材料输入保持逐字不变，新版须重新独立核验再单次执行。
+104字节原角度向量捕获及约203MB临时文件退役、完整射线控制只完成不可执行的Source草稿；有限稀释未通过前不会跳过前置条件。34核素无限稀释10741939原始字零差异的已核验结果仍成立。整体goal保持active。

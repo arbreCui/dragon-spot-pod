@@ -1,0 +1,74 @@
+旧 v5/v6 失败整体私有副本 — 精确八文件 Source-only，2026-10-13
+
+当前状态：三份执行 Source 已冻结，仅完成只读调查和 Source 保护前置验证。最终 release manifest 尚不存在；未来 v9 真正工具退出及实际 summary 未被预测、未被写入清理依据；没有删除、编译或执行数值业务。
+
+候选严格限于以下两个已失败旧分支中各四项：
+validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v5/AAA/
+validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v6/AAA/
+各分支 initial_pack.xsm 470,641,008 B、axial_macro.xsm 28,002,268 B、axial_track.xsm 11,352 B、basis.xsm 800,220 B。
+每分支 499,454,848 B，共八文件 998,909,696 B。候选均为自有、普通、非符号链接、单硬链接的私有文件；完整 EOF SHA 和七身份字段与旧失败 summary.output_pins 一致，历史设备号 34→当前 29 是明确的唯一字段转换，其余六字段和全部字节保持一致。三种原始输入的仍受保护原 producer 完整字节与私有副本相同、文件身份不同。
+
+v5 Root 真工具 ce7fcf/session59834 → 4e9522 exit 1；v6 dd5093 → 834ef7 exit 1。两轮各 33 个实际阶段。PACK 和 INITIAL 单项 PASS；最终 GLOBAL 分别因 SELF-owned child RSS 512.765625 MiB 超原 512 MiB，及 own child elapsed 600.125448 秒超原 599.733646 秒被终止。旧整体未完成工程或物理准入，不把 PACK/INITIAL PASS 改写成无效生产。全部 watchdog/log 和结果记录保留。各分支 global.xsm 44 B、ax_current.xsm、initial_system.xsm 以及其余结果/日志/Source 明确保留为因果和阶段证据；source-factor map005/006 无须清理，也未称其已完成等待参考分支为失败。
+
+有限只读候选调查：ecaa0e/session5061 → 5c5da2 exit 0。全 EOF 4,577 去重文件、5,699,354,809 B，119,968 项检查；当时保护 union 4,424，包括新 material current70 v3 Source。
+调查 JSON：../readonly_failed_v5_v6_candidate_survey_20261013/FINITE_EIGHT_FAILED_PRIVATE_COPY_CANDIDATE_REVIEW.json
+SHA256 891fdfbac2daac8eb09f09f742035454c8f872f57ec2d28a8768f63233bc5bf8
+七字段 [16777229,50011747,33188,1,212760,1791869336415739055,1791869336415739055]
+
+新 Source-only 完整保护前置验证实际 5c0c2b/session65330 → df3e1d exit 0，扩展 current protected union 4,482 项。全部原 4,390 行保护 fullpins 重读到 EOF，并加入以下明确实际 Source 目录及可达 fullpins：
+current_eleven_saved_gendf_current_mount_host_source_v4
+reaction_genDF_current_mount_stream_source_v2
+current_formal_material_authority_exact_cache70_source_v3
+current_formal_material_authority_exact_cache70_source_v4（材料作者确认的最终冻结目录）
+完整 current catalog 的全部 3,040 行、Common 全部 2,012 行、science 全部 3,315 current pins 及 1,129 原科学输入、v9 HF 全部 257 依赖、实际 complete70 输入和输出、GENDF/reference 当前输入均保留。行数不假定为去重路径数；每一原 fullpin 行纳入，随后按路径去重。精确八候选与当前所有保护路径及设备/inode 均不重合。
+
+下一科学审计预算是条件估算：上次真实两文件清理后原 initial reserve 剩余 1,251,926,357 B。若 v9 最终保留不超过既定 whole fresh 2 GiB，且其他 ART 无新增，则再释放八候选后的最坏原 initial reserve 仍余 103,352,405 B（原式已经含下一 full fresh 2 GiB）。只清两个 PACK 的对应条件余量为 45,724,725 B。这里不是未来实际预算准入，Root 必须在真正 v9 终态后重新测量 complete history；当前 v9 仍有并发输出时，不发布带固定当前 delta 的最终 manifest。
+
+三份冻结 Source：
+exact_eight_release_common.py
+prepare_exact_eight_after_true_v9_closure.py
+verify_or_execute_exact_eight.py
+Source freeze：COMPLETE_EXACT_EIGHT_RELEASE_SOURCE_ONLY_FREEZE.json
+SHA256 f6d1442e3fda4718bfda0d6dcd94e5ab577b5af2b286e13745d69d6407dcf74b
+七字段 [16777229,50012360,33188,1,5648,1791869633301732784,1791869633301732784]
+Source 冻结器真实 802ed6 exit 0；其 Source_gate 立即核对 Source、只读 helper 和有限候选 authority 全部 SHA/7ID，manifest 仍不存在。
+
+准备接口必须由 Root 外部选择完整 Source freeze、未来真实 v9 tool receipt、未来实际 v9 summary 各自准确 SHA256 和全部七字段。未来工具 receipt 精确路径为 REC/ACTUAL_PIPELINE_V9_AFTER_EXACT_TWO_RELEASE_TRUE_TOOL_RETURNS_20261013.json；实际 summary 是 v9 输出目录的 Root_actual_three_plane_engineering_summary.json。writer gate 接受真实闭合 exit 0 或 1，并要求实际 engineering 状态一致，不假设成功；每个实际阶段的 watchdog/log 必须完整稳定、业务 own child 都真正清理闭合，当前 process metadata 中没有活跃 v9 owner/runtime。整个实际 v9 output_pins 必须逐完整 EOF/七字段验证并加入最终保护表，才允许生成最终 manifest。静态 Source freeze 中不存在任何未来实际 receipt 身份。
+
+执行默认仅只读；Root 必须额外提供准确 final manifest SHA/7ID 及 --execute。每次仅 unlink 八个固定文件名，重新检查私有 nlink1 和完整保护 DAG 不重合；每次实际删除写持久记录。全部保留和 current science/v9 文件事后完整读到 EOF；整个两旧分支完整入口差必须恰好删除八项，两个父目录各少四普通入口。APFS parent nlink/目录大小和时间变化依据真实 before/after 记录，不假定不变。逻辑 history 必须恰好减少八文件和 998,909,696 B，任何部分或事后失败都停止且不自动重试。
+
+原限制原样：SELF 512 MiB、whole 1,800 秒、stage 600 秒、单线程/单业务子进程、fresh 2 GiB、history 96 GiB、free floor 8 GiB、cold 20,971,764,748 B、metadata 64 MiB。原物理输入、producer、算法、阈值及验收状态不改变。此次 Source-only 不赋予 AAA 精度、online BOOT、独立参考或 ABA 完成资格；主目标保持。
+
+
+真实 v9 终态后最终准备已完成 — 2026-10-13
+
+以下新实际状态取代上文“最终manifest尚不存在”的当前说明，上文保留为 Source-only 冻结时历史。三份 frozen Source 未改动。
+Root 真 v9 工具 17febf/session51915 → d0ea2b exit 1；实际 summary 42 stages、FAILED_UNQUALIFIED_NO_RETRY、after_check_error None。GLOBAL 和 PROJECT PASS；view_missing_operand 是正确严格拒绝，view_memory_output 在 CLE lexical 卡片输入实际 SIGTRAP -5，未达到预期拒绝 exit 1。没有将该旧结果提升为 online BOOT 或物理通过。
+材料作者明确确认 current_formal_material_authority_exact_cache70_source_v5 全树 Source、报告和 Source_only_writers 写入停止后，最终 prepare 才执行。
+最终 preparation 真 14ce27/session8971 → 8f7d9f exit 0。精确八 manifest：EXACT_EIGHT_CLOSED_FAILED_V5_V6_PRIVATE_COPY_MANIFEST.json
+SHA256 ff41720ece425f35ad1a19e788d5c95354e94e5c3f3804421958a24198519ee4
+七字段 [16777229,50013100,33188,1,4365208,1791870085838502446,1791870085838502446]。
+全部 current union 4,769 fullpins 已保护，包含材料最终 v5 全树及其完整可达 inputs、明确 GENDF 当前 v4/parser v2、全部真实 v9 output_pins、42 个 watchdog/log、真正 Root tool receipt/summary。prepare 前当前 process metadata 中没有 live v9 owner/runtime；全部业务 own child cleanup 真闭合。
+
+独立只读 final manifest/current union 后验实际 a5338a/session10336 → 5f849d exit 0，共 5,157 去重文件、6,646,776,089 B 完整 EOF、103,874 项检查；所有 4,769 保护和全 372 保留旧普通文件以及八候选 SHA/七字段完全一致。完整两个旧目录入口均未改变。旧 PACK/INITIAL 单项 PASS、旧 GLOBAL 失败和小因果 raw 保留。
+独立 JSON：independent_final_manifest_review_20261013/INDEPENDENT_FULL_EOF_FINAL_MANIFEST_REVIEW.json
+SHA256 e3774709922c79ac4b944357bb71a5348df22f6f2dfd7470db6bc2458df8aea6
+七字段 [16777229,50013129,33188,1,2555,1791870105758999699,1791870105758999699]。
+后验时 v10 HF 尚不存在，因此未声称已核验 v10 Source；Root 若先冻结 v10 后再执行清理，还须独立完整核验该当前新 Source 与八候选无交集。
+
+准确只读/Root execute argv 已保存 ROOT_REVIEWABLE_FINAL_EXACT_EIGHT_ARGV.json。Root 自行选择 execute；此准备和审查均没有调用 unlink，没有清理实际 receipt。真实 preparation 与 review tool returns 分别保留独立 JSON；原 Source-only 信息和真实记录不覆盖。
+
+
+Root 实际精确八文件清理及独立事后闭合 — 2026-10-13
+
+以下实际完成结果取代上文“仅准备未删除”的当前状态；准备及 Source-only 记录全部保留为历史，不覆盖任何 frozen Source 或 manifest。
+Root 真实际执行 53b61f/session59401 → 3ce611 exit 0；准确八项 v5/v6 旧私有 PACK/输入副本已删除，合 998,909,696 B。ACTUAL_EXACT_EIGHT_RELEASE_RECEIPT.json SHA256 bbcc9a7ecaddb95f49b050a4f4a79fc45ab41afba682d6d14111b791ae35788e；全部七字段 [16777229,50013549,33188,1,363033,1791870263257314745,1791870263257761413] 由真实 Root terminal 选择，独立完整 EOF 后验相同。
+实际执行当时 history scope 从 79,491,198,711 B / 95,969 文件变为 78,492,289,015 B / 95,961 文件，精确减少八文件及上述逻辑字节。原 96 GiB history、cold 20,971,764,748 B、metadata 64 MiB、future full fresh 2 GiB、free floor 8 GiB 保持；原完整初始预留余量由 401,659,133 B 增为真实 1,400,568,829 B。当前观测不用于冒充执行当时差值；任何后续 v10 ART 输出按新增业务增长计数。
+
+独立只读事后审核 d06985/session71210 → 58e179 exit 0，全 4,769 保护文件、全 372 保留旧文件及全部 frozen Source/manifest 完整 EOF SHA/七字段不变。共 5,151 去重普通文件，5,648,231,153 B 完整 EOF，100,529 项检查。整个两旧分支的全普通文件/符号链接入口差恰好八项被删；所有目录都仍存在，两个受影响父目录各少四普通入口，自然 APFS nlink -4 / 目录大小 -128 及真实时间变化与执行 receipt 完全一致，其余目录七字段不变。
+全部真实 v9 输出、42 个实际 child watchdog/log 及真正 Root 工具闭合 record 保留；两旧分支各 33 个 child 真闭合及 stop 因果物保留，GLOBAL 44 B、ax_current 和 initial_system 未删。旧 PACK/INITIAL 和 v9 GLOBAL/PROJECT 各自 PASS 保持；v9 失败的 BOOT lexical 输入不被当作在线 BOOT 或精度完成。
+独立 JSON：independent_postrelease_20261013/INDEPENDENT_EXACT_EIGHT_POSTRELEASE_FULL_EOF_REVIEW.json
+SHA256 1698ad4ae89207b57b03988a67af10067190c7d6f2136675709f81b2970700f9
+七字段 [16777229,50013691,33188,1,2140092,1791870401358829160,1791870401358829160]。
+真实后验工具返回：independent_postrelease_20261013/ACTUAL_INDEPENDENT_POSTRELEASE_TRUE_TOOL_RETURNS.json。
+没有重复删除、准备、编译或调用任何业务；本清理仅移除八个明确旧私有 raw 重放路径，结果文档、日志、当前科学输入和 production originals 完整保留。既定物理输入、算法、原阈值和原资源限制保持；完整原目标仍未因清理获得完成资格。

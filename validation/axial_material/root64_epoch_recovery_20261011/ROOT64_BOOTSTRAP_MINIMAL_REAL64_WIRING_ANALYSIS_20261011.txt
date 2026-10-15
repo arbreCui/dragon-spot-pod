@@ -1,0 +1,57 @@
+ROOT64 原生生产到在线 BOOT 的最小完整接线分析
+2026-10-11；只读 Source 审查产生的实施方案，不是资格、执行或旧源码恢复凭证。
+本轮没有修改 src、冻结 new_source、decks；没有编译、Native、求解、训练或数值测试。
+
+结论与范围
+冻结的 SPOR64_BOOT64 / SPOBOOT64 仅覆盖 MCCG TYPE-K 原生终态 flux 的封存、读取和 clone。不能把 IMPORT clone 作为 GLOBAL64 到平面的投影，也不能把 ROOT-REF64 自复制作为独立 producer/终态求解证明。完整接线必须包含真实 REAL64 初态、原生 kernel、global canonical state、三平面投影、冻结 fission source、BOOT ingress 和 bootstrap commit。GLOBAL64 / ROOT-QFISS64 的旧 Source 已丢失，本文件的完整布局是明确的新合同建议，不声称旧 ABI 同字节恢复。
+
+已定位的真实 Source 断点
+1. validation/artifacts/axial-material-r64-system-normalization-20261003/build/AXMAT_SNAPSHOT_DRIVER64.f:379-383：JPFLUX/FLUX type2 -> GAR32 -> DBLE 初始化；其 strict gate 在1346，1517后的FLUX64/SOUR64与1541的SPOT-KEFF64则来自真正原生DOUBLE变量。
+2. src/FLU2DR64.f:377-383：全局SPOT轴向也从GAR32初始化。490-495所有TYPE-K第一次k估计将DOUBLE FLUX demote到FLX32再调用FLUKEF；1210-1215的TYPE2更新同样如此。实际生产 B1 SIGS 在FLUGPI:287升为TYPE3，后续更新使用B1HOM64，但第一次k估计仍须消除FLX32回流。
+3. src/SPOSTATE.f90:232-236：global nu-fission norm仍用unknown/type2；397-415：plane restriction明确以binary32乘、累加、除，然后才升到SPOT-X-A。lr64读取FLUX64不等于这些路径已用REAL64。
+4. src/SPOPROJ.f90:145-191：读FLUX/type2，FIXB canonical结果再次demote为type2写回。data/SpotPlaneR64.c2m:21仍调用SPOFSRC；SPOFSRC的unknown/source/chi/nufis/fis/keff为REAL32。
+5. src/SPOR64_B2B.f90:461-493：BOOT从FLUX/type2和DSOUR/type2唯一promotion；CONT 495-524已坚持SPOT-R64/FLUX、QFISS type4，但不能借CONT入口假冒epoch0 bootstrap。
+6. src/FLUDRV.f:302仅在SPOT调用FLU2DR64；MCCG走FLU2DR。prepare_r64_snapshot_candidate.py:19-25有真实MCCG TYPE-K分流的Source构造锚点。FLUDRV:315-345在kernel返回后才写完整STATE/EPS/KEYFLX/OPTION，新的terminal封存必须在这些完成后。
+
+初态如何严格处理
+当前system-normalization/A/snapshot.x2m:30-34确实从seed_A.xsm恢复并INIT ON；不是uniform cold起点。seed_A.xsm现存78,033,352 B；本次没有读取/认证其载荷，不能据文件存在称其有FLUX64或来源合格。
+暖启动必须先完成全370项FLUX64 list type10 / 每项type4,nunk / finite / FLUX mirror exactdemote / TRACK-SYSTEM-MATERIAL-RCONTRACT完整上下文、真实producer Source与工具终态、外部fullEOF SHA/7ID绑定；然后直接读入DOUBLE FLUX(:,:,2)，禁止从FLUX镜像构造。旧AB保存终态存在真正driver type4输出，但当前初始seed能否满足上述合同必须另行实际纯载荷核验；不继承旧TMP丢失Source或旧身份epoch资格。
+若原暖seed唯一可用来源是legacy type2，就不能同时声称保留其历史有效初始DOUBLE bit image又去掉该promotion。必须声明新cold分支：在真实driver内部按原cold数学初始化规则直接写0.0D0/1.0D0（MCCG仅active scalar key置1，其余0；SPOT按原FLUDRV相应door规则），该fresh值可证明与原cold数学常量等值，但不是旧warm seed的连续精度升级，不继承warm科学资格。来源是真正新driver赋值，不是将镜像升格再给它贴type4标签。
+将所有静态材料系数、几何VOLUME/AREA/VOL1D按原记录精确提升用于REAL64算术是允许的同一输入表示；迭代flux、k、source、canonical A、leakage不能先demote再promote。
+
+实施单元A：原生driver / host
+在新的独立integration_source命名空间复制可用AXMAT driver与src/FLUDRV.f、src/FLU2DR64.f，不改冻结两文件。为初态加显式cold/warm typed入口及完整nunk×370 REAL64 staging；warm全项先验后才调用kernel。建议以已核验的typed initial_flux64参数传入driver，使调用者来源清楚，driver内部不再自行读GAR32。cold由同一真实调用者按已声明数学规则建立该数组，输入规则记录在Source和协议中。
+MCCG producer保持原DOOR64、rebalance、acceleration、原material、370群、32 fission slots、8reg/14unknown/8mix、strict三残差和inner_state=1/it>=2。在strict branch只捕获真实terminal_flux、AKEFF、[EEXT,EUNK_LAST,EINR_LAST]、[IT,ITERF_LAST,IINR_STATE]，cap分支不得给有效终态；输出参数随真实成功返回。FLUDRV完成STATE/EPS/links之后，拥有完整MICROLIB2、TRACK、SYSTEM、RCONTRACT及独立plane/epoch binding的实际outer caller调用冻结PUBLISH_NATIVE，再保存XSM。若使用共享暂存而非显式输出参数，须在每次call reset并保证一对一调用，不能读取旧terminal残留。
+轴向SPOT global生产同样必须从typed64初态入FLU2DR64；首次k初估及实际TYPE2分支可复用真实AXMAT_FLUKEF64更新式，其完整可用Source在validation/artifacts/axial-material-r64-snapshot-A-20261003/build/AXMAT_FLUKEF64.f。TYPE3保留B1HOM64原公式与原B1 SIGS/VOID等边界。不要把MCCG-only snapshot driver直接用于SPOT geometry。
+真实终态值及strict分支调用是producer证明；封存副本、STATE文字及重读逐位相等仅是一致性检查。外部host必须固定新producer Source/编译链接命令/实际运行输入/日志与输出full-file SHA/7ID，且分别核验存储篡改。文件pin不足以在裸内存对象上证明终态真实求解。
+
+实施单元B：SPOSTATE64 / GLOBAL64 / 三平面projection
+从src/SPOSTATE.f90复制新SPOSTATE64：FLUX64/SPOT-KEFF64必须存在且type正确，FLUX/K-EFFECTIVE仅exactdemote镜像；norm、volume average、Gram rhs、solution、offspace、signed leakage全部由unknown64真实值计算。保留全局一次NUFISS-UNIT归一化、原面积/体积、MAT1D、完整FIXB Gram solve、basis排列及原rank门，禁止局部fit、clip或换rank。已有basis系数是原type2静态输入，可在乘法时精确提升；这不等于把迭代场从type2提升。
+GLOBAL64建议为一个新独立root目录，不复制三份完整AX，含NPLANE=3、EPOCH=0、ROLE=原生global终态、真实strict terminal信息、CASE/RCONTRACT、KEFF64/RHO64(精确1/keff)、NORM64、完整AX TRACK/SYSTEM/MACROLIB3固定上下文、FLUX列表370×nunkAX(type4，包括全scalar/current unknown)、canonical DIMS/RANK/OFF/BOFF/GOFF、A(ncoef,type4)、GRAM、L(3×370,type4)、H(3,type4)、原basis与全部布局。ncoef按原偏移核验；只有全群rank2满足时才有ncoef=2220，不得用强制shape掩盖17群失败。
+GLOBAL64也须绑定原完整径向三平面archive的TRACK/MICROLIB2/SYSTEM及A/B/A或AAA选择，避免全局算子与平面材料拼接。完整材料physical tree不裁剪，包含三个散射矩、全部8×32×370 NUSIGF/CHI/原能窗等；新current pin不自证旧失效资格。
+新SPOPROJ64/BOOT projection读取同一GLOBAL64 canonical state；按原area/volume/MAT1D/FIXB公式在REAL64重构每平面scalar。生成新archive三项，不改输入：每项ROOT-FLUX64为type10长度370，每组type4长度该plane TRACK的nunk（当前14），KEYFLX顺序精确一致；scalar为新canonical projection，其余surface/current初值从已认证native64 seed原值完整保留，严格按原projection行为，不随意置零。FLUX type2只能是demote镜像。ROLE明确PROJECTED-BOOT，不可标NATIVE-K64或调用冻结PUBLISH_NATIVE冒称该投影再次通过MCCG终态。
+三平面共用同一个global keff/rho/norm/epoch，plane标签1/2/3固定；plane维度、material、volume64、weight64、track和route均与其真实archive item一致。GLOBAL64有严格最后commit与外部fullpin；缺失global、错误scope/epoch/dims应普通拒绝。不能把新record添加进冻结21项ROOT64-SEAL inventory而仍声称原版本合同不变；用新bootstrap边界明确新版本精确inventory。
+可复用B2H_RECONSTRUCT的REAL64 basis×coordinate算子及B2J完整布局/几何检查。不可直接调B2H_PROJECT做epoch0：它要求SOLVED/e seed并输出e+1。不可将未经径向求解的bootstrap seed贴SOLVED以满足此条件。
+
+实施单元C：真实ROOT-QFISS64 / BOOT ingress / e0 commit
+从同一个新projected-bootstrap archive构造所有三对MACRO0/FSOURCE，并在owning host内保持private/live直到BOOT完成。复用SPOR64_B2N.f90:414-449确定的真实标量loop和原material：fis64=sum_h REAL64(NUSIGF(im,ifis,h))*phi64(key,h)，q64(key,g)+=REAL64(CHI(im,ifis,g))*fis64*rho64，ifis=1..32、h/g=1..370。q64其余unknown为0、非负有限；qint64用原volume64积分。无FMA/reassociation假设、无额外normalization、clip或live fission。
+ROOT-QFISS64明确是FSOURCE中type10长度370，每组type4长度nunk（当前14）；RHO、PLANE、STATE=FROZEN-QFIS、EPOCH=0及来源GLOBAL64完整绑定。DSOUR/type2、SPOT-QINT/type2、SPOT-KEFF/type2为exactdemote mirror。MACRO0由同一plane原MACROLIB全树复制，仅将所有NUSIGF置+0，防TYPE-S双计fission；其他材料record不变，源的真material parent仍保存原MICROLIB2，不用零NUSIGF MACRO0代替物理来源。
+B2N公共CONT contract要求PROJECTED/e且e>0，不能放宽它至>=0。新bootstrap-specific reader/preflight使用上述新record与e=0；可抽取/复制同一原QFISS算子，显式不同入口，不冒称调用未改B2N已支持BOOT。
+新的B2B BOOT typed分支保留原七physical objects+RCONTRACT、原TYPE-S0、INIT ON、REBA、caps/EPS/ACCE/merge、真实TRACK_f、全部物理/geometry/system验证；只用已完整准入ROOT-FLUX64与ROOT-QFISS64建立initial_flux64/fixed_source64，拒绝missing/type2/错epoch/dims/global/material/route。禁止旧FLUX/DSOUR fallback，仍调用实际FLU2DR64_CORE/DOORFV64与原strict terminal predicate。Frozen候选SPOBOOT64七参仅import，不能替代此真实BOOTrun；保留它作为native64 checkpoint admission helper。
+BOOT source、seed和fresh SYSTEM均须证明来自同一GLOBAL64/plane/e0。系统由同一拥有者实际ASM产生，并在真正SOLVE前绑定；不能直接换用旧SYSTEM标签。旧BOOT若缺LEAK1D64会在ASM时把leakage预减到REAL32自散射；应与CONT一致使用真实LEAK1D64和未减system(SPOT-L1-RAW / SPOT-S0-PHYS)，由core在REAL64减泄漏，避免bootstrap遗漏该连续精度环。
+成功BOOT仍由B2C既有严格发布建立SPOT-R64的FLUX/SOUR(type4)，不提前写SOLVED/0。三平面成功后，组装无archive生命周期marker的原bootstrap候选（TRACK/MICROLIB2/SYSTEM/FLUX三个list、SPOT-ITER-K精确global keff）；丢弃仅供e0输入的ROOT64包装或保存为分离证据，不能污染B2I exact inventory。
+随后实际调用SPOR64_B2I_SEAL_BOOTSTRAP(AX_OUT,ARCH_OUT,AX,AX_TRACK,ARCH,RCONTRACT,status)，其既有检查/输出不变，形成CLOSED/0。这是真实完成三次径向BOOTrun之后的commit，不是启动前的自贴标签。其后原B2J从CLOSED/0投影到PROJECTED/1，B2K实际ASM绑定、B2N真实source、B2O/B2B CONT、B2R collect、B2W close继续原链。
+
+实施单元D：实际dispatcher / decks / host绑定与验收
+KDRDRV.f:116在SPOPROJ附近增加新SPOSTATE64/SPOPROJ64/typedBOOT必要入口；不能只编译模块却让decks仍调原SPOPROJ/SPOFSRC。新outer bootstrap host尽量复用FLU existingR64 operand tuple与原kernel，独立global作为新bootstrap proof包由owninghost验证并私有派生，不让散落caller任意指定q64/rho/epoch。
+production_inputs.py:110 `_axial_solve` 改新integration variant，真实global driver后调SPOSTATE64。bootstrap_radial:193 SPOPROJ FIXB -> 新SPOPROJ64；SpotPlaneR64:21 SPOFSRC -> typed bootstrap source builder；:27 FLU R64 BOOT -> 新typed BOOT branch。保留原host production_runner.py:886-892的axial -> radial -> B2I次序。R64 CONT不通过假e=1用于绕过e0的办法。
+生产到在线验证顺序：完整Source/API审查 -> 新固定编译/链接 -> 原17cases内容全部真实执行（含GLOBAL64、QFISS/type4、source commit/epoch/dims、contexts/routes/coherent stored tamper） -> 相同声明输入实际typed producer与保存文件 -> 外部fullEOF SHA/7ID -> 完整在线三plane BOOT -> e0 B2I commit -> 原下一epoch连续链。小fixture合同PASS或4 compile-only不是实际producer/source/online资格。
+原rank2/SVD gate9.5367431640625e-7、全370验收、正式AAA3%及资源512MiB/stage600/whole1800/threads1/单业务child/不自动retry保持。共同rank2现仍353/370；完成工程接线也不允许跳过训练门开始正式AAA/ABA。GLOBAL64/核验若超资源，应优化持有/遍历，不删physical context或扩大上限。
+
+分工建议（源码实现互不覆盖）
+A负责integration_source中的AXMAT / FLU2DR64 / FLUDRV及double k helper、typed cold/warm/真实terminal outputs；不得改frozen new_source。
+B负责新SPOSTATE64/GLOBAL64/三plane projection及exact inventories，不依赖A的旧REAL32 canonical数据。
+C负责新bootstrap source builder/B2B typed入口/真kernel/e0 B2I glue，复用B2N算子和B2C/B2I严格出口，保留CONT合同。
+Root在A/B/C合同收口后做dispatcher/deck/host固定命令和全控制集绑定，先真实有界构建，再实际Native；不把未运行项写成PASS。
+
+本报告记录确定Source位置及明确的新合同建议；未进行原seed/type4载荷准入、当前完整物理来源资格、编译/链接、真实新controls或Native producer/BOOT。所有缺口保持明确。

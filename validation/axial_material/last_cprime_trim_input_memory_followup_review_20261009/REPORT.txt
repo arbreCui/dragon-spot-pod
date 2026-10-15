@@ -1,0 +1,19 @@
+V8失败后的输入审核内存处理（2026-10-09）
+
+上一goal turn有实际进展：第九轮存储清理真实完成并独立通过；V8实际PREP完整独审通过；唯一五阶段RUN真实退出1，Python审核516.46875 MiB超原512 MiB，失败独审已保存。
+V8冻结零重试；当前无业务进程在运行、无V8成功seal、无标准INPUT API或新native/AAA/ABA信用。主goal完整目标保持。
+
+当前源生命周期审查c92a5357361b181ac221eeda3ad3792d1ab855ac8a86af97fb175efdb32dc238为source-only。
+两种图摘要已经逐块流式实现，不再重复修改它们；PREP producer的legacy全clone仍存在，不能声称已减少其峰值。
+实际失败语句仍未定位；以下候选只是源码推断，必须测量，不能承诺512 MiB内成功。
+
+正在只于TMP准备：
+1. 原F8 strict_json_bytes解析内不可变builtin str/int的局部共享，保持所有完整字段、普通dict/list、插入顺序、float负零、bool/int类型以及JSON重复键/非有限/UTF8/整数/深度错误门。
+   不全局缓存、不共享mutable容器；局部pool也可能增大解析中峰值，必须用完整实际JSON比较并实测再决定。
+2. current predicate helper中两份私有声明capture/physical，在其真正最后使用点后释放；保留全部原读取、门顺序、真实函数和返回。
+3. 独立纯metadata parser的Root-owned诊断方案：原/候选顺序单child、.12、thread1、120秒/512 MiB、零重试，完整输入SHA/身份和序列化内容均须相同。
+   该独立parser诊断与实际业务上下文不同，任何通过都不能授予combined runtime/native RSS/AAA/ABA信用，也不能把诊断peak说成V8实际失败原因。
+
+源码与小fixture、完整数据语义和本次PID观测通过之后，才考虑新版本source admission及原完整五阶段RUN；不复跑已冻结V8、不提高预算、不缩窄原输入或改变数学/物理阈值。
+
+2026-10-09实际诊断与V9选择：首项原DECL已运行，但父监测程序data_before变量名错误，以真实1退出；精确child wait码未落盘，保持None，旧四项资格False。剩余三case真实eb41ca/session3948→0e3832 EXIT0，完整输出及普通类型一致。来源载入时原完整factory AST为28.046875MiB，函数独立候选为16.765625MiB；末段差异0.58–3.27MiB不可归因解析器。V9保留原parser，只使用已正式准入fd3两处last-use引用释放；内存收益与完整构建仍须新actual PREP/RUN证明，未计科学通过。

@@ -1,0 +1,24 @@
+V9 完整构建准备与实际验证（2026-10-09）
+
+最终源码44789已正式安装，原解析器和65个函数体保持。已审fd3 helper只释放两份私有临时声明的最终引用。
+源码独审真实4741bd EXIT0，Root正式安装真实fe61a3 EXIT0。
+Root唯一完整PREP实际ef22f4/session60763 → f4b055 EXIT0 CLOSED；严格真实0后，fc1b03 EXIT0记录本次外部Root PREP收据。
+原1800/600秒、512 MiB、线程1、单子进程、零重试、2 GiB归档、96 GiB历史、8 GiB空闲限额保持。
+实际构建、native RSS、AAA物理精度与ABA尚未通过；主goal仍active。
+
+DECL SHA 7bc3d176f58ad6ee92d640c799b3f8d79923c65b2bf27c3b545c511e282b53e0
+PREP SHA 0297aa6543c36ca3f452b1948e0d034e218f71c253b08cd671c3c83cb01262fb
+完整历史图全文件及来源见证独立复核仍在执行；当前计数35,647规范文件、235,528关系、86命名空间、186别名、445缺席条件、231动态历史资源根，不将计数当成核验通过。
+完整RUN尚未启动；seal和成功terminal绑定仍None，四尾字段为空。
+
+最新结果（2026-10-09）：实际PREP的完整独审已经通过，双方证据已保存在本目录的两个full_independent_PREP子目录。
+第十二轮清理仅移除保护闭包外的64份普通缓存；完整命名空间、别名及缺席条件元数据保持。
+V9唯一RUN仍未启动，原512 MiB等门槛不变，不授予native RSS、AAA或ABA通过。
+
+最新实际RUN结果：bace6e/session37772 → d425ef EXIT0 CLOSED；5阶段均PASS，完整四尾PASS，整段307.694秒，归档153,579,305字节。
+最后audit own-child采样峰值501.15625 MiB，低于原512 MiB；这仅证明此构建审核，没有授予native冷启动RSS、AAA/ABA或物理精度通过。
+真实0后，原b534记录器0b7b0e EXIT0写入新Root terminal709a9592…1b9d27，seal ece13c55…f3aed。完整独立RUN复核正在执行，尚未执行新运行时INPUT。
+
+2026-10-09 主goal续行：完整actual RUN source+graph独立scope PASS已真实闭合并保留；fresh绑定host180053的完整source独审及4实际pins通过。Root唯一标准3arg INPUT host已实际0a5d42/session11005启动，当前仍live，尚无实际HOST/API成功终态。原1800/600/512、线程1/子1/0retry不变；未执行cold或新增科学验收。
+
+唯一V9完整3arg INPUT host实际0a5d42/session11005 → cbbfbe EXIT0 CLOSED；ownPID20473 watch0，采样峰值497.84375MiB，43.689559秒，host49.044546秒。完整合并API日志25,266,286B，SHA0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5；Root原始真实工具观测已保存。当前待Root9payload/第10凭证与全INPUT独审。没有cold/新nativeRSS/FLU/AAA/ABA信用。

@@ -1,0 +1,70 @@
+{
+  "schema": "DRAFT_CURRENT_MOUNT_COMMON_COMPLETE_BYTE_INVERSE_V1",
+  "Source_draft_only": true,
+  "actual_catalog_pin_not_predicted": true,
+  "actual_binding_file_not_generated": true,
+  "business_compile_import_or_transport_executed": false,
+  "original_common_sha256": "e9273410d444e5c7d587cf0586e379491e441554e5601eca40e53eeac2b1e5eb",
+  "draft_common_sha256": "baed0ead3b1159b7874c5f606bf97978673e11074ef131131c402bec50982454",
+  "complete_original_copy_sha256": "e9273410d444e5c7d587cf0586e379491e441554e5601eca40e53eeac2b1e5eb",
+  "complete_byte_inverse_equals_unmodified_original": true,
+  "exact_ordered_replacements": [
+    {
+      "before": "BIND = BASE/'CURRENT_WARM_A_COMPLETE_HOST_SOURCE_BINDING.json'",
+      "after": "BIND = BASE/'CURRENT_WARM_A_COMPLETE_HOST_SOURCE_BINDING.json'\nORIGINAL_BASE = REC/'native_warm_A_bounded_host_source_v3'\nCURRENT_CATALOG_SCHEMA = 'CURRENT_MOUNT_FULL_EOF_IDENTITY_CATALOG_V1'\n_CURRENT_BINDING_PIN = None\n_CURRENT_CATALOG_PIN = None\n_CURRENT_CATALOG = None\n_METADATA_REATTESTATIONS = []"
+    },
+    {
+      "before": "def load_json_exact(path,sha,seven):\n    p=pin(path)\n    if p['sha256']!=sha or p['identity']!=json.loads(seven):raise RuntimeError('external owning report fullpin')\n    return json.loads(Path(path).read_text()),p",
+      "after": "def _complete_pin_key(row):\n    if not isinstance(row,dict) or not all(k in row for k in ('path','sha256','size_bytes','identity')):\n        return None\n    path=row['path'];sha=row['sha256'];size=row['size_bytes'];seven=row['identity']\n    if not isinstance(path,str) or not Path(path).is_absolute() or not isinstance(sha,str) or len(sha)!=64 or any(ch not in '0123456789abcdef' for ch in sha):\n        return None\n    if type(size) is not int or size<0 or not isinstance(seven,list) or len(seven)!=7 or any(type(x) is not int for x in seven) or seven[4]!=size:\n        return None\n    return (path,sha,size,tuple(seven))\n\ndef _read_current_json_exact(path,wanted=None):\n    p=pin(path)\n    if wanted is not None and any(p[k]!=wanted[k] for k in ('path','sha256','size_bytes','identity')):\n        raise RuntimeError('exact current metadata fullpin required: '+str(path))\n    raw=Path(path).read_bytes()\n    if len(raw)!=p['size_bytes'] or hashlib.sha256(raw).hexdigest()!=p['sha256'] or identity(path)!=p['identity']:\n        raise RuntimeError('exact current metadata read changed: '+str(path))\n    return json.loads(raw),p\n\ndef current_catalog():\n    global _CURRENT_BINDING_PIN,_CURRENT_CATALOG_PIN,_CURRENT_CATALOG\n    binding,binding_pin=_read_current_json_exact(BIND,_CURRENT_BINDING_PIN)\n    selected=binding.get('current_mount_full_identity_catalog_pin')\n    if _complete_pin_key(selected) is None or selected not in binding['fixed_current_pins']:\n        raise RuntimeError('fresh binding must explicitly freeze the actual current catalog fullpin')\n    if binding.get('current_metadata_view_is_reattestation_not_execution') is not True:\n        raise RuntimeError('fresh binding must distinguish mount reattestation from execution')\n    if _CURRENT_CATALOG is not None:\n        if selected!=_CURRENT_CATALOG_PIN:\n            raise RuntimeError('selected current catalog changed')\n        same_pin(selected['path'],selected)\n        return _CURRENT_CATALOG\n    catalog,actual=_read_current_json_exact(selected['path'],selected)\n    if catalog.get('schema')!=CURRENT_CATALOG_SCHEMA or not isinstance(catalog.get('rows'),list) or not catalog['rows']:\n        raise RuntimeError('complete current mount catalog schema')\n    table={}\n    for row in catalog['rows']:\n        before=row.get('historical_pin');after=row.get('current_pin')\n        old_key=_complete_pin_key(before);new_key=_complete_pin_key(after)\n        if old_key is None or new_key is None or type(row.get('mandatory')) is not bool or not isinstance(row.get('roles'),list):\n            raise RuntimeError('catalog requires exact complete historical and current PF declarations')\n        if old_key[:3]!=new_key[:3] or old_key[3][1:]!=new_key[3][1:]:\n            raise RuntimeError('catalog change exceeds the proven device field transition')\n        if old_key[3][0] not in (16777234,16777229) or new_key[3][0]!=16777229:\n            raise RuntimeError('catalog requires the actual declared device transition')\n        if old_key in table and table[old_key]!=after:\n            raise RuntimeError('same complete historical PF has inconsistent current bindings')\n        table[old_key]=after\n        same_pin(after['path'],after)\n    for historical in catalog.get('historical_non_live_declarations',[]):\n        if isinstance(historical,dict) and 'current_pin' in historical:\n            raise RuntimeError('historical non-live observations must not be reissued as current')\n    _CURRENT_BINDING_PIN=binding_pin;_CURRENT_CATALOG_PIN=actual;_CURRENT_CATALOG=catalog\n    return catalog\n\ndef bound_json_current_view(rawdata,catalog):\n    if catalog is not current_catalog():\n        raise RuntimeError('explicit view requires the actual selected full-EOF-attested catalog')\n    if catalog.get('schema')!=CURRENT_CATALOG_SCHEMA:\n        raise RuntimeError('explicit current catalog view schema')\n    table={}\n    for row in catalog['rows']:\n        key=_complete_pin_key(row['historical_pin'])\n        if key is None or _complete_pin_key(row['current_pin']) is None:\n            raise RuntimeError('explicit current catalog view requires complete PF rows')\n        if key in table and table[key]!=row['current_pin']:\n            raise RuntimeError('inconsistent complete PF mapping')\n        table[key]=row['current_pin']\n    def visit(value):\n        if isinstance(value,dict):\n            key=_complete_pin_key(value)\n            if key in table:\n                result={k:visit(v) for k,v in value.items()}\n                for name in ('path','sha256','size_bytes','identity'):\n                    result[name]=visit(table[key][name])\n                return result\n            return {k:visit(v) for k,v in value.items()}\n        if isinstance(value,list):return [visit(v) for v in value]\n        return value\n    return visit(rawdata)\n\ndef _record_metadata_reattestation(path,p,raw,view,catalog):\n    historical=[]\n    for row in catalog['rows']:\n        if row['current_pin']==p and row['historical_pin'] not in historical:\n            historical.append(row['historical_pin'])\n    raw_hash=hashlib.sha256(json.dumps(raw,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()).hexdigest()\n    view_hash=hashlib.sha256(json.dumps(view,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()).hexdigest()\n    record=dict(metadata_path=str(path),actual_unmodified_metadata_file_pin=p,\n        historical_metadata_file_pins=historical,current_catalog_pin=_CURRENT_CATALOG_PIN,\n        original_JSON_value_sha256=raw_hash,explicit_current_JSON_view_sha256=view_hash,\n        metadata_view_changed=(raw!=view),metadata_reattestation_only=True,\n        previous_stage_records_reexecuted_by_this_view=False)\n    if record not in _METADATA_REATTESTATIONS:_METADATA_REATTESTATIONS.append(record)\n\ndef read_bound_json_current(path,wanted):\n    raw,p=_read_current_json_exact(path,wanted);catalog=current_catalog()\n    view=bound_json_current_view(raw,catalog)\n    _record_metadata_reattestation(path,p,raw,view,catalog)\n    return view,p\n\ndef current_metadata_reattestation_provenance():\n    current_catalog()\n    return dict(schema='EXPLICIT_CURRENT_MOUNT_METADATA_VIEW_PROVENANCE_V1',\n        actual_current_binding_pin=_CURRENT_BINDING_PIN,actual_current_catalog_pin=_CURRENT_CATALOG_PIN,\n        metadata_view_records=list(_METADATA_REATTESTATIONS),\n        strict_actual_seven_field_file_identity_preserved=True,\n        historical_files_modified=False,prior_business_stages_reexecuted_by_metadata_view=False,\n        physical_accuracy_or_reference_qualification_inferred_from_reattestation=False)\n\ndef load_json_exact(path,sha,seven):\n    p=pin(path)\n    if p['sha256']!=sha or p['identity']!=json.loads(seven):raise RuntimeError('external owning report fullpin')\n    return read_bound_json_current(path,p)"
+    },
+    {
+      "before": "oracle=json.loads(Path(authority['path']).read_text())",
+      "after": "oracle,_=read_bound_json_current(authority['path'],authority)"
+    },
+    {
+      "before": "package=json.loads(Path(freeze['path']).read_text())",
+      "after": "package,_=read_bound_json_current(freeze['path'],freeze)"
+    },
+    {
+      "before": "if json.loads(Path(baseline['path']).read_text())['actual_before_pin']!=e['before']:",
+      "after": "baseline_view,_=read_bound_json_current(baseline['path'],baseline)\n    if baseline_view['actual_before_pin']!=e['before']:"
+    },
+    {
+      "before": "binding=json.loads(BIND.read_text());verify_rows(binding['fixed_current_pins'])",
+      "after": "binding,_=_read_current_json_exact(BIND);current_catalog();verify_rows(binding['fixed_current_pins'])"
+    },
+    {
+      "before": "c=binding['compiler']['path'];src=str(BASE/'verify_native_A_archive64.f90')",
+      "after": "c=binding['compiler']['path'];src=str(ORIGINAL_BASE/'verify_native_A_archive64.f90')"
+    }
+  ],
+  "unchanged_complete_function_source": [
+    "identity",
+    "pin",
+    "same_pin",
+    "write",
+    "verify_rows",
+    "closed_report",
+    "create_runtime",
+    "check_full_current",
+    "scope"
+  ],
+  "original_admit17_and_initialize_all_raise_statements_preserved": true,
+  "catalog_contract": {
+    "schema": "CURRENT_MOUNT_FULL_EOF_IDENTITY_CATALOG_V1",
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_mount_identity_reattestation_20261012/CURRENT_MOUNT_FULL_EOF_IDENTITY_CATALOG.json",
+    "complete_rows_fields": [
+      "historical_pin",
+      "current_pin",
+      "mandatory",
+      "roles"
+    ],
+    "current_binding_must_contain_actual_catalog_pin_in_fixed_current_pins": true,
+    "current_binding_catalog_pin_field": "current_mount_full_identity_catalog_pin",
+    "current_binding_reattestation_flag": "current_metadata_view_is_reattestation_not_execution"
+  },
+  "explicit_report_provenance_function": "current_metadata_reattestation_provenance",
+  "no_historical_completed_execution_reissued_as_actual_rerun": true,
+  "explicit_view_requires_selected_catalog_already_full_EOF_attested_by_current_catalog": true,
+  "current_view_identity_lists_do_not_alias_catalog": true
+}

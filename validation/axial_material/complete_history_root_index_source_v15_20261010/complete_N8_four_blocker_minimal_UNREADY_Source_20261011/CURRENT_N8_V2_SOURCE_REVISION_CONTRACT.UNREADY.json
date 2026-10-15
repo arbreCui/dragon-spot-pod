@@ -1,0 +1,418 @@
+{
+  "schema": "CURRENT_N8_V2_FOUR_SOURCE_BLOCKER_MINIMAL_REVISION_CONTRACT_V1",
+  "source_only": true,
+  "status": "UNREADY_SOURCE_ONLY_NOT_ADMITTED_BOUND_CONTROLLED_EXECUTED_OR_QUALIFIED",
+  "parent_manifest_pin": {
+    "path": "/private/tmp/axmat_N8_exact_owner_complete_UNREADY_Source_mjczixe4/MANIFEST.json",
+    "sha256": "81d83891b2ee213a45de57868e71667633ae4a126f1cb8603f299d23d2e9bde6",
+    "size_bytes": 152666,
+    "identity": [
+      16777229,
+      49516505,
+      33188,
+      1,
+      152666,
+      1791649654667544376,
+      1791649654667544376
+    ]
+  },
+  "actual_failed_independent_report_pin": {
+    "path": "/private/tmp/axmat_N8_COMPLETE_INDEPENDENT_Source_review_36g28ueh/REVIEW.json",
+    "sha256": "d7d13de86c9f73117ef60fd91870606223a0b18ee7b4b481dea7082ef289b0d6",
+    "size_bytes": 79104,
+    "identity": [
+      16777229,
+      49520362,
+      33188,
+      1,
+      79104,
+      1791650768393040275,
+      1791650768393040275
+    ]
+  },
+  "actual_failed_independent_manifest_pin": {
+    "path": "/private/tmp/axmat_N8_COMPLETE_INDEPENDENT_Source_review_36g28ueh/MANIFEST.json",
+    "sha256": "40b1ac21f3cb043adf9dcd212b8a752b09c5f9864312125732952fa084f81c30",
+    "size_bytes": 4070,
+    "identity": [
+      16777229,
+      49520621,
+      33188,
+      1,
+      4070,
+      1791650874056955066,
+      1791650874056955066
+    ]
+  },
+  "actual_failed_independent_Source_verdict_tool_pin": {
+    "path": "/private/tmp/axmat_N8_COMPLETE_INDEPENDENT_Source_review_36g28ueh/ACTUAL_INDEPENDENT_SOURCE_VERDICT_TOOL_RETURN.json",
+    "sha256": "2a2a2b1c6b707523cea0c956f264650d88b5c2f5be391787a45b450916f5bdb6",
+    "size_bytes": 1219,
+    "identity": [
+      16777229,
+      49520363,
+      33188,
+      1,
+      1219,
+      1791650768692802488,
+      1791650768692802488
+    ]
+  },
+  "actual_failed_independent_seal_pin": {
+    "path": "/private/tmp/axmat_N8_COMPLETE_INDEPENDENT_Source_review_36g28ueh_seal_receipt/ACTUAL_SOURCE_SEAL_TOOL_RETURN.json",
+    "sha256": "579a95c17ef4dcf38e878c6082bcc471bb13c9641923c00886cdf54cbf435fa1",
+    "size_bytes": 1649,
+    "identity": [
+      16777229,
+      49520624,
+      33188,
+      1,
+      1649,
+      1791650874128126513,
+      1791650874128126513
+    ]
+  },
+  "actual_failed_independent_postseal_pin": {
+    "path": "/private/tmp/axmat_N8_COMPLETE_INDEPENDENT_Source_review_36g28ueh_seal_receipt/ACTUAL_FULL_SOURCE_POSTSEAL_TOOL_RETURN.json",
+    "sha256": "0712a339cdf6e6fa02532aab4ff775435a561dca0fc8db8894eae25981372042",
+    "size_bytes": 2079,
+    "identity": [
+      16777229,
+      49520631,
+      33188,
+      1,
+      2079,
+      1791650880546272062,
+      1791650880546272062
+    ]
+  },
+  "changed_complete_Source_roles": [
+    "Root_observation_postclose_META_writer.UNREADY.py",
+    "N8_genuine_integrated_controls_driver.UNREADY.py",
+    "N8_Root_controls_postclose_META.UNREADY.py",
+    "N8_actual_controls_qualification_gate.Source_META_only.py",
+    "complete_observation_BUILD5_AB_runtime.UNREADY.py",
+    "Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+    "bind_complete_observation_SOURCE_only.UNREADY.py",
+    "N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json"
+  ],
+  "required_complete_author_Source_roles": {
+    "qualified_source_manifest": "MANIFEST.json",
+    "host_template": "complete_observation_genuine_host.UNREADY.py",
+    "runtime_template": "complete_observation_BUILD5_AB_runtime.UNREADY.py",
+    "binder": "bind_complete_observation_SOURCE_only.UNREADY.py",
+    "postclose_writer": "Root_observation_postclose_META_writer.UNREADY.py",
+    "native_Source_archive": "COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz",
+    "native_Source_index": "COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json",
+    "observer_module": "OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90",
+    "context_extractor": "OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py",
+    "original_complete_native_walker": "PARENT_SOURCE/Root_bound_complete_native_checker.py",
+    "original_material_seed_contract": "ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json",
+    "material_blueprint_Source": "GUARD_SOURCE/material_inputs.py",
+    "request_preparer": "Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+    "legacy_context_old_XSM_extractor": "COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py",
+    "owner_scope_helper": "N8_exact_owner_scope_observer.UNREADY.py",
+    "monitor_controls_gate": "N8_actual_controls_qualification_gate.Source_META_only.py",
+    "monitor_controls_protocol": "N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json",
+    "monitor_control_driver": "N8_genuine_integrated_controls_driver.UNREADY.py",
+    "monitor_control_child_Source": "N8_private_control_child.UNREADY.py",
+    "monitor_control_Source_binder": "N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py",
+    "monitor_controls_postclose_qualifier": "N8_Root_controls_postclose_META.UNREADY.py"
+  },
+  "required_complete_author_Source_role_count": 21,
+  "current_role_Source_pins_before_manifest": {
+    "host_template": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/complete_observation_genuine_host.UNREADY.py",
+      "sha256": "ce7aa9fc3cc9a93d9cffd70b9dd649914c06344fcb9447e152f0285fd5526cb9",
+      "size_bytes": 14475,
+      "identity": [
+        16777229,
+        49522300,
+        33188,
+        1,
+        14475,
+        1791636135998599129,
+        1791651454438110770
+      ]
+    },
+    "runtime_template": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/complete_observation_BUILD5_AB_runtime.UNREADY.py",
+      "sha256": "7477e120dff86c5783fecdc6cfc6d2f6caa61c1f32c28227ec2538218bf68feb",
+      "size_bytes": 89749,
+      "identity": [
+        16777229,
+        49522299,
+        33188,
+        1,
+        89749,
+        1791651795463548040,
+        1791651795463548040
+      ]
+    },
+    "binder": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/bind_complete_observation_SOURCE_only.UNREADY.py",
+      "sha256": "71e364742624bda6fbe6047ceff564b620af25bbc7a51ecb96e4e0e63839101a",
+      "size_bytes": 31267,
+      "identity": [
+        16777229,
+        49522298,
+        33188,
+        1,
+        31267,
+        1791651795480487183,
+        1791651795480487183
+      ]
+    },
+    "postclose_writer": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/Root_observation_postclose_META_writer.UNREADY.py",
+      "sha256": "5691761f186ed0e0eae6a8151d3e83937cb152fc926e8a0eb28ccbde4c025344",
+      "size_bytes": 28664,
+      "identity": [
+        16777229,
+        49522293,
+        33188,
+        1,
+        28664,
+        1791651795442605966,
+        1791651795442605966
+      ]
+    },
+    "native_Source_archive": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz",
+      "sha256": "3b1e160285fb641e5277d7d97b6b381a6568040076f9a72eb2ab84055b23e9b3",
+      "size_bytes": 2405748,
+      "identity": [
+        16777229,
+        49522158,
+        33188,
+        1,
+        2405748,
+        1791636135982820880,
+        1791651454412373013
+      ]
+    },
+    "native_Source_index": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json",
+      "sha256": "30fe07df1035b51475246c5f933695dcba0c2d8fb9996ac0cd607e4023da5df4",
+      "size_bytes": 623273,
+      "identity": [
+        16777229,
+        49522160,
+        33188,
+        1,
+        623273,
+        1791636135983749216,
+        1791651454412816139
+      ]
+    },
+    "observer_module": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90",
+      "sha256": "5f9899a6f1283a4bb72e0b32015a23b7ba8a9fa64c502f530783c804bed23f9d",
+      "size_bytes": 7939,
+      "identity": [
+        16777229,
+        49522214,
+        33188,
+        1,
+        7939,
+        1791636135985937180,
+        1791651454422526757
+      ]
+    },
+    "context_extractor": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py",
+      "sha256": "a9d1437055071a478ec2b5205d6c2c7ac38a0e33e25eb9f9bdfe72d753ba9f03",
+      "size_bytes": 13094,
+      "identity": [
+        16777229,
+        49522221,
+        33188,
+        1,
+        13094,
+        1791636135988461645,
+        1791651454423925887
+      ]
+    },
+    "original_complete_native_walker": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/PARENT_SOURCE/Root_bound_complete_native_checker.py",
+      "sha256": "9d8494234a3a6d58ef4cf8f151ff0505f35c750929ad444dfee8ca8a667dedb0",
+      "size_bytes": 51631,
+      "identity": [
+        16777229,
+        49522240,
+        33188,
+        1,
+        51631,
+        1791636135991210027,
+        1791651454426880605
+      ]
+    },
+    "original_material_seed_contract": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json",
+      "sha256": "6007ba0ec39f68c87418d5ba2b40c429d9f403ea3a09d0974732a2138eab14dc",
+      "size_bytes": 57310,
+      "identity": [
+        16777229,
+        49522222,
+        33188,
+        1,
+        57310,
+        1791636135988654104,
+        1791651454424103929
+      ]
+    },
+    "material_blueprint_Source": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/GUARD_SOURCE/material_inputs.py",
+      "sha256": "a533750046980e979ad00b11de0761f2854fc75670484dd4338863af43438a5d",
+      "size_bytes": 13275,
+      "identity": [
+        16777229,
+        49522170,
+        33188,
+        1,
+        13275,
+        1791636135984278717,
+        1791651454415534982
+      ]
+    },
+    "request_preparer": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+      "sha256": "31e855c95524cf48ffad6f5c8741f23ec6fc1ca0accfbeae017cbbe4e980356c",
+      "size_bytes": 22843,
+      "identity": [
+        16777229,
+        49522294,
+        33188,
+        1,
+        22843,
+        1791651795474792663,
+        1791651795474792663
+      ]
+    },
+    "legacy_context_old_XSM_extractor": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py",
+      "sha256": "079e6b9bca0f5e0ab43a41604ccd91c83112a0d040253dcc9101ae47b0efcb69",
+      "size_bytes": 52322,
+      "identity": [
+        16777229,
+        49522152,
+        33188,
+        1,
+        52322,
+        1791636135980420999,
+        1791651454410873882
+      ]
+    },
+    "owner_scope_helper": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/N8_exact_owner_scope_observer.UNREADY.py",
+      "sha256": "f3e170015ea659921aaa9493062f1fb630b764a70912a00ceb2e7f17ac5c0e58",
+      "size_bytes": 17118,
+      "identity": [
+        16777229,
+        49522210,
+        33188,
+        1,
+        17118,
+        1791649117972219771,
+        1791651454421863588
+      ]
+    },
+    "monitor_controls_gate": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/N8_actual_controls_qualification_gate.Source_META_only.py",
+      "sha256": "a44c9ddcb53e3669e78c8f777b7b3423d60d43fc41cbc6869d1519c900b7cef5",
+      "size_bytes": 12128,
+      "identity": [
+        16777229,
+        49522208,
+        33188,
+        1,
+        12128,
+        1791651795449649991,
+        1791651795449649991
+      ]
+    },
+    "monitor_controls_protocol": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json",
+      "sha256": "5f0624aa7e91238982080e5f0c2beb7afdf35334b1ec77c9a1aee18e6a941a29",
+      "size_bytes": 15447,
+      "identity": [
+        16777229,
+        49522207,
+        33188,
+        1,
+        15447,
+        1791651795483243859,
+        1791651795483243859
+      ]
+    },
+    "monitor_control_driver": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/N8_genuine_integrated_controls_driver.UNREADY.py",
+      "sha256": "1546bc6230ab2414f917b3b571dcfe60e9accfc9c2f64402f8beeb64763d3e14",
+      "size_bytes": 26581,
+      "identity": [
+        16777229,
+        49522211,
+        33188,
+        1,
+        26581,
+        1791651795445175850,
+        1791651795445175850
+      ]
+    },
+    "monitor_control_child_Source": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/N8_private_control_child.UNREADY.py",
+      "sha256": "854ab636e875e1e0765152520a6af404cffe8bf76aba82c8dd2d2277d4b16bf0",
+      "size_bytes": 2681,
+      "identity": [
+        16777229,
+        49522212,
+        33188,
+        1,
+        2681,
+        1791648305883223881,
+        1791651454422305381
+      ]
+    },
+    "monitor_control_Source_binder": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py",
+      "sha256": "645833dea0e82babba4367a807a084f0756a86b76be2aeb1e63671d7fd8e8722",
+      "size_bytes": 12442,
+      "identity": [
+        16777229,
+        49522209,
+        33188,
+        1,
+        12442,
+        1791648535691442240,
+        1791651454421704087
+      ]
+    },
+    "monitor_controls_postclose_qualifier": {
+      "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/N8_Root_controls_postclose_META.UNREADY.py",
+      "sha256": "cf74c1b4d485fd1aaf30d3acee34808482d27a7b65a8bc14ea976b93f46fa804",
+      "size_bytes": 18547,
+      "identity": [
+        16777229,
+        49522206,
+        33188,
+        1,
+        18547,
+        1791651795447537650,
+        1791651795447537650
+      ]
+    }
+  },
+  "historical_original_N8_reports_and_absolute_Source_pins_are_parent_history_not_current_review": true,
+  "historical_original_author_scripts_fixed_to_OLD_must_not_be_executed": true,
+  "current_N8_to_parent_inverse": "COMPLETE_N8_V2_ALL_CHANGED_ROLE_BYTE_AST_INVERSE.json",
+  "current_N8_to_N7_inverse": "COMPLETE_N8_V2_CURRENT_FOUR_ROLE_TO_N7_BYTE_AST_INVERSE.json",
+  "first_live_census_prerequisite_added": false,
+  "new_hypothetical_escaped_group_scope_gate_added": false,
+  "original_guard_classes_MRO_caps_physics_owner_helper_unchanged": true,
+  "actual_independent_Source_review": null,
+  "actual_Root_Source_admission": null,
+  "actual_controls_Source_binding": null,
+  "actual_monitor_controls_qualification": null,
+  "actual_native_AB_execution": null,
+  "scientific_qualification_created": false
+}

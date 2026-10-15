@@ -1,0 +1,4 @@
+T11 cleanup source independent static review PASS, pending fixedmanifest and actual Root preflight.
+Mother T10 to T11 has exactly2 source regions changed: REPORT path and permitted suffix set adding .npz. Complete byte inverse and unchanged original helper definitions proven.
+Source SHA7448a303ad88d4e8033a54b9c9784381f8ca98bc4c826911c41ec442d66f0dfe; restore53a51f…87bd exact. Doc baseline32585 paths/3797135364B SHA cc44e60…4c420 pinned.
+No cleanup program import/execution; no preflight/action/restore run, no project write. Guard review and manifest-specific followups saved. Do not treat this source-only pass as deletion/preflight approval.

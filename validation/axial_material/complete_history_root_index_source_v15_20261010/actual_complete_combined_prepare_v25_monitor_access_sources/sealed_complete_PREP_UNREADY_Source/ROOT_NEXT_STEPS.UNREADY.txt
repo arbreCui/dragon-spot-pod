@@ -1,0 +1,70 @@
+SOURCE ONLY UNREADY complete V25 continuation; no candidate executed here.
+
+Preserved complete V22 canonical (70 original definitions), PREP/BUILD genuine
+hosts, success/failure metadata writers and full binders are included as full
+parents. The full finite text transforms reverse exactly to those originals.
+The original five-stage commands and all physical/whole-input gates remain.
+
+The seven extra stdlib functions read the actual new Q schema/status and all
+pure/fresh/install core proofs. Three None fullpin slots additionally require
+the new Q's own actual Root writer94520a terminal, saved48 report and complete
+retention (actual review17e611 and seal821784). Raw terminal JSON retains exact
+Python integer identities. These post-Q proofs cannot be inside Q itself.
+All original310 declared inputs and every added actual read/proof endpoint
+remain explicit typed expected files plus ordinary owned paths; no future
+count is guessed and no Source/namespace record is omitted to save memory.
+
+Three snapshot calls use _consume=True only at the exclusively owned inactive
+builtin ReadOpenAudit's last use. Public nine fields are unchanged. Clone
+failure after clearing is not transactional; no wider Popen case is claimed.
+New complete PREP/build/RSS/INPUT/native/science pins remain unknown.
+
+Root runs these commands ONLY after independent full Source review. Literal
+ACTUAL_* placeholders below are instructions to Root, never current pins.
+Root must independently verify all path/SHA/size/7ID inputs immediately before
+binding. Output must be a genuinely fresh private/tmp namespace.
+
+PREP Source binding command (stdlib metadata/Source only):
+/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B "/private/tmp/axmat_v25_complete_canonical_TRUE_snapshot_jointQ_UNREADY_SOURCE_bwo0x_85/bind_actual_V25_Q_to_complete_PREP_SOURCE.UNREADY.py" \
+  "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_complete_graph_private_inactive_audit_helper_admission_v25.json" \
+  ACTUAL_ROOT_FULL_EOF_Q_SHA /private/tmp/ROOT_CHOSEN_FRESH_V25_PREP_BOUND_SOURCE \
+  --actual-new-Q-writer-terminal "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_joint_helper_admission_v25_receipts/Root_actual_joint_helper_META_admission_writer_tool_terminal_return.json" \
+  --actual-new-Q-writer-terminal-sha256 ACTUAL_ROOT_FULL_EOF_WRITER_TERMINAL_SHA \
+  --actual-Q-saved-peer "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_joint_helper_admission_v25_receipts/sealed_independent_actual_joint_Q_saved_META_review/REVIEW.json" \
+  --actual-Q-saved-peer-sha256 ACTUAL_ROOT_FULL_EOF_SAVED48_REPORT_SHA \
+  --actual-Q-saved-peer-retention "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_joint_helper_admission_v25_receipts/Root_actual_joint_Q_saved_META_peer_retention_record.json" \
+  --actual-Q-saved-peer-retention-sha256 ACTUAL_ROOT_FULL_EOF_COMPLETE_RETENTION_SHA
+
+The result includes actual Q/three externalproof fullpins, complete inverse
+and an actual bound-source manifest. It is not installed and grants only
+reviewable Source binding. Independently audit it before installation. Place
+all original parents, new entries, actual Q/proofs, peer and real tool receipts
+plus metadatawriter into D before a final complete source freeze; do not append
+Source after freeze. Run unchanged genuine PREP only once in its new family.
+Capture real closed terminal, then run the pre-frozen writer. Saved PREP peer
+must fulfill the strict future contract consumed by the full BUILD binder:
+INDEPENDENT_V25_ACTUAL_COMPLETE_PREP_SAVED_META_REVIEW_V1 / PASS_ACTUAL_COMPLETE_PREP_ONLY,
+complete scope + true actual PREP/metadatawriter closed0, all_checks_typed_true,
+blockers[], exact three actual_Root_PREP_summary_pin / actual_Root_PREP_terminal_pin /
+actual_complete_namespace_manifest_pin, with all six named business/science flags False.
+
+After real saved PREP evidence and its independent review, BUILD Source binding:
+/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B "/private/tmp/axmat_v25_complete_canonical_TRUE_snapshot_jointQ_UNREADY_SOURCE_bwo0x_85/bind_actual_V25_closed_PREP_to_complete_BUILD_SOURCE.UNREADY.py" \
+  --saved-prep-peer-report ACTUAL_SAVED_FULL_PREP_PEER_PATH \
+  --saved-prep-peer-report-sha256 ACTUAL_SAVED_FULL_PREP_PEER_SHA \
+  --actual-Q-sha256 ACTUAL_ROOT_FULL_EOF_Q_SHA \
+  --actual-canonical-sha256 ACTUAL_INSTALLED_CANONICAL_SOURCE_SHA \
+  --destination /private/tmp/ROOT_CHOSEN_FRESH_V25_BUILD_BOUND_SOURCE \
+  --actual-new-Q-writer-terminal "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_joint_helper_admission_v25_receipts/Root_actual_joint_helper_META_admission_writer_tool_terminal_return.json" \
+  --actual-new-Q-writer-terminal-sha256 ACTUAL_ROOT_FULL_EOF_WRITER_TERMINAL_SHA \
+  --actual-Q-saved-peer "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_joint_helper_admission_v25_receipts/sealed_independent_actual_joint_Q_saved_META_review/REVIEW.json" \
+  --actual-Q-saved-peer-sha256 ACTUAL_ROOT_FULL_EOF_SAVED48_REPORT_SHA \
+  --actual-Q-saved-peer-retention "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_joint_helper_admission_v25_receipts/Root_actual_joint_Q_saved_META_peer_retention_record.json" \
+  --actual-Q-saved-peer-retention-sha256 ACTUAL_ROOT_FULL_EOF_COMPLETE_RETENTION_SHA
+
+The build binder crosschecks these same3 external Q pins against the installed
+canonical globals and actual PREP canonical namespace pin. It preserves all
+five stages, saved declaration/graph/trace/formal terminal and Source admission
+fullpins. Complete BUILD and its postclosewriter require their own Source peer,
+fresh full D/E, freeze and true actual runtime. Whole INPUT/native/science are
+not obtained from PREP or metadata-only helper Q. Root alone performs execution.

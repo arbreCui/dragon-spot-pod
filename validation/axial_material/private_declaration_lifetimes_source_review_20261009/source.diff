@@ -1,0 +1,21 @@
+--- /Users/wen/spot/validation/axial_material/combined_runtime_current_predicates.py
++++ /private/tmp/axmat_private_declaration_lifetimes_source_draft_20261009/combined_runtime_current_predicates_private_declaration_lifetimes_20261009.py
+@@ -49,6 +49,8 @@
+         # 619.capture_admission verifies the old16f bytes directly; it does not
+         # call that older capture factory's environment as a current API.
+         if label == 'original_capture16f':
++            del declarations[label]
++            del d
+             continue
+         if require_build_interpreter:
+             assert str(Path(sys.executable).resolve()) == d['build_python_executable']
+@@ -60,6 +62,9 @@
+         assert all(os.environ.get(k) == '1' for k in THREAD_KEYS)
+         observed.append(dict(owner=record['declaration'], checks='CURRENT_INTERPRETER_NATIVE_RESOLUTION_LOADER_THREADS',
+                              interpreter_policy=require_build_interpreter))
++        if label not in ('capture', 'physical'):
++            del declarations[label]
++        del d
+     capture = provider.load(provider.CAPTURE_FACTORY, provider.CAPTURE_FACTORY_SHA,
+                             'actual_readonly_current_capture_topology_predicate')
+     physical = provider.load(provider.PHYSICAL_FACTORY, provider.PHYSICAL_FACTORY_SHA,

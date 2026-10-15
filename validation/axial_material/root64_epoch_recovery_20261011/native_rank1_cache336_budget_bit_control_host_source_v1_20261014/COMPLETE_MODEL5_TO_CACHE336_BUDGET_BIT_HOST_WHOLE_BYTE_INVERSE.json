@@ -1,0 +1,182 @@
+{
+  "schema": "COMPLETE_MODEL5_TO_CACHE336_BUDGET_BIT_HOST_WHOLE_BYTE_INVERSE_V1",
+  "source_only": true,
+  "original_host_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/bq64_private_GANLIB_model_control_host_source_v5_20261013/run_guarded_model_controls.py",
+    "sha256": "fa55f74e435dae922b131e1d7568385a648f4e1c87432d3d61780176193da886",
+    "size_bytes": 24917,
+    "identity": [
+      16777229,
+      50071098,
+      33188,
+      1,
+      24917,
+      1791906314011549533,
+      1791906314011549533
+    ]
+  },
+  "candidate_host_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_cache336_budget_bit_control_host_source_v1_20261014/run_guarded_cache336_budget_bit_controls.py",
+    "sha256": "810f227d4f5d6e73d4c8d38420235ee2dd3fe5e9efa2a1d602ca04419cc3f565",
+    "size_bytes": 25316,
+    "identity": [
+      16777229,
+      50082803,
+      33188,
+      1,
+      25316,
+      1791915771881712856,
+      1791915771881712856
+    ]
+  },
+  "blocks": [
+    {
+      "old_start_line": 1,
+      "new_start_line": 1,
+      "old": "\"\"\"Guarded model controls; Source-only until a genuine closed2 build is supplied.\"\"\"\n",
+      "new": "\"\"\"Guarded exact-cache budget bit controls; compile test/link unchanged math/run.\"\"\"\n"
+    },
+    {
+      "old_start_line": 18,
+      "new_start_line": 18,
+      "old": "OUT=R/'validation/artifacts/axial-material-new-BQ64-private-GANLIB-model-controls-20261013-v5'\nKIND='model'\n",
+      "new": "OUT=R/'validation/artifacts/axial-material-new-native-rank1-cache336-budget-bit-controls-20261014-v1'\nKIND='cache336'\n"
+    },
+    {
+      "old_start_line": 22,
+      "new_start_line": 22,
+      "old": "HF_SCHEMA='COMPLETE_BQ64_PRIVATE_GANLIB_MODEL_CONTROL_HOST_SOURCE_ONLY_FREEZE_V1'\nSF_SCHEMA='COMPLETE_BQ64_COMPACT_EXPECTED_COMPOSED_FORTRAN_SOURCE_ONLY_FREEZE_V1'\nREPORT_SCHEMA='ACTUAL_BQ64_PRIVATE_GANLIB_MODEL_GUARDED_CONTROL_REPORT_V1'\nPASS_STATUS='ACTUAL_PRIVATE_GANLIB_MODEL_CONTROLS_CLOSED0_ONLY'\n",
+      "new": "HF_SCHEMA='COMPLETE_NATIVE_RANK1_CACHE336_BUDGET_BIT_CONTROL_HOST_SOURCE_ONLY_FREEZE_V1'\nSF_SCHEMA='COMPLETE_NATIVE_RANK1_CACHE336_DRIVER_AND_CONTROL_SOURCE_ONLY_FREEZE_V1'\nREPORT_SCHEMA='ACTUAL_NATIVE_RANK1_CACHE336_BUDGET_BIT_GUARDED_CONTROL_REPORT_V1'\nPASS_STATUS='ACTUAL_CACHE336_ENABLED_STORE_REJECT_MIXED_GROUP_BIT_CONTROLS_CLOSED0_ONLY'\n"
+    },
+    {
+      "old_start_line": 149,
+      "new_start_line": 149,
+      "old": "    matches=[row for row in rows if row.get('status')=='ACTUAL_COMPACT_GANLIB_MODEL_CONTROLS_ONLY']\n    if len(matches)!=1:raise RuntimeError('one genuine private GANLIB model terminal JSON')\n",
+      "new": "    matches=[row for row in rows if row.get('status')=='ACTUAL_GENERIC_RANK1_CACHE336_BUDGET_COMPONENT_BIT_CONTROLS_COMPLETED_ONLY']\n    if len(matches)!=1:raise RuntimeError('one genuine cache336 exact-budget bit terminal JSON')\n"
+    },
+    {
+      "old_start_line": 152,
+      "new_start_line": 152,
+      "old": "    if type(actual.get('assertions'))is not int or actual['assertions']!=36 or \\\n       any(actual.get(k)is not False for k in ('physics_qualified','reader_qualified','AAA_qualified')):\n        raise RuntimeError('actual36 private model assertions and precise unqualified scope')\n    models=[]\n    for name in ('C64-EXP','C64-ACT'):\n        p=cwd/name;row=c.pin(p)\n        if row['identity'][3]!=1 or not stat.S_ISREG(row['identity'][2]):\n            raise RuntimeError('retained actual model ordinary single-link file')\n        models.append(row)\n    if models[0]['size_bytes']!=948232 or models[0]['size_bytes']>32*2**20 or \\\n       models[1]['size_bytes']<=models[0]['size_bytes'] or models[1]['size_bytes']>32*2**20 or \\\n       models[0]['sha256']==models[1]['sha256']:\n        raise RuntimeError('actual compact948232 and independent full-model physical bound')\n    return dict(actual_model_assertions=actual['assertions'],actual_terminal=actual,\n                actual_retained_model_file_pins=models,actual_log_pin=log_pin)\n",
+      "new": "    if type(actual.get('actual_assertions'))is not int or actual['actual_assertions']!=338 or \\\n       type(actual.get('actual_SPOT1P64_calls'))is not int or actual['actual_SPOT1P64_calls']!=121 or \\\n       any(actual.get(k)is not False for k in ('formal_SN32_quadrature_equivalence','genuine_solver_qualified',\n         'physics_qualified','AAA_qualified','ABA_admitted','goal_complete')):\n        raise RuntimeError('genuine338 assertions/121 calls, original301+110 and new37+11, unqualified scope')\n    return dict(actual_assertions=actual['actual_assertions'],actual_SPOT1P64_calls=actual['actual_SPOT1P64_calls'],\n      actual_terminal=actual,actual_log_pin=log_pin,original301_preserved=True,new37_budget_assertions_completed=True)\n"
+    },
+    {
+      "old_start_line": 191,
+      "new_start_line": 183,
+      "old": "    expected_new=list(old);expected_new[40]=plan['new_build_expected_BOOTQ_object_path']\n",
+      "new": "    expected_new=list(old);expected_new[37]=plan['new_build_expected_Driver_object_path']\n"
+    },
+    {
+      "old_start_line": 194,
+      "new_start_line": 186,
+      "old": "      '-o',plan['new_build_expected_BOOTQ_object_path']]\n",
+      "new": "      '-o',plan['new_build_expected_Driver_object_path']]\n"
+    },
+    {
+      "old_start_line": 208,
+      "new_start_line": 200,
+      "old": "",
+      "new": "    math=plan['unchanged_math_object_pin']\n    if new[57]!=math['path'] or math['path'] not in new:\n        raise RuntimeError('exact retained mathematical SPOT1P64 object at link57')\n    c.same_pin(math['path'],math)\n    core=[math['path']]\n"
+    },
+    {
+      "old_start_line": 239,
+      "new_start_line": 236,
+      "old": "        if selected!=plan.get(key)or not isinstance(selected,dict)or hf_table.get(selected['path'])!=selected:\n",
+      "new": "        if not isinstance(selected,dict)or selected.get('path')!=plan[key+'_path']or hf_table.get(selected['path'])!=selected:\n"
+    },
+    {
+      "old_start_line": 252,
+      "new_start_line": 249,
+      "old": "    if psf!=plan['selected_control_Source_freeze_pin']or hf_table.get(psf['path'])!=psf or \\\n",
+      "new": "    if psf!=selected_fortran_sf or psf['path']!=plan['selected_control_Source_freeze_path']or hf_table.get(psf['path'])!=psf or \\\n"
+    },
+    {
+      "old_start_line": 260,
+      "new_start_line": 257,
+      "old": "    production_sf=psf if KIND=='model'else sf['candidate_fortran_source_freeze_pin']\n",
+      "new": "    production_sf=psf if KIND=='cache336'else sf['candidate_fortran_source_freeze_pin']\n"
+    },
+    {
+      "old_start_line": 263,
+      "new_start_line": 260,
+      "old": "    if pbase['path']!=plan['new_build_expected_report_path']or base.get('schema')!='ACTUAL_BQ64_COMPACT_EXPECTED_COMPLETE70_BUILD_ONLY_V1'or \\\n       base.get('status')!='ACTUAL_ONE_BOOTQ_SOURCE_COMPILE_COMPLETE70_LINK_CLOSED0_ONLY'or \\\n",
+      "new": "    if pbase['path']!=plan['new_build_expected_report_path']or base.get('schema')!='ACTUAL_NATIVE_RANK1_CACHE336_DRIVER_COMPLETE70_BUILD_ONLY_V1'or \\\n       base.get('status')!='ACTUAL_ONE_CACHE336_DRIVER_SOURCE_COMPILE_COMPLETE70_LINK_CLOSED0_ONLY'or \\\n"
+    },
+    {
+      "old_start_line": 269,
+      "new_start_line": 266,
+      "old": "       base.get('replacement_zero_based_complete70_input_index')!=40 or \\\n",
+      "new": "       base.get('replacement_zero_based_complete70_input_index')!=37 or \\\n"
+    },
+    {
+      "old_start_line": 271,
+      "new_start_line": 268,
+      "old": "        'original_four_archives_identical_and_retained','original_eight_unchanged_core_objects_identical_and_retained'))or \\\n       any(base.get(k)is not False for k in ('transport_executed','new_entry_controls_executed','new_reader_control_qualification')):\n",
+      "new": "        'original_four_archives_identical_and_retained','current_nine_core_objects_identical_and_retained'))or \\\n       any(base.get(k)is not False for k in ('transport_executed','new_entry_controls_executed','new_reader_control_qualification','new_cache_budget_component_control_qualification')):\n"
+    },
+    {
+      "old_start_line": 279,
+      "new_start_line": 276,
+      "old": "    new_object=c.pin(plan['new_build_expected_BOOTQ_object_path'])\n    if new_object not in base['output_pins']:raise RuntimeError('new BOOTQ genuine actual build output PF')\n    for row in plan['original_nine_core_pins'][:5]+plan['original_nine_core_pins'][6:]:\n",
+      "new": "    new_object=c.pin(plan['new_build_expected_Driver_object_path'])\n    if new_object not in base['output_pins']:raise RuntimeError('new Driver genuine actual build output PF')\n    for row in plan['current_nine_core_pins']:\n"
+    },
+    {
+      "old_start_line": 307,
+      "new_start_line": 304,
+      "old": "          actual_link_command=link_cmd,actual_new_build70_report_pin=pbase,actual_new_BOOTQ_object_pin=new_object,\n",
+      "new": "          actual_link_command=link_cmd,actual_new_build70_report_pin=pbase,actual_new_Driver_object_pin=new_object,\n"
+    },
+    {
+      "old_start_line": 311,
+      "new_start_line": 308,
+      "old": "        owned.append(c.pin(OUT/'build/control.o'));owned.extend(c.pin(p)for p in sorted((OUT/'build').glob('*.mod')))\n",
+      "new": "        if sorted(p.name for p in (OUT/'build').iterdir())!=['control.o']:\n            raise RuntimeError('control compile creates exactly control.o, no rebuilt math module')\n        owned.append(c.pin(OUT/'build/control.o'))\n"
+    },
+    {
+      "old_start_line": 313,
+      "new_start_line": 312,
+      "old": "        if KIND=='model':\n            cwd=OUT/'model';cwd.mkdir();record=run(cwd,'run_model',[exe])\n",
+      "new": "        if KIND=='cache336':\n            cwd=OUT/'bits';cwd.mkdir();record=run(cwd,'run_budget_bits',[exe])\n"
+    },
+    {
+      "old_start_line": 316,
+      "new_start_line": 315,
+      "old": "            owned.extend(actual[-1]['actual_retained_model_file_pins'])\n",
+      "new": ""
+    },
+    {
+      "old_start_line": 356,
+      "new_start_line": 354,
+      "old": "        expected_count=3 if KIND=='model'else 11\n",
+      "new": "        expected_count=3 if KIND=='cache336'else 11\n"
+    },
+    {
+      "old_start_line": 372,
+      "new_start_line": 370,
+      "old": "          actual_new_build70_report_pin=pbase,actual_new_BOOTQ_object_pin=new_object,\n",
+      "new": "          actual_new_build70_report_pin=pbase,actual_new_Driver_object_pin=new_object,\n"
+    },
+    {
+      "old_start_line": 375,
+      "new_start_line": 373,
+      "old": "          logical_control_count=1 if KIND=='model'else 7,actual_run_phase_count=1 if KIND=='model'else 9,\n          private_model_does_not_independently_qualify_public_reader=True,old17_PASS_inherited=False,\n          actual_model_controls_passed=good if KIND=='model'else False,\n",
+      "new": "          logical_control_count=1 if KIND=='cache336'else 7,actual_run_phase_count=1 if KIND=='cache336'else 9,\n          component_bit_controls_do_not_independently_qualify_solver_or_physics=True,old17_PASS_inherited=False,\n          actual_cache336_budget_bit_controls_passed=good,original301_assertions_retained=True,new37_assertions_expected=True,\n          actual_model_controls_passed=False,\n"
+    },
+    {
+      "old_start_line": 383,
+      "new_start_line": 382,
+      "old": "          final_report_resource_check_passed=False,compiler_executed=True,synthetic_protocol_fixture_only=True,\n",
+      "new": "          final_report_resource_check_passed=False,compiler_executed=(OUT/('compact-'+KIND+'-controls/compile_control.watchdog.json')).exists(),synthetic_protocol_fixture_only=True,\n"
+    },
+    {
+      "old_start_line": 398,
+      "new_start_line": 397,
+      "old": "                  actual_model_controls_passed=False,actual_seven_genuine_public_READ_controls_passed=False)\n",
+      "new": "                  actual_cache336_budget_bit_controls_passed=False,actual_model_controls_passed=False,actual_seven_genuine_public_READ_controls_passed=False)\n"
+    }
+  ],
+  "whole_original_recovery": true,
+  "original_guard_FirstFailure_aux128_pending8_methods_wholebytes_retained": true,
+  "compiler_executed": false,
+  "numerical_executed": false
+}

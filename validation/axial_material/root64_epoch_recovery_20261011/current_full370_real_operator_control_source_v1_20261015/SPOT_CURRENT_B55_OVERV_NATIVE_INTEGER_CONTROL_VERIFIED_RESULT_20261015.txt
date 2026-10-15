@@ -1,0 +1,15 @@
+SPOT 本次 B55 OVERV 原程序与精确整数控制结果（2026-10-15）
+
+结果：本次B55最终快照的370组×8混合物=2960个OVERV字，与原程序及独立精确整数模型一致，差异0；3个常量的比较差异也为0。371个ENERGY原字与2960个OVERV原字共13324字节来自本次B55 SQL/字节池，未复用A运行结果。
+
+实际Root：9d4c99→02a5d8，原整数返回0；三个子阶段均真实返回0；独立后验f10181，原整数返回0。14个新输出共3858869字节已盲SHA双次核验。原Fortran、精确整数模型、读取方法和整段数学比较代码保持原字节。
+
+完整72个累计目录、原进程监控和2GiB/512MiBRSS/600秒阶段/1800秒整体等限制保留。后验只核真实Host已记录的本次比较事实与新文件字节，不重算科学数组、也不重读SQL。
+
+当前该结果闭合本次原算术控制凭证。旧SOURCE_CONTEXT_NOT_SAVED历史记录保持；尚未执行B六阶段聚合、不能在本步骤宣称来源问题已消除、恢复历史机器位或通过物理精度。六阶段聚合会消费此真实控制凭证并单独生成当前解析结果。
+
+实际报告：/Users/wen/spot/validation/artifacts/axial-material-current-B55-OVERV-original-native-integer-control-20261015-v1/Root_actual_current_B55_OVERV_control_summary.json
+独立核验：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_OVERV_control_source_v1_UNREADY/actual_postverify_20261015/REVIEW.json
+真实工具返回：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B55_OVERV_control_source_v1_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+
+下一步：四个完整产品做无损归档并逐流解压SHA/长度核验；随后单独核验精确退役原文副本，保留压缩结果、原快照、SQL/字节池与结果文档，为六阶段重建维持原累计空间限制。然后完成B六阶段与A/B在线读取、AAA、独立耦合参考及ABA。总目标仍进行中，原物理输入和验收阈值不变。

@@ -1,0 +1,60 @@
+{
+  "schema": "V25_MONITOR_ACCESS_COMPLETE_INSTALLER_PRELAUNCH_UNREADY_SOURCE_CONTRACT_V1",
+  "source_only": true,
+  "status": "UNREADY_REQUIRES_INDEPENDENT_SOURCE_ADMISSION_AND_ROOT_EXECUTION",
+  "original_closed_failed_V22_D_files": 123,
+  "original_closed_failed_V22_D_directories": 12,
+  "current_actual_PREP_fixed_inputs": 144,
+  "current_bound_host_pin": {
+    "path": "/private/tmp/spot_v25_monitor_access_ACTUAL_READY_BUILD_SOURCE_ROOT_20261010/combined_build_host.py",
+    "sha256": "b47fa026c4b9317741c67c35d4a708294c1a5cb7b5a84e18911c908116f14c24",
+    "size_bytes": 19015,
+    "identity": [
+      16777229,
+      49469765,
+      33188,
+      1,
+      19015,
+      1791631475968738900,
+      1791631475968738900
+    ]
+  },
+  "current_bound_writer_pin": {
+    "path": "/private/tmp/spot_v25_monitor_access_ACTUAL_READY_BUILD_SOURCE_ROOT_20261010/write_actual_build_postclose_META.py",
+    "sha256": "54d30f415a162e80fa91619489beeb4eb776d7787b66a91fd9d55ec2221baf1a",
+    "size_bytes": 37838,
+    "identity": [
+      16777229,
+      49469766,
+      33188,
+      1,
+      37838,
+      1791631475968873942,
+      1791631475968873942
+    ]
+  },
+  "future_independent_Source_peer_manifest": null,
+  "future_independent_Source_peer_seal": null,
+  "future_Root_source_install_terminal": null,
+  "future_Root_prelaunch_terminal": null,
+  "future_actual_BUILD_terminal": null,
+  "future_actual_native_binary": null,
+  "whole_build_qualified": false,
+  "whole_INPUT_admitted": false,
+  "native_RSS_qualified": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false,
+  "original_caps": [
+    1800,
+    600,
+    512,
+    2147483648,
+    103079215104,
+    8589934592,
+    1,
+    1,
+    0
+  ],
+  "new_business_or_candidate_executed": false,
+  "all_writes_private_TMP_only": true
+}

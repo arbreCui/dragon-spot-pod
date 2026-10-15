@@ -1,0 +1,928 @@
+{
+  "candidate_sha256": "a3eb42648ef45615b4c561bcf25908fbf869091a4f1d6115edbcb74338738448",
+  "full_byte_inverse_exact": true,
+  "parent_sha256": "36a4c3bfb1fe3e6ed7a1f13d9092289a6aae8e43dc09a6bb19f83726db09149b",
+  "regions": [
+    {
+      "candidate_end": 7,
+      "candidate_start": 6,
+      "candidate_text": "5",
+      "parent_end": 7,
+      "parent_start": 6,
+      "parent_text": "4"
+    },
+    {
+      "candidate_end": 52,
+      "candidate_start": 51,
+      "candidate_text": "6",
+      "parent_end": 52,
+      "parent_start": 51,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 275,
+      "candidate_start": 274,
+      "candidate_text": "6",
+      "parent_end": 275,
+      "parent_start": 274,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 346,
+      "candidate_start": 335,
+      "candidate_text": "684742fbb37",
+      "parent_end": 336,
+      "parent_start": 335,
+      "parent_text": "1"
+    },
+    {
+      "candidate_end": 360,
+      "candidate_start": 347,
+      "candidate_text": "ee634f22a8a3d",
+      "parent_end": 338,
+      "parent_start": 337,
+      "parent_text": "1"
+    },
+    {
+      "candidate_end": 374,
+      "candidate_start": 361,
+      "candidate_text": "0c4f400a7aafd",
+      "parent_end": 339,
+      "parent_start": 339,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 375,
+      "candidate_start": 375,
+      "candidate_text": "",
+      "parent_end": 349,
+      "parent_start": 340,
+      "parent_text": "602bd15b5"
+    },
+    {
+      "candidate_end": 388,
+      "candidate_start": 378,
+      "candidate_text": "a2b3a66700",
+      "parent_end": 357,
+      "parent_start": 352,
+      "parent_text": "4dcdf"
+    },
+    {
+      "candidate_end": 392,
+      "candidate_start": 389,
+      "candidate_text": "55b",
+      "parent_end": 360,
+      "parent_start": 358,
+      "parent_text": "9c"
+    },
+    {
+      "candidate_end": 393,
+      "candidate_start": 393,
+      "candidate_text": "",
+      "parent_end": 372,
+      "parent_start": 361,
+      "parent_text": "aa439d5d3b2"
+    },
+    {
+      "candidate_end": 394,
+      "candidate_start": 394,
+      "candidate_text": "",
+      "parent_end": 376,
+      "parent_start": 373,
+      "parent_text": "b16"
+    },
+    {
+      "candidate_end": 397,
+      "candidate_start": 396,
+      "candidate_text": "b",
+      "parent_end": 385,
+      "parent_start": 378,
+      "parent_text": "11c4861"
+    },
+    {
+      "candidate_end": 399,
+      "candidate_start": 398,
+      "candidate_text": "f",
+      "parent_end": 399,
+      "parent_start": 386,
+      "parent_text": "51ac8b6b987dc"
+    },
+    {
+      "candidate_end": 485,
+      "candidate_start": 484,
+      "candidate_text": "6",
+      "parent_end": 485,
+      "parent_start": 484,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 960,
+      "candidate_start": 959,
+      "candidate_text": "6",
+      "parent_end": 960,
+      "parent_start": 959,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 1052,
+      "candidate_start": 1037,
+      "candidate_text": "83cdb306d1408dc",
+      "parent_end": 1037,
+      "parent_start": 1037,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1053,
+      "candidate_start": 1053,
+      "candidate_text": "",
+      "parent_end": 1039,
+      "parent_start": 1038,
+      "parent_text": "f"
+    },
+    {
+      "candidate_end": 1061,
+      "candidate_start": 1055,
+      "candidate_text": "e8b1bb",
+      "parent_end": 1041,
+      "parent_start": 1041,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1071,
+      "candidate_start": 1062,
+      "candidate_text": "8e13f92fe",
+      "parent_end": 1042,
+      "parent_start": 1042,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1073,
+      "candidate_start": 1072,
+      "candidate_text": "5",
+      "parent_end": 1045,
+      "parent_start": 1043,
+      "parent_text": "8a"
+    },
+    {
+      "candidate_end": 1082,
+      "candidate_start": 1074,
+      "candidate_text": "1c23b075",
+      "parent_end": 1046,
+      "parent_start": 1046,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1086,
+      "candidate_start": 1084,
+      "candidate_text": "2a",
+      "parent_end": 1052,
+      "parent_start": 1048,
+      "parent_text": "b31c"
+    },
+    {
+      "candidate_end": 1089,
+      "candidate_start": 1087,
+      "candidate_text": "d8",
+      "parent_end": 1054,
+      "parent_start": 1053,
+      "parent_text": "0"
+    },
+    {
+      "candidate_end": 1090,
+      "candidate_start": 1090,
+      "candidate_text": "",
+      "parent_end": 1063,
+      "parent_start": 1055,
+      "parent_text": "c7d2607b"
+    },
+    {
+      "candidate_end": 1095,
+      "candidate_start": 1091,
+      "candidate_text": "aa9a",
+      "parent_end": 1064,
+      "parent_start": 1064,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1097,
+      "candidate_start": 1096,
+      "candidate_text": "e",
+      "parent_end": 1071,
+      "parent_start": 1065,
+      "parent_text": "49b09f"
+    },
+    {
+      "candidate_end": 1099,
+      "candidate_start": 1099,
+      "candidate_text": "",
+      "parent_end": 1088,
+      "parent_start": 1073,
+      "parent_text": "3fe7dfa7fb8fc62"
+    },
+    {
+      "candidate_end": 1101,
+      "candidate_start": 1101,
+      "candidate_text": "",
+      "parent_end": 1101,
+      "parent_start": 1090,
+      "parent_text": "4e6b981f04f"
+    },
+    {
+      "candidate_end": 1299,
+      "candidate_start": 1298,
+      "candidate_text": "6",
+      "parent_end": 1299,
+      "parent_start": 1298,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 1345,
+      "candidate_start": 1344,
+      "candidate_text": "a",
+      "parent_end": 1347,
+      "parent_start": 1344,
+      "parent_text": "e3f"
+    },
+    {
+      "candidate_end": 1357,
+      "candidate_start": 1347,
+      "candidate_text": "dec7789855",
+      "parent_end": 1349,
+      "parent_start": 1349,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1368,
+      "candidate_start": 1358,
+      "candidate_text": "7b751441c3",
+      "parent_end": 1350,
+      "parent_start": 1350,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1370,
+      "candidate_start": 1370,
+      "candidate_text": "",
+      "parent_end": 1353,
+      "parent_start": 1352,
+      "parent_text": "9"
+    },
+    {
+      "candidate_end": 1389,
+      "candidate_start": 1371,
+      "candidate_text": "50504316ccdb241b80",
+      "parent_end": 1355,
+      "parent_start": 1354,
+      "parent_text": "e"
+    },
+    {
+      "candidate_end": 1392,
+      "candidate_start": 1391,
+      "candidate_text": "1",
+      "parent_end": 1357,
+      "parent_start": 1357,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1397,
+      "candidate_start": 1393,
+      "candidate_text": "cac8",
+      "parent_end": 1358,
+      "parent_start": 1358,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1398,
+      "candidate_start": 1398,
+      "candidate_text": "",
+      "parent_end": 1361,
+      "parent_start": 1359,
+      "parent_text": "5d"
+    },
+    {
+      "candidate_end": 1400,
+      "candidate_start": 1399,
+      "candidate_text": "b",
+      "parent_end": 1368,
+      "parent_start": 1362,
+      "parent_text": "0ec55e"
+    },
+    {
+      "candidate_end": 1402,
+      "candidate_start": 1401,
+      "candidate_text": "1",
+      "parent_end": 1371,
+      "parent_start": 1369,
+      "parent_text": "ae"
+    },
+    {
+      "candidate_end": 1406,
+      "candidate_start": 1405,
+      "candidate_text": "f",
+      "parent_end": 1376,
+      "parent_start": 1374,
+      "parent_text": "ce"
+    },
+    {
+      "candidate_end": 1407,
+      "candidate_start": 1407,
+      "candidate_text": "",
+      "parent_end": 1407,
+      "parent_start": 1377,
+      "parent_text": "55aea04a813f3bb373126d778ae98f"
+    },
+    {
+      "candidate_end": 1601,
+      "candidate_start": 1600,
+      "candidate_text": "6",
+      "parent_end": 1601,
+      "parent_start": 1600,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 1631,
+      "candidate_start": 1622,
+      "candidate_text": "6bcef2698",
+      "parent_end": 1624,
+      "parent_start": 1622,
+      "parent_text": "33"
+    },
+    {
+      "candidate_end": 1641,
+      "candidate_start": 1632,
+      "candidate_text": "4a120f0cf",
+      "parent_end": 1625,
+      "parent_start": 1625,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1642,
+      "candidate_start": 1642,
+      "candidate_text": "",
+      "parent_end": 1637,
+      "parent_start": 1626,
+      "parent_text": "24f74c560dc"
+    },
+    {
+      "candidate_end": 1650,
+      "candidate_start": 1645,
+      "candidate_text": "9d068",
+      "parent_end": 1640,
+      "parent_start": 1640,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 1652,
+      "candidate_start": 1651,
+      "candidate_text": "6",
+      "parent_end": 1642,
+      "parent_start": 1641,
+      "parent_text": "3"
+    },
+    {
+      "candidate_end": 1661,
+      "candidate_start": 1654,
+      "candidate_text": "0b50901",
+      "parent_end": 1647,
+      "parent_start": 1644,
+      "parent_text": "637"
+    },
+    {
+      "candidate_end": 1677,
+      "candidate_start": 1663,
+      "candidate_text": "90b8ae646b50b2",
+      "parent_end": 1651,
+      "parent_start": 1649,
+      "parent_text": "f3"
+    },
+    {
+      "candidate_end": 1680,
+      "candidate_start": 1679,
+      "candidate_text": "2",
+      "parent_end": 1665,
+      "parent_start": 1653,
+      "parent_text": "b6d0c05a16ea"
+    },
+    {
+      "candidate_end": 1681,
+      "candidate_start": 1681,
+      "candidate_text": "",
+      "parent_end": 1670,
+      "parent_start": 1666,
+      "parent_text": "c044"
+    },
+    {
+      "candidate_end": 1684,
+      "candidate_start": 1683,
+      "candidate_text": "9",
+      "parent_end": 1679,
+      "parent_start": 1672,
+      "parent_text": "7563ba0"
+    },
+    {
+      "candidate_end": 1685,
+      "candidate_start": 1685,
+      "candidate_text": "",
+      "parent_end": 1682,
+      "parent_start": 1680,
+      "parent_text": "da"
+    },
+    {
+      "candidate_end": 1686,
+      "candidate_start": 1686,
+      "candidate_text": "",
+      "parent_end": 1686,
+      "parent_start": 1683,
+      "parent_text": "a60"
+    },
+    {
+      "candidate_end": 1970,
+      "candidate_start": 1969,
+      "candidate_text": "6",
+      "parent_end": 1970,
+      "parent_start": 1969,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 2019,
+      "candidate_start": 2018,
+      "candidate_text": "4",
+      "parent_end": 2018,
+      "parent_start": 2018,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2023,
+      "candidate_start": 2020,
+      "candidate_text": "b67",
+      "parent_end": 2023,
+      "parent_start": 2019,
+      "parent_text": "00cd"
+    },
+    {
+      "candidate_end": 2045,
+      "candidate_start": 2025,
+      "candidate_text": "c09124d1d9e1513719ab",
+      "parent_end": 2025,
+      "parent_start": 2025,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2048,
+      "candidate_start": 2046,
+      "candidate_text": "d6",
+      "parent_end": 2027,
+      "parent_start": 2026,
+      "parent_text": "2"
+    },
+    {
+      "candidate_end": 2050,
+      "candidate_start": 2049,
+      "candidate_text": "6",
+      "parent_end": 2029,
+      "parent_start": 2028,
+      "parent_text": "8"
+    },
+    {
+      "candidate_end": 2057,
+      "candidate_start": 2052,
+      "candidate_text": "033a8",
+      "parent_end": 2031,
+      "parent_start": 2031,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2058,
+      "candidate_start": 2058,
+      "candidate_text": "",
+      "parent_end": 2054,
+      "parent_start": 2032,
+      "parent_text": "ede6583f31cbd94e8970c6"
+    },
+    {
+      "candidate_end": 2061,
+      "candidate_start": 2060,
+      "candidate_text": "d",
+      "parent_end": 2060,
+      "parent_start": 2056,
+      "parent_text": "488b"
+    },
+    {
+      "candidate_end": 2065,
+      "candidate_start": 2063,
+      "candidate_text": "d4",
+      "parent_end": 2067,
+      "parent_start": 2062,
+      "parent_text": "abbe0"
+    },
+    {
+      "candidate_end": 2066,
+      "candidate_start": 2066,
+      "candidate_text": "",
+      "parent_end": 2071,
+      "parent_start": 2068,
+      "parent_text": "609"
+    },
+    {
+      "candidate_end": 2070,
+      "candidate_start": 2069,
+      "candidate_text": "a",
+      "parent_end": 2074,
+      "parent_start": 2074,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2077,
+      "candidate_start": 2071,
+      "candidate_text": "d6284d",
+      "parent_end": 2077,
+      "parent_start": 2075,
+      "parent_text": "91"
+    },
+    {
+      "candidate_end": 2081,
+      "candidate_start": 2079,
+      "candidate_text": "b3",
+      "parent_end": 2079,
+      "parent_start": 2079,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2082,
+      "candidate_start": 2082,
+      "candidate_text": "",
+      "parent_end": 2082,
+      "parent_start": 2080,
+      "parent_text": "47"
+    },
+    {
+      "candidate_end": 2184,
+      "candidate_start": 2183,
+      "candidate_text": "6",
+      "parent_end": 2184,
+      "parent_start": 2183,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 2321,
+      "candidate_start": 2320,
+      "candidate_text": "6",
+      "parent_end": 2321,
+      "parent_start": 2320,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 2412,
+      "candidate_start": 2397,
+      "candidate_text": "03ffdee9f7df0ad",
+      "parent_end": 2397,
+      "parent_start": 2397,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2413,
+      "candidate_start": 2413,
+      "candidate_text": "",
+      "parent_end": 2402,
+      "parent_start": 2398,
+      "parent_text": "2b3d"
+    },
+    {
+      "candidate_end": 2427,
+      "candidate_start": 2415,
+      "candidate_text": "f50d17904542",
+      "parent_end": 2404,
+      "parent_start": 2404,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2428,
+      "candidate_start": 2428,
+      "candidate_text": "",
+      "parent_end": 2409,
+      "parent_start": 2405,
+      "parent_text": "573b"
+    },
+    {
+      "candidate_end": 2458,
+      "candidate_start": 2430,
+      "candidate_text": "a852406d012d92dc8cb6d26dffa9",
+      "parent_end": 2411,
+      "parent_start": 2411,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 2460,
+      "candidate_start": 2460,
+      "candidate_text": "",
+      "parent_end": 2419,
+      "parent_start": 2413,
+      "parent_text": "411008"
+    },
+    {
+      "candidate_end": 2461,
+      "candidate_start": 2461,
+      "candidate_text": "",
+      "parent_end": 2461,
+      "parent_start": 2420,
+      "parent_text": "5d19cbf3b54a1ff86f43644f949e49839f372f481"
+    },
+    {
+      "candidate_end": 3382,
+      "candidate_start": 3381,
+      "candidate_text": "6",
+      "parent_end": 3382,
+      "parent_start": 3381,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 3860,
+      "candidate_start": 3855,
+      "candidate_text": "same_",
+      "parent_end": 3858,
+      "parent_start": 3855,
+      "parent_text": "poo"
+    },
+    {
+      "candidate_end": 3863,
+      "candidate_start": 3861,
+      "candidate_text": "it",
+      "parent_end": 3859,
+      "parent_start": 3859,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 3867,
+      "candidate_start": 3864,
+      "candidate_text": "ral",
+      "parent_end": 3861,
+      "parent_start": 3860,
+      "parent_text": "d"
+    },
+    {
+      "candidate_end": 3878,
+      "candidate_start": 3874,
+      "candidate_text": "iden",
+      "parent_end": 3870,
+      "parent_start": 3868,
+      "parent_text": "pa"
+    },
+    {
+      "candidate_end": 3882,
+      "candidate_start": 3879,
+      "candidate_text": "ity",
+      "parent_end": 3873,
+      "parent_start": 3871,
+      "parent_text": "hs"
+    },
+    {
+      "candidate_end": 5161,
+      "candidate_start": 5160,
+      "candidate_text": "6",
+      "parent_end": 5152,
+      "parent_start": 5151,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 5193,
+      "candidate_start": 5184,
+      "candidate_text": "6bcef2698",
+      "parent_end": 5177,
+      "parent_start": 5175,
+      "parent_text": "33"
+    },
+    {
+      "candidate_end": 5203,
+      "candidate_start": 5194,
+      "candidate_text": "4a120f0cf",
+      "parent_end": 5178,
+      "parent_start": 5178,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 5204,
+      "candidate_start": 5204,
+      "candidate_text": "",
+      "parent_end": 5190,
+      "parent_start": 5179,
+      "parent_text": "24f74c560dc"
+    },
+    {
+      "candidate_end": 5212,
+      "candidate_start": 5207,
+      "candidate_text": "9d068",
+      "parent_end": 5193,
+      "parent_start": 5193,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 5214,
+      "candidate_start": 5213,
+      "candidate_text": "6",
+      "parent_end": 5195,
+      "parent_start": 5194,
+      "parent_text": "3"
+    },
+    {
+      "candidate_end": 5223,
+      "candidate_start": 5216,
+      "candidate_text": "0b50901",
+      "parent_end": 5200,
+      "parent_start": 5197,
+      "parent_text": "637"
+    },
+    {
+      "candidate_end": 5239,
+      "candidate_start": 5225,
+      "candidate_text": "90b8ae646b50b2",
+      "parent_end": 5204,
+      "parent_start": 5202,
+      "parent_text": "f3"
+    },
+    {
+      "candidate_end": 5242,
+      "candidate_start": 5241,
+      "candidate_text": "2",
+      "parent_end": 5218,
+      "parent_start": 5206,
+      "parent_text": "b6d0c05a16ea"
+    },
+    {
+      "candidate_end": 5243,
+      "candidate_start": 5243,
+      "candidate_text": "",
+      "parent_end": 5223,
+      "parent_start": 5219,
+      "parent_text": "c044"
+    },
+    {
+      "candidate_end": 5246,
+      "candidate_start": 5245,
+      "candidate_text": "9",
+      "parent_end": 5232,
+      "parent_start": 5225,
+      "parent_text": "7563ba0"
+    },
+    {
+      "candidate_end": 5247,
+      "candidate_start": 5247,
+      "candidate_text": "",
+      "parent_end": 5235,
+      "parent_start": 5233,
+      "parent_text": "da"
+    },
+    {
+      "candidate_end": 5248,
+      "candidate_start": 5248,
+      "candidate_text": "",
+      "parent_end": 5239,
+      "parent_start": 5236,
+      "parent_text": "a60"
+    },
+    {
+      "candidate_end": 5392,
+      "candidate_start": 5387,
+      "candidate_text": "same_",
+      "parent_end": 5381,
+      "parent_start": 5378,
+      "parent_text": "poo"
+    },
+    {
+      "candidate_end": 5395,
+      "candidate_start": 5393,
+      "candidate_text": "it",
+      "parent_end": 5382,
+      "parent_start": 5382,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 5399,
+      "candidate_start": 5396,
+      "candidate_text": "ral",
+      "parent_end": 5384,
+      "parent_start": 5383,
+      "parent_text": "d"
+    },
+    {
+      "candidate_end": 5410,
+      "candidate_start": 5406,
+      "candidate_text": "iden",
+      "parent_end": 5393,
+      "parent_start": 5391,
+      "parent_text": "pa"
+    },
+    {
+      "candidate_end": 5414,
+      "candidate_start": 5411,
+      "candidate_text": "ity",
+      "parent_end": 5396,
+      "parent_start": 5394,
+      "parent_text": "hs"
+    },
+    {
+      "candidate_end": 5451,
+      "candidate_start": 5446,
+      "candidate_text": "07b22",
+      "parent_end": 5428,
+      "parent_start": 5428,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 5465,
+      "candidate_start": 5452,
+      "candidate_text": "9f2f4fba626fb",
+      "parent_end": 5429,
+      "parent_start": 5429,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 5480,
+      "candidate_start": 5466,
+      "candidate_text": "7f4faec5edd9cb",
+      "parent_end": 5430,
+      "parent_start": 5430,
+      "parent_text": ""
+    },
+    {
+      "candidate_end": 5493,
+      "candidate_start": 5482,
+      "candidate_text": "15f0e0f4f4e",
+      "parent_end": 5433,
+      "parent_start": 5432,
+      "parent_text": "6"
+    },
+    {
+      "candidate_end": 5501,
+      "candidate_start": 5494,
+      "candidate_text": "f5858aa",
+      "parent_end": 5435,
+      "parent_start": 5434,
+      "parent_text": "3"
+    },
+    {
+      "candidate_end": 5503,
+      "candidate_start": 5502,
+      "candidate_text": "4",
+      "parent_end": 5439,
+      "parent_start": 5436,
+      "parent_text": "119"
+    },
+    {
+      "candidate_end": 5504,
+      "candidate_start": 5504,
+      "candidate_text": "",
+      "parent_end": 5455,
+      "parent_start": 5440,
+      "parent_text": "b404d79799dec93"
+    },
+    {
+      "candidate_end": 5506,
+      "candidate_start": 5506,
+      "candidate_text": "",
+      "parent_end": 5458,
+      "parent_start": 5457,
+      "parent_text": "7"
+    },
+    {
+      "candidate_end": 5507,
+      "candidate_start": 5507,
+      "candidate_text": "",
+      "parent_end": 5460,
+      "parent_start": 5459,
+      "parent_text": "b"
+    },
+    {
+      "candidate_end": 5509,
+      "candidate_start": 5508,
+      "candidate_text": "1",
+      "parent_end": 5475,
+      "parent_start": 5461,
+      "parent_text": "7ddfc384977a9e"
+    },
+    {
+      "candidate_end": 5510,
+      "candidate_start": 5510,
+      "candidate_text": "",
+      "parent_end": 5492,
+      "parent_start": 5476,
+      "parent_text": "d1ca6cd956bb3eb1"
+    },
+    {
+      "candidate_end": 5904,
+      "candidate_start": 5903,
+      "candidate_text": "6",
+      "parent_end": 5886,
+      "parent_start": 5885,
+      "parent_text": "5"
+    },
+    {
+      "candidate_end": 5996,
+      "candidate_start": 5995,
+      "candidate_text": "6",
+      "parent_end": 5978,
+      "parent_start": 5977,
+      "parent_text": "5"
+    }
+  ],
+  "schema": "AXMAT_V6_DIAGNOSTIC_DIRECT_PARENT_COMPLETE_SOURCE_INVERSE_V1"
+}

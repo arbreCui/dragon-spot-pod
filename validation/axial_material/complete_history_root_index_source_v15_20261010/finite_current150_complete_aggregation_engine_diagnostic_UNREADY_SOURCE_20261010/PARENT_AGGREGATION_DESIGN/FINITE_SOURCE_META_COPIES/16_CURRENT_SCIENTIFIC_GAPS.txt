@@ -1,0 +1,27 @@
+当前科学验收缺口（2026-10-10；已纳入完整 raw 软件转移、原生布局及后处理TRANC源码复核）
+
+AAA 的原 7/8 是与独立连续能 OpenMC 比较；只有 nu_fission 未通过。原判据为一次全局 nu-fission 归一化后燃料 bin 最大相对差不大于 3%，并满足原统计规则。实际最大点差 3.9525259224%，95% 上限 4.6963660269%，参考统计充分。差异同时包含方法与数据差异，尚不能单独归因 POD 或轴向闭合。
+
+已完成的新增证据：当前 A/B 原始 MACROLIB ASCII 全记录转移实际退出 0，每状态 19,619 条记录、2,264,113 个数值，两读取器完整一致；保存证据独审 4,752 项检查通过。全部 370 群、8 区、三矩、裂变字段及原缺口均保留。该成功限于软件保存和读取一致性，原始 XSM 内存位尚未逐位核验。
+
+原生源码与有限保存元数据复核 149 项通过：FISSIONINDEX 为 8 区×8 同位素槽的 64 个微观库同位素索引；宏观 32 裂变组件为 8 槽×4 能量相关谱，完整裂变场仍有 8×32=256 项。原转移报告 256/64 合同差异没有修改；尚需原生索引与同位素/区域绑定以及内存位证据，才可准入未来科学合同。
+
+新增253项有限源码/小型元数据调查：材料输入使用CTRA APOL ANIS3与TONE TRAN PIJ。初始APOL TRANC可包含NTOT0−NTOT1及P1转移列和；不是吸收截面。若实际TONE SPH分支执行，TRANC除SPH因子，named event edits/NUSIGF乘因子，NTOT保持；P0/P2与P1的矩阵变换规则不同，且有自散射修正。因此最终TRANC不能无条件等于最终NTOT0−NTOT1加P1列和。实际SPH因子未保存、未独立重放，不能假定为1。本次是源码条件式证据，无新的物理数值通过结果。
+原生逐位检查完成实际源码绑定、8133项源码独审和冻结安装，实际调用后因strict bool条件错误在材料逐位比较前退出1；没有原生逐位资格。完整失败结果已保存，需仅修该条件并在fresh目录完成完整核验。下一步需先完整核对原生A/B，再按最终62同位素的实际别名、混合区、密度和字段存在性，重放全部370×8宏观TRANC、总截面、18项额外反应、全部三矩及32裂变组件；保留缺失字段与REAL32分步舍入。没有完整编译和浮点来源，不称逐位算术重放。真实MF3/MF6事件和中子产额来源仍需独立证明。
+
+仍需补足：原始 XSM 与保存 ASCII 全字段的原生数据对应；真实输运修正 TRANC 及反应多重性；径向/角向/轴向交换、白边界与真空端部；同数据未降阶有限高度全多群耦合参考；完整方程残差、正性、归一化后幅度唯一性、物理反应平衡及角向/轴向细化。MGXEXP 的合成 ABSORPTION 不能直接提供真实反应平衡。
+
+历史未降阶研究入口 /Users/wen/spot/validation/iterative/qualify_native_axial_coupling.py 使用旧针型 20 cm 人工轴向延伸、S2-DD 和旧 8×370×32 数据。保存的 4–64 cell 细化出现负出射角通量，不能替代当前 150 cm 同温 A/B 的有效耦合参考。
+
+源相位一致性、全 8 区同模型固定源控制和完整 raw 软件转移均不能替代未降阶耦合本征参考或 AAA 物理精度。原温度 750/620/475°C、A/B 配比、几何和验收阈值保持。AAA 和 ABA 资格仍为 false。
+
+核对来源：
+/Users/wen/spot/validation/artifacts/axial-material-qualified-AAA-white-trace-refined-reference-hostpath-20261005/AAA/reference_assessment.json
+/Users/wen/spot/validation/axial_material/case_spec.json
+/Users/wen/spot/validation/iterative/native_axial_refinement_result.md
+/Users/wen/spot/validation/axial_material/material_inputs.py
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/finite_current150_AB_reference_source_route_20261010/REPORT.txt
+完整 raw 保存证据：actual_full_AB_rawrecord_transfer_v22_admitted_receipts/sealed_independent_actual_complete_full_AB_rawrecord_review/MANIFEST.json
+原生布局有限证据：actual_full_AB_rawrecord_transfer_v22_admitted_receipts/sealed_finite_native_FISSIONINDEX_layout_SOURCE_META_review/MANIFEST.json
+
+新增反应/TRANC源码证据：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/finite_current150_AB_reaction_TRANC_post_TONE_source_META_20261010/REPORT.txt

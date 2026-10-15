@@ -1,0 +1,29 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v3/run_actual_three_plane_pipeline.py
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v4/run_actual_three_plane_pipeline.py
+@@ -22,7 +22,7 @@
+ spec=importlib.util.spec_from_file_location('pipeline_original_common',COMMON)
+ c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+ HERE=Path(__file__).resolve().parent
+-OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v3'
++OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v4'
+ WORK=OUT/'AAA'
+ MI=2**20
+ ROOT_NAMES={'AX':'ax_current.xsm','AXTRACK':'axial_track.xsm','AXSYSTEM':'initial_system.xsm',
+@@ -129,7 +129,7 @@
+         for suffix in ['summary','sha256','seven-id']:p.add_argument('--'+prefix+'-'+suffix,required=True)
+     args=p.parse_args();start=time.monotonic()
+     hf,phf=ext(args,'host_freeze')
+-    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V3' or \
++    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V4' or \
+        Path(hf['host_source']['path']).resolve()!=Path(__file__).resolve():
+         raise RuntimeError('exact owning complete Host Source freeze')
+     c.same_pin(__file__,hf['host_source']);c.verify_rows(hf['dependencies'])
+@@ -587,7 +587,7 @@
+       actual_terminal=result,actual_private_release_ledger=ledger,actual_closed_CLE_scratch_archival_ledger=scratch_ledger,
+       private_release_ledger_scope='HOST_OWNED_UNLINK_ONLY',
+       frozen_Fortran_internal_disposal=dict(names=['BOOT-MAC-1/2/3.xsm','BOOT-Q-1/2/3.xsm','BOOT-SOLVED-STAGE.xsm'],
+-         source='aaa_three_plane_streaming_source_v1/SPOBOOX64.f90',
++         source='aaa_three_plane_streaming_source_v2/SPOBOOX64.f90',
+          complete_logical_readback_before_disposal_required_by_frozen_source=True,
+          actual_complete_copy_readback_seen=result is not None,
+          independent_physical_EOF_pins_available=False,exact_raw_replay_retained=False),

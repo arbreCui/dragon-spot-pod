@@ -1,0 +1,2 @@
+前1–8轮恢复来源独立交叉：本轮unique9/legacy8/NPZ159共176项，exactpath/解析后alias/来源目录祖先交叉均0；167条新retained_primary边无primary落入候选、无候选间恢复环。
+原89材料tape全部HOLD保持。本报告只验证恢复来源闭包，不替代最终完整SHA预检/业务依赖独审、不批准删除。本次未压缩、恢复、删除或运行业务。

@@ -8,11 +8,14 @@ program test_d4a_region_rates
   use, intrinsic :: iso_fortran_env, only : real32,real64
   use, intrinsic :: ieee_arithmetic, only : ieee_value,ieee_quiet_nan
   implicit none
-  integer, parameter :: nreg=396,nradial=132,nfloor=3,ngrp=370,nmix=18,nfis=2
+  integer, parameter :: nradial=132,nsnap=3,ngrp=370,nmix=18,nfis=2
   type(c_ptr) :: flux,track,macro,groups,groups64,item
-  integer :: state(40),mat(nreg),key(nreg),i,f,r,g,j,mode_status
-  real(real32) :: volume(nreg),field(nreg),nufis(nmix*nfis)
-  real(real64) :: field64(nreg),nufis64(nmix*nfis)
+  integer :: state(40),i,f,r,g,j,s,mode_status,nreg,nfloor
+  integer, allocatable :: mat(:),key(:),mat1d(:)
+  real(real32), allocatable :: volume(:),field(:)
+  real(real32) :: nufis(nmix*nfis)
+  real(real64), allocatable :: field64(:)
+  real(real64) :: nufis64(nmix*nfis)
   character(len=32) :: mode
   logical :: exists
 
@@ -20,8 +23,9 @@ program test_d4a_region_rates
   call get_command_argument(1,mode,status=mode_status)
   if (mode_status /= 0) error stop 'INVALID CASE ARGUMENT.'
   select case(trim(mode))
-  case('good','bad_key','duplicate_key','bad_material','bad_volume','nan_flux','flux64_type', &
-       'nusigf_shape','nusigf_type','extra_fissile','missing_fissile','bad_dimensions')
+  case('good','good6','good12','bad_key','duplicate_key','bad_material','bad_volume','nan_flux','flux64_type', &
+       'nusigf_shape','nusigf_type','extra_fissile','missing_fissile','bad_dimensions', &
+       'bad_mat1d','bad_fine_material','bad_cell_count')
   case default
     error stop 'UNKNOWN FIXTURE CASE.'
   end select
@@ -32,11 +36,20 @@ program test_d4a_region_rates
   inquire(file='macro.xsm',exist=exists)
   if (exists) error stop 'FIXTURE FILE ALREADY EXISTS.'
 
+  nfloor=3
+  if (mode == 'good6') nfloor=6
+  if (mode == 'good12' .or. mode == 'bad_mat1d' .or. mode == 'bad_fine_material') nfloor=12
+  nreg=nradial*nfloor
+  allocate(mat(nreg),key(nreg),mat1d(nfloor),volume(nreg),field(nreg),field64(nreg))
+  do f=1,nfloor
+    mat1d(f)=1+(f-1)/(nfloor/nsnap)
+  enddo
   do r=1,nradial
     do f=1,nfloor
       i=(r-1)*nfloor+f
-      mat(i)=2+(f-1)*6
-      if (r <= 25) mat(i)=4+(f-1)*6
+      s=mat1d(f)
+      mat(i)=2+(s-1)*6
+      if (r <= 25) mat(i)=4+(s-1)*6
       key(i)=nreg+1-i
       volume(i)=real(r+f,real32)
     enddo
@@ -44,6 +57,8 @@ program test_d4a_region_rates
   if (mode == 'bad_key') key(1)=nreg+1
   if (mode == 'duplicate_key') key(2)=key(1)
   if (mode == 'bad_material') mat(2)=8
+  if (mode == 'bad_fine_material') mat(4)=10
+  if (mode == 'bad_mat1d') mat1d(4)=2
   if (mode == 'bad_volume') volume(1)=-1.0_real32
   call LCMOP(track,'track.xsm',0,2,0)
   call LCMPTC(track,'SIGNATURE',12,'L_TRACK     ')
@@ -54,12 +69,13 @@ program test_d4a_region_rates
   state(4)=nmix
   state(6)=nradial
   state(7)=nfloor
-  state(8)=nfloor
+  state(8)=nsnap
   if (mode == 'bad_dimensions') state(6)=nradial-1
+  if (mode == 'bad_cell_count') state(7)=4
   call LCMPUT(track,'STATE-VECTOR',40,1,state)
   call LCMPUT(track,'MATCOD',nreg,1,mat)
   call LCMPUT(track,'KEYFLX',nreg,1,key)
-  call LCMPUT(track,'MAT1D',nfloor,1,[1,2,3])
+  call LCMPUT(track,'MAT1D',nfloor,1,mat1d)
   call LCMPUT(track,'VOLUME',nreg,2,volume)
   call LCMCL(track,1)
 
@@ -97,7 +113,7 @@ program test_d4a_region_rates
   do g=1,ngrp
     item=LCMDIL(groups,g)
     nufis=0.0_real32
-    do f=1,nfloor
+    do f=1,nsnap
       j=4+(f-1)*6
       nufis(j)=real(g+f,real32)
       nufis(nmix+j)=real(2*g+f,real32)

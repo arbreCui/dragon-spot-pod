@@ -1,0 +1,7 @@
+R18 清理实际终态独立核验：PASS。
+12960 个历史 full_jobs raw 中间文件缺席；Root 固定14332项全缺席。
+当前35647 canonical、37339 原metadata及37395完整owner集合身份保持，86 namespace、186 aliases、445 absence保持。
+最终 operators、controls、结果/日志/原seal保留：12753项继承刚完整819870861B全文SHA，现全7字段身份一致；12份预检raw重新全文SHA通过。
+SOURCE31、WORK56、TERM12、CT3逐完整文件鲜SHA通过；236动态resource roots及原96GiB/free8GiB/未来reserve保持。
+旧逐raw全验和replay必须按保留源码输入在隔离位置重算，不能直接运行原primary覆盖最终输出。
+本核验未执行科学业务、未重读35GB、未改项目或删文件；不授予native/AAA/ABA信用。

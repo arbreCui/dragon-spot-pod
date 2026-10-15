@@ -4,11 +4,22 @@ set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
 PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/d4_reference/test_evidence_diagnostics.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_compare_saved_axial.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_trace_physical_columns.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_coupled_reference_qualification.py"
+
+PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/check_method_contract.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_spot_strict_inner.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_picard_control.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_one_map_mesh_layout.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_nonlinear_solver_contract.py"
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
@@ -16,6 +27,12 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_d4a_picard_series.py"
 sh "$ROOT/validation/iterative/test_d4a_corrected_observables_replay.sh"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_d4a_repaired_observables.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_d4a_repaired_acceptance.py"
+PYTHONDONTWRITEBYTECODE=1 python3 \
+  "$ROOT/validation/iterative/test_d4a_repaired_packaging.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \
   "$ROOT/validation/iterative/test_export_d4a_corrected_result.py"
 PYTHONDONTWRITEBYTECODE=1 python3 \

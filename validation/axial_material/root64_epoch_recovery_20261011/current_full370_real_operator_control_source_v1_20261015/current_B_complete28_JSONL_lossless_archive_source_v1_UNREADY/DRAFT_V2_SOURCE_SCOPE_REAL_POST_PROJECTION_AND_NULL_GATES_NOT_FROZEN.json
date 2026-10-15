@@ -1,0 +1,150 @@
+{
+  "schema": "B_COMPLETE28_JSONL_SOURCE_DRAFT_STATIC_V2",
+  "source_only": true,
+  "complete_source_file_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v1_UNREADY/B_complete28_JSONL_archive_common.UNREADY.py",
+      "sha256": "798c3e490263369f2a0d9c45b60227f0e8bb22cc25d4d02feae8d5d81e8586e9",
+      "size_bytes": 21967,
+      "identity": [
+        16777229,
+        50892072,
+        33188,
+        1,
+        21967,
+        1792075395053385372,
+        1792075395053385372
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v1_UNREADY/archive_B_complete28_JSONL_serial.UNREADY.py",
+      "sha256": "b5350dbc60b5482983554b8e22d8b3fff6058f97f42ddac05e2b3fd13505dbb3",
+      "size_bytes": 8128,
+      "identity": [
+        16777229,
+        50892079,
+        33188,
+        1,
+        8128,
+        1792075268436074498,
+        1792075268436074498
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v1_UNREADY/run_guarded_B_complete28_JSONL_archive.UNREADY.py",
+      "sha256": "e818c0674352ec5ddb1a1c2a57455af03f9bb2ecb9d7716c2099c0c3111a698e",
+      "size_bytes": 10664,
+      "identity": [
+        16777229,
+        50892082,
+        33188,
+        1,
+        10664,
+        1792075268691232923,
+        1792075268691232923
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v1_UNREADY/prepare_B_complete28_JSONL_archive_Source.UNREADY.py",
+      "sha256": "375e07dee1f5c9add2875f0c4ebad0c7889265f31b699982c02e85b264ed3cd9",
+      "size_bytes": 3835,
+      "identity": [
+        16777229,
+        50892083,
+        33188,
+        1,
+        3835,
+        1792075269197411683,
+        1792075269197411683
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v1_UNREADY/publish_B_complete28_JSONL_archive_CLI.UNREADY.py",
+      "sha256": "ba2f8ee563a2549a4f2071a357536304374422bc6da6cfd3e35468e7861e26e9",
+      "size_bytes": 3397,
+      "identity": [
+        16777229,
+        50892084,
+        33188,
+        1,
+        3397,
+        1792075269253296739,
+        1792075269253296739
+      ]
+    }
+  ],
+  "whole_NULL_binding_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v1_UNREADY/DRAFT_V2_BINDING_ACCURATE_EXECUTE_POST_SOURCE_PROJECTION_ACTUAL_PFS_BUDGET_NULL.json",
+    "sha256": "54ad92c3d606469915a4c206ec73c0d10a4d803bc8d30d7d8d8d511c6323b086",
+    "size_bytes": 62941,
+    "identity": [
+      16777229,
+      50892157,
+      33188,
+      1,
+      62941,
+      1792075370538375134,
+      1792075370538375134
+    ]
+  },
+  "whole_inverse_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v1_UNREADY/DRAFT_V2_FIVE_SOURCE_WHOLE_ORIGINAL_PAIRED_ARCHIVE_INVERSE.json",
+    "sha256": "c32e507d1aa06c68129d3fb574b9847f9795502c3549cef4042bbf4b4f44e1ba",
+    "size_bytes": 153137,
+    "identity": [
+      16777229,
+      50892220,
+      33188,
+      1,
+      153137,
+      1792075459844831099,
+      1792075459844831099
+    ]
+  },
+  "Python_AST_and_global_scope0": true,
+  "original_archive_one_whole2311_SHA": "db8a6b9fe2234c77f460274fe3d73d5fe43377089ef8341c305b8b20da892495",
+  "original_complete_nonempty_JSONL_count": 28,
+  "original_plain_total_bytes": 249929878,
+  "retained_empty_mismatch_JSONL_full_pin": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-current-B-complete-sixphase-aggregate-after-B55-and-exactB4-retirement-20261015-v1/evidence/aggregate/B/all_numeric_mismatches.jsonl",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size_bytes": 0,
+    "identity": [
+      16777229,
+      50876795,
+      33188,
+      1,
+      0,
+      1792063437065845408,
+      1792063437065862324
+    ]
+  },
+  "historic_presence_not_current_or_target": true,
+  "archive_only_no_plain_retirement": true,
+  "actual_exact16_executeRoot0_post0_PFs": null,
+  "actual_budget": null,
+  "actual_frozen_exact16_execute_post_Source_projection_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_early14_B2_pool_and_failed_partial_exact16_spool_lifecycle_source_v1_UNREADY/execute_actual_postverify_20261015/EXACT_SUCCESS_REPORT_FIELD_PROJECTION_SOURCE_ONLY.json",
+    "sha256": "161690cb6fe970d95aaa6e7cbc8c35472165d089aa50a364b5170622f20df0ba",
+    "size_bytes": 3033,
+    "identity": [
+      16777229,
+      50892005,
+      33188,
+      1,
+      3033,
+      1792075162110621346,
+      1792075162110621346
+    ]
+  },
+  "post_exact16absence_native_preservation_and_future_no_byte_recreation_literals_explicitly_checked": true,
+  "complete_original_prefix_count": 82,
+  "sole_new_archive_root_prefix_count": 83,
+  "new_output_component_bytes": 276824064,
+  "new_gzip_component_bytes": 268435456,
+  "new_runtime_metadata_headroom_bytes": 8388608,
+  "new_Source_component_bytes": 8388608,
+  "all_rawnative_final55pair_55contexts_archives_docs_and_detail_retained": true,
+  "GEN_pub_helper_worker_native_compiler_JSONL_body_gzip_or_delete_executed": false,
+  "author_frozen": false
+}

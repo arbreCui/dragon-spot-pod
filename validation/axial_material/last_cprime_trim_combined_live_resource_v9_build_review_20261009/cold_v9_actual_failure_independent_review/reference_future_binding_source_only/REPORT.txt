@@ -1,0 +1,8 @@
+V9参考绑定最小源码改动面：结构计划完成，UNREADY，不是可执行factory。Root已报告V9真正native退出1，bootstrap_axial峰513.890625MiB超过原512且完成maps0；本失败族不可推进参考，只保留未来新成功族所需源码接线说明。
+
+保留原六阶段export/physical/project/statistics/currents/collect、120秒总cap/首export60秒/512MiB/单线程单子进程零重试/256MiB归档/96GiB历史/free8；recipe56eb、全2000 statepoints及八门/nu-fission3%全部不改。
+需要改的是当前producer/terminal/准备文件/来源接线，不是科学计算：原cold_terminal_input比较stdout=status，但V9真正stdout是original_controller_return加四tail；新增入口必须复用F59 cold_terminal_admission完整typedRoot0、真实CLI/完整stdoutstderr/namespace/watch等语义。新终态/最终map/三导出输入SHA全部None。
+必须分开当前native使用的prepared_cold1290与原prepared35f。原physical helper三处当前prepared.json descriptor和父reference ready/consumer/measurement指针都要绑定prepared_cold；OLD88640祖先不替换。
+不得把原original92 BUILD/admission字典直接换成新combined字典或改一条runtime：原祖先返回完整保留，再接当前全combined/physical/dedup/capture及原七组件/真实native全准入。
+实际环境边界：原reference父/孩子强制P12+NumPy2.4.3；当前F59/producer和cp314SciPy强制P14.4+NumPy2.4.4。仅改路径后在P12直接调用F59 wholemetadata/终态函数会破坏原环境门。需在原P14验证真实producer准入，再由P12在完整已声明现场输入/来源/消费者图上分析；两个环境/全MRO/source guard必须各自保持，不能改解释器或丢guard取巧。
+REPORT.json逐一列出9个精确源码区域与关联函数/行号/原region SHA、helper完整原definitions/pins、原CLI及futureNone。实现仍需实际native成功+全后验、双环境接线源码审核、完整逆向/数学AST保真后才能READY。没有生成业务候选、没有调用export/reference/API/H5，没有写项目。

@@ -1,0 +1,9 @@
+仅标准库 Source render 与作者有限源码自审通过，未执行生成后的 host / 项目 API / guard / 构建 / 数值。
+新 host ebe99a7aaf7abd4e073d0e206bea205344e186d5a3be144a012443f1cd51a196：21 项整字节及 AST 逆回 cf2c，再原13项逆回37d；generator15项全字节逆回c8cf。
+九个真实 argv 与同一 Root V21 PREP summary/整数0closed终端/完整五namespace逐项匹配，五prepared输出path/fullSHA/typed7ID完整；source_admission来自SOURCE目录。
+真实canonicalREADY Source023abc已安装，六未来业务pins仍None。new helperdc01/new联合Q29ac四literal均绑定，原component/support/guard/MRO/资源不变。
+五stage和静态commands完整等于原V20命令必要版本及真PREP pin retarget；canonical stage_commands函数与旧Source整字节及AST一致，NM/OTOOL/OLD/PHYSICAL/DEDUP/TRIM全AST一致。此Source自审未解析ART declaration命令值，运行时仍保留原全部exact5commands gate。
+outer1800/inner600/RSS512/联合HOST+SOURCE+OUT+TERMINAL+buildSourceArchive2GiB/history96GiB/free8GiB/1thread/1child/0retry，完整raw4logs-before-identity/5watch/fullseal/runtimeidentity/4tails与动态SOURCE inventory原样。
+Source与Root META显式输入完整EOF/SHA/7ID前后不变；原sealed设计包、D/E、canonical和ART未改。
+Root需另行完成真实PREP保存独审、第三方Source review、全SOURCE安装freeze和真正一次新目录build；此包不授build/wholeINPUT/native/AAA/ABA/physics资格。
+复制设计包旧sealed_manifest只用于lineage，新完整绑定清单另封存。

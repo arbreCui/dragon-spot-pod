@@ -1,0 +1,7 @@
+R13零删除独立metadata预检：PASS_ZERO_DELETION_METADATA_PRESERVATION
+
+从完整JSONL实际派生的非Git类型：{"dir": 6977, "file": 174095, "symlink": 687}；当前精确一致。
+完整非Git路径181759；缺失0、新增0、身份/类型/链接目标差异0。所有目录路径与七字段身份亦保持；不使用atime或allocated作为内容身份。
+当前cache 159，与R12 HOLD集合、Root清点及fresh boundary精确一致；无新增cache；原已删64条仍全部缺席。
+当前graph SHA 0e365ebbaafa0d9e9b3a34eee89cc9c3e1de3ee47812d985135b8201bd001be3；实际派生resource roots 231全部存在；absence_inputs 445全部保持缺席。
+仅TMP写入，无删除/压缩/恢复/API/PREP/RUN/native，不全hash项目文件；这是零删除保留终态的metadata核对，不是35GB科学INPUT字节准入。Root随后有意新增R13报告和README索引不属于本次预写快照，须在后验单列。

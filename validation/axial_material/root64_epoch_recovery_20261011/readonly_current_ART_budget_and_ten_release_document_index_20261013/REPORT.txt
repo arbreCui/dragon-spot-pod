@@ -1,0 +1,56 @@
+当前ART预算与十批清理结果入口：有限只读完成
+
+实际ART 79447184410字节，96532 regular，703 history roots；free 207955275776字节。ownPS无活业务host/child；v11 true工具 observed_closed、原EXIT1已核对。
+原history96GiB实际cap余23632030694字节；再扣cold20971764748+metadata64MiB余2593157082字节；再留fullfresh2GiB余445673434字节。
+813MB+64MiB（880108864B）或保守813MiB+64MiB（919601152B）可在本次原fresh2GiB窗口内执行，实际history/cold/meta/free约束均容纳。
+若诊断保留后另完整预留下一fresh2GiB：decimal方案缺434435430B；binary方案缺473927718B。不能把实际history cap尚有余量误称两个独立fresh窗口同时准入。
+这是一次真实当前快照；未来运行前仍需依原guard观察当时预算。未复制/删除/改原Source/重跑已有diagnostic。
+
+十批完整结果入口：79个唯一旧业务文件，12605160148字节，实际deletion_records确认和为Root累计数。
+最早三份REPORT仍叙述准备，但其实际完成receipt入口全部存在、完整EOF可读；原REPORT不改。14项原execute EXIT1/APFS父目录假设错误保持历史真实，独立Root只读后验完成凭证单独列入索引，未称原execute为EXIT0、未重删。
+所有REPORT/actualreceipt/补充后验当前完整PF在TEN_RELEASE_RESULT_DOCUMENT_INDEX.json。
+
+1. 24 files /3566694788B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/ACTUAL_EXACT_RELEASE_EXECUTION_RECEIPT.json
+
+2. 5 files /467550984B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json
+
+3. 14 files /998914456B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_AAA3_input_copies_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_AAA3_input_copies_20261012/ACTUAL_EXACT_FOURTEEN_RELEASE_EXECUTION_RECEIPT.json
+
+4. 6 files /1427734232B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/ACTUAL_EXACT_SIX_RELEASE_EXECUTION_RECEIPT.json
+
+5. 7 files /499457228B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/failed-v3-seven_ACTUAL_RELEASE_RECEIPT.json
+
+6. 6 files /1427734232B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/optional-map003004-six_ACTUAL_RELEASE_RECEIPT.json
+
+7. 6 files /970096676B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/ACTUAL_EXACT_SIX_FAILED_V4_RELEASE_RECEIPT.json
+
+8. 2 files /1498711904B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_closed_v7_v8_project_pair_20261013/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_closed_v7_v8_project_pair_20261013/ACTUAL_EXACT_TWO_PROJECT_PRIVATE_COPY_RELEASE_RECEIPT.json
+
+9. 8 files /998909696B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_v5_v6_exact_eight_source_only_20261013/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_v5_v6_exact_eight_source_only_20261013/ACTUAL_EXACT_EIGHT_RELEASE_RECEIPT.json
+
+10. 1 files /749355952B
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/ACTUAL_SINGLE_OLD_V9_PROJECT_RELEASE_RECEIPT.json
+
+CURRENT_ART_BUDGET_SNAPSHOT完整PF：
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/readonly_current_ART_budget_and_ten_release_document_index_20261013/CURRENT_ART_BUDGET_SNAPSHOT.json", "sha256": "b37cc789b8d0587151e6c89e596466da6a2e45a566533d5f27c085d39c9ebe4f", "size_bytes": 1355, "identity": [16777229, 50026681, 33188, 1, 1355, 1791879233022157533, 1791879233022157533]}
+
+finished=true：预算和结果入口只读核对完成；不构成数值或goal资格。

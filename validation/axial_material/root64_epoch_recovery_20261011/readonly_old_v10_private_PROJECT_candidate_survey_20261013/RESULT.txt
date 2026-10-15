@@ -1,0 +1,32 @@
+旧v10 PROJECT单文件释放：后续方案（只读，2026-10-13）
+
+此阶段只分析安全设计，不生成释放executable、manifest或未来业务PF，不删除文件。原候选REPORT/JSON/真实工具证据保持不变。未来v13 HF尚未冻结，本方案不能作为最终执行准入。
+
+唯一候选
+/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v10/AAA/projected_boot.xsm
+749355952B；SHA ea56e0e58889469c81e1519713ca0df93a3ebb5f2b1a1fbd2e20b5d8be72833a。
+当前调查7ID=[16777229,50015491,33152,1,749355952,1791871337358403803,1791871337358403803]，只作当前观测，不预填未来unlink时身份。
+当前selected gate union5149 PF无该path/inode依赖，但须在实际v13新DAG冻结之后再次完整证明。调查资源快照为ART80374776540B/96813files/free207766339584B，原完整cold/meta/fullfresh reserve差−481918696B；仅释此文件时预测余267437256B，不等于未来实测空间。
+
+可沿用已成功诊断释放的机制
+参照 diagnostic_v2_single_PROJECT_release_source_v1/release_single_diagnostic_project.py:29、41、60及141–209。
+完整EOF/SHA/七字段external准入；当前UID-owned、regular、nlink1、与全部保护PF的path和inode独立；精确树inventory含目录和symlink；真实ps/lsof无owner/child/writer/句柄；原SELF512/whole1800、history96GiB/fresh2GiB/cold20971764748+meta64MiB/free8GiB门不变。
+收据在独立PKG外目录exclusive创建，保存候选全部PF、闭合权威、完整保护表、before inventory/资源并fsync，然后才允许唯一常量路径unlink。保留same-owned-FD首次错误/后检查错误/实际已删数量，禁止footer覆盖最初失败或自动重试。
+删除时父目录O_DIRECTORY|O_NOFOLLOW dirfd身份必须等于before，紧接unlink前target全部7ID/UID/nlink再次相等；唯一白名单及唯一unlink调用，不接受任意target参数、glob、目录删除或第二候选。
+删除后目标确实不存在、全部其他文件SHA/七字段保留、symlink及其他目录身份不变；仅该APFS父目录允许实际nlink−1、size−32B及单调mtime/ctime，inode/mode不变。真正ART logical差−749355952B/ordinary files差−1；原完整初始reserve必须重新实测通过。APFS实际free回收不作假预测。
+
+必须更换的准入和证据（不能只做全局v2→v10字符串替换）
+原诊断释放要求parent EXIT0/COMPLETE_ONLY、old45历史/new1、目标abort once和其独立Source/CLI。旧v10是实际parent closed EXIT1/FAILED_UNQUALIFIED_NO_RETRY、46原stages和SELF失败；这些事实必须原样保留，不能套诊断成功schema、改FAILED为PASS或授BOOT/physics资格。
+新权威需分别完整读取旧v10 Root真实initial/terminal/整数exit1收据、failed summary、发布前complete raw record和46个原watch/log；核每个原PASS/FAILED原returncode、限制、cleanup、PASS日志hash，保存GLOBAL/PROJECT的单项PASS与整体失败区别。候选应与原raw owned target权威和当前7ID全EOF一致，而不是从summary空output_pins虚构输出。
+保留旧v10全部其他267普通文件、33目录、0symlink（数字只是当前快照，最终以重测清单为准）；所有结果/日志/Source/actual receipts均不删除。候选释放代价明确为旧v10 wholePROJECT及其中GLOBAL子树原路径不能raw回放，不推断生产/数学失效。
+必须显式保护当前v11 PROJECT、当前v12 PROJECT、v12全部曲线/raw/stages/log/watch/报告以及所有当前必要依赖；不把它们加入候选。原候选调查证据也完整保留。
+
+v13冻结后才允许的最小下一步
+先取得真实已冻结v13 HF、其完整Source/serializer bundle起源及Root精确CLI的path/SHA/七字段；这些值现在未知，不设置placeholder成功或预填PF。若新DAG真的依赖旧v10 PROJECT，立即取消本候选，不绕门。
+按真实v13 selected gate列表枚举全部直接mandatory fullpins及Source目录，核新Common/support/parent/OwnRSS/free-global origin；并合并catalog3040/Common2012、最新原fixed/owned、current material、GENDF、savedv2/ref输入、v11/v12保护和旧v10其余文件的完整current EOF表。物理依赖与只作为历史证据的JSON内PF必须明确区分，不能仅grep，也不能把历史output数组盲目升级为current。
+最终release Source应在独立新namespace准备，外CLI至少必选own-release-HF、actual-v13-HF、actual-v13-exact-CLI三组path/SHA/七字段；旧v10真实closed1/raw/summary、v12 trueclosure及当前survey由真实manifest完整绑定。未来参数未知就保持必选未填，旧模块/冻Source不修改。
+Source完成后保留全文delta/wholebyteinverse、安全逻辑独立审核与Root复核；最终manifest及source freeze固定真实gate union/target/before inventory。再由Root决定单次执行，执行前再读ps/lsof、Source/current保护与资源，拒绝并发任何ART writer或已启动v13业务。
+成功后保留真实Root工具返回、唯一删除receipt和独立后验，才更新实际释放统计；本方案当前不改变原10批79文件12605160148B。
+
+证据：当前目录 REPORT.txt、FULL_CURRENT_GATE_UNION_AND_EXACT_OLD_V10_CANDIDATE_READONLY_REVIEW.json、TRUE_READONLY_TOOL_RETURNS.json；诊断释放原Source及其成功实际receipt继续保留。
+release_executable_created=false；deletion_executed=false；new_numerical_business=false；AAA_qualified=false；ABA_admitted=false；goal_complete=false。

@@ -1,0 +1,4 @@
+v2 Source-only 修正：仅展开 v14 明确选中的五份实际静态准入 manifest。保留旧 HF 文件本体作为谱系，不任意递归其历史 dependencies 成为当前业务 DAG。
+唯一旧 v5 helper增加实际完整 EOF 的保留谱系行；来自旧 HF.dependencies[0]，SHA/大小/其余六身份相同，仅34→29，不加入通用当前mapping，也不修改v14。
+保留 v1 真失败，准备/验证两 helper整文件字节相同；完整 common逆恢复、明确变更与原512/600/1800/96GiB/2GiB/8GiB/冷储备/64MiB预算均保存。
+其余5184、所有当前科学/Source、v13 299以及旧树其余结果/日志/曲线/finite报告继续保护。未来PF仍None。此作业只读取允许的Source/元数据，没有重读两候选、导入业务、PS、准备MF、编译、数字或删除。

@@ -1,0 +1,31 @@
+--- /private/tmp/axmat_v12_graph_table_standalone_bounded_whole_input_intake_source_only_20261009/postterminal_recorder.UNREADY.py
++++ /private/tmp/axmat_v12_standalone_postterminal_recorder_READY_candidate_source_only_20261009/postterminal_recorder.READY_REVIEW_CANDIDATE.py
+@@ -4,7 +4,7 @@
+ """
+ import argparse,importlib.util,hashlib,shutil,sys
+ from pathlib import Path
+-DRAFT_STATUS='UNREADY_SOURCE_ONLY_GRAPH_TABLE_V12_POSTTERMINAL_RECORDER_DRAFT'
++DRAFT_STATUS='READY_REVIEWED_ROOT_POSTTERMINAL_INTAKE_RECORD_ONLY'
+ if DRAFT_STATUS!="READY_REVIEWED_ROOT_POSTTERMINAL_INTAKE_RECORD_ONLY":raise ValueError("UNREADY: source only; no observed new host return")
+ HELPER=Path('/private/tmp/axmat_root_historical_owned_specs_combined_runtime_actual_bound_recorder_20261007.py')
+ HELPER_SHA='0b8a9a0a3b71bdea15269a14e54011d142e00c92979fbedef8ade3bcac7ec047'
+@@ -14,13 +14,13 @@
+ BASE=Path('/private/tmp/axmat-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-20261009')
+ OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-evidence-20261009')
+ HOST=Path('/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_v12_build_review_20261009/standalone_bounded_intake_source_20261009/host.py')
+-HOST_SHA=None
++HOST_SHA='5af2c2abed88ec4dd416607be45ba433f3ff1732a97a04aa884e097b8d457cd9'
+ COMPONENT_TERM=Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-terminal-v12-20261009')
+-DECL_SHA=None
+-SEAL_SHA=None
+-RUN_SHA=None
+-PREP_SHA=None
+-API_RETURN_SHA=None
++DECL_SHA='410720642a1952480ad9190ed48292e96cf9f17d8ab02967b5503713caa09f5d'
++SEAL_SHA='1f0ddf9751140abc2eb114918695b33007725cd34839e278b2e4b04f9c779dfa'
++RUN_SHA='396697c31e8112040b7fab32f452e5fabd8592ec41379d3daf2eda1519df7b28'
++PREP_SHA='f431490002fb5e2d4de0cee17979c5ef5b5725740f16fea85fdcfd3fd502ddb5'
++API_RETURN_SHA='65fc18ba1fab484b91c626a48d79a55a9bd5f21b65a391d18b9c4313e2333536'
+ CMD=['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12','/Users/wen/spot/validation/axial_material/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.py','admit','--sha256',SEAL_SHA,'--terminal-evidence',str(COMPONENT_TERM/'terminal_return.json'),'--terminal-evidence-sha256',RUN_SHA]
+ for value in (DECL_SHA,SEAL_SHA,RUN_SHA,PREP_SHA,API_RETURN_SHA):
+  if type(value)is not str or len(value)!=64 or any(c not in '0123456789abcdef'for c in value)or value=='0'*64:raise ValueError('UNREADY: exact actual component and host stream pins required')

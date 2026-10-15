@@ -1,0 +1,1227 @@
+{
+  "schema": "ROOT_ACTUAL_COMPLETE_OBSERVED_SNAPSHOT_COVERAGE_FOR_CONTEXT_V1",
+  "all_original_snapshot_pairs_saved": true,
+  "actual_extraction_report_pin": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/ACTUAL_COMPLETE_OBSERVED_XSM_EXTRACTION_REPORT.json",
+    "sha256": "cede3cbeeef8d027708fafe1e9aa3df30b0d964ee6aad88ce074b22ab98a2b80",
+    "size_bytes": 125132,
+    "identity": [
+      16777229,
+      50164773,
+      33188,
+      1,
+      125132,
+      1791967926740042836,
+      1791967926740042836
+    ]
+  },
+  "actual_observation_manifest_pin": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-current-formal-material-short-FIL-A10-closed-capture-continuation-20261014-v3/ACTUAL_CURRENT_FORMAL_COMPLETE_OBSERVATION_MANIFEST.json",
+    "sha256": "7b53b08f6a8ce9eaf382886eed8d2e1d2b2cb807c64bbd28380d61360cc34c67",
+    "size_bytes": 564617,
+    "identity": [
+      16777229,
+      50162256,
+      33188,
+      1,
+      564617,
+      1791965735425683478,
+      1791965735425683478
+    ]
+  },
+  "actual_closed_extraction_receipt_independently_reviewed": true,
+  "independent_actual_review_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_six_root_first_A_fullfield_extraction_actual_evidence_postverify_20261014/ROOT_ACTUAL_CURRENT_MATERIAL_EXTRACTION_REVIEW.json",
+    "sha256": "393eddcf2637a68426e3a191a0432030383e71be8254498b65d7819e7509d00a",
+    "size_bytes": 44475,
+    "identity": [
+      16777229,
+      50165473,
+      33188,
+      1,
+      44475,
+      1791968585030353128,
+      1791968585030353128
+    ]
+  },
+  "states": {
+    "A": {
+      "all_snapshot_pairs": [
+        {
+          "event": 4,
+          "role": "postmacro-LIBMIX",
+          "root_prefix": [
+            "MACROLIB"
+          ],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000004-postmacro-LIBMIX.xsm",
+            "sha256": "80d4680c6f423e94c4ddf1e5dbb0b9cf345d8625812fd8423b414f0c627c5813",
+            "size_bytes": 9881700,
+            "identity": [
+              16777229,
+              50145090,
+              33152,
+              1,
+              9881700,
+              1791957869900655577,
+              1791957869900655577
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000004_postmacro-LIBMIX/complete_native_original_path_index.sqlite",
+            "sha256": "0ad4ed0bc8624219b492a9d4a9592ea63b92059e8dc56e9de08b11e949ea39f1",
+            "size_bytes": 12185600,
+            "identity": [
+              16777229,
+              50164708,
+              33188,
+              1,
+              12185600,
+              1791967921993319270,
+              1791967921993319270
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000004_postmacro-LIBMIX/complete_native_original_value_bytes.bin",
+            "sha256": "12fd5f80ca9f270f1123a348124489962d38eb6242aec59e5a533e103f2239b8",
+            "size_bytes": 9044736,
+            "identity": [
+              16777229,
+              50164711,
+              33188,
+              1,
+              9044736,
+              1791967922259431282,
+              1791967922259431282
+            ]
+          }
+        },
+        {
+          "event": 7,
+          "role": "oldmacro-pre-LIBMIX",
+          "root_prefix": [
+            "MACROLIB"
+          ],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000007-oldmacro-pre-LIBMIX.xsm",
+            "sha256": "80d4680c6f423e94c4ddf1e5dbb0b9cf345d8625812fd8423b414f0c627c5813",
+            "size_bytes": 9881700,
+            "identity": [
+              16777229,
+              50145099,
+              33152,
+              1,
+              9881700,
+              1791957872387110478,
+              1791957872387110478
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000007_oldmacro-pre-LIBMIX/complete_native_original_path_index.sqlite",
+            "sha256": "0ad4ed0bc8624219b492a9d4a9592ea63b92059e8dc56e9de08b11e949ea39f1",
+            "size_bytes": 12185600,
+            "identity": [
+              16777229,
+              50164716,
+              33188,
+              1,
+              12185600,
+              1791967922591058982,
+              1791967922591058982
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000007_oldmacro-pre-LIBMIX/complete_native_original_value_bytes.bin",
+            "sha256": "12fd5f80ca9f270f1123a348124489962d38eb6242aec59e5a533e103f2239b8",
+            "size_bytes": 9044736,
+            "identity": [
+              16777229,
+              50164719,
+              33188,
+              1,
+              9044736,
+              1791967922858817954,
+              1791967922858817954
+            ]
+          }
+        },
+        {
+          "event": 8,
+          "role": "oldmacro-LIBDEN",
+          "root_prefix": [
+            "MACROLIB"
+          ],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000008-oldmacro-LIBDEN.xsm",
+            "sha256": "80d4680c6f423e94c4ddf1e5dbb0b9cf345d8625812fd8423b414f0c627c5813",
+            "size_bytes": 9881700,
+            "identity": [
+              16777229,
+              50145101,
+              33152,
+              1,
+              9881700,
+              1791957872494768025,
+              1791957872494768025
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000008_oldmacro-LIBDEN/complete_native_original_path_index.sqlite",
+            "sha256": "0ad4ed0bc8624219b492a9d4a9592ea63b92059e8dc56e9de08b11e949ea39f1",
+            "size_bytes": 12185600,
+            "identity": [
+              16777229,
+              50164724,
+              33188,
+              1,
+              12185600,
+              1791967923184951225,
+              1791967923184951225
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000008_oldmacro-LIBDEN/complete_native_original_value_bytes.bin",
+            "sha256": "12fd5f80ca9f270f1123a348124489962d38eb6242aec59e5a533e103f2239b8",
+            "size_bytes": 9044736,
+            "identity": [
+              16777229,
+              50164727,
+              33188,
+              1,
+              9044736,
+              1791967923450363818,
+              1791967923450363818
+            ]
+          }
+        },
+        {
+          "event": 10,
+          "role": "postmacro-LIBMIX",
+          "root_prefix": [
+            "MACROLIB"
+          ],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000010-postmacro-LIBMIX.xsm",
+            "sha256": "9bfb4e9a725317928001bef5b0c3f45371d0aaa2dad02ddc6f8e791e03552c03",
+            "size_bytes": 9893572,
+            "identity": [
+              16777229,
+              50145104,
+              33152,
+              1,
+              9893572,
+              1791957872633699545,
+              1791957872633699545
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000010_postmacro-LIBMIX/complete_native_original_path_index.sqlite",
+            "sha256": "945767ecab6454a925e38ac0b4a9791952d5fcd252358eda7bbe58f6af616a17",
+            "size_bytes": 12435456,
+            "identity": [
+              16777229,
+              50164734,
+              33188,
+              1,
+              12435456,
+              1791967923784417939,
+              1791967923784417939
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000010_postmacro-LIBMIX/complete_native_original_value_bytes.bin",
+            "sha256": "98ba38536abde1da3bb87ba130e761915f8a31dd5d573f53d02a0cec35d074c0",
+            "size_bytes": 9056608,
+            "identity": [
+              16777229,
+              50164737,
+              33188,
+              1,
+              9056608,
+              1791967924052368997,
+              1791967924052368997
+            ]
+          }
+        },
+        {
+          "event": 51,
+          "role": "oldmacro-pre-LIBMIX",
+          "root_prefix": [
+            "MACROLIB"
+          ],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000051-oldmacro-pre-LIBMIX.xsm",
+            "sha256": "9bfb4e9a725317928001bef5b0c3f45371d0aaa2dad02ddc6f8e791e03552c03",
+            "size_bytes": 9893572,
+            "identity": [
+              16777229,
+              50145148,
+              33152,
+              1,
+              9893572,
+              1791957875104455980,
+              1791957875104455980
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000051_oldmacro-pre-LIBMIX/complete_native_original_path_index.sqlite",
+            "sha256": "945767ecab6454a925e38ac0b4a9791952d5fcd252358eda7bbe58f6af616a17",
+            "size_bytes": 12435456,
+            "identity": [
+              16777229,
+              50164742,
+              33188,
+              1,
+              12435456,
+              1791967924385435991,
+              1791967924385435991
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000051_oldmacro-pre-LIBMIX/complete_native_original_value_bytes.bin",
+            "sha256": "98ba38536abde1da3bb87ba130e761915f8a31dd5d573f53d02a0cec35d074c0",
+            "size_bytes": 9056608,
+            "identity": [
+              16777229,
+              50164745,
+              33188,
+              1,
+              9056608,
+              1791967924657802391,
+              1791967924657802391
+            ]
+          }
+        },
+        {
+          "event": 52,
+          "role": "oldmacro-LIBDEN",
+          "root_prefix": [
+            "MACROLIB"
+          ],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000052-oldmacro-LIBDEN.xsm",
+            "sha256": "9bfb4e9a725317928001bef5b0c3f45371d0aaa2dad02ddc6f8e791e03552c03",
+            "size_bytes": 9893572,
+            "identity": [
+              16777229,
+              50145150,
+              33152,
+              1,
+              9893572,
+              1791957875218895423,
+              1791957875218895423
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000052_oldmacro-LIBDEN/complete_native_original_path_index.sqlite",
+            "sha256": "945767ecab6454a925e38ac0b4a9791952d5fcd252358eda7bbe58f6af616a17",
+            "size_bytes": 12435456,
+            "identity": [
+              16777229,
+              50164750,
+              33188,
+              1,
+              12435456,
+              1791967924994098976,
+              1791967924994098976
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000052_oldmacro-LIBDEN/complete_native_original_value_bytes.bin",
+            "sha256": "98ba38536abde1da3bb87ba130e761915f8a31dd5d573f53d02a0cec35d074c0",
+            "size_bytes": 9056608,
+            "identity": [
+              16777229,
+              50164753,
+              33188,
+              1,
+              9056608,
+              1791967925263881704,
+              1791967925263881704
+            ]
+          }
+        },
+        {
+          "event": 54,
+          "role": "postmacro-LIBMIX",
+          "root_prefix": [
+            "MACROLIB"
+          ],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000054-postmacro-LIBMIX.xsm",
+            "sha256": "f104a81c0c254687a72a591d20b11656ef43f2221255c5b2f5b1dabebdf42743",
+            "size_bytes": 9893572,
+            "identity": [
+              16777229,
+              50145153,
+              33152,
+              1,
+              9893572,
+              1791957875358012111,
+              1791957875358012111
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000054_postmacro-LIBMIX/complete_native_original_path_index.sqlite",
+            "sha256": "32c4d60fc6bd4f5268f4c098e081dfc07ed638af8bd7badd0129813476d94598",
+            "size_bytes": 12435456,
+            "identity": [
+              16777229,
+              50164758,
+              33188,
+              1,
+              12435456,
+              1791967925596122905,
+              1791967925596122905
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000054_postmacro-LIBMIX/complete_native_original_value_bytes.bin",
+            "sha256": "44f4a5572f8ec1969d255fffc9c1a351b75438963f3c0d14144bbeeb91beb967",
+            "size_bytes": 9056608,
+            "identity": [
+              16777229,
+              50164761,
+              33188,
+              1,
+              9056608,
+              1791967925866530759,
+              1791967925866530759
+            ]
+          }
+        },
+        {
+          "event": 55,
+          "role": "final-complete-micro",
+          "root_prefix": [],
+          "input_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000055-final-complete-micro.xsm",
+            "sha256": "1aca710188c4c03d752dd253fe65402c599bd067f9caf73ba154267faac5cf63",
+            "size_bytes": 76594248,
+            "identity": [
+              16777229,
+              50145155,
+              33152,
+              1,
+              76594248,
+              1791957875494189872,
+              1791957875494189872
+            ]
+          },
+          "sqlite_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000055_final-complete-micro/complete_native_original_path_index.sqlite",
+            "sha256": "a5d50cf86fa74954c5cf2eb758015a10eafbbf4d0781237aa4dd446b3a19bd11",
+            "size_bytes": 16953344,
+            "identity": [
+              16777229,
+              50164766,
+              33188,
+              1,
+              16953344,
+              1791967926310204626,
+              1791967926310204626
+            ]
+          },
+          "native_pool_pin": {
+            "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000055_final-complete-micro/complete_native_original_value_bytes.bin",
+            "sha256": "fcd2ef26fb29c1b70b59c97f59a566efb33eed1953edcc7355ac5cc47fef593e",
+            "size_bytes": 74693004,
+            "identity": [
+              16777229,
+              50164769,
+              33188,
+              1,
+              74693004,
+              1791967926640779322,
+              1791967926640779322
+            ]
+          }
+        }
+      ],
+      "complete_context_pins": [
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000001.context.bin",
+          "sha256": "f32db9f475368670066bd5762ae572e58204ba4e5ab583f19d4d3e1dc0496939",
+          "size_bytes": 2249,
+          "identity": [
+            16777229,
+            50145086,
+            33188,
+            1,
+            2249,
+            1791957869767500575,
+            1791957869767500575
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000002.context.bin",
+          "sha256": "1a7823253fc160f4a42942b68b4b415818f943770f27e71803cbb05f94802174",
+          "size_bytes": 1634,
+          "identity": [
+            16777229,
+            50145087,
+            33188,
+            1,
+            1634,
+            1791957869767652117,
+            1791957869767652117
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000003.context.bin",
+          "sha256": "db249d523570287143977832fd9310e389cea792fbce711ed09b1b46d79cc2cf",
+          "size_bytes": 75,
+          "identity": [
+            16777229,
+            50145088,
+            33188,
+            1,
+            75,
+            1791957869790417147,
+            1791957869790417147
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000004.context.bin",
+          "sha256": "49484a4ef009552b5485017ec7a8aaf8f6f2f83de71ff23553d1f62d71c20796",
+          "size_bytes": 36,
+          "identity": [
+            16777229,
+            50145089,
+            33188,
+            1,
+            36,
+            1791957869793614907,
+            1791957869793614907
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000005.context.bin",
+          "sha256": "ecdaa5c7ca956aa24a579b76fb43de57595a7661ca3087b059797f288fd2f48b",
+          "size_bytes": 869,
+          "identity": [
+            16777229,
+            50145093,
+            33188,
+            1,
+            869,
+            1791957869916719253,
+            1791957869916719253
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000006.context.bin",
+          "sha256": "12e27547dc6e469f3e6f74e579090bb857ff3a2b0479f20acbbdb38a1188cd01",
+          "size_bytes": 2107,
+          "identity": [
+            16777229,
+            50145097,
+            33188,
+            1,
+            2107,
+            1791957872280770019,
+            1791957872280770019
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000007.context.bin",
+          "sha256": "9a19bdbbcd11bec9032327ae67ce56f009fa9bcb30f0f72f1ec573df7c1537ba",
+          "size_bytes": 2249,
+          "identity": [
+            16777229,
+            50145098,
+            33188,
+            1,
+            2249,
+            1791957872280884228,
+            1791957872280884228
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000008.context.bin",
+          "sha256": "ed7df9eef605c12702ffa46b84e4fb22a10230fa1c77ff04c5df0afed14a2864",
+          "size_bytes": 1634,
+          "identity": [
+            16777229,
+            50145100,
+            33188,
+            1,
+            1634,
+            1791957872387422271,
+            1791957872387422271
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000009.context.bin",
+          "sha256": "be1d99112398478fc56c6fc27683e3c596163984e0e2ac615a9981459010aa1b",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145102,
+            33188,
+            1,
+            331,
+            1791957872517346263,
+            1791957872517346263
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000010.context.bin",
+          "sha256": "ac6d40d57df23b8da21b7587ab78806e8a569d66461d503d07018fa97f018190",
+          "size_bytes": 36,
+          "identity": [
+            16777229,
+            50145103,
+            33188,
+            1,
+            36,
+            1791957872523018864,
+            1791957872523018864
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000011.context.bin",
+          "sha256": "95147fe165e70f4ef108dc59d1f2c3f05f90b9258772a9878ace503326642346",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145105,
+            33188,
+            1,
+            331,
+            1791957872634036046,
+            1791957872634036046
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000012.context.bin",
+          "sha256": "5da4e6b7260331a90a08d16b51ce9d57632702e46497468fc93aa99add72c259",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145107,
+            33188,
+            1,
+            12167,
+            1791957872923081497,
+            1791957872923081497
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000013.context.bin",
+          "sha256": "2d4f2831fa7d630c4b15281817ee0f1adb60d3eb6e79c198563b6571d6274f43",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145108,
+            33188,
+            1,
+            331,
+            1791957872925850006,
+            1791957872925850006
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000014.context.bin",
+          "sha256": "80efc6262a7c8366839476f083fc50bbcd5abf8f6f511f726e6626ef7a16504f",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145109,
+            33188,
+            1,
+            12167,
+            1791957873216805295,
+            1791957873216805295
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000015.context.bin",
+          "sha256": "47ded1d969b2efaebe0e9c63f3dfe36ffe110fd01536a2f58de55258a4f5bfef",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145110,
+            33188,
+            1,
+            331,
+            1791957873219362595,
+            1791957873219362595
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000016.context.bin",
+          "sha256": "ec3f06a17b7f96f9bff26ec056256e595ca4b08a3c66650705b7760b5234fd85",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145111,
+            33188,
+            1,
+            12167,
+            1791957873510220010,
+            1791957873510220010
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000017.context.bin",
+          "sha256": "bcf2e024b93bf985023b4ac4f18fda7536fc14b8baaecf13f119aee9559ce60e",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145112,
+            33188,
+            1,
+            331,
+            1791957873512826601,
+            1791957873512826601
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000018.context.bin",
+          "sha256": "599af9c900fb89c3429a4f1d86d1a0e6222c0fd1655b24ec127f02859ee04277",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145114,
+            33188,
+            1,
+            12167,
+            1791957873803148014,
+            1791957873803148014
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000019.context.bin",
+          "sha256": "18f2bfc6d28fe1de1a54011688bf08f2f6f8c0c08adf08cbd22409aeabd6c0d9",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145115,
+            33188,
+            1,
+            331,
+            1791957873805609855,
+            1791957873805609855
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000020.context.bin",
+          "sha256": "df92a7cd0dfb8ca50fbd8e5b3ed413d8fc87321ebd5ef6a810a0ebfa79257e61",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145116,
+            33188,
+            1,
+            12167,
+            1791957874097361314,
+            1791957874097361314
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000021.context.bin",
+          "sha256": "802e34018ce99f741c3afccdeb9b1821142c6d7cfeb860238e758b31e05893f8",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145117,
+            33188,
+            1,
+            331,
+            1791957874099744155,
+            1791957874099744155
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000022.context.bin",
+          "sha256": "35e3db7590c46b5fcd6c2ba3dee5be08e6ec06644fe88d6d27b29fe0365dbd13",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145118,
+            33188,
+            1,
+            12167,
+            1791957874396009628,
+            1791957874396009628
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000023.context.bin",
+          "sha256": "fd0bcae1905f9a335d3262f37609a145e7f6afaf042c1962f776460c0086aef2",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145119,
+            33188,
+            1,
+            331,
+            1791957874398575011,
+            1791957874398575011
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000024.context.bin",
+          "sha256": "409670dfe20d174cf5b3e178c4e9824ed66b804204bf7b178724dc7e3db86ab6",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145120,
+            33188,
+            1,
+            12167,
+            1791957874695022860,
+            1791957874695022860
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000025.context.bin",
+          "sha256": "0ad89a9f552854ea32d02294f78d6f7c8c304f2c96c705af10fc5973a68fe085",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145121,
+            33188,
+            1,
+            331,
+            1791957874697475492,
+            1791957874697475492
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000026.context.bin",
+          "sha256": "77e46e8d7d4abf4e2a49abcf7b81accdcf285b3c4103f281b786cbcc226ac2f0",
+          "size_bytes": 12167,
+          "identity": [
+            16777229,
+            50145122,
+            33188,
+            1,
+            12167,
+            1791957874986085233,
+            1791957874986085233
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000027.context.bin",
+          "sha256": "b4c3ed0bc9324fd39f24fa033c2352b26ac70991a0ecf92f6fd9c3c7bfc972f5",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145123,
+            33188,
+            1,
+            331,
+            1791957874988877242,
+            1791957874988877242
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000028.context.bin",
+          "sha256": "cc75db2ac395d37aa0fd764473685feb0b68f1bb8ac23fd5f0decec7843100fe",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145124,
+            33188,
+            1,
+            331,
+            1791957874988942950,
+            1791957874988942950
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000029.context.bin",
+          "sha256": "e006d1c8f02147fe4db609dbd65204d9dd45329539dea43d5b16baab01b2863e",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145125,
+            33188,
+            1,
+            331,
+            1791957874988989951,
+            1791957874988989951
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000030.context.bin",
+          "sha256": "7d2a02edc0f6b936d8127f500fc116594000273d57b0222de0c1b0df07007c2e",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145126,
+            33188,
+            1,
+            331,
+            1791957874989032784,
+            1791957874989032784
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000031.context.bin",
+          "sha256": "ff6965834561cc79e2de1ad422302683b73da671dfd7a5981ec1149db76ca910",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145127,
+            33188,
+            1,
+            331,
+            1791957874989083826,
+            1791957874989083826
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000032.context.bin",
+          "sha256": "5b9b0f7caadb4a23cf60b86bbd718d7388252288f00ce6acd8763c3254811a2b",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145128,
+            33188,
+            1,
+            331,
+            1791957874989131159,
+            1791957874989131159
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000033.context.bin",
+          "sha256": "648f56811511dc01fa635e5e94d7b7a9004541e27a7c8f9c88163581180e8c43",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145129,
+            33188,
+            1,
+            331,
+            1791957874989173826,
+            1791957874989173826
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000034.context.bin",
+          "sha256": "dbdbc61786ab1f47fa14d9002d60f7ea2bc1207229239aa386282b87c9302f59",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145130,
+            33188,
+            1,
+            331,
+            1791957874989211410,
+            1791957874989211410
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000035.context.bin",
+          "sha256": "f65dce23ffd3267a7a44e59ceeea13d28b5c0149dc7f3ec232e7f01d610a9f19",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145131,
+            33188,
+            1,
+            331,
+            1791957874989254660,
+            1791957874989254660
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000036.context.bin",
+          "sha256": "3884e4a33d9a6e8383358842688953da050f2a52fe0fb6d26e3b5e1abb9e0011",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145132,
+            33188,
+            1,
+            331,
+            1791957874989293160,
+            1791957874989293160
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000037.context.bin",
+          "sha256": "9a7e7c0474551d46346e952d871bba8fcf30961d52364924441685eccd3f7dd7",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145133,
+            33188,
+            1,
+            331,
+            1791957874989332993,
+            1791957874989332993
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000038.context.bin",
+          "sha256": "4a5ab6939a26badd36bfd4ec2362750fd266686898bd25b55f7dc0243e8ce2b1",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145134,
+            33188,
+            1,
+            331,
+            1791957874989374327,
+            1791957874989374327
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000039.context.bin",
+          "sha256": "0b50ee1455e42870de2c749ad0f2df8d0ba2a9294621ebecbb9b3c59f99f528d",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145135,
+            33188,
+            1,
+            331,
+            1791957874989418910,
+            1791957874989418910
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000040.context.bin",
+          "sha256": "68b13660286d9e08f72bcf94e2b86eba0ab2b7938155812f8631dd7e4f04b5a5",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145136,
+            33188,
+            1,
+            331,
+            1791957874989460077,
+            1791957874989460077
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000041.context.bin",
+          "sha256": "fb24851bd9c45e76dd2b478289370cffc407bd4aa28c484c3fb7dc69590fe1c7",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145137,
+            33188,
+            1,
+            331,
+            1791957874989503619,
+            1791957874989503619
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000042.context.bin",
+          "sha256": "8d01b647f7790bc7afa176d06a6141584f066e76b7316a9366f197e6b73bf3ce",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145138,
+            33188,
+            1,
+            331,
+            1791957874989677911,
+            1791957874989677911
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000043.context.bin",
+          "sha256": "e914fe56508eb5370ebe203a87267678da1f4697e18359f71fda35ed97d48113",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145139,
+            33188,
+            1,
+            331,
+            1791957874989756536,
+            1791957874989756536
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000044.context.bin",
+          "sha256": "c000a0dfa6d8acda5434cc74857b0902690fba922734bad6a77655d3fc1ef1ea",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145140,
+            33188,
+            1,
+            331,
+            1791957874989822203,
+            1791957874989822203
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000045.context.bin",
+          "sha256": "848d770a7e9f77b4d3515f6ee0626d6883ea8c81bdc91d7c54dcbd2dfcbf2030",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145141,
+            33188,
+            1,
+            331,
+            1791957874989872453,
+            1791957874989872453
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000046.context.bin",
+          "sha256": "2c9d0e0e05290f80565731b046c8a1185d8f6dcfc00e68598fe73522fb018c1d",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145142,
+            33188,
+            1,
+            331,
+            1791957874989917537,
+            1791957874989917537
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000047.context.bin",
+          "sha256": "4d834a0d54320cc91418c5ef338454451f0346a050a65b1cde174622c1cda8ce",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145143,
+            33188,
+            1,
+            331,
+            1791957874989965829,
+            1791957874989965829
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000048.context.bin",
+          "sha256": "a7e3b2b8ffd61d5cbf3acbee29b9c8f932dfc743a1761ec58af903c64a97f0b1",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145144,
+            33188,
+            1,
+            331,
+            1791957874990011704,
+            1791957874990011704
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000049.context.bin",
+          "sha256": "364a298f9893d90e0f95692a45756a69ad3094555d0dd49ffd645cf378031b96",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145145,
+            33188,
+            1,
+            331,
+            1791957874990054162,
+            1791957874990054162
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000050.context.bin",
+          "sha256": "e0d8809cc46284b7019dbb9924ac1b878c16ab0ddb232754888791228bf37b47",
+          "size_bytes": 2107,
+          "identity": [
+            16777229,
+            50145146,
+            33188,
+            1,
+            2107,
+            1791957874990102412,
+            1791957874990102412
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000051.context.bin",
+          "sha256": "a544d9442e4948335346ea36d7fa5fcdefde6804250cf5b3167daffc2859d68c",
+          "size_bytes": 2281,
+          "identity": [
+            16777229,
+            50145147,
+            33188,
+            1,
+            2281,
+            1791957874990144121,
+            1791957874990144121
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000052.context.bin",
+          "sha256": "54f8ccdd12ff58a8acdd44f2c68631e583e069b991ff6c6579f45f9349e0a3ea",
+          "size_bytes": 1634,
+          "identity": [
+            16777229,
+            50145149,
+            33188,
+            1,
+            1634,
+            1791957875104913190,
+            1791957875104913190
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000053.context.bin",
+          "sha256": "0a349d9cc3d1cf05f24d1cfeb307c1b3b354682df2e82ec67502394e2c601abc",
+          "size_bytes": 331,
+          "identity": [
+            16777229,
+            50145151,
+            33188,
+            1,
+            331,
+            1791957875241669453,
+            1791957875241669453
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000054.context.bin",
+          "sha256": "5d1bb97ac1cf9c0a8e642a341eb01466593a6a90cb6cdff74ff41d8f3df6a75f",
+          "size_bytes": 36,
+          "identity": [
+            16777229,
+            50145152,
+            33188,
+            1,
+            36,
+            1791957875247103596,
+            1791957875247103596
+          ]
+        },
+        {
+          "path": "/Users/wen/spot/validation/artifacts/axial-material-new-current-formal-material-observations-short-FIL-after-v18-saved370-20261014-v10/A/axobs-000055.context.bin",
+          "sha256": "fa763023639e93bcb9286fc9c4e3cc7bffc60fbcf9ba815228b731e6993cdf37",
+          "size_bytes": 48,
+          "identity": [
+            16777229,
+            50145154,
+            33188,
+            1,
+            48,
+            1791957875358325653,
+            1791957875358325653
+          ]
+        }
+      ]
+    }
+  },
+  "new_qualification_sha256": null,
+  "historical_native_RAM_bits_verified": false,
+  "original_XSM_memory_bits_verified": false,
+  "historical_unsaved_context_recovered": false,
+  "reaction_multiplicity_qualified": false,
+  "TRANC_semantics_qualified": false,
+  "physical_neutron_balance_qualified": false,
+  "coupled_370group_reference_qualified": false,
+  "scientific_accuracy_qualified": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false
+}

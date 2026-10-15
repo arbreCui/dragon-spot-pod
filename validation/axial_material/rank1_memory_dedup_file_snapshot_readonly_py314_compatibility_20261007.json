@@ -1,0 +1,53 @@
+{
+  "schema": "AXMAT_FILE_SNAPSHOT_TRUE_READONLY_PY314_CONSUMER_COMPATIBILITY_ONLY_V1",
+  "record_producer": "root",
+  "record_written_after_actual_terminal_return": true,
+  "actual_tool_terminal_return_observed": true,
+  "actual_tool_result": {
+    "initial_chunk_id": "49d9f7",
+    "session_id": 63366,
+    "terminal_chunk_id": "a8b0a5",
+    "exit_code": 0
+  },
+  "command": [
+    "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+    "/Users/wen/spot/validation/axial_material/prepare_rank1_cache_memory_dedup_file_snapshot_native_angular_capture.py",
+    "admit-diagnostic",
+    "--capture-seal-sha256",
+    "12756df88672c4438149119026edba0b2ef78780dffa5dcc522bcd06771d5296",
+    "--terminal-evidence",
+    "/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-file-snapshot-native-angular-capture-terminal-20261007/terminal_return.json",
+    "--terminal-evidence-sha256",
+    "d5496707eb1ad08826eec599dbf6035b9e39df67cf68a92e84db62bcbb753e63"
+  ],
+  "actual_stdout": {
+    "path": "/private/tmp/axmat-rank1-file-snapshot-actual-readonly-consumer-py314-20261007.stdout",
+    "sha256": "873256bafc1055fae5fa27e07045ee691400cd8cefb7cf85a00151dd13b16369",
+    "bytes": 3547819
+  },
+  "actual_stderr": {
+    "path": "/private/tmp/axmat-rank1-file-snapshot-actual-readonly-consumer-py314-20261007.stderr",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "entire_return_byte_exact_to_actual_py312": true,
+  "entire_return_structural_exact": true,
+  "all_inherited_return_bodies_preserved": true,
+  "identical_complete_payload_retained_at": {
+    "stdout": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-file-snapshot-native-angular-capture-terminal-20261007/admission_full_stdout.json",
+      "sha256": "873256bafc1055fae5fa27e07045ee691400cd8cefb7cf85a00151dd13b16369"
+    },
+    "stderr": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-file-snapshot-native-angular-capture-terminal-20261007/admission_full_stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "native_or_numerical_replay_executed": false,
+  "new_combined_runtime_RSS_proved": false,
+  "new_cold_or_bootstrap_executed": false,
+  "scientific_qualification": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false,
+  "observed_utc": "2026-10-07T10:11:47.308061+00:00"
+}

@@ -1,0 +1,17 @@
+SPOT B 分批归档空间回收结果（2026-10-15）
+
+已完成两文件精确回收，实际释放101693287字节（约97MiB）。Root只读检查0、独立只读复核0、Root实际回收0、独立执行后复核0全部闭合。原资源、进程及空闲空间检查保留，实际删除前确认没有文件使用者，逐项留存日志，最后删除后强制重新检查资源。
+
+实际移除：
+1. 原始产品m.xsm副本76594248字节。完整压缩文件000_m.xsm.gz与归档条目保留，已先经独立流式解压验证可恢复全部原始字节。
+2. 首次归档失败生成的不完整001_u.asc.gz残片25099039字节。其完整原始u.asc继续保留，不将残片计作有效结果。
+
+保留：完整gzip000及entry000、其余三份原始产品、原生树、55上下文、8组提取结果、原始输入、全部结果文档和失败记录。未改变科学数值或验收阈值。
+首次全四产品归档的Root1/child1与旧post空child_codes仍是原失败事实。当前只完成一个成员的可恢复归档，剩余三项及完整四项索引尚待下一次实际执行。
+
+完整凭证入口：current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/EXECUTION_RECEIPT.json
+真实Root工具回执：同目录ROOT_EXECUTION_TRUE_TOOL_RETURNS.json
+独立执行后核验：同目录execute_actual_postverify_20261015/REVIEW.json及TRUE_TOOL_RETURNS.json
+先行恢复验证：SPOT_CURRENT_B4_MEMBER0_BYTE_RECOVERY_VERIFIED_RESULT_20261015.txt
+
+下一步：在原累计2GiB限制内为剩余三项建立有界归档，复用原位置的第一个成员，最终索引仍覆盖四个完整产品；随后才回收剩余原文并运行B六阶段汇总。整体物理与耦合目标仍未完成。

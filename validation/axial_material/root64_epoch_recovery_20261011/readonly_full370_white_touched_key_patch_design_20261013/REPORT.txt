@@ -1,0 +1,41 @@
+全370×9独立参考 WHITE：最小 touched-key 修改设计（2026-10-13）
+
+只读设计，physics admission=false。未写候选数学Source、未编译或导入候选、未执行新kernel/reference；原冻结文件未改。当前v12是否真正闭合由Root另行核验，本文不授予任何终态资格。
+
+准确位置与成本
+full370_unreduced_eigen_reference_source_v2/current_full370_white_accumulate.cpp:31–33 每action清零 local_transfer(48,48,370) 与 local_leakage(2,8,48,370)；66–80又遍历全部3072逻辑键×370组。181824 actions合206668431360 dense值访问、至少1653347450880B局部清零。
+19–20每action重复检查142080项total，另有25833553920次检查；37–64原geometry/chord/piece/optical/exp循环仍需保留。native_layered_geometry.hpp:8–37使用113-bit交点构造，不能以普通double或合并长度代换。
+current_formal_full370_ray_operator.py:104–143保留完整T(288,288,370)=245514240B、L(2,8,288,370)=13639680B。193–243保留370个288维LU和两遍181824次完整370×9传播。当前group_chunk只管理LU，不能在Python分93组块重建全部ray几何。
+这些是静态循环量，不是实测墙钟或RSS，不能据此承诺600s/512MiB/whole1800通过。
+
+建议先审的最小delta：两份代码，旧dense oracle保持原字节
+1. current_full370_white_accumulate.cpp保留全部现有函数与include链，追加新touched入口，建议名 layered_white_accumulate370_touched。旧dense入口继续用于完整比较，不覆盖旧实现。
+2. current_formal_full370_ray_operator.py仅更换prepare_white选择的ABI名字；actions、shape、totals、quadrature、D/T/L初始化、计数/预算、全数组检查/370份缓存、WHITE/LU/九矩传播和全部阈值不变。
+须在新独立namespace具体化并重新冻结Source/HF/KernelBinding；本设计没有生成新数学Source，也没有预填compiler/library/control/material/GENDF未来PF。
+
+具体结构
+沿原37–64的chord/piece/group顺序。T键=row*48+column（最多2304），L键=(side*8+r)*48+column（最多768）；两个整型slot表每call初始化−1，约12288B。
+首次结构性触键获得370-double槽并先写全+0；同键各chord的全部370组依原表达式逐项+=。exp/乘积下溢为0也继续触键和逐组运算；不按值、阈值或value==0剪枝。
+可用至多3072*370项的单个未初始化有界pool，仅首触槽清零，避免vector扩容的双份capacity/复制峰。每call局部生命周期结束即释放，先不引入static/thread_local或跨iterate缓存。
+最终保留原j0..47、T的i0..47、L的side0..1/r0..7和group0..369顺序；只在slot不存在时跳过该结构性未触键。仍是“全per-ray局部和×原angular_track_weight一次，再加global”；D的48项原循环不变。
+于是有558563328个小整型key检查，group访问变为370*sum(U_action)，零写约8*370*sum(U_action)。U_action须由实际触点取得，不能伪造分布或把推测的96键设为硬cap。
+保守pool最坏仍9093120B，另加约12KiB索引；不能承诺峰RSS下降。全T/L、geometry、Python/SciPy/material仍占内存。若实测需要更小pool，再独立审“纯geometry metadata第一遍数U，分配U*370”的版本，不先混入额外状态与遍历。
+
+完整逆变换和数值等价证明范围
+移除精确追加的新函数/include文本，cpp必须恢复旧v2全文件字节；反向唯一Python ABI字面量必须恢复全文件。其余16文件全字节保持。新函数另逐块映射原guards、geometry/chord/optical表达式和最终运算，不能只凭test绿色或意图声明等价。
+每(key,group)相同+0初值、相同有序chord贡献；乘weight一次的位置及每global cell按原ray的加和顺序不变。禁止逐chord直接加global、按region合并optical长度再乘total、重排ray/group或并行reduction。
+跳过未触键的等价范围是本owning worker用np.zeros产生的+0 T/L、正weight、非负有限局部量和串行累积；不能声称对传入−0/NaN/Inf的任意裸ABI指针都bit等价，所以保留旧dense入口。必须实际冻结/核实原compiler flags、舍入模式及FTZ/DAZ；不得改fast-math、FMA或舍入来过关。触键0仍做原运算。
+后续受限比较应使用相同未变输入，在独立零输出和同一合法非零prefix上比较完整T/L/D/geometric所有bit；single-ray及原序multi-ray覆盖±mu、双orientation、原surface/region/nr极值、order16/32、全部370组、vacuum/零total/下溢/高optical与原无效输入拒绝。继而核全11364ray/181824 coverage、WHITE/LU/共享面/守恒及全九矩控制。
+全部原600/1800、SELF/child512、fresh2/history96、cold20971764748+meta64、free8、单线程/单child、无retry不变。有限kernel比较通过不等于全reference/AAA资格；仍需真实fullWHITE及每apply成本。重复total的25833553920检查、geometry、双完整传播与370LU尚在；删重复校验须另有真正不可变totals权威，不能在此顺手绕guard。
+
+尚缺真实准入权威
+plan:87–89的 required_actual_material_lineage_pin、required_actual_kernel_control_pin、required_actual_kernel_origin_pin均null。四项内部metadata还写历史dev34，当前dev29仅此字段变化；authority.py:74–91严格PF比较仍拒绝。须新Source明确current重绑定、完整EOF/七字段，不能只更换外层plan PF。
+material v7仍Source-only，prerequisite:24–31绑定v11；若v12真闭合须另冻合法新绑定。须实际75 observer build、first-A完整六阶段/62同位素+density+温度、SPH/MASK/oldmacro/TONE/IRSET上下文、完整P0/P1/P2与32裂变通道及三独立A全370 rawwords比较。不能用沿层复制代替材料权威或追回未保存的历史context。
+GENDF v4/parserv2仍缺first-A实际receipt及11个nonzeroNX文件154650680B真实提取；979740136B consumed-copy lifecycle、23个NX absence/必要来源、温度/稀释/能群/presence、MF3事件XS与MF6 neutron production/MT5 yield，以及DRAGR packed REAL32/density/SPH/MASK到原macro rawwords对应须实证。P0诊断本身不能授反应权威。
+formal U/W/PL32在authority:350–352读取/368–382绑定，但operator:63–100仍native4polar×96azimuth×双sign×双orientation=1536states；11364ray各16action，不能再×96。offset16/32是飞行积分规则，不是SN32。尚缺formal32关联与细化误差、Gram/度数归一化、reflection parity、constant-flux/source、AREA/volume/WHITE/392轴向面+304外表面控制及完整Source/compiler/include/library实际origin工具闭合。
+观测0/2/6仅三个轴向矩；1/3/4/5/7/8六UNKNOWN不能删或补零。独立isotropic初值不是观测，九未知由完整angular sweep更新。signed P1/P2、全部32裂变分量、原WHITE normalizer与原阈值均保留。
+authority._admit_lineage:264–286主要核schema/布尔及pins，未来adapter须读真实报告/数组/工具闭合推导资格；_admit_kernel_controls:288–303目前允许空evidence列表，须拒空并核控制测量正文。operator:251–262只报告physical WHITE defect；solve:225–230 dominant/angular/reaction/fullreference均false，固定点闭合不能自动改true。
+AAA原全部误差门（含nu-fission3%）保留，当前7/8不能变8/8；B/ABA完整authority另待AAA正确闭合后产生，不扩全堆芯或建新私有库。
+
+本目录SOURCE_FULL_EOF_PINS.json保存原18文件完整PF；旧审查 independent_reference_actual_admission_gap_review_20261013/REPORT.txt及全Source inverse继续保留。只读并行角向/authority复核得到相同结论。
+physics_admitted=false；full_reference_qualified=false；AAA_qualified=false；ABA_admitted=false；goal_complete=false。

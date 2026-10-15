@@ -1,0 +1,10 @@
+原完整独立参考契约只读审查：PASS（仅源码与小元数据，不是精度准入）。
+
+2000活跃批次的原producer、完整CE样本和分析入口均存在。固定100 inactive、2000 active、10000粒子/代、10代/批；statepoint.0101.h5至statepoint.2100.h5全部2000文件当前存在。这里只核文件身份与原manifest，没有读取H5数值或重验其全文SHA。
+保留recipe56eb：重新读取整个原样本及全部历史，不追加transport、不选子样本、不换阈值；48细格全部先验通过，再按固定4格归并到12观察格/96区域格，保留13平面，仅一次全局nu-fission归一化。
+原nu-fission阈值3%，scalar flux阈值1%；两个固定block长度都需保守upper95不超原阈值，同时完整八门一致PASS。跨线仍INCONCLUSIVE，不能用点估计或7/8代替。旧assessment恰nu_fission FAIL，其余7门PASS，必须原样保留。
+原CE生成入口：prepare_qualified_AAA_ce_white_trace_precision_specpin.py；有界执行runtime/ce_execution.py EXECUTION --sha256 17c4…，实际native命令openmc -s 1，原transport cap64800秒。已有完整样本，此recipe不授权重跑transport。
+原monitored reference factory固定旧rank1目录，不能直接拿来绑定V9；原六阶段export/physical/project/statistics/currents/collect与120秒总cap、首export60秒、512MiB/256MiB归档/96GiB历史/free8/单线程单子进程零重试均须保留。
+下一步缺项：真实新V9 AAA完成及全后验、当前final_directory/三份导出输入、针对V9源码审过的完整reference绑定、新物理等价/投影/三独立报告及全部八门collect。全部未来SHA仍None。完整CLI/绝对路径/源码行号/当前小pin见REPORT.json。
+当前case_spec仍250诊断批次；与独立2000批recipe是两个原边界，不修改250、不据此取得精度信用。新native0或VALID_MET也不等于独立accuracy PASS。
+未import业务、未启动任何参考/native/API、未写项目、未改数值/预算/门。

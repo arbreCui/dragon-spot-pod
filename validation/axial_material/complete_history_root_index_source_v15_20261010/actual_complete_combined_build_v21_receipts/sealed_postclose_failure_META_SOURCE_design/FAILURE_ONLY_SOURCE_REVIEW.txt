@@ -1,0 +1,7 @@
+专用 V21 真实失败关闭后 META writer：有限 SOURCE 自审通过，未 import/执行 writer。
+拒绝 Root EXIT0；源码无成功 terminal receipt 的构造入口。Root 必须传真实 CLOSED 非零原 tool record、freeze、preflight 及真实两个 parent 流的 path+SHA，所有参数必需。
+完整保存 H/S/O/T/D/E、原 child merged stream、真实外部 host stderr/stdout、阶段和watch；按实际 stages 表动态报告两项或其它真实 prefix，不固定1/5或2/5。
+D 全部文件/目录以及固定输入有序重复项完整前后 EOF SHA/7ID；原 S/T 和 PREP O4 独立 metadata 核对。Root postclose pin 检查不替代未到达的 host final input PASS。
+Root告知实际终态为 int1 CLOSED，peak514.203125MiB、child170.787905792s、前两项PASS；本SOURCE审查没有读取本次实际 ART 输出、没有独立授这些actual事实信用。
+原whole1800/stage600/512MiB/联合2GiB/history96/free8/1线程1子进程0retry不变。联合archive包括全部五namespace及E、canonical和writer，保存未来META tool return还需Root封存完整清单。
+本包含通用成功合同SOURCE reference，仅本 failure-only writer供此失败使用。无whole INPUT/native/AAA/ABA/physics成功信用，无科学参数修改。

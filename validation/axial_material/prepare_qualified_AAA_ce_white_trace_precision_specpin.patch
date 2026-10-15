@@ -1,0 +1,22 @@
+--- validation/axial_material/prepare_qualified_AAA_ce_white_trace_precision.py
++++ validation/axial_material/prepare_qualified_AAA_ce_white_trace_precision_specpin.py
+@@ -22,7 +22,7 @@
+ PRIOR = ART / 'axial-material-ce-qualified-AAA-long-generations-20261004'
+ DIAG = ART / 'axial-material-qualified-AAA-white-trace-reference-diagnostic-20261004'
+ OBS = ART / 'axial-material-qualified-AAA-white-trace-observables-20261004'
+-OUT = ART / 'axial-material-ce-qualified-AAA-white-trace-precision-20261004'
++OUT = ART / 'axial-material-ce-qualified-AAA-white-trace-precision-specpin-20261004'
+ PREPARED_SHA = '88640bfd32cbca03d4e527b99760f99288528bb0ff5720c81f758bca60beffbf'
+ PRIOR_EXEC_SHA = 'ac11a8edc48d0a288a41a37fe0f0c7ebdbec66317d49c63203f18e37c75337c6'
+ ACTIVE, INACTIVE, GPB, NP, WALL = 2000, 100, 10, 10000, 64800
+@@ -167,7 +167,9 @@
+         rationale='Existing 35-million-history single-thread reference took 7408 seconds. The fixed 210-million-history design forecasts about 12.35 hours and has an 18-hour cap. Prior bounded runs remain unchanged.',
+         authorization='Existing user authorization for ordered autonomous work and routine approvals.')
+     write_new(OUT/'resource_addendum.json',addendum)
+-    reviewed=[Path(__file__).resolve(),OUT/'declaration.json',OUT/'resource_addendum.json',OUT/'statistical_rules.json',OUT/'balance_symmetry_rules.json',
++    reviewed=[spec,Path(__file__).resolve(),ROOT/'validation/axial_material/prepare_qualified_AAA_ce_white_trace_precision.py',
++        ART/'axial-material-ce-qualified-AAA-white-trace-precision-20261004/preflight_rejection.json',
++        OUT/'declaration.json',OUT/'resource_addendum.json',OUT/'statistical_rules.json',OUT/'balance_symmetry_rules.json',
+         PROD/'prepared.json',status_path,final/'result.json',*code,*[case/n for n in ['materials.xml','geometry.xml','settings.xml','tallies.xml','reference_contract.json']],
+         *[p for p in (OUT/'runtime').iterdir() if p.is_file()]]
+     write_new(OUT/'input_sampling_review.json',dict(status='PASS',case='AAA',physical_and_tally_XML_identical=True,

@@ -1,0 +1,163 @@
+{
+  "schema": "COMPLETE_NATIVE_RANK1_EXACT_CACHE_SOURCE_WHOLE_BYTE_INVERSE_V1",
+  "source_only": true,
+  "candidate_imported_or_executed": false,
+  "compiler_or_numerical_job_started": false,
+  "complete_source_transforms": [
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/src/SPOT1P64.f90",
+        "sha256": "2ef1520ab8f405b07927ea444a9529c2a25d138da4c7ff7613299eb56ea0ae6f",
+        "size_bytes": 31076,
+        "identity": [
+          16777234,
+          35164083,
+          33188,
+          1,
+          31076,
+          1787548430292572036,
+          1787548430292572036
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT1P64.f90",
+        "sha256": "c097c482e2d9ab17b5252508cbe496091e9d2fa87628b8500981b86b14e49d21",
+        "size_bytes": 44109,
+        "identity": [
+          16777234,
+          49811242,
+          33188,
+          1,
+          44109,
+          1791763608122535675,
+          1791763608122535675
+        ]
+      },
+      "literal_changes": [
+        {
+          "offset_at_application": 5895,
+          "old_literal": "end module SPOT1P64_CACHE_MOD\n",
+          "new_literal": "end module SPOT1P64_CACHE_MOD\n\n! Independent reduced-rank exact factor cache. No SPOT-PHYS property is set.\nmodule SPOT1P64_R1_GENERIC_CACHE_MOD\n  use, intrinsic :: iso_fortran_env, only : int32,int64\n  implicit none\n  private\n  type, public :: SPOT1P64_R1_GENERIC_PLAN\n    logical :: ready=.false.,compressed=.false.\n    integer :: nstate=0,nblock=0\n    integer(int64) :: charged_bytes=0_int64\n    integer(int32),allocatable :: key_i(:),key_r32(:)\n    integer(int64),allocatable :: key_r64(:)\n    integer,allocatable :: positive_row(:),pivot(:,:)\n    double precision,allocatable :: lower_positive(:,:,:),lower_full(:,:,:)\n    double precision,allocatable :: factor(:,:,:),pivot_value(:,:),cprime(:,:,:)\n  end type\n  type(SPOT1P64_R1_GENERIC_PLAN),allocatable,save,public :: SPOT1P64_R1_PLAN(:)\n  integer(int64),save :: used_bytes=0_int64,maximum_bytes=0_int64\n  integer,save :: built_blocks=0,reused_blocks=0,key_misses=0,budget_fallbacks=0\n  logical,save :: enabled=.false.\n  public :: SPOT1P64_R1_CACHE_BEGIN,SPOT1P64_R1_CACHE_CLEAR,SPOT1P64_R1_CACHE_STATS\n  public :: SPOT1P64_R1_TRY,SPOT1P64_R1_STORE_BEGIN,SPOT1P64_R1_LOWER\n  public :: SPOT1P64_R1_NOTE_BUILD,SPOT1P64_R1_NOTE_REUSE\ncontains\n  subroutine SPOT1P64_R1_CACHE_BEGIN(ngroup,byte_limit)\n    integer,intent(in) :: ngroup\n    integer(int64),intent(in) :: byte_limit\n    type(SPOT1P64_R1_GENERIC_PLAN) :: empty\n    integer(int64) :: table_bytes\n    call SPOT1P64_R1_CACHE_CLEAR()\n    if (ngroup<=0.or.byte_limit<=0_int64) return\n    table_bytes=int(ngroup,int64)*int(storage_size(empty)/8,int64)\n    if (table_bytes>=byte_limit) return\n    allocate(SPOT1P64_R1_PLAN(ngroup))\n    used_bytes=table_bytes;maximum_bytes=byte_limit;enabled=.true.\n  end subroutine\n  subroutine SPOT1P64_R1_CACHE_CLEAR()\n    if (allocated(SPOT1P64_R1_PLAN)) deallocate(SPOT1P64_R1_PLAN)\n    used_bytes=0_int64;maximum_bytes=0_int64;enabled=.false.\n    built_blocks=0;reused_blocks=0;key_misses=0;budget_fallbacks=0\n  end subroutine\n  subroutine release_group(igroup)\n    integer,intent(in) :: igroup\n    type(SPOT1P64_R1_GENERIC_PLAN) :: empty\n    used_bytes=used_bytes-SPOT1P64_R1_PLAN(igroup)%charged_bytes\n    SPOT1P64_R1_PLAN(igroup)=empty\n  end subroutine\n  subroutine SPOT1P64_R1_CACHE_STATS(nbuild,nreuse,nmiss,nfallback,nbytes,nlimit)\n    integer,intent(out) :: nbuild,nreuse,nmiss,nfallback\n    integer(int64),intent(out) :: nbytes,nlimit\n    nbuild=built_blocks;nreuse=reused_blocks;nmiss=key_misses;nfallback=budget_fallbacks\n    nbytes=used_bytes;nlimit=maximum_bytes\n  end subroutine\n  subroutine SPOT1P64_R1_NOTE_BUILD(nblock)\n    integer,intent(in) :: nblock\n    built_blocks=built_blocks+nblock\n  end subroutine\n  subroutine SPOT1P64_R1_NOTE_REUSE(nblock)\n    integer,intent(in) :: nblock\n    reused_blocks=reused_blocks+nblock\n  end subroutine\n\n  ! Keys contain the entire actual LHS construction and all its raw operands.\n  ! No source_m/qext/old RHS/flux/keff is stored or reused. Integer bit patterns\n  ! are compared exactly, including signed zero; no hash or tolerance is used.\n  subroutine SPOT1P64_R1_TRY(igroup,nreg2d,nfloor,ielem,nmat,nsnap,nmode,ischm,npq,nsct, &\n      lfixup,translation,mat1d,mat,ncode,opposite,vol1d,total,sgas,basis,vol2d,zcode,du,w,pl, &\n      radial2d,mass_m,total_m,radial_m,scat_m,mn,dn,left_albedo,right_albedo,candidate,hit)\n    integer,intent(in) :: igroup,nreg2d,nfloor,ielem,nmat,nsnap,nmode,ischm,npq,nsct\n    logical,intent(in) :: lfixup,translation\n    integer,intent(in) :: mat1d(nfloor),mat(nfloor,nreg2d),ncode(2),opposite(npq)\n    real,intent(in) :: vol1d(nfloor),total(0:nmat),sgas(0:nmat,nsct),basis(nreg2d,nmode)\n    real,intent(in) :: vol2d(nreg2d),zcode(2),du(npq),w(npq),pl(nsct,npq)\n    double precision,intent(in) :: radial2d(nreg2d,nsnap),mass_m(nmode,nmode)\n    double precision,intent(in) :: total_m(nmode,nmode,nfloor),radial_m(nmode,nmode,nfloor)\n    double precision,intent(in) :: scat_m(nmode,nmode,nsct,nfloor),mn(npq,nsct),dn(nsct,npq)\n    double precision,intent(in) :: left_albedo,right_albedo\n    logical,intent(out) :: candidate,hit\n    integer(int32),allocatable :: ki(:),kr32(:)\n    integer(int64),allocatable :: kr64(:)\n    integer(int64) :: bytes\n    candidate=.false.;hit=.false.\n    if (.not.enabled) return\n    ! This separate route is genuine reduced rank one only. The original\n    ! full-rank physical cache and translation solver keep their old paths.\n    if (nmode/=1.or.nreg2d<=1.or.translation.or.lfixup.or.ielem/=1.or.ischm/=1) return\n    if (igroup<1.or.igroup>size(SPOT1P64_R1_PLAN)) call XABORT('R1 EXACT CACHE: INVALID GROUP.')\n    ki=[int([igroup,nreg2d,nfloor,ielem,nmat,nsnap,nmode,ischm,npq,nsct, &\n       merge(1,0,lfixup),merge(1,0,translation)],int32),int(mat1d,int32), &\n       int(reshape(mat,[size(mat)]),int32),int(ncode,int32),int(opposite,int32)]\n    kr32=[transfer(vol1d,[0_int32]),transfer(total,[0_int32]),transfer(sgas,[0_int32]), &\n       transfer(basis,[0_int32]),transfer(vol2d,[0_int32]),transfer(zcode,[0_int32]), &\n       transfer(du,[0_int32]),transfer(w,[0_int32]),transfer(pl,[0_int32])]\n    kr64=[transfer(radial2d,[0_int64]),transfer(mass_m,[0_int64]), &\n       transfer(total_m,[0_int64]),transfer(radial_m,[0_int64]),transfer(scat_m,[0_int64]), &\n       transfer(mn,[0_int64]),transfer(dn,[0_int64]),transfer([left_albedo,right_albedo],[0_int64])]\n    associate(plan=>SPOT1P64_R1_PLAN(igroup))\n      if (plan%ready) then\n        if (size(plan%key_i)==size(ki).and.size(plan%key_r32)==size(kr32).and. &\n            size(plan%key_r64)==size(kr64)) then\n          if (all(plan%key_i==ki).and.all(plan%key_r32==kr32).and.all(plan%key_r64==kr64)) then\n            candidate=.true.;hit=.true.;return\n          endif\n        endif\n      endif\n    end associate\n    key_misses=key_misses+1\n    call release_group(igroup)\n    bytes=int(size(ki),int64)*4_int64+int(size(kr32),int64)*4_int64+int(size(kr64),int64)*8_int64\n    if (bytes>maximum_bytes-used_bytes) then\n      budget_fallbacks=budget_fallbacks+1;return\n    endif\n    associate(plan=>SPOT1P64_R1_PLAN(igroup))\n      call move_alloc(ki,plan%key_i);call move_alloc(kr32,plan%key_r32);call move_alloc(kr64,plan%key_r64)\n      plan%charged_bytes=bytes\n    end associate\n    used_bytes=used_bytes+bytes;candidate=.true.\n  end subroutine\n\n  ! The original construction starts lower at +0. It only writes positive\n  ! direction rows. Nevertheless every omitted row is verified by bit value\n  ! before compact storage. Any exception uses full dense storage if it fits;\n  ! otherwise the current call remains on original uncached ALSBD.\n  subroutine SPOT1P64_R1_STORE_BEGIN(igroup,lower,du,store)\n    integer,intent(in) :: igroup\n    double precision,intent(in) :: lower(:,:,:)\n    real,intent(in) :: du(:)\n    logical,intent(out) :: store\n    integer :: nstate,nblock,npositive,in,j,row\n    integer(int64) :: bytes\n    logical :: compact\n    store=.false.;nstate=size(lower,1);nblock=size(lower,3)\n    if (size(lower,2)/=nstate.or.size(du)/=nstate) call XABORT('R1 EXACT CACHE: LOWER SHAPE.')\n    npositive=count(du>0.0);compact=.true.\n    do in=1,nstate\n      if (du(in)>0.0) cycle\n      do j=1,nstate\n        if (any(transfer(lower(in,j,:),[0_int64])/=0_int64)) compact=.false.\n      enddo\n    enddo\n    bytes=(2_int64*int(nstate,int64)*int(nstate,int64)*int(nblock,int64))*8_int64+ &\n      int(nstate,int64)*int(nblock,int64)*(8_int64+int(storage_size(0)/8,int64))\n    if (compact) then\n      bytes=bytes+int(npositive,int64)*int(nstate,int64)*int(nblock,int64)*8_int64+ &\n        int(npositive,int64)*int(storage_size(0)/8,int64)\n    else\n      bytes=bytes+int(nstate,int64)*int(nstate,int64)*int(nblock,int64)*8_int64\n    endif\n    if (bytes>maximum_bytes-used_bytes) then\n      call release_group(igroup);budget_fallbacks=budget_fallbacks+1;return\n    endif\n    associate(plan=>SPOT1P64_R1_PLAN(igroup))\n      plan%nstate=nstate;plan%nblock=nblock;plan%compressed=compact\n      allocate(plan%factor(nstate,nstate,nblock),plan%cprime(nstate,nstate,nblock))\n      allocate(plan%pivot(nstate,nblock),plan%pivot_value(nstate,nblock))\n      if (compact) then\n        allocate(plan%positive_row(npositive),plan%lower_positive(npositive,nstate,nblock))\n        row=0\n        do in=1,nstate\n          if (du(in)<=0.0) cycle\n          row=row+1;plan%positive_row(row)=in\n          plan%lower_positive(row,:,:)=lower(in,:,:)\n        enddo\n      else\n        allocate(plan%lower_full(nstate,nstate,nblock));plan%lower_full=lower\n      endif\n      plan%charged_bytes=plan%charged_bytes+bytes\n    end associate\n    used_bytes=used_bytes+bytes;store=.true.\n  end subroutine\n  subroutine SPOT1P64_R1_LOWER(igroup,block,dense)\n    integer,intent(in) :: igroup,block\n    double precision,intent(out) :: dense(:,:)\n    integer :: row\n    associate(plan=>SPOT1P64_R1_PLAN(igroup))\n      if (size(dense,1)/=plan%nstate.or.size(dense,2)/=plan%nstate.or. &\n          block<1.or.block>plan%nblock) call XABORT('R1 EXACT CACHE: RESTORED LOWER SHAPE.')\n      if (plan%compressed) then\n        dense=0.0d0\n        do row=1,size(plan%positive_row)\n          dense(plan%positive_row(row),:)=plan%lower_positive(row,:,block)\n        enddo\n      else\n        dense=plan%lower_full(:,:,block)\n      endif\n    end associate\n  end subroutine\nend module SPOT1P64_R1_GENERIC_CACHE_MOD\n\n"
+        },
+        {
+          "offset_at_application": 16359,
+          "old_literal": "  implicit none\n  integer, parameter :: dp=kind(1.0d0)\n",
+          "new_literal": "  use SPOT1P64_R1_GENERIC_CACHE_MOD, only : SPOT1P64_R1_PLAN,SPOT1P64_R1_TRY, &\n    SPOT1P64_R1_STORE_BEGIN,SPOT1P64_R1_LOWER,SPOT1P64_R1_NOTE_BUILD,SPOT1P64_R1_NOTE_REUSE\n  implicit none\n  integer, parameter :: dp=kind(1.0d0)\n"
+        },
+        {
+          "offset_at_application": 17801,
+          "old_literal": "  logical :: translation,diagonal_basis,mode_separable,use_factor_cache\n",
+          "new_literal": "  logical :: translation,diagonal_basis,mode_separable,use_factor_cache\n  logical :: generic_candidate,generic_hit\n"
+        },
+        {
+          "offset_at_application": 24855,
+          "old_literal": "  if (.not.translation) then\n    ! Solve the two-point boundary-value problem directly.",
+          "new_literal": "  call SPOT1P64_R1_TRY(igroup,nreg2d,nfloor,ielem,nmat,nsnap,nmode,ischm,npq,nsct, &\n    lfixup,translation,mat1d,mat,ncode,opposite,vol1d,total,sgas,basis,vol2d,zcode,du,w,pl, &\n    radial2d,mass_m,total_m,radial_m,scat_m,mn,dn,albedo_left,albedo_right,generic_candidate,generic_hit)\n\n  if (.not.translation) then\n    ! Solve the two-point boundary-value problem directly."
+        },
+        {
+          "offset_at_application": 27796,
+          "old_literal": "    double precision, allocatable :: solve_pack(:,:),rhs_one(:,:)\n",
+          "new_literal": "    double precision, allocatable :: solve_pack(:,:),rhs_one(:,:)\n    double precision, allocatable :: generic_lower(:,:),generic_rhs(:,:),generic_pack(:,:)\n"
+        },
+        {
+          "offset_at_application": 28055,
+          "old_literal": "    logical :: cached_path,cache_hit\n",
+          "new_literal": "    logical :: cached_path,cache_hit,generic_store\n"
+        },
+        {
+          "offset_at_application": 28927,
+          "old_literal": "    if (.not.cache_hit) then\n      allocate(lower(local_state,local_state,nfloor+1))",
+          "new_literal": "    if (generic_hit) then\n      if (SPOT1P64_R1_PLAN(igroup)%nstate/=local_state.or. &\n          SPOT1P64_R1_PLAN(igroup)%nblock/=nfloor+1) &\n        call XABORT('R1 EXACT CACHE: BLOCK DIMENSIONS CHANGED.')\n      cache_hit=.true.\n    endif\n    if (.not.cache_hit) then\n      allocate(lower(local_state,local_state,nfloor+1))"
+        },
+        {
+          "offset_at_application": 29555,
+          "old_literal": "    if (cached_path) then\n      if (cache_hit) then\n        allocate(rhs_one(local_state,1))",
+          "new_literal": "    if (generic_hit) then\n      allocate(generic_lower(local_state,local_state),generic_rhs(local_state,1))\n    else if (cached_path) then\n      if (cache_hit) then\n        allocate(rhs_one(local_state,1))"
+        },
+        {
+          "offset_at_application": 32263,
+          "old_literal": "    if (cached_path) then\n      associate(plan => SPOT1P64_PLAN(igroup)%mode(first_mode))\n        if (cache_hit) then\n          do block=1,nfloor+1\n",
+          "new_literal": "    generic_store=.false.\n    if (generic_candidate.and..not.generic_hit) then\n      call SPOT1P64_R1_STORE_BEGIN(igroup,lower,du,generic_store)\n      if (generic_store) allocate(generic_pack(local_state,local_state+1))\n    endif\n    if (generic_hit.or.generic_store) then\n      associate(plan => SPOT1P64_R1_PLAN(igroup))\n        if (generic_hit) then\n          do block=1,nfloor+1\n            generic_rhs(:,1)=right_hand(:,block)\n            if (block > 1) then\n              call SPOT1P64_R1_LOWER(igroup,block,generic_lower)\n              generic_rhs(:,1)=generic_rhs(:,1)- &\n                matmul(generic_lower,dprime(:,block-1))\n            endif\n            call SPOT1P64_SOLVE64(plan%factor(:,:,block), &\n              plan%pivot(:,block),plan%pivot_value(:,block),generic_rhs,info)\n            if (info /= 0) call XABORT('R1 EXACT CACHE: INVALID STORED FACTOR.')\n            dprime(:,block)=generic_rhs(:,1)\n          enddo\n          call SPOT1P64_R1_NOTE_REUSE(nfloor+1)\n        else\n          do block=1,nfloor+1\n            if (block == 1) then\n              plan%factor(:,:,block)=diagonal(:,:,block)\n              generic_pack(:,local_state+1)=right_hand(:,block)\n            else\n              plan%factor(:,:,block)=diagonal(:,:,block)- &\n                matmul(lower(:,:,block),plan%cprime(:,:,block-1))\n              generic_pack(:,local_state+1)=right_hand(:,block)- &\n                matmul(lower(:,:,block),dprime(:,block-1))\n            endif\n            call SPOT1P64_FACTOR64(plan%factor(:,:,block), &\n              plan%pivot(:,block),plan%pivot_value(:,block),info)\n            if (info /= 0) then\n              if (block == 1) then\n                call XABORT('SPOT1P: SINGULAR FIRST AXIAL BLOCK.')\n              else\n                call XABORT('SPOT1P: SINGULAR AXIAL SCHUR BLOCK.')\n              endif\n            endif\n            generic_pack(:,:local_state)=upper(:,:,block)\n            call SPOT1P64_SOLVE64(plan%factor(:,:,block), &\n              plan%pivot(:,block),plan%pivot_value(:,block),generic_pack,info)\n            if (info /= 0) call XABORT('R1 EXACT CACHE: NEW FACTOR SOLVE FAILED.')\n            plan%cprime(:,:,block)=generic_pack(:,:local_state)\n            dprime(:,block)=generic_pack(:,local_state+1)\n          enddo\n          plan%ready=.true.\n          call SPOT1P64_R1_NOTE_BUILD(nfloor+1)\n        endif\n      end associate\n    else if (cached_path) then\n      associate(plan => SPOT1P64_PLAN(igroup)%mode(first_mode))\n        if (cache_hit) then\n          do block=1,nfloor+1\n"
+        },
+        {
+          "offset_at_application": 38192,
+          "old_literal": "    solution(:,nfloor+1)=dprime(:,nfloor+1)\n    if (cached_path) then\n",
+          "new_literal": "    solution(:,nfloor+1)=dprime(:,nfloor+1)\n    if (generic_hit.or.generic_store) then\n      associate(plan => SPOT1P64_R1_PLAN(igroup))\n        do block=nfloor,1,-1\n          solution(:,block)=dprime(:,block)- &\n            matmul(plan%cprime(:,:,block),solution(:,block+1))\n        enddo\n      end associate\n    else if (cached_path) then\n"
+        },
+        {
+          "offset_at_application": 39309,
+          "old_literal": "    if (allocated(augmented)) deallocate(augmented)\n",
+          "new_literal": "    if (allocated(generic_lower)) deallocate(generic_lower)\n    if (allocated(generic_rhs)) deallocate(generic_rhs)\n    if (allocated(generic_pack)) deallocate(generic_pack)\n    if (allocated(augmented)) deallocate(augmented)\n"
+        }
+      ],
+      "whole_forward_and_reverse_exact": true
+    },
+    {
+      "original_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/global_native64_handle_lifetime_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+        "sha256": "3f91601a9a8b8cc5fb3eb6da113f7798e70e4e1e9f08d36adf6ddc9e356b0eff",
+        "size_bytes": 70774,
+        "identity": [
+          16777234,
+          49807098,
+          33188,
+          1,
+          70774,
+          1791760645163324930,
+          1791760645163324930
+        ]
+      },
+      "new_source_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_rank1_exact_block_cache_source_v1/SPOT_GLOBAL_NATIVE_DRIVER64.f",
+        "sha256": "fe79796879678cc30294332e5bb8a0c7fece713ac33004e525f2c94f291540e1",
+        "size_bytes": 71094,
+        "identity": [
+          16777234,
+          49811243,
+          33188,
+          1,
+          71094,
+          1791763608122824426,
+          1791763608122824426
+        ]
+      },
+      "literal_changes": [
+        {
+          "offset_at_application": 6360,
+          "old_literal": "     1 SPOT1P64_CACHE_CLEAR,SPOT1P64_CACHE_STATS\n",
+          "new_literal": "     1 SPOT1P64_CACHE_CLEAR,SPOT1P64_CACHE_STATS\n      USE SPOT1P64_R1_GENERIC_CACHE_MOD, ONLY:\n     1 SPOT1P64_R1_CACHE_BEGIN,SPOT1P64_R1_CACHE_CLEAR\n"
+        },
+        {
+          "offset_at_application": 27444,
+          "old_literal": "      CALL SPOT1P64_CACHE_BEGIN(NGRP,IPHYS_CACHE.EQ.1)\n",
+          "new_literal": "      CALL SPOT1P64_CACHE_BEGIN(NGRP,IPHYS_CACHE.EQ.1)\n*     Separate exact reduced-rank cache. Never sets SPOT-PHYS.\n      CALL SPOT1P64_R1_CACHE_BEGIN(NGRP,368_INT64*1024_INT64*\n     1 1024_INT64)\n"
+        },
+        {
+          "offset_at_application": 55356,
+          "old_literal": "      CALL SPOT1P64_CACHE_CLEAR()\n*     Never publish",
+          "new_literal": "      CALL SPOT1P64_CACHE_CLEAR()\n      CALL SPOT1P64_R1_CACHE_CLEAR()\n*     Never publish"
+        },
+        {
+          "offset_at_application": 61701,
+          "old_literal": "      CALL SPOT1P64_CACHE_CLEAR()\n      CALL SPOT_CAPTURE_HOM_NATIVE64",
+          "new_literal": "      CALL SPOT1P64_CACHE_CLEAR()\n      CALL SPOT1P64_R1_CACHE_CLEAR()\n      CALL SPOT_CAPTURE_HOM_NATIVE64"
+        }
+      ],
+      "whole_forward_and_reverse_exact": true
+    }
+  ],
+  "old_physical_cache_module_full_body_unchanged": true,
+  "old_legacy_ALSBD_projection_boundary_source_and_reconstruction_order_retained": true,
+  "new_generic_maximum_logical_cache_bytes": 385875968,
+  "skipped_lower_rows_require_actual_ALL_INT64_ZERO_BITS": true,
+  "full_dense_lower_reconstructed_before_original_full_shape_MATMUL": true,
+  "raw_and_projected_operator_keys_are_full_integer_bit_arrays_not_hashes": true,
+  "RHS_never_reused": true,
+  "all370_groups_and_original_rank_math_eps_caps_unchanged": true,
+  "Fortran_free_form_noncomment_line_limit": 132,
+  "original_scope_physics_qualification_not_inherited": true,
+  "scientific_accuracy_qualified": false,
+  "AAA_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false
+}

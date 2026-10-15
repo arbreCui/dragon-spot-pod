@@ -1,0 +1,269 @@
+{
+  "schema": "SPOT_INSTALLED6A_ORIGINAL_FULL_FRESH_PROTOCOL_SOURCE_ONLY_CONTRACT_V28",
+  "status": "FIXED_SOURCE_ONLY_PENDING_ROOT_INDEPENDENT_REVIEW_NO_EXECUTION",
+  "installed_helper": {
+    "path": "/Users/wen/spot/validation/axial_material/combined_runtime_complete_input_graph_read_open_short_index_stable_wire_sort_20261011.py",
+    "sha256": "6a0b6816cbc8c4ce026018bf1952ffcc720c8a0efe6b4c3c39c4c1040da28ff3",
+    "size_bytes": 152950,
+    "identity": [
+      16777229,
+      49645417,
+      33188,
+      1,
+      152950,
+      1791696656438509035,
+      1791696656438509035
+    ]
+  },
+  "installed_source_witness": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-stable-wire-sort-source-install-20261011/ACTUAL_SOURCE_INSTALL_WITNESS.json",
+    "sha256": "8a7ec7765b0ecd4acd43d17d70daeb5b2409daffd9caf301757685d7ec8fff38",
+    "size_bytes": 158516,
+    "identity": [
+      16777229,
+      49645418,
+      33188,
+      1,
+      158516,
+      1791696656847741398,
+      1791696656847741398
+    ]
+  },
+  "actual_install_launch_closed_receipts": {
+    "path": "/private/tmp/Root_stable_wire_source_install_actual_tool_returns_20261011.json",
+    "sha256": "7c8897152c3cb390f30ff0ac6b3acb3669159d06753168c92317d091fd7a7309",
+    "size_bytes": 1397,
+    "identity": [
+      16777229,
+      49645429,
+      33188,
+      1,
+      1397,
+      1791696674759719679,
+      1791696674759719679
+    ]
+  },
+  "actual_prior_pure_protocol_closed_pins": {
+    "host_result": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-stable-wire-sort-original-pure-controls-host-v27-20261011-odcl3yl4/result.json",
+      "sha256": "0aaed12e13c6109345ab859305d0fbef73a73b8a056343a02e1b0ffd07e974f6",
+      "identity": [
+        16777229,
+        49648052,
+        33188,
+        1,
+        625706,
+        1791698090465023371,
+        1791698090465023371
+      ]
+    },
+    "control_report": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-stable-wire-sort-original-pure-controls-v27-20261011-odcl3yl4/ACTUAL_REPORT.json",
+      "sha256": "b167686da6d8e73123285dc355fd7e3686481b67b82359202c27f28f9fa4ae0f",
+      "identity": [
+        16777229,
+        49648041,
+        33188,
+        1,
+        4002456,
+        1791698089581686097,
+        1791698089581686097
+      ]
+    },
+    "actual_launch_and_closed_tool_returns": {
+      "path": "/private/tmp/Root_v27_pure_protocol_actual_tool_returns_20261011.json",
+      "sha256": "83cda24cd118a688362eb4f3207d22c459378ca840b2849059ca1a4812cbd45a",
+      "identity": [
+        16777229,
+        49648134,
+        33188,
+        1,
+        1214,
+        1791698103755175345,
+        1791698103755175345
+      ]
+    },
+    "Root_external_closed_binding": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-stable-wire-sort-original-pure-controls-root-closure-v27-20261011-v3/ROOT_EXTERNAL_CLOSED_BINDING.json",
+      "sha256": "418da5c9433ee53ed7f2993cbde62bae78fd3ccfb1aa5ad9ddd4d13d5bd966e9",
+      "identity": [
+        16777229,
+        49648905,
+        33188,
+        1,
+        184890,
+        1791698556603299604,
+        1791698556603299604
+      ]
+    },
+    "Root_external_binding_tool_returns": {
+      "path": "/private/tmp/Root_v27_pure_external_closure_v3_actual_tool_returns_20261011.json",
+      "sha256": "192359997ecad586f2e4e5719f623bad329a9006fb13a0d61ec5a3fc938d07de",
+      "identity": [
+        16777229,
+        49648958,
+        33188,
+        1,
+        16911,
+        1791698613695273043,
+        1791698613695273043
+      ]
+    }
+  },
+  "complete_current_graph": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-sender-window-root-index-graph-trace-table-combined-runtime-v25-memory-observation-capture-pre-graph-gc-20261010/input_graph.json",
+    "sha256": "a91c1e63bd768575e715e735886f168b9af6722fddf2bb002317376da5d63ad1",
+    "size_bytes": 45841587,
+    "identity": [
+      16777229,
+      49537790,
+      33188,
+      1,
+      45841587,
+      1791657732241195952,
+      1791657732241195952
+    ]
+  },
+  "complete_current_graph_counts": {
+    "canonical_files": 37445,
+    "requirement_row_count": 238780,
+    "requirement_column_count": 5,
+    "owners": 4473,
+    "namespaces": 86,
+    "aliases": 186,
+    "saved_trace_records": 64108,
+    "saved_trace_actual_attempts": 178324,
+    "absence_inputs": 479,
+    "closure_categories": 9,
+    "coverage_categories": 9,
+    "actual_canonical_bytes": 36433696447,
+    "graph_content_sha256": "58382bfe4ce6e455b941d037fe9e5ce6346f08e4269ac5467f143380f58a2491"
+  },
+  "Source_archive": "/private/tmp/SPOT_stable_wire_v28_fullfresh_source_only_dwah5ubd/sources",
+  "Source_namespace_directory_identity": [
+    16777229,
+    49650428,
+    16877,
+    7,
+    224,
+    1791699222345999803,
+    1791699222345999803
+  ],
+  "Source_files": [
+    {
+      "path": "/private/tmp/SPOT_stable_wire_v28_fullfresh_source_only_dwah5ubd/sources/fresh_verifier_controls.py",
+      "sha256": "b77f3530253d2fe7a70001cb23cf28482fd6e671e544f74f531fb22e70ae02a9",
+      "size_bytes": 30511,
+      "identity": [
+        16777229,
+        49650433,
+        33188,
+        1,
+        30511,
+        1791699222343143685,
+        1791699222343143685
+      ]
+    },
+    {
+      "path": "/private/tmp/SPOT_stable_wire_v28_fullfresh_source_only_dwah5ubd/sources/fresh_verifier_host.py",
+      "sha256": "cbcebb9b625ac27189d38ef260458ffdf540df2c50bcef07b7b036480dbd02c6",
+      "size_bytes": 41093,
+      "identity": [
+        16777229,
+        49650434,
+        33188,
+        1,
+        41093,
+        1791699222346040393,
+        1791699222346040393
+      ]
+    },
+    {
+      "path": "/private/tmp/SPOT_stable_wire_v28_fullfresh_source_only_dwah5ubd/sources/inactive_audit_snapshot_controls_SOURCE_ONLY.py",
+      "sha256": "d439eb9641f45e09c17814a38a16dc7e2cbb6120fc09119df901e415daf28483",
+      "size_bytes": 23962,
+      "identity": [
+        16777229,
+        49650430,
+        33188,
+        1,
+        23962,
+        1791699222339722136,
+        1791699222339722136
+      ]
+    },
+    {
+      "path": "/private/tmp/SPOT_stable_wire_v28_fullfresh_source_only_dwah5ubd/sources/pure_helper_controls.py",
+      "sha256": "6ac338e3f54523210f81c1226c0954f86d047bad8e90af1ecaec539b796058cc",
+      "size_bytes": 70608,
+      "identity": [
+        16777229,
+        49650431,
+        33188,
+        1,
+        70608,
+        1791699222340157170,
+        1791699222340157170
+      ]
+    },
+    {
+      "path": "/private/tmp/SPOT_stable_wire_v28_fullfresh_source_only_dwah5ubd/sources/pure_helper_controls_host.py",
+      "sha256": "daffb72c35d69273f1fe3cba9b905951312c729d0be0e84b3316d4012554f92f",
+      "size_bytes": 17359,
+      "identity": [
+        16777229,
+        49650432,
+        33188,
+        1,
+        17359,
+        1791699222340337409,
+        1791699222340337409
+      ]
+    }
+  ],
+  "HOST": "/Users/wen/spot/validation/artifacts/axial-material-stable-wire-sort-complete-fresh-host-v28-20261011-dwah5ubd",
+  "OUT": "/Users/wen/spot/validation/artifacts/axial-material-stable-wire-sort-complete-fresh-v28-20261011-dwah5ubd",
+  "RECEIPTS": "/private/tmp/SPOT_stable_wire_v28_fullfresh_source_only_dwah5ubd/receipts",
+  "phase": "helper_complete_fresh_verifier_control",
+  "caps": {
+    "whole_host_seconds": 1800,
+    "stage_seconds": 600,
+    "rss_mib": 512,
+    "joint_HOST_SOURCE_OUT_SOURCE_RECEIPTS_archive_bytes": 67108864,
+    "history_bytes": 103079215104,
+    "min_free_bytes": 8589934592,
+    "threads": 1,
+    "children": 1,
+    "retries": 0
+  },
+  "original_complete_contract": {
+    "expected_return_source": "independently pinned original bcd strict parser and all original complete return constructors; no fresh old baseline",
+    "genuine_new_phase_reads": "all37445 canonical bytes EOF plus one original stored graph read; no cache or selected files",
+    "actual_complete_read_open_records": 37446,
+    "default_snapshot": "all original records identity/type/order/value/floatbits unchanged",
+    "gzip": "all expected return, actual return and actual default trace JSON fields/rows; full decompression EOF/SHA",
+    "private_last_use": "same original inactive audit builtin dict and same graph/input phase; default buffer released only after complete gzip and full ordered/type/bit pin",
+    "consumed_vs_default": "all nine fields, types/order/values/IEEE/counts, every encoded byte against same-phase complete default gzip EOF",
+    "trace_fields": [
+      "schema",
+      "coverage",
+      "records",
+      "subprocess_records",
+      "unique_records",
+      "actual_read_open_attempts",
+      "record_storage",
+      "success_of_open_attempt_is_not_observed",
+      "native_libc_HDF5_loader_and_directory_stat_are_not_traced"
+    ],
+    "small_trace_controls": "same original four positive and three rejection control function AST",
+    "genuine_supervision": "original619 guard + OwnRSSSerialExecutor/production.SerialExecutor MRO, five original history roots, dynamic history/free checks and original own-worker process observer unchanged"
+  },
+  "new_helper_Q_created": false,
+  "whole_522_to_512_memory_pass": false,
+  "physical_balance_qualified": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false,
+  "Native_solver_training_or_PS_started": false,
+  "Root_external_review_and_actual_launch_closed0_required": true,
+  "environment": "original openmc-dev Python3.12 -B; five thread variables1; future host own-worker/child ps needs original require_escalated authorization, never a monitor patch or sandbox-default retry"
+}

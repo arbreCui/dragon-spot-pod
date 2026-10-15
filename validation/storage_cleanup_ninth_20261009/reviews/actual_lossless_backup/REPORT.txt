@@ -1,0 +1,6 @@
+实际89份归档独立完整核验通过：每份compressed SHA/size/identity/普通单链接/真实父路径均匹配，严格单gzip流式CRC/ISIZE/EOF及解压后原size/SHA完全匹配。
+89正本仍在：fresh全部原SHA/size/identity不变，原result.sha256条目与成功stage receipt完全对应；两批整体FAILED_NO_RETRY事实不改。
+Root真实归档工具5cd1ed/session48986→0daf01 CLOSED EXIT0绑定报告d5834da3/inputdfb4；没有删除。
+raw名义分配8454860800B，gzip2640285696B；差5814575104B/5.415245056GiB仅为拟议raw退役后的容量差，本次实际释放0。
+保存89 archive→原raw primary→120前轮被删copy完整恢复顺序及原mode/mtime/SHA/size。恢复原raw后才可用旧映射；归档须硬保护，不改旧结果/ledger，不声称恢复旧inode。
+只证明lossless备份字节资格；不证明实际restore、新512MiB/API/科学/CE资格。未业务import/PREP/RUN/restore/delete/正式写。

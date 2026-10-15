@@ -1,0 +1,24 @@
+旧 v9 私有 PROJECT 单候选 current DAG 只读调查 — 2026-10-13
+
+结论：准确一个旧v9 PROJECT在此次测量的实际当前live输入DAG中没有path或device/inode角色；可在Root最后复核真实v11 Source及其依赖、无旧writer后作为一项精确旧raw清理候选。此次没有冻结最终manifest、没有删除、编译或业务。
+
+候选：/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v9/AAA/projected_boot.xsm
+完整EOF SHA256 ea56e0e58889469c81e1519713ca0df93a3ebb5f2b1a1fbd2e20b5d8be72833a
+大小749,355,952 B，七字段[16777229, 50012374, 33152, 1, 749355952, 1791869646152430244, 1791869646152430244]。普通nonsymlink、single-link、与旧v9失败summary.output_pins精确相同，所有权和原字节不变。
+
+调查实际 d6b5e6/session52795 → 684c0a exit 0；完整去重current live输入4,499项。全部3040 catalog行、2012 Common pins、3315 science current+1129原science inputs、当前v10 HF全部278依赖和host、实际complete70 fixed/output、material最终v6所有Source/可达实际输入、明确GENDF current hostv4/parserv2、reference v2完整Source和真正固定formal/producer输入均验证fullEOF/SHA/七字段。候选路径和inode无任何live角色。dev34→29历史输入转换严格只此字段变化，原SHA/size/其他六字段不变，并记录两端测量。
+
+历史关系必须区分：当前v10 HF确实直接验证旧v9 summary、watchdog、log、CLE卡片等作为已闭合失败Source provenance；它读取这些文件的完整PF，不递归打开该古summary中每个output_pin的raw。当前owning hostSource在fresh OUT/WORK从原三个producer档案自身产生projected_boot.xsm，未指向旧v9候选绝对路径。material/GENDF/reference实际fixed数据也没有读它。旧exact8 manifest曾把v9全部outputs作为那次清理的保护快照；该历史保护不自动形成所有未来流程永久必须保留的物理输入。本调查没有仅因古summary嵌套PF就把无读取的旧raw纳入live DAG，也没有忽略真正selected fixed pins。
+
+旧v9整体真失败：Root真实exit1、42阶段各child都清理闭合；GLOBAL和PROJECT单项真PASS且在原600/512条件内，最后view_memory_output因CLE卡片词法失败，onlineBOOT未准入。保留全部242个其他普通文件，包括所有文档/日志/watchdog、readback证明、剩余输出；真正v9 Root工具记录和失败summary完整保留。当前v10真正Root SELFcap失败的summary和工具闭合也保留，output_pins[]没有被假装可用物理资格。
+
+删除该候选将失去旧v9完整PROJECT及其保存的原完整GLOBAL树/独立ARCHIVE的该轮raw重放路径；不把GLOBAL/PROJECT PASS改写为错误，不称其producer或数学无效。正式producer原始三个warm档案、B、formal最终物理raw、当前science输入、全部参考固定输入保持。这个代价明确，不称它为无价值原始生产数据。
+
+真实当前history scope 79,344,313,384 B / 96,229个普通文件，free 209,305,600,000 B，原96 GiB history/20,971,764,748 B cold/64 MiB metadata/full future fresh2 GiB/8 GiB free floor不变，当前initial reserve尚余548,544,460 B，实际可以满足原initial条件。若随后只精确删除候选，且中间无新ART writer，则条件余量1,297,900,412 B。这里只是条件算术，不是已释放，不能拿旧失败summary的resources_after代替此真实观测；任何未来v11输出按新增业务计数。
+
+v11正准备，未来数学Source或PF不预测。真正HF冻结后应再读取该实际新Source的fixed依赖、material可能新绑定及仍在用的权威输入，确认没有引入本候选再决定manifest/execute。Root若只为了让下一次原预算准入，目前并无缺口；可以根据后续结果保留成本决定是否真正清理。
+
+JSON SINGLE_V9_PROJECT_CURRENT_DAG_AND_BUDGET_READONLY_REVIEW.json
+SHA256 dee6671f155807ce312f37d025c0f7db2ca4a0bdf1fd9ce733425953de74e347
+七字段[16777229,50016782,33188,1,3531818,1791872302629510161,1791872302629510161]
+真实工具记录 ACTUAL_READONLY_DAG_SURVEY_TRUE_TOOL_RETURNS.json。完整原目标和AAA/BOOT/independent reference/ABA资格未因调查改变。

@@ -1,0 +1,19 @@
+SPOT 后续 34 核素原 ASCII 输入路由审计 — 2026-10-15
+
+当前 SCI1 27 个实际核素引用的原 ASCII 全部有来源：23 份 round9 gzip（包含已经实际验证的4份）及 Fe56/He4/Na23/O16 四份保留的原 ASCII。C12 是 preparation.sources 的第28项，不属于实际27引用，不能加入当前材料覆盖。
+
+当前27引用共199个温度节点。已完成四核32T后，其余23引用为167T。元数据审计确认另19份gzip的当前身份、manifest、已保存无损解码证明、GROUPR输出、DRAGR tape24及SCI1 preparation来源相连；四份直接ASCII的当前身份、receipt和staged_inputs对应。此次路由审计没有读取科学体；其余23份仍需下一实际控制验证完整 EOF SHA及packed producer。
+
+19份gzip的 round9 manifest 零起始索引：
+Cr50 234；Cr52 237；Cr53 239；Cr54 241；Fe54 243；Fe57 245；Fe58 247；Mn55 249；Ni58 251；Ni60 253；Ni61 255；Ni62 257；Ni64 259；Si28 261；Ti48 263（各7T）。
+Pu241 176；Pu242 183；U235 190；U238 197（各8T）。
+
+保留原ASCII：
+Fe56 /Users/wen/spot/validation/artifacts/d4a-fe56-actual-temperature-run-20260929/groupr/tape30（7T）
+He4、Na23、O16 /Users/wen/spot/validation/artifacts/d4a-light-nuclide-actual-temperature-run-20261001/${NU}/groupr/tape30（9/6/8T）。其receipt在核素/运行根，以groupr_receipt.json、dragr_receipt.json和staged_inputs.json绑定，不能套用其他批的子目录路径。
+
+27候选均原ipflag0/thermal cutoff4eV。8个燃料为nimpo29导入已有库，原drahd ENERGY使用既存REAL32后提升；其余19个nimpo0新库使用原GENDF的binary64能源分支。下一控制必须按真实deck分流，不盲用首4核的能源公式。
+
+Mo7原ASCII也保留于 /Users/wen/draglib_output/shem370_endfb8r1_v5p1/${NU}/gendf_neutron_${NU}，走当前SCI2。原deck为nimpo0/ipflag1；原drasc须按outgoing1..370依次求和，清整行并置diagonal后packing。本轮仅确认当前文件/元数据存在，未建立新全科学体SHA证明。
+
+下一实际控制可全部使用原ASCII，避免对23个binary另做一次native a11。原压缩primary和直接原输入均继续保留。完整34核、有限18点、SPH/MASK、物理精度、独立参考、AAA/ABA均尚未通过，整体goal仍active。

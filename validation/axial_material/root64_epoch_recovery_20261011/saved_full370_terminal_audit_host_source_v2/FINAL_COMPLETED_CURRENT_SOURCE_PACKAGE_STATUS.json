@@ -1,0 +1,153 @@
+{
+  "schema": "SAVED_FULL370_FINAL_CURRENT_SOURCE_PACKAGE_STATUS_ONLY_V2",
+  "status": "CURRENT_SOURCE_PACKAGE_FROZEN_REAL_ARGV_UNEXECUTED_ROOT_WORKFLOW_REVIEW_REQUIRED",
+  "actual_completed_source_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/audit_saved_terminal_source_all370.py",
+      "sha256": "2027ec61895902575165869d753926808e882e5233e89c26a3ca9c973408024f",
+      "size_bytes": 29339,
+      "identity": [
+        16777229,
+        49959240,
+        33188,
+        1,
+        29339,
+        1791827450475355363,
+        1791827450475355363
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/ACTUAL_INPUT_PIN_PLAN_UNRUN.json",
+      "sha256": "e5066704ba1fa682eb7adc62eabb4211787b0396af7e7a3e3ebcc063082c6d9a",
+      "size_bytes": 256673,
+      "identity": [
+        16777229,
+        49959241,
+        33188,
+        1,
+        256673,
+        1791827450476262948,
+        1791827450476262948
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/run_actual_saved_full370_terminal_source_original_guard.py",
+      "sha256": "ee1e1b7512cbd8a9cd7a68633bd307d82e1dfdd5956486670244117ec7d89883",
+      "size_bytes": 18329,
+      "identity": [
+        16777229,
+        49959242,
+        33188,
+        1,
+        18329,
+        1791827450478133994,
+        1791827450478133994
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/CURRENT_SAVED_FULL370_GUARD_INPUT_BINDING.json",
+      "sha256": "a48df748efcfe7229b1ced1dd4ab875a2278bcbca82f38f0926731ab6576b486",
+      "size_bytes": 1835848,
+      "identity": [
+        16777229,
+        49960804,
+        33188,
+        1,
+        1835848,
+        1791827862050469293,
+        1791827862050469293
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/COMPLETE_SAVED_FULL370_EXPLICIT_CURRENT_MOUNT_INPUT_MAPPING.json",
+      "sha256": "6cb6828df228f5f642c7bfb7ea2929233eaa853cc48cbb188c3c964d3dfd74d7",
+      "size_bytes": 3996504,
+      "identity": [
+        16777229,
+        49960803,
+        33188,
+        1,
+        3996504,
+        1791827862021946691,
+        1791827862021946691
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/COMPLETE_SAVED_FULL370_SCIENCE_SOURCE_FREEZE.json",
+      "sha256": "378bce3d39074b6c4114f4d49f49eb80f5a9a1af81fcaba95976aa629c50721f",
+      "size_bytes": 516021,
+      "identity": [
+        16777229,
+        49960805,
+        33188,
+        1,
+        516021,
+        1791827862055389137,
+        1791827862055389137
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/COMPLETE_SAVED_FULL370_GUARD_HOST_SOURCE_FREEZE.json",
+      "sha256": "043b1a3232709edfe65f1b4f3f686365fe996239c97eb03f14c0df4deddd57ec",
+      "size_bytes": 10755,
+      "identity": [
+        16777229,
+        49960806,
+        33188,
+        1,
+        10755,
+        1791827862059747688,
+        1791827862059747688
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/ROOT_REVIEWABLE_EXACT_SAVED_FULL370_V2_ARGV_SOURCE_ONLY.json",
+      "sha256": "dd332c394874abbb8c80a4e7b976af034e0cd8461ff5e8b551bbbab98d12386d",
+      "size_bytes": 4342,
+      "identity": [
+        16777229,
+        49960807,
+        33188,
+        1,
+        4342,
+        1791827862060041689,
+        1791827862060041689
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/ACTUAL_SOURCE_ONLY_FINALIZER_TRUE_CLOSED_TOOL_RETURN.json",
+      "sha256": "8329bed27f85e7889fb5199bb7cf6d719edd61fa2b1fef68316c1fa1cf566e3f",
+      "size_bytes": 3682,
+      "identity": [
+        16777229,
+        49960818,
+        33188,
+        1,
+        3682,
+        1791827872448131020,
+        1791827872448131020
+      ]
+    }
+  ],
+  "complete_original_fixed_declarations_accounted": 3305,
+  "actual_live_original_fixed_current_mandatory": 3301,
+  "absent_historical_source_only_origins": 4,
+  "scientific_original_input_path_SHA_pairs_exactly_preserved": 1129,
+  "complete_scientific_input_bytes": 102109901,
+  "science_wholebytes_SHA": "2027ec61895902575165869d753926808e882e5233e89c26a3ca9c973408024f",
+  "original_guard_MRO_support_and_caps_unchanged": true,
+  "host_literal_changes": 6,
+  "manifest_literal_changes": 1,
+  "source_only": true,
+  "original_four_TMP_current_PF_fabricated": false,
+  "original_missing_TMP_content_currently_rehashed": false,
+  "current_fixed_Source_origin_classifications_are_new_proposed_declaration": true,
+  "Root_review_of_explicit_classification_required_before_invocation": true,
+  "true_three_plane_GLOBAL_and_online_BOOT_prerequisite_not_audited_or_granted_by_this_package": true,
+  "candidate_imported_or_executed": false,
+  "science_or_transport_or_compiler_executed": false,
+  "AAA_qualified": false,
+  "ABA_admitted": false,
+  "full_eigen_reference_qualified": false,
+  "goal_complete": false
+}

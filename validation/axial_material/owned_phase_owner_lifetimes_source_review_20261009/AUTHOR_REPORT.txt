@@ -1,0 +1,38 @@
+独占临时归属表生命周期源码候选（2026-10-09）
+
+原 helper 07b22 完整四处字节逆向通过，当前候选 855519。
+原顶层 57 函数+2 类，新 58 函数+2 类；只修改 _phase/verify_graph，
+新增 _owned_phase_owner_stream。所有顶层赋值原字节不变，schema、
+closure、JSON/byte-size限额、输入-only资格保持。无新类。
+
+非 consumer 验证中的 _owners 原完整规范化和全字段拒绝仍在原时序。
+仅这个全新独占临时列表移交新 deque，调用方删除它的列表引用。
+第一轮逐 owner 生成全部原 expected NEWdict 后，完整保留第二輪所需
+owner/category/new-paths 字段；对应 expected map 及时失去内部引用。
+第二轮所有归属的新 role 仍在全部 namespace 与独立新输入边之后的
+原位置。consumer 的 caller保留完整 owners 给原 lineage；直接 _phase
+默认路径完全不消费调用者的 list/map，create_graph 也保留完整归属。
+
+原 V5 instrumented 诊断最后 _phase.call 未return，仅定位本次函数区间。
+V6未经仪器的 518.625 MiB 失败没有逐行归因，不能据它承诺优化足够。
+此候选没有实际大图/构造/业务/原生/数学调用，也没有生产512 MiB证明。
+
+实际tiny工具 c244de EXIT0；28项通过（8 positive、20 negative）。
+42个独立NEWdict、3个namespace、9类closure、文件/目录alias、父JSON、
+新role边顺序、重复直接调用与外部list/map不变、完整生成graph和
+mapping/存储path验证返回完全相同，每phase 4个canonical鲜读各一次。
+冲突、缺文件、namespace多文件/空目录、alias改向、父JSON无归属、
+后续字节变化、归属index/role/requirement损坏、严格JSON异常全部拒绝
+同type/message；也实际测过最后鲜读后namespace/alias变化和恢复鲜读。
+未知namespace先拒绝，后续owner新路径失role仍按原时序拒绝。
+
+源码生命期fixture只用18个可weakref dict子类，其中17个非空。
+每次expected add前存活数严格18,17,...,2；第一namespace调用前全0。
+这证明逐owner临时expected map释放，不是循环结束才统一释放；该
+小样本fixture不代表plain生产大图RSS。所有要求字典仍单独分配。
+原CONSUMER_PHASES为空未改，未伪造consumer可执行资格；其lineage
+完整源体原字节、caller保留全部owners和原拒绝边界已检查。
+
+源和所有结果仅在TMP。STOPPED handoff没有未来DECL/PREP/RUN/seal
+成功值；需Root独审及不同新family实际有界执行。执行配方只用最终
+已钉tiny_phase_equivalence_suite.py，其他creator是中间源码脚手架。

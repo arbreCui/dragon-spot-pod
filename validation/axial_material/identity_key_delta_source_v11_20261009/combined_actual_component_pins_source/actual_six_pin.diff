@@ -1,0 +1,21 @@
+--- /private/tmp/axmat_v11_combined_component_contract_source_draft_20261009/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.UNREADY.py
++++ /private/tmp/axmat_v11_combined_actual_component_pins_unready_source_draft_20261009/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.UNREADY.py
+@@ -111,12 +111,12 @@
+ TRIM_TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-terminal-v11-20261009"
+ TRIM_OBJECT = TRIM/'build/SPOT1P64.o'
+ TRIM_KERNEL_SHA = '0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5'
+-TRIM_DECL_SHA = None
+-TRIM_SEAL_SHA = None
+-TRIM_TERMINAL_SHA = None
+-TRIM_SOURCE_ADMISSION_SHA = None
+-TRIM_OBJECT_SHA = None
+-TRIM_RUNTIME_SHA = None
++TRIM_DECL_SHA = '2e5c1cda328ee1be5484e756e01337d134a956ae9e6d8623215f49f75e9b42ee'
++TRIM_SEAL_SHA = '5517c1ada26e43ba55683092baf8f63f8676eeff58ee907cd03560047c7a0b19'
++TRIM_TERMINAL_SHA = '26ef721c5b76af13036e6a486468f40d7362b584485c20a8713da82a23a9f430'
++TRIM_SOURCE_ADMISSION_SHA = 'a065b026e1e03b2523c945e8b7a6fd508debbea7489fc2707606c3954bb0c1e8'
++TRIM_OBJECT_SHA = '271bd5f7d768b3380b8d976c177a468cd038faee81ba156f49969bfb8c061131'
++TRIM_RUNTIME_SHA = '05765aeb40f494e9502c0278bfc652c243f8970c31256d11abec5789de7df79b'
+ TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+ TRIM_ADMISSION = 'RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY'
+ # The old343e nested subproof is distinct from the composed new5e kernel.

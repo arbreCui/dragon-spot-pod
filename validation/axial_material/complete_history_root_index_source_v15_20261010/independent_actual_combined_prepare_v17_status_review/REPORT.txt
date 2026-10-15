@@ -1,0 +1,6 @@
+V17 combined prepare 内部执行成功，原限制保持。
+whole 199.29040412500035 秒，child 197.76525733299786 秒，峰值 502.171875 MiB，距 512 MiB 仅 9.828125 MiB。
+完整图 45519289 字节、声明 8613243 字节、creation trace 40938561 字节。完整九类闭包、86 个 namespace、historical 七项组件信息和完整 trace 保留；17 个 host 原输入全 SHA / 7 项身份前后不变。
+图计数：{"canonical_files": 37111, "requirements": 238441, "owners": 4473, "namespaces": 86, "aliases": 186, "trace_records": 63417, "coverage_categories": 9, "all_original_closure_categories": ["code_environment", "original92_build", "memory_build", "dedup_build", "physical_build", "capture", "component_ancestry", "component_terminals", "source_namespace"], "newly_declared_paths": 0, "absence_inputs": 479}
+Root 已报告外部 be9445 / session 70791 → e1b00f 整数 EXIT0 会话关闭；本审查未轮询，也不独立代替外部实际终态凭证。
+尚未执行五阶段构建、whole INPUT 或新 native，AAA / ABA 尚无新增成功信用。

@@ -1,0 +1,11 @@
+def _sort_new_owned_graph_json_in_place(value):
+    """Sort only the new producer's private JSON containers; no caller data."""
+    if type(value) is dict:
+        entries = [(key, value[key]) for key in sorted(value)]
+        value.clear()
+        for key, part in entries:
+            _sort_new_owned_graph_json_in_place(part)
+            value[key] = part
+    elif type(value) is list:
+        for part in value:
+            _sort_new_owned_graph_json_in_place(part)

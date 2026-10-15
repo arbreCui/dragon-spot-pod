@@ -1,0 +1,137 @@
+B-only retained IO Source feasibility and minimum next-step gates, 2026-10-15
+
+Scope: Source/report/control metadata only. Static tool04f995 returned genuine
+integer0; 6 whole-file inverses, 8 whole scientific Source equalities, and the
+original collect_state IO-only function inverse were checked again. All21
+retained code Source PFs and11Python ASTs passed (ef4cb9). All116 enumerated old
+input/context/tree/extraction PF roles passed current7 only; no old SCI/GENDF,
+XSM, SQL/pool, ASCII, JSONL or array body was opened/hash/decoded. No candidate
+was imported; no GEN/publication/compiler/native/process-check/deletion ran.
+This is Source feasibility, not runtime, binary, physics or goal qualification.
+All retained v1 code bytes remain unchanged.
+
+Source paths below are relative to this retained directory:
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/B_only_observer_IO_source_v1
+
+1. Native input and IO isolation
+B_original_input_binding.UNREADY.py:12-18,39-75 ties the exact fbe336 currentCASE
+and v10 seed to original B seven input rows, not a relabelled A observation.
+The actual original library PF paths already are the A native cwd paths:
+/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/DLIB_ACTUAL
+210627112B, and DLIB8R1_370 769113024B. No979740136B copy/link is needed.
+The four readonly cwd procedure/geometry roles use original B Source SHA/size,
+with distinct currentPF identities. Three FIL reads retain DLIB_ACTUAL twice
+and DLIB8R1_370; CLE12-character input rules remain original.
+The four products remain b63/m.xsm, b63/u.asc, b63/a.asc, b63/t.asc (all<=12bytes).
+b63 is an IO component, never a ledger index. Stat-only old cwd inventory had31
+entries, and b63 was absent. The owning host must bind the complete old-entry
+current7 inventory before child and recheck on success/failure; only the newly
+created literal b63 entry is excluded, not arbitrary new names.
+
+The cle2000/clemod/kdrdpr whole inverses preserve original computational code;
+only OS IO routing changes. cle2000 writable MODIFY/DELETE/cleanup use bound
+fresh OSnames; all .o2m/.l2m, _main/_procedure, _DUMMY/_FIL000 and TRACK_T_f
+writes route to fresh IO. Original readonly .c2m/include basenames remain.
+Observer filename prefix is IO-only; payload/event order/hash/LCMEQU are whole
+original. Four LIBMIX/LIBDEN/TONDRV/TONSPH hooks are whole original.
+exec_original_B_in_fresh_IO.UNREADY.py:72-92 separates native cwd from owned
+stage cwd, sets the same IO component, retains native stdin and stdout/stderr
+FDs, then execve preserves the original owned PID/group. This has not run.
+
+2. New IO build is the smallest future executable business step
+plan_IO_only_build_commands.UNREADY.py:14-61 is a readonly argv constructor,
+not a build host or compiler entry. The exact old metadata report records
+ACTUAL_FIVE_COMPILE_COMPLETE75_LINK_CLOSED0_ONLY and all6 records PASS.
+The actual old link has71 object paths plus4 archives (75 link inputs); all75
+were checked current7 without reading object/archive/binary bodies. Replace
+only the observer module object, retain all other old objects and four archive
+slots/order, and add exactly3 C overrides before the first archive: new74
+objects plus4 archives,78 link inputs. Do not call it75 total objects.
+The planner yields4 compile stages (observer+3 C) and1 link stage. New build
+must use original private bounded OwnRSS/SerialExecutor, exact Source/PID/MRO
+binding, one child at a time, stage600s/SELF512MiB and whole1800s clock, one
+thread/no retries. A new nested build/runtime under counted FTOP can avoid a
+new ledger root; its bytes still count. No whole Ganlib archive rebuild is
+needed by current Source plan. Exact C compiler fullPF, actual original Ganlib
+Darwin-arm64 ABI/configuration/headers, original Fortran compiler/object/archive
+PFs, genuine build returns and independent compiled-IO qualification are still
+missing. The original runtime stat reference is10879176B; old complete75 build
+output was11419043B. Neither is a hard upper bound on new IO build output or
+new runtime RSS. A separately admitted hard build output reservation is needed.
+
+A concrete Root-only build qualification host Source/GEN/peer/publication must
+be completed first; it must preserve every nonzero and raw monitor return.
+Only after that Source is admitted and the full reservation fits may Root run
+the5 serial build stages. B native capture remains separate and not admitted.
+
+3. B capture, complete extraction and construction
+capture_current_original_B.UNREADY.py:68-145 is a core function, not an owning
+Root host. Caller must acquire exclusive claim before any EOF/check/import,
+install exact original OwnRSS MRO/resources/bounded Source, original monotonic
+origin, Source/input dual checks and old-cwd current7 protection. Source64->65
+must use the complete actual A2 prefix after actual/post and genuine retirement/
+archive state, not the obsolete62 ordinal in old DRAFT_PLAN.json. If another
+root is appended, use that entire later prefix+1. No hidden build root/reset.
+
+capture core retains all four products, actual consecutive55context events and
+8 whole trees, real SPH decision branches and all native bytes. Manifest state
+and original B input/case binding are explicit. No warm-A/B-cache reuse.
+Request constructors retain B full extraction and8snapshot-pair saved review;
+engine/context/adapter/extractor scientific Source is whole original. All six
+construction phases remain. Old protected A comparison main is unreachable
+through B CLI. Original engineering evidence exit2 is not physics PASS.
+The engine scalar fallback:1291-1302 still reports SOURCE_CONTEXT_NOT_SAVED
+for original double sqrt/libm OVERV controls; it was intentionally not altered.
+If complete current-control evidence closure is required, a B final55 ENERGY/
+OVERV descriptor and true original bounded control receipt must be bound after
+new B extraction. The current A control descriptor cannot be relabelled as B.
+
+The original B evidence main:411 accepted any ledger-root descendant. That
+scope was too broad for the forthcoming host. Precise guard drafts now reside
+only in the separate UNREADY namespace:
+../B_only_observer_IO_source_v2_UNREADY/corrected_literal_operation_path_contract_v2
+current_B_material_lineage_evidence.UNREADY.py:201-203,414-421 binds the exact
+input-bound owningB final root and only owningB/evidence/extract or aggregate;
+B binding is checked before output mkdir. Request constructor:36-43,63-67
+requires complete current prefix plus exactly one owningB root and those exact
+fresh operation roles. Original Budget class, scalar/math/scope are unchanged;
+two whole-file byte inverses and AST0 passed genuine13dee7. This small directory
+has no science helper copies or runnable admitted package/host; the Source
+author must integrate it with exact retained dependency PFs. Nothing was GENed,
+frozen for business, published or run. First authoring matcher error2681921
+is retained in the parent v2 directory; corrected Source uses a new namespace.
+
+4. Strict space and memory gates stay open
+Historical full capture reference569395111B = four products423456221 + complete
+55contexts125254 +8trees145813636. Full extraction reference438863526B.
+The draft admission reservation floor is therefore1008258637B, before build,
+aggregation, controls, reports/logs, caches/scratch, and open-unlinked allowance.
+These are retained old stat/Source references, not actual B bytes, a size forecast,
+or a proven new upper bound. All products/context/tree/full JSONL scope stays.
+
+The earlier closed A2 Light23516f reported existing1604139295B. Adding only the
+above capture/extraction floor gives2612397932B, exceeding2GiB by464914284B;
+new A2 outputs and later legitimate retire/archive receipts will change that
+state. No fit is claimed. If aggregation used an additional320MiB reservation,
+that too must be added, never hidden inside the capture reference. Peak archive
+creation coexistence, external metadata and unlinked SQLite bytes count. Safe
+retirement/lossless archive planning must supply actual0/post0, a new complete
+current ledger and a defensible new total hard upper bound before any B native
+business. Insufficient space causes original pre-business refusal, not dropped
+ASCII, snapshots, contexts, extraction spools or reduced mathematical scope.
+
+Original RSS512MiB/stage600s/whole1800s/thread1/onechild/no retries, fresh2GiB,
+history96GiB/free8GiB/cold20971764748B/metadata64MiB remain. The partial B role
+CAPS dictionary is not a substitute for a full owning host resource binding.
+No B peak RSS or runtime adequacy has been measured. Original Source streaming
+and budget callbacks remain; the new build/capture/extract/construction stages
+must each get actual original watchdog/resource closure without a clock reset.
+
+Minimum remaining Source work: bounded build qualification host; bounded B
+capture/receipt host; exact owningB operation-gate/request integration; complete
+new product/peak-archive/output bound and latest-prefix binding; explicit B
+saved-pair review and current-control evidence contract. Then formal Source
+review/publication, genuine bounded build qualification, sole Root B child,
+independent actual metadata post, complete extraction and six-phase evidence.
+Goal sequence remains complete B -> AAA -> unreduced reference -> ABA; all
+physics/AAA/reference/ABA/goal qualifications remain false.

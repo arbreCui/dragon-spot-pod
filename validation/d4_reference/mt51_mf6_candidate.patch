@@ -1,0 +1,10 @@
+--- a/src/groupr.f90
++++ b/src/groupr.f90
+@@ -5868,6 +5868,7 @@
+    if (mfd.eq.3.and.mtd.eq.19) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.51) nz=nsigz
+    if (mfd.eq.6.and.mtd.eq.51) nz=nsigz
++   if (mfd.eq.8.and.mtd.eq.51) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.102) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.301) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.302) nz=nsigz

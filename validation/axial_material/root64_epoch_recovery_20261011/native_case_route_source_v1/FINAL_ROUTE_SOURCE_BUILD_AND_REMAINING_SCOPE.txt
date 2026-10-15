@@ -1,0 +1,64 @@
+SOURCE-ONLY native warm-A case route freeze, 2026-10-11
+
+The complete isolated KDRDRV.F retains the original function symbol, every
+ordinary dispatch branch, #if HDF5_LIB block and all other original bytes.
+One exact local splice registers AXNCASE64: and FLUNAT64:. .F explicitly
+preserves automatic cpp; no extra -D option or numerical flag is introduced.
+
+AXNCASE64 is a real two-output standard CLE entry using retained GANLIB
+LCMPTC/LCMPUT and the original SPOR64_RCONTRACT_LOAD/VERIFY ABI. It creates
+exactly six independent RCONTRACT records and three BOOT_BIND records.
+The full experiment name maps to the explicit fixed-12-character case token
+R64WARM-A-V1. Plane1/epoch0 is a declared input; it does not fabricate
+GLOBAL64, QFISS, a solved seal, bootstrap closure or scientific PASS.
+
+The complete new deck preserves actual A's SALT/MCCGT/ASM input bytes,
+complete material tree, geometry, tracking and FLU physical controls. Its
+only warm guess is the actual full REAL64 snapshot_A.xsm FLUX list ITEM1,
+already checked for all 5180 native bits by Root. RECOVER identifies object
+names, so ITEM1 remains correct; the archive does not use FLUX ITEM4.
+Only FLUNAT64 performs new transport. It uses direct full type4 REAL64 input
+and publishes only its actual strict kernel return followed by full header
+and all later original FLU checks. The complete output archive also saves
+TRACK, full MICROLIB2, SYSTEM, FLUX, RCONTRACT and BOOT_BIND.
+
+TRACK/RCONTRACT declaration is 2.5e-8. Actual A8 DOOR work uses
+min(declared,2.5e-10); AXMAT_EPS64=2.5e-10 and AXMAT_THER64=2.5e-9.
+Outer controls remain all2.5e-7, EXTE500, MAXINR740, ACCE3/3, REBA1,
+INITFL1, OPTION B0 and TYPE K. No inherited wholecase with MCCG1e-5.
+Axial5e-8 is only the original independent contract declaration here; this
+radial native case does not execute or qualify an axial/global solve.
+
+EXACT_PLANNED_COMPILE_AND_LINK_COMMANDS.json contains every full argv and
+the exact fresh output paths. It explicitly rebuilds the real A8/ACA/A9,
+AXMAT_FLUKEF64, real DOOR/balance, corrected MCGASM/MCGFST/MCGDSCA,
+rank adapter, original MCGFFIR, original FLUGPI, DRAGON and both route
+Sources. It links the current actual compiled new caller, driver/helper,
+VERIFY/RCONTRACT/BOOT module objects before pinned old standard archives.
+MCGFFIR64_RANK_ADAPTER is never replaced by a REAL32 adapter.
+Ordinary fallback branches, including SPOT, remain distinct and are
+resolved through the pinned old archives. This case is real MCCG TYPE K;
+it does not replace or qualify continuous global SPOT.
+
+The declaration includes fullEOF SHA/7ID of every actual current input,
+compiled dependency/module, opaque archive, original guard Source and
+current full standard Source reference trees. The old archives are valid
+separately pinned build dependencies; pinning a current Source inventory
+does not prove their historic Source-to-object mapping or a full Source
+archive rebuild. No such qualification is claimed.
+
+Root still must use the original serial host guard to create fresh build/
+runtime/A directories, copy exactly the four declared physical inputs
+to the short owned LCM filenames, repin each new owned copy, execute the
+listed compile/link commands, then the one bounded genuine Native case.
+No physical file copies, compile/link/Native or parser were run here.
+External host full input/output SHA/7ID and real stdout/watchdog evidence
+remain mandatory; an internal ROOT-REF64 self-copy is not independent proof.
+
+Mandatory remaining admission: full original17 applicable controls plus
+the explicitly new warm route's controls, all370 GLOBAL64 and native
+source/QFISS/plane/epoch coherence, three-plane bootstrap with actual
+kernel and independent closure, and online BOOT. None is bypassed or
+labelled completed by this Source package. Current common rank2 remains
+353/370 (groups1-17 fail); formal AAA endpoint remains3.9525259224%>3%.
+Independent coupled reference and ABA are not admitted by this case.

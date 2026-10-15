@@ -1,0 +1,9 @@
+完整 helper 有限独立 SOURCE 审查：未发现 SOURCE blocker；新资格仍待实际运行。
+
+新候选 dc01d8 的 11 项完整 inverse 精确回 bcd692。79 顶层函数、92 含 nested/method 函数原名称/数量保持；仅 _phase/_trace_records/verify_graph 改动，其余 76 顶层函数逐字节相同。移除所识别的新增生命周期语句和私有 keyword 后，三函数完整原 AST 相同，包括全部谓词、调用、循环、返回。
+
+所有 graph 字段删除仅在 fresh parse/deep clone 的独占完整图、consumer None 分支，并在原完整 gate 完成后。原 consumer 输入、默认 trace 输入、外部 mutable graph/owner 不被消费。_consume 是实际 bool，仅 True 要求 exact builtin list；形状 guard 本身不证明独占，独占来自唯一 verifier parse/clone 调用链。每条 trace 原验证/深 clone/完整 append 在旧行清除之前，完整记录和 attempt counts 保持；独立 subprocess_records 后续未删除。
+
+原 guard/caps/global/class/算法不变，Source 封存 7 members+manifest 全 SHA/7ID 前后保持。未 import/execute helper/API/guard/resource/业务/数值，未读 ART payload，未改 canonical 或作者封存包。
+
+仍必须以原 60s/512MiB/64MiB 控制协议实际资格，再独立执行一次当前完整全图 fresh verifier（stage600s/whole1800s/512MiB；1thread/1child/0retry）。不能把已有小 fixture verifier 的 392MiB 结果当当前全图 RSS 资格。新 qualification 和 future business/native pins 均 None；实际峰值源码行未观测，本包不授 RSS PASS/build/native/AAA/ABA 信用。

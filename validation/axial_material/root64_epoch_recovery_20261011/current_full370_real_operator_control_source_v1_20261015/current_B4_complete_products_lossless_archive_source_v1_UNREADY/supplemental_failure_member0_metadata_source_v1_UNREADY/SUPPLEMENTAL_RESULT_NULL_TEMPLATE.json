@@ -1,0 +1,22 @@
+{
+  "schema": "SUPPLEMENTAL_B4_FAILURE_MEMBER0_METADATA_RESULT_NULL_TEMPLATE_V1",
+  "status": null,
+  "failure": null,
+  "actual_Root_integer_exit_code": null,
+  "original_prior_post_integer_exit_code": null,
+  "original_prior_post_recorded_child_integer_exit_codes": null,
+  "supplemental_actual_recorded_child_integer_exit_codes": null,
+  "uniquely_completed_entry000_pin": null,
+  "current_complete_member000_gzip_blind_fullEOF_twice_pin": null,
+  "future_Root_independent_single_member_stream_control_pin": null,
+  "Source_author_task": "/root/b2_build_source_peer",
+  "actual_executor_task": null,
+  "metadata_only": true,
+  "archive_all4_complete": false,
+  "archive_all4_success_inferred": false,
+  "plain_retirement_authorized": false,
+  "physics_qualified": false,
+  "AAA_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false
+}

@@ -1,0 +1,6 @@
+第十八轮独立存储候选核对：PASS（仅准许进入精确删除前预检，本审查未删除）。
+可清退旧 native-layered-full 完整批次派生 raw_g*.npz 共12960份，分配占用 10.645672 GiB。当前输入图、37395 expected files、namespace、alias 和源码实际消费链全部排除；候选全文哈希由互补真实只读审查提供。
+我完整读取保留12753原封存文件约782MiB，核1080最终 operators/controls/result、主/重放全部15字段收据、24独审/288全场样例、6白边界、所有inputs/build/source/日志/原结果文档；12额外preflight raw 保留。
+前1–14轮 16份精确manifest、14份账本/10188条、11恢复相关源全部检查，未发现这12960raw作为既删副本的保留主本。因此此前copy恢复工具的直接恢复链不受影响；97份不可替代材料/元数据gzip全部保留。
+这些raw不是重复副本，最终算子和controls不是其无损替代。清退会失去旧raw直接逐字节重验和原全seal现成重放；须在隔离scratch目录按完整旧inputs/build/plan/admission及原命令重算，逐份长度和SHA匹配旧收据才可恢复。原primary用xb，不能在剩余最终文件上直接重跑覆盖。重算成本与未来精确字节重现尚未实证；没有即时恢复承诺。
+旧组件成功、coupled eigenproblem未合格、scheduler中断原因未知和陈旧running checkpoint原事实全保留。5份55KB支持源码因收益低原路径保留。未删除、未写项目、未运行科学业务。

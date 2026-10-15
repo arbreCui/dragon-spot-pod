@@ -92,21 +92,118 @@ Assembly outputs saved before FLU were independently read and checked:
 These are structural facts, not evidence that the repaired D4 solve
 converged or that the old CE discrepancy is explained.
 
-## Next decision and shortest continuation
+## Clean-source rebuild
 
-The old map-10 supervisor could not be terminated from the sandbox. The
-controller subsequently completed old map 10 (NOT_MET) and started old
-map 11; none is repaired-method evidence. PID 54771 is now gone and must
-not be used. The last verified map-11 supervisor/Dragon PIDs were
-74248/74249 under controller 17661; always recheck identity before any
-operation. The user has an updated stop request. Old-chain automatic
-acceptance is paused. Confirm stop status before touching the canonical
-binary or active scripts.
+The complete committed tree at `cf469c8` was exported with `git archive` to
+`/private/tmp/spot-cf469c8-clean.xZIfZa`. The repository tracks no `.o`, `.a`
+or `.mod` files. All solver/dependency libraries were built there from
+source with `make -C src -j2`, followed by the lifecycle host tools and
+`sh validation/run_fast.sh`. All three commands exited zero; the final
+marker was `SPOT ACTIVE FAST PASS`, including the new angular-moment tests.
+Logs are retained in
+`validation/artifacts/d4a-scattering-clean-build-20260923`.
+The working-tree and release canonical executables retain their old hash
+shown above. No transport was launched and no binary was promoted.
+This proves source-build/test reproducibility, not a validated replacement
+runtime, a coupled fixed point, or CE accuracy.
 
-A single new 90-second corrected **3-cell** axial probe has been requested,
-not approved. It is distinct from the earlier unapproved 6-cell mesh probe;
-neither may be launched without approval. Keep the existing snapshots,
-macrolib and fixed POD basis: this defect does not justify recomputing
-unchanged physical snapshots. After corrected axial validation, establish
-an explicit new coupled lineage/runtime; do not silently relabel old
-CLOSED states as repaired physics or rerun the completed CE reference.
+## Approved 90-second probe: solver convergence, export failure (2026-09-24)
+
+The user approved one corrected **3-cell** axial probe, capped at 90 seconds,
+with no retry, radial solve or feedback. It used exactly the previous candidate
+binary and frozen map-9 inputs. Only the time budget and log verbosity changed
+(`FLU EDIT -3` to `1`, unbuffered output). Evidence is in
+`validation/artifacts/d4a-scattering-fix-probe90-20260924`.
+
+The solver reached its unchanged terminal gates in 14 outer iterations:
+
+| Logged quantity | Value | Existing threshold |
+|---|---:|---:|
+| EEXT | 7.69394451e-10 | 1.99999999e-6 |
+| EUNK | 1.68566906e-6 | 1.99999999e-6 |
+| EINR | 1.68566906e-6 | 1.99999999e-6 |
+
+The logged eigenvalue is `1.2718148126934201`; it is a frozen-radial axial
+diagnostic, **not a new coupled fixed point or an accepted CE comparison**.
+SPOGBAL completed (global balance diagnostic `3.17083e-7`, no nonpositive
+scalar-flux entries). SPOSTATE also completed (`PERP=2.41155e-12`,
+`GERR=7.34990e-8`). These do not substitute for all final validation gates.
+
+The process then failed after 35.99 seconds at the second `SYS_OUT := SYS`:
+`XSM_FILE *SYS_OUT* ALREADY EXISTS`. The diagnostic deck had added pre-FLU
+assembly exports but retained the post-FLU copies. This is our probe-deck
+export bug, not a solver-convergence failure. `AX_OUT := AX` was never reached,
+so there is **no persisted axial state**. The original run status remains
+`INCOMPLETE`; neither its deck, log nor status is rewritten. No retry occurred.
+
+All protected binaries, libraries, sources and frozen inputs retained their
+identities. The saved SYSTEM and TRACK hashes exactly match the 30-second
+probe, whose physical XS and unchanged POD/radial records were independently
+checked. No probe process remains. The separate `probe_export_fixed.x2m`
+removes only the two duplicate post-FLU assembly exports. It was not run under
+that authorization; the subsequently approved fresh run is recorded below.
+
+## Export-fixed run and independent saved-state check (2026-09-24)
+
+The user separately authorized one fresh run with the same 90-second cap.
+`validation/artifacts/d4a-scattering-export-fixed-20260924` contains the complete
+result. The driver verified that the only executable deck differences from the
+previous run were removal of the two duplicate exports. No solver, input,
+physics, rank, grid, threshold or coefficient changed. No automatic retry,
+radial transport, online feedback or CE run occurred.
+
+The run exited zero in **37.4604 seconds**, exported `axial.xsm`, and reached the
+final deck marker. Its two terminal solver records are exactly the same text as
+the previous run: 14 outer iterations, `k64=1.2718148126934201`, and all three
+inner/outer solver gates passed at the existing `2e-6` thresholds.
+
+Independent GANLIB-only readback, with no SPOT solver call, passed:
+
+- The existing mesh checker read the saved SYSTEM/TRACK/AXIAL: 3 cells, correct
+  material ordering and 150 cm total height; all 13 checked group records match
+  the previously audited corrected assembly wordwise. SYSTEM and TRACK also
+  match its complete file hashes, preserving the physical XS/POD/radial audit.
+- `SPOT-KEFF64`, `SPOT-X-KEFF`, their REAL32 mirror and reciprocal rho agree.
+  Every FLUX/FLUX64 value is finite and the mirrors agree bitwise.
+- All **146520 active scalar flux entries are positive**, minimum
+  `8.3861402596134438e-18`. Signed angular/current entries were not incorrectly
+  subjected to scalar-flux positivity.
+- Reintegrating volume × scalar flux × nu-fission XS reproduces the saved
+  normalization **bitwise**: `1.2718148125469508`.
+  Layer nu-fission fractions, at the production log's printed precision, are
+  `0.259838086 / 0.484022293 / 0.256139621`, matching the saved-state readback.
+- Input, output, canonical binary, library and source hashes are unchanged
+  after checks; the complete `result.sha256` manifest verifies. No probe process
+  remains. The old incomplete artifacts were neither altered nor promoted.
+
+Classification: **SAVED_AXIAL_VERIFIED_NOT_COUPLED_FIXED_POINT**. This closes the
+short corrected-axial persistence/readback test. The radial response is still
+the frozen map-9 input, not a new response to this axial state. This therefore
+does not establish a repaired online Picard fixed point, final power accuracy,
+mesh convergence or a successful CE comparison.
+
+## Old chain and shortest continuation
+
+The old controller exited normally after map 11 reported `VALID_MET`:
+`Rrho=2.1368370406449344e-9`, `Rleak=2.3298773338411653e-7`,
+`Ra=2.7295793162486826e-7`, all below its unchanged `5e-7` gate. Its old
+scattering implementation still disqualifies it as repaired-method evidence.
+The former controller/supervisor/Dragon PIDs 17661/74248/74249 are gone;
+do not issue signals using these stale identities. Old-chain acceptance stays
+paused, and all sealed old receipts remain untouched.
+
+The short axial test is complete; do not repeat it merely to obtain another
+receipt. The raw TYPE-K guesses correctly failed B2I admission. The subsequently
+authorized single three-plane TYPE-S bootstrap completed on 2026-09-24 at
+04:24:33 Asia/Shanghai, in 8087.3168 seconds including B2I/B2J (10800-second cap,
+no retry). All three radial plane terminals passed; B2I sealed `CLOSED/0`, and
+B2J checked `PROJECTED/1` with no transport. Independent result/input manifest
+checks passed and the inputs are unchanged; its monitor paused after review.
+See [bootstrap preparation and result](d4a_scattering_bootstrap_preparation.md).
+This establishes a new initial state, **not a repaired coupled fixed point**.
+The separately budgeted repaired map 1 subsequently completed and passed
+independent replay as `CLOSED/1 / VALID_NOT_MET`; map 2 is now running under a
+separate single-map budget. See the [map-1 result and continuation](d4a_scattering_picard_map1_result.md).
+The 6-cell mesh experiment remains unapproved. Do not
+relabel old CLOSED states, promote this isolated axial state to a coupled
+fixed point, or rerun the completed CE reference.

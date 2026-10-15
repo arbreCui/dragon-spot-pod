@@ -1,0 +1,25 @@
+当前 A/B 快照生产到在线消费：最小下一阶段 Source 交接（只读审计，未执行）
+
+已确认的现状
+A、B 本次完整材料构造分别保留 8 快照、55 上下文、6 阶段、19249 字段及 1829421 已知元素；不匹配、上下文问题、未知宏来源均 0。这是完整构造证据，不能直接成为快照 producer 或 online 消费凭证。B 的 4 产品原文已分 original1 + remaining3 精确退役；partial001 不属于四个原产品。当前读取角色应为保留 SQL/字节池或已独立验证的四个 gzip+entry/index，不能重新把缺失原文作为 current7 输入。
+
+现有实际程序和准入位置（以下前缀 REC 均为 /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011）
+1. 当前 B63 材料/快照与六阶段：REC/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/PLAN.json；对应 capture/extract/B55/control/分段 archive-retirement 角色由该 PLAN 保留。其 saved final B55 SQL/pool 是本次 B63 构造输入，不是 nativeWarmB2 的在线证明。
+2. 独立 nativeWarmB2 的最新实际 host Source：REC/native_warm_B_process_monitor_host_source_v3/run_current_native_warm_B.py；实际目录为 validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v3-process-monitor-access。它的 Root_actual_single_plane_warm_B_summary.json 绑定 actual_output_pin、actual_SALT_binary_track_pin、actual_native_terminal 和完整固定输入；plane2/e0 的独立生产/全370回读不授 online_BOOT。早期 native_warm_B_bounded_host_source_v1 仅为 Source 沿革，下一步不能误用其旧 OUT。
+3. 原三独立 producer catalog：REC/aaa_three_plane_streaming_source_v1/PROTECTED_FORMAL_AND_PRODUCER_INPUTS.json，固定 A1/A2/A3。REC/aaa_three_plane_A8_owned_MAP_pipeline_source_v18_20261014/actual_inputs_and_readback.py::validate_actual_producers 对三份 report/archive/radial track/native_readback 逐项绑定；旧 catalog 带历史设备号，不可原样当作当前7ID，必须从当前真实凭证重新准入，原记录不改。
+4. 真正已通过的三段 online 工程入口：REC/aaa_three_plane_A8_owned_MAP_pipeline_source_v18_20261014/run_actual_three_plane_pipeline.py 的 BOOT_positive，SPOBVX64 的完整14有序操作数；Root a937cf int0，独立 post 为 REC/independent_v18_full50_engineering_actual_terminal_postverify_20261014/REVIEW.json，PASS_ACTUAL_V18_FULL50_ENGINEERING_POSTVERIFICATION。完整50步骤=17正例+33精确拒绝；本轮不重跑、不修改。其 A1/A2/A3 不能换成 B2 后仍称 AAA，也不能提前授 ABA。
+5. REC/native_warm_ingress_source_v1/test_actual_AB_warm_ingress64.f90 与 REC/run_current_actual_AB_warm_ingress.py 仅对旧离线 A/B 调 AXMAT_LOAD_WARM_NATIVE64 做完整 type4 读取/镜像逐位检查，输出明确 online_BOOT_qualified=false。validation/axial_material/qualified_snapshot_ingestion.py 的 OFFLINE_PRODUCER_TO_LEGACY_BOOT 路径同样显式 offline_r64_directly_consumed_by_boot=false，不能替代当前 native online 入口。
+
+最小下一实际步骤（先做这一项，不先启动 online 或重做整轮 v18）
+先审定并核对 B63 与上述 nativeWarmB2 的原始输入对应：同 CASE、原 B 材料 deck/完整 DLIB 身份、几何/温度/密度及核素-混合映射、完整 MICROLIB2/MACROLIB 物理树、Source/运行时来源。必须真实全范围比较当前 B55 保存 SQL/pool 与该独立 native archive 的原始记录类型、完整路径、长度及全部原字，保留所有记录/压缩稀疏映射；不能只比较19249个构造字段、shape、k 或文件名。旧 B2 若 pin/物理输入/Source 映射不一致，不可冒充当前 producer，改为新的独立 producer 后再接后续。
+可复用的比较实现：REC/saved_three_macro_exact_typed_path_join_source_v1_20261014/compare_saved_three_macro_exact_typed_path_words.py（MACROLIB 与 MICROLIB2,1,MACROLIB 的完整 typed 路径规范化、双向集合、每个原字/metadata）及其 saved_native_data_access_adapter.py。原 A1/A2/A3 三份比较范围保持；新 B2 比较是独立新角色，不删去原三份，也不从 A 结果推断 B。若旧 B2 没有仍有效的 SQL/pool 索引，下一作者先为它准备完整只读提取 Source，真实生成和当前预算另准入。
+该连接真实0及独立 post0 后，新的工程接线 Source 才可从真实 producer 报告和当前 catalog 构造 native online consumer 的精确 operand/plane/epoch/runtime 绑定。优先隔离 B 的实际消费控制；仍不得重标旧 loader 测试或修改 v18 的三独立 AAA producer。所有未知 consumer receipt/schema/Source 与实际输出 PF 留 NULL，不能制造 online PASS。
+
+正式科学准入仍拒绝的独立门
+REC/full370_unreduced_eigen_reference_source_v2/current_formal_input_authority.py::FormalBinding._admit_lineage 要求 ACTUAL_CURRENT_FORMAL_FULL370_MATERIAL_LINEAGE_V1：同 case/三独立 producer archive，all370_raw_macro_word_comparisons=3、全原字零差异、完整六阶段、无上下文/operand 问题、所有必要 reference producers 已知、captured_actual_full_SPH_selection、captured_actual_MASK_and_oldmacro、actual_reaction_multiplicity_source_coverage_complete 及完整原始凭证。已有 A 三 MacroCompare 结果应精确回绑到这份 lineage，不重做或凭两份 aggregate 自动置真；B 的新工程连接也不代替该三份 AAA 角色。
+其 _admit_kernel_controls 另要求正式 H150/Nz48/370/NDIM3/全部九矩、11364 条完整轨迹/181824 actions 的实际原限 controls。full370 v5 guardRSS 失败仍未过；独立耦合 reference 未准入。AAA ν裂变误差 3.9525259224% > 原3%仍未通过，ABA不得越过。反应多重性/处理源覆盖、温度插值、fullSPH/MASK 不能由构造/归档或 online 工程证据推定。
+
+下一作者需要的真实入参
+A/B capture+manifest+extract+aggregate Root/report/post及真工具；B55控制及 B4 original1/exact2/complete4/remaining3 四阶段真实闭合；A48归档/原文退休映射；当前独立 A1/A2/A3/B2 producer 及 archive/radial track/Source-runtime-CASE输入来源；完整物理树比较 Root0/post0；新 catalog 的完整当前PF；实际 online 消费 Source/构建/精确命令/完整正负控制/Root0/post0。只下一阶段增加一个新的 counted root，继承本次完整75 prefix；当前可用空间与输出上限必须实测，不预测适配。原 SELF/child512MiB、stage600/whole1800、joint2GiB/history96/cold/meta/free8、单线程/单业务子进程/0retry、claim先于helpers、journal及record.label watchdog 维持。
+
+本交接没有生成器、编译、native、worker、数值、科学数据/gzip体读取、删除或新的合格凭证；原 Source 和事实均未改。

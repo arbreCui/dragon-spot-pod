@@ -1,0 +1,38 @@
+1. Root's independent SOURCE peer reviews the complete fixed package first.
+
+2. Root may run the existing SOURCE-only bind_fresh_verifier_sources.py with:
+--install-tool-return /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v21_receipts/Root_actual_helper_SOURCE_install_tool_return_exact_integer.json
+--install-tool-return-sha256 f8e83e8ca68397f30657ed5a8fc5b0f2fdcb0e4bd8071a006cca75ba570a68b9
+--template-manifest-sha256 <actual new complete MANIFEST.json SHA>
+The generator was not executed here. It must actually re-pin installed helper,
+actual exact-integer witness and source-install record with full EOF/SHA/7ID.
+No new D/E/H/O may exist before binding. All manifest members copy to D, plus
+exact manifest/witness/source-record copies and actual binding inverse. The
+binder writes the canonical driver/host and full D freeze outside D last.
+
+3. If prior true installed SOURCE bindings are unchanged, expected new bytes:
+fresh_verifier_controls.py: 895c889569507f2b5e28ee1da6efc6c91bbdd30cd05338dd6e039d9591e72f84
+fresh_verifier_host.py: bb232eb13187013fde74e909aac8d316648a83a63115758ad2f0db200ab2322f
+The matching literal candidates are fresh_verifier_controls.v21b.READY_SOURCE.py
+and fresh_verifier_host.v21b.READY_SOURCE.py. Host TARGET_SHA is already final;
+no D modification or append is needed or allowed after the complete D freeze.
+Root must source-review and externally bind the actual resulting D before run.
+
+4. Fresh, exclusive one-use namespaces, not created by this package:
+D=/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_fresh_verifier_v21b_sources
+E=/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_fresh_verifier_v21b_receipts
+H=/Users/wen/spot/validation/artifacts/axial-material-complete-graph-fresh-verifier-host-v21b-20261010
+O=/Users/wen/spot/validation/artifacts/axial-material-complete-graph-fresh-verifier-v21b-20261010
+Root owns one actual normal host launch after actual bound SOURCE review. No old
+v21 or reused v21b namespace may be retried by this proposal.
+
+5. Real complete 37k opens/37112 records, complete 27-field return, three lossless
+full gzip JSON outputs, four positive/three reject private controls, true genuine
+watch/PID/caps and externally observed Root closed exit0 remain mandatory. SOURCE
+readiness confers no actual metadata/INPUT/native/AAA/ABA/balance qualification.
+Q remains None until independent actual success evidence exists.
+
+MANIFEST.json members are the complete installation inventory. The binder
+copies every member before final freeze, then adds its five binding metadata/
+canonical files; no raw numerical ART input is copied. Old SOURCE snapshots and
+old 0057/a459 manifests in the package are complete provenance-only evidence.

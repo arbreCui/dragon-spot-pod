@@ -1,0 +1,30 @@
+SPOT 最新结果入口（2026-10-15，B完整明细归档及原文回收独立核验后）
+
+1. A/B完整六阶段各8快照、55上下文、19249字段、1829421已知元素；差异、上下文问题、未知来源均0。原evidence-only child2/FAILED记录保持。
+   SPOT_CURRENT_A_FULL_AGGREGATE_OVERV_RESOLVED_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B_FULL_SIXPHASE_VERIFIED_RESULT_20261015.txt
+2. B2选定9个旧只读角色完成当前epoch完整字节桥接；完整物理提取62798记录/7958目录/8766extent/19620宏记录。
+   SPOT_CURRENT_NATIVE_B2_EPOCH_BYTES_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B2_COMPLETE_PHYSICAL_TREE_EXTRACTION_VERIFIED_RESULT_20261015.txt
+3. B55/B2完整typed宏观树比较19620记录、2264152个32位原字；双向路径一致，原字差异0、元数据差异0。首版超时及部分结果保留。
+   SPOT_CURRENT_B55_B2_FULL_TYPED_WORD_COMPARISON_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B55_B2_COMPLETE_COMPARE_V1_TIMEOUT_VERIFIED_FACTS_20261015.txt
+4. 最新完成：28份非空B明细249,929,878字节完整归档为24,003,048字节gzip，逐份完整恢复SHA/长度通过；独立盲SHA核验0后，另行只读0/独立post0/精确回收0/独立post0，原文全部回收。全28gzip、条目、完整索引、空差异文件、原生数据、其他结果及文档保留。未来按完整映射恢复原文字节并独立准入当前身份。
+   SPOT_CURRENT_B_COMPLETE28_JSONL_ARCHIVE_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B_COMPLETE28_JSONL_PLAINTEXT_RETIREMENT_VERIFIED_RESULT_20261015.txt
+5. 前一步B早期14临时索引/池+B2已消费pool+失败残片，精确16项回收367,026,207字节，真实只读0/独立post0/执行0/独立post0闭合。原生快照和结果文档保留；未来临时SQL/pool必须重新提取、独立准入，未承诺旧文件字节相同。
+   SPOT_CURRENT_B_COMPLETED_EXACT16_TEMPORARY_RETIREMENT_VERIFIED_RESULT_20261015.txt
+6. 上述两项本轮删除总量616,956,085字节，未扣新归档及Source/凭证，不是净空间变化。物理槽位、汇总原文、B四产品、A48份明细及A早期14临时产物等更早回收不重复计入。
+   SPOT_CURRENT_RESULTS_INDEX_V9_20261015.txt
+7. pool两次归档触24MiB/64MiB载荷界的真实Root1/child1均保留，没有完整pair归档成功。SQL单成员完整恢复及原SQL/旧残片回收仍有效；后续16项临时生命周期明确更新其原pool已回收状态。
+   SPOT_CURRENT_B2_SQL_POOL_ARCHIVE_V2_CAP_FAILURE_VERIFIED_FACTS_20261015.txt
+   SPOT_CURRENT_B2_POOL_SOURCE8_CAP64_FAILURE_VERIFIED_FACTS_20261015.txt
+   SPOT_CURRENT_B2_SQL_MEMBER0_AND_EXACT2_RECOVERY_VERIFIED_RESULT_20261015.txt
+
+当前83目录累计实存在第4项执行后约1.538GB，另有约16.4MB外部元数据；磁盘总可用空间充足，当前约束仍是原验证累计2GiB额度。新任务必须重新测算预算，旧PACK保守预算尚不能直接准入。
+
+下一顺序：A/B最终55号SQL/pool四份已完成派生产物183,292,696字节，经六组消费者真实0及独立post0只读审计后，正在另立精确临时生命周期Source准备；此时尚未执行清理。保留两份canonical原生快照和全部结果/归档，未来需要pair时重新提取并独立准入。继续筛选已完成旧结果完整无损归档，闭合真正含B2的PROJECT/GLOBAL/ARCHIVE预算与执行，生成18树/6GLOBAL上下文并实测B在线consumer；之后AAA物理控制→独立耦合参考准入→ABA。
+
+仍未完成：B在线消费、AAA物理精度、完整反应处理与多重性来源、温度插值、完整370群算子控制、独立耦合参考。AAA既有ν裂变偏差3.9525259224%仍超过3%阈值；字节等价与清理完成不等于物理验收通过，总goal保持active。
+
+这是最新导航。V9及以前、失败现场和所有完整结果凭证保留为历史。

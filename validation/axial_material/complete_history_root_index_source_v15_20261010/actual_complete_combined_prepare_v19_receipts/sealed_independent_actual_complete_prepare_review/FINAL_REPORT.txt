@@ -1,0 +1,6 @@
+原首次审查保存int1：审查器误以为joint_archive只含H/S/O/T/D。正确Root口径还含E当时200940B和规范FACTORY180593B，138488083+200940+180593=138869616；没有改保存摘要或科学/资源阈值。后续复用已完成82唯一文件完整SHA7ID证据，并检查当前7ID，只完成剩余保存metadata读数。
+V19实际完整PREP保存证据有限只读复核：ACTUAL_PREP_EVIDENCE_REVIEW_BLOCKED_BY_DEFINITE_PROOF_FAILURE
+固定17992摘要、603ed namespace：H/S/O/T/D全部68 files、14 subdirectories、0 symlinks；42冻结SOURCE、11 SOURCE库存、51原pinned inputs完整EOF SHA7ID对照。实际Root c5790b整数退出0/session2985 CLOSED/no repoll；子watch PID96184、唯一stage PASS、whole199.32746954192407/child198.1557341669686、sampled peak473.09375<512。原1800/600/512/2GiB/history96GiB/free8GiB、threads/children/retries=1/1/0保持。
+原真实619/705/38de/bc/ebbb源码和固定host/post-pins一致；formalT逐字保存实际子进程合并stdout/stderr与真实outer host stderr，正确标明两种范围，没有独立child stderr为空声明。完整45526587B图257ddbd和40959538B读取轨迹c1e2dae完成全hash；图只标准库解析encoded graph行数，不调用图/helper API，不授whole INPUT资格。
+只实际PREP证据通过；未import project/API/helper/guard或执行业务/数值/资源检查；没有改原H/S/O/T/D/E/输入，没有清理。build五stage/完整INPUT/native RSS/AAA/ABA/物理平衡及目标完成仍false；没有把未保存的host OS PID推断成实际记录。
+具体阻碍：["ValueError('actual_complete_saved_graph_metadata_counts')"]

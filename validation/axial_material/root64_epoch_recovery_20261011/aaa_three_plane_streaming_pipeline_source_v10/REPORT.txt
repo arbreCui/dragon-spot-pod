@@ -1,0 +1,49 @@
+Pipeline v10 Source only: one CLE operand whitespace split
+
+The genuine v9 run closed with aggregate failure after 42 stages. GLOBAL and
+PROJECT individually passed; the later view_memory_output input card contained
+128 nonblank columns, exceeding clelog.c's original 120-column input rule.
+Its actual exit was -5 and the expected operator refusal message was absent.
+This document makes no claim about the hardware mechanism of that trap.
+The genuine missing-operand control already reached its exact refusal, which
+also shows the v9 standard writable DELETE lifecycle reached the component.
+
+The new host differs from v9 in precisely two version literals (fresh output
+namespace and exact host freeze schema) plus one viewops whitespace break
+after GRCON. Reversing those three exact changes restores the entire original
+host. All three helper files have identical complete bytes. Physics Sources,
+actual complete70 runtime, link inputs, mathematical tolerances, original caps,
+six DELETE lifecycle statements and all 50/17/33 stage-oracle requirements stay.
+
+All generated view cards were statically constructed from restricted literal
+AST string expressions, without importing or executing any candidate.
+Five CLE view negative decks, two lifecycle negative decks and the unchanged
+two-line positive BOOT deck preserve every token and now have maximum card
+length 67 columns. view_system_alias remains the separate actual direct
+Fortran-entry control; it generates no CLE card. Twelve input operands plus
+the two AXOUT/ARCOUT outputs give the original fourteen operands. The rsplit
+negative still removes only TRACK_f3 and has eleven inputs plus two outputs.
+
+The first static checker incorrectly counted the input string alone as all
+fourteen operands. Its real EXIT1 is retained. The checker was corrected to
+count both output operands; existing draft host/helper bytes were checked
+equal and never rewritten. The successful Source-only preparation is true
+db05fd EXIT0. Postfreeze fullEOF review is true 4c13f3 EXIT0, 281 unique files /
+91,031,067 B. No compiler, CLE, native engine, candidate or physics ran.
+
+The complete original v9 manifest's 257 dependency rows were derived without
+omission. Current manifest has 278 rows after exact historical Source and
+v9 failure/lexer/log/deck/watch provenance. No old v9 PROJECT or raw producer
+copy is a new Source input; all physical producers remain the original real
+A1/A2/A3 reports and the actual complete70 build. All seven external CLI pins
+remain genuine current fullEOF SHA and full seven-field identity bindings.
+
+HF SHA aa75076e2ff7819eb164cecfd927b9485559b2282b0f7ac5ea9c8a5d9ead6861
+CLI SHA 6114a646a30e3ec0599e96f631e8262a146ef360289ca78f24f927f878219c36
+CLI file: ../ROOT_EXACT_ACTUAL_PIPELINE_V10_ARGV_20261013.json
+Final Source-only review:
+../aaa_pipeline_v10_author_finite_source_review_20261013/FINAL_POSTFREEZE_REVIEW.json
+
+Root must independently review Source and obtain the true original-guarded
+50-stage terminal before declaring engineering closure. This Source grants
+no online BOOT, independent reference, AAA accuracy, ABA or goal completion.

@@ -26,6 +26,9 @@ BAD_CASES = {
     "extra_fissile": "NONFUEL MATERIAL HAS NONZERO NUSIGF",
     "missing_fissile": "FISSILE MATERIALS MUST INCLUDE 4,10,16",
     "bad_dimensions": "INCONSISTENT D4-A FLUX/TRACK/MACROLIB DIMENSIONS",
+    "bad_cell_count": "INCONSISTENT D4-A FLUX/TRACK/MACROLIB DIMENSIONS",
+    "bad_mat1d": "CELL/SNAPSHOT MAP MUST BE THREE EQUAL CONTIGUOUS BLOCKS",
+    "bad_fine_material": "INCONSISTENT SIX-MATERIAL SNAPSHOT OFFSETS",
 }
 
 
@@ -41,7 +44,7 @@ def run(command, cwd, *, check=True):
     )
 
 
-def check_good(result, output):
+def check_good(result, output, nfloor):
     require(result.returncode == 0, result.stdout + result.stderr)
     own = [line.removeprefix("D4A-REGION NU-FISSION-FRACTIONS")
            for line in result.stdout.splitlines()
@@ -51,11 +54,15 @@ def check_good(result, output):
                  if line.startswith("SPORATE NU-FISSION-FRACTIONS")]
     require(len(own) == 1 and own == reference, "SPORATE E16.8 mismatch")
     rows = list(csv.DictReader(io.StringIO(output.read_text())))
-    # Exact integer fixture formula: V=r+f, FLUX[KEYFLX]=g+i,
-    # and the two NUSIGF components sum to 3*g+2*f. FLUX64 is twice FLUX.
+    # Exact integer fixture: V=r+cell, FLUX[KEYFLX]=g+i, and two
+    # NUSIGF components sum to 3*g+2*physical_zone. FLUX64 is twice FLUX.
+    # Unequal cell volumes/fluxes detect averaging instead of integration.
+    cells_per_zone = nfloor // 3
+    cells = {f: range((f - 1) * cells_per_zone + 1, f * cells_per_zone + 1)
+             for f in range(1, 4)}
     expected = {
-        (r, f): sum((r + f) * (g + (r - 1) * 3 + f) * (3 * g + 2 * f)
-                    for g in range(1, 371))
+        (r, f): sum((r + cell) * (g + (r - 1) * nfloor + cell) * (3 * g + 2 * f)
+                    for cell in cells[f] for g in range(1, 371))
         for r in range(1, 26) for f in range(1, 4)
     }
     total = sum(expected.values())
@@ -63,7 +70,7 @@ def check_good(result, output):
     require(len(rows) == 75 and set(keys) == set(expected), "Incomplete/duplicate CSV regions")
     for row, (r, f) in zip(rows, keys):
         require(int(row["material"]) == 4 + (f - 1) * 6, "Material mismatch")
-        require(float(row["volume"]) == r + f, "Volume mismatch")
+        require(float(row["volume"]) == sum(r + cell for cell in cells[f]), "Volume mismatch")
         require(float(row["nu_fission_rate"]) == expected[r, f], "Integer-reference rate mismatch")
         require(float(row["global_fraction"]) == expected[r, f] / total, "Global fraction mismatch")
 
@@ -84,21 +91,22 @@ def main():
         run(["gfortran", *FLAGS, "-I", ganlib / "modules",
              here / "test_d4a_region_rates.f90", ganlib / "libGanlib.a",
              "-lstdc++", "-o", fixture], work)
-        for mode in ("good", *BAD_CASES):
+        good_cases = {"good": 3, "good6": 6, "good12": 12}
+        for mode in (*good_cases, *BAD_CASES):
             case = work / mode
             case.mkdir()
             run([fixture, mode], case)
             command = [exporter, "flux.xsm", "track.xsm", "macro.xsm", "rates.csv"]
             result = run(command, case, check=False)
             output = case / "rates.csv"
-            if mode == "good":
-                check_good(result, output)
+            if mode in good_cases:
+                check_good(result, output, good_cases[mode])
                 before = output.read_bytes()
                 repeated = run(command, case, check=False)
                 require(repeated.returncode != 0 and "REFUSING TO OVERWRITE" in repeated.stderr,
                         "Existing output was not rejected")
                 require(output.read_bytes() == before, "Existing output changed")
-                print("good: 75 exact rates/fractions; SPORATE E16.8 identical; overwrite rejected")
+                print(f"{mode}: 75 exact rates/fractions; SPORATE E16.8 identical; overwrite rejected")
             else:
                 require(result.returncode != 0 and BAD_CASES[mode] in result.stderr,
                         f"{mode}: wrong rejection: {result.stdout}{result.stderr}")

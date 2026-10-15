@@ -1,0 +1,20 @@
+SPOT 四核/32温度无限稀释 P0 散射生产控制 — 2026-10-15
+
+Am241、Pu238、Pu239、Pu240 的原 ASCII GENDF 按原热散射处理、原 47 MT 顺序、原 fmatr LIST 累加与 group 反向索引回放，逐字比较当前 SCI1 的 SCAT00、NJJS00、IJJS00。ASCII 已经经过原 a11，未二次量化；只保留单核单温度的 compact P0/无限稀释数据，没有大型矩阵副本。
+
+实际 Root 运行 cb9918/session41990 → e7c858，整数退出码 0；耗时 39.202877 秒。四核共 32 个温度节点、96 个记录、1,926,639 个原始字，差异 0。实际热反应均包含 MT221，igrest/ngther 均为 85；4核为原 nimpo29 导入上下文，能源网格按已有 SCI ENERGY 的 REAL32 原分支使用。仅选择性读取 SCI 7,887,164 字节，原 SCI 全文件哈希在 parent 初始核验。
+
+独立后验 a9e33b 整数退出码 0，核验全部 7 份新输出及 204 个输入身份、96 个记录的类型/长度/偏移/hash、逐字零差异及原限额。没有由 peer 重读 SCI/gzip 科学体或重算矩阵。
+
+原 47 个累计根、原累计 2 GiB、SELF/child 512 MiB、阶段 600 秒、整段 1800 秒、单线程/单子进程/不重试保持。此前解析失败、NumPy 类型失败、原位置比较失败等历史仍完整保留。科学原始输入与结果文档保留。
+
+这仅证明四核原无限稀释 P0 packed producer。没有声明全 34 核、有限 18 个点、温度插值、SPH/MASK、物理平衡、完整传输、AAA 或 ABA 通过。
+
+实际结果：
+/Users/wen/spot/validation/artifacts/axial-material-four-original-ASCII-infinite-SCAT-producer-20261014-v1/Root_actual_four_original_ASCII_infinite_SCAT_summary.json
+SHA256 4b985fe28662618d666a8416d0e100dc302074b0df08794beabae519c8903e19
+独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/four_original_ascii_infinite_SCAT_producer_source_v1_20261014/actual_postverify_20261015/REVIEW.json
+SHA256 83c999b9e99e3debdd1a081041de6c5f7886035d8ce2dbcc0dc6419ce685dbcd
+真实工具：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/four_original_ascii_infinite_SCAT_producer_source_v1_20261014/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json

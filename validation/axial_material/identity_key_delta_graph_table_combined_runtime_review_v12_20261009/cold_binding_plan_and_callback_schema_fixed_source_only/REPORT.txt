@@ -1,0 +1,5 @@
+V12冷入口新SOURCE修订仅纠正ADMISSION_HOST生成metadata()的schema字面，精确等于当前CALLBACK_METADATA_SCHEMA；原Fee7/C0e/B563冻结不改。
+完整1+22区域逆向V11，再完整chain到真实V10，55工厂函数与原Fee7逐字不变；所有数学、MRO、7INPUT、P14/P12和512/4200/43200预算保持。
+未来绑定plan逐一标明真实权威来源。TRIM_CONTROL_COUNTS从真实V11 68步骤封存controls/audit/driver及当前实际完整嵌套API30键字典共同核对；不会用旧45统计冒充。
+当前formal V12仅观察36804descriptor/186alias；真正bounded host未获准入，必须未来durable全log+9payload及独立Root10后重新derive实际counts/graph/namespace并填值。
+所有未来success/count/inventory None保留，未执行业务/fixture/编译/controls/declare/native，未项目写；方案不授科学信用。

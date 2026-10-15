@@ -1,0 +1,43 @@
+2026-10-11 new continuous native producer Source and concrete caller wiring
+
+Current candidates (NEW Source, not recovered historical bytes):
+AXMAT_CONTINUOUS_DRIVER64.f: complete retained AXMAT_SNAPSHOT_DRIVER64 kernel, with ten saved local byte transforms. Original 57348-byte Source SHA256 ab98848880334ce3b3b680261a40dd4841ca02cb8588bc5e7da649e223bcc46e is copied in full to read_only_original/AXMAT_SNAPSHOT_DRIVER64.f; inverse proof returns every original byte exactly.
+AXMAT_NATIVE_PRODUCER_CHAIN.f90: actual strict loader, complete explicit native-driver interface and actual source-crosscheck/publication helper. These helpers are fully implemented, not empty transport stand-ins. The caller route is not yet installed.
+
+Native ABI appended to the complete original argument list:
+  INITIAL_FLUX64(NUNKNO,NGRP): real64 intent(in), full unknowns and all groups.
+  TERMINAL_FLUX64(NUNKNO,NGRP), TERMINAL_SOURCE64(NUNKNO,NGRP): real64 intent(out).
+  TERMINAL_KEFF64, TERMINAL_RESID64(3): real64 intent(out).
+  TERMINAL_COUNTERS(2)=[actual outer IT, actual ITERF_LAST]; TERMINAL_INNER_STATE integer intent(out).
+  TERMINAL_VALID logical intent(out); false and cleared outputs on entry, true only after actual strict branch, final original normalization/serialization, cache cleanup and deallocation complete.
+The strict branch captures residuals directly from EEXT/EUNK_LAST/EINR_LAST and AKEFF/counters, before later normalization. The returned arrays are the actual normalized FLUX(:,:,3/4), with bit-identical unchanged AKEFF. Residuals describe the actual accepted raw Picard image, not a reconstructed log or a fresh independent-image audit. No cap output can become valid. The entire original outer/inner solve, original caps/eps, MCCG door, rebalancing, acceleration, balance and serialization are retained outside the ten local transforms. Additional kind, finite/mirror and positive-field checks reject invalid representations; no threshold is relaxed.
+
+Actual REAL64 path:
+  host-pinned old native archive -> recovered full L_FLUX -> AXMAT_LOAD_WARM_NATIVE64
+  -> full type4 INITIAL_FLUX64 array -> AXMAT_CONTINUOUS_DRIVER64 original true MCCG kernel
+  -> actual strict native outputs -> complete FLUDRV header + original FLU links
+  -> AXMAT_PUBLISH_REAL_TERMINAL64 -> existing SPOR64_BOOT64_PUBLISH_NATIVE
+  -> final host full output SHA/7ID binding -> future online BOOT READ/IMPORT.
+The original GAR32->DBLE initial load is removed entirely. GAR32 only forms terminal legacy mirrors. Original first-k and every TYPE-K update already call AXMAT_FLUKEF64 with the full real64 field; those exact calls and implementation remain unchanged. Original native door and balance Source dependencies are full-EOF-pinned in the manifest.
+
+Precise future FLUDRV route insertion (not executed or installed by this Source task):
+1. A new explicitly selected caller branch must USE AXMAT_NATIVE_PRODUCER_CHAIN and carry independent IPMATERIAL/IPRCONTRACT/PLANE/EPOCH from the owning original FLU/host entry. Keep the original microscopic material root, not merely its temporary MACROLIB child. In src/FLU.f the L_LIBRARY branch at lines 166-171 sets IPMACR=LCMGID(KENTRY(I1),'MACROLIB'), so separately retain KENTRY(I1) as IPMATERIAL; for a direct L_MACROLIB entry it can be that exact admitted root. Preserve the original HPMACR, actual full material tree and case binding.
+2. Immediately before any old uniform/type2 initialization or overwrite (src/FLUDRV.f lines 236-272), load the full recovered native seed with AXMAT_LOAD_WARM_NATIVE64. Refuse unless AXMAT_SEED64_LOADED and INITFL=1. Allocate separate real64 terminal arrays; never alias input/output arrays. The existing INIT ON branch must not replace initial64 with FLUXO, DBLE(FLUX) or a legacy seed. Legacy mirrors may remain present for header/storage compatibility but provide no numerical initial values.
+3. At the current native kernel call site (src/FLUDRV.f lines 299-311), call AXMAT_CONTINUOUS_DRIVER64 through the explicit interface, passing all original exact cross sections/volumes/maps/caps/eps and the complete initial64 array followed by the eight terminal outputs. Strict false is a failed stage and cannot proceed to publication. No actual kernel is executed by the current new helper Source itself.
+4. Preserve the complete original FLUDRV post-call header block at lines 315-345: STATE-VECTOR, EPS-CONVERGE, KEYFLX, OPTION. Original FLU.f lines 351-360 writes SIGNATURE and LINK.MACRO/LINK.TRACK/LINK.SYSTEM before this FLUDRV call. With exact admitted names TRACK/SYSTEM/MICROLIB2 or MACRO0, the earliest complete publisher point is immediately after FLUDRV writes OPTION, before releasing terminal arrays. Do not call PUBLISH from inside the native driver before this header exists.
+5. Call AXMAT_PUBLISH_REAL_TERMINAL64 using the exact direct native outputs and bound material/track/system/contract/plane/epoch. It verifies every full370 SOUR64 item against the actual terminal source and exact type2 demotion mirror before the frozen PUBLISH performs its complete FLUX64/header/context/strict residual checks and writes ROOT-FLUX64/ROOT64-SEAL. Publication refusal leaves the stage unadmitted. The original ROOT module rejects pre-existing ROOT-FLUX64/ROOT64-SEAL/SPOT-R64, so target ownership must be fresh and exclusive, without old stale seal/lifecycle records.
+6. The external host must actually full-EOF-pin the selected seed/context/new producer Source and runtime before/after execution, then full-EOF-pin the fresh serialized produced object before online READ. Internal ROOT-REF64 is only a consistency copy; coherent changes to all copies still require independent host rejection. This Source task does not implement or claim the host admission or output pin.
+
+New seed declaration and actual byte audit:
+First selected new experiment is ROOT64_NEW_WARM_A_20261011, using the complete already produced native REAL64 snapshot A as an initial guess under the same A material/temperature. It is not the old legacy seed, not a cold run, and not a continuation inheriting old wholeInput or coupled-terminal qualification.
+Actually read to complete EOF in Source writer 088695:
+  A: validation/artifacts/axial-material-r64-system-normalization-20261003/A/snapshot_A.xsm, 78740816 bytes, current SHA256 8a60c979e8d1f84ef7efdbbda10c02e3d3bc8240dc548bb984b3603f7158cd42.
+  B: validation/artifacts/axial-material-r64-snapshot-B-dependencyfix-20261004/B/snapshot_B.xsm, 78740816 bytes, current SHA256 0c3a6054dc5fe72780afa58b9deb2166381e0d8afe388fff65640f33fd25d0ed.
+Both match the full archive hashes in the independently retained 20261004 producer_ingestion_receipt. Exact current dev/inode/mode/nlink/size/mtime_ns/ctime_ns and before/open/EOF/after stability are in NATIVE_PRODUCER_SOURCE_PINS_SEED_AUDIT_AND_SCOPE.json. No additional huge snapshot copies were made. A material and track plus geometry were likewise actually read to EOF and old expected hashes retained. The Fortran loader must still actually run and validate the current complete type4 and mirror items. The original payload audit hashes are recorded as provenance, not a newly executed logical native audit.
+
+Important concrete route compatibility:
+The retained real AXMAT_MCCG_DOOR64 Source requires TRACK REAL-PARAM=[2.5e-8,0,0,0]. This matches the already declared corrected 20261004 tight-work A/B offline experiment. It is different from the historical original route's MCCG=1e-5 case. The new publisher helper requires the actual four TRACK controls and external RCONTRACT eps_mccg_bits to match, and refuses a historical mismatched contract. Original outer target remains all 2.5e-7; original AXMAT_THER64=2.5e-9 and AXMAT_EPS64=2.5e-10 remain exact. Caps, acceleration, rank, material, physical and resource gates are not altered. This is an explicitly new warm case, so there is no claim that old 17 controls or old whole-input labels cover it.
+
+Remaining work is real caller/dispatcher/deck integration, bounded build/link, actual full-type4 warm ingress test, real native strict producer execution, external output seal, full current controls, then GLOBAL64/SPOSTATE64/SPOPROJ64/REAL64 QFISS/bootstrap epoch and online BOOT. Source compilation alone will not complete this chain. None of the unchanged rank2 353/370 failure, formal AAA 3.952526% endpoint error against 3%, independent coupled reference admission or pending ABA is resolved by this Source task.
+
+This task does not modify original src or previously frozen Source candidates and does not compile, invoke a Fortran parser, run Native, or execute numerical work. All new Sources and full-byte proof are reviewable; actual tool return is preserved separately.

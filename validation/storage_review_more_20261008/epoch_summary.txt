@@ -1,0 +1,41 @@
+第二轮旧 epoch 中间状态只读候选
+
+精确候选 115 文件，逻辑 21,555,872,840 字节（20.075 GiB），分配 21,556,097,024 字节。未删除、未读大载荷计算摘要、未执行业务/求解。
+
+每项均保留 CLOSED 轴向和快照终态、candidate_axial/system、全部基底/轨道/截面、报告日志JSON参数甲板源码；原小封存清单提供 payload expected SHA。当前全部 INPUT 图/API/typed owners/75 namespace/4 length-map/79 negative/source/prepared等排除，现存项目符号链接无入链。
+
+当前全项目 fresh 符号链接元数据数量：679；保留当前 repaired12-cell map1–9、三快照/POD原始来源、clean replay 和 CE核心。
+
+old_epochs_with_retained_closed_final_states: 79 文件 / 12.167 GiB
+  /Users/wen/spot/validation/artifacts/d4a-corrected-material-rank2-map1-portable-detached-20260920: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/d4a-corrected-material-rank2-map2-portable-detached-20260920: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/d4a-corrected-material-rank2-map3-portable-detached-20260921: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/d4a-corrected-material-rank2-map4-portable-detached-20260921: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/d4a-corrected-material-rank2-map5-portable-detached-20260922: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/d4a-corrected-material-rank2-series-from-map5-20260922: 9 文件 / 1.178 GiB
+  /Users/wen/spot/validation/artifacts/d4a-corrected-material-rank2-series-from-map8-restart-20260923: 9 文件 / 1.178 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map1: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map2-attempt2: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map3: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map4: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map5: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map6: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map7: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-d4a-rank2-picard-map8: 3 文件 / 0.393 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64-strict-leak64-one-map-80s: 3 文件 / 0.641 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64dp-aa1-h-map: 3 文件 / 0.641 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64dp-cont-f-map: 2 文件 / 0.431 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64dp-cont-g-map: 2 文件 / 0.431 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64dp-d1-w1-map: 3 文件 / 0.641 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64dp-d1-w2-map: 3 文件 / 0.641 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64dp2-gate-map: 3 文件 / 0.641 GiB
+  /Users/wen/spot/validation/artifacts/iterative-rank2-h2-r64dp2-picard-fixedpoint: 3 文件 / 0.641 GiB
+prior_expanded_still_existing_narrow_intermediates: 36 文件 / 7.908 GiB
+  /Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-rank1-factor-cache-20261007: 6 文件 / 1.318 GiB
+  /Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-20261004: 30 文件 / 6.590 GiB
+
+排除首轮已删24个；总 26 个不存在路径未计入，0 项被保留不推荐本轮退役。
+
+代价：被选旧包不能再完整通过原 seal/replay；不改写旧sha、结果和历史结论。需要新的逐项退役收据。逻辑/分配数不承诺APFS真实回收。
+旧非axial部分不降低轴向96GiB账本；rank1/white子集才减少该账本。
+本清单仅元数据候选，Root实际清理前仍须重新检查普通路径、七字段身份、原expected SHA、完整当前依赖及保留锚；本报告没有新的 INPUT/science/native RSS 准入。

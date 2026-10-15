@@ -1,0 +1,376 @@
+--- actual_saved_reaction_ledger_sources/saved_reaction_diagnostic_host.py
++++ saved_source_phase_diagnostic_host.CANDIDATE.py
+@@ -1,4 +1,8 @@
+-"""One complete saved reaction/flux diagnostic under the unchanged genuine guard."""
++"""One complete saved source-phase diagnostic under the unchanged genuine guard; SOURCE candidate only until Root admission."""
++import ast
++import math
++import stat
++import struct
+ import importlib.util
+ import json
+ import os
+@@ -9,18 +13,291 @@
+ BASE=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010')
+ SUPPORT=BASE/'actual_prepare_sources/prepare_cli_host_v15.py'
+ SUPPORT_SHA='3c1856f8ec16414d4f07fe4d88b3be2b859b1eb64d0c2624c9c7015c1b9a52a7'
+-HOST=Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-source-reaction-diagnostic-host-20261010')
+-TARGET=Path('/Users/wen/spot/validation/axial_material/refined_AAA_full_group_source_reaction_ledger_diagnostic_20261010.py')
+-TARGET_SHA='4851d9151dfe5682a36f450fff8d0acb42c69865e177affe81c4b703119f7874'
+-OUTPUT=Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-source-reaction-diagnostic-20261010')
+-SOURCE_ARCHIVE=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_saved_reaction_ledger_sources')
++HOST=Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-saved-source-phase-consistency-host-20261010')
++TARGET=Path('/Users/wen/spot/validation/axial_material/refined_AAA_full_group_saved_source_phase_consistency_diagnostic_20261010.py')
++TARGET_SHA='e4eed9d520499cf15dae35c56adb1b7a3dea54e67e73046dd828ee47a1225fcf'
++OUTPUT=Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-saved-source-phase-consistency-20261010')
++SOURCE_ARCHIVE=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_saved_source_phase_diagnostic_sources')
++ROOT_RECEIPTS=BASE/'actual_saved_source_phase_diagnostic_receipts'
++PARENT_HOST=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_saved_reaction_ledger_sources/saved_reaction_diagnostic_host.py')
++PARENT_HOST_SHA='3064dbf8c2a332d456d2d892b55ad424b5086172bada81e55b83ba1966ff647a'
++CONTRACT_SHA='1eb226b3d02da061c0c8e1750540f925c1ec9f6baf23afbbe0f6b24cd00fb991'
++IDENTITY_KEYS=('st_dev','st_ino','st_mode','st_nlink','st_size','st_mtime_ns','st_ctime_ns')
+ SEAL_SHA='b6b3b1477835bd6e312ac833d4cc681e0b7ca15482964f88daf0edb581d60206'
+ TERM_SHA='ad1d11d68f2ae052068bd6d752ce7b2d64c6cbfcf699713aa684cdc347655d7e'
+ WHOLE_CAP,STAGE_CAP,RSS_CAP,ARCHIVE_CAP=60,60,512,64*2**20
+ 
++def require(condition, reason):
++    if not condition:raise ValueError(reason)
++
++def unique_object(pairs):
++    value={}
++    for key,item in pairs:
++        require(key not in value,'duplicate diagnostic metadata key '+key)
++        value[key]=item
++    return value
++
++def strict_metadata(path):
++    return json.loads(path.read_text(),object_pairs_hook=unique_object,
++            parse_constant=lambda value: (_ for _ in ()).throw(ValueError('nonfinite diagnostic metadata')))
++
++def diagnostic_identity(value):
++    return {key:getattr(value,key) for key in IDENTITY_KEYS}
++
++def metadata_inputs(contract):
++    # Deliberately do not call regular-file-only support.pin on these literals:
++    # the original producer's literal/target/fd/alias contract permits symlinks.
++    records={}
++    for role,entry in contract.items():
++        path=Path(entry['path']);literal=diagnostic_identity(path.lstat());target=diagnostic_identity(path.stat())
++        alias=os.readlink(path) if stat.S_ISLNK(literal['st_mode']) else None
++        require(stat.S_ISREG(target['st_mode']),'diagnostic input target is not a regular file '+role)
++        require(literal==diagnostic_identity(path.lstat()) and target==diagnostic_identity(path.stat()),
++                'diagnostic input changed during metadata observation '+role)
++        require(alias==(os.readlink(path) if path.is_symlink() else None),'diagnostic literal alias changed '+role)
++        records[role]={'literal_7id':literal,'target_7id':target,'literal_symlink_text':alias}
++    return records
++
++def source_archive_pins(support):
++    require(SOURCE_ARCHIVE.is_dir() and not SOURCE_ARCHIVE.is_symlink(),'ordinary fixed SOURCE archive required')
++    pins={}
++    for path in sorted(SOURCE_ARCHIVE.rglob('*')):
++        require(not path.is_symlink(),'SOURCE archive must not contain aliases')
++        if path.is_file():pins[str(path)]=support.pin(path)
++        else:require(path.is_dir(),'ordinary SOURCE archive member required')
++    require(pins,'complete SOURCE archive must be populated before the one child')
++    wanted=(CONTRACT_SHA,'58d1cad3ed22b3d56f7db4d721ed3166cae04fd7d86e5c95f6c9df1532023fb9',
++            'a99db7ea44374e9c86159f102aa7f32c7fcaff0b7311ba71db341caff417dece',
++            '06623a9481878b4eeb543cdcafe005dfc0a361d4e9f819e331a1d566cdf5dd57',
++            '73806690ec7abf26771978c7beec67df5f4c3ec7b2274d444053c0a212323efc',
++            'bd86427d38677730da4738ddf9a6ac7fd43610a0075dbd760eb2ee3860db671e',
++            '4104f091a85aa3b302ed4e0092535b833d82eb62c904b01e8baf60cfada0d34d',TARGET_SHA)
++    actual={entry['sha256'] for entry in pins.values()}
++    require(all(digest in actual for digest in wanted),'full author/independent/READY binding SOURCE evidence required')
++    return pins
++
++def admitted_input_contract(support, source_pins):
++    paths=[Path(path) for path,entry in source_pins.items() if Path(path).name=='input_contract.json' and entry['sha256']==CONTRACT_SHA]
++    require(len(paths)==1,'one fixed original input contract required')
++    record=strict_metadata(paths[0]);contract=record['inputs']
++    require(record['schema']=='AXMAT_SAVED_SOURCE_PHASE_SOURCE_ONLY_INPUT_CONTRACT_V1' and
++            record['numeric_payload_parsed'] is False and type(contract) is dict and len(contract)==1140,
++            'complete fixed original source-only contract required')
++    require(all(record[key] is None for key in ('future_actual_evaluator_pin','future_actual_host_pin',
++            'future_actual_output_pins','future_actual_terminal_pin')),'source-only contract must not impersonate actual receipts')
++    tree=ast.parse(TARGET.read_text());assignment={}
++    for node in tree.body:
++        if isinstance(node,ast.Assign):
++            for name in node.targets:
++                if isinstance(name,ast.Name):assignment[name.id]=node.value
++    require(ast.literal_eval(assignment['SOURCE_STATUS'])=='READY','Root admitted READY source required')
++    require(ast.literal_eval(assignment['WALL_SECONDS'])==60.0 and
++            ast.literal_eval(assignment['RSS_LIMIT_MIB'])==512.0 and
++            ast.literal_eval(assignment['THREADS'])==ast.literal_eval(assignment['CHILDREN'])==1 and
++            ast.literal_eval(assignment['RETRIES'])==0,'immutable admitted producer limits required')
++    node=assignment['INPUTS'];require(isinstance(node,ast.Dict),'fixed literal INPUTS table required')
++    actual={}
++    for key,value in zip(node.keys,node.values):
++        role=ast.literal_eval(key)
++        require(type(role) is str and role not in actual and isinstance(value,ast.Tuple) and len(value.elts)==2,
++                'strict literal producer input entry required')
++        call,digest=value.elts
++        require(isinstance(call,ast.Call) and isinstance(call.func,ast.Name) and call.func.id=='Path' and
++                len(call.args)==1 and not call.keywords,'fixed literal producer Path required')
++        path=ast.literal_eval(call.args[0]);sha=ast.literal_eval(digest)
++        require(type(path) is str and Path(path).is_absolute() and valid_sha(sha),'fixed literal path/SHA required')
++        actual[role]={'path':path,'expected_sha256':sha}
++    require(set(actual)==set(contract) and len(actual)==1140,'all1140 original roles must remain exact')
++    for role,entry in contract.items():
++        require(actual[role]=={'path':entry['path'],'expected_sha256':entry['expected_sha256']},
++                'fixed producer and archived contract differ '+role)
++    for prefix in ('capture_source_','capture_return_','capture_field_'):
++        require({role for role in actual if role.startswith(prefix)}=={prefix+f'{group:03d}' for group in range(1,371)},
++                'all370 source/return/field input roles required')
++    require(sum(entry['observed_metadata_7id']['st_size'] for entry in contract.values())==96042876,
++            'original full saved-source input byte scope differs')
++    return contract,support.pin(paths[0],CONTRACT_SHA)
++
++def valid_sha(value):
++    return type(value) is str and len(value)==64 and all(char in '0123456789abcdef' for char in value)
++
++def validate_identity_record(record,path,sha,observation,reason):
++    keys={'path','sha256','size_bytes','literal_7id_before','literal_7id_after','target_7id_before',
++          'target_7id_after','fd_7id_before','fd_7id_after','literal_symlink_text'}
++    require(type(record) is dict and set(record)==keys and record['path']==path and record['sha256']==sha,
++            'complete fresh EOF receipt path/SHA/key set differs '+reason)
++    require(type(record['size_bytes']) is int and record['size_bytes']>=0,'fresh EOF byte count differs '+reason)
++    for key in ('literal_7id_before','literal_7id_after','target_7id_before','target_7id_after','fd_7id_before','fd_7id_after'):
++        value=record[key]
++        require(type(value) is dict and set(value)==set(IDENTITY_KEYS) and
++                all(type(value[item]) is int for item in IDENTITY_KEYS),'full typed seven-field identity required '+reason)
++    require(record['literal_7id_before']==record['literal_7id_after']==observation['literal_7id'] and
++            record['target_7id_before']==record['target_7id_after']==record['fd_7id_before']==record['fd_7id_after']==observation['target_7id'] and
++            record['literal_symlink_text']==observation['literal_symlink_text'] and
++            record['size_bytes']==record['target_7id_before']['st_size'],
++            'actual literal/target/fd/alias/EOF identity differs '+reason)
++
++
++def validate_input_receipts(identity_receipt,contract,before,after,target_observation):
++    require(set(identity_receipt)=={'before','after','evaluator_before','evaluator_after'},'whole input receipt scope differs')
++    require(set(identity_receipt['before'])==set(identity_receipt['after'])==set(contract) and len(contract)==1140,
++            'all1140 before/after fresh EOF records required')
++    require(before==after,'one unchanged outer metadata observation required for every input literal')
++    for role,entry in contract.items():
++        left=identity_receipt['before'][role];right=identity_receipt['after'][role]
++        validate_identity_record(left,entry['path'],entry['expected_sha256'],before[role],role+' before')
++        validate_identity_record(right,entry['path'],entry['expected_sha256'],after[role],role+' after')
++        require(left==right and left['size_bytes']==entry['observed_metadata_7id']['st_size'],
++                'fixed complete input changed across whole saved-source child '+role)
++    require(sum(identity_receipt['before'][role]['size_bytes'] for role in contract)==96042876,
++            'all1140 complete original input bytes required')
++    for name in ('evaluator_before','evaluator_after'):
++        validate_identity_record(identity_receipt[name],str(TARGET),TARGET_SHA,target_observation,name)
++    require(identity_receipt['evaluator_before']==identity_receipt['evaluator_after'],'actual evaluator changed across child')
++
++
++def validate_phase_payload(support,admission,contract,input_before,input_after,target_observation):
++    report=strict_metadata(OUTPUT/'result.json');manifest=strict_metadata(OUTPUT/'payload_manifest.json')
++    classification='COMPLETE_SAVED_ALL_GROUP_WORK_RHS_PHASE_IDENTITIES_NOT_PHYSICAL_BALANCE_QUALIFIED'
++    require(admission['classification']==report['classification']==classification and
++            admission['scientific_accuracy_qualified'] is False,'narrow complete saved-source phase identity scope required')
++    for key in ('reaction_multiplicity_contract_qualified','source_fission_scatter_partition_qualified',
++            'final_flux_reconstructed_source_equals_actual_prior_iteration_work_rhs_assumed',
++            'entire_original_compilation_source_byte_identity_proved','full_physical_neutron_balance_qualified',
++            'scientific_accuracy_qualified','AAA_qualified','ABA_admitted','same_MG_unreduced_reference_qualified','transport_launched'):
++        require(report[key] is False,'no science/balance/source-partition qualification permitted '+key)
++    for key in ('all_complete_work_rhs_and_saved_source_phase_word_identities',
++            'same_original_map012_saved_FLUX64_and_SOUR32_in_all_three_owners','original_physics_inputs_solver_and_thresholds_unchanged',
++            'no_clipping_fitting_extra_normalization_dropped_group_or_cell','requires_Root_actual_terminal_and_OwnRSS_receipts'):
++        require(report[key] is True,'full saved work-RHS identity predicate missing '+key)
++    require(report['dimensions']=={'groups':370,'unknowns_per_group':1800,'cells':384,'faces':392,'moments':3} and
++            all(type(value) is int for value in report['dimensions'].values()),'complete group/cell/face/moment scope required')
++    require(report['checked_word_counts']=={'S2_qext_words':426240,'whole_R64_rhs_words':666000,
++            'all_unknowns_flux_words':666000,'SOUR32_words_per_XSM_owner':666000,'projected_coefficients':53280} and
++            all(type(value) is int for value in report['checked_word_counts'].values()),'complete original compared word counts required')
++    require(admission['result']==str(OUTPUT/'result.json') and
++            admission['sha256']==support.pin(OUTPUT/'result.json')['sha256'] and
++            admission['payload_manifest']==str(OUTPUT/'payload_manifest.json') and
++            admission['manifest_sha256']==support.pin(OUTPUT/'payload_manifest.json')['sha256'],
++            'actual complete saved-source result/manifest stdout pins required')
++    binary={
++        'raw_S2_all_unknowns_g_u':([370,1800],5328000),
++        'published_work_source64_all_unknowns_g_u':([370,1800],5328000),
++        'published_flux64_all_unknowns_g_u':([370,1800],5328000),
++        'qext_all_moments_g_mode_l_z_r':([370,1,3,48,8],3409920),
++        'source_projected_all_moments_g_l_z_mode':([370,3,48,1],426240)}
++    names={name+'.bin' for name in binary}|{'execution_claim.json','layout.json','chronological_event_inventory.json',
++            'full_XSM_saved_record_identities.json','input_identities.json','result.json','payload_manifest.json'}
++    require(OUTPUT.is_dir() and not OUTPUT.is_symlink() and {path.name for path in OUTPUT.iterdir()}==names and len(names)==12,
++            'exact full12 flat payload file set required')
++    actual={}
++    for path in OUTPUT.iterdir():
++        require(path.is_file() and not path.is_symlink(),'ordinary whole output payload required')
++        pinned=support.pin(path);actual[path.name]={'sha256':pinned['sha256'],'size_bytes':pinned['identity'][4]}
++    require(manifest['schema']=='REFINED_AAA_SAVED_SOURCE_PHASE_PAYLOAD_MANIFEST_V1' and
++            manifest['scientific_accuracy_qualified'] is False and manifest['requires_Root_actual_terminal_and_OwnRSS_receipts'] is True,
++            'actual saved-source manifest scope differs')
++    members={name:value for name,value in actual.items() if name!='payload_manifest.json'}
++    require(len(members)==11 and manifest['files']==members,'all11 full-byte manifest members required')
++    require(type(manifest['payload_bytes_before_manifest']) is int and
++            manifest['payload_bytes_before_manifest']==sum(value['size_bytes'] for value in members.values()) and
++            type(admission['archive_bytes']) is int and admission['archive_bytes']==sum(value['size_bytes'] for value in actual.values()),
++            'complete output byte counts differ')
++    layout=strict_metadata(OUTPUT/'layout.json')
++    require(layout['dimensions']=={'groups':370,'unknowns':1800,'cells':384,'faces':392,
++            'axial_cells':48,'angles':32,'radial_regions':8,'moments':3} and
++            all(type(value) is int for value in layout['dimensions'].values()),'complete original field layout required')
++    require(layout['all_unknowns_layout']=={'flux_moments':[0,1152],'face_current':[1152,1544],'xnei':[1544,1800]} and
++            layout['original_float_precision_preserved'] is True and set(layout['arrays'])==set(binary),'all1800 original unknown positions required')
++    for name,(shape,size) in binary.items():
++        record=layout['arrays'][name];entry=actual[name+'.bin']
++        require(record['file']==name+'.bin' and record['dtype']=='<f8' and record['shape']==shape and
++                all(type(value) is int for value in record['shape']) and record['order']=='C' and
++                record['bytes']==entry['size_bytes']==size and record['sha256']==entry['sha256'],
++                'full raw array shape/precision/byte pin differs '+name)
++    require(sum(actual[name+'.bin']['size_bytes'] for name in binary)==19820160,'all full arrays required')
++    receipts=strict_metadata(OUTPUT/'input_identities.json')
++    validate_input_receipts(receipts,contract,input_before,input_after,target_observation)
++    chronology=strict_metadata(OUTPUT/'chronological_event_inventory.json')
++    require(chronology['metric_selection'] is False and chronology['all_groups_last_context']==[3,1] and
++            len(chronology['records'])==136 and len(chronology['group_final_contexts'])==370,'whole chronological inventory required')
++    last={};calls={group:0 for group in range(1,371)}
++    for seq,row in enumerate(chronology['records'],1):
++        require(type(row['dispatch']) is int and row['dispatch']==seq and
++                type(row['outer']) is int and row['outer']>0 and type(row['inner']) is int and row['inner']>0,
++                'strict original dispatch context required')
++        active=row['NGIND'];system=row['NPSYS']
++        require(type(active) is list and 1<=len(active)<=370 and all(type(value) is int and 1<=value<=370 for value in active) and
++                type(system) is list and len(system)==370 and all(type(value) is int for value in system) and
++                active==[group for group,value in enumerate(system,1) if value!=0],'full actual original active-group inventory required')
++        b2=bytes.fromhex(row['B2_real32_hex']);require(len(b2)==16,'native B2 precision required')
++        bvalues=struct.unpack('<4f',b2)
++        require(all(math.isfinite(value) for value in bvalues) and bvalues[3]==0,'original post-SIGS guard required')
++        for group in active:last[group]=[seq,row['outer'],row['inner']];calls[group]+=1
++    require(set(last)==set(range(1,371)) and all(value[1:]==[3,1] for value in last.values()),'all groups last actual context required')
++    for group,context in enumerate(chronology['group_final_contexts'],1):
++        require(len(context)==9 and all(type(value) is int for value in context) and
++                context[:4]==[group]+last[group] and context[1]==context[4]==context[7] and context[5]>0 and
++                context[6]==calls[group] and context[8]==0,'full selected last source/return/field context differs')
++    owners={'production_closed_axial','production_candidate_axial','capture_candidate_axial'}
++    saved=strict_metadata(OUTPUT/'full_XSM_saved_record_identities.json');seen=set()
++    require(len(saved['records'])==1110,'all three fixed XSM owners times370 groups required')
++    for row in saved['records']:
++        require(row['owner'] in owners and type(row['group']) is int and 1<=row['group']<=370 and
++                (row['owner'],row['group']) not in seen and set(row['records'])=={'FLUX64','FLUX','SOUR'},'complete unique original XSM owner/group required')
++        seen.add((row['owner'],row['group']))
++        for name,length,kind in (('FLUX64',3600,4),('FLUX',1800,2),('SOUR',1800,2)):
++            entry=row['records'][name]
++            require(set(entry)=={'offset_words','length_words','type','sha256'} and
++                    type(entry['offset_words']) is int and entry['offset_words']>=0 and
++                    type(entry['length_words']) is int and entry['length_words']==length and
++                    type(entry['type']) is int and entry['type']==kind and valid_sha(entry['sha256']),
++                    'full native XSM type/length/index/raw pin required')
++    require(seen=={(owner,group) for owner in owners for group in range(1,371)},'all1110 XSM owner/group rows required')
++    normalization=report['one_original_global_normalization']
++    require(set(normalization)=={'AKEFF_real64_hex','FISOUR_real64_hex','quotient_real64_hex'},'one original global normalization required')
++    values=[]
++    for name in ('AKEFF_real64_hex','FISOUR_real64_hex','quotient_real64_hex'):
++        raw=bytes.fromhex(normalization[name]);require(len(raw)==8,'native REAL64 normalization word required')
++        value=struct.unpack('<d',raw)[0];require(math.isfinite(value) and value>0,'positive finite original normalization operand required');values.append(value)
++    require(struct.pack('<d',values[0]/values[1]).hex()==normalization['quotient_real64_hex'],
++            'original single global REAL64 quotient words differ')
++    lineage=report['lineage']
++    require(lineage['origin']=='chronological map012 original Dragon 51b' and
++            lineage['original_capture_full_scientific_word_exact_recorded'] is True and
++            lineage['sealed_capture_raw_files_total']==1483 and lineage['selected_raw_capture_files']==1113 and
++            lineage['no_new_credit_for_unread_raw_capture_collision_or_block_files'] is True,'original recorded capture lineage scope required')
++    for name,sha in (('FLU2DR64.f','90bedc3f7cc4d320355dbbf43988ca8fb43e59dbee493a7f19fa8c050c42e8a5'),
++            ('SPOT1P64.f90','7544212ac8419f9c73688c12339c8779358a24f4065523fbbf891cc4fe1c79e0')):
++        entry=lineage['source_insertion_inverse'][name]
++        require(entry['restored_sha256']==sha and entry['capture_only_insertions_reversed'] is True and
++                entry['entire_original_compiled_source_byte_identity_proved'] is False,'reversible SOURCE insertion scope required')
++    claim=strict_metadata(OUTPUT/'execution_claim.json')
++    require(claim['schema']=='REFINED_AAA_SAVED_WORK_RHS_PHASE_READ_ONLY_RUN_CLAIM_V1' and
++            claim['normal_genuine_OwnRSS_supervision_required'] is True and
++            claim['evaluator']==receipts['evaluator_before'] and
++            claim['declared_limits']=={'whole_seconds':60.0,'stage_seconds':60.0,'own_rss_mib':512.0,
++            'archive_bytes':67108864,'threads':1,'children':1,'retries':0},'unchanged producer run claim required')
++    require(type(admission['elapsed_seconds']) in (int,float) and 0<=admission['elapsed_seconds']<WHOLE_CAP and
++            type(report['elapsed_seconds_before_final_report']) in (int,float) and
++            0<=report['elapsed_seconds_before_final_report']<WHOLE_CAP,'original complete diagnostic elapsed budget required')
++    return {'input_roles':1140,'input_bytes':96042876,'payload_files':12,'manifest_members':11,
++            'full_binary_files':5,'full_binary_bytes':19820160,'all_saved_work_RHS_word_identities_verified_by_fixed_child':True,
++            'whole_input_EOF_receipts_and_outer_literal_target_alias_identities_checked':True,
++            'source_partition_qualified':False,'full_physical_neutron_balance_qualified':False,
++            'AAA_qualified':False,'ABA_admitted':False}
++
++def joint_archive_bytes(support):
++    # SOURCE and Root receipts live outside ART. Preserve the original ART-only
++    # complete-history helper; account all new diagnostic material separately.
++    roots=(HOST,OUTPUT,SOURCE_ARCHIVE,ROOT_RECEIPTS)
++    total=support.archive_bytes(roots)
++    if not any(TARGET.is_relative_to(root) for root in roots):total+=TARGET.lstat().st_size
++    return total
++
+ def main():
+     started=time.monotonic()
+-    if len(sys.argv)!=1 or sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE') or sys.getprofile() is not None:
++    if len(sys.argv)!=1 or sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE') or sys.getprofile() is not None or sys.gettrace() is not None:
+         raise ValueError('fixed unprofiled nonoptimized read-only admission host required')
+     import hashlib
+     if hashlib.sha256(SUPPORT.read_bytes()).hexdigest()!=SUPPORT_SHA:
+@@ -31,7 +308,13 @@
+     if any(os.environ.get(k)!='1' for k in support.THREAD_KEYS) or Path(sys.executable).resolve()!=support.PYTHON:
+         raise ValueError('original single-thread Python required')
+     if any(os.path.lexists(p) for p in (HOST,OUTPUT)):raise ValueError('fresh one-use saved diagnostic namespaces required; no retry')
+-    inputs=[support.pin(TARGET,TARGET_SHA),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/bootstrap/initial_axial_track.xsm'),'b8302889d66f37947b3060f5caef2be43c7da5dfd6673daaa1ffb66fd81997d6'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/bootstrap/initial_axial_macrolib.xsm'),'bca18875dbde9b5ae14f916f3df902ab071c173adff02c1b09ef647116282510'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/closed_axial.xsm'),'fcb6e4144a05d943f5a54637c0124ec59498b7176ca077db295f0878ef60e01a'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/candidate_system.xsm'),'994bacfea61f3145d0ba73f7889494215bca77fb5a341152fdd652e8f168c5e4'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/run_status.json'),'1acb16adc59f91e66599f74d11993d300bae73647dc870d148936935d199012f'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/result.json'),'f3716289ced3716fa89747ecb99b01757cd8d0f85ed202548f2fb68d5518606c'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/prepared.json'),'024ffb9263e3d3b6cf10301d6fe2bac5a87a9b368008440e01038982291a6d53'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AAA-white-trace-refined-observables-20261005/protocol.json'),'3f5c23d7d79c8d26162229d1cda51d3ee2218645222c8aec27b428280a93cadf'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AAA-white-trace-refined-observables-20261005/observables.regions.csv'),'2fd4096bf31098cc8323fd7eae791a5c1bedb10bf01daf8a637a3c238b256327'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AAA-white-trace-refined-observables-20261005/observables.faces.csv'),'02f9d68c41f2bd0be79f691094db862fa6cfaee371071c094e3ad1b0322057b9'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AAA-white-trace-refined-observables-20261005/observables.summary.txt'),'7b430da7fc916ee54abefba63e4ad21e0c490826bbf8170e9d176995e9171612'),support_pin,support.pin(support.TARGET,support.TARGET_SHA),support.pin(support.OUT/'seal.json',SEAL_SHA),support.pin(support.TERMINAL/'terminal_return.json',TERM_SHA)]
++    source_before=source_archive_pins(support)
++    contract,contract_pin=admitted_input_contract(support,source_before)
++    input_metadata_before=metadata_inputs(contract)
++    target_observation=metadata_inputs({'evaluator':{'path':str(TARGET)}})['evaluator']
++    inputs=[support.pin(TARGET,TARGET_SHA),support.pin(PARENT_HOST,PARENT_HOST_SHA),contract_pin,
++            support_pin,support.pin(support.TARGET,support.TARGET_SHA),
++            support.pin(support.OUT/'seal.json',SEAL_SHA),support.pin(support.TERMINAL/'terminal_return.json',TERM_SHA)]
+     helper,hpin=support.load(support.OLD_HELPER,support.OLD_HELPER_SHA,'axmat_v15_admission_original619')
+     resource,rpin=support.load(support.RESOURCE_FACTORY,support.RESOURCE_SHA,'axmat_v15_admission_real_resource_module')
+     full,production=helper.modules();helper.guard_admission(full)
+@@ -44,36 +327,36 @@
+         before=resources.check()
+         if before['artifact_bytes']+ARCHIVE_CAP>=96*2**30 or before['disk_free_bytes']-ARCHIVE_CAP<8*2**30:
+             raise ValueError('complete original resource reserve required')
++        if joint_archive_bytes(support)>=ARCHIVE_CAP:raise ValueError('all SOURCE/Root receipt/canonical bytes must fit original compact reserve')
+         HOST.mkdir()
+-        for name in ('runtime','run','SAVED_REACTION_DIAGNOSTIC'):(HOST/name).mkdir()
++        for name in ('runtime','run','SAVED_SOURCE_PHASE_DIAGNOSTIC'):(HOST/name).mkdir()
+         shutil.copy2(support.BOUNDED,HOST/'runtime/run_bounded_dragon.py')
+         remaining=WHOLE_CAP-(time.monotonic()-started)
+         if remaining<=0:raise ValueError('whole admission budget exhausted')
+-        runner=full.OwnRSSSerialExecutor(HOST,remaining,'SAVED_REACTION_DIAGNOSTIC',resources)
++        runner=full.OwnRSSSerialExecutor(HOST,remaining,'SAVED_SOURCE_PHASE_DIAGNOSTIC',resources)
+         if type(runner) is not full.OwnRSSSerialExecutor or runner.resources is not resources:raise ValueError('genuine runner binding required')
+         command=[str(support.PYTHON),'-B',str(TARGET),'--evaluator-sha256',TARGET_SHA,'--out-root',str(OUTPUT)]
+         runner.execute(HOST/'run','admit',command,STAGE_CAP)
+         log=HOST/'run/admit.log';watch_path=HOST/'run/admit.watchdog.json'
+-        admission=json.loads(log.read_text());watch=json.loads(watch_path.read_text())
+-        report=json.loads((OUTPUT/'result.json').read_text());manifest=json.loads((OUTPUT/'payload_manifest.json').read_text())
+-        if admission['classification']!='ALL_370_GROUP_SAVED_SOURCE_REACTION_FLUX_DIAGNOSTICS_COMPLETE_NOT_PHYSICAL_BALANCE_QUALIFIED' or report['classification']!=admission['classification'] or admission['scientific_accuracy_qualified'] is not False:raise ValueError('actual saved diagnostic scope required')
+-        if any(report[k] is not False for k in ('scientific_accuracy_qualified','AAA_qualified','ABA_admitted','same_MG_unreduced_reference_qualified','reaction_raw_transfer_equivalence_qualified','full_physical_neutron_balance_qualified','transport_launched','basis_rank_or_white_coefficients_modified')):raise ValueError('full saved diagnostic no science qualification required')
+-        if report['dimensions']!={'groups':370,'mixtures':24,'fission_components':32,'cells':384,'faces':392,'radial_regions':8,'axial_cells':48,'unknowns_per_group':1800} or report['full_group_fine_cell_coverage'] is not True:raise ValueError('all groups cells faces required')
+-        if admission['result']!=str(OUTPUT/'result.json') or admission['sha256']!=support.pin(OUTPUT/'result.json')['sha256'] or admission['payload_manifest']!=str(OUTPUT/'payload_manifest.json') or admission['manifest_sha256']!=support.pin(OUTPUT/'payload_manifest.json')['sha256']:raise ValueError('actual complete payload result pins required')
+-        actual={str(p.relative_to(OUTPUT)):support.pin(p)['sha256'] for p in OUTPUT.rglob('*') if p.is_file() and p.name!='payload_manifest.json'}
+-        if actual!={k:v['sha256'] for k,v in manifest['files'].items()}:raise ValueError('entire actual payload manifest required')
++        admission=strict_metadata(log);watch=json.loads(watch_path.read_text())
++        input_metadata_after=metadata_inputs(contract)
++        require(metadata_inputs({'evaluator':{'path':str(TARGET)}})['evaluator']==target_observation,
++                'canonical evaluator literal/target identity changed')
++        phase_validation=validate_phase_payload(support,admission,contract,input_metadata_before,input_metadata_after,target_observation)
+         if len(runner.records)!=1 or runner.records[0]['status']!='PASS' or type(watch['returncode']) is not int or watch['returncode']!=0 or watch['command']!=command or watch['limit_failure'] is not None or watch['own_child_only'] is not True or watch['liveness_group_cleanup'] is not True or not 0<=watch['sampled_peak_rss_mib']<RSS_CAP:
+             raise ValueError('one genuine bounded read-only child PASS required')
+-        after=resources.check();elapsed=time.monotonic()-started;archived=support.archive_bytes((HOST,OUTPUT,SOURCE_ARCHIVE))
++        after=resources.check();elapsed=time.monotonic()-started;archived=joint_archive_bytes(support)
+         if not elapsed<WHOLE_CAP or not archived<ARCHIVE_CAP:raise ValueError('unchanged admission host caps exceeded')
++        source_after=source_archive_pins(support)
++        if source_after!=source_before:raise ValueError('whole frozen SOURCE archive changed')
+         for entry in inputs+[hpin,rpin]:
+             if support.pin(entry['path'],entry['sha256'])!=entry:raise ValueError('normal complete pinned inputs changed')
+-        value=dict(schema='AXMAT_GENUINE_SAVED_FULL_GROUP_REACTION_DIAGNOSTIC_HOST_V1',status='ACTUAL_SAVED_FULL_GROUP_REACTION_DIAGNOSTIC_EXTERNAL_ROOT_REQUIRED',input_sources=inputs,original_helper=hpin,resource_factory=rpin,actual_canonical_command=command,actual_diagnostic_stdout=support.pin(log),actual_diagnostic_result=support.pin(OUTPUT/'result.json'),actual_diagnostic_manifest=support.pin(OUTPUT/'payload_manifest.json'),actual_watchdog=support.pin(watch_path),watchdog=watch,stage_records=runner.records,resources_before=before,resources_after=after,whole_seconds=elapsed,archive_before_result_bytes=archived,whole_wall_cap_seconds=WHOLE_CAP,stage_wall_cap_seconds=STAGE_CAP,rss_cap_mib=RSS_CAP,archive_cap_bytes=ARCHIVE_CAP,threads=1,children_at_once=1,retries=0,profile_used=False,supervisor_class_or_MRO_modified=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False)
++        value=dict(schema='AXMAT_GENUINE_SAVED_FULL_GROUP_SOURCE_PHASE_DIAGNOSTIC_HOST_V1',status='ACTUAL_SAVED_FULL_GROUP_SOURCE_PHASE_DIAGNOSTIC_EXTERNAL_ROOT_REQUIRED',input_sources=inputs,source_archive_before=source_before,source_archive_after=source_after,all1140_input_outer_metadata_before=input_metadata_before,all1140_input_outer_metadata_after=input_metadata_after,actual_complete_phase_payload_validation=phase_validation,joint_archive_roots=[str(HOST),str(OUTPUT),str(SOURCE_ARCHIVE),str(ROOT_RECEIPTS)],canonical_source_bytes_counted_outside_archive=TARGET.lstat().st_size,original_helper=hpin,resource_factory=rpin,actual_canonical_command=command,actual_diagnostic_stdout=support.pin(log),actual_diagnostic_result=support.pin(OUTPUT/'result.json'),actual_diagnostic_manifest=support.pin(OUTPUT/'payload_manifest.json'),actual_watchdog=support.pin(watch_path),watchdog=watch,stage_records=runner.records,resources_before=before,resources_after=after,whole_seconds=elapsed,archive_before_result_bytes=archived,whole_wall_cap_seconds=WHOLE_CAP,stage_wall_cap_seconds=STAGE_CAP,rss_cap_mib=RSS_CAP,archive_cap_bytes=ARCHIVE_CAP,threads=1,children_at_once=1,retries=0,profile_used=False,supervisor_class_or_MRO_modified=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+         support.write_new(HOST/'result.json',value)
+-        if support.archive_bytes((HOST,OUTPUT,SOURCE_ARCHIVE))>=ARCHIVE_CAP or time.monotonic()-started>=WHOLE_CAP:raise ValueError('final admission host caps exceeded')
++        if joint_archive_bytes(support)>=ARCHIVE_CAP or time.monotonic()-started>=WHOLE_CAP:raise ValueError('final admission host caps exceeded')
+         print(json.dumps(dict(status=value['status'],actual_host_result=support.pin(HOST/'result.json'),actual_diagnostic_stdout=support.pin(log),actual_external_Root_terminal_required=True),allow_nan=False),flush=True)
+     except BaseException as error:
+-        if HOST.is_dir():support.write_new(HOST/'failed_host_result.json',dict(status='FAILED_SAVED_REACTION_DIAGNOSTIC_NO_RETRY',error=repr(error),stage_records=[] if runner is None else runner.records,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False))
++        if HOST.is_dir():support.write_new(HOST/'failed_host_result.json',dict(status='FAILED_SAVED_SOURCE_PHASE_DIAGNOSTIC_NO_RETRY',error=repr(error),stage_records=[] if runner is None else runner.records,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False))
+         raise
+ 
+ if __name__=='__main__':main()

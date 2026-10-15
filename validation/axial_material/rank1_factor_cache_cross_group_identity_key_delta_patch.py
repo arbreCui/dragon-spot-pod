@@ -1,0 +1,550 @@
+"""UNREADY source-only V11 identity-key storage extension.
+
+Compose the genuine complete V10 factor-diagonal helper, then append only
+six reviewed integer-key representation regions. No import-time business I/O.
+No compiled, control, RSS, native or precision qualification is implied.
+"""
+from __future__ import annotations
+import copy
+import hashlib
+import importlib
+import re
+import sys
+from pathlib import Path
+
+DRAFT_STATUS = 'READY'
+SCHEMA = 'AXMAT_RANK1_CROSS_GROUP_INTEGER_IDENTITY_KEY_DELTA_STORAGE_V1'
+PARENT_HELPER = Path('/Users/wen/spot/validation/axial_material/rank1_factor_cache_factor_diagonal_trim_patch.py')
+PARENT_HELPER_SHA256 = 'd849ebbbe4dd7e59b17bd67e60a07f950aa7a2fc33f22011431c83c46cff1b6e'
+PARENT_KERNEL_SHA256 = '5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809'
+C0_KERNEL_SHA256 = 'c0fddcd2ddc4dba6969440024a9205fbb297727a6a045886acba626323ab5718'
+IDENTITY_KERNEL_SHA256 = '0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5'
+
+IDENTITY_EDITS = [{'name': 'plan_integer_key_metadata',
+  'old': '    integer(int64), allocatable :: rank1_raw_bits(:),rank1_operator_bits(:)\n',
+  'new': '    integer(int64), allocatable :: rank1_raw_bits(:),rank1_operator_bits(:)\n'
+         '    ! bits stores either the original full key or only differing values.\n'
+         '    ! Allocated positions (including length zero) selects the delta format.\n'
+         '    integer(int64) :: rank1_raw_size=0_int64,rank1_operator_size=0_int64\n'
+         '    integer(int32), allocatable :: rank1_raw_positions(:),rank1_operator_positions(:)\n'},
+ {'name': 'two_full_base_owner_indices',
+  'old': '  integer(int64), save :: rank1_validated_hits=0_int64\n',
+  'new': '  integer(int64), save :: rank1_validated_hits=0_int64\n'
+         '  ! Owners refer only to the first full key of each phase in this lifecycle.\n'
+         '  integer, save :: rank1_raw_base_owner=0,rank1_operator_base_owner=0\n'},
+ {'name': 'public_complete_integer_key_decoder',
+  'old': '  public :: SPOT1P64_RANK1_RELEASE,SPOT1P64_RANK1_GUARD\n',
+  'new': '  public :: SPOT1P64_RANK1_RELEASE,SPOT1P64_RANK1_GUARD\n'
+         '  public :: SPOT1P64_RANK1_KEY_LOAD,SPOT1P64_RANK1_KEY_STATS\n'},
+ {'name': 'clear_both_full_base_owners',
+  'old': '    rank1_validated_hits=0_int64\n  end subroutine SPOT1P64_CACHE_CLEAR\n',
+  'new': '    rank1_validated_hits=0_int64\n'
+         '    rank1_raw_base_owner=0\n'
+         '    rank1_operator_base_owner=0\n'
+         '  end subroutine SPOT1P64_CACHE_CLEAR\n'},
+ {'name': 'guard_complete_integer_comparison_and_actual_storage',
+  'old': '  subroutine SPOT1P64_RANK1_GUARD(igroup,key,phase,eligible,active)\n'
+         '    integer, intent(in) :: igroup,phase\n'
+         '    integer(int64), intent(in) :: key(:)\n'
+         '    logical, intent(in) :: eligible\n'
+         '    logical, intent(out) :: active\n'
+         '    integer(int64) :: amount\n'
+         '    active=.false.\n'
+         '    if (.not.rank1_enabled) return\n'
+         '    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: INVALID ENERGY GROUP.')\n"
+         '    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) then\n'
+         '      if (.not.eligible) return\n'
+         '      ! All descriptors/scalars are covered by 4096 declared bytes/group.\n'
+         '      allocate(SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '    endif\n'
+         '    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '      if (.not.eligible) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '      if (size(key,kind=int64) > RANK1_CAP/8_int64) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')\n"
+         '      amount=size(key,kind=int64)*8_int64\n'
+         '      if (phase == 1) then\n'
+         '        if (allocated(plan%rank1_raw_bits)) then\n'
+         '          if (size(plan%rank1_raw_bits) /= size(key)) &\n'
+         "            call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '          if (any(plan%rank1_raw_bits /= key)) &\n'
+         "            call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '        else\n'
+         '          call SPOT1P64_RANK1_RESERVE(amount)\n'
+         '          allocate(plan%rank1_raw_bits(size(key)))\n'
+         '          plan%rank1_raw_bits=key\n'
+         '        endif\n'
+         '      else if (phase == 2) then\n'
+         '        if (.not.allocated(plan%rank1_raw_bits)) &\n'
+         "          call XABORT('SPOT1P64 RANK1 CACHE: MISSING RAW IDENTITY.')\n"
+         '        if (allocated(plan%rank1_operator_bits)) then\n'
+         '          if (size(plan%rank1_operator_bits) /= size(key)) &\n'
+         "            call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '          if (any(plan%rank1_operator_bits /= key)) &\n'
+         "            call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '          if (plan%ready) rank1_validated_hits=rank1_validated_hits+1_int64\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_RESERVE(amount)\n'
+         '          allocate(plan%rank1_operator_bits(size(key)))\n'
+         '          plan%rank1_operator_bits=key\n'
+         '        endif\n'
+         '      else\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: INVALID IDENTITY PHASE.')\n"
+         '      endif\n'
+         '      active=.true.\n'
+         '    end associate\n'
+         '  end subroutine SPOT1P64_RANK1_GUARD\n',
+  'new': '  subroutine SPOT1P64_RANK1_GUARD(igroup,key,phase,eligible,active)\n'
+         '    integer, intent(in) :: igroup,phase\n'
+         '    integer(int64), intent(in) :: key(:)\n'
+         '    logical, intent(in) :: eligible\n'
+         '    logical, intent(out) :: active\n'
+         '    integer(int64) :: amount\n'
+         '    active=.false.\n'
+         '    if (.not.rank1_enabled) return\n'
+         '    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: INVALID ENERGY GROUP.')\n"
+         '    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) then\n'
+         '      if (.not.eligible) return\n'
+         '      ! All descriptors/scalars are covered by 4096 declared bytes/group.\n'
+         '      allocate(SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '    endif\n'
+         '    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '      if (.not.eligible) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '      if (size(key,kind=int64) > RANK1_CAP/8_int64) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')\n"
+         '      amount=size(key,kind=int64)*8_int64\n'
+         '      if (phase == 1) then\n'
+         '        if (allocated(plan%rank1_raw_bits)) then\n'
+         '          call SPOT1P64_RANK1_KEY_MATCH(igroup,key,phase)\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_STORE(igroup,key,phase)\n'
+         '        endif\n'
+         '      else if (phase == 2) then\n'
+         '        if (.not.allocated(plan%rank1_raw_bits)) &\n'
+         "          call XABORT('SPOT1P64 RANK1 CACHE: MISSING RAW IDENTITY.')\n"
+         '        if (allocated(plan%rank1_operator_bits)) then\n'
+         '          call SPOT1P64_RANK1_KEY_MATCH(igroup,key,phase)\n'
+         '          if (plan%ready) rank1_validated_hits=rank1_validated_hits+1_int64\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_STORE(igroup,key,phase)\n'
+         '        endif\n'
+         '      else\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: INVALID IDENTITY PHASE.')\n"
+         '      endif\n'
+         '      active=.true.\n'
+         '    end associate\n'
+         '  end subroutine SPOT1P64_RANK1_GUARD\n'},
+ {'name': 'integer_only_key_helpers',
+  'old': '  subroutine SPOT1P64_RANK1_FACTORS(igroup,nstate,nblock,npositive)\n',
+  'new': '  ! Source-only V11 candidate. No floating operation is performed here.\n'
+         '  subroutine SPOT1P64_RANK1_KEY_STATS(igroup,phase,owner,count, &\n'
+         '                                    compressed,stored_words,stored_positions)\n'
+         '    integer, intent(in) :: igroup,phase\n'
+         '    integer, intent(out) :: owner\n'
+         '    integer(int64), intent(out) :: count,stored_words,stored_positions\n'
+         '    logical, intent(out) :: compressed\n'
+         '    owner=0\n'
+         '    count=0_int64\n'
+         '    stored_words=0_int64\n'
+         '    stored_positions=0_int64\n'
+         '    compressed=.false.\n'
+         '    if (.not.rank1_enabled) return\n'
+         '    if (.not.allocated(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: INVALID ENERGY GROUP.')\n"
+         '    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    ! Observation only: a negative control may archive malformed metadata.\n'
+         '    ! The MATCH/LOAD gates below validate every format/index before use.\n'
+         '    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '      if (phase == 1) then\n'
+         '        owner=rank1_raw_base_owner\n'
+         '        count=plan%rank1_raw_size\n'
+         '        compressed=allocated(plan%rank1_raw_positions)\n'
+         '        if (allocated(plan%rank1_raw_bits)) &\n'
+         '          stored_words=size(plan%rank1_raw_bits,kind=int64)\n'
+         '        if (compressed) stored_positions=size(plan%rank1_raw_positions,kind=int64)\n'
+         '      else if (phase == 2) then\n'
+         '        owner=rank1_operator_base_owner\n'
+         '        count=plan%rank1_operator_size\n'
+         '        compressed=allocated(plan%rank1_operator_positions)\n'
+         '        if (allocated(plan%rank1_operator_bits)) &\n'
+         '          stored_words=size(plan%rank1_operator_bits,kind=int64)\n'
+         '        if (compressed) stored_positions=size(plan%rank1_operator_positions,kind=int64)\n'
+         '      else\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: INVALID IDENTITY PHASE.')\n"
+         '      endif\n'
+         '    end associate\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_STATS\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_BASE_VALIDATE(owner,phase)\n'
+         '    integer, intent(in) :: owner,phase\n'
+         '    if (.not.allocated(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (owner < 1 .or. owner > size(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (.not.allocated(SPOT1P64_PLAN(owner)%mode)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (size(SPOT1P64_PLAN(owner)%mode) /= 1) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    associate(base => SPOT1P64_PLAN(owner)%mode(1))\n'
+         '      if (phase == 1) then\n'
+         '        if (allocated(base%rank1_raw_positions)) &\n'
+         "          call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '        call SPOT1P64_RANK1_KEY_VALIDATE_DATA(base%rank1_raw_bits, &\n'
+         '          base%rank1_raw_positions,base%rank1_raw_size)\n'
+         '      else if (phase == 2) then\n'
+         '        if (allocated(base%rank1_operator_positions)) &\n'
+         "          call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '        call SPOT1P64_RANK1_KEY_VALIDATE_DATA(base%rank1_operator_bits, &\n'
+         '          base%rank1_operator_positions,base%rank1_operator_size)\n'
+         '      else\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: INVALID IDENTITY PHASE.')\n"
+         '      endif\n'
+         '    end associate\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_BASE_VALIDATE\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_VALIDATE_DATA(bits,positions,nkey,base)\n'
+         '    integer(int64), allocatable, intent(in) :: bits(:)\n'
+         '    integer(int32), allocatable, intent(in) :: positions(:)\n'
+         '    integer(int64), intent(in) :: nkey\n'
+         '    integer(int64), optional, intent(in) :: base(:)\n'
+         '    integer :: k,previous,p\n'
+         '    if (.not.allocated(bits)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (nkey < 0_int64 .or. nkey > RANK1_CAP/8_int64) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (.not.allocated(positions)) then\n'
+         '      if (size(bits,kind=int64) /= nkey) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '      return\n'
+         '    endif\n'
+         '    if (.not.present(base)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (size(base,kind=int64) /= nkey .or. size(bits) /= size(positions)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (12_int64*size(bits,kind=int64) >= 8_int64*nkey) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    previous=0\n'
+         '    do k=1,size(positions)\n'
+         '      p=int(positions(k))\n'
+         '      if (p <= previous .or. int(p,int64) > nkey) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '      if (bits(k) == base(p)) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '      previous=p\n'
+         '    enddo\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_VALIDATE_DATA\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_SAVE_DATA(key,bits,positions,nkey,base)\n'
+         '    integer(int64), intent(in) :: key(:)\n'
+         '    integer(int64), allocatable, intent(inout) :: bits(:)\n'
+         '    integer(int32), allocatable, intent(inout) :: positions(:)\n'
+         '    integer(int64), intent(inout) :: nkey\n'
+         '    integer(int64), optional, intent(in) :: base(:)\n'
+         '    integer :: i,d,k\n'
+         '    integer(int64) :: amount\n'
+         '    logical :: use_delta\n'
+         '    if (allocated(bits) .or. allocated(positions) .or. nkey /= 0_int64) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (size(key,kind=int64) > RANK1_CAP/8_int64) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')\n"
+         '    use_delta=.false.\n'
+         '    d=0\n'
+         '    if (present(base)) then\n'
+         '      if (size(base) == size(key)) then\n'
+         '        do i=1,size(key)\n'
+         '          if (key(i) /= base(i)) d=d+1\n'
+         '        enddo\n'
+         '        use_delta=12_int64*int(d,int64) < 8_int64*size(key,kind=int64)\n'
+         '      endif\n'
+         '    endif\n'
+         '    if (use_delta) then\n'
+         '      amount=12_int64*int(d,int64)\n'
+         '      call SPOT1P64_RANK1_RESERVE(amount)\n'
+         '      allocate(bits(d),positions(d))\n'
+         '      k=0\n'
+         '      do i=1,size(key)\n'
+         '        if (key(i) == base(i)) cycle\n'
+         '        k=k+1\n'
+         '        positions(k)=int(i,int32)\n'
+         '        bits(k)=key(i)\n'
+         '      enddo\n'
+         '    else\n'
+         '      amount=8_int64*size(key,kind=int64)\n'
+         '      call SPOT1P64_RANK1_RESERVE(amount)\n'
+         '      allocate(bits(size(key)))\n'
+         '      bits=key\n'
+         '    endif\n'
+         '    nkey=size(key,kind=int64)\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_SAVE_DATA\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_STORE(igroup,key,phase)\n'
+         '    integer, intent(in) :: igroup,phase\n'
+         '    integer(int64), intent(in) :: key(:)\n'
+         '    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '      if (phase == 1) then\n'
+         '        if (rank1_raw_base_owner == 0) then\n'
+         '          call SPOT1P64_RANK1_KEY_SAVE_DATA(key,plan%rank1_raw_bits, &\n'
+         '            plan%rank1_raw_positions,plan%rank1_raw_size)\n'
+         '          rank1_raw_base_owner=igroup\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_BASE_VALIDATE(rank1_raw_base_owner,phase)\n'
+         '          call SPOT1P64_RANK1_KEY_SAVE_DATA(key,plan%rank1_raw_bits, &\n'
+         '            plan%rank1_raw_positions,plan%rank1_raw_size, &\n'
+         '            SPOT1P64_PLAN(rank1_raw_base_owner)%mode(1)%rank1_raw_bits)\n'
+         '        endif\n'
+         '      else if (phase == 2) then\n'
+         '        if (rank1_operator_base_owner == 0) then\n'
+         '          call SPOT1P64_RANK1_KEY_SAVE_DATA(key,plan%rank1_operator_bits, &\n'
+         '            plan%rank1_operator_positions,plan%rank1_operator_size)\n'
+         '          rank1_operator_base_owner=igroup\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_BASE_VALIDATE(rank1_operator_base_owner,phase)\n'
+         '          call SPOT1P64_RANK1_KEY_SAVE_DATA(key,plan%rank1_operator_bits, &\n'
+         '            plan%rank1_operator_positions,plan%rank1_operator_size, &\n'
+         '            SPOT1P64_PLAN(rank1_operator_base_owner)%mode(1)%rank1_operator_bits)\n'
+         '        endif\n'
+         '      else\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: INVALID IDENTITY PHASE.')\n"
+         '      endif\n'
+         '    end associate\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_STORE\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_CHECK_DATA(key,bits,positions,nkey,base)\n'
+         '    integer(int64), intent(in) :: key(:)\n'
+         '    integer(int64), allocatable, intent(in) :: bits(:)\n'
+         '    integer(int32), allocatable, intent(in) :: positions(:)\n'
+         '    integer(int64), intent(in) :: nkey\n'
+         '    integer(int64), optional, intent(in) :: base(:)\n'
+         '    integer :: i,k,p\n'
+         '    integer(int64) :: expected\n'
+         '    call SPOT1P64_RANK1_KEY_VALIDATE_DATA(bits,positions,nkey,base)\n'
+         '    if (size(key,kind=int64) /= nkey) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    k=1\n'
+         '    do i=1,size(key)\n'
+         '      if (allocated(positions)) then\n'
+         '        expected=base(i)\n'
+         '        if (k <= size(positions)) then\n'
+         '          p=int(positions(k))\n'
+         '          if (i == p) then\n'
+         '            expected=bits(k)\n'
+         '            k=k+1\n'
+         '          endif\n'
+         '        endif\n'
+         '      else\n'
+         '        expected=bits(i)\n'
+         '      endif\n'
+         '      if (expected /= key(i)) &\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    enddo\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_CHECK_DATA\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_MATCH(igroup,key,phase)\n'
+         '    integer, intent(in) :: igroup,phase\n'
+         '    integer(int64), intent(in) :: key(:)\n'
+         '    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '      if (phase == 1) then\n'
+         '        if (allocated(plan%rank1_raw_positions)) then\n'
+         '          call SPOT1P64_RANK1_KEY_BASE_VALIDATE(rank1_raw_base_owner,phase)\n'
+         '          call SPOT1P64_RANK1_KEY_CHECK_DATA(key,plan%rank1_raw_bits, &\n'
+         '            plan%rank1_raw_positions,plan%rank1_raw_size, &\n'
+         '            SPOT1P64_PLAN(rank1_raw_base_owner)%mode(1)%rank1_raw_bits)\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_CHECK_DATA(key,plan%rank1_raw_bits, &\n'
+         '            plan%rank1_raw_positions,plan%rank1_raw_size)\n'
+         '        endif\n'
+         '      else if (phase == 2) then\n'
+         '        if (allocated(plan%rank1_operator_positions)) then\n'
+         '          call SPOT1P64_RANK1_KEY_BASE_VALIDATE(rank1_operator_base_owner,phase)\n'
+         '          call SPOT1P64_RANK1_KEY_CHECK_DATA(key,plan%rank1_operator_bits, &\n'
+         '            plan%rank1_operator_positions,plan%rank1_operator_size, &\n'
+         '            SPOT1P64_PLAN(rank1_operator_base_owner)%mode(1)%rank1_operator_bits)\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_CHECK_DATA(key,plan%rank1_operator_bits, &\n'
+         '            plan%rank1_operator_positions,plan%rank1_operator_size)\n'
+         '        endif\n'
+         '      else\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: INVALID IDENTITY PHASE.')\n"
+         '      endif\n'
+         '    end associate\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_MATCH\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_LOAD_DATA(key,bits,positions,nkey,base)\n'
+         '    integer(int64), intent(out) :: key(:)\n'
+         '    integer(int64), allocatable, intent(in) :: bits(:)\n'
+         '    integer(int32), allocatable, intent(in) :: positions(:)\n'
+         '    integer(int64), intent(in) :: nkey\n'
+         '    integer(int64), optional, intent(in) :: base(:)\n'
+         '    integer :: k\n'
+         '    call SPOT1P64_RANK1_KEY_VALIDATE_DATA(bits,positions,nkey,base)\n'
+         '    if (size(key,kind=int64) /= nkey) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (allocated(positions)) then\n'
+         '      key=base\n'
+         '      do k=1,size(positions)\n'
+         '        key(int(positions(k)))=bits(k)\n'
+         '      enddo\n'
+         '    else\n'
+         '      key=bits\n'
+         '    endif\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_LOAD_DATA\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_KEY_LOAD(igroup,phase,key)\n'
+         '    integer, intent(in) :: igroup,phase\n'
+         '    integer(int64), intent(out) :: key(:)\n'
+         '    if (.not.rank1_enabled .or. .not.allocated(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: INVALID ENERGY GROUP.')\n"
+         '    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n'
+         "      call XABORT('SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.')\n"
+         '    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n'
+         '      if (phase == 1) then\n'
+         '        if (allocated(plan%rank1_raw_positions)) then\n'
+         '          call SPOT1P64_RANK1_KEY_BASE_VALIDATE(rank1_raw_base_owner,phase)\n'
+         '          call SPOT1P64_RANK1_KEY_LOAD_DATA(key,plan%rank1_raw_bits, &\n'
+         '            plan%rank1_raw_positions,plan%rank1_raw_size, &\n'
+         '            SPOT1P64_PLAN(rank1_raw_base_owner)%mode(1)%rank1_raw_bits)\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_LOAD_DATA(key,plan%rank1_raw_bits, &\n'
+         '            plan%rank1_raw_positions,plan%rank1_raw_size)\n'
+         '        endif\n'
+         '      else if (phase == 2) then\n'
+         '        if (allocated(plan%rank1_operator_positions)) then\n'
+         '          call SPOT1P64_RANK1_KEY_BASE_VALIDATE(rank1_operator_base_owner,phase)\n'
+         '          call SPOT1P64_RANK1_KEY_LOAD_DATA(key,plan%rank1_operator_bits, &\n'
+         '            plan%rank1_operator_positions,plan%rank1_operator_size, &\n'
+         '            SPOT1P64_PLAN(rank1_operator_base_owner)%mode(1)%rank1_operator_bits)\n'
+         '        else\n'
+         '          call SPOT1P64_RANK1_KEY_LOAD_DATA(key,plan%rank1_operator_bits, &\n'
+         '            plan%rank1_operator_positions,plan%rank1_operator_size)\n'
+         '        endif\n'
+         '      else\n'
+         "        call XABORT('SPOT1P64 RANK1 CACHE: INVALID IDENTITY PHASE.')\n"
+         '      endif\n'
+         '    end associate\n'
+         '  end subroutine SPOT1P64_RANK1_KEY_LOAD\n'
+         '\n'
+         '  subroutine SPOT1P64_RANK1_FACTORS(igroup,nstate,nblock,npositive)\n'}]
+
+IDENTITY_CONTRACT = {'schema': 'AXMAT_RANK1_CROSS_GROUP_INTEGER_IDENTITY_KEY_DELTA_STORAGE_V1',
+ 'ordinary_rank1_only': True,
+ 'phases': [1, 2],
+ 'first_full_owner_per_phase': True,
+ 'second_base_copy': False,
+ 'selection': 'same original key length and 12*ndiff < 8*nkey; otherwise full int64 fallback',
+ 'full_format': 'positions unallocated; size(bits)==original_size',
+ 'delta_format': 'positions int32 allocated, including zero-length; bits int64 contains differing '
+                 'words; strict ascending positive positions; same-size full base; each delta '
+                 'differs from base',
+ 'complete_current_key_integer_word_equality': True,
+ 'original_full_temporary_key_generation_and_8n_reservation_retained': True,
+ 'persistent_storage_bytes': 'full:8*nkey; delta:12*ndiff',
+ 'descriptor_bytes_per_group': 4096,
+ 'accounted_cap_bytes': 536870912,
+ 'public_KEY_LOAD': '(igroup,phase,key int64(:) intent(out))',
+ 'public_KEY_STATS': '(igroup,phase,owner defaultINTEGER out,count int64 out,compressed LOGICAL '
+                     'out,stored_words int64 out,stored_positions int64 out)',
+ 'CLEAR_releases_all_PLAN_and_resets_both_base_owners': True,
+ 'Factor64_Solve64_whole_source_unchanged': True,
+ 'all_original_45_stages_required': True,
+ 'per_group_dense_full_keys_and_actual_encoded_payload_must_be_archived': True,
+ 'actual_controls_executed': False,
+ 'actual_native_RSS_passed': False,
+ 'AAA_accuracy_qualified': False,
+ 'ABA_admitted': False}
+
+def sha(source):
+    return hashlib.sha256(source.encode()).hexdigest()
+
+def require_ready():
+    if DRAFT_STATUS != 'READY':
+        raise ValueError('reviewed V11 source admission required before execution')
+
+def _factor_parent():
+    if PARENT_HELPER.is_symlink() or not PARENT_HELPER.is_file():
+        raise ValueError('ordinary immutable V10 complete helper required')
+    if hashlib.sha256(PARENT_HELPER.read_bytes()).hexdigest() != PARENT_HELPER_SHA256:
+        raise ValueError('exact complete V10 helper hash required')
+    sys.path.insert(0,str(PARENT_HELPER.parent))
+    parent=importlib.import_module(PARENT_HELPER.stem)
+    if parent.__file__ != str(PARENT_HELPER) or parent.__spec__.origin != str(PARENT_HELPER):
+        raise ValueError('canonical normal V10 helper module required')
+    if hashlib.sha256(PARENT_HELPER.read_bytes()).hexdigest() != PARENT_HELPER_SHA256:
+        raise ValueError('V10 helper changed while importing')
+    return parent
+
+def identity_kernel(source):
+    require_ready()
+    if sha(source) != PARENT_KERNEL_SHA256:
+        raise ValueError('whole actual V10 kernel required')
+    kernel=source
+    for edit in IDENTITY_EDITS:
+        if kernel.count(edit['old']) != 1:
+            raise ValueError('unique identity source anchor required: '+edit['name'])
+        kernel=kernel.replace(edit['old'],edit['new'],1)
+    inverse=kernel
+    for edit in reversed(IDENTITY_EDITS):
+        if inverse.count(edit['new']) != 1:
+            raise ValueError('identity source inverse ambiguous: '+edit['name'])
+        inverse=inverse.replace(edit['new'],edit['old'],1)
+    if inverse != source or sha(kernel) != IDENTITY_KERNEL_SHA256:
+        raise ValueError('whole identity source inverse/hash differs')
+    retained={}
+    for name in ('SPOT1P64_FACTOR64','SPOT1P64_SOLVE64','boundary_solve','rank1_identity'):
+        pattern=r'(?ms)^  subroutine '+re.escape(name)+r'\(.*?^  end subroutine '+re.escape(name)+r'\n'
+        a=re.findall(pattern,source); b=re.findall(pattern,kernel)
+        if len(a) != 1 or a != b:
+            raise ValueError('whole original arithmetic/key routine changed: '+name)
+        retained[name]=sha(a[0])
+    return dict(kernel=kernel,proof=dict(schema=SCHEMA,parent_kernel_sha256=sha(source),
+        candidate_kernel_sha256=sha(kernel),complete_inverse_byteexact=True,
+        edits=copy.deepcopy(IDENTITY_EDITS),retained_whole_source_sha256=retained,
+        contract=copy.deepcopy(IDENTITY_CONTRACT),actual_controls_executed=False,
+        actual_native_RSS_passed=False,AAA_accuracy_qualified=False,ABA_admitted=False))
+
+def patch_kernel(source):
+    require_ready()
+    if sha(source) != C0_KERNEL_SHA256:
+        raise ValueError('whole original c0 source required')
+    base=_factor_parent().patch_kernel(source)
+    if base['proof']['candidate_kernel_sha256'] != PARENT_KERNEL_SHA256 or sha(base['kernel']) != PARENT_KERNEL_SHA256:
+        raise ValueError('genuine complete V10 patch lineage required')
+    delta=identity_kernel(base['kernel'])
+    proof=copy.deepcopy(base['proof'])
+    proof['inherited_v10_complete_proof']=copy.deepcopy(base['proof'])
+    proof['edits']+=copy.deepcopy(delta['proof']['edits'])
+    proof['cross_group_identity_key_delta']=copy.deepcopy(delta['proof'])
+    proof['candidate_kernel_sha256']=sha(delta['kernel'])
+    proof['delegated_factor_diagonal_helper']=dict(path=str(PARENT_HELPER),sha256=PARENT_HELPER_SHA256)
+    proof['scope']='ORDINARY_RANK1_LOWER_DICTIONARY_TERMINAL_CPRIME_DEAD_FACTOR_DIAGONAL_AND_CROSS_GROUP_INTEGER_IDENTITY_STORAGE_ONLY'
+    inverse=delta['kernel']
+    for edit in reversed(proof['edits']):
+        if inverse.count(edit['new']) != 1:
+            raise ValueError('complete c0 source inverse ambiguous')
+        inverse=inverse.replace(edit['new'],edit['old'],1)
+    if inverse != source:
+        raise ValueError('complete c0 source inverse differs')
+    proof['complete_inverse_byteexact']=True
+    proof['inverse_kernel_sha256']=sha(inverse)
+    return dict(kernel=delta['kernel'],proof=proof)
+
+def control_contract():
+    require_ready()
+    contract=copy.deepcopy(_factor_parent().control_contract())
+    contract['cross_group_identity_key_delta']=copy.deepcopy(IDENTITY_CONTRACT)
+    return contract
+
+def dense_reference_kernel(source):
+    require_ready()
+    return _factor_parent().dense_reference_kernel(source)

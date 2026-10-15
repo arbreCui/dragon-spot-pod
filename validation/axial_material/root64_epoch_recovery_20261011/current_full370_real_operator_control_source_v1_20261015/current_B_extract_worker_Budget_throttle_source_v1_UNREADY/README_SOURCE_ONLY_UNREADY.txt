@@ -1,0 +1,7 @@
+UNREADY worker Budget Source only, 2026-10-15
+
+The sole change moves the full-scan throttle timestamp from the beginning of a completed disk/metadata scan to its successful end. Every Budget.check invocation still performs its original elapsed600s and SELF512MiB checks before testing the unchanged0.25s throttle. A new full scan starts only after0.25s has elapsed since the preceding successful full scan completed. All original roots, explicit metadata/ancestor checks, open-unlinked accounting and cumulative2GiB limit remain; no scan scope or1MiB SHA/EOF check is removed.
+
+Eight other integration Sources and every other worker function/class remain wholebyte identical. Budget.__init__ is unchanged. Original mathematical engine, adapter, snapshot/context decoders, thresholds and intentional exit2/FAILED/error handling are unchanged. The inverse evidence restores the exact frozen original worker SHA.
+
+No Source generation, publication, helper import, worker/decoder/compiler/native execution or cleanup occurred. The currently running original v1 process and frozen Source are untouched; its outcome is unknown here. This is not an actual host or ledger admission. Any future attempt requires the real original terminal result, independent metadata post, a new owning host namespace and the entire then-current prefix including all original evidence. It cannot retry or overwrite original v1. Physics, AAA, ABA and goal qualifications remain false.

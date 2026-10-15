@@ -1,0 +1,70 @@
+def create_complete_input_graph(helpers,source_inventory,extra,roots):
+    # Directory-only resource scopes come from original caller declaration, never the reached trace.
+    roots=[str(p)for p in root_index_resource_factory().validate_history_roots(roots,ART)]
+    g=helpers['graph'];codec=helpers['codec'];checks=helpers['checks']
+    encoded=g.strict_json(str(INPUT_SPECS),INPUT_SPECS_SHA);expanded=codec.unpack_specs(encoded);del encoded;gc.collect()
+    failed=failed_prepare_input(g);trim=trim_component_input(g)
+    owners=g._owners(expanded['owners']+[dict(owner='NEW SOURCE-owned historical INPUT reuse implementation',category='code_environment',expected_files=extra),
+        dict(owner='ACTUAL FAILED PREP INPUT-only documents and namespace members',category='component_terminals',expected_files=failed['files']),
+        dict(owner='ACTUAL_COMPLETE_TRIM_COMPONENT_INPUT',category='component_ancestry',expected_files=trim['files']),*trim['support_owners']])
+    aliases=checks.bind_aliases(g,expanded,owners)
+    trim_alias_paths=[row['root']for row in trim['namespaces']]+[str(Path(row['root'])/name)for row in trim['namespaces']for name in row['symlinks']]
+    aliases=g._alias_map([*aliases.values(),*g.capture_aliases(trim_alias_paths)])
+    negative=g.strict_json(str(SOURCE/TRIM_ABSENCE_NAME))
+    aliases=g._alias_map([*aliases.values(),*negative['aliases']])
+    g._absence_phase(g._absence_inputs(negative['absence_inputs']),aliases,expected=negative['observations'])
+    namespaces=checks.bind_namespaces(g,expanded,aliases)
+    namespaces.extend(graph_trim_namespaces(g,trim['namespaces'],aliases))
+    for row in failed['namespaces']:
+        namespaces.append(g.explicit_sealed_namespace(row['root'],row['files'],{},owner=row['owner'],
+            category='component_terminals',directories=row['directories']))
+    namespaces.append(g.explicit_sealed_namespace(str(SOURCE),source_inventory['files'],{},
+        owner=str(SOURCE)+'#new_exhaustive_source',category='source_namespace',directories=source_inventory['directories']))
+    before=current_input_predicates(helpers,expanded,True)
+    with g.ReadOpenAudit()as audit:
+        requirements,actual,new_pins,fresh=g._phase(owners,namespaces,aliases,{},json_input=dict(path=str(INPUT_SPECS),sha256=INPUT_SPECS_SHA))
+    if new_pins or codec.pack_specs(expanded)!=fresh['parsed']:raise ValueError('whole INPUT codec/byte identity differs')
+    lengths=checks.check_failed_lengths_and_owned_negative_bytes(g,expanded,aliases,actual)
+    failed_lengths=check_failed_prepare_phase(failed,namespaces,actual)
+    trace=audit.snapshot()
+    api_trace=g.strict_json(str(SOURCE/TRIM_TRACE_NAME))
+    trace=dict(schema=g.TRACE_SCHEMA,coverage='PYTHON_AUDIT_OPEN_ATTEMPTS_ONLY',
+        records=[*api_trace['records'],*trace['records']],
+        subprocess_records=[*api_trace['subprocess_records'],*trace['subprocess_records']])
+    del api_trace
+    current_input_predicates(helpers,expanded,True)
+    write_new(OUT/'input_creation_python_open_trace.json',trace)
+    # Release all expanded duplicate owner/ns maps, while normalized full owners,
+    # full namespaces and complete actual trace remain. No edge is dropped.
+    # Whole expanded JSON already passed the original byte/codec equality.
+    # These are exactly the existing current predicate/length-check fields.
+    expanded=minimal_live_specs({'metadata':expanded})
+    trim_binding=trim['binding']
+    del trim,trim_alias_paths,before
+    del failed['files']
+    del requirements,actual,new_pins,fresh,audit;gc.collect()
+    graph=g.create_fresh_complete_wire_graph(typed_snapshot=dict(semantics='HISTORICAL_PREP_INPUT_ONLY_REUSE_NO_API_REEXECUTION',
+        historical_whole_component_body=BODY_BINDING,historical_PREP=dict(path=str(HISTORICAL_PREP),sha256=HISTORICAL_PREP_SHA),
+        failed_historical_combined_RUN_promoted=False,original_component_APIs_executed_now=False,prior_failed_PREP_input=failed['binding'],actual_last_cprime_trim_component_INPUT=trim_binding),
+        owners=owners,namespaces=namespaces,aliases=aliases.values(),read_trace=trace,absence_inputs=negative['absence_inputs'],live_resource_roots=roots)
+    g._absence_phase(g._absence_inputs(negative['absence_inputs']),aliases,expected=negative['observations'])
+    if graph['consumer_scope']is not None:raise ValueError('whole INPUT closure cannot use consumer scope')
+    pins={row['path']:row for row in graph['canonical_files']}
+    if checks.check_failed_lengths_and_owned_negative_bytes(g,expanded,aliases,pins)!=lengths:
+        raise ValueError('just-fresh failed sizes differ across creation phases')
+    if check_failed_prepare_phase(failed,graph['namespaces'],pins)!=failed_lengths:
+        raise ValueError('failed PREP sizes differ across full fresh creation phases')
+    current_input_predicates(helpers,expanded,True)
+    # All original full second-phase predicates above have completed.
+    # The complete graph retains its data; no caller input metadata is used below.
+    del owners,namespaces,aliases,trace,negative,expanded,failed,pins,trim_binding
+    gc.collect()
+    # Graph lives in OUT and is not included in its own SOURCE namespace or byte
+    # owners. The declaration pins its exact bytes without a self-hash cycle.
+    with normal(OUT/GRAPH_NAME,missing=True).open('x')as f:
+        json.dump(g.encode_complete_graph_table_storage(graph),f,separators=(',',':'),allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
+    if require(OUT/GRAPH_NAME).stat().st_size>g.MAX_JSON_BYTES:
+        raise ValueError('complete lossless graph exceeds original 64 MiB strict JSON cap')
+    files,complete_aliases=graph_input_bindings(g,graph)
+    binding=dict(path=str(OUT/GRAPH_NAME),sha256=digest(OUT/GRAPH_NAME),content_sha256=graph['content_sha256'],scope='COMPLETE_HISTORICAL_INPUT_ONLY')
+    return binding,files,complete_aliases

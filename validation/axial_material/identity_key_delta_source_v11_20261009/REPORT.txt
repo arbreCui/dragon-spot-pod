@@ -1,0 +1,9 @@
+V11 完整身份键无损 base+差异存储源码草稿
+
+状态：SOURCE_ONLY_DRAFT / UNREADY；未编译、未控制执行、未运行科学业务。
+母本：5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809。候选：0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5。
+6处源码替换可完整逆向回母本；原 full key 生成、Factor64/Solve64、Lower/Factor PACK/LOAD、boundary_solve 均完整字节不变。
+每phase首个完整键只存一次；后续同长度键仅在12*差异数<8*键长时存int32位置+原int64值，否则回退完整键。零差异合法。每次完整逻辑键仍逐字比较，原phase2 raw门及ready hit计数保持。
+新KEY_LOAD供真实controls输出完整键；KEY_STATS只观察元数据，不能充当准入。CLEAR释放全PLAN并清零两个base owner。原512MiB cap和4096/group描述符预留不变。
+实际差异数和RSS收益均未知。必须独立源码审核、实际编译、原45阶段全控制，以及新编码边界/损坏/完整负例控制后，才可建立新family。V10失败事实不改。
+另有可独立实施的缓存miss提前释放4个工作数组方案，理论临时重叠减少1212672B；当前候选未包含此改动。不得把Cprime假定为可删零列。

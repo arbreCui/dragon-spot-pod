@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "experiment_id": "axial-material-aaa-aba-20261003",
+  "status": "PREDECLARED_BEFORE_FIRST_COMMON_BASIS_CONSTRUCTION",
+  "case_spec_sha256": "ac3e67ffdc25f5bfa45bca5170253de8e875c983550e5ee878ee30c5d1a4c2c4",
+  "groups": 370,
+  "training_slots": ["A", "B", "A"],
+  "required_production_rank_each_group": 2,
+  "sigma2_over_sigma1_strict_min": 9.5367431640625e-7,
+  "formula": "sigma2 > 8 * epsilon(REAL32) * sigma1; epsilon(REAL32) = 2^-23",
+  "purpose": "Conservative numerical distinguishability screen for REAL32 snapshot input, not a POD truncation accuracy criterion.",
+  "evidence": "Read all three singular values per group from the actual production common_basis.xsm POD-SIGMA-G record; preserve the complete XSM and spectrum log.",
+  "failure_classification": "INCONCLUSIVE_RANK_INPUT_PRECISION",
+  "failure_action": "Stop before AAA or ABA; preserve outputs; no padding, rank reduction, threshold change, per-case retraining or fitting to CE results."
+}

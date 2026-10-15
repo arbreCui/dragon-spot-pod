@@ -1,0 +1,1 @@
+V12 postterminal recorder READY源候选：仅HOST/DECL/SEAL/RUN/PREP/API_RETURN六pins和READY赋值7region，可逆0346再29region逆真实V10 recorder2235。真实host3900c7/49432→bbe76b0，53.15720783296274s、498.75MiB、1PASS/0retry、全stdout=result、hoststderr空、完整API与formal字节相同；source/result/log/watch各pin真实匹配。其余全部纯helper0b8与body/meta/toolsCLI/预算原样。未运行recorder、未写durable或project；原sciencefalse。

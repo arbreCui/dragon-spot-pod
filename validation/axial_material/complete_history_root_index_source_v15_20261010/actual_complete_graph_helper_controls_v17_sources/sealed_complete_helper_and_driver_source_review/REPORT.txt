@@ -1,0 +1,12 @@
+UNREADY SOURCE ONLY. No new admission and no execution.
+Final helper: /private/tmp/axmat_v17_full_private_json_normalize_source_only_20261010/complete_fresh_wire_trace_table_full_json_normalize.CANDIDATE.py
+SHA256: bcd692aa3e42ecf4336bb70068c560bd322c789fd3fd458baade409ab6f829a6 /145715B
+Final driver: /private/tmp/axmat_v17_full_private_json_normalize_source_only_20261010/pure_helper_controls_full_json_normalize.CANDIDATE.py
+SHA256: da4bd8438cb5007e8e7a5817ba9e198237aa93766af769898d971adf9708e68e /58291B
+Normal future helper: /Users/wen/spot/validation/axial_material/combined_runtime_complete_input_graph_fresh_wire_trace_table_order_preserved_20261010.py
+Full accepted JSON normalization uses original _json_clone on corresponding foreign parts; builtin private containers stay in place; every returned child/root is assigned. No str() normalization of string subclasses. Original five-field rowcodec insertion order restored.
+Two complete original/fresh accepted-str controls include __str__ override, paths/labels and strict caller attribute/id/order/type/value/floatbits preservation; all original controls/pins/caps unchanged.
+Complete inverse: helper->173fc2->e8f142 and driver->34ba581 byte-for-byte.
+Final finite independent SOURCE review: no blocker. Root independent finite source review: no blocker.
+Root new v17 sole genuine bounded control remains required:60s/512MiB/64MiB fullarchive/1child/0retry. Frozen v16 failure is unchanged and not rerun.
+Actual success pins and Root execution handle:null. No helper import/execution, driver run, numeric payload read or project write.

@@ -1,0 +1,30 @@
+第八轮旧重放输入副本只读审查 — 已完成，尚未删除
+
+建议精确集合只有 10 个旧 native replay/inputs 或 replay/runs track_data.bin 副本。逻辑 396023440 B，分配 396042240 B（0.36884307861328125 GiB）。这是候选体积，不是实际释放量。
+
+实际只读工具 cb20cd / session 66759 -> 71ed87 CLOSED EXIT 0，耗时 4.834269 秒。独立完整读取 181 个文件、885500560 B，包括全部十组副本/主副本以及证据。没有删除、恢复、业务 import/API、求解或 PREP/RUN；只写 TMP 报告。
+
+Root 原始完整重复扫描 exact_content_groups.json SHA e88304048fb5c9c38b72a641891881a9ae352bfe41c6e91d00b6a8ddd2ddd564（583 文件完整读取 41029561402 B）已核对。十对副本与同族非 replay 主本均再次完整 SHA/identity 核验，SHA 一律 b5358f120d402b97084f68893b002d90f70c96d3d40359017774224e42a9efda，每个 39602344 B。双方都是 regular / 单链接文件，原 result.sha256 在各自原路径中分别绑定完全相同的 SHA；九组另有原 copied/initial/execution/replay JSON 精确绑定。directional 组 track 是原 runs 输出的重放镜像，证据是双方原 result.sha256 和全部 fresh bytes，JSON 精确复制绑定为 0，不借用其他组填补。
+
+当前保护核验：完整 V7 图 SHA 9103f35a3f121972969270162be56babe72143869b050f5220af6f3eb0715e68（35646 canonical / 235528 requirement rows / 86 namespace / 186 aliases）；旧保护索引 SHA 30893b4a333c6dc39df420b136b095e076e0ad2ac6255336b8e3eb26ced49b86；全部图中的 absolute 字符串、namespace/目录alias、旧保护 files/directories/inbound aliases、88 critical roots 均排除十项。687 条完整项目 symlink 两次 fresh screen 一致，SHA 1842485d68fae8dcd710b1b44aa1347c268760330907cab7210ea8e4548d577b，十项无 inbound link。原扫描对 32 组全部路径的 protection 标签已复核，而实际建议范围仅十项。
+
+明确保留：每个 native 实验自己的非 replay inputs/runs 主 track、全部 analysis 原结果和 NPZ、每个 result.sha256、JSON执行清单、验证结果、结果文档、日志和源码。所有 initial macro、其他 tracks、green input NPZ、seed/snapshot、TRACK_f、axial-material-*、A/B material/seed、archives、compiled/cache 本次全部 HOLD 或由其他审者处理。未执行过的较宽草案保存在 prior_unexecuted_broad_source.txt；Root 收口指令到达后，实际运行前即缩小到十项，不能把草案当已审核候选。
+
+历史路径限制：原 result/input/copy 清单和历史验证程序仍保留原字节，不会改写成缺文件也通过。原全清单校验、完整 copied-input 审计或历史 replay 若引用旧副本路径，将必须先恢复这些精确路径。静态源码扫查发现旧验证/生产引用，不能以没有图保护宣称所有历史调用都无影响。当前 admitted 保护范围依据完整 frozen V7 图/旧索引/critical/link closure；静态引用不等于当前进程在消费这些路径。本建议仅退休可精确恢复的旧 work copy，不能当运行/path-presence兼容性或新科学验收。
+
+恢复映射：从同族保留的非 replay 主本向下列精确旧路径恢复。仅在目标缺失且 fresh 主本 SHA/identity 不变、父目录规范且无符号链接时，按限定 artifact 路径恢复，禁止覆盖；原 mode 和 mtime 已记录。未实际执行恢复。
+
+native-signed-axial-state-20260929/replay/inputs/track_data.bin <- native-signed-axial-state-20260929/inputs/track_data.bin
+native-segment-composition-compact-20260929/replay/inputs/track_data.bin <- native-segment-composition-compact-20260929/inputs/track_data.bin
+native-axial-streaming-refinement-20260929/replay/inputs/track_data.bin <- native-axial-streaming-refinement-20260929/inputs/track_data.bin
+exact-native-flight-20260929/replay/inputs/track_data.bin <- exact-native-flight-20260929/inputs/track_data.bin
+native-axial-streaming-20260929/replay/inputs/track_data.bin <- native-axial-streaming-20260929/inputs/track_data.bin
+native-oblique-full-preflight-20260929/replay/inputs/track_data.bin <- native-oblique-full-preflight-20260929/inputs/track_data.bin
+native-axial-streaming-refinement-compact-20260929/replay/inputs/track_data.bin <- native-axial-streaming-refinement-compact-20260929/inputs/track_data.bin
+native-oblique-full-response-20260930/replay/inputs/track_data.bin <- native-oblique-full-response-20260930/inputs/track_data.bin
+native-directional-response-20260929/replay/runs/track_data.bin <- native-directional-response-20260929/runs/track_data.bin
+native-oblique-track-pilot-compact-20260929/replay/inputs/track_data.bin <- native-oblique-track-pilot-compact-20260929/inputs/track_data.bin
+
+完整候选及双端源封存证据：candidate_exact_restoration_mapping.json；十个保留主本 fresh pin：all_retained_primary_fresh_SHA_identity.json；157 个原清单/源码 fresh pin：all_evidence_fresh_SHA_identity.json；图/索引/roots/link：fresh_current_protection_screen.json；历史静态引用：project_static_historical_reference_screen.json；真实工具回执：actual_readonly_tool_terminal_receipts.json。
+
+实际删除结果 SHA、实际释放量均 None。Root 后续需组合精确 union、fresh preflight、不同审者独审后再决定清理。

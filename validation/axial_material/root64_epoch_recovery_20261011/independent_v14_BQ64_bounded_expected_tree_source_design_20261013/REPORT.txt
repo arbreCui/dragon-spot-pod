@@ -1,0 +1,15 @@
+BQ64只读存储设计：条件可行，未创建业务/数学Source，未编译/数值/删当前文件。
+
+BQ64暂存来自READ独立重算，不是外部BUILD提交副本。READ611/613严格拒旧名字，615/616建MAC/SRC，617调用完整BUILD，622–625在COMMITTED后两树全SAME_TREE，626/627即销毁，之后才actual ROOT-QFISS64读取与LOADED。提前关闭会省掉必需全树比较；全暂存搬RAM会叠加494MiB树和数学/solver数组。
+
+原真实双份保守预算800+480+560+16+560+16+128=2560MiB>fresh2048，旧1984漏576。当前fresh1912262262B、aux634413818B；扣内BQ528482632后105931186B只是失败库存解释，不授未来资格。
+
+首选最小单旧Fortran Source：只改BOOTQ64模块。public BUILD全bytes保持；private expected builder精确克隆prefix1..503及所有小record/list写入，只省GLOBAL64/SEED两条LCMEQU，仍建typedempty占位、EPOCH最后提交。private composed matcher克隆原目录/list/raw helpers，仅根/SPOT-R64两层选择两个固定path；先验父type0/-1及真空stub，再在LCMINF/empty检查前将expected local pointer解析为原ipglobal/原选定seed，完整遍历全names/types/lengths/list/rawwords/+0/-0，depth含原两层前缀、source全树共用MAX_NODES，禁止nested再graft，两个槽位均访问一次。macro仍原全stage+SAME_TREE；数学alloc返回释放后才全authority比较。原BOOT64/Context/BIND/BOOX/BOVIEW及旧publicSAME_TREE可保持全bytes。
+
+实际固定形状真f01309只读当前v14 PROJECT8024Bmetadata：三plane NUNKNO14,NREG8,NMAT8,NSURF6；不读Q/BQ或旧PROJECT/不重做科学EOF。Ganlib klong188words=752B。compact四标量目录4*752，DSOUR outer1+inner370+QFISS370+ROOT370共1111listitem，各752B目录+4Boffset；header12、root415+auth9words=1696B，三Qdata20*370*14=103600B。合计844632+7400*N=948232B<1MiB。root/auth8items、wrapper1item均≤30无extent且fresh/writeonce，无隐含sector对齐(源kdi offset*4)。32MiB仍作原资源规划硬gate，维数公式int64，不硬锁14破坏原小fixture；需先原GANLIBcompact模型实际布局/bitreadback证实，不把差值当证明。
+
+增加BQ_MAC16+compactBQ_SRC32后solve2032MiB余16；seal原1888。BQ仅exact两名字且原READ/Q同p时期，SRC需MAC，MAC单边过渡可；outer≤1Q/MAC，canonicalblankfinal，seal不共存。aux128所有log/raw/scratch/journal/meta/publication不减，原两snapshot fresh2及所有原caps保留，当前BQ文件不动，stale拒绝不丢。
+
+实际build不能继承old70 exe：singleSource方案compile新BOOTQ并完整relink70，只换index40(oldcore9第6)，其余69输入/四archives、其余8core保持PF/order。二Source API方案还需换BOOT64 index22，非首选；新module则不是原70须另建premise。新Source/object/runtime/build/control/HF/CLI/50 report PF全None。需新真build0、connected17/direct read/view/copy/composed边界、原full50的17/33及sealedpair全部bits。原新数学prefix/rawSource/全部control阈值不可删。
+
+完整两Source byteinverse/原BUILD及helper块SHA、精确预算、stage角色和未来验收义务见REPORT.json。不能标AAA/ABA/完成。

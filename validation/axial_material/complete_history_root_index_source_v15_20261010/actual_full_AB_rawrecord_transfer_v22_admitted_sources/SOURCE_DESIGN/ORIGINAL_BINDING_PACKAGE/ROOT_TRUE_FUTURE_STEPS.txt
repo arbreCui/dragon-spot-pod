@@ -1,0 +1,125 @@
+SOURCE ONLY. This package does not contain actual material bindings, SOURCE
+admission, READY executables, protocol/transfer PASS, RSS evidence or science Q.
+No reader, wrapper, helper, guard, native engine or physical solve was run while
+authoring or checking it. The sole data-transfer executor is Root, after its
+currently active full build has closed. Do not run this during that build.
+
+1. Preserve the original f862d8 Source package and 8058f9 Source peer. Their
+   complete copies are included without byte changes. The original wrapper is
+   still 098b2a/31499B. Only the separate protocol prose has one reversible
+   clarification: ordinary finite REAL32 rounding/underflow is permitted; the
+   serializer rejects overflow or a nonfinite resulting cast. Parser64 bits are
+   also retained. No original-XSM-memory-bit certification is made.
+
+2. Obtain an independent SOURCE-only peer review of this entire newly sealed
+   package, including all Source prototypes, complete originals and inverses.
+   Do not reuse the original378 peer as admission for the new binder/host/controls.
+   The future binder contract requires a complete current manifest pin, actual
+   exact-source review and observed typedint0 CLOSED source terminal. Root may
+   make a faithful metadata adapter for its actual peer receipt; preserve the
+   peer's original full report/actual tool return and bind both, with no invented
+   checks or terminal. Required schemas and field names are specified in the
+   SOURCE contracts below. Unknown real receipt/hash/identity fields stay None.
+
+3. Root alone makes a standard-library metadata/hash material-provenance receipt.
+   No decoder is needed for this prerequisite. Use full EOF SHA7ID, not JavaScript
+   numeric coercion, archive SHA or guessed current file size. Pin case_spec,
+   material_inputs, material_results, both full material_audit files, both actual
+   original macro.ascii files, all Source/deck manifest provenance and the union
+   of protected original material source maps. Preserve every audit limitation.
+   The closed tool return inside the final admission belongs to this real prior
+   fullhash/META check, not that admission JSON's own later metadata writer; do
+   not introduce a self-referential writer/receipt hash cycle.
+   Confirm result->input-manifest and result->A/B-audit SHA links, audit->actual
+   original macro SHA, same original150cm/8-region geometry, white radial albedo1
+   and axial vacuum, same750/620/475C, A .21/.79 and B .2436/.7564, all62 actual
+   isotope-row temperature bits, full370/8/32 metadata. Bind the real original
+   Python and both existing reader Source files. The current case_spec's legacy
+   SN8/12-cell production entries are not a new refined-reference declaration;
+   this is only the geometry/material/raw-data transfer prerequisite.
+   Real missing/mismatched provenance rejects binding. Do not fill, alter or
+   reprocess any material data to make the receipt pass.
+
+4. After these two real receipts have been saved and Source-peer reviewed, Root
+   may execute generate_ROOT_actual_rawrecord_binding.py once as a SOURCE-only
+   installer. It imports no reviewed API and calls no parser/guard/engine. Its
+   full original-file SHA reads occur only in that future Root operation.
+   Required argv:
+     --source-admission <actual ROOT SOURCE-only admission JSON>
+     --source-admission-sha256 <actual whole SHA>
+     --material-provenance-admission <actual Root provenance JSON>
+     --material-provenance-admission-sha256 <actual whole SHA>
+     --source-dir <new B/actual_current150_AB_full_rawrecord_transfer_v1_sources>
+     --receipts-dir <new B/actual_current150_AB_full_rawrecord_transfer_v1_receipts>
+     --host-dir <new ART/axial-material-current150-AB-full-rawrecord-host-v1-20261010>
+     --transfer-dir <new ART/axial-material-current150-AB-full-rawrecord-v1-20261010>
+     --protocol-dir <new ART/axial-material-current150-AB-full-rawrecord-protocol-v1-20261010>
+   Use the pinned /Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 with -B,
+   original unoptimized/unprofiled environment and the five thread variables1.
+   B and ART are the original explicit roots; namespaces must be fresh/separate.
+   Do not overwrite or retry a used namespace. Both admission files preexist
+   outside the new D/E; the binder creates the new D and E only after checks.
+
+5. Save the actual Source-installer tool return truthfully, retaining complete
+   stdout JSON as a string and external stderr. Seven integer identity fields
+   must remain exact Python integers; do not JSON-decode them through JavaScript.
+   Binder creates actual binding first, then only3 wrapper globals,1 protocol
+   status global and13 host Source-binding globals. All reviewed function ASTs
+   and full byte inverses are checked before Source emission. There is no hash
+   cycle: the binding does not contain final READY-wrapper SHA; the genuine host
+   separately pins the emitted READY-wrapper SHA. Its runtime/science success
+   globals, protocol Q, transfer Q, reaction Q and scientific-reference Q remain
+   None. Root must treat a binder failure as partial SOURCE installation, never
+   a successful protocol or transfer.
+
+6. Obtain independent SOURCE review of these actual bound files and all real
+   receipts before normal execution. Root freezes the complete D tree and all
+   then-existing E files. Include the actual Source installer/review records in
+   D/E before freezing, with full namespace list, dirs, no syms, full EOF SHA7ID.
+   The host pins every Source/receipt file before and after. No additions to D/E
+   are allowed during its operation. ROOT post-closure metadata is appended to E
+   only afterward and included in the actual final external archive accounting.
+
+7. Root's only normal operation is the emitted command:
+     pinned-python -B D/full_AB_rawrecord_genuine_host_READY.py
+   It uses the original3c185 support,619 helper,705 OwnRSSSerialExecutor with
+   original38de SerialExecutor MRO,bc4 bounded runtime andebbb dynamic resource
+   factory. No class/guard/resource code is replaced. Source prototypes cannot
+   execute because actual bindings/status are None/UNREADY.
+   There are exactly2 serial children: full tiny protocol first, complete actual
+   A/B transfer second. Each is limited to600s/512MiB, whole1800s, one child,
+   threads1, retry0. Protocol failure prevents transfer. Genuine actual watchdog
+   PID/parent PID, exact command, typed0, liveness cleanup and stage PASS must all
+   match real saved files. The child stream is honestly merged stdout+stderr;
+   no separate child stderr is claimed. Root separately retains outer stderr.
+
+8. The genuine history roots are exactly the three new ART operation directories
+   plus the original support.OUT and support.TERMINAL; all existing axial-family
+   history remains dynamically included by the unchanged resource Source.
+   D/E are outside ART and are NOT history_roots. They are still counted in full
+   with HOST+transfer+protocol in the2GiB joint archive before/between/after/final.
+   Original history96GiB/free8GiB checks and2GiB reserve remain. No source review
+   predicts RSS success. Watch rejection or partial input remains a preserved
+   failure, no automatic retry and no qualification.
+
+9. Actual transfer uses native_records.decode(raw_bytes) and the original
+   stream_records.decode_stream(binary_iterator), default retaining every record
+   with no reaction_selection. A's first complete dictionary is released before
+   A's second; A is fully released before B. Raw bytes, every header/closing span,
+   full key order/types, original kind/count/padding, every decoded value and
+   signed IEEE bit pattern, all370 groups/8 regions/3 moments/32 components,
+   STATE/IJJS/NJJS/IPOS/SCAT/SIGS/SIGW/TRANC/FISSIONINDEX/NUSIGF/CHI and every extra
+   reaction are retained without reordering, group/component reduction, dense
+   scatter reconstruction, interpolation, clipping or normalization.
+   Large complete raw/typed/contract/sparse payloads are separate from small META.
+   Absence or malformed fields are fully recorded as actual scientific gaps.
+
+10. A host result or two child PASS records alone are not admission. Root must
+    really observe typedEXIT0 CLOSED/no session, preserve the actual full returns,
+    independently review complete saved payload EOF/SHA, both actual watches,
+    Source/material input invariance and final ROOT joint/history/free budgets.
+    Every failure remains frozen. Root may afterward record only actual software
+    raw-transfer consistency; original XSM in-memory bits, true reaction-loss
+    multiplicity/transport correction, neutron balance, the full same-MG coupled
+    finite150 reference, AAA original3%/statistical gates and ABA remain false.
+    A separate scientific implementation/qualification is still necessary.

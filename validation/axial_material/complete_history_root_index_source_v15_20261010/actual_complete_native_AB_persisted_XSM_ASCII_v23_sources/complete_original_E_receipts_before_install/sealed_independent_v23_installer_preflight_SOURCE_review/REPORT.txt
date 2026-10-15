@@ -1,0 +1,3 @@
+SOURCE-only PASS: actual v23 Root installer and preflight. Complete literal byte/AST inverses to independently reviewed v22 originals; all functions, algorithms and genuine caps retained.
+Installer consumes actual full274 Source/11449peer and actual writer74peer, copies complete original E and Source dependencies before D freeze. Preflight schema/pins/MRO/history/free/joint caps remain consistent with postclose writer.
+No installer, preflight, writer, guard, helper, reader, native or numerical API executed; no material payload read; no new runtime/scientific qualification.

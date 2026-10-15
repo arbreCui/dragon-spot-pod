@@ -1,0 +1,23 @@
+SPOT 全34核素无限稀释散射比较结果 — 2026-10-15
+
+实际运行已通过，独立后验核验已完成。
+范围：SCI1的27个核素、199个原温度节点；SCI2的Mo7、35个节点；合计34核素、234温度、702条SCAT00/NJJS00/IJJS00记录。
+实际比较10,741,939个原始字，全部零差异；原ASCII完整EOF读取746,505,396字节，无额外解压文件或稠密数据临时文件。
+保留原生产顺序：燃料nimpo29使用已有REAL32能量网格；新库nimpo0使用GENDF二进制64位网格；Mo ipflag1逐项求和后仅保留对角项。
+实际运行耗时277.4585秒；子任务约273.0014秒，峰值157.125MiB；父任务峰值210,223,104字节。512MiB/600秒/1800秒、2GiB累计空间原限额均保持。
+运行结束累计根目录及外部元数据约1.849GB，磁盘可用约202.8GB。本轮无需额外清理。此前已退役4个完成比较的临时文件，释放405,417,320字节；结果、原数据、失败和日志保留。
+
+后验明确限制：原报告234个辅助区段索引列表因共享列表被清空；完整反应区段账本仍在，独立核验由其确认区段成员，并核对实际使用反应、热反应和额外反应。原报告未重写、未重跑；不声称全部元数据字段正确。后续有限稀释比较已在运行前修正这一报告字段。
+首次Source准备失败、首次独立检查失败及首次后验失败均保留真实返回与原路径。最终后验为PASS_WITH_METADATA_INDEX_LIMITATION，确认的范围仅为原始字比较。
+
+实际结果：
+/Users/wen/spot/validation/artifacts/axial-material-current-all34-original-ASCII-infinite-SCAT-producer-20261015-v1/Root_actual_all34_original_ASCII_infinite_SCAT_summary.json
+SHA256 28acc1adbf734def5ea74601e79914bfa226be80958f8bfb9b3c488e67d4c244；33,504,915字节。
+实际返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_all34_original_ASCII_infinite_SCAT_producer_source_v1_20261015/v2/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+独立核验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_all34_original_ASCII_infinite_SCAT_producer_source_v1_20261015/v2/actual_postverify_20261015/corrected_metadata_assessment_v2/REVIEW.json
+SHA256 ad330eb5e7d347ea626b73e4e545670185f651c2e50cac7b6a7811f06b33a7df。
+
+下一顺序：8燃料×8温度×18有限稀释点的P0生产比较，然后补齐Cr52/Fe56、完整反应与当前温度插值证据，执行完整射线控制，再按原门槛评估AAA独立耦合参考及ABA。已有A材料SPH/MASK构造及OVERV当前控制结果可复用，避免重复执行。
+有限稀释、完整传输、物理精度、AAA和ABA尚未完成；整体goal保持active。

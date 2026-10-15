@@ -1,0 +1,9 @@
+独立 SOURCE 审查通过：没有发现阻止一次受限保存态诊断的正确性问题。
+
+覆盖全部370群×1800 unknowns、384 cells、392 faces、3 moments；136 dispatch 按真实 NGIND/NPSYS 重建每群最后调用，没有按误差选样。post-SIGS S2 的源矩与 qext、原顺序 projection，完整 field flux/current/xnei 与 return/PRENORMAL，以及同一原 AKEFF/FISOUR 后的 published REAL64 flux/source，均以 dtype、shape 和全部字节相等为唯一合同。三 XSM 的完整 FLUX64/FLUX/SOUR 和既有全群诊断数组以原精度逐字核验，保留 signed zero，无新 tolerance。
+
+本次只读源码/JSON并 stat：候选没有 import/运行，全部numeric payload没有读。1,140输入共96,042,876 bytes来自本次 metadata身份观察；numeric SHA只向原sealed JSON重绑，没有伪称本次EOF读数。成熟parser六段原文逐字一致，两份Fortran全文逆转插入恢复原SHA，仍不能证明完整原编译源码身份。
+
+仅可在Root一次真实受限运行成功后授“原map012保存态工作RHS与源阶段的字一致”证据。构源分项/旧flux输入、完整编译链、反应multiplicity、完整物理balance、same-MG全阶参考、AAA和ABA均未qualified。
+
+预算估算：完整数组19,820,160 bytes；预计compact总计≤30MiB、OwnRSS约150MiB、60s内。此为SOURCE估算，不是实测；Root须把host+out+source归档和凭证共同算入原64MiB，并保持60s/512MiB/96GiB历史/8GiB空闲/1线程/1child/0retry。真实失败不得改门槛重跑。

@@ -1,0 +1,11 @@
+PASS — independent actual ninth cleanup review.
+
+Root actual cleanup2c9f71/session25842→d14461 EXIT0 CLOSED;265 exact scoped retirements correspond one-to-one to original preflight and ledger, all absent. 167 duplicate old work copies,9 unique old compensated map1–3 leaves,89 losslessly archived old material raw intermediates.
+
+Fresh full SHA and stable identity passed for336 retained primaries and4980 source/review pins;5321 unique fresh reads. All89 compressed archives freshly hashed and independently strictly decoded as complete single-member gzip,8454673080 original bytes; decoded size/SHA equal historical originals.53 final DRAGR outputs and28 accepted final material-source paths preserved according to original explicit evidence roles.
+
+Whole nonselected inventory before/after remains87cb87e22df74a4a4155723b09d008e56b9b154b426e50b8c136007a22f16f6e:175560 regular files,687 symlinks,7013 directories. Full current V8 graph228 live roots and cold6248/actual1534 path scopes exclude all265; no namespace, current/critical, old-index or inbound-link intersection. R9 is separately pinned and excluded from this whole-project fingerprint.
+
+Keep all89 gzip backups permanently. Restore original raw material paths before prior120 duplicate-copy restore edges; original inode/ctime cannot be restored. The9 unique numerical intermediates have no equal primary; historical stage seals remain unchanged but full old replay needs numerical rebuild without byte-equality promise.
+
+No project writes, deletion, restore, business API/PREP/RUN or new science/RSS qualification by this review. Initial readonly harness failed only on an overbroad material role count; corrected source rerun f82b19/session64623→55a6c7 EXIT0 CLOSED. The detailed JSON and receipts preserve both observations.

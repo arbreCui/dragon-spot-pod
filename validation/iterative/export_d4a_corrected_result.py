@@ -105,14 +105,21 @@ def verify_receipt(receipt: Path, root: Path) -> dict[str, str]:
     return entries
 
 
-def require_exact_inventory(root: Path, sealed: set[str], receipt_name: str) -> None:
+def require_exact_inventory(
+    root: Path, sealed: set[str], receipt_name: str, *, allow_runtime: bool = False
+) -> None:
     try:
-        children = list(root.iterdir())
+        children = list(root.rglob("*")) if allow_runtime else list(root.iterdir())
     except OSError as exc:
         fail(f"cannot inspect directory {root}: {exc}")
-    if any(child.is_symlink() or not child.is_file() for child in children):
-        fail(f"directory contains a link or non-regular entry: {root}")
-    actual = {child.name for child in children}
+    for child in children:
+        if child.is_symlink():
+            fail(f"directory contains a link: {root}")
+        if allow_runtime and child == root / "runtime" and child.is_dir():
+            continue
+        if not child.is_file():
+            fail(f"directory contains an unsupported non-regular entry: {root}")
+    actual = {child.relative_to(root).as_posix() for child in children if child.is_file()}
     if actual != sealed | {receipt_name}:
         fail(f"directory inventory differs from {receipt_name}: {root}")
 
@@ -137,7 +144,18 @@ def finite_number(token: str, label: str, *, positive: bool = False) -> float:
 
 def parse_map(directory: Path) -> tuple[int, dict[str, float], dict[str, str]]:
     result_entries = verify_receipt(directory / "result.sha256", directory)
-    require_exact_inventory(directory, set(result_entries), "result.sha256")
+    repaired = "runtime/runtime.sha256" in result_entries
+    require_exact_inventory(directory, set(result_entries), "result.sha256", allow_runtime=repaired)
+    if repaired:
+        if "source_result.sha256" not in result_entries:
+            fail("repaired portable map does not preserve its source result receipt")
+        source_entries = verify_receipt(directory / "source_result.sha256", directory)
+        if any(result_entries.get(name) != value for name, value in source_entries.items()):
+            fail("portable payload differs from its original source receipt")
+        runtime_entries = verify_receipt(directory / "runtime/runtime.sha256", directory / "runtime")
+        runtime_names = {f"runtime/{name}" for name in runtime_entries} | {"runtime/runtime.sha256"}
+        if runtime_names != {name for name in result_entries if name.startswith("runtime/")}:
+            fail("portable runtime inventory differs from its runtime receipt")
     required_sealed = {
         "portable_classification.txt",
         "input_manifest.sha256",
@@ -177,6 +195,11 @@ def parse_map(directory: Path) -> tuple[int, dict[str, float], dict[str, str]]:
         "SPOT-GATE COMPLETE"
     ]:
         fail("map convergence gate has no unique complete terminus")
+    threshold = finite_number(unique_match(
+        rf"^SPOT-GATE THRESHOLD\s+({FLOAT})\s*$", gate, "gate threshold"
+    )[0], "gate threshold", positive=True)
+    if threshold != 5.0e-7:
+        fail("map does not use the declared 5e-7 gate")
     residuals: dict[str, float] = {}
     for receipt_name, output_name in (
         ("RRHO", "Rrho"),
@@ -189,6 +212,8 @@ def parse_map(directory: Path) -> tuple[int, dict[str, float], dict[str, str]]:
             f"passing {receipt_name} record",
         )[0]
         residuals[output_name] = finite_number(token, receipt_name)
+        if residuals[output_name] > threshold:
+            fail(f"{receipt_name} exceeds the declared gate despite its PASS label")
 
     prepare = read_text(directory / "prepare.log", "prepare receipt")
     parent_epoch, projected_epoch = unique_match(
@@ -217,6 +242,9 @@ def parse_map(directory: Path) -> tuple[int, dict[str, float], dict[str, str]]:
         "map_input_manifest_sha256": sha256(directory / "input_manifest.sha256"),
         "map_output_manifest_sha256": sha256(directory / "output_manifest.sha256"),
     }
+    if repaired:
+        receipt_hashes["map_source_result_receipt_sha256"] = sha256(directory / "source_result.sha256")
+        receipt_hashes["map_runtime_receipt_sha256"] = sha256(directory / "runtime/runtime.sha256")
     return int(closed_epoch), residuals, receipt_hashes
 
 

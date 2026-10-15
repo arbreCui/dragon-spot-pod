@@ -1,0 +1,32 @@
+--- /private/tmp/axmat-trim-v5-bounded-runtime-input-intake-source-draft-20261008/axmat_trim_v5_standalone_bounded_runtime_api_intake_host_20261008.py
++++ /private/tmp/axmat-trim-v7-bounded-runtime-input-intake-source-draft-20261009/axmat_trim_v7_standalone_bounded_runtime_api_intake_host_20261009.py
+@@ -8,22 +8,22 @@
+ """
+ import sys,os,time,json,hashlib,importlib.util,shutil
+ from pathlib import Path
+-DRAFT_STATUS="UNREADY_ACTUAL_TRIM_V5_COMPONENT_AND_ROOT_BINDINGS_PENDING"
+-if DRAFT_STATUS!="READY_REVIEWED_TRIM_V5_STANDALONE_INPUT_ONLY":raise ValueError("UNREADY: no actual new intake or component evidence")
++DRAFT_STATUS="UNREADY_ACTUAL_TRIM_V7_COMPONENT_AND_ROOT_BINDINGS_PENDING"
++if DRAFT_STATUS!="READY_REVIEWED_TRIM_V7_STANDALONE_INPUT_ONLY":raise ValueError("UNREADY: no actual new intake or component evidence")
+ STARTED=time.monotonic()
+ if sys.flags.optimize!=0 or os.environ.get('PYTHONOPTIMIZE'):raise ValueError('nonoptimized Python required')
+ THREAD_KEYS=('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ if any(os.environ.get(k)!='1'for k in THREAD_KEYS):raise ValueError('single-thread environment required')
+ sys.dont_write_bytecode=True
+ PYTHON='/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12'
+-FACTORY=Path('/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v5.py')
+-FACTORY_SHA='331824f74c560dca5ea3de63776f3efb6d0c05a16ea7c044d87563ba02da1a60'
+-OUT=Path('/Users/wen/spot/validation/artifacts')/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v5-20261008'
+-TERM=Path('/Users/wen/spot/validation/artifacts')/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v5-20261008'
++FACTORY=Path('/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v7.py')
++FACTORY_SHA='45783d9920a53ca517f28abbff9071e81cd29b0ef87336f45216aa86d8e4bc5a'
++OUT=Path('/Users/wen/spot/validation/artifacts')/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v7-20261009'
++TERM=Path('/Users/wen/spot/validation/artifacts')/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v7-20261009'
+ SEAL_SHA=None
+ RUN_SHA=None
+ PREP_SHA=None
+-BASE=Path('/private/tmp/axmat-trim-v5-standalone-bounded-runtime-api-intake-20261008')
++BASE=Path('/private/tmp/axmat-trim-v7-standalone-bounded-runtime-api-intake-20261009')
+ FAMILY='STANDALONE_BOUNDED_RUNTIME_API_INTAKE'
+ DECL_SHA=None
+ for value in (DECL_SHA,SEAL_SHA,RUN_SHA,PREP_SHA):

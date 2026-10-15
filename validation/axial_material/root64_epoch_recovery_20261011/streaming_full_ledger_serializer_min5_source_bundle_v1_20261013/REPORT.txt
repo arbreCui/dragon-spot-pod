@@ -1,0 +1,8 @@
+四份诚实派生 Source 与两个一次性有限检查已经闭合。父 production_runner 只改完整 ledger 序列化，helper 的正常导入顺序和 ROOT、support 路径、Common 原 authority 锚点变化均有完整字节逆向记录。原 FULL/OwnRSS、全部 parent 非 dump 定义、数据、Fortran、控制与资源上限保持。
+
+canonical 真 b31802/session7787 → 4eaae9 EXIT0：45 个完整前缀由原 dump 实际写出，与新流式文件全文逐字相同；最后 11,200,725B 等于真实 v12 stages。Unicode/浮点/NaN/defaults 与三个 encoding-error 及已有目标/tmp 副作用保持。
+guard 真 937e39/session84577 → 663952 EXIT0：独立进程完整原 metadata/current69/17/catalog 准入后，保留真实 45 records、2654 fixed、163 owned 及其余运行状态；45 流式结果匹配真实 canonical SHA。原 OwnRSS 正常导入新 parent，新增一个 Python marker child 为第46项，PASS/已退出；短 child 原 watch sampled_peak=0，未冒称实际峰值采样。
+baseline 294,928,384B；stream45+guard 后峰值 295,092,224B，增加 163,840B（160KiB）。2828 唯一输入在该有限检查前后全文 EOF/all7 保持。无 profiling/peak reset/测量期 GC、module/class monkeypatch 或 numerical。
+
+第一次 v1 canonical 真 c409ce/session17997 → 7a04a7 EXIT1 被额外完整业务2GiB初始预留拦住，未开始dump；原失败与Source保留。v2 仅对本有限检查加64MiB输出上限/预留，原 history96/fresh2/cold+64metadata/free8/SELF512/stage600/whole1800 保持。完整业务仍必须预留2GiB。
+本证据说明有限数据/错误契约一致，完整实际运行状态下该序列化路径未累计大内存。没有执行或创建 v13 HOST，也不授完整工程、AAA/ABA、材料或 reference 资格。v12 原 EXIT1/45 stages/1997 journal 为历史失败因果保留。

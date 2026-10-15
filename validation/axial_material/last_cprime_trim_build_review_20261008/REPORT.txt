@@ -1,0 +1,53 @@
+末端cprime缓存块组件：实际构建、控制与输入准入结果（2026-10-08）
+
+完整40阶段实际通过，真实工具返回EXIT0；四项资源收尾检查通过。
+随后真正的三参数production_admission也返回EXIT0，独立复核通过。
+本结果只准入新组件作为后续组合构建输入；未授予原生FLU内存、AAA精度或ABA资格。
+
+实际数值与结构验证
+
+  1,152组新缓存与原未缓存输出逐位一致，其中1,146组原控制和6组排列控制。
+  378次独立dense参考比较；2,042,712个输出标量逐位比较。
+  14个身份拒绝项、2个容量拒绝项、6个结构零拒绝项和8个字典拒绝项均完成。
+  实际单位内核调用2,710次；完整原始输出与审计均封存。
+  370个生产形状组保留49个因子块，cprime实际形状为32×32×48。
+  lower-only primitives仍未分配factor/cprime；没有被新边界检查误拒。
+
+实际执行
+
+  整体826.532982833秒；SOURCE+OUT封存474,479,990字节，低于原2 GiB。
+  40阶段采样子进程RSS最大201.828125 MiB；这是单位构建/控制的观察，
+  不能替代新物理算子的实际FLU 512 MiB证明。
+  原1800秒整体、600秒单阶段、512 MiB子进程、96 GiB历史、至少8 GiB可用空间、
+  单线程、单数值子进程和零执行重试要求保持。
+  运行收尾的历史计数约70.395 GiB；后续新运行仍需实时核算。
+
+源与真实终态
+
+  formal factory：8f6947392a087cd722fc2cbc3075db54c256c73bcf9dab72cac708392b5ef92a
+  kernel source：343e731fa190d80f8d390831185aef11dabcab32f51a229a5761c827a4aeb1e1
+  compiled kernel：d9818c7aa7d10cef2cbb95119c13db449867a01518ec5928566462880b2cb767
+  runtime：b807c72ca393bca3a21297ea15d5e44d008cac49fc7623781fca9303a9141ddf
+  build seal：38f44fe55187199e467f8445015e505814cf0df911d9a51d1b35c8e264bb0e0e
+  actual external terminal：076565db2dc0048db70166d37bd6e81107d30acb9a72b14945b436a473094a88
+
+  实际run：7675bd/session35202→476e90，EXIT0。
+  实际三参数准入：42db8a/session15178→83b7bd，EXIT0。
+  完整准入返回2,055,446字节：actual_complete_production_admission.json。
+  返回类别RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_RUNTIME_INPUT_ONLY。
+
+两次初始准备使用了不符合原构建记录的启动环境，均在SOURCE/OUT创建前失败；
+没有编译或控制信用。完整错误已留存。最终准备、构建和准入均使用原声明的
+Python3.12环境；后续cold producer的Python3.14环境仍单独保留。
+首次额外SciPy环境核验也单独留档，没有改全局安装或原源文件。
+
+本次只删除永不被回代读取的持久缓存槽，完整末块SOLVE64、因子/pivots、
+dprime和全部数学运算顺序保持。每组逻辑节省8*nstate^2；370组共3,031,040字节，
+即2.890625 MiB。这个量不是RSS保证，原生冷启动仍必须实际通过512 MiB。
+静态源证明里的actual_controls_executed=False保持原字节；实际控制PASS由新的
+审计与终态证明，未回填原源证明冒充历史执行。
+
+独立实际控制及完整准入审查见同目录两个independent_actual_*_review.json。
+目前新组合构建草稿已经绑定这些真实摘要，保持UNREADY等待源审；
+须完成新的组合构建、输入检查和cold绑定，再实际重跑AAA及原独立精度门。
+旧512.015625 MiB失败、旧warm诊断与原AAA精度缺口均未改写为通过。

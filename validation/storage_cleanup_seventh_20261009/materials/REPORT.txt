@@ -1,0 +1,42 @@
+第七轮材料工作副本独立只读审查，2026-10-09
+
+结论：证据支持只退役下面五个旧工作输入副本。保留一个项目内原库副本、外部原生产库、最终累计 ASCII 主产物，以及全部材料成品和原结果文档。此报告为独立建议，实际删除由 Root 决定并执行删除前新鲜身份/依赖复核；本代理删除 0 文件、正式写入 0 文件，未启动业务 import、API、constructor、PREP、RUN 或 native。
+
+建议退役清单：
+/Users/wen/spot/validation/artifacts/d4a-actual-temperature-material-run-20261003/material650/DLIB8R1_370
+/Users/wen/spot/validation/artifacts/d4a-actual-temperature-material-run-20261003/material750/DLIB8R1_370
+/Users/wen/spot/validation/artifacts/d4a-actual-temperature-material-run-20261003/material850/DLIB8R1_370
+/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/DLIB8R1_370
+/Users/wen/spot/validation/artifacts/d4a-actual-temperature-library-run-20261003/import/EXPORT
+合计 logical 3,915,468,792 B；allocated 3,915,476,992 B（3.646572113 GiB）。五个原库工作副本每个 769,113,024 B/allocated 769,114,112 B，采用保守方案只建议删除其中四个。
+
+必须保留：
+/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/DLIB8R1_370（项目内原库副本）
+/Users/wen/draglib_output/shem370_endfb8r1_v5p1/draglibshem370_endfb8r1_v5p1.xsm（外部原生产库）
+/Users/wen/spot/validation/artifacts/d4a-actual-temperature-library-run-20261003/merge/28-U238/tape30（最终生成的累计 ASCII 主产物）
+全部五个 DLIB_ACTUAL；import/DLIB_370_bin 与 export/DLIB_370_bin；microlib.ascii、macro.ascii、metadata.ascii、material.xsm、A/B snapshots、logs、receipts、decks、所有原 inputs/staged_inputs/output_hashes/frozen_inputs/material_results 与 result.sha256。没有把 DLIB_ACTUAL 或主材料库当作旧原库复制件。
+
+重复字节证据：对五个 DLIB8R1_370、外部原生产库、final tape30 和 import/EXPORT 逐个完整新鲜读取，8 MiB 块，检查打开前后 regular inode/size/mtime/ctime/nlink 稳定，五个候选原库身份与 Root inventory 完全一致，所有文件为独立 inode/nlink1。
+所有六个原生产库字节均 exact SHA256：66b9a7b3e8534a54cf590db63a7c1dbd96b4a95c636f0e3a6eee5b219bbcc1e9。
+最终 tape30 和 import/EXPORT 各 839,016,696 B/allocated 839,020,544 B，均 exact SHA256：44772b86d87e90532f89e786369749b373114f0c0f3d90b282ded6b8432ca1c2。
+此处比较的是最终 output receipt/output_hashes/result seal，绝不是把 final merge 的 mutable input preimage 00f38a1087410835acdf317e997d72b2d95c3460ade65068f29b813fc4836fda 当作最终产物 SHA。
+
+复制与消费来源：
+validation/d4_reference/run_d4a_material_candidate.py:119-125 的 stage_inputs 将 DLIB8R1_370 指向 plan.assets.full_library 外部原生产库；144-150 按原 pin 验证源后 shutil.copyfile 并验证工作副本。三温度 staged_inputs.json、每目录 input_hashes.json 和原 result.sha256 均固定 66b9…，各 receipt 为 native exit0，保留 microlib/macro/metadata 三种真正输出。
+validation/axial_material/material_inputs.py:21-24 固定 candidate/PRODUCTION 及原 SHA；227-254 验证原库并在 required_staging_per_state 中指定生产源。旧 A/B frozen_inputs.json 明确记录 A/B 原库副本 SHA；此次完整 fresh bytes 同时证明副本与原源相同。该 generator 本身生成 decks/manifest，不声称其中出现 A/B copy 调用。material_audit.py:116-129 仍保留原 Mo → DLIB8R1_370、其他 isotope → DLIB_ACTUAL 的完整路由；审查未改变路由、物理记录或任何公式。
+validation/d4_reference/run_d4a_material_candidate_library.py:229 在 stage helper 中 copyfile 并固定输入；worker 逐步生成 final merge tape30 后 stage import，EXPORT 指向 previous/tape30，产生 DLIB_370_bin，再单独 export/reopen。import input_hashes/staged_inputs 与 final merge output receipt/output_hashes/result seal 全部对应 44772…；因此 EXPORT 是最终主产物的旧导入输入复制，而最终 tape30 本身是生成主产物。拒绝把 final tape30 加入退役名单。
+
+当前依赖与后续调用：
+当前 V7 input_graph.json 新鲜 SHA 9103f35a3f121972969270162be56babe72143869b050f5220af6f3eb0715e68，schema AXMAT_COMBINED_RUNTIME_VERIFIED_INPUT_GRAPH_V5，35,646 canonical files、235,528 complete requirements rows、86 namespaces、186 aliases。这七个被调查文件均不在 canonical_files、requirement path pool、new inputs、absence inputs，也没有 namespace ancestor、alias 或 exact stored readtrace 命中；旧 protection index 的 files/dirs/inbound target 同样没有命中。
+新鲜重新遍历项目 687 个 symlink，没有任何 symlink 指向候选文件或覆盖其上级目标。A/B 目录仍被 live resource root 计数，图未被修改；资源目录计数不能被冒充为输入保护或删除许可。删除复制件后资源占用需要 Root 正常新鲜计算，原 cap/root 范围不变。
+全项目无 ignore 的 .py/.sh/.c2m/.x2m 引用检索得到 51 个来源，逐个原字节 pin 并记录命中行；其中一个属于当前 V7 canonical source（reference_scientific_input_owners.py），实际只绑定 A/snapshot_A.xsm。其他后续 archived/current code 对旧 A/B root 的消费均为 material.xsm、geometry、snapshot/track/log 或 original manifests/results，未发现对旧 DLIB8R1_370 副本的继续消费。prepare_r64_snapshot_B.py:36、53-55 仅取 B material/geometry/snapshot；prepare_qualified_AB_production_v2.py:28 固定原 material.xsm；production_runner.py:362-395 消费精确声明的 input descriptors 与 material/results/snapshots，没有递归消费 required_staging_per_state 复制件。保存的 A/B snapshot decks 只打开 material.xsm，没有 LIB:/TONE: 或 DLIB 声明；material_audit.py:174 的 saved scientific evidence 不读取旧原库工作副本。
+任意未来用户配置的新路径不在这次静态+saved trace证明范围内。重新执行旧 TONE/native material 输入必须从保留主副本恢复 exact staging；完整旧工作目录 manifest 验证也必须先恢复被退役复制件。保留的原 manifests/receipts/result seals 仍记录历史原字节，不能改写成新成功或当前 API 证明。
+
+保留结果与历史回放边界：
+主审查完整 fresh hash 94 文件：8 个调查/主库字节证据 + 65 个材料和库结果/必留元数据 + 21 个原结果文档；之后另行完整 fresh pin 20 个旧独立 review/control 与关键 producer source 文件。三温度 results 和库工作 metadata 与原 result.sha256 对应；A/B results 绑定 material_inputs manifest、material_audit 与 archive/snapshot log SHA 均匹配。该核对只验证保存字节，未重新解析材料物理数据或运行科学 API。
+保存 library control/review 为 PASS_PRIVATE_LIBRARY_ROUNDTRIP_ONLY，三温度 control/review 为 PASS_THREE_MATERIAL_DATA_CHECKS_ONLY，review 原 manifest SHA 与实际仍保留的原 result.sha256 对应。库原 seal 32143c799d9c6d80a7ae46476d006aa9a12607d67099d271ba53f6d8b366ce42；材料原 seal 06761f9c41f6f40e514fc0fa9de5a85c0a8eae2987d05df182f0af114af41c44。未把这些旧成功升级为当前 V7 admission、512 MiB/RSS 或新物理精度资格。
+第三轮清理结果已有 old_full_stage_replay_retired=true，删了早期 scratch/1-27 cumulative tape30 且保留 final tape30。此次只拟扩大明确旧工作副本的退役；不删除或篡改旧成功结果/文档。原库 producer 的 whole-work-dir review 需要恢复退役文件后才可重放，不能声称删除后仍能全量重放旧 directory manifests。
+
+实际工具证据：主脚本 initial chunk 997fbc / session40773，final chunk 592bb3，EXIT0，94 hashes，脚本 elapsed 5.370746541011613 秒；补充 historical review/source provenance chunk a74ffb，EXIT0。所有业务运行证据字段不适用，未产生新的成功指纹。codec 与之前 intake/cold source 候选未写入修改，保持封存。
+
+后续：Root 可独立复核此 exact 五文件名单，删除前再次检查所有候选和保留主副本 inode/SHA、当前图/保护索引与 symlink，保留全部原 seals/metadata 与本次退役清单，记录实际删除字节并确认非候选结果/文档未改变。该建议不因文件大或未列图而批准；依据是完整 fresh exact duplicate + 明确旧 staging 源链 + 当前消费检查 + 保留真正产物/主副本。

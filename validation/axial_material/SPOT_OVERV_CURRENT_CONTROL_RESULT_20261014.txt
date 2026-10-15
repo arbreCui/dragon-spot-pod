@@ -1,0 +1,15 @@
+SPOT 速度倒数项独立控制实际结果 — 2026-10-14
+
+使用原 Fortran 混合精度计算语句、原编译选项及原四份链接库，一次完成编译、链接、运行，三个阶段均 PASS，主进程真实退出 0。
+
+全部常量及 370 群 × 8 材料 = 2,960 个字值严格满足：当前原生计算结果 = 独立整数舍入模型 = 已保存的当前材料观测结果。没有浮点容差放宽，没有拟合。
+
+输入取自已经提取的最后完整材料快照，仅读取 13,324 字节相关原始记录；未再次解码 XSM，也未重读整个 SQLite 或原始池。主过程报告时长 117.73 秒，原 512 MiB / 单阶段 600 秒 / 总时长 1800 秒 / 单线程 / 累计 2 GiB 限额保持。
+
+范围：验证当前速度倒数项的混合精度和舍入行为，未执行完整历史 LIBDEN 过程，不能恢复历史原生内存或原 XSM 机器字状态。原 SOURCE_CONTEXT_NOT_SAVED 记录保留；物理验收、AAA 和 ABA 资格仍为 false。
+
+证据：
+/Users/wen/spot/validation/artifacts/axial-material-new-OVERV-original-integer-current-control-20261014-v1/Root_actual_OVERV_original_current_integer_control_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_OVERV_ORIGINAL_INTEGER_ACTUAL24_TRUE_TOOL_RETURNS_20261014.json
+
+后续：唯一独立实际结果核验；继续三组材料对照。

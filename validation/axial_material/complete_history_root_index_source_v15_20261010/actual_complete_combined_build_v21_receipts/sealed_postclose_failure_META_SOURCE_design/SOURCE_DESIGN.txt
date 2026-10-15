@@ -1,0 +1,9 @@
+V21 完整五阶段构建关闭后凭证：有限 SOURCE 设计自审通过，脚本未执行。
+仅 Root 提供真实 strict integer EXIT0 CLOSED 且原完整五阶段/五watch/完整seal/driver/audit/runtime/四tails/全部输入与原上限均通过时写 T/terminal_return.json。
+非零或保存检查未通过：写真实 failed_build_terminal_return 与失败 summary，完整保存已创建流和 H/S/O/T/D；不写成功凭证，不删除，不重跑构建。
+正常 host 62条固定输入按实际有序清单保留重复项，不硬编码数量；SOURCE 文件和目录清单动态，当前30文件仅为 Root 告知状态，未读取 LIVE D/ART。
+完整 d.files 仅按显式路径流式 EOF hash。物理输入 postclose 7ID 是新观察，不伪称未捕获的 prelaunch 7ID。所有原 fixed_input_pins 前后完整 SHA/7ID。
+完整 child build.log 实际 stdout+stderr 合并；full_stderr 是真实外部 host stderr，独立 child stderr 未捕获也未验证为空。
+原whole1800s、每stage600s、512MiB、联合2GiB、history96GiB/free8GiB、1线程/1子进程/0retry保持。全部 SOURCE/OUT/HOST/TERMINAL/D/E实际文件计数，E root manifest/summary 后新增条目的时间边界明确。
+只标准库 SOURCE/META；本次不导入 writer 或项目，不调用 guard/API，不读 live 输出，不授 whole INPUT、native、AAA/ABA 或物理资格。
+未来必须由 Root 保存该 writer 的真实工具返回，再独立封存/审查成功或失败证据。任何 metadata 异常也保存，不用源码自审替代实际执行。

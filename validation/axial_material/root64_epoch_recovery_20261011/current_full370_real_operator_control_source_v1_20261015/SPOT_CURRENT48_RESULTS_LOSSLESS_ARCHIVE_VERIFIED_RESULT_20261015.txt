@@ -1,0 +1,35 @@
+SPOT 48份完整结果无损归档及核验（2026-10-15）
+
+结论：48份结果完整归档，原文805,236,925字节，gzip共68,959,717字节。全部原始输入流SHA/长度、保存的原文件凭证和逐流解压SHA/长度一致。当前原文仍全部保留；本阶段未删除原文，未把潜在节省作为已释放空间。
+归档包含43份旧完整JSONL结果及5份本次A完整字段核验结果，未删字段、行、未知项或失败项。30个旧历史输入角色与5个当前A结果角色在索引中明确标注。
+
+实际执行
+Root初始61b86c / session12538，真实最终86373c，原整数0，require_escalated，唯一执行、无重试。
+原监控子进程返回0，完整48份；监控约100.56秒，采样峰值70.34375MiB；Root约105.27秒。原512MiB/阶段600秒/整体1800秒/单线程/单子进程/无重试上限保持。
+所有压缩输出和元数据共70,860,690字节，低于192MiB总硬上限；gzip低于184MiB，保留8MiB元数据/运行产物余量。
+完整65累计目录和外部元数据仍低于2GiB；原历史、冷保留和磁盘余量检查通过。原文件及66个原生数据角色仍在。
+
+独立后验
+真实工具3ab8b9返回整数0；PASS_ACTUAL_ALL48_STREAMED_SHA_LENGTH_ARCHIVE_METADATA_ONLY_PLAINTEXT_RETAINED。
+48份新gzip字节SHA及文件身份双次核验；全部48份原文和66个原生角色仅检查原身份，未读旧原文正文。
+源代码作者与实际后验执行者分别披露；后验不宣称独立解压重算，实际逐字节解压证明来自Root受控子进程。没有数值重算、科学数组解析或物理资格提升。
+
+旧检查结论保留
+v2源代码审阅真实bc7d7a返回0，但审阅状态FAIL_SOURCE_ONLY，指出两处宿主监控/日志路径遗漏archive-stage前缀；禁止发布，未启动压缩业务。
+v3只修正这两处路径，反向替换可恢复完整v2宿主，其余4份源代码全文不变。原GEN0、失败分类、审阅记录和源文件全部保留。
+
+结果入口
+压缩包目录：validation/artifacts/axial-material-current-result48-lossless-archive-20261015-v1/archives
+完整路径/原始凭证/压缩凭证/逐字节解压证明索引：同目录上一级 RESULT43_LOSSLESS_ARCHIVE_INDEX.json
+实际报告：同目录上一级 Root_actual_result43_lossless_archive_summary.json
+实际报告SHA256 e615f318f4b06b851928704319047cd0397a6de40885872469718377cd632370
+原始真实返回：current_result43_lossless_archive_source_v3_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+SHA256 28aeaa21f86c81f8a145aa654158c364d75624ee07c1ba9de0bbeb9922d3790d
+独立后验：current_result43_lossless_archive_source_v3_UNREADY/actual_postverify_20261015/REVIEW.json
+SHA256 cd7f321600fb1306fcb379aa3c90a0f7036cc91548bbf3272d5c6f5ccc06eb70
+后验真实返回：同目录 TRUE_TOOL_RETURNS.json
+SHA256 bf9b89eea4f33dd16ecf1305408179d4a4973d47cb23d9b26febc1cad2d9811d
+
+下一步为另行准入的精确48份未压缩副本退休；确认压缩包和索引可保留并通过独立核验后才删除原文。潜在净节省805,236,925−68,959,717=736,277,208字节，不含新增元数据占用。随后执行B观察器构建和完整当前材料捕获。
+未来消费者必须保留原历史路径/完整凭证，并通过压缩索引与真实退休回执取得结果；不得将已退役原文路径继续当当前存活输入。
+物理精度、历史机器位、完整参考、AAA、ABA及目标完成标志保持false。

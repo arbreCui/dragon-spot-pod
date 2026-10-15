@@ -1,0 +1,155 @@
+--- /Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-last-cprime-trim-build-admission-20261008/SPOT1P64.f90
++++ /Users/wen/spot/validation/axial_material/factor_diagonal_trim_source_v10_20261009/SPOT1P64.f90
+@@ -49,6 +49,7 @@
+   public :: SPOT1P64_FACTOR64,SPOT1P64_SOLVE64
+   public :: SPOT1P64_RANK1_LOWER_STORE,SPOT1P64_RANK1_LOWER_VALIDATE
+   public :: SPOT1P64_RANK1_LOWER_LOAD
++  public :: SPOT1P64_RANK1_FACTOR_PACK,SPOT1P64_RANK1_FACTOR_LOAD
+ 
+ contains
+ 
+@@ -356,6 +357,88 @@
+   ! Only ordinary rank1 uses this storage.  Equality is INTEGER64 IEEE
+   ! equality. First occurrence defines dictionary order; 49 unique blocks
+   ! remain valid. Decode preserves full original matrix shape and arithmetic.
++
++  ! Ordinary-rank1 only: FACTOR64/SOLVE64 no longer read factor diagonals
++  ! after build. Keep every live entry, pivot, and pivot_value unchanged.
++  subroutine SPOT1P64_RANK1_FACTOR_PACK(igroup)
++    integer, intent(in) :: igroup
++    double precision, allocatable :: packed(:,:,:)
++    integer :: n,b,i,j,k,row
++    integer(int64) :: full_bytes,packed_bytes,dead_bytes
++    if (.not.rank1_enabled .or. .not.allocated(SPOT1P64_PLAN)) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))
++      n=plan%nstate; b=plan%nblock
++      if (n <= 0 .or. b <= 0 .or. plan%ready .or. .not.allocated(plan%factor)) &
++        call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++      if (any(shape(plan%factor) /= (/n,n,b/))) &
++        call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++      if (int(n,int64) > RANK1_CAP/24_int64/int(n,int64)) &
++        call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')
++      full_bytes=8_int64*int(n,int64)*int(n,int64)
++      if (int(b,int64) > RANK1_CAP/full_bytes) &
++        call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')
++      full_bytes=full_bytes*int(b,int64)
++      dead_bytes=8_int64*int(n,int64)*int(b,int64)
++      packed_bytes=full_bytes-dead_bytes
++      if (plan%rank1_factor_bytes < full_bytes) &
++        call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++      ! Both arrays coexist until move_alloc. Account the complete temporary.
++      call SPOT1P64_RANK1_RESERVE(packed_bytes)
++      allocate(packed(n-1,n,b))
++      do k=1,b
++        do j=1,n
++          row=0
++          do i=1,n
++            if (i == j) cycle
++            row=row+1
++            packed(row,j,k)=plan%factor(i,j,k)
++          enddo
++        enddo
++      enddo
++      call move_alloc(packed,plan%factor)
++      call SPOT1P64_RANK1_RELEASE(full_bytes)
++      plan%rank1_factor_bytes=plan%rank1_factor_bytes-dead_bytes
++    end associate
++  end subroutine SPOT1P64_RANK1_FACTOR_PACK
++
++  subroutine SPOT1P64_RANK1_FACTOR_LOAD(igroup,block,factor)
++    integer, intent(in) :: igroup,block
++    double precision, intent(out) :: factor(:,:)
++    integer :: n,b,i,j,row
++    if (.not.rank1_enabled .or. .not.allocated(SPOT1P64_PLAN)) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &
++      call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))
++      n=plan%nstate; b=plan%nblock
++      if (n <= 0 .or. b <= 0 .or. .not.plan%ready .or. .not.allocated(plan%factor)) &
++        call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++      if (any(shape(plan%factor) /= (/n-1,n,b/)) .or. &
++          any(shape(factor) /= (/n,n/)) .or. block < 1 .or. block > b) &
++        call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++      factor=0.0d0
++      do j=1,n
++        row=0
++        do i=1,n
++          if (i == j) cycle
++          row=row+1
++          factor(i,j)=plan%factor(row,j,block)
++        enddo
++      enddo
++    end associate
++  end subroutine SPOT1P64_RANK1_FACTOR_LOAD
++
+   subroutine SPOT1P64_RANK1_LOWER_STORE(igroup,lower,du)
+     integer, intent(in) :: igroup
+     double precision, intent(in) :: lower(:,:,:)
+@@ -525,6 +608,11 @@
+         8_int64*int(nrow,int64)*int(nstate,int64)*int(nunique,int64)+ &
+         4_int64*int(nrow,int64)+4_int64*int(nblock,int64)
+       expected_bytes=expected_bytes-8_int64*square
++      if (plan%ready .and. allocated(plan%factor)) then
++        if (any(shape(plan%factor) /= (/nstate-1,nstate,nblock/))) &
++          call XABORT('SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.')
++        expected_bytes=expected_bytes-8_int64*int(nstate,int64)*int(nblock,int64)
++      endif
+       if (expected_bytes /= plan%rank1_factor_bytes) &
+         call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')
+     end associate
+@@ -620,7 +708,8 @@
+     SPOT1P64_RANK1_RESERVE,SPOT1P64_RANK1_RELEASE, &
+     SPOT1P64_RANK1_GUARD,SPOT1P64_RANK1_FACTORS, &
+     SPOT1P64_RANK1_LOWER_STORE,SPOT1P64_RANK1_LOWER_VALIDATE, &
+-    SPOT1P64_RANK1_LOWER_LOAD
++    SPOT1P64_RANK1_LOWER_LOAD, &
++    SPOT1P64_RANK1_FACTOR_PACK,SPOT1P64_RANK1_FACTOR_LOAD
+   use AXMAT_WHITE_TRACE_MOD, only: AXMAT_WHITE_ON,AXMAT_WHITE_ROW, &
+     AXMAT_WHITE_PERIMETER,AXMAT_WHITE_KERNEL,AXMAT_WHITE_NOTE
+   implicit none
+@@ -1284,7 +1373,7 @@
+           if (rank1_identity_active) then
+             if (.not.allocated(plan%factor) .or. .not.allocated(plan%cprime)) &
+               call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')
+-            if (any(shape(plan%factor) /= (/local_state,local_state,nfloor+1/))) &
++            if (any(shape(plan%factor) /= (/local_state-1,local_state,nfloor+1/))) &
+               call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')
+             if (any(shape(plan%cprime) /= (/local_state,local_state,nfloor/))) &
+               call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')
+@@ -1301,9 +1390,16 @@
+             if (block > 1) rhs_one(:,1)=rhs_one(:,1)- &
+               matmul(plan%lower(:,:,block),dprime(:,block-1))
+             endif
++            if (rank1_identity_active) then
++              call SPOT1P64_RANK1_FACTOR_LOAD(igroup,block,rank1_lower_work)
++              call SPOT1P64_SOLVE64(rank1_lower_work, &
++                plan%pivot(:,block),plan%pivot_value(:,block), &
++                rhs_one,info)
++            else
+             call SPOT1P64_SOLVE64(plan%factor(:,:,block), &
+               plan%pivot(:,block),plan%pivot_value(:,block), &
+               rhs_one,info)
++            endif
+             if (info /= 0) &
+               call XABORT('SPOT1P64 CACHE: INVALID STORED FACTOR.')
+             dprime(:,block)=rhs_one(:,1)
+@@ -1356,6 +1452,7 @@
+               plan%cprime(:,:,block)=solve_pack(:,:local_state)
+             dprime(:,block)=solve_pack(:,local_state+1)
+           enddo
++          if (rank1_identity_active) call SPOT1P64_RANK1_FACTOR_PACK(igroup)
+           plan%ready=.true.
+           call SPOT1P64_CACHE_NOTE_BUILD(nfloor+1)
+         endif

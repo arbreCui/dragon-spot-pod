@@ -1,0 +1,189 @@
+{
+  "schema": "V17_OWNED_RUNTIME_FUTURE_PREPARER_SOURCE_ONLY_DESIGN_V1",
+  "source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/prepare_v17_A8_owned_MAP_actual_full50_source_only_v3_20261014.py",
+    "sha256": "949d980b15e2c4d715a7e961f69c194e06553cf9a9bf2b208d507142310f365b",
+    "size_bytes": 39338,
+    "identity": [
+      16777229,
+      50118651,
+      33188,
+      1,
+      39338,
+      1791944886498845408,
+      1791944886498845408
+    ]
+  },
+  "current_template_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/v17_A8_owned_MAP_future_full50_Source_preparation_20261014/FUTURE_BINDING_SPEC_NONE.json",
+    "sha256": "768f407c9f573b3c23b45c9c1e335cb15cf2f562940116df669a26c80a2eacb3",
+    "size_bytes": 17598,
+    "identity": [
+      16777229,
+      50118716,
+      33188,
+      1,
+      17598,
+      1791944995823639709,
+      1791944995823639709
+    ]
+  },
+  "original_Host_source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_cache336_pipeline_source_v16_20261014/run_actual_three_plane_pipeline.py",
+    "sha256": "52337acb4fa4f5154d8a786aaa493f6dbc0e1532623d1c6f5345abdcc960417c",
+    "size_bytes": 135438,
+    "identity": [
+      16777229,
+      50086458,
+      33188,
+      1,
+      135438,
+      1791919111182281299,
+      1791919111182281299
+    ]
+  },
+  "planned_candidate_sha256_only_not_written": "f89fa2679801d149c9b5770ff549956118d7e96c74df62b2f26332ae2593b4e5",
+  "planned_host_change_blocks": [
+    {
+      "before": "import time\n",
+      "after": "import time\nimport shlex\nimport re\n",
+      "reason": "exact real Root argv and strict executed completion validation"
+    },
+    {
+      "before": "OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-cache336-20261014-v16')",
+      "after": "OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-A8-owned-MAP-20261014-v17')",
+      "reason": "unique next full50 OUT"
+    },
+    {
+      "before": "def main():\n",
+      "after": "def owned_runtime_terminal0(value):\n    if not isinstance(value,dict)or type(value.get('exit_code'))is not int or value['exit_code']!=0 or value.get('session_id')is not None:\n        raise RuntimeError('owned Runtime actual genuine terminal integer0 and no session')\n\ndef owned_runtime_live_rows(rows,retired):\n    historical=current_pin_table(retired);out=[]\n    for row in rows:\n        if row['path']in historical:\n            if row!=historical[row['path']]:raise RuntimeError('only exact historical PF can leave current roots')\n        else:out.append(row)\n    return unique(out)\n\ndef owned_runtime_completion_log(text):\n    lines=text.splitlines();seals=[];completion=[];normal=[]\n    failure_schemas={'ACTUAL_BOOT_EXACT_FAILURE_STATUS_DIAGNOSTIC_V1','ACTUAL_BOOTB_FIRST_ADMISSION_PREDICATE_DIAGNOSTIC_V1','ACTUAL_BOOT_BIND64_EXPLICIT_RETURN_DIAGNOSTIC_V1','ACTUAL_BOOT_BIND64_FAILED_PHYS_GROUP_INVENTORY_V1','ACTUAL_BOOT_BIND64_NATIVE17_REJECTION_V1','ACTUAL_SPOR64_A9_FAILED_RETURN_DIAGNOSTIC_V1','ACTUAL_SPOR64_A8_FAILED_RETURN_DIAGNOSTIC_V1','ACTUAL_SPOR64_A8_MCCGF442_STATE_FAILURE_SNAPSHOT_V1'}\n    for i,line in enumerate(lines):\n        if len(line)>65536:raise RuntimeError('bounded actual log JSON/marker line')\n        if re.fullmatch(r'>\\|ACTUAL-AAA3-TRUE-ONLINE-BOOT-COMPLETE[ ]+\\|>0031',line):completion.append(i)\n        if line.lstrip().startswith('normal end of execution for dragon 5  Version 5.1.0'):normal.append(i)\n        if line.strip().startswith('{')and line.strip().endswith('}'):\n            value=json.loads(line)\n            if isinstance(value,dict):\n                if value.get('schema')in failure_schemas:raise RuntimeError('actual completed BOOT has no false-return/failure observer events')\n                if value.get('schema')=='ACTUAL_XSM_SEALED_PAIR_COMPLETE_COPY_READBACK_V1':seals.append((i,value))\n    if len(seals)!=1 or len(completion)!=1 or len(normal)!=1 or not seals[0][0]<completion[0]<normal[0] or 'SPOBOOX64: ACTUAL STRICT SOLVE NOT COMMITTED.'in text:\n        raise RuntimeError('one actual seal then anchored executed decorated ECHO0031 then normal end; listing is not execution')\n    seal=seals[0][1]\n    if seal.get('status')!='PASS'or seal.get('all_payload_bits_equal')is not True or seal.get('complete_lifecycle_checked')is not True or (seal.get('groups'),seal.get('planes'),seal.get('epoch'))!=(370,3,0):raise RuntimeError('original complete370×3 seal0 and lifecycle')\n    return dict(seal=seal,actual_execution_line=lines[completion[0]],seal_line_number=seals[0][0]+1,completion_line_number=completion[0]+1,normal_end_line_number=normal[0]+1)\n\ndef owned_runtime_readback_shape(value):\n    if not isinstance(value,dict)or value.get('dimensions',[])[:3]!=[1,370,3]or value.get('rank_values')!=370 or value.get('rank1_all_groups')is not True or \\\n       value.get('independent_reference_physics_assessment')is not False or not isinstance(value.get('planes'),list)or len(value['planes'])!=3:\n        raise RuntimeError('actual original complete full370 three-plane terminal readback')\n    for p,row in enumerate(value['planes'],1):\n        if row.get('plane')!=p or row.get('groups')!=370 or row.get('unknowns')!=14 or row.get('fission_components')!=32 or \\\n           row.get('SYSTEM_SPOT_L1_SNAP')!=p or row.get('SYSTEM_SPOT_L1_RAW')!=1 or row.get('SYSTEM_full370_SPOT_S0_PHYS_checked')is not True or \\\n           row.get('flux_values')!=370*14 or row.get('source_values')!=370*14:\n            raise RuntimeError('every actual terminal plane/full370/native field/mirror readback')\n    for name in ('complete_AX_tree','complete_ARCHIVE_tree'):\n        digest=value.get(name)\n        if not isinstance(digest,dict)or set(digest)!={'sha256','leaves','bytes','directories','list_items'}or not isinstance(digest['sha256'],str)or len(digest['sha256'])!=64 or any(x not in '0123456789abcdef'for x in digest['sha256'])or any(type(digest[k])is not int or digest[k]<0 for k in ('leaves','bytes','directories','list_items')):\n            raise RuntimeError('original helper complete pair digest dict and raw inventory counts')\n\ndef admit_owned_map_runtime_values(report,pactual,own,pown,sf,psf,plan,pp,cli,pcli,rt,prt,argv,pargv,post,ppost,pt,ppt):\n    root=Path(pactual['path']).parent\n    if own.get('schema')!='COMPLETE_GUARDED_ONE_BOOT_A8_18_OWNED_MAP_LIFETIME_HOST_SOURCE_ONLY_FREEZE_V1'or \\\n       sf.get('schema')!='COMPLETE_SPOR64_A8_18_CALLER_OWNED_MAP_LIFETIME_FORTRAN_SOURCE_ONLY_FREEZE_V1'or \\\n       sf.get('source_only')is not True or any(sf.get(k)is not False for k in ('compiled','numerical_executed','business_executed','files_deleted'))or \\\n       own['selected_owned_Fortran_Source_freeze_pin']!=psf or own['diagnostic_host_plan_pin']!=pp or cli['selected_own_Host_freeze_pin']!=pown or \\\n       plan['selected_owned_Fortran_Source_freeze_pin']!=psf or plan['diagnostic_Source_pin']!=sf['diagnostic_source_pin']or \\\n       plan['planned_output_root']!=str(root)or cli['output_root']!=str(root)or plan['runtime_authorities_complete']is not True or \\\n       plan['only_replacement_zero_based_index']!=1 or plan['compiler_Module_ABI_whole_bytes_must_equal_old']is not True:\n        raise RuntimeError('exact Source-only owned18 SF, V2 owning HF/PLAN/CLI and only1 obligation')\n    flags=sf['Source_flags']\n    if len(flags)!=9 or any(v is not True for v in flags.values())or any(sf.get(k)is not True for k in flags):\n        raise RuntimeError('all nine exact owned lifetime Source flags')\n    if own['host_source']['path']!=str(REC/'boot_v16_A8_18_owned_MAP_lifetime_host_source_v2_20261014/run_guarded_one_BOOT_A8_owned_MAP_lifetime.py')or \\\n       pactual['path']!=str(Path(cli['output_root'])/'Root_actual_one_BOOT_status_diagnostic_summary.json')or \\\n       len(cli['exact_reviewable_argv'])!=42 or argv['exact_argv']!=cli['exact_reviewable_argv']or argv['interface_pin']!=pcli or argv['Host_freeze_pin']!=pown:\n        raise RuntimeError('only selected V2 genuine 42-token Root launch, never failed V1')\n    terminal_return=rt['actual_terminal_return']\n    if not isinstance(terminal_return,dict)or type(terminal_return.get('exit_code'))is not int or terminal_return['exit_code']!=1 or terminal_return.get('session_id')is not None:\n        raise RuntimeError('original genuine owned Runtime Host parser-only terminal1 retained')\n    if rt.get('observed_closed')is not True or type(rt.get('original_integer_exit_code'))is not int or rt['original_integer_exit_code']!=1 or \\\n       not isinstance(rt.get('exact_executed_command'),str)or shlex.split(rt['exact_executed_command'])!=argv['exact_argv']:\n        raise RuntimeError('genuine owned Runtime Root closed1 and exact shlex argv42')\n    records=report['records']\n    if report.get('schema')!='ACTUAL_GUARDED_ONE_BOOT_A8_18_OWNED_MAP_LIFETIME_V1'or report.get('status')!='FAILED_DIAGNOSTIC_UNQUALIFIED'or \\\n       report.get('failure')!=\"RuntimeError('original status8/process0 requires genuine full370×3 sealed-pair readback; no missing-event qualification')\"or report.get('actual_outcome')is not None or report.get('first_failure_secondary_errors')!=[]or len(records)!=3 or \\\n       [r['label'].rsplit('/',1)[-1]for r in records]!=['compile_BOOT_diagnostic','link_Dragon','BOOT_diagnostic']or \\\n       any(r.get('status')!='PASS'for r in records)or report.get('final_report_resource_check_passed')is not True or \\\n       report.get('actual_host_Source_freeze_pin')!=pown or report.get('actual_diagnostic_Fortran_Source_freeze_pin')!=psf or \\\n       report.get('replacement_zero_based_link_index')!=1 or report.get('original_guard_class')!='OwnRSSSerialExecutor'or report.get('original_guard_MRO_unchanged')is not True or \\\n       any(report.get(k)is not False for k in ('full50_executed','engineering_qualified','physics_qualified'))or \\\n       any(report.get(k)is not True for k in ('other69_current_Driver37_BOOTQ40_math57_and_four_archives_unchanged','current_all9_core_objects_unchanged','retained_original9_latest_capture_nine_input_sources_full_EOF_and_all7_preserved')):\n        raise RuntimeError('genuine three PASS owned Runtime, separate singleBOOT0 never full50/physics')\n    caps=plan['original_caps']\n    if report['original_caps']!=caps or caps['SELF_and_each_own_child_RSS_cap_bytes']!=512*2**20 or caps['original_stage_wall_cap_seconds']!=600 or caps['whole_wall_cap_seconds']!=1800 or \\\n       caps['fresh_output_cap_bytes']!=2*2**30 or caps['history_cap_bytes']!=96*2**30 or caps['original_cold_reserve_bytes']!=20971764748 or caps['filesystem_floor_bytes']!=8*2**30 or caps['retries']!=0 or \\\n       type(report.get('SELF_peak_bytes'))is not int or not 0<=report['SELF_peak_bytes']<512*2**20 or type(report.get('wall_seconds'))not in (int,float)or not 0<report['wall_seconds']<1800:\n        raise RuntimeError('unchanged original owned Runtime caps and true resource snapshots')\n    seal=post.get('actual_Fortran_complete_copy_readback')\n    if type(post.get('actual_BOOT_exit_code'))is not int or post['actual_BOOT_exit_code']!=0 or post.get('actual_single_BOOT_completed')is not True or \\\n       not isinstance(seal,dict)or seal.get('schema')!='ACTUAL_XSM_SEALED_PAIR_COMPLETE_COPY_READBACK_V1'or seal.get('status')!='PASS'or \\\n       (seal.get('groups'),seal.get('planes'),seal.get('epoch'))!=(370,3,0)or seal.get('all_payload_bits_equal')is not True or seal.get('complete_lifecycle_checked')is not True:\n        raise RuntimeError('original complete370×3 seal0, never preseal or failure observer')\n    terminal=post['actual_terminal_pair_readback'];owned_runtime_readback_shape(terminal)\n    if post['complete_terminal_readback']!=terminal:raise RuntimeError('two exact post keys preserve original helper complete return')\n    if post.get('schema')!='INDEPENDENT_A8_18_OWNED_MAP_LIFETIME_V2_ACTUAL_RUNTIME_POSTVERIFICATION_V1'or \\\n       post.get('status')!='PASS_ACTUAL_A8_18_OWNED_MAP_LIFETIME_V2_THREE_STAGE0_COMPLETE_PAIR_FACTS_POSTVERIFIED_HOST_COMPLETION_PARSER_FAILURE_RETAINED'or \\\n       post.get('failure')is not None or post.get('verification_failure')is not None or post.get('actual_summary_failure')!=report['failure']or \\\n       any(post.get(k)is not False for k in ('business_executed','compiler_executed','numerical_executed','files_deleted','engineering_qualified','physics_qualified','full50_executed'))or \\\n       post.get('actual_owner_bit_control_results','MISSING')is not None or \\\n       post.get('actual_report_pin')!=pactual or post.get('actual_Host_freeze_pin')!=pown or post.get('actual_CLI_pin')!=pcli or \\\n       post.get('actual_Root_true_tool_return_pin')!=prt or post.get('actual_Root_exact_argv_pin')!=pargv or post.get('actual_Fortran_Source_freeze_pin')!=psf or \\\n       type(post.get('actual_Root_exit_code'))is not int or post['actual_Root_exit_code']!=1 or post.get('actual_Root_closed')is not True or \\\n       type(post.get('actual_stage_count'))is not int or post['actual_stage_count']!=3 or post.get('actual_stage_statuses')!=['PASS','PASS','PASS']or \\\n       any(post.get(k)is not True for k in ('actual_single_BOOT_completed','all_three_watches_closed_without_limit_failure','actual_terminal_pair_full370x3_readback_verified','only_ordered70_index1_changed','actual_other69_ordered70_inputs_full_EOF_unchanged','actual_module6092_fullSHA_matches_original'))or \\\n       post.get('actual_Fortran_complete_copy_readback')!=seal or post.get('actual_terminal_pair_readback')!=terminal:\n        raise RuntimeError('exact independent genuine success post0 and original complete pair facts')\n    if pt.get('observed_closed')is not True or type(pt.get('original_integer_exit_code'))is not int or pt['original_integer_exit_code']!=0:raise RuntimeError('independent actual post observed closed integer0')\n    completion_lines=post.get('actual_completion_stdout_lines')\n    if not isinstance(completion_lines,list)or len(completion_lines)!=1 or not isinstance(completion_lines[0],str)or re.fullmatch(r'>\\|ACTUAL-AAA3-TRUE-ONLINE-BOOT-COMPLETE[ ]+\\|>0031',completion_lines[0])is None:raise RuntimeError('independent one actual executed decorated completion, never listing')\n    for key in ('actual_review_return','actual_postverification_return'):\n        result=pt[key];owned_runtime_terminal0(result);lines=result['output'].strip().splitlines()\n        if not lines or json.loads(lines[-1])['review_pin']!=ppost:raise RuntimeError('actual post tool original stdout exact review PF')\n    actual=current_pin_table(report['fixed_current_pins']+report['output_pins']);old70=plan['current_ordered70_input_pins']\n    obj=actual[str(root/'build/SPOR64_A8.o')];mod=actual[str(root/'build/spor64_a8.mod')];dragon=actual[str(root/'runtime/Dragon')]\n    new70=list(old70);new70[1]=obj;oldmod=plan['selected_original_A8_module_pin']\n    if len(old70)!=70 or len({r['path']for r in old70})!=70 or len({r['path']for r in new70})!=70 or \\\n       post['actual_new_object1_pin']!=obj or post['actual_ordered70_input_pins']!=new70 or post['actual_Module_ABI_pin']!=mod or post['original_Module_ABI_pin']!=oldmod or \\\n       mod['size_bytes']!=6092 or mod['sha256']!=oldmod['sha256']or mod['size_bytes']!=oldmod['size_bytes']or \\\n       report['actual_ordered70_link_inputs']!=[r['path']for r in new70]or \\\n       any(actual.get(r['path'])!=r for r in new70+plan['current_nine_core_object_pins'])or \\\n       [i for i,(a,b)in enumerate(zip(old70,new70))if a!=b]!=[1]:\n        raise RuntimeError('actual only1 repair70, bootstrap9 and identical6092 module whole bytes')\n    first=plan['original_compiler_pin']['path']\n    expected_compile=[first,*plan['original_compile_flags'],'-I'+str(root/'build'),*plan['original_compile_include_arguments'],'-J'+str(root/'build'),'-c',sf['diagnostic_source_pin']['path'],'-o',obj['path']]\n    expected_link=[first,'-O2','-ffp-contract=off',*[r['path']for r in new70],'-o',dragon['path']]\n    if records[0]['command']!=expected_compile or records[1]['command']!=expected_link or records[2]['command']!=[dragon['path']]or \\\n       report['actual_commands']!=[expected_compile,expected_link,[dragon['path']]]or [r for r in new70 if r['path'].endswith('.a')]!=plan['original_four_archive_pins']:\n        raise RuntimeError('actual compile1/link ordered70/BOOT commands and four archive order')\n    for name,key in (('closed_boot_axial.xsm','actual_terminal_axial_pin'),('closed_boot_archive.xsm','actual_terminal_archive_pin')):\n        if post[key]!=actual[str(root/'AAA'/name)]:raise RuntimeError('independent exact actual sealed physical pair PF')\n    return dict(report=report,report_pin=pactual,object_pin=obj,Dragon_pin=dragon,current70_pins=new70,link_command=expected_link,\n      source_pin=sf['diagnostic_source_pin'],source_freeze_pin=psf,build_Host_freeze_pin=pown,post_review_pin=ppost,\n      terminal_axial_pin=post['actual_terminal_axial_pin'],terminal_archive_pin=post['actual_terminal_archive_pin'],\n      provenance=dict(actual_runtime_report_pin=pactual,actual_Root_true_tool_return_pin=prt,actual_Root_exact_argv_pin=pargv,\n        actual_post_review_pin=ppost,actual_post_tools_pin=ppt,actual_owned_Fortran_Source_freeze_pin=psf,actual_owned_Host_freeze_pin=pown,\n        actual_object1_pin=obj,actual_module6092_pin=mod,actual_ordered70_input_pins=new70,single_boot_completed=True,\n        full50_executed=False,engineering_qualified=False,physics_qualified=False,actual_owner_bit_control_results=None))\n\ndef admit_owned_map_runtime(args,hf,helper,cache_runtime,compact):\n    report,pactual=ext(args,'owned_runtime')\n    keys=('selected_actual_owned_runtime_report_pin','selected_owned_runtime_Host_freeze_pin','selected_owned_Fortran_Source_freeze_pin',\n      'selected_owned_runtime_plan_pin','selected_owned_runtime_CLI_pin','selected_owned_runtime_Root_tools_pin','selected_owned_runtime_Root_argv_pin',\n      'selected_owned_runtime_post_review_pin','selected_owned_runtime_post_tools_pin')\n    rows={k:selected_pin(hf,k)for k in keys};values={k:c.load_json_exact(r['path'],r['sha256'],json.dumps(r['identity']))[0]for k,r in rows.items()}\n    if pactual!=rows['selected_actual_owned_runtime_report_pin']:raise RuntimeError('only actual selected owned Runtime report')\n    get=lambda key:values[key]\n    runtime=admit_owned_map_runtime_values(report,pactual,get(keys[1]),rows[keys[1]],get(keys[2]),rows[keys[2]],get(keys[3]),rows[keys[3]],\n      get(keys[4]),rows[keys[4]],get(keys[5]),rows[keys[5]],get(keys[6]),rows[keys[6]],get(keys[7]),rows[keys[7]],get(keys[8]),rows[keys[8]])\n    own=get(keys[1]);plan=get(keys[3]);sf=get(keys[2]);old70=plan['current_ordered70_input_pins'];core=plan['current_nine_core_object_pins']\n    if [old70[i]for i in (37,40,57)]!=[cache_runtime['current70_pins'][i]for i in (37,40,57)]or old70[40]!=compact['object_pin']or \\\n       [x for x in old70 if x['path'].endswith('.a')]!=[x for x in cache_runtime['current70_pins']if x['path'].endswith('.a')]:\n        raise RuntimeError('owned only1 keeps genuine Q40/Driver37/math57 and original four archives')\n    # Preserve original failed Host/report. Only the three actual child stages\n    # are closed0; their actual watches and executed completion line are checked.\n    root=Path(pactual['path']).parent\n    for record in report['records']:helper.check_watch(root,record)\n    rows,logpin=compact_log_rows(root,report['records'][2])\n    text=Path(logpin['path']).read_text(encoding='utf-8',errors='strict')\n    completion=owned_runtime_completion_log(text)\n    c.same_pin(logpin['path'],logpin)\n    if completion['seal']!=get(keys[7])['actual_Fortran_complete_copy_readback']or get(keys[7])['actual_completion_stdout_lines']!=[completion['actual_execution_line']]:raise RuntimeError('unique actual log seal and executed line equal supplemental facts')\n    c.verify_rows(own['dependencies']);c.same_pin(own['host_source']['path'],own['host_source']);c.verify_rows(sf['files'])\n    c.verify_rows(runtime['current70_pins']+core+[plan['selected_original_A8_module_pin']])\n    # The independent post alone ran original final_readback. Exact current\n    # physical pair whole-PF checks preserve that complete logical/bit proof.\n    c.same_pin(runtime['terminal_axial_pin']['path'],runtime['terminal_axial_pin'])\n    c.same_pin(runtime['terminal_archive_pin']['path'],runtime['terminal_archive_pin'])\n    runtime['fixed']=unique(list(rows.values())+[own['host_source']]+own['dependencies']+sf['files']+report['fixed_current_pins']+report['output_pins'])\n    return runtime\n\ndef main():\n",
+      "reason": "separate strict actual owned Runtime admission, original admission functions retained"
+    },
+    {
+      "before": "'cache336-build70','cache336-budget-bits']:",
+      "after": "'cache336-build70','cache336-budget-bits','owned-runtime']:",
+      "reason": "one new mandatory actual Runtime report triplet"
+    },
+    {
+      "before": "hf['schema']!='COMPLETE_ACTUAL_AAA3_CACHE336_PIPELINE_HOST_SOURCE_FREEZE_V16'",
+      "after": "hf['schema']!='COMPLETE_ACTUAL_AAA3_A8_OWNED_MAP_PIPELINE_HOST_SOURCE_FREEZE_V17'",
+      "reason": "new complete owning Source HF"
+    },
+    {
+      "before": "    runtime=admit_cache336_driver_build(args,hf,helper,compact)\n    build=runtime['report'];pbuild=runtime['report_pin']\n    current70_link=build['actual_complete70_link_inputs']",
+      "after": "    cache_runtime=admit_cache336_driver_build(args,hf,helper,compact)\n    runtime=admit_owned_map_runtime(args,hf,helper,cache_runtime,compact)\n    build=runtime['report'];pbuild=runtime['report_pin']\n    current70_link=[x['path']for x in runtime['current70_pins']]\n    owned_runtime_admission_provenance=runtime['provenance']",
+      "reason": "final actual repair70 for execution and direct aliases, separate Driver37 chain kept"
+    },
+    {
+      "before": "    link_command=build['records'][-1]['command']\n",
+      "after": "    link_command=runtime['link_command']\n",
+      "reason": "real link record1, not last BOOT record"
+    },
+    {
+      "before": "direct_binding['schema']!='DECLARED_ACTUAL_COMPONENT_DIRECT_ALIAS_ENTRY_BINDING_V3'",
+      "after": "direct_binding['schema']!='DECLARED_ACTUAL_COMPONENT_DIRECT_ALIAS_ENTRY_BINDING_V4'",
+      "reason": "owned Runtime direct-main binding"
+    },
+    {
+      "before": "    budget=admit_cache336_budget_bit_controls(args,hf,helper,runtime)\n    cache336_admission_provenance=dict(new_driver_build_report_pin=pbuild,new_Driver_object_pin=runtime['object_pin'],\n      new_Driver_Fortran_Source_freeze_pin=runtime['source_freeze_pin'],new_Driver_Host_freeze_pin=runtime['build_Host_freeze_pin'],",
+      "after": "    budget=admit_cache336_budget_bit_controls(args,hf,helper,cache_runtime)\n    cache336_admission_provenance=dict(new_driver_build_report_pin=cache_runtime['report_pin'],new_Driver_object_pin=cache_runtime['object_pin'],\n      new_Driver_Fortran_Source_freeze_pin=cache_runtime['source_freeze_pin'],new_Driver_Host_freeze_pin=cache_runtime['build_Host_freeze_pin'],",
+      "reason": "budget controls retain original separate Driver build/SF provenance"
+    },
+    {
+      "before": "    fixed=unique(fixed+compact['fixed']+controls['fixed']+runtime['fixed']+budget['fixed']+[cache_build_pin]",
+      "after": "    fixed=unique(fixed+compact['fixed']+controls['fixed']+cache_runtime['fixed']+runtime['fixed']+budget['fixed']+[cache_build_pin]",
+      "reason": "both original Driver chain and owned chain remain fixed"
+    },
+    {
+      "before": "                 original69['fixed_current_pins']+original69['output_pins'])\n    observation.checkpoint('admission.before_fixed_EOF')",
+      "after": "                 original69['fixed_current_pins']+original69['output_pins'])\n    fixed=owned_runtime_live_rows(fixed,hf['historical_retired_exact_private_body_pins'])\n    observation.checkpoint('admission.before_fixed_EOF')",
+      "reason": "explicit exact retired PF whitelist, never generic absent or nested historical promotion"
+    },
+    {
+      "before": "    archives=tuple(x for x in build['records'][-1]['command']if x.endswith('.a'))\n",
+      "after": "    archives=tuple(x for x in link_command if x.endswith('.a'))\n",
+      "reason": "four archives from genuine actual repair link"
+    },
+    {
+      "before": "    del compact,controls,cache_build,runtime,budget\n",
+      "after": "    del compact,controls,cache_build,cache_runtime,runtime,budget\n",
+      "reason": "release only unused JSON containers before guarded original50"
+    },
+    {
+      "before": "          actual_cache336_driver_and_budget_bit_admission=cache336_admission_provenance,\n",
+      "after": "          actual_cache336_driver_and_budget_bit_admission=cache336_admission_provenance,\n          actual_A8_owned_MAP_runtime_admission=owned_runtime_admission_provenance,\n",
+      "reason": "raw separate owned Runtime provenance"
+    },
+    {
+      "before": "          actual_cache336_driver_and_budget_bit_admission=cache336_admission_provenance,angular_moments_status='UNKNOWN',",
+      "after": "          actual_cache336_driver_and_budget_bit_admission=cache336_admission_provenance,\n          actual_A8_owned_MAP_runtime_admission=owned_runtime_admission_provenance,angular_moments_status='UNKNOWN',",
+      "reason": "summary separate owned Runtime provenance"
+    }
+  ],
+  "whole_host_inverse_equal": true,
+  "all_original_function_and_class_hashes": {
+    "ext": "bd0b0e900b0fcd9031e72e38b6060058e0ee8a2663d2d5727f217bd012d19d53",
+    "unique": "ef0e470a89108e957fc7662758d216a01ae6ce9d318469cc883953ae1d84089f",
+    "ParentObservationFailure": "180996613b55d0da24785e37b4eaff6df569fb7a7f91356a8db434e47276285b",
+    "ParentMemoryObservation": "26b54d3646bd310fdb57d6463361feeb40e127f4c7ed0a3da5341858bd554545",
+    "empty_final_metadata_kind": "cbc72f3b03e09c21d91bf54a899a152d0443c18b9df97326c73f3c2366404803",
+    "classify_storage_inventory": "1f80d81548ae5aaee9a632b70c62cad408a464b23119319bf323975531be9863",
+    "FirstFatal": "0aa23b57dcc9340671b8cf688d4fe9e53f95370d44c5bf05bd53b3cea5659790",
+    "PhaseResources": "512085d4c7ed29c8c2472b91d577f4b2eb1f19707e29adda4160af2502ceedf0",
+    "selected_pin": "f49191a119c4a645b21e8ed10a8433191ebfe0fe5f586587592bc8a456d4d446",
+    "read_selected": "c4fad6a41ddd01573f7ba8931a82abed423a2b6a0871fd6e18380f8d0f336fd7",
+    "current_pin_table": "679102f1a73ced1dd19022fc5af00deb5d92129ced424d2d804bbba791e1ce6b",
+    "compact_log_rows": "ef5b66ecf4ca8f8e2cce8c3cf544409ef4061a3dc7d4b69f6a2e5bf2156c9d3f",
+    "exact_counter_oracles": "e32debbae43cc499e2257d80bebdc0f36e37719cad0077be7b989ee72a2c5cda",
+    "admit_compact_build": "73ea2260e1d49f53a0e294951007ba01f78ce8404fede7426d244fb0120be74f",
+    "admit_control_host": "3e025cd513686611d2eb322ed776cbac7f90cc0a7eba379da5e971bb8bac46d6",
+    "exact_public_pin": "a860c933f1510a5ae513a3e6e307443c4e8de1a41f624b23c8348fe6c5d07ba9",
+    "exact_public_live_pin": "d593b91c83defcc066b9d66e8a10bfa46f4f23cb2cba7b19bbcd367ed015d376",
+    "exact_public_nulls": "1431024d502f418126229884e663e4fb888482fd48d0fe5929ee9af299ce3e21",
+    "admit_exact_public_stale_lifetimes": "379b6ce74bb9c93cc482c92948f6461d6d1583172fd944da79f0784f5f00cb1a",
+    "admit_compact_controls": "1c751c0a0be334f8b12425c5bb2d21fae2a632679db0dd22bb34d3d1b7ebdce1",
+    "require_cache336_bit_compiler_metadata": "d677485dcef01eac1bb0efed964a5524d5060fc35e902eb133b23a01b85ef535",
+    "admit_cache336_driver_build": "f03f23bec0f9e0ac5b82012a8c51330c521932006245c5ba260a5101afac1e00",
+    "admit_cache336_budget_bit_controls": "bb66bc196226667a47062dbdfa459b4580f2ece633c0cc6cfafcb0f9644ff8ca"
+  },
+  "original50_continuous_bytes": 18902,
+  "original50_continuous_sha256": "7cc6f56f2864cfd8eb1e9300221434a6b6b41605a40f8604889ad13c1b65c801",
+  "old_v1_preparer_source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/prepare_v17_A8_owned_MAP_actual_full50_source_only_v1_20261014.py",
+    "sha256": "8ab94fe5a72db54cc9ac2951c049640a2d1e180eb1adb9577f91d30e1c832df0",
+    "size_bytes": 34690,
+    "identity": [
+      16777229,
+      50118394,
+      33188,
+      1,
+      34690,
+      1791944595200306967,
+      1791944595200306967
+    ]
+  },
+  "old_v2_preparer_source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/prepare_v17_A8_owned_MAP_actual_full50_source_only_v2_20261014.py",
+    "sha256": "eefe23f9eb9282e5d56e9aff5c45f9a7933440ef8ad33b5759545fa607b9f5c9",
+    "size_bytes": 38244,
+    "identity": [
+      16777229,
+      50118559,
+      33188,
+      1,
+      38244,
+      1791944772216457081,
+      1791944772216457081
+    ]
+  },
+  "historical_v1_root0_contract_not_current": true,
+  "original_current_Root1_parser_failure_retained": true,
+  "actual_metadata_pure_Source_contract_check": true,
+  "template_Null_refusal": "required canonical actual full PF; unknown None is not an authority",
+  "actual_main_preparer_executed": false,
+  "candidate_package_created": false,
+  "helper_business_imported": false,
+  "compiler_executed": false,
+  "numerical_executed": false,
+  "files_deleted": false
+}

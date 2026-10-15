@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "experiment_id": "axial-material-rank1-moc-precision-20261003",
+  "status": "PREDECLARED_BEFORE_RANK1_COMMON_BASIS_CONSTRUCTION",
+  "case_spec_sha256": "7995bc48c1c842dabdf15e002d45741dad43668555a1ad9cf518626e877008e6",
+  "groups": 370,
+  "training_slots": [
+    "A",
+    "B",
+    "A"
+  ],
+  "required_production_rank_each_group": 1,
+  "selected_sigma_over_sigma1_strict_min": 9.5367431640625e-07,
+  "formula": "sigma_requested > 8 * epsilon(REAL32) * sigma1; requested=1; epsilon(REAL32)=2^-23",
+  "purpose": "Numerical input-resolution admission for retained directions only, not a truncation accuracy guarantee. All three singular values remain evidence; sigma2 is not an admission gate for this distinct rank1 experiment.",
+  "evidence": "Read all three singular values per group from actual production common_basis.xsm POD-SIGMA-G; preserve full XSM, spectrum log, and parent rank2 failure.",
+  "failure_classification": "INCONCLUSIVE_RANK_INPUT_PRECISION",
+  "failure_action": "Stop before AAA or ABA; preserve outputs; no padding, threshold change, per-case retraining or fitting to CE results."
+}

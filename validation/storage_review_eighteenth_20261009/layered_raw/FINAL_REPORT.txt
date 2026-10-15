@@ -1,0 +1,7 @@
+第十八轮存储复查：提出一组较大派生中间文件候选，尚未删除。
+可考虑退役 native-layered-full-20261001/primary 内1080个已完成full_jobs批次的12960份raw_g*.npz：逻辑11,404,193,496字节（10.620983 GiB），按inode去重当前分配11,430,703,104字节。精确路径/全SHA/7字段身份/原job、结果和manifest绑定在候选JSON中。
+全部候选fresh全文SHA等于原result.sha256及primary/replay两收据；303原输入和build源码全SHA、1080批原命令/真0watch、保留2160 operators/controls和24完整归约算子也均核对。保留所有结果文档、原日志、收据、原seal、operators.npz、controls.npz、每批result.json、288独立验证轨迹及12份preflight raw样例。
+当前完整37395 expected map对整个layered目录仅锁1个build文件（173168字节），对oblique目录锁0；86namespace均不覆盖两目录。12960候选在完整当前canonical/namespace/alias/literal和expected表内均无命中；已逐源码追当前consumer仅消费完整graph和追加expected，不重新调用旧native实验API。历史报告提及raw并不永久阻止退役。
+这些raw是原输入/代码/命令可重算的逐轨迹派生见证，归约operators并非raw的无损替代。今后旧raw审计、replay或原全包逐字节重验需在隔离scratch根先重算，并与原SHA/长度全等后再恢复准确路径。没有即时恢复包，也没有在本次运行科学重算。
+Root固定清单预检和独立此前restore主本交集核验完成前，不执行删除。oblique的完整响应数组本轮继续保留。当前SOURCE31/WORK56/TERM12/CT3和4份准确路径工作副本保留；159旧cache集合和最大60旧文件元数据记录与R17相同，没有新无依赖cache。
+真实只读工具771d0c/session97651→f39b73 EXIT0 CLOSED；基础窗口79eec3/session58945→dd47ae EXIT0 CLOSED。两次基础reader误断言真1的完整源/流/收据保留，只有审查器纠正，业务和项目原文件未改。旧35GB主科学字节未重读。

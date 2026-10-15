@@ -1,0 +1,9 @@
+V10 standalone intake最小草稿，仅TMP，无业务执行。
+母本来自正式旧B intake_proof_files，host180053/recorder5bd181全文保持；新host11、recorder14纯身份替换完整逆向原byte exact。
+实际新combined factory c55/DECL32370/PREPdefbc/SEAL3d109/RUNaec936/runtime39a372已只读fullSHA。标准API参数名为seal_sha/terminal_evidence/terminal_evidence_sha256。
+原精确API命令仍9token：P12、new formal factory、admit、--sha256、actual seal、--terminal-evidence、actual TERM/terminal_return.json、--terminal-evidence-sha256、actual RUN SHA。
+原host源码启动命令仍P12+host.py；全5线程环境1、禁优化/外部PYTHONPATH、不写pyc。1800秒总限、600秒阶段、512MiB、单子、零重试及genuine supervisor MRO/source guards完全保留。
+事实口径：standalone combined intake原build环境是Python3.12；后续cold producer P14属于独立阶段，不能移植到这里。
+host与recorder均UNREADY。新BASE/ART/stdout/stderr均未创建；actualhost工具tuple、exit、API whole SHA、PID/peak/elapsed及Root10receipt全部None。recorderHOST_SHA/API_RETURN_SHA也None。
+Root须先独立源审并仅将host状态改READY后唯一真正执行；真实host0+完整后验才可绑定recorder并录9payload+独立Root10。此草稿不能声称实际INPUT/冷启动/精度成功。
+真实生成23ff5a EXIT0；参数label元数据纠正d5ff67 EXIT0，原label版报告另留。两候选源码未因label纠正变化。未import producer/API/constructor/执行host或recorder，也未写项目。

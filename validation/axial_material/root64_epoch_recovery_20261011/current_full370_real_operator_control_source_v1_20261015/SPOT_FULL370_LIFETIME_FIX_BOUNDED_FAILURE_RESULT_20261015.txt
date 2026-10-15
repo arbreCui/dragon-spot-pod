@@ -1,0 +1,19 @@
+SPOT 完整370群算子生命周期修正版实际失败结果 — 2026-10-15
+
+v5 实际 Root f7d5ee/session3970→c59d97，原始整数1；子进程原始整数1。失败结果不改写。
+输出 /Users/wen/spot/validation/artifacts/axial-material-current-full370-real-operator-control-20261015-v3。
+Root Host SHA256 0d1a4413288175df15ba296f336bc07bdd5f6dd9a8ea68dd23d3bb0d950b1332，1132811字节。
+Root真工具返回 v5/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json。
+
+本次按原正性/对称性检查验证完整输入后，在白边界准备期间释放约11.4MB输入及最后临时数组；保持全部数学、几何、库、原Budget检查、时间起点和限额。该修正不足以完成控制。
+
+固定大小诊断文件 control/ORIGINAL_BUDGET_FAILURE_CHECKPOINT.json 明确记录：
+阶段 WHITE_PREPARATION；原Budget时间532.198535584秒；SELF精确峰值542736384字节，即517.59375MiB，高于原512MiB上限。
+因此可以确认SELF峰值保护触发，不是600秒超时，也不是监视器RSS杀进程。监视采样峰值原值511.078125MiB，limit_failure=None，保持不改写。
+阶段检查计数6860、总检查计数8858，均为原Budget检查调用数；不是native动作数，不能据此填造进度或物理结果。
+
+子监视耗时533.216027秒，Root阶段534.035081秒，Root全过程537.512616秒。没有完成子报告、白缓存或 actual_control_results。Root最终资源检查通过。
+当前独立失败事实后验正在进行；后续将核对实际峰值和Source分配来源，原512MiB/600秒/1800秒/累计2GiB限额不提高、不重置。
+
+同一轮已完成：A1精确清理202708660字节并独立后验通过；104字节原角度保存；62槽原温度/名称/混合编号共1984字节捕获并独立后验通过。温度结果不等于插值、节点选择或完整反应权威通过。
+总目标保持active；完整耦合参考、科学精度、AAA与ABA均未完成。

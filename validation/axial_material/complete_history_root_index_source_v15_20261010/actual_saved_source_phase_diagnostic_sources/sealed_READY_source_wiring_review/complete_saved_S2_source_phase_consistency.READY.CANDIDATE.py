@@ -1,0 +1,1630 @@
+"""UNREADY independent saved final S2/source-phase cross-check; no transport.
+
+Only Root may source-admit READY and execute this exact source under the genuine
+OwnRSS supervisor. Every 370-group source/return/field payload and all 1800
+unknowns are retained. A saved-state identity is never a physical-balance gate.
+"""
+from __future__ import annotations
+import argparse
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import struct
+import sys
+import time
+SOURCE_STATUS = 'READY'
+ROOT=Path('/Users/wen/spot')
+DEFAULT_OUTPUT=ROOT/'validation/artifacts/axial-material-AAA-refined-all-group-saved-source-phase-consistency-20261010'
+WALL_SECONDS=60.0
+RSS_LIMIT_MIB=512.0
+ARCHIVE_LIMIT_BYTES=64*2**20
+THREADS=CHILDREN=1
+RETRIES=0
+NG,NUN,NZ,NA,NR,NL,NMAT,LL4,LL5=370,1800,48,32,8,3,24,1152,392
+np=None
+
+
+
+INPUTS = {
+    'capture_seal': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/seal.json'), '16f67ec74e41d3282a7e90fe342e0165c81a8fb97a6cfc1cd72615e6a9ac9c0a'),
+    'capture_raw_receipt': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/raw_capture_receipt.json'), '6885e0f23382d2f6007d33615c9f7e91bc4ef5ec42a568426e1cd2527d5bca1c'),
+    'capture_declaration': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/declaration.json'), '6ed345f39f4ddab3299b2845877f10903f38fe89d9f9a5ebf875acadd3d3ce2b'),
+    'capture_archival_admission': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/archival_source_admission.json'), '7d700f867ad190f84277a6b438d4b17673a48d7f9a6baee75b28ba2501f88515'),
+    'capture_driver_result': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/driver_result.json'), '7ac06b3cf41162bbf95b3d45fcd5ef75eb99ba454b34fb4d5eed7ae8dbb7a522'),
+    'capture_audit_result': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/audit/result.json'), '9cd46b03030ac8205ff1dfd2001d2d14bc0aac97ae2e25ab0fdb87433c339c88'),
+    'capture_claim': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/execution_claim.json'), 'ac98066327bd4c42559ed12564aa7c3a1e0cded83b3eb9e920e0b37a101d9f0a'),
+    'diagnostic_manifest': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-source-reaction-diagnostic-20261010/payload_manifest.json'), '2b94603f1b259443a5f9dca10d5aed9a2cf47a989d9d238e8aef878ae8cce538'),
+    'diagnostic_result': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-source-reaction-diagnostic-20261010/result.json'), '5b8ef55f4abe0c010734039a0fe12bde1b1f6f8fccb50884e884e74ceb874c0e'),
+    'diagnostic_root_summary': (Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_saved_reaction_ledger_receipts/Root_actual_saved_reaction_ledger_summary.json'), '9402105aa09d9bd15f5de7dac10a0b8639ca1ac20736ffa54562e4efd8906336'),
+    'diagnostic_independent_review': (Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/independent_actual_saved_reaction_diagnostic_review/REVIEW.json'), 'd09b3006e7c52711b39d13bfb22d379313f47844fdda10a4a7e048b66f6f6ae4'),
+    'production_prepared': (Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/prepared.json'), '024ffb9263e3d3b6cf10301d6fe2bac5a87a9b368008440e01038982291a6d53'),
+    'production_final_seal': (Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/result.json'), 'f3716289ced3716fa89747ecb99b01757cd8d0f85ed202548f2fb68d5518606c'),
+    'production_run_status': (Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/run_status.json'), '1acb16adc59f91e66599f74d11993d300bae73647dc870d148936935d199012f'),
+    'parser_source': (Path('/Users/wen/spot/validation/axial_material/refined_AAA_full_group_source_reaction_ledger_diagnostic_20261010.py'), '4851d9151dfe5682a36f450fff8d0acb42c69865e177affe81c4b703119f7874'),
+    'capture_evaluator_source': (Path('/Users/wen/spot/validation/axial_material/prepare_refined_AAA_angular_capture.py'), 'cf402b628cf4c5095ffbc078f36a169624d42853e250248af23e3e37ac1775a2'),
+    'capture_callback_source': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/build/axmat_capture_angles.f90'), '7f6f94884a6750bf27b958c98b1201c278df8959e589dba0c5dbe88e65838915'),
+    'capture_sender_source': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/build/FLU2DR64.f'), 'eba175148cbc32391fc447a10b016adf0a9760831d5b5b1b9220587e15328c45'),
+    'capture_sender_baseline': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/build/FLU2DR64.compiled_baseline.f'), '90bedc3f7cc4d320355dbbf43988ca8fb43e59dbee493a7f19fa8c050c42e8a5'),
+    'capture_receiver_source': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/build/SPOT1P64.f90'), '31961d9410ee31c0631e6aa068bd93d313cd56fa05fc686741acadb8ee8a4834'),
+    'historical_binary_review': (Path('/Users/wen/spot/validation/axial_material/production_source_factor_binary_review.json'), '7970e6e93b8d71b6df420278d83fc3ab8793783428f9ed843990edf715166450'),
+    'capture_published': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_capture.bin'), '664ea99a954a93ae0c150eca66e514b7aa3febb03ea2d59d0138b5ccdba65540'),
+    'capture_events': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_capture_events.bin'), 'efd333f1fd31b7755e14c5998f3d75aabf38cca4245ce539952e1edc33e33a54'),
+    'capture_pre_normal': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_pre_normal.bin'), '5915ad1f810d95fb4874940e01e9ac89e581be55b16e83fd6117979df8c3d28b'),
+    'capture_source_001': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g001.bin'), '0ad434095242e93815dd4191bd1c932d386c8ef28983e0d9313e875efc4178e9'),
+    'capture_return_001': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g001.bin'), 'f56d0feb5b23dd09c2b35dcf7bd6f758d44dd51bf79605c98e0bee8bbb3dec25'),
+    'capture_field_001': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g001.bin'), '79f0e96715824c8d08820b701a9e2b5549d39678146b86e49b39e2024087b188'),
+    'capture_source_002': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g002.bin'), 'd672536726e3125cf165246bbbfae7df3a0329fc6ad46f7614aac087f1e93cc2'),
+    'capture_return_002': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g002.bin'), '6b4b3471be3464c7eb159491be8cb73c8141c2ab959e495e1add09a6c04f8257'),
+    'capture_field_002': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g002.bin'), 'c904414eef1da7cc1e01f1e5e57ec289ea0f8d2d18ef25d727fcb6d11891591e'),
+    'capture_source_003': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g003.bin'), 'c810b0b323d4f0f63cc05405701dc0792f0755f612959820d27c302b778e6336'),
+    'capture_return_003': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g003.bin'), '3b7cd6f2d85217816c82945ec799273ac9cf5bf71c6158523e34bc2ce951b15c'),
+    'capture_field_003': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g003.bin'), '2582bf4688102494f4218930ec2099b804074bb7999172e0a31d491cf408b10e'),
+    'capture_source_004': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g004.bin'), 'ee7c494d4204e9d4b9dfede0c65443973e2deb48f7e276df46fc098f05414e16'),
+    'capture_return_004': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g004.bin'), '681fce8ecbefe4060dfb2b3ef1dbbbd3d45577435bbbde68b0b75d0c1a514573'),
+    'capture_field_004': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g004.bin'), 'f71ced7c0e2729f1364b57c63c142cec1880bac703606d57c9e9e658bbb42ff5'),
+    'capture_source_005': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g005.bin'), '955b1ee20cb8abd35490080e20e06b9876f3d93ad43e4cb1e6a93c349df9a972'),
+    'capture_return_005': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g005.bin'), '4c17b2aa287f3c99952e3ba4c8497b521bf610b7eb78a8941c998abcdb5c1d59'),
+    'capture_field_005': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g005.bin'), '67a8b71d7a18e236185c0c073d575f2ee8ecbb50fbf17f0cf0cd9a547574d27a'),
+    'capture_source_006': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g006.bin'), '30ba12d3008ff9b7c330b343b4f833454f3f00f76d915fc18b22cdfb4d3c8c7a'),
+    'capture_return_006': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g006.bin'), 'b1d197546c0465839aeee0e7b9c7a98828aca7d59412a3b0709ffcb328cf5fb0'),
+    'capture_field_006': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g006.bin'), 'a5d59a87c7704e8637bc2152d3ee50a20b564ff08c8eb75e2ee3579c20ab9b07'),
+    'capture_source_007': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g007.bin'), 'd3a0bbed92a1524c2cc772255e82b2ad6b41d7a911d4c05135af135cc6fa5415'),
+    'capture_return_007': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g007.bin'), '9d70b9f43f5850710da9b83669b390cdaa1422fd3ad47c239da9e992ae79c952'),
+    'capture_field_007': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g007.bin'), '68a68a8635ced6c823d50ce74692bdb46d48f28a64df6b8dbaffc2053988824d'),
+    'capture_source_008': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g008.bin'), '4ffafa454e40bb75584c4805712345e249312fc814f3d4d620ebbd044005a8fb'),
+    'capture_return_008': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g008.bin'), 'd1f08f5c44abd68b78c792b300f643451dc59cc192acabc9d5e0bf516f8558f8'),
+    'capture_field_008': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g008.bin'), '47dca835281d3407deffa924a8c47ae97f519b1bc85dfdcdc174f52bbcc9e8cd'),
+    'capture_source_009': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g009.bin'), '77bd52f3cfc38031295c079d6645d8f9f65fa6b9fd3f96cb1c5705701922d721'),
+    'capture_return_009': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g009.bin'), '789662c1e67401c4effc3134a16921c356a495486afdfb7c2308656188e100e3'),
+    'capture_field_009': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g009.bin'), '1d309f0c7676e741d89b3a33a2455dffa132235e01a1668fe8d2b06e6e988043'),
+    'capture_source_010': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g010.bin'), 'b3daecfffbaaf5b89b9e1bdf2c3ca9eebdab76d482344821e987fbcbad555554'),
+    'capture_return_010': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g010.bin'), 'df0017d5f7d178155f750a7231ccef54945c032783401099bce826b9a488dccb'),
+    'capture_field_010': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g010.bin'), '1c0fda3dfeef82f056d96875bb0e689a72cab4934a70ca3fbd80dead394f4a06'),
+    'capture_source_011': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g011.bin'), 'cbd4e51e9bcf87f579d399f95d33f180dd9dc6ad7f83e9b3593fd2461d8d5c6d'),
+    'capture_return_011': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g011.bin'), 'b150147eda33c2cd8d047538e7d4a57f33df03f3930c8c4e9e737afca240344a'),
+    'capture_field_011': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g011.bin'), '2e76196e834e5faee5afac16a4cf941a8f7bbb4cf65eb073fd3ca5006b21f185'),
+    'capture_source_012': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g012.bin'), 'f96bbb5e95d0eed0d8901664f38793652dd715e3f4a7a7315a4b220deca88dfe'),
+    'capture_return_012': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g012.bin'), '2b7dc8632b2fb72ad1a482a5191deaad15b88068dc1359f7b883365ded0cf4c1'),
+    'capture_field_012': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g012.bin'), '1d6398ccf9ff7a309facc207f371d2ec08109e8a46b431d356300613820724f2'),
+    'capture_source_013': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g013.bin'), '81fa0fc6e7210d290de9f6bd1d2aa64e7d35ae5c4d4065d4425b6c78f6bfd9dc'),
+    'capture_return_013': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g013.bin'), '9ebd119982aedfa53c4a3713f0aef851ec326ede3668d2310e7377c38dbf0295'),
+    'capture_field_013': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g013.bin'), 'cbe026cc1ee1fad325048459c8ba844501d093875dc1c7a0258840a510909994'),
+    'capture_source_014': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g014.bin'), 'e7059ca7a604421563e464641b86422e9a53f9483d7480b1493e60905b35be6c'),
+    'capture_return_014': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g014.bin'), '78da99cc445cc7900c3e5f5e78c72e99cd78e166a42e93aa814ae26253a6274c'),
+    'capture_field_014': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g014.bin'), 'cbd63f820b00e873cce5fe3255387680d3a597034a2950a09b16cbc1a5d8d65e'),
+    'capture_source_015': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g015.bin'), '2e69512c1701f62c21d8b3553b18a7b037644516f07ff50fdc14c76665fa7cab'),
+    'capture_return_015': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g015.bin'), '098932287569760aceac48121a5ca1d101ebc7737b7146a00c7048e03d4a2141'),
+    'capture_field_015': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g015.bin'), 'b7db25d6adaf32306ce53f4fd9c832d290b263cea6108ca5b0e91cd83e75a9f8'),
+    'capture_source_016': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g016.bin'), 'f2ae15c1b2327cde5d170883cbad6c0371a4d7b1e0df0cac48aa69a1e5ef1048'),
+    'capture_return_016': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g016.bin'), 'ebe71bd39a2cac6ed304f5da0541608fc98a78dae3554db292eda270884d0fab'),
+    'capture_field_016': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g016.bin'), '67ae7484c8666dcc812a027f97077feb2ba229d7dfeda4d4227a9766a3d8bf87'),
+    'capture_source_017': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g017.bin'), '76429cfecd67d66dcf717a4c72942bc94d316587dc534bc8a30f1e5842bb8419'),
+    'capture_return_017': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g017.bin'), '88263219a26d9979f51139eab472f7561e27e96863f8f7d7b46486711f79a842'),
+    'capture_field_017': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g017.bin'), 'edd488affdcbf2ba41089c92596806df121560121eb8bcf79b6e00adf29a695d'),
+    'capture_source_018': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g018.bin'), '868db644048499e2ceec2265ff3d2b6fbd806e37f9c971a75ac78d87be738e1e'),
+    'capture_return_018': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g018.bin'), 'bec33a5dd580a349b91f1415cc310ab3eb0699b64ceee36054a45e36e266371c'),
+    'capture_field_018': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g018.bin'), '7622dc7de5df9a25aa66a86c5838dcd290f7464c65c329558a24962e7da246a8'),
+    'capture_source_019': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g019.bin'), '86fbac9e8d5e0bf211df48489ffab504471049d521ce3d3a6f6870984fb79702'),
+    'capture_return_019': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g019.bin'), 'd71f9cec4423ec74567cbd5ea4701f7466ee9fa33cda8883e231062d9e97526d'),
+    'capture_field_019': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g019.bin'), '06221baae51f68b35ad61661aaa4904f5bafddaf0da2c673bde6ac110a5bc5e9'),
+    'capture_source_020': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g020.bin'), '08c49e27bf4a7f1b2045a5a684ae2e1027cc018d619165998b9c07a6d07741ec'),
+    'capture_return_020': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g020.bin'), '7a2e30786512e0c11a385da51bc66332284fb53b54902f51a0e87020ae4dc905'),
+    'capture_field_020': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g020.bin'), '1afb84028a054d9c4f49e7236594a034daea78ab11dae25a10950044ef708ae5'),
+    'capture_source_021': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g021.bin'), 'f80affac46256d04287aeb12d13d21c111a30c93233e2c79a51d62061160dfbd'),
+    'capture_return_021': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g021.bin'), '07de157b6d776245640d2a945b516c6eb27aff620dda840f5c6504b370fe8291'),
+    'capture_field_021': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g021.bin'), 'ca74a336d3dc68bc38252104a950983e4648258323ea97796f42575452744e24'),
+    'capture_source_022': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g022.bin'), 'c33447102f57db19dd39cb7a7b571865c0ecffd870148c4ab36bca3d05c66038'),
+    'capture_return_022': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g022.bin'), 'c4cecb160d8f9544fc1469d3cfb8ec06177d953a057272dd9075d643513f07ec'),
+    'capture_field_022': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g022.bin'), 'fec17cbc9440c345522cc636c37745b7154f4dfded41e37b32402b4e62ea555e'),
+    'capture_source_023': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g023.bin'), 'cd8bb65810cedbe6c423ef3ddaee6ba70245e4d94db72db1eb87c42abfcbf046'),
+    'capture_return_023': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g023.bin'), 'e12e32e59cf7fd4ea7fe0e734e98b3fe5b385af276409c1030c646e5e6021356'),
+    'capture_field_023': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g023.bin'), '3ec44c81b406a4ec52f6fea8b81734237484d5d19f2178b62711cfee305ee35e'),
+    'capture_source_024': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g024.bin'), '7c622b261c3142033cdba86694f6c8b845217203eb87b44b8179950d6df0f55b'),
+    'capture_return_024': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g024.bin'), 'c4ea54fc0b6c617393b894c8f666e5e4771f33a69cca36b563a283ee235c012e'),
+    'capture_field_024': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g024.bin'), '09b6d25983c66596356eb59642e441ceebddfee8be2b48f2f524bfb329e074b9'),
+    'capture_source_025': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g025.bin'), 'd669945ca6ac86b8013de2ee495ff28cd853c3c47decfc65d75cb3af987f71b5'),
+    'capture_return_025': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g025.bin'), 'b851399f7018f63881d6a9f7b9a812c2287dc6f0bc494b370ba6c4b6db314243'),
+    'capture_field_025': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g025.bin'), 'bda8ba4730eb8b291bd6df96f0515e6d1d524d3ebdd9c7a3d5f3677e23d260a0'),
+    'capture_source_026': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g026.bin'), '214206d8c6f1b1546857bcb45cda263063a2f719d1926acf7e832c831263163f'),
+    'capture_return_026': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g026.bin'), 'e14e7695c846fb609a2a792758cf979c4388b83c3b7b094efc695c2e4a1a60f3'),
+    'capture_field_026': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g026.bin'), '31f2194ae0bee9ac4aef0a2061ba1686d9f2dc01a3bc4c8435bf32f8062346bf'),
+    'capture_source_027': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g027.bin'), 'c1601c80e780d220d62e32510f156a92d54d2977f4a488b2e0ab328cae80ace2'),
+    'capture_return_027': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g027.bin'), '483c151501aa0b2fbe969d2804861a63c9d77ac6a4ee77d35fcf7803e5dcf735'),
+    'capture_field_027': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g027.bin'), 'd402be894f3fd87ef43b4f50c0a517a89ba2e3b1fa24cfcf242f79ffaf82d99c'),
+    'capture_source_028': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g028.bin'), '9dcd1f6292de423f8b20460e2862ef744425b209410ab5bcecf4e84b50b2a00b'),
+    'capture_return_028': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g028.bin'), 'b9c0769af4d98e474d069d931b4e77538d998c3b2030bd25988dfd7afc2ac7d9'),
+    'capture_field_028': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g028.bin'), '793e942a50a104111b8c621d56ffefb3023a2a408481485a7248bf169ca71873'),
+    'capture_source_029': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g029.bin'), '21f3aa7866b2ab9356462ebf5b1b513e33ca7f36be7fa66f4830c48ce10a1720'),
+    'capture_return_029': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g029.bin'), '02460c067b88f468cbb065ef3eb87491a0dff4ecf9f9f60cdeb26a38cd403d8a'),
+    'capture_field_029': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g029.bin'), 'd7856bef57be792df9a09a586d700bdf84fedd8e752cdbf9bcefaed5b1e0e265'),
+    'capture_source_030': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g030.bin'), '6893cbb14f59bc474f3d8195da9306ae77ba18364d3bb25e982944b54403ec85'),
+    'capture_return_030': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g030.bin'), 'c8ba9abc9521f93ae563da5d78a1fe1b1e19fdb96d0e86d1004d6b49a08c8fa8'),
+    'capture_field_030': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g030.bin'), '918cfc4d7ba066adaa4dd92fdd49149f91ae6282ef2ba10962f22a4fe516ba28'),
+    'capture_source_031': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g031.bin'), '05a032ad56c2bf0c7be6160fffce7c9a61703ee3b88dfac8a7e966e4cccd33f3'),
+    'capture_return_031': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g031.bin'), 'aa1a62bea3589a7306857efd51bc08b51d1daff0759b208ccaaf2205bd29ac88'),
+    'capture_field_031': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g031.bin'), 'e090b4a9d20484f7d8ee1057929c3130be415325f1516b77d85c42db6a7f5666'),
+    'capture_source_032': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g032.bin'), 'c081d19d1799f18c1bed50533d978071dbab69d7dcf66501d68a63d50e4f39ea'),
+    'capture_return_032': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g032.bin'), '4c914be703104ee9e6771692318267e93319bee38445726660ddd72e65c58dcf'),
+    'capture_field_032': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g032.bin'), '04b918f9dd19c7327502e1fa23273be445cb695fea37cc5f64f0f9d2286a591f'),
+    'capture_source_033': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g033.bin'), 'deb655f1bcc4ec0298932830fbb40304c100376b1bf8b1f88e6dedf283852ffd'),
+    'capture_return_033': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g033.bin'), '731d93c0e31a82e895156d19174ded869671d8831ab9176c8ec18e055f5abb5c'),
+    'capture_field_033': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g033.bin'), '47b5ef8730edcab7ec1c5c2baa4047356d5b263daa092774d025b3991f263ffb'),
+    'capture_source_034': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g034.bin'), '14fd949d5e1cbaec24e98f555f5dc4808170c620036d37c295d4e7946375c361'),
+    'capture_return_034': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g034.bin'), '0a59564e28f38eb4b600e9222be68733238f9ae363d6a23ee7aa331c0cdbef94'),
+    'capture_field_034': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g034.bin'), '5cc03be572b0c2421fc44f3248851c6abefb2ca5750c9b525f37fcbd1583e5c1'),
+    'capture_source_035': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g035.bin'), '663fdf8f9700d48f356a7575b3787556b4f746f8966e22cb233cb27edba59b96'),
+    'capture_return_035': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g035.bin'), '68fdcd48c66611d64404e04a92cca8b3d78967370f058bb5386942005bc919bc'),
+    'capture_field_035': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g035.bin'), '9f9390935be4fe896e61db9ef0947318203d1567250288c22b92a5f34b3af2cd'),
+    'capture_source_036': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g036.bin'), '54abaafc9555ebf4806ea9bb97eea0529dcd32ab8f25533e60ad1fef752ce29f'),
+    'capture_return_036': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g036.bin'), 'd918eff8aaca55ab0539412b301d9edcb117f942d2035499b0b48291460f0cc5'),
+    'capture_field_036': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g036.bin'), 'da404358504c1b0d08c70b375ee881f0ff11c803bc3174477c39cb1ea84de94c'),
+    'capture_source_037': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g037.bin'), 'bfb5bf7b22c876561bb85cdf6d05f18fdfd464c9e2007df3f1974f3dcf1ab0c3'),
+    'capture_return_037': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g037.bin'), 'd633c8a2732fc937f127439f2054ef2bcae911753071978f370c9970492c5087'),
+    'capture_field_037': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g037.bin'), 'e827d7c5f31712ea52d4fc7fe5aabcb952f9bf749aefb240821216a8fe2b79e2'),
+    'capture_source_038': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g038.bin'), 'dccf9d7dc85d809190300cd7d7cb061cce2c398dec6886ca7d9046dd1310939a'),
+    'capture_return_038': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g038.bin'), 'a6cb8c6f671bb3242a196270fb7007a145ba9e99358b4e3061f7cf7f8d2e94f5'),
+    'capture_field_038': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g038.bin'), '94c2fb8fa2f277aff1d5560c2d2acf592088785d37ae005389f9bebf6d894849'),
+    'capture_source_039': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g039.bin'), '32d804eb4eb004c89bf3632955e3d91adada25f8fe7f4fc3e6abf28261f84b48'),
+    'capture_return_039': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g039.bin'), '13d90a408acb2fca9e2c73d855ee0d7d1f48e9fe29852f00ef03e2922b7b04cd'),
+    'capture_field_039': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g039.bin'), 'dfca3986a1bc8bce2cf8db2d6409869102ef5fa6b5d16ff2fc3b9a022efdd15d'),
+    'capture_source_040': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g040.bin'), '4f8b33ebbefa4b1eee53056fde9ed260bc54a7b88949a5aa4adcdd01441725de'),
+    'capture_return_040': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g040.bin'), '429c93cd0fb469bc781f4087e49d301768d1da725acb4087eda7ce2ae7e19c35'),
+    'capture_field_040': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g040.bin'), 'a53a128e4240cf76b004242d890cbdcd946a04938f34b63acf0ac798622d48c6'),
+    'capture_source_041': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g041.bin'), 'af753b43f1fb6b5af04faebb16f65202393ce8d8d2aee2f03399e188f7c62993'),
+    'capture_return_041': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g041.bin'), 'b823d636c350d6af148970c3a6f1185c53955e8cc7bf0960b325bda3605e5199'),
+    'capture_field_041': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g041.bin'), '0e3d797ac0bbbf8bb25f1f43d9a38cc426ae73e4ea65e3ac6d27e09f055f53ec'),
+    'capture_source_042': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g042.bin'), '4544aa5a1515d62a90c3d9ef30dacee43091f6dfb4125ee6dbe509c76c57b6fa'),
+    'capture_return_042': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g042.bin'), '588b58ba6f4ce4f29ca4d16e6f2077db1842f4c7900ea1483e9896c31efe1f65'),
+    'capture_field_042': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g042.bin'), 'c8a41cedb7225db5030b2b3ba6968c061cd01f6462cde7c9fe822f7c52a0106b'),
+    'capture_source_043': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g043.bin'), '5ac5623a4acac10d2a9da25fa8c447a19afb041d5bf927bfaea792abc7a9beb4'),
+    'capture_return_043': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g043.bin'), 'db5a52bee75d729b3d15bb54df2da5d0cf052d0d40508024ee10ebf7417fce37'),
+    'capture_field_043': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g043.bin'), 'd08ee4f03c666ef1d43bc4b00219d1d25e39c9b6417e4b4d5e44677835333a31'),
+    'capture_source_044': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g044.bin'), '215a559016196f5b5189992bd771212012d54859c71a4fd2d293e312c7128e76'),
+    'capture_return_044': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g044.bin'), '79316f1d30ef6e2929ea5e9ef99b7066d8c4e48b584ece8e4d571d4934139efc'),
+    'capture_field_044': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g044.bin'), 'dfdf54c5e6254b6b9f5babe6f80510c7529f09c90257a2f5bf22f46dda039e73'),
+    'capture_source_045': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g045.bin'), 'd35b2e9444c25d4351adc301540a577ff197a5d17d2fa2545e5fa0ee3741802e'),
+    'capture_return_045': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g045.bin'), '5f0ea76a90af17c16c77f0956a6393f45b9d40fff3b46d6afd3b6b44ed46acaa'),
+    'capture_field_045': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g045.bin'), '9275500be1b6711ebe16e9be50cbd1dd13baeba36c58f52d6147f9bdc73ba7e2'),
+    'capture_source_046': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g046.bin'), 'e2ae0e0f3e2738c3ff6dd61a1a003e7d8a4d03701f24bd845f776184b64418a8'),
+    'capture_return_046': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g046.bin'), 'aeb98759b8b76a1154888418e0c9b9911b7b4fbe7be7bf6768fd18f3a5359448'),
+    'capture_field_046': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g046.bin'), 'f7a87187f464395e3a5b072ca96b46f816b0cc79fc6fcfa27bff26f93d286a8f'),
+    'capture_source_047': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g047.bin'), '0ca8b43d6e81a4b992ce075a9b9359b7a318656309298351ad993f0b6f12d710'),
+    'capture_return_047': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g047.bin'), 'dd08d227d291480be140dd91ceccd68e0fd3cdda8346c9ce3cf0d4f3df140baa'),
+    'capture_field_047': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g047.bin'), '3230eb2092d6dc5ed4522ca077c740e27d4333dab0ed883963752be1f366d6ac'),
+    'capture_source_048': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g048.bin'), 'fab8c4cf2eb1acdb4ee735f4a3192b9f3a86d2760913417aa045efc12b26bd8e'),
+    'capture_return_048': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g048.bin'), '9ba8844c5004f8992ea6daa0918046604b58be0a070f18d35e5559f4cb1415b6'),
+    'capture_field_048': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g048.bin'), '603e475762ed52dfff7c5eb4b764c066d8c2bdfe3a8e75431d5ad49da96310b8'),
+    'capture_source_049': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g049.bin'), '0c944bf83e1b874e50a67dba0be725212a6f5e25f498eccece5f6dd4d3571bb4'),
+    'capture_return_049': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g049.bin'), '4efca276bf386f82486204d287a0acf0aba6fa3cbe945c4dbdc4bb4223f2e128'),
+    'capture_field_049': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g049.bin'), '3fb10c65f2f0803f19ddeab8b2e5c512c220a9bd229b352c10fa0d15ca1f758e'),
+    'capture_source_050': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g050.bin'), 'ace584591f7d37f3cd09c29cc3866e9010d854500c3bb13f14ed8e384fc60187'),
+    'capture_return_050': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g050.bin'), '3fd8fc1c45ac93afd6bf8894bd7e9b6b7befae3428e88f59beeab858e1703442'),
+    'capture_field_050': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g050.bin'), '2b90a7dd4b84efde0cedb25a6e0e5bc0ea0cc81cc9e9b427763977bb598ee4ee'),
+    'capture_source_051': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g051.bin'), 'c32b0de32e22009900b7c7bf3ba50376f58200119b36ea28370ba3f68f88275e'),
+    'capture_return_051': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g051.bin'), 'bd385b616cf9006afad08b13d757f80480057a20639d7d1210b1d8e3bba5652d'),
+    'capture_field_051': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g051.bin'), 'c2ea180967b4d5d281a478d564efc244c7b0bf8c1267acf347a3633be1e2d2df'),
+    'capture_source_052': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g052.bin'), '7d086fe6ecc85b492f476813249ac518592ebfc7ff59ed2ca536a579fc2a3e4b'),
+    'capture_return_052': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g052.bin'), '5ab95a9b6a6324da4541d9cb409ccde5038e572f9ddc65a2c735ede1dbc239b3'),
+    'capture_field_052': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g052.bin'), '7a6784987a7c7ed37f10250cf66ca0316aa45cfdfe847184df32bb0f22606f76'),
+    'capture_source_053': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g053.bin'), '751a7c3da50ddff6819389f4d8d2f7be6e3c78dd0f62ac64ca15acc2bbb6743c'),
+    'capture_return_053': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g053.bin'), 'ec71c56ffbac8fa4abb7ded832d7b54c2afe438331a5e2876a179fae9ed2f9bd'),
+    'capture_field_053': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g053.bin'), '05193dab8a54a4239e3553dd773cf9bf5faec85f492357279d35e449141a5478'),
+    'capture_source_054': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g054.bin'), '5f0c27a4113d2ebb3bb6e68c3bfca8ea3805053821b50df79ce53329c5d02e0b'),
+    'capture_return_054': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g054.bin'), '1b0b191b290701eeebb9a36812d9aa40179af9ebc6efd4755f558a056ff9dc25'),
+    'capture_field_054': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g054.bin'), 'd176cdbb447f4652b37a7afb8a7e1be472cd4e99192aa1d49a32e9f9c2f18547'),
+    'capture_source_055': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g055.bin'), 'c4b3666a10340e3d22a7f762102beda66e116762ab3c798cce7f6d2e48caa398'),
+    'capture_return_055': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g055.bin'), '3813a70ca7e884f23c0c17d9fc2a9d605d874ae61b4e61efafccbde751b421c4'),
+    'capture_field_055': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g055.bin'), 'efacbf7815096c592f4ea9e5f323d0ffbce64afbda9bc1aabf063a65ddc01696'),
+    'capture_source_056': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g056.bin'), '80d08ef85455bdfbf4dbd454e506ddbbcb9456a164f543058630fb7f94e8c531'),
+    'capture_return_056': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g056.bin'), 'b5e14db3bfac34e1d57782573930067bee0adb0e561a1892b28d56d567966d85'),
+    'capture_field_056': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g056.bin'), 'e5981b4ea23d790cad8855d9e0d1b8c2e30efe6486384ed5fd6164eea1e82f4d'),
+    'capture_source_057': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g057.bin'), '931633780266db85655af02d11f763fd38b7f5c0c49c1490d541f61d27929940'),
+    'capture_return_057': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g057.bin'), '0719be2d34f95031785b6cc70b38489438a3b1d92220ce192cd218ab2e5b161d'),
+    'capture_field_057': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g057.bin'), '57116fae30bf0f704b7fb754dddd215171d8a224b20fcc66dcc4021dac5e11b5'),
+    'capture_source_058': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g058.bin'), '93f24cf768ec6a47f828ef91be023c349151d5ced8693a92deef0a09af6935f1'),
+    'capture_return_058': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g058.bin'), '57cdc04510c9b34171ab08165fde1bc074835b9be4c2017f55e01383b077f2af'),
+    'capture_field_058': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g058.bin'), '5cbb249ca1d11e6bc2203e1bdefce4053565e943359719ff7ead43487f770242'),
+    'capture_source_059': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g059.bin'), '0a8e2fe25dd4e7f7204654645785de7c156f1095cc9a1e4baae279fa046619d4'),
+    'capture_return_059': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g059.bin'), '00cab37cc927772632fa776122c66ef9403a3d650a448d703d188cc5c0995622'),
+    'capture_field_059': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g059.bin'), '4af08d023b87a4d8c326fc216a8550906d81fa1886ca8728850844359d03cec5'),
+    'capture_source_060': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g060.bin'), 'd44b7983db575005e427dedc6b06908d98f129bbc72c5af10e8328fad66b5b26'),
+    'capture_return_060': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g060.bin'), '393ab79c5631a9624da558c350b6c384861d3684e4e2d322a01cd43624c52812'),
+    'capture_field_060': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g060.bin'), '800cfea36b57932c8dae2a78c2d93f76f06212100ade5e1bd1c4c1af02e7bae0'),
+    'capture_source_061': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g061.bin'), '469ff386f97d88852d7a51acbd2217237db807fcd84a0471e9c97db19ce0d03f'),
+    'capture_return_061': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g061.bin'), '00776a06ca780cfb5f7dcc8a88786025776fca14b7e8284f859e216e8b67962d'),
+    'capture_field_061': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g061.bin'), '988c3ea2d42c193bf4c554c8ec9a92c0d981960c09cb525b6b7014c328762dcb'),
+    'capture_source_062': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g062.bin'), '3d3d49476ca85e719969c3eb33cdceade126f4daafe545e70edb5f4f6b32cf93'),
+    'capture_return_062': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g062.bin'), 'defabec88555cc2e07a95512f293d959ae2af04bfaf6c82247f61d37e155688d'),
+    'capture_field_062': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g062.bin'), '1d820e23628b42eec30d05f432d46292e91cc33795993681b3f67899ab01af7e'),
+    'capture_source_063': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g063.bin'), '53fcfc3cb3fc54a0b1ab1e5ab2b6cf06ebed342166561722f6502d0fa8e29a6e'),
+    'capture_return_063': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g063.bin'), '549a31917b6ec14e3e481895062e5f155c231dbfa13dedfb350ee957d2a34f67'),
+    'capture_field_063': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g063.bin'), '083f2699f7e93e7fb9a6698d2831e40c70f72d6af695fc374be806faacb97ddb'),
+    'capture_source_064': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g064.bin'), '8399d522f3fc52b68eccaf2c82d6a0592ad0fd35d67ccc1ea3b00b4f663899ab'),
+    'capture_return_064': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g064.bin'), '4b53251394876eff2012544d1dbc29d19b1c61a15abe82294a43c6cef94505ea'),
+    'capture_field_064': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g064.bin'), '0038909a72ede2b224b6f72bdb7d4e1177e02497345810ba5b8134a8afce7f9a'),
+    'capture_source_065': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g065.bin'), '9df891c063aff55772b6303a86bba2dfddf8391370b4df6bbf5f830a532afc33'),
+    'capture_return_065': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g065.bin'), '87d4a30362e836d0e07b3757bf9fc7c65e375924b48a843e2570bd8a184739a7'),
+    'capture_field_065': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g065.bin'), 'afd74bacf2779318121b3bba91ed46817707bfdb83f9172979e62358efdcf95e'),
+    'capture_source_066': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g066.bin'), '973150cd0b47338bff7552904deb571cc2694db7b2179517c12d4882a1927365'),
+    'capture_return_066': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g066.bin'), '326450149132cdf543f8c19c69f420223f74db4ba9596e85c83cfea1298b2df5'),
+    'capture_field_066': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g066.bin'), '2a08db9cf5b725bf1e22d3928a2104caca6b683b11f37f85e9a7071010e2c242'),
+    'capture_source_067': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g067.bin'), '4499440cdc5b613d172ad6ae76ca16871b89f6694676296579bb44946bda5691'),
+    'capture_return_067': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g067.bin'), '226bc023e6f23a3dc985a88d25d5f3af5c2d76820b6a919958b8e4edb612fbac'),
+    'capture_field_067': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g067.bin'), 'a725e871bb299520ebe5f9c1efecd09dc97ab84a2623ca4fedf2d7446a21c891'),
+    'capture_source_068': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g068.bin'), '074e595113ca9ab04ce33258b6b3c1baaf51094f8c96b981c40768aa7046b83d'),
+    'capture_return_068': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g068.bin'), '632c07e3b42b74653857494809a0e6d901cd7f8e199e7683c94863fbd39e773c'),
+    'capture_field_068': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g068.bin'), '53902f6ea983739ffa06ef26ce25726707802b9f336041844ecd54ac1c3f8a4c'),
+    'capture_source_069': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g069.bin'), 'f85053a3da2d9d53993c71dfa033e073870eb9541a23698f7761ecebaa2be6d6'),
+    'capture_return_069': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g069.bin'), 'afbb76f6753be868e5eec522b306f049e9d706ffe9a6f9dd4f55b03cb2e9d2a8'),
+    'capture_field_069': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g069.bin'), '351595588b4d4c3ca8ad7caea18df28b3a9e06f172c0da475012e3604dc9bfda'),
+    'capture_source_070': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g070.bin'), '7de3fdca73009b734d9029d9ea2b181658941695385106800ec881a392bdbe62'),
+    'capture_return_070': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g070.bin'), '3a4381716b861aacb70df9f27be8158d7d20a83ca0bbef596b1758d8831c9c72'),
+    'capture_field_070': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g070.bin'), 'ab2f78577e0a422beb03a8b795c5940c83065853886f4ee256175db440db085a'),
+    'capture_source_071': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g071.bin'), '25442b3d3092ee09259c092ac71dddbada4e2960fe86e0747b859566d839d024'),
+    'capture_return_071': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g071.bin'), '406ba1ccee8990071ebf73f740a963af6c09799d5c71759ee3afc0bcf286e634'),
+    'capture_field_071': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g071.bin'), 'efc30ae8663433a18f254aaa6f172ead7b79183f88688c4803bf4911f113b640'),
+    'capture_source_072': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g072.bin'), '4a9c146745573381587f794d1fe260ea00eb5e647412c939e424b89f617fe278'),
+    'capture_return_072': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g072.bin'), 'd27c5173d005415bbbe3c0ca81461a027f4ef98e1c609826946f92b51576ba3c'),
+    'capture_field_072': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g072.bin'), 'd506f8dbea7a9b1701ea9fd405dccd09d4d3b8395400bc31bb11d117e6f29091'),
+    'capture_source_073': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g073.bin'), '51e7fd7044074ba80b4163b05d9f5f2b114b5f4af850306ea104bea4d5e47dab'),
+    'capture_return_073': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g073.bin'), 'a21643795a249227a0a2445a0787821132f6a701f00a7e575b8363881ed4a4d7'),
+    'capture_field_073': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g073.bin'), 'd01765d3dbd1aba7c503cbbdd2b6e8c9d45197b78c47496708bd621fa2c7ba47'),
+    'capture_source_074': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g074.bin'), 'ceff12e3800a612250d3b1cb0369571c90b1bcd79a4e814e503c735405e2f554'),
+    'capture_return_074': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g074.bin'), 'f12644cab405ac61068cabfea33fb759e1c0cd36d49ca281b185c4eb1efb5802'),
+    'capture_field_074': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g074.bin'), '9e266575f35bfd763854519295e9cd197534f190db6ca08e5b8b2dfe63417258'),
+    'capture_source_075': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g075.bin'), '53933b24297021bf0a5638505392f531d193bf128be195a861a1b73d98bbd8ce'),
+    'capture_return_075': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g075.bin'), 'c5c35df63ce568697d28b2cbd2e73277dfe413aee070b503156826d665f017cd'),
+    'capture_field_075': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g075.bin'), 'a0dc3d939d830f7d514cd3b8a558fcfac62689a96287d31ca41776b16d1a5e0b'),
+    'capture_source_076': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g076.bin'), '36d21cbbfdcfa581920598da0995f8594da2aae014d72471c4a9cb5957cf7ad2'),
+    'capture_return_076': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g076.bin'), '03fabf58aa601b0fa264b87dfc0bd4dc9e6c894e117791033001c9a3b455a9a9'),
+    'capture_field_076': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g076.bin'), '9f8a5afb0714d8c97878fc46686f7f643c171c3221810614b35ff861dc6e2b64'),
+    'capture_source_077': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g077.bin'), 'e10a128d81f7000b52c75be2c3722c0db47bcd9f9bd36ae831d379e82af26cb6'),
+    'capture_return_077': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g077.bin'), 'fbcf71a6d6dcec2ca962dfc327c6940faddd56f2af7c97987c890d13ae6fcb83'),
+    'capture_field_077': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g077.bin'), '3d1ba39140cda88dc9db6a68653ab4de90633fde140a47333754fee20ff48b88'),
+    'capture_source_078': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g078.bin'), 'f23fd7e8c048b658eaf2b7430963be75013507d1bddc163614c552226a79cd20'),
+    'capture_return_078': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g078.bin'), 'c8db7b71df00a04fd3784f8d5579a03b736d560dc7cf75d0b15d083db2e1fef0'),
+    'capture_field_078': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g078.bin'), '1a389f559061e480beebd282e45bd607040ae8b489fc85ab9ddc54d8a1e1bda0'),
+    'capture_source_079': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g079.bin'), '82aac056c4f123a46b2949749f92a92d8c1409b8f1c1df31239e94ea6322c0c2'),
+    'capture_return_079': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g079.bin'), '932b0339b5d96f4ea81142664a729b5502afea794c05f15ab88d5e7d3f1b0722'),
+    'capture_field_079': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g079.bin'), '132d224f81432f3ece386e9fafde89fdaae41a527a1be211b1259855a2afb7cb'),
+    'capture_source_080': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g080.bin'), '6a17f7936a746c700e8c403ec236d030208cc5b497f8fa9899faa95667bfbbce'),
+    'capture_return_080': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g080.bin'), '5022af8688f3e19c1882dc8a10a234fe06049092a36264ab036991273f742df3'),
+    'capture_field_080': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g080.bin'), '53160bd3e576149b75f8ea39c430152cee09a38a858bf6d3d4342682d7c7615d'),
+    'capture_source_081': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g081.bin'), '54c12d8e58e904e4c8844055b40a7d15b056425973d3b8514b5a2794306e462d'),
+    'capture_return_081': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g081.bin'), '74cf9a37ed2d0e295b01fdf89503563651be1ac65940292c383de05c13dc669d'),
+    'capture_field_081': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g081.bin'), '013b17cb33e8d1da178edd0aaa951f90fbe2f4891dff853e85006603b0a89c42'),
+    'capture_source_082': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g082.bin'), 'fc96b3c64f999f149cfaf1c8538d023028fea32ebb5f9fc63c229a7dff4d2118'),
+    'capture_return_082': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g082.bin'), '808e720cdcf7dd90d4a25c465454eed12d68291d0dcd49360d2f1194139d332b'),
+    'capture_field_082': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g082.bin'), 'cb1ec1bdceae8d2bbc14dcc9837eb6627e903e556130d50b3cd2bb6dba1b6b58'),
+    'capture_source_083': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g083.bin'), 'e5a075105c1548653d969d982f4df3b9bdf5e2102593cf182f5e6aa27d40dee3'),
+    'capture_return_083': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g083.bin'), '78ae2b8e89bb5dfbb758b2139a1c2eba4c8c963cb9cf4a2ad6577c22d44ee4d1'),
+    'capture_field_083': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g083.bin'), '4af0e594d5c4c9c43c5fd1765f115c3d8616270d9f1fed95f4e202b1630d5e11'),
+    'capture_source_084': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g084.bin'), '90874e1c21db69b94dbf06db6231d740eee6817e24aac7c19d2cd4b9972bfeec'),
+    'capture_return_084': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g084.bin'), 'f57a414acb8ed2d6a700d5d4840e86c8ef333927918c59e9e1bff9fd50a266b8'),
+    'capture_field_084': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g084.bin'), 'a3da4580dbd8611efe51293089bd0f0350878ab3d638635bc10e3364bfc3a568'),
+    'capture_source_085': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g085.bin'), '7152d9e33ab518ebb905047d3e50d59db5ce3b7c65b150f2ef17acaf9cf899d7'),
+    'capture_return_085': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g085.bin'), '0da989cfa34eec2ed0fb82809a873d17ebad7c44c779c412e9148db1bce937da'),
+    'capture_field_085': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g085.bin'), '84751ec547db2f83f0d87256acd77f523ddb7890cbdca0389c3ee162ea0a6b6e'),
+    'capture_source_086': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g086.bin'), '116013e7c8af4978cf7c5a0c37a80af26d8c62d140d5a43665691bb3d056e653'),
+    'capture_return_086': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g086.bin'), 'acff08cd96a38b8263b1c67dc15941592c2b3fa1e0f2b8e288dcf8884f3ef708'),
+    'capture_field_086': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g086.bin'), 'ff6a9ba6854a05027f0235746863c0ddaccd2aa1aaf2392e1f67e9f0cdf6eb0b'),
+    'capture_source_087': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g087.bin'), '234a53282a01dc9b71b237a387b86cf6db8f2f1dd73047f957c4c7698cfc57ec'),
+    'capture_return_087': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g087.bin'), '288bf44978a39d9ea7a9c1ccc5696239d0f9a6d90966a827f21fc3324b40465e'),
+    'capture_field_087': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g087.bin'), '82139daa602179ab410b78fde0e5fadbe79eb36a525a476a14ecc0c91f96f2e4'),
+    'capture_source_088': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g088.bin'), 'e4a02e12f251e46ed4aee9ad1115add80d6059f24c7dd78613ab6a8e36a5f129'),
+    'capture_return_088': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g088.bin'), '1942cca951fce5f0e88661124ec82e52de9a2fcf8c7efec259e90effd922fbf4'),
+    'capture_field_088': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g088.bin'), '9617e775eab9d4178d10f53d75ffc0d740558394d8829ee777deb509935b28f4'),
+    'capture_source_089': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g089.bin'), 'ea560ba9ee9fa1b184cb890fd465c3fa221b9b19d942ae7e8d874bf1fde8ed36'),
+    'capture_return_089': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g089.bin'), '6fb296005bebded366d9d4ea5b7a47ac16a1f0a5a62ae32831081cab69b352b6'),
+    'capture_field_089': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g089.bin'), '7251d805a9c426be49cc86175a39a2ce09349e63b40f7af6bb4937abaf5b2d23'),
+    'capture_source_090': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g090.bin'), '18aa02e4711cf57d47ed13ffcc31c2524cad849d7beefc20aba5a21421bc6b1c'),
+    'capture_return_090': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g090.bin'), '78bdb2cbdfa049fb6a14eac8f88734d14c95a7a87c434090488af5aa26dcad5c'),
+    'capture_field_090': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g090.bin'), '7cfb5abd66dc803c9626844235ab69897c79353a474ed29e28c19d42a5dd850d'),
+    'capture_source_091': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g091.bin'), 'd9ea139693079001ce1e9dd48850216588d998bca719aed2024d7885392d63e1'),
+    'capture_return_091': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g091.bin'), 'd8d78abc9e5f5d548b2b4395c18e9f8feaab6b08cee7eec4f8f639a6740dbe25'),
+    'capture_field_091': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g091.bin'), '08468fc5556cbc1c8927b04d2fbf626309c0323d4bdfee55c180ca15cfe281aa'),
+    'capture_source_092': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g092.bin'), '49edc158b2b9a8381aeeb440c39e4219de0b795250d35b1e04eaec6eece7d5ca'),
+    'capture_return_092': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g092.bin'), '85af92a7dc2ab09d1b6970ac9ed03da0b5cef66b02e5add23e64b093fd2869e6'),
+    'capture_field_092': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g092.bin'), 'be0d3037aff309d27fc75c1daac1fcca496445f3c5a987003c006a3195117f46'),
+    'capture_source_093': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g093.bin'), '28188ad4c2eb3d82f627ddf86535ce56b5a4a42f97b04d4e6dd5d67f3e1fd83a'),
+    'capture_return_093': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g093.bin'), '0350de36b9d92d292052bb88e44262caccce8ce49dcaa77c6885c1910098bee0'),
+    'capture_field_093': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g093.bin'), '80f35d30ac546db57ed072acc679572cfc34af5656b0b47c47479a3996d25139'),
+    'capture_source_094': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g094.bin'), '9f017c94b430860341c6359b302e6003ff2d2abca18e496a26f27e7d8eede767'),
+    'capture_return_094': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g094.bin'), 'd96f8121f5c33c05710cb9619cd6d888c0bea12a644f334a72d43be7cf1142db'),
+    'capture_field_094': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g094.bin'), 'fd6a62f6e2f7d1b453e3d75894f9fe3c68aceacb738ea862f61200d7d1e10f0c'),
+    'capture_source_095': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g095.bin'), '933045a53a52bcac32fb34877f251b9aa4d87d6a1788b487a49371211889c266'),
+    'capture_return_095': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g095.bin'), 'f581955b2ae292b759829a22d05babe8522c4b84bd17f1beef1c175094d6fbcb'),
+    'capture_field_095': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g095.bin'), '8f188a1f34bc5647140c84f8e7093bfa6e35b2bfa8d2f69b63f403c718f81503'),
+    'capture_source_096': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g096.bin'), '3e451580d97c02628b3d16495b510fc7a3f8714bb1dea73d3c2c508b8169517b'),
+    'capture_return_096': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g096.bin'), 'd0a398ea6e8c15fc822b94e545269d1eb0ef1d98cc7ccf150261aeed04d4c285'),
+    'capture_field_096': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g096.bin'), 'a7319a89d6fe86acc4ad39bf0329f993154d07147a3da3eb37ffe9a1bf80001a'),
+    'capture_source_097': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g097.bin'), '5700dc81c5fa7f201c0981575dcba1a4a96570b8519b116bec603dd6d2c18736'),
+    'capture_return_097': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g097.bin'), '18d2a3f13cfdb8e5be857c117180202245c56ef7c8311412b24a2eb10b3e8d05'),
+    'capture_field_097': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g097.bin'), '24087130c5efc9bcaacf0771999296bd36a5c817fc70655ac09c7a033c98116b'),
+    'capture_source_098': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g098.bin'), '337e8dda985acd8048a3155daacac76b764b54a4d4c7767d820122b806f1c595'),
+    'capture_return_098': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g098.bin'), 'd615bb97c7fa13cb7d9d46acbf628d32ac225d6884e856301d39765b46ee343f'),
+    'capture_field_098': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g098.bin'), '85543767aef7ffef4272a66fc14cf6ab9be32d6e05143a3cec4c30d9435bbbba'),
+    'capture_source_099': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g099.bin'), '8dd58a36513c5b34ddda69de62163df23a814c791b607be74ccfaf3a25b41d32'),
+    'capture_return_099': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g099.bin'), '8d8c6610aee31952bece67672af7b85578fd9fea933fa335c56bc4d58138b6ee'),
+    'capture_field_099': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g099.bin'), 'deeab0208741ad3c2ec94d6204b3717131d1a711bafbbd07e904b8d570e185be'),
+    'capture_source_100': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g100.bin'), '02c15bad5639db85aa8d20685fcf470361d923f4a7f65c6b6cd592156ddaa5db'),
+    'capture_return_100': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g100.bin'), '08224691725073f7402ddcc7fed0a4a3f8684c642700e5d7e99e02a695ed8b26'),
+    'capture_field_100': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g100.bin'), '348f07abb4f0d2fe7e05cba00bf6aa2b0d49da38083b12f359bd1911268cdcb3'),
+    'capture_source_101': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g101.bin'), '6d0dcd9cba338072be1bc683e1997c057c794cee279da13ebb5840adaeb9fc7d'),
+    'capture_return_101': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g101.bin'), 'f43123f825d26690374354c4258b98558c22878c8f8b46b53ed80134cbf5650c'),
+    'capture_field_101': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g101.bin'), 'd2f26cc91fd122a9a56cd00c82370fc99ddfbf999e0005019c8bb70d44fd9711'),
+    'capture_source_102': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g102.bin'), '542da66c35d955a6ab7c69c438b0d70efb8a4eb6797b8a18d407805493a88bd3'),
+    'capture_return_102': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g102.bin'), 'f1b8c84b6c6511f262110e976d2d5d480814b1dec9ed677782ad81250fa442d0'),
+    'capture_field_102': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g102.bin'), '2af76bfbb4feea2fcc248c7f60072dd5e13f55a01c7c226586ea88cdaaca0935'),
+    'capture_source_103': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g103.bin'), 'd6b6e114563bc1b7fdb05f7bbe0d21728fb3233c5bfd6e429537d7075f908604'),
+    'capture_return_103': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g103.bin'), 'd604767d69f2a403bd17ef67addc289ee33e8693b522ab2829186694a0813b99'),
+    'capture_field_103': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g103.bin'), '6919650083dc4841e69d810e3a3e14892e57d18353d1cc4ccd6457c87a577154'),
+    'capture_source_104': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g104.bin'), '850c59bf76ea0ec2a0032304b3adad6cf5fc4d93d52dc75917f7dbfb44c87378'),
+    'capture_return_104': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g104.bin'), '512d95aa1b71e8289fd334bf89d9eaa13c9051408edb8e79562667ef1db43758'),
+    'capture_field_104': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g104.bin'), '159e7bc029aca833549c43d8348d1494a555867c79370a0f91951d29d4fbabc3'),
+    'capture_source_105': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g105.bin'), 'fadbd5d3b840832c14b75507ae320924fe0ddfe5ac38f6a2408d59982b40249a'),
+    'capture_return_105': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g105.bin'), 'd13738a53be3f6ace8f47d3dcd8cb0dd859ffcc9efa4f85ae1b9449aa7acb7ad'),
+    'capture_field_105': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g105.bin'), '301b3d0aa9bb14531a4ef467216dc80e6fb1818c4c16abbbc8b0df5eb13eaf2f'),
+    'capture_source_106': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g106.bin'), '5fb9d192b2e5313c2b9fc494a0fb59b33f2b4bf161a73f85194c90bc337f8cbe'),
+    'capture_return_106': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g106.bin'), '4e80a8c613a89bd63d57807f014b5f4a0b6a6843204af24eb5be25d0a6cca72a'),
+    'capture_field_106': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g106.bin'), '55177b814a84a1a0963ad4e8dc951d118facdf17bdd37e0086eff99ebb6574d8'),
+    'capture_source_107': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g107.bin'), '99aae6f98c89cfc2a4dd20e684039a878de363685497da159960942bc9b369ba'),
+    'capture_return_107': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g107.bin'), '8607e125e46bebb3c188b58c7479f48f50314db5baf3818e42337cff2bf25d9c'),
+    'capture_field_107': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g107.bin'), 'fa5786b8ae7b8ae6baa9038611cc76898451e16320deb39b380f0511666b5a7f'),
+    'capture_source_108': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g108.bin'), 'd675cf538a647d4de00ce6beb09f65ad226b99b8a3a1ccd14c1898508b8dab96'),
+    'capture_return_108': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g108.bin'), '5621d3819e0a6d52cc031fa604fbd46e3bb50c2146a21cdd8fabec6a36469439'),
+    'capture_field_108': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g108.bin'), '6462a267af20221f8f547479f9b2784001e3829e4cc4c7670d1d74db7fd3ffe2'),
+    'capture_source_109': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g109.bin'), '18a39afb440add62317311f8e843fac24016e24d805c6c0b9ff3ece11612ff9b'),
+    'capture_return_109': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g109.bin'), '3c3602c84c7c4252bc1fc0c89bdcb0648d0553c4a8029641fe844879b2922530'),
+    'capture_field_109': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g109.bin'), '7040f50284c028ee7de966e98def558b39545dbeab655daee5b6720fa8e0cae8'),
+    'capture_source_110': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g110.bin'), 'd45febe3467844edf6071d9bf98d15c379ce923f04bbcc564454e1ad6535fa19'),
+    'capture_return_110': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g110.bin'), '530611c673720e4645491941bcc62d54253928f52cb4e68d9b3d94128b1d9ccf'),
+    'capture_field_110': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g110.bin'), '84972fbef7ccc77850f81aea1cbbbb53c43f54e63510d48a9663fdbca800ceeb'),
+    'capture_source_111': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g111.bin'), '328e3b7fc18590f8c03de544093617e0333aead9dbdb1e7fdd88d85face711e7'),
+    'capture_return_111': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g111.bin'), 'e534679c7b375e2548ad9e7372f9249ecfcec97ce0ca6a18d6b872c5cb95780f'),
+    'capture_field_111': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g111.bin'), '0d197ff27848e63c67a167ea46a7d5571fa3785c1d7056b71e9fd45818ba1c42'),
+    'capture_source_112': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g112.bin'), '1735243fe9b6347d834d91b1f96be7588e9159b19592e3a2cbca924a61a2cf2d'),
+    'capture_return_112': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g112.bin'), '8447dad85e4aa3dc59fac605404c3ca0b353e2aca96ecc3eb1b03cf2e3a576c5'),
+    'capture_field_112': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g112.bin'), 'ba178fd78652553a317d53436f25be6f731fdc8867b73a3da80955f24f65a3af'),
+    'capture_source_113': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g113.bin'), 'ae04e9fc371f32cf38d11254788243979832d7fd0d41b5f44e4903e4ff31914b'),
+    'capture_return_113': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g113.bin'), '29b150e780080e1c3ba073faeb2e24015ebf5602616893fa5d6411b543597a87'),
+    'capture_field_113': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g113.bin'), '699305a410132b0b5e1aad4c16f1bd643f232c529aab33f0f3406785fba3d8ca'),
+    'capture_source_114': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g114.bin'), 'e5cdf3a0208803185f92cbd83e6e9bba2f7bee339024597939344b0f5448bb14'),
+    'capture_return_114': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g114.bin'), '9f36d9577c92b6787877015e2c52ba687e87b27cfa26d0da43e01558568f95b3'),
+    'capture_field_114': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g114.bin'), '168b3bbb9adce8cb156301b1a4238865226e43c3d8526daa38d7fe7bff75c50a'),
+    'capture_source_115': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g115.bin'), '77202f540eb499a61fb5525786bf5380be3547a5c476b2a6854fe3b7f313bc68'),
+    'capture_return_115': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g115.bin'), '672ba49d33f7b57d37e31110ab55426765739248abcf80288ef6570859d3e7f8'),
+    'capture_field_115': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g115.bin'), '4f5af7dba3513e01395cdb75646e84e9ff1a168caf0ce8ff6e4f6a61023fb02c'),
+    'capture_source_116': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g116.bin'), 'f0254c07635272269a5be17a17bf643ea537a09f8ef8ea3bceb4a8a8a01b4d6c'),
+    'capture_return_116': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g116.bin'), '106666876bfef5edd7b33cc30b6ab15e9c804b6c5d6cd58afbd104f18db1bf92'),
+    'capture_field_116': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g116.bin'), 'b4e77abdaebd77599834793625c3c24e1f7e6f96a6a79a660af9945f949ce095'),
+    'capture_source_117': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g117.bin'), 'db1887e42300f63dab1dff6739094eb986e62522d00dd9205cf5549375a6cf63'),
+    'capture_return_117': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g117.bin'), '79e5dfa7afbb4d2c8ea4ff2978181968b1b91fbf405fecf0afaee7cb396e51b8'),
+    'capture_field_117': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g117.bin'), 'ac9eba1300dd5fc77216ad03d7c496ea1d643ab2c33f7099789e5741adbcc75b'),
+    'capture_source_118': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g118.bin'), '87a5d0ae8045c66ab7d34dc54b4d68755ec1ffac170e9012d0ff1dedfb0e36ed'),
+    'capture_return_118': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g118.bin'), 'fc094e2b8e4bc069b0890431719bbf1dafbe284bbd40889793db848847b50bd3'),
+    'capture_field_118': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g118.bin'), 'b85cafffe7650beca00648e27de6325f8d5fa39dd587b8d8e76f6534b704e143'),
+    'capture_source_119': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g119.bin'), 'fec4a5782987cb38dc551c28a88dd19e6cf66a8c4f3221cbe8f33e67c2e6a303'),
+    'capture_return_119': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g119.bin'), '5678ee12d0f5f8f45aaee14584022ee94186cb24a328fbd8b0f73f8fb8123ea7'),
+    'capture_field_119': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g119.bin'), '23700fe20503b11adaed17b41354e841a6c5ee9afaa515ca63a8afe084989795'),
+    'capture_source_120': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g120.bin'), '8e87798a8290fc49563317bff69aff1b1b1ba272f27770ebd1e8c79bf17781bd'),
+    'capture_return_120': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g120.bin'), '1b6bd355bd32a8883eb3e51647616b4e38e56bc8b47ce0a929e642beb3c345a1'),
+    'capture_field_120': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g120.bin'), 'b1cc99cca5b33379cd76db2f45d308d8b4e10c665f6865dc966b86464919ef8a'),
+    'capture_source_121': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g121.bin'), '815535fdba9ec952d8d2edfa7270bf39a756f294f5cf3b80dd12beb871f849ce'),
+    'capture_return_121': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g121.bin'), 'bb1d6c23b74ad74c7a8aec9f6fa40edd04162289e747ae494214dedb3286a652'),
+    'capture_field_121': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g121.bin'), '813e62783f32a371cb2700ed0b73fd7a8488a0f8491bdc77870358ce17b21a67'),
+    'capture_source_122': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g122.bin'), '023e61953ae695ccc074eded009b8fd43ab859d438a094d1c626431a0e1cff78'),
+    'capture_return_122': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g122.bin'), 'fa275a771a281a16b0cc2d4b5994c2d00959c4bf55ec83610ada040d467806c4'),
+    'capture_field_122': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g122.bin'), '68c2c32bc0f529eb052bfe7e57fd7eb331334b641f5be91eed72bf1f173cb3c5'),
+    'capture_source_123': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g123.bin'), '79cf694e5042cd8012596953387dcd28b3381851d299faae104d7606795712d9'),
+    'capture_return_123': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g123.bin'), 'ec630c50b1e7ff4f2c5925b1a8071f2c9f390122d5452e92eecae7f0b5e6640b'),
+    'capture_field_123': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g123.bin'), '763fd5a4a14f959cce6310475a40329830ebfd914ed1c13f887d3e8ddc67ba85'),
+    'capture_source_124': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g124.bin'), '5f80e3178bd0f86ed82ba4443326ef50ba999b1c02a2c04a622087db0aae20bc'),
+    'capture_return_124': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g124.bin'), 'f21e9912e3193cfca9ad04264d668d018c645446aa19e1d97a387d0bab2778dc'),
+    'capture_field_124': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g124.bin'), '1e181aa9d1a756cf6ea894cde663a3cf3f5141d1ae38d9a9f5c593130f12104d'),
+    'capture_source_125': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g125.bin'), 'fbffdc7f47c4812dc1db0621c25367c08109e4167e6329f92f82e6366a7c9b30'),
+    'capture_return_125': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g125.bin'), 'a7230b518386f4f9801e56f105f54151c8c6872bfa55fd9c408941f125b77927'),
+    'capture_field_125': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g125.bin'), 'a64d37f6333e658d4221a03432903e2d00ae02b8213b8bd93d38b6f386c2735c'),
+    'capture_source_126': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g126.bin'), '9df23a9f757c48ab7c1f6424482c8d35bc36c94d20ea9fb609625d38c205db43'),
+    'capture_return_126': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g126.bin'), 'bfccd5f2393634fd9c2aaa74cadf5c9fd09163b17f8ccb5b7350e463904ee73a'),
+    'capture_field_126': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g126.bin'), '90268b0187407c05bb5512c1882a45f3b4b74b9537f7c1cd0d2690f66de304e8'),
+    'capture_source_127': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g127.bin'), 'c07ac268206821f7d385185a5c30f354a32e55dfeb4d2fce2826a796b6411843'),
+    'capture_return_127': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g127.bin'), 'f83f12852d667ef40d2b4e0a8ca135bc275e90dc9640a91dd036f16f35176c5b'),
+    'capture_field_127': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g127.bin'), '0e4e2c8055e1027b7e4626eac514653b94543dbb505ef688677840f14abd38ca'),
+    'capture_source_128': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g128.bin'), '87f0ffefa6b5acd86767fb09d0ffd725f6189f1a8915aee3ecc18e919062581c'),
+    'capture_return_128': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g128.bin'), '2ecf56a145b7b7e9e5c6dc6cc291aa22de85df00b155d52d51ac35808fbfe520'),
+    'capture_field_128': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g128.bin'), 'e66f7e296517fdcb7f2c6718909a5f3bbad13e9e010320f9c9c512e9237a543b'),
+    'capture_source_129': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g129.bin'), 'dd253639f6922a4def043bc7824c05fab1b5538efc80c0034a7bfa9b158f066a'),
+    'capture_return_129': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g129.bin'), '37bbe32dda5fcb86140d5e8c5735de54073c56af7324bc1990aeadb1599e4845'),
+    'capture_field_129': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g129.bin'), '9a2fdc1fd2047c0677a8fd66432058ca12d548f91caf0b494583372c69b152db'),
+    'capture_source_130': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g130.bin'), '35edc31942416858a80c3c8c544dc5b8a5dc3ba0aea2ee1b7cb445886dc64678'),
+    'capture_return_130': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g130.bin'), '49391d23ee03ebb384b1ce306d73faf702349834fe7aa736a2561fb1f340fe6c'),
+    'capture_field_130': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g130.bin'), '9e098952e80ef8c5a2d54461713b9850dc9ff287fb0cb7ccd4fd3aa5c5444611'),
+    'capture_source_131': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g131.bin'), '4cafb549f54887cb00887a4a1c80871e26701530188a330e7f1f853fa33db416'),
+    'capture_return_131': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g131.bin'), '6a0af0cd1900d134bafc53d87cbe169f531c422006d02532be815bb74ce8b6d7'),
+    'capture_field_131': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g131.bin'), '3eb705db28877fae6389fc41dbf2801e8cf4792a826af86e674cc0ef226bfa6e'),
+    'capture_source_132': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g132.bin'), 'be39fb2be9fe3a1b8ab278e1384cb9e009b2332b235705a8cc2098504dc43204'),
+    'capture_return_132': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g132.bin'), 'd91dc6db3f53758801300bc218aac5764647acc278411f2503eb57290107c7ee'),
+    'capture_field_132': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g132.bin'), '07b918855df8e12cb47141db078f3bf8ed1c9019f698e641e2afa4ecf29b9d07'),
+    'capture_source_133': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g133.bin'), '57915ffaf7754998f6024500d84ad36c47edc6780157a9aa56a7b4d6b06fa3f6'),
+    'capture_return_133': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g133.bin'), '687016178a96e6714716f2f7513e6727f0524cf6371be58d54c175fd2c5d5133'),
+    'capture_field_133': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g133.bin'), '74a2d6ba6367d474d5dc31329b06171f1494c261353384b89beba33d6ecdd024'),
+    'capture_source_134': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g134.bin'), 'e902abc8cdc8e11144d5cdfa914e2f4f0aa917d65146d4b2f19c4f5bd6032265'),
+    'capture_return_134': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g134.bin'), '2ccdbb8eb93a784369cc8eadc2f8930f5997eb83c7e85e81cd60a91b286f0a9d'),
+    'capture_field_134': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g134.bin'), '61647d9e9d046dcf84baee3022c91a7cc08038dcd277d62a8853026be310702a'),
+    'capture_source_135': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g135.bin'), '539a8b59d04bb20426a688e03b72cbbab67922409160a71a8e2c1e49461b1b6c'),
+    'capture_return_135': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g135.bin'), 'aa3e0f4c9f062a1e217594616eeef6d87f91b7f53090fa2c6c69672a8a334e17'),
+    'capture_field_135': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g135.bin'), '84db2403670f73166c3542beb9ba1c1028a7cb5013fe054857711eb48524029e'),
+    'capture_source_136': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g136.bin'), 'd96b9398ccfd120ecc2b1c529ecf578da92faac84981fdfda8b586e75b585870'),
+    'capture_return_136': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g136.bin'), 'cef43357863c38b6fd3e06524393cf75c6b0b9a384491175755230af31d9c414'),
+    'capture_field_136': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g136.bin'), '69ce102626510a40bc48ef0348db59c331348071c1d450e526f1633d1be5b484'),
+    'capture_source_137': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g137.bin'), '9e048f25d69c7bc446dfb2b746a96eb8e11bd708be02feb249d897cdbd534a82'),
+    'capture_return_137': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g137.bin'), '7ae48d04414e946db4613daa0e46f2a7c623d4b234e72009bfd92879e303435f'),
+    'capture_field_137': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g137.bin'), 'baed940ea4115d235c50bb2c224ed73c3b8f4a2ec2f1892550395fb670a954dd'),
+    'capture_source_138': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g138.bin'), '748827153e69dae7441bb3b3de03036e13ceeccd1dbdfa77d4fdbd5f5637dcd7'),
+    'capture_return_138': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g138.bin'), '78497a9db3266df561e8be70d81ec8b6355c8768b872e168f68561ebadaf0127'),
+    'capture_field_138': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g138.bin'), '2a2c98b587cb7e3051f1225984c1dcfa1a9b0abfd3c7713d7579da14932a31bd'),
+    'capture_source_139': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g139.bin'), '90166abcf2a2c8aef20fda08cd677e6ef5d67b7c42889c27c942259ec8633a0e'),
+    'capture_return_139': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g139.bin'), '7e4974a6c3686d351c4bbb79aa082bd542d0c75a4bd2a5b83ba2849e335968ce'),
+    'capture_field_139': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g139.bin'), 'd847f523e776e9668b9b2d08647d67214813c95e3cb9537c6b5ec9d834e0d50a'),
+    'capture_source_140': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g140.bin'), '46837915f9e204607559997d4252ef2033c569ad616009db42a06b70b7e32536'),
+    'capture_return_140': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g140.bin'), '685439a55b94f5724eace6875842cd30ef72f39443cee8bb0aaaa607e36e0a74'),
+    'capture_field_140': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g140.bin'), '519e8e86c6d00402aa35c9cd76f3ef9da0ff8e5476f13c80f267a42fbd1726a8'),
+    'capture_source_141': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g141.bin'), '490363ffa328799d9dc7e9ae925c922b9aa95fd8f4b9b47b134ece3f500db48b'),
+    'capture_return_141': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g141.bin'), '32648d57398b0733885919b0c8f755dfd86fc7321ae79203fc6ac8951e7a85aa'),
+    'capture_field_141': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g141.bin'), '21ca5e01cf9dbb260ba332a5bedd23b8923b7b712a04b6acd22ef1227f6f90f7'),
+    'capture_source_142': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g142.bin'), 'b0c08ac67de0512a68c21e80dd85b01da5c2a90b33ebd4fbeba92d96f256385f'),
+    'capture_return_142': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g142.bin'), '0a5fd6198d8ea9f067241848fc78af5f8b8a4a40e434a1f2678445e69c3d9279'),
+    'capture_field_142': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g142.bin'), '79a774dea55264f002a2c823fe30baa2b862a0f73aceff82ebdb13ce940a5181'),
+    'capture_source_143': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g143.bin'), 'cdb056913a2cf2dd8662089f87621d62a03d9f15196380921f8f97d0e6c622b0'),
+    'capture_return_143': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g143.bin'), '970811342fe80e150fce8a96b3ce3cdb1eecc0b3e331b705bf0a9048f7ef55e0'),
+    'capture_field_143': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g143.bin'), 'e0a6090fd78b5fce0486bc89446e9f689a2707c45a597bcdb86a08f8f49d1808'),
+    'capture_source_144': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g144.bin'), '03c12ce6a6979f89830742c69d0a00f706b1b787c3a845164df25a781542d8ca'),
+    'capture_return_144': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g144.bin'), '72812c7cec1dd515c42fd6d3af9a3b7cc7746fd92b4e175b924863721870c28d'),
+    'capture_field_144': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g144.bin'), '950f9466b5e26206df475328b978ad9f821c6b381c37c06c065f3a1fec66d359'),
+    'capture_source_145': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g145.bin'), 'f105a45f58209df2393ca1641dca887fdb38990920a58cfae8dbebbd671a96d1'),
+    'capture_return_145': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g145.bin'), '3b52c275fe8d3f6378eab49c448d939deeeac44b1067e10dab39b9cce5ea06bf'),
+    'capture_field_145': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g145.bin'), '55b3d200427d594dab2345a43abbbfd2abbf7f27d92328322390f7f0ae21f2ca'),
+    'capture_source_146': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g146.bin'), '16045a8e062c54cf26ca77d229b62c5311b66e5994ff10bbfa84c9020c25b783'),
+    'capture_return_146': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g146.bin'), 'c4cfd364328a2a2723b0fc233eaaa3866ec081a4fbbe21f245e1f2d72172bad2'),
+    'capture_field_146': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g146.bin'), '64146eaa9153e54a57ddb12c996df2ddadfa4a98f99303f0b115f5d19ebc4be9'),
+    'capture_source_147': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g147.bin'), '11b67f3a9a6f2fe7b7017d949fd28fa7273902b0c80be9bb67c3cd43e46dc027'),
+    'capture_return_147': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g147.bin'), '2fa75a646746eb684546d47da0dc64e7fd02de42d7c3a1e1f8fece9c0cd0e38d'),
+    'capture_field_147': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g147.bin'), 'e4153867673fa159a8a309724a648b2533fd40723916d8a9944571d6ab928572'),
+    'capture_source_148': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g148.bin'), '45b0868960d2ea1daea76034686199f8132597081916b01f7093c81b47bdc790'),
+    'capture_return_148': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g148.bin'), 'abbed0c49ad9a238584d0ed07dfea3778aa3eb279ca326d74496ec5e1e03c55a'),
+    'capture_field_148': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g148.bin'), 'e4138f39fc0a72d88b5f06526a4afe4acbaa08f303fe92fd75a05aad10e5fe70'),
+    'capture_source_149': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g149.bin'), '23595349ee27a84440d61c4e78db34aab86634b2d7c44a8c599abed5636d2d44'),
+    'capture_return_149': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g149.bin'), '704e5d0058bb50b2793ce2f1eb89553750448b98dd3b69e4d780fe021e92a57d'),
+    'capture_field_149': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g149.bin'), '530484b3a7ebc2c77bd9d1ecf535a8a263f9d1051c5423cf1760acedb46be7f1'),
+    'capture_source_150': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g150.bin'), 'a66060be9a1fd52de3a22a3e1bd61f4f3b7852d5cc77627ac9e384ee9898d2dc'),
+    'capture_return_150': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g150.bin'), '652ebbae5b21c9523275a01605dbc561e8074c0a3bf10ff0ed744278ba6fa3c8'),
+    'capture_field_150': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g150.bin'), '903c7f786ce0905030acae9e0f6cd911f45cac7b1c1b0b31d2eac90adddcec73'),
+    'capture_source_151': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g151.bin'), '569a36d57a3f028dab55ea1c3895845e49c8fde3e3a309876124b05ee59c6468'),
+    'capture_return_151': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g151.bin'), 'f753d675841d58ae09bff2599e58934c415a0e29f234ece540cf43e803d3c6d0'),
+    'capture_field_151': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g151.bin'), 'edfe96e79b7508db6d5493627fa78eb9f44a82fe51c8c07fb64b6dbba67c24e9'),
+    'capture_source_152': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g152.bin'), '1fa46e048c5ebba5fc60925f6f723b99c3777a7090dd8fe2d05717ce0ea05c50'),
+    'capture_return_152': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g152.bin'), 'ae4c4d92eb619db10d7e431e89d1d40c730ab670fd7c031febac2265393141d0'),
+    'capture_field_152': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g152.bin'), '3144d2f5b9b027a64c0b14795f704d5769740cd86e6e2ebed50c271436135e78'),
+    'capture_source_153': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g153.bin'), 'c0d7464a914273eb4359119f75ba098cf6976ec6750bc91d571eb6d1a4479bb5'),
+    'capture_return_153': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g153.bin'), 'c9aadf8680ae24e9f5c8e1b16404b8822180ed3cf707470c56ce0824f5223827'),
+    'capture_field_153': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g153.bin'), 'fb2faa3f7e79363d328a6911a64cd2c63a69d1731f853ee46bac2624c42f6634'),
+    'capture_source_154': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g154.bin'), '14e72708db723404da57029dd6ad4d4112edb57737b04ef89d90a61a48f412b4'),
+    'capture_return_154': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g154.bin'), 'daa8700a449121702f5953433b5d85cff22f0f18852524891ecb3385d2b5db21'),
+    'capture_field_154': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g154.bin'), '788b766fe2ef6b4f8a6b6dd0dad4e92dd535dc4b1898f7bb236fceea5aa021a2'),
+    'capture_source_155': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g155.bin'), '2ce673e7f66e6a7ad21e47b95e41f9e22c3b8c27f3807ec1fd73f39504a15295'),
+    'capture_return_155': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g155.bin'), 'd97fb057226d3e1d22d824eef4077e6404e5129543f2c720fd234cfa9a350e26'),
+    'capture_field_155': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g155.bin'), '53b7c1f01e414b0aca6c8170e81a8160e14ccc8f99298f1e543f4c07abe2ce01'),
+    'capture_source_156': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g156.bin'), '669eea7d216c9750cecd4c9548bf73ab044e65be4f1552bd73e13a841a9b84d1'),
+    'capture_return_156': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g156.bin'), '8d4b8d743756e2bc393f353bfd48c0471f8b827cc2ecd9e9404748ab1c8e1241'),
+    'capture_field_156': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g156.bin'), '519073ff4eb5af038e4d60efce67cc6bfb766f3536d3f2ee2827ff167e6bef67'),
+    'capture_source_157': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g157.bin'), 'ea70f505e32e894047f62fbb75f4d7705983b3c9fc19e633786c2e9b7375ce82'),
+    'capture_return_157': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g157.bin'), '6f341e5a34bdf4d4ec89ff58f3b0d72da5f020962dba7eac481e426c6b4c3c65'),
+    'capture_field_157': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g157.bin'), '3489ccc0a7dcc610c60915047ef61358c10f36c0f3c25ec773bd58f0d8943293'),
+    'capture_source_158': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g158.bin'), '7ff33707cd6bee3ea8200c59f7296549f291b8375a48d849aab570347b2274da'),
+    'capture_return_158': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g158.bin'), 'fd258b8ac557aee3fdaec5f5464f900d57b704eb7e2206e5f2bca62cb52b3083'),
+    'capture_field_158': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g158.bin'), '16bb43aa1e64478a53331beab4b638662472b037d92d6717a2c24192dd4549bd'),
+    'capture_source_159': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g159.bin'), '23e62ad7bb1c39edd2af99c20d565932798f02b7b922f5bef688fec38c732d0b'),
+    'capture_return_159': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g159.bin'), '819cc9294dfb591bdbc917ff1f85fd8125a60a217f29e5350a0b660228c3e8f0'),
+    'capture_field_159': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g159.bin'), '092f1d4109ac06f45c6856217129351c16739f44edccf75e0aa0bd6a1e6342a8'),
+    'capture_source_160': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g160.bin'), 'f020cb513b5440a1993de387d46c23a844ffacaeecac0d62ce90294c6497ec3e'),
+    'capture_return_160': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g160.bin'), '4e48b264aa0c159d30b4b383d64eefc22cdd4f8f3173ae4b2aea07fb64abc5e8'),
+    'capture_field_160': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g160.bin'), 'a73fcb75d8e78298f0f4ca9a04889138b51cb2740367068d2504e4dd51f2e17b'),
+    'capture_source_161': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g161.bin'), 'd0af7485d569015f4200633a959823eac8b8723e1a4484cafc962971a480b382'),
+    'capture_return_161': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g161.bin'), 'cc592d5385aa36303e7302607920d7edc7e2ba27f1b470822bcc3854e8d85e53'),
+    'capture_field_161': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g161.bin'), '2c17dabd943a5c83624a3153e76822760c86f9843f2e0bc69959c3f88b60a553'),
+    'capture_source_162': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g162.bin'), '1498f915276359fc333085fd25c30e9415d1a9b088d931393de14b08fec5b036'),
+    'capture_return_162': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g162.bin'), '367befee342a5de974f12cadd34ebcb826770984d628495680cd49c71308e85d'),
+    'capture_field_162': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g162.bin'), '4041a78d383ef8e11c2017984cad7f4acf1bfe83078a4b4b1834c57c7eb42f7e'),
+    'capture_source_163': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g163.bin'), 'b2daee5d2ef25baff35ce67c910d29baefc7bc1d6059b9e79fa5f01f8331501a'),
+    'capture_return_163': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g163.bin'), '754ffd3ebf876772396aae525d044e361958e8801648484d142d9d3f409cdf96'),
+    'capture_field_163': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g163.bin'), '9146a0ba1d8a6f031d3c9c49a89648e86ccec99f72da70dcc0d09e874719a14e'),
+    'capture_source_164': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g164.bin'), 'ecae417f8c4b45b6361e661b44e69b0b5f7c6d60d4266fb1dddefefcdeea82e7'),
+    'capture_return_164': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g164.bin'), 'd2f2c92328c4075c7f4245630b60edaa40ee7edf654534612867e9439da80f52'),
+    'capture_field_164': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g164.bin'), '23dd3fecfab0152b58f17237d928da0878ac214141531f83178c2a258457843a'),
+    'capture_source_165': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g165.bin'), '99e2abc85d48fd5f490ea82cd40c2d39f5f8f466ef45ab4325966e35c2edc427'),
+    'capture_return_165': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g165.bin'), '3e7ae7d2b0f4c3919965c58bc9d35e10d0e42f6463cf9c0a64b1c75d768e6eb2'),
+    'capture_field_165': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g165.bin'), '7657bfa91de29c11762b66dc9b221fd68a5e59e5ff7fefe06e82b81981401e8a'),
+    'capture_source_166': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g166.bin'), 'f4d90f8bee5603c19b66e4417b03b1bdc8c1173cb7bcafbe51ee7d958c9dd1e6'),
+    'capture_return_166': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g166.bin'), '74e81306d731cb1a5496d1f5edfd4c38e3006b794c7d2366546e536d3660e7d2'),
+    'capture_field_166': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g166.bin'), '48843f298550912d3474ae0ba9ea8c4d3890a59042247151d0840db03b56052f'),
+    'capture_source_167': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g167.bin'), 'a0f58b58c6c550e533b357626e1016d7264f0802d2e59cc0c7b5354d294faf88'),
+    'capture_return_167': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g167.bin'), '3713c03cf6770fe5a02edebd7a92d070fa02ffb2c98bb01bb7c5ad0a8c34ac00'),
+    'capture_field_167': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g167.bin'), 'c294c746b147ba7bdb29c9aa405339883f15be8bd935f6ae14bfbab8ff5bfad8'),
+    'capture_source_168': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g168.bin'), 'ab990321925450e519a21ee079767ff8f2e9efac3cfb9e5b5d8bb344c5d3d627'),
+    'capture_return_168': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g168.bin'), 'c7fecb03fabb17f0b4b13316400bafcafff1ddb9d3ed22d540d1153975bca845'),
+    'capture_field_168': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g168.bin'), '20226aaf727110625eef762ff9cc65babde76572f5060f91d5d1bfd542588d3d'),
+    'capture_source_169': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g169.bin'), 'd0276044a7d6218839e061f57ffd3571d4020fe5c0f847959a81a4a13514fc0c'),
+    'capture_return_169': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g169.bin'), 'c242101dd9c85275934f6e53961c10541c70dcc07a905dafe40e885856f06970'),
+    'capture_field_169': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g169.bin'), 'c6ea998c2b9bf64a7a7871c352488c9d93199198102b01342d5f71e7ad67fc66'),
+    'capture_source_170': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g170.bin'), '517fa2383754b6d7ebb73e9d5fe3596c1c6880c14c1ea6e1e838811bbc30f2ef'),
+    'capture_return_170': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g170.bin'), '9db7b738e9462575296a86aa7d5e2a830562f8c21b61ee93491e73d960892fec'),
+    'capture_field_170': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g170.bin'), 'a260d708fa22304993ee954df0cc11862e57e4f07723f1088430612999c4d3fd'),
+    'capture_source_171': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g171.bin'), '1803b143fb4facdb1dd875e90795ff902063c77dcf516c3c22637f95682a1fe4'),
+    'capture_return_171': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g171.bin'), '94453b619ceedaee437156d456dbebe36167cfa0673c50270301a4da6ef8ec93'),
+    'capture_field_171': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g171.bin'), '260d1a75983842842d555d2db3f180f335132865aeefb11ade0ab3afb58a1ead'),
+    'capture_source_172': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g172.bin'), '581c7ea7c14510d342b4bab38a1144ca14c1502a1dacdc44c8e445f1e7af434b'),
+    'capture_return_172': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g172.bin'), 'eb003e31f91a9be7140cafc60b6b82f3ba8bbd4bd77439b1401f9889ece0d5fe'),
+    'capture_field_172': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g172.bin'), 'c7a1d22645e3f8b821dc8315660da8740a91d974d325afc257b0c9f0bf5d10b4'),
+    'capture_source_173': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g173.bin'), '8a87d0b361a6fe05f640bd05dd547001417365c5340fd419fd5390df618821af'),
+    'capture_return_173': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g173.bin'), 'ccdc0043ac23abd7d8e1f0faf4befd38f517e807fee1bcadfc855a0a03ad7b60'),
+    'capture_field_173': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g173.bin'), 'd8337c4a2d46bed4521a280d9f929f6c91fa21320fafbb66421093ed7d1db6cb'),
+    'capture_source_174': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g174.bin'), 'f77dff0f74d9477a7ad43462cf008fec3a6bffac93ca09cf619dd538d5d04a6e'),
+    'capture_return_174': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g174.bin'), 'ff54a5e097f0a929e509b0689b1b369db0a4a91435cc6d25c9243ad227e8930e'),
+    'capture_field_174': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g174.bin'), '88ba595862dffb802b3e6c9c8502ca545d0c336f2b2f2da6872e20382b04248f'),
+    'capture_source_175': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g175.bin'), 'b754e32de656d77cd3eb62dbd03050ad020640e33ee883e8c0836a58ab4f0203'),
+    'capture_return_175': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g175.bin'), 'f7f2b6ab69caf233735d9aa9b8f4fb890c0a12ea9dd52afe1c3e467e2bb4bd6a'),
+    'capture_field_175': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g175.bin'), '0caaa049bee6daeaf8568cc7ae7fa4fefcd3470e8e5eedbd638bb2bc2c7cacdc'),
+    'capture_source_176': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g176.bin'), '0aa11d165d6da00ca09f1e80c5112fa61d257427590d072b6649c480b972e58d'),
+    'capture_return_176': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g176.bin'), '455aaf81e2e1cf9b53ef5bd3647e055487fc53055b84522ddb654c0b959117f4'),
+    'capture_field_176': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g176.bin'), '9dc7d734f41613c9a87f128ef80814e7e76b17ae00cab5725d5232d15523169b'),
+    'capture_source_177': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g177.bin'), 'b6e5f18071206a7de760d8abaae319eaa07598f9e09ae9f7c0b045cff7b53489'),
+    'capture_return_177': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g177.bin'), '0ad2415d2a3a010b93c0ff0f6b8e73e2bada26160821c4c505c809a62af21969'),
+    'capture_field_177': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g177.bin'), 'b3b16f4af6553976e6b43649aec4685fa910b30427eca879c4812198dc2e619a'),
+    'capture_source_178': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g178.bin'), '7a298d08985fa0c36d147b74497fea67d4b4147d690b0ffde4e3481cf93f9666'),
+    'capture_return_178': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g178.bin'), '54ad67e463b471fdc26ec5af95da8c0c209ec30b612d41ebce95cdf2c873e298'),
+    'capture_field_178': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g178.bin'), 'b8f2b90daa12ad682b50226b8389454ab0170f6bd82f41274ea030938a8a27db'),
+    'capture_source_179': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g179.bin'), 'd85823d6934c39c99c43dd72369bc963c692fc383f90d3988c8f410fa98c2620'),
+    'capture_return_179': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g179.bin'), '7976304cb3069312b7f1800e56636fdc8075b7cf79c9a9ad574ae893d2ab8834'),
+    'capture_field_179': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g179.bin'), 'a2bfa81937bc7b01267dbb16ce3252d2e4bdab7a380cc38359d441634bbbe6c4'),
+    'capture_source_180': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g180.bin'), '04b3cdc9547defd5a29e6b711219591bde7cb961e8a1c8630f2d5fe62e4d63e8'),
+    'capture_return_180': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g180.bin'), 'fc182be1854346a6e07343ce8ac7e17161e8f23f57da27a3a5f5e4993e4604ac'),
+    'capture_field_180': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g180.bin'), '399a0d921f65dddebff7bd81ee29372763344452e0c51d4d22d17ada67440673'),
+    'capture_source_181': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g181.bin'), '5530d91aa0443a3a1efc6fc0ff61a0050af1c633ba990e77eaa34b41ecf94b12'),
+    'capture_return_181': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g181.bin'), '3f6b0fbb34dc7375429e8818e68d33eceb7929861a339f62a7063703b61e03e3'),
+    'capture_field_181': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g181.bin'), '6d636eb8d21476dd768a32d62ab23604ead694f02b5eef2dd8f6359caa956e09'),
+    'capture_source_182': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g182.bin'), 'e23244b90e4b25c642c9421bd0119d28714811fef38fb82a7f2e69dd12b52266'),
+    'capture_return_182': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g182.bin'), 'e358aed9459f6c71f377d51929cbae7dd1341e415f6e8af815e778dca9517fca'),
+    'capture_field_182': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g182.bin'), '9a5e0133822d3a4f120d9e9f5f1aeb81bf471f8c08879d1860d67dec460e9faa'),
+    'capture_source_183': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g183.bin'), '37240340ac4b603dcf96a7cd31d1eed6f402c682576522d40a71a686ea06ce48'),
+    'capture_return_183': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g183.bin'), 'c90950a53d923ec58ea832a81e0fdab9049c4c206c1fe5cd6d6ad14fda531b4a'),
+    'capture_field_183': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g183.bin'), '8e7340f175f9a1a29726d5c253c4c117cab95d28c75db2fb9a99c4101896d2f2'),
+    'capture_source_184': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g184.bin'), '8f5518e1718eab85676c3d8bcec31fb3d1976cf3be5dab11689baef3520d9531'),
+    'capture_return_184': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g184.bin'), '31bca22d20c2758ba811af3e357bc3cf6c1a6315dc77ae7e42a5f423565b08ba'),
+    'capture_field_184': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g184.bin'), '1111b393929f047a2ee836288d1b5778dd0d4a14767f41002d54f9452371e416'),
+    'capture_source_185': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g185.bin'), '2a2da1ba1162c179532a6337448e9d6b142fa1df5f7141cab534065111a40e46'),
+    'capture_return_185': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g185.bin'), '98cc2f2daa97165cb46f47d1df8b4c551b7cbfc727eea4d322cbbd8f632adc77'),
+    'capture_field_185': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g185.bin'), '1c91962d45259163a460595665c07ddb065087afa905ec4e1098448c09632813'),
+    'capture_source_186': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g186.bin'), 'ec0d9707b95e64af565fbbbae356dbcb7cf3080d1ba28d8b5ca75f376f01948c'),
+    'capture_return_186': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g186.bin'), '7aa79b696c6fef26e51270b033af4538dfdfd0aaa6abaf3966e65cde1a55299f'),
+    'capture_field_186': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g186.bin'), '0c43c4f5a895b009698079f142e5dfde0e1b8ee4947c46b36b06c08b03da37bd'),
+    'capture_source_187': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g187.bin'), 'd6fe6159a39798238473c6f4cc960848804f078e27fdb030c9a2a9ebebda7fc9'),
+    'capture_return_187': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g187.bin'), 'c5589ebd27c609e4ededb2c859ba5e5addc01e6bda756dd5de98bee152777d9d'),
+    'capture_field_187': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g187.bin'), '94ff27ef0a47201c205f916c2e7eb734f025e372758d13eb2515f3b90dcb99df'),
+    'capture_source_188': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g188.bin'), 'ef62c50cf5914799b579692e63c75d29f4bfa65b51345ba69a3c19e6d5c10cf5'),
+    'capture_return_188': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g188.bin'), 'acc3ebbfd91066762fa041eded931f6affac00d8eb4e628f6255c5d6c5ce0be0'),
+    'capture_field_188': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g188.bin'), 'a2ee21789d4f903e71eaa8a5901a6794803b61e90ba3c57cd74eddb052df7567'),
+    'capture_source_189': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g189.bin'), '7cc785f8564d4fdd7e7c6a15f2773a5da4a54c28d4f359e7956da68dad508533'),
+    'capture_return_189': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g189.bin'), '8eef7b1d6ea17a2a3caf6fc213d386f2b934f19a47677e15b016c46179cbb563'),
+    'capture_field_189': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g189.bin'), 'b1a8afe1577a60f59806fed92cf269d336f2dd950fd533604e84e11bdf4e9079'),
+    'capture_source_190': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g190.bin'), '34b40e0091d47120003779fd7c5ed491b652a5716daab0d6b390f52f6b4faf25'),
+    'capture_return_190': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g190.bin'), '81cd76ce92cfca071afb5d61e74520ff85d14a4c2b03017c56adbcb320f15f40'),
+    'capture_field_190': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g190.bin'), 'f91e6407ec27f89b932ff05133bc9337f4eda41cb0efcc9c7d2586f4bd273d69'),
+    'capture_source_191': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g191.bin'), 'fe986d22d345b9b7ba2e0bf7b5c4b83698bb624e4cba4c43ca7883e43512d009'),
+    'capture_return_191': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g191.bin'), 'eff7188be1ce632ffddffb51319f937d7410b0c2718f84101bd0b3e0d37aa047'),
+    'capture_field_191': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g191.bin'), '7357c90d5e6c10fdcf754c71b3fde2513b7e662f1d054fa51fe983f24d166ee3'),
+    'capture_source_192': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g192.bin'), '5a88920f1f781648cc9fc2f623fd91c486b862aca6ca4d3d4af320ba2d24a807'),
+    'capture_return_192': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g192.bin'), '95926ea29a173385f22db32e37c1fc4d3163bff2377fd8f913fa69a1ea076a28'),
+    'capture_field_192': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g192.bin'), '62c1b37ba596f090c666c6b8b55cd1bb44ba02cb493cceedf07a3f0ea4712ad7'),
+    'capture_source_193': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g193.bin'), '558ef5d75f1f106a4910973e32da783f22384725a2e2c1621a4f0a5211c11f91'),
+    'capture_return_193': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g193.bin'), '5815dbdf582b0d9dcfe4a7dd052655179ed0b3a1bc60f31b5b22ca778e7e0627'),
+    'capture_field_193': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g193.bin'), 'c7ae2aad6f45fa0048e178c8e09285dbe924235be9fcffa822502ce1f3deb1d1'),
+    'capture_source_194': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g194.bin'), 'c83e951b6dcbb9ada80246204bdfbd21113bebd7668fe9c99c8df4873b377f27'),
+    'capture_return_194': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g194.bin'), '2b4ab10c6d2527b5b9a9cffe5aa0658b4e0cde5894da83e3c351da5c3a47823f'),
+    'capture_field_194': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g194.bin'), '2dfb5e6980b9c1852afc5f501b063942b2c1076f0b858bc935f82ae3495994f6'),
+    'capture_source_195': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g195.bin'), 'bf3233addd07eff5d462677c09f101b0e8531d21e0fc17e5116cc0d101a7e58a'),
+    'capture_return_195': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g195.bin'), '92a825d6c6b06bdca0ca72a6c10a717dad4b4a67ce7774f1bcabb2311b7d5634'),
+    'capture_field_195': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g195.bin'), '59996c3bad105a3c36dcdaa5628934fed7582c3f62cbd1176e628a6d41522779'),
+    'capture_source_196': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g196.bin'), '1eb76653b2880ee167318a99d960d8e0cbd85dd51fe4455b94e2b8543fdfd024'),
+    'capture_return_196': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g196.bin'), '97c9b51aab3d35e200a038d7e36486793a723435813842fc3f24f199ac3dac63'),
+    'capture_field_196': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g196.bin'), '14b8d04224b71ac73ee0fbac7325f35ba07813a7f0f220aac02d396635d53251'),
+    'capture_source_197': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g197.bin'), 'da0fd12f735134e4ea95d9f7b594d87e1fab99d6272d1d6b07763f5e649ae773'),
+    'capture_return_197': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g197.bin'), 'ba00431034fa084817603e9a2ffebf32e4693b336dc51a789dddb41343122171'),
+    'capture_field_197': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g197.bin'), '5a28dd1df9520684a6f9a1921ee3b58cb0fe5271b3364e56c1b3edb0dfe047ee'),
+    'capture_source_198': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g198.bin'), '0341eefa272eb5072521fd0d560b536bc00fb59b2682f402c6f9efe87fb459ba'),
+    'capture_return_198': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g198.bin'), '70827193671bb065be15fc717505c3dd1379fcdb8fcb841b4a94685dbd6c8630'),
+    'capture_field_198': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g198.bin'), '28dc2b9aefa31f3a9b045310a6050038694b79f5e04eb39cda128a31fa1ccc26'),
+    'capture_source_199': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g199.bin'), 'c58155dde1fce5175c3549e15f3d7b202faa1aaaa879b45e8e706a92605eac17'),
+    'capture_return_199': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g199.bin'), 'c54beba5c685ca58412093ceb13426b00872632dc5f59f5f3787353c7427f150'),
+    'capture_field_199': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g199.bin'), '2e693c862a10e24aedd421b2f33d4e49d16ca0bc20a94a1da1c86c9716c1613e'),
+    'capture_source_200': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g200.bin'), '3678ee330ae54077f4fccd3fef394e53fb9f6bbc8a774e3c726a2d24a1fb9f8c'),
+    'capture_return_200': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g200.bin'), 'ce5ab86e924ebf63ab0a86c3235c6d96140a2c133a72ee81ac8843e964d772eb'),
+    'capture_field_200': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g200.bin'), '44548563c67a8bba51d0028709cc958857a3319159ce1a1201ebd94816628724'),
+    'capture_source_201': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g201.bin'), 'ab9858a655d55399006ff4ff4d9f6e129138356acde2a7afc8d26f9c502e97d4'),
+    'capture_return_201': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g201.bin'), '663c108f29ed574f60edf063a1cf0ccdb49ed70cfdca3ae5c0b69891517e51b9'),
+    'capture_field_201': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g201.bin'), '34b232a4c009893198818b5d73c26b47bc76f17942f67d6e2f826d12ded78e9d'),
+    'capture_source_202': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g202.bin'), '22eda0b95d4d9163e94fa7ba405a22532bb8177ba0a678c4ec746e6d4380a67a'),
+    'capture_return_202': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g202.bin'), 'd2058e46efde99dafa9f52252dcab4bc2701f3e61699632916278e52cf9198d2'),
+    'capture_field_202': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g202.bin'), '511f0071ede3c3769d970ef3cea93141b73bd65f7314752296a8066c9b8d1ee4'),
+    'capture_source_203': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g203.bin'), 'c3d5827e43f5adf34951ebd51f27e53597ffbbef6e7f5336407676e1e2f30c59'),
+    'capture_return_203': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g203.bin'), '56d70fc06c5d13e82701b2f3e91f70b95ed744a34af9866671c3fcffe22f7bb6'),
+    'capture_field_203': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g203.bin'), 'eb6f20833dfb31fccc5a73dcbc4b5560ad22b1fc982dc86978547dc671ff8cbf'),
+    'capture_source_204': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g204.bin'), 'abecb0615baeff934455dd03a03cfdb627103ce28b34e7bf26bd71663ad6fc05'),
+    'capture_return_204': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g204.bin'), 'a6f504834516ca670db5b592b065fa764b237413ed5a785142a7b546afce29db'),
+    'capture_field_204': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g204.bin'), 'a98ae6276ae42d551b01434fddb037532514b1ac9cb12578d42444c7b59ecdcf'),
+    'capture_source_205': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g205.bin'), '7d1fc380d1fbb5ceca5fe431b1915880fbac068fc72c8ac5579993db4c551eb3'),
+    'capture_return_205': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g205.bin'), '68be8e562764606715bf18c349f9af4e43a98067a22873c5e82be1b59423ee1e'),
+    'capture_field_205': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g205.bin'), 'b1f33b3f5d02a471cd4d85e7bfb7f9e2e9e169c818b09f4152e4ba76f9910a2c'),
+    'capture_source_206': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g206.bin'), '2f1a8ff890416848e2fbb184231e53a28738b92d5cd714f383770fdc40a0dcaa'),
+    'capture_return_206': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g206.bin'), '984c5a87196e5c7d030d1e1e6ed34a1d7307fe9a96fd74d6a4a15a0a62208d56'),
+    'capture_field_206': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g206.bin'), '0b83d714905497c391dc5f16430764d973b9a7ca745c04b57e7034f4188f37e8'),
+    'capture_source_207': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g207.bin'), 'd8e8026d618593b9533d2c9265e288b469b26b27f37d29df093a83929d24ef89'),
+    'capture_return_207': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g207.bin'), 'bf9c2611be63b94fcc1e1537176c97b851c1311e43dded3249171d0f7da072d1'),
+    'capture_field_207': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g207.bin'), '53396a4cf6289165fc38331bb2e235f54b05c2bb0dacbe9c55e76a137fb1cacd'),
+    'capture_source_208': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g208.bin'), '73775b2a8f9f00190056c83be39bfeeacb90409b334107380597b237001c7b5f'),
+    'capture_return_208': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g208.bin'), '4ba1369b067e4aa1f520cfb5becc105ee2b76eb27a17dc7238f382213bd7597e'),
+    'capture_field_208': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g208.bin'), '283848c319bb198f4b436cdb39aa72df5ea3df497d927725702841d3db6ac230'),
+    'capture_source_209': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g209.bin'), 'd03be1b81af1ec4778850d534895176e6ec8593c21c11328e9532269d65c15ba'),
+    'capture_return_209': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g209.bin'), '10967e387eae2d753ec5e3f3f3f93ba3e92fabf0cefdb8d87a071ca3dfa85816'),
+    'capture_field_209': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g209.bin'), '19bdcda8623cc6cd8c1a13f916f55026561af0e25974a87d528b52e1b89ba073'),
+    'capture_source_210': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g210.bin'), 'bb4df545537d0c4692f40bf0f68d1ce87bef733ccf10cc0c04859dbf4999f96c'),
+    'capture_return_210': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g210.bin'), '371db402cfc4610f7b41315b2b51a30960ffc4238d364865d1b998844be82469'),
+    'capture_field_210': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g210.bin'), 'f69f3374157c498ee54a915cb42e33b16cf7ac7d184d15cb206182d62b1576a1'),
+    'capture_source_211': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g211.bin'), '3e70bf087823c3c95d38cb02b6c6bdedfb55bce858f2def548fb49980a39e8c4'),
+    'capture_return_211': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g211.bin'), '15629c0381f938cfc8ca5b31f4a0c477bbbcfce1c0620868a505a1dc637a1001'),
+    'capture_field_211': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g211.bin'), '9bd4cdcf1a145223ca8df788fb3d264589aa916595947945569a30279a0a87dc'),
+    'capture_source_212': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g212.bin'), '6a0e0455a76623e06ab3a71b602726c39120fb092a204b539f45781775153e9c'),
+    'capture_return_212': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g212.bin'), '747578a75cbdebf6ff5d3f37c31135ac163bf2338792493bda82424df378205b'),
+    'capture_field_212': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g212.bin'), '8069fa2fc483792a6a117e966248e39c8d3b04bd9d873be20a397e4ec4eb17c1'),
+    'capture_source_213': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g213.bin'), '35b8cf566fa102cda5906bb9ec7ed63548535568befb606f6f8460526bf79c97'),
+    'capture_return_213': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g213.bin'), 'f645d84e0c0ab7cebdda9280582ba89b9ca8b761be648144b421bbb29be2d0f7'),
+    'capture_field_213': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g213.bin'), '9e2b677d821b1586470c97f000e7a5c90df01aad25379ceafcfe68508033a4a9'),
+    'capture_source_214': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g214.bin'), '551525137f46eba4108cbefe105ef325ff45b54ec6c3796627b02a93fa07f716'),
+    'capture_return_214': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g214.bin'), '08b0f67e70e72e5e9289a604076b27e1d462b181d74dd849058e30e037599d51'),
+    'capture_field_214': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g214.bin'), '997fe6fde8ee5da9bbfcd31b0a88fbf52e806121a6e9d29abfaf4a475769f5ce'),
+    'capture_source_215': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g215.bin'), 'e507903e0becde5926f0617b7c90d6749eecb977319d02a52fdd454c9f438b3e'),
+    'capture_return_215': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g215.bin'), 'c9671bb0b07353a8b547db2cc567f2a162a3e8b47ea95b0a99e09571b15a4da0'),
+    'capture_field_215': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g215.bin'), 'b04d6328d412e492b99a001dff380a32930d97739806368f782d972d3f9c89a4'),
+    'capture_source_216': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g216.bin'), '70dd32a4338f5c6fec8ad99868f6805e01533041bdf8ab009d6e9c6352f8835d'),
+    'capture_return_216': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g216.bin'), 'fff8ce318d732406bd96d56d38e96e0a13bc17b877092f7607a50d6ac00def90'),
+    'capture_field_216': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g216.bin'), 'c82f4ec9279f5813730675fbc58ea81daaf0bd43019d845a8e9d07bafa8758b9'),
+    'capture_source_217': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g217.bin'), '685aa134d18d66ce64e56c9ee326dc5e237b88cad4db10fe0885e1d2c73d1069'),
+    'capture_return_217': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g217.bin'), 'ad212618ecbec1224ba0ec7d3924bc070a120143abbd52a747ed533fce8a50b0'),
+    'capture_field_217': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g217.bin'), '666eeebd5a42c4c8eb21a3b8d49a1a62012db81899c38cac46d1a4e3bb0d1f6e'),
+    'capture_source_218': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g218.bin'), 'e84538f070f9e9da90f08bfc3c42699ebc4bc26462c89c0def86773dffa263e2'),
+    'capture_return_218': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g218.bin'), '0385b9770788d7946a654fbf36bf5a4126a08e5dd88481555e44155a93af51d4'),
+    'capture_field_218': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g218.bin'), '752526b82d20c005007bc149498cd9399de78bb6bd5d7b2698157fc7d5e9f26a'),
+    'capture_source_219': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g219.bin'), 'c8a5663f9872c83ea5bd7b5b5646c969e597fbdad0db22a63482ce8ec3656801'),
+    'capture_return_219': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g219.bin'), '4dbfe5f85127da3a8f0367b11fdca3c5767aa3ff21cfc6b24d8676a9af614627'),
+    'capture_field_219': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g219.bin'), '91d07cf5c87c25d921790871718973bac3c740aaa5361701a3a3c7c8d6dbd410'),
+    'capture_source_220': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g220.bin'), 'eb9cadcbc70bcedccdc8229f3f285548ad62ac2fb63bbc8f3345ce309072247d'),
+    'capture_return_220': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g220.bin'), 'eb0146f5e0361d371cb478b623eb2bfca8efd9c8d66e84e9bf61701f600b1c6b'),
+    'capture_field_220': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g220.bin'), '5e151b291c8e055766681b573abd8476dc1d1bfc8a77c11051fcd9c72fbf5481'),
+    'capture_source_221': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g221.bin'), '96ffd563c1fae7252e0288c61be83fd27e37de71a878a50213cb82ef5285372c'),
+    'capture_return_221': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g221.bin'), '454eec234927100bcbfcf8c278bae5c9f3e47499c7521068845329e0c53bbd04'),
+    'capture_field_221': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g221.bin'), 'b540e230f91257937c90fc9da4aed2293be906e58cf1622acfaf0a9cdd287e94'),
+    'capture_source_222': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g222.bin'), 'eaa6d7e3068afdce8578c310a52924f24236359ef70202eb09f7fe729e5665d5'),
+    'capture_return_222': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g222.bin'), '3093627cbc3684e2eb5de86cc663321d1f13526a2e4bd7054590134bed6b0478'),
+    'capture_field_222': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g222.bin'), 'a33876de6d203e67a9bb77c9b4d6f3f7239adbc60604c6707f7761ff83d7fd59'),
+    'capture_source_223': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g223.bin'), '755e100749c7dac9c570487d84378a9c6743dc87b3ffef92e5192e54d3c18236'),
+    'capture_return_223': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g223.bin'), '524bbcc376edba495ae1351c232f8ad5fcd163904a478f77eb89650360286fbd'),
+    'capture_field_223': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g223.bin'), '7b6d2bfa72422581139221aa585ccfd50aaff0783225fe94fbdf4a0cbad7a2aa'),
+    'capture_source_224': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g224.bin'), 'dfd08c982af5d6bb357caea443459ec48c3801e117ae7505a66a5a4ccf4a440a'),
+    'capture_return_224': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g224.bin'), 'cbdf20f360e65d512e0ce89fad3dfbac94b595b00558c5a36bc5b9294d9beba9'),
+    'capture_field_224': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g224.bin'), 'd38a7e841ad720010677ae3bd0965513c4f4a7d2f291220115cf084a02759a9b'),
+    'capture_source_225': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g225.bin'), '78fc1f326bad5877118733a2f14e6ca99b1c4053e2bbaabe651ecf61e14b9ef4'),
+    'capture_return_225': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g225.bin'), '35e9690f7e784c91136a6ee7d04dc3299ffad18bc5663367f105d9c945db5206'),
+    'capture_field_225': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g225.bin'), '6e0da7c7a479bdde04a33759ab6b5da6dd33d87877770792c33a5d79b60f4dc1'),
+    'capture_source_226': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g226.bin'), '214d8bbeb242c147bdd7b1dca66addf98a59990839afbab747fb83278dcf0ad4'),
+    'capture_return_226': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g226.bin'), '0baffb10c1c0672c66a42ee1a7b506f379e2a0a3bcd7cc4ddf6c58c66eadc7b9'),
+    'capture_field_226': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g226.bin'), 'a713fa8f69e817edb393209ce5013014a77a1ce0ad956d164af99efeca3cf39d'),
+    'capture_source_227': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g227.bin'), 'd68ebc35d18aea74ec7ab2d3a4f8ecad02dbfdeeea3724e33121e1f4940917a6'),
+    'capture_return_227': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g227.bin'), '5ac42f2dc371b3b35ff3d819b30120e65326b808abb2b2ccd3e7f6955b33b21d'),
+    'capture_field_227': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g227.bin'), '39b95e78366e86cb403b0495527713bf8f59789757375ac1edfa643046ae282b'),
+    'capture_source_228': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g228.bin'), 'f90e207f09c8e4158a0a6a136c361a84ccb6f829b620715c8bf051ecd5bcabc4'),
+    'capture_return_228': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g228.bin'), '274a292bffb5217842a9763959e7e083fed27e55117349af1cc316dffdfece46'),
+    'capture_field_228': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g228.bin'), '8e8c150da45467ab02e8f348aa1cf370c1dfe0269faf43655d33b61d3e2aa953'),
+    'capture_source_229': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g229.bin'), 'ca3c25458f4e6477323411c56106c0741b5ebbd37696bc93028f9b68c4c81554'),
+    'capture_return_229': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g229.bin'), '8d9c2d006e44052eb69f1e1b2c378993990087d5d438b4287df43ae8e719c193'),
+    'capture_field_229': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g229.bin'), '8d94c125ab59651b1f27dcc610fdfce4c22b0685765ccbe6219d1216b36a1501'),
+    'capture_source_230': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g230.bin'), '64866d3cadebe7ac56f1bb485348d89e1b3bf6cbe393454052cb162966178a74'),
+    'capture_return_230': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g230.bin'), '7f13a49f07696a47ef711b99b9a575d9855c419c206390aff6339b5d94875d02'),
+    'capture_field_230': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g230.bin'), 'eaa9c091adcd33eb5a97cf2ec8fdd08d1f40aa120cd5760a04cedfb9e74fb57f'),
+    'capture_source_231': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g231.bin'), 'c4e57aadb5430e5393552e52167159ea917f262ac720f8584dc4e8bea8cd1e17'),
+    'capture_return_231': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g231.bin'), 'a3c6b5fe8834050fc500aad7ccdec0a073bed44e4d944f71abeb156b551b67eb'),
+    'capture_field_231': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g231.bin'), '3251e010446a8a2c900cb5593b4738148470357d453b479aa142e864d09fce26'),
+    'capture_source_232': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g232.bin'), '240a7f9c2c256f66612eca82d7241c144088ca5876e4474394aea95a97ab3c8c'),
+    'capture_return_232': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g232.bin'), 'e68a7bfe32b3c64baec135dd49a6e3218296e8c4f6b65a193e76202953aed6ff'),
+    'capture_field_232': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g232.bin'), 'bc8dc5f606d3376f00186299cd5b6f70991a1351a7637dc7ae29822fc6433fef'),
+    'capture_source_233': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g233.bin'), 'ad4adadaad8d89571a8713618799ba90258f0507873f9258f4891d806ef647b5'),
+    'capture_return_233': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g233.bin'), '9a613e1e8fc5236b360903e5a5e4ec7f29421a432510447b3ca73fe68b1f5320'),
+    'capture_field_233': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g233.bin'), '0f17997149ceb52e900fe6dc9f21ade505f7bfe4e9d3ec283fa2fb076dabf185'),
+    'capture_source_234': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g234.bin'), 'e1f0b3930687565b05f3b579a0d9f524d436b97d8de00e1349d7890c4eda2594'),
+    'capture_return_234': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g234.bin'), 'b92f34361a6d89fcd966643cc647d62e52d74453fe0f50e3192446ad8a1acff4'),
+    'capture_field_234': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g234.bin'), '97456c553dd5402802473cf3ab5f385b8214e3a599737a9c1450e79a6d6e1778'),
+    'capture_source_235': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g235.bin'), '2cd0ba3047c1bbb5fe569549fddb582fb57f4fdb3cac94023519863c4a2483e6'),
+    'capture_return_235': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g235.bin'), 'afd817892d780dab0e3285e19fce82bed65efb3bc76b49bd8e1443f651070e32'),
+    'capture_field_235': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g235.bin'), '525a767c657773433e23f292a1c83d372ff74d516a6454566324d716fa3ae0e3'),
+    'capture_source_236': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g236.bin'), 'd309bf98c539cd59be65c537787f312d322c8e39d279beb08094d152acc94688'),
+    'capture_return_236': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g236.bin'), '612f13a4a144d71a1f4551191f1119a92cee3cda5a49d4c8928d92c4b84bed8f'),
+    'capture_field_236': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g236.bin'), '96e86d71b22ad3aa01d750b9b32a9f29cc658381f8924bbe3a45d75aafc927a3'),
+    'capture_source_237': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g237.bin'), '2ce878ee43dc2bb77aae560362eef52cd10edd020f5e65cf7a3a0b8d3d021e84'),
+    'capture_return_237': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g237.bin'), '08101dff35e416c5f2454d9828fb60fd08ecf3b6cb8d5d9b94457ecbc4d616b8'),
+    'capture_field_237': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g237.bin'), 'c102c71d1e439209ad9bbba18e397475d6ec9a939de0a98ecb31e6502a63c411'),
+    'capture_source_238': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g238.bin'), '523706ceca5448b448a7f0e795d73632b3afa2182d348b5fcd371d3f23746e74'),
+    'capture_return_238': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g238.bin'), 'b9d2115e4a8878bf2c9748911e71a1e525de1dea3507b7b3c80042d3f171a65b'),
+    'capture_field_238': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g238.bin'), 'd7870a3e56092a268e7be40f20c3b9797e9c6d49ecd029aaa6a191fe0deaa2b6'),
+    'capture_source_239': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g239.bin'), '123aebdc45ba82c9c8a6f098200055611066f897f552eb0bae0a687079d3c590'),
+    'capture_return_239': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g239.bin'), '3db71fb27d2f3f393b5ecdb1a5291fc56aacfee1d95ac7d6853b0ec2990c6d92'),
+    'capture_field_239': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g239.bin'), '72d5b2d991c16233862633675ac48a6dd5a6e4f2195c46da18f898af4c9f3532'),
+    'capture_source_240': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g240.bin'), '5499653e3fa3746d17c76b9991cbe3a6e86345ca085d36771014a4a7c774e0a7'),
+    'capture_return_240': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g240.bin'), 'ddd151e0d04081f41ce8834b8d77d9176c1a596d35f1db19bcb5913429a80163'),
+    'capture_field_240': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g240.bin'), 'f7b5640356736949889fcab31fcd1bf3020c3814c812788cb08cf31bf2aa2a7f'),
+    'capture_source_241': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g241.bin'), '578c1e52d4fb748a9d836141ea23235218ad7c716eb7573fe8e3861fa74ac312'),
+    'capture_return_241': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g241.bin'), '8abf74854e1009b74111f2011493abb021cc759068f37aaa77f1980ba48badf3'),
+    'capture_field_241': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g241.bin'), '277f116837a8acdbfd27f3bfe9d695e2159421d953bf21dad5b236f3b199f9c1'),
+    'capture_source_242': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g242.bin'), '3bb8e3b0dae8c2fec380786151bd08e1b47e3098e319153ebf8d43f39d963bc4'),
+    'capture_return_242': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g242.bin'), '7245502b99e95ed20298cb6e6575e2372680c371515a1a1c0accf825bf6bc6e5'),
+    'capture_field_242': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g242.bin'), '4c574743fe8f38648abfc871c7ab014292960a833dd098e70164fffcfbade07f'),
+    'capture_source_243': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g243.bin'), '66c96975fe373835db87cfa18138c52f6089f90e8373281a6a77a7781a99fd91'),
+    'capture_return_243': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g243.bin'), '64da41ea908e5b7c1315809757cd6074683c38562f8af0b0ad222c9bbbc6ba2d'),
+    'capture_field_243': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g243.bin'), '5c6aa195ba14ee93a95f5b044d0b6205425cd2b62df72c8880466cf5943028e0'),
+    'capture_source_244': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g244.bin'), '2fdfbb421a3240adf4d95e475956ca64fcdc0afb60cdd323df4adddb730a9955'),
+    'capture_return_244': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g244.bin'), '23cc50623a100e84ba0ee3614635f24747454e8ef99c7fc32ef4fed889372ce5'),
+    'capture_field_244': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g244.bin'), 'f80dba9bbed66727abe40521d9a1f30f7ff62ecac2dcccc2bab83191597daac4'),
+    'capture_source_245': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g245.bin'), 'ac63c339a4877b830cf60316fd23638918fe894fdffe4d7588f65ebfc2d711f4'),
+    'capture_return_245': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g245.bin'), 'b9292bd96d3ce518fc0b702cd7485850f2eb127dd4cdaf823bf099bb08f49072'),
+    'capture_field_245': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g245.bin'), 'e4150edf277126b18e12b2a3643a789ce2721c60bdf01a67d516758d253c45d9'),
+    'capture_source_246': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g246.bin'), '57ad606d0945918ba5998f128df817da14223559b8147725e193269c464b2518'),
+    'capture_return_246': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g246.bin'), 'f11c89fd926fb7cec453de69857b87d402d86444c1b53a4779d91bc0fd644fc6'),
+    'capture_field_246': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g246.bin'), '206fbcee4a8fd5b45418a44f8334e3edd4f17af424e043a7a67d45ecd0fdefb2'),
+    'capture_source_247': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g247.bin'), 'bbe3a7bb371f65258beba979a31ddca46d72a78e1923355b0642d5b24b9f02e7'),
+    'capture_return_247': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g247.bin'), 'd36067100729f7db6830bdb73e513d5b232c1735dfea529d873a1c61c988731c'),
+    'capture_field_247': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g247.bin'), '0e1bd8bf9a19cbaa789ea9eabebf222cb3045ed45ce0296fcbbd6d15fcad211a'),
+    'capture_source_248': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g248.bin'), '2bf3d96b9bf9acdf6e20e1876a29c856eebaac38c255b31695371f527de45026'),
+    'capture_return_248': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g248.bin'), '80505481ba0cd88ec044551f848f150c66078fa680d46df10e8021db4340adb2'),
+    'capture_field_248': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g248.bin'), '3a54499408427a37dfb4f5c09d71970a9a02f65f42014f50d7b974a274d0ae11'),
+    'capture_source_249': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g249.bin'), '1bb1992061049f7f04d374960a3d6e7ff0d93811632b43c6ef54e287a88476cc'),
+    'capture_return_249': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g249.bin'), '38515f8385b0db1a394fbba67ac4aa74a057717228c79117e4b141f34460292d'),
+    'capture_field_249': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g249.bin'), '223a5e9a50194c1a2da76c2e1bb34593d694355d89240e7f394d7c7a8d128b92'),
+    'capture_source_250': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g250.bin'), 'bdc3eda7217c2e6f233240c869b05bb1bdfd62165f12c4b8d20ced4caa71b053'),
+    'capture_return_250': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g250.bin'), '2eed3b7e9c58d2ba4f6d213e8ee52eb3758243483222e6caf42620ab0dce82b3'),
+    'capture_field_250': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g250.bin'), 'feedc402220a2abd5b9018badfe15230801d9a32a806e8a114416434a957f784'),
+    'capture_source_251': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g251.bin'), '9671a739776a37b3613994950a5c443300edd38a4e3f2881b1f3df02ff956108'),
+    'capture_return_251': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g251.bin'), 'f1955002c62c6c7aa801fe27404381d38db4b08775fe8aa875c8125a936812ec'),
+    'capture_field_251': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g251.bin'), '30c278980f51dffb5fd96c95e04f5ced0d07273cf711998cf02ae7d2a42ae3ce'),
+    'capture_source_252': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g252.bin'), 'b8133a4d9888aeb3f3ad26a224f46a7c931e1209f2271d402c5bd4cb9324a2f3'),
+    'capture_return_252': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g252.bin'), '09951f9c785df9dcfcccf00d21e379dd640cd16e69f475ba4b17094dcc68a890'),
+    'capture_field_252': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g252.bin'), '502397dbd0cdfeee857f4a3d2046675102e255ffdc73891efa61f8ecaf1b8621'),
+    'capture_source_253': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g253.bin'), '195f6d6aeb173e279abb06189e2b1cdfa032583810c9c356fb2b7091387388cc'),
+    'capture_return_253': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g253.bin'), '24ebf48dbfd0de1e033949e75bb9b9f6306e12861ce33f7ccec56ff1247f5ef1'),
+    'capture_field_253': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g253.bin'), '6c1e3284107952c57e4ef51bc0cb6233d66521a01631ddcf17448443993d9e98'),
+    'capture_source_254': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g254.bin'), '8a2d0242f62ec46b045990676a4fcbaddf35b29d43f3cc9184ef61045d5b50f9'),
+    'capture_return_254': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g254.bin'), 'b7f50b4c90b2cb3ee8141a5169f38cd104762d478077f3152b23aa2e82d2ef40'),
+    'capture_field_254': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g254.bin'), 'a6e37a925d4183b40c8ef169ad19890849ce1ca21cdf11dc375d885b93555819'),
+    'capture_source_255': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g255.bin'), '2b627bc090d16186295704dcce13f77a650fe0db95245c94ea89de0793daf3a8'),
+    'capture_return_255': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g255.bin'), '5087f8d9959dd938a0fc048a5b278817f9eb84a18b3caba217679a1158011c67'),
+    'capture_field_255': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g255.bin'), '366cad2e960d3198d69e97ce1f66caa986dce8a29a08cb4496ec12040f889426'),
+    'capture_source_256': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g256.bin'), 'd9f9b2cd99b3474b6fe28517495b385e7723cf593ee8c03391ab48dee81da97e'),
+    'capture_return_256': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g256.bin'), '7bc491d0715fddbf3afa6986d8a0a151077194f4f0c25eeca6782ae8b46d66b7'),
+    'capture_field_256': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g256.bin'), '8ed04bc26ffba9d7912a11263dffddf83984e9fa0d3f87c7da1350608054d565'),
+    'capture_source_257': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g257.bin'), '46a63775c498d13822435c69c6fc73ba2db383aedf43ed0859b200ca6481a129'),
+    'capture_return_257': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g257.bin'), 'f664de9527ec9596bffc2776f43e50784a9c142f7e6b7e6e13a4543cdba3c61d'),
+    'capture_field_257': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g257.bin'), 'a7d154289a862ec577bac459482d14dc59f07401ceddfac670f7f22d8ae0468e'),
+    'capture_source_258': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g258.bin'), 'd06055992fdeccf382762ed1599d63ce197c2ac8caf103cbafacf3e0e4959a85'),
+    'capture_return_258': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g258.bin'), '6053b436be7c73f170f89983e3066f3b47cf138bdc86308d357cae18e4664af8'),
+    'capture_field_258': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g258.bin'), 'c148d1c60383753fad0840491e2956b68986b18796e84dd3b2eafc728f628bda'),
+    'capture_source_259': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g259.bin'), '4b9638db4adcc74f006030e158151c1b3da3a8e99608a7190cf18cc4f3928c21'),
+    'capture_return_259': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g259.bin'), '87912e4ee271f4e0fcf715254018a996859c26ef1265ed59e78308e544683eec'),
+    'capture_field_259': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g259.bin'), '17bfaa450980b1fce1a9cd5d4a49405426755c7bc0e60d5b08169a9893993924'),
+    'capture_source_260': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g260.bin'), '40a9bf017de5b7b476acd1dceb35ac5bb56c1bdd03fc88e67dc6cc0943b1905c'),
+    'capture_return_260': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g260.bin'), '2edd291005055f0e076b90b546f5e5594d7f5c51210ae5e912f6bc4731acc607'),
+    'capture_field_260': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g260.bin'), 'afe05c3f64861e0177e9c0c16eb031af2cf8f9e5cbfbbc2cbc39bb6a259b4298'),
+    'capture_source_261': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g261.bin'), '9fa6d51c5682ecd5d544327dbaec16695583ffb15204635bc9a03839ccfe1ee2'),
+    'capture_return_261': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g261.bin'), '30ea38d295c0516bfab1c44a03e87ccb9a234509bae587527d9db690bd95fc73'),
+    'capture_field_261': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g261.bin'), '5a62f99ae37c497d4f071eb4c35341e3accf6795a2672e9195530f0b59e1dbc4'),
+    'capture_source_262': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g262.bin'), 'ea7d4e5220b27b4323eb619dfb73f2cd58283bee04352cdc8277651187574a8d'),
+    'capture_return_262': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g262.bin'), '1e5994402f32bac0d8507aeb5c130cad26a5d84e884d386412597ca34c11e2bc'),
+    'capture_field_262': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g262.bin'), 'c5b1f3898477db34409d539ad36be7acd110e1679c87b206e80b5cca50478d85'),
+    'capture_source_263': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g263.bin'), '7f223bf52d85f62065ca9991c9d0bffa560e8d10af3fe4d1e24ab36be5555aad'),
+    'capture_return_263': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g263.bin'), '5edaa5a25ce7b9228237186291234f8af1adbb06ba43649075172fcb85c14498'),
+    'capture_field_263': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g263.bin'), '9215017b8cb674801a92513a550210d4c170ced6cb35d635eb521120a1b92930'),
+    'capture_source_264': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g264.bin'), '4cba34b6bc24aaa1a316e7b60efc95e5285bfcfdc766c10675ecf82ad7ae017f'),
+    'capture_return_264': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g264.bin'), '7a349903398b40fc9536624cbb9140874b2df6775cc9cd224369ae0816bd39a8'),
+    'capture_field_264': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g264.bin'), 'e78622ed8db423c8565bea368baf03691e58f2b6826031d9c777d24bb3555524'),
+    'capture_source_265': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g265.bin'), '8f475c0b713589b3d8876fea7b9167a64bb9953e02fa81f05e8d607ca29fb4d1'),
+    'capture_return_265': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g265.bin'), '55b3926cf2727e6adfd95dbb0374ead0d55f64fb0804909889307c3d82d45090'),
+    'capture_field_265': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g265.bin'), 'caea5f631829a678cf7f8cccf038da88209cbf43322b4cdb5c48a6c198ea129d'),
+    'capture_source_266': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g266.bin'), 'd0e2397e0df7dec4b3f9f23fa577a45deb975b76dc6d02ba28f13f01101fa8a0'),
+    'capture_return_266': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g266.bin'), '02a20567942752ef5fd3eb8c728503f093a975712a612666a725e79cb29e25a3'),
+    'capture_field_266': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g266.bin'), 'af5f24e00ecec1512ac537a275d34828554dc22fbdcb19cc31cca2bfe91193ca'),
+    'capture_source_267': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g267.bin'), '9bad025d02843fd7f46bf74289e4025db6ffc434d2d509b64eb6fa3e132c94ee'),
+    'capture_return_267': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g267.bin'), 'ac3efeb685a6475863fae93bd17d4aed0e5725c81921cd277cdd83a88a1eb736'),
+    'capture_field_267': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g267.bin'), 'd75da1c3ec9df2dfa780df120ec31b5232d2c587239f1592a39efc77c3498558'),
+    'capture_source_268': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g268.bin'), '00c3c02a5756c25856cea316a1330cbb7b1cc26d777026f0ce44fe55211d47e6'),
+    'capture_return_268': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g268.bin'), 'ddada38c45805259b7dd9d390ff3dd60b4b9242a025b9c55db436d13c265e12f'),
+    'capture_field_268': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g268.bin'), '31ef4e131b6e741994ef4a098b039ba05e41dcd63df84fddf4c8303bb89deeb9'),
+    'capture_source_269': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g269.bin'), '3fc5e9b3dc307b500d1d3f14c462d976c7456f89dc292e11a8fcaa78cf63f306'),
+    'capture_return_269': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g269.bin'), 'ad2fa75cd4072b4944340fba6c601b016339ac2baca2c29f3a3997df5755d482'),
+    'capture_field_269': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g269.bin'), 'a52de679c6df7a28cbfbc7500aeac8d8867b93f0acd72104b2b91272d0de3100'),
+    'capture_source_270': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g270.bin'), 'c866ea3ae626d9234f2ed10042970d14e6ef8bcc1c188febb766ba3b7ce0a85c'),
+    'capture_return_270': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g270.bin'), '1fc446545eebd2bcab072587d4125ad005f2d80057395a9e267df225ce713fd6'),
+    'capture_field_270': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g270.bin'), 'e13fec29069c37bd5e1a772e884e7bca3824d0ecdec59a6500b7f567f904ccc4'),
+    'capture_source_271': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g271.bin'), '3cc6956b6afe8f2b3b95639c221e2027875cb48bbf3072713aaa94d86c86f876'),
+    'capture_return_271': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g271.bin'), '80af6d25aa3a02837c8ffb912022bc336afe432b2b7e962ae016e322b52f1773'),
+    'capture_field_271': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g271.bin'), '6bffc2b3f115c74b0b743400798b981109a49036c9850a7f94c10a8b6edf4283'),
+    'capture_source_272': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g272.bin'), '256134cb06a2a174a0a056d7f96ee0e5f54d333fefeb3d9da297c841bd0d9c16'),
+    'capture_return_272': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g272.bin'), '9ef1afa442fc9a29aa46c262307f29116d6c84ff24d0c21d4b080371ab0605dc'),
+    'capture_field_272': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g272.bin'), '32267786e246cd652e7a14618de86276d644e9c4be0e0938c6d325256d88fbba'),
+    'capture_source_273': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g273.bin'), 'e5ec984d9e292929f620e3cae9074d8883196b7b1e137efbfb773ba50ab6a624'),
+    'capture_return_273': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g273.bin'), '8712831003fcdefc52f7ee3d7a35658d7846eefdcc4bb5b51aa3f7f25a7feaee'),
+    'capture_field_273': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g273.bin'), '05c46bc2d5bead0d214dad76becc886a432a3f5c96d52c0e2fd16b96cefcfce5'),
+    'capture_source_274': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g274.bin'), 'e664638537c921eb7ca00893dc8834892db59d88645c8ec7d7cff6132387d3b0'),
+    'capture_return_274': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g274.bin'), 'b038ece6392cd3f051f5a764fcb72ff30c2f4f65e1c1b2b186750ec9574c3b54'),
+    'capture_field_274': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g274.bin'), '4245383ba1047c946caa4cd45eb5d8281ff46312f98569aa64ac7c1470ad9919'),
+    'capture_source_275': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g275.bin'), '2454d6620c7e55079273aa08884ff31ae190081d8b48616deb9b2519e3b3a04e'),
+    'capture_return_275': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g275.bin'), 'ec103cdfd4e12b9390b0d6dd95c5b5290fcf1ada144640077c5d6e0e8f356cf3'),
+    'capture_field_275': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g275.bin'), '39a1f6f8ec06056e1893794cb757685f32669a516272749a2b0f3e33822f7434'),
+    'capture_source_276': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g276.bin'), 'c8f8091797829b1c8845fd80e5f43300c66fd136d139e2713f3e549db6db94b7'),
+    'capture_return_276': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g276.bin'), '8711d53aad0b82f671aebd82c323b005edebabaadb8f1bc80fd72eee756b14cf'),
+    'capture_field_276': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g276.bin'), 'b949be5085e9ac0b072dbc8b07f93bf3e80e2ed76c066b43349b8ef0684a383a'),
+    'capture_source_277': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g277.bin'), '83dd782f15d663a815ba9e0ba7b2620d6921dd4799bb5000a850f477960de7df'),
+    'capture_return_277': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g277.bin'), '3e86bb674613260f8fa9ded92042792e5723905fc8ef2c3d55c898fb2f529c67'),
+    'capture_field_277': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g277.bin'), '061fc598c3cbc13fe6c1bc88f5aa365cbd796fbc508945d828279c048fc6c902'),
+    'capture_source_278': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g278.bin'), '0c8f01574eefefed04f7565b32e3ff67aa3b26181856d9984de526486744a256'),
+    'capture_return_278': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g278.bin'), '564a86e687237a5bf40192e76cc25799667b844b994ac77dcb0f79d5ec7bd86b'),
+    'capture_field_278': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g278.bin'), '98ec6a8aff2e8f2a8958c203569f897e17a5aaf5627694ad77904f64721c3cde'),
+    'capture_source_279': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g279.bin'), 'fb2b4c3fa8000d74ecfefa5fcfc6f05ef48bf48721cfec02d4b09d6a421baf32'),
+    'capture_return_279': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g279.bin'), 'da6d50267e4affdb011bbe3e42a8784c7b894acc05da04f7ca7bdcc32b463803'),
+    'capture_field_279': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g279.bin'), '6e026bf7a93ea22fea3271cc57823c0f87732c504ecd886473626ee4babb6b0a'),
+    'capture_source_280': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g280.bin'), 'e6c98e6e4425d72e47268068e2c206e3d01f8c1f359a23813a12bc0fa8d5c7b1'),
+    'capture_return_280': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g280.bin'), 'ad62b83273ab0e5128e6272774a193f5c54dfcf3905c702d28b4df9ffebc0a2b'),
+    'capture_field_280': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g280.bin'), '965920ba9806c4eed31940007027452c2bce0369f92cf0d7c53607bf5aefdf5a'),
+    'capture_source_281': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g281.bin'), '9926b91eba35645e48a920443d380fb0aa11262e06415098f67b5b21b0c11f22'),
+    'capture_return_281': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g281.bin'), '66cccb8e11bb28c1317dcfd89eb451bad5333535d644048b19ea6b717ccd0ac9'),
+    'capture_field_281': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g281.bin'), 'e90fcb315efe4a201270b2fcb187a802206865d855b5e653e8dcdb278b535246'),
+    'capture_source_282': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g282.bin'), '118dcc2f92bba5abdce5f6deeec67e7b32df8334a4ce3e997898ea829232732b'),
+    'capture_return_282': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g282.bin'), 'd75a584f735a6a614466f3ea3af15b0009d2861a95d49726134933d7bdf85722'),
+    'capture_field_282': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g282.bin'), '1c6fd70003ca6c76a1773306c12f806f4778db0e45afd6df388480f75e92bc3a'),
+    'capture_source_283': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g283.bin'), 'be117348fa001965a1962aa037e49cea6bde2b4a1bcdb018a68ceddb40a6b5cc'),
+    'capture_return_283': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g283.bin'), '6f55a61909a6ef27b48405e59f0bfa1df74cb0c4080bdab20195a565818644b1'),
+    'capture_field_283': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g283.bin'), '4ffa58246b7d992a973ea42c669441db28939c711def25df82892d8e478a19bc'),
+    'capture_source_284': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g284.bin'), 'e6834e89d2985053673162e363cb79ef1a98a7ec72af3737d21922e5bdc61f0e'),
+    'capture_return_284': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g284.bin'), 'f8cdfc842d6f049963705de0c32928d4518e498a548a3039d08278b6d4b0e63f'),
+    'capture_field_284': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g284.bin'), 'e57a43981f161578cbe1c1f5a0f282e03df6e20031886b9061180eb0dd89daff'),
+    'capture_source_285': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g285.bin'), '2f2446e4c5867f45c4b849332b610a6d21ee129122ca294de794dbc16facd44b'),
+    'capture_return_285': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g285.bin'), '6f003b6985851aa37d78f0175ab4ed2075ef24638b9b31889ff5a8e623ca5a3e'),
+    'capture_field_285': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g285.bin'), 'e846819461e5416fc3b0cc5cc4b98cd1797e7cb1e6c1b676e7af81e249b79f64'),
+    'capture_source_286': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g286.bin'), '35513ccb830329b0f8a888d0e848da0e295c72da6d8eeab9c3e9488f62a7e297'),
+    'capture_return_286': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g286.bin'), '47ed7d8846af171804d95a60588d0211172d25c8d208785bfb81549af7c064f9'),
+    'capture_field_286': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g286.bin'), '3d52049e6245bd5206faa51a83d7fd2aa5168a6b051eac19c45dbc2cc5a7583b'),
+    'capture_source_287': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g287.bin'), 'ffbd2326047b43bff1a78e8179c47a7ae885fa8d3121fa45870873c94c0ea644'),
+    'capture_return_287': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g287.bin'), 'cf0a5c6f202e95756ecff26e707204217b6b67a75f9e1a89bbf0b4960b6637b7'),
+    'capture_field_287': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g287.bin'), '8f3cdfbfbe68c8bcc14d99477e23f0301a6479252afccd3d43a454bb8f931bb2'),
+    'capture_source_288': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g288.bin'), 'fb13dc19854968650c2d8db94e1f503897df1bde703d0ec4840acd5c4cf4d1a0'),
+    'capture_return_288': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g288.bin'), '8fca3d631132c71e38b027b010224dd477ee0cd10f9ca782551529d6cb23eb95'),
+    'capture_field_288': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g288.bin'), '098a84f41ae49204863d3056a4d2498034a6b8ea328103cb0499412971907b29'),
+    'capture_source_289': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g289.bin'), '0a73d1b14020afcc614e4b8466aca9851f337c9a1c7b263366fb71657c20888d'),
+    'capture_return_289': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g289.bin'), '7a2dd515a7b8e040d1ae189c94ea0ea1900a3b8832d9ecf74829b238fff3ad90'),
+    'capture_field_289': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g289.bin'), '13621d2677cdc8b7b5501544ee735a9b45860611c2605b4c7bc0a2a0e14b9ee7'),
+    'capture_source_290': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g290.bin'), 'cb0cfa2354733191adaeb3f4b77de640aa6ee24b665e65179c99ceaed311e69d'),
+    'capture_return_290': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g290.bin'), 'e03903a94032ff4459afff3eda9f3ef8ca51ecd8111ba17e586e3973c7120b10'),
+    'capture_field_290': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g290.bin'), '30470599fb8ede7c224f63dd2717ed7d183e80e3347eb70d96e3ff8c17712aaa'),
+    'capture_source_291': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g291.bin'), '89d279b6a40376b559820e7a5a2fac0bcb8c601cd55ef89163bd8243d57446ef'),
+    'capture_return_291': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g291.bin'), '7eb4875707ca51fe9623b3dfde856c59734a9a50673dfdd952271c30bec50f1c'),
+    'capture_field_291': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g291.bin'), '122b817e76214b123d019e776d73cfe84e119d405cdfa9cd76d8354f461a6a89'),
+    'capture_source_292': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g292.bin'), 'dee61975d538c97a6d6fef8f87de6e08fabf7379b082a26c50d62e259c410d2b'),
+    'capture_return_292': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g292.bin'), 'ae8b9a657ede666c30d16cd6fb3efa51d7b10d870048dd1e330a72d120a32fdf'),
+    'capture_field_292': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g292.bin'), 'f7612b224dac8b51575213a680bfe9194f1754763e151504685d6f125e0771f9'),
+    'capture_source_293': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g293.bin'), 'ecc2700e8b81060f1237c2b4d804a692d3f546d9cfb705a4b9a810069a465189'),
+    'capture_return_293': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g293.bin'), '17b1c527e8c191cf1f85df58a9e9d0e9e6c7b3596277df91cc803d4ac613191d'),
+    'capture_field_293': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g293.bin'), '700a481b41eb708f655282345b268bdcd3e4c1d170f50223c9d8742818902676'),
+    'capture_source_294': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g294.bin'), 'd113e569f0418a41d3dd86b99862d4ac2f3e752b6d0b11dc13019c6bd3b23cee'),
+    'capture_return_294': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g294.bin'), '21511b4f79c7a1e74935d337e8c37673b8089f3b7c99840b8166a8699e9768c4'),
+    'capture_field_294': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g294.bin'), '92394e2b18496bae3e80540ab4af781dd2057b51820a18cd48fb9dc4d6eb8c8c'),
+    'capture_source_295': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g295.bin'), '52a9818c4513a40bc60ebc309ef07ebe6e24806afa8ef067375d5fe001df61c7'),
+    'capture_return_295': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g295.bin'), '5059b7a07a74daaffdfc9a33e4101734eebb6ccae02f3dbf3019449d55c3128d'),
+    'capture_field_295': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g295.bin'), '4c5c414806f997553cfbf123e5a25d2e7879d2bdfefe1f22c608bd97befc07f9'),
+    'capture_source_296': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g296.bin'), '1c3d3e96cd875a36a2a4385a54bb81739ece535f0cbfd8e6ed344b4a029ac759'),
+    'capture_return_296': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g296.bin'), 'd97e2a3b7a12de2a706e9e68083fa33d6a665bf0b752f7501e4eca3df7a11cf7'),
+    'capture_field_296': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g296.bin'), 'f8f4923d7af424b21e51fcc02f4a9ef9c80eb9a042003d23ac9ef7f0667c54b5'),
+    'capture_source_297': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g297.bin'), 'b5a429f638507cfcc122777e4d2776c65300b5c4b77ee254e5e2a285783590d3'),
+    'capture_return_297': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g297.bin'), '0e43b47510493d3d28abd502c473e2cbf5cf3d16c791d985be2aeb5add828207'),
+    'capture_field_297': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g297.bin'), '65e8245105d24a2de44232f5e357abd50f9e718ec316e84b49d2fbdb5f73ea25'),
+    'capture_source_298': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g298.bin'), '2dc64835584b1fcc591bd450cb0e6426a65ba9bf0ea015adbf19755ffc6e5db9'),
+    'capture_return_298': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g298.bin'), '8eccd03cdb1cb79a7408972a4afbf94f6dfabef25378fae4b895e0d82d5eef71'),
+    'capture_field_298': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g298.bin'), '74513a5cabdc6b4c2c3cca0f5c4061577d3200ea42335aca1ca6172f299b223f'),
+    'capture_source_299': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g299.bin'), '380ea8d026d79172fe348bd09b4639d93511e47d6388f02f87f402bfafc3fc43'),
+    'capture_return_299': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g299.bin'), '2e7ed3f97cacd16a4598f71343e82288376b9ff293df4a0f5405fbacf70d3209'),
+    'capture_field_299': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g299.bin'), '508112a07f0c0231922471acc90108e7d70ed2a407a550a1ff4c7fa8bcf1183b'),
+    'capture_source_300': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g300.bin'), '3d8290c3feda009f5e81f0df71341975ef099b9ea57a768ac46310101378f67f'),
+    'capture_return_300': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g300.bin'), '4fdc24f5569df8bdde12d4e20b1700b631bf6e757255d42812a44ba0c31d7282'),
+    'capture_field_300': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g300.bin'), 'b6559c0071a28a43b8cb0f6c93def4471b6e4b4b24eb2d1b81136cd7db5ff4f2'),
+    'capture_source_301': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g301.bin'), 'ebe96d3b285abbd31da7fe39d090ecdeecc49d5300e5c3b36b6f78d4df028b7f'),
+    'capture_return_301': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g301.bin'), '6a5b2ca7e181e1964273d1a27e31f023a91e1cd9616d38aff9d5117125f146a0'),
+    'capture_field_301': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g301.bin'), 'f6aaadf9d8969aebfb63b62b093fa6109ed29dc74b3ee827a947cd677f3212c4'),
+    'capture_source_302': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g302.bin'), '6104a35ce9fc45b9e1ee611a9253d1d85acaa2bc4539e98075fab00e844a0ba3'),
+    'capture_return_302': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g302.bin'), '166ccae1a1300431f6cac45a9e6ffbbfbd4cc798f4a087802b66848c8e4b8814'),
+    'capture_field_302': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g302.bin'), '18d4b3223f45fdd89b1693e4c7067e99be4a23cfba0276fd109553a8b4492209'),
+    'capture_source_303': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g303.bin'), 'febff7212f4d30470e91b81bf64f6c3dd50234c7ab00bb3181e54a7dc99fc9b0'),
+    'capture_return_303': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g303.bin'), '87578485bb171b3c367a52ea2746f1b6da55394e99b3a2dd3873cfaa5ae6392e'),
+    'capture_field_303': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g303.bin'), '04dff6594fee6a170ef2a7786e9321919709a3ebe0b202ea922322b60c4af10d'),
+    'capture_source_304': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g304.bin'), 'cde2eee1d3c188744ae5fbc4966371ee9636c14fe382c99356e0cad716ce752f'),
+    'capture_return_304': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g304.bin'), 'eff98bc9675ed2aa798622b2ef94b305c5a003ca7ae45b9ba0adbe56e0055752'),
+    'capture_field_304': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g304.bin'), '03031af10f3cfa5265f19ca510d61c19a0ff19cc2ce9ed0912d1df34a4c025ae'),
+    'capture_source_305': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g305.bin'), '203a6d0dde63a016492ac06c6d32c52d17a1c785a9a15e7d74126d0a58c960aa'),
+    'capture_return_305': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g305.bin'), '4edbb04960c3051b37c4c5fba8484e1f87faed8481bb2d51f616898a941425a3'),
+    'capture_field_305': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g305.bin'), '2bc1e2fa23320e74275c0f96ac81929630d4ade059f8b4730c0797859d3d389f'),
+    'capture_source_306': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g306.bin'), '002a1db2480a8dba77ba29fac63b780a46169f4f473bdc53c5a8a86d607ad7f8'),
+    'capture_return_306': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g306.bin'), 'a910400bf9671fb9390648e182409f026916cede21c0a4ceb04a7df42dfbb713'),
+    'capture_field_306': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g306.bin'), 'd1a0c9f826b02657c410b76a0396cd480702ac6de55a63106e634b2bc325bdce'),
+    'capture_source_307': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g307.bin'), '64aac6f766154882cabd474fab70e631fe02e24ab92134c50cdf2260462789f7'),
+    'capture_return_307': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g307.bin'), 'c27c29207bef4a6d956a400a4830d5735429114aa55c64ee7cbbd5f4337cb0ee'),
+    'capture_field_307': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g307.bin'), '2df436050a83ee865f796968d28c11697bf747f660e66f09503b943fc687eb40'),
+    'capture_source_308': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g308.bin'), '5722eb914e6c5cfda61e1ea7618f8bf4460f44de0dfaf712f1b288b4d61dd74a'),
+    'capture_return_308': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g308.bin'), '31d4b0a580f580456aca9e000d72d4c2e87963d8bb444ec2a7a79fd781256bf0'),
+    'capture_field_308': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g308.bin'), 'f1444d688396c77a30872366129d362eec396fe2a24f12965cb64f14737ba41b'),
+    'capture_source_309': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g309.bin'), 'a8cc8ad534c6b3907979caeaa5b5b4092295cca6b625d489255952a33791d7aa'),
+    'capture_return_309': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g309.bin'), '47a955ba258be8bdbd989658321c48e9dc672992369205a64fb0793d61754908'),
+    'capture_field_309': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g309.bin'), '67f64aeafca9394874eb657cdf32bebe8ceee0de0221e064a90474c737a7256c'),
+    'capture_source_310': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g310.bin'), '3eb657a8ccc6d1eee5f2312aef6803e99e56c44fa5a1ffffb0e11a2debc4c98c'),
+    'capture_return_310': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g310.bin'), '49bfe7db63089e6e6003621203cad71ed51d878dd1c3f427d1814d42ecf4ef7d'),
+    'capture_field_310': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g310.bin'), '76c9cb075016ec6e186068135e81eb8a5104f69cc4b14c2ded151fc3051725b7'),
+    'capture_source_311': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g311.bin'), '478b787583b18f359939ef548900233f2cb37a0b5b8f028946c4ef682864c121'),
+    'capture_return_311': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g311.bin'), '29785b742be67e13c76962861c539aa6efad9d82797a0f6e240dbccff5526dc9'),
+    'capture_field_311': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g311.bin'), '78dbde21dee8bf145b34e94e87cd9a8be1d5906422e2fc148c4c71c367645848'),
+    'capture_source_312': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g312.bin'), '2ca69d5427fa2d17c78f0773233bfe6483a4e1f24f86f0b7ff7ebddf34075252'),
+    'capture_return_312': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g312.bin'), '87eca960ad82d8b6aadeed8b45c8626e3236bee78afabdad1a0871f2cc52c8e4'),
+    'capture_field_312': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g312.bin'), '38d365f996d0e36148a523a50a8d3ebf8fa4fa3d600e0ac8c4cc782d5b96b921'),
+    'capture_source_313': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g313.bin'), 'deb5934bd0b85852201e94e971c6e119a25d651ded4ba7715a9847f6fc42142f'),
+    'capture_return_313': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g313.bin'), '76a2363a4ec8d930c277739bf00561110a2305c6075b1b25e3af600a63ff39fd'),
+    'capture_field_313': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g313.bin'), '7100b3e4fc5efc8afc710c037a696dd2b8cd5d591a6cb69aa882951b5c6f1572'),
+    'capture_source_314': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g314.bin'), '48ce279ffffaec02e744d6a5597f0d6457a844187e2f60ec57e456b99f63150c'),
+    'capture_return_314': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g314.bin'), '8a771d6ec4b4777393354c371d797fa0b2290297050b64922f2cc39cd0386fe3'),
+    'capture_field_314': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g314.bin'), 'b1db60b9ba8aa4b69e6468a0448f23a951ae2a7ae0996b1e0f6430993c65d025'),
+    'capture_source_315': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g315.bin'), '853338f23bf9a1c9c2df7198cd3186f1dfc69f75c415de041591dc7d0b8eb25e'),
+    'capture_return_315': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g315.bin'), '7ffa8678399fbed36846435a5340940adde3c92e8425f3dd0d6442839778301e'),
+    'capture_field_315': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g315.bin'), '7d26b05f9d02b1fb929bdfcc11501414fee5086ffc2ab0b88ea159ad246ff283'),
+    'capture_source_316': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g316.bin'), 'beff4c0f7981c63e38f780062aa7ff449cff31a962efad0e6042c6dc4c762e8a'),
+    'capture_return_316': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g316.bin'), '1470a23db3f41901228e383fc05d705db170da35c6388fea98fc35ac82a3338f'),
+    'capture_field_316': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g316.bin'), '8d25d3e2d86f1ea893e15de91c5893335313678dd9099a509cd28efef9c81936'),
+    'capture_source_317': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g317.bin'), '0bc04d4208d7cdfb373a8811725b888551057dad5d0dc8765e748b0527c83bd2'),
+    'capture_return_317': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g317.bin'), 'c22aa4d672b4de94fa3ce8225a97844c53dff7828856950f2a61f67db1365daa'),
+    'capture_field_317': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g317.bin'), '156a8bb03a8438f4450f3bd5a2d3c21e991d99e24fb7343faf48e6e479d7e528'),
+    'capture_source_318': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g318.bin'), 'df621d8916e5fd81ffeed9f9986c9fadfbfad197a4e79e7d638e6532f8e67104'),
+    'capture_return_318': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g318.bin'), 'a4b11046163d86ae754ad45bd77f26c7d5582d4628b9a0093f4aad3457f0c7cc'),
+    'capture_field_318': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g318.bin'), '53aa1dd9ef66107a0e05739264cdf0fe84cdae31ad89d6d4b70c77b97520948b'),
+    'capture_source_319': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g319.bin'), '83721aa484a728cdb1fbf0752e256a9693ec9f684497009589800814afee05fc'),
+    'capture_return_319': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g319.bin'), '4c429a9e9c7292f3bbcdf00e64b7b5fb236f7c24d46e7a49037dde90e8f84093'),
+    'capture_field_319': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g319.bin'), '86922795c7cb3ada764fc20bab6a711f41f134b86cac399bf1938a27e6192b29'),
+    'capture_source_320': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g320.bin'), 'ea4f8ba05636da8a1800a0d901c476a08414f3d0eb23e69bbe6093cfef36835f'),
+    'capture_return_320': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g320.bin'), 'f928decfd4f33a607fd9ad8004f4451fd35459a0d826813bbb0e0e1fa34da7c6'),
+    'capture_field_320': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g320.bin'), '66fe24c6ed1e8e89767df69dec3ab23b1b63d7efb2fcdd9f9fd0713cd877b212'),
+    'capture_source_321': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g321.bin'), 'e432bd661b48cd0fa48aeaa8448d2f9b4f94cecd724d507c3ef9b4094eec444a'),
+    'capture_return_321': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g321.bin'), 'ac9c0ea3726a8d80f44632a17022b0eeb0292d0b1082853303f8db2af08b38ba'),
+    'capture_field_321': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g321.bin'), '0653ee84b9f4f45fe43fe22c8d904fca48cb4ea98b1c37ab1819189cd0364c56'),
+    'capture_source_322': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g322.bin'), '9f03967d3a5e8d29521bc83c09bff884553782ca7ccb6aacc11784538ca282c3'),
+    'capture_return_322': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g322.bin'), '80e1f77fd10d93cf99a17e61aab9723009d76a511dc20690e58103d830b7d24b'),
+    'capture_field_322': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g322.bin'), 'cfbc35dcefb546b012f93e5dae24c031ff65bba2bae15741028a5e610911a986'),
+    'capture_source_323': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g323.bin'), '089551a3bbd5486e7a347f8df43624e2197cc61f9007c02c503a8740b5f230e5'),
+    'capture_return_323': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g323.bin'), '8628130342768ca5b36ed3caaa22f2d8033b74068baf4daea4f55ccec444879f'),
+    'capture_field_323': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g323.bin'), '6e4b4f08f7b3a0a3437b61bef7e1bca6e167356e6e988b593e1b2d1fe8f5aec0'),
+    'capture_source_324': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g324.bin'), '3f3caaf74c7e20e4c0386988d35726a7b1b24bbb000880961a07a478ff3b5292'),
+    'capture_return_324': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g324.bin'), '8f0ae0a5574caa3a66ab6a3af631f4df1b40069bc1a0189e501468749d940631'),
+    'capture_field_324': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g324.bin'), 'f13634b69ada1c08182673eee99789c52ea02caa7b320d7f806390bb4180e4a2'),
+    'capture_source_325': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g325.bin'), '5ae5b5c4efc25c2ac355059850e254e2ba1e2914171c3a1f132cf82926b78781'),
+    'capture_return_325': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g325.bin'), 'c764ac8fbd2cef18a2b8c2daa8c06ebc30fc5d0403526d3b463f65c65e41cfed'),
+    'capture_field_325': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g325.bin'), 'c44620660d7fc785e6febb5f486bcabcd8c2b1cb9be4a7324866aa1c5883300f'),
+    'capture_source_326': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g326.bin'), '7d0471aebf25c9193386df4861baf213ffdd44e6f71f5918163655b989aafb19'),
+    'capture_return_326': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g326.bin'), '76b3002ff6edf8324f565d2798de66a907c6f03958e7f2a03c4f6a7240831e8f'),
+    'capture_field_326': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g326.bin'), 'a365230fbddab7cd397b44e548d758def963d4b62e084bfdd6656d18508e1312'),
+    'capture_source_327': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g327.bin'), '54ab16e24e288c48a731e3533fe1191ceeacf4bdbb83e2c8ec622660a8b80b40'),
+    'capture_return_327': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g327.bin'), 'a9b2b8d943a813304b27068b7e443280745509d9031880f57bd916dc234a1371'),
+    'capture_field_327': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g327.bin'), '8d14b078b0402fd5d0f801950cdbc81b6869f47d4e033a3078a774737f20ab91'),
+    'capture_source_328': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g328.bin'), '138895e849c3a978f7942f8cda6efab63051b300cef98b5410d2352993045122'),
+    'capture_return_328': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g328.bin'), '4c1704bf77c3b95061671d19b371ac16766a7bed6ef92794372be36658009f29'),
+    'capture_field_328': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g328.bin'), '42443595702d17ef8cc979cbdbf7eedbcc8f093198fc45f589d1c1da43df8e05'),
+    'capture_source_329': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g329.bin'), '8d63a443021188205c15074e1eb9342cd44a061dd62811dbd774b0d4efaddb64'),
+    'capture_return_329': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g329.bin'), '77f1af38c570fc5a5a3fa1e440808d6871a66f11a3f546816dd98a9c48eb6772'),
+    'capture_field_329': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g329.bin'), '6b5d3e91777ac17221c608b67399f42d3942a2014eeb1ed628c3120a48bd0c7a'),
+    'capture_source_330': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g330.bin'), 'ba5bb06677c670791519bcbca82d5cf26de6b26dafa2514a229c6f833a0cd068'),
+    'capture_return_330': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g330.bin'), '8f7af016219fe40c5833837a576fd683c1d50d0c921f26fe99e2a9a5539981b1'),
+    'capture_field_330': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g330.bin'), 'b8a47c880dc60eed01dec0ad2bff9c37da14d6b1cce9814013c8a2464d80c698'),
+    'capture_source_331': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g331.bin'), 'b39bddea3eec10435abf82c6cc284e645ff5adc5ee4b372843f1b102cac04dfb'),
+    'capture_return_331': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g331.bin'), 'fd3107b2ffd58e787ba507b5588238aa988e4d41ae76348b7fc61c711e6b2f1b'),
+    'capture_field_331': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g331.bin'), '753db484715ab8e64b8ee6c0cd7dadd7ec55cbadb21f09af93ec69a7e8fc2215'),
+    'capture_source_332': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g332.bin'), 'fde98f9d32d8e74b48b0ab70fda7f5250984d98d6224ab671cf6a09f90f34bb2'),
+    'capture_return_332': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g332.bin'), '72a036ce87911d82306aa4c435cb0ada64566671a574db05380d0504f44a7adc'),
+    'capture_field_332': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g332.bin'), '6a72253ed64d130b449cc9656a6ce91b2db786f07a0be9b772ca607ad56a4abe'),
+    'capture_source_333': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g333.bin'), 'e64b3992a92250abec8180846d7d155f47e76381b3832355333c670b32273e7a'),
+    'capture_return_333': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g333.bin'), '3e7f8297a5b224033ecdb31d01460d175882946c6f80ed020e393e4a8ff7b09d'),
+    'capture_field_333': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g333.bin'), 'b71ed70cc6de1ce93795320b9c5f1bb32bb3a1fe81d8c8b9f6525ec13ed9ac0e'),
+    'capture_source_334': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g334.bin'), 'f55d1eb117950d5e9399e0463f92359fde6741134303e6298735f3a19e8419f5'),
+    'capture_return_334': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g334.bin'), '111ee1457366f8fce531d6588f1746fe8b83b31e919b031eb96e2622d44b57fa'),
+    'capture_field_334': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g334.bin'), '0c72c7028e41fca17b920a7fd2d77f048b3d784e97f0152785d820c6927546af'),
+    'capture_source_335': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g335.bin'), '8c5acf6da3e9a94d34b35818f662bb901c4f7ffb27e4bc455d95ca999eba0d2f'),
+    'capture_return_335': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g335.bin'), 'b765958e8a6d73697fb4e9ab8a1480687dc1c4590a52f4760d085b25b2a7dd2b'),
+    'capture_field_335': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g335.bin'), 'ea030f1e509a891ff4eaa71cf1049501c7d69df2072c9610f845503563971355'),
+    'capture_source_336': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g336.bin'), 'ed70f856a56da85095149602c265179e4aa282ec0bb96ded48577ad5230c0081'),
+    'capture_return_336': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g336.bin'), '4f42e01c7c3b47883dce1f92cddfafb33e6e72be502ec2e644acc82716aa9b36'),
+    'capture_field_336': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g336.bin'), 'bcf6ffae934d125c2257064d0b4f1d8b024411dbfbd6fbdbc7e817fb2e7b3be0'),
+    'capture_source_337': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g337.bin'), 'b192c746ad2396799c15035b5f0457fdb02de1a44b248926cf8a545e1d378a06'),
+    'capture_return_337': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g337.bin'), 'df72f1dcacf47c3c6e32585d6a700892e6176c669119d64a1e976c6c3534beb3'),
+    'capture_field_337': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g337.bin'), '7d1c6b5eec6f0050d9b9184dcc610475e5ac055408619a894fb3ada689695278'),
+    'capture_source_338': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g338.bin'), 'c306b21a759b53ea0dbf3013055beb9fedd46f9b634baba8410d8afb4a8e1acc'),
+    'capture_return_338': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g338.bin'), '2a1ebbf62046a765b82a5ff4daa15f89258de15fecfb502b60179f917027a83b'),
+    'capture_field_338': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g338.bin'), '0d47b27020079f69ec8e82b1c7c3cfda793e82630c23e4044aaeb6fa083cfc1e'),
+    'capture_source_339': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g339.bin'), '91f3d6d8098e6ca0b6092d4ab3a57be6f148cc2203f554293f114d43c0732593'),
+    'capture_return_339': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g339.bin'), 'a50d16278b7b5cc250da7cc10e742e7b4305136558a435c2200d6d92a997fbbe'),
+    'capture_field_339': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g339.bin'), 'c523a9abc4857341013a35ff7ac5f31b4a7d9068b9e7961255b20aac94a82e0e'),
+    'capture_source_340': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g340.bin'), '03d5f4db8765035422c3311ccce15eb1c22247050088abde1e76e187e93070c2'),
+    'capture_return_340': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g340.bin'), '6a039bcf82509aed26f11c2e64488ff9bd79be9525e514e1018272f0df270dd7'),
+    'capture_field_340': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g340.bin'), '79cbf7704befd6b752b451a8c0d280af717a9f185eb9edffecea20593bbd6876'),
+    'capture_source_341': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g341.bin'), 'c2623556610154459506bf006da598536b5c97201e570e0733db1fcc829722a1'),
+    'capture_return_341': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g341.bin'), 'c804c2d081345fec05bf6552d99caa68cf035c7a8b6adc2e1a7b1644f517dfab'),
+    'capture_field_341': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g341.bin'), '9d3a35b242f9152e7bb973b496773bdd0defaf4935b34a60db081ef0da75f6e9'),
+    'capture_source_342': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g342.bin'), 'a879bd997c9b71d7eccec50a3ee1df1f601423af7a2c852937bdde1034419d6c'),
+    'capture_return_342': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g342.bin'), '9a17e4ecec6b1e9fe13989db61ea092e31e2c2877d093506fd6b7212c5c3cf6a'),
+    'capture_field_342': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g342.bin'), '8e4224968a3f8048d41b2a27c19a349e4d015e10cc05853576547b457888f08b'),
+    'capture_source_343': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g343.bin'), '3f9d1504e37625ee91ad45b75768cd4ea21b687e7a5b8a7acb53aa21b12d1ef4'),
+    'capture_return_343': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g343.bin'), '48a8f9aef96dd79862578cc3d971419c09469c26f8e9315fee2bf22603f45c65'),
+    'capture_field_343': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g343.bin'), '57faa671493901087c62f48dabe7abcd220fa5827e9807ab8d8a3263d2ebce09'),
+    'capture_source_344': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g344.bin'), '1e5a217217068324f5a904ca3a0db51459a24ae182c8f04e556dd9ff4457b4c7'),
+    'capture_return_344': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g344.bin'), '30232753e56bafd073aac5778a576907457e9497c9c1bfccc1f929f9296ab7f5'),
+    'capture_field_344': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g344.bin'), '9b64a7aff5afbd36d92c653fad7da26bf35ea184e983dd685776aaa9dcdceaa8'),
+    'capture_source_345': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g345.bin'), '51aff8e2fe71ee5dddf4533f7afa2ab9eae4a4a5aa0aa00cafeae786166e8dd1'),
+    'capture_return_345': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g345.bin'), 'f204b91f2e7e9934367d1de6a2ae0be209f5b1099cb6996b9fd9268b0cdddf97'),
+    'capture_field_345': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g345.bin'), '96452051555685816b19f8f78f60ad19ca3465d1f0fa3a62cb7cf5ab2d57468f'),
+    'capture_source_346': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g346.bin'), '1273b348b4a64a4a8edad838f3cf6eceaf2a05c19e87d3cac7bd64b405b765a9'),
+    'capture_return_346': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g346.bin'), '0fb8dba37fa50a297df310c2a721e7357cc3af2bdc6a088af29eeb0570c10d45'),
+    'capture_field_346': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g346.bin'), 'd6e85350fedc3033b4625a01b023acd74aa7c359145e09766228dc82304de7fb'),
+    'capture_source_347': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g347.bin'), '2f589b8ec1561b15e55625c74de4587b867622d8b13772e8a944b128981f8884'),
+    'capture_return_347': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g347.bin'), '272d8868e980f991861e78a1747e183c5558417c4655a7ab41d7b99634e54222'),
+    'capture_field_347': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g347.bin'), '69837c55fb9d42aad873d4bda9baa9b8a187a98ead5073f83da732e913ada5d9'),
+    'capture_source_348': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g348.bin'), '13993060eab46b7fcdc9084a529614dd209a0e27d40198103dab3262fa30ee8a'),
+    'capture_return_348': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g348.bin'), 'e763cc9fa0dc0797fa20716c615b00319189b3b07e4fe991173d45791c53e808'),
+    'capture_field_348': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g348.bin'), '2f02da2f42fa702b9178cb828278df6d9ee4c0b9fee398938454ef70c8da6530'),
+    'capture_source_349': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g349.bin'), '97cdb6fbe3e6658434b21f997e4bb1cfbaad9108b9b2b145c7384f53f46c3047'),
+    'capture_return_349': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g349.bin'), '95be2ea9fd29414405587d550787306328e874cc615581866aa1c2f4f5d6defc'),
+    'capture_field_349': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g349.bin'), 'bf2a34411d460ae6976d93f81ae21a45ef5ced1e75b0a849989a87903d97c8b0'),
+    'capture_source_350': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g350.bin'), 'c79751a4dc5668135a7d73f8df5eeaa3fe696229b80ae649753f9d0c1448935e'),
+    'capture_return_350': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g350.bin'), '794ffb0f83aab29ed4934aac37b9c56ad5add1a557a4307dea2214e6f1a2cb1f'),
+    'capture_field_350': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g350.bin'), '5aa66fcb14e475b53d57782279a8f5aadbd431fad2f8888af6ea7ee72ceb01c8'),
+    'capture_source_351': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g351.bin'), 'a0b06583b91f7ab3f8a4d39f3929f185eb3e5ab0d4e0caca8a937715dba9fd4a'),
+    'capture_return_351': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g351.bin'), 'dca201424018369c5538dd18e01b7b1c47f8553adcf59872703985371402f742'),
+    'capture_field_351': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g351.bin'), '91aaefbf8223a26bcb461a3c0cfa8fcad8d5156f7e1104eafb10c0972c14f670'),
+    'capture_source_352': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g352.bin'), '9398ab11a5016876cf47b90ec03f21cf189eb498867a2612829075b51f510389'),
+    'capture_return_352': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g352.bin'), '7476235a8b0b40d483b2d2d615ab30f37ed8cce37f31ca6f4e11a605d3e838f4'),
+    'capture_field_352': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g352.bin'), '2efc7dcd9e6e0d9a3362598aa3f7729239eb407c72739a64fef450e000ee54e7'),
+    'capture_source_353': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g353.bin'), 'b6362c1a0d14bef6574e568f44b71069eebbed0e5d73075b58bc4be247b11dc2'),
+    'capture_return_353': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g353.bin'), '32ee252faebf96113550ec1bfe16696d3fafa60428d462717a01b1c2fb722766'),
+    'capture_field_353': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g353.bin'), 'eeec6041fbd251a4984dc470f0fa0b6db8043b86ce6202ddd431eb0e7da80bba'),
+    'capture_source_354': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g354.bin'), 'dcb7629546eb7659b51b4b09d2cf1a9badfdf8df04c59cfcbfb7d2c9c00b5231'),
+    'capture_return_354': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g354.bin'), 'bf9fc274c45695a773e9609fc18ee5590c6bffff07d18a6225c121e1fe31b37d'),
+    'capture_field_354': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g354.bin'), 'edd70ef6ef2d51be444b8c34a7c46d9b47ffa90e9c6d105a4469765f2fd09202'),
+    'capture_source_355': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g355.bin'), 'd4107486e18bfb2dd6fa946a67c844bb48f6150745fd26c4e7152e50d2840ebc'),
+    'capture_return_355': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g355.bin'), '881ebefac0df74c368fccae8727cd5f27b4c57c0f9695c70386cfc713400b231'),
+    'capture_field_355': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g355.bin'), '907d451e00a9f24d94250f6454b7e39bfe1d2880bd327fc3daad1b1fd25fb837'),
+    'capture_source_356': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g356.bin'), '85a4d5381ffd37a6070e4383523197e8bf5b5b75fa3b1ec4344a33d417768d62'),
+    'capture_return_356': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g356.bin'), 'bb8000353c2483fcef30ea1dcd3e6a16b44f1a765ac3f953fc3b508ff6e1f12b'),
+    'capture_field_356': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g356.bin'), '3cf51093b3798afb3ae25aedaa9457bd5229b6bb6d440588aa0f2391472a37ae'),
+    'capture_source_357': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g357.bin'), '065fcd863b799631fbf8f7f3b3f779b8bc6f8448580af28a7f6116efbc43f3a4'),
+    'capture_return_357': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g357.bin'), 'ead897a7828d0cf847a14934ed177d3028b01b821b9f3838e6893692e4aaca92'),
+    'capture_field_357': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g357.bin'), 'c26dd730f10936ed172cf79e6393d3f09990409ff8a71507666965e8bc6232f9'),
+    'capture_source_358': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g358.bin'), '28077f1dd417243ff589ff3f70167015724b991e8fd1b4cecc33f435bd77190d'),
+    'capture_return_358': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g358.bin'), '9afc520a82845ca5799924dee5719851d47d5e4652aa27c97aef7d634ca90f2e'),
+    'capture_field_358': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g358.bin'), '31222fd45795cfb6e5429e88394d02da4408f277280b1e65975ba4b05592206b'),
+    'capture_source_359': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g359.bin'), '94ebf52ecb72f26cc8252124b919c28348a3141cddea81fb20a2d1ee346597d5'),
+    'capture_return_359': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g359.bin'), 'ad9251293ac86c06e348b465ac7b61a2f54189de2794ce1e5663c3ff6df5a9a0'),
+    'capture_field_359': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g359.bin'), 'a954563277dfe40fa4b7694348da2f9587d752118cfba58be0d30283383d0e84'),
+    'capture_source_360': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g360.bin'), '75bbbf2f4db9c7fc5676539d34cc262f52c12b04bcfac1370e49e09ed4c72fdb'),
+    'capture_return_360': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g360.bin'), '42a2efb9691a33a0f18a58fa78b87349c761789778938870185312585edbe031'),
+    'capture_field_360': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g360.bin'), '489432bfa54d227960bc4ec6a98d9b51cc4c46f85886870dca5ad07fb8eb9ffd'),
+    'capture_source_361': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g361.bin'), 'd8131163927ff7b160ac6fd63dbacbfb62e914ba999d28e889f448d4d6f1bbfc'),
+    'capture_return_361': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g361.bin'), 'c2681e50e6651ef91a8fbdb15ca0c64eaf8a7c36fe498aef77b5ea5084790232'),
+    'capture_field_361': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g361.bin'), '59cd59222e78fa0dee671d1a9e1b03b212e9e531ffe63e7bad8b76f19a781179'),
+    'capture_source_362': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g362.bin'), '0490ca3326231e3530969a5a4a5c0454978cc4888c5e56da94146c0d03c4325e'),
+    'capture_return_362': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g362.bin'), '77cc89527fec67787a0be74358e7f37cadd7a7e46a384beee5e5d7d8fb51325e'),
+    'capture_field_362': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g362.bin'), '5812a90d85c16f53f1ebcb6ec522ac5f3f0642eb8f3adca891490a578b115d27'),
+    'capture_source_363': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g363.bin'), 'b151bd475fb2496a7b70b9b245eec76e1d3bb957efc23ab0041bfa46fbb05566'),
+    'capture_return_363': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g363.bin'), 'ca1906d88edbe44ab49b823a65afc3e2b371627bbbca813fc8642389501e73b1'),
+    'capture_field_363': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g363.bin'), 'd03231c82a554c916a80ea18b3986d42b1da0e79d2be952aa8f990e9b0128f54'),
+    'capture_source_364': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g364.bin'), 'c04dd376766642bfa4d52518cfe6996367a5e1cb0e093ba69a45e139abf18232'),
+    'capture_return_364': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g364.bin'), '2b0b1d33e481374ecbc074f158e410b1c2d99afdefd9c5a6b1cbc1470786ebcb'),
+    'capture_field_364': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g364.bin'), 'af4314f22c2a22e07c6eac78f3e8885db880d9780447310396776b238ce8ac72'),
+    'capture_source_365': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g365.bin'), '3b42b40dd5e539ac5c3e57f0e3b0727050c0cdd157b9a8f8bbc23bd235368d08'),
+    'capture_return_365': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g365.bin'), '90c82a2a5807001e9e5f9dfc553d414de70dd837480d4969bee00a66423ed62c'),
+    'capture_field_365': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g365.bin'), '011e86391dcac1c1e47ea6388ced10974d9579a9b7d7d683014e73fd0747edd2'),
+    'capture_source_366': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g366.bin'), 'eac3062b16dba00d7294856178dcd4af11f7d3e73d5e8056b5a3b1cf5ab2e928'),
+    'capture_return_366': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g366.bin'), 'cb05410314b4ffd61c4d2a2f11af419aceed4fff79eaa71f21c4c8d9ede9adf3'),
+    'capture_field_366': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g366.bin'), 'c2a95353611af9d1a479cd34bbb670de2025a599950d5172efc5665c7f102797'),
+    'capture_source_367': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g367.bin'), '8d93e7efd8e1cf34e21ad753fc08f46b5b05ebd7c55b480cf935575ea9ca5663'),
+    'capture_return_367': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g367.bin'), '256567a6a88e720b982e1bd52b389e972fc7628968ed2d00993061e7c56173b0'),
+    'capture_field_367': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g367.bin'), '6b4ec4da0e5168372a82e3038f7f48e7d144d0d7c5b38c9700e538bb03e7d706'),
+    'capture_source_368': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g368.bin'), '6881151cc5d2d90caf8173aea6fd8ddfa5ce7329a2b5a6662acc95677ca74dc8'),
+    'capture_return_368': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g368.bin'), '62aa081c67d6c4316fc2c649ae3de03c7d3cc731f06dd04044be3a041ac0926c'),
+    'capture_field_368': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g368.bin'), 'bee67247e327822ce382eb0cb1fefc9ce8a29039fff48b1667bfd64e02c2a7df'),
+    'capture_source_369': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g369.bin'), '08729c67521897b41a98bb18cc1785f4f87f53c7d9328efb75f9111b8e600985'),
+    'capture_return_369': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g369.bin'), '12f03e99c45a5fb2fd05f2a696b7bec5d859cd636e587377578d938ba4eb8157'),
+    'capture_field_369': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g369.bin'), '525d892ff47ce79a8668558bd28e41698615a980f78c5250446500bb7bcaddbc'),
+    'capture_source_370': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_source_g370.bin'), '1942153ac62ebcdbb8c1cab362e4992986965f17ab7cac9e823c78702c3ea393'),
+    'capture_return_370': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_return_g370.bin'), '2cc699cc2d61c7edce87fc6a78f85581c4490f04ca098bed60ee0a22fb76dd4d'),
+    'capture_field_370': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/angular_field_g370.bin'), '6d5587b4a2c0581695d6153d6e8b7d5d194c1c8c7d7437909f328f64fe8d1f5b'),
+    'diagnostic_full_flux': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-source-reaction-diagnostic-20261010/full_flux64.bin'), '099e4c32892239df99022a5c545439ce871ebab27b78c1cf9a32de0dee8e601d'),
+    'diagnostic_full_source': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-source-reaction-diagnostic-20261010/full_saved_source32.bin'), 'a7ee6e69ea69f334a440a97080d1639614f032dbd28bf3c78b44b274126d5bd8'),
+    'production_closed_axial': (Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/closed_axial.xsm'), 'fcb6e4144a05d943f5a54637c0124ec59498b7176ca077db295f0878ef60e01a'),
+    'production_candidate_axial': (Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/candidate_axial.xsm'), 'a7ec2c1825bafa854f7299a582658de57f1c968f17eca703cb65f8e233a056f3'),
+    'capture_candidate_axial': (Path('/Users/wen/spot/validation/artifacts/axial-material-AAA-production-angular-capture-20261006/AAA/candidate_axial.xsm'), 'a7ec2c1825bafa854f7299a582658de57f1c968f17eca703cb65f8e233a056f3'),
+    'track': (Path('/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/bootstrap/initial_axial_track.xsm'), 'b8302889d66f37947b3060f5caef2be43c7da5dfd6673daaa1ffb66fd81997d6'),
+}
+
+
+def identity(s):
+    return {k:getattr(s,k) for k in ('st_dev','st_ino','st_mode','st_nlink','st_size','st_mtime_ns','st_ctime_ns')}
+
+def check_time(start):
+    if time.monotonic()-start >= WALL_SECONDS:
+        raise TimeoutError('original saved-state diagnostic wall limit exceeded')
+
+def fresh_hash(path,start):
+    """Full EOF SHA; no memo, each literal input freshly read before and after."""
+    check_time(start)
+    literal_before=identity(path.lstat());target_before=identity(path.stat())
+    alias=os.readlink(path) if path.is_symlink() else None
+    h=hashlib.sha256();count=0
+    with path.open('rb') as stream:
+        fd_before=identity(os.fstat(stream.fileno()))
+        if fd_before!=target_before:raise ValueError('input path/fd identity mismatch')
+        block=bytearray(2**20)
+        while True:
+            check_time(start);n=stream.readinto(block)
+            if type(n) is not int or n<0 or n>len(block):raise ValueError('invalid input read count')
+            if n==0:break
+            h.update(memoryview(block)[:n]);count+=n
+        fd_after=identity(os.fstat(stream.fileno()))
+    literal_after=identity(path.lstat());target_after=identity(path.stat())
+    alias_after=os.readlink(path) if path.is_symlink() else None
+    if count!=fd_before['st_size'] or fd_before!=fd_after or target_before!=target_after or literal_before!=literal_after or alias!=alias_after:
+        raise ValueError('input changed across full EOF hash')
+    return {'path':str(path),'sha256':h.hexdigest(),'size_bytes':count,'literal_7id_before':literal_before,'literal_7id_after':literal_after,'target_7id_before':target_before,'target_7id_after':target_after,'fd_7id_before':fd_before,'fd_7id_after':fd_after,'literal_symlink_text':alias}
+
+class XSM:
+    """Independent read-only little-endian Ganlib directory/record reader."""
+    def __init__(self,path,pinned,start):
+        self.path=path;self.pinned=pinned;self.start=start;self.stream=path.open('rb');self.records={};self.bytes_read=0
+        if identity(os.fstat(self.stream.fileno()))!=pinned['fd_7id_before']:raise ValueError('XSM owner changed before parsing')
+        if self.read(0,3)[:4]!=b'$XSM':raise ValueError('wrong little-endian XSM format')
+        self.root=self.directory(self.ints(2,1)[0])
+    def read(self,offset,words):
+        check_time(self.start)
+        if type(offset) is not int or type(words) is not int or offset<0 or words<0 or (offset+words)*4>self.pinned['size_bytes']:
+            raise ValueError('XSM out-of-file range')
+        self.stream.seek(offset*4);raw=self.stream.read(words*4);self.bytes_read+=len(raw)
+        if len(raw)!=words*4:raise ValueError('short XSM record')
+        return raw
+    def ints(self,offset,count):return struct.unpack(f'<{count}i',self.read(offset,count))
+    def directory(self,start):
+        result={};seen=set();offset=start
+        while offset not in seen:
+            seen.add(offset)
+            magic,cap,count,following,_=struct.unpack_from('<4s4i',self.read(offset,8))
+            if magic!=b'$$$$' or not 0<=count<=cap<=30:raise ValueError('invalid XSM directory')
+            raw=self.read(offset+8,6*cap)
+            for i in range(count):
+                entry=tuple(struct.unpack_from('<i',raw,4*(k*cap+i))[0] for k in range(3))
+                name=raw[12*(cap+i):12*(cap+i+1)].decode('ascii').rstrip(' \0')
+                if not name or name in result:raise ValueError('invalid/duplicate XSM name')
+                result[name]=entry
+            offset=following
+        if offset!=start:raise ValueError('invalid XSM extent cycle')
+        return result
+    def raw(self,directory,name,words,kind,owner):
+        e=directory.get(name)
+        if e is None or e[1:]!=(words,kind):raise ValueError('wrong record '+owner+'/'+name+': '+repr(e))
+        raw=self.read(e[0],words)
+        desc={'offset_words':e[0],'length_words':words,'type':kind,'sha256':hashlib.sha256(raw).hexdigest()}
+        key=owner+'/'+name
+        if key in self.records and self.records[key]!=desc:raise ValueError('record identity drift')
+        self.records[key]=desc
+        return raw
+    def array(self,directory,name,dtype,count,owner):
+        d=np.dtype(dtype);k={'i':1,'f':2 if d.itemsize==4 else 4}[d.kind]
+        raw=self.raw(directory,name,count*(d.itemsize//4),k,owner)
+        arr=np.frombuffer(raw,dtype=d).copy()
+        if arr.size!=count or (d.kind=='f' and not np.isfinite(arr).all()):raise ValueError('invalid typed field '+owner+'/'+name)
+        return arr
+    def variable(self,directory,name,dtype,owner):
+        e=directory.get(name)
+        if e is None or e[1]<=0:raise ValueError('missing variable field '+name)
+        d=np.dtype(dtype)
+        if (e[1]*4)%d.itemsize:raise ValueError('invalid typed length')
+        return self.array(directory,name,dtype,e[1]*4//d.itemsize,owner)
+    def text(self,directory,name,owner):
+        e=directory.get(name)
+        if e is None or e[2]!=3 or e[1]<=0:raise ValueError('invalid character record '+name)
+        return self.raw(directory,name,e[1],3,owner).decode('ascii').rstrip(' \0')
+    def list(self,directory,name,count,owner):
+        offsets=struct.unpack(f'<{count}i',self.raw(directory,name,count,10,owner))
+        result=[]
+        for offset in offsets:
+            item=self.directory(offset)
+            if '***HANDLE***' not in item:raise ValueError('missing list handle')
+            self.records[f'{owner}/{name}/HANDLE/{len(result)+1}']={'directory_offset_words':offset,'directory':item}
+            result.append(item['***HANDLE***'])
+        return result
+    def groups(self):
+        entries=self.list(self.root,'GROUP',NG,'ROOT')
+        if any(e[1:]!=(-1,0) for e in entries):raise ValueError('group must be a directory')
+        return [self.directory(e[0]) for e in entries]
+    def audit_group_payloads(self,groups):
+        # Preserve every stored group field identity, including delayed-fission
+        # records and higher moments not used by the P0 formula; omit nothing.
+        for g,directory in enumerate(groups,1):
+            for name,e in directory.items():
+                if e[1]>0 and e[2] in (1,2,3,4):self.raw(directory,name,e[1],e[2],f'GROUP/{g}')
+                else:raise ValueError('unexpected nested/unsupported group field '+name)
+    def close(self):
+        fd=identity(os.fstat(self.stream.fileno()));self.stream.close()
+        if fd!=self.pinned['fd_7id_before'] or identity(self.path.stat())!=self.pinned['target_7id_before']:
+            raise ValueError('XSM changed during parse')
+
+class Output:
+    def __init__(self,path,start):
+        if not path.is_absolute():raise ValueError('absolute fresh output required')
+        path.mkdir(exist_ok=False);self.path=path;self.start=start;self.files={};self.bytes=0
+    def bytes_file(self,name,raw):
+        check_time(self.start)
+        if '/' in name or name in self.files:raise ValueError('invalid output name')
+        if self.bytes+len(raw)>ARCHIVE_LIMIT_BYTES:raise ValueError('64 MiB compact output cap exceeded')
+        p=self.path/name
+        with p.open('xb') as f:f.write(raw)
+        self.files[name]={'sha256':hashlib.sha256(raw).hexdigest(),'size_bytes':len(raw)};self.bytes+=len(raw)
+        return self.files[name]
+    def json_file(self,name,value):
+        raw=(json.dumps(value,indent=2,sort_keys=True,allow_nan=False)+'\n').encode('utf8')
+        return self.bytes_file(name,raw)
+    def array(self,name,value,dtype='<f8'):
+        arr=np.ascontiguousarray(value,dtype=dtype)
+        raw=arr.tobytes(order='C');info=self.bytes_file(name+'.bin',raw)
+        return {'file':name+'.bin','dtype':arr.dtype.str,'shape':list(arr.shape),'order':'C','axes':'documented in array key/name and layout.json','bytes':info['size_bytes'],'sha256':info['sha256']}
+
+def unpack(group, nmat):
+    import numpy as np
+    output = {}
+    def split(data, fields):
+        first = 0
+        for name, shape in fields:
+            count = int(np.prod(shape));output[name] = data[first:first + count].reshape(shape, order="F")
+            first += count
+        if first != data.size:
+            raise ValueError("actual production archive payload layout differs")
+    split(group["integer"], [("mat1d", (NZ,)), ("mat", (NZ, NR)),
+                             ("ncode", (2,)), ("opposite", (NA,))])
+    split(group["single"], [("vol1d", (NZ,)), ("total", (nmat + 1,)),
+        ("sgas", (nmat + 1, NL)), ("basis", (NR, 1)), ("vol2d", (NR,)),
+        ("zcode", (2,)), ("mu", (NA,)), ("w", (NA,)), ("pl", (NL, NA))])
+    split(group["double"], [("radial2d", (NR, 3)), ("weight", (NR,)), ("mass", (1, 1)),
+        ("total_projected", (1, 1, NZ)), ("radial_projected", (1, 1, NZ)),
+        ("scat_projected", (1, 1, NL, NZ)), ("mn", (NA, NL)), ("dn", (NL, NA)),
+        ("white_angle", (NA, NA)), ("white_mode", (1, 1)), ("qext", (1, NL, NZ, NR)),
+        ("source_projected", (NL, NZ, 1)), ("cell", (NA, 1, NZ)), ("face", (NA, 1, NZ + 1)),
+        ("modal_flux", (NL, NZ, 1)), ("modal_current", (NZ + 1, 1)),
+        ("flux", (1, NL, NZ, NR)), ("current", (NZ + 1, NR)), ("xnei", (NA, NR))])
+    return output
+
+
+def require(condition, reason):
+    if not condition:raise ValueError(reason)
+
+def unique_object(pairs):
+    value={}
+    for key,item in pairs:
+        if key in value:raise ValueError('duplicate JSON key '+key)
+        value[key]=item
+    return value
+
+def metadata(role,start):
+    check_time(start)
+    with INPUTS[role][0].open('r',encoding='utf8') as stream:
+        return json.load(stream,object_pairs_hook=unique_object,
+                         parse_constant=lambda value: (_ for _ in ()).throw(ValueError('nonfinite JSON')))
+
+def bind_metadata(start):
+    seal=metadata('capture_seal',start);raw=metadata('capture_raw_receipt',start)
+    decl=metadata('capture_declaration',start);admit=metadata('capture_archival_admission',start)
+    audit=metadata('capture_audit_result',start);driver=metadata('capture_driver_result',start)
+    final=metadata('production_final_seal',start);status=metadata('production_run_status',start)
+    prepared=metadata('production_prepared',start);diagnostic=metadata('diagnostic_manifest',start)
+    diagresult=metadata('diagnostic_result',start);rootsummary=metadata('diagnostic_root_summary',start)
+    production=INPUTS['production_final_seal'][0].parent
+    capture=INPUTS['capture_seal'][0].parent
+    require(status['cases']['AAA']['classification']=='VALID_MET' and
+            status['cases']['AAA']['completed_maps']==12 and
+            status['cases']['AAA']['final_directory']==str(production),'original chronological final MET pointer changed')
+    require(final['classification']=='SEALED_STAGE_OUTPUTS','unsealed original map012')
+    for role in ('production_closed_axial','production_candidate_axial','track'):
+        name=INPUTS[role][0].name
+        require(final['sha256'][name]==INPUTS[role][1],'map012 sealed owner pin differs: '+role)
+    require(decl['original_production_prepared_sha256']==INPUTS['production_prepared'][1] and
+            decl['original_map012_seal_sha256']==INPUTS['production_final_seal'][1],'capture replay origin differs')
+    require(prepared['runtime_sources']['Dragon']['sha256']==admit['actual_frozen_executable_sha256']==
+            '51b2d3ff947daa3ea523932bcc28276b054632f0bfc6cf76fa21ac458a4f7be4','historical Dragon lineage differs')
+    require(admit['entire_frozen_compilation_source_identity_proved'] is False and
+            admit['scientific_source_correction_applied'] is False and
+            admit['shared_sources_or_libraries_modified'] is False,'archival source evidence scope changed')
+    require(decl['actual_source_contract']=={'ITPIJ':1,'NANIS':2,'NDIM':1,'INSB':1,'LSCAL':False,
+            'self_scattering_reduction_branch_reachable':False},'original source branch contract differs')
+    require(decl['final_call']['outer']==3 and decl['final_call']['inner']==1 and
+            decl['final_call']['group_ids']==list(range(1,NG+1)),'original all-group final call differs')
+    require(driver['classification']=='COMPLETE_BOUNDED_PRODUCTION_ANGULAR_CAPTURE_ONLY' and driver['error'] is None,
+            'original capture terminal did not complete')
+    require(audit['classification']=='COMPLETE_PRODUCTION_ANGULAR_CAPTURE_ONLY','capture audit scope differs')
+    for key in ('complete_production_370_groups','original_map012_scientific_records_word_exact',
+                'original_terminal_passed','all_three_moments_and_currents_byte_exact',
+                'original_keff_byte_exact','raw_fields_and_sources_unmodified'):
+        require(audit[key] is True,'original preserved capture evidence missing '+key)
+    for record in (audit,decl,driver):
+        require(record['AAA_accuracy_qualified'] is False and record['ABA_admitted'] is False,
+                'original evidence must not promote physics accuracy')
+    require(len(audit['groups'])==NG and [row['group'] for row in audit['groups']]==list(range(1,NG+1)),
+            'capture audit does not cover all original groups')
+    require(audit['chronological_inventory']=={'dispatches':136,'all_370_groups_last_context':[3,1],
+            'actual_NGIND_and_NPSYS_archived':True,'metric_based_selection':False},'capture inventory scope differs')
+    for role in ('capture_raw_receipt','capture_declaration','capture_archival_admission',
+                 'capture_driver_result','capture_audit_result','capture_claim'):
+        require(seal['files'][str(INPUTS[role][0].relative_to(capture))]==INPUTS[role][1],
+                'capture seal metadata binding differs '+role)
+    for role,(path,expected) in INPUTS.items():
+        if role.startswith(('capture_source_','capture_return_','capture_field_')) or role in (
+                'capture_published','capture_events','capture_pre_normal'):
+            relative=str(path.relative_to(capture))
+            require(raw['files'][relative]==seal['files'][relative]==expected,
+                    'complete selected raw capture pin differs '+role)
+        elif role in ('capture_callback_source','capture_sender_source','capture_sender_baseline','capture_receiver_source'):
+            require(decl['files'][str(path)]==expected,'declared capture source pin differs '+role)
+    require(raw['selection']=='Original terminal all-group last chronological calls' and raw['raw_capture_count']==1483,
+            'capture chronological receipt differs')
+    require(raw['original_output_files']['candidate_axial.xsm']==INPUTS['capture_candidate_axial'][1]==
+            INPUTS['production_candidate_axial'][1],'capture is not word-exact original map012 owner')
+    for role in ('diagnostic_full_flux','diagnostic_full_source'):
+        require(diagnostic['files'][INPUTS[role][0].name]['sha256']==INPUTS[role][1],
+                'actual saved diagnostic array pin differs '+role)
+    require(rootsummary['actual_payload_manifest']['sha256']==INPUTS['diagnostic_manifest'][1] and
+            rootsummary['actual_payload_result']['sha256']==INPUTS['diagnostic_result'][1],
+            'Root actual saved diagnostic lineage differs')
+    require(diagresult['full_physical_neutron_balance_qualified'] is False and
+            diagresult['AAA_qualified'] is False and diagresult['ABA_admitted'] is False,
+            'saved reaction diagnostic is not a physics acceptance')
+    inverse={}
+    for name,role,base in (('FLU2DR64.f','capture_sender_source','capture_sender_baseline'),
+                           ('SPOT1P64.f90','capture_receiver_source',None)):
+        patch=admit['patches'][name];text=INPUTS[role][0].read_text()
+        require(patch['candidate_sha256']==INPUTS[role][1] and patch['native_expressions_changed'] is False,
+                'capture is not a reversible archival-only source insertion')
+        for old,new in reversed(patch['replacements']):
+            require(text.count(new)==1,'ambiguous capture insertion inverse '+name)
+            text=text.replace(new,old,1)
+        digest=hashlib.sha256(text.encode()).hexdigest()
+        require(digest==patch['original_sha256'],'whole source insertion inverse differs '+name)
+        if base is not None:require(text.encode()==INPUTS[base][0].read_bytes(),'recovered compatible baseline source differs')
+        inverse[name]={'restored_sha256':digest,'capture_only_insertions_reversed':True,
+                       'entire_original_compiled_source_byte_identity_proved':False}
+    return {'origin':'chronological map012 original Dragon 51b','source_insertion_inverse':inverse,
+            'original_capture_full_scientific_word_exact_recorded':True,
+            'raw_scope':'all 370 last chronological S2, return, field files plus events/PRENORMAL/published; no collision/block payload requalification',
+            'sealed_capture_raw_files_total':1483,'selected_raw_capture_files':3+3*NG,
+            'no_new_credit_for_unread_raw_capture_collision_or_block_files':True}
+
+class Stream:
+    def __init__(self,role,before,start):
+        self.role=role;self.path=INPUTS[role][0];self.pinned=before[role];self.start=start
+        self.stream=self.path.open('rb');self.bytes=0
+        require(identity(os.fstat(self.stream.fileno()))==self.pinned['fd_7id_before'],'stream owner changed '+role)
+    def raw(self,count):
+        check_time(self.start);raw=self.stream.read(count);self.bytes+=len(raw)
+        require(len(raw)==count,'truncated stream '+self.role)
+        return raw
+    def magic(self,magic):require(self.raw(8)==magic,'undeclared stream schema '+self.role)
+    def words(self,dtype,count):
+        array=np.frombuffer(self.raw(np.dtype(dtype).itemsize*count),dtype=dtype).copy()
+        require(array.size==count and (array.dtype.kind!='f' or np.isfinite(array).all()),'invalid typed stream '+self.role)
+        return array
+    def close(self):
+        require(self.stream.read(1)==b'','unexpected trailing stream '+self.role)
+        require(self.bytes==self.pinned['size_bytes'],'incomplete stream consumption '+self.role)
+        require(identity(os.fstat(self.stream.fileno()))==self.pinned['fd_7id_before'],'stream fd changed '+self.role)
+        self.stream.close()
+        require(identity(self.path.stat())==self.pinned['target_7id_before'],'stream target changed '+self.role)
+
+def events(before,start):
+    stream=Stream('capture_events',before,start);stream.magic(b'AXCEV001')
+    require(stream.words('<i4',16).tolist()==[NG,NUN,NZ*NR,NMAT,NL,3,3,1,0,3,0,1,2,1,1,0],
+            'complete actual ITPIJ/ILEAK/LSCAL/geometry source event contract differs')
+    latest=np.zeros((NG,3),dtype='<i4');calls=np.zeros(NG,dtype='<i4');records=[]
+    while stream.bytes<stream.pinned['size_bytes']:
+        event=stream.words('<i4',4);seq,outer,inner,nactive=map(int,event)
+        require(seq==len(records)+1 and outer>0 and inner>0 and 1<=nactive<=NG,'invalid chronological event')
+        active=stream.words('<i4',nactive);npsys=stream.words('<i4',NG);b2=stream.words('<f4',4)
+        require(len(set(active.tolist()))==nactive and (active>=1).all() and (active<=NG).all() and
+                np.array_equal(active,np.flatnonzero(npsys)+1) and b2[3]==0,'original NGIND/NPSYS/SIGS guard differs')
+        latest[active-1]=[seq,outer,inner];calls[active-1]+=1
+        records.append({'dispatch':seq,'outer':outer,'inner':inner,'NGIND':active.tolist(),
+                        'NPSYS':npsys.tolist(),'B2_real32_hex':b2.tobytes().hex()})
+    stream.close();require(len(records)==136 and np.all(latest[:,1:]==[3,1]),'not all370 original terminal calls')
+    return latest,calls,records
+
+def equal_words(left,right,reason):
+    require(left.dtype==right.dtype and left.shape==right.shape and left.tobytes()==right.tobytes(),reason)
+
+def evaluate(out,before,start):
+    lineage=bind_metadata(start);latest,calls,event_records=events(before,start)
+    pub=Stream('capture_published',before,start);pub.magic(b'AXCAP001')
+    require(pub.words('<i4',11).tolist()==[NG,NUN,NZ,NA,NR,NL,NMAT,3,466,326,7883],'actual capture layout differs')
+    terminal=pub.words('<i4',9);real=pub.words('<f8',7);b2=pub.words('<f4',4);operands=pub.words('<f8',2)
+    require(terminal.tolist()==[3,1,371,1,1,500,740,136,NG],'actual original terminal differs')
+    require(real[0]<real[1] and real[2]<real[3] and real[4]<real[5] and
+            (real[[1,3,5]]>0).all(),'original native convergence receipt differs')
+    require((operands>0).all() and b2[3]==0,'invalid original normalization/SIGS guard')
+    equal_words(real[6:7],operands[:1],'actual terminal keff differs')
+    require(b2.tobytes().hex()==event_records[-1]['B2_real32_hex'],'last published B2 differs from chronological event')
+    normal=operands[0]/operands[1]
+    require(np.isfinite(normal) and normal>0,'invalid single global native normalization')
+    pre=Stream('capture_pre_normal',before,start);pre.magic(b'AXCPN001')
+    require(pre.words('<i4',2).tolist()==[NUN,NG],'actual PRENORMAL layout differs')
+    diagflux=Stream('diagnostic_full_flux',before,start);diagsource=Stream('diagnostic_full_source',before,start)
+    roles=('production_closed_axial','production_candidate_axial','capture_candidate_axial','track')
+    readers={role:XSM(INPUTS[role][0],before[role],start) for role in roles}
+    raw_s2=np.empty((NG,NUN),dtype='<f8');published_source=np.empty_like(raw_s2);published_flux=np.empty_like(raw_s2)
+    qext=np.empty((NG,1,NL,NZ,NR),dtype='<f8');projected=np.empty((NG,NL,NZ,1),dtype='<f8')
+    contexts=[];identities=[];counts={'S2_qext_words':0,'whole_R64_rhs_words':0,'all_unknowns_flux_words':0,
+                                    'SOUR32_words_per_XSM_owner':0,'projected_coefficients':0}
+    try:
+        track=readers['track'];state=track.array(track.root,'STATE-VECTOR','<i4',40,'ROOT')
+        require(tuple(state[[0,1,5,6,7,10,11]])==(384,NUN,NR,NZ,3,LL4,LL5),'original all-cell track layout differs')
+        entries={}
+        for role in roles[:-1]:
+            reader=readers[role];state=reader.array(reader.root,'STATE-VECTOR','<i4',40,'ROOT')
+            require(state[:2].tolist()==[NG,NUN],'original all-group XSM layout differs '+role)
+            if role=='production_closed_axial':
+                require(reader.text(reader.root,'SPOT-X-STATE','ROOT')=='CLOSED' and
+                        reader.array(reader.root,'SPOT-X-EPOCH','<i4',1,'ROOT').tolist()==[12],'wrong closed map012 owner')
+            require('SOUR64' not in reader.root and 'SPOT-R64' not in reader.root,'changed saved-source schema needs new review')
+            equal_words(reader.array(reader.root,'SPOT-KEFF64','<f8',1,'ROOT'),operands[:1],'map012/capture keff words differ '+role)
+            entries[role]={name:reader.list(reader.root,name,NG,'ROOT') for name in ('FLUX64','FLUX','SOUR')}
+        for group in range(1,NG+1):
+            check_time(start);context=pub.words('<i4',9)
+            require(context[0]==group and np.array_equal(context[1:4],latest[group-1]) and
+                    context[1]==context[4]==context[7] and context[5]>0 and context[6]==calls[group-1] and context[8]==0,
+                    'not actual all-group chronological last source phase')
+            final=pub.words('<f8',NUN);source=pub.words('<f8',NUN);prenormal=pre.words('<f8',NUN)
+            fields=Stream(f'capture_field_{group:03d}',before,start);fields.magic(b'AXCFD001');header=fields.words('<i4',8)
+            require(header[:4].tolist()==context[:4].tolist() and header[4:].tolist()==[466,326,7883,1490],
+                    'full angular field scope/phase differs')
+            packed={name:fields.words(dtype,count) for name,dtype,count in
+                    [('integer','<i4',466),('single','<f4',326),('double','<f8',7883)]};fields.close();a=unpack(packed,NMAT)
+            stream=Stream(f'capture_source_{group:03d}',before,start);stream.magic(b'AXCS2001')
+            require(stream.words('<i4',5).tolist()==context[:4].tolist()+[NUN],'full actual S2 phase differs')
+            s2=stream.words('<f8',NUN);stream.close()
+            stream=Stream(f'capture_return_{group:03d}',before,start);stream.magic(b'AXCRT001')
+            require(stream.words('<i4',5).tolist()==context[:4].tolist()+[NUN],'full actual returned phase differs')
+            returned=stream.words('<f8',NUN);stream.close()
+            require(a['ncode'].tolist()==[1,1] and (a['zcode']==0).all() and (a['w']>0).all() and
+                    (a['vol1d']>0).all(),'original quadrature/vacuum field contract differs')
+            equal_words(s2[:LL4],a['qext'].ravel(order='F'),'post-SIGS S2/qext raw words differ')
+            equal_words(0.5*(a['face'][:,:,:-1]+a['face'][:,:,1:]),a['cell'],'full diamond/shared face raw identity differs')
+            replay=np.zeros((NL,NZ),dtype='<f8')
+            for iz in range(NZ):
+                for region in range(NR):
+                    if a['mat'][iz,region]==0:continue
+                    for moment in range(NL):
+                        replay[moment,iz]+=(float(a['weight'][region])*float(a['basis'][region,0]))*float(a['qext'][0,moment,iz,region])
+            equal_words(replay,a['source_projected'][:,:,0],'all three source projection words differ')
+            assembled=np.concatenate([a['flux'].ravel(order='F'),a['current'].ravel(order='F'),a['xnei'].ravel(order='F')])
+            equal_words(assembled,returned,'all field moments/current/xnei do not match actual returned vector')
+            equal_words(returned,prenormal,'actual return does not match all-unknown PRENORMAL')
+            equal_words(returned*normal,final,'one global native REAL64 flux normalization words differ')
+            equal_words(s2*normal,source,'one global native REAL64 work RHS normalization words differ')
+            equal_words(diagflux.words('<f8',NUN),final,'actual all-unknown saved diagnostic FLUX64 differs')
+            demoted=source.astype('<f4');equal_words(diagsource.words('<f4',NUN),demoted,'actual saved diagnostic SOUR32 differs')
+            for role in roles[:-1]:
+                reader=readers[role]
+                row={}
+                for name,words,kind,dtype,value in [('FLUX64',2*NUN,4,'<f8',final),
+                        ('FLUX',NUN,2,'<f4',final.astype('<f4')),('SOUR',NUN,2,'<f4',demoted)]:
+                    entry=entries[role][name][group-1];require(entry[1:]==(words,kind),'wrong full XSM typed handle')
+                    raw=reader.read(entry[0],words);arr=np.frombuffer(raw,dtype=dtype)
+                    equal_words(arr,value,'captured published words differ from '+role+'/'+name)
+                    record={'offset_words':entry[0],'length_words':words,'type':kind,'sha256':hashlib.sha256(raw).hexdigest()}
+                    reader.records[f'{name}/{group}']=record;row[name]=record
+                identities.append({'owner':role,'group':group,'records':row})
+            raw_s2[group-1]=s2;published_source[group-1]=source;published_flux[group-1]=final
+            qext[group-1]=a['qext'];projected[group-1]=a['source_projected'];contexts.append(context.tolist())
+            counts['S2_qext_words']+=LL4;counts['whole_R64_rhs_words']+=NUN;counts['all_unknowns_flux_words']+=NUN
+            counts['SOUR32_words_per_XSM_owner']+=NUN;counts['projected_coefficients']+=NL*NZ
+        pub.close();pre.close();diagflux.close();diagsource.close()
+    finally:
+        for reader in readers.values():reader.close()
+    arrays={name:out.array(name,value) for name,value in [('raw_S2_all_unknowns_g_u',raw_s2),
+            ('published_work_source64_all_unknowns_g_u',published_source),('published_flux64_all_unknowns_g_u',published_flux),
+            ('qext_all_moments_g_mode_l_z_r',qext),('source_projected_all_moments_g_l_z_mode',projected)]}
+    out.json_file('layout.json',{'dimensions':{'groups':NG,'unknowns':NUN,'cells':NZ*NR,'faces':LL5,
+                    'axial_cells':NZ,'angles':NA,'radial_regions':NR,'moments':NL},'arrays':arrays,
+                    'all_unknowns_layout':{'flux_moments':[0,LL4],'face_current':[LL4,LL4+LL5],
+                    'xnei':[LL4+LL5,NUN]},'original_float_precision_preserved':True,
+                    'comparisons':'typed array shapes and native little-endian words exactly equal; no numerical tolerance'})
+    out.json_file('chronological_event_inventory.json',{'records':event_records,'group_final_contexts':contexts,
+                    'metric_selection':False,'all_groups_last_context':[3,1]})
+    out.json_file('full_XSM_saved_record_identities.json',{'records':identities,
+                    'scope':'all370 FLUX64/FLUX/SOUR handles in each of three fixed XSM owners, all1800 unknowns'})
+    return {'classification':'COMPLETE_SAVED_ALL_GROUP_WORK_RHS_PHASE_IDENTITIES_NOT_PHYSICAL_BALANCE_QUALIFIED',
+            'dimensions':{'groups':NG,'unknowns_per_group':NUN,'cells':NZ*NR,'faces':LL5,'moments':NL},
+            'checked_word_counts':counts,'all_complete_work_rhs_and_saved_source_phase_word_identities':True,
+            'one_original_global_normalization':{'AKEFF_real64_hex':operands[:1].tobytes().hex(),
+                    'FISOUR_real64_hex':operands[1:].tobytes().hex(),'quotient_real64_hex':np.array([normal],dtype='<f8').tobytes().hex()},
+            'lineage':lineage,'same_original_map012_saved_FLUX64_and_SOUR32_in_all_three_owners':True,
+            'reaction_multiplicity_contract_qualified':False,'source_fission_scatter_partition_qualified':False,
+            'final_flux_reconstructed_source_equals_actual_prior_iteration_work_rhs_assumed':False,
+            'entire_original_compilation_source_byte_identity_proved':False,
+            'full_physical_neutron_balance_qualified':False,'scientific_accuracy_qualified':False,
+            'AAA_qualified':False,'ABA_admitted':False,'same_MG_unreduced_reference_qualified':False,
+            'transport_launched':False,'original_physics_inputs_solver_and_thresholds_unchanged':True,
+            'no_clipping_fitting_extra_normalization_dropped_group_or_cell':True,
+            'requires_Root_actual_terminal_and_OwnRSS_receipts':True}
+
+def main():
+    global np
+    start=time.monotonic()
+    parser=argparse.ArgumentParser();parser.add_argument('--evaluator-sha256',required=True)
+    parser.add_argument('--out-root',required=True);args=parser.parse_args()
+    if SOURCE_STATUS!='READY':raise RuntimeError('UNREADY source-only candidate; Root source admission required')
+    require(sys.flags.optimize==0 and sys.gettrace() is None and sys.getprofile() is None,'uninstrumented interpreter required')
+    for name in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS'):
+        require(os.environ.get(name)=='1','original single thread environment required '+name)
+    import numpy as numpy
+    np=numpy
+    selfpath=Path(__file__).absolute();self_before=fresh_hash(selfpath,start)
+    require(self_before['sha256']==args.evaluator_sha256,'evaluator source pin differs')
+    require(Path(args.out_root)==DEFAULT_OUTPUT,'source plan fixes one fresh exclusive output namespace')
+    out=Output(DEFAULT_OUTPUT,start)
+    out.json_file('execution_claim.json',{'schema':'REFINED_AAA_SAVED_WORK_RHS_PHASE_READ_ONLY_RUN_CLAIM_V1',
+            'evaluator':self_before,'declared_limits':{'whole_seconds':WALL_SECONDS,'stage_seconds':WALL_SECONDS,
+            'own_rss_mib':RSS_LIMIT_MIB,'archive_bytes':ARCHIVE_LIMIT_BYTES,'threads':THREADS,'children':CHILDREN,'retries':RETRIES},
+            'parent_PID':os.getppid(),'PID':os.getpid(),'started_unix':time.time(),'normal_genuine_OwnRSS_supervision_required':True})
+    before={}
+    for role,(path,expected) in INPUTS.items():
+        item=fresh_hash(path,start);require(item['sha256']==expected,'immutable input full EOF pin differs '+role);before[role]=item
+    result=evaluate(out,before,start);after={}
+    for role,(path,expected) in INPUTS.items():
+        item=fresh_hash(path,start)
+        require(item['sha256']==expected and item['literal_7id_before']==before[role]['literal_7id_before'] and
+                item['target_7id_before']==before[role]['target_7id_before'] and
+                item['literal_symlink_text']==before[role]['literal_symlink_text'],'input changed across whole saved phase diagnostic '+role)
+        after[role]=item
+    self_after=fresh_hash(selfpath,start)
+    require(self_after['sha256']==self_before['sha256'] and
+            self_after['literal_7id_before']==self_before['literal_7id_before'] and
+            self_after['target_7id_before']==self_before['target_7id_before'],'evaluator source changed')
+    out.json_file('input_identities.json',{'before':before,'after':after,'evaluator_before':self_before,'evaluator_after':self_after})
+    result['elapsed_seconds_before_final_report']=time.monotonic()-start;out.json_file('result.json',result)
+    out.json_file('payload_manifest.json',{'schema':'REFINED_AAA_SAVED_SOURCE_PHASE_PAYLOAD_MANIFEST_V1',
+            'files':dict(out.files),'payload_bytes_before_manifest':out.bytes,'scientific_accuracy_qualified':False,
+            'requires_Root_actual_terminal_and_OwnRSS_receipts':True})
+    check_time(start)
+    print(json.dumps({'classification':result['classification'],'result':str(out.path/'result.json'),
+            'sha256':out.files['result.json']['sha256'],'payload_manifest':str(out.path/'payload_manifest.json'),
+            'manifest_sha256':out.files['payload_manifest.json']['sha256'],'archive_bytes':out.bytes,
+            'elapsed_seconds':time.monotonic()-start,'scientific_accuracy_qualified':False},indent=2,allow_nan=False))
+
+if __name__=='__main__':main()

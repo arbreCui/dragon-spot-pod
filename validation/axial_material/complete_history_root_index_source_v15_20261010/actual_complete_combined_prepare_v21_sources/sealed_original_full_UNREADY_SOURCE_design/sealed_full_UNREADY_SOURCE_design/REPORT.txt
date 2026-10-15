@@ -1,0 +1,5 @@
+已生成完整 V21 UNREADY SOURCE，完整 inverse 逐字节回 V20 566939。
+仅 13 个有限修改：已审两处 strict decode lifetime、fresh V21 family/path/schema、doc/status/Ready 版本、新 helper 设计路径及两个未知资格 SHA 的 None。
+全部 70 个原定义保留：68 个逐字节不变，require_ready 仅版本字串，strict_json_bytes 等于已审 prototype。全部原物理/component pins、五阶段/whole INPUT/完整 trace/两次完整 fresh EOF/原 guard 与 caps 保留。
+当前生成器只接受 --generate-unready-source-only，没有 READY 绑定分支。新 Q 字段与真实两项成功/独审尚未提供，因此未知 schema/Q SHA/7ID 都为空；不读取新 Q。
+仅 SOURCE 标准库静态工作；无项目/helper/guard/API 执行、无 ART/数值/历史读取、无 canonical/results 修改，没有实际 RSS/构建/native/AAA/ABA 成功信用。

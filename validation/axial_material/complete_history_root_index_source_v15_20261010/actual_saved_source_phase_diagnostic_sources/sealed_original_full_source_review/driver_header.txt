@@ -1,0 +1,26 @@
+"""UNREADY independent saved final S2/source-phase cross-check; no transport.
+
+Only Root may source-admit READY and execute this exact source under the genuine
+OwnRSS supervisor. Every 370-group source/return/field payload and all 1800
+unknowns are retained. A saved-state identity is never a physical-balance gate.
+"""
+from __future__ import annotations
+import argparse
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import struct
+import sys
+import time
+SOURCE_STATUS = 'UNREADY'
+ROOT=Path('/Users/wen/spot')
+DEFAULT_OUTPUT=ROOT/'validation/artifacts/axial-material-AAA-refined-all-group-saved-source-phase-consistency-20261010'
+WALL_SECONDS=60.0
+RSS_LIMIT_MIB=512.0
+ARCHIVE_LIMIT_BYTES=64*2**20
+THREADS=CHILDREN=1
+RETRIES=0
+NG,NUN,NZ,NA,NR,NL,NMAT,LL4,LL5=370,1800,48,32,8,3,24,1152,392
+np=None

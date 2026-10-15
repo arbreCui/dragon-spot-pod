@@ -1,0 +1,115 @@
+{
+  "schema": "B28_EXACT28_DRAFT_SOURCE_ONLY_NULL_ADMISSION_STATIC_V1",
+  "complete_source_file_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_exact28_plaintext_retirement_source_v1_UNREADY/retire_exact28_archived_B_result_JSONL_originals.UNREADY.py",
+      "sha256": "dff81571ae679c763249217a1b7cbc7c55b782ce6ce7bb50b5cab0918f89e030",
+      "size_bytes": 27654,
+      "identity": [
+        16777229,
+        50894783,
+        33188,
+        1,
+        27654,
+        1792076456823820832,
+        1792076456823820832
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_exact28_plaintext_retirement_source_v1_UNREADY/write_once_exact28_B_result_JSONL_reviewable_CLI.UNREADY.py",
+      "sha256": "074e0297d42a34c7f4a51df462705ca54dd868ee8afb0b3ded5815313b871a20",
+      "size_bytes": 6997,
+      "identity": [
+        16777229,
+        50894802,
+        33188,
+        1,
+        6997,
+        1792076464409079649,
+        1792076464409079649
+      ]
+    }
+  ],
+  "whole_original_inverse_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_exact28_plaintext_retirement_source_v1_UNREADY/DRAFT_TWO_SOURCE_WHOLE_ORIGINAL_PHYSICAL_RETIREMENT_INVERSE.json",
+    "sha256": "1fa8a7b3ad609c71cc561daed181a25ad123256dff6ec3e2a48f69e84d2cb217",
+    "size_bytes": 91939,
+    "identity": [
+      16777229,
+      50894804,
+      33188,
+      1,
+      91939,
+      1792076464590745907,
+      1792076464590745907
+    ]
+  },
+  "NULL_plan_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_exact28_plaintext_retirement_source_v1_UNREADY/DRAFT_PLAN_PENDING_TRUE_ALL28_ARCHIVE_ROOT0_CHILD0_POST0_AND_BUDGET.json",
+    "sha256": "880edeef2bfc3241d58738077556a184ce11875b33d87fc7117124bd836ebe34",
+    "size_bytes": 61018,
+    "identity": [
+      16777229,
+      50894803,
+      33188,
+      1,
+      61018,
+      1792076464588963693,
+      1792076464588963693
+    ]
+  },
+  "actual_archive_Source_PLAN_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v2_UNREADY/PLAN.json",
+    "sha256": "59dd9cc2fad3f439c013ce7063c4f51d6e9a48730f81ee6e0baaa340cbf100f9",
+    "size_bytes": 1417739,
+    "identity": [
+      16777229,
+      50894556,
+      33152,
+      1,
+      1417739,
+      1792076199833519558,
+      1792076199833519558
+    ]
+  },
+  "actual_archive_Source_common_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v2_UNREADY/B_complete28_JSONL_archive_common.UNREADY.py",
+    "sha256": "530833fd34ca0bdf5602cd41e6ed98aaa9b2e484e62c3521d9748d50d64da62e",
+    "size_bytes": 21993,
+    "identity": [
+      16777229,
+      50894483,
+      33188,
+      1,
+      21993,
+      1792076137127304009,
+      1792076137127304009
+    ]
+  },
+  "actual_archive_post_Source_projection_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete28_JSONL_lossless_archive_source_v2_UNREADY/actual_postverify_20261015/EXACT_SUCCESS_REPORT_FIELD_PROJECTION_SOURCE_ONLY.json",
+    "sha256": "ba37e5b3c9ad8f28ce82786f29d05f1d28b09ab4ff15ee7a6d1d1266ed8bf5b1",
+    "size_bytes": 1110,
+    "identity": [
+      16777229,
+      50894608,
+      33188,
+      1,
+      1110,
+      1792076274631410952,
+      1792076274631410952
+    ]
+  },
+  "Python_AST_and_global_scope0": true,
+  "all_worker_literal_PLAN_keys_initialized": true,
+  "exact_ordered_target_count": 28,
+  "exact_target_bytes": 249929878,
+  "empty_numeric_mismatch_original_path_retained": true,
+  "complete_joint_root_count": 83,
+  "no_new_data_output_root": true,
+  "bounded_entire_Source_bytes": 8388608,
+  "original_guard_PS_lsof_dirfd7_fsync_forcedfresh_double_admission_gates_preserved": true,
+  "all_future_actual_archive_Root_child_post_entry_gzip_index_and_budget_NULL": true,
+  "archive_failed_GEN1_not_archive_business_failure": true,
+  "candidate_or_helper_or_GEN_pub_worker_PS_lsof_native_compiler_payload_gzip_or_delete_executed": false
+}

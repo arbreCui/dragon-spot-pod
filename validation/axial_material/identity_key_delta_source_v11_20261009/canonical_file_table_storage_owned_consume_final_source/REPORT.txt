@@ -1,0 +1,7 @@
+新最小owned consume修订仅TMP SOURCE与pure codec通过，仍UNREADY。
+公开默认decode和encoder不改调用者输入；两个strict wrapper在原严格JSON解析后，仅消费自己新parse的行表。
+逐row完整scalar转freshdict后置None，全部完成clear；primitive实证content SHA前旧rows为空，不能据此声称业务RSS512MiB通过。
+完整8区域逆向1d7、3区域逆向冻结abb5；原67函数逐字、所有schema/values/limits/math/verify/phase/lineage不改。
+真实旧graph67624825B -> 诊断透明表66558451B，原64MiB余550413B；36776 canonical行、全decoded对象typed/order/IEEE floatbits/content摘要保持。
+41原控制＋18新增控制共59通过，两实际pure reviewer失败均原样保留，仅修测试namespace及原parser排序边界，无业务重试。
+未写项目或正式graph，未导入业务、调用API/phase/controller/native/compiler。Root另建unique V12正式图后仍须完整原gate准入。

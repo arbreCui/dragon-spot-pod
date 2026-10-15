@@ -1,0 +1,3 @@
+H14b实际读核差0.994321s；成功组件源码计划88次当前声明environment，线性节约约87.500s是估算。以V11完整audit代替V13截断audit，估计driver仍约1801.056s，未加入sender完整审计与成功seal/tail，无法认定原1800s内有余量。
+V13未分配到stage的1312.846s不能全归SHA。原resource每次动态核268根、约6.7–7.4万文件；没有独立resource函数耗时。后置完整扫描加log/hash上界估计61次总89.312s，不是纯扫描实测。
+具体可减重复工作：单次declaration内senderproof6→1、contract3→1、新helper proofgate2→1，边界内完整字节/7ID/别名/namespace仍全部验证，不跨stage缓存、不跳过任何检查。收益尚未测；不凭此推断full86或native/AAA/ABA成功。

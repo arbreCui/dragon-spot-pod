@@ -1,0 +1,18 @@
+SPOT 已完成比较的临时文件退役结果 — 2026-10-14
+
+本次独立 Source 复核通过后，Root 只读核验返回 0（64e9a1），精确退役执行返回 0（257bf1）。退役的是 A2/A3 原档案索引与原词池共四份临时文件，实际释放 405,417,320 字节。四份 SHA 均不同，依据是已完成工作的生命周期结束，不是假称同字节重复。
+
+三平面逐类型路径比较已经完成：58,860 条记录、6,792,456 个原始字，原字和元数据差异均为 0。A1 索引/字池/物理明细、三个原始 XSM、原失败的序号比较、正确的完整比较明细、报告、Source、日志和结果文档保留。原失败返回及旧报告未改写。
+
+退役范围严格绑定四条完整身份；未作通用缺失跳过。EXECUTION_RECEIPT 精确记录每条成功退役身份及累计字节，保留原始物理资格为 false。
+
+本次释放量大于完整白边界缓存的最低 260,858,880 字节需求；后续仍按原累计 2 GiB、内存 512 MiB、每阶段 600 秒、整段 1800 秒、单线程/单子进程/不重试规则执行动态准入。没有声称完整传输或物理精度已通过。
+
+退役凭证：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/literal4_completed_compare_spool_retirement_20261014_v1/EXECUTION_RECEIPT.json
+SHA256 5d087a7b70570f6ddbbe7ebd058c767a1cc8b19eac85fd9d57f419111643cce5
+
+真实执行返回与精确命令：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/literal4_completed_compare_spool_retirement_20261014_v1/ROOT_EXECUTION_TRUE_TOOL_RETURNS.json
+
+整体目标继续 active。

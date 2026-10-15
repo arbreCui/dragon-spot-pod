@@ -1,0 +1,6 @@
+V11 最小接入计划已保存，全部新实际凭据为None，UNREADY。
+TMP combined身份草稿完整逆回V10 c55，65顶层/70全部函数逐字不改。
+待新组件完整源合同及真实68stage构建后，改当前schema/codec/计数与0800 proof层；factor5e、last-cprime343e祖先证据保留。
+随后新combined PREP+5stage+4tail、真实bounded whole INPUT9+Root10、cold F/C/B独立逐阶段接入；不能复用V10成功或FAILED bootstrap。
+完整物理/角度/快照、原7INPUT与完整owner/alias/ns/absence/resource闭包、原512/4200/43200门和P14/P12分离保持。
+具体常量与函数行参见source_plan.json绑定报告；当前onlyidentity草稿不具备新的component guard，故不可READY或执行。

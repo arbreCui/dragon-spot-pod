@@ -1,0 +1,42 @@
+SOURCE design only; no Root admission is authored or executed here.
+
+Use schema ROOT_ACTUAL_CURRENT150_AB_MATERIAL_PROVENANCE_BINDING_ADMISSION_V1.
+Retain every original required field, actual closed metadata terminal, all full
+geometry/temperature/composition checks and every false/None runtime/science flag.
+Add protected_material_source_expected_sha256 as the complete 54-member union
+dictionary of both original audit.source_sha256 maps, including the old906 auditor.
+Keep protected_material_source_pins as all 54 real current logical-path fullpins:
+material_audit.py is actually cb461, while the other53 equal their original hashes.
+
+Add historical_material_source_retention with exactly these eight keys:
+schema: ROOT_ACTUAL_FIXED_MATERIAL_AUDITOR_HISTORICAL_RETENTION_V1
+resolution_kind: historical_exact_source_retention
+original_path: /Users/wen/spot/validation/axial_material/material_audit.py
+original_expected_sha256: 90659465a03f6b9464df5a7780aabbce06aeb8c0bbfb746c3dc40eda1b6afed5
+current_original_source: actual fullpin {path,sha256,size_bytes,identity[7]} for
+  the current original logical path, cb461b94ae61917da63e813e3dae2261d8f48a20834b15b42d0cad9fe0b8ddc9 /18948B.
+retained_source: actual fullpin for
+  /Users/wen/spot/validation/artifacts/axial-material-tools-20261003/material_audit_used_for_ab.py,
+  original90659465a03f6b9464df5a7780aabbce06aeb8c0bbfb746c3dc40eda1b6afed5 /18947B.
+retention_record: actual fullpin for
+  /Users/wen/spot/validation/artifacts/axial-material-tools-20261003/material_audit_implementation_retention.json,
+  1e5cc9cc2edba850080c61dbad8a71e7e76551dc920c8a0fb844017a3b8c5697 /1222B.
+full_source_inverse_proof: actual fullpin for this new package's
+  MATERIAL_AUDITOR_FULL_SOURCE_INVERSE.json,
+  e1755e33f677ad3ded8e5722d76f1abe4dd0d5db8610d015348ca25074b20ba8.
+
+Root must rehash all pins to complete EOF with exact Python integer identities;
+preserve honest old906-vs-currentcb461 disclosure and the original A/B audit hashes.
+Never fill currentcb461's actual pin with906, remove that logical source, rerun the
+old auditor or claim original XSM bits/reaction multiplicity/rawtransfer/science.
+This binder appends retained/current/mapping/proof actual pins to final input_pins,
+stores the complete original54 expected map and explicit resolution in the binding,
+and copies all four historical/current/mapping/proof evidence bytes to fresh D.
+Other mismatches cannot use retention; their original path and producerSHA must match.
+
+Prerequisite Root metadata precheck is external actual evidence, not transferQ.
+Root's source admission must qualify the new sealed manifest, new binder and
+unchanged full host/protocol/wrapper, backed by a new independent Source review.
+Use the unchanged binder CLI from ROOT_TRUE_FUTURE_STEPS.txt and new fresh D/E/H/O/C.
+Actual source admission, actual material admission and actual transfer/science pins
+remain unknown until Root supplies real independently reviewed bindings.

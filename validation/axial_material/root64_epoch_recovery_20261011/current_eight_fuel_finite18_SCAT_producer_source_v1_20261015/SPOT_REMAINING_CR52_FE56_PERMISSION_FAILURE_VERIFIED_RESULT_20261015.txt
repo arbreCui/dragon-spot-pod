@@ -1,0 +1,10 @@
+Cr52/Fe56 第一次运行的失败事实已独立核验。
+
+复核36a5ff退出0，状态PASS_FAILURE_FACTS_ONLY；原实际Root退出1、child退出-15保持。原/bin/ps权限失败、清理成功、父子进程已退出均有凭证。没有科学比较报告、聚合结果或原字零差异结论；采样RSS=0只表示未取得样本。
+
+第一份后验因旧报告大小限制退出1，源文件与返回保留。新纠正入口仅扩展明确、已固定的旧报告元数据读取角色，实际复核0，没有重跑科学业务。
+
+新的有界入口继续累计58→59，计算和原guard保持，执行需允许原进程监控器工作。完整goal、物理精度、独立参考与AAA/ABA仍未完成。
+
+后验：remaining_Cr52_Fe56_source_v1/actual_postverify_20261015/corrected_metadata_roles_v2/REVIEW.json
+实际返回：remaining_Cr52_Fe56_source_v1/actual_postverify_20261015/corrected_metadata_roles_v2/TRUE_TOOL_RETURNS.json

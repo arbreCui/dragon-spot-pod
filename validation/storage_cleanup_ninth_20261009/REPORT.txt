@@ -1,0 +1,62 @@
+SPOT 第九轮存储清理结果（2026-10-09）
+
+本轮实际清理与独立最终保留复核全部通过，真实工具均退出0。
+Root实际2c9f71/session25842 -> d14461 CLOSED EXIT0，耗时60.963秒。
+
+本轮固定265项：
+1. 159个旧native数值回放NPZ，保留同族analysis主数据、原result.sha256、verification和全部日志文档。
+2. 8个早期iterative工作快照，保留全部相同SHA主本、源程序、参数和原运行结果。
+   部分旧副本没有独立当前绝对路径原seal；只声称鲜读完整字节相等及原recipe/log证据。
+3. 9个旧compensated map001–003数值中间文件，逐项匹配原SEALED_STAGE_OUTPUTS的result.json。
+   保留map001–004的全部closed父状态、完整最终map004和bootstrap、原日志及结果。
+   原run_status仍WAITING_REFERENCE，AAA VALID_MET/4 maps；不升级为独立物理精度通过。
+4. 89个旧材料PENDF/GROUPR tape30，经无损gzip保存全部原始字节后移除原件。
+   这些原件是第二轮已经删除的120个工作副本的恢复来源，禁止直接丢弃。
+   三批final-four/remaining-fuel/remaining-temperature分别25/28/36项。
+   final-four原整批审核通过；两remaining原整批FAILED_NO_RETRY事实不改。
+   每项原native stage退出0、receipt/result/output_hashes与鲜读SHA相同。
+
+空间：
+本轮原文件分配占用移除12,914,892,800字节（12.027931 GiB）。
+89份项目内无损归档保留2,640,285,696字节（2.458958 GiB）。
+扣除归档，名义净省9.568974 GiB；新审计文档另占少量空间。
+本轮首次实测整个项目156.872086 GiB；删除后实测147.359440 GiB。
+整个磁盘可用空间是共享APFS时点读数，不将目录分配量等同于独占物理释放量。
+
+核验与保留：
+Root固定清单e4b9c50d79ae6370cd62bb90ed4f2896b6e010438139c52af920672ccad8b4f8。
+Root预检真实退出0，独立完整预检35655209c7722f7ea23b459c6f17581f1538af7c575f8994b819598510d25602通过。
+265候选及336保留文件、4,980项来源审查凭据均完整读取SHA。
+89归档另经独立严格单成员gzip/CRC/EOF、逐块解压size/SHA与原件比较通过。
+删除账本逐项保存原路径、SHA、大小、身份及类别；265原路径确实缺席。
+Root删除窗口内其余175,560普通文件、687符号链接和7,013目录路径的整体基线完全不变。
+当前V8 full graph/86 namespaces/186 aliases/228 resource roots、完整原INPUT、冷启动保护路径均保留。
+全部53份三族低/高最终DRAGR库、28份最终sources和merge28、实际成品材料、源核数据保留。
+当前两组完整输入、native full主数据、42份材料/seed、42个生产archive及runtime snapshots继续保留。
+编译产物、SciPy环境和唯一源码/程序证据仍保留；缓存和Git不是主要占用来源。
+
+恢复与旧回放限制：
+restore_retired_work_copies.py默认只列出本轮167相同副本；显式恢复时核对保留主本完整SHA。
+restore_archived_material_intermediates.py默认只列出89份归档；显式恢复原raw文件，保留原mode/mtime/SHA/size。
+先恢复本轮89个material原件，再使用此前轮次工作副本恢复映射。旧inode/ctime不能还原，不能重跑旧身份基线声称通过。
+packed_material_intermediates/内全部89 gzip永久保留，不能再当缓存删除。
+9个compensated数值中间文件没有认证同字节主本，旧阶段完整重验需历史数值重建；不承诺重建字节完全相同。
+所有原历史seal/results/logs保持原字节，不改清单忽略缺项；直接复验旧全目录封存/回放仍可能失败。
+
+科学目标：
+本轮没有调用业务INPUT API、PREP、RUN、transport solver或AAA/ABA。
+第九轮删除窗口结束时，V8实际PREP退出0的证据继续保留，V8 RUN尚未启动。
+后续主goal已另做一次V8 RUN，Python审核516.46875 MiB超原512 MiB而失败，未获科学通过；详见/Users/wen/spot/validation/axial_material/last_cprime_trim_combined_live_resource_v8_build_review_20261009/REPORT.txt。
+原RSS、3%精度门槛和独立耦合参考准入不变；主goal仍未完成。
+
+独立实际终态复核1eeb9b6e3d4c332a486deb426f8a903f3f206e779bf47b96dbb07b2ca37dcbf5通过。
+实际f82b19/session64623 -> 55a6c7 CLOSED EXIT0；再次全流式核验89归档和全部保留SHA。
+独审完成后有意更新validation/README.md、current_progress.json及本轮归档.gitignore排除规则；三份原字节均已另存。
+
+文档收尾后实测项目149.695992 GiB；与本轮首次实测相比净降7.176094 GiB。
+
+收尾容量差异：自动本地Git捕获已保存89份归档的额外历史对象，.git占用由本轮初425 MiB增为约2.792 GiB。
+因此最终整个项目净降约7.18 GiB，不能把名义9.57 GiB说成最终实测净降。
+现已仅在.gitignore加入本轮大归档路径，防止后续未跟踪备份再进入捕获；结果文档、恢复索引仍可见。
+已有Git对象与引用保持，不删除用户或本地捕获历史；89份项目内原归档永久保留。
+剩余大目录：两批完整输入各约12.356 GiB；native-layered-full主数据约11.448 GiB、native-oblique-full-response约11.047 GiB。它们是当前实验/历史输入依赖，不能仅凭旧日期或目录大小删除。

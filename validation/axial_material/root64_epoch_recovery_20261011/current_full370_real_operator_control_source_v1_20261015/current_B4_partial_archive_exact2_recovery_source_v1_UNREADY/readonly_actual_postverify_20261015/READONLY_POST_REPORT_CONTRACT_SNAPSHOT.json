@@ -1,0 +1,40 @@
+{
+  "schema": "EX2_READONLY_POST_INTERFACE_SNAPSHOT_BEFORE_ACTUAL_RECEIPT_V1",
+  "readonly_post_report_contract": {
+    "schema": "CURRENT_B4_EXACT2_READONLY_METADATA_POSTVERIFY_V1",
+    "status": "PASS_CURRENT_B4_EXACT2_READONLY0_NO_UNLINK_METADATA_ONLY",
+    "actual_report_not_yet_created": true,
+    "required_identity_fields": [
+      "actual_readonly_receipt_pin",
+      "actual_readonly_tools_pin",
+      "source_pin",
+      "plan_pin",
+      "exact_target_pins"
+    ],
+    "required_empty_released_pins": [],
+    "required_actual_released_bytes": 0,
+    "required_files_deleted": false,
+    "required_fresh_original_resources": true,
+    "required_genuine_readonly_Root_integer_exit_code": 0
+  },
+  "contract_source_at_author_time": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/DRAFT_PLAN_PENDING_FAILURE_POST_AND_MEMBER0_ROOT0_PEER0.json",
+    "sha256": "0adc5ff7c18f65cfe6386aedc2d6a27f5c15a03902b398e36748f38e830aea22",
+    "size_bytes": 539346,
+    "identity": [
+      16777229,
+      50873126,
+      33188,
+      1,
+      539346,
+      1792061367611445156,
+      1792061367611445156
+    ]
+  },
+  "contract_read_from": "readonly_post_report_contract",
+  "author_core_and_actual_receipt_PFs_not_yet_bound": true,
+  "actual_readonly_receipt_pin": null,
+  "actual_readonly_tools_pin": null,
+  "actual_readonly_Root_integer_exit_code": null,
+  "actual_post_executed": false
+}

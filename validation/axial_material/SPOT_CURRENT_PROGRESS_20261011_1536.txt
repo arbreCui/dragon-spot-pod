@@ -1,0 +1,28 @@
+SPOT 当前进度
+记录时间：2026-10-11 15:36，Asia/Shanghai
+
+整体阶段
+目前仍处于研发验证阶段。A/B 数据基线及主要检查流程已经建立，核心物理验收尚未通过，不能据此交付 ABA 材料对照结论。
+目标顺序保持：A/B 双精度快照及生产到在线读取验证 → AAA 同质控制 → 独立耦合参考准入 → ABA。原物理输入、精度门槛和资源限制保持。
+
+已完成和当前卡点
+1. A/B 双精度快照：原控制各复算一次，全部 370 群的终态及完整材料库、系统、轨迹数据检查通过。离线检查通过；生产到在线启动读取的完整验证仍未完成。
+2. 共同 rank2 基底：新 A/B 终态实测已完成，353/370 群满足原门槛，前 17 群未通过。不能计作共同 rank2 准入通过。
+3. AAA 同质控制：原正式试验最大燃料误差约 3.95%；后续角度修正诊断约 3.80%，均高于原 3% 门槛。后续诊断的完整参考收口也有未通过项，不能代替新的正式验收。
+4. 内存优化：最新完整输入读取检查实际通过，覆盖 37,445 份输入，监督样本峰值 323.265625 MiB。该阶段及其独立结果保存已经完成；完整构建和运行流程此前出现的 522.359375 MiB 超过 512 MiB 的问题，尚未完成优化后的完整验证。新一轮准入文件仍在准备，未执行，不能据此宣布完整流程内存通过。
+5. 数据链新增进展：原 O16 保存的短反应向量已按原程序规则展开到完整 370 群，28 项材料比较和 28 项终态快照比较全部逐位相同。实际执行返回 0。原来直接比较中的记录长度差已有这一单独验证；有限稀释、SPH、CTRA、MASK 与物理闭合仍有未证明环节。散射汇总遗漏 MT22/23 已确认，但不能据此认定为 AAA 误差原因。
+6. 独立耦合参考尚未准入，ABA 尚未启动。
+
+下一步
+先完成完整流程的内存与生产到在线读取验证；并行依据原数据追查前 17 群的基底准入问题和 AAA 误差。相关条件满足后，完成 AAA 正式验收，再准入独立耦合参考并执行 ABA。
+存储清理按用户指示暂缓；本次状态核对未删除任何文件。目标保持 active，未宣称完成。
+
+结果位置
+A/B 数据核验：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-AB-stability-root-review-20261011/REPORT.txt
+共同 rank2：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-new-AB-common-rank2-root-review-20261011-v1/REPORT.txt
+最新输入读取检查及独立保存：
+/Users/wen/spot/validation/artifacts/axial-material-stable-wire-sort-fullfresh-root-closure-v28-20261011/REPORT.txt
+最新 O16 完整展开比较：
+/Users/wen/spot/validation/artifacts/axial-material-original-O16-short-vector-source-expansion-20261011-v3/REPORT.txt

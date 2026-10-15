@@ -1,0 +1,11 @@
+真实 finalization 独立只读后验：PASS（metadata only，无 native/科学/AAA/ABA 资格）。
+业务真实工具：a76002/session47736 → 195dc5，EXIT0 CLOSED；只读 reader：84349b，EXIT0 CLOSED，无 session。
+仅新增 own_child_supervision；删除该字段后 whole typed/type/order/list/float64bits 与原 prepared 完全一致，原 serialized byte inverse 逐字节一致。
+prepared_cold SHA1290a19501ba7801deafe351407b244bd32f71a6cf0d010d4a14fd64e61d8b3e；原 prepared SHA35f8100a753b149b6b100b8bc7154ca1b09f488a464a5068e0ffb826877d6ec7。
+监督字段精确引用原 binding4e8de、control seal339f838、control terminal04f61；Root finalization receipt ea33c715、observer8cf6d184、controls联合准入f00c085匹配真实终态。
+完整 stdout846B 等实际预期结构，stderr0B；Root CLI原始五参数及 factory59d0保持。
+namespace：SOURCE31、CT3未增；WORK56只新增prepared_cold.json；TERM12只新增finalization.stdout/finalization.stderr/finalization_terminal_return.json。全部旧 regular 七字段、目录路径和链接目标保持；不错误要求新增文件后的父目录时间不变。
+case reference250 legacy 与独立2000active/八精度门合同原样，不混同两个层次。
+所有执行/输出只在TMP；无业务 import/callback/API/native，无源码/门槛修改。source-only母config保持全部未来None；未来 native/cold未发生。
+辅助929f8b SyntaxError仍独立保留，不替代业务195dc5真0，不构成业务重试。
+本报告不代替互补source/env/recovery全来源审查，Root仅在联合准入后进入下一实际阶段。

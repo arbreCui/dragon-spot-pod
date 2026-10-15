@@ -1,0 +1,9 @@
+V7 actual audit prefix: read-only source investigation
+
+Actual V7 fifth command is the canonical factory CLI audit-build, not audit/audit_build.py. Four stages PASS; the own child ended -15 at 516.78125 MiB after 8.433607915998437 seconds under the unchanged 512 MiB guard. The child audit log is empty, so the reached interval and failing source line remain unproved.
+
+The complete 65 factory definitions are byte-identical from V6 to V7. Actual audit_build begins with the same true declaration_admission prefix used by the old V6 diagnostic. That old wrapper profiles all Python call/return events and only filters selected functions inside the hook, so its 71.83-second observation is not a normal-performance comparator or a V7 stack witness. It reached _phase entry at 57.015 seconds; that is evidence only for that separate V6 diagnostic.
+
+Three private temporary-container opportunities are identified: retain only the two declarations subsequently used from eight parsed component declarations after preserving all original checks; consume private expanded owner maps while producing the identical complete normalized owners; avoid a second namespace-map copy only with explicit private ownership and unchanged public isolation. These are source candidates, not measured RSS savings or proof of this failure location.
+
+The factory already deletes the 19MB full encoded specs before graph verification. Only four required metadata categories (1,889,248 compact serialized bytes) survive for later checks. strict_json already deletes the complete payload before JSON object allocation; its pools are cleared. The complete graph, read trace, requirement indexes and every original file, namespace and negative gate remain required. No source or ART was edited, no business/API/constructor/diagnostic/PREP/RUN was executed. Native RSS, full map, AAA and ABA remain unqualified.

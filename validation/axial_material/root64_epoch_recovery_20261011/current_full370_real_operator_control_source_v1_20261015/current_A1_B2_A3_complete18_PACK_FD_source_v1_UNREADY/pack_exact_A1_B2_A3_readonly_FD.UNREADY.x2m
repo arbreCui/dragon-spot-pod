@@ -1,0 +1,11 @@
+XSM_FILE PACK :: FILE './initial_pack.xsm' ;
+XSM_FILE RCON1 :: FILE './plane1_rcon.xsm' ;
+XSM_FILE RCON2 :: FILE './plane2_rcon.xsm' ;
+XSM_FILE RCON3 :: FILE './plane3_rcon.xsm' ;
+XSM_FILE A1 :: FILE '/dev/fd/101' ;
+XSM_FILE B2 :: FILE '/dev/fd/102' ;
+XSM_FILE A3 :: FILE '/dev/fd/103' ;
+MODULE APACKX64: END: ;
+PACK RCON1 RCON2 RCON3 := APACKX64: A1 B2 A3 :: ;
+ECHO "ACTUAL-A1-B2-A3-COMPLETE18-PACK-ONLY" ;
+END: ; QUIT "LIST" .

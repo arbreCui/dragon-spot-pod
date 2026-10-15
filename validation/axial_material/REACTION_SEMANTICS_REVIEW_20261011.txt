@@ -1,0 +1,69 @@
+当前实际 A/B Draglib 路线：独立 Source 语义复核（2026-10-11）
+范围：只读本项目原 Source、28核素候选实际加工 Source 和小型原 inputs.json；没有解析数值库/GNDF/原材料数组，没有执行求解/NumPy/加工/编译/资源观察，没有写 repo。以下是 Source 合同和代数推导，不是当前 A/B 实际处理分支、数值或 physical PASS。
+
+1. 原实际输入不变：material_inputs.py:122 / material_interface.txt:28–38 为 CTRA APOL ANIS3；TONE 用 TRAN PIJ、径向 tracking ANIS1。62同位素条目中只有7种 Mo 改用原 DLIB8R1_370，其他用已审28核素实际温度候选。两个库的加工来源身份不可互相继承。
+
+2. N2N/N3N/N4N 加工时是事件向量，而非额外出生向量：实际候选 dragr.f90:729–740 将三个名称绑定 MT16/17/37；939 调 fvect；2317 匹配 GENDF MF3 同 MT；2356 取 rv；1000–1002 保存 real(rv)。这条路径没有乘2/3/4，也没有减去一个中子。有限稀释保存按1021–1031写反应率差项，由 LIBDRB:570–572 和681–686等恢复、除ZNPHI；仍没有按 (nu-1) 把 named event edit 重定义为出生。旧根报告所需的“实际事件”含 TONE/SPH 后续等价变换，不能直接把最终字段叫未经变换物理截面。
+
+3. SCAT 是另一条生产 transfer 路径：dragr.f90:1897–1899 的47项集合为 MT2/5/16/17/28/37/51–91；1996–2022 加入每个 fmatr 的矩阵；fmatr:2203 读取 GENDF MF6 同 MT，保持 primary->secondary。GROUPR 的 panel:6071–6099 积分 feed*xsec*flux；getff:7163–7175 的 MF3 原截面 feed=1，而 continuum 路径7184–7245在明确分支中设 MT16/17/37 yield 2/3/4；getmf6:8031–8037 另从真实 File6 product yield 插值并加和，8093等进入矩阵。仅见 fallback 源码不足以证明每核素/温度/MT实际走fallback，也不能把 NX、NNP、N2A 写固定中子数。N2N 等标签事件向量与 SCAT 生产矩阵必须按同源真实 reaction inventory/yield/温度/dilution联合证明。
+
+4. Draglib 读取与宏观保存不自动“消除TRANC”：LIBDRB:157–163 按 secondary,primary 恢复 rawSCAT；189用PCAT*SIGS；199–205缺SIGS才取完整列和。609在有限稀释缺SIGS分支用MIN(sumSCAT,TOTAL)生成SIGS00，但不修改 SCAT。故 SIGS00 不可当完整生产矩阵列和；不应借此MIN限制真实(n,xn)生产。LIBDEN:352–377独立聚合SIGS与SCAT；448–458独立保存SCAT/SIGW；500–503聚合保存原NTOT0；547–550和651–659独立聚合保存TRANC；1010–1011只把宏观非零 convention记为flag2。原源群全目的求和应来自完整SCAT，不能用SIGS00替代。
+
+5. APOL TRANC不是吸收且可能含leakage：LIBADD:144–194，实际 APOL=ITRANC1时先可加入NTOT0-NTOT1，再用XDRLGS获取P1 production-transfer并加入其列和。原文192–193明确两种 correction可能共存。不能把最终 TRANC 全称为P1 transport或把它重命名吸收，也不能仅因physics balance residual小就设0。
+
+6. 修正在使用端按真实角向分支启用：ASMDRV:223–242 读保存TRANC，激活时同时从P0 NTOT0和P0 self-scatter减同一TRANC。因此在无额外处理、同一完整矩阵和精确算术下 Tcorr - sum(S0corr) = Traw - sum(S0raw)，这是净移除代数恒等式。两次REAL32减法、实际系统payload、源分区和额外LEAK1D需保留各自舍入与分支。ASM.f:352–355 的NANI>1且ISTRM1、FLU.f:413–416 的NANI>1会关闭 ITRANC。所以径向ANIS1快照可能用已修正P0 operator；新完整P2参考不能无条件在三矩 rawSCAT 上再减一次TRANC。完整参考须明确自身所用原NTOT0/三矩 vs与原径向算子匹配的修正形式，并保持真实契约，不能用“保存存在TRANC”推断已修正。
+
+7. SPH/MASK必须真实读取：TONDRV:355–401 的KSPH1、真实NBNRS>1才调用TONSPH/TONCMI，然后LIBMIX再次聚合。TONCMI:172–216 中真实h：NTOT保持；TRANC除h；普通named event edits及NUSIGF乘h；P0/P2非对角乘入射h、对角加NTOT0*(1-h)；P1非对角除出射h、对角加NTOT1*(1-1/h)。忽略分步REAL32舍入可推出 T-sum(S0_after)=h*(T-sum(S0_before))，不是给出真实h或证明物理吸收。LIBDEN的MASK/MASKL还允许未更新区/群保留旧宏观值；LIBRSE:429–435保留SADD语义不解码multiplicity。N2N最终可能是equivalence后的event-scaled字段，不能将其与另一状态/范围的 rawT或SCAT混搭。不能假设h=1、全部MASK true、缺record等于0。
+
+8. TOTAL-SCAT的物理恢复式尚缺充分证据。条件式：若同一未变换事件与production合同、全部反应覆盖、non-fission transfer完整成立，U=T-sum_dst(S0)=Sigma_f + sum_nonfission(1-nu_r)*Sigma_r。若非裂变反应能严格分成无中子出射的吸收事件及非吸收中子产生事件，则物理全吸收(含fission)是 Sigma_f+sum_(nu_r=0)Sigma_r；等价恢复式为 U + sum_(非吸收、非裂变中子产生通道)(nu_r-1)*Sigma_r，不能把nu=0吸收通道也加进此补偿和。若唯一多中子生产为nu=2/3/4三通道，其他非吸收通道均一中子、所有无中子通道完整覆盖时，才可能简化为 U+N2N+2N3N+3N4N。当前尚无实际 complete reaction/yield合同、Mo原库相同来源证明、真实SPH/更新mask/old-post-final同一上下文、完整浮点执行身份，故简式不能授physical balance PASS。MGXEXP是本项目consumer假设，不能循环作为该公式来源权威。
+
+下一步：先取得真实A/B all-context (每次LIBDEN前后、最终XSM，真实SPH、MIX/DEN/MASK/MASKL/LSHI/TIMESPER/NORD/旧保留值等)并严格核验，再做最终微宏观完整聚合重放。随后从同源保留GENDF/ENDF或有实际证据的processing inventory/yield重放独立事件账目。完整P2参考使用生产SCAT可检查方程账目，但在独立事件合同缺失时不能冒充物理吸收/真实反应平衡验收。未改变原rank、3%等阈值，AAA/ABA/science admission仍不由本memo新增。
+
+完整EOF输入指纹（只证明读取时Source身份保持）：
+/Users/wen/spot/validation/axial_material/material_inputs.py
+  SHA256 a533750046980e979ad00b11de0761f2854fc75670484dd4338863af43438a5d; bytes 13275; exact 7ID before/after held: st_dev=16777229, st_ino=48005199, st_mode=33188, st_nlink=1, st_size=13275, st_mtime_ns=1790963307156547778, st_ctime_ns=1790963307156547778
+
+/Users/wen/spot/validation/axial_material/material_interface.txt
+  SHA256 c4ba137215c4f19a5436733a331197b65846f831c3f6697be1a473c76e3253a0; bytes 5734; exact 7ID before/after held: st_dev=16777229, st_ino=48005500, st_mode=33188, st_nlink=1, st_size=5734, st_mtime_ns=1790963307310875335, st_ctime_ns=1790963307310875335
+
+/Users/wen/spot/validation/artifacts/d4a-actual-temperature-library-run-20261003/inputs.json
+  SHA256 81aa7ebc5ce09ba05370fd1a620f0c87ec5b740734656119bd4f3c68bd643d6f; bytes 14129; exact 7ID before/after held: st_dev=16777229, st_ino=47976083, st_mode=33188, st_nlink=1, st_size=14129, st_mtime_ns=1790959857925487930, st_ctime_ns=1790959857925487930
+
+/Users/wen/spot/validation/artifacts/d4a-mt51-mf6-control-prepared-20261001/candidate/source/src/dragr.f90
+  SHA256 047ed05e54c54aad2681ce1796bec72f47a0118a2d80295d0d9929e4e42381ac; bytes 123030; exact 7ID before/after held: st_dev=16777229, st_ino=47730382, st_mode=33188, st_nlink=1, st_size=123030, st_mtime_ns=1790808119194112619, st_ctime_ns=1790808119194186911
+
+/Users/wen/spot/validation/artifacts/d4a-mt51-mf6-control-prepared-20261001/candidate/source/src/groupr.f90
+  SHA256 95d95f3de609a6ae9cb304ef5fd464c77f85397c8a6ba07c121b38598986557b; bytes 486744; exact 7ID before/after held: st_dev=16777229, st_ino=47730380, st_mode=33188, st_nlink=1, st_size=486744, st_mtime_ns=1790808119400265575, st_ctime_ns=1790808119400265575
+
+/Users/wen/spot/src/LIBDRA.f
+  SHA256 2c91401ddc79f214954b041fec8dfcb1b2e74988c1a82f62b438f612c3c8a265; bytes 15726; exact 7ID before/after held: st_dev=16777229, st_ino=913581, st_mode=33188, st_nlink=1, st_size=15726, st_mtime_ns=1778159901694816759, st_ctime_ns=1778159901694816759
+
+/Users/wen/spot/src/LIBDRB.f
+  SHA256 a7449f750a1906ac92b7dc459b013f89f9bc2bcc709f21f64ab59344ad9e37de; bytes 24759; exact 7ID before/after held: st_dev=16777229, st_ino=913582, st_mode=33188, st_nlink=1, st_size=24759, st_mtime_ns=1778159901694874259, st_ctime_ns=1778159901694874259
+
+/Users/wen/spot/src/LIBADD.f
+  SHA256 8590c0fa3e450d2f448e975c93033a6547ac4c4264630f83318514e3a2ec0f40; bytes 8546; exact 7ID before/after held: st_dev=16777229, st_ino=913559, st_mode=33188, st_nlink=1, st_size=8546, st_mtime_ns=1778159901693710134, st_ctime_ns=1778159901693710134
+
+/Users/wen/spot/src/LIBDEN.f
+  SHA256 bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e; bytes 39389; exact 7ID before/after held: st_dev=16777229, st_ino=913571, st_mode=33188, st_nlink=1, st_size=39389, st_mtime_ns=1778159901694292842, st_ctime_ns=1778159901694292842
+
+/Users/wen/spot/src/LIBRSE.f
+  SHA256 910cf71511acc8b303f9fae4352e6caa1a94128b05e0677d10be1a22c9dc4006; bytes 19755; exact 7ID before/after held: st_dev=16777229, st_ino=913627, st_mode=33188, st_nlink=1, st_size=19755, st_mtime_ns=1778159901697197342, st_ctime_ns=1778159901697197342
+
+/Users/wen/spot/src/XDRLGS.f
+  SHA256 b0ad9329c278412ccc2ea05209803e28b5d499531ec19a0d64a62f95ceb56cb5; bytes 9365; exact 7ID before/after held: st_dev=16777229, st_ino=914161, st_mode=33188, st_nlink=1, st_size=9365, st_mtime_ns=1778159901731315259, st_ctime_ns=1778159901731315259
+
+/Users/wen/spot/src/TONDRV.f
+  SHA256 9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956; bytes 16065; exact 7ID before/after held: st_dev=16777229, st_ino=914102, st_mode=33188, st_nlink=1, st_size=16065, st_mtime_ns=1778159901727668884, st_ctime_ns=1778159901727668884
+
+/Users/wen/spot/src/TONCMI.f
+  SHA256 837bb5d4b6b0df5bc25871b7c05d389add827715344900a6759f2ff8f543d3b4; bytes 8028; exact 7ID before/after held: st_dev=16777229, st_ino=914101, st_mode=33188, st_nlink=1, st_size=8028, st_mtime_ns=1778159901727612467, st_ctime_ns=1778159901727612467
+
+/Users/wen/spot/src/ASM.f
+  SHA256 5632f5af70b3e06e423215f9a9f791bd75f0cc051c33de9a016f6c10c984a251; bytes 14641; exact 7ID before/after held: st_dev=16777229, st_ino=913316, st_mode=33188, st_nlink=1, st_size=14641, st_mtime_ns=1786062650830362475, st_ctime_ns=1786062650830362475
+
+/Users/wen/spot/src/ASMDRV.f
+  SHA256 916aed0da19eec1824221f1e8d6df00763d761d14995786d59fcbb75a668b4cc; bytes 15968; exact 7ID before/after held: st_dev=16777229, st_ino=35189902, st_mode=33188, st_nlink=1, st_size=15968, st_mtime_ns=1787208405490783945, st_ctime_ns=1787208405490783945
+
+/Users/wen/spot/src/FLU.f
+  SHA256 b002f499eced15e9aceea1538fe5802d2dc70e66a0c54bf30d6a71997ae6a94b; bytes 22676; exact 7ID before/after held: st_dev=16777229, st_ino=913489, st_mode=33188, st_nlink=1, st_size=22676, st_mtime_ns=1790126244484836498, st_ctime_ns=1790126244484836498

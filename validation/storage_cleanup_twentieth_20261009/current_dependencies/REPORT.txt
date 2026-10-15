@@ -1,0 +1,7 @@
+第20轮固定30份旧mesh12迭代中间物：当前依赖范围 PASS。
+map1..5各6份 projected_proposal/candidate_radial/candidate_snapshots/candidate_axial/candidate_system/parent_for_checker，逻辑2,580,841,168B，Root全文校验时分配2,580,910,080B（约2.404GiB）。
+当前37395期望读取、37339组件、35647canonical、全部requirement符号路径、86namespace、186alias、445absence及graph精确字面值均无命中。原当前native/prepare的672离线展开与38055静态读取集合 exact/resolve/inode均无命中，36份依赖源/metadata鲜SHA与7身份保持；原运行只取新WORK父状态，不重验这些旧中间物。
+全668条项目链接文本与目标鲜核无incoming；30份nlink1，Root完整inode扫无其他硬链接。
+全部closed/bootstrap/map6..9保留；map6 candidate_radial作为历史径向balance来源继续HOLD。结果/日志/源码/原清单和恢复主本不在本轮候选。
+本报告只审当前依赖/链接，需互补结果与恢复关系PASS及Root固定预检才能退役。退役后原逐阶段wholemanifest重验需隔离重算；不承诺即时或未经验证的逐字节复现。
+本核验只读TMP，候选数值及旧35GB无新全文读，未删文件、改项目或运行业务，也不赋科学成功。

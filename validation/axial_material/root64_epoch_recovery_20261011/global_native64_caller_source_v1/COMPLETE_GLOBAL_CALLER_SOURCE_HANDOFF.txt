@@ -1,0 +1,34 @@
+Complete new SPOT global typed caller Source package. Source-only, no solve or qualification.
+
+Five full Sources: SPOT_GLOBAL_CALLER_CARRIERS.f90, SPOT_GLOBAL_CALLER_API.f90,
+FLUGPG64.f, FLUDRVG64.f, FLUGLOBAL64.f. The latter uses the standard five-tuple
+CLE ABI with exactly seven operands: AX_CURRENT, fresh independent GLOBAL_NEW,
+readonly MACROLIB3, TRACK_AX, SYSTEM_NEXT, ARCH_BOOT, RCONTRACT.
+
+The lower wrapper returns actual typed terminal values to the full owning FLU.
+All original headers and complete FLU postchecks execute before canonical WRITE,
+then the real publisher receives actual terminal arrays and checks full context.
+No stored header re-read substitutes for producing a solve result.
+
+Cold: original scalar=1/all-other=0 math directly in REAL64.
+CONT: complete native TYPE4 flux/source/keff/B2 and exact legacy mirror checks;
+the native values are authoritative, not promoted compatibility values.
+Parser B2/BSDIR are REAL64; static MACRO type2 B2 is read into independent
+REAL32 buffers then exactly promoted. All original formula/parser/caps/eps/
+ACCE/REBA/TYPE K B1 SIGS physical settings and FORMAT bytes are preserved.
+
+Actual Source writer EXIT0; static audit EXIT0: complete forward/inverse
+16 FLU /12 wrapper /10 parser /5 API transforms; all 46 protected original and
+frozen v2 files unchanged. Exact current argument orders: 53 wrapper,60 native
+driver,15 real publisher. This audit is not a Fortran parser or numerical test.
+
+Actual canonical filename: bootstrap_qfiss_source_v2/SPOR64_BOOT_CANONICAL64.f90
+with module SPOR64_BOOT_CANONICAL64_V2. Publisher module SPOR64_BOOT_PUBLISH64
+is Root-owned and still needs its Root freeze/current-pin verification.
+Build helper/API/parser/wrapper/owner using frozen v2 global driver, complete V2
+canonical/context and complete publisher dependencies. Required actual guards,
+compiler/objects/lib/tool/input pin validation remain Root's bounded host work.
+
+Dispatcher/deck/production route, actual global solve, independent global-output
+binding, projection/QFISS/BOOT/17/whole-input/AAA/ABA qualification remain open.
+This Source freeze never declares whole-chain online or physical qualification.

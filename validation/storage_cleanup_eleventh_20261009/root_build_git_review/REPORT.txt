@@ -1,0 +1,39 @@
+第十一轮根目录、构建缓存与Git只读审计（2026-10-09）
+
+结论：没有新增可安全删除的大型构建/依赖缓存。只读查根目录并排除validation/artifacts主结果，未改.git/源码/当前依赖，未删除任何文件，未启动V9、业务、构建或求解。Root另行审查的旧NPZ/bootstrap副本不在本报告的删除结论内。
+
+当前占用（按unique dev/ino去重）
+整个非validation、非Git根范围约139.515625 MiB，其中编译后缀/三程序筛选约120.425781 MiB。
+src69.269531MiB、lib23.988281MiB、Trivac23.570313MiB、bin8.726563MiB、Ganlib6.292969MiB、Utilib4.031250MiB、data3.343750MiB；SPOT_doc0.089844MiB、script0.007813MiB。.claude无regular占用。未发现根范围旧build/target/dist/node_modules/venv/.venv或CMakeFiles目录。validation主区域只看到5个__pycache__目录，61项约1.418MiB（沿前轮已核验的观察）；继续HOLD，不能当成大回收量。
+
+狭窄可再生低风险候选
+- /Users/wen/spot/.ruff_cache/CACHEDIR.TAG — 4096 allocated B
+- /Users/wen/spot/.ruff_cache/.gitignore — 4096 allocated B
+- /Users/wen/spot/.ruff_cache/0.15.14/7217266486644075063 — 4096 allocated B
+以上仅Ruff派生缓存，共12288 B（12KiB），可由后续普通检查重建；无源程序或数值结果。建议只按这些精确路径复核后处理，不删整个目录、不扩成其他缓存。此前10轮明确仅列为微小收益，未实际删除；本轮也未删除，且没有提供活动writer/open-file的完整排除证明。没有确定的大项可删路径。
+
+重复依赖必须保留
+4对当前root/src→installed静态库完整SHA相等：
+- src/libDragon.a 与 lib/Darwin_arm64/libDragon.a
+- Ganlib/src/libGanlib.a 与 Ganlib/lib/Darwin_arm64/libGanlib.a
+- Trivac/src/libTrivac.a 与 Trivac/lib/Darwin_arm64/libTrivac.a
+- Utilib/src/libUtilib.a 与 Utilib/lib/Darwin_arm64/libUtilib.a
+仅删source侧名义约31.46MiB，但这些是当前Makefile真实target、installed link输入及历史/未来源码基线，不具完整依赖排除，全部HOLD。Ganlib/src/Ganlib↔Ganlib/bin/Darwin_arm64/Ganlib、Trivac/src/Trivac↔Trivac/bin/Darwin_arm64/Trivac相等也继续保留。src/Dragon与bin/Darwin_arm64/Dragon虽均9147176bytes，却SHA不同（0019568a… vs2908cf38…），不能当重复文件。全部精确SHA及路径保存main_source_installed_duplicate_hashes_HOLD.json。
+src/、Ganlib/src/、Trivac/src/、Utilib/src/内.o/.mod/.a，以及root8个.mod、bin/、lib/、原Makefile/README/HISTORY/许可/SPOT_doc/script/data全部继续保留；不要运行make clean或按后缀通配删。第六至十轮已明确主机当前库、唯一编译版本和源依赖保留；现有同SHA不能新增批准。
+
+Git大项及原因
+.git当前约2.766834259 GiB；objects约2.546630859GiB，lost-found约224.972656MiB。Git2.54.0 (Apple Git-157)。count-objects报告2519loose、6890in-pack、3packs、garbage0/prune-packable0。
+只读cat-file共9409对象；refs/reflogs可达7474，当前未引用1935。未引用对象表示约2.475370052GiB，仍必须保留：未引用不表示无恢复价值，尤其旧自动capture对象和lost-found。
+第九轮89份永久材料gzip全部可与旧capture provenance中的object_id/size及现有blob metadata严格对上；逻辑长度2546524057B，对象表示约2.334555375GiB。这是第九轮已报告Git从约425MiB增至2.792GiB的主要原因。旧capture_ref现不再由当前refs/reflogs覆盖其89blob，此事实不修改旧报告时点或恢复规则，不授权清除。gzip已压缩，Git再打包收益没有实测，不能把全部2.79GiB写成可回收量。
+.git/lost-found/other/5351fb9cb8f5cbbfc53a2c961fad91117c1a3db6约218.09MiB，为当前未引用blob的恢复副本；其Git对象虽仍在pack内，仍须保留lost-found和对象，避免后续普通gc同时丢掉恢复来源。其余lost-found也保留。对象清单、9个refs快照和可达集合均保存TMP。
+
+Git可安全压缩的边界（仅建议，本轮未执行）
+保留所有可达与未引用对象的repack可以把loose对象和旧packs重新组织，不更改分支历史。例如以后另获授权并暂停并发Git写入时，可评估git repack -a -d --keep-unreachable --threads=1；Git官方文档说明--keep-unreachable保留现有pack中的未引用对象，也打包未引用loose对象。先保存refs/reflogs/所有9409对象及lost-found基线，后验每个对象仍可读、refs/分支/tag/本地capture和lost-found不变。不要删除refs/codex、分支、tag、reflog、worktrees、lost-found，不手工删objects/pack。不能换成普通gc/prune、prune=now、reflog expire或历史改写；官方gc会涉及未引用对象与reflog等清理。实际收益未知，压缩期间临时占用可能增长，不给释放承诺。
+依据：https://git-scm.com/docs/git-repack （--keep-unreachable）；https://git-scm.com/docs/git-gc （默认清理/expiry范围）。这些建议不执行任何命令。
+
+必须保留结果资料
+前10轮REPORT/manifest/真实retirement ledger/cleanup_result/terminal/preflight/独立审查/恢复工具/源pins，89永久gzip和全部恢复映射，原result.sha256/seal/日志/参数/科学输入，以及T10保持SHA的32452份结果/source/report/visual文档继续保留。Git删除或清理不能替代这些保存义务。V8原失败和解析诊断首轮父失败保留；V9未启动。
+
+空间说明：这里使用当前文件st_blocks/uniqueinode与Git自身object metadata，不将hardlink行sum或APFS目录下降当作保证新增磁盘空闲。当前确定可再生候选仅12KiB，没有承诺回收的大项。本报告及详细metadata/pins只写TMP。
+
+观察口径补充：初始du .git为2923444KiB（2.788GiB）；稍后的unique metadata约2.767GiB。此前也观察过allocated随时间下降的同类现象，本轮不把两次读数差当成删除/压缩收益，未执行这些动作。Git对象与refs是保存时点的只读快照；共享自动本地捕获可能更新未来状态。

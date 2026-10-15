@@ -1,0 +1,58 @@
+--- /Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v6.py
++++ /private/tmp/axmat-trim-v7-owned-phase-lifetimes-factory-source-draft-20261009/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v7.py
+@@ -1,9 +1,11 @@
+-"""Reviewed independent combined-runtime same-literal canonical text reuse.
+-
+-Derived from frozen v5; no result or RSS credit is inherited from its failed
+-Python audit or separate profiled input diagnostic. Only freshly resolved
+-canonical text equal to its validated literal reuses that immutable literal
+-object, alongside the new family identity.
++"""Reviewed independent combined-runtime temporary owner-map lifetime candidate.
++
++Derived from frozen v6, whose actual fifth Python input-audit child exceeded
++its original 512 MiB RSS cap. No success or memory credit is inherited from
++that failed run or separate input diagnostics. The new reviewed helper only
++consumes its own freshly normalized nonconsumer owner descriptors after each
++complete original expected-file edge sequence; all owner new-input roles keep
++their original later positions, and consumer lineage keeps complete owners.
+ The full regular-byte union, old seven-key body, actual trim input, all namespaces
+ and every original wall/RSS/disk/thread/child/terminal gate remain required.
+ """
+@@ -28,10 +30,10 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT/'validation/artifacts'
+-SOURCE = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-last-cprime-trim-live-resource-scopes-v6-20261008'
+-OUT = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v6-20261008'
+-TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v6-20261008'
+-FAMILY = 'HISTORICAL_INPUT_TRIM_COMBINED_RUNTIME_LINK_V6'
++SOURCE = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-last-cprime-trim-live-resource-scopes-v7-20261009'
++OUT = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v7-20261009'
++TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v7-20261009'
++FAMILY = 'HISTORICAL_INPUT_TRIM_COMBINED_RUNTIME_LINK_V7'
+ DRAFT_STATUS = 'READY_REVIEWED_TRIM_COMPONENT_INPUT_REUSE_FORMAL_FACTORY'
+ CAPTURE_SEAL_SHA = '12756df88672c4438149119026edba0b2ef78780dffa5dcc522bcd06771d5296'
+ CAPTURE_TERMINAL_SHA = 'd5496707eb1ad08826eec599dbf6035b9e39df67cf68a92e84db62bcbb753e63'
+@@ -74,11 +76,11 @@
+ HISTORY_POLICY = 'AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1'
+ THREAD_KEYS = ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ TAIL_FIELDS = ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')
+-PREFIX = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V6'
++PREFIX = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V7'
+ TERMINAL_SCHEMA = PREFIX+'_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1'
+ 
+ PREP_TERMINAL_SCHEMA = PREFIX+'_ACTUAL_EXTERNAL_PREP_RETURN_V1'
+-FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v6.py'
++FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v7.py'
+ HISTORICAL_FACTORY = ROOT/'validation/axial_material/prepare_combined_physical_dedup_file_snapshot_runtime_build.py'
+ HISTORICAL_FACTORY_SHA = 'bf4692a57209ace55e22f85c6e9ffabf80850dcb1b610348e7dc97b74a80040c'
+ HISTORICAL_DECL = ART/'axial-material-physical-dedup-combined-runtime-build-20261007/declaration.json'
+@@ -88,7 +90,7 @@
+ INPUT_SPECS = ROOT/'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+ INPUT_SPECS_SHA = '2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa'
+ INPUT_HELPERS = {
+- 'graph': (ROOT/'validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_same_literal_phase_identity_20261008.py','07b22c9f2f4fba626fbe7f4faec5edd9cbbc15f0e0f4f4edf5858aac489be612'),
++ 'graph': (ROOT/'validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_owned_phase_owner_lifetimes_20261009.py','85551979317309cfa70bb27a4b0e04ae908bbd33865dc3edfbe6c7f4d70baf6c'),
+  'codec': (ROOT/'validation/axial_material/combined_runtime_typed_specs_codec.py','758c6d39ecb4c37e5ff5b3d6639ab8404447719e7cfd3ff72336276a94bb2e69'),
+  'current': (ROOT/'validation/axial_material/combined_runtime_current_predicates.py','0e7423bb39c6a6c5c55e2ba12dede62d3d779dd1805342eedc39e6bf40e5c779'),
+  'checks': (ROOT/'validation/axial_material/combined_runtime_historical_input_checks.py','86e7d6340da59c74abcff57fa52bb07d690f51cc33fe76f330ece2e0d158258e'),

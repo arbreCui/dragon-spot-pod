@@ -1,0 +1,6 @@
+V15 combined 完整 SOURCE-only 草稿已生成，保持 UNREADY。
+七项真实组件成功 pin +六项未来 combined/native pin 均为 None。完整86+原68数学计数+14 sender 单位观察分域不变。
+生产三个 object 和原92 link 全序列逆向保持；whole7/e8两严格入口、原5阶段和1800/600/512/2GiB/96/free8原预算保持。
+完整 helper/resource 源准入函数逐字复制当前 V15，所有来源文件以两独立 owner 角色合入全图。当前资源类 normal load ebbb，旧 fe811 保留祖先描述；无 class/module overlay。
+故意无效的 helper 测试 symlink 仍由其原完整 namespace 门复核，未伪装成有效数值 native aliases。
+只生成 TMP 源码及 byte inverse 证据；未业务导入/调用/fixture/编译/项目写/Root轮询，也未获得86/combined/native/AAA/ABA资格。

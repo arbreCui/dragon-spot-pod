@@ -1,0 +1,9 @@
+真实finalization后验SOURCE-ONLY scope/reader模板准备完成，未执行reader或business/helper/import/ctor/finalize/native。原F59d0 finalize5args、P14普通导入CLI/handoff按Root0ab源计划完整引用；原模板含future工具/newpreparedcold None，不把source-derived command当syscall trace或已执行。
+
+已存在的原prepared35f、binding4e、controlseal339f、CT04f、DTd0精确绝对路径+SHA固定。唯一预期新增metadata为own_child_supervision={binding,controls:{seal,terminal_evidence}}，descriptor类型/键序/路径/值全exact。删除此字段必须whole原prepared严格type/order/list/value/float64 bit一致（typed-tree全遍历，bool/int不混，float使用!d bits），且按原indent2 JSON再序列化完全恢复原prepared原字节35f。inputs/spec/math/budgets/config/localfiles/runtime/source/env/caps及legacy reference250全部保持；另original92 contract2000active+0101..2100及八门保持，没有override或信用。
+
+完整SOURCE/WORK/TERM/CT既有regular七field和dirs/links路径基线在config：新WORK仅prepared_cold.json，TERM仅finalization.stdout/.stderr/_terminal_return.json三个记录；其它旧regular严格七field全相同，directory paths/link targets保持，不虚称有意新增文件父目录mtime不变。Root真正builtin int0 CLOSED后才可绑定preparedcold实际SHA、完整distinct stdout/stderr和Rootfinalization receipt（AXMAT_ROOT_ACTUAL_COLD_FINALIZATION_RETURN_V1），整个stdout必须原classification/oldnewpins/三个False完全一致；transport_started仍False。futureactual和futurecold全部None，source master不可当PASS。
+
+既有controls完整源后验58b1/真实4155作为已知来源保留，Root全joint仍须实际供给qualified pin；这个模板不重复controls业务。读取范围只有source/小metadata/既有control报告和身份基线，无35GB内容重读。全部输出固定TMP。真finalize只形成冷运行输入，不启动solver，不给予native512或AAA精度/ABA信用。原预算和2000八门不可改变。
+
+准确原函数行/全文引用/expected schema/完整根namespace范围见source_only_scope_and_original_function_spans.json；futureconfig及未执行reader源码同目录，真实源准备工具收据另封存。

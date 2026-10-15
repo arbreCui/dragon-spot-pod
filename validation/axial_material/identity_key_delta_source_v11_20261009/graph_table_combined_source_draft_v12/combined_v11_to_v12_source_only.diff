@@ -1,0 +1,57 @@
+--- /Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py
++++ /private/tmp/axmat_v12_owned_specs_identity_key_delta_graph_table_combined_source_only_20261009/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.UNREADY.py
+@@ -1,4 +1,4 @@
+-'V11 whole historical INPUT combined runtime factory. Six actual component build pins are bound to the completed 68-stage controls and Root terminal evidence. The genuine three-argument API and full V11 source/control contract remain required. Original seven INPUT bodies, physics, classes, math, graph scope and budgets are retained. Native RSS, AAA accuracy and ABA still require fresh qualification.'
++'V12 full historical INPUT combined runtime source-only draft. Only canonical_files wire storage uses an explicit lossless columns and rows table; the expanded original graph remains for complete fresh verification and expected input bindings. All genuine modules, math, seven INPUT bodies, actual V11 component evidence and original resource budgets are retained. New graph helper SHA and all future combined success evidence are unbound. No native RSS, AAA or ABA qualification is granted.'
+ import argparse
+ import gc
+ import ast
+@@ -20,11 +20,11 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT/'validation/artifacts'
+-SOURCE = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
+-OUT = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
+-TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
+-FAMILY = 'HISTORICAL_INPUT_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_RUNTIME_LINK_V11'
+-DRAFT_STATUS = 'READY_REVIEWED_TRIM_COMPONENT_INPUT_REUSE_FORMAL_FACTORY'
++SOURCE = ART/'axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-source-v12-20261009'
++OUT = ART/'axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009'
++TERMINAL = ART/'axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-terminal-v12-20261009'
++FAMILY = 'OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_COMBINED_RUNTIME_LINK_V12'
++DRAFT_STATUS = 'UNREADY_SOURCE_ONLY_CANONICAL_FILE_TABLE_COMBINED_V12'
+ CAPTURE_SEAL_SHA = '12756df88672c4438149119026edba0b2ef78780dffa5dcc522bcd06771d5296'
+ CAPTURE_TERMINAL_SHA = 'd5496707eb1ad08826eec599dbf6035b9e39df67cf68a92e84db62bcbb753e63'
+ CAPTURE_FACTORY = ROOT/'validation/axial_material/prepare_rank1_cache_memory_dedup_file_snapshot_native_angular_capture.py'
+@@ -66,11 +66,11 @@
+ HISTORY_POLICY = 'AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1'
+ THREAD_KEYS = ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ TAIL_FIELDS = ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')
+-PREFIX = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V11'
++PREFIX = 'AXMAT_OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_COMBINED_RUNTIME_V12'
+ TERMINAL_SCHEMA = PREFIX+'_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1'
+ 
+ PREP_TERMINAL_SCHEMA = PREFIX+'_ACTUAL_EXTERNAL_PREP_RETURN_V1'
+-FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py'
++FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.py'
+ HISTORICAL_FACTORY = ROOT/'validation/axial_material/prepare_combined_physical_dedup_file_snapshot_runtime_build.py'
+ HISTORICAL_FACTORY_SHA = 'bf4692a57209ace55e22f85c6e9ffabf80850dcb1b610348e7dc97b74a80040c'
+ HISTORICAL_DECL = ART/'axial-material-physical-dedup-combined-runtime-build-20261007/declaration.json'
+@@ -80,7 +80,7 @@
+ INPUT_SPECS = ROOT/'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+ INPUT_SPECS_SHA = '2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa'
+ INPUT_HELPERS = {
+- 'graph': (ROOT/'validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_requirements_varint_wire_compact_phase_20261009.py','1d7c4d7a9ecc4546ceb4c7e0b81562329f874ca5302621ef5fc026f62c7f7643'),
++ 'graph': (ROOT/'validation/axial_material/combined_runtime_complete_input_graph_canonical_file_table_storage_20261009.py',None),
+  'codec': (ROOT/'validation/axial_material/combined_runtime_typed_specs_codec.py','758c6d39ecb4c37e5ff5b3d6639ab8404447719e7cfd3ff72336276a94bb2e69'),
+  'current': (ROOT/'validation/axial_material/combined_runtime_current_predicates_final_private_last_uses_20261009.py','fd3bdb5543044fc71f0acb9799b1c6fcf7709cbbf22342f0931a299af59cee19'),
+  'checks': (ROOT/'validation/axial_material/combined_runtime_historical_input_checks.py','86e7d6340da59c74abcff57fa52bb07d690f51cc33fe76f330ece2e0d158258e'),
+@@ -1307,7 +1307,7 @@
+     # Graph lives in OUT and is not included in its own SOURCE namespace or byte
+     # owners. The declaration pins its exact bytes without a self-hash cycle.
+     with normal(OUT/GRAPH_NAME,missing=True).open('x')as f:
+-        json.dump(graph,f,separators=(',',':'),allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
++        json.dump(g.encode_canonical_file_table_storage(graph),f,separators=(',',':'),allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
+     files,complete_aliases=graph_input_bindings(g,graph)
+     binding=dict(path=str(OUT/GRAPH_NAME),sha256=digest(OUT/GRAPH_NAME),content_sha256=graph['content_sha256'],scope='COMPLETE_HISTORICAL_INPUT_ONLY')
+     return binding,files,complete_aliases

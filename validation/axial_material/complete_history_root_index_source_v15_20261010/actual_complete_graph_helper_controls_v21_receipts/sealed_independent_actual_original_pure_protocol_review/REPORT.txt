@@ -1,0 +1,11 @@
+V21 原完整 60 秒协议保存证据：有限独立 META 复核通过。
+
+Root ea406f/session49247 → 295ec9 → 5e1034 严格整数 EXIT0 CLOSED，无结束后轮询。whole 16.883993 秒、真实 child15.5914465 秒、peak384.140625MiB，原60秒/512MiB/64MiB保持。完整 HOST+OUT+SOURCE59,662,256B；29 Source、39 host 固定输入全 fresh EOF SHA/7ID前后相同；完整普通文件/目录集合及两个原预期 OUT别名身份/文本/解析目标相同。
+
+5 checkpoints、61拒绝、2 accepted str subclasses、完整旧图62332trace/237767requirements/36776files、新63379trace、两strict入口的完整元数据/语义hash/类型/顺序/floatbits收据相等，old trace未换成new trace；原 genuine watch命令/returncode/cleanup/resource/caps 完整一致。
+
+如实保留 META collector 3d83e7 EXIT1（错误假定无别名）与仅修正捕获两真实原别名的 c13fa8 EXIT0；原控制未重跑，H/OUT/SOURCE未改。独立child stderr未捕获，child日志是原正常监督器merged stdout/stderr；外部host stderr确为空，不能据此宣称独立child stderr为空。
+
+原60秒driver源码无 verify_graph 或 _trace_records 调用，因此该实际协议从未测试新private True verifier 分支，也未取得当前完整图freshverifier资格。先前 SOURCE报告“small-fixture verifier receipt”措辞在此更正为 producer/codec controls。newhelper Q仍 None，原60协议 PASS不授fullgraph/RSS全图资格、完整构建/INPUT/native/AAA/ABA成功信用。
+
+本审查仅标准库读取固定保存的 Source/META，encoded graph/trace仅流式SHA未解码；未调用/import helper/guard/API/业务/数值，未扫描历史、未修改输入namespace。

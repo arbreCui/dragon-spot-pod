@@ -1,0 +1,19 @@
+SPOT B 新观察器构建结果（2026-10-15）
+
+结果：新 B 可执行文件的四次编译、一次链接均已真实执行通过；独立后验核验通过。
+Root 实际终止返回8622c3/0，独立核验549538/0。74个显式对象和4个归档参与链接，24个新输出保留。编译与链接阶段未执行B计算。
+
+修复：为三条C编译命令明确指定当前macOS SDK；观察器Fortran、科学钩子、原物理输入、链接数学及资源上限保持。当前Clang/SDK仅为新IO构建路线，不声称恢复历史编译器或旧归档ABI。
+
+旧失败均保留：v1在启动编译前缺监控目录；v2观察器编译通过、首个C编译缺stdio.h而停止。v3构建未重跑。首次后验核验因工具记录的权限字段名不一致停止；原记录保留，另存同一真实工具返回的规范字段表示后核验通过，没有再次编译。
+
+新可执行文件：/Users/wen/spot/validation/artifacts/axial-material-B-IO-build-qualification-20261015-v3/sources/runtime/Dragon
+SHA256 f50ecd92224d3b08fd2241a63b0b70163c3da60a822cb9f82c2c8e2ad038cd27；10880872字节。
+
+实际构建报告：/Users/wen/spot/validation/artifacts/axial-material-B-IO-build-qualification-20261015-v3/Root_actual_B_IO_build_summary.json
+独立核验报告：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/B_IO_build_qualification_source_v3_UNREADY/actual_postverify_canonical_Root_metadata_v2_20261015/REVIEW.json
+原始真实工具返回：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/B_IO_build_qualification_source_v3_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+规范字段表示：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/B_IO_build_qualification_source_v3_UNREADY/ROOT_ACTUAL24_CANONICAL_TRUE_TOOL_RETURNS.json
+
+后续：使用这个已核验的新运行文件执行完整B捕获，保留4个导出、55个上下文和8棵完整快照，再独立核验与提取全部字段。
+此结果只完成构建阶段。B快照生产与在线读取、AAA精度、独立耦合参考及ABA尚未验收，总目标继续进行。

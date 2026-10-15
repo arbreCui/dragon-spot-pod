@@ -1,0 +1,39 @@
+# 本包只提供未准入源码
+
+本包把父359设计实现为全范围诊断引擎、原监督入口的完整衍生源码、纯标准库Source binder，以及实际历史观测扩展源码。作者没有导入或运行引擎、adapter、binder、监督入口、Ganlib、材料或输运。作者只执行了标准库源码生成、AST/字节回逆、完整Source/smallMETA哈希和封存。
+
+引擎覆盖全部原始23895个根MICROLIB记录，其中19619个MACROLIB记录，保留全部原字段类型、计数、空项、原始字节池跨度、物理/API/两个ASCII顺序。每状态完整数字范围是MICRO18670730和MACRO2264113；原ASCII关闭跨度及全部原档仍属于原129输入，不在本包重解码或裁剪。构造候选保留全部62同位素自己的区域和密度、实际12字节别名解析、370群×8区、18个实际8字节编辑名、三矩散射/SIGS/SIGW/CHECK、32裂变组件与256逐群值、64 FISSIONINDEX、六延迟族的12个逐群记录、48 LAMBDA、全部体积和积分通量last-write。
+
+所有字段都有保留和分类路径。无法证明生产者的字段或组件保持原始字节，明确记录UNKNOWN，不生成缺失值或零。Source明确初始化的模型累加器可从零开始；这不把缺失材料字段转换为零。每个REAL32乘、加、除、平方根分别采用整数比率舍入模型，尚未实际运行算术控制，不能称为历史LIBDEN机器算术重放。DOUBLE/libm、FMA、编译器优化和历史Source→binary均保持未证实。
+
+旧macro、旧NFISS0/NFISSI/INDFIS、旧STATE9/LDIFF、实际tracking MAT、最后MASK/MASKL/TMPDAY、全部实际SPH仍不足。部分已知字段即使比对一致也无法给完整聚合PASS。本候选完整诊断正常保存后故意返回EXIT2；异常返回EXIT1。原genuine监督器将其保留为失败，不能把子程序EXIT2改写为成功。失败路径也尝试全部原输入完整EOF/SHA/7ID复核和D/E完整文件、目录冻结复核；任何无法完成的后核验保留具体错误。
+
+V23实际已保存native小报告及冻结checker Source被完整有限复制。本包只核了这些Source/META的真实字节与布局，不读其SQLite或pool，不在这里重授native资格或核RSS。真实persisted native字节一致不代表旧进程RAM；LCM copy物理顺序一致与native API旋转再导出顺序不一致均保持原报告含义。
+
+## Root实际顺序
+
+1. 保存真实V23 CLOSED终端、真实native完整独审和全pairedSQL/pool实际pins。提供规范化观测包装时保留原真实terminal/output，不改原receipt、不猜原schema。包装schema分别是ROOT_ACTUAL_COMPLETE_NATIVE_OBSERVED_TERMINAL_FOR_AGGREGATION_V1和ROOT_ACTUAL_COMPLETE_NATIVE_SAVED_POOL_COVERAGE_FOR_AGGREGATION_V1；后者绑定原报告及独审fullpins、相同终端fullpin、完整A/B paired files、same_actual_native_report_and_independent_review_bound=true、scientific_qualification_created=false。当前模板中所有这些实际pins都是None。
+2. 完成此新family的独立全Source审核。新报告必须绑定本manifest以及host/engine/unchangedadapter/binder五个真实fullpins，并使用本包EXACT_SOURCE_ADMISSION_AND_PEER_CONTRACT.json的精确schema/status和unique check label合同。不要把父Source审核、旧raw5正10拒、helper479总checks或native19431实际检查借作此新family准入。
+3. Root保存这个family真正Source准入记录和实际typedint0 CLOSED工具返回。未来BUILD receipt必须是BUILD family，不能拿PREP替代；诚实非零的已关闭BUILD可作来源记录，不能伪PASS。填写ROOT_SOURCE_REQUEST_TEMPLATE.UNREADY.json的所有实际pins、五个新且互不重叠的H/O/C/D/E路径、完整原129有序输入pins和追加真实证据pins。原129保留为完整前缀，pairedSQL/pool均在追加输入中。
+4. Root只运行纯标准库Source binder。所需argv：Python -B bind_complete_aggregation_SOURCE_only.UNREADY.py --source-manifest-sha256 <本包实际manifestSHA> --request <Root实际完整request> --request-sha256 <真实SHA> --output-source-dir <全新TMP>。这些括号是待填写要求，不是可直接运行的命令，也不是资格值。binder仅哈希有限Source/META；对原129和大型pairedpayload只校验typed pin形状，不读取它们。
+5. Root独审实际四个派生Source/binding/inverse完整文件，再Source-only安装完整新D，记录真实复制后7ID和完整目录冻结。binding只绑定真实SHA；运行前后由Root监督入口实际观察安装后7ID，不构造未来inode，不需要为猜测7ID反复绑定。
+6. 如选择先做全范围诊断，Root串行运行新genuinehost，只开一个数值子进程，不与build/native/材料并行。原619/705/38de/bc4/ebbb模块和OwnRSSSerialExecutor→SerialExecutor的MRO保持，whole1800/stage600/RSS512MiB/HOCDE联合2GiB/history96GiB/free8GiB/1thread/1child/0retry不变。SQLite8MiB、mmap0、FILE temp；所有DB、journal、spool和未链接仍打开的SQLite临时文件均计数。A的文件与DB关闭后才开始B。完整诊断仍非零，不写新Q。
+7. 要关闭科学构造缺口，应先完成下一节的同输入观测生产和完整旧XSM提取接线，再实现旧继承/初始化/实际分支的context-aware引擎，并通过完整算术、拒绝、失败及fullfresh控制。现包的独立Source审核不能省掉这些实际步骤。
+
+## 精确观测扩展
+
+四个衍生固定格式Fortran只插入USE和观测call，13个完整hunks可逆回原四文件；原数值赋值与控制语句不变。精确一基原Source插入位置与完整call在EXACT_READONLY_OBSERVATION_PRODUCTION_EXTENSION_CONTRACT.json和COMPLETE_OBSERVATION_FORTRAN_SOURCE_INVERSE.json。观测模块是AXMAT_OBSERVATION_MOD.UNREADY.f90。只在未来另行准入的新Source build中使用；作者没有编译或运行。
+
+LIBMIX前保存rootState40、实际MIX/DEN/MASK/MASKL/TMPDAY以及旧MACROLIB目录长度/类型；oldmacro不存在有明确原长度/类型，没有虚构快照。LIBDEN读完旧macro的NFISSI/STATE9/LDIFF/MASKK/LALL后保存全部构造参数与旧macro全树；NFISS0赋值后、首个slot修改前保存定义过的INDFIS实际范围。LIBMIX末尾保存postmacro。TONDRV实际MAT剔除之后保存完整MAT/LSHI/MIX/DEN，在两个真实最终LIBMIX call前分别保存MASK/MASKL及所有分支参数。每次TONCMI之前保存全部62 MASKI和8×370实际SPH/INRS，最后保存含SHIBA的完整micro树。每一个真实调用有独立事件号，不只挑最后一项，不重编号、不把SPH=1或所有MASK=true当事实。
+
+old/post snapshots用LCMEQU向新disk-backedXSM复制完整原word；没有用CHARACTER经strncpy的二进制LCMEXP代替任意原word证据。observer逻辑值用MERGE1/0保存观测真值，不称原LOGICAL内存字节。context stream用32位little-endian INTEGER/REAL原words，extract_actual_observation_context.UNREADY.py逐字段、逐4096words写全部原字节/REAL32bits和跨度，严格检查每个事件EOF和连续原事件序。它尚无独立绑定的完整genuinehost，CLI默认拒绝。
+
+还需具体实现完整old-XSM提取入口：基于本包复制的实际Root_bound_complete_native_checker.py，保持XSM、ReadOnlyFileBytes和DiskRecords完整方法，walk_table(native.root,explicit_prefix,())和rows.checkpoint()，每个old macro根明确prefix MACROLIB，全micro根prefix空；不能造一个原档中不存在的根节点。保存全部physical slots、empty list项、kind/length/rawpool/SHA7ID及API rank；不需要也不能用最终ASCII自证old snapshot。当前包只封存这一精确扩展合同，尚未写这个完整可准入入口，也未接入旧数据继承运算。
+
+Root未来观测生产必须使用同A/B原deck和同物理输入，单独固定Source/module编译顺序、实际编译命令和binary Source链接，再在原genuine资源监督下逐状态执行。插入调用没有改原算术语句，但新增I/O会改时间和资源；只有真实同输入产物完整字节核对后，才能宣称实际观测未改变材料结果。所有新事件/XSM/context/日志/完整提取spool均计联合2GiB；重复事件超限时诚实失败，不能裁剪事件或放宽cap。真实old-state输入不足时，保持聚合和科学false。
+
+## 本轮恢复与局限
+
+初次两份Source生成后正文又有有限修改，本包保留初次真实返回并另存恢复后真实返回。连接终止不代表后来步骤执行过；只有本包实际保存的typed终端和seal可算本轮完成。一次修改请求因上下文行不匹配失败，随后在自己的mutable TMP中修正，未动已sealed父包或项目。
+
+本包不是最终构造资格，也不是反应多重性、独立全局平衡、AAA或ABA科学结果。ABSORPTION若由MGXEXP合成，仍不能当真实吸收。编译链接false是一项实际未证范围，不能新增成“原材料raw bytes无法读取”的门槛。

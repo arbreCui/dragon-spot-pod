@@ -1,0 +1,91 @@
+{
+  "schema": "SAVED370_AFTER_LATEST_FULL50_SOURCE_ONLY_SPEC_V3",
+  "source_only": true,
+  "preparer_source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/prepare_saved370_after_latest_full50_source_only_v3_20261014.py",
+    "sha256": "ddb98fd7ce0c54024f26209862d389f951621ad9baa637e47c903f00f310886e",
+    "size_bytes": 10644,
+    "identity": [
+      16777229,
+      50121146,
+      33188,
+      1,
+      10644,
+      1791947981954874821,
+      1791947981954874821
+    ]
+  },
+  "selected_original_binding_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/CURRENT_SAVED_FULL370_GUARD_INPUT_BINDING.json",
+    "sha256": "a48df748efcfe7229b1ced1dd4ab875a2278bcbca82f38f0926731ab6576b486",
+    "size_bytes": 1835848,
+    "identity": [
+      16777229,
+      49960804,
+      33188,
+      1,
+      1835848,
+      1791827862050469293,
+      1791827862050469293
+    ]
+  },
+  "selected_original_Host_freeze_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_full370_terminal_audit_host_source_v2/COMPLETE_SAVED_FULL370_GUARD_HOST_SOURCE_FREEZE.json",
+    "sha256": "043b1a3232709edfe65f1b4f3f686365fe996239c97eb03f14c0df4deddd57ec",
+    "size_bytes": 10755,
+    "identity": [
+      16777229,
+      49960806,
+      33188,
+      1,
+      10755,
+      1791827862059747688,
+      1791827862059747688
+    ]
+  },
+  "actual_latest_full50_authority_pins": {
+    "report": null,
+    "Host_freeze": null,
+    "CLI": null,
+    "Root_tools": null,
+    "Root_argv": null,
+    "post_review": null,
+    "post_tools": null
+  },
+  "actual_latest_full50_post_contract": {
+    "schema": "READONLY_ACTUAL_V18_FULL50_ENGINEERING_POSTVERIFICATION_V1",
+    "status": "PASS_ACTUAL_V18_FULL50_ENGINEERING_POSTVERIFICATION",
+    "fields": {
+      "report": "actual_report_pin",
+      "Host_freeze": "actual_Host_freeze_pin",
+      "CLI": "actual_CLI_pin",
+      "Root_tools": "actual_Root_true_tool_return_pin",
+      "Root_argv": "actual_Root_argv_pin",
+      "ordered50_verified": "actual_ordered50_labels_verified",
+      "expected33_verified": "actual_exact33_case_message_mapping_verified"
+    }
+  },
+  "compiler_executed": false,
+  "numerical_executed": false,
+  "pipeline_executed": false,
+  "files_deleted": false,
+  "actual_saved370_report_pin": null,
+  "actual_Host_freeze_pin": null,
+  "actual_CLI_pin": null,
+  "all_original_scientific1129_and_science_reader_wholebytes_unchanged": true,
+  "selected_actual_readonly_full50_post_producer_Source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/postverify_actual_v18_full50_engineering_readonly_v1_20261014.py",
+    "sha256": "779bb63091dc0bd73eb18827a82f20f649cccb05d2d737486f664e8eb2415ae7",
+    "size_bytes": 44138,
+    "identity": [
+      16777229,
+      50121356,
+      33188,
+      1,
+      44138,
+      1791948118668817734,
+      1791948118668817734
+    ]
+  },
+  "actual_pipeline_or_post_executed_by_this_Source": false
+}

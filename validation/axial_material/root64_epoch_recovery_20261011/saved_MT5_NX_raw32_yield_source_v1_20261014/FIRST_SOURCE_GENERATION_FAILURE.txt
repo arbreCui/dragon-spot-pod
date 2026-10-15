@@ -1,0 +1,1 @@
+Actual Source-only writer terminal exited 1 before creating any freeze/plan/statement-proof. Failure: strict require(part, original Source segment) received bytes instead of a Boolean. Original failed writer Source is preserved as FIRST_FAILED_WRITER_SOURCE.py. No scientific child, host, compiler or input read was executed.

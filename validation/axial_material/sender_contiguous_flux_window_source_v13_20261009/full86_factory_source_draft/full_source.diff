@@ -1,0 +1,1085 @@
+--- /Users/wen/spot/validation/axial_material/prepare_qualified_AB_rank1_factor_cache_cross_group_identity_key_delta_production.py
++++ /private/tmp/axmat_v13_full_sender_window_component_source_draft_20261009/prepare_qualified_AB_sender_contiguous_flux_window_production_v13.py
+@@ -1,11 +1,12 @@
+-"""Source-only complete V11 cross-group integer identity storage component.
+-
+-The original 45 stages, dense c017 comparisons, all physical inputs and thresholds
+-remain compulsory. Two driver build stages and 21 independently audited keycodec
+-stages are additional. Expected persistent fees derive from archived original
+-dense full keys, never from candidate compressed output. No native RSS, AAA or ABA
+-qualification follows from component controls. Root's actual terminal is external.
+-This draft cannot execute until its complete source admission is reviewed.
++"""Source-only complete V13 sender contiguous FUN window component.
++
++The complete original68 build/cache/codec stages must reexecute, followed by
++four new sender builds and14 real wrapper dispatch controls, total86 stages.
++The observer SPOF64 substitutes only in the unit executable; production links
++the actual full sender and unchanged real SPOF64. Original mathematical inputs,
++FP order, cache models, thresholds, budgets and genuine OwnRSS remain mandatory.
++This draft is UNREADY: unknown source/contract/auditor pins block all execution.
++No component result grants native RSS, convergence, independent accuracy or ABA.
+ """
+ 
+ import argparse
+@@ -29,9 +30,9 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT / "validation/artifacts"
+-SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-admission-v11-20261009"
+-OUT = ART / "axial-material-rank1-factor-cache-cross-group-identity-key-delta-build-v11-20261009"
+-TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-terminal-v11-20261009"
++SOURCE = ART / "axial-material-qualified-AB-sender-contiguous-flux-window-build-admission-v13-20261009"
++OUT = ART / "axial-material-sender-contiguous-flux-window-build-v13-20261009"
++TERMINAL = ART / "axial-material-qualified-AB-sender-contiguous-flux-window-build-terminal-v13-20261009"
+ PARENT = ART / "axial-material-rank1-factor-cache-build-20261007"
+ PARENT_SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-build-admission-20261007"
+ PARENT_TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-build-terminal-20261007"
+@@ -75,12 +76,12 @@
+ TOTAL_WALL, STAGE_WALL, RSS_CAP = 1800, 600, 512
+ ARCHIVE_RESERVE = 2 * 2**30
+ HISTORY_CAP, FREE_FLOOR = 96 * 2**30, 8 * 2**30
+-FAMILY = "RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_V11"
++FAMILY = "SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_V13"
+ HISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"
+ OBSERVER_EXPECTED = [32, 3, 2, 3, 1]
+-TERMINAL_SCHEMA = "AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1"
++TERMINAL_SCHEMA = "AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V13"
+ TAIL_FIELDS = ("actual_tail_check", "actual_elapsed_seconds", "actual_archive_bytes", "actual_resources")
+-SOURCE_STATUS = "READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_COMPONENT_EXECUTION"
++SOURCE_STATUS = "UNREADY_SOURCE_ONLY_REQUIRES_FROZEN_SENDER_CONTROL_AND_AUDITOR"
+ PATCH_HELPER_SHA = "733855513a81ead79f797dc0843b061f1604ab61b6db9684613a06a067387300"
+ CONTROL_SOURCE_SHA = "eab3a7790e9f499282017cc37581be5acb07f8a4170e8fcaae95b0de47305d52"
+ FACTORY_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_factor_cache_last_cprime_trim_production.py"
+@@ -139,11 +140,45 @@
+ FUTURE_ACTUAL_BUILD_SEAL_SHA = None
+ FUTURE_ACTUAL_NATIVE_TERMINAL_SHA = None
+ 
++# Immutable V11 cache/sender ancestry remains above; these are new private inputs.
++SENDER_FACTORY_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_factor_cache_cross_group_identity_key_delta_production.py"
++SENDER_FACTORY_SOURCE_PARENT_SHA = "f136baab5047a8727cfd2c0abb5399acf617c25c4f4e7692242419e6f9daef4e"
++SENDER_PATCH_HELPER = ROOT / "validation/axial_material/sender_contiguous_flux_window_patch_v13.py"
++SENDER_PATCH_HELPER_SHA = None
++CANDIDATE_SENDER_SOURCE = ROOT / "validation/axial_material/sender_contiguous_flux_window_source_v13_20261009/FLU2DR64.f"
++CANDIDATE_SENDER_SHA = None
++SENDER_SOURCE_PROOF = CANDIDATE_SENDER_SOURCE.parent / "source_patch_proof.json"
++SENDER_SOURCE_PROOF_SHA = None
++SENDER_SOURCE_INPUT = CANDIDATE_SENDER_SOURCE.parent / "source_admission_INPUT.json"
++SENDER_SOURCE_INPUT_SHA = None
++SENDER_CONTROL_SOURCE = ROOT / "validation/axial_material/sender_contiguous_flux_window_observer_controls_v13.f90"
++SENDER_CONTROL_SOURCE_SHA = None
++SENDER_CONTROL_CONTRACT = CANDIDATE_SENDER_SOURCE.parent / "wrapper_control_contract.json"
++SENDER_CONTROL_CONTRACT_SHA = None
++SENDER_CONTROLS_AUDITOR = ROOT / "validation/axial_material/sender_contiguous_flux_window_controls_audit_v13.py"
++SENDER_CONTROLS_AUDITOR_SHA = None
++SENDER_CONTROL_LAYOUT = None  # Root must bind the complete frozen raw contract.
++SENDER_MODES = ('all','suffix','interior','scalar_first','scalar_last','scalar_one',
++    'sparse','empty_ileak0','empty_ileak3','transition',
++    'unsupported_reference_active','unsupported_candidate_active',
++    'unsupported_reference_empty','unsupported_candidate_empty')
++SENDER_CASES = tuple(dict(name=name,args=[name],expected_returncode=0 if i<10 else 1,
++    expected_message=None if i<10 else 'FLUSP64: UNSUPPORTED LEAKAGE MODEL.')
++    for i,name in enumerate(SENDER_MODES))
++ORIGINAL_STAGE_COUNT = 68
++COMPLETE_STAGE_COUNT = 86
++
+ def require_ready():
+     if SOURCE_STATUS != "READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_COMPONENT_EXECUTION":
+         raise ValueError("source-only cprime-trim draft is UNREADY; no declaration/API/child allowed")
+     if not all(re.fullmatch(r"[0-9a-f]{64}", value or "") for value in (PATCH_HELPER_SHA, CONTROL_SOURCE_SHA, KEYCODEC_AUDITOR_SHA)):
+         raise ValueError("independently frozen helper/control source pins are mandatory")
++    for value in (SENDER_PATCH_HELPER_SHA,CANDIDATE_SENDER_SHA,SENDER_SOURCE_PROOF_SHA,SENDER_SOURCE_INPUT_SHA,
++                  SENDER_CONTROL_SOURCE_SHA,SENDER_CONTROL_CONTRACT_SHA,SENDER_CONTROLS_AUDITOR_SHA):
++        if not re.fullmatch(r"[0-9a-f]{64}",value or "") or value=="0"*64:
++            raise ValueError("new sender source, complete contract and independent auditor pins are mandatory")
++    if type(SENDER_CONTROL_LAYOUT) is not dict:
++        raise ValueError("the complete frozen sender raw layout must be bound; no inferred defaults")
+ 
+ 
+ def digest(path):
+@@ -326,6 +361,417 @@
+         evidence_producer_implemented_by_this_factory=False)
+ 
+ 
++def sender_source_admission():
++    """Pinned source INPUT only: no helper import/call or execution credit."""
++    import ast
++    import hashlib
++    import re
++
++    def sha(value):
++        if (type(value) is not str or re.fullmatch('[0-9a-f]{64}', value) is None
++                or value == '0' * 64):
++            raise ValueError('UNREADY: actual sender source SHA required')
++        return value
++
++    def owned(path, expected):
++        if path is None:
++            raise ValueError('UNREADY: actual sender source path required')
++        return require(path, sha(expected))
++
++    def text_digest(text):
++        return hashlib.sha256(text.encode('utf-8')).hexdigest()
++
++    def text(path):
++        # Preserve complete bytes/newlines rather than universal-newline edits.
++        return Path(path).read_bytes().decode('utf-8')
++
++    def description(path):
++        value = pin(path)
++        return dict(path=value['path'], bytes=Path(path).stat().st_size,
++                    sha256=value['sha256'])
++
++    def fixed_statements(source):
++        result = []
++        for line in source.splitlines():
++            if not line.strip() or line[0] in '*cC!':
++                continue
++            if len(line) < 6:
++                raise ValueError('invalid fixed-form source statement')
++            if line[5] not in ' 0':
++                if not result:
++                    raise ValueError('fixed-form continuation has no predecessor')
++                result[-1] += line[6:].strip()
++            else:
++                result.append(line[6:].strip())
++        return [re.sub(r'\s+', '', line).upper() for line in result]
++
++    # require(expected=None) is permissive in the inherited factory, so every
++    # new SHA is explicitly rejected before any source file is opened.
++    specifications = (
++        ('helper', SENDER_PATCH_HELPER, SENDER_PATCH_HELPER_SHA),
++        ('original_sender', SENDER_SOURCE, SENDER_SOURCE_SHA),
++        ('candidate_sender', CANDIDATE_SENDER_SOURCE, CANDIDATE_SENDER_SHA),
++        ('proof', SENDER_SOURCE_PROOF, SENDER_SOURCE_PROOF_SHA),
++        ('source_INPUT', SENDER_SOURCE_INPUT, SENDER_SOURCE_INPUT_SHA),
++    )
++    for label, path, expected in specifications:
++        sha(expected)
++        if path is None or not Path(path).is_absolute():
++            raise ValueError('UNREADY: explicit absolute sender input required: ' + label)
++    paths = {label: owned(path, expected) for label, path, expected in specifications}
++    original_sha = 'bb901bfed9a4199a5b4c98c58c93bf3b3dda597fd2047bfed6d267c8dcadac81'
++    receiver_sha = '876eed542d97a368dd40e00ff92b1310cd106b03cbf766b618afda74f8566df2'
++    if sha(SENDER_SOURCE_SHA) != original_sha:
++        raise ValueError('complete original fixed sender parent differs')
++    helper_text = text(paths['helper'])
++    tree = ast.parse(helper_text)
++    top_literals = {}
++    for node in tree.body:
++        if isinstance(node, ast.Assign):
++            for target in node.targets:
++                if isinstance(target, ast.Name) and target.id in ('ORIGINAL_SENDER_SHA256', 'WRAPPER_START'):
++                    if target.id in top_literals:
++                        raise ValueError('duplicate helper source literal')
++                    top_literals[target.id] = ast.literal_eval(node.value)
++    start = '      SUBROUTINE FLUSP64('
++    if top_literals != dict(ORIGINAL_SENDER_SHA256=original_sha, WRAPPER_START=start):
++        raise ValueError('helper original full-source/whole-wrapper literal differs')
++    functions = [node for node in tree.body if isinstance(node, ast.FunctionDef)
++                 and node.name == 'patch_sender']
++    if len(functions) != 1:
++        raise ValueError('one literal helper patch_sender definition required')
++    literal_edits = [node.value for node in functions[0].body
++                     if isinstance(node, ast.Assign) and len(node.targets) == 1
++                     and isinstance(node.targets[0], ast.Name) and node.targets[0].id == 'edits']
++    if len(literal_edits) != 1:
++        raise ValueError('one helper literal five-region edit table required')
++    edits = ast.literal_eval(literal_edits[0])
++    names = ['private_window_state_and_explicit_receiver_interface',
++             'ascending_active_window_detection_and_conditional_allocation',
++             'retain_copy_in_only_for_sparse_fallback',
++             'direct_output_window_or_original_sparse_solve_and_scatter',
++             'release_only_the_allocated_output_fallback']
++    if (type(edits) is not list or len(edits) != 5
++            or any(type(edit) is not dict or set(edit) != {'name', 'old', 'new'}
++                   or any(type(edit[key]) is not str or not edit[key] for key in ('name', 'old', 'new'))
++                   or edit['old'] == edit['new'] for edit in edits)
++            or [edit['name'] for edit in edits] != names):
++        raise ValueError('complete independent five-region helper literals required')
++    proof = read(paths['proof'])
++    if type(proof) is not dict or proof.get('edits') != edits:
++        raise ValueError('pinned proof must equal helper AST literal edits')
++    sender = text(paths['candidate_sender'])
++    original = text(paths['original_sender'])
++    # Independent full-source inverse; never call helper.patch_sender().
++    inverse = sender
++    for edit in reversed(edits):
++        if inverse.count(edit['new']) != 1:
++            raise ValueError('nonunique complete sender inverse region: ' + edit['name'])
++        inverse = inverse.replace(edit['new'], edit['old'], 1)
++    if inverse != original or text_digest(inverse) != original_sha:
++        raise ValueError('complete five-region inverse differs from exact original sender')
++    # Independently verify original replacement uniqueness in forward order.
++    forward = original
++    for edit in edits:
++        if forward.count(edit['old']) != 1:
++            raise ValueError('nonunique original sender region: ' + edit['name'])
++        forward = forward.replace(edit['old'], edit['new'], 1)
++    if forward != sender or text_digest(sender) != sha(CANDIDATE_SENDER_SHA):
++        raise ValueError('complete literal candidate source identity differs')
++    if original.count(start) != 1 or sender.count(start) != 1:
++        raise ValueError('one complete trailing private sender wrapper required')
++    old_prefix, old_tail = original.split(start)
++    new_prefix, new_tail = sender.split(start)
++    original_wrapper = start + old_tail
++    candidate_wrapper = start + new_tail
++    reference_wrapper = original_wrapper.replace(start, '      SUBROUTINE FLUSP64_REFERENCE(', 1)
++    if old_prefix != new_prefix:
++        raise ValueError('all source outside the private wrapper must remain byte exact')
++    unit = owned(paths['candidate_sender'].parent / 'FLUSP64.candidate_unit.f',
++                 proof.get('candidate_wrapper_sha256'))
++    reference = owned(paths['candidate_sender'].parent / 'FLUSP64.original_reference_unit.f',
++                      proof.get('reference_wrapper_sha256'))
++    if text(unit) != candidate_wrapper or text(reference) != reference_wrapper:
++        raise ValueError('complete candidate/reference units must derive from exact full sources')
++    source_input = read(paths['source_INPUT'])
++    if type(source_input) is not dict or type(source_input.get('original_receiver')) is not dict:
++        raise ValueError('complete pinned source INPUT and original receiver owner required')
++    receiver_item = source_input['original_receiver']
++    if (type(receiver_item.get('path')) is not str
++            or not Path(receiver_item['path']).is_absolute()
++            or receiver_item.get('sha256') != receiver_sha):
++        raise ValueError('actual fixed original SPOF64 source owner differs')
++    receiver_path = Path(receiver_item['path'])
++    receiver = owned(receiver_path, receiver_sha)
++    receiver_statements = fixed_statements(text(receiver))
++    if candidate_wrapper.count('      INTERFACE\n') != 1 or candidate_wrapper.count('      END INTERFACE\n') != 1:
++        raise ValueError('one private explicit receiver interface required')
++    interface_text = candidate_wrapper.split('      INTERFACE\n', 1)[1].split('      END INTERFACE\n', 1)[0]
++    interface_statements = fixed_statements(interface_text)
++    header = 'SUBROUTINESPOF64(KPSYS,IPTRK,IMPX,NGEFF,NGIND,NREG,NMAT,NUN,MAT,KEYFLX,FUNKNO,SUNKNO,TITR)'
++    declarations = ['INTEGERNGEFF,NGIND(NGEFF),IMPX,NREG,NMAT,NUN,MAT(NREG),KEYFLX(NREG)',
++                    'TYPE(C_PTR)KPSYS(NGEFF),IPTRK',
++                    'DOUBLEPRECISIONFUNKNO(NUN,NGEFF),SUNKNO(NUN,NGEFF)', 'CHARACTERTITR*72']
++    expected_interface = [header, 'USEGANLIB', declarations[0], declarations[1],
++                          declarations[2], declarations[3], 'ENDSUBROUTINESPOF64']
++    if (interface_statements != expected_interface
++            or receiver_statements.count(header) != 1
++            or any(receiver_statements.count(line) != 1 for line in declarations)):
++        raise ValueError('private thirteen-argument ABI/types/shapes must equal actual876eed receiver')
++    old_header = fixed_statements(original_wrapper)[0]
++    new_header = fixed_statements(candidate_wrapper)[0]
++    if old_header != new_header:
++        raise ValueError('private sender public calling ABI must remain exact')
++    expected_proof = dict(
++        schema='AXMAT_FLUSP64_CONTIGUOUS_OUTPUT_WINDOW_SOURCE_PATCH_V13',
++        scope='CONTIGUOUS_ACTIVE_OUTPUT_COPY_STORAGE_ONLY_WITH_ORIGINAL_SPARSE_FALLBACK',
++        original_sender_sha256=original_sha, candidate_sender_sha256=sha(CANDIDATE_SENDER_SHA),
++        original_wrapper_sha256=text_digest(original_wrapper),
++        candidate_wrapper_sha256=text_digest(candidate_wrapper),
++        reference_wrapper_sha256=text_digest(reference_wrapper), edits=edits,
++        complete_inverse_byteexact=True, sender_outside_wrapper_byteexact=True,
++        receiver_interface='ORIGINAL_EXPLICIT_SHAPE_SPOF64_WITHOUT_PUBLIC_ABI_CHANGE',
++        direct_window_condition='ascending active last-first+1 == NGEFF, NGEFF > 0',
++        source_copy_and_leakage_arithmetic_retained=True, sparse_gather_scatter_retained=True,
++        empty_active_set_returns_before_allocation=True, no_pointer_or_target_or_assumed_shape_added=True,
++        partial_output_on_failed_direct_call_must_not_be_reused=True,
++        successful_receiver_does_not_read_incoming_output_required=True,
++        caller_old_source_output_nonalias_required=True,
++        conditional_payload_saving_bytes=dict(formula='8 * NUN * NGEFF', NUN=1800, NGEFF=370, bytes=5328000),
++        observed_native_RSS_saving=None, native_RSS_verified=False,
++        AAA_accuracy_qualified=False, ABA_admitted=False)
++    if proof != expected_proof:
++        raise ValueError('entire independently reconstructed sender source proof differs')
++    expected_input = dict(schema='AXMAT_FLUSP64_CONTIGUOUS_OUTPUT_WINDOW_SOURCE_ONLY_INPUT_V13',
++        source_only=True, helper=description(paths['helper']), original_sender=description(paths['original_sender']),
++        candidate_sender=description(paths['candidate_sender']), proof=description(paths['proof']),
++        original_receiver=description(receiver), compiled=False, controls_executed=False,
++        native_RSS_verified=False, AAA_accuracy_qualified=False, ABA_admitted=False)
++    if source_input != expected_input:
++        raise ValueError('entire original source INPUT ownership/credit body differs')
++    source_paths = {**paths, 'candidate_unit': unit, 'reference_unit': reference, 'original_receiver': receiver}
++    source_inputs = {str(paths[label]): sha(expected) for label, path, expected in specifications}
++    source_inputs.update({str(unit): sha(proof['candidate_wrapper_sha256']),
++                          str(reference): sha(proof['reference_wrapper_sha256']),
++                          str(receiver): receiver_sha})
++    # Recheck all ownership pins after the complete text/JSON/AST inspection.
++    for path, expected in source_inputs.items():
++        owned(path, expected)
++    for label, path, expected in specifications:
++        owned(path, expected)
++    return dict(sender_text=sender, reference_wrapper_text=reference_wrapper,
++                candidate_wrapper_text=candidate_wrapper, proof=proof,
++                source_inputs=source_inputs,
++                source_input=dict(path=str(paths['source_INPUT']), sha256=sha(SENDER_SOURCE_INPUT_SHA)))
++
++
++def sender_control_contract():
++    """Return the whole frozen source contract, never a tiny cases substitute."""
++    import copy
++    import re
++
++    def bound(path, wanted):
++        if (path is None or type(wanted) is not str
++                or re.fullmatch('[0-9a-f]{64}', wanted) is None or wanted == '0' * 64):
++            raise ValueError('UNREADY: actual sender control source pins required')
++        return require(path, wanted)
++
++    if type(SENDER_CONTROL_LAYOUT) is not dict or not SENDER_CONTROL_LAYOUT:
++        raise ValueError('UNREADY: complete Root-bound sender layout required')
++    specifications = [(SENDER_CONTROL_SOURCE, SENDER_CONTROL_SOURCE_SHA),
++                      (SENDER_CONTROL_CONTRACT, SENDER_CONTROL_CONTRACT_SHA),
++                      (SENDER_CONTROLS_AUDITOR, SENDER_CONTROLS_AUDITOR_SHA)]
++    # Reject every unbound pin before a permissive require(None) can read.
++    for path, wanted in specifications:
++        if (path is None or type(wanted) is not str
++                or re.fullmatch('[0-9a-f]{64}', wanted) is None or wanted == '0' * 64):
++            raise ValueError('UNREADY: control driver/whole contract/auditor SHA required')
++    driver, contract_path, auditor = [bound(path, wanted) for path, wanted in specifications]
++    contract = read(contract_path)
++    if type(contract) is not dict:
++        raise ValueError('whole sender contract object required')
++    normalized = copy.deepcopy(contract)
++    for name in ('source_driver', 'reference_unit'):
++        item = normalized.get(name)
++        if type(item) is not dict or set(item) != {'path', 'sha256', 'size_bytes', 'identity'}:
++            raise ValueError('complete source contract descriptor layout required')
++        del item['path']; del item['identity']
++    if normalized != SENDER_CONTROL_LAYOUT:
++        raise ValueError('entire complete Root-bound normalized sender layout differs')
++    if (contract['schema'] != 'AXMAT_FLUSP64_WINDOW_WRAPPER_CONTROL_CONTRACT_V1'
++            or contract['status'] != 'SOURCE_ONLY_UNREADY'
++            or contract['runtime_auditor_interface'] != 'audit_sender_controls(controls_root, contract) -> dict'
++            or contract['candidate_unit'] != 'link actual fullsender object; do not add or replace candidate wrapper source'
++            or contract['compiler_or_control_execution_performed'] is not False
++            or contract['actual_outputs'] is not None
++            or contract['original_68_controls_must_remain_unmodified'] is not True
++            or contract['all_four_negative_modes_required'] is not True):
++        raise ValueError('truthful complete source-only observer contract required')
++    if (contract['source_driver']['sha256'] != SENDER_CONTROL_SOURCE_SHA
++            or contract['source_driver']['size_bytes'] != driver.stat().st_size):
++        raise ValueError('formal driver bytes must equal complete contract source')
++    source = sender_source_admission()
++    ref_sha = source['proof']['reference_wrapper_sha256']
++    if (contract['reference_unit']['sha256'] != ref_sha
++            or contract['reference_unit']['size_bytes'] != len(source['reference_wrapper_text'].encode('utf-8'))):
++        raise ValueError('complete exact old reference wrapper must match sender proof')
++    modes = ('all', 'suffix', 'interior', 'scalar_first', 'scalar_last', 'scalar_one',
++             'sparse', 'empty_ileak0', 'empty_ileak3', 'transition',
++             'unsupported_reference_active', 'unsupported_candidate_active',
++             'unsupported_reference_empty', 'unsupported_candidate_empty')
++    cases = contract['cases']
++    if (type(cases) is not list or len(cases) != 14
++            or [case['name'] for case in cases] != list(modes) or tuple(SENDER_MODES) != modes):
++        raise ValueError('complete ten positive/four negative modes required')
++    projection = []; raw_total = 0; raw_count = 0; positive_steps = 0
++    reference_wrappers = 0; candidate_wrappers = 0; reference_observers = 0; candidate_observers = 0
++    manifest_rows = 0
++    for index, case in enumerate(cases):
++        name = case['name']; negative = index >= 10
++        if (case['case_id'] != index + 1 or case['args'] != [name]
++                or case['negative'] is not negative or case['expected_returncode'] != (1 if negative else 0)
++                or (case['nun'], case['ngrp']) != ((1800, 370) if name == 'all' else (12, 1 if name == 'scalar_one' else 8))
++                or (case['nreg'], case['nmat'], case['nmerg']) != (7, 4, 3)):
++            raise ValueError('exact fixture dimensions/case identity differ: ' + name)
++        projection.append(dict(name=name, args=[name], expected_returncode=1 if negative else 0,
++            expected_message='FLUSP64: UNSUPPORTED LEAKAGE MODEL.' if negative else None))
++        expected_raw = []
++        if negative:
++            active = case['ngrp'] if name.endswith('_active') else 0
++            target = 'reference' if 'reference' in name else 'candidate'
++            steps = [dict(step=1, active_groups=active)]
++            if (case.get('steps') is not None or case['ileak'] != 2
++                    or case['target'] != target or case['target_wrapper_calls'] != 1
++                    or case['observer_calls'] != 0 or case['manifest_lines'] != 0
++                    or case['manifest_size_bytes'] != 0
++                    or case['expected_message'] != 'FLUSP64: UNSUPPORTED LEAKAGE MODEL.'):
++                raise ValueError('exact unsupported-leak negative layout required: ' + name)
++            reference_wrappers += target == 'reference'
++            candidate_wrappers += target == 'candidate'
++        else:
++            steps = case['steps']
++            if [step['step'] for step in steps] != list(range(1, len(steps) + 1)):
++                raise ValueError('ascending complete declared steps required')
++            positive_steps += len(steps); reference_wrappers += len(steps); candidate_wrappers += len(steps)
++            if case['manifest_lines'] != len(steps):
++                raise ValueError('one positive manifest row per step required')
++            for step in steps:
++                active = step['active_groups']
++                if (type(active) is not int or not 0 <= active <= case['ngrp']
++                        or step['expected_route'] not in (0, 1, 2)
++                        or (step['expected_route'] == 0) != (active == 0)
++                        or step['reference_observer_calls'] != int(active > 0)
++                        or step['candidate_observer_calls'] != int(active > 0)):
++                    raise ValueError('exact observer call/route semantics differ')
++                reference_observers += step['reference_observer_calls']
++                candidate_observers += step['candidate_observer_calls']
++        for step in steps:
++            n, g, r, m, z, active = [case[k] for k in ('nun', 'ngrp', 'nreg', 'nmat', 'nmerg')] + [step['active_groups']]
++            size = 8 * (18 + g + 2*r + m + r + 4 + z*g + 8*n*g + 2*active + n*active) + 72
++            if not negative and step['each_raw_size_bytes'] != size:
++                raise ValueError('independent complete raw bytes formula differs')
++            for who in (('input',) if negative else ('input', 'reference', 'candidate')):
++                expected_raw.append(dict(name=name + '.s' + str(step['step']) + '.' + who + '.bin',
++                                         size_bytes=size, who=who))
++        if case['raw_files'] != expected_raw:
++            raise ValueError('whole exact raw-name/size/who layout differs: ' + name)
++        names = [item['name'] for item in expected_raw]
++        if (len(set(names)) != len(names)
++                or case['strict_case_namespace'] != ['execute.log', 'execute.watchdog.json', 'wrapper_manifest.jsonl'] + names):
++            raise ValueError('complete exact case namespace differs: ' + name)
++        raw_count += len(expected_raw); raw_total += sum(item['size_bytes'] for item in expected_raw)
++        manifest_rows += case['manifest_lines']
++    counts = dict(positive_cases=10, negative_cases=4, positive_steps=positive_steps,
++        positive_reference_wrapper_calls=positive_steps, positive_candidate_wrapper_calls=positive_steps,
++        negative_reference_wrapper_calls=reference_wrappers-positive_steps,
++        negative_candidate_wrapper_calls=candidate_wrappers-positive_steps,
++        positive_reference_observer_calls=reference_observers, positive_candidate_observer_calls=candidate_observers,
++        negative_observer_calls=0, wrapper_calls_total=reference_wrappers+candidate_wrappers,
++        observer_calls_total=reference_observers+candidate_observers, positive_raw_files=raw_count-4,
++        negative_raw_files=4, raw_files_total=raw_count, raw_bytes_total=raw_total, manifest_files=14)
++    if (counts != contract['planned_counts_not_actual']
++            or (raw_count, raw_total, reference_wrappers+candidate_wrappers,
++                reference_observers+candidate_observers, positive_steps, manifest_rows) != (70,288241824,48,34,22,22)
++            or projection != list(SENDER_CASES)):
++        raise ValueError('complete source plan counts/formula/operational projection differ')
++    raw_schema = contract['raw_schema']
++    if (raw_schema['schema'] != 'AXMAT_FLUSP64_WINDOW_OBSERVER_RAW_V1'
++            or raw_schema['exact_eof_required'] is not True
++            or raw_schema['byte_order'] != 'little' or raw_schema['word_type'] != 'signed int64'
++            or len(raw_schema['header_words']) != 18
++            or raw_schema['generic_bytes_formula'] != '8*(18+NGRP+2*NREG+NMAT+NREG+4+NMERG*NGRP+8*NUN*NGRP+2*NGEFF+NUN*NGEFF)+72'):
++        raise ValueError('complete exact raw interface/formula required')
++    for path, wanted in specifications:
++        bound(path, wanted)
++    return contract
++
++
++def complete_archive_forecast(c, changed, sender, contract):
++    """Append sender storage to the unchanged complete inherited cache forecast."""
++    base = archive_forecast(c, changed)
++    if (sender != sender_source_admission() or contract != sender_control_contract()
++            or sender['proof']['native_RSS_verified'] is not False
++            or sender['proof']['observed_native_RSS_saving'] is not None):
++        raise ValueError('same whole bound sender contract and source-only proof required')
++    raw_bytes = sum(item['size_bytes'] for case in contract['cases'] for item in case['raw_files'])
++    rows = sum(case['manifest_lines'] for case in contract['cases'])
++    if (raw_bytes, rows) != (288241824,22):
++        raise ValueError('exact complete additional sender raw forecast required')
++    additional_source = {
++        'FLU2DR64.f': len(sender['sender_text'].encode('utf-8')),
++        'FLUSP64.original_reference_unit.f': len(sender['reference_wrapper_text'].encode('utf-8')),
++        'sender_window_controls.f90': require(SENDER_CONTROL_SOURCE, SENDER_CONTROL_SOURCE_SHA).stat().st_size,
++        'sender_patch_helper.py': require(SENDER_PATCH_HELPER, SENDER_PATCH_HELPER_SHA).stat().st_size,
++        'sender_source_patch_proof.json': require(SENDER_SOURCE_PROOF, SENDER_SOURCE_PROOF_SHA).stat().st_size,
++        'sender_source_only_INPUT.json': require(SENDER_SOURCE_INPUT, SENDER_SOURCE_INPUT_SHA).stat().st_size,
++        'sender_control_contract.json': require(SENDER_CONTROL_CONTRACT, SENDER_CONTROL_CONTRACT_SHA).stat().st_size,
++        'sender_controls_auditor.py': require(SENDER_CONTROLS_AUDITOR, SENDER_CONTROLS_AUDITOR_SHA).stat().st_size,
++    }
++    # No second nonraw reservation: retain the original single 1GiB allowance.
++    if (base['nonraw_binary_diff_watch_log_and_metadata_allowance_bytes'] != 1*2**30
++            or base['original_archive_reserve_bytes'] != ARCHIVE_RESERVE or ARCHIVE_RESERVE != 2*2**30):
++        raise ValueError('original 1GiB nonraw and 2GiB complete cap must remain exact')
++    sender_source_bytes = sum(additional_source.values())
++    manifest_allowance = rows * 2048
++    complete_bytes = base['forecast_complete_bytes'] + raw_bytes + sender_source_bytes + manifest_allowance
++    if complete_bytes >= ARCHIVE_RESERVE:
++        raise ValueError('whole cache+sender SOURCE/OUT forecast exceeds original2GiB')
++    result = dict(base)
++    result.update(sender_exact_additional_control_raw_bytes=raw_bytes,
++        sender_exact_additional_SOURCE_file_bytes=additional_source,
++        sender_exact_additional_SOURCE_bytes=sender_source_bytes,
++        sender_manifest_files=14, sender_manifest_rows=rows,
++        sender_manifest_json_allowance_bytes=manifest_allowance,
++        forecast_complete_with_sender_bytes=complete_bytes,
++        inherited_cache_forecast_fields_retained_exact=True,
++        original_single_nonraw_1GiB_allowance_retained=True,
++        actual_complete_SOURCE_OUT_2GiB_cap_remains_mandatory=True,
++        sender_raw_plan_is_not_actual_output_or_native_RSS=True)
++    if any(result[key] != value for key, value in base.items()):
++        raise ValueError('inherited cache/raw/source forecast fields must not change')
++    return result
++
++
++def check_sender_negative_watch(stage):
++    """Original keycodec watch predicate with declared sender rc1, no new wait4 claim."""
++    labels = {'sender_controls/' + case['name'] + '/execute'
++              for case in SENDER_CASES if case['expected_returncode'] == 1}
++    if stage['label'] not in labels or len(labels) != 4:
++        raise ValueError('one of all four declared sender expected-negative stages required')
++    path = OUT / (stage['label'] + '.watchdog.json')
++    watch = read(require(path))
++    if (type(watch['returncode']) is not int or watch['returncode'] != 1
++            or type(watch['pid']) is not int or watch['pid'] <= 0
++            or watch['command'] != stage['command'] or expected_stage_exit(stage) != 1
++            or stage['status'] != 'FAILED' or watch['limit_failure'] is not None
++            or watch['own_child_only'] is not True or watch['liveness_group_cleanup'] is not True
++            or watch['rss_cap_mib'] != 512 or not 0 <= watch['sampled_peak_rss_mib'] < 512
++            or not 0 < watch['wall_cap_seconds'] <= stage['wall_cap_seconds'] <= 600
++            or not 0 <= watch['elapsed_seconds'] < watch['wall_cap_seconds']):
++        raise ValueError('expected1 is accepted only from genuine own child without resource failure')
++    return pin(path)
++
++
+ def source_inputs():
+     expected = {MEMORY_KERNEL_SOURCE:MEMORY_KERNEL_SOURCE_SHA, MEMORY_FACTORY:MEMORY_FACTORY_SHA,
+         KERNEL_SOURCE:KERNEL_SOURCE_SHA, KERNEL_OBJECT:KERNEL_OBJECT_SHA,
+@@ -344,6 +790,10 @@
+         IDENTITY_SOURCE_ADMISSION:IDENTITY_SOURCE_ADMISSION_SHA,
+         KEYCODEC_CONTROL_SOURCE:KEYCODEC_CONTROL_SHA,KEYCODEC_AUDITOR:KEYCODEC_AUDITOR_SHA,
+         PRIMITIVE_ABI_REVIEW:PRIMITIVE_ABI_REVIEW_SHA}
++    expected.update(sender_source_admission()["source_inputs"])
++    expected.update({SENDER_FACTORY_SOURCE_PARENT:SENDER_FACTORY_SOURCE_PARENT_SHA,
++                     SENDER_CONTROL_SOURCE:SENDER_CONTROL_SOURCE_SHA,SENDER_CONTROL_CONTRACT:SENDER_CONTROL_CONTRACT_SHA,
++                     SENDER_CONTROLS_AUDITOR:SENDER_CONTROLS_AUDITOR_SHA})
+     for path,wanted in expected.items():
+         require(path,wanted)
+     old = read(require(PARENT / "declaration.json"))
+@@ -657,6 +1107,7 @@
+         *[[exe,*c['args']] for c in d['control_contract']['factor_negative_cases']],
+         [keyexe,*d['control_contract']['keycodec_positive_command_args']],
+         *[[keyexe,*case['args']] for case in d['control_contract']['keycodec_negative_cases']],
++        *[[str(OUT/'runtime/flusp64_window_observer_controls'),*case['args']] for case in d['sender_control_contract']['cases']],
+         [d['build_python_executable'],str(Path(__file__).resolve()),'audit-build','--sha256',expected]]
+ 
+ 
+@@ -667,7 +1118,7 @@
+         for c in d['control_contract']['memory_negative_cases']]+['controls/dedup_positive/execute']+[
+         'controls/dedup_negative_'+c['name']+'/execute' for c in d['control_contract']['dedup_negative_cases']]+['controls/factor_positive/execute']+[
+         'controls/factor_negative_'+c['name']+'/execute' for c in d['control_contract']['factor_negative_cases']]+['controls/keycodec_positive/execute']+[
+-        'controls/keycodec_negative_'+case['name']+'/execute' for case in d['control_contract']['keycodec_negative_cases']]+['audit/audit']
++        'controls/keycodec_negative_'+case['name']+'/execute' for case in d['control_contract']['keycodec_negative_cases']]+['sender_controls/'+case['name']+'/execute' for case in d['sender_control_contract']['cases']]+['audit/audit']
+ 
+ 
+ def prepare_build(parent_seal,parent_terminal,parent_terminal_sha,failed_capture_terminal_sha,patch_sha,controls_sha,
+@@ -679,12 +1130,16 @@
+     memory_parent=memory_predecessor_admission(memory_seal,memory_terminal,memory_terminal_sha,parent)
+     memory_failed=failed_memory_capture_admission(failed_memory_capture_terminal_sha)
+     old,originals=source_inputs(); changed,c=patch_admission(patch_sha,controls_sha)
+-    forecast=archive_forecast(c,changed); shape=production_cache_shape_forecast(parent,c)
++    sender=sender_source_admission(); sender_contract=sender_control_contract()
++    forecast=complete_archive_forecast(c,changed,sender,sender_contract); shape=production_cache_shape_forecast(parent,c)
+     h=helper(); full,production=h.modules(); guard_files=h.guard_admission(full)
+     h.environment(old)
+     compiler=old['build_commands'][0][0]
+     link=list(old['build_commands'][2]); link[link.index(str(KERNEL_OBJECT))]=str(OUT/'build/SPOT1P64.o'); link[-1]=str(OUT/'runtime/Dragon')
+-    restore=list(link); restore[restore.index(str(OUT/'build/SPOT1P64.o'))]=str(KERNEL_OBJECT); restore[-1]=str(PARENT/'runtime/Dragon')
++    if link.count(str(SENDER_OBJECT))!=1:raise ValueError('exact old sender link token required')
++    link[link.index(str(SENDER_OBJECT))]=str(OUT/'build/FLU2DR64.o')
++    restore=list(link); restore[restore.index(str(OUT/'build/SPOT1P64.o'))]=str(KERNEL_OBJECT)
++    restore[restore.index(str(OUT/'build/FLU2DR64.o'))]=str(SENDER_OBJECT); restore[-1]=str(PARENT/'runtime/Dragon')
+     if restore!=old['build_commands'][2]:raise ValueError('sole kernel link inverse must be exact')
+     common=[compiler,'-O2','-march=native','-ffp-contract=off','-g','-fPIC','-frecord-marker=4','-ffixed-line-length-none',
+         '-I'+str(OUT/'build'),'-I'+str(ANG),'-I'+str(ROOT/'lib/Darwin_arm64/modules'),
+@@ -704,6 +1159,15 @@
+          str(OUT/'build/SPOT1P64.o'),str(WHITE_OBJECT),str(ROOT/'lib/Darwin_arm64/libDragon.a'),
+          str(ROOT/'Trivac/lib/Darwin_arm64/libTrivac.a'),str(ROOT/'Utilib/lib/Darwin_arm64/libUtilib.a'),
+          str(ROOT/'Ganlib/lib/Darwin_arm64/libGanlib.a'),'-o',str(OUT/'runtime/keycodec_controls')]])
++    commands.insert(1,[*common,'-c',str(SOURCE/'FLU2DR64.f'),'-o',str(OUT/'build/FLU2DR64.o')])
++    commands.extend([
++      [*common,'-c',str(SOURCE/'FLUSP64.original_reference_unit.f'),'-o',str(OUT/'build/FLUSP64.original_reference_unit.o')],
++      [*common,'-c',str(SOURCE/'sender_window_controls.f90'),'-o',str(OUT/'build/sender_window_controls.o')],
++      [compiler,'-O2','-march=native','-ffp-contract=off','-g',str(OUT/'build/sender_window_controls.o'),
++       str(OUT/'build/FLU2DR64.o'),str(OUT/'build/FLUSP64.original_reference_unit.o'),str(OUT/'build/SPOT1P64.o'),
++       str(WHITE_OBJECT),str(ROOT/'lib/Darwin_arm64/libDragon.a'),str(ROOT/'Trivac/lib/Darwin_arm64/libTrivac.a'),
++       str(ROOT/'Utilib/lib/Darwin_arm64/libUtilib.a'),str(ROOT/'Ganlib/lib/Darwin_arm64/libGanlib.a'),
++       '-o',str(OUT/'runtime/flusp64_window_observer_controls')]])
+     files=dict(old['files']); files.update(originals)
+     memory_decl=read(require(MEMORY_ROOT/'declaration.json'))
+     for path,wanted in memory_decl['files'].items():
+@@ -736,15 +1200,24 @@
+     # Prepare the real constructor's runtime input before declaration. No
+     # duplicate class or altered __init__/__file__/parent callable is used.
+     SOURCE.mkdir();OUT.mkdir()
+-    for name in ('build','runtime','controls','audit',FAMILY):(OUT/name).mkdir()
++    for name in ('build','runtime','controls','sender_controls','audit',FAMILY):(OUT/name).mkdir()
+     names=['positive',*["negative_"+x['name'] for x in [*c['negative_cases'],*c['cap_negative_cases']]],
+         'memory_positive',*["memory_negative_"+x['name'] for x in c['memory_negative_cases']],
+         'dedup_positive',*["dedup_negative_"+x['name'] for x in c['dedup_negative_cases']],
+         'factor_positive',*["factor_negative_"+x['name'] for x in c['factor_negative_cases']]]
+     names.extend(['keycodec_positive',*['keycodec_negative_'+case['name'] for case in KEYCODEC_CASES]])
+-    if len(commands)!=8 or len(commands)+len(names)+1!=68:
++    if len(commands)!=12 or len(names)!=59 or len(commands)+len(names)+len(SENDER_CASES)+1!=86:
+         raise ValueError('all original45 plus2 driver build and21 codec execute stages required')
+     for name in names:(OUT/'controls'/name).mkdir()
++    for case in SENDER_CASES:(OUT/'sender_controls'/case['name']).mkdir()
++    (SOURCE/'FLU2DR64.f').write_text(sender['sender_text'])
++    (SOURCE/'FLUSP64.original_reference_unit.f').write_text(sender['reference_wrapper_text'])
++    shutil.copy2(require(SENDER_CONTROL_SOURCE,SENDER_CONTROL_SOURCE_SHA),SOURCE/'sender_window_controls.f90')
++    shutil.copy2(require(SENDER_PATCH_HELPER,SENDER_PATCH_HELPER_SHA),SOURCE/'sender_patch_helper.py')
++    shutil.copy2(require(SENDER_SOURCE_PROOF,SENDER_SOURCE_PROOF_SHA),SOURCE/'sender_source_patch_proof.json')
++    shutil.copy2(require(SENDER_SOURCE_INPUT,SENDER_SOURCE_INPUT_SHA),SOURCE/'sender_source_only_INPUT.json')
++    shutil.copy2(require(SENDER_CONTROL_CONTRACT,SENDER_CONTROL_CONTRACT_SHA),SOURCE/'sender_control_contract.json')
++    shutil.copy2(require(SENDER_CONTROLS_AUDITOR,SENDER_CONTROLS_AUDITOR_SHA),SOURCE/'sender_controls_auditor.py')
+     for name,key in (('SPOT1P64.f90','kernel'),('SPOT1P64.original_reference.f90','reference_kernel'),
+             ('SPOT1P64.dense_reference.f90','dense_reference_kernel')):(SOURCE/name).write_text(changed[key])
+     shutil.copy2(require(CONTROL_SOURCE,controls_sha),SOURCE/'rank1_factor_cache_last_cprime_trim_controls.f90')
+@@ -754,7 +1227,7 @@
+     files[str(OUT/'runtime/run_bounded_dragon.py')]=digest(OUT/'runtime/run_bounded_dragon.py')
+     (SOURCE/'SPOT1P64.patch').write_text(''.join(difflib.unified_diff(MEMORY_KERNEL_SOURCE.read_text().splitlines(True),
+         changed['kernel'].splitlines(True),fromfile=str(MEMORY_KERNEL_SOURCE),tofile=str(SOURCE/'SPOT1P64.f90'))))
+-    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_SOURCE_ADMISSION_V1',
++    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_SOURCE_ADMISSION_V13',
+         actual_original_source_objects=originals,source_patch_proof=changed['proof'],dense_reference_proof=changed['dense_reference_proof'],
+         inherited_completed_memory_source_admission=memory_parent['source_admission'],
+         actual_dictionary_parent_source=pin(MEMORY_KERNEL_SOURCE),dictionary_parent_is_not_dense_reference=True,
+@@ -762,14 +1235,17 @@
+         delegated_dedup_patch=dict(path=str(DELEGATED_DEDUP_PATCH),sha256=DELEGATED_DEDUP_PATCH_SHA),
+         cross_group_identity_key_delta=c['cross_group_identity_key_delta'],keycodec_source=pin(KEYCODEC_CONTROL_SOURCE),keycodec_auditor=pin(KEYCODEC_AUDITOR),
+         last_cprime_trim=c['last_cprime_trim'],factor_diagonal_trim=c['factor_diagonal_trim'],factor_codec_control_contract=c['factor_codec_control_contract'],
+-        original_reference_proof=changed['original_reference_proof'],control_source_proof=changed['control_source_proof'],sole_new_production_objects=['SPOT1P64.o'],
+-        unchanged_sender_object=pin(SENDER_OBJECT),unchanged_Flu_selector_object=parent['compiled_selector'],
++        original_reference_proof=changed['original_reference_proof'],control_source_proof=changed['control_source_proof'],sole_new_production_objects=['SPOT1P64.o','FLU2DR64.o'],
++        sender_window_source_admission=sender, sender_wrapper_control_contract=sender_contract,
++        full_component_factory_source_parent=pin(require(SENDER_FACTORY_SOURCE_PARENT,SENDER_FACTORY_SOURCE_PARENT_SHA)),
++        original_sender_ancestry=pin(SENDER_OBJECT),actual_new_sender_source=pin(SOURCE/'FLU2DR64.f'),unchanged_Flu_selector_object=parent['compiled_selector'],
+         unchanged_white_object=pin(WHITE_OBJECT),whole_link_inverse_restoration_exact=True,control_contract=c,
+         reference_objects_unit_only=True,actual_full_FLU_entry_executed=False,native_RSS_proof_obtained=False,
+         fresh_512MiB_native_capture_required=True,scientific_qualification=False))
+     inv=h.inventory(SOURCE);files.update({str(SOURCE/name):sha for name,sha in inv['files'].items()})
+-    d=dict(schema='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_DECLARATION_V1',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
+-        files=files,build_commands=commands,production_link_command=commands[1],inherited_rank1_factor_cache_admission=parent,
++    d=dict(schema='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_DECLARATION_V13',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
++        files=files,build_commands=commands,production_link_command=commands[2],
++        sender_source_admission=sender,sender_control_contract=sender_contract,original_stage_count=68,complete_stage_count=86,inherited_rank1_factor_cache_admission=parent,
+         inherited_rank1_factor_cache_memory_admission=memory_parent,actual_failed_compact_memory_native_capture_evidence=memory_failed,
+         actual_failed_cold_AAA_evidence=parent['actual_failed_cold_AAA_evidence'],actual_failed_native_capture_evidence=failed,
+         patch_helper=pin(PATCH_HELPER),controls_source=pin(CONTROL_SOURCE),control_contract=c,complete_archive_forecast=forecast,
+@@ -788,7 +1264,7 @@
+     if archive_bytes()>=ARCHIVE_RESERVE:raise ValueError('complete SOURCE plus OUT exceeded original 2GiB reservation')
+     resources.check()
+     print(json.dumps(dict(declaration=str(OUT/'declaration.json'),declaration_sha256=digest(OUT/'declaration.json'),
+-        source_root=str(SOURCE),classification='DECLARED_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_ONLY'),allow_nan=False))
++        source_root=str(SOURCE),classification='DECLARED_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_ONLY_V13'),allow_nan=False))
+ 
+ 
+ def environment(d, require_build_interpreter=True):
+@@ -801,7 +1277,7 @@
+ def declaration_admission(expected,require_build_interpreter=True):
+     require_ready()
+     d=read(require(OUT/'declaration.json',expected))
+-    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_DECLARATION_V1'
++    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_DECLARATION_V13'
+             or d['family']!=FAMILY or d['source_root']!=str(SOURCE) or d['total_wall_seconds']!=1800 or d['stage_wall_seconds']!=600
+             or d['rss_cap_mib']!=512 or d['archive_reserve_bytes']!=2*2**30 or d['artifact_budget_bytes']!=96*2**30
+             or d['min_free_bytes']!=8*2**30 or d['threads']!=1 or d['numeric_children_at_once']!=1 or d['retries']!=0
+@@ -811,7 +1287,7 @@
+             or d['actual_external_terminal_return_contract']!=terminal_contract(d['build_python_executable'])
+             or d['future_actual_factor_cache_observer_required']!=cache_observer_contract()):
+         raise ValueError('immutable original caps and memory-only input scope differ')
+-    if d['production_link_command']!=d['build_commands'][1]:raise ValueError('explicit actual production link command differs')
++    if d['production_link_command']!=d['build_commands'][2]:raise ValueError('explicit actual production link command differs')
+     environment(d,require_build_interpreter);helper().verify_inventory(SOURCE,d['source_inventory'])
+     if exact_directories(SOURCE)!=d["source_directories"]:raise ValueError("complete source directory namespace changed")
+     prior=d['inherited_rank1_factor_cache_admission']
+@@ -827,19 +1303,28 @@
+     failed=d['actual_failed_native_capture_evidence']
+     if failed_capture_admission(failed['terminal']['sha256'])!=failed:raise ValueError('retained failed capture identity changed')
+     changed,c=patch_admission(d['patch_helper']['sha256'],d['controls_source']['sha256'])
+-    if c!=d['control_contract'] or archive_forecast(c,changed)!=d['complete_archive_forecast'] or production_cache_shape_forecast(prior,c)!=d['stored_production_shape_cache_forecast']:
++    if c!=d['control_contract'] or complete_archive_forecast(c,changed,sender_source_admission(),sender_control_contract())!=d['complete_archive_forecast'] or production_cache_shape_forecast(prior,c)!=d['stored_production_shape_cache_forecast']:
+         raise ValueError('complete source/controls/shape/archive contract changed')
+     for name,key in (('SPOT1P64.f90','kernel'),('SPOT1P64.original_reference.f90','reference_kernel'),('SPOT1P64.dense_reference.f90','dense_reference_kernel')):
+         if (SOURCE/name).read_text()!=changed[key]:raise ValueError('actual new complete source differs from reversible source proof')
+     if (SOURCE/'rank1_factor_cache_last_cprime_trim_controls.f90').read_bytes()!=CONTROL_SOURCE.read_bytes():raise ValueError('actual controls source differs')
+     if (SOURCE/'keycodec_controls.f90').read_bytes()!=require(KEYCODEC_CONTROL_SOURCE,KEYCODEC_CONTROL_SHA).read_bytes():
+         raise ValueError('fresh independent keycodec source differs')
+-    if d['control_contract']['original45_required'] is not True or len(stage_labels(d))!=68:
++    if d['sender_source_admission']!=sender_source_admission() or d['sender_control_contract']!=sender_control_contract():
++        raise ValueError('new complete sender source/receiver/wrapper contract changed')
++    if (SOURCE/'FLU2DR64.f').read_text()!=d['sender_source_admission']['sender_text'] or (SOURCE/'FLUSP64.original_reference_unit.f').read_text()!=d['sender_source_admission']['reference_wrapper_text']:
++        raise ValueError('private compiled sender/reference source bytes changed')
++    if (SOURCE/'sender_window_controls.f90').read_bytes()!=require(SENDER_CONTROL_SOURCE,SENDER_CONTROL_SOURCE_SHA).read_bytes():
++        raise ValueError('new actual wrapper driver bytes differ')
++    if d['original_stage_count']!=68 or d['complete_stage_count']!=86 or len(d['build_commands'])!=12:
++        raise ValueError('all original68 and18 new stages required')
++    if d['control_contract']['original45_required'] is not True or len(stage_labels(d))!=86:
+         raise ValueError('old complete45 and new independent23 stages mandatory')
+     return d
+ 
+ 
+ def check_watch(stage):
++    if expected_stage_exit(stage)==1:return check_sender_negative_watch(stage)
+     if expected_stage_exit(stage)==23:return check_keycodec_negative_watch(stage)
+     item = helper().check_watch(OUT, stage)
+     watch = read(item["path"])
+@@ -1121,11 +1606,15 @@
+         if stage['label'] not in {prefix+name+'/execute' for name in names}:
+             raise ValueError('undeclared expected-negative stage')
+         return 23
++    if stage['label'].startswith('sender_controls/'):
++        cases={"sender_controls/"+c['name']+"/execute":c for c in SENDER_CASES}
++        if stage['label'] not in cases:raise ValueError('undeclared sender case stage')
++        return cases[stage['label']]['expected_returncode']
+     return 0
+ 
+ 
+ def stage_outcome_valid(stage):
+-    return stage['status']==('FAILED' if expected_stage_exit(stage)==23 else 'PASS')
++    return stage['status']==('FAILED' if expected_stage_exit(stage)!=0 else 'PASS')
+ 
+ 
+ def check_keycodec_negative_watch(stage):
+@@ -1623,11 +2112,103 @@
+         scientific_accuracy_or_performance_qualified=False)
+ 
+ 
++def sender_namespace_identities():
++    root=OUT/'sender_controls'
++    if root.is_symlink() or not root.is_dir():raise ValueError('owned complete sender tree required')
++    identities={}
++    for path in [root,*sorted(root.rglob('*'))]:
++        if path.is_symlink():raise ValueError('no sender evidence symbolic link is eligible')
++        info=path.stat()
++        if not (stat.S_ISDIR(info.st_mode) or (stat.S_ISREG(info.st_mode) and info.st_nlink==1)):
++            raise ValueError('sender evidence requires unique ordinary files and directories')
++        identities[str(path.relative_to(root))]=[info.st_dev,info.st_ino,info.st_mode,info.st_nlink,
++            info.st_size,info.st_mtime_ns,info.st_ctime_ns]
++    return identities
++
++
++def sender_raw_receipt(d):
++    before=sender_namespace_identities()
++    files=raw_inventory(OUT/'sender_controls')
++    if sender_namespace_identities()!=before:raise ValueError('whole sender tree changed during raw archival hash')
++    return dict(files=files,before_numeric_gates=True,declared_sender_control_contract=d['sender_control_contract'],
++        raw_identity_before_after_equal=True,raw_identity_snapshot=before)
++
++
++def sender_controls_audit(d):
++    """Independent whole raw observer audit; this grants no real SPOT math credit."""
++    contract=sender_control_contract()
++    if d['sender_control_contract']!=contract:raise ValueError('entire declared sender contract changed')
++    receipt=read(require(OUT/'raw_sender_controls_receipt.json'))
++    before=sender_namespace_identities()
++    if (receipt['files']!=raw_inventory(OUT/'sender_controls') or receipt['before_numeric_gates'] is not True
++            or receipt['declared_sender_control_contract']!=contract or receipt['raw_identity_before_after_equal'] is not True
++            or receipt['raw_identity_snapshot']!=before or sender_namespace_identities()!=before):
++        raise ValueError('whole returned sender raw/log/watch/manifest bytes must precede every acceptance')
++    module=load(require(SENDER_CONTROLS_AUDITOR,SENDER_CONTROLS_AUDITOR_SHA),'sender_contiguous_flux_window_controls_audit_v13')
++    result=module.audit_sender_controls(OUT/'sender_controls',contract)
++    positive=[c for c in contract['cases'] if not c['negative']]
++    steps=[s for c in positive for s in c['steps']]
++    expected_counts=dict(positive_cases=10,expected_guard_rejection_cases=4,positive_steps=22,
++        reference_wrapper_calls=24,candidate_wrapper_calls=24,wrapper_calls_total=48,observer_calls_total=34,
++        direct_candidate_steps=sum(s['expected_route']==1 for s in steps),
++        sparse_fallback_steps=sum(s['expected_route']==2 for s in steps),empty_steps=sum(s['expected_route']==0 for s in steps),
++        raw_file_count=70,raw_bytes=288241824,
++        independently_verified_active_output_scalars=sum(2*c['nun']*s['active_groups'] for c in positive for s in c['steps']))
++    if (result['schema']!='AXMAT_FLUSP64_WINDOW_COMPLETE_RAW_OBSERVER_CONTROLS_AUDIT_V13'
++            or result['status']!='PASS' or result['counts']!=expected_counts
++            or len(result['cases'])!=14 or [c['name'] for c in result['cases']]!=list(SENDER_MODES)
++            or any(result[k] is not True for k in ('complete_raw_scope_verified','all_successful_caller_bits_equal_to_original',
++                'all_sources_independently_reconstructed','actual_contiguous_alias_and_sparse_nonalias_verified',
++                'all_other_caller_planes_and_inactive_output_unchanged','repeated_calls_and_active_set_transition_verified',
++                'raw_identity_before_after_equal')) or result['raw_identity_snapshot']!=before
++            or any(result[k] is not False for k in ('solver_math_credit','native_RSS_verified','AAA_accuracy_qualified','ABA_admitted'))
++            or result['real_SPOT_receiver_calls_in_this_observer_executable']!=0):
++        raise ValueError('all fourteen whole raw routing/alias/bit controls must independently pass without solver credit')
++    wanted={c['name']+'/'+r['name']:r for c in contract['cases'] for r in c['raw_files']}
++    if set(result['all_raw_files'])!=set(wanted):raise ValueError('all seventy raw sender files required')
++    for name,row in result['all_raw_files'].items():
++        path=OUT/'sender_controls'/name
++        if row!=dict(path=str(path),bytes=path.stat().st_size,sha256=digest(require(path))) or row['bytes']!=wanted[name]['size_bytes']:
++            raise ValueError('whole sender raw bytes/pins differ from independent actual audit')
++    for actual,case in zip(result['cases'],contract['cases']):
++        if (actual['actual_returncode']!=case['expected_returncode']
++                or actual['status']!=('EXPECTED_REJECTION' if case['negative'] else 'PASS')
++                or set(actual['raw_files'])!={r['name'] for r in case['raw_files']}):
++            raise ValueError('every exact positive and real expected negative case must close')
++        for basename,row in actual['raw_files'].items():
++            if row!=result['all_raw_files'][case['name']+'/'+basename]:raise ValueError('case raw ownership differs')
++        for field,basename in (('actual_log','execute.log'),('actual_watchdog','execute.watchdog.json'),('actual_manifest','wrapper_manifest.jsonl')):
++            path=OUT/'sender_controls'/case['name']/basename
++            if actual[field]!=dict(path=str(path),bytes=path.stat().st_size,sha256=digest(require(path))):
++                raise ValueError('case log/watch/manifest identity differs')
++    if sender_namespace_identities()!=before:raise ValueError('whole sender tree changed during factory independent acceptance')
++    return result
++
++
++def component_controls_audit(d):
++    # The original 68-stage audit body and all numerical/FP/cache fixtures remain
++    # byte-for-byte unchanged. Sender stub calls belong only to the new scope.
++    original=control_audit(d)
++    if original['counts']['total_declared_stages']!=68:raise ValueError('original complete68 count changed')
++    sender=sender_controls_audit(d)
++    result=copy.deepcopy(original)
++    result['original_68_control_counts']=copy.deepcopy(original['counts'])
++    result['counts']['total_declared_stages']=86
++    result['sender_window_controls']=sender
++    result['sender_window_control_counts']=copy.deepcopy(sender['counts'])
++    result['sender_window_controls_passed']=True
++    result['sender_window_source_admission']=d['sender_source_admission']
++    return result
++
++
+ def binary_audit(d):
+     paths={'new_kernel':OUT/'build/SPOT1P64.o','reference_kernel':OUT/'build/SPOT1P64.original_reference.o',
+         'dense_reference_kernel':OUT/'build/SPOT1P64.dense_reference.o','unit_executable':OUT/'runtime/rank1_factor_cache_last_cprime_trim_controls',
+         'actual_Dragon':OUT/'runtime/Dragon','keycodec_driver_object':OUT/'build/keycodec_controls.o',
+-        'keycodec_executable':OUT/'runtime/keycodec_controls'}
++        'keycodec_executable':OUT/'runtime/keycodec_controls',
++        'new_sender':OUT/'build/FLU2DR64.o','sender_reference_wrapper':OUT/'build/FLUSP64.original_reference_unit.o',
++        'sender_observer_driver':OUT/'build/sender_window_controls.o',
++        'sender_window_executable':OUT/'runtime/flusp64_window_observer_controls'}
+     raw={}
+     for name,path in paths.items():
+         require(path)
+@@ -1646,23 +2227,46 @@
+             or any(sym in symbols('keycodec_executable') for sym in ('_spot1p64_original_','_spot1p64_dense_'))
+             or str(SOURCE/'keycodec_controls.f90') not in Path(raw['keycodec_driver_object_debug']['path']).read_text()):
+         raise ValueError('fresh independent keycodec driver must compile actual source and link only candidate routine')
+-    for symbol in ('_spot1p64_','_flu2dr64_','_flu_'):
++    for name,symbols_required in (('new_sender',('_flu2dr64_','_flusp64_')),
++            ('sender_reference_wrapper',('_flusp64_reference_',)),('sender_observer_driver',('_spof64_',)),
++            ('sender_window_executable',('_flusp64_','_flusp64_reference_','_spof64_','_spot1p64_'))):
++        if any(symbols(name).count(sym)!=1 for sym in symbols_required):
++            raise ValueError('fresh actual sender/wrapper-reference/observer symbols must be uniquely compiled/linked')
++    for name,file in (('new_sender','FLU2DR64.f'),('sender_reference_wrapper','FLUSP64.original_reference_unit.f'),
++            ('sender_observer_driver','sender_window_controls.f90')):
++        if str(SOURCE/file) not in Path(raw[name+'_debug']['path']).read_text():
++            raise ValueError('every new sender unit must name its exact declared private source')
++    if digest(paths['new_sender'])==SENDER_OBJECT_SHA:raise ValueError('old sender object may never stand for the new full source')
++    for symbol in ('_spot1p64_','_flu2dr64_','_flusp64_','_spof64_','_flu_'):
+         if symbols('actual_Dragon').count(symbol)!=1:raise ValueError('actual normal production override definition missing/duplicate')
+-    if any(symbol in symbols('actual_Dragon') for symbol in ('_spot1p64_original_','_spot1p64_dense_')):
++    if any(symbol in symbols('actual_Dragon') for symbol in ('_spot1p64_original_','_spot1p64_dense_','_flusp64_reference_')):
+         raise ValueError('production must exclude every unit reference routine')
+     if digest(paths['new_kernel']) in (KERNEL_OBJECT_SHA,MEMORY_KERNEL_OBJECT_SHA) or digest(paths['actual_Dragon']) in (PARENT_RUNTIME_SHA,MEMORY_RUNTIME_SHA):
+         raise ValueError('actual new compiled storage object/runtime must differ from original')
+     for name,file in (('new_kernel','SPOT1P64.f90'),('reference_kernel','SPOT1P64.original_reference.f90'),('dense_reference_kernel','SPOT1P64.dense_reference.f90')):
+         if str(SOURCE/file) not in Path(raw[name+'_debug']['path']).read_text():raise ValueError('actual compilation unit must name declared private source')
+-    link=list(d['build_commands'][1]);old=read(PARENT/'declaration.json')['build_commands'][2]
+-    if link.count(str(OUT/'build/SPOT1P64.o'))!=1 or str(KERNEL_OBJECT) in link or str(OUT/'build/SPOT1P64.dense_reference.o') in link:
+-        raise ValueError('sole new production kernel precedence/reference exclusion differs')
+-    if link.index(str(OUT/'build/SPOT1P64.o'))>=link.index(str(ROOT/'lib/Darwin_arm64/libDragon.a')):raise ValueError('override must precede original archive')
+-    link[link.index(str(OUT/'build/SPOT1P64.o'))]=str(KERNEL_OBJECT);link[-1]=str(PARENT/'runtime/Dragon')
++    link=list(d['build_commands'][2]);old=read(PARENT/'declaration.json')['build_commands'][2]
++    if (link.count(str(OUT/'build/SPOT1P64.o'))!=1 or link.count(str(OUT/'build/FLU2DR64.o'))!=1
++            or str(KERNEL_OBJECT) in link or str(SENDER_OBJECT) in link
++            or any(str(OUT/name) in link for name in ('build/SPOT1P64.dense_reference.o','build/SPOT1P64.original_reference.o',
++                'build/FLUSP64.original_reference_unit.o','build/sender_window_controls.o'))):
++        raise ValueError('only the new kernel and actual new full sender production overrides are allowed')
++    if any(link.index(str(OUT/'build'/name))>=link.index(str(ROOT/'lib/Darwin_arm64/libDragon.a')) for name in ('SPOT1P64.o','FLU2DR64.o')):
++        raise ValueError('both actual overrides must precede original archive')
++    unitlink=d['build_commands'][-1]
++    if (unitlink.count(str(OUT/'build/FLU2DR64.o'))!=1 or unitlink.count(str(OUT/'build/FLUSP64.original_reference_unit.o'))!=1
++            or unitlink.count(str(OUT/'build/sender_window_controls.o'))!=1
++            or any(token in unitlink for token in (str(SENDER_OBJECT),str(SOURCE/'SPOF64.o'),str(OUT/'build/SPOF64.o')))
++            or any(sym in symbols('sender_window_executable') for sym in ('_spot1p64_original_','_spot1p64_dense_'))):
++        raise ValueError('observer stub/reference wrapper are unit-only; actual new fullsender required')
++    link[link.index(str(OUT/'build/SPOT1P64.o'))]=str(KERNEL_OBJECT)
++    link[link.index(str(OUT/'build/FLU2DR64.o'))]=str(SENDER_OBJECT);link[-1]=str(PARENT/'runtime/Dragon')
+     if link!=old:raise ValueError('entire link recipe must invert exactly outside sole new kernel/output')
+     return dict(status='PASS',source_and_command_identity_verified=True,exact_parent_link_inverse_restoration=True,
+         actual_private_object_definitions_verified=True,executable_definitions_verified=True,raw_metadata=raw,
+-        actual_objects={key:pin(path) for key,path in paths.items()},unchanged_sender_object=pin(SENDER_OBJECT),
++        actual_objects={key:pin(path) for key,path in paths.items()},original_sender_ancestry=pin(SENDER_OBJECT),
++        actual_full_sender_source=pin(SOURCE/'FLU2DR64.f'),actual_sender_source_proof=pin(SOURCE/'sender_source_patch_proof.json'),
++        actual_new_sender_compiled_and_linked=True,actual_sender_wrapper_observer_separate_unit_only=True,
+         production_references_excluded=True,unit_three_symbols_unique=True,
+         entire_historical_compiled_source_reconstruction_claimed=False,independent_complete_instruction_equivalence_claimed=False,
+         independent_LU_reconstruction_claimed=False)
+@@ -1685,17 +2289,20 @@
+         raise ValueError("all actual raw controls must be archived before numerical acceptance")
+     identity = read(require(OUT / "runtime/build_identity.json"))
+     helper().verify({str(OUT / name):sha for name,sha in identity["files"].items()})
+-    controls = control_audit(d)
++    controls = component_controls_audit(d)
+     write_new(OUT / "audit/controls.json", controls)
+     binary = binary_audit(d)
+     write_new(OUT / "audit/binary_identity.json", binary)
+-    write_new(OUT / "audit/result.json", dict(classification="PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY",
++    write_new(OUT / "audit/result.json", dict(classification="PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_CONTROLS_ONLY",
+         declaration_sha256=expected, control_status=controls["status"], binary_status=binary["status"],
+         factor_diagonal_codec_controls_passed=controls["codec_controls"]["status"]=="PASS",
+         cross_group_identity_controls_passed=controls["keycodec_controls"]["status"]=="PASS",
+         rank1_factor_cache_controls_passed=True, all_new_cache_outputs_bitwise_equal_to_uncached=True,
+         operator_identity_guard_negative_controls_passed=True, rank1_factor_cache_math_and_rhs_order_unchanged=True,
+-        control_counts=controls["counts"], previous_stage_watchdogs=watches,
++        control_counts=controls["counts"], original_68_control_counts=controls['original_68_control_counts'],
++        sender_window_control_counts=controls['sender_window_control_counts'],sender_window_controls_passed=True,
++        sender_window_source_admission=d['sender_source_admission'],actual_new_sender_compiled_and_linked=True,
++        sender_wrapper_observer_real_SPOT_credit=0,previous_stage_watchdogs=watches,
+         inherited_rank1_factor_cache_admission=d["inherited_rank1_factor_cache_admission"],
+         inherited_rank1_factor_cache_memory_admission=d["inherited_rank1_factor_cache_memory_admission"],
+         actual_failed_compact_memory_native_capture_evidence=d["actual_failed_compact_memory_native_capture_evidence"],
+@@ -1731,7 +2338,7 @@
+     if remaining <= 0:
+         raise ValueError("whole build budget already exhausted before the first real compilation")
+     runner = full.OwnRSSSerialExecutor(OUT, remaining, FAMILY, resources)
+-    result = dict(classification="FAILED_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_NO_RETRY", error=None,
++    result = dict(classification="FAILED_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_NO_RETRY", error=None,
+         actual_full_FLU_entry_executed=False, transport_launched=False, AAA_accuracy_qualified=False, ABA_admitted=False)
+     try:
+         for index, command in enumerate(d["build_commands"]):
+@@ -1739,9 +2346,11 @@
+             runner.execute(OUT / "build", f"build_{index:02d}", command, STAGE_WALL)
+         names = ("runtime/Dragon", "runtime/rank1_factor_cache_last_cprime_trim_controls", "build/SPOT1P64.o", "build/SPOT1P64.dense_reference.o",
+             "build/SPOT1P64.original_reference.o", "build/rank1_factor_cache_last_cprime_trim_controls.o",
+-            "build/keycodec_controls.o","runtime/keycodec_controls")
++            "build/keycodec_controls.o","runtime/keycodec_controls","build/FLU2DR64.o",
++            "build/FLUSP64.original_reference_unit.o","build/sender_window_controls.o","runtime/flusp64_window_observer_controls")
+         write_new(OUT / "runtime/build_identity.json", dict(files={name:digest(require(OUT / name)) for name in names},
+-            sole_new_production_overrides=["SPOT1P64.o"], inherited_sender_override=pin(SENDER_OBJECT),
++            sole_new_production_overrides=["SPOT1P64.o","FLU2DR64.o"], original_sender_ancestry=pin(SENDER_OBJECT),
++            actual_sender_source=pin(SOURCE/'FLU2DR64.f'),actual_sender_source_proof=pin(SOURCE/'sender_source_patch_proof.json'),
+             inherited_Flu_override=read(PARENT / "runtime/build_identity.json")["inherited_Flu_override"]))
+         try:
+             environment(d)
+@@ -1786,11 +2395,24 @@
+                     check_keycodec_negative_watch(stage)
+                 else:
+                     raise ValueError('keycodec negative unexpectedly returned success; no retry')
++            for case in d['sender_control_contract']['cases']:
++                environment(d)
++                command=[str(OUT/'runtime/flusp64_window_observer_controls'),*case['args']]
++                if case['expected_returncode']==0:
++                    runner.execute(OUT/'sender_controls'/case['name'],'execute',command,STAGE_WALL)
++                else:
++                    try:runner.execute(OUT/'sender_controls'/case['name'],'execute',command,STAGE_WALL)
++                    except RuntimeError:
++                        stage=read(OUT/FAMILY/'stages.json')['stages'][-1]
++                        if stage['label']!='sender_controls/'+case['name']+'/execute':raise
++                        check_sender_negative_watch(stage)
++                    else:raise ValueError('sender unsupported leakage unexpectedly returned success; no retry')
+         finally:
+             # Preserve all returned/partial raw files and actual stdout before
+             # any independent finite/bitwise or expected-negative-message gate.
+             write_new(OUT / "raw_controls_receipt.json", dict(files=raw_inventory(OUT / "controls"),
+                 before_numeric_gates=True, declared_control_contract=d["control_contract"]))
++            write_new(OUT/'raw_sender_controls_receipt.json',sender_raw_receipt(d))
+         runner.execute(OUT / "audit", "audit", stage_commands(d, expected)[-1], STAGE_WALL,
+                        "AXMAT-RANK1-CACHE-BUILD-AUDITED")
+         stages = read(OUT / FAMILY / "stages.json")["stages"]
+@@ -1799,7 +2421,11 @@
+                 or any(not stage_outcome_valid(row) for row in stages)):
+             raise ValueError("all declared build/control/audit stages must actually pass exactly once")
+         audit = read(OUT / "audit/result.json")
+-        if (audit["classification"] != "PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY"
++        if (audit['sender_window_controls_passed'] is not True or audit['actual_new_sender_compiled_and_linked'] is not True
++                or audit['original_68_control_counts']['total_declared_stages']!=68
++                or audit['control_counts']['total_declared_stages']!=86 or audit['sender_wrapper_observer_real_SPOT_credit']!=0):
++            raise ValueError('complete original68 and14 new actual fullsender wrapper controls required')
++        if (audit["classification"] != "PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_CONTROLS_ONLY"
+                 or audit["control_status"] != "PASS" or audit["binary_status"] != "PASS"
+                 or any(audit[key] is not True for key in ("rank1_factor_cache_controls_passed",
+                     "all_new_cache_outputs_bitwise_equal_to_uncached", "operator_identity_guard_negative_controls_passed",
+@@ -1808,8 +2434,11 @@
+                     "canonical_dictionary_signed_zero_and_all_unique_fallback_verified",
+                     "dictionary_dimensions_indices_canonical_and_release_negative_controls_passed","factor_diagonal_codec_controls_passed"))):
+             raise ValueError("actual complete raw cache controls and compiled override identity must pass")
+-        result.update(classification="COMPLETE_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY", watchdogs=[check_watch(row) for row in stages],
+-            control_counts=audit["control_counts"], runtime_sha256=digest(OUT / "runtime/Dragon"),
++        result.update(classification="COMPLETE_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_CONTROLS_ONLY", watchdogs=[check_watch(row) for row in stages],
++            control_counts=audit["control_counts"],original_68_control_counts=audit['original_68_control_counts'],
++            sender_window_control_counts=audit['sender_window_control_counts'],sender_window_controls_passed=True,
++            actual_new_sender_compiled_and_linked=True,sender_wrapper_observer_real_SPOT_credit=0,
++            runtime_sha256=digest(OUT / "runtime/Dragon"),
+             rank1_factor_cache_budget_bytes=536870912, source_root=str(SOURCE),
+             all_new_cache_outputs_bitwise_equal_to_uncached=True, fresh_cold_AAA_required=True, factor_diagonal_codec_controls_passed=True,cross_group_identity_controls_passed=True)
+     except BaseException as error:
+@@ -1825,12 +2454,12 @@
+                 raise ValueError("complete SOURCE plus OUT or whole build wall budget exceeded")
+             result.update(elapsed_seconds=elapsed, archive_bytes_before_closeout=actual_size)
+         except BaseException as error:
+-            result.update(classification="FAILED_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_NO_RETRY", error=repr(error),
++            result.update(classification="FAILED_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_NO_RETRY", error=repr(error),
+                 elapsed_seconds=time.monotonic()-started)
+             write_new(OUT / "driver_result.json", result)
+             raise
+         write_new(OUT / "driver_result.json", result)
+-    write_new(OUT / "seal.json", dict(schema="AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_SEAL_V1", directories=exact_directories(OUT), files={
++    write_new(OUT / "seal.json", dict(schema="AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_SEAL_V13", directories=exact_directories(OUT), files={
+         str(path.relative_to(OUT)):digest(path) for path in OUT.rglob("*") if path.is_file() and not path.is_symlink()}))
+     try:
+         final_resources = resources.check()
+@@ -1957,7 +2586,7 @@
+     if not re.fullmatch(r"[0-9a-f]{64}", build_seal_sha or ""):
+         raise ValueError("the actual new rank-one-cache build seal hash is mandatory")
+     seal = read(require(OUT / "seal.json", build_seal_sha))
+-    if seal["schema"] != "AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_SEAL_V1":
++    if seal["schema"] != "AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_SEAL_V13":
+         raise ValueError("the actual complete new rank-one-cache build seal is required")
+     if exact_directories(OUT)!=seal["directories"]:raise ValueError("complete final directory namespace changed")
+     actual = {}
+@@ -1975,8 +2604,8 @@
+     audit = read(require(OUT / "audit/result.json"))
+     flags = ("rank1_factor_cache_controls_passed", "all_new_cache_outputs_bitwise_equal_to_uncached",
+         "operator_identity_guard_negative_controls_passed", "rank1_factor_cache_math_and_rhs_order_unchanged", "fresh_cold_AAA_required")
+-    if (result["classification"] != "COMPLETE_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY" or result["error"] is not None
+-            or audit["classification"] != "PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY"
++    if (result["classification"] != "COMPLETE_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_CONTROLS_ONLY" or result["error"] is not None
++            or audit["classification"] != "PASS_SENDER_CONTIGUOUS_FLUX_WINDOW_BUILD_CONTROLS_ONLY"
+             or audit["declaration_sha256"] != declared_sha or audit["control_status"] != "PASS" or audit["binary_status"] != "PASS"
+             or any(audit[key] is not True for key in flags)
+             or audit["inherited_rank1_factor_cache_admission"] != d["inherited_rank1_factor_cache_admission"]
+@@ -2000,26 +2629,44 @@
+             "canonical_dictionary_signed_zero_and_all_unique_fallback_verified",
+             "dictionary_dimensions_indices_canonical_and_release_negative_controls_passed")) or audit["native_RSS_proof_obtained"] is not False:
+         raise ValueError("actual memory control result must pass without claiming native RSS")
+-    controls = control_audit(d)
++    controls = component_controls_audit(d)
+     if audit.get("factor_diagonal_codec_controls_passed") is not True or result.get("factor_diagonal_codec_controls_passed") is not True or controls["codec_controls"]["status"] != "PASS":
+         raise ValueError("new actual full factor codec controls must pass independently")
+     if (audit.get('cross_group_identity_controls_passed') is not True or result.get('cross_group_identity_controls_passed') is not True
+-            or controls['keycodec_controls']['status']!='PASS' or controls['counts']['total_declared_stages']!=68):
++            or controls['keycodec_controls']['status']!='PASS' or controls['counts']['total_declared_stages']!=86 or controls['original_68_control_counts']['total_declared_stages']!=68):
+         raise ValueError('all original45 plus actual21 independent codec cases must pass, without native qualification')
+     if controls != read(OUT / "audit/controls.json") or controls["counts"] != result["control_counts"]:
+         raise ValueError("actual full raw finite/bitwise/coverage/allocation audit differs from its sealed result")
++    if (result['sender_window_controls_passed'] is not True or audit['sender_window_controls_passed'] is not True
++            or result['actual_new_sender_compiled_and_linked'] is not True or audit['actual_new_sender_compiled_and_linked'] is not True
++            or result['original_68_control_counts']!=controls['original_68_control_counts']
++            or audit['original_68_control_counts']!=controls['original_68_control_counts']
++            or result['sender_window_control_counts']!=controls['sender_window_control_counts']
++            or audit['sender_window_control_counts']!=controls['sender_window_control_counts']
++            or audit['sender_window_source_admission']!=sender_source_admission()
++            or result['sender_wrapper_observer_real_SPOT_credit']!=0 or audit['sender_wrapper_observer_real_SPOT_credit']!=0):
++        raise ValueError('all original68 and new complete sender raw scopes must be freshly admitted independently')
+     binary = read(require(OUT / "audit/binary_identity.json"))
+     if (binary["status"] != "PASS" or binary["source_and_command_identity_verified"] is not True
+             or binary["exact_parent_link_inverse_restoration"] is not True
+             or binary["actual_private_object_definitions_verified"] is not True
+-            or binary["executable_definitions_verified"] is not True):
++            or binary["executable_definitions_verified"] is not True
++            or binary['actual_new_sender_compiled_and_linked'] is not True
++            or binary['actual_sender_wrapper_observer_separate_unit_only'] is not True
++            or binary['actual_full_sender_source']!=pin(SOURCE/'FLU2DR64.f')
++            or binary['actual_sender_source_proof']!=pin(SOURCE/'sender_source_patch_proof.json')
++            or binary['original_sender_ancestry']!=pin(SENDER_OBJECT)):
+         raise ValueError("actual normal compiled-source/object/link provenance is required")
+     for value in [*binary["raw_metadata"].values(), *binary["actual_objects"].values()]:
+         require(value["path"], value["sha256"])
+     identity = read(require(OUT / "runtime/build_identity.json"))
+-    if (identity["sole_new_production_overrides"] != ["SPOT1P64.o"]
++    if (identity["sole_new_production_overrides"] != ["SPOT1P64.o","FLU2DR64.o"]
+             or identity["inherited_Flu_override"] != read(PARENT / "runtime/build_identity.json")["inherited_Flu_override"]
+-            or identity["inherited_sender_override"] != pin(SENDER_OBJECT)):
++            or identity['original_sender_ancestry'] != pin(SENDER_OBJECT)
++            or identity['actual_sender_source']!=pin(SOURCE/'FLU2DR64.f')
++            or identity['actual_sender_source_proof']!=pin(SOURCE/'sender_source_patch_proof.json')
++            or binary['actual_objects']['new_sender']!=pin(OUT/'build/FLU2DR64.o')
++            or identity['files']['build/FLU2DR64.o']!=digest(OUT/'build/FLU2DR64.o')):
+         raise ValueError("the actual compiled 15/16 selector object and sole new override set must remain exact")
+     helper().verify({str(OUT / name):sha for name,sha in identity["files"].items()})
+     stages = read(require(OUT / FAMILY / "stages.json"))["stages"]
+@@ -2037,10 +2684,16 @@
+     # runtime identity that a consuming pipeline must compare exactly.
+     resources_for(d["resource_roots"]).check()
+     prior = d["inherited_rank1_factor_cache_admission"]
+-    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1",
+-        admission="RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY", build_root=str(OUT), source_root=str(SOURCE),
++    return dict(schema="AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_PRODUCTION_RUNTIME_INPUT_ADMISSION_V13",
++        admission="SENDER_CONTIGUOUS_FLUX_WINDOW_RUNTIME_INPUT_ONLY_V13", build_root=str(OUT), source_root=str(SOURCE),
+         build_seal_sha256=build_seal_sha, corrected_runtime=pin(OUT / "runtime/Dragon"),
+         compiled_kernel_source=pin(SOURCE / "SPOT1P64.f90"),
++        compiled_sender_source=pin(SOURCE/'FLU2DR64.f'),compiled_sender=pin(OUT/'build/FLU2DR64.o'),
++        sender_source_proof=pin(SOURCE/'sender_source_patch_proof.json'),sender_source_only_INPUT=pin(SOURCE/'sender_source_only_INPUT.json'),
++        sender_window_source_admission=d['sender_source_admission'],sender_window_controls_passed=True,
++        sender_wrapper_raw_controls=controls['sender_window_controls'],sender_window_control_counts=controls['sender_window_control_counts'],
++        original_68_control_counts=controls['original_68_control_counts'],
++        sender_wrapper_observer_real_SPOT_credit=0,actual_new_sender_compiled_and_linked=True,
+         source_admission=pin(SOURCE / "source_admission.json"),
+         inherited_rank1_factor_cache_admission=prior, actual_failed_cold_AAA_evidence=d["actual_failed_cold_AAA_evidence"],
+         inherited_rank1_factor_cache_memory_admission=d["inherited_rank1_factor_cache_memory_admission"],
+@@ -2084,7 +2737,8 @@
+         source_patch_proof=pin(SOURCE / "source_admission.json"),
+         actual_resource_class_factory=dict(path=str(parent_factory().PARENT_FACTORY), sha256=parent_factory().PARENT_FACTORY_SHA,
+             class_name="DynamicHistoryResources", genuine_class_not_overlay=True),
+-        corrected_sender_retained=True, white_closure_unchanged=True, collision_self_operator_unchanged=True,
++        corrected_sender_transport_math_retained=True,sender_output_storage_window_changed=True,
++        original_sender_ancestry=pin(SENDER_OBJECT),white_closure_unchanged=True, collision_self_operator_unchanged=True,
+         angle_grid_unchanged=True, radial_arithmetic_unchanged=True, physical_data_unchanged=True,
+         original_accuracy_thresholds_changed=False, no_CE_fitting=True,
+         resource_scope_policy=HISTORY_SCOPE_POLICY, resource_scope_contract=d["resource_scope_contract"],

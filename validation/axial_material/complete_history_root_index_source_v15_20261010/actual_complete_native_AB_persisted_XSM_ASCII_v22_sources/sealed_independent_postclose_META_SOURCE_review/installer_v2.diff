@@ -1,0 +1,13 @@
+--- /private/tmp/spot_install_v22_complete_native_ROOT.py
++++ /private/tmp/spot_install_v22_complete_native_ROOT_v2.py
+@@ -2,8 +2,8 @@
+ from pathlib import Path
+ ROOT=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010')
+ SOURCE=Path('/private/tmp/axmat_complete_native_actual_BOUND_SOURCE_ROOT_20261010_503adf')
+-WRITER=Path('/private/tmp/spot_v22_native_postclose_META_ROOT.py')
+-WRITER_SHA='5f302e44a094c20682e1708f3cd714f4e7bedf7da12de1c775ccca7b8338ea5b'
++WRITER=Path('/private/tmp/spot_v22_native_postclose_META_ROOT_v2.py')
++WRITER_SHA='dcdfbe2eda413f8958ec2c3a3ef4f8ae59507793706d385a3fab030c9bbc4dfc'
+ def main():
+     ap=argparse.ArgumentParser();ap.add_argument('--peer-manifest',required=True);ap.add_argument('--peer-manifest-sha256',required=True);ap.add_argument('--peer-seal-receipt',required=True);ap.add_argument('--metadata-source-peer-report',required=True);ap.add_argument('--metadata-source-peer-report-sha256',required=True)
+     a=ap.parse_args();assert hashlib.sha256(WRITER.read_bytes()).hexdigest()==WRITER_SHA

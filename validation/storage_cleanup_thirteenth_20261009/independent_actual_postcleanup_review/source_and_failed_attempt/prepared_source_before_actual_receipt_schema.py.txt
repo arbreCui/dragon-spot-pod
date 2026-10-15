@@ -1,0 +1,290 @@
+"""Independent fixed R13 storage postcheck; run only after Root's explicit true terminal.
+
+Stdlib metadata and bounded SHA reads only. No cleanup, restore, target import,
+API, scientific byte census, subprocess, or project write.
+"""
+from pathlib import Path
+from collections import Counter, defaultdict
+import hashlib
+import json
+import math
+import os
+import stat
+
+ROOT = Path('/Users/wen/spot')
+REPORT = ROOT / 'validation/storage_cleanup_thirteenth_20261009'
+BASE = Path('/private/tmp/spot_storage_recheck_20261009_root13')
+HERE = Path('/private/tmp/spot_storage_root13_post_retirement_independent_source_20261009')
+OUT = Path('/private/tmp/spot_storage_root13_actual_post_retirement_independent_review_20261009')
+MANIFEST_SHA = '810e1bb9ed07c24b633cf92e057551d8c3f7ebfdf2c474fb87f4096770dc25db'
+INVENTORY_SHA = '3a51108e35e4aed5e36638dbacb113e5e82ddb3ac480be6e2627c364355636c4'
+GRAPH_SHA = '0e365ebbaafa0d9e9b3a34eee89cc9c3e1de3ee47812d985135b8201bd001be3'
+KEYS = ('dev', 'ino', 'mode', 'size', 'mtime_ns', 'ctime_ns', 'nlink')
+R13_REL = REPORT.relative_to(ROOT).as_posix()
+
+
+def identity(s):
+    return [getattr(s, 'st_' + key) for key in KEYS]
+
+
+def kind(s):
+    if stat.S_ISREG(s.st_mode):
+        return 'file'
+    if stat.S_ISDIR(s.st_mode):
+        return 'dir'
+    if stat.S_ISLNK(s.st_mode):
+        return 'symlink'
+    return 'other'
+
+
+def pin(path):
+    path = Path(path)
+    before = identity(path.lstat())
+    assert stat.S_ISREG(before[2]) and path.resolve(strict=True) == path
+    h = hashlib.sha256()
+    with path.open('rb') as stream:
+        while chunk := stream.read(1024 * 1024):
+            h.update(chunk)
+    assert identity(path.lstat()) == before
+    return {'path': str(path), 'sha256': h.hexdigest(), 'size': before[3], 'identity': before}
+
+
+def load(path):
+    p = pin(path)
+    value = json.loads(Path(path).read_text())
+    assert identity(Path(path).lstat()) == p['identity']
+    return value, p
+
+
+def keep(rel):
+    return not (rel == '.git' or rel.startswith('.git/') or rel == R13_REL or rel.startswith(R13_REL + '/'))
+
+
+def iscache(rel):
+    return Path(rel).suffix in ('.pyc', '.pyo') or any(x in ('__pycache__', '.ruff_cache', '.pytest_cache', '.mypy_cache') for x in Path(rel).parts)
+
+
+def fingerprint_from_rows(rows, excluded):
+    """Reconstruct cleanup's serialized DFS stream without importing its source."""
+    children = defaultdict(list)
+    for rel, row in rows.items():
+        if keep(rel):
+            parent = Path(rel).parent.as_posix()
+            children[parent].append((Path(rel).name, rel, row))
+    h = hashlib.sha256()
+    counts = {'regular_files': 0, 'symlinks': 0, 'directories': 0}
+    stack = ['.']
+    while stack:
+        parent = stack.pop()
+        h.update(json.dumps(['directory', parent], separators=(',', ':')).encode() + b'\n')
+        counts['directories'] += 1
+        dirs = []
+        for name, rel, row in sorted(children[parent]):
+            if row['type'] == 'dir':
+                dirs.append(rel)
+                continue
+            if str(ROOT / rel) in excluded:
+                continue
+            ident = [row[key] for key in KEYS]
+            if row['type'] == 'file':
+                value = ['file', rel, ident]
+                counts['regular_files'] += 1
+            elif row['type'] == 'symlink':
+                value = ['link', rel, ident, row['target']]
+                counts['symlinks'] += 1
+            else:
+                continue
+            h.update(json.dumps(value, separators=(',', ':')).encode() + b'\n')
+        stack.extend(reversed(dirs))
+    return {'sha256': h.hexdigest(), **counts}
+
+
+def fresh_namespace(ns):
+    root = Path(ns['root'])
+    assert root.is_dir() and root.resolve(strict=True) == Path(ns['canonical_root'])
+    files, dirs, links = set(), set(), {}
+    stack = [root]
+    while stack:
+        parent = stack.pop()
+        with os.scandir(parent) as entries:
+            for entry in entries:
+                p = Path(entry.path)
+                rel = p.relative_to(root).as_posix()
+                s = entry.stat(follow_symlinks=False)
+                t = kind(s)
+                if t == 'dir':
+                    dirs.add(rel)
+                    stack.append(p)
+                elif t == 'file':
+                    files.add(rel)
+                elif t == 'symlink':
+                    target = p.resolve(strict=True)
+                    links[rel] = {'kind': 'directory' if target.is_dir() else 'file', 'target': str(target), 'text': os.readlink(p)}
+                else:
+                    raise ValueError('Nonordinary namespace member: ' + str(p))
+    return {'root': str(root), 'regular_files': len(files), 'directories': len(dirs), 'symlinks': len(links), 'metadata_exact': files == set(ns['files']) and dirs == set(ns['directories']) and links == ns['symlinks']}
+
+
+def main():
+    # All these fields are null in the prepared plan. No storage postcheck can
+    # start until facts supplied after Root's explicit observed EXIT0 message.
+    plan, plan_pin = load(HERE / 'future_postcheck_bindings.json')
+    facts = plan['actual_root_cleanup']
+    assert facts is not None, 'UNEXECUTED: Root actual cleanup terminal has not been bound'
+    tool = facts['actual_tool']
+    assert type(tool['exit_code']) is int and tool['exit_code'] == 0
+    assert tool['closed'] is True and facts['explicit_root_true0_message_received'] is True
+    assert tool['initial_chunk_id'] and tool['terminal_chunk_id']
+    assert facts['observation_path'] and facts['observation_sha256']
+    assert not OUT.exists(), 'No overwrite or second postcheck output'
+    observation, observation_pin = load(facts['observation_path'])
+    assert observation_pin['sha256'] == facts['observation_sha256']
+    assert observation['actual_tool'] == tool
+    assert observation['actual_tool_terminal_observed'] is True
+    assert observation['record_written_after_actual_terminal_return'] is True
+    assert observation['record_producer'] == 'root'
+    manifest, manifest_pin = load(REPORT / 'manifest.json')
+    assert manifest_pin['sha256'] == MANIFEST_SHA
+    candidates = manifest['candidates']
+    selected = {row['path'] for row in candidates}
+    expected = {str(ROOT / ('validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v' + str(v) + '-20261009/runtime/Dragon')) for v in (7, 8)}
+    assert selected == expected and len(candidates) == len(expected)
+    assert len(manifest['retained_primaries']) == 1
+    cleanup_pin = pin(REPORT / 'cleanup_fixed_build_copies.py')
+    restore_pin = pin(REPORT / 'restore_retired_build_copies.py')
+    assert cleanup_pin['sha256'] == manifest['cleanup_source_sha256']
+    assert restore_pin['sha256'] == manifest['restore_source_sha256']
+    retained_pins = []
+    for row in manifest['retained_control_pins'] + manifest['retained_primaries']:
+        actual = pin(row['path'])
+        assert actual['identity'] == row['identity'] and actual['sha256'] == row['sha256'] and actual['size'] == row['size']
+        retained_pins.append(actual)
+    primary = manifest['retained_primaries'][0]
+    for row in candidates:
+        assert row['sha256'] == primary['sha256'] and row['size'] == primary['size']
+        mapping = row['restore_byte_exact_mapping']
+        assert mapping['target'] == row['path'] and mapping['source'] == primary['path']
+        assert mapping['expected_sha256'] == row['sha256'] and mapping['expected_size'] == row['size']
+        assert mapping['overwriting_forbidden'] is True
+        assert not os.path.lexists(row['path'])
+    before, before_pin = load(REPORT / 'preflight.stdout')
+    result, result_pin = load(REPORT / 'cleanup_result.json')
+    stdout, stdout_pin = load(facts['stdout_path'])
+    stderr_pin = pin(facts['stderr_path'])
+    assert stdout == result
+    assert stdout_pin['sha256'] == observation['stdout_sha256']
+    assert stderr_pin['sha256'] == observation['stderr_sha256'] and stderr_pin['size'] == 0
+    assert result['status'] == 'PASS_ACTUAL_FIXED_TWO_BUILD_COPY_RETIREMENT'
+    assert result['executed'] is True and result['manifest_sha256'] == MANIFEST_SHA
+    assert result['count'] == len(selected)
+    assert result['logical_bytes'] == sum(row['size'] for row in candidates)
+    assert result['allocated_bytes'] == sum(row['allocated_bytes'] for row in candidates)
+    assert result['science_or_API_executed'] is False and result['scientific_credit'] is False
+    ledger_pin = pin(REPORT / 'retirement_ledger.jsonl')
+    ledger = [json.loads(line) for line in (REPORT / 'retirement_ledger.jsonl').read_text().splitlines()]
+    assert identity((REPORT / 'retirement_ledger.jsonl').lstat()) == ledger_pin['identity']
+    assert [row['path'] for row in ledger] == [row['path'] for row in candidates]
+    for row in ledger:
+        assert set(row) == {'path', 'sha256', 'retained_primary', 'removed_at'}
+        assert row['sha256'] == primary['sha256'] and row['retained_primary'] == primary['path']
+        assert type(row['removed_at']) in (int, float) and math.isfinite(row['removed_at']) and row['removed_at'] >= result['timestamp']
+    inventory = BASE / 'full_metadata_inventory.jsonl'
+    inventory_identity = identity(inventory.lstat())
+    h = hashlib.sha256()
+    baseline, all_types = {}, Counter()
+    with inventory.open('rb') as stream:
+        for line in stream:
+            h.update(line)
+            row = json.loads(line)
+            rel = row['path']
+            assert rel and not rel.startswith('/') and '..' not in Path(rel).parts
+            all_types[row['type']] += 1
+            if keep(rel):
+                assert rel not in baseline
+                baseline[rel] = row
+    assert h.hexdigest() == INVENTORY_SHA and identity(inventory.lstat()) == inventory_identity
+    summary, summary_pin = load(BASE / 'inventory_summary.json')
+    boundary, boundary_pin = load(BASE / 'fresh_boundary_and_cache_review.json')
+    assert dict(all_types) == summary['types']
+    current, new_r13 = {}, Counter()
+    stack = [ROOT]
+    while stack:
+        parent = stack.pop()
+        with os.scandir(parent) as entries:
+            for entry in entries:
+                p = Path(entry.path)
+                rel = p.relative_to(ROOT).as_posix()
+                if rel == '.git':
+                    continue
+                s = entry.stat(follow_symlinks=False)
+                row = dict(zip(KEYS, identity(s)))
+                row.update(path=rel, type=kind(s))
+                if row['type'] == 'symlink':
+                    row['target'] = os.readlink(p)
+                if rel == R13_REL or rel.startswith(R13_REL + '/'):
+                    new_r13[row['type']] += 1
+                else:
+                    current[rel] = row
+                if row['type'] == 'dir':
+                    stack.append(p)
+    selected_rel = {Path(path).relative_to(ROOT).as_posix() for path in selected}
+    missing = set(baseline) - set(current)
+    added = set(current) - set(baseline)
+    assert missing == selected_rel and not added
+    directory_exceptions = {'validation': 'R13 report directory added'}
+    directory_exceptions.update({str(Path(rel).parent): 'one fixed Dragon copy unlinked' for rel in selected_rel})
+    differences, allowed_directory_changes = [], []
+    for rel in sorted(set(baseline) & set(current)):
+        old, new = baseline[rel], current[rel]
+        fields = [key for key in KEYS if old[key] != new[key]]
+        if old['type'] != new['type'] or (old['type'] == 'symlink' and old['target'] != new['target']):
+            differences.append({'path': rel, 'difference': 'type_or_link_target'})
+        if fields and rel in directory_exceptions and old['type'] == new['type'] == 'dir':
+            permitted = {'size', 'mtime_ns', 'ctime_ns'}
+            if rel == 'validation':
+                permitted.add('nlink')
+                assert new['nlink'] == old['nlink'] + 1 and new['size'] >= old['size']
+            else:
+                assert new['nlink'] == old['nlink'] and new['size'] <= old['size']
+            assert set(fields) <= permitted and new['mtime_ns'] >= old['mtime_ns'] and new['ctime_ns'] >= old['ctime_ns']
+            allowed_directory_changes.append({'path': str(ROOT / rel), 'reason': directory_exceptions[rel], 'changed_fields': fields, 'before': [old[k] for k in KEYS], 'after': [new[k] for k in KEYS]})
+        elif fields:
+            differences.append({'path': rel, 'difference': 'seven_identity_fields', 'fields': fields})
+    assert not differences
+    reconstructed_before = fingerprint_from_rows(baseline, selected)
+    independent_after = fingerprint_from_rows(current, selected)
+    assert reconstructed_before == independent_after == before['other_paths_before'] == result['other_paths_before'] == result['other_paths_after']
+    cache_before = {str(ROOT / rel) for rel, row in baseline.items() if row['type'] == 'file' and iscache(rel)}
+    cache_after = {str(ROOT / rel) for rel, row in current.items() if row['type'] == 'file' and iscache(rel)}
+    assert cache_before == cache_after == {row['path'] for row in boundary['cache_rows']}
+    graph, graph_pin = load(boundary['graph_pin']['path'])
+    assert graph_pin['sha256'] == GRAPH_SHA == boundary['graph_pin']['sha256']
+    namespace_checks = [fresh_namespace(ns) for ns in graph['namespaces']]
+    assert all(row['metadata_exact'] for row in namespace_checks)
+    alias_checks = []
+    for row in graph['aliases']:
+        p = Path(row['path'])
+        s = p.lstat()
+        target = p.resolve(strict=True)
+        assert stat.S_ISLNK(s.st_mode) and os.readlink(p) == row['text'] and str(target) == row['target']
+        assert ('directory' if target.is_dir() else 'file') == row['kind']
+        alias_checks.append({'path': str(p), 'target': str(target), 'kind': row['kind'], 'identity': identity(s)})
+    unexpected_absences = [path for path in graph['absence_inputs'] if os.path.lexists(path)]
+    missing_roots = [path for path in graph['live_resource_roots'] if not Path(path).is_dir()]
+    assert not unexpected_absences and not missing_roots
+    assert not any(row['path'] in selected for row in graph['canonical_files'])
+    final = {'schema': 'SPOT_R13_INDEPENDENT_ACTUAL_FIXED_TWO_STORAGE_POSTCHECK_V1', 'status': 'PASS', 'actual_root_tool_observed': tool, 'actual_root_observation_pin': observation_pin, 'plan_pin': plan_pin, 'manifest_pin': manifest_pin, 'cleanup_source_pin': cleanup_pin, 'restore_source_pin': restore_pin, 'root_preflight_pin': before_pin, 'root_cleanup_result_pin': result_pin, 'root_actual_stdout_pin': stdout_pin, 'root_actual_stderr_pin': stderr_pin, 'retirement_ledger_pin': ledger_pin, 'retired_exact_paths': sorted(selected), 'ledger_exact_truthful': True, 'master_and_control_full_SHA_pins': retained_pins, 'derived_control_rows': len(manifest['retained_control_pins']), 'derived_control_bytes': sum(row['size'] for row in manifest['retained_control_pins']), 'derived_master_rows': len(manifest['retained_primaries']), 'derived_unique_retained_paths': len({row['path'] for row in retained_pins}), 'root_inventory_pin': {'path': str(inventory), 'sha256': h.hexdigest(), 'identity': inventory_identity}, 'summary_pin': summary_pin, 'boundary_pin': boundary_pin, 'derived_baseline_types': dict(Counter(row['type'] for row in baseline.values())), 'derived_current_types': dict(Counter(row['type'] for row in current.values())), 'missing_exact_only_selected': sorted(missing), 'unexpected_added_paths': sorted(added), 'identity_or_type_or_link_differences': differences, 'directory_identity_exception_policy': 'Directory paths and dev/ino/mode exact. Only validation parent may increase size/nlink and change mtime/ctime for new R13 tree; two selected runtime parents may decrease size and change mtime/ctime after one unlink each. All other directory seven fields exact. Atime/allocation excluded.', 'allowed_directory_changes': allowed_directory_changes, 'R13_new_tree_excluded_types': dict(new_r13), 'README_excluded': False, 'git_exclusion': '.git and descendants only', 'independently_reconstructed_before': reconstructed_before, 'independent_after': independent_after, 'cache_count_derived': len(cache_after), 'cache_set_metadata_unchanged': True, 'graph_pin': graph_pin, 'namespace_record_count_derived': len(namespace_checks), 'namespace_metadata_checks': namespace_checks, 'alias_record_count_derived': len(alias_checks), 'alias_metadata_checks': alias_checks, 'absence_input_count_derived': len(graph['absence_inputs']), 'unexpected_absence_presence': unexpected_absences, 'resource_root_count_derived': len(graph['live_resource_roots']), 'missing_resource_roots': missing_roots, 'canonical_count_derived': len(graph['canonical_files']), 'files_deleted_by_this_audit': 0, 'project_or_ART_or_formal_written_by_this_audit': False, 'cleanup_restore_business_API_INPUT_PREP_RUN_or_native_executed_by_this_audit': False, 'scientific_full_byte_revalidation_or_credit': False, 'scope_limit': 'Storage preservation metadata plus explicit 132 control/master SHA and graph SHA. Namespace/alias checks are metadata; no 35GB scientific file-content validation or new scientific qualification.'}
+    OUT.mkdir()
+    (OUT / 'independent_actual_postcheck.json').write_text(json.dumps(final, ensure_ascii=False, sort_keys=True, indent=2) + '\n')
+    report = 'R13固定两条旧失败编译副本退役后独立只读复核：PASS\n\n'
+    report += '真实Root终态由明确消息及绑定工具观察核对；本复核未执行删除或恢复。retirement ledger精确两条，候选缺席；OUT9主本及全部保留control完整SHA与身份不变。\n'
+    report += '原完整inventory除两条候选、R13新增文档树及.git外，所有普通文件七字段、链接身份/目标、目录路径一致；README仍纳入。三个受影响父目录允许字段逐项见JSON，未宣称所有目录七字段相同。\n'
+    report += '独立由原inventory重建before指纹及fresh metadata重建after，均等于Root真preflight及真cleanup before/after。cache集合保持；graph完整SHA保持，全部namespace路径/链接、alias、absence和resource root元数据复核。\n'
+    report += '实际派生数量：control ' + str(len(manifest['retained_control_pins'])) + '；namespace ' + str(len(namespace_checks)) + '；alias ' + str(len(alias_checks)) + '；absence ' + str(len(graph['absence_inputs'])) + '；resource roots ' + str(len(graph['live_resource_roots'])) + '。\n'
+    report += '仅TMP写入；这是存储保留独审，不是35GB科学INPUT字节准入、solver/API/PREP/RUN或冷启动成功信用。旧包回放先按保留restore映射恢复对应Dragon原字节，原inode/ctime不可恢复。\n'
+    (OUT / 'REPORT.txt').write_text(report)
+    print(json.dumps({'status': 'PASS', 'output': str(OUT), 'retired_count': len(selected), 'independent_after': independent_after, 'controls': len(manifest['retained_control_pins']), 'resource_roots': len(graph['live_resource_roots'])}))
+
+
+if __name__ == '__main__':
+    main()

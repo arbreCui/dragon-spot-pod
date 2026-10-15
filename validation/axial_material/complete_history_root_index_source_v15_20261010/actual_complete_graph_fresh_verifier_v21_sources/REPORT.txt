@@ -1,0 +1,117 @@
+Complete current-graph fresh verifier — independently bindable SOURCE package
+
+This package only designs and statically checks SOURCE. It does not read either
+Root install witness, the current37k graph or numeric payload; no helper, guard,
+control, generator main or business API is imported/called. All actual helper
+bindings remain None in the driver and host templates. Candidate dc01d8 /147870
+is context, not an admission or a hardcoded execution pin. Unknown Q/business
+pins remain None. Runtime and science qualifications remain False.
+
+Root binding interface
+After peer SOURCE review, Root alone may execute bind_fresh_verifier_sources.py
+with --install-tool-return <actual witness path>,
+--install-tool-return-sha256 <actual witness SHA>, and
+--template-manifest-sha256 <actual sealed package MANIFEST SHA>.
+The intended exact-integer witness, supplied by Root rather than read here, is
+.../actual_complete_graph_helper_controls_v21_receipts/
+Root_actual_helper_SOURCE_install_tool_return_exact_integer.json with SHA
+f8e83e8ca68397f30657ed5a8fc5b0f2fdcb0e4bd8071a006cca75ba570a68b9.
+The generator does not hardcode that witness path/SHA and does not promote the
+older imprecise witness. It requires exact schema
+ROOT_V21_ACTUAL_COMPLETE_HELPER_SOURCE_INSTALL_TOOL_RETURN_V1, closed:true,
+observed actual terminal return with typed int0/no session, exact integer
+correction markers, installed_helper/source_install_record pins with seven
+actual integers, pure/full verifier qualification False, and runtime helper
+qualification SHA None. It full-rechecks actual canonical helper and SOURCE
+record EOF/SHA7identity before/after and requires the intended canonical path.
+It only writes fresh SOURCE/metadata, never starts a child or imports a guard.
+
+The fixed generated SOURCE namespace is
+B/actual_complete_graph_fresh_verifier_v21_sources; receipts are
+B/actual_complete_graph_fresh_verifier_v21_receipts. Actual HOST and OUT are
+ART/axial-material-complete-graph-fresh-verifier-host-v21-20261010 and
+ART/axial-material-complete-graph-fresh-verifier-v21-20261010.
+All four must be fresh at binding. Ready driver/host text is produced with
+complete inverse hunks to the UNREADY templates; actual source pins and a full
+SOURCE freeze manifest are saved in receipts. No SOURCE files may be appended
+after freeze. Root must independently review/bind actual READY host/driver and
+the frozen complete file inventory before any actual run. The normal host keeps
+its original zero-extra-argument interface; Root external freeze avoids a
+self-SHA manifest cycle. No external terminal exit is invented by the generator.
+
+Driver contract
+The current V20 graph SHA is dfaaaff743d8edf4c94b262c5ee8104f606eddecaf39260010167f0884c6d976.
+The true full public verify_graph signature is unchanged. Old bcd strict_json
+independently obtains all expected public fields from the complete stored graph
+and releases full graph state before the one real new-helper verify_graph call.
+The call is enclosed by actual ReadOpenAudit and requires every canonical path
+plus stored graph read once:37,111+1=37,112 records/attempts. Complete expected
+return, actual return and actual unfiltered trace are saved as lossless gzip,
+full decompression EOF/SHA verified. Four new private positive controls and
+three rejects run inside the new600-second stage. Original60 pure protocol is
+not expanded and is not credited with actual verify_graph coverage. All driver,
+old parent, new helper and fixed graph inputs get complete before/after pins;
+new helper identity must equal the Root actual exact-seven-integer binding.
+
+Finite host differences and inverse
+The host template is mechanically derived from the exact genuine original
+pure_helper_controls_host.py (SHA de72db68baa9b91fee8aad1965605ab25c9cb11ed2ea3013c3a1f04d52a41fb2).
+23 ordered bounded SOURCE hunks reverse to every original byte and full AST:
+doc/imports; fixed new namespaces/target; UNREADY actual-pin guards; separate
+stage label; declared600 stage/1800 whole; real driver SHA CLI; current graph,
+installed witness and complete source inputs; full new report/claim/gzip checks;
+actual PID match; complete SOURCE namespace before/after; honest merged-stream
+labels; new metadata status/failure schema; joint counting also includes receipts.
+New source-only functions inspect whole SOURCE directories/regular files and
+unfiltered persisted output objects. They do not replace the supervisor.
+
+The actual original619 helper load, resource factory load, helper.modules(),
+helper.guard_admission(full), original705/38de class/path/MRO predicate,
+DynamicHistoryResources instance, type(runner), runner.resources identity,
+one execute call, bounded copy, one genuine watchdog and PASS/command/return0/
+ownchild/cleanup checks are retained. Existing history96GiB/free8GiB reserves,
+thread1/child1/retry0 and RSS512MiB remain. Genuine complete resource scans run
+before/after; joint HOST+OUT+SOURCE+receipts/archive remains64MiB and is checked
+again after actual host result. Original normal support and sealed original
+admission dependencies remain real canonical inputs. No guard/MRO monkeypatch,
+fake __file__, profile, counter substitute, new retry or threshold change exists.
+
+The host verifies actual child stdout/report/claim PID equals watch.pid and
+their actual getppid equals host os.getpid. It validates all27 public return
+fields in order/type/value via complete canonical JSON wires, complete expected/
+actual gzip equality, all37,112 actual trace records/attempts, saved current
+graph counts and scopes, four private positives and three exact rejects, the
+exact six-file output namespace, full input/source pins, and false qualification
+flags. Actual child log is honestly merged stdout/stderr; both independent-child
+stream-capture flags are False. External Root host stdout/stderr and actual
+closed typed0 terminal receipts remain mandatory outside this host. A successful
+child/host returns pending external Root evidence; it never certifies its own
+outer completion or assigns business/native/AAA/ABA/neutron-balance eligibility.
+
+All evidence in this package is SOURCE-only. It proves no actual execution,
+512MiB compliance or memory improvement. Actual Root binding tool return,
+complete source freeze, fresh one-stage watchdog/PASS/real PID/limits/outputs,
+before/after input/SOURCE full pins, outer stdout/stderr and observed closed
+typed0 Root tool return require a future separate saved-evidence review.
+
+SOURCE correction of the blocked0057 package
+The sealed0057 package remains unchanged and must not be bound/run: its source
+passed SOURCE_ARCHIVE and RECEIPTS (outsideART) to history_roots, whose unchanged
+eb resource constructor requires strict ART descendants. This fresh package
+changes exactly that host block: retain the original five retargeted ART roots,
+assert five and strict Path.is_relative_to(ART) before the genuine call, and
+exclude only SOURCE/receipts from history-root arguments. The genuine dynamic
+axial-material-* union and resource check remain the exact fixed eb SOURCE.
+SOURCE/receipts still remain in the joint HOST+OUT+SOURCE+receipts64MiB separate
+archive count after execution and final result, and full SOURCE/input7identity
+before/after comparison remains. The original before resource reserve stays
+byte exact; it did not contain a separate before joint archive measurement and
+this narrow correction does not invent one. No resource class, guard, MRO, cap,
+control, driver or Root binding generator is changed. A single reversible host
+block recovers every previous0057 host byte/AST, and all23 original genuine host
+inverse hunks still recover the exact original complete SOURCE. Five declared
+path relations and unchanged dynamic-global implementation are proved only by
+SOURCE/AST/path operations; no ART directory or witness/currentgraph is read.
+Original77 static checks plus38 finite root-fix checks pass. This remains
+UNREADY and requires new peer SOURCE review, actual Root binding review, then
+one normal complete fresh verifier execution with real external closure.

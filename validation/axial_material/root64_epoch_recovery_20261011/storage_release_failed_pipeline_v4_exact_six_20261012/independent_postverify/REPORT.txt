@@ -1,0 +1,1 @@
+独立实际清理后复核通过：准确六个旧 v4 raw 文件缺失；3797 固定保护 DAG、164 保留文件、四 Source 及所有 29 已关闭 watch/log 全文 EOF/7ID 稳定。v4 inventory 恰好减六，唯 AAA 目录 APFS nlink -6 / size -192，其余目录和链接完整相同。v3 因果 PACK 原文件完整保留，额外当前 Native Source 小 pin 无交叉。未删除、未导入清理脚本、未跑 prepare、编译、数值业务或全 ART 实时扫描。

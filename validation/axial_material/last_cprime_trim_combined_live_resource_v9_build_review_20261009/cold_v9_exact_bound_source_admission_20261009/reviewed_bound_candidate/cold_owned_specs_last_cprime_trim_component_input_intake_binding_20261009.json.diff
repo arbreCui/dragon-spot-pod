@@ -1,0 +1,85 @@
+--- /private/tmp/axmat-last-cprime-trim-cold-v9-input-v5-draft-20261009/cold_owned_specs_last_cprime_trim_component_input_intake_binding_20261009.json
++++ /private/tmp/axmat-last-cprime-trim-cold-v9-qualified-input-bound-candidate-20261009/cold_owned_specs_last_cprime_trim_component_input_intake_binding_20261009.json
+@@ -1,17 +1,52 @@
+ {
+   "schema": "AXMAT_COLD_COMPLETE_LAST_CPRIME_TRIM_COMPONENT_INPUT_INTAKE_V1",
+   "semantics": "COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION",
+-  "draft_status": "UNREADY_TRIM_COMBINED_AND_BOUNDED_INTAKE_PENDING",
++  "draft_status": "REVIEWED_COMPLETE_COMPONENT_INPUT_REUSE_NO_COLD_CREDIT",
+   "actual_bounded_api_terminal_evidence": {
+-    "path": null,
+-    "sha256": null
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json",
++    "sha256": "23acbccb31befbba6ae52ffaf80ae119fd3b7341faa263c18a45c0cd239062ba"
+   },
+   "api_return": {
+-    "path": null,
+-    "sha256": null
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.log",
++    "sha256": "0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5"
+   },
+-  "intake_proof_files": null,
+-  "intake_namespaces": null,
++  "intake_proof_files": {
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/host.stdout": "cbf6d9379039bea8874ed4c8b298996216925c8e2ed2fb3a32887d72d505699c",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/result.json": "4b90ddfa50325c1c3f27c479dd1be5508856066e8ecee67fac41d1f8d1bec911",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/host.py": "180053eb92dbe4ff05ee87db75056ee2debca057aecd1b314e6ed648a9096aae",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/host.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/postterminal_recorder.py": "5bd181e59b3229398ec7725e8513da5cf055791400522935f5ebfc2b9bd0d03e",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/runtime/run_bounded_dragon.py": "bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.watchdog.json": "82b52569aef851f9cbc4a6b33403fcfb15fb5c828d83456162e90087fe71142b",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.log": "0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/STANDALONE_BOUNDED_RUNTIME_API_INTAKE/stages.json": "23905533d15bca99347b18d43af7413101108b44cdddb745d6ac73585ac38797",
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json": "23acbccb31befbba6ae52ffaf80ae119fd3b7341faa263c18a45c0cd239062ba"
++  },
++  "intake_namespaces": [
++    {
++      "root": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009",
++      "inventory": {
++        "files": {
++          "host.stdout": "cbf6d9379039bea8874ed4c8b298996216925c8e2ed2fb3a32887d72d505699c",
++          "result.json": "4b90ddfa50325c1c3f27c479dd1be5508856066e8ecee67fac41d1f8d1bec911",
++          "host.py": "180053eb92dbe4ff05ee87db75056ee2debca057aecd1b314e6ed648a9096aae",
++          "host.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++          "postterminal_recorder.py": "5bd181e59b3229398ec7725e8513da5cf055791400522935f5ebfc2b9bd0d03e",
++          "runtime/run_bounded_dragon.py": "bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09",
++          "intake/admit.watchdog.json": "82b52569aef851f9cbc4a6b33403fcfb15fb5c828d83456162e90087fe71142b",
++          "intake/admit.log": "0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5",
++          "STANDALONE_BOUNDED_RUNTIME_API_INTAKE/stages.json": "23905533d15bca99347b18d43af7413101108b44cdddb745d6ac73585ac38797",
++          "Root_terminal_return.json": "23acbccb31befbba6ae52ffaf80ae119fd3b7341faa263c18a45c0cd239062ba"
++        },
++        "symlinks": {},
++        "directories": [
++          "STANDALONE_BOUNDED_RUNTIME_API_INTAKE",
++          "intake",
++          "runtime"
++        ]
++      }
++    }
++  ],
+   "helper_sources": {
+     "graph": {
+       "path": "/Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_requirements_varint_wire_compact_phase_20261009.py",
+@@ -27,17 +62,17 @@
+     }
+   },
+   "complete_historical_input_graph": {
+-    "path": null,
+-    "sha256": null,
+-    "content_sha256": null,
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009/input_graph.json",
++    "sha256": "0e365ebbaafa0d9e9b3a34eee89cc9c3e1de3ee47812d985135b8201bd001be3",
++    "content_sha256": "f91b0168754de2d1e207eda794bd5b4ecd143f84c53f58c27fbb7d45e24ff946",
+     "scope": "COMPLETE_HISTORICAL_INPUT_ONLY"
+   },
+   "binding_source": {
+     "path": "/Users/wen/spot/validation/axial_material/cold_component_input_consumer_last_cprime_trim_own_pid_peak.py",
+-    "sha256": "040f3ec2b201eeeba850c5dff72d66604784d99d97bf9f2c6c991e9ceb48d588"
++    "sha256": "2fa0cb00ec458e9bbbbdf2f15db703a1c0547b08d35f585b6c7e6e6274d06d59"
+   },
+   "component_API_executed_in_cold_process": false,
+   "production_module_identity_overlay": false,
+   "science_qualification": false,
+-  "expected_complete_alias_count": null
++  "expected_complete_alias_count": 186
+ }

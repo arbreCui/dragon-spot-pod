@@ -1,0 +1,298 @@
+--- /Users/wen/spot/validation/axial_material/cold_component_input_consumer_factor_diagonal_trim_own_pid_peak_v10.py
++++ /Users/wen/spot/validation/axial_material/cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py
+@@ -1,4 +1,4 @@
+-'UNREADY V10 complete cold INPUT consumer source-only draft.\n\nAll complete graph, canonical/row/owner/namespace/alias/absence/fresh-read gates\nand historical whole bodies remain unchanged. Actual new bounded intake and\ncombined success witnesses are absent. No controller, native, AAA or ABA credit.'
++'UNREADY V11 complete cold INPUT consumer source-only candidate.\n\nAll complete fresh historical graph/owner/alias/absence/namespace gates remain compulsory. Original P12 bounded intake and separate P14 cold producer contracts remain intact. Every actual new success pin and observed count is absent. No component API or controller runs from this source-only candidate; no native, AAA or ABA credit.'
+ import ast
+ import gc
+ import hashlib
+@@ -13,13 +13,13 @@
+ 
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT/'validation/artifacts'
+-SCHEMA = 'AXMAT_COLD_COMPLETE_FACTOR_DIAGONAL_TRIM_COMPONENT_INPUT_INTAKE_V1'
++SCHEMA = 'AXMAT_COLD_COMPLETE_CROSS_GROUP_IDENTITY_KEY_DELTA_COMPONENT_INPUT_INTAKE_V1'
+ WITNESS_SCHEMA = 'AXMAT_OWNED_SPECS_STANDALONE_BOUNDED_RUNTIME_API_INTAKE_ROOT_ACTUAL_RETURN_V1'
+ SEMANTICS = 'COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION'
+-STATUS = 'REVIEWED_TRIM_COMPLETE_INPUT_CONSUMER_WITH_ACTUAL_BOUNDED_INTAKE'
+-INTAKE_ROOT = ART/'axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009'
+-INTAKE_ROOT_SHA = 'c68607f8bf98733754c0d65e37cfac6b5ebd3a58eb051a416ce7ec62f8653f0d'
+-INTAKE_RETURN_SHA = '6f8d404141656b5bd36f1382b2074df05d3fac9e280dae1c9871ed843a3fccdf'
++STATUS = 'UNREADY'
++INTAKE_ROOT = ART/'axial-material-owned-specs-cross-group-identity-key-delta-v11-standalone-bounded-runtime-api-intake-evidence-20261009'
++INTAKE_ROOT_SHA = None
++INTAKE_RETURN_SHA = None
+ THREADS = ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS',
+            'VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ GRAPH_SOURCE_SHA = '1d7c4d7a9ecc4546ceb4c7e0b81562329f874ca5302621ef5fc026f62c7f7643'
+@@ -27,15 +27,15 @@
+ CHECK_SOURCE_SHA = '86e7d6340da59c74abcff57fa52bb07d690f51cc33fe76f330ece2e0d158258e'
+ SPECS = ROOT/'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+ SPECS_SHA = '2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa'
+-API_SOURCE = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_factor_diagonal_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v10.py'
+-API_SOURCE_SHA = 'c55ca2680d9e1326979649f835d9612a8fd80df5aecee1adc25765c419329efc'
+-API_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_FACTOR_DIAGONAL_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V10_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+-API_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'
+-API_SOURCE_ROOT = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'
+-API_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'
+-API_SEAL_SHA = '3d1094466cb03a08d3bdb08eee0a1f4f3c2b75bb676400beaf5fe7a4892001b5'
+-API_TERMINAL_SHA = 'aec9364827742e68d545ef7ea63ad7d656201c9de13938a1ddceb4b13bbc2bd9'
+-API_PREP_SHA = 'defbc6c30603c334f7c1f8c883c4fb4af6c8fb6cc7ea2ae8df41591be0872658'
++API_SOURCE = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py'
++API_SOURCE_SHA = None
++API_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V11_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++API_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
++API_SOURCE_ROOT = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
++API_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
++API_SEAL_SHA = None
++API_TERMINAL_SHA = None
++API_PREP_SHA = None
+ PYTHON = '/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12'
+ PRIOR_DECL = ART/'axial-material-physical-dedup-combined-runtime-build-20261007/declaration.json'
+ PRIOR_DECL_SHA = 'aa3e33a10b64deb947f82fd9f8b19559f9f700f58396e641a4e66def5d4b46a4'
+@@ -54,21 +54,46 @@
+ GUARD_SHA = '619ed1e3115e0f9f25fd20cc259d384891f2fff52d913acebd5d9ca8f39d5743'
+ HISTORY_POLICY = 'AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1'
+ 
+-TRIM_FACTORY = Path('/Users/wen/spot/validation/axial_material/prepare_qualified_AB_rank1_factor_cache_factor_diagonal_trim_production.py')
+-TRIM_FACTORY_SHA = 'd82d89daa779c8e1f3087e5c49f05279d35a9b3320ea1ae0257f7eaa586ebc8e'
+-TRIM_SOURCE = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-admission-20261009')
+-TRIM_BUILD = Path('/Users/wen/spot/validation/artifacts/axial-material-rank1-factor-cache-factor-diagonal-trim-build-20261009')
+-TRIM_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-terminal-20261009')
+-TRIM_DECL_SHA = 'f03dab4ce9e8376b4f64491dc934489df1ddd766c3bd38e4ba58a1771c966501'
+-TRIM_SEAL_SHA = 'c8a5fa37aad42efb5bf80ea1db66506d75ffd5571ff46f86d8358724e53430d4'
+-TRIM_TERMINAL_SHA = 'e9ff017a011fdb543bfecde70c6911eba58225075d3affbb02ebd241d2860b25'
+-TRIM_KERNEL_SHA = '5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809'
+-TRIM_OBJECT_SHA = 'fc3441c2523283b5026528c9f11e6d1edeba9ec202f55a0a1258e7ef3e09a6d1'
+-TRIM_RUNTIME_SHA = '821151dea83ebcf1c8870f889028dd10e45367a7883b09259ee096eb3cef266e'
+-TRIM_SOURCE_ADMISSION_SHA = '58246aa23b6a81bdfd9a5f805d0fc5982519653a31b8b8db434e65c5d2d001a0'
+-TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++TRIM_FACTORY = Path('/Users/wen/spot/validation/axial_material/prepare_qualified_AB_rank1_factor_cache_cross_group_identity_key_delta_production.py')
++TRIM_FACTORY_SHA = 'f136baab5047a8727cfd2c0abb5399acf617c25c4f4e7692242419e6f9daef4e'
++TRIM_SOURCE = ART/'axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-admission-v11-20261009'
++TRIM_BUILD = ART/'axial-material-rank1-factor-cache-cross-group-identity-key-delta-build-v11-20261009'
++TRIM_TERMINAL = ART/'axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-terminal-v11-20261009'
++TRIM_DECL_SHA = None
++TRIM_SEAL_SHA = None
++TRIM_TERMINAL_SHA = None
++TRIM_KERNEL_SHA = '0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5'
++TRIM_OBJECT_SHA = None
++TRIM_RUNTIME_SHA = None
++TRIM_SOURCE_ADMISSION_SHA = None
++TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+ TRIM_FACTOR_STORAGE_CONTRACT = {'schema': 'AXMAT_RANK1_DEAD_FACTOR_DIAGONAL_STORAGE_PATCH_V1', 'ordinary_rank1_only': True, 'ready_factor_physical_shape': '[nstate-1,nstate,nblock]', 'public_solve_shape': '[nstate,nstate]', 'retained_build_all_original_factor_and_full_RHS_solves': True, 'all_original_40_stages_required': True, 'persistent_release_bytes': '8*nstate*nblock', 'transient_pack_reservation_bytes': '8*(nstate-1)*nstate*nblock', 'reused_square_workspace': 'rank1_lower_work', 'actual_native_RSS_passed': False}
+ TRIM_INPUT_SEMANTICS = 'ACTUAL_TRIM_3ARG_RETURN_IN_THIS_PREP_THEN_COMPLETE_FRESH_INPUT_REUSE_NO_API_REEXECUTION'
++
++
++GRAPH_SOURCE = ROOT/'validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_requirements_varint_wire_compact_phase_20261009.py'
++TRIM_V10_PROOF = ROOT/'validation/axial_material/factor_diagonal_trim_source_v10_20261009/complete_c0_source_patch_proof.json'
++TRIM_V10_PROOF_SHA = 'cdc033619d16f89cdd0e284ec87ad09701202bb5131860f39a70f773391214ea'
++TRIM_V10_KERNEL_SHA = '5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809'
++TRIM_LAST_CPRIME_KERNEL_SHA = '343e731fa190d80f8d390831185aef11dabcab32f51a229a5761c827a4aeb1e1'
++TRIM_C0_KERNEL_SHA = 'c0fddcd2ddc4dba6969440024a9205fbb297727a6a045886acba626323ab5718'
++TRIM_IDENTITY_STORAGE_CONTRACT = {'schema': 'AXMAT_RANK1_CROSS_GROUP_INTEGER_IDENTITY_KEY_DELTA_STORAGE_V1', 'ordinary_rank1_only': True, 'phases': [1, 2], 'first_full_owner_per_phase': True, 'second_base_copy': False, 'selection': 'same original key length and 12*ndiff < 8*nkey; otherwise full int64 fallback', 'full_format': 'positions unallocated; size(bits)==original_size', 'delta_format': 'positions int32 allocated, including zero-length; bits int64 contains differing words; strict ascending positive positions; same-size full base; each delta differs from base', 'complete_current_key_integer_word_equality': True, 'original_full_temporary_key_generation_and_8n_reservation_retained': True, 'persistent_storage_bytes': 'full:8*nkey; delta:12*ndiff', 'descriptor_bytes_per_group': 4096, 'accounted_cap_bytes': 536870912, 'public_KEY_LOAD': '(igroup,phase,key int64(:) intent(out))', 'public_KEY_STATS': '(igroup,phase,owner defaultINTEGER out,count int64 out,compressed LOGICAL out,stored_words int64 out,stored_positions int64 out)', 'CLEAR_releases_all_PLAN_and_resets_both_base_owners': True, 'Factor64_Solve64_whole_source_unchanged': True, 'all_original_45_stages_required': True, 'per_group_dense_full_keys_and_actual_encoded_payload_must_be_archived': True, 'actual_controls_executed': False, 'actual_native_RSS_passed': False, 'AAA_accuracy_qualified': False, 'ABA_admitted': False}
++TRIM_IDENTITY_EDITS = ROOT/'validation/axial_material/identity_key_delta_source_v11_20261009/region_edits.json'
++TRIM_IDENTITY_EDITS_SHA = 'adee9790a4ee89c697ec3c72eeb8b6913b01401e2ad1c9c193431a4afc66253a'
++TRIM_FACTOR_PATCH_HELPER = ROOT/'validation/axial_material/rank1_factor_cache_factor_diagonal_trim_patch.py'
++TRIM_FACTOR_PATCH_HELPER_SHA = 'd849ebbbe4dd7e59b17bd67e60a07f950aa7a2fc33f22011431c83c46cff1b6e'
++TRIM_IDENTITY_RETAINED_SOURCE_SHA = {'SPOT1P64_FACTOR64':'655144f094da3d6fe72835abb387368c9cb08116ac12e65a08326b59283c15e2','SPOT1P64_SOLVE64':'1136c44ea92f47d9931a85d3d6998011e3f50864902c9a2e23353fe488b7004d','boundary_solve':'955d1de9bfcf685c0a234bf7dcd026a2a93e5f5bf55feb742b984e2c433636be','rank1_identity':'0187e42af102a745d4b1a867030d8ad15265890aab320ff3d4480521d84aa80b'}
++TRIM_CONTROL_COUNTS = None
++EXPECTED_API_DESCRIPTOR_COUNT = None
++EXPECTED_API_ALIAS_COUNT = None
++EXPECTED_INTAKE_PAYLOAD_COUNT = None
++FUTURE_ACTUAL_COLD_DECLARATION_TERMINAL_SHA = None
++FUTURE_ACTUAL_COLD_PREPARED_SHA = None
++FUTURE_ACTUAL_COLD_BINDING_SHA = None
++FUTURE_ACTUAL_COLD_CONTROL_SEAL_SHA = None
++FUTURE_ACTUAL_COLD_CONTROL_TERMINAL_SHA = None
++FUTURE_ACTUAL_COLD_TERMINAL_SHA = None
++FUTURE_ACTUAL_COLD_CLOSEOUT_SEAL_SHA = None
+ 
+ 
+ def nonzero_sha(value):
+@@ -80,16 +105,23 @@
+ def input_guard():
+     if sys.flags.optimize != 0 or 'PYTHONOPTIMIZE' in os.environ:
+         raise ValueError('nonoptimized source predicates required before project input read')
+-    if STATUS != 'REVIEWED_TRIM_COMPLETE_INPUT_CONSUMER_WITH_ACTUAL_BOUNDED_INTAKE':
++    if STATUS != 'REVIEWED_IDENTITY_KEY_DELTA_COMPLETE_INPUT_CONSUMER_WITH_ACTUAL_BOUNDED_INTAKE':
+         raise ValueError('UNREADY: no actual intake or cold binding/fixture credit')
+     if any(os.environ.get(k)!='1' for k in THREADS):
+         raise ValueError('original single-thread contract required')
+ 
+-    for value in (INTAKE_ROOT_SHA,INTAKE_RETURN_SHA,API_SOURCE_SHA,API_SEAL_SHA,API_TERMINAL_SHA,API_PREP_SHA):
++    for value in (INTAKE_ROOT_SHA,INTAKE_RETURN_SHA,API_SOURCE_SHA,API_SEAL_SHA,API_TERMINAL_SHA,API_PREP_SHA,
++        TRIM_FACTORY_SHA,TRIM_DECL_SHA,TRIM_SEAL_SHA,TRIM_TERMINAL_SHA,TRIM_KERNEL_SHA,
++        TRIM_OBJECT_SHA,TRIM_RUNTIME_SHA,TRIM_SOURCE_ADMISSION_SHA):
+         nonzero_sha(value)
+     for path in (API_SOURCE,API_BUILD,API_SOURCE_ROOT,API_TERMINAL):
+         if path is None or not Path(path).is_absolute():raise ValueError('UNREADY: actual winning combined bindings required')
+     if type(API_SCHEMA)is not str or not API_SCHEMA:raise ValueError('UNREADY: actual winning combined schema required')
++    if type(TRIM_CONTROL_COUNTS)is not dict or not TRIM_CONTROL_COUNTS:
++        raise ValueError('UNREADY: exact independently observed component count body required')
++    for count in (EXPECTED_API_DESCRIPTOR_COUNT,EXPECTED_API_ALIAS_COUNT,EXPECTED_INTAKE_PAYLOAD_COUNT):
++        if type(count)is not int or count<=0:
++            raise ValueError('UNREADY: actual descriptor/alias/intake counts are unbound')
+ 
+ def normal(path,missing=False):
+     path=Path(path)
+@@ -200,7 +232,9 @@
+             'AAA_accuracy_qualified','ABA_admitted'))):
+         raise ValueError('actual standalone bounded API Root EXIT0 INPUT evidence required')
+     root=normal(Path(receipt['path']).parent);v=e['payload_inventory']
+-    if v['symlinks']!={}or type(v['files'])is not dict or len(v['files'])!=9:
++    if (v['symlinks']!={}or type(v['files'])is not dict or len(v['files'])!=9
++        or len(v['files'])!=EXPECTED_INTAKE_PAYLOAD_COUNT
++        or binding['expected_intake_payload_count']!=EXPECTED_INTAKE_PAYLOAD_COUNT):
+         raise ValueError('complete durable intake payload inventory required')
+     inventory_shape(g,root,dict(files={**v['files'],Path(receipt['path']).name:receipt['sha256']},
+         directories=v['directories'],symlinks={}))
+@@ -279,7 +313,11 @@
+         raise ValueError('whole genuine combined API INPUT return required')
+     files=value['descriptor_files'];aliases=value['input_aliases']
+     if (type(files)is not dict or type(aliases)is not dict or type(binding['expected_complete_alias_count'])is not int
+-        or binding['expected_complete_alias_count']<=0 or len(aliases)!=binding['expected_complete_alias_count']):
++        or binding['expected_complete_alias_count']<=0 or len(aliases)!=binding['expected_complete_alias_count']
++        or binding['expected_complete_alias_count']!=EXPECTED_API_ALIAS_COUNT
++        or len(files)!=EXPECTED_API_DESCRIPTOR_COUNT
++        or binding['expected_complete_descriptor_count']!=EXPECTED_API_DESCRIPTOR_COUNT
++        or binding['actual_V11_component_control_counts']!=TRIM_CONTROL_COUNTS):
+         raise ValueError('complete canonical descriptor/alias maps required')
+     for p,wanted in files.items():
+         if not Path(p).is_absolute()or '..'in Path(p).parts:raise ValueError('canonical typed owner required')
+@@ -306,7 +344,11 @@
+         or value['source_patch_proof']!=value['source_admission']
+         or value['factor_diagonal_codec_controls_passed']is not True
+         or value['factor_diagonal_storage_contract']!=TRIM_FACTOR_STORAGE_CONTRACT
+-        or value['cache_unit_control_counts']['total_declared_stages']!=45
++        or value['cache_unit_control_counts']['total_declared_stages']!=68
++        or value['cache_unit_control_counts']!=TRIM_CONTROL_COUNTS
++        or value['cache_unit_control_counts']['original_factor_diagonal_45_stages_retained']!=45
++        or value['cache_unit_control_counts']['additional_keycodec_driver_build_stages']!=2
++        or value['cache_unit_control_counts']['additional_keycodec_execute_stages']!=21
+         or value['cache_unit_control_counts']['inherited_last_cprime_stages_retained']!=40
+         or value['cache_unit_control_counts']['factor_codec_positive_fixtures']!=3
+         or value['cache_unit_control_counts']['factor_codec_module_negative_calls']!=4
+@@ -345,7 +387,122 @@
+         or item['old_capture_RSS_transferred']is not False
+         or item['trim_native_RSS_proof_obtained']is not False):
+         raise ValueError('whole independently executed trim INPUT must be an explicit graph owner')
++    identity_key_delta_source_and_controls(value,combined)
+     return value
++
++
++def identity_key_delta_source_and_controls(value,combined):
++    """Read frozen genuine source/control facts; never call the component API.
++
++    Its retained admission label alone grants no V11 storage or native credit.
++    Every byte is also owned by the complete fresh global INPUT phase.
++    """
++    for expected in (TRIM_DECL_SHA,TRIM_SEAL_SHA,TRIM_TERMINAL_SHA,TRIM_OBJECT_SHA,
++                     TRIM_RUNTIME_SHA,TRIM_SOURCE_ADMISSION_SHA):nonzero_sha(expected)
++    require(TRIM_FACTORY,TRIM_FACTORY_SHA)
++    g=normal_module(GRAPH_SOURCE,GRAPH_SOURCE_SHA)
++    owners=combined['descriptor_files']
++    def owned(path,sha):
++        literal=str(path);nonzero_sha(sha)
++        if owners.get(literal)!=sha:raise ValueError('complete V11 source/control fact lacks explicit owner')
++        return g.strict_json(literal,sha)
++    source=owned(TRIM_SOURCE/'source_admission.json',TRIM_SOURCE_ADMISSION_SHA)
++    proof=source['source_patch_proof'];old=proof['inherited_v10_complete_proof'];identity=proof['cross_group_identity_key_delta']
++    expected_old=owned(TRIM_V10_PROOF,TRIM_V10_PROOF_SHA)
++    identity_edits=owned(TRIM_IDENTITY_EDITS,TRIM_IDENTITY_EDITS_SHA)
++    expected_identity=dict(schema=TRIM_IDENTITY_STORAGE_CONTRACT['schema'],
++        parent_kernel_sha256=TRIM_V10_KERNEL_SHA,candidate_kernel_sha256=TRIM_KERNEL_SHA,
++        complete_inverse_byteexact=True,edits=identity_edits,retained_whole_source_sha256=TRIM_IDENTITY_RETAINED_SOURCE_SHA,
++        contract=TRIM_IDENTITY_STORAGE_CONTRACT,actual_controls_executed=False,actual_native_RSS_passed=False,
++        AAA_accuracy_qualified=False,ABA_admitted=False)
++    expected_proof=dict(expected_old)
++    expected_proof.update(inherited_v10_complete_proof=expected_old,edits=expected_old['edits']+identity_edits,
++        cross_group_identity_key_delta=expected_identity,candidate_kernel_sha256=TRIM_KERNEL_SHA,
++        delegated_factor_diagonal_helper=dict(path=str(TRIM_FACTOR_PATCH_HELPER),sha256=TRIM_FACTOR_PATCH_HELPER_SHA),
++        scope='ORDINARY_RANK1_LOWER_DICTIONARY_TERMINAL_CPRIME_DEAD_FACTOR_DIAGONAL_AND_CROSS_GROUP_INTEGER_IDENTITY_STORAGE_ONLY')
++    declaration=owned(TRIM_BUILD/'declaration.json',TRIM_DECL_SHA)
++
++    if (source['schema']!='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_SOURCE_ADMISSION_V1'
++        or proof['candidate_kernel_sha256']!=TRIM_KERNEL_SHA
++        or proof['parent_kernel_sha256']!=TRIM_C0_KERNEL_SHA
++        or proof['inverse_kernel_sha256']!=TRIM_C0_KERNEL_SHA
++        or proof['complete_inverse_byteexact']is not True or old!=expected_old or proof!=expected_proof
++        or source['control_contract']!=declaration['control_contract']
++        or declaration['family']!='RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_V11'
++        or declaration['source_root']!=str(TRIM_SOURCE)
++        or (declaration['total_wall_seconds'],declaration['stage_wall_seconds'],declaration['rss_cap_mib'],declaration['threads'],declaration['numeric_children_at_once'],declaration['retries'])!=(1800,600,512,1,1,0)
++        or (declaration['archive_reserve_bytes'],declaration['artifact_budget_bytes'],declaration['min_free_bytes'])!=(2*2**30,96*2**30,8*2**30)
++        or value['production_link_command']!=declaration['production_link_command']
++        or declaration['production_link_command']!=declaration['build_commands'][1]
++        or old['candidate_kernel_sha256']!=TRIM_V10_KERNEL_SHA
++        or old['last_cprime_trim']['candidate_kernel_sha256']!=TRIM_LAST_CPRIME_KERNEL_SHA
++        or old['factor_diagonal_trim']['parent_kernel_sha256']!=TRIM_LAST_CPRIME_KERNEL_SHA
++        or old['factor_diagonal_trim']['candidate_kernel_sha256']!=TRIM_V10_KERNEL_SHA
++        or identity['schema']!=TRIM_IDENTITY_STORAGE_CONTRACT['schema']
++        or identity['parent_kernel_sha256']!=TRIM_V10_KERNEL_SHA
++        or identity['candidate_kernel_sha256']!=TRIM_KERNEL_SHA
++        or identity['complete_inverse_byteexact']is not True
++        or identity['contract']!=TRIM_IDENTITY_STORAGE_CONTRACT
++        or source['cross_group_identity_key_delta']!=TRIM_IDENTITY_STORAGE_CONTRACT
++        or source['control_contract']['cross_group_identity_key_delta']!=TRIM_IDENTITY_STORAGE_CONTRACT
++        or source['control_contract']['original45_required']is not True
++        or source['control_contract']['total_planned_stage_count']!=68
++        or source['sole_new_production_objects']!=['SPOT1P64.o']
++        or source['whole_link_inverse_restoration_exact']is not True
++        or any(source[k]is not False for k in ('actual_full_FLU_entry_executed','native_RSS_proof_obtained','scientific_qualification'))
++        or any(identity[k]is not False for k in ('actual_controls_executed','actual_native_RSS_passed','AAA_accuracy_qualified','ABA_admitted'))):
++        raise ValueError('entire V11 top0800 with unchanged genuine5e/343e/c0 source gates required')
++    for item in (source['keycodec_source'],source['keycodec_auditor']):
++        if owners.get(item['path'])!=nonzero_sha(item['sha256']):
++            raise ValueError('actual codec source/auditor must remain complete byte owners')
++
++    kernel_path=require(TRIM_SOURCE/'SPOT1P64.f90',TRIM_KERNEL_SHA)
++    inverse=kernel_path.read_text()
++    if hashlib.sha256(inverse.encode()).hexdigest()!=TRIM_KERNEL_SHA:
++        raise ValueError('actual complete candidate source bytes differ')
++    for edit in reversed(identity_edits):
++        if inverse.count(edit['new'])!=1:raise ValueError('complete six-region inverse must be unique')
++        inverse=inverse.replace(edit['new'],edit['old'],1)
++    if hashlib.sha256(inverse.encode()).hexdigest()!=TRIM_V10_KERNEL_SHA:
++        raise ValueError('actual0800 complete source must invert byteexact to original5e')
++    seal=owned(TRIM_BUILD/'seal.json',TRIM_SEAL_SHA)
++    if seal['schema']!='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_SEAL_V1':
++        raise ValueError('actual V11 successful complete seal required')
++    item=value['compiled_unit_controls']
++    if item!=dict(path=str(TRIM_BUILD/'audit/controls.json'),sha256=seal['files']['audit/controls.json']):
++        raise ValueError('whole actual controls must be bound by new successful seal')
++    for relative in ('audit/result.json','driver_result.json'):
++        if owners.get(str(TRIM_BUILD/relative))!=seal['files'][relative]:
++            raise ValueError('source/control success fact differs from actual complete seal')
++    controls=owned(item['path'],item['sha256'])
++    audit=owned(TRIM_BUILD/'audit/result.json',owners.get(str(TRIM_BUILD/'audit/result.json')))
++    driver=owned(TRIM_BUILD/'driver_result.json',owners.get(str(TRIM_BUILD/'driver_result.json')))
++    codec=controls['keycodec_controls']
++    if (controls['schema']!='AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_FULL_RAW_CONTROLS_AUDIT_V1'
++        or controls['status']!='PASS' or controls['counts']!=TRIM_CONTROL_COUNTS
++        or audit['classification']!='PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY'
++        or driver['classification']!='COMPLETE_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY'
++        or driver['error']is not None or audit['control_counts']!=controls['counts']or driver['control_counts']!=controls['counts']
++        or audit['cross_group_identity_controls_passed']is not True or driver['cross_group_identity_controls_passed']is not True
++        or controls['all_c017_full_identity_keys_bitwise_equal_to_candidate_decode']is not True
++        or controls['memory_controls']['dense_reference_calls']!=378
++        or len(controls['memory_controls']['independent_dense_identity_accounting'])!=378
++        or codec['schema']!='AXMAT_RANK1_CROSS_GROUP_IDENTITY_KEY_CODEC_CONTROLS_AUDIT_V1'
++        or codec['status']!='PASS' or codec['actual_codec_controls_passed']is not True
++        or codec['standalone_control_count']!=21 or codec['positive_key_count']!=27 or codec['positive_stats_count']!=6
++        or codec['expected_negative_actual_rejection_count']!=20
++        or (codec['raw_binary_bytes'],codec['raw_manifest_jsonl_bytes'],codec['raw_xabort_bytes'],codec['raw_total_bytes'])!=(70792,26930,1000,98722)
++        or any(codec[k]is not True for k in ('complete_input_encoded_positions_anchor_decoded_wordwise_equal',
++            'canonical_strict_cost_fallback_zero_delta_two_phase_lifecycle_and_hits_verified','exact_EOF_verified',
++            'all_fresh_seven_identity_before_after_equal'))
++        or any(codec[k]is not False for k in ('original45_controls_completion_claimed','full_component_build_admission_claimed',
++            'actual_full_FLU_entry_executed','native_RSS_verified','AAA_accuracy_qualified','ABA_admitted'))
++        or any(audit[k]is not False for k in ('actual_full_FLU_entry_executed','transport_launched','native_RSS_proof_obtained','AAA_accuracy_qualified','ABA_admitted'))
++        or any(driver[k]is not False for k in ('actual_full_FLU_entry_executed','transport_launched','AAA_accuracy_qualified','ABA_admitted'))):
++        raise ValueError('actual full68 component source/control return required without native/science credit')
++    return dict(actual_complete68_source_control_INPUT_verified=True,component_API_executed=False,
++        whole_original45_stages_retained=True,top0800_and_ancestor5e343e_separated=True,
++        native_RSS_credit_inherited=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+ 
+ 
+ def current_trim_component_paths(g):

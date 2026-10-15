@@ -1,0 +1,2 @@
+H14b独立源码审查通过，仅SOURCE_ONLY/UNREADY。完整1区域逆619、3区域逆839；原33非digest定义与11其余辅助定义、实际FD7ID/完整EOF/作用域清理全部保持。native-only别名保留839完整body；文件路径采用有限active-link展开栈，已结束链接允许后续..合法再访，活动重复拒绝循环。
+本机SDK MAXSYMLINKS=32是静态头文件证据；文件walk上限64未取代真实open。必须新跑原21项并扩展循环/短链接/重复链接dotdot对照；未导入helper或执行fixture/perf，未证明提速、86/native/AAA/ABA。

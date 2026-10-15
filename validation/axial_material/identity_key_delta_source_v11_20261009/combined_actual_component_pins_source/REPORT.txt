@@ -1,0 +1,5 @@
+V11组合TMP草稿仅填入6项真实新组件凭据，仍UNREADY。
+声明/封存/Root实际退出0收据按指定完整SHA鲜核；object、runtime、source_admission从真正V11路径全文读取，分别与封存和声明一致。
+六行修改完整逆回45e；此前17区域继续逆回711身份草稿，合计23区域。
+65顶层/70全部函数、whole INPUT、物理、预算、真实类/MRO完全不变。
+正式组件admit完成状态仍None；新combined/INPUT/cold成功全None，不能执行本草稿。

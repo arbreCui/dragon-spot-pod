@@ -1,0 +1,20 @@
+UNREADY capture namespace-only Source. No binder, candidate, guard, resource API or business execution here.
+1. Obtain a new independent Source review coupled to this MANIFEST and current seven role + seven utility fullpins. P3 Source qualification and old real PREP are lineage only.
+2. Root runs the same PREP Source binder with actual Q path/c6 SHA/fresh TMP; unchanged mandatory flags:
+ --actual-new-Q-writer-terminal PATH --actual-new-Q-writer-terminal-sha256 SHA
+ --actual-Q-saved-peer PATH --actual-Q-saved-peer-sha256 SHA
+ --actual-Q-saved-peer-retention PATH --actual-Q-saved-peer-retention-sha256 SHA
+ --actual-diagnostic-resource-environment-witness PATH --actual-diagnostic-resource-environment-witness-sha256 SHA
+All true proof values come from Root; this Source fills no future business/environment result. New canonical basename:
+ prepare_sender_window_root_index_graph_trace_table_combined_runtime_v25_memory_observation_capture.py
+3. Root uses unchanged complete utilities with new actual manifest/peer/bound pins to install/freeze/prelaunch in capture namespaces. The utility fixed namespace map is in current report. Original B/history/date20261010, Q/helper, physics, empty-stderr gate, caps and MRO remain unchanged.
+4. Before the one new genuine PREP launch, use two actual external shell redirections, not combined tool output and never invented empty files:
+ env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 /Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B NEW_CAPTURE_PREP_D/combined_prepare_host.py > NEW_CAPTURE_PREP_E/parent_stdout.log 2> NEW_CAPTURE_PREP_E/parent_stderr.log
+Root must set NEW_CAPTURE_PREP_D/E to the fixed actual capture paths, confirm neither stream file already exists, and preserve the real terminal separately. Native executor child capture remains original merged stdout/stderr; these redirections only supply genuine separate external Root host streams. Do not claim separate child stderr.
+5. On genuine closed exit0, retain real terminal and both full streams, use the original writer and full namespace/saved-result review. Never synthesize missing stderr or re-run old namespaces. Then actual new PREP proof feeds unchanged BUILD binder and current BUILD interfaces; Root BUILD also captures actual external streams separately. No old PREP success is a new capture declaration/terminal/result pin.
+6. Nine original caps and all complete inputs/5stages/two graph reads/trace/physical commands remain. No RSS improvement or scientific qualification is predicted.
+
+Fixed capture PREP D=/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_memory_observation_capture_sources
+Fixed capture PREP E=/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_memory_observation_capture_receipts
+Exact future Root PREP launch spelling (only after actual binding/install/prelaunch; do not execute this Source package):
+env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 /Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_memory_observation_capture_sources/combined_prepare_host.py > /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_memory_observation_capture_receipts/parent_stdout.log 2> /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_memory_observation_capture_receipts/parent_stderr.log

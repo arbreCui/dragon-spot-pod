@@ -1,0 +1,8 @@
+完整保存源相位实际证据只读复核：PASS_INDEPENDENT_ACTUAL_SAVED_SOURCE_PHASE_IMMUTABLE_EVIDENCE_ONLY
+Root原c0567a/session54523实际integer0已关闭；复核不重轮询、不重跑诊断。
+完整12输出/11清单成员/5数组19,820,160B、D冻结56文件均全EOF SHA及7ID一致；1140原输入96,042,876B实际child前后、Root关闭后及本复核新鲜全EOF与literal/target/fd7ID/alias一致。
+实际child93514/host93507 PID绑定、one genuine serial PASS、whole2.801652s/child0.952601s/peak90.625MiB、原60s/512MiB/联合64MiB及history96GiB/free8GiB凭证一致。
+复用已封存15函数singleREADY及2+16+15 host逆变换源码证明，无业务导入/调用、数值解码、物理计算、重放、源修改或规范目录写入。
+只授软件保存工作源/源相位一致性证据；反应多重性、裂变散射分项、完整编译源身份、物理平衡、同能群参考、AAA、ABA及最终目标完成均false。
+
+边界说明：Root关闭后清单含新鲜fullEOF SHA与literal/target7ID及alias；fd7ID由实际child前后和本复核新鲜读取独立核对。保存相位字等式由固定、已审且未改的child实际完成，本复核不再次重算这些数值等式，而是验证完整输入/输出/源码与真实运行凭证仍逐字保持。96GiB历史是实际genuine快照核对，未重新扫描整个历史树；当前free8GiB和完整联合归档字节数已独立查看。

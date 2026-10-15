@@ -1,0 +1,141 @@
+def production_admission(build_seal_sha, terminal_evidence, terminal_evidence_sha256):
+    """Future read-only runtime input admission, with no AAA/ABA launch."""
+    require_ready()
+    if not re.fullmatch(r"[0-9a-f]{64}", build_seal_sha or ""):
+        raise ValueError("the actual new rank-one-cache build seal hash is mandatory")
+    seal = read(require(OUT / "seal.json", build_seal_sha))
+    if seal["schema"] != "AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_SEAL_V1":
+        raise ValueError("the actual complete new rank-one-cache build seal is required")
+    if exact_directories(OUT)!=seal["directories"]:raise ValueError("complete final directory namespace changed")
+    actual = {}
+    for root, folders, names in os.walk(OUT, followlinks=False):
+        if any((Path(root) / name).is_symlink() for name in [*folders, *names]):
+            raise ValueError("the final sealed build namespace may contain no symlinks")
+        for name in names:
+            path = require(Path(root) / name)
+            actual[str(path.relative_to(OUT))] = digest(path)
+    if set(actual) != set(seal["files"]) | {"seal.json"} or any(actual[name] != sha for name, sha in seal["files"].items()):
+        raise ValueError("every final raw/control/watch/binary file must belong to the exact successful sealed namespace")
+    declared_sha = digest(OUT / "declaration.json")
+    d = declaration_admission(declared_sha, require_build_interpreter=False)
+    result = read(require(OUT / "driver_result.json"))
+    audit = read(require(OUT / "audit/result.json"))
+    flags = ("rank1_factor_cache_controls_passed", "all_new_cache_outputs_bitwise_equal_to_uncached",
+        "operator_identity_guard_negative_controls_passed", "rank1_factor_cache_math_and_rhs_order_unchanged", "fresh_cold_AAA_required")
+    if (result["classification"] != "COMPLETE_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY" or result["error"] is not None
+            or audit["classification"] != "PASS_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_BUILD_CONTROLS_ONLY"
+            or audit["declaration_sha256"] != declared_sha or audit["control_status"] != "PASS" or audit["binary_status"] != "PASS"
+            or any(audit[key] is not True for key in flags)
+            or audit["inherited_rank1_factor_cache_admission"] != d["inherited_rank1_factor_cache_admission"]
+            or audit["inherited_rank1_factor_cache_memory_admission"] != d["inherited_rank1_factor_cache_memory_admission"]
+            or audit["actual_failed_compact_memory_native_capture_evidence"] != d["actual_failed_compact_memory_native_capture_evidence"]
+            or audit["actual_failed_cold_AAA_evidence"] != d["actual_failed_cold_AAA_evidence"]
+            or audit["future_actual_factor_cache_observer_required"] != cache_observer_contract()
+            or audit["inherited_selector_source_controls_not_newly_executed"] is not True
+            or audit["newly_executed_original_interface_receiver_calls"] != 0
+            or audit["newly_executed_native_receiver_calls"] != result["control_counts"]["actual_total_unit_kernel_invocations"]
+            or result["actual_full_FLU_entry_executed"] is not False or audit["actual_full_FLU_entry_executed"] is not False
+            or any(result[key] is not False or audit[key] is not False for key in ("transport_launched", "AAA_accuracy_qualified", "ABA_admitted"))
+            or result["rank1_factor_cache_budget_bytes"] != 536870912
+            or result["runtime_sha256"] != digest(OUT / "runtime/Dragon")
+            or result["control_counts"] != audit["control_counts"]):
+        raise ValueError("only complete raw cache controls and genuine compiled overrides may admit this runtime as an input")
+    if any(audit[k] is not True for k in ("lower_structural_zero_rows_losslessly_packed",
+            "full_shape_MATMUL_and_RHS_order_unchanged", "all_original_and_memory_controls_bitwise_passed",
+            "rowmap_dimensions_zero_and_cap_negative_controls_passed", "fresh_512MiB_native_capture_required",
+            "lower_repeated_blocks_losslessly_deduplicated","all_original_memory_and_dictionary_controls_bitwise_passed",
+            "canonical_dictionary_signed_zero_and_all_unique_fallback_verified",
+            "dictionary_dimensions_indices_canonical_and_release_negative_controls_passed")) or audit["native_RSS_proof_obtained"] is not False:
+        raise ValueError("actual memory control result must pass without claiming native RSS")
+    controls = control_audit(d)
+    if audit.get("factor_diagonal_codec_controls_passed") is not True or result.get("factor_diagonal_codec_controls_passed") is not True or controls["codec_controls"]["status"] != "PASS":
+        raise ValueError("new actual full factor codec controls must pass independently")
+    if (audit.get('cross_group_identity_controls_passed') is not True or result.get('cross_group_identity_controls_passed') is not True
+            or controls['keycodec_controls']['status']!='PASS' or controls['counts']['total_declared_stages']!=68):
+        raise ValueError('all original45 plus actual21 independent codec cases must pass, without native qualification')
+    if controls != read(OUT / "audit/controls.json") or controls["counts"] != result["control_counts"]:
+        raise ValueError("actual full raw finite/bitwise/coverage/allocation audit differs from its sealed result")
+    binary = read(require(OUT / "audit/binary_identity.json"))
+    if (binary["status"] != "PASS" or binary["source_and_command_identity_verified"] is not True
+            or binary["exact_parent_link_inverse_restoration"] is not True
+            or binary["actual_private_object_definitions_verified"] is not True
+            or binary["executable_definitions_verified"] is not True):
+        raise ValueError("actual normal compiled-source/object/link provenance is required")
+    for value in [*binary["raw_metadata"].values(), *binary["actual_objects"].values()]:
+        require(value["path"], value["sha256"])
+    identity = read(require(OUT / "runtime/build_identity.json"))
+    if (identity["sole_new_production_overrides"] != ["SPOT1P64.o"]
+            or identity["inherited_Flu_override"] != read(PARENT / "runtime/build_identity.json")["inherited_Flu_override"]
+            or identity["inherited_sender_override"] != pin(SENDER_OBJECT)):
+        raise ValueError("the actual compiled 15/16 selector object and sole new override set must remain exact")
+    helper().verify({str(OUT / name):sha for name,sha in identity["files"].items()})
+    stages = read(require(OUT / FAMILY / "stages.json"))["stages"]
+    if (len(stages) != len(stage_labels(d)) or [row["label"] for row in stages] != stage_labels(d)
+            or [row["command"] for row in stages] != stage_commands(d, declared_sha)
+            or any(not stage_outcome_valid(row) for row in stages)):
+        raise ValueError("all actual original serial guarded build/control/audit stages must pass once")
+    watches = [check_watch(row) for row in stages]
+    if watches != result["watchdogs"] or watches[:-1] != audit["previous_stage_watchdogs"]:
+        raise ValueError("actual final watchdogs must match both independent child and parent verification")
+    terminal = external_terminal_admission(d, declared_sha, build_seal_sha, result,
+        terminal_evidence, terminal_evidence_sha256)
+    # Admit the current complete family history, including legitimate future
+    # family roots, without introducing a changing snapshot into this immutable
+    # runtime identity that a consuming pipeline must compare exactly.
+    resources_for(d["resource_roots"]).check()
+    prior = d["inherited_rank1_factor_cache_admission"]
+    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1",
+        admission="RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY", build_root=str(OUT), source_root=str(SOURCE),
+        build_seal_sha256=build_seal_sha, corrected_runtime=pin(OUT / "runtime/Dragon"),
+        compiled_kernel_source=pin(SOURCE / "SPOT1P64.f90"),
+        source_admission=pin(SOURCE / "source_admission.json"),
+        inherited_rank1_factor_cache_admission=prior, actual_failed_cold_AAA_evidence=d["actual_failed_cold_AAA_evidence"],
+        inherited_rank1_factor_cache_memory_admission=d["inherited_rank1_factor_cache_memory_admission"],
+        actual_failed_compact_memory_native_capture_evidence=d["actual_failed_compact_memory_native_capture_evidence"],
+        actual_failed_native_capture_evidence=d["actual_failed_native_capture_evidence"],
+        actual_external_terminal_evidence=terminal["receipt"], actual_external_terminal_validation=terminal,
+        future_contract=prior["future_contract"], capture_dependency=prior["capture_dependency"],
+        source_and_receiver_controls=prior["source_and_receiver_controls"],
+        source_and_receiver_controls_inherited_not_newly_executed=True,
+        dispatch_evidence=prior["dispatch_evidence"], predecessor=prior,
+        inherited_selector_and_source_unit_controls=dict(compiled_selector=prior["compiled_selector"],
+            compiled_unit_controls=prior["compiled_unit_controls"], rows=112, selector_invocations=224,
+            source_unit_invocations=192, actual_native_receiver_calls=14, newly_executed=False),
+        compiled_selector=prior["compiled_selector"], compiled_unit_controls=pin(OUT / "audit/controls.json"),
+        compiled_cache_identity=pin(OUT / "audit/binary_identity.json"),
+        actual_control_rows=prior["actual_control_rows"], actual_selector_invocations=prior["actual_selector_invocations"],
+        actual_source_unit_invocations=prior["actual_source_unit_invocations"],
+        inherited_native_receiver_calls=14, newly_executed_original_interface_receiver_calls=0,
+        newly_executed_native_receiver_calls=controls["counts"]["actual_total_unit_kernel_invocations"],
+        cache_unit_control_counts=controls["counts"], inherited_selector_source_controls_not_newly_executed=True,
+        factor_diagonal_codec_controls_passed=True,factor_diagonal_storage_contract=d["control_contract"]["factor_diagonal_trim"],
+        rank1_factor_cache_controls_passed=True, all_new_cache_outputs_bitwise_equal_to_uncached=True,
+        operator_identity_guard_negative_controls_passed=True, rank1_factor_cache_math_and_rhs_order_unchanged=True,
+        rank1_factor_cache_budget_bytes=536870912, fresh_cold_AAA_required=True,
+        future_actual_factor_cache_observer_required=cache_observer_contract(),
+        future_actual_FLU_observer_required=prior["future_actual_FLU_observer_required"],
+        future_bounded_progress_observer=dict(prefix="AXMAT-RANK1-CACHE PROGRESS ",
+            columns=["IT", "JT", "IGDEB", "EINN", "builtblocks", "reusedblocks", "validated_hits", "peak_accounted_bytes"],
+            frequency="First and every 32nd completed inner iteration, ordinary rank-one built pool only",
+            scientific_gate=False, iteration_algorithm_and_IPRT_unchanged=True),
+        lower_structural_zero_rows_losslessly_packed=True, full_shape_MATMUL_and_RHS_order_unchanged=True,
+        lower_repeated_blocks_losslessly_deduplicated=True,
+        all_original_memory_and_dictionary_controls_bitwise_passed=True,
+        canonical_dictionary_signed_zero_and_all_unique_fallback_verified=True,
+        dictionary_dimensions_indices_canonical_and_release_negative_controls_passed=True,
+        all_original_and_memory_controls_bitwise_passed=True,
+        rowmap_dimensions_zero_and_cap_negative_controls_passed=True, fresh_512MiB_native_capture_required=True,
+        native_RSS_proof_obtained=False,
+        production_link_command=d["production_link_command"],
+        compiled_kernel=pin(OUT / "build/SPOT1P64.o"),
+        source_patch_proof=pin(SOURCE / "source_admission.json"),
+        actual_resource_class_factory=dict(path=str(parent_factory().PARENT_FACTORY), sha256=parent_factory().PARENT_FACTORY_SHA,
+            class_name="DynamicHistoryResources", genuine_class_not_overlay=True),
+        corrected_sender_retained=True, white_closure_unchanged=True, collision_self_operator_unchanged=True,
+        angle_grid_unchanged=True, radial_arithmetic_unchanged=True, physical_data_unchanged=True,
+        original_accuracy_thresholds_changed=False, no_CE_fitting=True,
+        resource_scope_policy=HISTORY_SCOPE_POLICY, resource_scope_contract=d["resource_scope_contract"],
+        current_complete_history_admission_required=True,
+        inherited_physical_flags_scope="Actual completed source-factor/moment-order input controls; no new transport or CE qualification",
+        actual_full_FLU_entry_executed=False, full_FLU_entry_execution_proved_by_build=False,
+        production_pipeline_prepared=False, AAA_accuracy_qualified=False, ABA_admitted=False)

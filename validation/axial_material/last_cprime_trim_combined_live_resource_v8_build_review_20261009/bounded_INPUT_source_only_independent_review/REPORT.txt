@@ -1,0 +1,9 @@
+PASS — independent full V8 bounded-input intake source-only review.
+
+Host6595B SHA2c531b47705b3e617733b6d0d1bc37650b648cea8003a0dd9ec0c03b553b6481; recorder7712B SHA301bb1f3683e7d5c3b4b336bdc19e59ef4520f6dcaa8d1911f0c2cc26dacfa2c. Independently reconstructed complete frozen V7 byte streams using exactly7 host and8 recorder identity-only regions. All remaining source bytes including whitespace, numeric/bool constants, MRO/constructor/modules, math, caps1800/600/512MiB/2GiB/96GiB/free8/thread1/child1/retry0 unchanged.
+
+Candidate remains STOPPED/UNREADY before any business read/import/constructor/output. Four host andfive recorder actual witness pins remainNone; all11 handoff actual bindings also remainNone. Fresh formal F8 pin4fc0dc0e794962a371cae55ca210026b008b09879a332d497083f3c856e940a4; genuine three-argument API andordinary9-token CLI preserve complete seal inventory, five build stages, four tail fields, whole seven-key original2cad INPUT body andgenuine original705/38de/bc4 sources. Wire strict row iterator andfull canonical/namespace/alias unions remain in the formal producer; intake contains no legacy full-matrix assumption orscope narrowing.
+
+All9 original payload names plus independent tenth Root_terminal_return.json namespace preserved. Recorder accepts genuine observed0 only andrepins complete host/stdout/empty stderr/watch/stages/API bytes; future failure receipts remain Root obligation. No new RUN/seal/API/RSS/native/AAA/ABA evidence iscreated here. Final bound host/recorder revisions need fresh review after actual new V8 RUN0 andtrue Root receipts.
+
+True independent source review e783bf EXIT0 CLOSED; no business import/API/PREP/RUN/constructor/child orproject/ART writes. One initial audit serialization assumption was corrected to the prior explicit ASCII canonical digest convention; original failed source/receipt retained.

@@ -1,0 +1,61 @@
+--- /private/tmp/axmat_v12_graph_table_cold_source_only_20261009/cold_component_input_consumer_identity_key_delta_graph_table_own_pid_peak_v12.py
++++ /private/tmp/axmat_v12_cold_consumer_observed_facts_unready_source_only_20261009/cold_component_input_consumer_identity_key_delta_graph_table_own_pid_peak_v12.py
+@@ -18,8 +18,8 @@
+ SEMANTICS = 'COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION'
+ STATUS = 'UNREADY'
+ INTAKE_ROOT = Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-evidence-20261009')
+-INTAKE_ROOT_SHA = None
+-INTAKE_RETURN_SHA = None
++INTAKE_ROOT_SHA = '449d08d08cdfe7cb19eaf3a882312f8d6c21725011650289608e4bae601178bf'
++INTAKE_RETURN_SHA = '65fc18ba1fab484b91c626a48d79a55a9bd5f21b65a391d18b9c4313e2333536'
+ THREADS = ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS',
+            'VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ GRAPH_SOURCE_SHA = 'e8f142bef9dede08e9e43eba995203dea17e0e48b6f383502ed18b89808a5c28'
+@@ -33,9 +33,9 @@
+ API_BUILD = Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009')
+ API_SOURCE_ROOT = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-source-v12-20261009')
+ API_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-terminal-v12-20261009')
+-API_SEAL_SHA = None
+-API_TERMINAL_SHA = None
+-API_PREP_SHA = None
++API_SEAL_SHA = '1f0ddf9751140abc2eb114918695b33007725cd34839e278b2e4b04f9c779dfa'
++API_TERMINAL_SHA = '396697c31e8112040b7fab32f452e5fabd8592ec41379d3daf2eda1519df7b28'
++API_PREP_SHA = 'f431490002fb5e2d4de0cee17979c5ef5b5725740f16fea85fdcfd3fd502ddb5'
+ PYTHON = '/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12'
+ PRIOR_DECL = ART/'axial-material-physical-dedup-combined-runtime-build-20261007/declaration.json'
+ PRIOR_DECL_SHA = 'aa3e33a10b64deb947f82fd9f8b19559f9f700f58396e641a4e66def5d4b46a4'
+@@ -59,13 +59,13 @@
+ TRIM_SOURCE = ART/'axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-admission-v11-20261009'
+ TRIM_BUILD = ART/'axial-material-rank1-factor-cache-cross-group-identity-key-delta-build-v11-20261009'
+ TRIM_TERMINAL = ART/'axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-terminal-v11-20261009'
+-TRIM_DECL_SHA = None
+-TRIM_SEAL_SHA = None
+-TRIM_TERMINAL_SHA = None
++TRIM_DECL_SHA = '2e5c1cda328ee1be5484e756e01337d134a956ae9e6d8623215f49f75e9b42ee'
++TRIM_SEAL_SHA = '5517c1ada26e43ba55683092baf8f63f8676eeff58ee907cd03560047c7a0b19'
++TRIM_TERMINAL_SHA = '26ef721c5b76af13036e6a486468f40d7362b584485c20a8713da82a23a9f430'
+ TRIM_KERNEL_SHA = '0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5'
+-TRIM_OBJECT_SHA = None
+-TRIM_RUNTIME_SHA = None
+-TRIM_SOURCE_ADMISSION_SHA = None
++TRIM_OBJECT_SHA = '271bd5f7d768b3380b8d976c177a468cd038faee81ba156f49969bfb8c061131'
++TRIM_RUNTIME_SHA = '05765aeb40f494e9502c0278bfc652c243f8970c31256d11abec5789de7df79b'
++TRIM_SOURCE_ADMISSION_SHA = 'a065b026e1e03b2523c945e8b7a6fd508debbea7489fc2707606c3954bb0c1e8'
+ TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+ TRIM_FACTOR_STORAGE_CONTRACT = {'schema': 'AXMAT_RANK1_DEAD_FACTOR_DIAGONAL_STORAGE_PATCH_V1', 'ordinary_rank1_only': True, 'ready_factor_physical_shape': '[nstate-1,nstate,nblock]', 'public_solve_shape': '[nstate,nstate]', 'retained_build_all_original_factor_and_full_RHS_solves': True, 'all_original_40_stages_required': True, 'persistent_release_bytes': '8*nstate*nblock', 'transient_pack_reservation_bytes': '8*(nstate-1)*nstate*nblock', 'reused_square_workspace': 'rank1_lower_work', 'actual_native_RSS_passed': False}
+ TRIM_INPUT_SEMANTICS = 'ACTUAL_TRIM_3ARG_RETURN_IN_THIS_PREP_THEN_COMPLETE_FRESH_INPUT_REUSE_NO_API_REEXECUTION'
+@@ -83,10 +83,10 @@
+ TRIM_FACTOR_PATCH_HELPER = ROOT/'validation/axial_material/rank1_factor_cache_factor_diagonal_trim_patch.py'
+ TRIM_FACTOR_PATCH_HELPER_SHA = 'd849ebbbe4dd7e59b17bd67e60a07f950aa7a2fc33f22011431c83c46cff1b6e'
+ TRIM_IDENTITY_RETAINED_SOURCE_SHA = {'SPOT1P64_FACTOR64':'655144f094da3d6fe72835abb387368c9cb08116ac12e65a08326b59283c15e2','SPOT1P64_SOLVE64':'1136c44ea92f47d9931a85d3d6998011e3f50864902c9a2e23353fe488b7004d','boundary_solve':'955d1de9bfcf685c0a234bf7dcd026a2a93e5f5bf55feb742b984e2c433636be','rank1_identity':'0187e42af102a745d4b1a867030d8ad15265890aab320ff3d4480521d84aa80b'}
+-TRIM_CONTROL_COUNTS = None
+-EXPECTED_API_DESCRIPTOR_COUNT = None
+-EXPECTED_API_ALIAS_COUNT = None
+-EXPECTED_INTAKE_PAYLOAD_COUNT = None
++TRIM_CONTROL_COUNTS = {'fixtures': 8, 'inherited_bitwise_source_pairs_reexecuted': 1146, 'additional_permutation_source_pairs': 6, 'dense_reference_kernel_calls': 378, 'memory_module_negative_calls': 6, 'dictionary_positive_primitives': 3, 'dictionary_module_negative_calls': 8, 'original_stages_retained': 31, 'total_declared_stages': 68, 'original_factor_diagonal_45_stages_retained': 45, 'additional_keycodec_driver_build_stages': 2, 'additional_keycodec_execute_stages': 21, 'inherited_last_cprime_stages_retained': 40, 'factor_codec_positive_fixtures': 3, 'factor_codec_module_negative_calls': 4, 'factor_codec_public_factor_calls': 6, 'factor_codec_public_solve_calls': 12, 'actual_returned_unit_kernel_calls': 2696, 'actual_guard_rejected_unit_kernel_calls': 14, 'actual_total_unit_kernel_invocations': 2710, 'bitwise_source_pairs': 1152, 'independent_pivot_rhs': 3, 'negative_calls': 14, 'cache_cap_negative_calls': 2, 'production_groups': 370, 'production_layers': 48, 'production_angles': 32, 'source_moments': 3, 'bitwise_compared_output_scalars': 2042712, 'compared_actual_field_and_source_bytes': 53816832}
++EXPECTED_API_DESCRIPTOR_COUNT = 36804
++EXPECTED_API_ALIAS_COUNT = 186
++EXPECTED_INTAKE_PAYLOAD_COUNT = 9
+ FUTURE_ACTUAL_COLD_DECLARATION_TERMINAL_SHA = None
+ FUTURE_ACTUAL_COLD_PREPARED_SHA = None
+ FUTURE_ACTUAL_COLD_BINDING_SHA = None

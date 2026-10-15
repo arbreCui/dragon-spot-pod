@@ -1,0 +1,75 @@
+Source-only independent expected-fixture review
+
+Controls SHA256 3f59d94d49c049b206419b49c3a3ac437aa3d980548ab8fb27632ba4dfd472f7
+Accounting mother SHA256 5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809
+
+Expected positive order: 27 key snapshots + 6 stats snapshots = 33 events. All built/reuses=0; cap=536870912. live=peak at every snapshot in this monotone key-only fixture; CLEAR resets both and all hits to0. Enabled BEGIN reserves12*4096=49152. Fullfallback owner still phase first-owner; zero-delta payload+positions allocated with zero lengths.
+
+event | name | group/phase | representation | owner | live=peak | ready/active/hits
+1 | threshold_begin | - | stats | - | 49152 | -/-/0
+2 | p1_owner5 | 5/1 | full | 5 | 49200 | 0/1/0
+3 | p1_zero_delta | 1/1 | delta | 5 | 49200 | 0/1/0
+4 | p1_single_delta | 2/1 | delta | 5 | 49212 | 0/1/0
+5 | p1_strict_12d36_lt_8n48 | 3/1 | delta | 5 | 49248 | 0/1/0
+6 | p1_equal_12d48_eq_8n48_full | 4/1 | full | 5 | 49296 | 0/1/0
+7 | p1_over_12d60_gt_8n48_full | 6/1 | full | 5 | 49344 | 0/1/0
+8 | p1_different_size_full | 7/1 | full | 5 | 49400 | 0/1/0
+9 | p2_owner2 | 2/2 | full | 2 | 49448 | 0/1/0
+10 | p2_zero_delta | 5/2 | delta | 2 | 49448 | 0/1/0
+11 | p2_single_delta | 1/2 | delta | 2 | 49460 | 0/1/0
+12 | p2_strict_12d36_lt_8n48 | 3/2 | delta | 2 | 49496 | 0/1/0
+13 | p2_equal_12d48_eq_8n48_full | 4/2 | full | 2 | 49544 | 0/1/0
+14 | p2_over_12d60_gt_8n48_full | 6/2 | full | 2 | 49592 | 0/1/0
+15 | p2_different_size_full | 7/2 | full | 2 | 49648 | 0/1/0
+16 | p1_ineligible_fresh | 11/1 | absent | 0 | 49648 | 0/0/0
+17 | p2_ineligible_fresh | 11/2 | absent | 0 | 49648 | 0/0/0
+18 | ready_phase1_no_hit | 5/1 | full | 5 | 49648 | 1/1/0
+19 | ready_phase2_first_hit | 5/2 | delta | 2 | 49648 | 1/1/1
+20 | ready_phase2_second_hit | 5/2 | delta | 2 | 49648 | 1/1/2
+21 | not_ready_phase2_no_hit | 5/2 | delta | 2 | 49648 | 0/1/2
+22 | threshold_clear | - | stats | - | 0 | -/-/0
+23 | lifecycle_begin | - | stats | - | 49152 | -/-/0
+24 | lifecycle_p1_owner9 | 9/1 | full | 9 | 49200 | 0/1/0
+25 | lifecycle_p1_group3_zero | 3/1 | delta | 9 | 49200 | 0/1/0
+26 | lifecycle_p2_owner3 | 3/2 | full | 3 | 49248 | 0/1/0
+27 | lifecycle_p2_group9_delta | 9/2 | delta | 3 | 49260 | 0/1/0
+28 | lifecycle_ready_hit | 9/2 | delta | 3 | 49260 | 1/1/1
+29 | lifecycle_clear | - | stats | - | 0 | -/-/0
+30 | disabled_begin | - | stats | - | 0 | -/-/0
+31 | disabled_phase1 | 1/1 | absent | 0 | 0 | 0/0/0
+32 | disabled_phase2 | 1/2 | absent | 0 | 0 | 0/0/0
+33 | disabled_clear | - | stats | - | 0 | -/-/0
+
+Negative each run: 7 common events then attempt event8; 10 mutations x phases1/2=20. Prelude live49272; built/reuses/hits0; ready0. Attempt active0/decode0/decodedsize0 always. Common header count6, words1, positions1, compressed1, owner5(p1)/7(p2), payloadsize1,indexsize1,anchorsize6,hasmode1,planallocated1,haspositions1,hasbits1,anchorpositions0,anchorbits1; inputsize6 except input_length7; missing_anchor anchorsize0/anchorbits0. Last two header words0. Full header vectors and exact integer-word byte expectations are in expected_sequence.json.
+
+negative_unchanged_word_p1 | guard | output_words=6 | attempted word2 XOR1; encoded delta word1 and anchor unchanged
+negative_unchanged_word_p2 | guard | output_words=6 | attempted word2 XOR1; encoded delta word1 and anchor unchanged
+negative_difference_word_p1 | guard | output_words=6 | attempted word1 XOR2 relative to seeded word1 (base word1 XOR3); encoded and anchor unchanged
+negative_difference_word_p2 | guard | output_words=6 | attempted word1 XOR2 relative to seeded word1 (base word1 XOR3); encoded and anchor unchanged
+negative_stored_difference_word_p1 | guard | output_words=6 | encoded delta word1 XOR2 (base word1 XOR3); attempted seeded key and anchor unchanged
+negative_stored_difference_word_p2 | guard | output_words=6 | encoded delta word1 XOR2 (base word1 XOR3); attempted seeded key and anchor unchanged
+negative_base_word_p1 | guard | output_words=6 | anchor word2 XOR1; attempted seeded key and encoded delta word1 unchanged
+negative_base_word_p2 | guard | output_words=6 | anchor word2 XOR1; attempted seeded key and encoded delta word1 unchanged
+negative_input_length_p1 | guard | output_words=6 | attempted extends seeded six-word key with word7=17; stored count/payload/anchor remain six-word representation
+negative_input_length_p2 | guard | output_words=6 | attempted extends seeded six-word key with word7=17; stored count/payload/anchor remain six-word representation
+negative_load_length_p1 | load | output_words=7 | attempted/encoded/anchor unchanged; LOAD destination has seven words, unlike stored count6
+negative_load_length_p2 | load | output_words=7 | attempted/encoded/anchor unchanged; LOAD destination has seven words, unlike stored count6
+negative_ineligible_existing_p1 | guard | output_words=6 | attempted/encoded/anchor unchanged; GUARD eligibility=false for already-keyed group2
+negative_ineligible_existing_p2 | guard | output_words=6 | attempted/encoded/anchor unchanged; GUARD eligibility=false for already-keyed group2
+negative_corrupt_index_zero_p1 | load | output_words=6 | encoded index1 becomes0; attempted and stored payload/anchor unchanged
+negative_corrupt_index_zero_p2 | load | output_words=6 | encoded index1 becomes0; attempted and stored payload/anchor unchanged
+negative_corrupt_index_high_p1 | load | output_words=6 | encoded index1 becomes7 beyond stored count6; attempted and stored payload/anchor unchanged
+negative_corrupt_index_high_p2 | load | output_words=6 | encoded index1 becomes7 beyond stored count6; attempted and stored payload/anchor unchanged
+negative_missing_anchor_p1 | load | output_words=6 | phase first-owner bits directly deallocated; attempted/payload/index unchanged, anchor allocation=false and anchor_size0; live accounting stays49272
+negative_missing_anchor_p2 | load | output_words=6 | phase first-owner bits directly deallocated; attempted/payload/index unchanged, anchor allocation=false and anchor_size0; live accounting stays49272
+
+Substantive coverage/qualification gaps:
+- Controls contain no positive equality or accounting assertions: independent auditor must verify every manifest row, all 32/10 header words, allocations, sizes, payload/index/anchor/input/decoded bytes, event order and exact file lengths. Success marker alone proves none of these.
+- Expected encoding/owner/active semantics cannot be derived from controls producer alone; this report distinguishes parent-reviewed codec contract and pinned v10 accounting from source-literal event construction. It is not actual execution evidence.
+- Negative guard mutations target compressed d1 group2 only; no owner/fullfallback corruption guard cases, no multi-index stored corruption, duplicated/unsorted indices, missing positions/target bits, phase mismatch, empty or shorter keys. d2/d6 absent; different-size only n7. Those are scope limits, not claims of demonstrated defects.
+- Manual ready assignment tests hit-counter primitive only; no factor/transport/physics/denominator qualification. All build/reuse expected0.
+- missing_anchor directly deallocates bits without RELEASE: pre-abort snapshot intentionally keeps49272. Auditor must not recompute live from currently allocated arrays and demand a lower live value.
+- Negative snapshots archive mutation without decoding. No output array is serialized, only output_words; LOAD rejection is assessed by real exit23 plus exact actual_xabort message and absence of unexpected_return file in an eventual separate execution audit.
+- Source-only report creation/validation exits0; actual controls were not run. A preceding case-sensitive rg discovery exited1 for no matches; corrected case-insensitive source discovery exited0. All source reads and pin checks exited0.
+
+Source-order comparison, header segment-size consistency and positive reconstruction checks all passed (stdlib only, no candidate/OUT reads). Negative enumeration is descriptive; controls does not define external launch order.

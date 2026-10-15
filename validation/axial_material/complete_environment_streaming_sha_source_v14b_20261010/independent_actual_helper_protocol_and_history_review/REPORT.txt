@@ -1,0 +1,1 @@
+H14b后续实际证据只读审查已准备。仅AST/编译reader源码未执行reader；未知Root收据、source绑定及host/driver产物路径全部None。收到真终态后才绑定并逐文件审查；21组与别名5子例、完整历史五输入/八namespace/event范围保留。禁止helper/fixture/benchmark重跑，不授予86/native/AAA/ABA资格。

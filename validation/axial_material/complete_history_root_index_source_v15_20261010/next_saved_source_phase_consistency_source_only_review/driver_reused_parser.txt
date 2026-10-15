@@ -1,0 +1,152 @@
+def identity(s):
+    return {k:getattr(s,k) for k in ('st_dev','st_ino','st_mode','st_nlink','st_size','st_mtime_ns','st_ctime_ns')}
+
+def check_time(start):
+    if time.monotonic()-start >= WALL_SECONDS:
+        raise TimeoutError('original saved-state diagnostic wall limit exceeded')
+
+def fresh_hash(path,start):
+    """Full EOF SHA; no memo, each literal input freshly read before and after."""
+    check_time(start)
+    literal_before=identity(path.lstat());target_before=identity(path.stat())
+    alias=os.readlink(path) if path.is_symlink() else None
+    h=hashlib.sha256();count=0
+    with path.open('rb') as stream:
+        fd_before=identity(os.fstat(stream.fileno()))
+        if fd_before!=target_before:raise ValueError('input path/fd identity mismatch')
+        block=bytearray(2**20)
+        while True:
+            check_time(start);n=stream.readinto(block)
+            if type(n) is not int or n<0 or n>len(block):raise ValueError('invalid input read count')
+            if n==0:break
+            h.update(memoryview(block)[:n]);count+=n
+        fd_after=identity(os.fstat(stream.fileno()))
+    literal_after=identity(path.lstat());target_after=identity(path.stat())
+    alias_after=os.readlink(path) if path.is_symlink() else None
+    if count!=fd_before['st_size'] or fd_before!=fd_after or target_before!=target_after or literal_before!=literal_after or alias!=alias_after:
+        raise ValueError('input changed across full EOF hash')
+    return {'path':str(path),'sha256':h.hexdigest(),'size_bytes':count,'literal_7id_before':literal_before,'literal_7id_after':literal_after,'target_7id_before':target_before,'target_7id_after':target_after,'fd_7id_before':fd_before,'fd_7id_after':fd_after,'literal_symlink_text':alias}
+
+class XSM:
+    """Independent read-only little-endian Ganlib directory/record reader."""
+    def __init__(self,path,pinned,start):
+        self.path=path;self.pinned=pinned;self.start=start;self.stream=path.open('rb');self.records={};self.bytes_read=0
+        if identity(os.fstat(self.stream.fileno()))!=pinned['fd_7id_before']:raise ValueError('XSM owner changed before parsing')
+        if self.read(0,3)[:4]!=b'$XSM':raise ValueError('wrong little-endian XSM format')
+        self.root=self.directory(self.ints(2,1)[0])
+    def read(self,offset,words):
+        check_time(self.start)
+        if type(offset) is not int or type(words) is not int or offset<0 or words<0 or (offset+words)*4>self.pinned['size_bytes']:
+            raise ValueError('XSM out-of-file range')
+        self.stream.seek(offset*4);raw=self.stream.read(words*4);self.bytes_read+=len(raw)
+        if len(raw)!=words*4:raise ValueError('short XSM record')
+        return raw
+    def ints(self,offset,count):return struct.unpack(f'<{count}i',self.read(offset,count))
+    def directory(self,start):
+        result={};seen=set();offset=start
+        while offset not in seen:
+            seen.add(offset)
+            magic,cap,count,following,_=struct.unpack_from('<4s4i',self.read(offset,8))
+            if magic!=b'$$$$' or not 0<=count<=cap<=30:raise ValueError('invalid XSM directory')
+            raw=self.read(offset+8,6*cap)
+            for i in range(count):
+                entry=tuple(struct.unpack_from('<i',raw,4*(k*cap+i))[0] for k in range(3))
+                name=raw[12*(cap+i):12*(cap+i+1)].decode('ascii').rstrip(' \0')
+                if not name or name in result:raise ValueError('invalid/duplicate XSM name')
+                result[name]=entry
+            offset=following
+        if offset!=start:raise ValueError('invalid XSM extent cycle')
+        return result
+    def raw(self,directory,name,words,kind,owner):
+        e=directory.get(name)
+        if e is None or e[1:]!=(words,kind):raise ValueError('wrong record '+owner+'/'+name+': '+repr(e))
+        raw=self.read(e[0],words)
+        desc={'offset_words':e[0],'length_words':words,'type':kind,'sha256':hashlib.sha256(raw).hexdigest()}
+        key=owner+'/'+name
+        if key in self.records and self.records[key]!=desc:raise ValueError('record identity drift')
+        self.records[key]=desc
+        return raw
+    def array(self,directory,name,dtype,count,owner):
+        d=np.dtype(dtype);k={'i':1,'f':2 if d.itemsize==4 else 4}[d.kind]
+        raw=self.raw(directory,name,count*(d.itemsize//4),k,owner)
+        arr=np.frombuffer(raw,dtype=d).copy()
+        if arr.size!=count or (d.kind=='f' and not np.isfinite(arr).all()):raise ValueError('invalid typed field '+owner+'/'+name)
+        return arr
+    def variable(self,directory,name,dtype,owner):
+        e=directory.get(name)
+        if e is None or e[1]<=0:raise ValueError('missing variable field '+name)
+        d=np.dtype(dtype)
+        if (e[1]*4)%d.itemsize:raise ValueError('invalid typed length')
+        return self.array(directory,name,dtype,e[1]*4//d.itemsize,owner)
+    def text(self,directory,name,owner):
+        e=directory.get(name)
+        if e is None or e[2]!=3 or e[1]<=0:raise ValueError('invalid character record '+name)
+        return self.raw(directory,name,e[1],3,owner).decode('ascii').rstrip(' \0')
+    def list(self,directory,name,count,owner):
+        offsets=struct.unpack(f'<{count}i',self.raw(directory,name,count,10,owner))
+        result=[]
+        for offset in offsets:
+            item=self.directory(offset)
+            if '***HANDLE***' not in item:raise ValueError('missing list handle')
+            self.records[f'{owner}/{name}/HANDLE/{len(result)+1}']={'directory_offset_words':offset,'directory':item}
+            result.append(item['***HANDLE***'])
+        return result
+    def groups(self):
+        entries=self.list(self.root,'GROUP',NG,'ROOT')
+        if any(e[1:]!=(-1,0) for e in entries):raise ValueError('group must be a directory')
+        return [self.directory(e[0]) for e in entries]
+    def audit_group_payloads(self,groups):
+        # Preserve every stored group field identity, including delayed-fission
+        # records and higher moments not used by the P0 formula; omit nothing.
+        for g,directory in enumerate(groups,1):
+            for name,e in directory.items():
+                if e[1]>0 and e[2] in (1,2,3,4):self.raw(directory,name,e[1],e[2],f'GROUP/{g}')
+                else:raise ValueError('unexpected nested/unsupported group field '+name)
+    def close(self):
+        fd=identity(os.fstat(self.stream.fileno()));self.stream.close()
+        if fd!=self.pinned['fd_7id_before'] or identity(self.path.stat())!=self.pinned['target_7id_before']:
+            raise ValueError('XSM changed during parse')
+
+class Output:
+    def __init__(self,path,start):
+        if not path.is_absolute():raise ValueError('absolute fresh output required')
+        path.mkdir(exist_ok=False);self.path=path;self.start=start;self.files={};self.bytes=0
+    def bytes_file(self,name,raw):
+        check_time(self.start)
+        if '/' in name or name in self.files:raise ValueError('invalid output name')
+        if self.bytes+len(raw)>ARCHIVE_LIMIT_BYTES:raise ValueError('64 MiB compact output cap exceeded')
+        p=self.path/name
+        with p.open('xb') as f:f.write(raw)
+        self.files[name]={'sha256':hashlib.sha256(raw).hexdigest(),'size_bytes':len(raw)};self.bytes+=len(raw)
+        return self.files[name]
+    def json_file(self,name,value):
+        raw=(json.dumps(value,indent=2,sort_keys=True,allow_nan=False)+'\n').encode('utf8')
+        return self.bytes_file(name,raw)
+    def array(self,name,value,dtype='<f8'):
+        arr=np.ascontiguousarray(value,dtype=dtype)
+        raw=arr.tobytes(order='C');info=self.bytes_file(name+'.bin',raw)
+        return {'file':name+'.bin','dtype':arr.dtype.str,'shape':list(arr.shape),'order':'C','axes':'documented in array key/name and layout.json','bytes':info['size_bytes'],'sha256':info['sha256']}
+
+def unpack(group, nmat):
+    import numpy as np
+    output = {}
+    def split(data, fields):
+        first = 0
+        for name, shape in fields:
+            count = int(np.prod(shape));output[name] = data[first:first + count].reshape(shape, order="F")
+            first += count
+        if first != data.size:
+            raise ValueError("actual production archive payload layout differs")
+    split(group["integer"], [("mat1d", (NZ,)), ("mat", (NZ, NR)),
+                             ("ncode", (2,)), ("opposite", (NA,))])
+    split(group["single"], [("vol1d", (NZ,)), ("total", (nmat + 1,)),
+        ("sgas", (nmat + 1, NL)), ("basis", (NR, 1)), ("vol2d", (NR,)),
+        ("zcode", (2,)), ("mu", (NA,)), ("w", (NA,)), ("pl", (NL, NA))])
+    split(group["double"], [("radial2d", (NR, 3)), ("weight", (NR,)), ("mass", (1, 1)),
+        ("total_projected", (1, 1, NZ)), ("radial_projected", (1, 1, NZ)),
+        ("scat_projected", (1, 1, NL, NZ)), ("mn", (NA, NL)), ("dn", (NL, NA)),
+        ("white_angle", (NA, NA)), ("white_mode", (1, 1)), ("qext", (1, NL, NZ, NR)),
+        ("source_projected", (NL, NZ, 1)), ("cell", (NA, 1, NZ)), ("face", (NA, 1, NZ + 1)),
+        ("modal_flux", (NL, NZ, 1)), ("modal_current", (NZ + 1, 1)),
+        ("flux", (1, NL, NZ, NR)), ("current", (NZ + 1, NR)), ("xnei", (NA, NR))])
+    return output

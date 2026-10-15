@@ -1,0 +1,17 @@
+{
+  "F": "/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v9.py",
+  "OUT": "/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009",
+  "P": "/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12",
+  "R": "/Users/wen/spot/validation/axial_material/last_cprime_trim_combined_live_resource_v9_build_review_20261009",
+  "SOURCE": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009",
+  "T": "/private/tmp/axmat-last-cprime-trim-combined-live-resource-v9-root-execution-20261009",
+  "TERM": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009",
+  "declarationSha": null,
+  "factorySha": "44789bc288715c34d08dbfa91b9c05dfc78166c2b8fa048bbe0207b273419a46",
+  "failed_terminal_sha": null,
+  "prepSha": null,
+  "sealSha": null,
+  "source_review_status": "READY_SOURCE_CANDIDATE_PENDING_INDEPENDENT_REVIEW_AND_ROOT_FORMAL_COPY",
+  "terminalPath": null,
+  "terminalSha": null
+}

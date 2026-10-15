@@ -1,0 +1,14 @@
+SPOT 62槽温度原字值捕获独立后验结果 — 2026-10-15
+
+实际 Root f59794/session95151→38b4de 整数0；四记录1984字节、62槽的实际存储温度、USED/RNAME、混合编号捕获成功。
+独立后验 c35202 整数0，状态 PASS_ACTUAL_CURRENT62_TEMPERATURE_OPERAND_CAPTURE_ONLY_POSTVERIFICATION，无 failure。
+最终报告 current_temperature_operand_capture_source_v1/v5/actual_postverify_20261015/REVIEW.json。
+SHA256: dafb038ec5564164cb6ba9c44e001042ab979aaef8797be27a73029e8e965ced
+真实工具返回同目录 TRUE_TOOL_RETURNS.json，SHA495e98c58141063ace1b5145fddf397d74eba4f673d7d1089e8c8dab3af4a1e3。
+
+7份新输出1350977字节完整PF两次核验；四段原字节与原描述符、全部62槽字段及C→K预期字一致。旧SQL/字池/XSM只做身份核对，没有再次解码或重跑捕获。监视器原始峰值采样0.0，子SELF33505280字节；保持两项原记录，不作零内存解释。
+原输入每文件Root1次完整校验+子构造/close各1次，共3次；原56累计根/512MiB/600秒阶段/1800秒全局/单子进程/不重试保持。
+首次后验准备因其字段 resource_roots 的检查器写错而退出1，原未冻结Source及f374a7工具记录保留；纠正入口冻结后完成后验0，没有改动实际捕获。
+
+37槽750°C→1023.1500244140625K；24槽620°C→893.1500244140625K；1槽475°C→748.1500244140625K。此为REAL32原字值一致性核验，不表示温度插值、节点选择、SPH、反应完整性、独立耦合参考、物理精度、AAA或ABA已通过。
+当前完整算子v5修正入口Source/发布/资源检查已通过，已启动单次有界控制；其结果另行记录，目标保持active。

@@ -1,0 +1,19 @@
+V9 READY-source admission candidate — TMP handoff (2026-10-09)
+
+Prepared source candidate: /private/tmp/axmat_last_cprime_trim_v9_ready_source_admission_candidate_20261009/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v9.py
+Factory SHA 44789bc288715c34d08dbfa91b9c05dfc78166c2b8fa048bbe0207b273419a46
+Module DRAFT_STATUS exactly READY_REVIEWED_TRIM_COMPONENT_INPUT_REUSE_FORMAL_FACTORY.
+This is a source candidate for independent review and Root formal copy; no factory or recorder was invoked, no PREP/RUN/native/API/business import or formal/ART mutation occurred.
+
+Complete source inverse to f700f43b411904f002a59cddcd879e1aa4e92fa632417e7be0bd7292fbc32ada has exactly2 replaced regions: module docstring and DRAFT_STATUS right value. All65 function source bytes and AST are exact, including require_ready and original F8 strict_json_bytes. Every other top source statement/import/assignment and the existing8 identities are retained. All math/MRO/5stages/4tails/caps/gates/full historical2cad INPUT/actual trimfed209 INPUT/graph wire/dynamic roots remain inherited unchanged. The only selected implementation optimization is the already admitted current helper fd3bdb…cee19 releasing capture/physical private dictionaries at their last uses. Root supplied its formal admission reference baa9ad; this preparation independently verified the formal source SHA. No parser153 candidate is integrated. Memory benefit awaits a genuine complete actual full RUN.
+
+Prepared Root-owned future execution directory: /private/tmp/axmat-last-cprime-trim-combined-live-resource-v9-root-execution-20261009
+It did not exist before preparation and now contains exactly config.json and original b534 recorder. No factory or worker exists or has run there.
+Recorder SHA b534c49f046d3869dba07e4101e907bd08de8c61599bc3a05a688a0733de5d9e, byte exact to b534c49f046d3869dba07e4101e907bd08de8c61599bc3a05a688a0733de5d9e.
+Config SHA afc40f7a08839839eb724b8a3c6722f66f5d07cf71129a032ac065c0b7be634e. Only factorySha/source_review_status update from the f700 config; its complete deep inverse is exact. declarationSha/prepSha/sealSha/terminalSha/terminalPath/failed_terminal_sha all remain None. Those fields cannot be filled from old V8 or isolated-parser facts.
+
+The unchanged require_ready formal-path gate rejects this TMP path before business despite its requested READY source literal. F/R/SOURCE/OUT/TERM all were and still are absent at this preparation snapshot; guards and original source/helper/graph pins before/after were stable. The formal current helper source exists at exactly fd3bdb5543044fc71f0acb9799b1c6fcf7709cbbf22342f0931a299af59cee19, graph helper1d7 remains unchanged. The V8 failed RUN and isolated diagnostic first parent failure packets are unchanged. No retrospective successful execution, resource admission or science qualification is created.
+
+Artifacts: ready_vs_f700_complete_byte_inverse.json; all_65_definitions_exact_source_AST.json; config_deep_inverse.json; prepared_path_guards_and_source_before_after_pins.json; F700_TO_READY_DOC_AND_STATUS_ONLY.diff; audit_ready_source_only.py; Root_source_admission_recipe.json; actual_source_and_recipe_tool_receipts.json.
+
+Actual source tools: c6dfa6 EXIT0 generation; original Python3.12 fresh static audit0c8fbe EXIT0. The audit only reads/AST-compiles source and metadata, never imports or executes the factory/recorder. The independent reviewer has been given the exact source/config hashes. Root must receive independent admission before its single formal copy and unique prepare/run. All future actual tool/terminal/RSS outcome fields are None.

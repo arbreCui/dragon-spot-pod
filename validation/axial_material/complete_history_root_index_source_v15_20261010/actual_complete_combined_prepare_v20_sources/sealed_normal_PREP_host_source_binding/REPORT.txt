@@ -1,0 +1,8 @@
+V20 normal PREP host SOURCE 生成方案已准备，尚未生成任何业务host。
+直接复用封存V19 generator2ac/normalPREPhostf5c；有限15项generator修改完整inverse回2ac，9项未来host retarget计划保持原host代码及所有genuine监督/resource/API/checks。
+真正V20 READY绝对源码路径和独立审查完整SHA是两个必需argv；全字节实际源码SHA必须精确匹配，拒绝空值/零值/未知值。当前这两个字段均null，未造未来SHA。
+READY20状态及6未来成功pins None仍强制要求。已知585e只作为V19祖先SOURCE锚点，不能冒充未收到的V20独立资格。
+未来生成时必须整字节inverse回f5c，HOST20/SOURCE20/OUT20/TERMINAL20/SOURCE_ARCHIVE20全部明确retarget；fresh输出/输入前后全PIN保持。
+原WHOLE1800/STAGE600/RSS512MiB/archive2GiB/history96/free8GiB/1thread/1child/0retry和genuine619/705/production/resource保持，SOURCE_ARCHIVE全文件PIN及H+SOURCE+OUT+SOURCE_ARCHIVE两次联计保持。
+仅标准库SOURCE文本/AST/编译语法/完整inverse/全SHA7ID，不import或运行generator/项目/API/guard/resource/业务/数值，不重扫ART历史，不改canonical/ART。
+Root提供真实READY候选及独立审查结果后方可进行实际绑定；没有PREP/build/fullINPUT/native/AAA/ABA成功信用，也不解释RSS cause或预测PASS。

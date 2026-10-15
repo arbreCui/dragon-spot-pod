@@ -1,0 +1,21 @@
+SPOT 完整 370 群算子首次有界控制失败结果 — 2026-10-15
+
+本次完整控制未通过，保留原 Root 与子进程整数 1。
+原始 Root 调用 b82b8f，session 38216，终止返回 6e7579 整数 1。
+执行入口 v4；失败输出 /Users/wen/spot/validation/artifacts/axial-material-current-full370-real-operator-control-20261015-v2。
+Root 报告 SHA256 eac8baa99b31f29619f8aedcef77e1a63c01b3fbaa12e7c79e34848d76251393，1,094,770 字节。
+Root 真工具返回：v4/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json。
+
+实际仅一个 FAILED 子阶段。子进程监视记录耗时 516.442581334 秒，返回整数 1；采样峰值 510.640625 MiB，limit_failure=None，清理运行组成功。
+异常日志停在 prepare_white 的原始 native 调用完成后、Budget.check() 内。原始检查是 SELF 峰值<512 MiB 且阶段时间<600 秒；由于实际子进程时间小于 600 秒，证据支持 SELF 峰值检查触发的推断。原始日志未打印确切 ru_maxrss，不能把采样峰值当作确切峰值，不能声称监视器 RSS 杀进程或 600 秒超时。
+没有生成完成的子进程控制报告、白边界缓存文件或 actual_control_results。原资源后检查通过，完整科学控制与物理结论均未知。
+
+独立失败事实核验 c7b72f 整数 0：PASS_FAILURE_FACTS_ONLY。
+报告 v4/actual_failure_metadata_assessment_20261015/REVIEW.json，SHA c850c7cfec6d16ef46b92e102709f2624850e8a61b227f9cd666a398787e397b。
+真实核验工具：同目录 TRUE_TOOL_RETURNS.json。
+此核验通过只表示失败事实、保留记录与文件身份相符，不把实际失败改为通过。
+
+Source 审查确认白边界准备保留约 259 MB 的传输/泄漏数组；具体越限分配及实际完成动作数未输出。下一入口拟保持原数学、ABI、几何、正性前置检查及所有限额，暂时释放已验证的约 11.4 MB 输入/临时数组，在应用前以完整摘要确认重建输入完全相同，并加入固定大小的精确 SELF 峰值诊断。尚未声称修正足以通过。
+
+本轮此前 A1 精确清理已释放 202,708,660 字节，独立后验通过；原快照和结果文档均保留。当前温度字值捕获的新入口还在修正执行守卫；尚未进行温度实际捕获。
+总目标保持 active。完整参考、科学精度、AAA 和 ABA 均未完成，不更改阈值或提高资源上限。

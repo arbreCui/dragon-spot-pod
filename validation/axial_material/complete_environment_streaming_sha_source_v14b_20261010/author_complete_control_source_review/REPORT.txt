@@ -1,0 +1,2 @@
+H14b helper-only控制草稿已生成，UNREADY，未运行。原21组完整保留，仅aliases组新增合法3link、同dirlink target结束后dotdot再访、self/mutual/growing循环；合法路径独立标准库完整SHA，循环独立原OS ELOOP，拒绝后无partialstream及context清理。
+新canonical v14b、helperSHA None、新v14b OUT前缀；历史old619/DECL/完整environment动作逐字保留，原120/512/64MiB/单子进程/零重试及96/free8不改。不授原86数学控制/提速/native/AAA/ABA。

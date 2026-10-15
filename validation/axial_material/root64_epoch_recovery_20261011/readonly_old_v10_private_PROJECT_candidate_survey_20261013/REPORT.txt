@@ -1,0 +1,12 @@
+旧v10 private PROJECT单候选只读调查（2026-10-13）
+当前选定v12HF/actualfixed2654、v11fixed2643/currentowned163、catalog3040/Common2012、savedv2 3315/1129、materialv7/GENDFv4/parserv2/refv2实际selected gate fullpins及完整Source枚举：候选path/inode无物理依赖；不是文本grep结论。全选定Source JSON typed fullPF也无该target出现。
+候选 /Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v10/AAA/projected_boot.xsm
+SHA ea56e0e58889469c81e1519713ca0df93a3ebb5f2b1a1fbd2e20b5d8be72833a
+全部7ID [16777229, 50015491, 33152, 1, 749355952, 1791871337358403803, 1791871337358403803]
+唯一749355952B、当前UID-owned nlink1独立inode，仅作候选；未删除、未写释放执行Source。
+旧v10真Root closedEXIT1、46watch/log均真实闭合；保留全部其他267普通文件/33目录/0symlink完整清单与PF，failed aggregate不变为PASS。当前v11及v12 PROJECT保留，v12全部最新曲线文件也列mandatory保护。
+原ART真实logical 80374776540B，96813files，free 207766339584B；扣原cold20971764748+meta64MiB+完整fresh2GiB后reserve=-481918696B。
+若后续仅释放此候选，预测ART 79625420588B/96812files、reserve=267437256B；不猜APFS实际free回收。完整当前gate union及原资源roots在JSON保留，不重复大量资源日志。
+候选代价：以后旧v10完整PROJECT/GLOBAL-subtree原路径不能raw回放，其它生产/math/control/结果文件保留；原v11和v12的大PROJECT继续live。
+未来v13 SourceHF尚未知，不能预填保护或把这次调查当最终释放准入；必须在真正新DAG冻结后重证明，再由Root决定单次清理。原业务10批79文件12605160148B不增加。
+真实读取5150文件、6262052144B，checks=5150；无physics/编译/删除，qualification=false/goal_complete=false。

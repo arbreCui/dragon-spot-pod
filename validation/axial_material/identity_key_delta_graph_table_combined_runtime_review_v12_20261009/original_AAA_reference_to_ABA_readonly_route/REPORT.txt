@@ -1,0 +1,21 @@
+V12 AAA 独立精度验收 → ABA 原路线（只读源码准备，尚未运行）
+
+结论：先完成新的冷 AAA，真实退出 0、完整 ownPID512/阶段封存/四尾门通过且 WAITING_REFERENCE/VALID_MET，才能做独立参考复核。旧 refined/source-factor 的七通过一失败不是新 V12 资格。
+
+1. 当前身份从哪取
+用真正 WORK/prepared_cold.json（其 SHA 是冷 AAA status 和 Root terminal 绑定的 SHA），不能错用旧标准 prepared.json 的 SHA。真实 status.cases.AAA.final_directory 决定导出 closed_axial；bootstrap 的 initial_axial_track / initial_axial_macrolib 另两项按实际封存绑定。当前 prepared 中的完整 case_spec/rank_addendum、training/common_basis、current runtime、V11 component/V12 full INPUT/cold 真实来源链均重新接入。
+
+2. 完整参考与旧数据复用条件
+原 recipe56ebbf 固定 100 inactive +2000 active（0101..2100）、10000 particles/10代；k/entropy 每项保留21000 raw+2100 batch。原 CE sample metadata 2000 文件仍在（439558000字节），本次没有重哈H5内容。未来真正复核须全SHA+模型/核数据/日志来源与完整历史。必须新导出全部48单元实数观测、新核材料/温度/密度/核数据、radial/white/vacuum/geometry，384 fine volume完整合并96观察bins并保留13planes。只有这些新物理等价检查通过，旧独立样本才能用于新结果；不能借旧 assessment/qualification。若物理/参考契约变更或原完整证据无法恢复验证，才需要新独立参考输运。统计不足必须INCONCLUSIVE，追加采样另行预声明，不能重抽样掩盖确定FAIL。
+
+3. 可复用的原执行接口
+原 prepare_qualified_AAA_rank1_cache_monitored_graph_reference.py 的 declare/prepare/run/admit-qualification 是完整有界接口祖先。必须另建当前身份 source/OUT/TERM 并 source inverse审查：旧PROD/BUILD/controller/schema/observer/旧图与prepared.json路径不能原样调用V12。参考分析用原P12环境，生产仍P14。尤其复制 recipe冻结 reference_statistics.py（1578b8…；active2000/10代），不要换成AM通用默认250/1代版本。
+六个原stage：fine/export、fine/physical、AAA/project、AAA/statistics、AAA/currents、AAA/collect。参数模板和精确源行号见机器报告。原120秒从run入口完整覆盖准入、导出、六stage、最终全输入核验和发布/hash/seal/四尾；export60秒、ownRSS512、1线程/1子/0retry、SOURCE+OUT256MiB、history96GiB/free8全部保留。前次实际120秒失败是落实路线风险，不能调整门槛或挪出计时。
+
+4. 八门及资格发布
+input_equivalence/source_convergence/block_stability/statistical_resolution/keff/scalar_flux/nu_fission/currents_balance_symmetry 必须全PASS。原通量全局体积加权L2 1%、燃料nu-fission最大差3%、keff允许500+3sigma pcm且sigma<=50；block5/10与4000bootstrap/完整entropy等不变。原collector从当前证据派生prepared/spec/rank/basis/status和三份独立报告receipt。pending不准入；正式receipt+完整科学seal+真实Root0/完整stdout+最终四尾+原qualify_aba全部通过，才允许下一阶段。
+
+5. ABA 入口
+等价原入口是当前 production_runner run CURRENT_PREPARED --sha256 CURRENT_SHA --case ABA --reference-qualification CURRENT_FORMAL_Q --reference-sha256 CURRENT_Q_SHA；原qualify_aba先于创建ABA。新V12 coldF目前没有run-ABA，下一步须从原guarded ABA execution祖先精确接线保持ownPID512/原预算，不直接裸跑旧wrapper。ABA重新bootstrap/mapping，数值MET后仍WAITING_REFERENCE；AAA旧sample不能证明ABA，需后续独立ABA参考。
+
+当前仅源路线PASS，future reference/AAA/ABA全部未知。所有读取证据保持七项身份前后相同。无业务import/call、CLI执行、fixture、Root轮询、数值子进程或项目写；实际只读工具终态另存回执。

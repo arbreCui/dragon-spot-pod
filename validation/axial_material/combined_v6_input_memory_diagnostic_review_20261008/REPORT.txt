@@ -1,0 +1,26 @@
+SPOT V6完整输入内存区间诊断实际失败结果（2026-10-09）
+
+实际2006c8/session69745 → afe818退出1，句柄已结束。
+原512MiB监督器终止子进程91399，sampled own RSS512.34375MiB，
+子进程71.832秒、失败stage72.844秒，原进程组清理完成。
+严格JSON解析、完整owner展开和规范化已返回；78个whole边界
+记录的最后事件为_phase.call（57.015秒/累计RUSAGE471.875MiB），
+未观测phase返回、PROFILE_STOP或子/host成功result；读完数量未知。
+
+这仅约束本次instrumented的输入区间，不能证明原无instrument
+V6失败的具体行、每行分配因果、正常性能或原生RSS。原实际V6
+构建失败收据49b675独立保留，绝不转移其信用。所有业务、冷启动、
+原生RSS、AAA精度和ABA状态仍未通过。
+
+host/child源仅身份逆向到原V5，Root和独立源复核通过后才
+生成仅status改变的新READY（ff0b216e）；实际调用原genuine
+declaration_admission(da73, True, prep_sha256=684742)，normal
+canonical import、705/38de/bc4、25whole函数/max1024和全部限额保持。
+完整stdout0B/stderr774B/merged子日志、78边界、watch/stage、
+Root真实终态与声明/准备/source/config证据保存。本新档案包括
+BASE、source draft、Root执行及本复核目录，符合原2GiB，
+没有仅统计BASE；完整清单见complete_diagnostic_archive_observation.json。
+
+终态见actual_root_terminal_return.json；全事件见
+actual_boundary_failure_summary.json。原STOPPED/READY时间点说明
+留存REPORT_before_actual_failure_lead_update.txt，仅作历史过程。

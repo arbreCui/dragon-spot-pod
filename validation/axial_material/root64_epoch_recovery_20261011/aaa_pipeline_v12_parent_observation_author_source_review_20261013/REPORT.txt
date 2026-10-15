@@ -1,0 +1,27 @@
+v12 最小父进程阶段内存观测 Source：已实际准备、冻结并停止写Source
+
+真实Source-only工具d11297 EXIT0，未导入候选/编译/运行业务。319依赖，完整EOF328 files，Sourcepeak95764480B。
+目的仅 locate earlier parent memory growth；已测隔离与组合均未复现实际v11 SELF548306944B，未证最小repair，本Source不称repair。
+新host插入标量observer、stable/check/runner caller前后和原PhaseResources.check每5秒资源回调观测；没有新Thread、profiling、峰reset或GC，原准入后单次GC1保持。
+完整逆23个明确块恢复全部v11 host字节；原数学、Fortran、三helper、50steps/17positive/33exactnegative、所有物理inputs、guard MRO/Common/SerialExecutor/dump_json不改。CLI实际执行argv只改host namespace和新HF path/SHA/all7，六个实际外部input绑定完整值不变；CLI metadata说明观测scope且资格保持false。
+内存journal<=10000标量，单次write.close后retain；不写已入PF journal。已pin后<=64个小RAM tail，sameFD输出仅最后8条并硬拒绝>8192B。journal加最终summary总publication<=原8MiB，不扩预算。
+freeze/pin的新error单独observer.first_error，不覆盖既有failure/after_error。ParentObservationFailure与原guard异常区分；已有primary胜过新observer错误，真正late original guard仍bare raise。观测失败不吞成EXIT0。
+所有未来actualreport/成功/AAA/ABA/goal字段没有prefill；如果实际原50gates与资源等全部闭合0，也必须另按独立完整验收才授engineering prerequisite。
+Source-freeze已经交Root和material peer实际只读review；此处仅Source结果，不numerical。
+
+实际Frozen PF：
+host_freeze_pin
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v12/COMPLETE_PIPELINE_HOST_SOURCE_FREEZE.json", "sha256": "78b39199eb37aeffd6b57ca548f82fbdc9b2f097b61ada08201315ab98cc3533", "size_bytes": 170446, "identity": [16777229, 50031483, 33188, 1, 170446, 1791882415542929115, 1791882415542929115]}
+
+CLI_pin
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_EXACT_ACTUAL_PIPELINE_V12_ARGV_20261013.json", "sha256": "5306908f1156b11ec8ac2df9cd9dfa0aae42e0c8d30ef4515861891ca08a9f18", "size_bytes": 12954, "identity": [16777229, 50031484, 33188, 1, 12954, 1791882415543665743, 1791882415543665743]}
+
+inverse_pin
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v12/COMPLETE_V11_TO_V12_PARENT_MEMORY_OBSERVATION_BYTE_INVERSE.json", "sha256": "d8d7bf8dd1e3333b7e09130bce1846bebd741d13ea5060a7acece53979b412ef", "size_bytes": 19549, "identity": [16777229, 50031481, 33188, 1, 19549, 1791882415359224352, 1791882415359224352]}
+
+author_static_review_pin
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v12/AUTHOR_FINITE_PARENT_MEMORY_OBSERVATION_SOURCE_ONLY_REVIEW.json", "sha256": "5932c1af99e0124db29f620872046f3fb31f248d64cb3405c9ea3be9f070d034", "size_bytes": 3848, "identity": [16777229, 50031482, 33188, 1, 3848, 1791882415405626482, 1791882415405626482]}
+
+handoff：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/FINAL_PIPELINE_V12_PARENT_MEMORY_OBSERVATION_SOURCE_HANDOFF_20261013.json
+true return：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_pipeline_v12_parent_observation_author_source_review_20261013/TRUE_PREPARE_TOOL_RETURN.json
+finished=true：Source准备任务已真闭合，所有Source停止写；Root自行决定actual执行。

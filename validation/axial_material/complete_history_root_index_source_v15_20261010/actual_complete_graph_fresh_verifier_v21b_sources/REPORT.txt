@@ -1,0 +1,38 @@
+V21b complete fresh verifier: finite SOURCE correction, no runtime qualification.
+
+All three independent expected constructors now follow the old pinned bcd SOURCE:
+reader is deepcopy(FRESH_READER_CONTRACT); nine coverage entries follow the old
+CLOSURE_CATEGORIES with inner literal order canonical_files/bytes/owners; all ten
+trace coverage counters follow their original literal insertion order. Complete
+stored category/descriptor/counter keysets and all values are checked. The full
+27-field return and exact nested order/value/type/float-bit comparisons remain.
+typed_snapshot keeps the complete stored snapshot order, without normalization.
+
+The exact byte/AST inverses recover the previous ee552 READY driver and 3633 READY
+host with five hunks each. All driver definitions besides the expected function
+are byte-identical; all host functions are byte-identical. Only the three oracle
+constructors, the new v21b one-use namespaces and required final driver SHA change.
+The host retains its inherited genuine-original 23-hunk full inverse, five strict
+ART descendant roots, complete dynamic history family, original guard/resource
+classes/MRO, own child/watch/PID/streams/source pins and 600/1800/512/64MiB/96GiB/
+free8/1thread/1child/0retry constraints. No scientific threshold changes.
+
+Final source literal candidates (not actual installed/runtime-qualified files):
+driver 895c889569507f2b5e28ee1da6efc6c91bbdd30cd05338dd6e039d9591e72f84
+host   bb232eb13187013fde74e909aac8d316648a83a63115758ad2f0db200ab2322f
+binder 52c42fcf871e0b01d1a4373f35a3a740e344458282868a3765f5fa5f2e2bcd0e
+The host already binds the final driver SHA. Prior actual dc01/f8e/7f5 SOURCE
+literal pins and exact seven-integer identities are unchanged. Actual success
+pins, Q and business pins remain None; all runtime/scientific flags remain False.
+
+81 inherited SOURCE checks and 148 full old-constructor/AST/inverse/render checks
+passed with actual closed integer exit 0. The AST proof records the entire old
+27-field return and all three constructor origins. A SOURCE-only text render from
+the UNREADY templates using prior actual SOURCE literals reproduces both final
+candidate bytes. Neither generator main nor any driver/helper/guard/API was run;
+no witness/current graph/numeric payload/ART directory was read here.
+
+The old v21 real failure is Root-reported context, not a new observed runtime
+receipt from this package. The old v21 and blocked 0057 namespaces are preserved.
+No new fresh-verifier PASS/gzip/Q/RSS/scientific qualification is claimed here.
+ROOT_INSTALL_STEPS.txt gives the complete fresh SOURCE binding sequence.

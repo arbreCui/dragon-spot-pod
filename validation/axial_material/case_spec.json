@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "experiment_id": "axial-material-aaa-aba-20261003",
+  "status": "PREDECLARED_BEFORE_NEW_PHYSICAL_SOLVES",
+  "user_authorization": {
+    "thread_id": "01a0fd86-bbcb-72f1-b86b-7d14848a90b5",
+    "exact_text": "按照这个顺序你做，设定个goal，你自动批准，做完汇报",
+    "scope": "Execute the agreed ordered tasks and bounded scientific computations; retain negative results and original gates. Do not represent this as a different historical approval."
+  },
+  "question": "Does the production fixed-space iterative 2D/1D SPOT method remain accurate across an axial fuel-composition interface?",
+  "geometry": {
+    "type": "one hexagonal pin cell with four fuel rings",
+    "radial_regions": 8,
+    "region_order_outer_to_inner": ["sodium", "AIM1_clad", "helium_gap", "fuel_outer", "fuel_3", "fuel_2", "fuel_inner", "helium_hole"],
+    "radii_inner_to_outer_cm": [0.11, 0.308712, 0.381084, 0.412536, 0.4225, 0.435, 0.485],
+    "hex_edge_cm": 0.61776479,
+    "physical_z_edges_cm": [0, 50, 100, 150],
+    "cells_per_zone": 4,
+    "radial_boundary": "white isotropic albedo one, NOT specular reflection",
+    "axial_boundary": "vacuum at both ends",
+    "source": "data/rnr_0burn_spot_proc/irena_pincell.dat; SAL_GEOMETRY_MOD.f90 DEFAUL=0 semantics"
+  },
+  "materials": {
+    "temperature_C_in_every_zone": {"fuel_and_hole": 750, "clad_and_gap": 620, "sodium": 475},
+    "kelvin_offset": 273.15,
+    "density_formula": "current corrected rnr_cc/rnr_interpol; fixed radii; no historical hard-coded number densities",
+    "A": {"rnr_cc_p_Pu": 0.21, "rnr_cc_p_U": 0.79},
+    "B": {"rnr_cc_p_Pu": 0.2436, "rnr_cc_p_U": 0.7564},
+    "B_provenance": {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/rnr_0burn.x2m",
+      "line": 29,
+      "literal": "*REAL p_Pu p_U := 0.2436 0.7564 ;",
+      "scope": "Documented alternative input parameters selected a priori for a composition sensitivity experiment; not claimed to be an independently validated IRENA axial design. Interpret p_Pu according to rnr_cc, including its isotope/Am bookkeeping."
+    },
+    "unchanged": ["isotope vectors within the fuel branches", "oxygen-to-metal ratio", "compaction", "structural compositions", "density law", "geometry", "temperature conditions"],
+    "draglib_route": "already completed actual-temperature candidate for its 28 nuclides; unchanged original library for Mo; no new nuclear-data processing",
+    "new_material_data_checks_required": true
+  },
+  "cases": {"AAA": ["A", "A", "A"], "ABA": ["A", "B", "A"]},
+  "basis": {
+    "training_slots": ["A", "B", "A"],
+    "requested_rank": 2,
+    "fixed_once_for_both_cases": true,
+    "groupwise_rank_admission": "Every group must support the declared rank before case execution; preserve singular spectra. Refuse otherwise; no padding with roundoff, per-case retraining, or rank fitting to CE.",
+    "gram_matrix": "retained in full"
+  },
+  "production": {
+    "implementation": "existing repaired Dragon cf469c8, SHA256 873ad14272a2f0765d95e6de067194a01708ccf9aa88d58cd782049e6d331fef",
+    "groups": 370,
+    "fission_components": 32,
+    "sn": 8,
+    "scat": 3,
+    "axial_spatial": "constant diamond",
+    "picard_alpha": 1,
+    "outer_gate_each": 5e-7,
+    "radial_controls": {"eps": 2.5e-7, "eps_mccg": 1e-5, "maxout": 500, "maxinr": 740, "acce": [3, 3]},
+    "axial_controls": {"eps": 5e-8, "maxout": 500, "maxinr": 740, "acce": [3, 0], "rebalance": "OFF"},
+    "offline_snapshot_controls": {"eps": 2e-6, "eps_mccg": 2e-6, "maxout": 500, "tone_eps": 1e-5, "tone_maxit": 20},
+    "control_provenance": "Current pin REAL64 controls for the online path; corrected snapshot EPSI/FLU consistency for new offline fields. No live-runtime modification."
+  },
+  "reference": {
+    "primary": "independent continuous-energy OpenMC model with identical declared geometry/material formulas/boundaries",
+    "scope": "Total method-plus-data difference; does not isolate POD truncation from MG processing or synthesis closure.",
+    "nuclear_data": "/Users/wen/openmc-workspace/data/endfb-viii.1-hdf5/cross_sections.xml",
+    "threads": 1,
+    "particles_per_batch": 50000,
+    "inactive_batches": 100,
+    "active_batches": 250,
+    "statepoint_every_active_batch": true,
+    "seed_AAA": 310031,
+    "seed_ABA": 310033,
+    "scores": ["region-by-cell scalar flux", "region-by-cell nu-fission", "layer totals", "all axial face net current", "signed directional crossing bins"],
+    "normalization": "one global integrated nu-fission normalization; no per-layer or per-group scaling",
+    "mg_reference": "Only admissible after exact raw-data transfer checks; no clipping/renormalization. Not a prerequisite for the explicitly limited CE total-error comparison."
+  },
+  "predeclared_decisions": {
+    "aaa_first": "AAA must reach a valid fixed point and pass reference input/statistical and declared observable checks before full ABA execution.",
+    "keff": {"sigma_pcm_max": 50, "abs_reactivity_difference_pcm_max": "500 + 3*sigma_pcm", "inherited_from": "existing D4 external comparison criterion"},
+    "shape_targets": {
+      "meaning": "New experiment engineering screening targets, not existing D4 acceptance claims or universal reactor accuracy standards.",
+      "fission_normalized_scalar_flux_volume_weighted_relative_l2_max": 0.01,
+      "normalized_nu_fission_max_relative_difference_in_fuel_bins": 0.03,
+      "statistical_rule": "Estimate covariance after global normalization from contiguous active-batch blocks, with at least 20 blocks. Report 95% bootstrap upper limits and block-length sensitivity. Do not label PASS when source convergence, block stability, or statistical resolution is inadequate."
+    },
+    "currents_and_balance": "Retain signs; report physical interface/escape and telescoping balance. Symmetric AAA/ABA should have reflected axial scalar/rate profiles and antisymmetric +z current within numerical/statistical uncertainty. No clipping or k-only acceptance.",
+    "failure": "Preserve failed/incomplete outputs. Diagnose a failed AAA before ABA. Any revised numerical experiment is separately declared before execution; do not change thresholds after seeing results.",
+    "optional_sensitivity": "If justified, change only axial cells 12->24, SN8->SN16, or an independently admitted common rank. Report sensitivity, not an additive error attribution."
+  },
+  "resource_caps": {
+    "new_numeric_children_at_once": 1,
+    "new_child_threads": 1,
+    "material_TONE_wall_s_per_state": 600,
+    "offline_snapshot_wall_s_per_state": 1200,
+    "common_basis_wall_s": 120,
+    "bootstrap_radial_wall_s": 600,
+    "axial_wall_s": 300,
+    "map_radial_wall_s": 300,
+    "postchecks_wall_s": 120,
+    "max_maps_per_case": 100,
+    "total_wall_s_per_spot_case": 21600,
+    "ce_smoke_wall_s": 120,
+    "ce_production_wall_s_per_case": 1800,
+    "disk_min_free_GiB": 8,
+    "new_case_artifact_budget_GiB": 12,
+    "automatic_retries_after_solver_failure": 0,
+    "notes": "Caps are limits, not runtime promises. Existing material/native jobs retain their separate already-declared supervisors and caps. Routine implementation/debug fixes may be tested in new directories; no overwrite or numerical gate relaxation."
+  },
+  "parallel_closeout": {
+    "d4_three_material_states": "Owned by existing task 019f6077-95da-7622-96dc-06b1021b75b2; 1800s original bounded run, no duplicate dispatch; stop at material-data result.",
+    "native_layered_full": "Owned by existing task 01a0e4a4-ad2f-76f2-9f38-8fed84cbd3ee; complete original 2191-job scope, independent review and seal; no expansion into a new eigenproblem project."
+  },
+  "excluded": ["automatic new D4 production chain", "whole-core calculation", "nonfissile axial-layer production support", "long-term maintenance of a second nuclear-data library", "replacement of production solver with toy network"]
+}

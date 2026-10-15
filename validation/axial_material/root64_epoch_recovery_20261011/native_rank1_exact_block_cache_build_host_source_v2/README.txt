@@ -1,0 +1,7 @@
+Complete70 current mount Source-only Host v2. No compiler, candidate import or business has run.
+
+The unchanged original draft and Fortran Source files remain intact. Current complete seven-field file pins are bound through the actual immutable current mount catalog. Loading prior reports or the unchanged Fortran freeze explicitly produces a catalog-bound current metadata view, and both planned and terminal reports call and retain current_metadata_reattestation_provenance. This is metadata reattestation, not reexecution of earlier stages.
+
+Real prerequisite reports are the original two-stage current69, separate ten-stage alias build and Root-closed four-stage generic rank1 bit controls (110 calls, 301 assertions). Current execution compiles SPOT1P64 first, then the native driver, then links 70 ordered inputs. Only driver37 is replaced and the new helper is inserted before the original first archive at57. Original nine flags, archives, oldnine objects and all remaining68 inputs are protected.
+
+Original OwnRSS guard, stage600/whole1800, SELF and own-child512MiB, one thread/one child/zero retry, history96GiB/fresh2GiB/free8GiB/cold20971764748B plus metadata64MiB remain. Final summary bytes are checked, with a controlled same-inode owned-summary failure rewrite before true nonzero. All physical qualification flags remain false. The new Common binding/freeze and own Host freeze must be real before Root executes. Future compiler outputs are not predicted.

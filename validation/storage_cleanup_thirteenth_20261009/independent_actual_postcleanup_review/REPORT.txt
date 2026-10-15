@@ -1,0 +1,9 @@
+R13固定两条旧失败编译副本退役后独立只读复核：PASS
+
+真实Root终态由明确消息及绑定工具观察核对；本复核未执行删除或恢复。retirement ledger精确两条，候选缺席；OUT9主本及全部保留control完整SHA与身份不变。
+原完整inventory除两条候选、R13新增文档树及.git外，所有普通文件七字段、链接身份/目标、目录路径一致；README仍纳入。三个受影响父目录允许字段逐项见JSON，未宣称所有目录七字段相同。
+独立由原inventory重建before指纹及fresh metadata重建after，均等于Root真preflight及真cleanup before/after。cache集合保持；graph完整SHA保持，全部namespace路径/链接、alias、absence和resource root元数据复核。
+实际派生数量：control 132；namespace 86；alias 186；absence 445；resource roots 231。
+仅TMP写入；这是存储保留独审，不是35GB科学INPUT字节准入、solver/API/PREP/RUN或冷启动成功信用。旧包回放先按保留restore映射恢复对应Dragon原字节，原inode/ctime不可恢复。
+
+独立工具终态：纠正后dabfe5/session28651→10794c EXIT0 CLOSED。首次df380f/session83906→670c2a EXIT1亦完整保留；只纠正macOS目录成员删除时nlink减1的reader规则，没有再次执行删除。实际三个父目录均只有size/mtime/ctime/nlink改变，dev/ino/mode保持；validation对应R13新树nlink+1，两个runtime各对应唯一缺失Dragon成员nlink-1。其他目录七字段保持，所有普通文件和链接七字段保持。

@@ -1,0 +1,33 @@
+NEW SOURCE ONLY. No compiler, link, parser, native, transport or numeric job executed.
+
+BPROJ64 standard five-tuple CLE entry:
+  NENTRY8 ordered PROJECTED_OUT GLOBAL64 AX AXTRACK AXSYSTEM AXMACRO ARCHIVE RCON
+  first product JENTRY0, seven inputs JENTRY2, every IENTRY1/2 matched to actual medium.
+  Exact options RANK 1 ; or RANK 2 ;. No default, fallback, duplicate or trailing option.
+  Calls actual frozen project10arg ABI with mandatory rank, all370mustmatch.
+  Full global/physical/canonical checks and complete readback occur in the real callee.
+
+BQFIS64 standard five-tuple CLE entry:
+  NENTRY10 ordered MACRO_OUT SOURCE_OUT PROJECTED GLOBAL64 AX AXTRACK AXSYSTEM AXMACRO ARCHIVE RCON
+  first2 products JENTRY0, eight inputs JENTRY2, every IENTRY1/2 matched to actual medium.
+  Exact options PLANE 1 ;, PLANE 2 ; or PLANE 3 ;. No default or extra tokens.
+  Calls actual frozen BUILD12arg, then READ14arg for complete physical recomputation.
+  Readback failures are fatal; rawtype4 all370QFISS array must be present.
+
+Both entries require actual root directories, fresh products, non-null handles and pairwise
+independent handles/names. HENTRY remains actual caller names rather than hardcoded long
+role labels. External host SHA/7ID binding still ensures unique actual filesystem inputs;
+coherent self-rewrites are not independently authenticated by metadata copies.
+
+KDRDRV.F is the complete original native-route dispatcher with exactly one local splice
+adding FLUGLOBAL64:, BPROJ64:, BQFIS64:. Original AXNCASE64:/FLUNAT64: routes and every
+old branch/KTRDRV fallback/HDF5_LIB conditional remain byte-identical outside that splice.
+It retains .F automatic cpp and the original nine numeric flags. Corrected AXNCASE64 v2
+must be linked; the dispatcher does not duplicate or silently repair frozen entry Sources.
+
+No whole-case deck is declared here: the owning host must provide its frozen prepared/case
+rank, all independent physical inputs and actual terminal output pins. Actual BOOT kernel
+and caller remain separate unfinished work, with later dispatcher registration still due.
+Complete existing libraries are pinned opaque dependencies; no full-source archive-build
+qualification, original17/global/sourceepoch/coherenttamper pass, AAA qualification or ABA
+admission is claimed. NewSource is reviewable/callable, not runtime-qualified.

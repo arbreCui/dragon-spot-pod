@@ -1,0 +1,26 @@
+SPOT 继续执行：传输核与 NX 生产链结果 — 2026-10-14
+
+本轮已完成实际运行与独立后验：
+
+1. 私有传输核按原选项编译成功，两组共 12 项组件测试通过，生成真实库来源凭证。运行约 8.78 秒，仍为组件范围，未代替完整 48 层/370 群/全射线的正式控制。
+
+2. NX 直接二进制回放完成 11 核素、79 个温度，发现 9,294 个原始字中 1,282 个不同。失败报告与原始运行返回完整保留。
+
+3. 沿实际生产链补原 ASCII 格式转换后，原生 Fortran 控制的三个阶段通过。全部 79 个温度、9,294 个 NX 字与当前原库逐字一致，1,282 个差异全部得到解释。实际运行约 56.21 秒；独立后验对全部 29,230 个输入与输出值及比较明细复核通过。
+
+4. 核素覆盖描述更正：实际最终材料含 34 个唯一核素引用（候选库 27 加 Mo7）和 62 个正密度材料槽。“28”是候选库准备条目数，包含未使用 C12，不是当前材料唯一核素数。原实际材料未修改。
+
+原内存、时长、单线程及累计 2 GiB 限额全部保持。NX 后验完成后累计余量约 10,847,310 字节。完整白边界传输缓存至少需 260,858,880 字节，下一正式控制前需精确退役已完成工作的多余中间数据，保留科学原始输入、完整结果文档和日志。
+
+整体目标仍 active。当前没有宣称历史完整 ASCII 文件重建、完整 NJOY 构建复现、packed SCAT 全反应、当前 SPH/MASK 反应多重性、中子平衡、AAA 物理精度、独立耦合参考或 ABA 已通过。部分核素的原扩展温度 GENDF 中间文件需要核查恢复来源；完整覆盖按 34 个实际核素引用执行。
+
+下一顺序：精确腾出完整正式控制空间；补齐实际 34 核素的 GENDF/生成上下文并回放 SCAT 与反应语义；运行完整传输核控制；满足原准入和精度门槛后执行 AAA 独立参考，再推进 B 完整上下文及 ABA。
+
+结果索引：
+/Users/wen/spot/validation/axial_material/SPOT_KERNEL_ORIGIN_COMPONENT_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_NX_ALL_TEMPERATURE_RAW_COMPARISON_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_NX_ORIGINAL_FORMATTER_CONTROL_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_CURRENT_MATERIAL_NUCLIDE_COVERAGE_CORRECTION_20261014.txt
+
+原格式控制最终独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/original_a11_NX_formatter_component_source_v1_20261014/actual_postverify_20261014/REVIEW.json

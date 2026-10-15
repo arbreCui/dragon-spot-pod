@@ -1,0 +1,19 @@
+SPOT 非消费者输入验证临时归属映射释放源码复核（2026-10-09）
+
+正式源码与TMP855519候选全字节相同。仅_phase/verify_graph改变，
+加私有deque流与import；59原定义中57不变，原两类、schema和限额不变。
+非consumer verify_graph才移交新规范化临时list引用，按原顺序
+生成每条expected独立dict后释放本owner map，只保留原第二轮新
+角色需要的字段；全部namespace/new_inputs之后仍原序加入owner新角色。
+外部_phase直接调用与create_graph保留default，不改调用方list/maps；
+consumer仍保留全owners用于原lineage，原allowlist空未伪造准入。
+
+作者真c244de EXIT0、独立真48315f EXIT0，28项8positive20negative
+全部通过。42条独立dict及顺序、角色、4canonical每phase鲜读一次、
+异常与恢复后fresh读取等值；18临时map按18,17,...2递减、首次
+namespace前全部释放。完整源inverse精确恢复07b22父helper。
+
+小样本和生命周期只证明源码等价与临时引用释放，不能承诺生产RSS
+降低或通过512MiB。V6受限区间诊断仍真实失败，无完整phase返回；
+本候选须绑定新V7自己的完整PREP和受限RUN，不转移旧成功，
+不减少原235528逻辑边或35646 canonical的任何检查。

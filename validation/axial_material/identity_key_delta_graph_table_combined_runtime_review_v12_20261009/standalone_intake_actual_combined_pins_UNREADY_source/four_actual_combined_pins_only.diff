@@ -1,0 +1,19 @@
+--- /private/tmp/axmat_v12_graph_table_standalone_bounded_whole_input_intake_source_only_20261009/host.UNREADY.py
++++ /private/tmp/axmat_v12_graph_table_standalone_intake_actual_combined_pins_unready_source_only_20261009/host.UNREADY.py
+@@ -20,12 +20,12 @@
+ FACTORY_SHA='5af1feebc7d40549750e1daec6148ae073a4c85c1eb3242485e6d9e80826861b'
+ OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009')
+ TERM=Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-terminal-v12-20261009')
+-SEAL_SHA=None
+-RUN_SHA=None
+-PREP_SHA=None
++SEAL_SHA='1f0ddf9751140abc2eb114918695b33007725cd34839e278b2e4b04f9c779dfa'
++RUN_SHA='396697c31e8112040b7fab32f452e5fabd8592ec41379d3daf2eda1519df7b28'
++PREP_SHA='f431490002fb5e2d4de0cee17979c5ef5b5725740f16fea85fdcfd3fd502ddb5'
+ BASE=Path('/private/tmp/axmat-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-20261009')
+ FAMILY='STANDALONE_BOUNDED_RUNTIME_API_INTAKE'
+-DECL_SHA=None
++DECL_SHA='410720642a1952480ad9190ed48292e96cf9f17d8ab02967b5503713caa09f5d'
+ for value in (DECL_SHA,SEAL_SHA,RUN_SHA,PREP_SHA):
+  if type(value)is not str or len(value)!=64 or any(c not in '0123456789abcdef'for c in value)or value=='0'*64:raise ValueError('UNREADY: exact actual component pins required')
+ if str(Path(sys.executable).resolve())!=PYTHON:raise ValueError('actual build Python3.12 required')

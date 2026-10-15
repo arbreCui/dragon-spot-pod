@@ -1,0 +1,1 @@
+pure helper fixture component_terminals

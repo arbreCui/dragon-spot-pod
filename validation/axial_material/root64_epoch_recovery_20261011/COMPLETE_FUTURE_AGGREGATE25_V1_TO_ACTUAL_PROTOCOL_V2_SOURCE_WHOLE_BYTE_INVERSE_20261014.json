@@ -1,0 +1,56 @@
+{
+  "schema": "COMPLETE_FUTURE_AGGREGATE25_ACTUAL_PROTOCOL_SOURCE_WHOLE_BYTE_INVERSE_V1",
+  "predecessor_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/bind_material_aggregate_request_after_actual_six_root_extraction_source_only_v1_20261014.py",
+    "sha256": "654e57bf2da12672c3795439b838314ede0e5c74cc10f0c24cc064e2f1b6e881",
+    "size_bytes": 13354,
+    "identity": [
+      16777229,
+      50165448,
+      33188,
+      1,
+      13354,
+      1791968550117945402,
+      1791968550117945402
+    ]
+  },
+  "candidate_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/bind_material_aggregate_request_after_actual_six_root_extraction_source_only_v2_20261014.py",
+    "sha256": "16eaac3e80e1f31ff1d88819a12bcbd321634efa70bebd3e900fb3aa9e449778",
+    "size_bytes": 13539,
+    "identity": [
+      16777229,
+      50171221,
+      33188,
+      1,
+      13539,
+      1791969455131201243,
+      1791969455131201243
+    ]
+  },
+  "changes": [
+    {
+      "before": "EXPECTED_POST_SCHEMA=None",
+      "after": "EXPECTED_POST_SCHEMA='INDEPENDENT_SIX_ROOT_FIRST_A_FULLFIELD_EXTRACTION_ACTUAL_EVIDENCE_POSTVERIFICATION_V1'"
+    },
+    {
+      "before": "EXPECTED_POST_STATUS=None",
+      "after": "EXPECTED_POST_STATUS='PASS_ACTUAL_SIX_ROOT_FIRST_A_FULLFIELD_EXTRACTION_EVIDENCE_POSTVERIFICATION'"
+    },
+    {
+      "before": "POST_COVERAGE_CANONICAL_FIELD=None",
+      "after": "POST_COVERAGE_CANONICAL_FIELD='actual_extraction_review_pin'"
+    },
+    {
+      "before": "OUT_CLI=M/'ROOT_REVIEWABLE_EXACT_AGGREGATE_REQUEST_AFTER_ACTUAL_SIX_ROOT_EXTRACTION_ARGV_20261014.json'",
+      "after": "OUT_CLI=M/'ROOT_REVIEWABLE_EXACT_AGGREGATE_REQUEST_AFTER_ACTUAL_SIX_ROOT_EXTRACTION_ARGV_V2_20261014.json'"
+    }
+  ],
+  "all_functions_wholebytes_unchanged": true,
+  "request_builder_source_unchanged": true,
+  "source_only": true,
+  "business_executed": false,
+  "compiler_executed": false,
+  "numerical_executed": false,
+  "files_deleted": false
+}

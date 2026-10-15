@@ -1,0 +1,3 @@
+PASS: saved actual V24 pure archive FAILURE evidence only.
+16447 exact independent checks; child0/all5protocol and5positive13reject3lastuse complete; outer actual1/CLOSED, HOD80605706B exceeds unchanged64MiB.
+No overall protocol/newQ/fresh/RSS/build/INPUT/native/science qualification. Large graph/trace payload not reread.

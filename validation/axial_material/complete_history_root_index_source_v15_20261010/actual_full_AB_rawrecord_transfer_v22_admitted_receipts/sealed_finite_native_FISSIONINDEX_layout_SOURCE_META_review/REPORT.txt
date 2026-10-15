@@ -1,0 +1,5 @@
+Source/META only: authoritative LIBDEN distinguishes local isotope slots NFISSI from expanded fission components NFISSI*NESP.
+LIBDEN.f:1067 FISSIONINDEX is NBMIX*NFISSI kind1; LIBDEN.f:978/984 STATE4 is NFISSI*NESP; LIBDEN.f:902 group fission fields are NBMIX*NFISSI*NESP. INDFIS is microlib isotope ordinal (LIBDEN.f:703; LIBNFI.f:184).
+Current saved top microlib STATE16=4 and CHI-LIMITS=[0,21,40,61,370] explicitly confirm4 spectra. Source plus saved counts give NFISSI8 and NESP4:64 indices,32 components and256 values per group. Both A/B preserve all370 groups and all base/delayed fission fields. The expected256 FISSIONINDEX fixture conflicts with this producer layout, but this review does not edit it or grant qualification.
+Before semantic closure, bind the actual microlib META lineage and index identity/mix/zero slots, then check original LCM memory bits, physical reaction multiplicities and transport-correction interpretation. All physical/native/AAA/ABA qualifications remain false.
+No raw material payload, project API, guard or business operation was read/run. Exact Source references and full EOF/stat7 pins are in Source files and SOURCE_SEGMENTS.json.

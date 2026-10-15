@@ -1,0 +1,76 @@
+SOURCE V2 UNREADY — no preparation/publication/compression/deletion performed.
+
+The complete5 Python Sources are frozen together. Original v1 draft checkpoint,
+three Source files and all old metadata remain immutable. Serial archive worker
+bytes equal the entire frozen v1 worker; it handles all48 plain files/805236925B.
+
+Only Root may execute prepare_result48_lossless_archive_Source.py, once, after
+actual early14v2 receipt0/Roottools0/independent post0 are present. Required CLI:
+
+--author-summary / --author-sha256 / --author-seven-id
+--latest-plan-summary / --latest-plan-sha256 / --latest-plan-seven-id
+--early14-receipt-summary / --early14-receipt-sha256 / --early14-receipt-seven-id
+--early14-root-tools-summary / --early14-root-tools-sha256 / --early14-root-tools-seven-id
+--early14-post-summary / --early14-post-sha256 / --early14-post-seven-id
+--early14-post-tools-summary / --early14-post-tools-sha256 / --early14-post-tools-seven-id
+--early14-post-schema / --early14-post-status
+--early14-post-receipt-pin-field / --early14-post-root-tools-pin-field
+
+All six PF triples are actual complete SHA256/size/identity evidence, with exact
+Python seven integers. The four projection strings come from the actual passing
+post's audited schema/keys. No future values are supplied by this document or
+by DRAFT_METADATA_SOURCE_SEED.json; its early14 closure fields remain NULL and
+cannot satisfy preparation. The latest-plan must retain the completed A2 whole
+64 prefix/caps and any actually added later roots, then append exactly the sole
+fresh archive output. Source stays under already-counted FTOP. Initial expected
+root count is65, but later stages must inherit the actual latest prefix.
+
+Preparer creates an exclusive Source-preparation claim first, checks frozen
+Source, actual A2 Root0/child2/post0 and real early14 Root0/post0/released14 PFs,
+keeps all66 remaining native roles/current libraries, checks all48 plain current7
+without opening their bodies, and evaluates original resource classes. It writes
+PLAN and SOURCE_REVIEW_READY only with each metadata <8MiB/entire Source <16MiB.
+It emits status RESULT48_LOSSLESS_ARCHIVE_SOURCE_PREPARATION_ONLY with actual
+ready_pin/plan_pin. Root saves the genuine closed original tool object under
+actual_Source_preparation_return; no Sourcegen retry/overwriting is allowed.
+
+After genuine Sourcegen0, an independent frozen Source auditor must validate
+the exact selected_Source_pins plus READY plus genuine generation-tools PF,
+all5 Source files/actual prerequisite projections, old48+native66 current7-only
+scope, unchanged guard/caps/whole original worker, no payload decode. Its passing
+report must include binding_pin and the complete selected PF collection once;
+actual_review_return must close typed integer0 with stdout review_pin. No
+particular selected count is guessed or hardcoded in the publisher.
+
+Then Root oncepublisher write_once_result48_archive_SF_HF_CLI.py requires the
+three actual peer-review/peer-tools/generation PF triples. It checks genuine0,
+contains every selected PF, blind wholeEOF Source/metadata only, preserved plain
+and native current7, real receipt/post admission and original resource classes.
+It writes FINAL_SOURCE_FREEZE, FINAL_HOST_FREEZE, FINAL_ROOT_REVIEWABLE_CLI and
+FINAL_PUBLICATION_RECEIPT, once/no overwrite. It never launches the archive.
+The CLI preserves the actual A2 ENV/Python/-B11 prefix and exactly24 argv items;
+actual execution requires require_escalated for the unchanged original PS guard.
+
+The actual guarded archive is Root-only, one original OwnRSS child, serial48
+files,512MiB/600/1800/thread1/no retry and complete cumulative2GiB/history96GiB/
+original cold/meta/free8GiB reservations. Original production_inputs import
+spine and original classes/guard proof are retained. Exact read-only system
+metadata exception allows only saved /bin/ps and /usr/sbin/lsof fullPFs at UID0,
+nlink1; every original plain/archive/scientific private input retains ordinary
+owned UID501/current7 checks. No target owner guard is widened. Original
+gfortran nlink2 metadata exception remains exact. No system tool is a target.
+
+Total owning output remains <192MiB: gzip payload <184MiB,8MiB metadata/runtime
+reserve. Each metadata/compressed write checks prospective owning total. No
+compression ratio or stage fit is promised. Root must preserve partial outputs,
+claims and original nonzero if anything fails; no automatic retry/cleanup.
+All48 plaintexts remain present through complete archive and independent post0.
+Only a later separately admitted exact48 plain retirement can remove them.
+
+Archive index retains original path+fullPF as the lookup key, immutable old43
+registry, old30 historical A guard role flags and separate A2 new5 role flags.
+After a future genuine plain-retirement receipt/post0, old consumers cannot be
+given missing paths as live inputs: keep original historical PFs and admit the
+exact archive lookup/retirement proof, with bounded verified byte decompression
+where bytes are needed. This Source has no plaintext unlink implementation.
+Physics/AAA/reference/ABA/goal qualification remain false.

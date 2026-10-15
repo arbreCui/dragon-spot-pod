@@ -1,0 +1,39 @@
+from pathlib import Path
+import os,json,hashlib,sys,shutil,datetime,stat
+T=Path('/private/tmp/axmat-last-cprime-trim-combined-live-resource-v9-root-execution-20261009'); c=json.loads((T/'config.json').read_text()); R=Path(c['R']); OUT=Path(c['OUT']); SOURCE=Path(c['SOURCE']); TERM=Path(c['TERM'])
+def sha(p):
+ p=Path(p); assert p.is_absolute() and not p.is_symlink(); h=hashlib.sha256()
+ with p.open('rb')as f:
+  while raw:=f.read(1024*1024):h.update(raw)
+ return h.hexdigest()
+def pin(p):return dict(path=str(p),sha256=sha(p))
+def write(p,v):
+ with p.open('x')as f:json.dump(v,f,indent=2,allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
+def inventory(root):
+ files={};directories=[]
+ for folder,dirs,names in os.walk(root,followlinks=False):
+  for n in dirs:
+   p=Path(folder)/n; assert p.is_dir()and not p.is_symlink();directories.append(str(p.relative_to(root)))
+  for n in names:
+   p=Path(folder)/n; assert stat.S_ISREG(p.lstat().st_mode)and not p.is_symlink();files[str(p.relative_to(root))]=sha(p)
+ return dict(files=files,symlinks={},directories=sorted(directories))
+action=sys.argv[1]; tool=json.loads((R/(action+'_terminal_tool_return.json')).read_text()); assert type(tool['exit_code'])is int and tool['exit_code']==0
+assert sha(Path(c['F']))==c['factorySha']; d=json.loads((OUT/'declaration.json').read_text()); prefix='AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V9';decl=pin(OUT/'declaration.json')
+e=dict(record_producer='root',actual_tool_terminal_return_observed=True,record_written_after_actual_terminal_return=True,returncode=0,actual_tool_result=tool,observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),source=pin(Path(c['F'])),declaration=decl,native_transport_executed=False,mathematical_controls_newly_executed=False,combined_runtime_native_RSS_proved=False,actual_full_FLU_entry_executed=False,AAA_accuracy_qualified=False,ABA_admitted=False,scientific_qualification=False)
+if action=='prepare':
+ assert not TERM.exists(); TERM.mkdir()
+ inv=inventory(SOURCE);assert inv==d['source_inventory'];write(TERM/'declaration_source_inventory.json',inv)
+ out=TERM/'declaration_full_stdout.json';err=TERM/'declaration_full_stderr.txt';shutil.copy2(T/'prepare.stdout',out);shutil.copy2(T/'prepare.stderr',err)
+ assert json.loads(out.read_text())==dict(declaration=str(OUT/'declaration.json'),declaration_sha256=decl['sha256']); assert err.stat().st_size==0
+ e.update(schema=prefix+'_ACTUAL_EXTERNAL_PREP_RETURN_V1',command=[c['P'],c['F'],'prepare-build'],full_stdout=pin(out),full_stderr=pin(err),build_seal=None,historical_PREP=d['historical_PREP'],historical_whole_component_body=d['historical_whole_component_body'],input_graph=d['input_graph'],source_inventory=pin(TERM/'declaration_source_inventory.json'),actual_last_cprime_trim_component_INPUT=d['actual_last_cprime_trim_component_INPUT'],trim_component_API_executed_in_this_PREP=True,successful_new_runtime_build_observed=False,original_component_APIs_executed_now=False,successful_declaration_input_observed=True,successful_combined_link_completion_observed=False,production_admission_observed=False,input_file_pins=len(d['files']),planned_total_stages=5,compiled_or_numeric_stages_started=0,archive_reserve_bytes=2*2**30)
+ for field in ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources'):e[field]=None
+ receipt=TERM/'declaration_terminal_return.json';write(receipt,e);c.update(declarationSha=decl['sha256'],prepSha=sha(receipt))
+elif action=='run':
+ assert c['declarationSha']==decl['sha256'];prep=pin(TERM/'declaration_terminal_return.json');assert prep['sha256']==c['prepSha']
+ out=TERM/'run_full_stdout.json';err=TERM/'run_full_stderr.txt';shutil.copy2(T/'run.stdout',out);shutil.copy2(T/'run.stderr',err);body=json.loads(out.read_text());result=json.loads((OUT/'driver_result.json').read_text());assert body['result']==result and result['classification']=='COMPLETE_COMBINED_RUNTIME_LINK_IDENTITY_ONLY'and result['error']is None
+ for field in ('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources'):e[field]=body[field]
+ assert e['actual_tail_check']=='PASS'and e['actual_elapsed_seconds']<1800 and 0<e['actual_archive_bytes']<2*2**30
+ e.update(schema=prefix+'_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1',command=[c['P'],c['F'],'run-build','--sha256',decl['sha256'],'--prep-sha256',prep['sha256']],full_stdout=pin(out),full_stderr=pin(err),prep_terminal_evidence=prep,build_seal=pin(OUT/'seal.json'),successful_combined_link_completion_observed=True,successful_new_runtime_build_observed=True,production_admission_observed=False)
+ receipt=TERM/'terminal_return.json';write(receipt,e);c.update(sealSha=e['build_seal']['sha256'],terminalSha=sha(receipt),terminalPath=str(receipt))
+else:raise ValueError(action)
+(T/'config.json').write_text(json.dumps(c,indent=2)+'\n');shutil.copy2(receipt,R/(action+'_terminal_return.json'));print(json.dumps(dict(receipt=pin(receipt),declaration_sha256=c['declarationSha'],prep_sha256=c['prepSha'],seal_sha256=c.get('sealSha'))))

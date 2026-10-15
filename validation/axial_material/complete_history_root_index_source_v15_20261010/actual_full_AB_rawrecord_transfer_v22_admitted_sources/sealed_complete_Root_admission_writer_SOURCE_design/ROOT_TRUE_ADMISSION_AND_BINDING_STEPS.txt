@@ -1,0 +1,45 @@
+SOURCE design only. Root is the sole future executor; no actual admissions or
+runtime success were generated while authoring this package.
+
+1. Use the original Python and a fresh prerequisite metadata directory:
+/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B /private/tmp/axmat_standalone_stdlib_material_Source_admission_writer_SOURCE_20261010_pcg7ly2n/write_ROOT_source_and_material_admissions.py --output-dir /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_full_AB_rawrecord_transfer_v22_admission_meta
+
+All prior inputs are fixed actual sources: report689fd, actual Root70a7c1 receipt
+efe585, derivative641682/binder52b866, complete independent430 review85514/MANIFEST73df
+and actual7f50bb terminal29ca482. The writer verifies full82 inputs/54 current pins
+and54 original expected hashes/20Source-generated pins/124 ordered temperature rows,
+the complete322 precheck and complete430 Source review before creating files.
+It preserves the whole original report and old failedb0c8 receipt; it creates only
+Source/material prerequisite metadata. Observe the actual final tool return and
+save its exact real output outside the completed metadata directory as appropriate.
+
+2. Only after Root observes the writer's actual typedint EXIT0 and CLOSED, use
+the actual SHA values from its full output for the derivative binder. Never insert
+invented success SHA values or derive prerequisite closure from the binder itself.
+Required unchanged binder CLI fields are:
+--source-admission
+  B/actual_full_AB_rawrecord_transfer_v22_admission_meta/Root_actual_rawrecord_SOURCE_admission.json
+--source-admission-sha256 <actual writer-return Source admission SHA>
+--material-provenance-admission
+  B/actual_full_AB_rawrecord_transfer_v22_admission_meta/Root_actual_current150_AB_material_provenance_admission.json
+--material-provenance-admission-sha256 <actual writer-return material admission SHA>
+--source-dir B/actual_full_AB_rawrecord_transfer_v22_admitted_sources
+--receipts-dir B/actual_full_AB_rawrecord_transfer_v22_admitted_receipts
+--host-dir ART/axial-material-full-AB-rawrecord-transfer-host-v22-20261010
+--transfer-dir ART/axial-material-full-AB-rawrecord-transfer-v22-20261010
+--protocol-dir ART/axial-material-full-AB-rawrecord-protocol-controls-v22-20261010
+B=/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010
+ART=/Users/wen/spot/validation/artifacts
+Binder=/private/tmp/axmat_rawrecord_fixed_historical_auditor_retention_SOURCE_20261010_tl856qp8/generate_ROOT_actual_rawrecord_binding.py
+Root may select other genuinely fresh names; the exact original fresh guards
+remain active. Do not reuse actual_full_AB_rawrecord_transfer_v22_receipts, which
+is only the existing prerequisite metadata namespace. No D/E/H/O/C may exist
+before binding. No directory is pre-created by this SOURCE design.
+
+3. Independently verify the actual READY Source binding/inverse/freeze and
+all real pins before Root launches the genuine normal host once. Preserve complete
+protocol controls and full default two-reader A/B rawrecord transfer, all records
+and bits, A release before B, genuine guards/MRO and original1800/600/512/2GiB/
+history96/free8/1thread/1child/0retry. Observe actual host closure separately;
+admissions and SOURCE READY never constitute protocol/transfer/XSM/reaction balance/
+native accuracy/AAA/ABA science qualification.

@@ -1,0 +1,6 @@
+第十九轮旧迭代状态独立保留审查：PASS（有限源/结果/旧恢复链范围，尚未删除）。
+固定仅18份早期closed_snapshots.xsm及18条下一map parent_snapshots_closed链接，约3.989067GiB；white map001–008、rank1 map001–009、compensated map001。后三份closed、最后2map本轮前现存内容与父链接目标保留，bootstrap、失败AB/storage场景、其他数值结果不选。
+原producer每map以上一closed状态制作proposal、径向/轴向更新后提交新的closed，用于下一次迭代；这些是早期迭代中间状态。三旧run_status全文保持WAITING_REFERENCE，AAA最终分别11/12/4map达到VALID_MET；不代表独立参考/AAA精度通过。所有每map result.json原sha256封存字典、checker/convergence及其他日志全文哈希核验，原门限5e-7不改。white map010和compensated map003原seal已有9项被R2/R4/R9退休，逐条原SHA和真实账本证明；最后2map的原全seal并非现在全字节齐备，不伪造恢复，也不把最后结果当旧状态无损副本。
+旧13份精确manifest、14份账本/10188条直接copy恢复主本均无选中路径。R4/R9曾将部分closed作为旧唯一中间件退休后的保留anchor，该历史选择被如实记载；它们不是实际复制恢复工具的源。旧中间件本来就需重算，本轮会再增加所需重算的早期状态前缀，不暗称旧全stage直接重验仍可用。97永久gzip保留。
+清理后若重验被选早期stage，须从保留原输入、训练basis、bootstrap、runtime、deck、参数与命令在隔离目录重算所需完整前缀，逐份长度/原stage SHA匹配后恢复；不能直接覆盖原case。未来逐字节重现未实证、不承诺即时恢复。不改原结果/日志/科学门，不增加科学资格。
+本reader仅读源、原seal/status/log与恢复元数据并核候选身份；没有重读4GiB快照或35GiB全图。候选全文SHA与保留boundary全文SHA由Root固定plan提供，当前图/所有入链为互补独审。未删除、未写项目、未执行业务。

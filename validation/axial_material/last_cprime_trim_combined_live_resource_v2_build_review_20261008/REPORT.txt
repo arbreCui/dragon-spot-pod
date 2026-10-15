@@ -1,0 +1,24 @@
+SPOT last-cprime 精简组件组合构建v2（2026-10-08）
+
+精简组件原40阶段和三参数正式准入已通过；组合v2源码独立复核通过，
+本版补齐原资源目录范围，仍逐一核验普通文件全部原字节owner。
+12处完整逆向恢复冻结的8232组合源码，原七键完整输入和全部预算保留。
+
+正式源SHA：14ca113d15d1d82e476a22ce9d31537e741131cc73669979d124973ad663d513
+源审报告SHA：49dc6fe3a5e49b95f934d62c95871402de8af6327abdacadefd393064ad39c5a
+实际准备当前活跃：5a751f/session59836，尚未观察退出码。
+
+原组合首次准备EXIT1及全部原始记录另见相邻
+last_cprime_trim_combined_build_review_20261008/REPORT.txt，旧失败输入未改写。
+五阶段构建及新组合正式准入尚未执行；新原生512 MiB、冷AAA精度、ABA仍待验证。
+
+正式准备实际完成：5a751f/session59836 → 4d6ef2 EXIT0，完整stdout295B、stderr0B。
+实际声明SHA：f74b7c2f42da9c197b0a55d36407f4c764ed96f2aa1cba1b296e2c684498cb23
+独立Root PREP SHA：e7e1e3fb32a4c02edb2b32b535c76cae3baa11f8aee1e35bc5c5e0f24ae6c0b8
+新组件真实三参数准入全返回和完整读取记录已纳入graph；普通字节输入35646项、命名空间86项、明确资源目录207项。
+五阶段构建开始：7c3f1d/session1155，当前活跃，无构建通过资格。
+
+本版实际RUN EXIT1：7c3f1d/session1155 → 2339b3，第一link阶段未通过。
+沙箱默认权限禁止原ps内存采样和原killpg子进程清理；没有编译/物理通过资格。
+获自动批准的自身子进程检查4ac7df EXIT0，前后均无该原链接命令遗留子进程。
+本版SOURCE/OUT/PREP及失败全部输出冻结保留，下一独立版本以原获授权监控权限执行。

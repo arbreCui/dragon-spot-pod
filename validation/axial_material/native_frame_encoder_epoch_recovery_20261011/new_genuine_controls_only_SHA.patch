@@ -1,0 +1,11 @@
+--- /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_invalid_prepost_d19_monitor_controls_sources_20261011/fresh_frame_genuine_controls.py
++++ /Users/wen/spot/validation/axial_material/native_frame_encoder_epoch_recovery_20261011/new_genuine_controls.py
+@@ -27,7 +27,7 @@
+ 
+ SUPPORT=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_prepare_sources/prepare_cli_host_v15.py')
+ SUPPORT_SHA='3c1856f8ec16414d4f07fe4d88b3be2b859b1eb64d0c2624c9c7015c1b9a52a7'
+-ADAPTER_SHA='a2b507e0f5e5470c227484f1d8a1e63367aed2313cb15695a9c46b57a2d444cc'
++ADAPTER_SHA='70d2a5abb8379e825d186b933ac4a55c7434b90984f9ca89c23dc442c8e857af'
+ POLICY='FRESH_COMPLETE_CURRENT_CENSUS_TOTAL_2S_V1'
+ CAPS=dict(whole_seconds=1800,stage_seconds=600,rss_mib=512,joint_archive_bytes=2*2**30,history_bytes=96*2**30,free_floor_bytes=8*2**30,threads=1,children_at_once=1,retries=0)
+ GROUPS={'transient':'01_transient_then_fresh','escaped':'02_captured_escape_and_topology',

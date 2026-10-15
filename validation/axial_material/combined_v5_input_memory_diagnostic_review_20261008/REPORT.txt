@@ -1,0 +1,32 @@
+SPOT 组合v5输入核验内存定位实测（2026-10-08）
+
+实际一次诊断d14afd/session25136 → a28de8退出1；PID85774采样峰
+513.90625 MiB触原512 MiB门，返回-15，子73.335秒、整阶段74.363秒，
+进程组清理完成。真实Root收据、完整stdout0B/stderr774B、child
+合并日志38459B、watchdog、stage及78条边界标记全部保存。
+没有child/result或host/result；主V5组合运行仍是514.359375 MiB的失败。
+
+这是原331824工厂的真实declaration_admission(de3decl, True,
+prep_sha256=1dPREP)，普通canonical import，未改函数或全局变量。
+原705/38de/bc4监督器、1800/600/512、2GiB/96GiB/free8及1/1/0保持。
+profile观察开销计入限额，只留标量/不可变函数名，不保留frame或返回对象。
+
+记录序列：JSON解析返回20.949秒，累计自身高水位458.1875 MiB；
+完整内容摘要返回41.494；归属表展开返回43.618，累计高水位466.890625；
+归属标准化返回49.513；57.243秒进入_phase，未观察到返回。
+本次额外5项读取后核对函数边界未到达，1024日志上限没有触发。
+输入阶段实际读完多少文件无法确认，本报告不填写成功数。
+
+RUSAGE_SELF为累计高水位，不是逐函数即时RSS、逐行分配归因或正常
+性能。新观察只限定本次带profile失败区间，不能直接定位未带profile
+V5构建的某一源码行；没有生产准入、原生RSS、完整FLU或AAA/ABA资格。
+
+执行前独审发现旧config的BASE路径残留；原错误稿保留且禁启动。
+修正v2仅两路径改为独立V5，然后Root仅状态变READY，使用新c955配置
+摘要真运行；独立源码复核、Root完整源逆向和路径核验随目录保存。
+
+下一源码候选在fresh _resolve结果与已验证literal值相同的情况下
+共享不可变路径文本，保留每条独立归属、前后fresh解析/字节核验。
+它尚未取得实际512 MiB通过。独立实际失败证据复核已完成，完整78条raw标记与摘要及真实返回一致。
+本次child未到producer constructor_preflight边界，不给该步骤执行信用。
+独审报告independent_actual_failure_review.json已保存，仍没有完成资格。

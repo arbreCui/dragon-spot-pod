@@ -1,0 +1,1 @@
+已封存 V11完整组件只读核验通过：68阶段闭合（48 PASS，20预期拒绝FAILED且实际退出23）。7599个seal成员及完整SOURCE字节hash匹配，Root终端26ef…f430与全stdout/driver/tail一致。1152对及2042712输出标量原始字节逐位一致；本结果只有组件构建/控制资格，native RSS、完整FLU/AAA/ABA及独立物理精度仍false。

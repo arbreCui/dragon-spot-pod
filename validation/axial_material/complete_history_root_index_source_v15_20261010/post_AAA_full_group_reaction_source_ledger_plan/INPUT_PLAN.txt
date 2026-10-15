@@ -1,0 +1,29 @@
+冻结 refined AAA map012 全370群反应/源账本下一步计划（仅定位/计划；未计算）
+
+实际保存已核：8径向区×48轴向细格=384cell；8×49face=392；370群；24材料；32裂变分量；每群1800 unknown。
+bootstrap macro ENERGY371、FISSIONINDEX64；370群全部保存NUSIGF/CHI、P0 compressed scatter map/SCAT00、NTOT0/TRANC及现有核反应channel字段。candidate_system370群全部保存correctedTX/S0与RADIAL-OP64。
+closed_axial保存370×1800 REAL64 FLUX64，以及REAL32 FLUX/SOUR；完整根目录确无SOUR64或SPOT-R64 axial authority。不能把径向plane的R64 SOUR当384cell轴向源。
+旧nativeSPOGBAL/νΣfΦ exporter已经存在；新工作是独立全字段、每群/每格源与碰撞账本、原始sourcebuffer解释、closure项分离和完整细网格账本，不是重复nuSigmaF*phi。
+
+必读原保存输入：
+track: /Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/bootstrap/initial_axial_track.xsm
+ seal SHA=b8302889d66f37947b3060f5caef2be43c7da5dfd6673daaa1ffb66fd81997d6 （本次只metadata7ID稳定，未重hash数值payload）
+macro: /Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/bootstrap/initial_axial_macrolib.xsm
+ seal SHA=bca18875dbde9b5ae14f916f3df902ab071c173adff02c1b09ef647116282510 （本次只metadata7ID稳定，未重hash数值payload）
+closed_axial: /Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/closed_axial.xsm
+ seal SHA=fcb6e4144a05d943f5a54637c0124ec59498b7176ca077db295f0878ef60e01a （本次只metadata7ID稳定，未重hash数值payload）
+candidate_axial: /Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/candidate_axial.xsm
+ seal SHA=a7ec2c1825bafa854f7299a582658de57f1c968f17eca703cb65f8e233a056f3 （本次只metadata7ID稳定，未重hash数值payload）
+system: /Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/AAA/map012/candidate_system.xsm
+ seal SHA=994bacfea61f3145d0ba73f7889494215bca77fb5a341152fdd652e8f168c5e4 （本次只metadata7ID稳定，未重hash数值payload）
+
+核算：QF=Σf χ_gmf (ΣhνΣf_hmf φ_hi)/k64；QSoff按NJJS/IJJS/IPOS下降群序。
+C=V[(Tcorr-Sselfcorr)φ-QSoff-QF]+A(Jright-Jleft)；D=V·RADIAL-OP64·φ；Rclosed=C+D。完整输出C/D/Rclosed；核sumC=sumRclosed-sumD，不删除D。完整uncorrectedNTOT0/allgrouptransfer/correction与所有reaction channels separately报告，未审明multiplicity/NX不得叫物理吸收。
+保存SOUR32是真实lastworksource的投影，不能默认等于最终φ/k重建的REAL64源；源的相位/roundoff/SIGS guarded校正分别记录。current native source哈希是context，不是假定20261005 Dragon二进制完整源码准入。
+
+输出：完整输入/record identities、compact raw+schema的全370×384源/碰撞/闭合项与370×8×49电流、full-cell/global/group摘要、源buffer差异、现有384cell/392face导出独立回放、固定4→1/原single globalnorm 96观察格、缺项/物理scope、真实监督及终端。预算不增加：继承saved-only60s、ownRSS512MiB、thread1/child1/retry0；64MiB compactoutput是拟议bounded envelope，不称旧ledger已声明的cap。Root正式准入normalgenuine supervisor及全资源96GiB/free8后才执行。
+
+拒绝：源pin/7ID/namespace漂移、XSM结构或压缩映射越界、漏群/漏格、材料/分量/群序变更、nonfinite或违反原positive geometry/k/scalarFlux规则、拟合/clip/renormalize/阈值改动、预算超限或旧结果借作本次结果。signedcurrents/允许的closure符号保留。物理channel合同缺失时阻断physicalabsorption信用；不能凭未找到文件宣称数据不存在。
+
+本次未解码或计算任一XSM flux/XS/source/current值；只核目录元数据与已有seal/export存证，小CSV/report字节另用于freshSHA7身份核验。所有新declaration/execution/seal/watchdog/independentaudit/same-MG未降阶reference pins均None，AAA/ABA/scientific/new86资格false。
+详细输入、字段、等式、条件、源行号与小文件freshSHA7见INPUT_PLAN.json/small_source_pins.json。

@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""Verify, or restore on explicit request, the exact retired rehearsal tar."""
+import argparse
+import hashlib
+import json
+import os
+import stat
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parent
+RECIPE = BASE / 'tar/candidate.json'
+PATCH = BASE / 'tar/exact_tar_headers_and_padding.bin'
+
+def digest(path):
+    value = hashlib.sha256()
+    with path.open('rb') as stream:
+        while block := stream.read(4 * 1024 ** 2):
+            value.update(block)
+    return value.hexdigest()
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--restore', action='store_true', help='Write the original tar path; it must be absent.')
+    args = parser.parse_args()
+    recipe = json.loads(RECIPE.read_text())
+    target = Path(recipe['candidate']['path'])
+    project = BASE.parents[1]
+    if not target.is_relative_to(project / 'validation/artifacts'):
+        raise ValueError('target is outside the project artifact directory')
+    patch = PATCH.read_bytes()
+    if hashlib.sha256(patch).hexdigest() != recipe['patch']['sha256']:
+        raise ValueError('saved tar metadata differs')
+    for member in recipe['members']:
+        primary = Path(member['retained_payload']['path'])
+        if not primary.is_relative_to(project / 'validation/artifacts') or primary.is_symlink():
+            raise ValueError('unexpected primary path')
+        info = primary.stat()
+        if not stat.S_ISREG(info.st_mode) or info.st_size != member['size'] or digest(primary) != member['retained_payload']['sha256']:
+            raise ValueError(f'primary differs: {primary}')
+    output = None
+    if args.restore:
+        output = target.open('xb')
+    result = hashlib.sha256()
+    length = 0
+    try:
+        for index, gap in enumerate(recipe['gaps']):
+            if length != gap['archive_offset']:
+                raise ValueError('noncontiguous tar recipe')
+            data = patch[gap['patch_offset']:gap['patch_offset'] + gap['size']]
+            if len(data) != gap['size']:
+                raise ValueError('truncated tar metadata')
+            result.update(data); length += len(data)
+            if output is not None:
+                output.write(data)
+            if index < len(recipe['members']):
+                member = recipe['members'][index]
+                if length != member['data_offset']:
+                    raise ValueError('unexpected member offset')
+                local = hashlib.sha256(); count = 0
+                with Path(member['retained_payload']['path']).open('rb') as stream:
+                    while block := stream.read(4 * 1024 ** 2):
+                        local.update(block); count += len(block)
+                        result.update(block); length += len(block)
+                        if output is not None:
+                            output.write(block)
+                if count != member['size'] or local.hexdigest() != member['retained_payload']['sha256']:
+                    raise ValueError('primary changed while reconstructing')
+        if length != recipe['candidate']['size'] or result.hexdigest() != recipe['candidate']['sha256']:
+            raise ValueError('reconstructed archive differs')
+        if output is not None:
+            output.flush(); os.fsync(output.fileno()); output.close(); output = None
+            os.chmod(target, stat.S_IMODE(recipe['candidate']['identity'][2]))
+            os.utime(target, ns=(recipe['candidate']['identity'][4], recipe['candidate']['identity'][4]))
+    except BaseException:
+        if output is not None:
+            output.close(); target.unlink()
+        raise
+    print(json.dumps({'status': 'PASS', 'archive_sha256': result.hexdigest(), 'bytes': length, 'restored': args.restore, 'path': str(target)}))
+
+if __name__ == '__main__':
+    main()

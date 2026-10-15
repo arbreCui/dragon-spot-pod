@@ -1,0 +1,24 @@
+V7 独占临时归属表生命周期组合工厂源码候选（2026-10-09）
+
+从正式V6源6bcef完整9处逆向产生新V7，仅docstring与7个顶层赋值改变；
+全部65函数正文及其原执行门、schema负例、物理输入和限额逐字节不变。
+SOURCE/OUT/TERMINAL是3个新的scopes-v7-20261009根，FORMAL basename、
+PREFIX/FAMILY仅V7身份；INPUT_HELPERS.graph钉新helper 855519。
+V6失败518.625 MiB仅是诚实来源，不是继承成功或RSS通过凭据。
+
+原2cad9全部19,356,767B INPUT_SPECS实际sha核验保持，BODY_BINDING及
+actual_components整七键回传检查原源未改；旧组件真实成功pin都仅INPUT
+含义，绝不改作新V7成功。无futureDECL/PREP/RUN/seal值。
+
+资源根在函数正文里由原历史动态axial-material-*规则观察；这里不加
+独立新常量或改根函数。元数据只读的V6声明原221根全部保留，预测再
+增加V7三根及新V6诊断根，共225根。现存family名称未发现额外未计根；
+真实V7 PREP必须再次观察，预测不是实际新声明。源不存在全局替换导致
+老V6root被抹掉的情况，原221根在原live目录和预测表内全部保留。
+
+原graph已经compact，V6实际67,097,740B距64MiB门仅11,124B。
+本作者未生成V7 graph，不承诺其尺寸，保留严格原64MiB门。
+正式新helper观察尚未存在时，TMP工厂不能执行，require_ready原函数
+会拒绝TMP __file__；只能Root先审源/复制正式helper再决定实际新family。
+
+未执行项目导入、构造器、API、生产、原生或数学，不写ART或正式源。

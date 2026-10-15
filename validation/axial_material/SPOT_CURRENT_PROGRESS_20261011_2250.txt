@@ -1,0 +1,716 @@
+后序接口在执行前发现两项兼容缺口，尚未运行GENDF或三宏库对照：2026-10-14 19:32，Asia/Shanghai
+GENDF16 Source审adbf7b与Root小Source全逆向886126通过；唯一发布6b32f9元数据Root0、metadata18真实0生成32参数接口，但最终轻核验发现实际加载SF前驱v6、替换映射却用v7，导致三个child/host/CLI旧路径未命中。源SF23f1/HF5636/recipe5ddc原封保，Root32从未执行；事实c5804646/7827B与真checker1工具80b1a0c8/1859B保，不伪PASS。正在新v11精准loadedSF三PF映射与已发布旧Source累计计量；解析/math保持。
+三宏库当前凭证元审70fa6c0＋补38输出ade1870确认全部2383精确路径只设备34→29，原SHA、size和其余六字段保持、Catalog401f与MF9914皆全覆盖。原3sealed报告保，投影Source16d596准备，Root4a3915全逆向及固定/63output投影实核0；独立Source审发现三原producer schema没有after_check_error，而原消费代码直接索引。将精确适配这三真实格式，不能伪补原报告None或genericmissing；对照请求/业务从未执行。
+OVERV原混合精度控制Source b9a60d只候选，真实控制编译/运行、独立B32/B64 oracle仍None；不把Source0或183万零差异当历史machinebits/物理资格。首A六phase完整聚合与独立后验0结果保持，累计旧清理33批287项37080958384B（34.53GiB）及全部文档结果保，goal active，继续修具体接口再顺序实际执行。
+
+以下为历史状态，以上述更新为准。
+
+BOOT首准入返回点已真实定位：2026-10-14 05:44，Asia/Shanghai
+唯一probe实际49cd95/session11566→1e1656 EXIT1，原BOOTB对象49编译和70重链接两PASS；BOOT真实13.85750775s/峰211.109375MiB/无limit失败，SELF200671232B/整轮39.662948167s/finalresourceTrue。首JSON predicate_id=BOOTB_INGRESS_RETURN_L0466，original_return_source_line466，actual_return_status1；之后外层plane1/status1/required8。精确对应原 SPOR64_BOOTB64.f90 第466行 if (.not. boot_bound) return：SPOR64_BOOT_BIND64_READ未通过，尚未进入571的求解核心；helper内部哪项不满足仍未知，不能猜为材料或求解误差。 只读小records42485a EXIT0已核新Q全部370组双精度值finite/非negative、14未知量shape，PROJECT首层ROOT-FLUX64与native FLUX全部bit相同、370 LEAK64 finite且real32镜像全bit相同；最大单次pread2960B。REVIEW54842ae4（21500B）保留，仅排除已观测数据条件，未证明内部context.valid/QREAD status或freshASM系统资格。
+原状态FAILED_DIAGNOSTIC_UNQUALIFIED/原exception与traceback保留，records为编译PASS/链接PASS/BOOT FAILED；actual_outcome已正确记录首predicate，无secondaryerrors，18原和diag输入均全EOF/当前7保留。summary9d2ed992（2984464B）、Root真实工具ROOT_ACTUAL_ONE_BOOTB_FIRST_PREDICATE_DIAGNOSTIC_V1_TRUE_TOOL_RETURNS_20261014.json、日志和所有现场保留。独立本轮后验92bcbf EXIT0已核3513固定及3512HF项双当前7、28现场文件全EOF、原70/core9/18输入与新9普通副本、ABI及真实日志顺序，REVIEW52f1d98e（647449B）/Tools0ec91a5d（2588B）保留；工程/physics/AAA/ABA均未通过。下一步绑定helper细化诊断仅Source已准备并独立f79b8b EXIT0：82显式失败return（READ28/SYSTEM40/RESPONSE12/FINITE2）加稳定scope/原line/原bool0输出后继原return，整逆恢复原13017B/ABI/数学/每条件一次求值。Fortran3e41669a（43557B）/REVIEW6caeeb82（65715B）/Tools17c94eb4（1859B）保留，尚未编译或运行。FINITE隐式false无事件，允许父RESPONSE成为首event，不凭缺事件授资格；不绕过任何契约或放宽物理门槛。
+此前精确五项清理实际0与独立c0b5af0已完成；累计17批163文件21439198916B（约19.97GiB）释放，结果文档/日志/科学原件保留。AAA νfission3.9525259224%>3%仍未解决，独立370×9及ABA未准入。
+
+以下为历史状态，以上述更新为准。
+
+五个旧副本已实际释放：2026-10-14 05:26，Asia/Shanghai
+本轮实际817915/session61851→7f6220 EXIT0闭合，严格只删除旧failedv16 Q/MAC、diag4生成Q/MAC和旧SPOASM独立重复输入，5项1323735516B（约1.23GiB）；8262保护项及503其他文件在执行内完整EOF/当前7核验，18真实输入、70对象与数学、科学原件、结果文档和日志均保留。receipt2211974e（375489B）及ROOT_LITERAL5_DIAG4_V3_ACTUAL_EXECUTE_TRUE_TOOL_RETURNS_20261014.json已保存；独立实际post c0b5af EXIT0已核8262项双当前7、503其余完整EOF、五目标absent及精确目录变化，REVIEW9f5ef048（606871B）和真实Tools80f3dc06（29309B）保留；这不授工程或物理资格。
+实际释放后家族79709838014B/98026files，可用207563542528B；原cold20971764748B+metadata64MiB+完整fresh2GiB储备余183019830B，admittedTrue，所有限额保持。累计17批163个旧业务中间文件释放21439198916B（约19.97GiB）。下一步独立post闭合后，以真实释放凭证绑定BOOTB首predicate探针并只运行一轮BOOT，尚未编译运行探针；原失败status1保留，AAA νfission3.9525259224%>3%仍未解决，独立370×9及ABA未准入。
+清理Sourcev2曾误把sealed post中的唯一输入listing行list当bool；独立复核指出后保留v2，唯一v3严格list1/exactline及executedFalse修正。v3 Source/MF/readonly/最终argv核验全部真实0后才唯一execute，旧sealed结果没有重写。
+
+以下为历史状态，以上述更新为准。
+
+首准入predicate探针仅Source已通过：2026-10-14 05:03，Asia/Shanghai
+原BOOTB pre-core121..564的216返回点仅加failure-only原line/predicateID/status输出并继原return，31940B原文件整逆恢复，原条件只求值一次/数学/ABI/原status1/565+实际core及其余41helper返回保持。Source8853bdcf、独立5769c1 EXIT0、SF实际d66b46 EXIT0(0c3c38c0/42860B)，尚未编译或运行，实际首predicate仍未知。三层TRACK严格bounded8755ac EXIT0排除344–385所核关联/MCCG/REALPARAM bits失配，不授BOOT资格。
+当前独立预算d3fe5d EXIT0：家族81033573530B/98031files/721roots，原cold+64metadata+完整fresh2储备缺1140715686B，不能开新业务。下一精确五候选1323735516B（旧failedv16 Q/MAC及diag4生成Q/MAC合1056965264B，旧SPOASM独立重复输入266770252B），当前角色survey/旧proof/文件7身份已核，预计余183019830B但尚未删除、不能预授准入。当前18真实input（old9与diagcopy9）、成功fresh17 context/publicMAC/原4科学树、8旧v14aliases、Source/结果/日志全部保留。新探针Host只Source草稿且futurecleanup/HF/execution未知。
+清理累计仍20115463400B（约18.73GiB），整体工程/physics/AAA/ABA仍未通过；上一真实诊断明确第一层BOOTB_ADMISSION_FAILED(status1)，原sealed报告与独立post保持。接下来先精确历史角色迁移、Source/MF/readonly/actual释放及后验，恢复原储备后再唯一首predicate诊断，不重GLOBAL/full50或降低任何限额。
+
+以下为历史状态，以上述更新为准。
+
+BOOT唯一状态诊断真实终态：2026-10-14 04:49，Asia/Shanghai
+诊断actual a7c771/session68590→b0b41c EXIT1，编译BOOX68/原70重链接两PASS，原69输入/数学/guard保持。BOOT真实watch1、14.65810879s、峰207.328125MiB，无资源limit；唯一实际JSON boot_plane1/actual_return_status1/required8，明确BOOTB_ADMISSION_FAILED，不是已接受求解或提交完成，具体首predicate仍未知。原XABORT与原失败exception/tb保留，所有工程/physics/AAA/ABA false。
+summary6e63e275（2947850B）actual_outcome=None是辅助解析元字段遗漏：原日志只在输入deck listing出现完成ECHO标记，Host按substring误当真正完成并写secondary拒绝；实际无执行完成ECHO/normal end/seal。原sealed报告不重写、不重跑同诊断，独立17cdeb EXIT0已核3452固定7两轮/69与9对象EOF/9普通输入副本/13owned/27现场文件1345461521B完整EOF及唯一statusJSON+abort。REVIEW0dc4277f（657214B）、Tools7af85aa9（2371B）、Root真实工具ROOT_ACTUAL_ONE_BOOT_STATUS_DIAGNOSTIC_V4_TRUE_TOOL_RETURNS_20261014.json保留。原结束预算snapshot下一完整fresh2储备缺1140531231B，不作为当前独立准入值。
+下一步只读核TRACK关联/MCCG状态/REAL-PARAM与GRCON bits及原inmemorySYS派生；必要时最小BOOTB failure-only首return位置诊断，原status1/ABI/判定/表达式/运算/写入不改。不放宽任何门槛，不把组件Source或后验工具0授业务成功，材料/GENDF预备器仍不可执行。当前清理累计20115463400B（约18.73GiB），所有结果文档/日志/科学原件保留。
+
+以下为历史状态，以上述更新为准。
+
+诊断前储备已恢复：2026-10-14 04:13，Asia/Shanghai
+精确旧failedv15三个重复私有本体已实际a21f12/session41961→541ee9 EXIT0释放1504027360B（约1.40GiB）；旧global/BOOT-GLOBAL-stage/initial_pack只三项absent，其余189及当前failedv16全部297受保护。7999保护项与189其余在执行时完整EOF/当前all7核验，独立实际post正在执行。receiptcb43748d（371942B）、Root真实工具ROOT_LITERAL3_ACTUAL_EXECUTE_TRUE_TOOL_RETURNS_20261014.json保留。
+家族当前实际79688112009B/98004文件，可用207709233152B；原cold20971764748+metadata64MiB+完整fresh2GiB储备余204745835B，实际admittedTrue，所有原上限不变。累计16批158个旧业务中间文件释放20115463400B（约18.73GiB）。
+v16内存修正的GLOBAL已真通过，但最终BOOT仍实际strict solve未提交，全部297失败现场与报告/日志/科学原件保留。已核真实p1早期尺寸/state/link及全部370 MAC.group目录schema，未证明具体失败predicate；新SPOBOOX64诊断Source仅failure-only打印plane/status/required8并flush，随后原XABORT，原数学、conditions/commit顺序全不变。尚未编译或运行新的诊断；将保原600/512/1800+fullfresh2并只诊断BOOT，不重跑GLOBAL/全50，不授工程/physics。
+
+以下为历史状态，以上述更新为准。
+
+v16完整真实终态与独立失败后验：2026-10-14 03:50，Asia/Shanghai
+Root b4650d/session52892→49c2e3 EXIT1，整体FAILED_UNQUALIFIED_NO_RETRY。50记录=16正常PASS+33精确预期拒绝+最后BOOT_positive真实失败；不是17PASS完整工程成功。GLOBAL真实watch0、418.6119925s、峰479.328125MiB，满足原600s/512MiB；内存修正在该阶段实际通过。最后BOOT watch1、14.143533542s、峰206.65625MiB、limit_failure=None，末日志SPOBOOX64: ACTUAL STRICT SOLVE NOT COMMITTED. 未提交最终封存，不能读回成功或启动材料/GENDF后续。
+SELF296828928B，summarywall1081.726311s、after_check_error=None；summaryac8fa3e（2415747B），Root真实工具ROOT_ACTUAL_V16_FULL50_BOOT_FAILURE_TRUE_TOOL_RETURNS_20261014.json保留。独立post3d0064/session23594→56e8d7 EXIT0已核50有序记录/33精确拒绝、3129固定项all7两轮、原数学/70对象档案EOF及297现场文件1385100960B完整EOF。REVIEW38b6a125（891506B）、真实Tools c6c26621（2546B），报告明确NONPASS，不授工程/物理资格。
+下一步定位BOOT ingress/strict solve未提交的真实分支，保持原数学、512/600/1800、no retry和物理误差阈值；不原地重跑v16，保留全部失败场景与报告。旧failedv15三个历史私人副本1504027360B已readonly角色调查（global/BOOT-GLOBAL/initial_pack），若下一轮储备需要可精确迁保护角色后释放，当前尚未删除。
+材料/GENDF预备器仅Source已准备且未来PF为空，v16失败不满足实际生成门槛。正式AAA νfission3.9525259224%>3%仍未解决，独立370×9/ABA未准入。清理累计18611436040B（约17.33GiB），结果文档/日志/科学原件均保留。
+
+以下为历史状态，以上述更新为准。
+
+完整v16已真实启动：2026-10-14 03:28，Asia/Shanghai
+Root唯一b4650d/session52892执行full50，当前运行中，未有终态；OUT为validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-cache336-20261014-v16。最终Source审核220ca3 EXIT0，HF/CLI实际d36911 EXIT0；HF102335f5（1189702B/2920依赖）、CLI1c68f17a（39065B），Root56b439生成13prefix90argv并经独立672afb EXIT0最终核验。原50主体、3helper及数学/预算保持。
+缓存Driver2和338断言/121调用真实通过，独立Driver457eda和Bitbe6dc0 EXIT0完成；Bit原compilerFalse误字段已以具体Source/日志/watch及透明独立勘误固定，原sealed报告保留。v16读取两组真实报告及后验，不填未来PASS。
+本轮结果以实际全50闭合及最终seal bits回读为准；运行中的阶段记录不是工程完成，物理AAA νfission3.9525259224%>3%仍未解决，独立370×9/ABA未准入。
+
+以下为历史状态，以上述更新为准。
+
+缓存修正真实控制通过：2026-10-14 03:06，Asia/Shanghai
+Driver2实际9dad6f/session63836→04273b EXIT0，2阶段编译/链接PASS，原69其它输入与4archives保留，wall12.577950084s、SELF142917632B。summary9d27d7ad（2381120B），Root真实工具保存。
+Bit2实际3216c3/session83368→420e1f EXIT0，compile/link/run三阶段全部PASS，338断言/121调用真实完成；原301/110保留，新增enabled-store拒绝与mixed两group全部输出bit相等。wall13.642511334s、SELF143851520B，summary09d386e8（2741410B）。核心数学SPOT1P64未重编译。独立实际post正在执行，不能授完整GLOBAL/onlineBOOT或物理资格。
+Bit2汇总的compiler_executed=False是Host误查compact-cache336-controls路径的元字段错误；实际编译日志和watch位于build/，三阶段真实records保留。原sealed报告不重写，独立后验将明确记录真实编译/链接事实，不能把该字段误读为未编译或复跑测试。
+五项清理已独立25e734 EXIT0核7567保护完整EOF及323其它留、5目标absent；累计释放18611436040B（约17.33GiB），结果文档、日志、科学快照和v15失败全现场保留。下一步新v16完整50阶段仍待真实运行；原512MiB/600s/1800s与物理误差阈值保持。
+
+以下为历史状态，以上述更新为准。
+
+缓存驱动构建状态：2026-10-14 02:47，Asia/Shanghai
+首次Driver构建actual a466b8/session77353→2a4fdb EXIT1。唯一compile阶段本身PASS/watchreturn0（2.821435416s、无limit_failure），但Host错误地要求build目录只有对象文件，将同目录正常compile日志和watchdog也判为多余，因而在链接前终止。尚无新Dragon运行资格，未运行338/121控制或v16。本次7文件失败现场、原工具及summary44ff15f6保留。下一版本只修正精确输出枚举与新输出目录，原Driver336、核心数学、guard、预算与编译选项保持，不重跑旧版本。
+
+以下为历史状态，以上述更新为准。
+
+已完成旧文件清理：2026-10-14 02:43，Asia/Shanghai
+精确五个旧私人中间副本已实际0754c0/session20838→4108f1 EXIT0删除，释放1478165640B（约1.38GiB）。家族实际存储81260703839→79782538199B，原cold+metadata64MiB+完整fresh2GiB储备实余110319645B，可用空间207690100736B；所有上限保持。累计15批155个旧业务中间文件释放18611436040B（约17.33GiB）。回执dc6be5fd（373150B）保留；独立实际删除后验正在执行，未宣称其完成。
+结果文档、日志、科学快照与v15全部失败现场保留。缓存336修正已完成源码审核和冻结，下一步编译与338断言/121调用的真实一致性测试；完整三层v16和物理目标均未完成。
+
+以下为历史状态，以上述更新为准。
+
+当前状态更新：2026-10-14 02:40，Asia/Shanghai
+完整三层v15实际在GLOBAL触发原512MiB上限（峰512.203125MiB），FAILED_UNQUALIFIED_NO_RETRY；仅33/50记录，PROJECT、在线BOOT和封存读回未开始。独立失败后验60e48a EXIT0已核192现场文件、固定输入和原始异常，全部现场保留。正式AAA νfission最大误差3.9525259224%仍超过3%，独立370×9与ABA尚未完成。
+五个旧私人中间副本1478165640B已通过双Source审核，MF实际81f8e8→858478 EXIT0、默认readonly50bab9→92c140 EXIT0；7567保护项完整EOF核验。尚未执行删除，累计实际释放仍17133270400B。当前原完整fresh2GiB储备缺1367845995B，预计删除五项后恢复约110319645B余量，必须以实际删除后预算为准。结果文档、日志、科学快照及本轮v15失败现场保留。
+缓存修正Source、Driver build Host和bit control Host均独立Source0并实际冻结；Driver仅内部368→336MiB，SPOT1P64数学模块保持原样。新增控制保留原301断言/110调用，合338断言/121调用，覆盖存储拒绝和mixed两group全部输出bit比较。尚未编译或实际运行，不能预授512MiB、600s或整体工程通过。
+下一步依次执行五项清理及独立后验、Driver单源编译/原70重链接、缓存预算位一致性控制、新v16完整50阶段；通过后再按原顺序推进370群诊断、材料权威、独立参考、AAA剩余精度与ABA。所有原预算和验收阈值保持。
+
+以下为历史状态，以上述更新为准。
+
+SPOT 当前进度（最新追加：2026-10-14 01:50，Asia/Shanghai）
+
+本轮实际进展
+后续修正准备（2026-10-14 02:13）：v15失败独立60e48a EXIT0已完整核192现场文件1601987710B、3011固定项及首异常，REVIEW f6c78ee0；原完整fresh2GiB储备当前缺1367845995B。新缓存Source实际88b183 EXIT0，仅Driver内部上限368→336MiB，核心SPOT1P64保持原源码；新控制保留原301断言/110调用，并增37断言/11调用覆盖enabled-store拒绝与mixed2group全输出bit比较，尚未编译或运行，不预授RSS或600s成本通过。
+已选下一批精确五旧副本1478165640B（旧v14 Q1/MAC1/PROJECT及旧public5两束），源码已真实cc6b7c EXIT0准备、Root1ef3e1 Source0；独立Source审进行中。旧保护7251仅indices4160/4161/4294/4607/4612迁历史，其余7246保留，并保护本轮v15所有现场及当前science。MF/只读/实际删除均未执行；8旧别名、SPOASM备用副本及所有文档日志保留。
+完整三层v15已实际 b1cc8f/session77078 → 60a790 EXIT1，在GLOBAL达到原own-child512MiB上限，整体FAILED_UNQUALIFIED_NO_RETRY。共33记录：13正常PASS、19精确预期拒绝和1个真实GLOBAL故障；不是完整50。GLOBAL watchdog真实−15、peak512.203125MiB、elapsed286.79903758s、limit_failure为own-child512；SELF306331648B，summary wall660.1704883s、after_check_error=None。PROJECT及在线BOOT未启动，无封存读回，所有原件保留。summary01967b19（2083098B）；Root真实工具ROOT_ACTUAL_V15_GLOBAL_OWN_CHILD_RSS512_FAILURE_TRUE_TOOL_RETURNS_20261014.json。独立失败后验正在进行，不能授三层工程/物理资格。
+旧v14 GLOBAL峰507.09375MiB/return0/293.9971089s，原本只有约4.9MiB余量。新BOOTQ静态BSS仅比旧多16B，不是128MiB buffer静态分配；新增比较buffer均局部allocatable。下一步核现368MiB内部精确缓存与GLOBAL工作区寿命，评估保持原数学、求和顺序、512MiB/600s/1800s及精度门槛的最小修正，尚未修改或重跑。
+下一储备只读调查已找到11旧v14独立临时副本1331516216B、旧public5两束200327056B及SPOASM旧控制输入备用副本266770252B；共1798613524B，仅候选尚未删。当前科学快照、v3 current PACK和本轮v15全部失败现场保留。后续释放须本轮真实终态/独立失败后验、精确保护角色迁移和实际预算。
+完整三层v15已唯一实际启动 b1cc8f/session77078，终态未知，尚不授工程或物理资格。最终Host b104643e（114682B），五个完整字节变更块反向恢复旧draft2、原50阶段连续18902B与3辅助文件保持；独立Source90a28d EXIT0/Root f6a3f2 EXIT0。ownHF30ddc6c4（1129274B/2802依赖）、CLIe6d6ef18，Root实际a130b2生成78argv/11前缀全部真实外部PF；独立最终整合150a76 EXIT0通过。原三A生产、旧cache70/原17与新build/fresh17/model/public7四实际凭证均绑定。运行预期17正常阶段通过+33异常输入精确拒绝，并要求最终完整sealed pair bits回读；当前不能填未来结果。
+公共v7已实际 e74529/session46091 → a574a0 EXIT0：11阶段全部PASS、7逻辑控制/9运行阶段，wall44.47422025s、SELF152698880B。summary97b50c64（8123234B），2642固定凭证/34输出；唯一首SRC已完成束100163528B真实退役，其意图与回执均保留，unlink及前后父目录fsync实际returned true，第二MAC束当前完整保留。独立812c07 EXIT0完整核对2642固定项、35物理输出、11日志与watch、首SRC退休和MAC当前束及旧public5现场。REVIEW fd1079bd（54931B）。这是组件读取控制通过，生产三层在线BOOT和物理精度尚待运行。
+两份旧失败 v14 的内层私有重复文件已唯一执行删除，真实工具 3cd71d/session80090 → 655ec6 EXIT0；释放 528482632B（约504MiB）。独立删除后 f71b6d/session42077 → ff6afa EXIT0，7251保护项全部完整EOF/SHA/all7核验通过；当前结果、文档、日志、源文件、外层Q1/MAC1/PROJECT及其余297个v14输出均保留，失败公共v5的两份大束也完整保留。实际回执 ec2c754a（367916B），独立REVIEW f7da4e64（374518B）。
+累计实际清理14批150个旧业务中间文件17133270400B（约15.96GiB）。家族存储从80070766376B降至79542283744B；原完整2GiB新运行储备余350574100B，可用空间208002658304B。原96GiB历史、8GiB底线及所有运行上限保持。
+新组件构建、17项连接控制和36条内部模型断言已实际通过并独立核验。公共v5的原辅助空间失败保留；新public7已如上唯一实际通过，独立后验也已完成。生产三层在线reader资格仍待整体运行。
+下一步：将四组真实通过报告绑定新三层入口，修正两处准入token并明确准入首个已完成SRC合成束的真实退役证据，再执行原50阶段三层/GLOBAL/在线BOOT与封存回读；然后按既定顺序开展370群诊断、材料/反应权威、独立参考、AAA剩余精度和ABA。
+科学目标仍未完成：正式AAA νfission最大误差3.9525259224%超过3%；独立全370×9未准入，ABA未开始。不将源码审核、内部模型或单阶段通过计作物理完成。
+
+以下为之前的阶段记录，以上述最新追加为当前状态。
+
+SPOT 当前进度
+核对时间：2026-10-14 00:11，Asia/Shanghai
+以本文开头为当前判断；历史结果、原始失败及源码版本全部保留。
+
+目标尚未完成
+A1/B2/A2/A3独立真实双精度生产及370群终态回读通过。三段GLOBAL/PROJECT单阶段通过，整体在线BOOT未通过。正式AAA精度仍有νfission最大3.9525259224%超过3%，其余7项通过；独立全370×9未降阶参考未准入，ABA未开始。
+
+当前执行状态
+模型v5已真实6556d0/session85313→557554 EXIT0：3阶段全部PASS、36条实际断言；C64-EXP实际948232B等于推导布局界，C64-ACT954412B、SHA不同，完整比较/边界控制通过。summarya7724f8d（2693213B），wall13.828757625s/SELF144637952B；独立1dcd44 EXIT0完整EOF/all7核14输出和全部current身份、旧2565/2532闭包保持。此为私有模型，不单独授生产reader或物理资格。
+公共v5实际abfd87/session10645→f70e1a EXIT1：10记录9PASS/1FAILED，compile/link+前5 single+staleSRC prepare/read通过；第二staleMAC prepare两份各100163528B合留触发原辅助128MiB。最后prepare子进程watch真returncode0但limit_failure非空，故guard阶段FAILED；该子日志不冒充Host准入，第11 read未启动。summaryc60ae9b8（5377582B）、wall39.50733525s、SELF151486464B，首128异常和after/publication secondary完整保留。公共/reader/完整50/AAA/ABA都未通过。
+下一唯一publicHostv6将只修已完成first stale束的明确生命周期：真实read0+全部statuses/原beforeMF及after完整EOF/all7相等+otherAbsent通过后，fsynced精确退役该新self-owned synthetic大bundle，保留MF/sentinel/日志/历史EOF前后与真实删除回执，随后只保持第二束current；不改Fortran/11阶段/9phase/status/cap128。尚未准备或执行v6。v15 draft还须在新Source版本修两处误入unary+准入token，并显式接受第一束严格completed-retired凭证，不泛跳缺失。
+BQ2备选独立b0ca51 Source调查0：旧failedv14 BQ-MAC9893580/SRC518589052合528482632B只在旧7030保护列表indices4166/4167；所有现HF+catalog3030/BIND2012无本体引用。后续Source准备精准迁7028，旧7030/cur66实际0凭证原件保留，Q1/MAC1/PROJECT及其余297输出全部保留；尚未执行删除。失败public现场两大bundle也保留。
+模型控制v4已真实69cb81/session37145→8ce75f EXIT1闭合：原SerialExecutor在首次execute发布RUNNING记录、尚未启动child之前，写compact-model-controls/stages.json.tmp因caller未创建记录目录而拒绝。实际仅3个文件（计划绑定、bounded副本、失败summary），无编译器/日志/watch/object；1条RUNNING记录不计PASS，summary34c65012（1546386B），wall5.690394042s、SELF138117120B、首异常保持。
+公共控制v4未启动，Source存在相同caller目录遗漏；在新唯一两个Hostv5仅补对应阶段目录创建并切ownOUT，原Fortran/数学/3与11阶段/oracles/OwnRSS/firsterror/所有资源限制不变，v4及真失败原件完整保留。新build4和fresh17真实0结论不变，模型/公共READ/整轮/AAA/ABA尚未通过。
+新BOOTQ原17项控制已真实5356fc/session37513→5adf13 EXIT0闭合：20阶段全部PASS、17逻辑控制/18运行阶段，72.491319708s、SELF182943744B约174.47MiB，原8core与当前1b78完整factory/17oracle保持。actual coherent rewrite后由Host wholeEOF/all7 gate真拒绝，Fortran内部拒绝未声称。实际报告7809453e（9091563B）、2587fixed/47outputs，独立实际后验进行中；Root真实工具原件ROOT_ACTUAL_FRESH17_V2_NEW_COMPACT_BQ_TRUE_TOOL_RETURNS_20261013.json已保存。
+模型/7 genuine READ双SourceHF已真e6ad7d EXIT0冻结，model0cf278e8/2584deps、public043c1044/2596deps；Root真4d7f94 Source-only建绑定实际741979新build的exact argv，未来actual控制结果仍None。原模型3/公共11阶段待最终入口Source整合真0后唯一执行，reader/完整50/AAA/ABA仍未获资格。
+新build4已真实863c18/session97263→c2d939 EXIT0闭合：1个BOOTQ编译1.870323167s、原70顺序链接1.041006625s均PASS，整轮11.758788541s、SELF148258816B约141.39MiB，原69其它输入/8core/4archives全保持。实际新BOOTQ.o SHA1118ab3d（198368B）及Dragon403e0a35（10744200B），summary74197904（2333640B）。新HF38ad77ba/2565deps与CLI35ca85ab已独立55a1e2 Source0，原2532全部继承，Root b12fec前置核真整数0。
+实际新build后验进行中；fresh17、private模型及7 genuine publicREAD尚未执行，生产reader/完整50/AAA/ABA资格仍未提升。后续只绑定实际新对象和已闭合报告，不继承旧reader17 PASS。
+新post_curated66 Common/catalog/BIND v2已真实f356d0/session51082→d9a1ca EXIT0核3030行/2979唯一保留路径的3052255693B完整EOF/all7。独立5398d1 Source0及Root9ac367 Source0核精确10失效行转历史、其余3030行顺序/数据、BIND2012仅catalogPF index2006替换、Common仅BASE/BIND两literal整字节逆还原，原方法/数学/守护和流式写出不变。新SF真2df20b EXIT0冻结e2b380b7，Common a5b774a6；旧v1 Source预备索引假设失败及partial文件保留，不是编译或业务失败。
+Root buildHostv4 97c65524和fresh17Hostv2 c68980d2真d1f1ed Source-only准备，只切新Common path/SHA与ownOUT。exact70/95mods/core9新计划a832e0 EXIT0，purecommands85ca95/0f648f均Source0各1正向8精确拒绝；独立新Host复核和最终HF准备中，仍未编译、不授新reader或物理资格。
+最新新build_v3已真实6a9869 EXIT1在编译前身份目录核验拒绝，没有编译器/子进程/新OUT创建：原current_catalog3040仍活扫已实际释放的v3 radial1.bin。只读cd4508确认实际66中仅10 catalog rows，均mandatory=false且角色仅旧v3/v4 failedJSON递归PF，原BIND当前2012和科学/数学不依赖它们。原Source/目录不改，正在新唯一catalog/Common包中把精确10匹配实际releasePF迁为历史非live，并保持原3030其他rows、原数学/守护/流式方法完整；不会通配跳过缺失。旧所有SF/HF和真拒绝保留，无自动重跑，后续实际新Common/新buildHost v4须完整Source0再编译。
+实际清理独立后验33c1bd/session83829→9b142b EXIT0闭合：7030保护和2123其它旧项全EOF/all7、66 absent、24parent精确变化、v14/v12整树保持，原家族79716266657B/97353、预留余176591187B再真测通过。原资源限制保持；仅身份目录前置需明确历史角色修正，工程/AAA/ABA仍未提升。
+没有正在运行的数值或编译任务。最近完整v14已由f8a3d7/session65091→c674cb EXIT1闭合：50记录16通过、33精确预期拒绝、最后BOOT正向失败。GLOBAL294.590119834s、PROJECT9.600063333s，summary wall884.353103667s，SELF217.734375MiB，首异常及原回溯正确保留。独立后验f23127/session4651→2d1bef EXIT0保持原科学/Source、5625保护及全部299输出；没有封存终端或工程/物理提升。
+内层独立READ同时复制BQ-SRC518589052B和BQ-MAC9893580B，额外528482632B触发原128MiB辅助规划上限；原双份最坏2560MiB超过2GiB。不能只提高限额重试。
+
+已完成的新修复准备
+新单BOOTQ候选2040424e（63418B）已经独立30b4d4 EXIT0完成37项Source检查及95文件全EOF/all7；public BUILD整块原字节、原数学、旧BOOT64及raw两buffers保持。仅private expected builder省去GLOBAL64/SEED两重复大副本并保留typedempty槽位；私有matcher完整比较原输入树所有目录、类型、长度、list及全部raw words，两槽各一次、累计depth64与nodes2000000不重置。固定NUNKNO14紧凑树推导844632+7400*N=948232B，规划32MiB；BQ_MAC16MiB+原角色的完整条件预算2032MiB，仍须真实模型布局及运行核验。
+候选SF由98d042 EXIT0一次冻结（3fdfdeb7，19087B）。private模型控制是精确块复制，不能单独授生产reader资格。7个genuine publicREAD额外用例源e11e65ca（66374B）已独立2d10c5 EXIT0审查，重用真实当前1b7820完整factory；含GLOBAL/SEED bit篡改、库存及两stale名字两phase完整PF契约，尚未编译/实际控制。
+Root新build Host最终v3已修完整报告首异常保护及计划路径。独立d79246 EXIT0核46项/189文件全EOF。真实4146c1 EXIT0冻结HF c803bf31（962704B/2532依赖）及CLI5363c93b；只计划compile一个BOOTQ及按原70顺序relink，只换zero-based40/core第6，其余69输入/8core/4archives保持。旧70 exe和旧17仅旧reader前提；新17、private模型、7 genuine READ必须真实通过，再允许原完整50及封存读回。HF/CLI最终整合独立审核仍在进行，所有未来actual PF保持None。
+Root原17新对象控制Host已准备Source草稿，原17全部名字/18阶段/20条命令保持，真实Source-only754cc2核1正向/8精确拒绝；未执行Host或编译。
+
+清理及空间
+累计实际清理13批148个旧业务中间文件16604787768B（约15.46GiB），诊断自有副本另计。最新literal66清理真实0ac5ff/session56412→46d4e8 EXIT0：1751559764B、24个父目录按实际逐文件−1nlink/−32B变化；7030保护项全EOF、12旧OUT其他2123文件/目录、最新v14全部299、v12有限测量依赖、v3因果PACK和全部旧ax_current保持。30旧保护候选显式迁为历史，不能再称现存PF；旧私有精确路径回放失去，原日志和结果留下。
+真实原家族81467826421B/97419→79716266657B/97353，cold+metadata64MiB+完整fresh2GiB储备余176591187B，original_initial_reserve_admitted=true，可用207909527552B。Source v3双独立审核、MF准备452ee0→de2971 EXIT0、默认只读a6d8ef→d4d48b EXIT0和最终只读1d53de EXIT0均真实闭合；实际清理独立后验9b142b EXIT0全7030 EOF/7保持，尚未编译或数值。原96GiB历史、8GiB可用、512MiB/600s/1800s、2GiB和128MiB均保持。
+清理凭证：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_CURATED66_V3_ACTUAL_RELEASE_TRUE_TOOL_RETURNS_20261013.json
+原17新reader Host当前c8cfdd21（16920B）已独立1ebe3e EXIT0：实际same_pin拒绝coherent重写、own newbuild HF/SF双closure选择、20/18/17原oracle和异常首对象/tb守恒。Root当前纯命令0588d4 EXIT0；尚未实际编译/控制，必须真实newbuild完成后才冻结该Host的实际外参。
+两个模型/public7控制Host最终v3 Source-only候选与有限边界测试准备，等待peer Source0。v15接入设计已4e5b31 EXIT0，保留原50主体/FirstFatal及旧69/cache70数学来源，四新实际报告futurePF均None；v15 Host草稿正在准备，没有工程或物理资格提升。
+
+既定科学顺序
+SPOT为2D径向—1D轴向/POD组件；150cm三个50cm燃料段。A Pu.2100/U.7900、B Pu.2436/U.7564，原密度/几何/温度/370群/28核素固定，基础12与正式48单元/SN32/rank1分开。
+先三段/在线BOOT真实通过，再saved full370（已观测P0/P1/P2外六矩UNKNOWN）、材料75/GENDF真实权威、独立参考准入、AAA剩余精度，最后ABA。材料绑定仅只读计划，尚未执行75；不将Source或单阶段PASS计作这些完成。
+
+当前凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_V14_FULL_PIPELINE_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_v14_actual_full_failure_postverify_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/bq64_compact_expected_composed_source_draft_v1_20261013/COMPLETE_BQ64_COMPACT_EXPECTED_COMPOSED_SOURCE_FREEZE.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/bq64_compact_expected_build_host_source_v3_20261013/COMPLETE_BQ64_COMPACT_EXPECTED_BUILD_HOST_SOURCE_FREEZE.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_public_read_compact_bq_admission_controls_Source_review_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/readonly_v13_plus_older_private_copy_candidate_survey_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/SPOT_MEMORY_DIAGNOSIS_CURRENT_20261013.txt
+
+历史追加（
+保存本次更新前当前段（各条状态为其记录时点）：
+SPOT 当前进度
+核对时间：2026-10-13 21:07，Asia/Shanghai
+以本段为当前判断；全部历史记录和原始失败证据完整保留。
+
+目标尚未完成
+A1/B2/A2/A3独立真实双精度生产及370群终态回读通过。三段GLOBAL/PROJECT单阶段通过，整体在线BOOT未通过。正式AAA物理精度仍有νfission最大3.9525259224%超过3%，其余7项通过；独立全370×9未降阶参考未准入，ABA未开始。
+
+最新完整实际运行
+v14真实f8a3d7/session65091→c674cb EXIT1闭合：50记录16通过、33精确预期拒绝、最后BOOT正向失败。GLOBAL294.590119834s、PROJECT9.600063333s通过；summary wall884.353103667s，SELF228311040B（217.734375MiB）满足原512MiB。原完整记录流式写入保留，未观察到v12末尾264MiB累计增长；首个异常对象及原回溯已保留，后续错误单列，没有被scratch归档错误覆盖。
+BOOT watchdog−15、15.808921917s、211.03125MiB；首个limit_failure为128MiB runtime/context/log/meta规划上限，执行记录elapsed16.149896208s。actual_terminal=None，没有封存完成标记，工程/AAA/ABA均未提升。v14已关闭，不自动重跑。
+额外占用已定位：内层独立READ重新BUILD产生BQ64-SRC-ST518589052B、BQ64-MAC-ST9893580B，与外层BOOT-Q-1/BOOT-MAC-1同大小、同时存在。当前主角色1277848444B，aux634413818B；BQ64两文件528482632B，其余aux105931186B低于128MiB。全OUT299文件1912262262B，独立全部EOF后验f23127/session4651→2d1bef EXIT0；5625保护/2711当前输入身份不变，原Source/数学及v13所有299输出保持。
+
+下一修复
+原双份Q/MAC最坏求解预算2560MiB，超过原2GiB，不能只增HOST角色预算。正评审保持public BUILD及原物理重算、完整目录/类型/长度/全部bit比较的只读期望子树方案：仅GLOBAL64/SEED重复大副本改为直接对应原输入的完整逐树比对，其余派生字段仍独立重算；宏临时和小源临时的保守界须证明。当前仅Source设计，未写或运行新数学/业务版本。材料v7→已冻v14的只读最小绑定方案已9de80b EXIT0保存，但前置仍不合格，未来业务PF均None，未创建v8或执行75。
+
+空间
+已实际清理12批82个旧业务中间文件14853228004B（约13.83GiB）；另一个诊断自有副本单独计数。最新旧v11/v12两个私有PROJECT1498711904B由Root3900d8→1588b6 EXIT0释放，独立5e88dd EXIT0；全部结果文档、日志、曲线、科学输入和其余521旧文件保留。两旧PROJECT/GLOBAL整树及旧finite fixture精确路径重放失去，历史EOF和真实结果保留。
+清理后原axial家族79555564159B/97120、cold+metadata64MiB+完整fresh2GiB预留余337293685B，是v14启动前实际准入；v14新增1.912GB后当前家族81467826421B/97419，下一完整储备余−1574968577B，尚未准入。原history96GiB、free8GiB和全部原限制保持。v14的BQ/Q/MAC、空final及所有失败文件暂保留。
+
+既定科学输入及顺序
+SPOT为2D径向—1D轴向/POD组件；150cm三个50cm燃料段。A Pu.2100/U.7900、B Pu.2436/U.7564，原密度/几何/温度/370群/28核素固定，基础12单元与正式48单元/SN32/rank1分开。
+先真实通过三段/在线BOOT，再saved full370(P0/P1/P2之外六矩UNKNOWN)、材料75/GENDF真实权威、独立参考准入、解决AAA剩余精度，最后ABA。Source、有限测量、离线快照和单阶段PASS不替代这些完成条件。
+
+主要凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_V14_FULL_PIPELINE_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_V14_CLOSED_FAILURE_PHYSICAL_EVIDENCE_PINS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_v14_actual_full_failure_postverify_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_EXACT_OLD_V11_V12_PAIR_V2_ACTUAL_RELEASE_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_old_v11_v12_PROJECT_pair_v2_actual_postverify_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/material_v7_to_frozen_v14_readonly_binding_plan_20261013/PLAN.json
+/Users/wen/spot/validation/axial_material/SPOT_MEMORY_DIAGNOSIS_CURRENT_20261013.txt
+
+
+
+保存21:07前当前段（各条状态为各自记录时点）：
+SPOT 当前进度
+核对时间：2026-10-13 20:02，Asia/Shanghai
+当前判断以本段为准；历史记录和原失败证据完整保留。
+
+目标仍在进行
+A1/B2/A2/A3独立真实双精度生产及370群终态回读已通过。三段GLOBAL和PROJECT单阶段实际通过；整体在线BOOT尚未通过。正式AAA仍有1项物理精度失败，独立未降阶参考未准入，ABA未开始。
+
+最新完整实际运行
+v13由Root真实c510a7/session73713→5e6985 EXIT1闭合。50条记录包含16项通过、33个已接受的精确预期拒绝、最后1个BOOT正向失败。GLOBAL实际292.3458715s、PROJECT实际通过；summary wall854.9318723s。主控SELF峰233046016B（222.25MiB），未出现v12末尾约264MiB累计跳增，原512MiB门槛保持。
+新阻点是BOOT临时文件存储角色缺失：真实Q1为518589052B、MAC1为9893580B，被现有HOST计入128MiB辅助预算。BOOT watchdog真实returncode−15、elapsed10.56133175s、峰200.4375MiB；首个limit_failure为remaining runtime/context/log/meta storage planning bound128MiB。后续scratch归档异常覆盖终端主错误，两层原证据均保留。没有有效封存终端，actual_terminal=None、output_pins=[]，不得授整轮、AAA或ABA资格。
+完整50条raw/stages、全部watch/log、2253条journal及299输出（1383672384B）保留。独立只读a25289 EXIT0确认业务EXIT1、5186保护项/2688当前输入和所选Source身份保持，299输出完成EOF核验。寿命Source复核571f62 EXIT0确认Q/MAC逐平面串行，条件求解1984MiB、seal1888MiB可在原2GiB内规划；必须严格同平面/阶段、空final规范前缀和同pass辅助核算。
+v14已真实Source-only准备08aa1d EXIT0并冻结，377依赖保留原354。58作者有限边界及54独立边界通过；独立最终整合fc4a8f EXIT0、Root完整EOF整合aa24ad EXIT0。仅修HOST存储角色和首异常传播；原数学、Fortran、物理输入、50项控制、六实际外参及全部资源/精度限额不变。HF f047ad0e、CLI e8407069；尚未运行业务，输出目录仍不存在，有限Source证明不授整轮或物理资格。双PROJECT释放Source只写出并冻结，候选仍未删除；等待最终清单与真实无写者门槛。
+
+空间清理
+11批已真实删除80个旧业务中间文件，共13354516100B（约12.44GiB），保留结果文档、日志和科学输入。最新旧v10唯一私有PROJECT749355952B由Root真实4241f9→de90c6 EXIT0精确释放；5186保护和其他267个v10文件保持，独立后验d8ef80 EXIT0。旧v10该PROJECT/GLOBAL整树原路径重放已失去，释放前EOF证据和单阶段PASS事实保留；诊断自有副本另计。
+清理后原guard受限axial家族实测79670603679B，原cold20971764748B+metadata64MiB+完整fresh2GiB预留后余222254165B。随后v13新增1383672384B，下一整轮预算须重新实测。只读调查旧v11/v12私有PROJECT是否仍为科学或未来执行依赖，尚未删除它们；v13失败证据保留。
+
+物理目标与既有精度
+SPOT验证2D径向—1D轴向/POD组件；150cm为三个50cm燃料段。A Pu.2100/U.7900、B Pu.2436/U.7564，密度/几何/温度/370群/28核素固定；基础12单元与正式48单元/SN32/rank1分开。
+正式AAA12轮/105步骤收敛通过，精度8项7通过；k−294.072pcm满足507.951pcm，flux L2 0.5854%、95%上界0.7401%低于1%。νfission最大3.9525259224%超过3%，保守区间[3.6802%,4.6964%]；角向修正3.798223%仍不合格，原因未证实。旧D4−1095.56pcm也未通过；rank2仅353/370群，不混同正式rank1全群。
+
+接续顺序
+1. 复核v14存储/异常Source，按最终依赖精确腾出所需空间，重新实测原预算，再执行一次完整三段/在线BOOT。
+2. 上一步真实通过后执行saved full370审计v2；P0/P1/P2之外六个未观测角矩保持UNKNOWN。
+3. 将observer75材料Source绑定真正合格的新前置，执行材料观测和11个非零NX核素GENDF权威核验。
+4. 准入独立全370×9未降阶耦合参考，解决AAA剩余物理精度项，最后执行ABA。离线快照、Source核查或单阶段PASS不替代这些完成条件。
+
+主要最新凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_V13_FULL_PIPELINE_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_V13_CLOSED_FAILURE_PHYSICAL_EVIDENCE_PINS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_v13_actual_full_failure_postverify_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_v13_BOOT_Q_MAC_lifetime_storage_source_review_20261013/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v10_single_PROJECT_actual_receipts_20261013/ACTUAL_SINGLE_OLD_V10_PROJECT_RELEASE_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_old_v10_release_v3_actual_postverify_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/SPOT_MEMORY_DIAGNOSIS_CURRENT_20261013.txt
+
+
+最新同pass空间调查：全部ART148359488854B/200779文件；原96GiB门槛受限axial家族81054276063B/97122文件。原cold+metadata+完整fresh2GiB预留差1161418219B；旧v11/v12两私有PROJECT合计1498711904B均释放后的条件余量337293685B，尚未删除。两者不在当前直接业务必需行；v12是已关闭finite fixture历史输入，释放将失去该旧fixture及旧PROJECT/GLOBAL精确路径回放，全部报告/日志/曲线与科学输入保留。最终v14依赖和真实无写者门槛仍待核验。
+调查凭证：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/readonly_v11_v12_private_PROJECT_dependency_survey_20261013/REPORT.txt
+
+
+清理清单首次只读准备d95971/session97447→dfd8a7 EXIT1，停在一份旧v5源码依赖的设备号谱系分类；未创建正式清单、未删除或执行数值。原Source和真实失败工具保留，正在准备新v2角色修正，不修改已冻结v14。
+凭证：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_OLD_V11_V12_PAIR_READONLY_MANIFEST_PREPARATION_V1_TRUE_FAILURE_TOOL_RETURNS_20261013.json
+
+最新实际清理（2026-10-13 20:31）
+Root真实3900d8/session90650→1588b6 EXIT0，仅删除旧v11/v12各一份私有PROJECT，共1498711904B。旧业务累计12批82文件、14853228004B（约13.83GiB）；诊断自有副本仍另计。5625保护项完整EOF保持，其他521旧分支文件及v13全部299输出保留；仅两个AAA父目录自然nlink−1/size−32，其余目录和文件条目保持。
+原guard受限axial家族真实81054276063B/97122→79555564159B/97120；原cold20971764748B+metadata64MiB+完整fresh2GiB预留后实际余337293685B，budget admitted true，磁盘可用208472350720B。全部结果/日志/曲线/科学输入保留，旧两PROJECT/GLOBAL整树及已关闭finite fixture精确路径重放失去；历史EOF和实际PASS/FAIL事实保留，不将失去的raw PF当现存。
+独立后验只读正在收尾；v14整轮业务仍未启动，Source/HF/CLI维持已审核字节，输出目录仍不存在。当前段前文“未删除/预测余量”代表本次实际清理前的状态，以本条最新真实执行为准。
+凭证：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_EXACT_OLD_V11_V12_PAIR_V2_ACTUAL_RELEASE_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v11_v12_PROJECT_pair_actual_receipts_20261013/ACTUAL_EXACT_OLD_V11_V12_PROJECT_PAIR_RELEASE_RECEIPT.json
+
+
+最新实际启动（2026-10-13 20:35）：清理独立后验5e88dd EXIT0，真实完整储备准入和全部保护保持；Root确认735412 EXIT0后已启动冻结v14完整50项，f8a3d7/session65091仍运行。无终端退出码、无成功预填；原512MiB/600s/1800s/2GiB及物理输入保持。前文“尚未启动/后验收尾”均为启动前状态，以本条为准。
+后验凭证：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_old_v11_v12_PROJECT_pair_v2_actual_postverify_20261013/REVIEW.json
+
+最新真实闭合（2026-10-13 20:54，以本条为准）
+v14 f8a3d7/session65091→c674cb EXIT1已关闭，50记录16PASS/33精确预期拒绝/最后BOOT正向失败。GLOBAL294.590119834s、PROJECT9.600063333s通过，summary wall884.353103667s；SELF228311040B（217.734375MiB），原512MiB内。首个128MiB辅助预算异常和原traceback已正确保留，后续检查作为secondary，不再被归档错误覆盖。BOOT记录16.149896208s；没有封存终端，工程/AAA/ABA仍false，不重跑。
+实际新OUT299文件/1912262262B：另发现内层BQ64-SRC-ST518589052B、BQ64-MAC-ST9893580B，与外层Q1/MAC1同大小、同时存在。额外暂存进入辅助预算，Source-only进一步寿命/共存分析进行中；简单增加576MiB角色将使旧1984MiB求解forecast超过原2GiB，不能如此放宽或冒称可用。Q/MAC/BQ64及所有失败输出保留，独立失败后验进行中。
+前文“仍运行/准备启动”仅为当时时点；目前没有业务运行。清理12批82文件14853228004B事实保持；v14新增1.912GB后下一轮完整储备须重新核验，旧337293685B只代表v14启动前实际储备。原科学输入、数学和全部限制保持，后续顺序仍等待BOOT真实通过。
+凭证：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_V14_FULL_PIPELINE_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_V14_CLOSED_FAILURE_PHYSICAL_EVIDENCE_PINS_20261013.json
+
+状态及未完成项属于各自时间；当前判断以本文开头为准）
+
+保存2026-10-13 18:32当前段（当时状态）：
+SPOT 当前进度
+核对时间：2026-10-13 18:32，Asia/Shanghai
+当前判断以本段为准；历次结果、失败证据和历史记录完整保留。
+
+当前判断
+目标仍在进行，尚未完成。A1/B2/A2/A3独立真实双精度生产及370群终态回读已通过。三段GLOBAL和PROJECT各自实际通过，但整体在线BOOT尚未通过；正式AAA精度仍有1项失败，独立未降阶耦合参考未准入，ABA未开始。
+
+最新实际结果
+流式完整记录写入的四Source已冻结：45个完整前缀与原函数逐字节一致，默认值/编码错误/已有临时文件行为一致；canonical和独立fresh guard两进程都真实EXIT0。保留真实45记录及2654固定/163自有文件后，纯流式45和原OwnRSS唯一Python标记阶段闭合，SELF峰295092224B（281.421875MiB），增长仅163840B（160KiB）。该有限测量不授完整流程资格，原数学/守护类/验收条件和512MiB上限保留。
+v13完整流程Source已真实e2e2e5 EXIT0准备，只改三处接入literal，原50步、17正向/33精确拒绝、三个helper和全部原319依赖保持；当前354依赖及六组外参经Root与独立Source核查通过。尚未运行业务。旧v10唯一PROJECT清理的最终v3 Source与真实5186项保护清单已冻结，Root默认只读3bed4c→a52979 EXIT0；候选未删除，等待独立收尾后释放并按原完整fresh2GiB预留重新实测准入。
+v12完整阶段定位已真917c72/session17475→7380c1 EXIT1闭合，45阶段约765.369s，SELF542670848B（517.53125MiB），仍触发原512MiB。观察无错误，1997条记录保存。GLOBAL主控约282.6MB稳定；stage32–44每次执行末尾的完整记录写入区段增加约16.75–21.375MiB，小对象blocks仅+10–70，增长集中在原SerialExecutor.execute的finally dump_json。正BOOT未进入，整轮不合格；当前修复已进入新v13 Source准备，尚未实际整轮验收。
+v10真实关闭EXIT1：46阶段，763.549820s，主控SELF541753344B（516.65625MiB），超过原512MiB。GLOBAL实际291.467980s、子进程峰508.734375MiB；PROJECT实际9.230095s。最后pair_case_rank_mismatch子进程按精确预期退出1，但主控随后触发内存上限，不能授整体或该控制的完成资格。完整原执行记录、日志、watchdog和真实工具返回均保留。
+只读测量确认准入后仍持有的完整metadata报告可释放45467460B对象heap。原完整46阶段记录树约14406323B；真实生产范围有界读取峰42270720B，不采用mmap或叶内容缓存。这些测量不替代全50阶段实际内存验收。
+新v11已冻结并完成Root及独立Source核查：只缓存真实原compiler/includes/archives/exe及boundedSHA，在完整固定输入准入后释放无后用报告并执行一次GC。原数学、全部物理输入、原守护MRO、完整raw/resource记录、50阶段/17成功/33精确拒绝、所有原限制不变。v11现已真实关闭EXIT1，不能授整轮资格：45阶段（15成功/30实际FAILED记录），755.731095s，SELF548306944B（522.90625MiB）；最后pair_rank_type子进程真实退出1、无子进程资源失败、进程组清理通过，但主控stable检查触发原512MiB。实际仅29拒绝控制完全接受，terminal=None/output_pins=[]。GLOBAL实际292.941925s、峰506.46875MiB，PROJECT实际通过；在线BOOT未进入。旧报告生命周期修复尚不足，不能不改源码重复数值运行。
+
+空间清理
+十批已实际删除79个旧中间raw或关闭失败的私有副本，共12605160148B（约11.74GiB）。最新一批精确删除旧v9私有PROJECT一个749355952B文件；5119保护文件及其他242个v9普通文件完整EOF/7ID前后核验通过。GLOBAL/PROJECT单阶段PASS事实、结果文档、源码、日志和原科学输入保持；该旧PROJECT/GLOBAL整树raw路径重放能力已失去。Root及独立核心后验均实际EXIT0：5119保护、242保留文件完整EOF/all7不变，唯一目标absent，父目录自然nlink-1/字节-32，其他31目录及全部普通/符号链接条目准确保持，不重跑删除。
+实际清理后历史78594957432B、预留后余1297900412B。v11关闭后重新实际观测历史79446615744B/96489普通文件，保留原cold20971764748B+metadata64MiB+fresh2GiB后余446242100B；磁盘可用209305600000B。原history96GiB、fresh2GiB、free8GiB、stage600s/whole1800s、SELF和own-child各512MiB、单线程和单业务子进程不变。
+
+物理目标和既有精度
+SPOT验证2D径向—1D轴向/POD组件；150cm为三个50cm燃料段。A为Pu.2100/U.7900，B为原Pu.2436/U.7564；密度、几何、温度及370群/28核素输入固定。基础12单元与正式48单元/SN32/rank1分开。
+正式AAA已有12轮/105步骤收敛PASS、8项精度7PASS；k偏差-294.072pcm满足507.951pcm，flux L2 0.5854%、95%上界0.7401%低于1%。νfission最大3.9525259224%超过3%，保守区间[3.6802%,4.6964%]，角向修正3.798223%仍不合格，原因未证实。旧D4偏差-1095.56pcm也未通过。rank2只353/370群，不能混同正式rank1全群。
+
+接续顺序
+1. 完成最终旧v10单PROJECT精确释放及重新预算核查，再由Root运行一次已冻结v13完整50步。v12已定位到完整ledger写入增长区段；新流式Source与有限两进程验证已通过，不能放宽512MiB或把有限测量当整轮完成。历史原写入/资源检查、监督、大文件读取/复制、20次EOF核验、1500次监测和真实组合诊断均保留。紧凑结果汇总在SPOT_MEMORY_DIAGNOSIS_CURRENT_20261013.txt。
+2. 真实执行已冻结saved full370审计v2，保留原1129科学输入和P0/P1/P2诊断；另外六个未观测角矩保持UNKNOWN，不能补零冒称九矩。
+3. 当前observer75材料Source v7已冻结并通过Root及独立Source审核；仅新namespace/当前v11 HF绑定，原18数学/5观测/7capture helpers/75顺序/原限制全部保持。它绑定现已失败v11，故仍不得执行，后续需真正合格新前置及新Source绑定；未来实际报告未预填。随后执行已有11个非零NX核素的GENDF读取，核验62密度、MASK/SPH和原材料权威；不重跑NJOY或假定NX默认中子数。
+4. 独立全370×9未降阶耦合参考仍需当前身份重绑定、真实材料/库权威、SN32/九矩物理控制和原限内成本准入，再解决AAA剩余物理精度项，最后执行ABA。离线快照、源码核查或单阶段PASS均不能替代这些完成条件。
+
+诊断临时副本另行清理
+唯一组合诊断自有PROJECT副本749355952B已真实EXIT0释放，其他文件和原v11 PROJECT完整保留。该项不混入旧业务10批79文件。实测ART79522277304B/96551文件，free207854415872B，按原cold+metadata+完整下一fresh2GiB预留后余370580540B。该已释放副本PF仅历史，不冒称当前raw回放。
+
+主要最新凭证
+/Users/wen/spot/validation/axial_material/SPOT_MEMORY_DIAGNOSIS_CURRENT_20261013.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/readonly_current_ART_budget_and_ten_release_document_index_20261013/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V11_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V11_PARENT_SELF_MEMORY_REFUSAL_CAUSE_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_pipeline_v11_author_finite_source_review_20261013/FINAL_FROZEN_SOURCE_AND_AUTHOR_REVIEW_HANDOFF.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_FINITE_PIPELINE_V11_CLOSED_METADATA_LIFETIME_HOST_REVIEW_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_pipeline_v11_closed_metadata_source_review_20261013/FINAL_HANDOFF_SOURCE_REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/ACTUAL_SINGLE_OLD_V9_PROJECT_RELEASE_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/ROOT_ACTUAL_EXACT_ONE_RELEASE_TRUE_TOOL_RETURNS.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_reference_actual_admission_gap_review_20261013/REPORT.txt
+
+
+
+
+保存本次更新前当前段（保留旧时间及当时状态）：
+SPOT 当前进度
+核对时间：2026-10-13 14:13:26，Asia/Shanghai
+以本段当前状态为准；后面的历史追加保留当时记录。
+
+整体判断
+SPOT处于组件验证和真实双精度接线阶段。A1、B2、A2、A3各自真实独立生产及370群完整终态回读已经通过；三段全局及在线初始化尚未通过。正式AAA物理精度仍有1项未过，独立全群未降阶耦合参考尚未准入，ABA尚未开始，目标尚未完成。
+用户明确授权先清理旧无用文件、保留结果文档、腾够空间后按原顺序继续。本轮九批已实际精确删除78个旧raw或失败私有输入XSM副本，共11855804196B（约11.04GiB）。第一批24个旧失败文件3566694788B；第二批5个旧B失败raw467550984B；第三批6个早期source-factor中间raw1427734232B。第三批来自已成功运行12轮但等待参考的旧分支map001/map002；其余map003–012、bootstrap、training、全部结果文档、日志和源码均保留，该分支353普通文件及89符号链接未变，当前/下一步3638完整依赖pins未变。第四批另删AAA3两次关闭失败的14私有输入副本998914456B；原生产输入均保留，50个其他闭合文件及3702当前/冻结依赖完整EOF SHA和7ID保持。原执行后验误假定APFS父目录nlink不变，保留EXIT1；独立只读后验EXIT0已核验两个父目录分别恰好少7文件条目/nlink7/目录字节224，没有重跑删除。旧被删中间raw或失败副本路径失去历史重放能力；当前合格raw、最终结果和科学输入保留，第五批另删v3旧失败的7私有输入副本499457228B；第六批删旧source-factor map003/map004的6早期中间raw1427734232B，该分支已完成12轮但等待参考，不能冒称失败分支，map005–012及bootstrap/training全部结果/日志均保留。两次实际执行与新增v5保护wrapper均EXIT0，3783原保护与38新增Source完整EOF/7ID前后保持，父目录nlink/字节自然减少已正确核验；v3 invalid initial_pack因当前标识修复证据需要明确保留。第七批另删已关闭失败v4的6个自有输入/PACK副本970096676B；真实执行EXIT0及独立3970文件完整EOF后验EXIT0，164个其他结果、日志、Source和当前依赖未变。逐项清单与七批真实执行凭证完整保存。
+
+目标与当前实验
+验证2D径向—1D轴向/POD耦合输运方法，再完成同温轴向材料对照。150cm单棒有三个50cm物理段，三个段均为燃料；A/B只改变既定材料配比，几何、温度、密度固定。基础12轴向单元、28核素、370群；正式AAA为48单元、SN32、rank1。
+顺序为真实A/B及三段生产和在线读取闭合，AAA同质控制合格，独立全群未降阶耦合参考准入，最后ABA。AAA使用独立A1/A2/A3，ABA使用A1/B2/A3；不能复制A1或重标来替代生产，不能越过前置失败。
+
+本轮实际完成
+1. B当前v3真实compile/link/solve/独立370群回读四步骤PASS，16.135430s，plane2/e0，k64=1.539088602963858；全部5180 flux低位保留，2956 source值区别于REAL32往返。完整Source/owned/output EOF SHA及7ID独立复核通过。旧Bv1预算失败、v2监测权限失败保留；v2没有执行输运，v3保留原进程监督在允许自有进程监测的环境执行。
+2. A2/A3及按各自输入契约接线的新三段入口，五项真实编译及完整61输入链接六步骤PASS，10.682523s；这不替代新三段入口的运行控制。
+3. A2和A3各自入口17步骤实际闭合：5正步骤PASS、12个错误输入按精确预期拒绝；各自loader8调用/7拒绝。各自独立真实solve及完整370群回读四步骤PASS，A2为22.643689s、plane2/e0，A3为22.660426s、plane3/e0。两者k64=1.4280075695106618，全部5180 flux为真实native、2956 source值保留非32低位；与A1同质同k不被冒称耦合结果。
+4. A1原四步骤生产PASS、15.598487s，当前完整17项控制、83组件控制及A/B真实typed读取仍有效。所有上述生产仅授单平面，不授GLOBAL、在线BOOT、AAA精度或ABA准入。
+5. 新存储与在线接线别名九项真实编译及完整69输入链接十步骤PASS，17.402176s；原九个核心生产对象保持原字节和身份。Root独立回读2222个完整文件和十组真实监督日志，构建后本次目录20201866B，原SELF/child内存和时间限制保持。仅授构建，不授三段运行、GLOBAL、在线BOOT或物理精度。旧v2在编译器启动前因缺少记录目录失败，失败记录保留；v3只补创建记录目录和自己的新目录身份，已通过。
+
+尚未完成与下一步
+真正三段发布、全局双精度求解和在线BOOT尚未通过。实际pipeline v1在第二项负控制因上层CLE启动文件未释放而失败；v2保留旧文件并在每次闭合后归档，前两项负控制实际精确拒绝，但第三项重复A1名称被CLE解析层提前拒绝，未达到APACK组件的别名检查，整个pipeline仍FAILED。两次均未进入正PACK或输运，失败日志和真实工具返回保留。新v3三个直接实际组件别名控制已冻结并经独立Source审查通过，仍要求退出1及精确预期错误。Root实际新50阶段pipeline v3已经关闭FAILED：两项probe编译链接、五项PACK精确负控制、正向PACK子程序均按预期闭合，但完整独立回读拒绝SIGNATURE，因此不授PACK或三段资格。实测新PACK标识为L_ARCHIVE后三个NUL，三个原始native为三个空格；已定位APACK的9字面量被要求写12字符，独立Fortran Sourcev2只改用len12常量。其余8新文件逐字节不变，全部15字符写入已审查，原读回规则未放宽。Root实际新buildv4九项编译及完整69输入链接十项PASS，17.767525s，失败及后验均为空；独立完整回读2223文件1057478228B及十组实际监督日志通过，仅授构建。pipeline v4已实际关闭FAILED，29阶段286.487106s，正PACK/完整18树回读已过，17项负控制按精确预期拒绝；initial_source32以真正退出1拒绝REAL32源项，实际消息为冻结SPOASMP64的SPOASM: INVALID OFFLINE REAL64 SOURCE ITEM.，测试表误预期上层native契约消息而停止。子进程RSS7.140625MiB、无资源失败，后验空。将只修该项精确测试预期及新namespace，物理Source和原错误匹配强度不改，未进入正initial/GLOBAL/BOOT，不授整轮资格。新v5已完成Root及独立有限Source审查：仅source32精确错误预期和新namespace改变，LPOD_only的原generic拒绝路径Source已核对；当前Root实际pipeline v5已真实关闭EXIT1：三段正PACK和initial_source32/LPOD_only精确负控制、initial_positive均按预期通过；第33阶段global_positive在558.642135s因own-child RSS512.765625MiB触发原512MiB限制，watchdog returncode=-15并确认进程组清理，RootSELF278511616B，后验无error。上层scratch归档异常遮盖原原因，真实stage和watch已保留原内存限制错误。GLOBAL未完成，在线BOOT未进入，整轮不授资格；已证实全局迭代中XSM目录句柄反复创建并累积；新Source仅把这批固定句柄提前建立一次，原数学、标量及向量求解路径和验收门槛保持。Root独立Source核验通过，实际1项编译及完整69输入链接两步骤PASS，9.242786s，真实EXIT0；完整2245文件后验确认仅native driver对象替换，其余68输入及原9核心对象未变。最新pipeline v6执行Source已冻结并经Root全62依赖完整EOF核验，独立有限Source真5706e2 EXIT0、52项检查通过；Root实际v6已真实dd5093/session36593→834ef7 EXIT1关闭，33阶段、916.059657s；正三段发布/完整回读及initial_positive通过，global_positive 600.396879s触发原own-child wall cap，watch return=-15、sampled峰113.375MiB、进程组清理通过，SELF290144256B，后验无error。内存已在原限内完成实测但GLOBAL未结束、BOOT未进入。源码已定位每JT重复小矩阵因子化；全370 dense缓存约431.56MiB加进程基线会超512，fresh Source已实现独立ordinary-rank1全bit算子键和positive-row精确lower压缩，oldPHYS模块全字节保持，原dense MATMUL/ALSBDfallback/舍入/群数/门槛/资源保持。Root实际四stage compile module/control/link/run已4ae3bf/session91292→87a7e7 EXIT0，110求解调用、301断言全部完成；18类算子变更、更新RHS、负零和非零遗漏行dense fallback、预算不足回原ALSBD全部位一致。仅授组件控制，不授full370生产或正式SN32/全局/BOOT。当前机器卷设备号由旧16777234变为16777229，其余身份字段及完整SHA均保持；新完整Catalog实际2995文件3.108GB、2547mandatory全部核验，167历史声明不升格，旧凭证不改。当前完整身份BIND与构建Host已在新namespace冻结，严格实际全7ID准入；Root真实完整70构建已0e9ac7/session83774→98975a EXIT0，module/driver/link三PASS，16.281827s，SELF168247296B，终态含报告资源检查通过。Root完整独立2321文件1103655451B EOF后验通过，只有driver37替换和helper57插入，其余68及四archive、old9原文件保持；Root真实v7已fe10a0/session83238→af64f1 EXIT1关闭，41stages713.578952s，完整Source/current29所有输入准入通过。GLOBAL实际PASS290.851109s，原outer/unknown误差均小于5e-8、outer47/370群、k64=1.3568786751533426，own-child峰506.46875MiB<512；projection实际PASS9.323115s并完整独立transfer读回通过。仅授这两个单项步骤，不授整轮或科学精度。随后view_missing_operand真实exit1但CLE拒绝未定义SYS1、kernel666，未到SPOBVX组件，因此原精确错误校验拒绝整体；不会当作组件通过。v8将只复用现有完整BOOT_PREFIX的真实RECOVER/ASM定义3SYS到负控制precheck，保留原全部expected消息、count50/17/33、数学/caps和正BOOT；Root实际v8已524f8d/session50349→6b577b EXIT1关闭，41stages703.066176s，GLOBAL/project再次真实通过，但RECOVER正常恢复的MICROLIB2是read-only借用视图，原precheck/正BOOT_PREFIX中的ERASE触发Ganlib只读生命周期错误，尚未到目标SPOBVX拒绝；原错误比对仍拒绝整体，不将它冒称组件PASS。v9有限源码证据已纠正此前borrowed-view推断：RECOVER/EQU是逐块深复制，RHS-only ERASE通过CLE按JENTRY2打开再要求销毁而拒绝；不同MACRO/TRACK名又违反已冻结LINK.MACRO/TRACK固定契约。因此v9只按项目既有标准重复LHS/RHS DELETE写法修6处清理，保持MICROLIB2/MACRO0/TRACK原名及原ASM/RECOVER数值正文，预设三独立名字方案被撤销但原历史cause文件仍保留。新v9 Source/HF原257依赖完整校验通过；Root实际e80bee/session45475→ae90ee EXIT1仅在初始history96GiB预留cold+metadata+fullfresh2GiB检查拒绝，OUT不存在，无业务子进程。正在明确保护当前依赖后准备精确释放v7/v8旧失败整体的两份大型中间PROJECT副本，保留各单项GLOBAL/projectPASS记录及所有文档日志，不降预算；之后才重新准入数值流程。saved全370 audit v2已完整当前3301mandatory/1129科学输入重证明，4个已消失旧临时Source仅历史分类保留、科学代码bytes不变，待真实BOOT后才运行。保存结果审计及74仍等待真正BOOT。审查发现原BPROJ重复复制整树，仅leaf大小下界2251368888B已超过原fresh2GiB。独立新命名空间的单份private XSM提交实现已完成并冻结，完整九项Fortran Source差异审查和真实构建通过；原数学与阈值保持。三段执行Host、分块完整回读、明确中间副本生命周期已经完成Source审查；当前仅修复已证实的入口控制可达性。发现整文件mmap即使逐块哈希仍可能超RSS，已要求使用同一fd有界pread逐块读取全部数据。三段运行控制和真实执行后才授资格。
+正式细化AAA完成12轮耦合/105步骤、数值收敛通过，原8项精度7PASS：k偏差-294.072pcm满足507.951pcm；flux L2 0.5854%、95%上界0.7401%低于1%。端部燃料裂变率最大误差3.9525259224%超过3%，保守区间[3.6802%,4.6964%]；角向修正诊断约3.798223%仍未过，原因未证实。新的全370群终态P0/P1/P2和源项一致性审计Source已准备，尚未执行。
+独立全370群未降阶耦合参考的v2完整driver Source已通过153项有限独立核验，尚无实际准入资格，ABA仍未开始。另查明原库NX对应MT5，不能假定默认中子数；11个非零NX核素真实GENDF保留，无需为此重跑NJOY，正在准备当前材料SPH/MASK及完整62密度的真实观测。原rank2路线353/370群准入、1–17失败，与正式rank1全370群PASS分开，不混用。
+
+资源
+第五/六批追加释放1927191460B，第七批追加970096676B。第七批真实关闭后原cold+metadata+fullfresh预留仍余2040828916B；后续新构建/报告另计，下次启动重新检查。第六批真实关闭终态history78269060170B、94837普通文件，free210944000000B；原cold20971764748B+metadata64MiB+futurefresh2GiB后剩1623797674B，下一次实际初始预留准入。Sourcev5已按同原资源限制启动，每次仍重新实际检查。
+第三批删除终态历史78090690371B、94481文件，cold20971764748B+metadata64MiB+fresh2GiB后余1802167473B。新69构建实际终态历史78108071344B、94521文件、磁盘可用211557941248B；构建报告随后增加约4.82MB，下一次启动须重新实际测量。第四批实际闭合终态历史78154090869B，冷运行/元数据/fresh2GiB后余1738766975B，原初始预留准入。原96GiB历史、fresh2GiB、free8GiB、stage600s/whole1800s、SELF/own child各512MiB、单线程/单业务子进程均保留。没有放宽资源或科学验收门槛。
+
+本轮当前追加：第八批已真实7a746b/session82301→16fdee EXIT0，精确删除已关闭失败整体v7/v8的两份private projected_boot.xsm，共1498711904B。两个分支其余472普通文件及4390当前完整保护依赖前后全EOF SHA/7ID保持，结果文档与全部日志保留；个别GLOBAL/PROJECT PASS仍保留，整轮失败及BOOT未通过不重标。删除终态ART78640931487B/95726文件，原cold+metadata+fullfresh2GiB后余1251926357B。新v9原258个Source/依赖完整EOF及CLI重核验通过、OUT此前不存在；实际17febf/session51915→d0ea2b EXIT1已真实关闭，42stages/724.689694s/SELF474185728B/afterNone；GLOBAL294.389882s和PROJECT9.185135s单项PASS，view_missing_operand已到组件并精确拒绝，6DELETE生命周期修复已有效。下一view_memory_output在输入第29行128列超过CLE源码1:120范围，log打印越界标记后SIGTRAP(-5)，未得到原expected exit1/组件消息，整个v9仍不授在线BOOT或三段完成。新的v10只准备同token参数换行及namespace，原50count/17positive/33strictnegative、physicsSource/cache/math/caps均不动；未执行v10。独立清理后验EXIT0已经完成；后续saved审计完整Source与3315/1129输入已Root复核可执行，仍等待真正BOOT。材料current70→75 Source审核发现预期负例无log_sha256及最终wholecap漏查，已在新v5修复但仍绑定失败v9不可执行；下一Source需明确绑定真实新v10 Source，不伪造未来业务成功。GENDF current29新v4及原parser字节已作者/独立Source审核EXIT0，未运行。第九批旧v5/v6精确8副本998909696B已真实53b61f/session59401→3ce611 EXIT0；两失败整体的PACK/INITIAL单项PASS证据、44B GLOBAL失败因果物、其余372普通文件及4769当前完整保护pins保持。新Source未改原math/caps，独立删除后验d06985/session71210→58e179 EXIT0，全部4769保护与372保留、5151完整文件5648231153B核验；删除8path准确不存在，目录入口/真实metadata只对应这8，未重跑删除。
+
+第九批实际终态：ART78492289015B/95961文件；原cold+metadata+fullfresh2GiB后余1400568829B。Source v10仅viewops换行与两个namespace/schema literal，Root全部279依赖EOF及完整host逆关系通过；独立f70e7c/session46040→da142b EXIT0，3113当前文件3126591743B/84344checks，8份CLE deck全tokens与oracles相同、最大67列。实际d78ff8/session98757→e1a425 EXIT1已真实关闭，46stage/763.549820s/SELF541753344B（516.65625MiB）触发原512MiB主控限；failure/after均为original SELFcap。GLOBALwatch291.467980s/508.734375MiB/exit0、PROJECT9.230095s单项PASS。新view_memory/system_alias/pair_missingrank/ranktype均到原guard按精确预期拒绝；最后pair_case_rank_mismatch child实际exit1且exactmessage唯一、无资源失败，但Root stable触发SELFcap所以不预授其整体control；最后4步骤未进入，BOOT未通过。新的v11先仅定位主控持有已准入大型JSON及不断累积资源记录的lifetime，所有完整证据/原genuine supervisor/math/50/17/33/caps必须保持；尚未冻结或运行v11。
+
+当前资源：v10失败后真实ART79344313384B，原cold+metadata+fullfresh2GiB后仍余548544460B。进一步数值启动重新检查；旧v9私有PROJECT是否可释放由当前Source-DAG只读核验决定，不清理任何当前依赖。材料v6已明确绑定当前v10 Source/HF并经独立3d5026 EXIT0/18751checks/3204EOF4.1006GB及Root65fc06 Source scope审核，但真实v10FAILED所以不得执行75build；saved audit、首A observation及GENDF/reaction实际提取仍未运行。
+
+主要凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V10_PARENT_SELF_MEMORY_REFUSAL_CAUSE_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V10_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_pipeline_v10_finite_source_review_20261013/INDEPENDENT_FINITE_SOURCE_REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_FINITE_PIPELINE_V10_COLUMN_WRAP_HOST_REVIEW_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_v5_v6_exact_eight_source_only_20261013/ACTUAL_EXACT_EIGHT_RELEASE_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V9_CLE_COLUMN_RANGE_FAILURE_CAUSE_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V9_AFTER_EXACT_TWO_RELEASE_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_closed_v7_v8_project_pair_20261013/ACTUAL_EXACT_TWO_PROJECT_PRIVATE_COPY_RELEASE_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v9/CORRECTED_SOURCE_LIFECYCLE_EVIDENCE.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V9_PRELAUNCH_HISTORY_REFUSAL_TRUE_TOOL_RETURNS_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V8_READONLY_RECOVERY_VIEW_ERASE_FAILURE_CAUSE_20261013.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V7_GLOBAL_PROJECT_PASS_AND_VIEW_PREFIX_FAILURE_CAUSE_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_COMPLETE70_CURRENT_MOUNT_BUILD_REVIEW_20261012.json
+/Users/wen/spot/validation/artifacts/axial-material-new-native-rank1-exact-block-cache-complete70-build-only-20261012-v2/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_GENERIC_RANK1_BIT_CONTROL_REVIEW_20261012.json
+/Users/wen/spot/validation/artifacts/axial-material-new-generic-rank1-exact-cache-bit-controls-20261012-v1/Root_actual_component_bit_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_mount_identity_reattestation_20261012/REPORT.txt
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_AAA3_V6_GLOBAL_OWN_CHILD_TIME_FAILURE_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/ACTUAL_EXACT_SIX_FAILED_V4_RELEASE_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/independent_postverify/INDEPENDENT_ACTUAL_EXACT_SIX_POSTVERIFY.json
+/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-global-native64-handle-lifetime-complete69-build-only-20261012-v1/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_HANDLE_LIFETIME69_BUILD_REVIEW_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/ROOT_ACTUAL_TWO_BATCH_TRUE_CLOSED_TOOL_RETURNS.json
+/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-aliases-build-only-20261012-v4/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_COMPLETE69_BUILD_V4_REVIEW_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/ACTUAL_EXACT_SIX_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-aliases-build-only-20261012-v3/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_COMPLETE69_BUILD_REVIEW_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/ACTUAL_EXACT_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v3-process-monitor-access/Root_actual_single_plane_warm_B_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-A2-A3-complete61-route-build-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A2-20261012-v1/Root_actual_single_plane_warm_A2_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A3-20261012-v1/Root_actual_single_plane_warm_A3_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/ABA_admission_precheck.json
+
+
+
+
+
+
+
+
+保存此前v3启动状态：
+SPOT 当前进度
+核对时间：2026-10-12 06:17:31，Asia/Shanghai
+以本段当前状态为准；后面的历史追加保留当时记录。
+
+整体判断
+SPOT处于组件验证和真实双精度接线阶段。A1、B2、A2、A3各自真实独立生产及370群完整终态回读已经通过；三段全局及在线初始化尚未通过。正式AAA物理精度仍有1项未过，独立全群未降阶耦合参考尚未准入，ABA尚未开始，目标尚未完成。
+用户明确授权先清理旧无用文件、保留结果文档、腾够空间后按原顺序继续。本轮四批已实际精确删除49个旧raw或失败私有输入XSM副本，共6460894460B（约6.02GiB）。第一批24个旧失败文件3566694788B；第二批5个旧B失败raw467550984B；第三批6个早期source-factor中间raw1427734232B。第三批来自已成功运行12轮但等待参考的旧分支map001/map002；其余map003–012、bootstrap、training、全部结果文档、日志和源码均保留，该分支353普通文件及89符号链接未变，当前/下一步3638完整依赖pins未变。第四批另删AAA3两次关闭失败的14私有输入副本998914456B；原生产输入均保留，50个其他闭合文件及3702当前/冻结依赖完整EOF SHA和7ID保持。原执行后验误假定APFS父目录nlink不变，保留EXIT1；独立只读后验EXIT0已核验两个父目录分别恰好少7文件条目/nlink7/目录字节224，没有重跑删除。旧被删中间raw或失败副本路径失去历史重放能力；当前合格raw、最终结果和科学输入保留，逐项清单与三批真实执行凭证完整保存。
+
+目标与当前实验
+验证2D径向—1D轴向/POD耦合输运方法，再完成同温轴向材料对照。150cm单棒有三个50cm物理段，三个段均为燃料；A/B只改变既定材料配比，几何、温度、密度固定。基础12轴向单元、28核素、370群；正式AAA为48单元、SN32、rank1。
+顺序为真实A/B及三段生产和在线读取闭合，AAA同质控制合格，独立全群未降阶耦合参考准入，最后ABA。AAA使用独立A1/A2/A3，ABA使用A1/B2/A3；不能复制A1或重标来替代生产，不能越过前置失败。
+
+本轮实际完成
+1. B当前v3真实compile/link/solve/独立370群回读四步骤PASS，16.135430s，plane2/e0，k64=1.539088602963858；全部5180 flux低位保留，2956 source值区别于REAL32往返。完整Source/owned/output EOF SHA及7ID独立复核通过。旧Bv1预算失败、v2监测权限失败保留；v2没有执行输运，v3保留原进程监督在允许自有进程监测的环境执行。
+2. A2/A3及按各自输入契约接线的新三段入口，五项真实编译及完整61输入链接六步骤PASS，10.682523s；这不替代新三段入口的运行控制。
+3. A2和A3各自入口17步骤实际闭合：5正步骤PASS、12个错误输入按精确预期拒绝；各自loader8调用/7拒绝。各自独立真实solve及完整370群回读四步骤PASS，A2为22.643689s、plane2/e0，A3为22.660426s、plane3/e0。两者k64=1.4280075695106618，全部5180 flux为真实native、2956 source值保留非32低位；与A1同质同k不被冒称耦合结果。
+4. A1原四步骤生产PASS、15.598487s，当前完整17项控制、83组件控制及A/B真实typed读取仍有效。所有上述生产仅授单平面，不授GLOBAL、在线BOOT、AAA精度或ABA准入。
+5. 新存储与在线接线别名九项真实编译及完整69输入链接十步骤PASS，17.402176s；原九个核心生产对象保持原字节和身份。Root独立回读2222个完整文件和十组真实监督日志，构建后本次目录20201866B，原SELF/child内存和时间限制保持。仅授构建，不授三段运行、GLOBAL、在线BOOT或物理精度。旧v2在编译器启动前因缺少记录目录失败，失败记录保留；v3只补创建记录目录和自己的新目录身份，已通过。
+
+尚未完成与下一步
+真正三段发布、全局双精度求解和在线BOOT尚未通过。实际pipeline v1在第二项负控制因上层CLE启动文件未释放而失败；v2保留旧文件并在每次闭合后归档，前两项负控制实际精确拒绝，但第三项重复A1名称被CLE解析层提前拒绝，未达到APACK组件的别名检查，整个pipeline仍FAILED。两次均未进入正PACK或输运，失败日志和真实工具返回保留。新v3三个直接实际组件别名控制已冻结并经独立Source审查通过，仍要求退出1及精确预期错误。Root实际新50阶段pipeline已启动，尚无关闭终态或资格，不把上层kernel666算作组件通过。审查发现原BPROJ重复复制整树，仅leaf大小下界2251368888B已超过原fresh2GiB。独立新命名空间的单份private XSM提交实现已完成并冻结，完整九项Fortran Source差异审查和真实构建通过；原数学与阈值保持。三段执行Host、分块完整回读、明确中间副本生命周期已经完成Source审查；当前仅修复已证实的入口控制可达性。发现整文件mmap即使逐块哈希仍可能超RSS，已要求使用同一fd有界pread逐块读取全部数据。三段运行控制和真实执行后才授资格。
+正式细化AAA完成12轮耦合/105步骤、数值收敛通过，原8项精度7PASS：k偏差-294.072pcm满足507.951pcm；flux L2 0.5854%、95%上界0.7401%低于1%。端部燃料裂变率最大误差3.9525259224%超过3%，保守区间[3.6802%,4.6964%]；角向修正诊断约3.798223%仍未过，原因未证实。新的全370群终态P0/P1/P2和源项一致性审计Source已准备，尚未执行。
+独立全370群未降阶耦合参考的完整driver Source正在完成，尚无实际准入资格，ABA仍未开始。另查明原库NX对应MT5，不能假定默认中子数；11个非零NX核素真实GENDF保留，无需为此重跑NJOY，正在准备当前材料SPH/MASK及完整62密度的真实观测。原rank2路线353/370群准入、1–17失败，与正式rank1全370群PASS分开，不混用。
+
+资源
+第三批删除终态历史78090690371B、94481文件，cold20971764748B+metadata64MiB+fresh2GiB后余1802167473B。新69构建实际终态历史78108071344B、94521文件、磁盘可用211557941248B；构建报告随后增加约4.82MB，下一次启动须重新实际测量。第四批实际闭合终态历史78154090869B，冷运行/元数据/fresh2GiB后余1738766975B，原初始预留准入。原96GiB历史、fresh2GiB、free8GiB、stage600s/whole1800s、SELF/own child各512MiB、单线程/单业务子进程均保留。没有放宽资源或科学验收门槛。
+
+主要凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/ACTUAL_EXACT_SIX_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-aliases-build-only-20261012-v3/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_COMPLETE69_BUILD_REVIEW_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/ACTUAL_EXACT_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v3-process-monitor-access/Root_actual_single_plane_warm_B_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-A2-A3-complete61-route-build-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A2-20261012-v1/Root_actual_single_plane_warm_A2_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A3-20261012-v1/Root_actual_single_plane_warm_A3_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/ABA_admission_precheck.json
+
+
+保存此前清理第四批前状态：
+SPOT 当前进度
+核对时间：2026-10-12 06:02:43，Asia/Shanghai
+以本段当前状态为准；后面的历史追加保留当时记录。
+
+整体判断
+SPOT处于组件验证和真实双精度接线阶段。A1、B2、A2、A3各自真实独立生产及370群完整终态回读已经通过；三段全局及在线初始化尚未通过。正式AAA物理精度仍有1项未过，独立全群未降阶耦合参考尚未准入，ABA尚未开始，目标尚未完成。
+用户明确授权先清理旧无用文件、保留结果文档、腾够空间后按原顺序继续。本轮已实际精确删除35个旧raw XSM，共5461980004B（约5.09GiB）。第一批24个旧失败文件3566694788B；第二批5个旧B失败raw467550984B；第三批6个早期source-factor中间raw1427734232B。第三批来自已成功运行12轮但等待参考的旧分支map001/map002；其余map003–012、bootstrap、training、全部结果文档、日志和源码均保留，该分支353普通文件及89符号链接未变，当前/下一步3638完整依赖pins未变。旧被删中间raw失去历史重放能力；当前合格raw、最终结果和科学输入保留，逐项清单与三批真实执行凭证完整保存。
+
+目标与当前实验
+验证2D径向—1D轴向/POD耦合输运方法，再完成同温轴向材料对照。150cm单棒有三个50cm物理段，三个段均为燃料；A/B只改变既定材料配比，几何、温度、密度固定。基础12轴向单元、28核素、370群；正式AAA为48单元、SN32、rank1。
+顺序为真实A/B及三段生产和在线读取闭合，AAA同质控制合格，独立全群未降阶耦合参考准入，最后ABA。AAA使用独立A1/A2/A3，ABA使用A1/B2/A3；不能复制A1或重标来替代生产，不能越过前置失败。
+
+本轮实际完成
+1. B当前v3真实compile/link/solve/独立370群回读四步骤PASS，16.135430s，plane2/e0，k64=1.539088602963858；全部5180 flux低位保留，2956 source值区别于REAL32往返。完整Source/owned/output EOF SHA及7ID独立复核通过。旧Bv1预算失败、v2监测权限失败保留；v2没有执行输运，v3保留原进程监督在允许自有进程监测的环境执行。
+2. A2/A3及按各自输入契约接线的新三段入口，五项真实编译及完整61输入链接六步骤PASS，10.682523s；这不替代新三段入口的运行控制。
+3. A2和A3各自入口17步骤实际闭合：5正步骤PASS、12个错误输入按精确预期拒绝；各自loader8调用/7拒绝。各自独立真实solve及完整370群回读四步骤PASS，A2为22.643689s、plane2/e0，A3为22.660426s、plane3/e0。两者k64=1.4280075695106618，全部5180 flux为真实native、2956 source值保留非32低位；与A1同质同k不被冒称耦合结果。
+4. A1原四步骤生产PASS、15.598487s，当前完整17项控制、83组件控制及A/B真实typed读取仍有效。所有上述生产仅授单平面，不授GLOBAL、在线BOOT、AAA精度或ABA准入。
+5. 新存储与在线接线别名九项真实编译及完整69输入链接十步骤PASS，17.402176s；原九个核心生产对象保持原字节和身份。Root独立回读2222个完整文件和十组真实监督日志，构建后本次目录20201866B，原SELF/child内存和时间限制保持。仅授构建，不授三段运行、GLOBAL、在线BOOT或物理精度。旧v2在编译器启动前因缺少记录目录失败，失败记录保留；v3只补创建记录目录和自己的新目录身份，已通过。
+
+尚未完成与下一步
+真正三段发布、全局双精度求解和在线BOOT尚未通过。实际pipeline v1在第二项负控制因上层CLE启动文件未释放而失败；v2保留旧文件并在每次闭合后归档，前两项负控制实际精确拒绝，但第三项重复A1名称被CLE解析层提前拒绝，未达到APACK组件的别名检查，整个pipeline仍FAILED。两次均未进入正PACK或输运，失败日志和真实工具返回保留。正在新v3加入直接调用当前实际组件的三个别名控制，仍要求退出1及精确预期错误，不把上层kernel666算作组件通过。审查发现原BPROJ重复复制整树，仅leaf大小下界2251368888B已超过原fresh2GiB。独立新命名空间的单份private XSM提交实现已完成并冻结，完整九项Fortran Source差异审查和真实构建通过；原数学与阈值保持。三段执行Host、分块完整回读、明确中间副本生命周期已经完成Source审查；当前仅修复已证实的入口控制可达性。发现整文件mmap即使逐块哈希仍可能超RSS，已要求使用同一fd有界pread逐块读取全部数据。三段运行控制和真实执行后才授资格。
+正式细化AAA完成12轮耦合/105步骤、数值收敛通过，原8项精度7PASS：k偏差-294.072pcm满足507.951pcm；flux L2 0.5854%、95%上界0.7401%低于1%。端部燃料裂变率最大误差3.9525259224%超过3%，保守区间[3.6802%,4.6964%]；角向修正诊断约3.798223%仍未过，原因未证实。新的全370群终态P0/P1/P2和源项一致性审计Source已准备，尚未执行。
+独立全370群未降阶耦合参考的完整driver Source正在完成，尚无实际准入资格，ABA仍未开始。另查明原库NX对应MT5，不能假定默认中子数；11个非零NX核素真实GENDF保留，无需为此重跑NJOY，正在准备当前材料SPH/MASK及完整62密度的真实观测。原rank2路线353/370群准入、1–17失败，与正式rank1全370群PASS分开，不混用。
+
+资源
+第三批删除终态历史78090690371B、94481文件，cold20971764748B+metadata64MiB+fresh2GiB后余1802167473B。新69构建实际终态历史78108071344B、94521文件、磁盘可用211557941248B；构建报告随后增加约4.82MB，下一次启动须重新实际测量。原96GiB历史、fresh2GiB、free8GiB、stage600s/whole1800s、SELF/own child各512MiB、单线程/单业务子进程均保留。没有放宽资源或科学验收门槛。
+
+主要凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/ACTUAL_EXACT_SIX_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-aliases-build-only-20261012-v3/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_COMPLETE69_BUILD_REVIEW_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/ACTUAL_EXACT_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v3-process-monitor-access/Root_actual_single_plane_warm_B_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-A2-A3-complete61-route-build-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A2-20261012-v1/Root_actual_single_plane_warm_A2_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A3-20261012-v1/Root_actual_single_plane_warm_A3_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/ABA_admission_precheck.json
+
+
+保存此前05:32当前状态：
+SPOT 当前进度
+核对时间：2026-10-12 05:32:30，Asia/Shanghai
+以本段当前状态为准；后面的历史追加保留当时记录。
+
+整体判断
+SPOT处于组件验证和真实双精度接线阶段。A1、B2、A2、A3各自真实独立生产及370群完整终态回读已经通过；三段全局及在线初始化尚未通过。正式AAA物理精度仍有1项未过，独立全群未降阶耦合参考尚未准入，ABA尚未开始，目标尚未完成。
+用户明确授权先清理旧无用文件、保留结果文档、腾够空间后按原顺序继续。本轮已实际精确删除35个旧raw XSM，共5461980004B（约5.09GiB）。第一批24个旧失败文件3566694788B；第二批5个旧B失败raw467550984B；第三批6个早期source-factor中间raw1427734232B。第三批来自已成功运行12轮但等待参考的旧分支map001/map002；其余map003–012、bootstrap、training、全部结果文档、日志和源码均保留，该分支353普通文件及89符号链接未变，当前/下一步3638完整依赖pins未变。旧被删中间raw失去历史重放能力；当前合格raw、最终结果和科学输入保留，逐项清单与三批真实执行凭证完整保存。
+
+目标与当前实验
+验证2D径向—1D轴向/POD耦合输运方法，再完成同温轴向材料对照。150cm单棒有三个50cm物理段，三个段均为燃料；A/B只改变既定材料配比，几何、温度、密度固定。基础12轴向单元、28核素、370群；正式AAA为48单元、SN32、rank1。
+顺序为真实A/B及三段生产和在线读取闭合，AAA同质控制合格，独立全群未降阶耦合参考准入，最后ABA。AAA使用独立A1/A2/A3，ABA使用A1/B2/A3；不能复制A1或重标来替代生产，不能越过前置失败。
+
+本轮实际完成
+1. B当前v3真实compile/link/solve/独立370群回读四步骤PASS，16.135430s，plane2/e0，k64=1.539088602963858；全部5180 flux低位保留，2956 source值区别于REAL32往返。完整Source/owned/output EOF SHA及7ID独立复核通过。旧Bv1预算失败、v2监测权限失败保留；v2没有执行输运，v3保留原进程监督在允许自有进程监测的环境执行。
+2. A2/A3及按各自输入契约接线的新三段入口，五项真实编译及完整61输入链接六步骤PASS，10.682523s；这不替代新三段入口的运行控制。
+3. A2和A3各自入口17步骤实际闭合：5正步骤PASS、12个错误输入按精确预期拒绝；各自loader8调用/7拒绝。各自独立真实solve及完整370群回读四步骤PASS，A2为22.643689s、plane2/e0，A3为22.660426s、plane3/e0。两者k64=1.4280075695106618，全部5180 flux为真实native、2956 source值保留非32低位；与A1同质同k不被冒称耦合结果。
+4. A1原四步骤生产PASS、15.598487s，当前完整17项控制、83组件控制及A/B真实typed读取仍有效。所有上述生产仅授单平面，不授GLOBAL、在线BOOT、AAA精度或ABA准入。
+5. 新存储与在线接线别名九项真实编译及完整69输入链接十步骤PASS，17.402176s；原九个核心生产对象保持原字节和身份。Root独立回读2222个完整文件和十组真实监督日志，构建后本次目录20201866B，原SELF/child内存和时间限制保持。仅授构建，不授三段运行、GLOBAL、在线BOOT或物理精度。旧v2在编译器启动前因缺少记录目录失败，失败记录保留；v3只补创建记录目录和自己的新目录身份，已通过。
+
+尚未完成与下一步
+真正三段发布、全局双精度求解和在线BOOT尚未执行。审查发现原BPROJ重复复制整树，仅leaf大小下界2251368888B已超过原fresh2GiB。独立新命名空间的单份private XSM提交实现已完成并冻结，完整九项Fortran Source差异审查和真实构建通过；原数学与阈值保持。三段执行Host、分块完整回读、明确中间副本生命周期及负控制正在最终审查。发现整文件mmap即使逐块哈希仍可能超RSS，已要求使用同一fd有界pread逐块读取全部数据。三段运行控制和真实执行后才授资格。
+正式细化AAA完成12轮耦合/105步骤、数值收敛通过，原8项精度7PASS：k偏差-294.072pcm满足507.951pcm；flux L2 0.5854%、95%上界0.7401%低于1%。端部燃料裂变率最大误差3.9525259224%超过3%，保守区间[3.6802%,4.6964%]；角向修正诊断约3.798223%仍未过，原因未证实。新的全370群终态P0/P1/P2和源项一致性审计Source已准备，尚未执行。
+独立全370群未降阶耦合参考无完整已准入driver，ABA仍未开始。原rank2路线353/370群准入、1–17失败，与正式rank1全370群PASS分开，不混用。
+
+资源
+第三批删除终态历史78090690371B、94481文件，cold20971764748B+metadata64MiB+fresh2GiB后余1802167473B。新69构建实际终态历史78108071344B、94521文件、磁盘可用211557941248B；构建报告随后增加约4.82MB，下一次启动须重新实际测量。原96GiB历史、fresh2GiB、free8GiB、stage600s/whole1800s、SELF/own child各512MiB、单线程/单业务子进程均保留。没有放宽资源或科学验收门槛。
+
+主要凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/ACTUAL_EXACT_SIX_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-aliases-build-only-20261012-v3/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_INDEPENDENT_ACTUAL_COMPLETE69_BUILD_REVIEW_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/ACTUAL_EXACT_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v3-process-monitor-access/Root_actual_single_plane_warm_B_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-A2-A3-complete61-route-build-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A2-20261012-v1/Root_actual_single_plane_warm_A2_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A3-20261012-v1/Root_actual_single_plane_warm_A3_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/ABA_admission_precheck.json
+
+
+保存此前04:54当前状态：
+SPOT 当前进度
+核对时间：2026-10-12 04:54:34，Asia/Shanghai
+以本段当前状态为准；后面的历史追加保留当时记录。
+
+整体判断
+SPOT处于组件验证和真实双精度接线阶段。A1、B2、A2、A3各自真实独立生产及370群完整终态回读已经通过；三段全局及在线初始化尚未通过。正式AAA物理精度仍有1项未过，独立全群未降阶耦合参考尚未准入，ABA尚未开始，目标尚未完成。
+用户明确授权先清理旧无用文件、保留结果文档、腾够空间后按原顺序继续。本轮已实际精确删除29个旧FAILED尝试的raw XSM，共4034245772B（约3.76GiB）。第一批24文件3566694788B，其余7478普通文件、10符号链接和2211当前保护pins保持；第二批5旧B失败raw467550984B，两失败目录其余26文件及3429当前/计划依赖full EOF SHA/7ID保持。结果报告、失败日志、源码、当前合格raw及科学输入保留；这些旧失败raw失去历史重放能力，删除清单和逐项执行凭证完整保存。
+
+目标与当前实验
+验证2D径向—1D轴向/POD耦合输运方法，再完成同温轴向材料对照。150cm单棒有三个50cm物理段，三个段均为燃料；A/B只改变既定材料配比，几何、温度、密度固定。基础12轴向单元、28核素、370群；正式AAA为48单元、SN32、rank1。
+顺序为真实A/B及三段生产和在线读取闭合，AAA同质控制合格，独立全群未降阶耦合参考准入，最后ABA。AAA使用独立A1/A2/A3，ABA使用A1/B2/A3；不能复制A1或重标来替代生产，不能越过前置失败。
+
+本轮实际完成
+1. B当前v3真实compile/link/solve/独立370群回读四步骤PASS，16.135430s，plane2/e0，k64=1.539088602963858；全部5180 flux低位保留，2956 source值区别于REAL32往返。完整Source/owned/output EOF SHA及7ID独立复核通过。旧Bv1预算失败、v2监测权限失败保留；v2没有执行输运，v3保留原进程监督在允许自有进程监测的环境执行。
+2. A2/A3及按各自输入契约接线的新三段入口，五项真实编译及完整61输入链接六步骤PASS，10.682523s；这不替代新三段入口的运行控制。
+3. A2和A3各自入口17步骤实际闭合：5正步骤PASS、12个错误输入按精确预期拒绝；各自loader8调用/7拒绝。各自独立真实solve及完整370群回读四步骤PASS，A2为22.643689s、plane2/e0，A3为22.660426s、plane3/e0。两者k64=1.4280075695106618，全部5180 flux为真实native、2956 source值保留非32低位；与A1同质同k不被冒称耦合结果。
+4. A1原四步骤生产PASS、15.598487s，当前完整17项控制、83组件控制及A/B真实typed读取仍有效。所有上述生产仅授单平面，不授GLOBAL、在线BOOT、AAA精度或ABA准入。
+
+尚未完成与下一步
+真正三段发布、全局双精度求解和在线BOOT尚未执行。审查发现原BPROJ重复复制整树，仅leaf大小下界2251368888B已超过原fresh2GiB。正在独立新命名空间准备单份private XSM提交和明确中间副本生命周期，保留完整物理上下文、所有seal、终态检查、原数学及阈值。旧冻结源码保留；新Source还需完整差异证明、运行控制和真实执行后才授资格。
+正式细化AAA完成12轮耦合/105步骤、数值收敛通过，原8项精度7PASS：k偏差-294.072pcm满足507.951pcm；flux L2 0.5854%、95%上界0.7401%低于1%。端部燃料裂变率最大误差3.9525259224%超过3%，保守区间[3.6802%,4.6964%]；角向修正诊断约3.798223%仍未过，原因未证实。新的全370群终态P0/P1/P2和源项一致性审计Source已准备，尚未执行。
+独立全370群未降阶耦合参考无完整已准入driver，ABA仍未开始。原rank2路线353/370群准入、1–17失败，与正式rank1全370群PASS分开，不混用。
+
+资源
+第二批删除终态历史79075321870B、94396普通文件，原cold20971764748B+metadata64MiB+fresh2GiB之后余817535974B。A3真实生产终态历史79513130307B、94486文件、磁盘可用210146689024B，原初始全部reserve之后余约379727537B；后续报告写入有少量增长，下一次运行须重新实际测量。原96GiB历史、fresh2GiB、free8GiB、stage600s/whole1800s、SELF/own child各512MiB、单线程/单业务子进程均保留。没有放宽资源或科学验收门槛。
+
+主要凭证
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/ACTUAL_EXACT_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v3-process-monitor-access/Root_actual_single_plane_warm_B_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-A2-A3-complete61-route-build-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A2-20261012-v1/Root_actual_single_plane_warm_A2_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A3-20261012-v1/Root_actual_single_plane_warm_A3_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/ABA_admission_precheck.json
+
+历史追加（状态及未完成项属于各自时间；当前判断以本文开头为准）
+
+保存此前04:35当前状态：
+SPOT 当前进度
+核对时间：2026-10-12 04:35，Asia/Shanghai
+以本段当前状态为准；后面的历史追加保留当时记录。
+
+整体判断
+核心径向—轴向耦合组件、完整迭代流程和结果回放已经跑通，目前进入真实双精度生产与三平面接线验证阶段。整体物理精度尚未验收通过，没有通过验收的材料差异结论。
+目标尚未完成；用户于本轮明确授权清理旧无用大文件、保留结果文档并继续原顺序。Root已按完整清单实际删除24个旧FAILED尝试raw XSM，释放3566694788B（3.321743GiB），其余7478个普通文件、10个符号链接及2211个当前保护pins核验未变。原cold/metadata/fresh2GiB初始预算已实际准入，未改上限或科学门槛。
+清理后B v2首个probe编译因默认执行环境拒绝原监管器读取自有进程内存而FAILED，compiler正常退出0，输运未启动；失败证据保留。Root只读监测权限检查通过，另在允许原监测的环境执行仅更换新目录的B v3，四步骤全部PASS：真实compile/link/solve/独立370群终态读回闭合，16.135430秒。plane2/e0、k64=1.539088602963858，5180个flux低位全部保留，2956个source值区别于REAL32往返。独立全Source/owned/output EOF SHA及7ID核验通过，仅授B单平面生产资格，不授三平面、全局、在线启动或科学精度。
+A2/A3完整构建和独立入口/生产Source正在审查，尚未运行。
+
+目标与当前实验
+验证2D径向—1D轴向/POD耦合输运方法，再完成同温轴向材料对照。当前150cm单棒分为三个50cm物理段，三个段均为燃料。A/B只改变既定材料配比，温度、密度及几何保持固定。基础布局12个轴向单元、28核素、370群；正式细化AAA使用48单元、SN32、rank1。
+AAA是三个物理段全部使用A材料的同质控制；后续ABA使用A/B/A材料。顺序仍为真实A/B及三平面生产和在线读取闭合、AAA同质控制合格、独立全群未降阶耦合参考准入，然后执行ABA。不能跳过前面的未通过项。
+
+已经实际完成
+1. 历史D4-A九轮耦合迭代数值收敛及完整结果回放通过，但其独立参考精度未通过。
+2. 正式细化AAA完成12轮耦合、105个步骤，数值收敛通过；原八项验收七项通过。k偏差-294.072pcm满足原允许值507.951pcm；通量L2点估计0.5854%、95%上界0.7401%，低于原1%标准。
+3. 当前完整17项正反控制已实际通过；A、B自己的入口控制也分别通过。83项组件控制及真实A/B保存数据的双精度读取检查通过。这些控制不替代实际输运或物理精度验收。
+4. A1已取得真实连续双精度单平面求解及完整370群终态读回凭证，四步骤全部通过，15.598487秒。结果仅授plane1/e0单平面生产资格，不授三平面、全局或在线启动资格。
+
+最新完成的准备
+A2、A3独立生产，以及按每个物理段自己的输入契约接线的三平面初始入口，完整源码已经实现、独立审查并冻结，尚未编译或运行。AAA必须使用独立生产的A1/A2/A3，后续ABA使用A1/B2/A3；不能复制A1或改标签来替代真实生产。
+B启动前存储检查已修复：先预留完整新运行额度再启动。最新只读预检查实际在创建运行目录和启动业务子进程前拒绝，没有业务重试。该源码审查不计为数值验证通过。
+
+尚未完成与实际卡点
+B旧v1运行曾因存储预算整体FAILED、未读回；v2因进程监测权限整体FAILED、未输运。当前v3已实际完整闭合，旧失败均保留，不能混用其资格。
+A2/A3真实生产、三平面连续全局双精度求解及真实在线初始化仍待验证。
+正式AAA端部燃料裂变率份额最大误差3.9525259224%，超过原3%门槛，保守区间[3.6802%,4.6964%]。角向修正诊断约3.798223%，仍未通过；端部偏差原因尚未证实。
+独立全370群未降阶耦合参考尚未准入，ABA未开始。独立原rank2实验另有1–17群基底准入失败；正式rank1训练370群准入通过，两条路线资格不能混用。
+
+资源现状与下一步
+本次只读复测：675个历史结果目录、94278个普通文件，逻辑历史长度82143322879B（约76.50GiB）。原历史上限96GiB，另保留21038873612B冷运行与元数据空间；若再预留新运行完整2GiB，需要恢复2250465035B（约2.096GiB）预算余量。磁盘实际可用约207.26GB，阻碍来自既定实验预算，不是磁盘耗尽。
+本次清理后原预算阻碍已解除。继续顺序：先取得B完整终态读回资格，再真实编译并执行A2/A3和三平面初始、在线全过程；随后定位并解决AAA端部偏差，通过AAA和独立参考准入后执行ABA。旧失败记录保留，未执行无条件业务重试。
+
+主要依据
+完整当前17项控制：
+/Users/wen/spot/validation/artifacts/axial-material-new-ROOT64-full-connected17-expected-planes-v4-20261012/Root_actual_compile_only_summary.json
+A1真实生产：
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A-20261012-v3/Root_actual_single_plane_warm_A_summary.json
+B实际失败与资源监测：
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v1/Root_actual_single_plane_warm_B_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v1/B/solve.watchdog.json
+正式AAA与ABA拒绝：
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/ABA_admission_precheck.json
+三平面源码冻结与启动前拒绝：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/COMPLETE_INITIAL_AAA_ABA_NATIVE_SOURCE_SET_FREEZE_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_INITIAL_STORAGE_ADMISSION_REFUSAL_20261012.json
+
+
+
+2026-10-11 23:25 追加：连续双精度真实输入与调用链进展
+新连续双精度生产 driver/helper 两项真实编译 PASS，4.785329 秒；完整 caller/API/FLUDRV 三项真实编译 PASS，3.656984 秒。原 600 秒阶段、1800 秒整体、512 MiB、单线程和单业务子进程限制保留，没有求解重试。
+新输入接口已真实编译、链接并分别只读加载当前 A/B 归档，四阶段 PASS，5.726573 秒。每档全 370 群×14 unknown 的 5180 个 flux 值以及原生 k，全部与直接读取 TYPE4 的原值逐位一致；每档 5180 个 flux 值都区别于 REAL32 往返结果。全 SOUR64/SOUR 形状、类型和镜像检查通过，2956 个 source 值区别于 REAL32 往返。两个归档的完整文件 SHA 和四次身份观察保持。该结果证明新 typed ingress 在真实 A/B 数据上有效，未执行输运，不授 producer/online BOOT/原17项/物理精度资格。
+首次 A/B 检查提交在 CreateProcess 之前发生自动审批审核超时；确认 fresh OUT 不存在后，仅按工具允许重试一次审批，随后实际四阶段正常退出 0。此为未启动的审批重试，不是业务作业重跑。
+完整新 caller 实际 Source 接线为 FLUNAT64→FLUDRVN64→REAL64 loader→continuous driver→完整 HEADER 及原后续检查→真实 terminal publisher。dispatcher、新 warm case deck、完整原控制、链接及真实 native 执行仍待完成。
+进一步发现全局 SPOT TYPE3 的 B1HOM64 内部仍有 flux32→B1HXS2→phi 归一化及动态 B2 等单精度反馈。新的全局 typed driver 正在独立实现，B1 依赖同步扩展；不得仅凭 driver 去掉两处 promotion 就称 TYPE3 整链连续双精度。TRACK/RCONTRACT 的保留声明值是 2.5e-8；DOOR 内部实际更严工作目标为 2.5e-10，thermal 为 2.5e-9，outer 三项仍 2.5e-7。
+科学卡点与 ABA 状态保持上述原判定；原 goal 仍 active，无文件清理。
+
+追加依据：
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-producer-compile-only-20261011/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axmat-native-real64-warm-ingress-20261011/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-caller-compile-only-20261011/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_NEW_NATIVE_PRODUCER_TWO_COMPILE_TRUE_TOOL_RETURNS.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_NEW_AB_WARM_INGRESS_TRUE_TOOL_RETURNS.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_NEW_NATIVE_CALLER_THREE_COMPILE_TRUE_TOOL_RETURNS.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_producer_chain_source/caller_candidate_v1/FINAL_FREEZE_INTERFACE_AND_RUNTIME_SCOPE.txt
+
+2026-10-11 23:48 追加：真实新生产入口完整构建
+新Source入口AXNCASE64/FLUNAT64和全部声明15项支持Source已在原监管下实际编译，并完整链接Dragon。实际工具19c4a7创建session33582；最终82ee3e退出0。16阶段全部通过，整体19.900050291秒，SELF峰值164102144B（156.5MiB），原512MiB/stage600s/whole1800s/单线程/单业务子进程/no retry维持。
+当前1553项固定输入逐档完整EOF SHA/7ID检查稳定，含声明1538项原始参考输入。新可执行文件9583128B，SHA256 094b888084a5fb994d52251a10f7c79425074e361e14f0f879a951e516ec0f1e。旧四个标准库仅为已pin依赖，未证明全部原Source到archive对象的构建映射。
+未启动Native输运。该构建未授producer/onlineBOOT/原17项完整控制/AAA/ABA资格。下一条必需链路仍是全局B1等动态反馈全部REAL64、GLOBAL64 canonical与PROJECTED-BOOT/e0、同一seed的全32槽QFISS64及真BOOT求解。正在这些新独立Source中实现；正式AAA端部仍3.9525%>3%。独立rank2路线另有第1–17群未准入，不混用两条路线资格。
+清理继续暂缓，无文件删除。原goal继续active。
+实际结果：
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-route-build-only-20261011/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_NEW_NATIVE_CASE_ROUTE_BUILD_TRUE_TOOL_RETURNS.json
+
+2026-10-12 追加：全局双精度编译与科学路线范围核对
+全局双精度driver、B1依赖及相关完整Source共8项实际编译PASS，正常退出0，10.671154542秒；未执行全局求解。完整全局调用方5项Source和启动裂变源3项Source已经形成并静态审查，但尚无其完整编译、连接及真实在线求解结果。
+新的全局输出与投影候选审查发现字符串宽度、最终输出提交检查及固定rank数组宽度问题，需要修正；这些候选不计作已完成组件。
+保存数据诊断独立核对370群矩阵。前17个失败快群的A/B通量形状差很小；去掉重复A的影子对照仍全部失败。旧到新保存态变化远小于跨过原rank2门槛所需变化，不能假设接通双精度就会自动通过。该结论仅属于独立原rank2路线，不撤销正式rank1训练结果，也不授物理精度资格。
+正式细化prepared.production_config.rank=1，training/rank_admission.requested_rank=1；当前正式AAA仍为7/8精度通过、端部裂变率失败，ABA实际准入仍拒绝，未开始计算。原goal继续active，清理暂缓，无文件删除。
+本次主要依据：
+/Users/wen/spot/validation/artifacts/axial-material-new-SPOT-global-native64-dependencies-compile-only-20261011/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/axial_material/common_rank_cause_diagnostic_20261011/REPORT.txt
+/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/prepared.json
+/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/training/rank_admission.json
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/ABA_admission_precheck.json
+
+2026-10-12 最新状态核对：新增15项实际编译、两次完整链接
+以下五次有界执行的实际摘要均无failure或after_check_error，正常闭合；合计15项编译、两次完整Dragon链接：
+1. 启动canonical/context/裂变源3项编译，4.518765秒。
+2. 原生生产入口字符串宽度修复1项编译及完整27输入链接，3.137173秒。
+3. 双精度全局发布、投影及B2H共3项编译，3.729083秒。
+4. 全局连续双精度调用链5项编译，5.713436秒。
+5. 投影/裂变源调用入口和dispatcher共3项编译及完整48输入链接，5.478717秒。
+全部保留原600秒阶段、1800秒整体、512MiB、单线程、单业务子进程和无自动业务重试约束。上述计数仅属于工程构建，不计为15项新的科学验证。
+真实径向算子与在线启动求解的7项源码已经完整冻结并静态审查，其冻结文件明确compiled=false、numeric_executed=false、physically_qualified=false。原17项完整正反控制正在重建；已有83项组件控制不替代该要求。尚未运行新链路的实际A/B输运或在线BOOT。
+科学验收保持：正式AAA数值收敛，精度7/8通过；端部燃料裂变率最大误差3.9525259224%超过原3%标准。独立全群未降阶耦合参考尚未准入，ABA未开始。原goal继续active。用户明确暂缓清理，本次未删除文件。
+本次核对依据：
+/Users/wen/spot/validation/artifacts/axial-material-new-bootstrap-QFISS64-v2-compile-only-20261012/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-route-repair-build-only-20261012-v2/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-bootstrap-global-projection-v2-compile-only-20261012/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-global-native64-caller-compile-only-20261012/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-bootstrap-CLE-global-complete-route-build-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/online_boot_native64_source_v1/COMPLETE_TRUE_ONLINE_BOOT_AND_OPERATOR_SOURCE_FREEZE.json
+
+2026-10-12 01:41:15 最新核对：原生算子完整构建推进，完整控制尚未通过
+真实算子及在线BOOT的7项Source实际编译PASS，8.679361秒。55输入完整链接实际失败，原因是未链接原生SPOPOD64；保留失败后，另编译完整原生POD并完成56输入链接PASS，3.202602秒。可执行文件10366824B，SHA256 7bc5ea81de61a45c3bbfe6aa12e58429ab1549050816a48fbc67bbeec999031d。未执行该新链路实际输运。
+完整17项控制v2首次编译失败：局部REAL32数组nu遮蔽整数参数NU，令LCMPDL长度参数类型错误。另建v3只在声明、赋值及NUSIGF记录写入三处改名nu_sigf，保留全部公式和预期状态。实际v3编译及链接PASS，但首个positive控制以actual full GLOBAL publisher断言失败；三阶段共4.574028秒，after_check_error为空。整组17项尚未通过，未启动真实A/B新输运，不授连续双精度生产、在线BOOT、AAA或ABA资格。
+修复候选的源码绑定生成期间两次字符串唯一性断言失败，及一次当前依赖pin不一致前置拒绝，均发生在相关业务子进程启动之前；已经分别保存并修正，不计作业务成功或17项控制通过。当前失败记录保持，无自动业务重跑。
+下一步先定位全局发布对正确输入的拒绝原因，闭合完整控制及当前真实入口控制，再执行真实A/B连续双精度求解和在线启动验证。科学卡点保持正式AAA端部裂变率3.9525259224%>3%；独立全群未降阶耦合参考未准入，ABA未开始。用户要求暂缓清理，本次未删除文件；goal仍active。
+实际依据：
+/Users/wen/spot/validation/artifacts/axial-material-new-true-online-BOOT-operator-seven-compile-only-20261012/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-true-online-BOOT-native-POD56-complete-route-build-only-20261012-v2/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-ROOT64-full-connected17-namespace-repair-v3-20261012/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_FULL_CONNECTED17_CURRENT_TRUE_TOOL_RETURNS_20261012.json
+
+2026-10-12 02:15 最新核对：完整17项当前控制通过，修复接入完整程序
+两次保留原监管的实际诊断定位到SPOR64_BOOT_CONTEXT64的固定NSNAP=3被同名局部nsnap遮蔽，令GLOBAL_CHECK及READ不能正确使用固定三平面要求。仅将17处代码常量引用改名EXPECTED_NPLANE，完整字节逆证成立，局部变量、公式、接口、三平面要求及资源上限保留。修复完整源码单独实际编译PASS，2.087934秒，公共module字节保持相同。
+随后当前完整17项合成正反控制实际执行20步骤、18阶段，全部闭合，51.058772秒；SELF峰值197181440B。独立完整文件核验按预期拒绝一致改写副本，Fortran内部并不声称能识别所有同步改写。历史丢失的原17文件未恢复，不继承其旧PASS；当前完整控制使用新的完整数据并独立通过。
+最后完整56输入Dragon实际重新链接PASS，2.178671秒；仅替换本次真实编译的Context对象，其余55项按原顺序保留。新可执行文件10366856B，SHA256 1a837c009db988fff6902161673916b31c1435a930fb2beb6553ac15b0323701。旧标准库仅为固定依赖，未授全部历史Source到archive构建资格。
+下一步执行当前程序的真实入口控制，合格后执行一次真实A warm双精度求解并完整读取终态，再推进B及全三平面链路；当前尚无这批新求解结果。工程构建与17项合成控制不授连续全局双精度、在线BOOT或物理精度资格。
+科学验收仍为正式AAA原8项精度中7项通过，端部裂变率3.9525259224%超过原3%标准；独立全群未降阶耦合参考未准入，ABA未开始。原goal active，用户要求清理暂缓，本次未删除文件。
+实际依据：
+/Users/wen/spot/validation/artifacts/axial-material-new-bootstrap-CTX-expected-three-planes-compile-only-20261012/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-ROOT64-full-connected17-expected-planes-v4-20261012/Root_actual_compile_only_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-bootstrap-CTX-repaired-native-POD56-complete-route-link-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_CTX_NAMESPACE_REPAIR_17_CONTROLS_AND_COMPLETE_RUNTIME_TOOL_RETURNS_20261012.json
+
+2026-10-12 02:45 最新核对：A真实双精度生产闭合，B独立程序构建通过
+当前A入口实际17步骤闭合：5个正常步骤PASS，12个预定错误输入按唯一准确拒绝信息退出code1；另核对全370群typed loader的1个正例及7个拒绝。这些预定FAILED记录是通过的负控制，不能当作真实求解失败。整体23.769164秒。
+原v2入口在启动业务前因只接受旧凭证schema而前置拒绝，未创建OUT、未启动业务；完整17结果并未失效。最小v3只将schema匹配收紧为当前真实凭证的精确名称并更换新结果目录，保留所有公式、物理输入、原监管和判据。实际只读准入验证通过后执行上述真实入口，没有求解重试。
+A实际编译probe、链接、求解、只读终态共四步骤code0，15.598487秒。单平面plane1/e0、全370群×14个未知量共5180个flux值的ROOT-FLUX64/FLUX64/ROOT-REF64逐位一致；5180值均保留区别于REAL32往返的低位。全部SOUR64为type4、有限且与SOUR32镜像一致，其中2956值区别于REAL32往返。真实发布前接口另验证全部源项与实际terminal_source64逐位一致，不把只读镜像检查冒称独立源项求解证明。
+A真实outer2/inner1，k64=1.4280075695106618，严格收敛残差[5.7532260736134836e-15,5.444112702201975e-10,5.444112702201975e-10]满足原门槛。真实SALT生成轨迹与原几何轨迹参考全字节相同。观测到求解子进程峰值431.296875MiB，SELF148.4375MiB，未触原512MiB及时间上限；不声称操作系统硬内存保证或独立物理精度验证。
+新A归档156880856B，SHA256 172ff389a42e6f573143e2fd1650e04fcfc5e7fe30f36e5b29bf902255e46bcc，完整EOF和七项身份已绑定实际求解及读回。该结果不授全三平面、GLOBAL、rank、在线BOOT、AAA或ABA资格。
+B最小独立case使用R64WARM-B-V1、plane2/e0，只改变既定A/B材料配比，保留几何、温度、370群、原求解和阈值。独立B handler及完整dispatcher两项真实编译并完成57输入链接，三步骤PASS，4.654627秒；保留原A入口，新增一个B对象并替换dispatcher，其余旧输入顺序及四archive保留。新B程序10367512B，SHA256 7a6b2d326126c21b6311dd6477541dad6ae984caced95a016c2f4782af51a663。此为构建，不授B真实生产资格。
+下一步当前B自己的完整入口控制，通过后一次真实B双精度求解及读回；随后继续全三平面与真实在线BOOT凭证。科学卡点仍为正式AAA端部裂变率3.9525259224%超过原3%，独立耦合参考未准入、ABA未开始。原goal继续active，清理暂缓，未删除文件。
+实际依据：
+/Users/wen/spot/validation/artifacts/axial-material-current-warm-A-CLE-entry-controls-20261012-v3/Root_actual_entry_controls_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-A-20261012-v3/Root_actual_single_plane_warm_A_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-B-complete57-route-build-only-20261012/Root_actual_build_only_summary.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_CURRENT_WARM_A_ENTRY_AND_NATIVE_TOOL_RETURNS_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_CURRENT_NATIVE_B_COMPLETE57_BUILD_TOOL_RETURNS_20261012.json
+
+2026-10-12 02:59:02 最新核对：B入口通过，B求解正常退出但资源预算导致整体未通过
+B当前入口17步骤按原oracle闭合：5个正步骤PASS，12个错误输入均按准确唯一XABORT拒绝；loader另核对8次调用/7次拒绝。报告failure和after_check_error均null，24.537800042秒，SELF165871616B。case R64WARM-B-V1、plane2/e0，未在入口控制中执行输运。
+实际B warm工具325a5b/session70535，最终329871 EXIT1。两项probe编译/链接PASS；真正B求解watchdog returncode0、日志唯一ROOT64-NEW-WARM-B-NATIVE-COMPLETE并normal end，耗时7.328074958秒，观测峰值431.53125MiB，但limit_failure为history96GiB original cold reserve。原监督器因此将solve步骤及整个生产报告置FAILED；全部流程13.257196792秒，SELF168263680B。new_native_B.xsm存在且156880856B；独立只读终态、输出完整SHA/7ID绑定和SALT完整比对未执行，所以不把正常退出或输出文件存在计为生产闭合，也不把预算失败称为物理收敛失败。没有业务重试。
+求解前计入预算的历史数据81981109416B，加原冷运行预留20971764748B及metadata预留67108864B，对103079215104B上限仅余59232076B；本次归档156880856B超过该余量。磁盘当时尚有207693021184B可用，限制来自既定实验预算而非磁盘耗尽。用户明确不急清理，保持文件；没有放宽预算。
+下阶段需先核实并解决原资源预算的执行余量，保留当前B失败与实际输出证据，取得B独立完整终态资格；继而真实生产第三平面、接入每个平面自身的输入契约和在线启动，随后定位并修复AAA端部偏差，满足AAA及独立耦合参考准入后才执行ABA。目标保持active，本次仅汇报最新进展。
+实际依据：
+/Users/wen/spot/validation/artifacts/axial-material-current-warm-B-CLE-entry-controls-20261012-v1/Root_actual_entry_controls_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v1/Root_actual_single_plane_warm_B_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-new-REAL64-native-warm-B-20261012-v1/B/solve.watchdog.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_CURRENT_WARM_B_ENTRY_AND_NATIVE_TOOL_RETURNS_20261012.json
+
+2026-10-12 03:21:05 最新追加：三平面生产与输入契约Source已实现，资源预准入修复完成
+先前goal turn有实际进展：B入口已实际合格，并取得一次B真正求解正常退出而宿主预算拒绝的证据。本轮未重跑任何业务，清理继续暂缓，无文件删除。
+A3独立生产：真实writer2cfa60 EXIT0生成完整handler/dispatcher/deck/probe，case12 R64-A3-WARM1、plane3/e0；A2同质控制所需独立生产：13c89e EXIT0生成同四项，case12 R64-A2-WARM1、plane2/e0。两者固定同原A material/geometry/native seed/rays，仍需各自真正从seed求解，不准复制或重标A1归档。AAA必须使用A1/A2/A3；后续ABA使用A1/B2/A3，B2不能代替AAA的A2。所有原370群、材料、温度、求解阈值、caps、archive LISTDIM1/ITEM1保留。A3/a57873与A2/7aea23独立完整Source及物理输入审核均实际EXIT0。
+新三平面初始入口：a7ced5 EXIT0生成完整SPOOPP64→SPOASMP64与dispatcher。标准入口九操作数：output、macro、track、三平面archive、basis、GLOBAL契约、plane1/2/3各自契约；明确拒绝output/契约别名，逐契约完整LOAD，每个NativeRead使用IPPLANE_CONTRACTS(ISNAP)，保留原CASE/完整树/plane/epoch及全部370/3/32slot/rank/unknowns检查。初始路线必须LPOD64且不是LDPOP；旧ASM/SPOASM八参数及旧SPOOPG64/SPOASMG64不写，在线LDPOP需另经完整context准入，不能继承初始路线资格。主审763a0c、独立子审a679e1均实际EXIT0；Root f34971全11Source逐字节正逆核验及5b61f5冻结均EXIT0。未编译、链接或进行数值运行。
+预算根因已独立确认：各history根无重叠，history与fresh分别检查而非相加计量；原cold预留不可释放。Root只读e7928e EXIT0统计675根/94278文件/82143322879B逻辑历史长度，加原21038873612B冷+metadata预留，对103079215104B上限超102981387B；磁盘可用207257600000B。磁盘可用与实验预算是不同门槛。未发现能保持所有冻结输入身份且不删除、不改预算而继续数值业务的已验证路径。
+新B初始存储Source：648031 EXIT0生成完整common/main与不变的entry support/probe；仅增加原fresh2GiB完整上界的启动前一次性历史预留及外部Sourcefreeze必填path/SHA/7ID、全过程Source固定核验，原运行期实际增长监控、96GiB、冷预留、64MiB、free8GiB、时间/内存/单线程/无自动重试全部保留。Root929ec8与独立ae8933完整4Source正逆核验和3Python AST均实际通过，小审查收据后b2bc34实际冻结。a36ab0实际只读预准入0.901242秒按当前原cold预算拒绝，业务OUT始终不存在，未创建业务子进程；由于当前首先触发原cold检查，新增fresh2GiB分支的运行期正例尚未执行，不把此次拒绝说成数值验收。新预留需要至少2250465035B原历史额度余量恢复；该算式基于本轮统计，并未实际释放容量。
+原goal仍active，科学结果不变：正式AAA端部裂变率3.9525259224%>3%；独立全群耦合参考未准入；ABA未开始。下一步有预算后先取得B完整生产读回资格，再在原约束下真实编译并执行A2/A3和三平面初始/在线全过程，完成AAA与独立参考准入后ABA。
+本轮主要新依据：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/COMPLETE_INITIAL_AAA_ABA_NATIVE_SOURCE_SET_FREEZE_20261012.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/three_native_plane_contract_route_source_v1/INDEPENDENT_SMALL_SOURCE_REVIEW_RECEIPT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/native_warm_B_initial_storage_reserve_source_v2/COMPLETE_WARM_B_INITIAL_STORAGE_SOURCE_FREEZE.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_INITIAL_STORAGE_ADMISSION_REFUSAL_20261012.json

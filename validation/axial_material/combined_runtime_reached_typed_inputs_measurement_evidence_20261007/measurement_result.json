@@ -1,0 +1,53 @@
+{
+  "schema": "AXMAT_COMBINED_RUNTIME_REACHED_TYPED_INPUTS_ACTUAL_READONLY_MEASUREMENT_V1",
+  "classification": "FRESH_TYPED_BYTES_NAMESPACE_AND_ALIAS_MEASUREMENT_ONLY",
+  "typed_specs": {
+    "path": "/private/tmp/combined_runtime_source_owned_typed_input_specs_draft_20261007.json",
+    "sha256": "c9c7414f71ac6f857d8f8dcf959cd558ea2bd26b6fb137ed28870f95473da2d6"
+  },
+  "adapter": {
+    "path": "/private/tmp/combined_runtime_source_owned_typed_input_adapter_draft_20261007.py",
+    "sha256": "29429fe5318d4525bbbe3e55ce1880d895cbe3cda702962bb780871b95de1714"
+  },
+  "helper": {
+    "path": "/private/tmp/combined_runtime_complete_input_graph_mechanics_stopped_draft_20261007.py",
+    "sha256": "c8e58bcad7b9f4a6b1d6615050d41854397c4d102efd2af81b402b376827bb44"
+  },
+  "full_original_baseline_file_count": 26784,
+  "baseline_omitted_or_filtered": false,
+  "reached_component_count": 8,
+  "original_namespace_logical_requirement_count": 65,
+  "distinct_namespace_roots": 18,
+  "independent_source_directory_predicate_count": 3,
+  "literal_alias_logical_requirement_count": 10,
+  "actual_alias_count": 186,
+  "canonical_files_read": 29109,
+  "actual_bytes_read": 35249128310,
+  "logical_owner_edges": 192470,
+  "namespace_regular_edges": 85834,
+  "namespace_directory_edges": 911,
+  "all_selected_expected_SHAs_and_namespace_requirements_passed": true,
+  "each_selected_canonical_file_freshly_opened_once_in_phase": true,
+  "fresh_specs_parsed_from_same_phase_owned_bytes": true,
+  "actual_phase_open_trace": {
+    "path": "/private/tmp/combined-runtime-reached-typed-inputs-readonly-measurement-20261007/measurement/actual_phase_python_open_trace.json",
+    "sha256": "5d53da1978a8417396a9b61a40979c0d5c07aad47feca23820551f485935ae3c"
+  },
+  "actual_phase_python_open_attempt_count": 29109,
+  "requirement_table_sha256": "98f4295687ade8f5378b0da31c06a2f443856c108f5b41682585b034659e6c18",
+  "phase_elapsed_seconds": 19.903279250022024,
+  "child_whole_elapsed_seconds": 22.547925624996424,
+  "historical_component_semantics_only": true,
+  "trace_scope": "PYTHON_OPEN_ATTEMPTS_OF_SELECTED_PHASE_ONLY_NOT_LIBC_NATIVE_OR_DYLD_TRACE",
+  "all_original_parent_predicate_edges_complete": false,
+  "current_independent_live_predicates_all_checked": false,
+  "original_component_APIs_executed": false,
+  "complete_parent_predicate_replacement_proved": false,
+  "new_business_contract_READY": false,
+  "original_failed_combined_runtime_admitted": false,
+  "science_qualification_created": false,
+  "native_transport_executed": false,
+  "combined_runtime_RSS_proved": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false
+}

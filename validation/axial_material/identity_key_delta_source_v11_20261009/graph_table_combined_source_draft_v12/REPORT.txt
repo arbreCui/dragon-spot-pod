@@ -1,0 +1,1 @@
+V12仅源码UNREADY草稿：母canonical66d冻结。新SOURCE/OUT/TERM独立，Graph helperSHA None。仅writer json.dump入参改为g.encode_canonical_file_table_storage(graph)，原expanded graph与whole INPUT/verify/metadata/数学/真正MRO/所有预算保留；全部其他函数源逐字相等。真实V11 component六pins保留，所有新combined success/counts/inventory为空。失败V11只作此报告背景，不加进fresh INPUT成功链，不重试旧namespace。完整逆变换还原母源，无业务导入/执行和项目写。

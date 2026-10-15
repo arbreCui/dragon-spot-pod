@@ -1,0 +1,24 @@
+SPOT 最新结果入口 V16（2026-10-16）
+
+最新完成
+1. 真正A1/B2/A3已实际打包：Root0、原生child0、完整18树/三RCON/严格双精度科学读回0、独立元数据后验0。新PACK470,641,008字节，14份新产物共470,725,364字节；中间层完整对应规范B快照。
+   SPOT_CURRENT_A1_B2_A3_COMPLETE18_PACK_READONLY_FD_VERIFIED_RESULT_20261016.txt
+2. 只读入口小样本控制Root0、独立后验0，同PID继承和完整1,809字节/定位/EOF/内核拒写通过；真实代码[0,0,71,1,1]的三个原始FAILED保留。
+   SPOT_CURRENT_READONLY_FD_SAME_PID_EXEC_SMALL_CONTROL_VERIFIED_RESULT_20261016.txt
+3. 新B运行程序完整71输入构建Root0/四child0/独立后验0；A1/A3/formal13共31项当前字节全核，A1/B2/A3生产者目录27项已保存。
+   SPOT_CURRENT_B_PLANE2_MINIMAL_RUNTIME_COMPLETE71_BUILD_VERIFIED_RESULT_20261016.txt
+   SPOT_CURRENT_A1_A3_FORMAL13_EPOCH_BYTES_AND_SELECTED27_CATALOG_VERIFIED_RESULT_20261016.txt
+4. 最近四轮旧原文件回收合计1,032,538,365字节，非净空间增长。规范副本、完整归档、恢复映射、所有失败和结果文档保留。
+   SPOT_CURRENT_A_B_NATIVE_EXACT10_REDUNDANT_ORIGINAL_RETIREMENT_VERIFIED_RESULT_20261016.txt
+   SPOT_CURRENT_RESULTS_INDEX_V15_20261016.txt
+   SPOT_CURRENT_RESULTS_INDEX_V14_20261016.txt
+
+当前与下一步
+完整累计目录现86个。PACK独立后验写前fresh=1,630,582,032字节、external=83,718,024字节、open-unlinked=0；全69外部依赖继续计账。原累计2GiB、其他资源门均保持，下一执行必须重新量测。
+下一步制作真正B轴向工程上下文、宏观库/轨迹/系统和全局RCON，沿用原冻结配置和共享基；候选小阶段须单独准入。旧全A formal13不能当作B兼容。
+旧GLOBAL/PROJECT的实际输入依赖与完整中间副本占用，不能靠提前删PACK规避。先完成小阶段并安排新无损归档/必要存储实现调整，再准入完整GLOBAL/PROJECT与B在线consumer。
+可归档候选131个已完成NPZ共149,689,878字节；尚无该批新归档/恢复/退役资格，本轮未新增删除。七份规范原生副本继续承担旧恢复映射，结果文档保留。
+
+未完成
+完整B上下文和在线读取、AAA物理精度、完整反应/多重性、温度插值、完整370群算子、独立耦合参考、ABA。AAA ν裂变误差3.9525259224%>3%仍FAIL，主goal保持active。
+历史入口、完整结果和真实失败凭证继续保留。

@@ -1,0 +1,1 @@
+V13 combined 源稿独审通过，保持 UNREADY。32 区域整逆真实 V12；70 原定义中 61 字节保持、9 为门/接线变化、新增 6 含 nested。完整七历史 INPUT、e8 lossless graph、原 64MiB 读界、5阶段/MRO/物理与原预算保留。新sender为第三生产override，连同kernel/physical与输出整逆原92；真实SPOF保留，observer/reference不进生产。完整86 component、原30字段68计数/2710真kernel与48stub分域及70raw/7身份/seal门保持。7成功pins尚 None，未读正在运行的stage、未poll或执行业务；不授component/combined/RSS/native/AAA/ABA通过信用。

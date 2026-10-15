@@ -1,0 +1,13 @@
+Root有限源码成本审计（2026-10-11）
+
+上一goal turn分类PROGRESS：真实十项观察控制达到预期并独立复核；新WHITE原始边界组件真实六项通过，并完整保留首次5/6失败及修正前源码。当前全文件SHA仍匹配，未把组件控制提升为完整参考或物理精度。
+
+当前新观察器一次正常首frame资源check中，JointHistoryResources.check先执行原super().check一次。joint_bytes.persist调用原FailureOnlyMonitorEvidence.record，其disk_account在添加账户元数据前、实际写入前、实际写入后共执行三次完整base_history_check。joint_bytes在完整candidate journal写入后又执行一次完整base_history_check。故正常单candidate路径共五次完整动态历史遍历；初始和最终完整HOCDE计量，以及record三次计量也各自保留，D/E冻结还在各位置复核。无效或异常frame可能产生更多完整遍历。
+
+保存的29个独立发布窗口最大1.032541792秒；常规控制最后窗口约0.95秒。这些是窗口总耗时，不能从原raw精确分出每次历史遍历或lsof耗时；没有单独采集对应计时。不声称遍历必占多少比例，不能把5次调用计数直接当实际CPU成本。
+
+原OwnRSS _process每条编译器命令第一次while和退出各保留资源核验，运行超过5秒还增加核验。新增DirectDriverLibraryStage移除的只是execute每单元额外前后核验与完整stages重写；原_process未改。四种真实工具小控制将测量这条同host/同资源/原owner/原_process路径。零RSS样本只表示未测得有效峰值；它不授Native内存资格。
+
+如果实测固定监测开销使原917单元600秒预算不可信，应先作保持全scope和原caps的显式新Source优化，不提高预算、不缩范围、不取消原guard抽样、不复用旧对象。新策略必须保存所有无效/异常证据、完整当前census/严格lsof、完整自有追加字节与独立后收尾；现有十控制不能自动资格化修改后的Source。本次仅完成静态成本计数，未实现优化或运行新的候选。
+
+真实完整A/B上下文、反应聚合、独立参考及物理平衡仍未完成；原rank2有17群未准入，另立rank1 AAA仍7/8、端部3.952526%>3%，ABA未开始。原阈值和物理输入保持，清理暂缓。

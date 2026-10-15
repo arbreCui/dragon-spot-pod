@@ -1,0 +1,19 @@
+--- V7_parent
++++ V8_candidate
+@@ -1,6 +1,6 @@
+ from pathlib import Path
+ import os,json,hashlib,sys,shutil,datetime,stat
+-T=Path('/private/tmp/axmat-last-cprime-trim-combined-live-resource-v7-root-execution-20261009'); c=json.loads((T/'config.json').read_text()); R=Path(c['R']); OUT=Path(c['OUT']); SOURCE=Path(c['SOURCE']); TERM=Path(c['TERM'])
++T=Path('/private/tmp/axmat-last-cprime-trim-combined-live-resource-v8-root-execution-20261009'); c=json.loads((T/'config.json').read_text()); R=Path(c['R']); OUT=Path(c['OUT']); SOURCE=Path(c['SOURCE']); TERM=Path(c['TERM'])
+ def sha(p):
+  p=Path(p); assert p.is_absolute() and not p.is_symlink(); h=hashlib.sha256()
+  with p.open('rb')as f:
+@@ -18,7 +18,7 @@
+    p=Path(folder)/n; assert stat.S_ISREG(p.lstat().st_mode)and not p.is_symlink();files[str(p.relative_to(root))]=sha(p)
+  return dict(files=files,symlinks={},directories=sorted(directories))
+ action=sys.argv[1]; tool=json.loads((R/(action+'_terminal_tool_return.json')).read_text()); assert type(tool['exit_code'])is int and tool['exit_code']==0
+-assert sha(Path(c['F']))==c['factorySha']; d=json.loads((OUT/'declaration.json').read_text()); prefix='AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V7';decl=pin(OUT/'declaration.json')
++assert sha(Path(c['F']))==c['factorySha']; d=json.loads((OUT/'declaration.json').read_text()); prefix='AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V8';decl=pin(OUT/'declaration.json')
+ e=dict(record_producer='root',actual_tool_terminal_return_observed=True,record_written_after_actual_terminal_return=True,returncode=0,actual_tool_result=tool,observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),source=pin(Path(c['F'])),declaration=decl,native_transport_executed=False,mathematical_controls_newly_executed=False,combined_runtime_native_RSS_proved=False,actual_full_FLU_entry_executed=False,AAA_accuracy_qualified=False,ABA_admitted=False,scientific_qualification=False)
+ if action=='prepare':
+  assert not TERM.exists(); TERM.mkdir()

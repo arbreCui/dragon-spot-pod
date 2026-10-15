@@ -1,0 +1,33 @@
+--- 82ee_initial_stopped
++++ final_ready_candidate
+@@ -1,13 +1,16 @@
+-"""Independent V8 source-only lossless wire and predicate-lifetime integration.
++"""V8 complete-input wire and private declaration lifetime integration.
+ 
+ Derived from frozen v7 without retrying its failed actual input-audit RUN.
+-The candidate graph helper stores all five requirement columns in a strict
++The reviewed graph helper stores all five requirement columns in a strict
+ canonical varint wire format and uses private tuples only during wire verify.
+-The current-predicate helper releases only private declaration references.
+-Helper/factory reviews and every new-family Root runtime witness are pending.
++Its producer still creates and clones the complete old graph before encoding.
++The reviewed current-predicate helper releases only private declarations.
++Formal source admission requires an independent final factory source review.
++Every new-family Root PREP, build, API and runtime witness remains required.
+ The full regular-byte union, original seven-key body, complete actual trim
+ input, namespaces, math and wall/RSS/disk/thread/child/terminal gates remain.
+-This source draft creates no current INPUT, build, RSS or science credit.
++The ready constant permits the unchanged original formal-only source gate;
++it creates no INPUT, build, RSS or science completion credit.
+ """
+ import argparse
+ import gc
+@@ -34,7 +37,7 @@
+ OUT = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v8-20261009'
+ TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v8-20261009'
+ FAMILY = 'HISTORICAL_INPUT_TRIM_COMBINED_RUNTIME_LINK_V8'
+-DRAFT_STATUS = 'UNREADY_V8_SOURCE_ONLY_HELPER_AND_FACTORY_REVIEWS_PENDING'
++DRAFT_STATUS = 'READY_REVIEWED_TRIM_COMPONENT_INPUT_REUSE_FORMAL_FACTORY'
+ CAPTURE_SEAL_SHA = '12756df88672c4438149119026edba0b2ef78780dffa5dcc522bcd06771d5296'
+ CAPTURE_TERMINAL_SHA = 'd5496707eb1ad08826eec599dbf6035b9e39df67cf68a92e84db62bcbb753e63'
+ CAPTURE_FACTORY = ROOT/'validation/axial_material/prepare_rank1_cache_memory_dedup_file_snapshot_native_angular_capture.py'

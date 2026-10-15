@@ -1,0 +1,20 @@
+SPOT A1 两份临时比较文件精确清理实际结果 — 2026-10-15
+
+Root 实际只读检查 2c30ee：整数 0；完整哈希与记录一致，执行了两轮新的进程/打开句柄检查；未删除文件。
+Root 实际删除 bed23b：整数 0。状态 RETIRED_EXACT_LITERAL2_COMPLETED_A1_COMPARE_SPOOLS_ONLY，无 failure。
+实际仅删除 A1/original_archive_index.sqlite（52,441,088 字节）和 A1/original_words.bin（150,267,572 字节），共 202,708,660 字节，约 203 MB。
+目标前缀：/Users/wen/spot/validation/artifacts/axial-material-current-three-plane-raw-macro-compare-after-GENDF-cumulative25-20261014-v1-evidence/A1/
+这是已完成临时文件的生命周期退役；不是相同哈希副本去重。
+
+执行收据：v4/EXECUTION_RETIREMENT_RECEIPT.json
+SHA256: c607484ee05709c792b34448dc1dd0b61f9c238af20a38c83efd2f233d2d6f07
+原始工具返回：v4/ROOT_RETIREMENT_EXECUTION_TRUE_TOOL_RETURNS.json
+只读收据：v4/READONLY_RETIREMENT_RECEIPT.json
+原始只读工具返回：v4/ROOT_RETIREMENT_READONLY_TRUE_TOOL_RETURNS.json
+独立 Source 核验：v4/independent_source_review_20261015/REVIEW.json，3bb25a 整数 0。
+
+原始 A1 XSM、104 字节原角度捕获、全部比较报告/JSONL、Root 真工具返回、旧错误与失败收据保留。此前 A2/A3 的四份退役只作为原历史，不重复计数或修改。
+v3 原发布失败 KeyError('identity') 和原整数 1 仍保留；新 v4 入口完成实际执行，没有覆盖失败或提升限制。
+
+删除后同一 54 个累计根占用 1,720,825,548 字节，外部显式元数据 8,227,549 字节，共 1,729,053,097 字节；打开但已删除文件占用 0。仍沿用累计 2 GiB、历史 96 GiB、单阶段 600 秒、SELF 512 MiB 等原限额。
+截至本记录，删除后独立核验正在进行；未把执行成功表述为物理精度、完整耦合参考、AAA、ABA 或总目标完成。

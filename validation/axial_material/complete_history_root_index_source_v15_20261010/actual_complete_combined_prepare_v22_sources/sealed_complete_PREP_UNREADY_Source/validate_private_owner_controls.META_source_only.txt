@@ -1,0 +1,27 @@
+def validate_private_owner_controls(value):
+    assert value['schema'] == 'AXMAT_V22_PRIVATE_OWNER_CONSUME_ACTUAL_CONTROL_V1'
+    assert value['status'] == 'ACTUAL_PRIVATE_OWNER_CONTROLS_RETURNED_METADATA_ONLY'
+    positives = value['positive_controls']; rejects = value['private_guard_rejections']
+    subtypes = value['accepted_str_subclass_equivalence_controls']; partial = value['partial_invalid_second_owner_rejections']
+    assert len(positives) == 4 and [r['case'] for r in positives] == ['default_list', 'default_tuple', 'explicit_False_list', 'owned_builtin_list_True']
+    for row in positives:
+        assert row['full_normalized_descriptor_types_order_values_attrs_floatbits_equal_default'] is True
+        assert row['expected_complete_descriptor_signature'] == row['actual_complete_descriptor_signature']
+        if row['case'] == 'owned_builtin_list_True': assert row['owned_list_completely_cleared_after_success'] is True
+        else: assert row['caller_full_identity_type_order_value_attrs_floatbits_unchanged'] is True
+    assert len(rejects) == 3 and [r['case'] for r in rejects] == ['nonbool_consume', 'tuple_True', 'list_subclass_True']
+    for row in rejects:
+        assert row['class'] == 'InputGraphError'
+        assert row['message'] == 'private owner consume needs a bool and an exclusively owned builtin list'
+        assert row['caller_full_identity_type_order_value_attrs_floatbits_unchanged'] is True
+    assert len(subtypes) == 2 and [r['case'] for r in subtypes] == ['plain_accepted_str', 'accepted_str_with_str_override']
+    for row in subtypes:
+        assert row['default_caller_full_identity_type_order_value_attrs_floatbits_unchanged'] is True
+        assert row['owned_list_completely_cleared_after_success'] is True
+        assert row['complete_normalized_descriptor_types_order_value_strattrs_floatbits_equal_default'] is True
+        assert row['expected_complete_descriptor_signature'] == row['actual_complete_descriptor_signature']
+    assert len(partial) == 2 and [r['case'] for r in partial] == ['invalid_second_owner_default', 'invalid_second_owner_owned_True']
+    assert all(r['class'] == 'InputGraphError' and r['message'] == 'missing file owner' for r in partial)
+    for key in ('first_valid_slot_None_after_original_validate_and_append', 'invalid_second_slot_original_identity_and_value_unchanged', 'default_partial_caller_unchanged', 'original_owner_rejection_class_order_message_preserved', 'original_protocol_controls_fixtures_and_caps_unchanged', 'no_new_fixture_file_or_IO_created'):
+        assert value[key] is True
+    assert value['new_helper_qualification_created'] is False and value['business_or_science_qualification_created'] is False

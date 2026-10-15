@@ -1,0 +1,11 @@
+R20 mesh12 旧工作文件结果保留独审
+
+固定建议仅 map1..5 六类共30份：projected_proposal、candidate_radial、candidate_snapshots、candidate_axial、candidate_system、parent_for_checker。逻辑2,580,841,168字节，分配2,580,910,080字节。它们是原 B2J/径向/轴向/检查器过程的阶段工作状态，不是逐字节重复文件；本独审不声称 closed 可无损替代 RETURNED/QFISS。
+
+九轮全部 closed 状态与 bootstrap/原输入链接留，map6..9全套留。早五轮原 VALID_NOT_MET、map9 VALID_MET、最终 CE k FAIL 原事实留。10组早期 pin/current 保存诊断的直接提取输入为 closed 状态/track，未命中这30份；现有诊断结果逐份全文SHA通过。map6 candidate_radial 是独立 REAL64 QFISS balance 输入，必须留。
+
+旧16份恢复清单及R18/R19实际计划、既有逐项账本和恢复源码都未把这30份作为已删产物的唯一复制主本。保留全部文档、数值汇总、源代码、输入、参数、日志与原SHA清单。
+
+删除后早期 result/input/output wholemanifest 和九轮整链独立 checker 无法原地直接完整重验，早期诊断脚本的全清单前置检查也会拒绝。需要在隔离目录按保留原输入/runtime/父closed和原命令重算并逐份比旧size/SHA后恢复；未证明未来逐字节重现，也不承诺即时恢复。原五轮耗时合计约20.86小时。
+
+本报告仅结果保留/原源码用途/恢复链范围PASS；完整当前依赖和全入链排除、正式预检/精确执行仍须Root与graph独审。未删、未改项目、未执行科学业务；未重读35GB或候选2.58GB。

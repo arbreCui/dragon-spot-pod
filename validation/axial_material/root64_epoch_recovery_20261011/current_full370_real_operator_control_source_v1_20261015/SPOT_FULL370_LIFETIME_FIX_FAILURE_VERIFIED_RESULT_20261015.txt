@@ -1,0 +1,18 @@
+SPOT 完整370群控制：第二次有界失败及独立复核结果
+日期：2026-10-15
+
+结果：未通过完整控制。原实际 Root/child 退出码1保留。
+独立失败事实复核实际退出码0，状态 PASS_FAILURE_FACTS_ONLY；这只验证失败记录，不能替代控制通过。
+
+失败发生在 WHITE_PREPARATION。原 Budget 记录峰值542,736,384字节（517.59375 MiB），超过原512 MiB；当时原elapsed532.198535584秒，小于600秒。未发生监控器杀进程；没有完整控制结果、白边界缓存或child通过报告。
+释放已验证系数与末尾q共11,366,400字节后，仍超限；没有调整上限或重置时间。
+检查数6860/总8858的原记录仅表示Budget调用次数。独立源码推导：white每个成功原生调用前后各一次检查，失败在后检查，因此已有3430次rc==0调用，原轨迹214（零起始）的第六个动作。角度、nr、几何规模及当时驻留内存没有被记录。
+ru_maxrss保留历史峰值，不能据此断言返回后的当前驻留内存或具体分配器原因。后循环布尔检查尚未执行，不能归因于这些临时数组。
+
+下一步：在原调用边界增加有界诊断，记录前后当前RSS与峰值、实际动作身份、现有几何计数、活跃数组字节及别名。只在原失败处保存<=8192字节记录。原物理输入、浮点算术、库对象、全部检查和时间/内存上限保持不变。
+
+已通过的62槽温度捕获和旧文件释放结果保留；本结果不构成物理精度、独立参考、AAA或ABA完成。
+事实复核：v5/actual_failure_metadata_assessment_20261015/REVIEW.json
+真实工具：v5/actual_failure_metadata_assessment_20261015/TRUE_TOOL_RETURNS.json
+原实际返回：v5/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+原实际宿主：validation/artifacts/axial-material-current-full370-real-operator-control-20261015-v3/Root_actual_full370_real_operator_control_summary.json

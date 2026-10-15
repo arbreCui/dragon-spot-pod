@@ -1,0 +1,49 @@
+旧 v9 单项 PROJECT 私有缓存清理：完成，真实闭合
+2026-10-13
+
+实际范围与执行
+仅删除 /Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v9/AAA/projected_boot.xsm。
+1 个 regular/nlink=1、自有私有缓存，749355952 字节。原 SHA ea56e0e58889469c81e1519713ca0df93a3ebb5f2b1a1fbd2e20b5d8be72833a；与全部当前固定输入的路径及物理 inode 无交集。
+Root 实际执行 da9eb6/session35362 →1b92a7，原始整数 EXIT0、observed_closed=true。没有重复删除。
+Root 已核对的累计十批清理：79 files、12605160148 字节。本记录实际范围仅这一项；累计数引用 Root 汇总，未在此重新审核十批。
+
+固定保护与实际后验
+旧 v9 其他242个普通文件全部保留，含结果文档、日志/watchdog、失败因果、读回和保留输出。
+5119项固定保护 SHA/七项身份保持，覆盖 Common、3040行 catalog（2989 unique）、science3315/1129、actual70、v10/v11 HF278/308、材料v6、GENDFv4、reference实际固定输入，以及 Source/proof/CLI。
+业务启动前 Root 固定后验：622cf5/session12681 →1bc9ee EXIT0；5119 unique EOF、5646544500字节。
+业务启动前独立 peer 核心后验：e35776/session93139 →a11b18 EXIT0；5119 fixed+242 retained完整EOF/all7ID；不重建Source DAG，不编译/跑业务/删除。
+其 REVIEW 内记5373次输入EOF、5756842354字节；终端总数5374次、5759079596字节包含2237242字节REVIEW自身回读。两种口径精确相差该结果文档一次，不是数据缺失。
+31目录、0 symlink、242剩余普通entries对照冻结manifest与实际receipt，仅上述一项消失。
+唯一父目录AAA：原[16777229,50010749,16877,120,3840,1791869678742729708,1791869678742729708]，实际删除后[16777229,50010749,16877,119,3808,1791873732229478182,1791873732229478182]。
+自然nlink -1、目录size -32是实际APFS观察；没有预设目录nlink/size规则。所有其他目录、文件、symlink entries和身份均保持。
+
+实际历史预算
+ART：79344313384字节/96229 regular →78594957432字节/96228 regular；精确释放749355952字节/1文件。
+保留原fresh2GiB、history96GiB、cold20971764748字节、metadata64MiB、free floor8GiB后，原初始预留余量548544460 →1297900412字节。
+这些是实际删除receipt和业务启动前两份后验的已闭合历史数值。后续v11产生新输出时，不以实时ART继续等于历史数值作为清理判据，本文档未重新扫描或监测运行中的ART预算。
+
+保留科学事实与代价
+旧v9 GLOBAL和PROJECT单阶段PASS完整保留；BOOT/整体失败按真实记录，不将阶段PASS改成数学或producer错误。
+删除损失仅为旧v9大型PROJECT及其保留GLOBAL树/归档的完整raw路径重放。原producer、正式最终raw、科学输入、结果文档与独立证据均保留。
+物理输入、370群/九矩、数学、验收阈值、SELF/own child512MiB、stage600/whole1800秒、单线程/单业务子进程及不重试要求不变。
+本清理不授予AAA、ABA、材料完整A/B authority、GENDF或reference数值资格。
+
+补充审核和文档生成的真实记录
+额外删除前只读补充审核 c9cc48/session34527 →ecc84e EXIT1；Root已执行删除后读取候选得到FileNotFoundError。真返回保存在independent_final_manifest_review_20261013/TRUE_READONLY_PRECHECK_INTERLEAVED_WITH_ROOT_RELEASE_TOOL_RETURNS.json。未伪报其前验PASS，未重跑或重删；Root独立前验accd7e EXIT0及两份实际后验是本次完成依据。
+第一份结果文档写入检查8ac835 EXIT1：将保存的输入EOF计数与含报告回读的终端计数直接比较而停止；REPORT尚未创建，未修改Source或执行清理/业务。真返回保存在TRUE_FIRST_RESULT_DOCUMENT_METADATA_CHECK_FAILURE.json。此处按两种真实计数口径说明，未扩审。
+本作者只准备新Source/冻结/manifest及收尾文档；实际删除由Root完成。所有冻结Source/manifest和历史receipts未修改。
+
+真实闭合证据完整PF（本次仅重读四份结果文档核对，无业务或预算扫描）：
+ACTUAL RELEASE RECEIPT
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/ACTUAL_SINGLE_OLD_V9_PROJECT_RELEASE_RECEIPT.json", "sha256": "d3434e323460b4e8fe791cb4ae661fee9d704a8658d0c94f43cf205985de8a2f", "size_bytes": 359088, "identity": [16777229, 50018462, 33188, 1, 359088, 1791873734657044650, 1791873734657515318]}
+
+ROOT TRUE TOOL RETURNS
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/ROOT_ACTUAL_EXACT_ONE_RELEASE_TRUE_TOOL_RETURNS.json", "sha256": "bb893287474143063b5aeb3a4b8a24ee9fe08e0ec1dd00f65a432a1adc5e3e85", "size_bytes": 1014, "identity": [16777229, 50018491, 33188, 1, 1014, 1791873759174023342, 1791873759174023342]}
+
+INDEPENDENT QUICK POSTREVIEW
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_exactone_quick_core_postverify_20261013/REVIEW.json", "sha256": "19984d590c301953a70b6659d83c090f2e8e44b4e73c4ac9086cb4f84e106e80", "size_bytes": 2237242, "identity": [16777229, 50019320, 33188, 1, 2237242, 1791874474623688334, 1791874474623688334]}
+
+ROOT FIXED POSTREVIEW
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_EXACT_ONE_FIXED_PROTECTION_POSTRELEASE_REVIEW_20261013.json", "sha256": "502f376841bf328b829e13a0ded0ef4771456a3da957ae57894996681cd3e0b7", "size_bytes": 1047, "identity": [16777229, 50019280, 33188, 1, 1047, 1791874437273421877, 1791874437273421877]}
+
+finished=true：实际精确清理及两份业务前完整后验真实闭合；结果文档收尾完成。后续业务由Root继续。

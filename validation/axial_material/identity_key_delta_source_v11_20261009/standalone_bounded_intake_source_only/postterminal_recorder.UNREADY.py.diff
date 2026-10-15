@@ -1,0 +1,53 @@
+--- /Users/wen/spot/validation/axial_material/factor_diagonal_trim_combined_v10_build_review_20261009/standalone_bounded_intake_source_20261009/postterminal_recorder.py
++++ /private/tmp/axmat_v11_standalone_bounded_whole_input_intake_source_only_20261009/postterminal_recorder.UNREADY.py
+@@ -4,24 +4,24 @@
+ """
+ import argparse,importlib.util,hashlib,shutil,sys
+ from pathlib import Path
+-DRAFT_STATUS='READY_REVIEWED_ROOT_POSTTERMINAL_INTAKE_RECORD_ONLY'
++DRAFT_STATUS='UNREADY_SOURCE_ONLY_V11_POSTTERMINAL_RECORDER_DRAFT'
+ if DRAFT_STATUS!="READY_REVIEWED_ROOT_POSTTERMINAL_INTAKE_RECORD_ONLY":raise ValueError("UNREADY: source only; no observed new host return")
+ HELPER=Path('/private/tmp/axmat_root_historical_owned_specs_combined_runtime_actual_bound_recorder_20261007.py')
+ HELPER_SHA='0b8a9a0a3b71bdea15269a14e54011d142e00c92979fbedef8ade3bcac7ec047'
+ if hashlib.sha256(HELPER.read_bytes()).hexdigest()!=HELPER_SHA:raise ValueError('reviewed pure recorder helper changed')
+ s=importlib.util.spec_from_file_location('actual_root_pure_recorder_helpers',HELPER)
+ r=importlib.util.module_from_spec(s);s.loader.exec_module(r)
+-BASE=Path('/private/tmp/axmat-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-20261009')
+-OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009')
+-HOST=Path('/Users/wen/spot/validation/axial_material/factor_diagonal_trim_combined_v10_build_review_20261009/standalone_bounded_intake_source_20261009/host.py')
+-HOST_SHA='a5d00497e2419ddaf9d9de99da9a6e48659f8a7521c4476842e49741b847871a'
+-COMPONENT_TERM=Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009')
+-DECL_SHA='32370a3b0daee193b48a70de428397ccb3a65793fbefc4f5d60b8698d592356a'
+-SEAL_SHA='3d1094466cb03a08d3bdb08eee0a1f4f3c2b75bb676400beaf5fe7a4892001b5'
+-RUN_SHA='aec9364827742e68d545ef7ea63ad7d656201c9de13938a1ddceb4b13bbc2bd9'
+-PREP_SHA='defbc6c30603c334f7c1f8c883c4fb4af6c8fb6cc7ea2ae8df41591be0872658'
+-API_RETURN_SHA='6f8d404141656b5bd36f1382b2074df05d3fac9e280dae1c9871ed843a3fccdf'
+-CMD=['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12','/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_factor_diagonal_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v10.py','admit','--sha256',SEAL_SHA,'--terminal-evidence',str(COMPONENT_TERM/'terminal_return.json'),'--terminal-evidence-sha256',RUN_SHA]
++BASE=Path('/private/tmp/axmat-cross-group-identity-key-delta-v11-standalone-bounded-runtime-api-intake-20261009')
++OUT=Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-cross-group-identity-key-delta-v11-standalone-bounded-runtime-api-intake-evidence-20261009')
++HOST=Path('/Users/wen/spot/validation/axial_material/cross_group_identity_key_delta_combined_v11_build_review_20261009/standalone_bounded_intake_source_20261009/host.py')
++HOST_SHA=None
++COMPONENT_TERM=Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009')
++DECL_SHA=None
++SEAL_SHA=None
++RUN_SHA=None
++PREP_SHA=None
++API_RETURN_SHA=None
++CMD=['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12','/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py','admit','--sha256',SEAL_SHA,'--terminal-evidence',str(COMPONENT_TERM/'terminal_return.json'),'--terminal-evidence-sha256',RUN_SHA]
+ for value in (DECL_SHA,SEAL_SHA,RUN_SHA,PREP_SHA,API_RETURN_SHA):
+  if type(value)is not str or len(value)!=64 or any(c not in '0123456789abcdef'for c in value)or value=='0'*64:raise ValueError('UNREADY: exact actual component and host stream pins required')
+ FALSE=('cold_controller_imported','cold_controller_bound','cold_prepared','physics_or_native_transport_executed','combined_runtime_native_RSS_proved','actual_full_FLU_entry_executed','AAA_accuracy_qualified','ABA_admitted')
+@@ -34,11 +34,11 @@
+ st=st_doc['stages']
+ body=r.strict(BASE/'intake/admit.log')
+ if (x['schema']!='AXMAT_OWNED_SPECS_STANDALONE_BOUNDED_RUNTIME_API_INTAKE_ACTUAL_HOST_V1' or x['actual_command']!=CMD or x['watchdog']!=w or x['stage_records']!=st or len(st)!=1 or st[0]['status']!='PASS' or st[0]['command']!=CMD or w['command']!=CMD or type(w['returncode'])is not int or w['returncode']!=0 or w['limit_failure']is not None or not 0<w['sampled_peak_rss_mib']<512 or w['own_child_only']is not True or w['liveness_group_cleanup']is not True or x['whole_elapsed_seconds']>=1800 or (x['total_wall_cap_seconds'],x['stage_wall_cap_seconds'],x['RSS_cap_mib'],x['threads'],x['children_at_once'],x['retries'])!=(1800,600,512,1,1,0) or any(x[k]is not False for k in FALSE) or x['child_stderr_combined_into_actual_log']is not True or x['separate_child_stderr_observation_claimed']is not False):raise ValueError('complete actual guarded intake contract differs')
+-if (body['schema']!='AXMAT_HISTORICAL_INPUT_OWNED_SPECS_FACTOR_DIAGONAL_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V10_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1' or body['admission']!='COMBINED_RUNTIME_INPUT_ONLY' or body['original_component_APIs_executed_now']is not False or body['production_pipeline_prepared']is not False or any(body[k]is not False for k in ('native_transport_executed','combined_runtime_native_RSS_proved','actual_full_FLU_entry_executed','AAA_accuracy_qualified','ABA_admitted'))):raise ValueError('whole actual INPUT-only API required')
++if (body['schema']!='AXMAT_HISTORICAL_INPUT_OWNED_SPECS_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V11_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1' or body['admission']!='COMBINED_RUNTIME_INPUT_ONLY' or body['original_component_APIs_executed_now']is not False or body['production_pipeline_prepared']is not False or any(body[k]is not False for k in ('native_transport_executed','combined_runtime_native_RSS_proved','actual_full_FLU_entry_executed','AAA_accuracy_qualified','ABA_admitted'))):raise ValueError('whole actual INPUT-only API required')
+ for key in ('producer','declaration','build_seal','actual_run','actual_PREP','actual_API_whole_merged_stream','actual_API_whole_return','supervisor_source','parent_source','bounded_helper'):
+  if r.pin(x[key]['path'])!=x[key]:raise ValueError('actual source/result binding changed: '+key)
+ if r.sha(BASE/'intake/admit.log')!=API_RETURN_SHA or st[0]['log_sha256']!=r.sha(BASE/'intake/admit.log'):raise ValueError('whole merged actual API bytes changed')
+-stdout=Path('/private/tmp/axmat-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-host-20261009.stdout');stderr=stdout.with_suffix('.stderr')
++stdout=Path('/private/tmp/axmat-cross-group-identity-key-delta-v11-standalone-bounded-runtime-api-intake-host-20261009.stdout');stderr=stdout.with_suffix('.stderr')
+ if r.strict(stdout)!=x or stderr.stat().st_size!=0:raise ValueError('actual complete host stream differs')
+ if OUT.exists() or OUT.is_symlink():raise ValueError('exclusive new evidence family required')
+ r.normal(OUT,missing=True);OUT.mkdir()

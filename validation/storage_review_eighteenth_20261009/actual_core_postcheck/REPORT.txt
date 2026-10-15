@@ -1,0 +1,4 @@
+第十八轮真实core清理独立后验：PASS。1372指定core路径全部缺席；15保留.o全身份保持，全部138模块/bin/4 Darwin主库/源码路径通过重构原有限core七身份指纹验证。
+保留source/Makefile/master共2744路径全文SHA与原身份fresh一致；current binding 37395 expected路径和graph 35647 canonical路径仍在，canonical大小保持。binding4e/graph0e365/原prepared35f/preparedcold1290及小原证据SHA保持。
+Root真实cleanup67e2cd/session90150→4cb679 EXIT0 CLOSED，固定计划08f761；另外12960 raw由互补代理审核，本reader未读取其大原始内容。Root保护余集before/after160363regular/687links/7058dirs指纹和10文档SHA相同，本readerfresh验证小文档并绑定Root真实fd3e7d EXIT0观察，不冒称本reader全项目重扫。
+仅TMP写报告，删除0，项目/Git写入False，无编译/native/科学业务/35GB内容读。目录因批准unlink可有时间变化；只验证原目录paths和剩余文件身份，不虚构父目录时间不变。

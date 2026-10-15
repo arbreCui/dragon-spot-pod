@@ -1,0 +1,56 @@
+{
+  "source_only": true,
+  "status": "UNREADY_N6_REQUIRES_NEW_INDEPENDENT_SOURCE_REVIEW_ROOT_ADMISSION_REQUEST_AND_BINDING",
+  "required_new_v6_namespaces": {
+    "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v6-host-20261010",
+    "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v6-runtime-20261010",
+    "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v6-control-20261010",
+    "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v6_sources",
+    "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v6_receipts"
+  },
+  "material_input_layout": {
+    "schema": "COMPLETE_AB_SINGLE_COPY_ORIGINAL_SHARED_LIBRARIES_AND_EXACT_PROCEDURE_FILE_LITERALS_V1",
+    "shared_directory": "shared_input_libraries",
+    "state_order": [
+      "A",
+      "B"
+    ],
+    "seed_destination_order": [
+      "material.x2m",
+      "AxMatTone.c2m",
+      "geometry.dat",
+      "rnr_cc.c2m",
+      "rnr_interpol.c2m",
+      "DLIB_ACTUAL",
+      "DLIB8R1_370"
+    ],
+    "original_procedure_copy_name": "AxMatTone.c2m.original",
+    "literal_replacements": [
+      {
+        "original": "FIL: 'DLIB_ACTUAL'",
+        "derived": "FIL: '../shared_input_libraries/DLIB_ACTUAL'",
+        "count": 2
+      },
+      {
+        "original": "FIL: 'DLIB8R1_370'",
+        "derived": "FIL: '../shared_input_libraries/DLIB8R1_370'",
+        "count": 1
+      }
+    ]
+  },
+  "N5_and_N4_actual_Source_admissions_do_not_admit_N6": true,
+  "actual_independent_N6_Source_peer": null,
+  "actual_N6_Source_admission": null,
+  "actual_N6_Root_Source_admission_terminal": null,
+  "actual_N6_request": null,
+  "actual_N6_Source_binding": null,
+  "actual_N6_runtime_terminal": null,
+  "actual_N6_observation_manifest": null,
+  "actual_N6_storage_RSS_and_physical_qualification": null,
+  "nine_original_caps_unchanged": true,
+  "all_original129_plus_current_actual_extra_input_roles_preserved": true,
+  "actual_new_input_count_is_actual_request_evidence_not_guessed": true,
+  "shared_new_layout_storage_or_RSS_or_science_PASS_created": false,
+  "compiler_descendant_RSS_scope_still_not_certified": true,
+  "ILIBRARYNAME_filename_Source_metadata_changes_are_saved_not_normalized": true
+}

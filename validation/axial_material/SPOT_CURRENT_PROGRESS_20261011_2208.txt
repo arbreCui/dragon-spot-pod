@@ -1,0 +1,51 @@
+SPOT 当前进度
+核对时间：2026-10-11 22:08，Asia/Shanghai
+
+整体判断
+项目处于核心组件已实现、整体物理精度仍在验收的阶段。已有完整耦合迭代收敛和输出回放成果，尚未完成原 goal。近期新增成果集中在恢复运行依赖、建立当前文件核验和改进监测；科学验收没有新增通过项。不用能群通过比例推算整个项目的完成百分比。按用户指示暂缓清理，本轮未删除文件。
+
+研究目标与当前对象
+目标是验证 2D 径向—1D 轴向/POD 耦合输运方法，并在同温条件下做轴向材料对照。当前对象为 150 cm 单棒，三段各 50 cm，12 个轴向单元，28 核素、370 群。三个高度段均为燃料。A/B 的材料配比不同，但温度、密度、几何保持原约定。
+已确认顺序仍为：A/B 双精度保存态及真实在线读取 → AAA 同质控制 → 独立全群耦合参考准入 → ABA 材料对照。本轮未更换材料、rank、训练数据或验收阈值。
+
+已完成的实质结果
+1. 核心 2D/1D 耦合和泄漏反馈实现。历史 D4-A 十二单元案例完成九轮耦合迭代，原数值收敛门槛及最终输出回放通过；独立连续能量参考 k 差为 -1095.56180 pcm，超过允许值 558.65111 pcm，整体精度仍失败。
+2. A/B 双精度离线保存态及完整 370 群读回已有核验。现有生产流程仍包含 REAL32 镜像重入；连续双精度生产到实际在线 BOOT 读取尚未完成。
+3. 正式 AAA 同质控制已有完整数值收敛结果，完成 12 个 map、105 个步骤，原精度八项中七项通过。
+4. 保存数据复核确认 AAA 分箱与全局归一化一致，A/B 反应量聚合逐位一致。约 99.99% 的诊断加权平方残差呈共同轴向形状，端部贡献明显；具体原因未证实。
+
+科学验收的主要卡点
+共同 rank2 基底：353/370 群通过，1–17 群失败。第 15 群比值约 7.4443980064e-7，低于原门槛 9.5367431641e-7。双精度保存态未消除该问题。
+AAA 端部裂变率：正式最大误差 3.952526%，超过 3% 门槛。后续角向修正分支诊断约 3.798223%，仍未通过，其完整收尾也失败，不能替代正式资格。
+独立全 370 群未降阶耦合参考尚未准入；ABA 尚未开始，没有通过原验收的材料差异结论。
+
+本轮实际新增的工程进展
+部分旧临时目录依赖已消失，当前文件系统设备身份与旧记录不同，因此不能直接沿用旧运行凭证。项目内原关键准备数据字节仍保持；缺失原因尚无确切证据。
+输入恢复扫描：合并检查 37,834 个声明路径，287 个端点缺失；在声明搜索范围内找到其中 156 个端点的同字节副本，保存为 127 份独立文件，共 13,120,941 字节。另 131 个端点未在该范围内找到。不声称全部现存声明文件已逐字节审计。
+监测控制旧来源的 21 项源码同字节副本全部找到并保存。监测记录编码修正后，当前十项控制已真实执行，独立复核确认预定行为：四项正控制业务通过，六项负控制业务按预期失败。整套控制入口实际正常关闭，约 93.42 秒，外层采样最高 127.859375 MiB。
+保留限制：固定两秒超时拒绝记录真实存在；该负控制的后续清理出现 PermissionError，watchdog 实际退出 1。不能称全部清理成功。ECHILD 与未观察缓存控制的业务关闭证明仍为未知。
+新的小数据协议控制真实执行通过，但未完成完整当前输入图准入，未新增完整 Q 资格。
+新的 ROOT64 双精度生产/读取候选源码已保存、完成接口复核并冻结，尚未编译。原丢失源码不能假称恢复；新源码也不能继承旧 17 项控制资格。实际 driver 接线及 GLOBAL64/QFISS 等生产连接仍需完成。
+历史 v31 准备成功记录约 304.79 秒、469.046875 MiB；当前新构建没有执行。完整原生构建、链接和实际在线验证尚未完成。
+
+下一步
+先完成当前必要运行依赖、完整控制与输入准入；对新双精度候选做有界编译和真实控制，再完成实际生产接线、完整构建及 A/B 在线读取。原资源和时间限制保持。
+随后取得真实终态角度场、高阶矩、散射/裂变源项及中子平衡证据，定位共同基底和 AAA 端部偏差，按原门槛重新验收。
+AAA 和独立参考满足条件后，执行 ABA 材料对照。近期应以完整构建/在线双精度和 AAA 原门槛通过为里程碑，避免用恢复脚本或组件通过项代替科学进展。
+
+主要依据
+科学保存数据审查：
+/Users/wen/spot/validation/artifacts/axial-material-AAA-axial-error-and-reaction-review-20261011/REPORT.txt
+正式 AAA：
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+共同 rank2：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-new-AB-common-rank2-root-review-20261011-v1/REPORT.txt
+当前十项控制独立复核：
+/Users/wen/spot/validation/axial_material/native_frame_encoder_epoch_recovery_20261011/INDEPENDENT_ACTUAL_TEN_CONTROLS_SAVED_REVIEW.txt
+当前输入恢复与独立保存：
+/Users/wen/spot/validation/artifacts/axial-material-input-epoch-recovery-v2-20261011/summary.json
+/Users/wen/spot/validation/artifacts/axial-material-input-epoch-exact-copy-preservation-20261011/EXACT_BYTE_COPY_PRESERVATION.json
+新 ROOT64 源码契约：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/new_source/NEW_SOURCE_CONTRACT_AND_CHANGES.txt
+前次详细状态（保留作历史）：
+/Users/wen/spot/validation/axial_material/SPOT_CURRENT_PROGRESS_20261011_2131.txt

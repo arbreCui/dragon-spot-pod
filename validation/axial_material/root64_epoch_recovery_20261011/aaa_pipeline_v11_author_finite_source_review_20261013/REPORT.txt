@@ -1,0 +1,33 @@
+V11 Source-only handoff: shorten only already closed admission metadata lifetimes.
+
+The original v10 guarded run failed at 46 stages because its real parent peak was
+541,753,344 bytes, exceeding the unchanged 536,870,912-byte SELF cap. The last
+pair-case-rank mismatch child reached its exact intended refusal, but the parent
+cap prevented complete host closure; this is not a successful engineering run.
+
+The new frozen v11 host retains all original admission and complete fixed-PF EOF
+checks. It then caches the exact actual70 compiler/includes/archives/executable
+pin and original bounded guard SHA, closes only unused complete metadata JSONs
+including the last producer-loop row, and performs one standard gc.collect before
+the first stage. Later command constructors consume the same ordered values.
+The complete nine-block byte inverse restores the entire v10 host. All helpers,
+original Common, genuine OwnRSSSerialExecutor and SerialExecutor classes/MRO,
+all raw execution records and resource snapshots, all 50 stages/17 positives/33
+strict negative oracles, the six DELETE statements, BOOT deck, scientific values,
+native70 binary, and every original wall/memory/storage cap remain unchanged.
+
+The read-only metadata fixture released 45,467,460 bytes of object heap. Its peak
+294,944,768 bytes is not an actual v11 full-pipeline qualification. The separate
+read-only bounded reader audit traversed current PROJECT/GLOBAL64 and three
+complete producer archives with a 42,270,720-byte peak. Neither probe establishes
+that a future 50-stage run will fit 512 MiB. Allocator reuse and actual cumulative
+peak still require the genuine original once-run supervisor and complete final
+publication to pass under all unchanged guards. No candidate/compile/CLE/physics
+business was launched by preparation or review; AAA qualification, ABA admission
+and overall goal completion remain false.
+
+Frozen source files, helpers and host manifest have not been rewritten. The
+author's initial independent postfreeze checker incorrectly treated the saved
+stage ledger as a top-level list; its real exit1 is retained separately. Reading
+the original {'stages': [...]} container corrected only the separate audit script.
+The final read-only author review passed without changing any frozen source.

@@ -1,0 +1,66 @@
+Current B55 OVERV control, small UNREADY Source draft, 2026-10-15
+
+This is Source only. No formal author freeze, GEN, publisher, saved SQL/pool
+reader, integer oracle, compiler, native process, helper import or cleanup ran.
+The actual B extraction terminal/post, final55 pair and latest ledger are NULL.
+The reported running extraction is not treated as successful by this draft.
+
+Four whole Source copies preserve original bytes: original mixed-precision
+Fortran, exact integer rounding oracle, saved-input adapter and new B55 input
+interface. Ten original host functions are copied as whole functions into
+original_OVERV_shared_methods.UNREADY.py, including small_saved_input, log_rows
+and owning-summary rewrite. The copy has no main or import-time data access.
+The saved reader still reads only ENERGY371 and370 groups of eight OVERV words,
+13324 payload bytes altogether, from the declared immutable SQL/pool pair.
+The original Fortran and oracle continue to compare current constants plus all
+2960 OVERV words. No precision, sqrt/libm arithmetic or tolerances are changed.
+
+B55_control_metadata_and_commands.UNREADY.py is a pure metadata/argv interface.
+It requires exact new B extraction Root0, actual child2, original FAILED/error
+and the actual independent metadata post0. It selects only stateB/event55/
+final-complete-micro/root_prefix[] from all eight real saved snapshot pairs and
+all55 contexts. It constructs the original three serial compile/link/native
+commands with the unchanged nine Fortran flags and four archive order. It does
+not execute these commands or call any scientific helper.
+
+The new B55 interface matches the actual extraction post Source fields:
+actual_extraction_report_pin, actual_extraction_host_pin, manifest/input binding,
+all_snapshot_pairs, complete_context_pins, and the recorded full-PF verification
+flag. That independent post is metadata/blind-EOF verification; it does not claim
+a second SQL/XSM numerical replay. The control itself must independently compare
+new B ENERGY/OVERV words against the exact integer model and new native result.
+
+Known original compiler and four archive roles were checked current7 only.
+No compiler/archive bytes were opened or hashed. The gfortran15 role retains its
+specific existing nlink2 exception; it is not an ordinary nlink1 data role. A new
+B control has its own actual compiler/native results. Old A control success and
+old A post are reference material and cannot satisfy the new B runtime gates.
+
+Concrete remaining interfaces before admission
+1. Real current B extraction terminal Root0 and separate metadata post0, their
+   exact schemas/field keys, and the actual B55 SQL/pool descriptor. Every such
+   actual role is NULL in this draft until supplied from real closure.
+2. The complete then-latest prefix and original fresh resource snapshot. Reserve
+   only this complete control16MiB plus Source16MiB. Do not add future aggregate
+   320MiB here. Count all partial failures, compiler outputs, current metadata,
+   logs, raw controls, oracle output, reports and open-unlinked bytes. A hard
+   stage bound is not a size forecast or a promise the stage will fit.
+3. A new Root owning host, exclusive claim before project imports/EOF, original
+   production_inputs preload, unchanged private OwnRSS/MRO/bounded Source,
+   created original case-journal parent, actual record.label log/watch paths,
+   one child at a time, each600s/whole1800s/SELF512MiB, one thread and no retries.
+   The old A host has an A-only states lookup and old cumulative metadata route;
+   it must not be directly run or relabelled as B. Shared math/reader functions
+   above remain whole while the outer current-B routing is completed separately.
+4. Root-only once GEN/publisher, independent Source review, final24argv and
+   require_escalated actual execution for the original PS guard. Each of the
+   three new native stages must have genuine child0/monitor/resource closure.
+5. A separately prepared B-specific actual post. The old post has literal A
+   directories and old Root-return paths, so cannot simply be reused. The new
+   post must bind the new actual B pair/ENERGY/constants/2960 words and genuine
+   three-stage returns, while leaving all physical/AAA/reference/ABA flags false.
+
+Original SOURCE_CONTEXT_NOT_SAVED history is not erased. A later new aggregate
+may admit a genuinely closed current B control through explicit new evidence;
+neither this Source draft nor the old A control lowers an issue count. Full
+six-phase B construction and subsequent AAA/reference/ABA remain unfinished.

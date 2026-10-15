@@ -1,0 +1,10 @@
+UNREADY SOURCE ONLY. No helper import, driver execution, numeric payload read or project edit.
+SOURCE driver: /private/tmp/axmat_v16_root_pure_helper_controls_source_only_20261010/pure_helper_controls.UNREADY.py
+SOURCE SHA256: 34ba581aa89b74424c665b46907c3934011df4a0273abd9fe1e53d9fc6f220b2
+Normal helper: /Users/wen/spot/validation/axial_material/combined_runtime_complete_input_graph_fresh_wire_trace_table_20261010.py
+Normal helper exact SHA256: 173fc2da988e1b102080b6c2b5448b9c732934902d5a447160559b3d27a92002
+Root must use its sole genuine bounded host: 60s / 512MiB / 64MiB full archive / 1 child / 0 retry.
+Exact argv and every saved metadata SHA+7-field identity are in SOURCE_REVIEW.json.
+Actual success pins: null. Root execution handle: null.
+Finite independent source review: no blocker after complete ordered tuple, final deadline and original trace insertion-order pin fixes.
+No new runtime INPUT, native RSS, AAA, ABA or science qualification.

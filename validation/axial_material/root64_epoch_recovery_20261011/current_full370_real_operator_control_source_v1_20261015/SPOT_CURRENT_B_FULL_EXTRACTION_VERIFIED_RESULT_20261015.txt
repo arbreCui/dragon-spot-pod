@@ -1,0 +1,17 @@
+SPOT 当前 B 完整提取结果（2026-10-15）
+
+结果：全部55个上下文及8组原生快照已完成提取，并通过独立完整性核验。48个新输出共440308871字节。每组快照保留完整SQL/字节池及对应5个文件，最终B55 SQL/字节池留作本次控制输入。
+
+实际Root工具308cb5→ec2226，原整数返回0；独立post c99caf→e7bfe5，原整数返回0。原提取子程序按其证据模式返回2，监控记录FAILED及原error原样保存；Root只闭合完整提取证据，没有将子程序改写为0，也未声称物理验收通过。
+子程序监控约28.070898秒，采样峰值107.984375MiB，无超限；Root约37.13秒、SELF峰值121176064字节。完整71个累计目录与原2GiB/512MiBRSS/600秒/1800秒等限制通过。
+
+修复：原v1在校验期间因完整资源扫描反复触发，达到原阶段墙钟上限599秒后被监控终止，真实Root1/child-15、无SQL及6个部分文件已独立核验并完整保留。v2仅将资源扫描时间戳移到完整扫描成功结束；每次内存/时间检查、全部目录/凭证扫描及完整字节SHA校验仍保留，数学与提取范围不变。
+本次阶段输出硬界由512MiB下调为496MiB，以计入旧尝试和全部元数据；原累计空间、内存与时间阈值不变，完整8组/55事件不缩减。启动前一次自动审批检查超时未创建进程，工具允许重试后才成功启动；实际计算只启动一次。
+
+实际Host：/Users/wen/spot/validation/artifacts/axial-material-current-B-complete-fullfield-extract-20261015-v2/Root_actual_current_B_complete_extract_summary.json
+完整提取报告：/Users/wen/spot/validation/artifacts/axial-material-current-B-complete-fullfield-extract-20261015-v2/evidence/extract/ACTUAL_COMPLETE_OBSERVED_XSM_EXTRACTION_REPORT.json
+独立核验：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_extract_host_source_v2_UNREADY/actual_postverify_20261015/REVIEW.json
+真实工具返回：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_extract_host_source_v2_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+
+当前仅完成提取与完整性核验。六阶段重建、B55 ENERGY/OVERV控制及字段构造一致性尚未验收；不能将此结果写成六阶段或物理精度已通过。
+下一步使用本次B55实际输入执行原native及独立精确整数控制，再聚合六阶段；其后建立A/B在线读取凭证、验证AAA、准入独立耦合参考并执行ABA。

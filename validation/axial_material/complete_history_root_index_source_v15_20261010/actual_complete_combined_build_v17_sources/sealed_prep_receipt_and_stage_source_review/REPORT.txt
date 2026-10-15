@@ -1,0 +1,6 @@
+正式 PREP receipt 源码 / 事实形状有限审查通过，无阻塞。
+固定 receipt c743c01… 与声明 cb1984…、Root e1b00f typed EXIT0 CLOSED、11 个 SOURCE 全 EOF 独立清单相符。
+原 canonical 子进程完整合并 stdout+stderr 与实际外部 host stderr 分别 byte-exact 绑定；scope 显式、独立 child stderr 未捕获且不能证明其为空。这样保留原 reader 的有限真实检查含义，没有造空 child stderr 或改 API。
+下一 host 从 genuine V17 PREP host 作有限适配：只新 HOST 需不存在，SOURCE/OUT/TERMINAL 为既有准入材料；目标 run-build 精确绑定声明和 PREP SHA。外层监督完整命令用剩余 whole1800，内层原5stage每项600，RSS512、2GiB、history96/free8、1 numeric child / 0 retry、原类/MRO 均保持。
+五stage命令从 SOURCE literals 和声明字段静态推导，没有调用模块API。host应核验完整5stage/所有watchdog/rawreceipt/audit/seal/四tail与实际Root终态；build输出可增长，原SOURCE/声明/graph/PREP输入保持。
+本轮只读 SOURCE 和 PREP metadata，不运行 build/helper/numeric。原5stage、whole INPUT、native、AAA / ABA 成功尚待实际执行。

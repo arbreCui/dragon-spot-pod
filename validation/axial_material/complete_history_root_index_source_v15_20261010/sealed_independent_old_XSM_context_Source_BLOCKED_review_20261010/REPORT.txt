@@ -1,0 +1,9 @@
+独立有限完整 Source 审查：BLOCKED，未执行候选。
+
+原194成员+MANIFEST，共195文件；Root保留196文件、10目录，全EOF/SHA/7ID及完整保留来源前后不变。11有限逆向及完整extractor9d849祖先链通过。原caps、genuineguard、所有129及新上下文输入、旧宏观继承、完整反应字段和UNKNOWN边界保留。
+
+5处strict bool require条件实际产生list/dict：binder227；extractor770；engine926、1031、1040。engine1756–1765 final报告重复关键字 genuine_supervisor_watch_verified_here，导致TypeError。源未修改；当前binder不可运行，不能消费本BLOCKED报告为PASS。
+
+38项范围整体检查通过，2项入口/报告检查失败，合计6项具体阻断。字符转换、DOUBLE sqrt/libm、未初始化尾部、Source-to-binary与新控制仍未准入。新观测不会变成历史未保存上下文，SPH1与oldmacro0未被默认。AAA7/8、ABA未开始；本审查无新数值、科学、whole build或INPUT资格。
+
+此独审仅stdlib Source读取、AST和全字节逆向及小META核对。复制目录为明确有限Source与证明副本；完整196/195范围已在beforeafter inventory全列，不虚称只复制的23Source就是完整原包。

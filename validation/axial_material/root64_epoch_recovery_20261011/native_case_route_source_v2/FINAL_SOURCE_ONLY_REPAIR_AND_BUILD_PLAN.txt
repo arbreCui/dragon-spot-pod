@@ -1,0 +1,9 @@
+AXNCASE64 signature padding repair — Source only
+
+Confirmed source defect: the retained v1 literal L_BOOTBIND plus one blank is 11 characters, while LCMPTC requests 12. The reviewed GANLIB LCMPTC_S0 reads carr(1:leng) without padding or a length guard; this substring exceeds the supplied literal. No runtime failure was observed by this source review.
+
+The new complete AXNCASE64 inserts exactly one blank at line 46. Names, ABI, case, thresholds, caps, materials, formulas, dispatcher and deck remain byte identical. The complete original is retained and the forward/inverse proof checks every byte. No original or frozen v1 file was changed.
+
+The full current input and saved-output SHA/size/7ID binding is recorded separately, including historical identity differences without claiming inherited identity qualification. Existing objects and opaque archive inputs can be reused only after Root validates this current binding. The plan recompiles one object and repeats the complete ordered link into a fresh output; it does not execute either command. The original 512 MiB / 600 s stage / 1800 s whole / one-thread / one-child / no-retry supervisor and storage reserves remain required. No large history directory is copied.
+
+No new compile, transport, native BOOT, original 17 controls, training, AAA, ABA or physics qualification is asserted.

@@ -1,0 +1,1 @@
+V11 standalone whole INPUT intake仅源码草稿：原host及postterminal recorder按最小身份区域替换并可逆回V10完整原源。P12、1800/600/512、1thread/1child/0retry、whole七INPUT和genuine MRO保留。cold120属于另一范围未移入。新combined四pins、新host/API/watch/tool/count/inventory全None，UNREADY阻断执行。无业务导入/运行、项目写或Root会话读取。

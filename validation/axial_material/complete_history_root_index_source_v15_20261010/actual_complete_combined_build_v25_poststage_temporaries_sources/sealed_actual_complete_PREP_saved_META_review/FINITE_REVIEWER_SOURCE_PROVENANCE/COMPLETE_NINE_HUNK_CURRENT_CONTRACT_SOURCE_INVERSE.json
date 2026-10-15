@@ -1,0 +1,70 @@
+{
+  "schema": "FINITE_SAVED_PREP_REVIEWER_SOURCE_CURRENT_ACTUAL_WRAPPER_AND_COMPLETE_SCOPE_ADAPTATION_V1",
+  "source_only": true,
+  "original_complete_Source_pin": {
+    "path": "/private/tmp/spot_V25_poststage_saved_PREP_Source_META_independent_UNREADY_reviewer_20261010.py",
+    "sha256": "8b160bf2c748e008941d5ff1aeeb97b4520360d394ca290bfa6c75bc1edf9c9c",
+    "size_bytes": 29764,
+    "identity": [
+      16777229,
+      49488878,
+      33188,
+      1,
+      29764,
+      1791638613465085180,
+      1791638613465085180
+    ]
+  },
+  "derived_complete_Source_path": "/private/tmp/spot_V25_poststage_saved_PREP_Source_META_independent_actual_contract_complete_reviewer_20261010.py",
+  "finite_full_transforms": [
+    {
+      "old": "given={k:ref(cfg[k]) for k in KEYS};rt_doc=",
+      "new": "given={k:ref(cfg[k]) for k in KEYS};fixed={'actual_PREP_summary_pin':E/'Root_actual_complete_combined_prepare_summary.json','actual_PREP_terminal_pin':E/'Root_actual_prepare_tool_terminal_return.json','actual_PREP_metadata_writer_terminal_pin':E/'Root_actual_prepare_metadata_writer_tool_terminal_return.json','actual_complete_namespace_manifest_pin':E/'Root_actual_complete_prepare_namespace_manifest.json','actual_prelaunch_Source_freeze_pin':E/'Root_prelaunch_complete_source_freeze.json','actual_final_prelaunch_reserve_pin':E/'Root_final_prelaunch_source_and_reserve_check.json','actual_installed_canonical_pin':C,'actual_Q_pin':Q,'actual_root_source_install_record_pin':D/'Root_actual_complete_SOURCE_install_record.json','actual_case_spec_pin':CASE}\n    ck('all actual18 config proof roles fixed newPREP paths no old namespace substitution',all(given[k]['path']==str(p) for k,p in fixed.items()))\n    rt_doc=",
+      "count": 1
+    },
+    {
+      "old": "wt_doc['record_written_after_true_closed_PREP'] is True and wt_doc['Source_frozen_before_actual_PREP'] is True",
+      "new": "wt_doc['schema']=='ROOT_V25_ACTUAL_COMPLETE_PREP_METADATA_POSTCLOSE_WRITER_TOOL_RETURN_V1' and wt_doc['observed_terminal'] is True and wt_doc['actual_tool_return_not_synthetic'] is True and wt_doc['closed_session_not_repolled'] is True and exact(wt_doc['initial_tool_return'],wt)",
+      "count": 1
+    },
+    {
+      "old": "    views={str(root):namespace(saved,root,root==D)",
+      "new": "    writer_output=strict(wt['output'])\n    ck('real writer4bfa1b raw tool stdout exactly current summary original metrics no reconstruction',wt['chunk_id']=='4bfa1b' and writer_output=={k:summary[k] for k in ('status','whole_seconds','child_seconds','sampled_peak_rss_mib','joint_archive_bytes','all_source_files_verified_count')} and ident(E/'Root_actual_prepare_tool_terminal_return.json')[5]<=ident(E/'Root_actual_complete_combined_prepare_summary.json')[5]<=ident(E/'Root_actual_prepare_metadata_writer_tool_terminal_return.json')[5])\n    views={str(root):namespace(saved,root,root==D)",
+      "count": 1
+    },
+    {
+      "old": "    for q in all_inputs:ref(q)\n",
+      "new": "    for q in all_inputs:ref(q)\n    launch='env -u PYTHONOPTIMIZE OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 /Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B '+str(D/'combined_prepare_host.py')+' > '+str(E/'parent_stdout.log')+' 2> '+str(E/'parent_stderr.log')\n    writer_launch='env -u PYTHONOPTIMIZE OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 /Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B '+str(D/'write_actual_prepare_terminal.py')\n    ck('actual Root launches fixed fullSource originalPython B unoptimized five threads and frozen writer',rt_doc['actual_launch_arguments']['cmd']==launch and wt_doc['actual_launch_arguments']['cmd']==writer_launch and reserve['metadata_writer_already_frozen'] is True and reserve['all_new_H_S_O_T_absent'] is True and reserve['PREP_or_build_launched'] is False and reserve['native_or_science_qualified'] is False and caps(freeze,dict(original_whole_seconds='whole_seconds',original_stage_seconds='stage_seconds',original_RSS_mib='rss_mib',original_joint_archive_bytes='joint_archive_bytes',original_history_bytes='history_bytes',original_free_floor_bytes='free_floor_bytes',original_threads='threads',original_children='children',original_retries='retries')))\n",
+      "count": 1
+    },
+    {
+      "old": "0<w['elapsed_seconds']<=600",
+      "new": "0<w['elapsed_seconds']<=w['wall_cap_seconds']<=600",
+      "count": 1
+    },
+    {
+      "old": "    for role,p in [('canonical',C)",
+      "new": "    for family,report in [('bound',bp),('utility',up)]:\n        proof=request[family]['peer'];mf=meta(proof['manifest']['path']);seal=meta(proof['seal']['path']);st=terminal(seal,seal['terminal_tool_return']['chunk_id']);so=strict(st['output']);pv=tree(Path(proof['manifest']['path']).parent,True)\n        if not(so['manifest_pin']==ref(proof['manifest']) and so['review_pin']==ref(proof['review']) and mf['members']=={k:q for k,q in pv['files'].items() if k!='MANIFEST.json'} and mf['directories']=={'.':pv['root_identity'],**pv['directories']} and mf['member_count']==len(mf['members'])):raise ValueError('whole actual independent Source peer manifest seal closure')\n    ck('both actual original bound24 utility30 Source peer whole packages actual true seal coupled',ref(request['bound']['peer']['manifest'])==given['actual_bound_Source_peer_manifest_pin'] and ref(request['bound']['peer']['seal'])==given['actual_bound_Source_peer_seal_pin'] and ref(request['bound']['peer']['review'])==given['actual_bound_Source_peer_report_pin'])\n    for role,p in [('canonical',C)",
+      "count": 1
+    },
+    {
+      "old": "    graph=ref(summary['actual_input_graph'],False)",
+      "new": "    inventory=meta(T/'Root_actual_SOURCE_inventory.json');sf=ns['namespaces'][1]['files']\n    ck('all11 generated Source files RootfullEOF observation matches declaration and originalSourceinventory',summary['all_source_files_verified_count']==len(sf)==11 and inventory==d['source_inventory'] and inventory['files']=={k:q['sha256'] for k,q in sf.items()} and inventory['directories']==sorted(q['path'] for q in ns['namespaces'][1]['directories']) and formal['observed_at_unix']>=stage['started_unix']+w['elapsed_seconds'])\n    graph=ref(summary['actual_input_graph'],False)",
+      "count": 1
+    },
+    {
+      "old": "    text,t=source(C);assign=",
+      "new": "    qfalse=('fresh_production_graph_created','fresh_runtime_INPUT_qualified','new_combined_prepared','native_RSS_verified','AAA_accuracy_qualified','ABA_admitted','whole_build_qualified','whole_INPUT_admitted','physical_balance_qualified','canonical_wired','supervisor_class_or_MRO_modified','profile_used')\n    ck('Q helper only original340 owners controls48 Source provenance no whole native science transfer',all(q[k] is False for k in qfalse) and len(q['full_protocol'])==13 and [len(q['private_owner_consume_controls'][k]) for k in ('positive_controls','private_guard_rejections','accepted_str_subclass_equivalence_controls','partial_invalid_second_owner_rejections')]==[4,3,2,2] and [len(q['private_inactive_audit_snapshot_controls'][k]) for k in ('positive_controls','private_guard_rejections','last_use_failure_controls')]==[5,13,3] and all(qp[k] is False for k in ('whole_build_qualified','whole_INPUT_admitted','native_RSS_qualified','AAA_accuracy_qualified','ABA_admitted','physical_balance_qualified')))\n    text,t=source(C);assign=",
+      "count": 1
+    },
+    {
+      "old": "source_only=True,all_checks_typed_true=True,checks=CHECKS",
+      "new": "source_only=True,source_only_reviewer=True,stdlib_only=True,actual_PREP_closed_EXIT0_verified=True,actual_metadata_writer_closed_EXIT0_verified=True,actual_PREP_metadata_only=True,all_complete_scope_verified=True,all_checks_typed_true=True,checks=CHECKS",
+      "count": 1
+    }
+  ],
+  "whole_byte_inverse_exact": true,
+  "whole_AST_inverse_exact": true,
+  "no_original_Source_or_project_mutation": true,
+  "no_candidate_or_business_execution": true
+}

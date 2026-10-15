@@ -1,0 +1,13 @@
+SPOT A1 精确清理独立后验结果 — 2026-10-15
+
+实际删除 bed23b 整数 0：只删除两份已完成 A1 临时文件，202,708,660 字节。
+独立后验 180e9a 整数 0，状态 PASS_ACTUAL_EXACT_LITERAL2_A1_RETIREMENT_202708660B_METADATA_ONLY。
+最终报告：v4/actual_retirement_postverify_20261015/corrected_current7_schema_v2/REVIEW.json
+SHA256: 5a8b30afe48d414ca71ca564bbfc6a191db059999831c96a1eef23b60c338159
+真实后验工具返回：同目录 TRUE_TOOL_RETURNS.json，SHA a54d4211c83f23b985b27ac0ca7eaf1de8f76932651a2ff9c7ef5152bc3e19d2。
+后验两次确认目标仅两份均已不存在；525 个保留文件角色做两次身份核验，包括捕获 8 份输出、原 XSM、比较 JSONL/报告、原始失败凭证。52 份 Source/元数据做完整哈希核验。未再次读取旧科学数据正文。
+首次独立后验因其 current7 与完整 PF 的字段形式不同而失败（930c14 整数 1），原 Source/冻结/报告/工具返回全部保留；新后验仅修正自身字段核对。实际删除结果未重跑或改写。
+
+核验后累计同一 54 根及显式外部元数据 1,729,324,303 字节，小于原 2 GiB；原资源限制未提高或重置。
+完整算子 v4 的 Root Source 准备已以 1e2980 整数 0 接受实际捕获、删除和两项独立后验凭证，仍待独立 Source 审查及实际控制执行。
+本记录不表示完整耦合参考、物理精度、AAA、ABA 或总目标完成。

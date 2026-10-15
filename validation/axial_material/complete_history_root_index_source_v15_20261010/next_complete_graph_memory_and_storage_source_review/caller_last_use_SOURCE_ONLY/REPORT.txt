@@ -1,0 +1,5 @@
+源码定位完成；正式 V15 PREP 实际失败，未形成 graph/declaration。
+最小调用者修改只释放已完成完整 byte/codec/predicate 检查后不再使用的返回和重复映射；全部图数据、原追踪和后续谓词仍保留。
+独立 fresh complete wire SOURCE 草稿使用原 compact requirements 与原完整 coverage/trace 检查，流式旧语义摘要，再计算 wire 摘要，避免整图 clone 和整套 int rows。旧公开与 consumer 函数逐字不变。
+两份仅 UNREADY SOURCE；未运行任何项目函数/fixture/数值/资源扫描。没有实际 RSS 收益、图成功或 INPUT/native/AAA/ABA 信用。
+仍须完整纯元数据等值/异常/所有权控制与实际 storedbytes 验证；原 64MiB 门保留。当前新图尚不存在，不将内存方案等同解决 JSON cap。

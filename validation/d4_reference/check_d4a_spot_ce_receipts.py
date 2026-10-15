@@ -254,18 +254,21 @@ def run_spot_acceptance(
     corrected_build: Path,
     maps: list[Path],
     observables: Path,
+    repaired_runtime: Path | None = None,
+    repaired_bootstrap: Path | None = None,
 ) -> None:
     """Replay the authoritative corrected lineage and XSM/gate checkers."""
     if not SPOT_ACCEPTANCE.is_file():
         fail(f"SPOT acceptance checker is missing: {SPOT_ACCEPTANCE}")
     if not maps:
         fail("at least one ordered corrected SPOT map is required")
-    command = [
-        "sh",
-        str(SPOT_ACCEPTANCE),
-        str(corrected_build),
-        *(str(path) for path in maps),
-    ]
+    if (repaired_runtime is None) != (repaired_bootstrap is None):
+        fail("repaired runtime and bootstrap must be supplied together")
+    command = ["sh", str(SPOT_ACCEPTANCE)]
+    if repaired_runtime is not None:
+        command.extend(["--repaired-runtime", str(repaired_runtime),
+                        "--repaired-bootstrap", str(repaired_bootstrap)])
+    command.extend([str(corrected_build), *(str(path) for path in maps)])
     environment = os.environ.copy()
     environment["D4A_OBSERVABLES_DIR"] = str(observables)
     # The release verifier must replay the repository's admitted binaries;
@@ -692,6 +695,10 @@ def parse_args():
         description="Compare sealed corrected D4-A SPOT and CE receipts"
     )
     parser.add_argument("--corrected-build", required=True, type=Path)
+    parser.add_argument("--repaired-runtime", type=Path,
+                        help="sealed repaired runtime; requires --repaired-bootstrap")
+    parser.add_argument("--repaired-bootstrap", type=Path,
+                        help="sealed repaired CLOSED/0, separate from original snapshot build")
     parser.add_argument(
         "--spot-map",
         required=True,
@@ -718,7 +725,11 @@ def main() -> None:
     maps = [path.resolve() for path in args.spot_map]
     observables = args.spot_observables.resolve()
     cross_sections = args.cross_sections.resolve()
-    run_spot_acceptance(corrected_build, maps, observables)
+    run_spot_acceptance(
+        corrected_build, maps, observables,
+        args.repaired_runtime.resolve() if args.repaired_runtime is not None else None,
+        args.repaired_bootstrap.resolve() if args.repaired_bootstrap is not None else None,
+    )
     print("D4A SPOT CORRECTED LINEAGE REPLAY PASS")
     k_spot, spot_power = read_spot(observables)
     k_ce, sigma_k, ce_power = read_ce(

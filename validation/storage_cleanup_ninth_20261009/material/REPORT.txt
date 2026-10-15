@@ -1,0 +1,7 @@
+只读建议：退休三批旧材料处理中89个PENDF/GROUPR tape30中间数值文件；未删除任何文件。
+候选逻辑8454673080B；名义分配8454860800B / 7.874202728GiB。
+只有final-four整体已完成并独审通过；remaining-fuel/remaining-temperature整体FAILED_NO_RETRY，成功阶段收据与失败终态原样保留。
+候选与当前V8完整canonical/namespace/alias、旧保护索引、88关键根、6194/6248 cold保护、源代码推导真实1534读路径及最终library/material输入表均无交集。
+保留全部原核数据源、外部ENDF/原库、control/expanded低高DRAGR最终库、28核素最终merge、实际材料成品及全部文档、日志、甲板、收据、hash。
+删除会退役旧完整seal及PENDF/GENDF数值重放：没有逐项认证exactprimary，不能承诺byteexact恢复；重新构建须另批预算且逐字节匹配原SHA后才能原路径复验。未重签任何历史清单。
+当前建议不是实际清理结果、512MiB/API/PREP/RUN/物理或CE资格。Root需fresh精确union及第三方独审后再决定执行。

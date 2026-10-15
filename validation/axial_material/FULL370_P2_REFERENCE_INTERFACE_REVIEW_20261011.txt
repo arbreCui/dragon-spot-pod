@@ -1,0 +1,30 @@
+完整370群P2参考：最小输运接入与成本缺口（独立只读Source设计，2026-10-11）
+仅读 Source/小JSON，未读NPY/NPZ或其他数值数组，未调用NumPy/求解/编译/OS进程观察；未写repo。只在/tmp保存本页，无新认证层、运行或full-reference授信。
+
+实际范围与成本：原小META selection.json明示11364 tracks/4 polars；signed geometry.json明示181824 oriented states。即11364×4×2轴向sign×2平面orientation；azimuth由每个原track的angle决定，不能再乘一次azimuth数。每map/每offset order若按 current source_for_zonal_group(:181–196) 接单群 zonal，会有67,274,880个群/ray调用。该helper每次_finite扫描整个coefficients；zonal.py还每次leggauss，cpp:22每次用113-bit交点重新构建geometry。此为静态调用计数，不是实测性能。当前A/B真实TRACK/angles与该旧fixture精确绑定尚待核验，不因旧META赋新完整覆盖。
+
+最小新ABI：保留旧 layered_transport 与 layered_transport_zonal 两入口及原算术路径；新增physical-only入口 layered_transport_zonal_columns，使用 C-contiguous total(8,nz,k)、q(8*nz,k)、radial(6*nz,k)、axial(8,k)，actual route k=370且保留明确群编号顺序。每原ray/sign/orientation只make_layered_geo一次，各piece/column用 sigma=total[(r*nz+j)*k+c]，把coef(l,sigma)及primitive/cell collision的total索引放进c循环；几何、所有volume/9face字段、27metrics和共享face记录保持。不能只把370群塞进现有k：旧cpp:52/65/85的sigma在c外，k列共享同一total，会用错群。新入口不接受matched inflow、不自动basis或默认源；旧入口可用独立默认template分支或保持正文原样，不能借此改老物理。每column仍完整传播，signed q/inflow、高阶矩与32fission rates不裁剪/合并，weight仍WEI*WZMU/2在聚合端一次，stored-volume归一仍一次。
+
+源及内存：每outer source build保留(8,nz,370,9)；同一angular-bin q370先重构一次，在该bin的原tracks间复用，不能按track/group反复验证整个coefficients。按固定angular chunk流式，真实array/context先完整validate而非用旧缓存替代本次身份核验。Nz12、max15 segments时一个ray fields为4,795,200 bytes；Nz48为19,180,800 bytes。批370列降低几何/跨语言重复，剩余67m群状态传播、P2源矩阵乘与white迭代仍必须计算。保存全部ray fields，一map最坏181824×4,795,200=871,882,444,800 bytes；不是实际平均占用。新计划需预先固定逐全索引streaming覆盖/账目、输出与独立复核/worst witnesses的有限schema并实测小批成本；不能照抄三群旧巨大basis矩阵档案、暗缩已冻结旧scope、宣称可满足600/1800秒。旧文件原样保留。
+
+几何批处理外仍缺：
+• 白边界：old full_action:100–106在构建op前把orientation/azimuth和掉、只保留8个polar/sign状态，:115–134只3群且constant sigma；这些聚合不保留P2 signed source。需要每群6*Nz白振幅，混合全部polar/sign/orientation/azimuth，但每face/layer/group独立；同真实incoming geometric measure归一，top/bottom vacuum输入严格0。固定源内部white闭合可用逐群小矩阵或有残差门槛的matrix-free方式，必须在跑前冻结算法/上限，不能把暂未闭合的radial回流算一个完整map。原positive-basis inverse/rho/closure controls需实际新local-total几何证明；P1/P2 signed坐标不能套旧全source非负判据或裁0。stored-surface-normalizer是独立比较模型，不能拟合成geometric denominator。
+• 全轨迹与电流：当前P2MomentAccumulator只保证observed angular bins，不证明11364原track×4×2×2逐索引exactly once；也没有6faces×Nz×370 radial incoming/outgoing、全部fine axial planes×8区×370有符号current、共享面与两vacuum ends账目。需独立保留/reconstruct字段及一致性，不能只保scalar flux/三矩算式。原H1/20,Nz1/2/4三群qualification不覆盖H150,Nz12或48新topology/offset积分误差。
+• 方程与物理账目：核kernel primitive/cell/global q+in-out-total*integral只是fixed-source方程守恒；full scattering/fission需在同final state重新构造所有九矩源、370×370×3 transfer、32component NUSIGF/CHI、actual k，保留原CHI和signed高阶项。还须独立事件/yield/TRANC/SPH/MASK合同恢复物理reaction loss；不能把TOTAL-SCAT或小toy network称物理吸收。几何volume source birth与stored-volume报告各自保留，不能把不同normalizer抵消成0。
+• 本征迭代：新P2 module没有fixed-source迭代、k更新/归一、scattering迭代或white迭代驱动。先冻结 Lψ=(S+F/k)ψ 的同源数据语义、seed、循环顺序/加速、每层maxiter及数值误差/残差门槛，引用真实caps；原生产outer_gate5e-7本身不是独立参考精度证明。final同时检查k、全9矩/源fixed-point及回流残差，按原一次global integratedνfission分母归一，不能perlayer/group再缩放；保留signed物理电流、AAA/ABA轴向反射对称与独立误差/稳定性。旧qualify_coupled_reference_extended仅1–2群/1–2cell toy，不能代替。
+
+最小下一步：新独立group-total ABI+薄wrapper，实施有界真实control：370群不同r/z/group total、ABA/void/薄光程、signed源与inflow，逐群对照现有zonal和独立literal recurrence，保留共享face/组顺序/旧ABI回归。此仅授组件接入和实测成本；拿到实际A/B上下文后，另固定full inventory/white/eigen-reference执行规范，保持原rank/物理输入/3%等验收阈值，仍须AAA全部通过才ABA。
+
+完整EOF Source/小META指纹（读取前后7ID全部保持；不证明实际runtime等同）：
+validation/iterative/native_full_angular_p2.py: 14816 bytes, SHA256 dfffb797817885cc798efd377065372c04e02894db787d3390803886bed3eb31
+validation/iterative/native_layered_transport.cpp: 7013 bytes, SHA256 2186706a66dff0629faa4efbdb26b8e0f6fe6fedebde0608f143ed7d040cccea
+validation/iterative/native_layered_zonal.py: 4089 bytes, SHA256 22d1c744c5ceead825fad569e5d7f6ccb355e2db70cb89b74eb096cb63f5b2a3
+validation/iterative/native_layered_geometry.hpp: 2780 bytes, SHA256 28eaefa04e3f53dfaa3d473e61700755118b3f2991670d0239198b755785b13b
+validation/iterative/native_layered_full_action.py: 9006 bytes, SHA256 7e41ed0bc2587c810a8f18a886447e398f30c53272dc27d432b6af8813b68b8e
+validation/iterative/run_native_layered_full_batch.py: 9246 bytes, SHA256 11b4657b1a708d3a7d84a08e414e1cc0037dfb8e8721d127de85b3f9675b9d7f
+validation/iterative/native_oblique_physical_boundary_contract.md: 6769 bytes, SHA256 37ef9a0343d55aed8e8f7050a7f886cf9acb3dfef08b4cb4259d83280ad14f4d
+validation/artifacts/native-layered-full-20261001/plan.json: 180481 bytes, SHA256 dcd291f3f069d321c2da93ceb1af0f96fa203bbf1d60c87c373cc6cdf1397d11
+validation/artifacts/native-layered-full-20261001/admission.json: 793 bytes, SHA256 a993f25ca2f95c5d5dd157089d55769a61934e5d57dae9f3a294155ea766dc71
+validation/artifacts/native-oblique-track-pilot-20260929/preflight/selection.json: 4586 bytes, SHA256 b89ef7946ac31dc9673833641724dc296e47474de3d34c18d294a60f0a29be82
+validation/artifacts/native-signed-axial-state-20260929/analysis/geometry.json: 520 bytes, SHA256 a78cdff2dd1fceb156de88866f459266e03c0d324b179e9295862c2c3b82a32c
+validation/axial_material/case_spec.json: 7887 bytes, SHA256 ac3e67ffdc25f5bfa45bca5170253de8e875c983550e5ee878ee30c5d1a4c2c4

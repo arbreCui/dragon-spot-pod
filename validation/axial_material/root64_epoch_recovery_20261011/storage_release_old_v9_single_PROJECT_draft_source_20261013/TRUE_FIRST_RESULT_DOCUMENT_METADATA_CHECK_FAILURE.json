@@ -1,0 +1,14 @@
+{
+  "schema": "ACTUAL_RESULT_REPORT_WRITER_METADATA_CHECK_FAILURE_V1",
+  "tool_return": {
+    "chunk_id": "8ac835",
+    "wall_time_seconds": 0.000007291,
+    "exit_code": 1,
+    "original_token_count": 29,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 24, in <module>\nRuntimeError: finite postreview totals\n"
+  },
+  "original_integer_exit_code": 1,
+  "observed_closed": true,
+  "reason": "Declared postreview totals did not exactly match saved reviewer fields; REPORT was not created; no deletion, Source change, business, or new audit occurred.",
+  "finished_PASS_claimed": false
+}

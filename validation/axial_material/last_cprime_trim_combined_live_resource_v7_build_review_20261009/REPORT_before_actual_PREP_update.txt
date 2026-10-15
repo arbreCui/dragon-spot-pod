@@ -1,0 +1,9 @@
+SPOT 组合V7私有owner临时映射生命周期源码复核（2026-10-09）
+
+V6完整输入诊断真实停在_phase区间未返回；V7引用已独审的855519
+helper，按原顺序形成独立logical边后释放私有规范化expected maps。
+Source/tiny证明不等于实际RSS通过。新factory9处源逆向恢复V6，
+全部65函数正文原字节，旧七键/物理输入/原限额保持。
+独审报告保存；准备和运行尚未执行，新DECL/PREP/RUN/seal不存在。
+新graph尺寸须实测，原64MiB门不放宽；旧222resource roots完整保留，
+225是准备后预测而非实际事实。下一步Root执行本family自己的PREP。

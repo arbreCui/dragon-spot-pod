@@ -1,0 +1,52 @@
+SPOT extra21 新原始操作数独立重建实际结果
+日期：2026-10-15
+
+实际数值执行成功
+真实Root终端ecd8fd/0，原子阶段PASS，最终报告资源检查True。
+17核素、21反应组合、131个温度文件全部从保存的原始P0 LIST数值独立重建。
+每文件20个派生数组，共2620数组、18,854,830个值，差异值0、差异位0。
+每文件26项诊断统计，共3406项，精确一致；核对1344条原始LIST。
+独立实现原FVECT/FMATR零初始化、入射/出射顺序、ig0谱和LOWER0展开，
+按出射群0至369的binary64左折计算行和；未导入原捕获器或scalar.matrix。
+未重新打开旧SCI/GENDF/XSM科学数据体、未重跑原始加工或native输运。
+
+资源
+全程13.1527556秒，子阶段8.5194435秒；守卫采样峰值121.515625MiB。
+新增输出6,081,673字节，低于16MiB输出硬上限。
+原512MiB/阶段600秒/全程1800秒/单线程/单子进程/零重试均保留。
+累计62目录，宿主最终记录产物1,931,143,773字节，加外部元数据8,540,858字节，仍低于2GiB。
+实际权限require_escalated只用于原进程监控守卫；未放宽数学或资源约束。
+
+证据范围
+本轮证明：已捕获P0原始操作数与20个派生数组及26项统计一致。
+NL1原始全部数值列的SHA可核对；NL2只独立核对保存的P0列，不重新证明高阶列。
+本轮不重新证明原ASCII全文，不证明原NJOY产额加工分支或物理中子倍数。
+此前MF3非零/MF6未写出行192个、Mo95部分比值约2、Cr50 MT44低比值等统计得到独立重算确认；
+其物理解释仍需原加工分支及反应覆盖凭证，未据此准入physics/AAA/ABA。
+
+历史失败
+首次v1真实Root04bed5/1、child1，因两处MF6来源字段映射错误，未形成完成报告。
+同Source作者metadata-only failurefacts f5bf55/0仅核对失败凭证，没有改写真实失败。
+v2只修字段映射及入口账本，数值12函数不变；旧v1不修改不重跑。
+v2独立Source审阅自身首次f817e8/1字段适配失败已保存，修正后的审阅c740b3/0。
+v2 Source生成845760/0、发布43b114/0、运行前检查397b9e/0。
+
+整体goal
+整体同温材料对照未完成。B完整材料构造观测、AAA产额误差、完整370群运行资源门槛、
+独立耦合参考及ABA仍需完成。不得把本轮操作数一致计作物理精度完成。
+
+下一步
+完成本轮结果文件后验（同Source作者，metadata-only，非第二次数值复算）。
+准备真实B-only完整观测：原B配方不变，使用已计数原库短文件名，观测/缓存/临时输出使用新目录；
+四项历史同配方输出已约423MB，当前2GiB累计余量不足，先审计已完成旧中间文件的安全退役。
+同时保留P1散射、原processing分支/温度插值和全370群运行剩余检查，不降低原准入要求。
+
+实际宿主：
+/Users/wen/spot/validation/artifacts/axial-material-current-extra21-captured-operand-independent-replay-20261015-v2/Root_actual_extra21_new_captured_operand_independent_replay_summary.json
+SHA256 184fb231b9aa7366070929956e1761b72f1d1044eb82babf6e72aeb2589c1c45
+数值重建报告：
+/Users/wen/spot/validation/artifacts/axial-material-current-extra21-captured-operand-independent-replay-20261015-v2/inventories/ACTUAL_NEW_CAPTURED_EXTRA21_OPERAND_INDEPENDENT_REPLAY.json
+SHA256 a8766b77600c48983ac572d6d52a0e7a194b2357f2eeb7eb8d4ef97cdb4ed13c
+真实执行返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_operand_replay_source_v2/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+SHA256 6686e2c16d8590974abf9b168d6f76b884800f0335c8a8494afa2b11056fc731

@@ -1,0 +1,17 @@
+SPOT A1 原角度向量捕获结果 — 2026-10-15
+
+实际捕获已完成，Root 原始工具返回整数 0；独立后验也已完成并返回整数 0。
+仅捕获原始 TRACK/1 中 XMU$MCCG、ZMU$MCCG、WZMU$MCCG 各 4 个 REAL32 字及 V$MCCG 14 个 REAL32 字，共 26 字、104 字节。逐段 payload 哈希与原记录一致，未拟合、未重跑材料生成、未重新解码 XSM。
+
+输出：/Users/wen/spot/validation/artifacts/axial-material-current-A1-native-vector-capture-and-literal2-retirement-20261015-v1/inventories/A1_native_track_vectors_f4.bin
+SHA256: 1d647ddcf5363c8883cf8972baf0882e7f6cdfc845fd38cc99353e10351763ca
+Root 实际证据：v2/ROOT_CAPTURE_ACTUAL24_TRUE_TOOL_RETURNS.json（原始执行 1b04eb，终止返回 f63e4e，整数 0）
+独立后验：v2/actual_capture_postverify_20261015/corrected_process_access_v2/REVIEW.json
+后验 SHA256: 9b63bd8a3e6aa5e3499086b8d5a843fc98ffb933babf1e4ddad5ad796e069152
+后验实际工具：同目录 TRUE_TOOL_RETURNS.json，17e72c，整数 0。
+首次后验因读取进程列表的权限限制失败，原始失败 Source/报告/工具返回仍保留；后续只修正检查权限，没有重跑实际捕获。
+
+清理截至本记录：尚未删除 A1 两份临时比较文件。
+v3 清理入口的独立 Source 审查通过，但 Root 发布传入的文件凭证使用错误字段 bytes/seven_id，实际 Source 要求 size_bytes/identity。283ba4 原始发布返回整数 1，失败为 KeyError('identity')。失败收据和 ROOT_FINAL_PUBLICATION_TRUE_TOOL_RETURNS.json 原样保留，没有生成 Source freeze，也未进行只读清理检查或删除。新入口将保持原有完整哈希、无占用、精确文件身份及空间限制。
+
+此 104 字节结果只为后续算子输入保存原记录；不表示完整耦合参考、反应完整性、物理精度、AAA 或 ABA 已通过。总目标保持 active。

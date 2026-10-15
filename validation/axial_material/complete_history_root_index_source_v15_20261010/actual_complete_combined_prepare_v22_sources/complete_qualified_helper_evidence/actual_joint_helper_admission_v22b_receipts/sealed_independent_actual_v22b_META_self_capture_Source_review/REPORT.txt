@@ -1,0 +1,5 @@
+SOURCE_PASS only. Corrected writer a9fefd; exact two-hunk inverse to actual 61d552.
+All 17 function names, other 15 full functions, globals/main/constructor/caps retained.
+Pure and fresh E_pre_summary each have exactly two self-capture null records; each is resolved by the same peer postcapture full pin at exact root/name. No field is skipped. Other nulls reject.
+Prior c8c7d5 actual writer failure and earlier static-review omission are preserved candidly. Old frozen D33/2 unchanged; new D2/1 unchanged.
+No writer, validator, helper, guard, business or numerical call was made. No graph/material/gzip payload was read. No new Q or physical/scientific qualification was created.

@@ -1,0 +1,96 @@
+{
+  "schema": "FULL_ACTUAL_CONTEXT_AND_SNAPSHOT_EXTENSION_CONTRACT_V2",
+  "source_only": true,
+  "observer_binary_magic": "AXOBSCTX",
+  "observer_stream_version_exact": 2,
+  "state_order": [
+    "A",
+    "B"
+  ],
+  "all_context_events_consecutive_original_numbers": true,
+  "all_events_without_any_branch_selection_or_sorting": true,
+  "all_context_words_and_spans_saved_to_disk": true,
+  "full_native_snapshots": [
+    "all oldmacro-pre-LIBMIX",
+    "all oldmacro-LIBDEN",
+    "all postmacro-LIBMIX",
+    "all final-complete-micro"
+  ],
+  "macro_only_native_root_prefix": [
+    "MACROLIB"
+  ],
+  "full_micro_root_prefix": [],
+  "no_fake_MACROLIB_root_row": true,
+  "native_walker_parent": "full frozen Root_bound_complete_native_checker.py9d8494",
+  "walker_unchanged_classes": [
+    "XSM",
+    "ReadOnlyFileBytes",
+    "DiskRecords"
+  ],
+  "all_native_types": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    10,
+    99
+  ],
+  "all_original_payload_words_types_counts_empty_lists_and_physical_API_orders_preserved": true,
+  "Source_rule_API_export_rotation_order_never_normalized": true,
+  "ASCII_not_used_or_invented": true,
+  "sqlite_contract": {
+    "schema_columns": [
+      "key",
+      "ordinal",
+      "api_key",
+      "row",
+      "micro_ordinal",
+      "macro_ordinal"
+    ],
+    "cache_mib": 8,
+    "mmap_size": 0,
+    "temp_store": "FILE",
+    "journal_mode": "DELETE"
+  },
+  "input_chunk_bytes": 1048576,
+  "full_context_MAT_stream_no_whole_region_dictionary": true,
+  "actual_context_states_exact_keys": [
+    "complete_context_pins",
+    "all_snapshot_pairs",
+    "actual_extraction_report_pin",
+    "actual_observation_manifest_pin",
+    "selected_last_libmix_number",
+    "actual_extraction_coverage_contract_pin"
+  ],
+  "every_snapshot_exact_keys": [
+    "event",
+    "role",
+    "root_prefix",
+    "input_pin",
+    "sqlite_pin",
+    "native_pool_pin"
+  ],
+  "last_final_micro_pool_must_equal_full_construction_input": true,
+  "Root_coverage_schema": "ROOT_ACTUAL_COMPLETE_OBSERVED_SNAPSHOT_COVERAGE_FOR_CONTEXT_V1",
+  "coverage_requires_same_complete_all_context_and_snapshot_lists": true,
+  "coverage_requires_actual_closed_extraction_and_independent_saved_review": true,
+  "actual_extraction_report_schema": "ACTUAL_COMPLETE_OBSERVED_OLD_POST_FINAL_XSM_EXTRACTION_EVIDENCE_ONLY_V1",
+  "required_caps": {
+    "whole_seconds": 1800,
+    "stage_seconds": 600,
+    "rss_mib": 512,
+    "joint_archive_bytes": 2147483648,
+    "history_bytes": 103079215104,
+    "free_floor_bytes": 8589934592,
+    "threads": 1,
+    "children_at_once": 1,
+    "retries": 0
+  },
+  "full_original129_plus_all_actual_snapshot_context_pool_meta_Source_inputs": true,
+  "SQLite_journal_all_spools_and_open_unlinked_regular_temp_files_count_in_joint_HOCDE": true,
+  "A_all_handles_closed_before_B": true,
+  "all_future_observation_extraction_pins_and_new_Q": null
+}

@@ -1,0 +1,13 @@
+本包是全新 Source；原 v2 driver、原 9 对象和 src/SPOT1P64 不变。
+
+实际 v5 global_positive 在 558.3736 秒触发 own-child 512 MiB RSS 上限；sampled peak 512.765625 MiB，真实 returncode -15，非 600 秒超时。
+
+只读原生结构：370 群、8 区、48 格、SN32、NUN 1800、JPAR(27)=1（vector route）。只读 2772 字节，最大单次 pread 720 字节；无 mmap、业务 import 或数值执行。
+
+XSM LCMGID/LCMGIL 每次新建目录句柄并登记，root close 才释放。LP64 xsm=128 字节；每 full inner JT 的新 handle 对象 189440 字节及占用 registry 槽 5936 字节，逻辑累计 195376 字节。registry capacity 每 100 槽扩容，实际分配 delta 不声称等于此逻辑值。2000 full JT 的逻辑示例 390752000 字节不是已观测迭代数。
+
+最小修复：本次 SPOT FLU 内仅一次获取 MACRO/SYSTEM GROUP 及各群句柄，scalar/vector 四调用共用 SYSTEM handle map。新增两个 C_PTR 数组仅 5920 字节，正常返回释放数组；Ganlib 根仍由宿主正常 close 统一释放对象。原读记录、组顺序、数值参数、ALSBD、factor cache、限额及 other-door fallback 都保留。
+
+LCMGPD 按输出变量地址和长度复用，不足以证明 U/W/PL 每轮三项新 malloc，本包未改它。打开大 PACK 不等于所有 leaf 常驻。外部 FLUKEF/B1HOM 独立导航未改，本包未声称所有进程累计分配已消除。
+
+仅 Source：未编译、未运行、未宣告物理精度、AAA、ABA 或参考解准入。

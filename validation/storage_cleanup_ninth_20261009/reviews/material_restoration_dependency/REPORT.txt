@@ -1,0 +1,5 @@
+最终直接删除建议：0项，0B。原89项、7.874202728GiB清单仅为prior-notapproved，不可执行。
+89项全部是第二轮已实际删除120个重复NJOY工作输入的retained duplicate_primary；原manifest、preflight、实际ledger、EXIT0结果完全对应。
+逐项完整primary路径、SHA、identity、旧被删owner及所有1–8恢复来源交叉见held_89_prior_actual_restoration_primaries.json。原89报告保持字节不变。
+当前业务读scope仍为零交集，可评估lossless gzip迁移；此处没有压缩或删除。必须先归档全部原bytes并独立流式解压核验原SHA/size；归档成为硬保护；新工具先恢复原raw primary，再由旧恢复映射恢复旧副本。
+旧7/8 standalone恢复工具对primary检查普通路径、size/SHA，不要求旧inode；旧1–6清理预检里的identity严格比较是历史删除/保留基线，不可声称重建inode后能重新通过旧preflight。原文档/ledger不改。

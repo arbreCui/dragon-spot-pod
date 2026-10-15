@@ -1,0 +1,23 @@
+2026-10-11 SPOSTATE64 / SPOPROJ64 readonly Source compatibility review
+
+Reviewed complete Sources:
+  continuous_chain_source/SPOSTATE64.f90
+  20587 bytes; SHA256 15b31edbc2f1385483dcb49b22029e5a81b1bd3ffd29de824522be9efa4bb438
+  projection_chain_source/SPOPROJ64.f90
+  11565 bytes; SHA256 c59e1f5133552b059df79d59cc2280ebca7e52e03b7603e391db3d47bcf4f983
+
+Confirmed Source-level arithmetic compatibility, subject to the same admitted global field, geometry and canonical-state binding:
+1. Both routines traverse group / snapshot / radial cell / increasing floor, select MAT1D==snapshot and KEYFLX>0, multiply unchanged stored volume promoted to dp by the actual FLUX64 unknown, accumulate in dp, and divide by the dp accumulated volume. SPOPROJ64's mixed real32 volume and dp flux product is evaluated in dp; its mixed volume addition is also dp. SPOSTATE64 makes that conversion explicit. No intervening real32 field/restriction rounding was found.
+2. SPOSTATE64 forms plane=restricted64/norm and obtains coordinates via the unchanged stored-basis Gram solve. SPOPROJ64 FIXB reconstructs with the same (group, snapshot, mode) OFF index and (mode, radial cell) BOFF/basis index. Its diagnostic compares raw_value/norm to that reconstruction. Thus fixed projection retains the original canonical normalization convention.
+3. SPOPROJ64 validates each full native FLUX64 and exact demotion mirror, loads every nunk2d native unknown, replaces only active KEYFLX positions, and writes the full nunk2d vector. Non-scalar native plane unknowns are retained. They are not supplied by the real32 mirror.
+4. SPOSTATE64 mandatory SPOT-KEFF64 and full FLUX64 authority supplies rho, normalization, positivity, leakage, restriction and canonical coordinates. Legacy type2 values only validate exact demotion. All Gram/FIXB/geometry/layout/offset and SPD guards are retained from the complete original Source. No scientific threshold, material or rank changes were made.
+
+No definite arithmetic-order mismatch or non-scalar-unknown loss was identified in this readonly Source check. This is not a compiler result or numerical qualification.
+
+Pending integration obligations; do not interpret these candidates as a complete online BOOT producer:
+A. SPOPROJ64 overwrites FLUX64/FLUX only. If the archive originates from an admitted native seed containing ROOT-FLUX64, SOUR64, ROOT64-SEAL or native role records, those old records are stale after projection. Fresh projection role/epoch/global binding and REAL64 source construction must be generated and finally sealed by the upcoming owning producer. A modified seed cannot reuse its old native terminal seal as proof for projected values.
+B. Global field is preflighted before writes, but plane fields are preflighted and mutated one plane at a time. Later-plane rejection can leave earlier plane records changed in the local target. The owning stage must operate on fresh exclusively owned objects and publish commit/epoch only after all global, plane, source and context validations succeed. No partially written local candidate is an admitted terminal object.
+C. SPOPROJ64 inherits original geometry/map validation scope and does not independently validate every key/volume/MAT1D record. Its admitted TRACK must be bound to the exact same geometry validated by SPOSTATE64 (or an equivalently strict independent preflight), with full-group, full-unknown and context pins. Shared path names are insufficient binding.
+D. SPOSTATE64 itself writes canonical records and retains the original trailing token check. It is a canonical numerical component only; strict external ownership/final commit and lifecycle controls still have to be supplied. No GLOBAL64, ROOT-QFISS64, independent native producer witness, bootstrap epoch or online dispatcher/deck call is present here.
+
+No edits were made to SPOPROJ64 during this review. SPOSTATE64 Source is frozen at the SHA above. This review did not invoke a compiler, Fortran parser, Native process, or numerical solve and conveys no historical 17-control PASS or scientific qualification.

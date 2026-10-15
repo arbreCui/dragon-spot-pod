@@ -1,0 +1,10 @@
+PASS: full actual 83 ordered case rows + actual summary, exact statuses and 32/52/55 explicit calls.
+Three original watchdogs real returncode 0; observed core-child RSS 33.234375 MiB.
+The link-stage RSS 0 means no positive sample, not a measured zero peak.
+Core wall 5.001366 s; SELF 85.359375 MiB. All current fixed/dependency/output full SHA+7ID pins match.
+Complete frozen core/state-projection ART file namespaces stayed byte/identity unchanged.
+Coherent internal all-copy edit actually accepted; independent external host SHA refusal remains required.
+SPOSTATE64 and SPOPROJ64: two real compile-only steps closed0; repeated full byte inverses recover exact originals.
+Watchdogs preserve original Popen returncode, not an invented raw waitpid tuple.
+No new PS, compiler or Native child ran during independent saved review.
+No old 17/global/source/epoch/producer/native solve/online/AAA/ABA science qualification.

@@ -1,0 +1,110 @@
+--- /Users/wen/spot/validation/axial_material/cold_component_input_consumer_last_cprime_trim_own_pid_peak.py
++++ TMP source-only consumer_v9_to_v10.diff
+@@ -1,4 +1,4 @@
+-'Complete cold INPUT consumer bound to qualified actual complete bounded INPUT.\n\nWhole original seven-key ancestry and all trim fields remain unchanged.\nEvery future cold phase must freshly verify the entire graph and all owners;\nno native, fixture, AAA or ABA qualification is inherited.'
++'UNREADY V10 complete cold INPUT consumer source-only draft.\n\nAll complete graph, canonical/row/owner/namespace/alias/absence/fresh-read gates\nand historical whole bodies remain unchanged. Actual new bounded intake and\ncombined success witnesses are absent. No controller, native, AAA or ABA credit.'
+ import ast
+ import gc
+ import hashlib
+@@ -13,13 +13,13 @@
+ 
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT/'validation/artifacts'
+-SCHEMA = 'AXMAT_COLD_COMPLETE_LAST_CPRIME_TRIM_COMPONENT_INPUT_INTAKE_V1'
++SCHEMA = 'AXMAT_COLD_COMPLETE_FACTOR_DIAGONAL_TRIM_COMPONENT_INPUT_INTAKE_V1'
+ WITNESS_SCHEMA = 'AXMAT_OWNED_SPECS_STANDALONE_BOUNDED_RUNTIME_API_INTAKE_ROOT_ACTUAL_RETURN_V1'
+ SEMANTICS = 'COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION'
+-STATUS = 'REVIEWED_TRIM_COMPLETE_INPUT_CONSUMER_WITH_ACTUAL_BOUNDED_INTAKE'
+-INTAKE_ROOT = ART/'axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009'
+-INTAKE_ROOT_SHA = '23acbccb31befbba6ae52ffaf80ae119fd3b7341faa263c18a45c0cd239062ba'
+-INTAKE_RETURN_SHA = '0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5'
++STATUS = 'UNREADY_FACTOR_DIAGONAL_V10_ACTUAL_BOUNDED_INTAKE_NOT_BOUND'
++INTAKE_ROOT = ART/'axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009'
++INTAKE_ROOT_SHA = None
++INTAKE_RETURN_SHA = None
+ THREADS = ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS',
+            'VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+ GRAPH_SOURCE_SHA = '1d7c4d7a9ecc4546ceb4c7e0b81562329f874ca5302621ef5fc026f62c7f7643'
+@@ -27,15 +27,15 @@
+ CHECK_SOURCE_SHA = '86e7d6340da59c74abcff57fa52bb07d690f51cc33fe76f330ece2e0d158258e'
+ SPECS = ROOT/'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+ SPECS_SHA = '2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa'
+-API_SOURCE = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v9.py'
+-API_SOURCE_SHA = '44789bc288715c34d08dbfa91b9c05dfc78166c2b8fa048bbe0207b273419a46'
+-API_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V9_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+-API_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009'
+-API_SOURCE_ROOT = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009'
+-API_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009'
+-API_SEAL_SHA = 'ece13c5594c48bb22af8d507f1f40ef88457efa824e28200c6ddfced70cf3aed'
+-API_TERMINAL_SHA = '709a9592c8b4a56cba99c61b628db8fed91d0c49d76d75c360591f11fa1b9d27'
+-API_PREP_SHA = '0297aa6543c36ca3f452b1948e0d034e218f71c253b08cd671c3c83cb01262fb'
++API_SOURCE = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_factor_diagonal_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v10.py'
++API_SOURCE_SHA = 'c55ca2680d9e1326979649f835d9612a8fd80df5aecee1adc25765c419329efc'
++API_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_FACTOR_DIAGONAL_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V10_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++API_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'
++API_SOURCE_ROOT = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'
++API_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'
++API_SEAL_SHA = None
++API_TERMINAL_SHA = None
++API_PREP_SHA = None
+ PYTHON = '/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12'
+ PRIOR_DECL = ART/'axial-material-physical-dedup-combined-runtime-build-20261007/declaration.json'
+ PRIOR_DECL_SHA = 'aa3e33a10b64deb947f82fd9f8b19559f9f700f58396e641a4e66def5d4b46a4'
+@@ -54,19 +54,20 @@
+ GUARD_SHA = '619ed1e3115e0f9f25fd20cc259d384891f2fff52d913acebd5d9ca8f39d5743'
+ HISTORY_POLICY = 'AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1'
+ 
+-TRIM_FACTORY = ROOT/'validation/axial_material/prepare_qualified_AB_rank1_factor_cache_last_cprime_trim_production.py'
+-TRIM_FACTORY_SHA = '8f6947392a087cd722fc2cbc3075db54c256c73bcf9dab72cac708392b5ef92a'
+-TRIM_SOURCE = ART/'axial-material-qualified-AB-rank1-factor-cache-last-cprime-trim-build-admission-20261008'
+-TRIM_BUILD = ART/'axial-material-rank1-factor-cache-last-cprime-trim-build-20261008'
+-TRIM_TERMINAL = ART/'axial-material-qualified-AB-rank1-factor-cache-last-cprime-trim-build-terminal-20261008'
+-TRIM_DECL_SHA = 'e6dd804a473ae25888ecf5e070af708a024618772c0f753d836127af6074dc00'
+-TRIM_SEAL_SHA = '38f44fe55187199e467f8445015e505814cf0df911d9a51d1b35c8e264bb0e0e'
+-TRIM_TERMINAL_SHA = '076565db2dc0048db70166d37bd6e81107d30acb9a72b14945b436a473094a88'
+-TRIM_KERNEL_SHA = '343e731fa190d80f8d390831185aef11dabcab32f51a229a5761c827a4aeb1e1'
+-TRIM_OBJECT_SHA = 'd9818c7aa7d10cef2cbb95119c13db449867a01518ec5928566462880b2cb767'
+-TRIM_RUNTIME_SHA = 'b807c72ca393bca3a21297ea15d5e44d008cac49fc7623781fca9303a9141ddf'
+-TRIM_SOURCE_ADMISSION_SHA = '559b25aa80ff165ce6edc756de9c9309929288c5e601ef2ce71a1e9805c11677'
+-TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++TRIM_FACTORY = Path('/Users/wen/spot/validation/axial_material/prepare_qualified_AB_rank1_factor_cache_factor_diagonal_trim_production.py')
++TRIM_FACTORY_SHA = 'd82d89daa779c8e1f3087e5c49f05279d35a9b3320ea1ae0257f7eaa586ebc8e'
++TRIM_SOURCE = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-admission-20261009')
++TRIM_BUILD = Path('/Users/wen/spot/validation/artifacts/axial-material-rank1-factor-cache-factor-diagonal-trim-build-20261009')
++TRIM_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-terminal-20261009')
++TRIM_DECL_SHA = 'f03dab4ce9e8376b4f64491dc934489df1ddd766c3bd38e4ba58a1771c966501'
++TRIM_SEAL_SHA = 'c8a5fa37aad42efb5bf80ea1db66506d75ffd5571ff46f86d8358724e53430d4'
++TRIM_TERMINAL_SHA = 'e9ff017a011fdb543bfecde70c6911eba58225075d3affbb02ebd241d2860b25'
++TRIM_KERNEL_SHA = '5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809'
++TRIM_OBJECT_SHA = 'fc3441c2523283b5026528c9f11e6d1edeba9ec202f55a0a1258e7ef3e09a6d1'
++TRIM_RUNTIME_SHA = '821151dea83ebcf1c8870f889028dd10e45367a7883b09259ee096eb3cef266e'
++TRIM_SOURCE_ADMISSION_SHA = '58246aa23b6a81bdfd9a5f805d0fc5982519653a31b8b8db434e65c5d2d001a0'
++TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++TRIM_FACTOR_STORAGE_CONTRACT = {'schema': 'AXMAT_RANK1_DEAD_FACTOR_DIAGONAL_STORAGE_PATCH_V1', 'ordinary_rank1_only': True, 'ready_factor_physical_shape': '[nstate-1,nstate,nblock]', 'public_solve_shape': '[nstate,nstate]', 'retained_build_all_original_factor_and_full_RHS_solves': True, 'all_original_40_stages_required': True, 'persistent_release_bytes': '8*nstate*nblock', 'transient_pack_reservation_bytes': '8*(nstate-1)*nstate*nblock', 'reused_square_workspace': 'rank1_lower_work', 'actual_native_RSS_passed': False}
+ TRIM_INPUT_SEMANTICS = 'ACTUAL_TRIM_3ARG_RETURN_IN_THIS_PREP_THEN_COMPLETE_FRESH_INPUT_REUSE_NO_API_REEXECUTION'
+ 
+ 
+@@ -294,7 +295,7 @@
+     """
+     whole=combined['actual_components'];value=combined['actual_last_cprime_trim_admission']
+     if (type(value)is not dict or value['schema']!=TRIM_SCHEMA
+-        or value['admission']!='RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_RUNTIME_INPUT_ONLY'
++        or value['admission']!='RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY'
+         or value['build_root']!=str(TRIM_BUILD)or value['source_root']!=str(TRIM_SOURCE)
+         or value['build_seal_sha256']!=TRIM_SEAL_SHA
+         or value['compiled_kernel']!=dict(path=str(TRIM_BUILD/'build/SPOT1P64.o'),sha256=TRIM_OBJECT_SHA)
+@@ -303,6 +304,14 @@
+         or value['actual_external_terminal_evidence']!=dict(path=str(TRIM_TERMINAL/'terminal_return.json'),sha256=TRIM_TERMINAL_SHA)
+         or value['source_admission']!=dict(path=str(TRIM_SOURCE/'source_admission.json'),sha256=TRIM_SOURCE_ADMISSION_SHA)
+         or value['source_patch_proof']!=value['source_admission']
++        or value['factor_diagonal_codec_controls_passed']is not True
++        or value['factor_diagonal_storage_contract']!=TRIM_FACTOR_STORAGE_CONTRACT
++        or value['cache_unit_control_counts']['total_declared_stages']!=45
++        or value['cache_unit_control_counts']['inherited_last_cprime_stages_retained']!=40
++        or value['cache_unit_control_counts']['factor_codec_positive_fixtures']!=3
++        or value['cache_unit_control_counts']['factor_codec_module_negative_calls']!=4
++        or value['cache_unit_control_counts']['factor_codec_public_factor_calls']!=6
++        or value['cache_unit_control_counts']['factor_codec_public_solve_calls']!=12
+         or value['inherited_rank1_factor_cache_admission']!=whole['original92']
+         or value['inherited_rank1_factor_cache_memory_admission']!=whole['dedup']['inherited_rank1_factor_cache_memory_admission']
+         or value['resource_scope_policy']!='AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1'

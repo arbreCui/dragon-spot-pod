@@ -1,0 +1,45 @@
+{
+  "schema": "COMPLETE_V17_ONCE_WRITER_V1_TO_V2_SINGLE_AGGREGATE_PF_INVERSE_V1",
+  "original_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/write_once_v17_A8_owned_MAP_full50_HF_CLI_v1_20261014.py",
+    "sha256": "99dbf2aa18bd8ba7bffd03777699602898bacb6d1f4ea93bde7ff555ddf521ad",
+    "size_bytes": 15820,
+    "identity": [
+      16777229,
+      50119209,
+      33188,
+      1,
+      15820,
+      1791945698657250011,
+      1791945698657250011
+    ]
+  },
+  "candidate_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/write_once_v17_A8_owned_MAP_full50_HF_CLI_v2_20261014.py",
+    "sha256": "fb10d46857fa1f4dbdcf28d9e8b37b7e7a479735e33afea56b07fce1587ca45b",
+    "size_bytes": 15821,
+    "identity": [
+      16777229,
+      50119996,
+      33188,
+      1,
+      15821,
+      1791946734591090517,
+      1791946734591090517
+    ]
+  },
+  "changes": [
+    {
+      "before": "    if any(row not in dependencies for row in selected.values()):raise RuntimeError('all selected actual Source/prerequisite proof PFs belong to current HF')",
+      "after": "    if any(row not in dependencies for row in fullpins(selected)):raise RuntimeError('all selected actual Source/prerequisite proof PFs belong to current HF')",
+      "reason": "selected_derived_guard_source_pins is the original three exactPF aggregate; enumerate only original canonical fullpins then preserve strict membership"
+    }
+  ],
+  "whole_inverse_bytes_equal": true,
+  "all_other_original_writer_conditions_caps_O_EXCL_fsync_Source_peer_current7_and_HF_CLI_wholebytes_unchanged": true,
+  "source_only": true,
+  "compiler_executed": false,
+  "numerical_executed": false,
+  "pipeline_executed": false,
+  "files_deleted": false
+}

@@ -1,0 +1,3 @@
+Original5f302e/355081 Source blocked by one exact output-report binding gap. Source copies and limited host record constructor proof retained.
+Minimum v2 repair only: keep report read pin and compare path/SHA/7ID against host actual_native.report; installer only retargets writer SHA.
+Fixed bound89 and current E have no empty subdirectories; no new directory control or scientific guard requested. No candidate/guard/native/numeric program run or source qualification invented.

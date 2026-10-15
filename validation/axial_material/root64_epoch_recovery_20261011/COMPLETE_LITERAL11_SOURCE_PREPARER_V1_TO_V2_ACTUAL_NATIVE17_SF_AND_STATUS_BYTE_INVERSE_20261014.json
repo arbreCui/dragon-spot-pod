@@ -1,0 +1,69 @@
+{
+  "schema": "COMPLETE_LITERAL11_SOURCE_PREPARER_V1_TO_V2_SOURCE_WHOLE_BYTE_INVERSE_V1",
+  "original_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/prepare_literal11_next_native17_BIND_duplicates_sources_only_v1_20261014.py",
+    "sha256": "357310c1e2dd5c61b88d5751830baf44412bdb86009359cf397642af513c89a1",
+    "size_bytes": 29769,
+    "identity": [
+      16777229,
+      50108479,
+      33188,
+      1,
+      29769,
+      1791933715149284312,
+      1791933715149284312
+    ]
+  },
+  "candidate_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/prepare_literal11_next_native17_BIND_duplicates_sources_only_v2_20261014.py",
+    "sha256": "ae0b3c002c867c22db5a73c3402f9cd0db86f05394df12d1d5801b1e010c7e6a",
+    "size_bytes": 31274,
+    "identity": [
+      16777229,
+      50108574,
+      33188,
+      1,
+      31274,
+      1791933810915494868,
+      1791933810915494868
+    ]
+  },
+  "changes": [
+    {
+      "before": "role['status']!='PASS_READONLY_EXACT11_ROLE_AND_CURRENT_BUDGET_SURVEY_NOT_RELEASE_AUTHORIZATION'",
+      "after": "role['status']!='PASS_READONLY_EXACT11_ROLE_AND_CURRENT_ORIGINAL_BUDGET_SURVEY_NOT_RELEASE_AUTHORIZATION'"
+    },
+    {
+      "before": "    bindtable={p['path']:p for p in const['BIND_NEW_SOURCE_PINS']}\n    for i,p in enumerate(nativepins):bindtable[p['path']]=p;hist['strict_native17_current_Source_'+str(i)]=p",
+      "after": "    nativesfpin={'path':str(native/'COMPLETE_BOOT_BIND64_STRICT_NATIVE17_CONSUMER_SOURCE_FREEZE.json'),'sha256':'6e454f420ab956bf48c4999a17d95891f3b05f23cd79fe67175a9265c759d819','size_bytes':77363,'identity':[16777229,50108507,33188,1,77363,1791933739559134988,1791933739559134988]}\n    nativesf=read(nativesfpin);nativecreation=pin(R/'ACTUAL_STRICT_NATIVE17_BIND_CONSUMER_SOURCE_FREEZE_TRUE_TOOL_RETURN_20261014.json')\n    if nativecreation['sha256']!='c9f3f351785d02c8d0662709f2be74209c36102bccba509a0eaed4f37e8ace85'or nativesf['schema']!='COMPLETE_BOOT_BIND64_STRICT_NATIVE17_CONSUMER_FORTRAN_SOURCE_ONLY_FREEZE_V1'or nativesf['source_only']is not True or any(nativesf[k]is not False for k in('compiled','numerical_executed','business_executed','files_deleted')):raise RuntimeError('exact actual Source-only native17 freeze, no compile or physics')\n    for p in nativesf['files']:\n        if pin(p['path'])!=norm(p):raise RuntimeError('native17 Source closure current EOF7')\n    if len(nativesf['files'])!=12 or not set(p['path']for p in nativepins)<=set(p['path']for p in nativesf['files']):raise RuntimeError('exact native17 twelve Source proof files')\n    bindtable={p['path']:p for p in const['BIND_NEW_SOURCE_PINS']}\n    for i,p in enumerate(nativesf['files']+[nativesfpin,nativecreation]):bindtable[p['path']]=norm(p);hist['strict_native17_current_Source_'+str(i)]=norm(p)\n    hist['literal11_preparer_v1_preserved']=pin(R/'prepare_literal11_next_native17_BIND_duplicates_sources_only_v1_20261014.py');hist['literal11_Prewrite_Source_failure_tool']=pin(R/'ACTUAL_LITERAL11_SOURCE_PREPARATION_PREWRITE_FAILURE_TRUE_TOOL_RETURN_V1_20261014.json')"
+    },
+    {
+      "before": "native17_future_Source_freeze_pin=None",
+      "after": "native17_current_Source_freeze_pin=nativesfpin"
+    },
+    {
+      "before": "future_native17_Fortran_Source_freeze_pin=None",
+      "after": "current_native17_Fortran_Source_freeze_pin=nativesfpin"
+    }
+  ],
+  "whole_inverse_verified": true,
+  "prewrite_failure_tool_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_LITERAL11_SOURCE_PREPARATION_PREWRITE_FAILURE_TRUE_TOOL_RETURN_V1_20261014.json",
+    "sha256": "a78ad03cda41866bce819909beb1d44618936a1c373b5e3145a34ba9b520dd6d",
+    "size_bytes": 2196,
+    "identity": [
+      16777229,
+      50108573,
+      33188,
+      1,
+      2196,
+      1791933810912428651,
+      1791933810912428651
+    ]
+  },
+  "source_only": true,
+  "business_executed": false,
+  "compiler_executed": false,
+  "numerical_executed": false,
+  "deletion_executed": false
+}

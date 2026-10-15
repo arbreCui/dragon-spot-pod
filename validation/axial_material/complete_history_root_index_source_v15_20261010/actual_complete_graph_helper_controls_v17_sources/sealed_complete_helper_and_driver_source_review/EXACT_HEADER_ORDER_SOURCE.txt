@@ -1,0 +1,10 @@
+    # Original encode_graph_wire creates this header after its sorted JSON
+    # clone. Restore that exact insertion order on this private new header.
+    # Its complete five-field shape was already strictly validated above.
+    row_codec = graph["requirements"]["rows"]
+    graph["requirements"]["rows"] = {
+        "schema": row_codec["schema"], "encoding": row_codec["encoding"],
+        "row_count": row_codec["row_count"], "column_count": row_codec["column_count"],
+        "data": row_codec["data"],
+    }
+    del row_codec

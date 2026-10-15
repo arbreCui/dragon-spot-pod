@@ -1,0 +1,22 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_host_source_v3/build_streaming_runtime.py
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_host_source_v4/build_streaming_runtime.py
+@@ -18,8 +18,8 @@
+ COMMON=REC/'native_warm_A_bounded_host_source_v3/guarded_warm_A_common.py'
+ spec=importlib.util.spec_from_file_location('streaming_build_original_common',COMMON)
+ c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+-SOURCE=REC/'aaa_three_plane_streaming_source_v1'
+-OUT=c.ART/'axial-material-new-AAA3-streaming-aliases-build-only-20261012-v3'
++SOURCE=REC/'aaa_three_plane_streaming_source_v2'
++OUT=c.ART/'axial-material-new-AAA3-streaming-aliases-build-only-20261012-v4'
+ ORDER=['SPOR64_XSM_STORE64.f90','SPOR64_XSM_RB64.f90','SPOR64_B2IX.f90',
+        'SPOR64_BOOT_PROJECTX64.f90','APACKX64.f90','BPROJX64.f90',
+        'SPOBOOX64.f90','SPOBVX64.f90','KDRDRV.F']
+@@ -65,7 +65,7 @@
+             parser.add_argument('--'+prefix+'-'+suffix,required=True)
+     args=parser.parse_args();start=time.monotonic()
+     hf,phf=load_external(args,'host_freeze')
+-    if hf['schema']!='COMPLETE_AAA3_NEW_ALIAS_BUILD_HOST_SOURCE_ONLY_FREEZE_V3' or \
++    if hf['schema']!='COMPLETE_AAA3_NEW_ALIAS_BUILD_HOST_SOURCE_ONLY_FREEZE_V4' or \
+        hf['compiler_executed'] is not False or hf['transport_executed'] is not False:
+         raise RuntimeError('complete external exact own Host Source freeze required')
+     if Path(hf['host_source']['path']).resolve()!=Path(__file__).resolve():

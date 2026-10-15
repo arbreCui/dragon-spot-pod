@@ -1,0 +1,18 @@
+SPOT 三份独立平面材料与当前材料构造逐字比较结果 — 2026-10-14
+
+实际修正后的完整比较成功，主过程真实退出 0。以完整类型化字段路径配对，保留双方原始物理序号和 API 顺序；未排序改写旧档案，未重新解码三份原始档案。
+
+三份独立档案分别完整比较 19,620 条 MACROLIB 记录（含空类型根）与 2,264,152 个原始字，合计 58,860 条记录、6,792,456 个原始字。三组类型、长度和原始字内容差异全部为 0，路径集合完整一致。
+
+因此三份平面材料档案与当前完整 A 材料构造的宏观截面内容一致。首次 9,501,687 个差异由遍历序号错配造成；首次主过程退出 1、累计资源失败及全部原报告继续保留，未回写或篡改。
+
+实际运行约 11.39 秒，复用已有 SQLite 索引与原始字池，新增明细和文件约 34.4 MiB。最终累计产物为 2,119,867,446 字节，原 2 GiB 限额保持。此前仅精准去重两份完全相同结构记录，共释放 68,743,634 字节；科学原始输入、完整结构副本、三份索引和字池、结果文档与日志保留。
+
+该结果完成材料宏观内容一致性核验，尚不代表 AAA 物理精度、反应多重性权威、中子平衡、独立全群耦合参考或 ABA 已完成。原 AAA ν裂变最大误差约 3.95% 高于 3% 门槛，角向误差约 3.80% 等问题仍保留。
+
+证据：
+/Users/wen/spot/validation/artifacts/axial-material-current-saved-three-macro-typed-path-compare-20261014-v1/Root_actual_saved_three_macro_typed_path_comparison_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-current-saved-three-macro-typed-path-compare-20261014-v1/comparison/ACTUAL_SAVED_THREE_MACRO_CANONICAL_PATH_COMPARISONS.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_SAVED_THREE_TYPED_PATH_ACTUAL24_TRUE_TOOL_RETURNS_20261014.json
+
+后续顺序：独立核验本次实际结果；补齐反应多重性完整权威与当前全群传输核控制/来源；满足原准入要求后运行 AAA 独立全群参考，随后才进入 B 完整上下文和 ABA。当前继续使用原材料、温度、几何和验收阈值。

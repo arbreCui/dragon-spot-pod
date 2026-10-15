@@ -21,10 +21,28 @@
 subroutine SPOPOD(nreg2d,nsnap,phi,vol,rank_req,nmode,basis,coeff, &
                   sigma,rec_err,ortho_err,impx,igr)
   implicit none
+  integer, intent(in) :: nreg2d,nsnap,rank_req,impx,igr
+  real, intent(in) :: phi(nreg2d,nsnap),vol(nreg2d)
+  integer, intent(out) :: nmode
+  real, intent(out) :: basis(nreg2d,nsnap),coeff(nsnap,nsnap)
+  double precision, intent(out) :: sigma(nsnap),rec_err,ortho_err
+
+  ! Preserve the original REAL caller ABI; both entries use one POD algorithm.
+  call SPOPOD64(nreg2d,nsnap,dble(phi),dble(vol),rank_req,nmode, &
+                basis,coeff,sigma,rec_err,ortho_err,impx,igr)
+end subroutine SPOPOD
+
+
+! PHI/VOL have the exact explicit extents NREG2D/NSNAP, as in SPOPOD.
+! Only the inputs change precision; BASIS/COEFF remain the original REAL.
+subroutine SPOPOD64(nreg2d,nsnap,phi,vol,rank_req,nmode,basis,coeff, &
+                    sigma,rec_err,ortho_err,impx,igr)
+  use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
+  implicit none
   integer, parameter :: dp=kind(1.0d0), iunout=6
 
   integer, intent(in) :: nreg2d,nsnap,rank_req,impx,igr
-  real, intent(in) :: phi(nreg2d,nsnap),vol(nreg2d)
+  double precision, intent(in) :: phi(nreg2d,nsnap),vol(nreg2d)
   integer, intent(out) :: nmode
   real, intent(out) :: basis(nreg2d,nsnap),coeff(nsnap,nsnap)
   double precision, intent(out) :: sigma(nsnap),rec_err,ortho_err
@@ -40,18 +58,31 @@ subroutine SPOPOD(nreg2d,nsnap,phi,vol,rank_req,nmode,basis,coeff, &
   if (rank_req < 0) call XABORT('SPOPOD: NEGATIVE RANK REQUEST.')
   if (nreg2d < nsnap) &
     call XABORT('SPOPOD: NREG2D MUST BE GREATER THAN OR EQUAL TO NSNAP.')
-  if (any(vol <= 0.0)) call XABORT('SPOPOD: NONPOSITIVE RADIAL VOLUME.')
+  if (any(.not. ieee_is_finite(phi))) &
+    call XABORT('SPOPOD: NONFINITE SNAPSHOT FLUX.')
+  if (any(.not. ieee_is_finite(vol))) &
+    call XABORT('SPOPOD: NONFINITE RADIAL VOLUME.')
+  if (any(vol <= 0.0d0)) call XABORT('SPOPOD: NONPOSITIVE RADIAL VOLUME.')
 
   allocate(weight(nreg2d),shape(nreg2d,nsnap),x(nreg2d,nsnap))
   allocate(z(nsnap,nsnap),recon(nreg2d,nsnap))
-  vtot=sum(real(vol,dp))
-  weight=real(vol,dp)/vtot
+  vtot=sum(vol)
+  if (.not. ieee_is_finite(vtot) .or. vtot <= 0.0d0) &
+    call XABORT('SPOPOD: INVALID TOTAL RADIAL VOLUME.')
+  weight=vol/vtot
+  if (any(weight <= 0.0d0)) &
+    call XABORT('SPOPOD: RADIAL WEIGHT UNDERFLOW.')
 
   do k=1,nsnap
-    vsum=sum(weight*real(phi(:,k),dp))
+    vsum=sum(weight*phi(:,k))
+    if (.not. ieee_is_finite(vsum)) &
+      call XABORT('SPOPOD: NONFINITE SNAPSHOT NORMALIZATION.')
     if (vsum <= 0.0d0) call XABORT('SPOPOD: NONPOSITIVE SNAPSHOT FLUX.')
-    shape(:,k)=real(phi(:,k),dp)/vsum
+    shape(:,k)=phi(:,k)/vsum
     x(:,k)=sqrt(weight)*shape(:,k)
+    if (any(.not. ieee_is_finite(shape(:,k))) .or. &
+        any(.not. ieee_is_finite(x(:,k)))) &
+      call XABORT('SPOPOD: NONFINITE NORMALIZED SNAPSHOT.')
   enddo
 
   call ALSVDF(x,nreg2d,nsnap,nreg2d,nsnap,sigma,z)
@@ -102,4 +133,4 @@ subroutine SPOPOD(nreg2d,nsnap,phi,vol,rank_req,nmode,basis,coeff, &
 100 format(' SPOPOD: group',I5,' modes=',I3,'/',I3, &
            ' reconstruction error=',1P,E11.4,' orthogonality error=',E11.4)
 110 format(' SPOPOD: singular values',1P,100E12.4)
-end subroutine SPOPOD
+end subroutine SPOPOD64

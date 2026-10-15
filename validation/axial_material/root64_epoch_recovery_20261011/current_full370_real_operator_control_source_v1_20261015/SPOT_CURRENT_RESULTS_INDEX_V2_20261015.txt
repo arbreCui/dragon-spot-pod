@@ -1,0 +1,21 @@
+SPOT 最新结果入口（2026-10-15，B完整捕获已核验）
+
+1. A完整字段核验已通过：8组快照、55事件、6阶段；19249字段/1829421已知元素，当前不匹配、未知来源和字段问题均0。
+   SPOT_CURRENT_A_FULL_AGGREGATE_OVERV_RESOLVED_VERIFIED_RESULT_20261015.txt
+
+2. 已完成旧文件回收并保留结果。14个旧临时SQL/字节池149659264字节，以及已无损归档的48份原文805236925字节，合计移除954896189字节旧副本。48份完整结果保存在68959717字节gzip中；包含归档索引/回执的整个归档目录70860690字节。上述合计为旧副本释放量，非扣除新归档和元数据后的净值。
+   SPOT_CURRENT_A_EARLY14_TEMPORARY_SPOOL_RETIREMENT_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT48_RESULTS_LOSSLESS_ARCHIVE_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT48_PLAINTEXT_RETIREMENT_VERIFIED_RESULT_20261015.txt
+   此前3个ASCII回收346861973字节另见 SPOT_CURRENT_A_THREE_ASCII_RETIREMENT_VERIFIED_RESULT_20261015.txt，不重复计入本轮。
+
+3. B新观察器构建及独立核验通过：四次编译、一次链接真实返回0；系统SDK路径问题已修正。
+   SPOT_B_IO_BUILD_SDK_FIXED_VERIFIED_RESULT_20261015.txt
+
+4. B完整捕获及独立核验通过：4个导出、55个上下文、8棵原生快照，80个新输出；约572.1MB，原输入目录保持完整。
+   SPOT_CURRENT_B_FULL_CAPTURE_VERIFIED_RESULT_20261015.txt
+
+5. 当前下一步：完整B字段提取、本次B55 OVERV控制、六阶段聚合。完整范围保留，执行和空间按各完整阶段分别实测准入。
+   这之后仍需A/B在线读取凭证、AAA精度、反应处理与多重性完整来源、温度插值、完整370群算子/独立耦合参考及ABA。AAA现有ν裂变偏差3.9525%大于3%阈值，仍未通过；阈值保持。
+
+本文仅为结果导航；具体结论以各说明链接的真实工具返回、完整文件清单及独立核验报告为准。原阶段说明和失败记录均保留。

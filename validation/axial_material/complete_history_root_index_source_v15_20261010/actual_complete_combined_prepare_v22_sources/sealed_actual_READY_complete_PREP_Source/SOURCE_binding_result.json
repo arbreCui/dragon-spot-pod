@@ -1,0 +1,72 @@
+{
+  "schema": "V22_ROOT_COMPLETE_CANONICAL_GENUINE_PREP_ACTUAL_Q_SOURCE_BINDING_ONLY_V1",
+  "source_only": true,
+  "actual_Q": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_complete_graph_private_owner_namespace_helper_admission_v22.json",
+    "sha256": "89d2f03c0af74844731ddf5225307c38ae40521d99ca29c88c5d8db39796b816",
+    "size_bytes": 448851,
+    "identity": [
+      16777229,
+      49407444,
+      33188,
+      1,
+      448851,
+      1791605464130734338,
+      1791605464130734338
+    ]
+  },
+  "READY_source": {
+    "path": "/private/tmp/axmat_v22_actual_Q_bound_complete_PREP_SOURCE_root_20261010_b89d2/complete_combined_runtime.V22.READY_SOURCE.py",
+    "sha256": "09e53974005082a14d9675f69258549609a991f86ec231ab6b15edfe20dd265e",
+    "size_bytes": 180960,
+    "identity": [
+      16777229,
+      49408403,
+      33188,
+      1,
+      180960,
+      1791606198727985204,
+      1791606198727985204
+    ]
+  },
+  "genuine_PREP_host_Source": {
+    "path": "/private/tmp/axmat_v22_actual_Q_bound_complete_PREP_SOURCE_root_20261010_b89d2/combined_prepare_host.py",
+    "sha256": "1be8cbf79ef14d7537d099d0a08d0c5ef755530c2652c58cfbb188c7e18bf051",
+    "size_bytes": 9147,
+    "identity": [
+      16777229,
+      49408404,
+      33188,
+      1,
+      9147,
+      1791606198728153204,
+      1791606198728153204
+    ]
+  },
+  "complete_PREP_metadata_writer_Source": {
+    "path": "/private/tmp/axmat_v22_actual_Q_bound_complete_PREP_SOURCE_root_20261010_b89d2/write_actual_prepare_terminal.py",
+    "sha256": "348ae877f7c8e4c86f07cb4a49f96de97e11839ccb0858c5a602e3982a4ccba0",
+    "size_bytes": 10406,
+    "identity": [
+      16777229,
+      49408405,
+      33188,
+      1,
+      10406,
+      1791606198728226913,
+      1791606198728226913
+    ]
+  },
+  "new_helper_qualification_created_by_this_Source_binder": false,
+  "helper_guard_API_PREP_build_INPUT_native_or_numeric_executed": false,
+  "canonical_or_ART_or_Root_D_E_written": false,
+  "all_future_business_pins": {
+    "FUTURE_ACTUAL_COMBINED_DECLARATION_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_PREP_TERMINAL_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_SEAL_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_TERMINAL_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_RUNTIME_SHA": null,
+    "FUTURE_ACTUAL_NATIVE_TERMINAL_SHA": null
+  },
+  "requires_Root_external_saved_Q_review_and_bound_Source_review_before_installation": true
+}

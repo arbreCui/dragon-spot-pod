@@ -1,0 +1,59 @@
+--- /private/tmp/axmat_complete_graph_canonical_file_table_storage_source_draft_20261009/combined_runtime_complete_input_graph_canonical_file_table_storage_20261009.py
++++ /private/tmp/axmat_complete_graph_canonical_file_table_owned_consume_source_draft_20261009/combined_runtime_complete_input_graph_canonical_file_table_storage_20261009.py
+@@ -836,14 +836,17 @@
+     return {"schema": CANONICAL_FILE_TABLE_STORAGE_SCHEMA, "graph": view}
+ 
+ 
+-def decode_canonical_file_table_storage(storage):
++def decode_canonical_file_table_storage(storage, *, _consume=False):
+     """Restore the whole original graph from one exact transparent table schema.
+ 
+-    Inputs are not modified. Restored canonical pin dicts are fresh and keep the
++    Default inputs are not modified. Private consume is used only on each strict
++    wrapper's new parsed container, clearing rows after complete scalar transfer.
++    Restored canonical pin dicts are fresh and keep the
+     original path/sha256/size_bytes order. Other complete graph values survive.
+     Content SHA verification detects omitted, added or changed rows/fields.
+     Fresh-file/math/resource eligibility remains the original caller's job.
+     """
++    _require(type(_consume) is bool, "invalid private canonical-file storage consume flag")
+     _require(type(storage) is dict and set(storage) == {"schema", "graph"}
+              and storage.get("schema") == CANONICAL_FILE_TABLE_STORAGE_SCHEMA,
+              "invalid complete graph storage header")
+@@ -858,9 +861,17 @@
+              and type(table["rows"]) is list,
+              "invalid canonical-file table header/columns")
+     pins = []
+-    for row in table["rows"]:
++    rows = table["rows"]
++    for index, row in enumerate(rows):
+         values = _canonical_file_storage_values(row)
+         pins.append({key: value for key, value in zip(CANONICAL_FILE_TABLE_STORAGE_COLUMNS, values)})
++        if _consume:
++            rows[index] = None
++    if _consume:
++        rows.clear()
++    del rows
++    if pins:
++        del row, values
+     restored = dict(graph)
+     restored["canonical_files"] = pins
+     _require(_sha(restored.get("content_sha256")) == _content_digest(restored),
+@@ -891,7 +902,7 @@
+     result = _parse_strict_json_text(decoded, path)
+     del decoded
+     if type(result) is dict and result.get("schema") == CANONICAL_FILE_TABLE_STORAGE_SCHEMA:
+-        return decode_canonical_file_table_storage(result)
++        return decode_canonical_file_table_storage(result, _consume=True)
+     return result
+ 
+ 
+@@ -905,7 +916,7 @@
+     result = _parse_strict_json_text(decoded, path)
+     del decoded
+     if type(result) is dict and result.get("schema") == CANONICAL_FILE_TABLE_STORAGE_SCHEMA:
+-        return decode_canonical_file_table_storage(result)
++        return decode_canonical_file_table_storage(result, _consume=True)
+     return result
+ 
+ 

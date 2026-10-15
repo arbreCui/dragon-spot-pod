@@ -1,0 +1,20 @@
+B观察器首次构建入口失败事实（2026-10-15）
+
+真实Root：4c431e / session28035 → a4618a，原整数1，require_escalated；无重试。
+失败点：原SerialExecutor在production_runner.py第697行写 B_IO_build/stages.json.tmp 时，其父目录未创建。该行在启动编译器进程之前。
+实际记录仅一条sources/build/observer_compile，状态RUNNING；没有子进程返回码字段，也没有watchdog。不能将此记录称作编译器返回1或编译阶段完成。
+产物仅6份源代码/头文件副本、原资源监控程序副本和宿主失败报告；没有新对象文件或可执行程序。原始输入、48份压缩结果及全部回收结果保持。
+
+独立失败事实后验283d37返回0，PASS_FAILURE_FACTS_ONLY；原Root1完整保留。Root已核对该回执的完整SHA、原文件身份、实际返回类型及上述事实。
+
+失败宿主报告：validation/artifacts/axial-material-B-IO-build-qualification-20261015-v1/Root_actual_B_IO_build_summary.json
+SHA256 f128f9b43a2725469495882778cc43b0b4ef3532de7179b997b0f3835ecdb2ec
+原始Root返回：current_extra_reaction_source_v2/B_IO_build_qualification_source_v1_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+SHA256 055a90f8da93620acd447e2323774a021b36964751c9c4b5d45047c57d83bb13
+独立后验：同构建源码目录 actual_postverify_20261015/REVIEW.json
+SHA256 e732c0a146f5da24bb6392bc56e557820b1f11bd84a768f7c0d004bf9c50453b
+后验真实返回：同目录 TRUE_TOOL_RETURNS.json
+SHA256 8fe0e976b90b48649dc95aa6c468b7c0fe5fe8ad4031142d0947fa91bafcfc2c
+
+下一版本仅补齐原监控记录目录，保留完整失败66根目录清单并增加新的第67个输出根。五阶段命令、科学代码、ABI配置及原资源上限保持；旧v1 Source/准备0/发布0/轻审0/失败1及全部文件不改。
+当前尚未构建合格的B新二进制，未运行B材料捕获或物理计算。

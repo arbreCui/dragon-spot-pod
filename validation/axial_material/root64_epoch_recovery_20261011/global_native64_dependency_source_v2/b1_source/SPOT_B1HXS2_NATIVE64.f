@@ -1,0 +1,208 @@
+*DECK SPOT_B1HXS2_NATIVE64
+*     NEW SOURCE: full original B1HXS2 procedure, typed dynamic ABI.
+*     Static VOL/GAR/GARFI/XSCAT material buffers remain REAL.
+*     Full live FLUX and every weighted result stay DP.
+*     Original equations, loop order and spectrum guard retained.
+*     No compilation, numerical execution or qualification here.
+      SUBROUTINE SPOT_B1HXS2_NATIVE64(NUNKNO,IPMACR,IPAS,NGRO,NBM,IAN,NFISSI,VOL,MAT,
+     1 KEYFLX,FLUX,LFISSI,IJJ0,IJJ1,NJJ0,NJJ1,IDEL,FLXIN,SA,ST,SFNU,XHI,
+     2 SCAT0,SCAT1,NGROIN,INORM)
+*
+      USE GANLIB
+*----
+*  SUBROUTINE ARGUMENTS
+*----
+      TYPE(C_PTR) IPMACR
+      INTEGER NUNKNO,IPAS,NGRO,NBM,IAN,NFISSI,MAT(IPAS),KEYFLX(IPAS),
+     1 IJJ0(NGRO),IJJ1(NGRO),NJJ0(NGRO),NJJ1(NGRO),IDEL(2),NGROIN,INORM
+      REAL VOL(IPAS)
+      DOUBLE PRECISION FLUX(NUNKNO,NGRO),SA(NGRO),ST(NGRO),
+     1 SFNU(NGRO),XHI(NGRO),SCAT0(IDEL(1)),SCAT1(IDEL(2))
+      DOUBLE PRECISION FLXIN(NGRO)
+      LOGICAL LFISSI
+*----
+*  LOCAL VARIABLES
+*----
+      TYPE(C_PTR) JPMACR,KPMACR
+      LOGICAL LOGIC
+      CHARACTER CM*2
+      DOUBLE PRECISION SUM,A11,A13
+      INTEGER, ALLOCATABLE, DIMENSION(:) :: IJJ,NJJ,IPOS
+      REAL, ALLOCATABLE, DIMENSION(:) :: XSCAT,GAR,GARFI
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: GAF
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: A14
+*----
+*  SCRATCH STORAGE ALLOCATION
+*   XSCAT   scattering vector (XSCAT(0)=0.0).
+*   IJJ     last scattering group (IJJ(0) = 0).
+*   NJJ     number of scattering group (NJJ(0)=-NGROUP).
+*   IPOS    position self scattering in XSCAT (IPOS(0)=NGROUP+1).
+*----
+      ALLOCATE(IJJ(0:NBM),NJJ(0:NBM),IPOS(0:NBM))
+      ALLOCATE(XSCAT(0:NBM*NGRO),GAR(0:NBM),GARFI(0:NBM*NFISSI))
+      ALLOCATE(A14(NFISSI,0:NBM),GAF(NGRO))
+*
+      IANN=IAN
+      IF(IAN.LT.0) IANN=-(IAN+1)
+      NGROIN=0
+      SUM=0.0D0
+      A13=0.0D0
+      DO 45 NF=1,NFISSI
+      DO 40 IBM=1,NBM
+      A14(NF,IBM)=0.0D0
+   40 CONTINUE
+   45 CONTINUE
+      JPMACR=LCMGID(IPMACR,'GROUP')
+      LFISSI=.FALSE.
+      IF(NFISSI.GT.0) THEN
+         DO 62 LLL=1,NGRO
+         KPMACR=LCMGIL(JPMACR,LLL)
+         A13=0.0D0
+         CALL LCMGET(KPMACR,'NUSIGF',GARFI(1))
+         DO 61 NF=1,NFISSI
+         DO 60 I=1,IPAS
+         IBM=MAT(I)
+         IF(IBM.GT.0) THEN
+            IF(GARFI((NF-1)*NBM+IBM).NE.0.0) LFISSI=.TRUE.
+            A14(NF,IBM)=A14(NF,IBM)+FLUX(KEYFLX(I),LLL)*VOL(I)*
+     1      GARFI((NF-1)*NBM+IBM)
+         ENDIF
+   60    CONTINUE
+   61    CONTINUE
+   62    CONTINUE
+         DO 75 NF=1,NFISSI
+         DO 70 IBM=1,NBM
+         A13=A13+A14(NF,IBM)
+   70    CONTINUE
+   75    CONTINUE
+      ENDIF
+*
+      IF(INORM.EQ.1) THEN
+        DO 85 LLL=1,NGRO
+        A11=0.0D0
+        DO 80 I=1,IPAS
+        A11=A11+FLUX(KEYFLX(I),LLL)*VOL(I)
+   80   CONTINUE
+        FLXIN(LLL)=A11
+   85   CONTINUE
+        IDEL(1)=0
+        IDEL(2)=0
+      ENDIF
+*
+      DO 200 LLL=1,NGRO
+      KPMACR=LCMGIL(JPMACR,LLL)
+      IF(LFISSI) THEN
+         A11=0.0D0
+         CALL LCMGET(KPMACR,'NUSIGF',GARFI(1))
+         DO 95 NF=1,NFISSI
+         DO 90 I=1,IPAS
+         IBM=MAT(I)
+         IF(IBM.GT.0) A11=A11+FLUX(KEYFLX(I),LLL)*VOL(I)*
+     1   GARFI((NF-1)*NBM+IBM)
+   90    CONTINUE
+   95    CONTINUE
+         SFNU(LLL)=A11/FLXIN(LLL)
+      ELSE
+         SFNU(LLL)=0.0
+      ENDIF
+*
+      GAR(0)=0.0
+      IF(INORM.EQ.1) THEN
+        CALL LCMGET(KPMACR,'NTOT0',GAR(1))
+        A11=0.0D0
+        DO 100 I=1,IPAS
+        A11=A11+FLUX(KEYFLX(I),LLL)*VOL(I)*GAR(MAT(I))
+  100   CONTINUE
+        ST(LLL)=A11/FLXIN(LLL)
+      ELSE
+        A11=ST(LLL)*FLXIN(LLL)
+      ENDIF
+*
+      CALL LCMGET(KPMACR,'SIGS00',GAR(1))
+      DO 110 I=1,IPAS
+      A11=A11-FLUX(KEYFLX(I),LLL)*VOL(I)*GAR(MAT(I))
+  110 CONTINUE
+      SA(LLL)=A11/FLXIN(LLL)
+*
+      IF(LFISSI) THEN
+         A11=0.0D0
+         CALL LCMGET(KPMACR,'CHI',GARFI(1))
+         DO 125 NF=1,NFISSI
+         DO 120 IBM=1,NBM
+         A11=A11+A14(NF,IBM)*GARFI((NF-1)*NBM+IBM)
+  120    CONTINUE
+  125    CONTINUE
+         XHI(LLL)=A11/A13
+         SUM=SUM+XHI(LLL)
+      ELSE
+         XHI(LLL)=0.0
+      ENDIF
+      IF(INORM.EQ.1) THEN
+*----
+*  TRANSPORT CORRECTION
+*----
+        A11=0.0D0
+        IF(IAN.EQ.-1) THEN
+           GAR(0)=0.0
+           CALL LCMGET(KPMACR,'SIGS01',GAR(1))
+           DO 130 I=1,IPAS
+           A11=A11+FLUX(KEYFLX(I),LLL)*VOL(I)*GAR(MAT(I))
+  130      CONTINUE
+           ST(LLL)=ST(LLL)-A11/FLXIN(LLL)
+        ENDIF
+*
+        DO 190 M=0,IANN
+        WRITE (CM,'(I2.2)') M
+        DO 140 IG=1,NGRO
+        GAF(IG)=0.0D0
+  140   CONTINUE
+        CALL LCMLEN(KPMACR,'NJJS'//CM,ILONG,ITYLCM)
+        IF(ILONG.GT.0) THEN
+          CALL LCMGET(KPMACR,'NJJS'//CM,NJJ(1))
+          CALL LCMGET(KPMACR,'IJJS'//CM,IJJ(1))
+          CALL LCMGET(KPMACR,'IPOS'//CM,IPOS(1))
+          CALL LCMGET(KPMACR,'SCAT'//CM,XSCAT(1))
+          DO 160 I=1,IPAS
+          IBM=MAT(I)
+          IF(IBM.EQ.0) GO TO 160
+          DO 150 IG=IJJ(IBM)-NJJ(IBM)+1,IJJ(IBM)
+          IGAR=IPOS(IBM)+IJJ(IBM)-IG
+          GAF(IG)=GAF(IG)+FLUX(KEYFLX(I),IG)*VOL(I)*XSCAT(IGAR)
+  150     CONTINUE
+          IF(IAN.EQ.-1) THEN
+             IGAR=IPOS(IBM)+IJJ(IBM)-LLL
+             GAF(LLL)=GAF(LLL)-FLUX(KEYFLX(I),LLL)*VOL(I)*GAR(IBM)
+          ENDIF
+  160     CONTINUE
+        ENDIF
+        IF(M.EQ.0) THEN
+           DO 170 IG=IJJ0(LLL)-NJJ0(LLL)+1,IJJ0(LLL)
+           IGAR=IDEL(1)+1+IJJ0(LLL)-IG
+           SCAT0(IGAR)=GAF(IG)/FLXIN(IG)
+  170      CONTINUE
+           IDEL(1)=IDEL(1)+NJJ0(LLL)
+        ELSE IF(M.EQ.1) THEN
+           DO 180 IG=IJJ1(LLL)-NJJ1(LLL)+1,IJJ1(LLL)
+           IGAR=IDEL(2)+1+IJJ1(LLL)-IG
+           SCAT1(IGAR)=GAF(IG)/FLXIN(IG)
+  180      CONTINUE
+           IDEL(2)=IDEL(2)+NJJ1(LLL)
+        ENDIF
+  190   CONTINUE
+        LOGIC=(IJJ0(LLL).LE.LLL).AND.(NGROIN.EQ.LLL-1)
+        IF(IANN.GE.1) LOGIC=LOGIC.AND.(IJJ1(LLL).LE.LLL)
+        IF(LOGIC) NGROIN=LLL
+      ENDIF
+  200 CONTINUE
+      IF((ABS(1.0D0-SUM).GT.1.0D-3).AND.LFISSI) THEN
+         CALL XABORT('SPOT_B1HXS2_NATIVE64: INCONSISTENT FISSION SPECTRUM.')
+      ENDIF
+*----
+*  SCRATCH STORAGE DEALLOCATION
+*----
+      DEALLOCATE(GAF,A14)
+      DEALLOCATE(GARFI,GAR,XSCAT)
+      DEALLOCATE(IPOS,NJJ,IJJ)
+      RETURN
+      END
+*

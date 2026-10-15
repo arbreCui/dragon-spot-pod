@@ -1,0 +1,7 @@
+PASS_ACTUAL_JOINT_HELPER_Q_METADATA_ONLY
+48 finite unique exact-bool aggregate checks. Genuine Root writer94520a typed0 CLOSED and actual Q c6efd7...2d9b are fully coupled.
+Original13 protocol + owner4/3/2/2 + new5/13/3 honest nontransactional clone-failure + fresh27/37112/4+3/full9 same-phase wire metadata retained.
+Source65, actual retention14a142, V23 actual Source-only install3b, V25 saved peers55/42, original184/199 Sources/D9/10/allcaps retained.
+All310 declared Root input pins have exact integer metadata/current lstat; no large payload rehash or gzip/control replay by this reviewer.
+Only helper metadata qualification. No new whole INPUT/build/native/RAM/science credit; AAA7/8 and ABA unstarted remain outside this scope.
+Original Q and Root proof full before/after unchanged.

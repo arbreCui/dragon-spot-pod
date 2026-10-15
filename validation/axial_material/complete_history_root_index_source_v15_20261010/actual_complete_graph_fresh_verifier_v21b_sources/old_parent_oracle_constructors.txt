@@ -1,0 +1,34 @@
+def _old_parent_complete_return_constructors(old,graph):
+ """Original pinned bcd pure constructors, never the new helper as oracle.
+
+ Stored graph dictionaries were normalized for storage. Original verify_graph
+ returns a deepcopy of FRESH_READER_CONTRACT, regenerated _coverage dictionaries
+ in CLOSURE_CATEGORIES order, and regenerated _trace_coverage counts in its
+ literal constructor order. Preserve every field/value/type/list/float bit;
+ only these known output constructors supply their original insertion order.
+ """
+ reader=copy.deepcopy(old.FRESH_READER_CONTRACT)
+ require(reader==graph['fresh_reader_contract'],'entire stored reader contract differs from original parent constant')
+ saved_coverage=graph['coverage']
+ require(type(saved_coverage) is dict and set(saved_coverage)==set(old.CLOSURE_CATEGORIES),'entire original closure category set required')
+ for descriptor in saved_coverage.values():
+  require(type(descriptor) is dict and set(descriptor)=={'canonical_files','bytes','owners'},'all original coverage descriptor fields required')
+ coverage={category:{'canonical_files':saved_coverage[category]['canonical_files'],
+                     'bytes':saved_coverage[category]['bytes'],
+                     'owners':copy.deepcopy(saved_coverage[category]['owners'])}
+           for category in old.CLOSURE_CATEGORIES}
+ saved_trace=graph['trace_coverage']
+ trace={
+  'owned_file_attempts':saved_trace['owned_file_attempts'],
+  'owned_namespace_directory_attempts':saved_trace['owned_namespace_directory_attempts'],
+  'explicit_live_resource_directory_attempts':saved_trace['explicit_live_resource_directory_attempts'],
+  'owned_regular_descriptor_attempts':saved_trace['owned_regular_descriptor_attempts'],
+  'explicit_subprocess_pipe_attempts':saved_trace['explicit_subprocess_pipe_attempts'],
+  'explicit_subprocess_null_device_attempts':saved_trace['explicit_subprocess_null_device_attempts'],
+  'explicit_declared_absent_file_attempts':saved_trace['explicit_declared_absent_file_attempts'],
+  'actual_subprocess_audit_attempts':saved_trace['actual_subprocess_audit_attempts'],
+  'unique_records':saved_trace['unique_records'],
+  'actual_read_open_attempts':saved_trace['actual_read_open_attempts']}
+ require(type(saved_trace) is dict and set(saved_trace)==set(trace),'all original trace coverage fields required')
+ require(coverage==saved_coverage and trace==saved_trace,'entire original constructor values differ from complete stored coverage dictionaries')
+ return reader,coverage,trace

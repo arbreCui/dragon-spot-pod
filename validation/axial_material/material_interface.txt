@@ -1,0 +1,88 @@
+Fresh same-temperature A/B pin materials and radial snapshots
+
+Purpose
+  Generate input files only. No material solve, transport, compilation, library
+  conversion or nuclear-data processing occurs in material_inputs.py.
+  A uses Pu/U heavy-metal mass fractions 0.21/0.79. B uses 0.2436/0.7564,
+  the commented alternative on rnr_0burn.x2m line 29. B is a declared composition
+  sensitivity test, not a validated IRENA design. Fuel/clad/sodium temperatures
+  are 750/620/475 C for both states and every physical axial zone.
+
+Scientific source and geometry
+  Current data/rnr_0burn_spot_proc/rnr_cc.c2m and rnr_interpol.c2m are required
+  to match the corrected-20260527 pin procedures byte for byte. The generated
+  AxMatTone procedure uses the current SpotD4Snap density calculation block,
+  including +273.15, rather than historical SpotSnapBld concentrations.
+  All density formulas, isotope vectors, O/M and material constants remain in
+  those current procedures. Only Pu/U are supplied as declared state arguments.
+
+  The corrected pin TDT is copied unchanged to geometry.dat in each state.
+  Hex edge: 0.61776479 cm. Inner-to-outer radii: 0.11, 0.308712, 0.381084,
+  0.412536, 0.4225, 0.435, 0.485 cm. Mixtures 7/6/5/4 are the four fuel rings,
+  8 is central He, 3 gap He, 2 AIM1 clad, 1 Na. Geometry and boundary data are
+  identical in A/B. The archived 20260527 pin deck's CTRA NONE, ANIS2, +273.16
+  and MXIT3 are historical settings and are not imported into this experiment.
+
+Library and self-shielding
+  LIB uses NMIX8, CTRA APOL, ANIS3. Eight fuel nuclides in each of four rings
+  preserve 32 fission components; the main fuel definition is MIX7 with COMB
+  copies in 6/5/4. Oxygen remains NOEV. AIM1 isotope self-shielding flags come
+  from current SpotD4Snap, including its structural-material flag 2.
+  The reviewed private 28-nuclide library is staged as DLIB_ACTUAL. Its admitted
+  binary hash is e78b87094b67bd4d1bcdc3a5dd2beeb168318853a48321473bb9b86df5ba19cc.
+  Only seven Mo isotopes switch to DLIB8R1_370; other pin nuclides use direct
+  actual-temperature nodes. The pin consumes 34 distinct nuclides: C12 exists
+  in the shared candidate but has no EM10 region here. Expected material entries
+  are 62 (36 fuel-ring entries, 23 clad, Na and two He).
+  Self-shielding is real SALT TISO48/100 MERGMIX then TONE MXIT20 EPS1e-5
+  TRAN PIJ. No table interpolation substitute or reduced material model is used.
+  Original-library contents are independently pinned to
+  66b9a7b3e8534a54cf590db63a7c1dbd96b4a95c636f0e3a6eee5b219bbcc1e9,
+  the hash retained by d4a-actual-temperature-material-prepared-20261003.
+
+Generate
+  python -B validation/axial_material/material_inputs.py FRESH_OUTPUT
+  Optional --config supplies numerical snapshot controls before protocol freeze;
+  changing compositions or common temperatures is refused. Optional library
+  paths permit relocation; candidate contents must retain the admitted hash.
+  The output manifest material_inputs.json seals copied sources, generated decks,
+  geometry and required library staging paths/hashes. It is an input receipt,
+  never proof that a material solve or snapshot succeeded. Libraries are not
+  copied by this generator: the execution owner must stage private copies.
+
+Per-state sequence (A and B are independent new directories)
+  1. material.x2m calls AxMatTone with explicit Pu/U and temperatures. It checks
+     the MACROLIB dimensions 370 groups, 8 mixtures, 32 fission components,
+     then exports material.xsm, microlib.ascii, macro.ascii, metadata.ascii.
+     Log: material.log. Marker: AXMAT-MATERIAL-A-COMPLETE / B-COMPLETE.
+     Qualify the saved data, provenance, TONE terminal and requested P0/P1 checks
+     before admitting the snapshot; deck completion alone is not qualification.
+  2. snapshot.x2m reads that state's new material.xsm without another TONE.
+     It repeats the dimension gate and executes full-region SALT TISO48/100
+     ANIS1, MCCGT GAUS4 AAC80 TMT STIS1 MCU10000, ASM ARM and fresh FLU TYPE K.
+     Default MCCGT EPSI=1e-5 and snapshot EXTE/UNKT/THER=2.5e-7, maxout500,
+     are predeclared configurable numerical controls, not measured performance.
+     Log: snapshot.log. Marker: AXMAT-SNAPSHOT-A-COMPLETE / B-COMPLETE.
+     No saved legacy flux or fabricated analytic snapshot is an input.
+
+Outputs for production runner
+  A/snapshot_A.xsm and B/snapshot_B.xsm each contain L_ARCHIVE LISTDIM=1.
+  BACKUP writes ITEM1 under exactly TRACK, MICROLIB2, SYSTEM, FLUX.
+  A/radial_track.bin and B/radial_track.bin hold the SALT binary tracks.
+  material_inputs.json['snapshots'][A or B] gives deck/archive/log/radial_track
+  paths and marker. Actual output hashes are not known at generation time.
+  The execution owner must publish material_results.json binding these output
+  hashes to material_inputs.json, native logs, sources, staged libraries and
+  pinned runtime. Require normal exits, actual convergence and object checks.
+  Verify A/B TRACK geometry, MATCOD, KEYFLX and volumes match; never assume two
+  independently generated binary track files are byte-identical in advance.
+  Package completed snapshots by BACKUP/RECOVER into A/B/A training, AAA and
+  ABA case archives. Reuse the same A snapshot bytes where A is repeated.
+  Do not run three identical A material/snapshot solves to populate three slots.
+
+Boundary
+  The execution protocol, wall caps and runtime must be frozen by the coordinating
+  owner before running. Input generation is not compute authorization. Real TONE,
+  snapshot convergence, basis rank, coupled convergence and independent transport
+  accuracy each require their own actual evidence. These files do not inherit
+  the old D4 CLOSED/9 MET or its numerical accuracy claims.

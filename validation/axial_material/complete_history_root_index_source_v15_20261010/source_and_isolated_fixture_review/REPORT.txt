@@ -1,0 +1,4 @@
+仅SOURCE与独立纯函数fixture通过，候选尚未安装。原函数130–149行只改两处：每次调用的局部路径树初始化；完成原路径/祖先检查后以路径树判断重复及父子重叠。返回原顺序、全部原错误顺序和文件系统检查原样，不缓存stat、不筛根。
+401项真实临时树比较实际d352e9整数0 CLOSED，包括future根、目录/祖先链接、悬挂/环、硬链接文件、str边界、父子/重复以及提前错误优先序。所有结果与原函数类型/路径顺序/异常类及消息相同。
+已提供完整原moment模块的新TMP副本，仅目标函数两区变化，原其余41函数/类片段、DynamicHistoryResources全class/check/__init__源码及原96GiB/free8GiB不变。正常接入需新canonical basename/唯一module身份/真实资源class源描述；旧祖先准入链及已prepare的4f绝不能改或monkeypatch。原模块ROOT按文件深度推导，因此必须安装于原validation/axial_material目录。
+现有profile时间含观测器开销与并行，不是无偏正常时长；本轮未测完整prepare提速，更未授full86/native/RSS/AAA/ABA资格。

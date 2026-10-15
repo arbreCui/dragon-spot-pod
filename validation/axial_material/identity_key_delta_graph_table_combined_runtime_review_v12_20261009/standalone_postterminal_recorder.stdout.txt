@@ -1,0 +1,1 @@
+{'path': '/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json', 'sha256': '449d08d08cdfe7cb19eaf3a882312f8d6c21725011650289608e4bae601178bf'} 26415645

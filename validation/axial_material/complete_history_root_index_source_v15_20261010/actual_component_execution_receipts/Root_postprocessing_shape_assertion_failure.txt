@@ -1,0 +1,4 @@
+Root evidence postprocessing stopped at a pure descriptor-shape assertion (actual tool chunk 8e4137, integer exit 1).
+The host's input pin contains path, SHA256 and seven identity fields; Root's comparison helper produced only path and SHA256.
+The business admission had already actually exited zero (c2b65d/session89358 -> 9b3290, closed). It was not rerun.
+The next evidence-only repair verifies the full saved identity explicitly instead of equating differently shaped descriptors.

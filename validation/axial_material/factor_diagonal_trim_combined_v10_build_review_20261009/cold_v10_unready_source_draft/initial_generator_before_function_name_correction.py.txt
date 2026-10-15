@@ -1,0 +1,162 @@
+"""Finite source-only cold retarget. Does not import any project module."""
+from pathlib import Path
+import ast,copy,difflib,hashlib,json,os
+
+D=Path('/private/tmp/axmat_factor_diagonal_trim_v10_minimal_cold_source_draft_20261009')
+ROOT=Path('/Users/wen/spot');AM=ROOT/'validation/axial_material';ART=ROOT/'validation/artifacts'
+F=AM/'prepare_historical_input_owned_specs_physical_last_cprime_trim_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak.py'
+C=AM/'cold_component_input_consumer_last_cprime_trim_own_pid_peak.py'
+B=AM/'cold_owned_specs_last_cprime_trim_component_input_intake_binding_20261009.json'
+COM=AM/'prepare_historical_input_owned_specs_factor_diagonal_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v10.py'
+CONTROL=AM/'factor_diagonal_trim_source_v10_20261009/control_contract.json'
+PLAN=AM/'factor_diagonal_trim_source_v10_20261009/factor_codec_control_contract.json'
+pins={F:'59d0c9b0f0a3b9ca6764f628ade537ec9b09eaa6edfe69e734994a7323adbfc8',C:'2fa0cb00ec458e9bbbbdf2f15db703a1c0547b08d35f585b6c7e6e6274d06d59',B:'b37b9d5adda1fb4a5ffe0f4a4914d513f38f6f68d480be6145f8d4af041572dc',COM:'c55ca2680d9e1326979649f835d9612a8fd80df5aecee1adc25765c419329efc',CONTROL:'abc58ca49c84e03765a581fa0fd804023764f5a931bb04b87b0ed5c70b07cf2a',PLAN:'7026f91f2098f9bf9d14f2d34f455473a654000ace6e3864b53d9a20bbb14373'}
+sha=lambda b:hashlib.sha256(b).hexdigest()
+def ident(p):
+ s=p.lstat();return dict(dev=s.st_dev,ino=s.st_ino,size=s.st_size,mode=s.st_mode,nlink=s.st_nlink,mtime_ns=s.st_mtime_ns,ctime_ns=s.st_ctime_ns)
+before={str(p):ident(p) for p in pins};blobs={p:p.read_bytes() for p in pins}
+assert all(sha(blobs[p])==s for p,s in pins.items())
+sources={F:blobs[F].decode(),C:blobs[C].decode()}
+ct=ast.parse(blobs[COM].decode()); ca={n.targets[0].id:n.value for n in ct.body if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+def val(n):
+ if isinstance(n,ast.Constant):return n.value
+ if isinstance(n,ast.Name) and n.id in ('ROOT','ART'):return {'ROOT':ROOT,'ART':ART}[n.id]
+ if isinstance(n,ast.Name):return val(ca[n.id])
+ if isinstance(n,ast.BinOp) and isinstance(n.op,ast.Div):return Path(val(n.left))/val(n.right)
+ if isinstance(n,ast.BinOp) and isinstance(n.op,ast.Add):return val(n.left)+val(n.right)
+ raise AssertionError(ast.dump(n))
+component={name:val(ca[name]) for name in ('TRIM_FACTORY','TRIM_FACTORY_SHA','TRIM_SOURCE','TRIM','TRIM_TERMINAL','TRIM_DECL_SHA','TRIM_SEAL_SHA','TRIM_TERMINAL_SHA','TRIM_KERNEL_SHA','TRIM_OBJECT_SHA','TRIM_RUNTIME_SHA','TRIM_SOURCE_ADMISSION_SHA','TRIM_SCHEMA','TRIM_ADMISSION')}
+assert component['TRIM_SCHEMA']=='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+factor=copy.deepcopy(json.loads(blobs[CONTROL])['factor_diagonal_trim'])
+codec=json.loads(blobs[PLAN]);assert codec['total_planned_stage_count']==45 and codec['additional_stage_count']==5 and codec['original40_required'] is True
+FNAME='prepare_historical_input_owned_specs_physical_factor_diagonal_trim_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak_v10.py'
+CNAME='cold_component_input_consumer_factor_diagonal_trim_own_pid_peak_v10.py'
+BNAME='cold_owned_specs_factor_diagonal_trim_component_input_intake_binding_v10_20261009.json'
+intakeroot=ART/'axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009'
+input_schema='AXMAT_COLD_COMPLETE_FACTOR_DIAGONAL_TRIM_COMPONENT_INPUT_INTAKE_V1'
+callback_schema='AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_INPUT_ADMISSION_V1'
+api_schema=val(ca['PREFIX'])+'_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+
+def save(name,data):
+ with (D/name).open('x') as f:json.dump(data,f,indent=2,ensure_ascii=False,allow_nan=False);f.write('\n')
+def transform(path,mapping,doc,literal_replacements):
+ original=sources[path];tree=ast.parse(original);lines=original.splitlines(keepends=True);offset=[0]
+ for line in lines:offset.append(offset[-1]+len(line))
+ patches=[]
+ def add(n,new,label):
+  a,b=offset[n.lineno-1],offset[n.end_lineno];patches.append(dict(start=a,end=b,old=original[a:b],new=new,label=label))
+ add(tree.body[0],repr(doc)+'\n','module source-only documentation')
+ for n in tree.body:
+  if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name):
+   name=n.targets[0].id
+   if name in mapping:add(n,name+' = '+mapping[name]+'\n','source/contract identity '+name)
+   elif name=='TRIM_INPUT_SEMANTICS':
+    a=offset[n.lineno-1]
+    patches.append(dict(start=a,end=a,old='',new='TRIM_FACTOR_STORAGE_CONTRACT = '+repr(factor)+'\n',label='independently sourced complete factor storage metadata contract'))
+ funcs={n.name:n for n in tree.body if isinstance(n,ast.FunctionDef)}
+ n=funcs['last_cprime_trim_return_admission'];new=''.join(lines[n.lineno-1:n.end_lineno])
+ old="or value['admission']!='RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_RUNTIME_INPUT_ONLY'"
+ assert new.count(old)==1;new=new.replace(old,"or value['admission']!='RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY'")
+ old="or value['source_patch_proof']!=value['source_admission']"
+ assert new.count(old)==1
+ new=new.replace(old,old+"\n        or value['factor_diagonal_codec_controls_passed']is not True\n        or value['factor_diagonal_storage_contract']!=TRIM_FACTOR_STORAGE_CONTRACT\n        or value['cache_unit_control_counts']['total_declared_stages']!=45\n        or value['cache_unit_control_counts']['inherited_last_cprime_stages_retained']!=40\n        or value['cache_unit_control_counts']['factor_codec_positive_fixtures']!=3\n        or value['cache_unit_control_counts']['factor_codec_module_negative_calls']!=4\n        or value['cache_unit_control_counts']['factor_codec_public_factor_calls']!=6\n        or value['cache_unit_control_counts']['factor_codec_public_solve_calls']!=12")
+ add(n,new,'complete new component INPUT identity/codec guards; all original body checks retained')
+ for fname,repls in literal_replacements.items():
+  n=funcs[fname];new=''.join(lines[n.lineno-1:n.end_lineno])
+  for old,rep in repls:
+   assert old in new,(fname,old);new=new.replace(old,rep)
+  add(n,new,'only private consumer filename literals in '+fname)
+ patches.sort(key=lambda r:(r['start'],r['end']));assert all(a['end']<=b['start'] for a,b in zip(patches,patches[1:]))
+ changed=original
+ for r in reversed(patches):
+  assert changed[r['start']:r['end']]==r['old'];changed=changed[:r['start']]+r['new']+changed[r['end']:]
+ inverses=[];shift=0
+ for r in patches:
+  inverses.append(dict(start=r['start']+shift,end=r['start']+shift+len(r['new']),old=r['old'],new=r['new'],label=r['label']));shift+=len(r['new'])-len(r['old'])
+ restored=changed
+ for r in reversed(inverses):
+  assert restored[r['start']:r['end']]==r['new'];restored=restored[:r['start']]+r['old']+restored[r['end']:]
+ assert restored==original
+ nt=ast.parse(changed);nl=changed.splitlines(keepends=True)
+ of={n.name:n for n in ast.walk(tree) if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))};nf={n.name:n for n in ast.walk(nt) if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+ assert of.keys()==nf.keys()
+ exact=[];modified=[]
+ for name,n in of.items():
+  nn=nf[name];a=''.join(lines[n.lineno-1:n.end_lineno]);b=''.join(nl[nn.lineno-1:nn.end_lineno])
+  (exact if a==b else modified).append(name)
+ assert sorted(modified)==sorted(['last_cprime_trim_return_admission',*literal_replacements])
+ original_assign={n.targets[0].id:n for n in tree.body if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+ new_assign={n.targets[0].id:n for n in nt.body if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+ for name in original_assign.keys()-mapping.keys():assert ast.dump(original_assign[name],include_attributes=False)==ast.dump(new_assign[name],include_attributes=False),name
+ result=dict(parent_path=str(path),parent_sha256=sha(blobs[path]),candidate_sha256=sha(changed.encode()),top_definition_count=len(funcs),all_definition_count=len(of),unchanged_definition_count=len(exact),unchanged_definitions=exact,modified_definitions=modified,complete_inverse_byteexact=True,restored_sha256=sha(restored.encode()),regions=inverses,all_nonidentity_top_level_assignments_AST_unchanged=True)
+ return changed,result,nt
+
+trim_map={name:repr(str(value)) if isinstance(value,Path) else repr(value) for name,value in component.items() if name not in ('TRIM','TRIM_ADMISSION')}
+trim_map['TRIM_BUILD']=repr(str(component['TRIM']))
+# Paths remain pathlib objects, just as in both frozen mothers.
+for name,value in component.items():
+ if isinstance(value,Path):trim_map[name]='Path('+repr(str(value))+')'
+trim_map['TRIM_BUILD']='Path('+repr(str(component['TRIM']))+')'
+consumer_map=dict(trim_map)
+consumer_map.update(SCHEMA=repr(input_schema),STATUS=repr('UNREADY_FACTOR_DIAGONAL_V10_ACTUAL_BOUNDED_INTAKE_NOT_BOUND'),INTAKE_ROOT='ART/'+repr(intakeroot.name),INTAKE_ROOT_SHA='None',INTAKE_RETURN_SHA='None',API_SOURCE='ROOT/'+repr(str(COM.relative_to(ROOT))),API_SOURCE_SHA=repr(pins[COM]),API_SCHEMA=repr(api_schema),API_BUILD='ART/'+repr(val(ca['OUT']).name),API_SOURCE_ROOT='ART/'+repr(val(ca['SOURCE']).name),API_TERMINAL='ART/'+repr(val(ca['TERMINAL']).name),API_SEAL_SHA='None',API_TERMINAL_SHA='None',API_PREP_SHA='None')
+candc,cinv,ctree=transform(C,consumer_map,'UNREADY V10 complete cold INPUT consumer source-only draft.\n\nAll complete graph, canonical/row/owner/namespace/alias/absence/fresh-read gates\nand historical whole bodies remain unchanged. Actual new bounded intake and\ncombined success witnesses are absent. No controller, native, AAA or ABA credit.',{})
+CP=D/CNAME;CP.write_text(candc);csha=sha(candc.encode())
+
+oldb=json.loads(blobs[B]);b=copy.deepcopy(oldb)
+b['schema']=input_schema;b['draft_status']='UNREADY_V10_ACTUAL_COMPLETE_COMBINED_AND_BOUNDED_INPUT_NOT_BOUND'
+b['actual_bounded_api_terminal_evidence']=dict(path=str(intakeroot/'Root_terminal_return.json'),sha256=None)
+b['api_return']=dict(path=str(intakeroot/'intake/admit.log'),sha256=None)
+oldroot=oldb['intake_namespaces'][0]['root'];assert len(oldb['intake_namespaces'])==1
+old_inventory=oldb['intake_namespaces'][0]['inventory'];assert len(old_inventory['files'])==10 and old_inventory['symlinks']=={}
+b['intake_proof_files']={str(intakeroot/Path(path).relative_to(oldroot)):None for path in oldb['intake_proof_files']}
+b['intake_namespaces']=[dict(root=str(intakeroot),inventory=dict(files={name:None for name in old_inventory['files']},symlinks={},directories=old_inventory['directories']))]
+b['complete_historical_input_graph']=dict(path=str(val(ca['OUT'])/'input_graph.json'),sha256=None,content_sha256=None,scope=oldb['complete_historical_input_graph']['scope'])
+b['binding_source']=dict(path=str(AM/CNAME),sha256=csha)
+b['expected_complete_alias_count']=None
+assert 'binding_descriptor' not in b and set(b)==set(oldb)
+changed_bkeys=[k for k in b if b[k]!=oldb[k]]
+assert set(changed_bkeys)=={'schema','draft_status','actual_bounded_api_terminal_evidence','api_return','intake_proof_files','intake_namespaces','complete_historical_input_graph','binding_source','expected_complete_alias_count'}
+restored_b=copy.deepcopy(b)
+for k in changed_bkeys:restored_b[k]=oldb[k]
+assert restored_b==oldb
+old_serialized=json.dumps(oldb,indent=2,ensure_ascii=False,allow_nan=False)+'\n';assert old_serialized.encode()==blobs[B]
+btext=json.dumps(b,indent=2,ensure_ascii=False,allow_nan=False)+'\n';BP=D/BNAME;BP.write_text(btext);bsha=sha(btext.encode())
+
+factory_map=dict(trim_map)
+factory_map.update(SOURCE='ART/'+repr('axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-admission-scipy-env-physical-basis-own-pid-peak-v10-20261009'),OUTPUT='ART/'+repr('axial-material-production-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-scipy-env-physical-basis-own-pid-peak-v10-20261009'),EXPERIMENT=repr('axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-scipy-env-physical-basis-own-pid-peak-v10-20261009'),FORMAL_FACTORY='ROOT/'+repr('validation/axial_material/'+FNAME),COMBINED_FACTORY='ROOT/'+repr(str(COM.relative_to(ROOT))),COMBINED_FACTORY_SHA=repr(pins[COM]),COMBINED_BUILD='ART/'+repr(val(ca['OUT']).name),COMBINED_BUILD_SEAL='None',COMBINED_TERMINAL='ART/'+repr(val(ca['TERMINAL']).name)+"/'terminal_return.json'",COMBINED_TERMINAL_SHA='None',COMBINED_RUNTIME=repr(str(val(ca['OUT'])/'runtime/Dragon')),COMBINED_RUNTIME_SHA='None',COMBINED_SCHEMA=repr(api_schema),PRIVATE_INPUT_CONSUMER='ROOT/'+repr('validation/axial_material/'+CNAME),PRIVATE_INPUT_CONSUMER_SHA=repr(csha),COMPONENT_INTAKE_DESCRIPTOR='ROOT/'+repr('validation/axial_material/'+BNAME),COMPONENT_INTAKE_DESCRIPTOR_SHA=repr(bsha),INPUT_REUSE_SCHEMA=repr(input_schema),CALLBACK_METADATA_SCHEMA=repr(callback_schema),COLD_TERMINAL='ART/'+repr('axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-terminal-scipy-env-physical-basis-own-pid-peak-v10-20261009'),CONTROL_TERMINAL='ART/'+repr('axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-own-rss-terminal-scipy-env-physical-basis-own-pid-peak-v10-20261009'),DRAFT_STATUS=repr('UNREADY_FACTOR_DIAGONAL_V10_COMBINED_AND_BOUNDED_INPUT_NOT_BOUND'),SCHEMA=repr('AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_FACTORY_V1'),DECL_TERMINAL_SCHEMA=repr('AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_DECLARATION_ACTUAL_TERMINAL_V1'),COLD_TERMINAL_SCHEMA=repr('AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_ACTUAL_TERMINAL_V1'))
+ft=ast.parse(sources[F]);fa={n.targets[0].id:n.value for n in ft.body if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+old_admission_host=ast.literal_eval(fa['ADMISSION_HOST'])
+old_callback=ast.literal_eval(fa['CALLBACK_METADATA_SCHEMA']);assert old_admission_host.count(old_callback)==1
+new_admission_host=old_admission_host.replace(old_callback,callback_schema)
+assert new_admission_host.replace(callback_schema,old_callback)==old_admission_host
+factory_map['ADMISSION_HOST']=repr(new_admission_host)
+old_correction=ast.literal_eval(fa['CORRECTION_SCOPE'])
+new_correction=old_correction.replace('omit only dead last cprime with full-shape arithmetic','omit only dead last cprime and ready dead factor diagonals, with unchanged full build FACTOR/SOLVE and existing full square hit workspace')
+assert new_correction!=old_correction;factory_map['CORRECTION_SCOPE']=repr(new_correction)
+candf,finv,ftree=transform(F,factory_map,'UNREADY factor-diagonal V10 cold source-only integration draft.\n\nFrozen53 top-level and2 nested factory definitions preserve all original\nphysics, producer3.14/analysis3.12 contracts, resource/own-PID512 caps, original\ncontroller/basis/decks/budgets and four tails. New combined and bounded INPUT\nsuccess pins remain absent; neither V9 failure nor old native observations\nqualify this family. Complete actual INPUT is required before any declaration.',{'write_controller':[(C.name,CNAME)],'declare':[(C.name,CNAME)]})
+FP=D/FNAME;FP.write_text(candf);fsha=sha(candf.encode())
+def funcs(text):
+ t=ast.parse(text);ls=text.splitlines(keepends=True)
+ return {n.name:''.join(ls[n.lineno-1:n.end_lineno]) for n in ast.walk(t) if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+assert funcs(old_admission_host).keys()==funcs(new_admission_host).keys()
+assert [n for n,v in funcs(old_admission_host).items() if v!=funcs(new_admission_host)[n]]==['metadata']
+assert funcs(sources[F])['last_cprime_trim_return_admission']==funcs(sources[C])['last_cprime_trim_return_admission']
+assert funcs(candf)['last_cprime_trim_return_admission']==funcs(candc)['last_cprime_trim_return_admission']
+for name in ('producer_environment','working_snapshot_storage_forecast','component_return_admission','completed_components','complete_history_resources','prepare','prepare_binding_in_clean_process','run_controls','finalize_cold_in_clean_process','cold_launch_in_clean_process','cold_terminal_admission'):
+ assert name in finv['unchanged_definitions'],name
+for name in ('input_guard','intake_witness','body_header','current_trim_component_paths','current_cold_binding','current_checks','complete_success_namespaces','expected_union','post_graph_metadata','complete_input_phase','consume_completed_inputs','consume_metadata'):
+ assert name in cinv['unchanged_definitions'],name
+assert len(b['intake_proof_files'])==10 and set(b['intake_namespaces'][0]['inventory']['files'])==set(old_inventory['files'])
+assert all(v is None for v in b['intake_proof_files'].values())
+assert b['complete_historical_input_graph']['sha256'] is None and b['complete_historical_input_graph']['content_sha256'] is None and b['expected_complete_alias_count'] is None
+factory_roots=[ast.literal_eval(factory_map[n].split('ART/',1)[1]) for n in ('SOURCE','OUTPUT','COLD_TERMINAL','CONTROL_TERMINAL')]
+after={str(p):ident(p) for p in pins};assert before==after
+save('factory_complete_byte_inverse.json',finv);save('consumer_complete_byte_inverse.json',cinv)
+save('binding_complete_json_inverse.json',dict(parent_path=str(B),parent_sha256=pins[B],candidate_sha256=bsha,changed_full_top_fields=changed_bkeys,original_field_order_retained=True,full_expected_10_path_payload_plus_Root_member_names_retained=True,restored_original_serialized_sha256=sha(old_serialized.encode()),restored_original_bytes_exact=True,original_values={k:oldb[k] for k in changed_bkeys},candidate_values={k:b[k] for k in changed_bkeys}))
+save('source_pins_before_after.json',dict(files=[dict(path=str(p),sha256=s,before=before[str(p)],after=after[str(p)]) for p,s in pins.items()],all_pinned_source_identities_unchanged=True))
+for p,candidate,name in ((F,candf,'factory_v9_to_v10.diff'),(C,candc,'consumer_v9_to_v10.diff'),(B,btext,'binding_v9_to_v10.diff')):
+ (D/name).write_text(''.join(difflib.unified_diff(blobs[p].decode().splitlines(True),candidate.splitlines(True),fromfile=str(p),tofile='TMP source-only '+name)))
+report=dict(schema='FACTOR_DIAGONAL_V10_MINIMAL_COLD_SOURCE_DRAFT_SCOPE_V1',status='PASS_MINIMAL_SOURCE_DRAFT_UNREADY',factory=dict(path=str(FP),sha256=fsha,parent_sha256=pins[F],top_defs=53,nested_defs=2,whole_defs=len(finv['unchanged_definitions'])+len(finv['modified_definitions']),modified_defs=finv['modified_definitions'],unchanged_whole_defs=finv['unchanged_definition_count']),consumer=dict(path=str(CP),sha256=csha,parent_sha256=pins[C],whole_defs=cinv['all_definition_count'],modified_defs=cinv['modified_definitions'],unchanged_whole_defs=cinv['unchanged_definition_count']),binding=dict(path=str(BP),sha256=bsha,parent_sha256=pins[B],changed_whole_top_fields=changed_bkeys),whole_source_inverse=True,old_80_whole_definitions_retained=True,all_original_physics_math_budgets_environment_MRO_graph_function_bodies_preserved=True,only_compatibility_component_return_function_plus_two_consumer_copy_literals_modified=True,original_generated_admission_host_only_changed_metadata_schema=True,producer_P314_Numpy244_and_analysis_P312_separate_original=True,original_scope_96GiB_free8GiB_21GiB_reserve_ownPID512_single_child_zero_retry=True,whole_seven_INPUT_specs_2cad_binding_and_all_ordinary_return_compatibility_keys_unchanged=True,current_component_bindings_derived_from_frozen_combined_source_not_current_fresh_files={k:str(v) if isinstance(v,Path) else v for k,v in component.items()},new_combined_source=dict(path=str(COM),sha256=pins[COM]),new_combined_future_fields={k:None for k in ('COMBINED_BUILD_SEAL','COMBINED_TERMINAL_SHA','COMBINED_RUNTIME_SHA','API_SEAL_SHA','API_TERMINAL_SHA','API_PREP_SHA','INTAKE_ROOT_SHA','INTAKE_RETURN_SHA','graph_sha256','graph_content_sha256','expected_complete_alias_count','all10intake_payload_SHA256')},new_cold_roots=[str(ART/name) for name in factory_roots],future_roots_lexists={str(ART/name):os.path.lexists(ART/name) for name in factory_roots},new_intake_root=str(intakeroot),new_intake_root_lexists=os.path.lexists(intakeroot),unready_guards_original_functions_byteexact=True,original_ready_status_spelling_in_guards_retained_as_compatibility_enum=True,formal_self_sha_None_is_intentional_external_env_selfcycle_guard=True,complete_namespace_rows_aliases_absences_trace_and_every_endpoint_freshhash_gates_unchanged=True,all_graph_members_and_extra_endpoints_still_fully_merged_without_saved_second_rows_or_pruning=True,cold_source_original_order=['qualified actualnewcombinedPREP+5stageRUN+Root4witness and independentfullgraph','new bounded P12 standard3arg INPUT with own512 guard and durable9payload plus Root10 wholegraph qualification','fresh finalsource truebinding and source admission before source status changes','new originaldeclare thenprepare thenbinding thenpositive/oversize/shortcontrols thenfinalize thenfreshAAA originalbudget'],no_old_success_or_failure_substituted=True,no_scientific_native_AAA_ABA_credit=True,project_written=False,business_imported=False,business_executed=False,actual_tool_terminal_return=None)
+save('REPORT.json',report)
+(D/'REPORT.txt').write_text('V10 factor-diagonal cold 最小三件草稿：源码适配完成，仍 UNREADY。\nF59 53顶层+2嵌套、C2fa 25定义完整保留；F只修改完整组件return兼容guard以及两处consumer复制名，C只修改同一完整组件return guard。\n其余F52/C24定义源码字节保持，完整source逆向回各原SHA；ADMISSION_HOST仅metadata schema身份改变，数学/日志/原环境/预算函数保留。\n当前新component pins从冻结c55源码独立读取；新combined成功seal/terminal/runtime以及新bounded INPUT十项payload、graph SHA/content、aliascount全部None，不替换V9成功或失败。\nB保持原完整十项载荷和namespace结构、三个helper、全图scope；无自身hash循环。新factory/consumer/binding均采用新名字及新根，不覆盖旧失败WORK。\n真正接入前必须Root实际合格newcombined及标准3arg INPUT，再fresh绑定并全source独审，之后逐原declare/prepare/binding/controls/finalize/nativeAAA；原producerP14/analysisP12分离、96GiB/free8/21GiB/OwnRSS512/单child/0retry保持。\n只标准库源码/小metadata读取，未导入业务或写项目、未生成controller或数值运行，不能算cold/native/RSS/AAA/ABA通过。\n')
+print(json.dumps(dict(status=report['status'],factory_sha256=fsha,consumer_sha256=csha,binding_sha256=bsha,report_sha256=sha((D/'REPORT.json').read_bytes()),factory_definition_count=finv['all_definition_count'],consumer_definition_count=cinv['all_definition_count']),ensure_ascii=False))

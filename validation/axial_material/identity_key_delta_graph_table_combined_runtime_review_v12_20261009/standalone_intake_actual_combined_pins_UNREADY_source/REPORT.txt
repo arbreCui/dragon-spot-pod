@@ -1,0 +1,1 @@
+V12 standalone host仅4真实combined输入证据pins已绑定，完整4region可逆回11f4，再22region逆回真实V10a5。其余全部逻辑/完整7INPUT/真MRO/1800总600阶段512MiB/1线程1child0retry未改，继续UNREADY；原recorder0346保持不动，HOST/API_RETURN未填。30future模板字段仍None，不授正式admit、host运行、native或科学资格。只读现有4证据hash+纯SOURCE生成，未业务import/call/run/Rootjobpoll/项目写。

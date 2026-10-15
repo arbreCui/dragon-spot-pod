@@ -1,0 +1,491 @@
+{
+  "schema": "CURRENT_N9_LINK_COUNT_MINIMAL_SOURCE_REVISION_CONTRACT_V1",
+  "status": "UNREADY_SOURCE_ONLY_NOT_ADMITTED_BOUND_CONTROLLED_EXECUTED_OR_QUALIFIED",
+  "source_only": true,
+  "parent_manifest_pin": {
+    "path": "/private/tmp/axmat_N8_four_blocker_minimal_complete_UNREADY_Source_ekd9i0c_/MANIFEST.json",
+    "sha256": "cdaed7cd53d2b22ec3891a7f82064eea9505ae974f8ac284e6d76fe5ae7ae267",
+    "size_bytes": 187186,
+    "identity": [
+      16777229,
+      49523265,
+      33188,
+      1,
+      187186,
+      1791651878538880428,
+      1791651878538880428
+    ]
+  },
+  "parent_manifest_retained_fullpin": {
+    "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/PREVIOUS_SEALED_N8_V2_LINK_COUNT_BASELINE_PROVENANCE/ORIGINAL_N8_V2_MANIFEST.json",
+    "sha256": "cdaed7cd53d2b22ec3891a7f82064eea9505ae974f8ac284e6d76fe5ae7ae267",
+    "size_bytes": 187186,
+    "identity": [
+      16777229,
+      49535859,
+      33188,
+      1,
+      187186,
+      1791656980856272298,
+      1791656980856272298
+    ]
+  },
+  "accepted_minimal_candidate_fullpin": {
+    "path": "/private/tmp/spot_N8_actual_link_count_minimal_UNADMITTED_candidate_20261011_ruknor67/PROPOSAL_AND_STATIC_SOURCE_CHECK.json",
+    "sha256": "6e3d177531e79dabefc911c7b0e0fc7ba6621c4ee1d2a663c382bf17580ce1f2",
+    "size_bytes": 22410,
+    "identity": [
+      16777229,
+      49535011,
+      33188,
+      1,
+      22410,
+      1791656438970552084,
+      1791656438970552084
+    ]
+  },
+  "changed_complete_Source_roles": [
+    "complete_observation_BUILD5_AB_runtime.UNREADY.py",
+    "N8_genuine_integrated_controls_driver.UNREADY.py",
+    "Root_observation_postclose_META_writer.UNREADY.py",
+    "Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+    "bind_complete_observation_SOURCE_only.UNREADY.py",
+    "N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py",
+    "N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json"
+  ],
+  "only_accepted_three_logic_Source_roles": [
+    "complete_observation_BUILD5_AB_runtime.UNREADY.py",
+    "N8_genuine_integrated_controls_driver.UNREADY.py",
+    "Root_observation_postclose_META_writer.UNREADY.py"
+  ],
+  "namespace_only_additional_roles": [
+    "Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+    "bind_complete_observation_SOURCE_only.UNREADY.py",
+    "N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py"
+  ],
+  "required_complete_author_Source_roles": {
+    "qualified_source_manifest": "MANIFEST.json",
+    "host_template": "complete_observation_genuine_host.UNREADY.py",
+    "runtime_template": "complete_observation_BUILD5_AB_runtime.UNREADY.py",
+    "binder": "bind_complete_observation_SOURCE_only.UNREADY.py",
+    "postclose_writer": "Root_observation_postclose_META_writer.UNREADY.py",
+    "native_Source_archive": "COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz",
+    "native_Source_index": "COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json",
+    "observer_module": "OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90",
+    "context_extractor": "OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py",
+    "original_complete_native_walker": "PARENT_SOURCE/Root_bound_complete_native_checker.py",
+    "original_material_seed_contract": "ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json",
+    "material_blueprint_Source": "GUARD_SOURCE/material_inputs.py",
+    "request_preparer": "Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+    "legacy_context_old_XSM_extractor": "COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py",
+    "owner_scope_helper": "N8_exact_owner_scope_observer.UNREADY.py",
+    "monitor_controls_gate": "N8_actual_controls_qualification_gate.Source_META_only.py",
+    "monitor_controls_protocol": "N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json",
+    "monitor_control_driver": "N8_genuine_integrated_controls_driver.UNREADY.py",
+    "monitor_control_child_Source": "N8_private_control_child.UNREADY.py",
+    "monitor_control_Source_binder": "N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py",
+    "monitor_controls_postclose_qualifier": "N8_Root_controls_postclose_META.UNREADY.py"
+  },
+  "required_complete_author_Source_role_count": 21,
+  "current_role_Source_pins_before_manifest": {
+    "host_template": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/complete_observation_genuine_host.UNREADY.py",
+      "sha256": "ce7aa9fc3cc9a93d9cffd70b9dd649914c06344fcb9447e152f0285fd5526cb9",
+      "size_bytes": 14475,
+      "identity": [
+        16777229,
+        49535856,
+        33188,
+        1,
+        14475,
+        1791656980855998798,
+        1791656980855998798
+      ]
+    },
+    "runtime_template": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/complete_observation_BUILD5_AB_runtime.UNREADY.py",
+      "sha256": "02218a70f6aa336b749320f46d2019f8286fb059c5389c4e1a0db8f8799024cb",
+      "size_bytes": 90531,
+      "identity": [
+        16777229,
+        49535855,
+        33188,
+        1,
+        90531,
+        1791656980865046576,
+        1791656980865046576
+      ]
+    },
+    "binder": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/bind_complete_observation_SOURCE_only.UNREADY.py",
+      "sha256": "f2bb2b01ded94a27820ddfd787810593b0f5e8556227e5261497f9cdf434ebac",
+      "size_bytes": 31333,
+      "identity": [
+        16777229,
+        49535854,
+        33188,
+        1,
+        31333,
+        1791656980903242445,
+        1791656980903242445
+      ]
+    },
+    "postclose_writer": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/Root_observation_postclose_META_writer.UNREADY.py",
+      "sha256": "59bfd5b14d1b872b8e2d9dc971a8ccaf44ac2688ff3b4c4d3c1d058ec620477f",
+      "size_bytes": 28904,
+      "identity": [
+        16777229,
+        49535849,
+        33188,
+        1,
+        28904,
+        1791656980886782102,
+        1791656980886782102
+      ]
+    },
+    "native_Source_archive": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/COMPLETE_ORIGINAL_NATIVE_COMPILE_SOURCE.tar.gz",
+      "sha256": "3b1e160285fb641e5277d7d97b6b381a6568040076f9a72eb2ab84055b23e9b3",
+      "size_bytes": 2405748,
+      "identity": [
+        16777229,
+        49535675,
+        33188,
+        1,
+        2405748,
+        1791656980831849180,
+        1791656980831849180
+      ]
+    },
+    "native_Source_index": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/COMPLETE_ORIGINAL_NATIVE_SOURCE_INDEX.json",
+      "sha256": "30fe07df1035b51475246c5f933695dcba0c2d8fb9996ac0cd607e4023da5df4",
+      "size_bytes": 623273,
+      "identity": [
+        16777229,
+        49535677,
+        33188,
+        1,
+        623273,
+        1791656980832347015,
+        1791656980832347015
+      ]
+    },
+    "observer_module": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/OBSERVATION_SOURCE/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90",
+      "sha256": "5f9899a6f1283a4bb72e0b32015a23b7ba8a9fa64c502f530783c804bed23f9d",
+      "size_bytes": 7939,
+      "identity": [
+        16777229,
+        49535732,
+        33188,
+        1,
+        7939,
+        1791656980838192117,
+        1791656980838192117
+      ]
+    },
+    "context_extractor": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/OBSERVATION_SOURCE/extract_actual_complete_context_with_SPH_decisions.UNREADY.py",
+      "sha256": "a9d1437055071a478ec2b5205d6c2c7ac38a0e33e25eb9f9bdfe72d753ba9f03",
+      "size_bytes": 13094,
+      "identity": [
+        16777229,
+        49535739,
+        33188,
+        1,
+        13094,
+        1791656980839066911,
+        1791656980839066911
+      ]
+    },
+    "original_complete_native_walker": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/PARENT_SOURCE/Root_bound_complete_native_checker.py",
+      "sha256": "9d8494234a3a6d58ef4cf8f151ff0505f35c750929ad444dfee8ca8a667dedb0",
+      "size_bytes": 51631,
+      "identity": [
+        16777229,
+        49535759,
+        33188,
+        1,
+        51631,
+        1791656980841916462,
+        1791656980841916462
+      ]
+    },
+    "original_material_seed_contract": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/ORIGINAL129_AND_MATERIAL_SEED_CONTRACT.Source_META.json",
+      "sha256": "6007ba0ec39f68c87418d5ba2b40c429d9f403ea3a09d0974732a2138eab14dc",
+      "size_bytes": 57310,
+      "identity": [
+        16777229,
+        49535740,
+        33188,
+        1,
+        57310,
+        1791656980839199412,
+        1791656980839199412
+      ]
+    },
+    "material_blueprint_Source": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/GUARD_SOURCE/material_inputs.py",
+      "sha256": "a533750046980e979ad00b11de0761f2854fc75670484dd4338863af43438a5d",
+      "size_bytes": 13275,
+      "identity": [
+        16777229,
+        49535688,
+        33188,
+        1,
+        13275,
+        1791656980833494727,
+        1791656980833494727
+      ]
+    },
+    "request_preparer": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/Root_prepare_observation_REQUEST.Source_META_only.UNREADY.py",
+      "sha256": "8a3bd7d9f90c8cb520affa9711f4fb15120dad86c3fbe67042dd034bb37cc7fb",
+      "size_bytes": 22909,
+      "identity": [
+        16777229,
+        49535850,
+        33188,
+        1,
+        22909,
+        1791656980895266337,
+        1791656980895266337
+      ]
+    },
+    "legacy_context_old_XSM_extractor": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/COMPLETE_LEGACY_CONTEXT_HANDOFF_SOURCE/complete_observed_old_post_final_XSM_extractor.UNREADY.py",
+      "sha256": "079e6b9bca0f5e0ab43a41604ccd91c83112a0d040253dcc9101ae47b0efcb69",
+      "size_bytes": 52322,
+      "identity": [
+        16777229,
+        49535666,
+        33188,
+        1,
+        52322,
+        1791656980829309464,
+        1791656980829309464
+      ]
+    },
+    "owner_scope_helper": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/N8_exact_owner_scope_observer.UNREADY.py",
+      "sha256": "f3e170015ea659921aaa9493062f1fb630b764a70912a00ceb2e7f17ac5c0e58",
+      "size_bytes": 17118,
+      "identity": [
+        16777229,
+        49535728,
+        33188,
+        1,
+        17118,
+        1791656980837801532,
+        1791656980837801532
+      ]
+    },
+    "monitor_controls_gate": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/N8_actual_controls_qualification_gate.Source_META_only.py",
+      "sha256": "a44c9ddcb53e3669e78c8f777b7b3423d60d43fc41cbc6869d1519c900b7cef5",
+      "size_bytes": 12128,
+      "identity": [
+        16777229,
+        49535726,
+        33188,
+        1,
+        12128,
+        1791656980837530531,
+        1791656980837530531
+      ]
+    },
+    "monitor_controls_protocol": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/N8_TWELVE_GENUINE_CONTROL_PROTOCOL.UNREADY.json",
+      "sha256": "2283cb7b070c3e049a14d8d78a1470bc2fea8792cc32000c9b72bb0d4c69e3a7",
+      "size_bytes": 30379,
+      "identity": [
+        16777229,
+        49535725,
+        33188,
+        1,
+        30379,
+        1791656980919625288,
+        1791656980919625288
+      ]
+    },
+    "monitor_control_driver": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/N8_genuine_integrated_controls_driver.UNREADY.py",
+      "sha256": "540a3f66b335f64a4270625485d7691c872c14f0d01a8ed619a1505340101575",
+      "size_bytes": 26582,
+      "identity": [
+        16777229,
+        49535729,
+        33188,
+        1,
+        26582,
+        1791656980878498743,
+        1791656980878498743
+      ]
+    },
+    "monitor_control_child_Source": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/N8_private_control_child.UNREADY.py",
+      "sha256": "854ab636e875e1e0765152520a6af404cffe8bf76aba82c8dd2d2277d4b16bf0",
+      "size_bytes": 2681,
+      "identity": [
+        16777229,
+        49535730,
+        33188,
+        1,
+        2681,
+        1791656980838024450,
+        1791656980838024450
+      ]
+    },
+    "monitor_control_Source_binder": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/N8_bind_monitor_controls_SOURCE_META_only.UNREADY.py",
+      "sha256": "85777ebfe4352782fe825066db968cf7edb718e8bce8de7c6fda946788641468",
+      "size_bytes": 12475,
+      "identity": [
+        16777229,
+        49535727,
+        33188,
+        1,
+        12475,
+        1791656980911904556,
+        1791656980911904556
+      ]
+    },
+    "monitor_controls_postclose_qualifier": {
+      "path": "/private/tmp/axmat_N9_link_count_complete_UNREADY_Source_33xw3g05/N8_Root_controls_postclose_META.UNREADY.py",
+      "sha256": "cf74c1b4d485fd1aaf30d3acee34808482d27a7b65a8bc14ea976b93f46fa804",
+      "size_bytes": 18547,
+      "identity": [
+        16777229,
+        49535724,
+        33188,
+        1,
+        18547,
+        1791656980837242489,
+        1791656980837242489
+      ]
+    }
+  },
+  "current_inverse": "COMPLETE_N9_LINK_COUNT_ALL_CHANGED_ROLE_BYTE_AST_INVERSE.json",
+  "current_retention": "COMPLETE_N9_ALL_N8_V2_PARENT_MEMBER_RETENTION.Source_META.json",
+  "historical_original_N8_V2_author_reports_tool_terminals_inverses_and_absolute_pins_are_parent_history": true,
+  "historical_original_author_scripts_must_not_be_executed": true,
+  "historical_argv_is_not_current_argv": true,
+  "all_old_N8_V2_four_blocker_fixes_retained": true,
+  "original_guard_classes_MRO_caps_physics_owner_helper_unchanged": true,
+  "original_native_Source_archive_member_count": 1365,
+  "old_native_namespaces_historical": {
+    "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-host-20261010",
+    "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-runtime-20261010",
+    "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-control-20261010",
+    "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_sources",
+    "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v8_receipts"
+  },
+  "future_native_namespaces": {
+    "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-host-20261011",
+    "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-runtime-20261011",
+    "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-control-20261011",
+    "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_sources",
+    "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_receipts"
+  },
+  "future_controls_Source_namespaces": {
+    "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+    "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+  },
+  "future_case_namespaces": {
+    "01_exact_environment_and_sole_wait_owner": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case01-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case01-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case01-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "02_actual_live_business_and_descendants": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case02-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case02-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case02-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "03_actual_closed_after_live_PS_census": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case03-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case03-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case03-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "04_actual_nonzero_exit_preserves_stage_failure": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case04-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case04-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case04-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "05_actual_closed_leader_and_reparented_group": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case05-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case05-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case05-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "06_unknown_owner_ECHILD_and_PID_reuse_refusals": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case06-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case06-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case06-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "07_actual_late_descendant_exit_strict_lsof_failure": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case07-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case07-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case07-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "08_actual_strict_stream_nonzero_timeout_oversize": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case08-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case08-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case08-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "09_original_resource_caps_and_frozen_Source": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case09-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case09-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case09-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "10_original_cleanup_exceptions_and_group_evidence": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case10-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case10-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case10-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "11_actual_watchdog_pipe_and_group_closure": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case11-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case11-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case11-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    },
+    "12_actual_Root_and_independent_saved_control_closure": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case12-host-20261011",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case12-runtime-20261011",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v9-link-count-monitor-controls-case12-control-20261011",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_receipts"
+    }
+  },
+  "actual_new_k_output_observed": null,
+  "actual_independent_Source_review": null,
+  "actual_Root_Source_admission": null,
+  "actual_controls_Source_binding": null,
+  "actual_monitor_controls_qualification": null,
+  "actual_native_AB_execution": null,
+  "scientific_qualification_created": false
+}

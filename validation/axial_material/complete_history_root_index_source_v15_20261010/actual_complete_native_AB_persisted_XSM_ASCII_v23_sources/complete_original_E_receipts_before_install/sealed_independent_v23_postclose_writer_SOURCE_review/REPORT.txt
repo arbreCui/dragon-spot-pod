@@ -1,0 +1,3 @@
+SOURCE-only PASS: 9 exact literal retargets, complete 8213-byte and AST inverse to previously reviewed writer; all 7 functions preserved, 6 directly byte exact.
+Success report path/SHA/7ID cross-check, original caps, complete namespaces and all false/None science qualifiers retained.
+No writer, installer, guard, native, helper or numeric API executed. No installer pin is supplied; future v23 actual Source bindings remain Root prerequisites.

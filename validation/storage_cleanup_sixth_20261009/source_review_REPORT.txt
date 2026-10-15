@@ -1,0 +1,13 @@
+只读第六轮旧静态库候选复核（未删除）
+候选 24 个文件，六个旧 native build 根各四库，共占分配空间 197,935,104 字节（0.184341430664 GiB）。
+所有候选与保留的主项目四个库 fresh 全文件 SHA256/长度相同，fresh lstat 前后稳定，独立 inode，单 hardlink。
+筛除当前 V6 全图 35,646 canonical 文件、所有绝对路径字符串、86 namespace / 31 root、186 个全部 file aliases、旧索引 66,496 文件/246 目录/321 aliases、88 个关键根和项目 fresh 687 symlinks。未运行 graph/API/PREP/RUN/科学计算。
+原始科学结果、唯一 native 可执行文件、SOURCE、编译日志、参数、原始 result.sha256/input/copy manifests 保留：120 个关键小文件/可执行文件内容已 fresh pin。
+24 个源文件家族引用、19 个元数据库引用已保留证据；不宣称旧路径完全无引用。
+旧全表 manifest 核验和完整重建需要先按恢复映射把保留主库复制回原路径；不能改原始 seal/hash 来伪装继续完整存在。
+native-signed-axial-state-20260929 四库明确保留：probe_refined_AAA_white_odd_response.py prepare 行 78–83 核验它们，行 92–94 链接 Utilib/Ganlib。
+POD、主项目 lib/src 拷贝、所有大闭合结果/物理基底/材料输入、全部 current combined 依赖根均不在候选。
+第五轮已删除 30 路径 fresh 确认不存在，新 24 候选无交集，不重复计数。
+Root 应按精确 shortlist fresh preflight / 独立审查后决定；本代理未批准删除。
+完整报告：/private/tmp/spot_sixth_storage_duplicate_review_20261009/exact_library_candidates.json
+SHA256：8a122bbd9b4f7a62fdfecd58b7827ae47d5ed2ff018692b950c6137d6380b524

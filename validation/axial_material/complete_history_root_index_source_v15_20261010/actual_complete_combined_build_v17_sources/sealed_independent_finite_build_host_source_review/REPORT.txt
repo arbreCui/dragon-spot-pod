@@ -1,0 +1,5 @@
+cf2c3f… 新host有限 SOURCE 审查通过，无 shape / API 阻塞。
+13 项有限变更正向生成当前host，逆向全字节还原原37d PREPhost，genuine guard、类/MRO、真实resource绑定保持。
+原SOURCE静态5命令、family/labels、driver_result/audit/raw receipt/stages/seal及全部watchdog字段匹配；完整5项及4tail均检查。
+外层 whole1800、内层原每stage600，RSS512、完整 HOST+SOURCE+OUT+TERM+hostSource 2GiB、history96/free8、单线程、单numeric child / 0 retry保持。
+只读源码/声明/凭证，不运行或导入host、helper、API、numeric；实际5stage / whole INPUT / native / AAA / ABA尚未授成功资格。

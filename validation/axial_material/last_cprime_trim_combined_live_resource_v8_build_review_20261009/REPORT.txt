@@ -1,0 +1,29 @@
+V8完整输入构建结果（2026-10-09）
+
+V8唯一实际RUN失败，Root工具d68fa5/session22770 -> c5f80c CLOSED EXIT1。
+原五阶段中的build/link、metadata/objects、metadata/executable、metadata/dependencies均PASS；audit/audit FAILED。
+Python审核子进程PID8231实测峰值516.468750 MiB，超过原512 MiB限制，实际退出-15并完成本次子进程组清理。
+watch耗时31.506271秒，失败stage32.610260秒；driver全过程291.042740秒。
+错误仍是own-child 512 MiB RSS cap reached；只有supervisor traceback，实际审核的原失败函数/语句尚未定位。
+
+实际PREP此前Root退出0、独立完整PREP审查389be54b319de2ad32d104fb18644f6b4fe30a08ed802f2b8a0289a1d31b5389 PASS。
+完整35,647项canonical输入、235,528条五列归属、86 namespaces、186 aliases、445 absence以及原全部输入都通过准备期独立核验。
+完整graph大小64,639,433字节，保留原67,108,864字节上限；原225资源根加本轮3根，合计228。
+原七键完整历史输入2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa及完整trim fed209字典不变。
+这些是准备期输入证据，不能替代失败audit的成功、真实native运行或耦合精度结果。
+
+Root实际失败终态d4cacd55b43b590647ca9c1e6ec1168c58f8ddea7ec52b925b9048c556497039。
+失败writer真实eb19ec EXIT0只记录前述真实RUN退出1；没有调用成功recorder。
+stdout0字节，完整stderr1212字节，阶段、watch、driver原字节保留。
+seal.json与audit/result.json缺席；build_seal和四项成功尾检均None。
+失败driver记录archive153,409,544字节，完整历史资源72,343,429,515字节、空闲201,718,423,552字节。
+这些失败期资源观察不是完成后的成功尾检。原1800/600秒、512 MiB、一子进程、零重试、2 GiB归档、96 GiB历史、8 GiB空闲限制均保持。
+
+本轮V8冻结FAILED_NO_RETRY。正式标准三参数INPUT API、bounded intake、cold、native RSS、AAA、ABA均未执行或获得通过。
+V8 bounded INPUT源码独审8049d460d9d04b46342c267d7698e85a681218ce328c3a74265ad36c229a5be5仍是source-only、未来凭证为空，不可绑定失败producer晋级。
+TMP V8冷草案仍STOPPED UNREADY；没有正式source安装、cold/control fixture、数学/物理阈值变更。
+
+本轮存储清理已独立通过并另有storage_cleanup_ninth_20261009/REPORT.txt：265旧文件处理、全部结果文档和当前依赖保留，清理收尾时项目实际净降约7.176 GiB。
+主goal仍未完成。后续需先定位并减少Python审核的内存占用，在新的独立版本保留完整输入和所有原限制，然后才可恢复原后续实验顺序。
+
+实际失败终态独审5c0677e4535293bf0cd0eebc5055ca3714af159290818deb4b10bf55646a0d17 PASS（真实54e44f EXIT0 CLOSED），仅确认失败记录闭环，不把RUN变为成功。原本完整结果、输入、五阶段和源码均保留。

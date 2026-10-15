@@ -1,0 +1,13 @@
+现实 v11 固定2643文件原完整哈希重复内存有限测量：真实完成
+
+真实工具5f235b/session72302 →4bb823 EXIT0，20/20轮，无retry。
+使用peer完整真实元数据准入/关闭基线，保留45原records及原catalog/hf/cached小fields/fixed/owned/proofs/cases/release/scratch，原MRO与资源class声明不变。
+初始metadata检查adfe22 EXIT0：2643 fixed与163 owned均currentlive、全7不变，不将released历史pins当当前输入。每轮仅原c.verify_rows(fixed)，owned在循环前后验证；无copy2/tree读回/业务/source patch。
+20轮fixed完整EOF 41158241660字节。RSS baseline 292306944 →293273600字节；增长966656字节。最高ru_maxrss 293273600字节。allocatedblocks 560114 →562020；20轮每次显式GC累计回收0。总22.43638450000435秒。
+未出现百MiB增长，未触原SELF512/whole1800/env1上限；该有限路径未复现真实v11 SELF548MiB，不能据此声明v12修复或业务资格，也不能排除未测组合生命周期。
+全部具体metrics、真实固定PF/ownedPF、setup Source/metadata PF在REVIEW；真返回已保存TRUE_TOOL_RETURNS。不复制/删除物理文件、不修改原Source、不编译/运行数值；不进一步扩测。
+
+完整REVIEW PF：
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_v11_repeated_current2643_hash_memory_fixture_20261013/actual-fixed2643-20/REVIEW.json", "sha256": "26911ed6d038dbe0a817c71ad2de5ec6a92a5d0a00ba2e77f958bff02a87ee0a", "size_bytes": 1140716, "identity": [16777229, 50024105, 33188, 1, 1140716, 1791877984018209411, 1791877984018209411]}
+
+finished=true：本有限只读诊断已实际闭合，结果交Root继续定位。

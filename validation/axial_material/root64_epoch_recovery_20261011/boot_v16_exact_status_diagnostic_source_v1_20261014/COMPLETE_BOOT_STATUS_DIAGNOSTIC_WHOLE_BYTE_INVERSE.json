@@ -1,0 +1,40 @@
+{
+  "schema": "COMPLETE_BOOT_EXACT_STATUS_DIAGNOSTIC_SOURCE_WHOLE_BYTE_INVERSE_V1",
+  "predecessor_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_source_v2/SPOBOOX64.f90",
+    "sha256": "e2b76f69b218454c5a0c8f1047d6d1937249ace2e0edd9c5bb486ba79c2ff367",
+    "size_bytes": 8240,
+    "identity": [
+      16777229,
+      49796897,
+      33188,
+      1,
+      8240,
+      1791752813282087153,
+      1791757300858238434
+    ]
+  },
+  "candidate_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/boot_v16_exact_status_diagnostic_source_v1_20261014/SPOBOOX64.f90",
+    "sha256": "0f4ed70521dce0543cb452974dc41bb2106a712bd24c63ea44c89adc5dac90d6",
+    "size_bytes": 8473,
+    "identity": [
+      16777229,
+      50088923,
+      33188,
+      1,
+      8473,
+      1791921514154902036,
+      1791921514154902036
+    ]
+  },
+  "changes": [
+    {
+      "before": "    if(status/=SPOR64_BOOTC64_HOST_COMMITTED)call XABORT('SPOBOOX64: ACTUAL STRICT SOLVE NOT COMMITTED.')",
+      "after": "    if(status/=SPOR64_BOOTC64_HOST_COMMITTED)then\n      write(6,'(A,I0,A,I0,A)') &\n        '{\"schema\":\"ACTUAL_BOOT_EXACT_FAILURE_STATUS_DIAGNOSTIC_V1\",\"boot_plane\":',p, &\n        ',\"actual_return_status\":',status,',\"required_committed_status\":8}'\n      flush(6)\n      call XABORT('SPOBOOX64: ACTUAL STRICT SOLVE NOT COMMITTED.')\n    endif",
+      "reason": "one failure-only stdout JSON and flush before unchanged original abort"
+    }
+  ],
+  "whole_inverse_byte_equal": true,
+  "mathematical_or_condition_or_threshold_or_commit_order_changed": false
+}

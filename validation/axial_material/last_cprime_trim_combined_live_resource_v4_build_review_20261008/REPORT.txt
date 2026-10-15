@@ -1,0 +1,20 @@
+SPOT 组合运行时v4实际构建失败结果（2026-10-08）
+
+正式工厂a9a3429f…绑定低峰JSON helper 158b237e…。
+实际PREP 4f1a3f/session32167 → f27996，退出0；Root声明准备收据
+765008d7…与声明5388afde…保持。完整图67083192B、小于原64 MiB，
+35646规范文件、86命名空间、186别名及235528条归属要求。
+
+实际RUN 8aeda0/session85225 → 3029fe，退出1。
+前四阶段PASS，第五Python完整输入核验触原512 MiB限制。
+子PID80547、采样峰519.90625 MiB、返回-15，子耗时8.340秒，
+原进程组清理通过；完整driver耗时248.822秒。
+
+真实失败收据5df7191c…、完整stdout/stderr、driver_result、stages
+及watchdog随原ART保留；没有audit/result、binary_identity、成功seal、
+成功四项尾部、生产准入、原生RSS、完整FLU、AAA或ABA资格。
+旧数学/组件通过不转移为本次组合输入成功。
+
+源码级审查与实际PREP窄增量复核见本目录既存报告。
+本摘要在纠正V5审查文档保存目录时从未改动的原真实收据重新整理；
+原v4工厂、SOURCE、OUT、TERMINAL和真实失败返回内容均未改变。

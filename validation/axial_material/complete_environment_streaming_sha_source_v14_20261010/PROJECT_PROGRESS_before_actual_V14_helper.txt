@@ -1,0 +1,55 @@
+SPOT 当前进展（2026-10-10）
+
+整体目标：完成并独立验证基于 POD 的径向—轴向耦合中子输运方法，目前研究对象是组件算例。当前任务是同温轴向材料对照：先验收 AAA（各高度均为 A）的同质控制，再做 ABA（中间区域改为 B）。清理暂缓。
+
+已经完成：
+1. A/B 双精度快照及相关输入核验已有结果。
+2. V11 新组件完整68阶段回归与正式准入均实际退出0，原45阶段保留并重新执行。1152组、2042712个输出标量与原结果逐位一致；20个异常输入均按设计拒绝，原始失败状态保留。
+3. V12 全量输入的无损清单编码通过59项纯元数据检查和独立源码复核。实际新输入准备退出0，11份源文件归档完整；正式清单为66558943字节，低于原64MiB读取上限，保留36776个文件节点、237767条关系、186别名和86命名空间，新内容摘要独立核验一致。
+4. V12 整套程序5阶段构建全部PASS、实际退出0并封存，正式只读准入也实际退出0。总用时327.69秒，低于原1800秒上限；SOURCE+OUT归档159526441字节，低于原2GiB预留。受监控审计子进程峰值508.671875MiB，低于512MiB。这是构建与完整输入审计，不是新的原生输运或AAA物理精度通过。
+
+当前最新工程状态：V13减少连续群输出临时工作区的源码与完整86阶段方案已通过独立源码核验；实际12个构建、原59个控制执行、新14个窗口控制均结束。最后第86项完整审计仅剩33.394秒全程额度，被原1800秒总预算终止，真实退出1并关闭（b76b46/session34813→176835）。全程1816.282秒包含失败后必须的完整保护核验；阶段子进程累计503.436秒，其余1312.846秒需定位。61正常PASS、24预期拒绝和1最终审计FAILED；没有seal、完整审计结果或四项收尾凭证，V13未正式准入，输出逐位一致性仍未完成全域独立审核。保留全部实际原始结果，零重试、不补跑失败目录、不增加预算。下一步先处理核验耗时，新独立组件通过后才接入下一版整套程序与AAA。
+
+最新原生运行状态（V12）：整套接入已通过；独立受限standalone全量输入接口也已实际退出0，总用时53.157秒，API子进程峰值498.75MiB，低于原512MiB上限。完整接口归档9个有效载荷文件和唯一Root终端共10文件，实际记录器也退出0；全域独立只读证据审计已通过，完整输入资格已核验归档。新的冷运行入口已通过独立源码核对并安装。SOURCE31声明、PREP43准备、实际监控绑定和三个真实监控控制均已退出0；控制完整收尾92.278秒、61965994字节，低于原120秒与64MiB限制。最后启动确认已真实退出0，监控绑定与控制的联合独立核对也已通过。V12首次完整AAA已真实退出1并关闭（04a9cc/session69320→1bacfa，零重试）。前6个阶段PASS，第7个轴向启动阶段被自身进程内存监控终止：采样峰值512.890625MiB超过原512MiB，0个完整耦合map；没有完整冷运行收尾资格。完整原生内存和科学精度资格仍未通过。前一版V10 AAA在轴向启动第7阶段因自身进程峰值514.203125MiB超过原512MiB而实际退出1，0个完整耦合map；失败已保留，不重试旧运行目录。
+
+尚未完成：新的完整原生程序512MiB资格、AAA完整耦合验收、独立物理精度资格、ABA材料对照。历史D4-A算例9轮达到原数值收敛门槛，独立CE特征值比较仍不合格；历史同数据独立参考的燃料裂变率分布误差仍超过原3%门槛。收敛、编译和完整map均不能替代独立物理精度验收。
+
+接下来顺序：审计并减少重复原生工作区 → 新版本回归及受限AAA → 原阈值下独立物理精度 → ABA。完整输入接入和监控准备已经完成；物理输入和原验收门槛保持。
+
+证据：
+/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+/Users/wen/spot/validation/axial_material/identity_key_delta_full_component_review_v11_20261009/Root_actual_build_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/identity_key_delta_full_component_review_v11_20261009/Root_actual_formal_admit_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/Root_actual_prepare_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/independent_actual_prepare_source_graph_audit/REPORT.json
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/Root_actual_build_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/Root_actual_formal_admit_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/factor_diagonal_trim_cold_v10_review_20261009/Root_actual_AAA_tool_terminal_return.json
+
+独立接口实际证据：
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/Root_actual_standalone_host_tool_terminal_return.json
+/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json
+
+完整输入独立核对（2026-10-09）：
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/Root_actual_bounded_whole_input_independent_admission.json
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/independent_actual_standalone_intake_whole_graph_audit/combined_scope_binding.json
+最新AAA失败证据（2026-10-09）：
+/Users/wen/spot/validation/axial_material/identity_key_delta_graph_table_combined_runtime_review_v12_20261009/Root_actual_cold_AAA_tool_terminal_return.json
+/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-cold-terminal-v12-20261009/cold_failed_terminal_return.json
+
+历史完整AAA科学基线：12轮耦合、105步骤达到原数值收敛门槛；原八项独立精度门槛7PASS、nu_fission FAIL，最大偏差3.9525%，高于原3%。该历史收敛结果不授予新版AAA或ABA资格。
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+
+V13组件真实失败证据（构建于2026-10-09，关闭记录2026-10-10）：
+/Users/wen/spot/validation/axial_material/sender_contiguous_flux_window_source_v13_20261009/actual_component_execution_receipts/Root_actual_failed_run_tool_return.json
+/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-sender-contiguous-flux-window-build-terminal-v13-20261009/failed_terminal_return.json
+/Users/wen/spot/validation/artifacts/axial-material-sender-contiguous-flux-window-build-v13-20261009/driver_result.json
+/Users/wen/spot/validation/artifacts/axial-material-sender-contiguous-flux-window-build-v13-20261009/audit/audit.watchdog.json
+
+V13实际失败独立证据审查已通过；仅证明真实退出1及完整数据保留，未补做或授予输出精度审核。
+/Users/wen/spot/validation/axial_material/sender_contiguous_flux_window_source_v13_20261009/independent_actual_failed_component_run_review/REPORT.txt
+/Users/wen/spot/validation/axial_material/sender_contiguous_flux_window_source_v13_20261009/Root_failed_component_evidence_independent_review.json
+
+下一版核验效率设计：在单次完整环境核验内复用有界4MiB读取缓冲，仍逐个独立文件读到EOF、核验全部SHA/长度/前后7项身份；只对同次核验、同一真实路径的重复读取去重。不跨阶段借SHA，不以同摘要替代另一文件，不提高原预算。每次原环境核验涉及约28.56GB数据；同路径重复约0.768GB。读取效率和能否在原1800秒内完成尚未实测，新业务源码尚未生成。
+/Users/wen/spot/validation/axial_material/sender_contiguous_flux_window_source_v13_20261009/next_V14_complete_reading_efficiency_design/DESIGN_AND_EVIDENCE.json
+/Users/wen/spot/validation/axial_material/sender_contiguous_flux_window_source_v13_20261009/next_V14_complete_reading_efficiency_design/STREAMING_DIGEST_SOURCE_DESIGN.json

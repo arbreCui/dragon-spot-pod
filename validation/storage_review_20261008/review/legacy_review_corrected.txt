@@ -1,0 +1,86 @@
+# SPOT旧validation/artifacts只读容量审查（2026-10-08，v2）
+
+v2仅订正两组旧native replay与当前AAA输入依赖的范围判断。原报告保留；其余容量和材料保留表沿用原审查，不扩清理范围。
+
+## 范围与口径
+
+审查 `/Users/wen/spot/validation/artifacts` 的 D4-A、iterative、native 和材料参照历史族；排除 `axial-material-*` 主族的详细判断，由主审查统一处理。没有删除、移动、压缩、重编译、启动求解，也没有对大载荷重新计算hash。容量来自 `du -k -d1/-d2`、文件stat，重复线索来自已有封存JSON中的hash与文件大小。
+
+`validation/artifacts` 总计 **251.02 GiB**；非 `axial-material-*` 目录 **169.72 GiB / 412目录**。非轴向按前缀：`d4a-*` 97.57GiB/189目录；`native-*` 45.94GiB/19目录；`iterative-*` 23.50GiB/177目录；`r2-leak64-clean-replay` 0.944GiB。总计亦有少量其他前缀和root文件。
+
+容量不是主要来自源码或日志。非轴向文件stat的累计分配块（未对硬链接去重）主要为 NJOY `tape*` **64.04GiB**、`.xsm` **47.23GiB**、`.npz` **45.00GiB**；所有`.log`仅 **0.188GiB**，32个`Dragon`文件仅 **0.272GiB**。55个不嵌套的 `source/sources/runtime/vendor/build/node_modules/__pycache__` 命名子树合计约 **0.630GiB**，删这类构建副本不是主要瘦身点。
+
+注意：`d4a-corrected-material-three-snapshots-detached-20260904` 与 `d4a-corrected-closed0-runtime-release-20260920` 有37组共享inode/74路径（大约0.70GiB）。父目录du只计一次且分目录归属受遍历顺序影响，删其中一个名称不一定回收这些块。没有把相同文件大小单独当作重复的证明。
+
+## 最大目录与判断
+
+以下路径均相对 `/Users/wen/spot/validation/artifacts/`。
+
+| 路径 | 容量GiB | 占用来源和限制 |
+|---|---:|---|
+| `d4a-final-four-fuel-temperature-run-20261002` | 28.366 | U235 15.24GiB，U238 8.61GiB；PENDF/GROUPR/DRAGR阶段输入和产物多份；含唯一已验收实际温度燃料库，不能整目录视为废物 |
+| `native-oblique-full-response-20260930` | 22.059 | 主analysis 10.912GiB，replay/analysis同为10.912GiB；两完整数值 pass，报告明确科学输出逐字相同 |
+| `d4a-remaining-fuel-temperature-run-20261001` | 15.853 | 旧批次失败不代表全部无用：Am241/Pu238/Pu239/Pu240已经独立验收，随后被28源准备包选中；Pu241旧控制亦被最终批次缓存 |
+| `d4a-actual-temperature-library-run-20261003` | 11.859 | 累积merge占9.903GiB；最终merge ASCII约800.15MiB，最终私有二进制约200.87MiB，import/export含副本 |
+| `native-layered-full-20261001` | 11.448 | primary约11.283GiB，是完整真实轴向边界/层源参照；本实验已采用重放只比较不另存第二archive，不能再把replay估为另一11GiB |
+| `d4a-remaining-temperature-run-20261001` | 7.523 | 16种核素通过独立保存态审查并被材料候选引用；不能因为全批FAILED就整删 |
+| `native-segment-composition-compact-20260929` | 5.278 | 主/replay约各2.64GiB；原生表格细分失败与exact成功均已形成完整数值报告 |
+| `d4a-actual-temperature-material-run-20261003` | 3.292 | 三材料温度各复制733.48MiB原Mo库和200.87MiB候选库；MICROLIB/macro ASCII也为可读取数值结果 |
+| `d4a-corrected-material-rank2-series-from-map5-20260922` | 2.667 | 3个map portable各0.849GiB，另map004.raw约0.119GiB；旧未修复散射链 |
+| `d4a-corrected-material-rank2-series-from-map8-restart-20260923` | 2.548 | 3个portable map；旧未修复散射链，不能验证当前repaired实现 |
+| `native-oblique-full-preflight-20260929` | 1.596 | 预检副本与原始试验数据，已有后续完整qualified参照 |
+| `native-layered-kernel-20261001` | 1.524 | 内核前置/预检数据，后续full结果覆盖声明范围但仍有封存链依赖 |
+| `native-oblique-streaming-20260930` | 1.358 | 校准与重放，后续full使用其封存内核 |
+| `d4a-fe56-actual-temperature-run-20260929` | 1.142 | 被当前28源材料候选使用的Fe56 final dragr库 |
+| `d4a-fe56-mt51-control-candidate-20260929` | 1.040 | 首次核数据修复控制/候选源码和build，报告已记录；仍需保留决定修复机制的输入/输出证据 |
+| `d4a-light-nuclide-actual-temperature-run-20261001` | 1.011 | He4/Na23/O16库已被当前28源材料候选使用 |
+| `r2-leak64-clean-replay` | 0.944 | 独立源码clean replay、canonical历史publication receipt；数值结果合格，不能视为普通失败试跑 |
+
+## 有证据的优先瘦身候选（不是本轮删除授权或无条件安全列表）
+
+### 1. 可退役的旧全量replay：保守仅删重复NPZ，约13.423GiB
+
+- `native-oblique-full-response-20260930/replay` 整树约 **11.03GiB**。报告 `validation/iterative/native_oblique_full_response_result.md` 明确5,246科学文件fresh-copy replay逐字一致。
+- `native-segment-composition-compact-20260929/replay` 整树约 **2.64GiB**。报告 `native_segment_composition_result.md` 和artifact README明确2,897 analysis文件逐字一致。
+- **具体保守候选**仅为这两个目录下的 `replay/**/*.npz`，合计约 **13.423GiB**。保留两组完整primary、原输入/段与逆映射、报告，以及replay内全部小JSON、日志、plan、源码/编译身份、receipts和比较记录；不把整replay树都列为删除对象。原生库、编译命令、失败/重试记录和原`result.sha256`亦保留。
+- **当前依赖已明确排除**：补充证据 `/private/tmp/spot_storage_legacy_replay_dependency_intersection_20261008.json` 对这两个整root及其replay分别检查 current graph pins、API descriptors、75个namespace、186个aliases、4个length predicates、79个negative predicates、additional namespace、current absences及declared resource roots，交集全部为0。当前AAA reader不读取这两组旧完整replay；它们的leaf或seal并非当前graph必须保留项。这个候选不减少axial当前96项账本，亦不改变其准入合同。
+- **历史重放代价**：原各自完整seal包含这些数组；删除NPZ后，原包的全量manifest验证及自身self-verifier会缺档失败。应保留原清单并标注“历史replay数组已退役”；不能称原整包仍完整封存。这是旧全量replay可退役的边界，并非当前AAA依赖阻碍。此轮没有重新hash或重算科学结果，没有删除文件。
+- **单独判断**：`native-layered-full-20261001` 的当前输入依赖与唯一physical source参照另行处理；不能从上述两个旧replay的零交集结论推断它可删。其11.448GiB本来已采用重放仅比较、不保留第二大archive的方式。
+
+### 2. 材料流程里的逐阶段相同输入副本，已有清单显示18.70GiB
+
+只比较现存 `inputs/staged_inputs/output_hashes/cached_inputs.json` 记载的hash与文件size，没有重新读hash。以下数值是“每个相同hash组保留一份”的副本块数，理论估计不是直接可执行删除清单；均发现大文件nlink=1，是真正多份文件。
+
+| 包 | 内部已有相同hash+size的额外副本GiB | 举例 |
+|---|---:|---|
+| final-four-fuel-temperature-run | 8.635 | U235 low `pendf/tape30` = `groupr/tape29` = `dragr/tape22`；每个669.28MiB，high亦同 |
+| remaining-fuel-temperature-run | 4.988 | Pu240/Pu239 low/high各阶段PENDF输入复制 |
+| remaining-temperature-run | 2.206 | Fe54/expanded/pendf/tape30与groupr/tape29（135.53MiB），Ni58同类 |
+| actual-temperature-library-run | 1.041 | final `merge/28-U238/tape30`与`import/EXPORT`（800.15MiB）；import/export的`DLIB_370_bin`（200.87MiB） |
+| actual-temperature-material-run | 1.825 | 3温度目录里的733.48MiB `DLIB8R1_370`与200.87MiB `DLIB_ACTUAL`各可存一份 |
+
+阶段复制之所以存在，是完整封存的实际输入、父库preimage与原生输出按阶段保存。可重生成文件不等于没有审计价值。直接删tape会导致当前路径型manifest/independent review缺档；保留final库及报告可以供阅读，但不再支持原完整全链重放。若用户只要文档历史，确实可以有意放弃这类重放；如果仍要当前正式验证链，需先设计一份不可混淆的裁剪/去重合同。
+
+### 3. 已被当前修复epoch取代的旧SPOD/Picard试验
+
+`iterative-*`合计 **23.50GiB**；其中 `iterative-rank2-h2-*` 50目录 **7.602GiB**，`iterative-d4a-*` 10目录 **5.359GiB**，`iterative-map*` 12目录 **3.883GiB**。`d4a-corrected-material-rank2-*` 11目录 **9.965GiB**，其中上述两条series合计5.214GiB，及5份早期portable maps约4.243GiB。
+
+根README明确“Old maps 1–11 and their MET result cannot validate repaired scattering”；当前reference README也明确旧map8仅为数值SPOD/Picard回归。这些旧大XSM轨道/快照/每map flux状态，在保留旧结果Markdown、原清单、关键数值JSON/CSV、终止/计时receipt之后，是最符合“只留结果文档”的历史试验删除候选。
+
+**仍需保留/先摘出**：`r2-leak64-clean-replay`完整合格历史收据；`d4a-corrected-closed0-runtime-release-20260920`里的3快照/POD来源（当前quickstart仍引用）；旧three-snapshots共享硬链里被该来源使用的文件；当前repaired12-cell map1–9。早期series跨map可能parent links，删某map会影响下一map的重放；要按完整旧epoch归档，不零散只删一个parent。
+
+`iterative-rank2-current-*` 56目录合计仅 **0.012GiB**，几乎全是轻量候选/收据，保留成本低。历史文本不应因名字看起来旧就优先删除。
+
+## 必须先保留的报告和结果数据
+
+1. 阅读/方法记录：`README.md`, `HISTORY.md`, `validation/README.md`, `validation/README_HISTORY.md`, `validation/iterative/README.md`, `README_HISTORY.md`, `D4A_CORRECTED_QUICKSTART.md`, `D4A_CORRECTED_QUICKSTART_HISTORY.md`, `d4a_final_validation_handoff.md`, `d4a_corrected_acceptance_matrix.md`, `SPOT_doc/validation_plan*.md`，以及所有相关`*_result.md`；这些大多是小文件。
+2. 当前12-cell D4-A科学结果：`d4a-scattering-mesh12-bootstrap-run-20260925`，匹配`d4a-scattering-mesh12-picard-runtime-20260925`，map1–9的完整lineage和真实XSM，`d4a-scattering-mesh12-map9-final-observables-20260929`（**61.8MiB**）及 `d4a_mesh12_map9_final_comparison_result.md`。9maps约6.03GiB。这个epoch达到原MET gate，但CE accuracy FAIL，不能把收据只留一行摘要当作未来重放。
+3. 独立CE：`d4a-corrected-ce-production-20260923`（**15.0MiB**），含真实`statepoint.300.h5`、XML、`reference_result.json`、封存契约/运行身份/收据；对应 `validation/d4_reference/d4a_ce_production_result_20260923.md`。很小且是唯一能从原CE statepoint读取的此参考，应保留。
+4. 合格材料库28源：`d4a-actual-temperature-material-prepared-20261003/preparation.json`准确列出28个source，合计 **0.782GiB**，不是这些大目录里的全部tape。包括 final-four的Pu241/Pu242/U235/U238 `expanded/high/dragr/tape30`；remaining-fuel的Am241/Pu238/Pu239/Pu240同路径；remaining-temperature的16个`expanded/dragr/tape30`；Fe56和light-nuclide的final `dragr/tape30`。同时保留各control/review报告、双读取器比较数据与必要低/高GENDF。当前历史记录已明确某些旧低遍GENDF缺失，不能进一步删剩余唯一低遍证据后仍声称可完整重放。
+5. 私有候选库：`d4a-actual-temperature-library-run-20261003/import/DLIB_370_bin`（200.87MiB）、`export/root.ascii`及28份`export/NUCLIDE.ascii`子树导出、`roundtrip_check.json`、`receipts.json`、completed/输出身份。三温材料`macro.ascii`、`microlib.ascii`及`material_checks.json`保留独立可读内容。当前axial-material material_inputs.json和admission material snapshot引用这个族。
+6. Native参照：三个完整报告及artifact内部 `report.md`、`analysis/result.json`/每group result、`verification/result.json`/verification.json、plan和技术边界，以及一份完整primary raw witness/track/映射。上述两组旧完整replay不在当前AAA输入图中，保守退役仅针对其重复NPZ；小JSON/日志/源码/receipts全部保留。`native-layered-full` 是单独的唯一完整physical source参照和现有依赖项，应单独判断其保留范围；不能沿用两个旧replay的退役结论。若未来只留阅读结论并主动放弃其他数值重放，必须在新索引明确载荷已弃。
+7. 每包 `result.sha256`、input/output digest maps、recipe/source/运行版本和短receipt可以保留，容量很低；删除被它们指向的文件后应标注“历史清单，载荷已裁剪”，不能编辑原seal假装未经改变。
+
+## 决策含义
+
+“只留结果文档”可以把大多数旧试验原始数组、轨道、所有迭代中间状态与完整重复重放删掉，释放空间大；代价是无法从原文件重新验算/证明过去结论。当前完成状态、唯一合格科学参考和正式lineage应先做明确保留表。这次审查没有执行任何清理；上述容量不是保证真实回收量（APFS共享/快照、硬链接和其他仍存在引用都可能影响）。

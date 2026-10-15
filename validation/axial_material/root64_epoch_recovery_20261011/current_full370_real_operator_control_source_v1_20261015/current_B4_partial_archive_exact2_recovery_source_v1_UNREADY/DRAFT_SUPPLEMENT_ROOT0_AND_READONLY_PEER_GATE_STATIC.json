@@ -1,0 +1,79 @@
+{
+  "schema": "EX2_DRAFT_REAL_SUPPLEMENT_ROOT_MEMBER0_AND_READONLY_PEER_GATE_STATIC_V1",
+  "source_only": true,
+  "formal_freeze": false,
+  "Source": [
+    {
+      "Source": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/recover_exact2_B4_partial_archive_paths.UNREADY.py",
+        "sha256": "279a1190dfdff1ee308dad9a94c506d14a79a0ea8cee02ed0a12b531175d40ff",
+        "size_bytes": 23231,
+        "identity": [
+          16777229,
+          50873124,
+          33188,
+          1,
+          23231,
+          1792061310028419479,
+          1792061310028419479
+        ]
+      },
+      "AST0": true,
+      "undefined_globals": [],
+      "whole_previous_Source_restored": true
+    },
+    {
+      "Source": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/write_once_exact2_B4_recovery_reviewable_CLI.UNREADY.py",
+        "sha256": "e8b5373bfd85a3cc050a0d8038d5f6f1f68f3272a7e5b368e5037eb9fe61e405",
+        "size_bytes": 6922,
+        "identity": [
+          16777229,
+          50873125,
+          33188,
+          1,
+          6922,
+          1792061310029757440,
+          1792061310029757440
+        ]
+      },
+      "AST0": true,
+      "undefined_globals": [],
+      "whole_previous_Source_restored": true
+    }
+  ],
+  "actual_member0_Root_report_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_member0_independent_restore_byte_control_source_v2_UNREADY/ROOT_MEMBER0_INDEPENDENT_RESTORE_BYTE_CONTROL_REPORT.json",
+    "sha256": "ec1839601ba1295f61f603bb4163cd698003cab1079fa539876d63072159f096",
+    "size_bytes": 26386,
+    "identity": [
+      16777229,
+      50874172,
+      33188,
+      1,
+      26386,
+      1792061274530163251,
+      1792061274530163251
+    ]
+  },
+  "actual_member0_Root_tools_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_member0_independent_restore_byte_control_source_v2_UNREADY/ROOT_ACTUAL_TRUE_TOOL_RETURNS.json",
+    "sha256": "84a4153fe724a7f6de3df85806d3496b4b971d0a83442dc19a9ec6149280058b",
+    "size_bytes": 2718,
+    "identity": [
+      16777229,
+      50874208,
+      33188,
+      1,
+      2718,
+      1792061283945275482,
+      1792061283945275482
+    ]
+  },
+  "actual_member0_post0_still_NULL": true,
+  "exact_target_count": 2,
+  "exact_target_total_bytes": 101693287,
+  "readonly_post0_required_in_both_publisher_and_worker": true,
+  "payload_or_gzip_opened": false,
+  "GEN_pub_native_lsof_or_delete_executed": false
+}

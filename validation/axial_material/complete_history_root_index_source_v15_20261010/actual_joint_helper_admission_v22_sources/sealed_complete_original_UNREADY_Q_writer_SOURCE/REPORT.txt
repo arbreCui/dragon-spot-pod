@@ -1,0 +1,55 @@
+Final Source candidate: write_actual_joint_helper_admission_v22.FINAL.UNREADY.py
+SHA256 59590a6f123d26519fd68e7f9042c44c9fb3e1c1c477470728b1765789efc444, 42,882 bytes.
+
+Scope is stdlib SOURCE authoring and explicitly permitted finite saved META reads.
+The writer was never imported or executed. No helper, guard, project API, business,
+material numerical payload, graph payload, broad ART walk, canonical or Root D/E
+write occurred. No Q was generated. Root alone performs future binding/execution.
+
+Complete byte/AST inverse chain: final 2 hunks -> 4b220a (19 fresh-schema hunks)
+-> e6925e (13 pure-schema hunks) -> dc816f (41 original retarget/additional-control
+hunks plus disclosed import header/helpers/main isolation) -> complete original
+V21 Root writer a7324201063e968fcd7c9f7f0728722824b248bab065652de0d34985db5e6b22.
+All original seven functions retain whole bytes and AST. Every old Q top-level and
+complete-current-graph nested constructor field remains. New evidence is added;
+old Q29ac and helper dc01 provide lineage only, not new cf0 qualification credit.
+
+The two real new Root summary schemas are preserved, including their historical
+saved-review-false and newQ-None snapshot flags. Actual Root terminals are pure
+6f6847 and fresh 57a6f5, both strict integer-zero, CLOSED, no closed-session repoll.
+New saved pure schema PASS/hard_blockers/1084 checks, raw bfea93 tool, 28f447 seal;
+new fresh schema PASS/hard_blockers/686 checks, wrapped 722af0 tool, 407e5a seal.
+All source/META refs, complete EOF rows, namespaces, 4 owner positives/3 guard
+rejects/2 str subtypes/2 ordered invalid-second-owner controls, all original controls,
+full27 current graph result fields, complete unfiltered37112 trace, 3 complete gzip
+pins, original private trace4 positives/3 rejects are retained in the contract.
+
+Pure original normal regular-file ledger61,013,090 bytes and conservative Root
+61,013,128 bytes (two real symlink literal lengths totaling38 bytes) are distinct.
+Fresh Root DHO1,611,101 is a different ledger from original full H/O/D/E post-result
+1,620,310 and saved-peer current full H/O/D/E1,664,302. All64MiB caps remain; Root
+writer counts current full D/E/H/O after saved peer copies again. Fresh watch sample
+345.390625MiB and driver own355.1875MiB remain separate. Pure60/60/512, fresh
+1800/600/512, history96GiB/free8GiB and1thread/1child/0retry remain unchanged.
+
+The final Source is explicit UNREADY. All actual Root archived binding globals
+remain None. The eight known actual saved-META SHA values are strict expected
+values, not activated bindings. Root must obtain independent Source approval,
+bind exact actual archived pins and actual 4-source binding inverse record, then
+review that finite bound Source before running the stdlib metadata writer. Unknown
+business six pins and new Q SHA remain None throughout this Source package.
+
+Complete final stdlib Source self-review:486988 integer EXIT0 CLOSED,224 typed PASS.
+Earlier finite Source review137 and exact pure review131 are preserved. Actual Source
+failures (wrong PREP filename, nonunique status literal, contiguous hunk assumption,
+message SHA/byte concatenation) are retained with their corrected actual returns;
+they performed no helper, guard or business runs and did not modify project inputs.
+
+Future canonical/PREP plan only: original canonical023abc full70 definitions, all
+six futurebusiness None, exact11 own namespace/doc/qualification anchors; original
+genuine PREP host776bf8 exact11 atomic anchors. No business candidate was authored.
+Original complete inputs, whole historical seven-key bodies, full graph/trace, two
+fresh graph and two specs phases, five full stages, all nine coverage categories,
+aliases/namespaces/current predicates, physical inputs, genuine MRO/guard and
+PREP1800/600/512/2GiB/history96/free8/1/1/0 remain required. All Source inventories
+remain exhaustive/dynamic and full metadata writer must precede D freeze.

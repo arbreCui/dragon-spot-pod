@@ -1,0 +1,13 @@
+真实45record基线下1500次原self ps监测：一次有限只读诊断完成
+
+真实 dfcfac/session84220 →04f173 EXIT0。原API subprocess.run(['/bin/ps','-o','rss=','-p',str(os.getpid())],capture_output=True,text=True,timeout=2)实际执行1500次，每次原退出0并等待完毕；1499个间隔各0.2s。无自动retry、循环显式GC、rupeak reset或profiling。
+完整peer准入/关闭metadata后保留真45records、2643fixed、163owned及catalog/hf/cache/proofs/cases/release/scratch，原资源类保持。Source/固定/owned在前后完整EOF/all7复核；历史releasedpins不作为当前数据。
+首轮RSS 291815424 →末轮 293076992字节；增长 1261568字节（约1.20MiB）。最大采样ru_maxrss 293076992字节，未触SELF512MiB。allocatedblocks 561449 →561741（+292，包括采样记录自身）。每100次和首轮共16样本，subprocess._active均0、fd均4；最终真实等待和null-signal读确认无残留ps子进程。
+首样本8.18172746s，末样本331.85485996s；两样本间323.6731325s，在原stage600/whole1800内，原history96GiB/fresh2GiB/cold20971764748+metadata64MiB/free8GiB前后check均保持。
+本隔离路径没有复现真实v11 SELF548MiB，不能据此声称原runner/业务控制通过，不能宣称v12已修复，不能排除其他组合生命周期。原Dragon/solver/新业务未运行，物理输入无复制或删除，所有原Source未改。
+
+REVIEW完整PF：
+{"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_v11_actual45_self_ps1500_memory_fixture_20261013/real45-ownps1500/REVIEW.json", "sha256": "56ee7bb057b3004951c7f965ea58dc7a87ee761702c2c2da3499cee12eff8850", "size_bytes": 1464514, "identity": [16777229, 50028199, 33188, 1, 1464514, 1791880091209402198, 1791880091209402198]}
+
+完整metrics/资源/输入PF在REVIEW，真实initial/progress/terminal在TRUE_TOOL_RETURNS。只创建此一个诊断namespace，输出总量保持<=8MiB。
+finished=true：本次实际1500调用已真实闭合，结果交Root继续定位；不新增其他fixture。

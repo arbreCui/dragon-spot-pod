@@ -1,0 +1,22 @@
+SPOT V6完整输入内存区间诊断源码复核（2026-10-09）
+
+新的host/child仅身份逆向回原V5，配置绑定实际V6声明和准备凭证。
+新BASE/result路径正确，不转移旧V5函数区间或失败记录为V6信用。
+25个whole函数标记/max1024/原全部限额不变；仅观察事件和累计
+RUSAGE_SELF高水位，不能说明每行分配因果或无instrument的真实峰。
+Root独立实际启动尚未执行，READY尚未创建，等待独立源复核。
+完整新档案范围须包括BASE、source draft、Root execution、本审查
+目录及完整stdout/stderr，不以BASE单独数代替原2GiB。
+
+STOPPED源独审PASS；Root仅翻转status并生成新READY wholeSHA。
+真实一次受限诊断即将执行，尚无终态；完整档案预核符合2GiB。
+
+实际一次受限诊断2006c8/session69745 → afe818退出1，句柄结束。
+子进程91399被原512MiB门终止，sampled peak512.34375MiB，
+子进程71.832秒、失败stage72.844秒，原进程组清理完成。
+解析与展开已返回，最后_phase.call 57.015秒/累计471.875MiB；
+无_phase返回、无PROFILE_STOP、无子/host成功结果，读完数量未知。
+函数事件仅约束本次instrumented输入区间，不证明原V6无instrument
+失败的具体行、逐行分配因果、性能或原生RSS。完整stdout0B、
+stderr774B、merged子日志、终态和全部边界在本目录/BASE保存。
+所有业务、原生RSS和科学信用仍为false。

@@ -120,6 +120,12 @@ all :
 	spot-rank2-modal-aa2-map
 spot-fast :
 	sh validation/run_fast.sh
+.PHONY: spot-evidence spot-evidence-test
+# Read completed saved evidence only: no compilation or transport dependencies.
+spot-evidence :
+	@PYTHONDONTWRITEBYTECODE=1 python3 validation/d4_reference/report_d4a_evidence.py
+spot-evidence-test :
+	PYTHONDONTWRITEBYTECODE=1 python3 validation/d4_reference/test_evidence_diagnostics.py
 .PHONY: spot-b2c-dimensions spot-b2h-dimensions spot-a89-dimensions
 spot-b2c-dimensions :
 	sh validation/iterative/run_b2c_runtime_dimensions.sh

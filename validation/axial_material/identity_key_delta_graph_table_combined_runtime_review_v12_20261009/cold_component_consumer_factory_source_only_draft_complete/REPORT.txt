@@ -1,0 +1,5 @@
+V12 graph-table冷入口纯SOURCE身份草稿，全部保持UNREADY。
+三件新文件和四个新cold根，完整consumer27函数字节不变；factory55定义中仅render_controller/declare两处普通新consumer文件名传播，其余53原字节。
+新graph helper两个strict入口均可恢复完整原图，未改变任何whole7INPUT、物理、门槛、P14/P12、OwnRSS类/构造、512/4200/43200预算或V11组件0800及5e/343e祖先。
+只绑定已存在installed source5af/helper e8f；全部未来success、intake、cold source/receipt、count/inventory None。
+完整region逆向回冻结V11母本，再逆向到真实V10母函数字节；未导入/执行业务、未写项目、未轮询Root或读取未来产物。

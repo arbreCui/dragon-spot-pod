@@ -1,0 +1,75 @@
+{
+  "schema": "FINAL_A_B_EXACT4_DRAFT_SOURCE_ONLY_STATIC_V1",
+  "complete_source_file_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_B_final55_exact4_completed_spool_lifecycle_source_v1_UNREADY/retire_exact4_completed_A_B_final55_SQL_pool_spools.UNREADY.py",
+      "sha256": "bc011a15acde91d257045f357946a441768516996911882e22219cc1fcfddf1d",
+      "size_bytes": 35262,
+      "identity": [
+        16777229,
+        50895634,
+        33188,
+        1,
+        35262,
+        1792077473852735096,
+        1792077473852735096
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_B_final55_exact4_completed_spool_lifecycle_source_v1_UNREADY/write_once_exact4_completed_A_B_final55_spool_lifecycle_CLI.UNREADY.py",
+      "sha256": "86c8652d0d8e951e0216892677c7c720627c40a0b31eb6018ba4d80065b013f4",
+      "size_bytes": 7001,
+      "identity": [
+        16777229,
+        50895640,
+        33188,
+        1,
+        7001,
+        1792077483068303614,
+        1792077483068303614
+      ]
+    }
+  ],
+  "NULL_plan_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_B_final55_exact4_completed_spool_lifecycle_source_v1_UNREADY/DRAFT_PLAN_PENDING_GENUINE_EXACT28_EXECUTE0_POST0_AND_LATEST_BUDGET.json",
+    "sha256": "e2b93c897d0a817d170285c796bc5a9110bfe1330e4b817824bab92ecb1dcd63",
+    "size_bytes": 92234,
+    "identity": [
+      16777229,
+      50895641,
+      33188,
+      1,
+      92234,
+      1792077483252938069,
+      1792077483252938069
+    ]
+  },
+  "whole_frozen_E16_inverse_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_B_final55_exact4_completed_spool_lifecycle_source_v1_UNREADY/DRAFT_TWO_SOURCE_WHOLE_FROZEN_E16_INVERSE.json",
+    "sha256": "ca49954a5d47df884884d6f44636f2e3d9f0cba7e6113556080f7e4e33ae562c",
+    "size_bytes": 173866,
+    "identity": [
+      16777229,
+      50895642,
+      33188,
+      1,
+      173866,
+      1792077483255561493,
+      1792077483255561493
+    ]
+  },
+  "Python_AST_and_global_scope0": true,
+  "all_literal_PLAN_fields_initialized": true,
+  "exact_fullPF_target_count": 4,
+  "exact_target_total_bytes": 183292696,
+  "completed_consumer_closure_count": 6,
+  "canonical_native2_and_all_result_documents_retained": true,
+  "all28_gzip_entry_index_restoremap_permanently_retained": true,
+  "empty0_retained_at_original_path": true,
+  "history_exact16_plus_presence_plus28_only": true,
+  "full83_no_newdataownroot_Source8": true,
+  "original_E16_PS_lsof_dirfd7_fsync_finalforcedfresh_and_readonly_independentpost0_execute_gates_preserved": true,
+  "actual_exact28_execute_post_and_budget_allNULL": true,
+  "all_future_scientific_consumers_globally_claimed_native_only": false,
+  "no_candidate_helper_GEN_pub_PS_lsof_SQL_pool_native_gzip_body_or_delete_executed": true
+}

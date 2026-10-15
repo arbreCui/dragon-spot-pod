@@ -1,0 +1,10 @@
+SPOT 组合V7实际准备已通过（2026-10-09）
+
+Root真实PREP 1fe3ab/session26614 → ba3eb0退出0；
+新DECL df56e805ff04d9ec5cffc3b877f6054d9d68de849407c7ebee45fdc1175d7e52
+新RootPREP a25e5ff639355369867de4ff639eeda19b778e99125fbf641647004206718c7a
+完整graph 67104987字节，原64MiB门内，余3877字节。
+实际资源根225，来源11文件库存鲜读匹配。
+独立PREP审查进行中；RUN/seal尚不存在，不计RSS/科学/AAA/ABA通过。
+855519私有owner生命周期helper源逆向/tiny证明与45783factory源逆向保持；
+完整七键历史INPUT、输入范围和原限额不变，旧V6失败凭证不转成功。

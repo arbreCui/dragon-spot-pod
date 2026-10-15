@@ -1,0 +1,26 @@
+This complete V24 SOURCE package is UNREADY. It does not run a helper, guard, controller or numeric operation and creates no new qualification.
+
+The exact actual V23 failure was the tuple at private state `exact_actual_Popen_object_references[0]`. The original JSON-only comparator accepted neither that tuple nor an API object. This package retains the actual CLOSED1 failure Source, complete small META and log bytes; the entire permanently saved V23 H/O/D/E is not duplicated into the new 64MiB qualification Source scope.
+
+The private state tuple retains key, exact typename and unchanged id metadata and adds the actual observed object reference. The new state comparator checks exact whole dict fields/order, all data and map identity with the unchanged original `exact_value`, exact builtin list/tuple types/count/order, all first-three metadata values/types via the original comparator, and fourth-item exact type plus `is` identity. All seven private module state comparisons use it. The eighth original module call is the complete public nine-field comparator and is untouched.
+
+Fresh `run` keeps its original state equality and full no-subprocess predicate. Its two private raw-reference witnesses remain local; public snapshots, 27 fields, all37111 canonical files/37112 actual reads, complete trace and three lossless gzip algorithms do not contain Popen API objects. This does not claim identity equivalence for arbitrary subprocess-containing Fresh phases.
+
+Original controls remain: 5 positive, 13 private rejects and 3 failure/last-use controls, plus every original full pure protocol fixture/negative/accepted-subclass/codec control. Pure limits are whole60/stage60/512MiB/64MiB normalH+O+D. Fresh limits are whole1800/stage600/512MiB/joint64MiB H+O+D+E. Both retain96GiB history/free8GiB, genuine guard/MRO, threads1/child1/retry0. The current helperSource3b, originalcf0/Q89/canonical09e are unchanged. No RSS/build/INPUT/native/AAA/ABA/physics PASS is predicted.
+
+Fixed new one-use namespaces are in ROOT_FIXED_SOURCE_NAMESPACES_AND_FUTURE_ACTUAL_PINS.UNREADY.json. Both pure and Fresh H/O/D/E use v24. None is created by this Source author.
+
+Root sequence:
+
+1. Obtain a complete independent Source peer report under the precise generic schema/status and fullfive role+newmanifest pin contract in INDEPENDENT_SOURCE_PEER_REQUIRED_CONTRACT.UNREADY.json. This package does not supply a false peer PASS.
+2. Reuse the actual unchanged helper installation witness from V23: B/actual_complete_graph_helper_controls_v23_receipts/Root_actual_complete_helper_SOURCE_install_tool_return.json SHA a305a84b712276aecadd5ebc7fced99d0d58b68a061e228747f0ccfbeed63c12. Its genuine10a0e4 integer0 CLOSED, helperSource3b and installrecord079d are historical Source-install facts. Do not rename its real ROOT_V23_* schemas, fabricate a V24 installation terminal or assign helper qualification credit.
+3. Root may execute only the standard-library SOURCE binder with six exact actual parameters after the Source peer passes:
+
+   /Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B /private/tmp/axmat_v24_complete_inactive_audit_Popen_identity_UNREADY_SOURCE_hsjpb0_6/bind_complete_qualification_SOURCE_only.py actual_V23_install_witness_path actual_V23_install_witness_SHA final_V24_manifest_SHA actual_V24_Source_peer_path actual_V24_Source_peer_SHA fresh_TMP_bound_Source_output
+
+   The actual witness fixed argv1 is /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v23_receipts/Root_actual_complete_helper_SOURCE_install_tool_return.json; argv2 is the full a305 SHA above. All remaining actual peer/manifest/Source output parameters must be genuine. Binder writes only metadata Source in fresh TMP and never calls controllers/helper/guard/API.
+4. Independently review the actual complete bound Source and full byte/AST inverses. Root then copies all new Source members and actual binding evidence to the fresh v24 D locations, fixes all dynamic Source inventories and freezes before any runtime. No Source appends during actual H/O runs. Parent125 Source files and complete failure-context files remain enumerable.
+5. Root performs original genuine prelaunch pins/aliases/resources/limits checks, then one whole pure v24 host, then only after the real pure success closes0 one whole Fresh v24 host. Both normal hosts take no extra argv; original thread env and genuine supervisor remain. Preserve original merged streams honestly and do not repoll a CLOSED session or retry failed family.
+6. Real new pure/Fresh CLOSED0 and complete saved evidence independently reviewed are required before any new Q writer or complete build/INPUT/science wiring. Every future success pin remains None here.
+
+Full Source inverse file V24_COMPLETE_MODULE_CONTROLLER_BINDER_SOURCE_INVERSE.json proves 9 module hunks, controller2/7/3/8 finite hunks and2 binder output-schema hunks back to the complete V23 mother. Host schema literals alone account for changed host definition bytes; runtime algorithms, branches/checks, ordering and thresholds are unchanged. All original template-to-Q89 full inverses and their whole Source are retained in ORIGINAL_SEALED_V23_COMPLETE_MOTHER_SOURCE.

@@ -1,0 +1,70 @@
+****************************************************************
+* One rank-3 REAL64 direct-Picard axial response.              *
+* PARENT_AX must already be a canonical rank-3 fixed-basis     *
+* state in exactly the same basis as SYSTEM_NEXT.              *
+****************************************************************
+
+XSM_FILE TRACK_AX :: FILE './initial_axial_track.xsm' ;
+XSM_FILE MACROLIB3 :: FILE './initial_axial_macrolib.xsm' ;
+XSM_FILE PARENT_AX :: FILE './parent_axial.xsm' ;
+XSM_FILE RADIAL_IN :: FILE './candidate_radial.xsm' ;
+XSM_FILE SYSTEM_NEXT :: FILE './candidate_system.xsm' ;
+
+XSM_FILE CANDIDATE_AX :: FILE './candidate_axial.xsm' ;
+XSM_FILE CAND_SNAP :: FILE './candidate_snapshots.xsm' ;
+
+LINKED_LIST SNAP AX_CURRENT ;
+MODULE FLU: SPOGBAL: SPOSTATE: SPOXCONV: SPOLEAK:
+       GREP: UTL: END: ;
+
+REAL solver_eps := 5.0E-8 ;
+REAL k_candidate leak_change gbal gbal_group ;
+DOUBLE rrho rleak dleak ra ;
+
+ECHO "RANK3-FIXEDPOINT-AXIAL-BEGIN" ;
+ECHO "RANK3-FIXEDPOINT-AXIAL-TOLERANCE" solver_eps ;
+ECHO "RANK3-FIXEDPOINT-AXIAL-INITIAL-GUESS"
+  "RANK3-PARENT-RAW-FLUX" ;
+
+SNAP := RADIAL_IN ;
+
+* The parent's raw flux is only FLU's warm initial vector.  Remove
+* lifecycle metadata from this private solver copy; keep PARENT_AX
+* unchanged as the exact same-rank state used by SPOXCONV.
+AX_CURRENT := PARENT_AX ;
+AX_CURRENT := UTL: AX_CURRENT ::
+  EDIT 0
+  DEL 'SPOT-X-STATE'
+  DEL 'SPOT-X-EPOCH' ;
+AX_CURRENT := FLU: AX_CURRENT MACROLIB3 TRACK_AX SYSTEM_NEXT ::
+  EDIT -3 TYPE K B1 SIGS EXTE 500 <<solver_eps>> REBA OFF ACCE 3 0
+  UNKT <<solver_eps>> THER <<solver_eps>> ;
+AX_CURRENT := SPOGBAL:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+GREP: AX_CURRENT ::
+  GETVAL 'K-EFFECTIVE' 1 >>k_candidate<<
+  GETVAL 'SPOT-GBAL' 1 >>gbal<<
+  GETVAL 'SPOT-GBAL-MAX' 1 >>gbal_group<< ;
+AX_CURRENT := SPOSTATE:
+  AX_CURRENT TRACK_AX SYSTEM_NEXT MACROLIB3 :: ;
+
+* Raw, unmixed fixed-point defect in one common rank-3 trial space.
+AX_CURRENT := SPOXCONV: AX_CURRENT PARENT_AX :: ;
+GREP: AX_CURRENT ::
+  GETVAL 'SPOT-X-RRHO' 1 >>rrho<<
+  GETVAL 'SPOT-X-RLEAK' 1 >>rleak<<
+  GETVAL 'SPOT-X-DLEAK' 1 >>dleak<<
+  GETVAL 'SPOT-X-RA' 1 >>ra<< ;
+ECHO "RANK3-FIXEDPOINT-RAW-DEFECT" rrho rleak dleak ra ;
+ECHO "RANK3-FIXEDPOINT-CANDIDATE"
+  k_candidate gbal gbal_group ;
+
+SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak_change<< ;
+ECHO "RANK3-FIXEDPOINT-LEAKAGE" leak_change ;
+
+CANDIDATE_AX := AX_CURRENT ;
+CAND_SNAP := SNAP ;
+
+ECHO "RANK3-FIXEDPOINT-AXIAL-COMPLETE" ;
+END: ;
+QUIT "LIST" .

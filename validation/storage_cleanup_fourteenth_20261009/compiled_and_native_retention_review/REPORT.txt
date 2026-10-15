@@ -1,0 +1,28 @@
+旧binary/native轻量只读审查：本人新增可直接删固定项0。V2–V6五条程序由另一代理完整审查；不在这里预批准或重复hash，R13已删两条不重复计算。
+
+复用Root真d13960/51871→593b95 EXIT0 inventory，不再walk。筛选3874路径/3874独有inode，unique allocated 1282895872B（1.194790GiB）。筛选条件与旧4115完整native binary不同。
+.o 3127路径、119595008B（114.055MiB）；.a 20路径、163323904B（155.758MiB）。最大.o仅1,063,872B，最大.a24,626,264B。其余完整依赖/restore排除未成立，不能按后缀或旧日期清空。
+
+主要大占用是主输入/数值见证，HOLD：
+/Users/wen/spot/validation/artifacts/native-layered-full-20261001/primary：12115173376 allocated B（11.283134GiB）。
+/Users/wen/spot/validation/artifacts/native-oblique-full-response-20260930/analysis：11716825088 allocated B（10.912144GiB）。
+/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-source-factor-20261006：13266935808 allocated B（12.355797GiB）。
+/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005：13266280448 allocated B（12.355186GiB）。
+/Users/wen/spot/validation/artifacts/native-layered-full-20261001全目录 12291932160B，build仅 4960256B。
+/Users/wen/spot/validation/artifacts/native-oblique-full-response-20260930全目录 11860811776B，build仅 569344B。
+layered primary覆盖全部原轨迹与独立原坐标/witness；oblique analysis保存完整响应和primitive/cell/face见证，原result文档规定全范围审计/回放。不是可再生编译缓存。既有retired replay副本按R9恢复限制处理，不称所有旧全seal现在自动可重验。
+
+明确直接读取，HOLD：/Users/wen/spot/validation/artifacts/d4a-scattering-bootstrap-run-20260924/Dragon，9,154,744B；test_d4a_picard_map_preflight.py:18和REPAIRED_SHA直接依赖。
+/Users/wen/spot/validation/artifacts/native-signed-axial-state-20260929/build/libDragon.a：24626264B；原probe_refined_AAA_white_odd_response.py prepare校核四签名库并链接，HOLD。
+/Users/wen/spot/validation/artifacts/native-signed-axial-state-20260929/build/libTrivac.a：5801632B；原probe_refined_AAA_white_odd_response.py prepare校核四签名库并链接，HOLD。
+/Users/wen/spot/validation/artifacts/native-signed-axial-state-20260929/build/libUtilib.a：1073776B；原probe_refined_AAA_white_odd_response.py prepare校核四签名库并链接，HOLD。
+/Users/wen/spot/validation/artifacts/native-signed-axial-state-20260929/build/libGanlib.a：1476784B；原probe_refined_AAA_white_odd_response.py prepare校核四签名库并链接，HOLD。
+R12的51个old native/bootstrap同SHA筛选现identity保持，47个有原seal；同SHA并不解除测试/源码/恢复义务，完整路径见JSON。
+
+压缩包实际90个：89份永久材料恢复gzip，另一个cp314 SciPy wheel。没有新普通下载压缩包批次；wheel与installed环境仍被cold manifest固定。U238 merge/28-U238/tape30 839,016,696B是R7明确恢复主本，继续HOLD，不压缩改原路径。
+V2–V6五条各9,225,720B，共46128600 logical/46141440 allocated B；由graph代理另审新精确退役证明。R13旧V7/V8已缺席。
+
+保留最小结果文档：历轮REPORT/manifest/ledger/真实tool/独审/restore入口；native plan/frozen/prepared/execution inputs、result.sha256、source/compiler lineage、runs完整logs/watchdog、receipts、verification/results、resumption/retry。V7/V8真实失败及V9成功/INPUT/cold UNREADY源/inverse/独审亦保留。结果摘要不能替代仍依赖的primary/analysis原始数组。
+Root另审旧puremetadata无损压缩与精确恢复，本人不重复；这不授权删除native主数据、源码、环境、alias/canonical/namespace/既有完整history目录或恢复主本。
+
+仅TMP报告，0项目写/删除/压缩/恢复，无cold绑定/业务import/API/constructor/PREP/RUN/native/build/测试，不读Git历史或敏感文件，不重hash35GB科学INPUT，无RSS或科学信用。allocated按inode去重，不等同APFS即时独占空闲。

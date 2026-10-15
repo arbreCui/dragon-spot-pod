@@ -1,0 +1,89 @@
+Independent OpenMC continuous-energy inputs for the eight-region AAA / ABA pin
+
+Input-only boundary
+  ce_reference.py constructs and statically checks inputs. It has no transport
+  invocation or MG-to-MC coefficient path. Run AAA first, then ABA only under the
+  separately frozen execution/statistics protocol. Neither export nor the static
+  tests establish physical accuracy or convergence. Execution must use one thread.
+
+Geometry and boundary audit
+  data/rnr_0burn_spot_proc/irena_pincell.dat has TYPGEO=0, eight regions, seven
+  circular interfaces, DEFAUL/NBBCDA/ALLSUR=0/0/0 and albedo=1. SAL_GEOMETRY_MOD
+  documents DEFAUL=0 as isotropic reflection. SpotSnapBld's two SALT calls use
+  TISO 48 100.0 LONG. Therefore all six outer hexagonal surfaces are OpenMC white,
+  not specular reflective. The hex edge is .61776479 cm, orientation x (vertices
+  on the x axis). Axial ends at 0 and 150 cm are vacuum; 50/100 cm are physical
+  composition interfaces. Numerical tally interfaces transmit without a material
+  change. Ideal hex dimensions reproduce the declared nominal geometry; the DAT's
+  printed corner coordinates have decimal rounding at approximately 1e-8 cm.
+
+  Radial region and original mixture identifiers are outside-to-inside:
+    1 Na; 2 AIM1 clad; 3 He gap; 4/5/6/7 MOX outer-to-inner; 8 He hole.
+  The DAT's trailing descriptive comment list is not a region-index crosswalk.
+  Sorted circular radii are .11, .308712, .381084, .412536, .4225, .435, .485 cm.
+  All four fuel annuli are retained for mapping, with identical CE composition.
+
+Independent material construction
+  Use the corrected pure material_numbers and make_floor_materials functions in
+  validation/d4_reference/build_d4a_ce_reference.py. Its audited base and current
+  rnr_cc/rnr_interpol identities are checked. Load a fresh base module for each
+  composition before assigning p_Pu/p_U: A=.21/.79; B=.2436/.7564. Recompute atom
+  densities; never reuse the base module's import-time densities for B.
+  B is the commented alternative on line 29 of the original local rnr_0burn.x2m,
+  a declared experimental recipe, not a verified IRENA design. Preserve all other
+  isotope vectors, density/dilation and oxygen-to-metal formulas. There is no EM10
+  wrapper in this pin. Fuel/hole=750 C, clad/gap=620 C, Na=475 C throughout both
+  cases. Axial composition changes do not introduce temperature changes.
+  These are three distinct material temperatures, not one common temperature.
+  A CE cross_sections.xml may be supplied explicitly; without it the contract
+  records an unbound data library. Dataset/temperature availability is not proven
+  by the geometry-only construction and must pass the separate data preflight.
+
+Output bins and quantities
+  Default tally_cells_per_zone=4 gives 12 axial cells and 96 region/layer bins.
+  Finer multiples of four retain an explicit map back to the production 12 cells.
+  CellFilter leaf tallies score flux and nu-fission separately using tracklength;
+  parent-layer CellFilter tallies provide the same two full-cross-section scores
+  in 12 bins. The manifest supplies cell IDs, region IDs, zone/material labels,
+  z edges, physical volumes and all fine-to-production-bin assignments.
+  Flux is cell-integrated tracklength per source particle. Divide by the actual
+  manifest cell volume for scalar flux. Nu-fission is production per source
+  particle and must never be substituted for flux. Any shape normalization and
+  correlated confidence interval belong to the separate analysis contract.
+  Optional strictly increasing energy boundaries in eV add group-resolved scores;
+  absent boundaries mean the default flux/production tallies are energy-integrated.
+
+  SurfaceFilter tallies at all 13 ZPlanes give full-cross-section net current,
+  with every plane normal +z. PolarFilter [0,pi/2,pi] adds fixed global direction
+  bins: first +z, second -z. The second bin retains negative signed current.
+  MuSurfaceFilter is unsuitable: its normal flips with the crossed surface side,
+  so both crossing directions can occupy its positive-mu bin. The initial V1
+  smoke demonstrated this instrumentation defect and is retained as failed
+  directional evidence. Input contract V2 uses PolarFilter; validate the signed
+  bin sums, vacuum-entry zeros and both interface directions in a new smoke.
+  Bottom outward
+  leakage is minus the z=0 net score; top outward leakage is the z=150 net score.
+  Interior scores are +z-oriented net interface current. These are not region-
+  resolved currents. Tally IDs and plane roles are explicit in the manifest.
+
+Statistical outputs and execution separation
+  ReferenceConfig accepts particles, inactive, active and seed. Current input
+  defaults are 50000 particles/batch, 100 inactive and 250 active batches, with
+  one generation per batch. statepoint_every_active_batch=True saves batches
+  101..350 (all active batches); a caller can request final-statepoint-only for
+  an explicitly separate diagnostic. No budget is executed by this builder.
+  Consecutive cumulative tally sums and n_realizations permit recovering each
+  batch contribution; do not use consecutive cumulative means as independent
+  observations. The first active statepoint supplies the first contribution.
+  Block construction, common-denominator correlation, bootstrap confidence bounds
+  and engineering acceptance thresholds are owned by the separate protocol.
+
+Reproduction
+  Use an OpenMC environment with SurfaceFilter and PolarFilter support. The checked
+  local version is 0.15.4.dev160+ge542b2f03. ce_reference.py OUTPUT --case AAA/ABA
+  writes four XML files plus reference_contract.json in a new/empty directory.
+  --cross-sections binds explicit CE data; --energy-edges-json adds energy bins.
+  --tally-cells-per-zone 8 refines to 24 tally layers without changing materials.
+  test_ce_reference.py checks boundary evidence, region/volume/temperature maps,
+  independent A/B density recomputation, symmetry/outside points, separate scores,
+  active-batch statepoint serialization and refusal to overwrite existing output.

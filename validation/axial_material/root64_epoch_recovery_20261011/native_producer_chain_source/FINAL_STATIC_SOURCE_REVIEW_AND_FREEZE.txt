@@ -1,0 +1,13 @@
+Final Source-only freeze, 2026-10-11
+
+AXMAT_CONTINUOUS_DRIVER64.f: 61863 bytes; SHA256 fff770a409704a3c9283aedeb4f59a5fb17384ccd405508c0a6f338ce76f9fca.
+AXMAT_NATIVE_PRODUCER_CHAIN.f90: 10769 bytes; SHA256 650a785b277bd5266f797b5bd026e1e8977f48ac17cb986b84c13ac1955ccd3e.
+Final Source writer ce137b EXIT 0 regenerates complete original byte inverse and protected Source before/after fullpins. Source files are frozen and this author will not modify them pending Root review/compile.
+
+Static checks completed: full explicit interface matches all original scalar/array dimensions, real32 coefficients and real64 native fields; appended eight native ABI arguments match in order and kind; terminal outputs clear before any body execution, strict branch captures real kernel values, validity writes true at exactly one final normal-return site; GAR32->DBLE ingress removed; all other original bytes recover exactly via ten saved local transforms; full original MCCG TYPE K/shape/moment/tolerance/balance/acceleration guards and actual kernel calls preserved. All candidate lines are at most 132 bytes (fixed Source requires the same original fixed-line-length-none compiler flag).
+
+One Source error prevented before freeze: the new early scalar-positive check initially indexed KEYFLX(:,1,1) before original declared NLIN/NFUNL shape rejection. The identical original shape guard is now also applied before that indexing. This does not change declared eligible shapes or numerical thresholds. Prior draft tool return remains preserved; final SHA and proof supersede that draft.
+
+The actual frozen PUBLISH signature is used directly. Helper status maps to ROOT64_REFUSED, full370 native/mirror SOUR64 checks precede any publisher mutation, and the exact real TRACK MCCG cutoff 2.5e-8 must match the externally supplied new case RCONTRACT bits. The helper does not construct a fake native image, a strict-pass Boolean, a header or a scientific PASS. Native transport remains in the complete actual transformed driver, and actual FLUDRV/FLU integration is pending.
+
+Selected native A/B archive full-EOF SHA and current 7IDs are real observed file pins. The helper's full type4 logical loader has not yet run. No exact coherent-tamper rejection is claimed by internal self-copies; external original host input/output full-EOF pins remain necessary. No old wholeInput, 17 controls, physical accuracy, rank2 or AAA/ABA qualification is inherited. No compiler, Fortran parser or numerical process was run by this subtask.

@@ -1,0 +1,64 @@
+# SPOT轴向历史载荷清理独立只读审查（2026-10-08）
+
+本次仅给用户选择清单：没有删除、移动、压缩、启动AAA、启用104GiB、调用业务API或重新计算35GB输入载荷摘要。容量来自现存文件stat/du；依赖判断来自已保存的完整owned-specs graph、historical-input specs、prepared/current predicates及当前只读consumer源码。JSON元数据读取不等于重新验证其所指载荷。
+
+## 为什么占用大
+
+整个项目约251.66GiB，artifacts约251.02GiB。以下两族合计约23.54GiB，主要是每轮保存多个大XSM状态，报告和日志很小。
+
+| 家族 | du分配占用 | 当前graph直接读取 | 主要大对象 |
+|---|---:|---:|---|
+| `axial-material-production-qualified-AB-rank1-factor-cache-20261007` | 12.362GiB | 53文件 / 0.728GiB | bootstrap、每map多份XSM及完整输入快照 |
+| `axial-material-production-qualified-AB-white-trace-20261004` | 11.182GiB | 11文件 / 0.258GiB | bootstrap、每map多份XSM及完整输入快照 |
+
+`graph直接读取少`不能单独证明可删；此次还核了精确namespace、当前存在/不存在门、额外source/input map和future cold的prepared要求。
+
+## 第一批明确候选：rank1 maps001–006的48个普通XSM
+
+完整根路径：`/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-rank1-factor-cache-20261007/AAA/`。在 `map001`、`map002`、`map003`、`map004`、`map005`、`map006` 中，各自仅选择下表8个普通文件；不选择任何symlink，也不选择整个目录。
+
+| 每map普通文件 | map001实测bytes |
+|---|---:|
+| `candidate_axial.xsm` | 11,548,444 |
+| `candidate_radial.xsm` | 237,955,696 |
+| `candidate_snapshots.xsm` | 237,955,708 |
+| `candidate_system.xsm` | 871,272 |
+| `closed_axial.xsm` | 11,548,460 |
+| `closed_snapshots.xsm` | 237,955,712 |
+| `parent_for_checker.xsm` | 11,548,412 |
+| `projected_proposal.xsm` | 231,698,876 |
+
+48文件逻辑大小 **5,886,495,640B = 5.482GiB**；stat分配块合计 5,886,590,976B。均nlink=1且48个不同inode。每个完整路径、大小和inode保存在并行JSON清单。
+
+依赖排除结果：这48个路径与当前graph的29,141 canonical文件、typed expected owner paths、完整requirements paths、186 literal aliases及target、75 exhaustive namespaces均无交集；也不受原26,784 ordinary文件检查、4个失败length maps（3,747路径）、79个精确negative目录（663文件）、3个独立SOURCE目录要求、24个current absence要求覆盖。rank1/旧white/原refined三个prepared的local_files分别37/34/35项，加inputs/case_spec/rank_addendum及pilot额外输入地图均无交集。future cold源码仅以rank1 prepared/runtime/decks作baseline，要求fresh training/bootstrap/maps，没有复用这些旧map。
+
+当前实际family history 87,188,441,826B + 原cold预约 20,971,764,748B，超过原96GiB **5,080,991,470B（4.732GiB）**。第一批名义减少足以覆盖，仍保96GiB时余 805,504,170B（0.750GiB）。这是清单算术，不是实际删除后磁盘回收或未来运行准入。APFS clone/快照、文件变化与后续保存文件会影响可用空间，执行后须重新测真实资源。
+
+重要代价：每个旧map的 `result.json` 原seal仍列被选择文件的hash；删除会退役这些旧map的完整数值archive，不能继续声称原12maps全量seal/replay可重验。保留的12条parent symlink（map002–007）会指向被删closed_axial/closed_snapshots；当前input graph和future freshcold不读取这12条，但历史逐map重放会失效。原JSON、seal、源和结论均不应改写，另存裁剪清单说明载荷已退役。
+
+## 更窄替代：保留父级closed状态链
+
+若希望避免产生dangling parent links，可改为rank1 `map001–map008`中各自仅选择 `projected_proposal.xsm`、`candidate_radial.xsm`、`candidate_snapshots.xsm`：24文件 **5,660,882,240B = 5.272GiB**。它们属于以上已排除依赖的候选子集，库存没有指向这24文件的project symlink；保留 `closed_axial.xsm`、`closed_snapshots.xsm`、系统和checker父状态。其名义余量为 579,890,770B。这仍退役相应旧map完整seal，也不保完整数值重放；它只是保留更多已完成closed结果和父级关系的选项。两方案互为替代，容量不可相加。
+
+## 额外候选，供更大空间余量选择
+
+| 候选 | 文件 | 逻辑GiB | 当前合同交集 |
+|---|---:|---:|---|
+| rank1 map007–010每map同8个普通XSM | 32 | 3.655 | 无；同样退役旧seal并影响后继parent links |
+| 旧white-trace map001–009每map同8个普通XSM | 72 | 8.023 | 无；同样退役旧seal并影响后继parent links |
+| 旧white-trace map010（建议先保留作为最终map011的父状态） | 8 | 0.891 | 无；同样退役旧seal并影响后继parent links |
+
+这些是可退役历史轨迹候选，不是此次删除授权。优先第一批或窄替代就能按名义文件计费消除当前4.73GiB缺口，无需为了清理主动修改96GiB。旧white最终map011和rank1 map011/012、bootstrap应先保留完整，以留下最终状态和可用比较输入。
+
+## 必须保留
+
+- 两族全部源码、runtime、参数/decks、prepared/declaration、archives、training；bootstrap、rank1 map011/012及旧white map010/011完整对象。
+- 每map所有 `.json`、`.log`、watchdog、生成deck、result/seal、收据、status、检查结果；所有README/Markdown/CSV/report/PNG/SVG结果文档。
+- 所有原symlink及目录；若选择48文件方案，须在独立裁剪清单准确标注产生的12条悬空历史parent link。
+- 当前graph所有expected/raw/native/材料/参考样本、4失败length maps、79negative目录、当前唯一最终场及物理比较需要的输入。不能把graph外的大文件一概当作垃圾。
+
+## 本审查边界
+
+没有运行当前input reader、资格API或未来cold准备；没有核验大XSM完整bytes/hash，也不声称所有历史消费者都不再需要候选。结论限定为：现存metadata和已审future cold源码未把上述候选列作当前强输入；用户选择退役旧中间状态时，可以保留结果文档并释放较大空间。若用户还要求旧每轮完整数值重放，应保留其载荷或另行迁出存储，不能直接删除。
+
+详细清单：`/private/tmp/spot_storage_cleanup_independent_review_20261008.json`。全文件路径在JSON的 `candidate_groups.*.files` 中；inbound symlink、各合同交集、容量算术也完整保存。

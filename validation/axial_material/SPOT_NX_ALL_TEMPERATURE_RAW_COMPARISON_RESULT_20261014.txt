@@ -1,0 +1,16 @@
+SPOT NX 原生成字值全温度比较结果 — 2026-10-14
+
+11 种核素、79 个原库温度均完成比较。29 个温度记录完全一致，50 个存在原始 binary32 字值差异，共 1,282 个不同字。修正后的主过程和子进程均真实退出 1，按原要求保留结果、未通过，不放宽为浮点近似通过。
+
+一致的核素：U235（8 个温度），Cr50、Cr52、Cr54（各 7 个温度）。
+差异字数：U238 312、Fe54 286、Fe56 316、Fe57 291、Fe58 63、Cr53 7、Mn55 7。
+
+使用原 DRAGR NX 生成语句：由保存的 MF3/MT5 向量按原 binary64 非零条件截尾，再转换为 binary32。SCI 温度目录精确匹配；原 NX 叶完整字节哈希与此前保存的原库审查相同。原输入库先经完整身份及哈希核查，子进程仅选择性读取 SCI 的 509,768 字节目录/温度/NX 字段，未解码整个原库。额外保存 MF6-MF3 的产额诊断，仅对正截面定义比值并保留零值掩码，没有修改材料截面。
+
+首次 v1 运行的严格布尔实参错误已修复，失败证据完整保留。v2 完成全部 79 个温度，发现的是实际原始字值差异，不能归作同一类型错误。差异的幅值和原因仍待核查，暂不称其微小舍入差异，也不能据此认定完整反应权威或物理验收通过。
+
+证据：
+/Users/wen/spot/validation/artifacts/axial-material-saved-MT5-NX-raw32-producer-yield-diagnostic-20261014-v2/diagnostic/ACTUAL_SAVED_MT5_NX_RAW32_AND_YIELD_DIAGNOSTIC.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/saved_MT5_NX_raw32_yield_source_v2_20261014/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+
+下一步：核查实际 NJOY/DRAGR 版本、GENDF 输入形式及输出精度链，逐字定位 1,282 个差异来源；原验收条件不变。整体 goal active，AAA 独立全群参考及 ABA 尚未完成。

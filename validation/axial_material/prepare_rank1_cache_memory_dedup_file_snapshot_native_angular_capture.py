@@ -1,0 +1,1900 @@
+"""TMP-only independent capture using a deferred, private file SNAP.
+
+Relative to frozen cfb, the sole deck change replaces LINKED_LIST SNAP with
+XSM_FILE SNAP :: FILE './radial_snapshot_work.xsm'; AX_CURRENT remains LCM.
+The existing delayed copy and all five scientific calls/arguments/order remain.
+The working file is initially absent/nonalias, is retained before numeric gates,
+and its complete logical records must equal the separate CAND_SNAP output.
+Original map012 complete-record and all370 native ledger gates are unchanged.
+GANLIB/SPOLEAK sources and selected linked members explain supported storage,
+not source-machine equivalence, measured memory saving or prior failure cause.
+Both the 43fd and cfb native RSS failures remain exact INPUT-only namespaces.
+Only readonly diagnostic admission skips the current build-interpreter equality;
+all files/aliases/namespaces/loader/threads/body gates remain mandatory and fresh.
+Prepare/run/native/audit remain strict3.12. No TMP business action is permitted.
+"""
+import argparse
+import ast
+from contextlib import contextmanager
+import difflib
+import hashlib
+import importlib.util
+import json
+import math
+import os
+from pathlib import Path
+import re
+import shutil
+import stat
+import struct
+import sys
+import time
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[2]
+ART=ROOT/'validation/artifacts'
+SOURCE=ART/'axial-material-rank1-cache-memory-dedup-file-snapshot-native-angular-capture-admission-20261007'
+OUT=ART/'axial-material-rank1-cache-memory-dedup-file-snapshot-native-angular-capture-20261007'
+TERMINAL=ART/'axial-material-rank1-cache-memory-dedup-file-snapshot-native-angular-capture-terminal-20261007'
+PROD=ART/'axial-material-production-qualified-AB-rank1-factor-cache-20261007'
+FINAL,PARENT=PROD/'AAA/map012',PROD/'AAA/map011'
+BUILD=ART/'axial-material-rank1-factor-cache-build-20261007'
+BUILD_SOURCE=ART/'axial-material-qualified-AB-rank1-factor-cache-build-admission-20261007'
+BUILD_TERM=ART/'axial-material-qualified-AB-rank1-factor-cache-build-terminal-20261007'
+BUILDER=ROOT/'validation/axial_material/prepare_qualified_AB_rank1_cache_production.py'
+BUILDER_SHA='92d73658e349ea2b2816b2b770549ca22378c2595f2c9e5c9331bbf91c6abf8a'
+BUILD_SEAL='e86ee99baec88585c5965b67043658a519ebde61bb32d195fc35598970e4b39f'
+BUILD_TERM_SHA='c5eecbff0064a9285460c98bc01bad26ab9180a4b4e38a6186be779378ba9d96'
+MEMORY_BUILD=ART/'axial-material-rank1-factor-cache-memory-build-20261007'
+MEMORY_SOURCE=ART/'axial-material-qualified-AB-rank1-factor-cache-memory-build-admission-20261007'
+MEMORY_TERM=ART/'axial-material-qualified-AB-rank1-factor-cache-memory-build-terminal-20261007'
+MEMORY_BUILDER=ROOT/'validation/axial_material/prepare_qualified_AB_rank1_cache_memory_production.py'
+MEMORY_BUILDER_SHA='438309418dc49137559c88e3a291c93c90696e7b8af420c115c14efe268778de'
+MEMORY_BUILD_SEAL='ff1fc61b7b4094ab93d7403a1862bdd47f6d86ccf0178e87822ef0b5015532e5'
+MEMORY_DECLARATION_SHA='494c0ba0f873e198c1e09db87672a1e20eb10a23ff61d1dd21f4cea974663b45'
+MEMORY_TERM_SHA='b0bec2a8c435cc8fba2e2691d399455bb68d410fd889fa82e91c15a84b39b7a7'
+DRAFT_STATUS='READY_WITH_ACTUAL_COMPLETE_DEDUP_COMPONENT'
+DEDUP_BUILD=ART/'axial-material-rank1-factor-cache-memory-dedup-build-20261007'
+DEDUP_SOURCE=ART/'axial-material-qualified-AB-rank1-factor-cache-memory-dedup-build-admission-20261007'
+DEDUP_TERM=ART/'axial-material-qualified-AB-rank1-factor-cache-memory-dedup-build-terminal-20261007'
+DEDUP_BUILDER=ROOT/'validation/axial_material/prepare_qualified_AB_rank1_cache_memory_dedup_production.py'
+DEDUP_BUILDER_SHA='4ae768d5e06b64685c1626326de6e93d2e87b7d502f991bf1d7c06f169622c29'
+DEDUP_DECLARATION_SHA='7679f56d175023b98efcd9af0b359d808ef36e43843f19df551401dd520ef3c8'
+DEDUP_BUILD_SEAL='fd63bae4d542d735a8ad363de63c8e978b4318e4baea0176820d93624b39ea61'
+DEDUP_TERM_SHA='09b904094ecaf1fcc7d9979a02bf95629d26f761c53c06e66a7dd2ce52bd070e'
+DEDUP_KERNEL_SHA='50071dfc713cd1a7f319e392706686c73ef250ea03049a91ef29d5dec341adb6'
+DEDUP_KERNEL_OBJECT_SHA='c3983c6a0af16d91f737225c026d08319a07b91ce4f5e12d626ae3e3f38c6d79'
+DEDUP_RUNTIME_SHA='c6c43bd7016cae2b01c64a418c9ed4aa0cffab69a3fe76b0a853b4c6dc17c554'
+DEDUP_SOURCE_ADMISSION_SHA='09de383a9015315d57db09a7cc295d71262c256e74701bf7d81dddbffb0f243c'
+PREDECESSOR_MEMORY_CAPTURE_SOURCE=ROOT/'validation/axial_material/prepare_rank1_cache_memory_native_angular_capture.py'
+PREDECESSOR_MEMORY_CAPTURE_SHA='ebc53e9e9fd88c4208ef776333b363d17c27ca2d40f3a09161dbdb51d1c93f8e'
+MODULE_SHA='0bc23f7fe5c401460ad153430de703ad1b8570e6a15bbfe0e7d97fb01825991d'
+ORIGINAL_CAPTURE_SOURCE=ROOT/'validation/axial_material/prepare_rank1_cache_native_angular_capture.py'
+ORIGINAL_CAPTURE_SHA='da7bae3f30686c475f1f9136b5186ef5894db25b314424d66279853befa4297b'
+FAILED_CAPTURE_ROOT=ART/'axial-material-rank1-cache-native-angular-capture-20261007'
+FAILED_CAPTURE_TERMINAL=ART/'axial-material-rank1-cache-native-angular-capture-terminal-20261007'
+FAILED_CAPTURE_RECEIPT_SHA='648405e5477630afcf9ee7583ebfddfc0315348ae27e11e997c578a050a08d29'
+PREPARED_SHA='7d2154e9c722eab23f4411c9a8588ed8250da658ae880298c24dfb53308656b5'
+STATUS_SHA='03b68ebd59c7bfff9eca8f02961e1ae528bf4debf815dd23ae0d0a2cdf03051d'
+FINAL_SEAL_SHA='64293bc1022a44d3cbf5e738bf1b79f4f2aa7b8958d572a59cc8c2b3ca968d59'
+PARENT_SEAL_SHA='907867d184b856b2e8a7aeadceb0e9c40a006b2fd1798a3895577e2d50c3aa15'
+KERNEL_SHA='c0fddcd2ddc4dba6969440024a9205fbb297727a6a045886acba626323ab5718'
+SENDER_SHA='bb901bfed9a4199a5b4c98c58c93bf3b3dda597fd2047bfed6d267c8dcadac81'
+MODULE=ROOT/'validation/axial_material/rank1_cache_capture_angles.f90'
+NG,NUN,NZ,NA,NR,NL=370,1800,48,32,8,3
+TOTAL_WALL,STAGE_WALL,RSS=1800,600,512
+HISTORY_CAP,FREE_FLOOR=96*2**30,8*2**30
+THREAD_KEYS=('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+TERMINAL_SCHEMA='AXMAT_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1'
+TAIL_FIELDS=('actual_tail_check','actual_elapsed_seconds','actual_archive_bytes','actual_resources')
+
+PREDECESSOR_DEDUP_CAPTURE_SOURCE=ROOT/'validation/axial_material/prepare_rank1_cache_memory_dedup_native_angular_capture.py'
+PREDECESSOR_DEDUP_CAPTURE_SHA='43fd1e817a7f81e64cd8e30f937bb33d68871ce5afd755dceca6937ca96812d3'
+FAILED_DEDUP_CAPTURE_SOURCE=ART/'axial-material-rank1-cache-memory-dedup-native-angular-capture-admission-20261007'
+FAILED_DEDUP_CAPTURE_ROOT=ART/'axial-material-rank1-cache-memory-dedup-native-angular-capture-20261007'
+FAILED_DEDUP_CAPTURE_TERM=ART/'axial-material-rank1-cache-memory-dedup-native-angular-capture-terminal-20261007'
+FAILED_DEDUP_CAPTURE_RECEIPT_SHA='95573b54a72171719a3920f166828a10f789c45b6c559d60a79d1f07fdd0cceb'
+FAILED_DEDUP_CAPTURE_DECLARATION_SHA='5b16de46e6d0462d04adebfb3c037ea5f4cca5194f20b4acc5c6d7e5005343d7'
+ORIGINAL_DECK_SHA='0849ed24c071fde68957c32956b55dae619a8801c3e64a38e0a7a03c703b5cc4'
+GANLIB_STATIC_LIBRARY=ROOT/'Ganlib/lib/Darwin_arm64/libGanlib.a'
+GANLIB_STATIC_LIBRARY_SHA='204d9f3aeaf4e06d8fbb62225e14859a767476cd845ba0096f166b5f9e14822c'
+GANLIB_DEEP_COPY_SOURCE_SHAS={
+    'cle2000_c.c':'471f5967d72883799d2452984a6ecb1b4cf091270f190069c9727aa335554e61',
+    'GANDRV.F90':'acfc795284c33d5a40f67dd06af209bcd482dca8763e6212de3fef18764401b0',
+    'DRVEQU.F':'f9264772dde3c1599ebc8b915c20cf4300f3a0dda853adf1fb8caef54fc4b641',
+    'LCMAUX.f90':'25349f228eb258ea168ba73d291b69c7484709fe282c3cd882f6e0c1a3197ef6',
+    'lcm_c.c':'482694622199a3f42f05cb30bd3c4f5f57325494a356fa1a848188f1f0ccb637'}
+GANLIB_DEEP_COPY_MEMBER_SHAS={
+    'cle2000_c.o':'4029e637f5ebc95de30c3387f2ce1a1c33ffb60f6bb1f95b06ed4b647b1a44f8',
+    'GANDRV.o':'700575e72ebb19c1334d7ba37e5c656e6e93aab916dbe9f21686e826fe4f2deb',
+    'DRVEQU.o':'3215607cc6039bcf10813a501248a33bb7914c7e982f0470e9bf08e4b3237550',
+    'LCMAUX.o':'0b724b4ce0ab5c50e1fe018030b3cc782d6beeaa263b04ce653184876c54abc3',
+    'lcm_c.o':'26e3e9598f1315a17bd74c73093bae2e28909c7b676598526367becec3a2420d'}
+
+
+
+PREDECESSOR_DEFERRED_CAPTURE_SOURCE=ROOT/'validation/axial_material/prepare_rank1_cache_memory_dedup_deferred_snapshot_native_angular_capture.py'
+PREDECESSOR_DEFERRED_CAPTURE_SHA='cfb8d56ed1f4d185d2931745cfcc276563e3343032328def6dcf4cde858bd42b'
+FAILED_DEFERRED_CAPTURE_SOURCE=ART/'axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-admission-20261007'
+FAILED_DEFERRED_CAPTURE_ROOT=ART/'axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007'
+FAILED_DEFERRED_CAPTURE_TERM=ART/'axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-terminal-20261007'
+FAILED_DEFERRED_CAPTURE_RECEIPT_SHA='0346ce641abc8aa010bf44bcda43b3f6bd390b03f92f477ea6815678e6f0da62'
+FAILED_DEFERRED_CAPTURE_DECLARATION_SHA='4034eb67dbffa4d42468f0a36e78635d805bd728281ef5bb56eff61866895254'
+GANLIB_XSM_SOURCE_SHA='3c13ed32782599fcc261be1764ce00ef61b3dc28cd62ad6d8741ce1b3f0df0e6'
+GANLIB_XSM_MEMBER_SHA='67768dd7d920f8f675e02338347ee376e7cb2c1d223c88aa53c95036b8610c14'
+GANLIB_KDI_SOURCE_SHA='14130f71d12209a5fd3e00ed70ab8a7068f973de2873c8efcf733361e3c74fb9'
+GANLIB_KDI_MEMBER_SHA='9541b4745476f780d6510320b8cf4887dc0d0a728d1b05d8ad7e85b08d8bedb8'
+DRAGON_STATIC_LIBRARY=ROOT/'lib/Darwin_arm64/libDragon.a'
+DRAGON_STATIC_LIBRARY_SHA='954ed8568c59fdfc3ee566d027abac35c7a1469436afb0b147e4db7a7f28a1d9'
+SPOLEAK_STORAGE_SOURCE_SHA='39f60383cb5b6b9da7adcfb52ead77ae25989b345913a59096e21354f18136b9'
+SPOLEAK_STORAGE_MEMBER_SHA='ef9455059207231ff9c263ce501551d842dd7bc5f18f5efcd2f1cb4c649a7a5d'
+WORK_SNAPSHOT_NAME='radial_snapshot_work.xsm'
+FAILED_DEFERRED_INPUT_FILE_SHAS={'/Users/wen/spot/validation/axial_material/prepare_rank1_cache_memory_dedup_deferred_snapshot_native_angular_capture.py': 'cfb8d56ed1f4d185d2931745cfcc276563e3343032328def6dcf4cde858bd42b', '/Users/wen/spot/validation/axial_material/rank1_memory_dedup_deferred_snapshot_failed_capture_namespace_20261007.json': 'b8204c85bbf39bfacd53c51adff5a52c2480658ef2f3b1471463abd50e102f97', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/declaration.json': '4034eb67dbffa4d42468f0a36e78635d805bd728281ef5bb56eff61866895254', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/driver_result.json': '70fc9f8bd76b474f353ba1c58872486a72295b792a0f129fb78f07ef91a78470', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/execution_claim.json': 'e15c9fd702159d7db3ed2616f9d4d1609b4e94aa61ef5bb2d3bf91b3852aa7f1', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/AAA/stages.json': '1beafd7eea9cd1a2e12c9c6e3427ae333fb79c380968cd4f905c81a2e32fb043', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/raw_capture_receipt.json': '3ce710da0a330ca2a168e34909c4eda28e7386f5025d42883153e08012a5093a', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-terminal-20261007/capture_full_stdout.json': 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-terminal-20261007/capture_full_stderr.txt': '8f24c0785fb4a9b83ade26a5cd3d7788af55b51fda2578b347278ebd4cb70efb', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/AAA/capture_replay.watchdog.json': 'addb0014fac883e0d7cc046685b59a6016bb3ca4167e6d14be13b75d30f6e9e6', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/AAA/capture_replay.log': 'b75d358c72c5c0eeea6dd8775415a72786e72a596d6c31b0733da640b041a49d', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-terminal-20261007/terminal_return.json': '0346ce641abc8aa010bf44bcda43b3f6bd390b03f92f477ea6815678e6f0da62', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-terminal-20261007/declaration_terminal_return.json': '67e6d60fe06ad7a97ec00d32b5c75ea85d7d5454d9a1a0f8d6497b22ca9c36ab', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-terminal-20261007/declaration_full_stdout.json': '03fe5c1bb5dacdaa3606c6291851728a9826015da8e4d5d0ffecf5686566e81a', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-terminal-20261007/declaration_full_stderr.txt': 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-admission-20261007/source_admission.json': '6f43258ed06800b170b1d893aed72e887b1ef1471cbf398519cb3b9efb949c48', '/Users/wen/spot/validation/artifacts/axial-material-rank1-cache-memory-dedup-deferred-snapshot-native-angular-capture-20261007/runtime/build_identity.json': 'acf58eef641584cf7bd778b9610dacbaec9c6301f0a875142cf4222df1a1d143'}
+
+
+def digest(path):
+    with Path(path).open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+def read(path):
+    return json.loads(Path(path).read_text())
+
+def write_new(path, data):
+    with Path(path).open("x") as stream:
+        json.dump(data, stream, indent=2, allow_nan=False)
+        stream.write("\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+
+def require(path, wanted=None):
+    path = Path(path)
+    normal_path(path)
+    if not path.is_file() or (wanted is not None and digest(path) != wanted):
+        raise ValueError("missing or changed declared file: " + str(path))
+    return path
+
+
+def normal_path(path,allow_missing=False):
+    """Ordinary paths have no leaf or ancestor aliases; native aliases are explicit."""
+    path=Path(path)
+    if not path.is_absolute() or '..' in path.parts:raise ValueError('absolute ordinary path required')
+    for endpoint in [*reversed(path.parents),path]:
+        try:info=endpoint.lstat()
+        except FileNotFoundError:
+            if allow_missing:continue
+            raise ValueError('ordinary path component missing: '+str(endpoint))
+        if stat.S_ISLNK(info.st_mode):raise ValueError('ordinary path/ancestor alias forbidden: '+str(endpoint))
+        if endpoint!=path and not stat.S_ISDIR(info.st_mode):raise ValueError('ordinary ancestor is not a directory')
+    return path
+
+def verify(files):
+    for path, wanted in files.items():
+        require(path, wanted)
+
+def once(text, old, new):
+    if text.count(old) != 1:
+        raise ValueError("archival source anchor is absent or ambiguous: " + old[:100])
+    return text.replace(old, new, 1)
+
+def patched(original, changes, path, origin):
+    changed = original
+    for old, new in changes:
+        changed = once(changed, old, new)
+    restored = changed
+    for old, new in reversed(changes):
+        restored = once(restored, new, old)
+    if restored != original:
+        raise ValueError("archival patch changed native text outside listed insertions")
+    path.write_text(changed)
+    path.with_suffix(path.suffix + ".patch").write_text("".join(difflib.unified_diff(
+        original.splitlines(True), changed.splitlines(True),
+        fromfile=origin, tofile="isolated-archival-callbacks-only")))
+    return dict(origin=origin, original_sha256=hashlib.sha256(original.encode()).hexdigest(),
+                candidate_sha256=digest(path), replacements=changes,
+                full_text_restored_exactly=True, native_expressions_changed=False)
+
+def guard_admission(full):
+    path = Path(full.__file__).resolve()
+    require(path, "70516d764e05cffa6e82e780a991ff64e56b9c29bc99f3f1b18bcb0ff63195c6")
+    folder = full.OUT / "preflight/live_guard"
+    require(folder / "guard_controls.json", "ae4d7e86423a187c29efd5bf87d54053081d7b7fcf18ac88cd9e49639cb07454")
+    guard = read(folder / "guard_controls.json")
+    tested = require(folder / "tested_driver_source.py", guard["source_sha256"])
+    verify({str(folder / name): sha for name, sha in guard["control_files"].items()})
+    def class_text(source):
+        text = source.read_text()
+        return next(ast.get_source_segment(text, n) for n in ast.parse(text).body
+                    if isinstance(n, ast.ClassDef) and n.name == "OwnRSSSerialExecutor")
+    if (class_text(path) != class_text(tested) or not guard["positive_child_completed"]
+            or not guard["actual_oversize_child_rejected"] or not guard["terminated_own_child_not_live"]
+            or guard["rss_cap_mib"] != 512):
+        raise ValueError("byte-exact tested live guard with actual positive/oversize controls required")
+    return [path, folder / "guard_controls.json", tested,
+            *[folder / name for name in guard["control_files"]]]
+
+def read_capture(path):
+    """Parse native stream words without any scale correction or field repair."""
+    import numpy as np
+    with Path(path).open("rb") as stream:
+        def words(dtype, count):
+            raw = stream.read(np.dtype(dtype).itemsize * count)
+            if len(raw) != np.dtype(dtype).itemsize * count:
+                raise ValueError("truncated production capture")
+            return np.frombuffer(raw, dtype).copy()
+        if stream.read(8) != b"AXCAP002":
+            raise ValueError("undeclared capture schema")
+        dims = words("<i4", 11)
+        if dims[:6].tolist() != [NG, NUN, NZ, NA, NR, NL] or dims[7] != 3:
+            raise ValueError("full actual production capture dimensions required")
+        term_int, term_real = words("<i4", 9), words("<f8", 7)
+        b2, norm = words("<f4", 4), words("<f8", 2)
+        cache_stats = words("<i8", 6)
+        groups = []
+        for g in range(1, NG + 1):
+            record = dict(context=words("<i4", 9))
+            for name in ("published", "published_source"):
+                record[name] = words("<f8", NUN)
+            if record["context"][0] != g:
+                raise ValueError("all 370 groups in original order required")
+            groups.append(record)
+        if stream.read(1):
+            raise ValueError("unexpected capture trailing words")
+    directory = Path(path).parent
+    with (directory / "angular_pre_normal.bin").open("rb") as stream:
+        if stream.read(8) != b"AXCPN001" or np.frombuffer(stream.read(8), "<i4").tolist() != [NUN, NG]:
+            raise ValueError("original pre-normalization archive dimensions differ")
+        raw = stream.read()
+        if len(raw) != NUN * NG * 8:
+            raise ValueError("original pre-normalization field is incomplete")
+        before = np.frombuffer(raw, "<f8").copy().reshape((NUN, NG), order="F")
+    for g, record in enumerate(groups, 1):
+        record["before_normal"] = before[:, g - 1]
+        with (directory / f"angular_field_g{g:03d}.bin").open("rb") as stream:
+            if stream.read(8) != b"AXCFD001":
+                raise ValueError("actual angular field schema differs")
+            header = np.frombuffer(stream.read(32), "<i4").copy()
+            if header[:4].tolist() != record["context"][:4].tolist() or header[4:7].tolist() != dims[8:11].tolist():
+                raise ValueError("angular field is not the last chronological source call")
+            for name, dtype, count in [("integer", "<i4", dims[8]), ("single", "<f4", dims[9]),
+                                        ("double", "<f8", dims[10])]:
+                raw = stream.read(int(count) * np.dtype(dtype).itemsize)
+                if len(raw) != int(count) * np.dtype(dtype).itemsize:
+                    raise ValueError("actual angular field payload is incomplete")
+                record[name] = np.frombuffer(raw, dtype).copy()
+            if stream.read(1):
+                raise ValueError("unexpected angular field trailing words")
+        for name, prefix, magic in [("s2", "source", b"AXCS2001"),
+                                     ("returned", "return", b"AXCRT001")]:
+            with (directory / f"angular_{prefix}_g{g:03d}.bin").open("rb") as stream:
+                if stream.read(8) != magic:
+                    raise ValueError("actual source/return schema differs")
+                header = np.frombuffer(stream.read(20), "<i4").copy()
+                if header[:4].tolist() != record["context"][:4].tolist() or header[4] != NUN:
+                    raise ValueError("source/return is not the final original group call")
+                raw = stream.read()
+                if len(raw) != NUN * 8:
+                    raise ValueError("actual full source/return payload is incomplete")
+                record[name] = np.frombuffer(raw, "<f8").copy()
+    return dict(dimensions=dims, terminal_integer=term_int, terminal_real=term_real,
+                b2=b2, normalization=norm, cache_stats=cache_stats, groups=groups)
+
+def unpack(group, nmat):
+    import numpy as np
+    output = {}
+    def split(data, fields):
+        first = 0
+        for name, shape in fields:
+            count = int(np.prod(shape));output[name] = data[first:first + count].reshape(shape, order="F")
+            first += count
+        if first != data.size:
+            raise ValueError("actual production archive payload layout differs")
+    split(group["integer"], [("mat1d", (NZ,)), ("mat", (NZ, NR)),
+                             ("ncode", (2,)), ("opposite", (NA,)), ("white_row", (1,)), ("ischm", (1,)), ("lfixup", (1,))])
+    split(group["single"], [("vol1d", (NZ,)), ("total", (nmat + 1,)),
+        ("sgas", (nmat + 1, NL)), ("basis", (NR, 1)), ("vol2d", (NR,)),
+        ("zcode", (2,)), ("mu", (NA,)), ("w", (NA,)), ("pl", (NL, NA))])
+    split(group["double"], [("white_perimeter", (1,)), ("radial2d", (NR, 3)), ("weight", (NR,)), ("mass", (1, 1)),
+        ("total_projected", (1, 1, NZ)), ("radial_projected", (1, 1, NZ)),
+        ("scat_projected", (1, 1, NL, NZ)), ("mn", (NA, NL)), ("dn", (NL, NA)),
+        ("white_angle", (NA, NA)), ("white_mode", (1, 1)), ("qext", (1, NL, NZ, NR)),
+        ("source_projected", (NL, NZ, 1)), ("cell", (NA, 1, NZ)), ("face", (NA, 1, NZ + 1)),
+        ("modal_flux", (NL, NZ, 1)), ("modal_current", (NZ + 1, 1)),
+        ("flux", (1, NL, NZ, NR)), ("current", (NZ + 1, NR)), ("xnei", (NA, NR))])
+    return output
+
+def audit_events(capture):
+    import numpy as np
+    latest = np.zeros((NG, 3), dtype="<i4")
+    per_group_calls = np.zeros(NG, dtype="<i4")
+    count = 0
+    with (OUT / "AAA/angular_capture_events.bin").open("rb") as stream:
+        if stream.read(8) != b"AXCEV002":
+            raise ValueError("actual source dispatch inventory schema differs")
+        header = np.frombuffer(stream.read(72), "<i4").copy()
+        if header.size != 18 or header[11:].tolist() != [1, 2, 1, 1, 0, 32, 1]:
+            raise ValueError("actual ITPIJ/NANIS/NDIM/INSB/LSCAL source contract differs")
+        if header[[0, 1, 2, 4, 5, 6, 7, 8, 9, 10]].tolist() != [NG, NUN, NR * NZ, NL, 3, 3, 1, 0, 3, 0]:
+            raise ValueError("actual source dispatch production contract differs")
+        if header[3] != capture["dimensions"][6]:
+            raise ValueError("actual dispatched material count differs")
+        while raw := stream.read(16):
+            if len(raw) != 16:
+                raise ValueError("incomplete chronological source event")
+            sequence, outer, inner, nactive = np.frombuffer(raw, "<i4")
+            count += 1
+            if sequence != count or not 1 <= nactive <= NG or outer <= 0 or inner <= 0:
+                raise ValueError("invalid chronological source dispatch")
+            raw = stream.read(int(nactive) * 4)
+            if len(raw) != int(nactive) * 4:
+                raise ValueError("incomplete original NGIND event")
+            ngind = np.frombuffer(raw, "<i4").copy()
+            raw = stream.read(NG * 4)
+            if len(raw) != NG * 4:
+                raise ValueError("incomplete original NPSYS event")
+            npsys = np.frombuffer(raw, "<i4").copy()
+            raw = stream.read(16)
+            if len(raw) != 16:
+                raise ValueError("incomplete original B2 event")
+            b2 = np.frombuffer(raw, "<f4").copy()
+            if (len(set(ngind.tolist())) != nactive or (ngind < 1).any() or (ngind > NG).any()
+                    or not np.array_equal(ngind, np.flatnonzero(npsys) + 1) or b2[3] != 0):
+                raise ValueError("actual post-SIGS dispatch metadata differs")
+            latest[ngind - 1] = [sequence, outer, inner]
+            per_group_calls[ngind - 1] += 1
+    if count != capture["terminal_integer"][7]:
+        raise ValueError("final publication does not cover every actual dispatch")
+    for g, group in enumerate(capture["groups"]):
+        if not np.array_equal(latest[g], group["context"][1:4]):
+            raise ValueError("published group did not retain its chronological last call")
+        if group["context"][6] != 1:
+            raise ValueError("one actual first miss must archive each group block")
+    return dict(dispatches=count, all_370_groups_last_context=[3, 1],
+                actual_NGIND_and_NPSYS_archived=True, per_group_calls=per_group_calls.tolist(), metric_based_selection=False)
+
+@contextmanager
+def stream_xsm(path):
+    """Use the frozen parser with bounded record reads, avoiding two 238 MiB maps.
+
+    The complete snapshot equality walk touches both archives. Keeping those
+    mappings resident alongside the capture would needlessly cross 512 MiB.
+    """
+    from snapshot_control_preflight import _XSM
+    with Path(path).open("rb") as stream:
+        before = os.fstat(stream.fileno())
+        class Words:
+            def __len__(self):
+                return before.st_size
+            def __getitem__(self, item):
+                if not isinstance(item, slice) or item.step not in (None, 1):
+                    raise ValueError("frozen XSM reader requested an unsupported byte access")
+                first, stop, _ = item.indices(before.st_size)
+                result = os.pread(stream.fileno(), stop - first, first)
+                if len(result) != stop - first:
+                    raise ValueError("incomplete original XSM record read")
+                return result
+        yield _XSM(Words())
+        after = os.fstat(stream.fileno())
+        if (before.st_size, before.st_mtime_ns) != (after.st_size, after.st_mtime_ns):
+            raise ValueError("scientific archive changed during equality audit")
+
+def audit(expected):
+    import numpy as np
+    from probe_refined_AAA_white_odd_response import same_object, field
+    declaration = child_admission(expected)
+    _, _, _, list_handles = modules()
+    open_xsm = stream_xsm
+    actual_env = dict(python=sys.version.split()[0], numpy=np.__version__)
+    if any(actual_env[k] != declaration["numeric_environment"][k] for k in actual_env):
+        raise ValueError("declared audit numerical environment changed")
+    capture = read_capture(OUT / "AAA/angular_capture.bin")
+    events = audit_events(capture)
+    cache_events = audit_cache_events(capture, events, declaration)
+    slot_observation = audit_slots(capture)
+    integers = capture["terminal_integer"]
+    if integers[:7].tolist() != [3, 1, 371, 1, 1, 500, 740] or integers[8] != NG:
+        raise ValueError("exact predeclared original terminal is required")
+    real = capture["terminal_real"]
+    if not (real[0] < real[1] and real[2] < real[3] and real[4] < real[5]):
+        raise ValueError("unchanged strict native final gates did not pass")
+    # The full output archive comparison checks all scientific moments/currents,
+    # source, balance metadata and keff, including records not used by this audit.
+    for name in ("candidate_axial.xsm", "candidate_snapshots.xsm"):
+        with stream_xsm(FINAL / name) as old, stream_xsm(OUT / "AAA" / name) as new:
+            same_object(old, old.root, new, new.root)
+    # New independent work-file storage must preserve every final logical record.
+    work=working_snapshot_admission(declaration,require_present=True)
+    raw_receipt=read(OUT/'raw_capture_receipt.json')
+    if raw_receipt['working_snapshot']!=working_snapshot_raw_receipt(declaration):
+        raise ValueError('complete working file must be retained before all numeric gates')
+    with stream_xsm(work) as original, stream_xsm(OUT/'AAA/candidate_snapshots.xsm') as copied:
+        same_object(original,original.root,copied,copied.root)
+    with open_xsm(OUT / "AAA/candidate_axial.xsm") as archive:
+        handles = list_handles(archive, archive.root, "FLUX64", NG)
+        keff = field(archive, archive.root, "SPOT-KEFF64", "<f8", 1)
+        if keff.tobytes() != capture["normalization"][:1].tobytes():
+            raise ValueError("captured actual keff differs from published record")
+        published = [np.frombuffer(archive.read(h[0], h[1]), "<f8").copy() for h in handles]
+        flux32 = [np.frombuffer(archive.read(h[0], h[1]), "<f4").copy()
+                  for h in list_handles(archive, archive.root, "FLUX", NG)]
+        source32 = [np.frombuffer(archive.read(h[0], h[1]), "<f4").copy()
+                    for h in list_handles(archive, archive.root, "SOUR", NG)]
+    if not np.isfinite(capture["normalization"]).all() or capture["normalization"][1] <= 0:
+        raise ValueError("actual positive native normalization operands required")
+    rows = []
+    for g, (group, final) in enumerate(zip(capture["groups"], published, strict=True), 1):
+        context = group["context"]
+        if (context[2:4].tolist() != [3, 1] or context[1] != context[4] or context[5] <= 0
+                or context[6] <= 0 or context[6] != 1 or context[7] != context[5] or context[8] != 1):
+            raise ValueError("chronological last capture is not original terminal group call")
+        if any(not np.isfinite(group[k]).all() for k in (
+            "single", "double", "s2", "returned", "before_normal", "published", "published_source")):
+            raise ValueError("nonfinite actual archive words")
+        a = unpack(group, int(capture["dimensions"][6]))
+        independent_keys(group, a, g)
+        if (a["ncode"].tolist() != [1, 1] or (a["zcode"] != 0).any()
+                or (a["w"] <= 0).any() or (a["vol1d"] <= 0).any()):
+            raise ValueError("unchanged positive quadrature and vacuum boundary contract required")
+        if group["s2"][:1152].tobytes() != a["qext"].ravel(order="F").tobytes():
+            raise ValueError("actual post-SIGS S2/qext source words differ")
+        if (0.5 * (a["face"][:, :, :-1] + a["face"][:, :, 1:])).tobytes() != a["cell"].tobytes():
+            raise ValueError("actual native diamond cell/shared-face identity differs")
+        # Every source projection is tested, with the exact region accumulation
+        # order of the frozen rank1 solver, including the native void-material skip.
+        projected_source = np.zeros((NL, NZ), dtype="<f8")
+        for iz in range(NZ):
+            for region in range(NR):
+                if a["mat"][iz, region] == 0:
+                    continue
+                for l in range(NL):
+                    projected_source[l, iz] += (float(a["weight"][region]) *
+                        float(a["basis"][region, 0])) * float(a["qext"][0, l, iz, region])
+        if projected_source.tobytes() != a["source_projected"][:, :, 0].tobytes():
+            raise ValueError("actual complete projected source coefficients differ")
+        returned = np.concatenate([a["flux"].ravel(order="F"), a["current"].ravel(order="F"),
+                                   a["xnei"].ravel(order="F")])
+        if (returned.tobytes() != group["returned"].tobytes()
+                or group["returned"].tobytes() != group["before_normal"].tobytes()
+                or group["published"].tobytes() != final.tobytes()):
+            raise ValueError("all raw returned moments/currents or final FLUX64 words changed")
+        normalized = group["returned"] * (capture["normalization"][0] / capture["normalization"][1])
+        if normalized.tobytes() != final.tobytes():
+            raise ValueError("original one global normalization operation differs")
+        normalized_source = group["s2"] * (capture["normalization"][0] / capture["normalization"][1])
+        if normalized_source.tobytes() != group["published_source"].tobytes():
+            raise ValueError("actual raw S2 does not reproduce original normalized REAL64 source")
+        if (group['published'].astype('<f4').tobytes()!=flux32[g-1].tobytes()
+                or group['published_source'].astype('<f4').tobytes()!=source32[g-1].tobytes()):
+            raise ValueError('actual post-normalization fields/source do not reproduce native REAL32 saved records')
+        # Reproduce actual native summation/reconstruction order, with no BLAS.
+        modal = np.zeros((NL, NZ), dtype="<f8");current = np.zeros(NZ + 1, dtype="<f8")
+        for l in range(NL):
+            for n in range(NA):
+                modal[l] += a["dn"][l, n] * a["cell"][n, 0]
+        for n in range(NA):
+            current += float(a["w"][n]) * float(a["mu"][n]) * a["face"][n, 0]
+        if (modal.tobytes() != a["modal_flux"][:, :, 0].tobytes()
+                or current.tobytes() != a["modal_current"][:, 0].tobytes()):
+            raise ValueError("stored angular fields do not reproduce actual moments/currents")
+        if (a["face"][a["mu"] > 0, 0, 0] != 0).any() or (a["face"][a["mu"] < 0, 0, -1] != 0).any():
+            raise ValueError("actual vacuum incoming fields must be exactly zero")
+        block_path = OUT / "AAA" / f"angular_collision_g{g:03d}.bin"
+        with block_path.open("rb") as stream:
+            if stream.read(8) != b"AXCBL001":
+                raise ValueError("actual native collision schema differs")
+            header = np.frombuffer(stream.read(32), "<i4").copy()
+            blocks = np.frombuffer(stream.read(), "<f8").copy()
+        if (header[0] != g or header[1] != context[5] or header[4:].tolist() != [NA, NZ + 1, 1, 0]
+                or blocks.size != 3 * NA * NA * (NZ + 1) or not np.isfinite(blocks).all()):
+            raise ValueError("complete actual first native collision block inventory required")
+        lower, diagonal, upper = [
+            blocks[j * NA * NA * (NZ + 1):(j + 1) * NA * NA * (NZ + 1)].reshape(
+                (NA, NA, NZ + 1), order="F") for j in range(3)]
+        face = a["face"][:, 0]
+        rhs = np.zeros((NA, NZ + 1))
+        for iz in range(NZ):
+            q = np.zeros(NA)
+            for l in range(NL):
+                q += a["mn"][:, l] * a["source_projected"][l, iz, 0]
+            rhs[a["mu"] > 0, iz + 1] = float(a["vol1d"][iz]) * q[a["mu"] > 0]
+            rhs[a["mu"] < 0, iz] = float(a["vol1d"][iz]) * q[a["mu"] < 0]
+        defect = np.empty_like(rhs);scale = np.empty_like(rhs)
+        for iz in range(NZ + 1):
+            terms = [diagonal[:, :, iz] @ face[:, iz]]
+            absolute = [abs(diagonal[:, :, iz]) @ abs(face[:, iz])]
+            if iz:
+                terms.append(lower[:, :, iz] @ face[:, iz - 1])
+                absolute.append(abs(lower[:, :, iz]) @ abs(face[:, iz - 1]))
+            if iz < NZ:
+                terms.append(upper[:, :, iz] @ face[:, iz + 1])
+                absolute.append(abs(upper[:, :, iz]) @ abs(face[:, iz + 1]))
+            defect[:, iz] = sum(terms) - rhs[:, iz]
+            scale[:, iz] = sum(absolute) + abs(rhs[:, iz])
+        null_nonzero = (scale == 0) & (defect != 0)
+        ratio = np.divide(abs(defect), scale, out=np.zeros_like(scale), where=scale > 0)
+        rows.append(dict(group=g, context=context.tolist(), native_block_assembly_count=int(context[6]),
+            native_block_cache_enabled=True, first_cache_miss_blocks_and_all_hits_exact_operator_key=True,
+            raw_S2_one_global_normalization_published_source_byte_exact=True,
+            minimum_modal_cell=float(a["cell"].min()),
+            minimum_shared_face=float(a["face"].min()), negative_modal_cell_count=int((a["cell"] < 0).sum()),
+            negative_shared_face_count=int((a["face"] < 0).sum()),
+            minimum_physical_angular_cell=float((a["basis"][:, 0, None, None] * a["cell"][:, 0][None]).min()),
+            minimum_physical_angular_face=float((a["basis"][:, 0, None, None] * a["face"][:, 0][None]).min()),
+            full_native_matrix_equation_relative=float(ratio.max()),
+            zero_scale_nonzero_defect_count=int(null_nonzero.sum()),
+            original_1e10_diagnostic_gate_passed=bool(not null_nonzero.any() and ratio.max() <= 1e-10),
+            all_three_raw_moments_and_currents_byte_exact=True))
+        # Preserve the raw defect and scale for every group; positivity and the
+        # equation ledger are diagnostic findings, never repaired or hidden.
+        np.savez(OUT / "audit" / f"ledger_g{g:03d}.npz", defect=defect, scale=scale,
+                 ratio=ratio, zero_scale_nonzero_defect=null_nonzero)
+    write_new(OUT / "audit/result.json", dict(
+        classification="COMPLETE_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_ONLY", groups=rows,
+        chronological_inventory=events, cache_identity_inventory=cache_events, slot_observation=slot_observation,
+        complete_production_370_groups=True, original_map012_scientific_records_word_exact=True,
+        original_terminal_passed=True, all_three_moments_and_currents_byte_exact=True,
+        original_keff_byte_exact=True, raw_fields_and_sources_unmodified=True,
+        negative_fields_repaired=False, equation_accounting_modified=False,
+        original_accuracy_thresholds_changed=False, production_solver_promoted=False,
+        AAA_accuracy_qualified=False, ABA_admitted=False))
+    print("AXMAT-RANK1-MEMORY-DEDUP-FILE-SNAPSHOT-NATIVE-ANGULAR-CAPTURE-AUDITED")
+
+
+def load(path,name):
+    path=require(path)
+    if name in sys.modules:
+        m=sys.modules[name]
+        if Path(m.__file__).resolve()!=path.resolve():raise ValueError('module binding differs')
+        return m
+    spec=importlib.util.spec_from_file_location(name,path)
+    m=importlib.util.module_from_spec(spec);sys.modules[name]=m;spec.loader.exec_module(m)
+    if Path(m.__file__).resolve()!=path.resolve():raise ValueError('actual source binding differs')
+    return m
+
+
+def builder():
+    return load(require(BUILDER,BUILDER_SHA),'rank1_native_capture_actual_builder')
+
+
+def memory_builder():
+    return load(require(MEMORY_BUILDER,MEMORY_BUILDER_SHA),'rank1_memory_native_capture_actual_builder')
+
+
+def actual_memory_admission(seal,terminal,terminal_sha,original_build):
+    if (seal!=MEMORY_BUILD_SEAL or terminal_sha!=MEMORY_TERM_SHA
+            or Path(terminal)!=MEMORY_TERM/'terminal_return.json'):
+        raise ValueError('actual new memory build seal and Root exit-zero receipt required')
+    m=memory_builder();result=m.production_admission(seal,terminal,terminal_sha)
+    keys=('lower_structural_zero_rows_losslessly_packed','full_shape_MATMUL_and_RHS_order_unchanged',
+        'all_original_and_memory_controls_bitwise_passed','rowmap_dimensions_zero_and_cap_negative_controls_passed',
+        'fresh_512MiB_native_capture_required','rank1_factor_cache_controls_passed',
+        'all_new_cache_outputs_bitwise_equal_to_uncached','operator_identity_guard_negative_controls_passed')
+    if (result['schema']!='AXMAT_RANK1_FACTOR_CACHE_MEMORY_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+            or result['admission']!='RANK1_FACTOR_CACHE_MEMORY_RUNTIME_INPUT_ONLY'
+            or result['build_root']!=str(MEMORY_BUILD) or result['source_root']!=str(MEMORY_SOURCE)
+            or result['build_seal_sha256']!=seal or any(result[k] is not True for k in keys)
+            or result['native_RSS_proof_obtained'] is not False or result['actual_full_FLU_entry_executed'] is not False
+            or result['AAA_accuracy_qualified'] is not False or result['ABA_admitted'] is not False
+            or result['inherited_rank1_factor_cache_admission']!=original_build
+            or result['compiled_kernel_source']!=pin(require(MEMORY_SOURCE/'SPOT1P64.f90',KERNEL_SHA))
+            or result['corrected_runtime']!=pin(MEMORY_BUILD/'runtime/Dragon')
+            or result['actual_external_terminal_evidence']!=dict(path=str(terminal),sha256=terminal_sha)):
+        raise ValueError('actual complete memory-only input admission or inherited original chain differs')
+    md=read(require(MEMORY_BUILD/'declaration.json',MEMORY_DECLARATION_SHA))
+    if (md['production_link_command']!=result['production_link_command']
+            or md['production_link_command']!=md['build_commands'][1]):
+        raise ValueError('explicit actual memory production link differs')
+    old=read(require(BUILD/'declaration.json'))['build_commands'][2]
+    link=list(md['production_link_command'])
+    if link.count(str(MEMORY_BUILD/'build/SPOT1P64.o'))!=1 or str(BUILD/'build/SPOT1P64.o') in link:
+        raise ValueError('memory link must have only the real new kernel override')
+    link[link.index(str(MEMORY_BUILD/'build/SPOT1P64.o'))]=str(BUILD/'build/SPOT1P64.o')
+    link[-1]=str(BUILD/'runtime/Dragon')
+    if link!=old:raise ValueError('memory production link must restore original complete link except kernel/output')
+    failed=result['actual_failed_native_capture_evidence']
+    if failed['terminal']!=dict(path=str(FAILED_CAPTURE_TERMINAL/'terminal_return.json'),sha256=FAILED_CAPTURE_RECEIPT_SHA):
+        raise ValueError('the actual old RSS failure remains pinned failed input evidence')
+    return result,md
+
+
+def require_ready():
+    """No project load, filesystem mutation or action while success evidence is absent."""
+    if Path(__file__).resolve().parent!=ROOT/'validation/axial_material':
+        raise ValueError('TMP source-only draft: reviewed formal factory copy required')
+    pins=(DEDUP_BUILD_SEAL,DEDUP_TERM_SHA,DEDUP_KERNEL_SHA,DEDUP_KERNEL_OBJECT_SHA,
+        DEDUP_RUNTIME_SHA,DEDUP_SOURCE_ADMISSION_SHA)
+    if (DRAFT_STATUS!='READY_WITH_ACTUAL_COMPLETE_DEDUP_COMPONENT'
+            or any(not re.fullmatch('[0-9a-f]{64}',value or '') or value=='0'*64 for value in pins)):
+        raise ValueError('UNREADY: actual completed40-stage dedup build, Root exit-zero and all component pins required')
+
+
+def dedup_builder():
+    require_ready()
+    return load(require(DEDUP_BUILDER,DEDUP_BUILDER_SHA),'rank1_memory_dedup_native_capture_actual_builder')
+
+
+def dedup_kernel_source():
+    require_ready()
+    return require(DEDUP_SOURCE/'SPOT1P64.f90',DEDUP_KERNEL_SHA)
+
+
+def actual_dedup_admission(seal,terminal,terminal_sha,original_build,memory):
+    require_ready()
+    if (seal!=DEDUP_BUILD_SEAL or terminal_sha!=DEDUP_TERM_SHA
+            or Path(terminal)!=DEDUP_TERM/'terminal_return.json'):
+        raise ValueError('actual complete dedup build seal and Root exit-zero receipt required')
+    result=dedup_builder().production_admission(seal,terminal,terminal_sha)
+    keys=('lower_structural_zero_rows_losslessly_packed','full_shape_MATMUL_and_RHS_order_unchanged',
+        'all_original_and_memory_controls_bitwise_passed','rowmap_dimensions_zero_and_cap_negative_controls_passed',
+        'fresh_512MiB_native_capture_required','rank1_factor_cache_controls_passed',
+        'all_new_cache_outputs_bitwise_equal_to_uncached','operator_identity_guard_negative_controls_passed',
+        'lower_repeated_blocks_losslessly_deduplicated','all_original_memory_and_dictionary_controls_bitwise_passed',
+        'canonical_dictionary_signed_zero_and_all_unique_fallback_verified',
+        'dictionary_dimensions_indices_canonical_and_release_negative_controls_passed')
+    if (result['schema']!='AXMAT_RANK1_FACTOR_CACHE_MEMORY_DEDUP_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+            or result['admission']!='RANK1_FACTOR_CACHE_MEMORY_DEDUP_RUNTIME_INPUT_ONLY'
+            or result['build_root']!=str(DEDUP_BUILD) or result['source_root']!=str(DEDUP_SOURCE)
+            or result['build_seal_sha256']!=seal or any(result[key] is not True for key in keys)
+            or result['native_RSS_proof_obtained'] is not False or result['actual_full_FLU_entry_executed'] is not False
+            or result['AAA_accuracy_qualified'] is not False or result['ABA_admitted'] is not False
+            or result['inherited_rank1_factor_cache_admission']!=original_build
+            or result['inherited_rank1_factor_cache_memory_admission']!=memory
+            or result['compiled_kernel_source']!=pin(dedup_kernel_source())
+            or result['compiled_kernel']!=pin(require(DEDUP_BUILD/'build/SPOT1P64.o',DEDUP_KERNEL_OBJECT_SHA))
+            or result['corrected_runtime']!=pin(require(DEDUP_BUILD/'runtime/Dragon',DEDUP_RUNTIME_SHA))
+            or result['source_admission']!=pin(require(DEDUP_SOURCE/'source_admission.json',DEDUP_SOURCE_ADMISSION_SHA))
+            or result['source_patch_proof']!=result['source_admission']
+            or result['actual_external_terminal_evidence']!=dict(path=str(terminal),sha256=terminal_sha)):
+        raise ValueError('actual complete dedup input admission and both complete predecessor returns required')
+    dd=read(require(DEDUP_BUILD/'declaration.json',DEDUP_DECLARATION_SHA))
+    if (dd['production_link_command']!=result['production_link_command']
+            or dd['production_link_command']!=dd['build_commands'][1]
+            or dd['source_inventory']['files']['SPOT1P64.f90']!=DEDUP_KERNEL_SHA
+            or dd['inherited_rank1_factor_cache_admission']!=original_build
+            or dd['inherited_rank1_factor_cache_memory_admission']!=memory):
+        raise ValueError('actual dedup declaration, kernel and complete three-layer admission differ')
+    old=read(require(BUILD/'declaration.json'))['build_commands'][2]
+    link=list(dd['production_link_command'])
+    if link.count(str(DEDUP_BUILD/'build/SPOT1P64.o'))!=1 or str(BUILD/'build/SPOT1P64.o') in link:
+        raise ValueError('dedup link must have only the real new kernel override')
+    link[link.index(str(DEDUP_BUILD/'build/SPOT1P64.o'))]=str(BUILD/'build/SPOT1P64.o')
+    link[-1]=str(BUILD/'runtime/Dragon')
+    if link!=old:raise ValueError('dedup production link must restore original complete link except kernel/output')
+    failed=result['actual_failed_compact_memory_native_capture_evidence']
+    if (failed!=dd['actual_failed_compact_memory_native_capture_evidence'] or failed['input_only'] is not True
+            or failed['incomplete_raw_used_for_current_bitwise_controls'] is not False
+            or failed['native_RSS_passed'] is not False or failed['diagnostic_admitted'] is not False
+            or failed['terminal']['sha256']!='3387bf47688456526d1b73a682bab17107572b5417b87f7d45e08f9cbdf6bcff'):
+        raise ValueError('actual old compact-memory RSS failure is retained only as failed input')
+    return result,dd
+
+
+def modules():
+    # Genuine frozen helper + tested parent class; no controller/global overlay.
+    full,production=builder().helper().modules()
+    from snapshot_control_preflight import _open_xsm
+    from qualified_snapshot_ingestion import list_handles
+    return full,production,_open_xsm,list_handles
+
+
+def absent(path):
+    normal_path(path,allow_missing=True)
+    if Path(path).exists() or Path(path).is_symlink():raise ValueError('exclusive new family; no overwrite/retry')
+
+
+def pin(path):
+    return dict(path=str(require(path)),sha256=digest(path))
+
+
+def inventory(root):
+    normal_path(root)
+    if not Path(root).is_dir():raise ValueError('private inventory root must be a directory')
+    files={};directories=[]
+    for folder,dirs,names in os.walk(root,followlinks=False):
+        if any((Path(folder)/n).is_symlink() for n in [*dirs,*names]):raise ValueError('private namespace symlink')
+        for name in names:
+            p=Path(folder)/name
+            if not p.is_file():raise ValueError('private namespace must contain regular files')
+            files[str(p.relative_to(root))]=digest(p)
+        directories.extend(str((Path(folder)/name).relative_to(root)) for name in dirs)
+    return dict(files=files,symlinks={},directories=sorted(directories))
+
+
+def verify_inventory(root,wanted):
+    if inventory(root)!=wanted:raise ValueError('complete private namespace differs')
+
+
+def archive_bytes():
+    total=0
+    for root in (SOURCE,OUT):
+        normal_path(root)
+        for folder,dirs,names in os.walk(root,followlinks=False):
+            if any((Path(folder)/n).is_symlink() for n in [*dirs,*names]):raise ValueError('private archive alias forbidden')
+            for name in names:
+                info=(Path(folder)/name).stat(follow_symlinks=False)
+                if not stat.S_ISREG(info.st_mode):raise ValueError('nonregular private archive')
+                total+=info.st_size
+    return total
+
+
+def resource(roots):
+    return builder().DynamicHistoryResources(ART,roots,FREE_FLOOR,HISTORY_CAP)
+
+
+def environment(d, require_build_interpreter=True):
+    if type(require_build_interpreter) is not bool:raise ValueError("explicit current-interpreter policy required")
+    builder().helper().environment(d, require_build_interpreter=require_build_interpreter)
+    if d['resource_scope_contract']!=builder().resource_scope_contract():raise ValueError('family policy differs')
+    for key in THREAD_KEYS:
+        if os.environ.get(key)!='1':raise ValueError('one thread required')
+    if 'native_dependency_alias_bindings' in d:
+        for path,expected in d['native_dependency_alias_bindings'].items():
+            p=Path(path)
+            if not p.is_symlink() or os.readlink(p)!=expected['text'] or str(p.resolve(strict=True))!=expected['target']:
+                raise ValueError('explicit native alias literal/canonical binding differs')
+            normal_path(expected['target'])
+    if 'inherited_memory_build_admission' in d:
+        for item in d['memory_component_namespaces']:
+            verify_inventory(item['root'],item['inventory'])
+        prior=d['inherited_current_build_admission']
+        memory=d['inherited_memory_build_admission']
+        actual,_=actual_memory_admission(memory['build_seal_sha256'],memory['actual_external_terminal_evidence']['path'],
+            memory['actual_external_terminal_evidence']['sha256'],prior)
+        if actual!=memory:raise ValueError('actual full memory component admission changed')
+    if 'actual_failed_dedup_native_capture_input' in d:
+        if d['actual_failed_dedup_native_capture_input']!=failed_dedup_capture_input():
+            raise ValueError('actual failed predecessor remains exact INPUT-only namespace')
+        if d['deferred_snapshot_lifetime_sources']!=snapshot_lifetime_source_admission():
+            raise ValueError('exact logical snapshot-copy lifetime source/object provenance changed')
+    if 'actual_failed_deferred_native_capture_input' in d:
+        if d['actual_failed_deferred_native_capture_input']!=failed_deferred_capture_input():
+            raise ValueError('actual failed cfb complete namespace remains INPUT only')
+        if d['file_snapshot_storage_sources']!=file_snapshot_storage_source_admission():
+            raise ValueError('exact supported XSM source/selected-object provenance changed')
+        working_snapshot_admission(d)
+    if 'inherited_dedup_build_admission' in d:
+        for item in d['dedup_component_namespaces']:
+            verify_inventory(item['root'],item['inventory'])
+        dedup=d['inherited_dedup_build_admission']
+        actual,_=actual_dedup_admission(dedup['build_seal_sha256'],dedup['actual_external_terminal_evidence']['path'],
+            dedup['actual_external_terminal_evidence']['sha256'],d['inherited_current_build_admission'],d['inherited_memory_build_admission'])
+        if actual!=dedup:raise ValueError('actual full dedup component admission changed')
+
+
+def native_alias_bindings(declared):
+    """Freeze only aliases on already-declared native dependency paths."""
+    result={}
+    for path,target in declared.items():
+        p=Path(path)
+        if str(p.resolve(strict=True))!=target:raise ValueError('inherited native canonical target differs')
+        normal_path(target)
+        for component in [*reversed(p.parents),p]:
+            if component.is_symlink():
+                item=dict(text=os.readlink(component),target=str(component.resolve(strict=True)))
+                if str(component) in result and result[str(component)]!=item:raise ValueError('conflicting native alias binding')
+                result[str(component)]=item
+    return result
+
+
+def preserved_files(d):
+    result=dict(d['files'])
+    for entry in d['preserved_predecessors']:
+        root=Path(entry['root'])
+        for relative,sha in entry['inventory']['files'].items():
+            path=str(root/relative)
+            if path in result and result[path]!=sha:raise ValueError('conflicting inherited file identity')
+            result[path]=sha
+    return result
+
+
+def descriptor_files(value):
+    """Only explicit path/SHA descriptors, never path-looking strings."""
+    result={}
+    def walk(item):
+        if isinstance(item,dict):
+            if 'path' in item and 'sha256' in item:
+                path,sha=item['path'],item['sha256']
+                if not isinstance(path,str) or not Path(path).is_absolute() or not re.fullmatch('[0-9a-f]{64}',sha or ''):
+                    raise ValueError('malformed inherited endpoint descriptor')
+                if path in result and result[path]!=sha:raise ValueError('conflicting inherited descriptor')
+                result[path]=sha
+            for nested in item.values():walk(nested)
+        elif isinstance(item,list):
+            for nested in item:walk(nested)
+    walk(value)
+    return result
+
+
+def deferred_snapshot_deck(original):
+    """Pure complete-deck permutation with a byte-exact inverse."""
+    if not isinstance(original,str) or hashlib.sha256(original.encode()).hexdigest()!=ORIGINAL_DECK_SHA:
+        raise ValueError('only the actual original complete map012 deck is supported')
+    copy='SNAP := RADIAL_IN ;\n'
+    before='AX_CURRENT := PARENT_AX ;\n'
+    anchor='AX_CURRENT := SPOXCONV: AX_CURRENT PARENT_AX :: ;\n'
+    use='SNAP := SPOLEAK: SNAP AX_CURRENT TRACK_AX :: >>leak_change<< ;\n'
+    declaration='LINKED_LIST SNAP AX_CURRENT ;\n'
+    for word in (copy,before,anchor,use,declaration):
+        if original.count(word)!=1:raise ValueError('one exact snapshot definition/first-use anchor required')
+    if copy+before not in original or anchor+use not in original:
+        raise ValueError('original snapshot lifetime ordering differs')
+    first=original.index(copy);last=original.index(use)
+    between=original[first+len(copy):last]
+    if re.search(r'\b(?:SNAP|RADIAL_IN)\b',between):
+        raise ValueError('snapshot or radial input has an earlier scientific consumer')
+    # Parse semicolon-terminated statements; the regexp must never bridge modules.
+    def statements(text):
+        return [s for s in text.split(';') if re.search(r':=\s*(?:FLU|SPOGBAL|SPOSTATE|SPOXCONV|SPOLEAK):',s)]
+    scientific=statements(original)
+    if len(scientific)!=5:raise ValueError('all five original scientific calls are required')
+    # Removing only the copy before splitting prevents whitespace from obscuring
+    # a statement boundary; every scientific statement body stays byte-exact.
+    candidate=original.replace(copy,'',1).replace(anchor,anchor+copy,1)
+    inverse=candidate.replace(anchor+copy,anchor,1).replace(before,copy+before,1)
+    if inverse!=original or candidate.count(copy)!=1 or anchor+copy+use not in candidate:
+        raise ValueError('complete deck inverse/literal first-use ordering differs')
+    def call_bodies(text):
+        result=[]
+        for chunk in text.split(';'):
+            match=re.search(r'(?m)^([^\n]*:=\s*(?:FLU|SPOGBAL|SPOSTATE|SPOXCONV|SPOLEAK):)',chunk)
+            if match:result.append(chunk[match.start():]+';')
+        return result
+    if call_bodies(candidate)!=call_bodies(original) or len(call_bodies(candidate))!=5:
+        raise ValueError('scientific call/parameter/order changed')
+    return candidate,dict(schema='AXMAT_DEFERRED_SNAPSHOT_COMPLETE_DECK_INVERSE_V1',
+        original_sha256=hashlib.sha256(original.encode()).hexdigest(),
+        deferred_sha256=hashlib.sha256(candidate.encode()).hexdigest(),
+        full_deck_inverse_byte_exact=True,sole_complete_statement_moved=copy.rstrip('\n'),
+        original_single_definition=True,deferred_single_definition=True,
+        first_snapshot_consumer='SPOLEAK',immediately_after='SPOXCONV',
+        all_five_scientific_call_bodies_and_order_byte_exact=True,
+        inputs_and_Fortran_math_unchanged=True,logical_snapshot_cache_co_residence_avoided=True,
+        file_bytes_are_not_an_RSS_saving_claim=True,prior_RSS_failure_cause_not_established=True)
+
+
+def archive_member_identities(path,wanted):
+    """Read real BSD ar members; member hashes are not whole-file descriptors."""
+    result={};path=require(path)
+    with path.open('rb') as stream:
+        length=os.fstat(stream.fileno()).st_size
+        if stream.read(8)!=b'!<arch>\n':raise ValueError('ordinary ar archive magic required')
+        while stream.tell()<length:
+            header=stream.read(60)
+            if len(header)!=60 or header[58:]!=b'`\n':raise ValueError('truncated/invalid ar header')
+            name=header[:16].decode('ascii').strip()
+            try:size=int(header[48:58].decode('ascii').strip())
+            except ValueError:raise ValueError('invalid ar member length')
+            start=stream.tell()
+            if size<0 or start+size+(size%2)>length:raise ValueError('ar member crosses archive boundary')
+            prefix=0
+            if name.startswith('#1/'):
+                prefix=int(name[3:])
+                if not 0<prefix<=size:raise ValueError('invalid BSD ar member name extent')
+                name=stream.read(prefix).rstrip(b'\0').decode('ascii')
+            elif name not in ('/','//'):
+                name=name.rstrip('/')
+            if name in wanted:
+                if name in result:raise ValueError('duplicate required archive member')
+                raw=stream.read(size-prefix)
+                if len(raw)!=size-prefix:raise ValueError('truncated actual archive member')
+                sha=hashlib.sha256(raw).hexdigest()
+                if sha!=wanted[name]:raise ValueError('actual archive member bytes differ: '+name)
+                result[name]=dict(member_sha256=sha,member_bytes=len(raw))
+            stream.seek(start+size+(size%2))
+        if stream.tell()!=length or set(result)!=set(wanted):raise ValueError('actual archive member set is incomplete')
+    return result
+
+
+def snapshot_lifetime_source_admission():
+    """Pin sources and selected actual linked members, without a machine proof."""
+    files={};sources={}
+    for name,sha in GANLIB_DEEP_COPY_SOURCE_SHAS.items():
+        path=require(ROOT/'Ganlib/src'/name,sha);files[str(path)]=sha;sources[name]=path.read_text()
+    require(GANLIB_STATIC_LIBRARY,GANLIB_STATIC_LIBRARY_SHA)
+    files[str(GANLIB_STATIC_LIBRARY)]=GANLIB_STATIC_LIBRARY_SHA
+    members=archive_member_identities(GANLIB_STATIC_LIBRARY,GANLIB_DEEP_COPY_MEMBER_SHAS)
+    anchors={'cle2000_c.c':['strcmp(text, ":=")','strcpy(cmodul, "EQU:")','lcmcl_c(&kentry[iloop1], jdispe)'],
+        'GANDRV.F90':["if(hmodul == 'EQU:' )then",'call DRVEQU(nentry,hentry,ientry,jentry,kentry)'],
+        'DRVEQU.F':['IF(JENTRY(I).LE.1) CALL LCMEQU(IPLIST,KENTRY(I))'],
+        'LCMAUX.f90':['! deep copy of a LCM object','call lcmequ_c(iplis1, iplis2)'],
+        'lcm_c.c':['USE A GENERAL COPY ALGORITHM.','lcmequ_part3(*iplis1,*iplis2)',
+            'malloc(jlong*sizeof(int_32))','if (iact == 2 || iact == 3)',
+            '(ipkeep->idir[i])->imode = 0']}
+    for name,words in anchors.items():
+        if any(word not in sources[name] for word in words):raise ValueError('snapshot lifetime source proof anchor differs')
+    sender=require(FAILED_DEDUP_CAPTURE_SOURCE/'FLU2DR64.f',
+        '5a042be6fcd7b5c733d785f5fe9ff12183c00af1569b7e37226aa82dc22b548c')
+    native=require(BUILD_SOURCE/'FLU2DR64.f',SENDER_SHA)
+    files[str(sender)]=digest(sender);files[str(native)]=SENDER_SHA
+    clear='      CALL SPOT1P64_CACHE_CLEAR()\n      DEALLOCATE(LEAK1D,XCSOU,DIFHET,DHOM,GAMMA,XSCAT,FLUX,GAR32)\n      DEALLOCATE(NPSYS,IPOS,NJJ,IJJ)\n      RETURN'
+    if any(path.read_text().count(clear)!=1 for path in (sender,native)):
+        raise ValueError('actual sender cache CLEAR-before-RETURN source sequence differs')
+    return dict(schema='AXMAT_DEFERRED_SNAPSHOT_ALLOCATION_LIFETIME_SOURCE_INPUT_V1',
+        dependency_files=files,actual_linked_Ganlib_archive=dict(path=str(GANLIB_STATIC_LIBRARY),sha256=GANLIB_STATIC_LIBRARY_SHA),
+        actual_selected_archive_member_bytes=members,
+        source_route=['CLE :=','GANDRV EQU','DRVEQU LCMEQU','LCMAUX lcmequ_c','lcm_c XSM-to-LCM recursive deep copy'],
+        memory_object_close_IA1_preserves_payload=True,successful_FLU_clears_cache_before_return=True,
+        logical_allocation_co_residence_only=True,archive_member_source_machine_equivalence_not_claimed=True,
+        disk_file_length_not_an_allocated_or_RSS_byte_count=True,
+        predicted_or_actual_RSS_saving_not_claimed=True,prior_peak_cause_not_established=True,
+        science_qualification_obtained=False,native_RSS_proof_obtained=False)
+
+
+def failed_dedup_capture_input():
+    """Actual failed predecessor and its anchored namespace, never a success seal."""
+    term=FAILED_DEDUP_CAPTURE_TERM;old=FAILED_DEDUP_CAPTURE_ROOT;src=FAILED_DEDUP_CAPTURE_SOURCE
+    snapshot=ROOT/'validation/axial_material/rank1_memory_dedup_failed_capture_namespace_20261007.json'
+    files={str(PREDECESSOR_DEDUP_CAPTURE_SOURCE):PREDECESSOR_DEDUP_CAPTURE_SHA,
+        str(term/'terminal_return.json'):FAILED_DEDUP_CAPTURE_RECEIPT_SHA,
+        str(old/'declaration.json'):FAILED_DEDUP_CAPTURE_DECLARATION_SHA,
+        str(old/'driver_result.json'):'70f11a8a27ae600030db711727fd26244f4d3bd51c261d14380796f341dbb482',
+        str(old/'execution_claim.json'):'f0017eecec711fe287cee9ed1ee6844f3b098c963f9dd663538f438dcf910340',
+        str(old/'AAA/stages.json'):'783a711cf6724d0c49946b34b21416fb7ab7c93beb37fb168e1cf90c4eb9e952',
+        str(old/'raw_capture_receipt.json'):'b8e1859863e6ace3e82864f671bec58d64bc7cffc0c33829383559997acda134',
+        str(term/'capture_full_stdout.json'):'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        str(term/'capture_full_stderr.txt'):'8e183142209fdf93d35ea2eb10cd9893ffbe69ce01006f83c65cabc7ec585337',
+        str(old/'AAA/capture_replay.watchdog.json'):'aa117fd41faf03ecf2fb7d2b318e4141a091823f6ffc55a066504463fe85317e',
+        str(old/'AAA/capture_replay.log'):'a4bcc60815117885fa04eb58f1b353fc0a2bfb25c566a989683e1a528e854d6e',
+        str(old/'runtime/build_identity.json'):'32fd77e393666e109b80d8d5df0b4d63eac909d73a35a380e4194f9afba444f6',
+        str(src/'source_admission.json'):'6f43258ed06800b170b1d893aed72e887b1ef1471cbf398519cb3b9efb949c48',
+        str(term/'declaration_terminal_return.json'):'74cc4bb11f87b4814c0bbada9bfdec01f271164bf398d7074441feee43d25f3c',
+        str(term/'declaration_full_stdout.json'):'c7ff56ab3d208662ec44e49bdd1e2b0d9d08c8d34a16323e988a0f6c597ed090',
+        str(term/'declaration_full_stderr.txt'):'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        str(snapshot):'d924f1d5b5256cc7b48181c459ab1ed253e60a7c77bf529e3b78c2249429c63f'}
+    verify(files)
+    e=read(term/'terminal_return.json');driver=read(old/'driver_result.json');w=read(old/'AAA/capture_replay.watchdog.json')
+    expected_error="RuntimeError('own-child 512 MiB RSS cap reached')"
+    if (e['schema']!='AXMAT_RANK1_MEMORY_DEDUP_NATIVE_ANGULAR_CAPTURE_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1'
+        or e['record_producer']!='root' or e['actual_tool_terminal_return_observed'] is not True
+        or e['record_written_after_actual_terminal_return'] is not True
+        or type(e['returncode']) is not int or e['returncode']!=1
+        or e['actual_tool_result']!=dict(initial_chunk_id='805b05',session_id=4669,terminal_chunk_id='d703bc',exit_code=1)
+        or e['source']!=dict(path=str(PREDECESSOR_DEDUP_CAPTURE_SOURCE),sha256=PREDECESSOR_DEDUP_CAPTURE_SHA)
+        or e['declaration']!=dict(path=str(old/'declaration.json'),sha256=FAILED_DEDUP_CAPTURE_DECLARATION_SHA)
+        or e['command']!=['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12',str(PREDECESSOR_DEDUP_CAPTURE_SOURCE),'run','--sha256',FAILED_DEDUP_CAPTURE_DECLARATION_SHA]
+        or e['capture_only'] is not True or any(e[k] is not False for k in ('production_solver_promoted','AAA_accuracy_qualified','ABA_admitted','native_RSS_proof_obtained'))
+        or e['retries']!=0 or e['capture_seal'] is not None or any(e[k] is not None for k in TAIL_FIELDS)
+        or e['failure']!=expected_error or e['actual_native_RSS_mib']!=563.234375
+        or driver['classification']!='FAILED_RANK1_MEMORY_DEDUP_NATIVE_ANGULAR_CAPTURE_NO_RETRY'
+        or driver['error']!=expected_error or driver['capture_only'] is not True
+        or any(driver[k] is not False for k in ('production_solver_promoted','AAA_accuracy_qualified','ABA_admitted'))
+        or not 0<driver['elapsed_seconds']<TOTAL_WALL
+        or driver['archive_bytes_before_closeout']!=895159729
+        or w['command']!=[str(old/'runtime/Dragon')] or type(w['returncode']) is not int or w['returncode']!=-15
+        or w['sampled_peak_rss_mib']!=563.234375 or w['limit_failure']!=expected_error
+        or w['rss_cap_mib']!=512 or w['own_child_only'] is not True or w['liveness_group_cleanup'] is not True):
+        raise ValueError('actual failed dedup capture Root/driver/own-child boundary differs')
+    for name in ('source','declaration','full_stdout','full_stderr','driver_result','execution_claim','stage_index','raw_capture_receipt','actual_native_watch','actual_native_full_log'):
+        item=e[name]
+        if files.get(item['path'])!=item['sha256']:raise ValueError('failed Root descriptor does not match hard pin')
+    if (require(term/'capture_full_stdout.json').stat().st_size!=0
+            or expected_error not in require(term/'capture_full_stderr.txt').read_text()):
+        raise ValueError('actual failure complete stdout/stderr differs')
+    stages=read(old/'AAA/stages.json')['stages']
+    if len(stages)!=5 or [v['label'] for v in stages]!=['build/build_00','build/build_01','build/build_02','build/build_03','AAA/capture_replay'] or [v['status'] for v in stages]!=['PASS']*4+['FAILED']:
+        raise ValueError('actual predecessor four builds/first native failure boundary differs')
+    saved=read(snapshot)
+    if (set(saved['namespaces'])!={'SOURCE','OUT'} or saved['classification']!='OBSERVED_FAILED_NAMESPACE_SNAPSHOT_NOT_SUCCESS_SEAL'
+        or saved['qualification'] is not False or saved['combined_bytes']!=895195466
+        or saved['before_closeout_bytes']!=895159729 or saved['postcloseout_driver_bytes']!=35737
+        or saved['Root_run_terminal']!=e_pin(term/'terminal_return.json',files)
+        or saved['Root_declaration_terminal']!=e_pin(term/'declaration_terminal_return.json',files)):
+        raise ValueError('independently observed failed namespace anchor differs')
+    namespaces=[];total=0
+    for kind,root,count in [('SOURCE',src,6),('OUT',old,1472)]:
+        entry=saved['namespaces'][kind]
+        if (set(entry)!={'root','files','file_bytes','symlinks','directories'} or entry['root']!=str(root)
+            or len(entry['files'])!=count or set(entry['files'])!=set(entry['file_bytes']) or entry['symlinks']!={}):
+            raise ValueError('complete actual failed namespace descriptor differs')
+        wanted={k:entry[k] for k in ('files','symlinks','directories')}
+        verify_inventory(root,wanted)
+        for relative,size in entry['file_bytes'].items():
+            if type(size) is not int or size<0 or (root/relative).stat().st_size!=size:
+                raise ValueError('failed namespace original byte lengths differ')
+            total+=size
+        namespaces.append(dict(root=str(root),inventory=wanted,original_file_bytes=entry['file_bytes']))
+    if total!=895195466 or any(name in saved['namespaces']['OUT']['files'] for name in ('seal.json','audit/result.json','audit/audit.json')):
+        raise ValueError('failed namespace cannot provide a success seal or numeric audit')
+    raw=read(old/'raw_capture_receipt.json');ofiles=saved['namespaces']['OUT']['files']
+    raw_files={name:sha for name,sha in ofiles.items() if name.startswith('AAA/angular_') and name.endswith('.bin')}
+    if raw['files']!=raw_files or len(raw_files)!=1439 or raw['raw_capture_count']!=1439 or raw['before_numeric_gates'] is not True or raw['original_output_files']!={}:
+        raise ValueError('actual complete partial raw inventory is input-only')
+    counts={name:sum(bool(re.fullmatch('AAA/angular_'+name+r'_g\d{3}\.bin',path)) for path in raw_files)
+        for name in ('source','collision','key_p1','key_p2','field','return')}
+    if counts!=dict(source=370,collision=267,key_p1=267,key_p2=267,field=266,**{'return':0}):
+        raise ValueError('actual raw stopped-group coverage differs')
+    sizes=saved['namespaces']['OUT']['file_bytes']
+    if sizes['AAA/angular_capture_events.bin']!=0 or sizes['AAA/angular_cache_events.bin']!=17104:
+        raise ValueError('unflushed chronology cannot be promoted to a complete event witness')
+    termfiles={str(Path(path).relative_to(term)):sha for path,sha in files.items() if Path(path).parent==term}
+    verify_inventory(term,dict(files=termfiles,symlinks={},directories=[]))
+    return dict(schema='AXMAT_FAILED_DEDUP_CAPTURE_EXACT_INPUT_ONLY_V1',dependency_files=files,namespaces=namespaces,
+        observed_failed_namespace=files[str(snapshot)],actual_predecessor_source_sha256=PREDECESSOR_DEDUP_CAPTURE_SHA,
+        actual_tool_exit_code=1,actual_native_return_code=-15,actual_native_sampled_RSS_mib=563.234375,
+        actual_four_builds_passed_then_first_native_failed=True,actual_partial_raw_record_count=1439,
+        actual_partial_raw_group_counts=counts,chronological_source_event_file_unflushed=True,
+        saved_before_closeout_bytes=895159729,saved_final_source_out_bytes=895195466,
+        retained_raw_files_not_copied=True,failure_body_and_namespace_are_input_only=True,
+        no_current_scientific_or_RSS_credit=True,successful_capture_seal_exists=False,
+        native_RSS_proof_obtained=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+
+
+def e_pin(path,files):
+    return dict(path=str(path),sha256=files[str(path)])
+
+
+
+def file_snapshot_deck(original):
+    """Pure two-step full inverse; only SNAP storage differs from the delayed deck."""
+    deferred,prior=deferred_snapshot_deck(original)
+    before='LINKED_LIST SNAP AX_CURRENT ;\n'
+    after="XSM_FILE SNAP :: FILE './radial_snapshot_work.xsm' ;\nLINKED_LIST AX_CURRENT ;\n"
+    if deferred.count(before)!=1 or WORK_SNAPSHOT_NAME in deferred:
+        raise ValueError('one independent original SNAP declaration required')
+    candidate=deferred.replace(before,after,1)
+    inverse=candidate.replace(after,before,1)
+    if inverse!=deferred or candidate.count(after)!=1:
+        raise ValueError('complete intermediate storage-declaration inverse differs')
+    def calls(text):
+        result=[]
+        for chunk in text.split(';'):
+            match=re.search(r'(?m)^([^\n]*:=\s*(?:FLU|SPOGBAL|SPOSTATE|SPOXCONV|SPOLEAK):)',chunk)
+            if match:result.append(chunk[match.start():]+';')
+        return result
+    if calls(candidate)!=calls(original) or len(calls(candidate))!=5:
+        raise ValueError('original five literal scientific calls/order differ')
+    for declaration in ("XSM_FILE RADIAL_IN :: FILE './candidate_radial.xsm' ;\n",
+                        "XSM_FILE CAND_SNAP :: FILE './candidate_snapshots.xsm' ;\n"):
+        if original.count(declaration)!=1 or candidate.count(declaration)!=1:
+            raise ValueError('read-only source and separate original output declarations changed')
+    if candidate.count('SNAP := RADIAL_IN ;\n')!=1 or not re.search(
+        r'AX_CURRENT := SPOXCONV: AX_CURRENT PARENT_AX :: ;\nSNAP := RADIAL_IN ;\nSNAP := SPOLEAK:',candidate):
+        raise ValueError('delayed copy/first scientific consumer ordering differs')
+    return candidate,dict(schema='AXMAT_FILE_SNAPSHOT_COMPLETE_DECK_INVERSE_V1',
+        original_sha256=prior['original_sha256'],prior_deferred_sha256=prior['deferred_sha256'],
+        file_snapshot_sha256=hashlib.sha256(candidate.encode()).hexdigest(),prior_deferred_deck_inverse=prior,
+        storage_declaration_inverse=dict(original=before,candidate=after,whole_intermediate_byte_exact=True),
+        full_original_deck_inverse_byte_exact=True,all_five_scientific_call_bodies_and_order_byte_exact=True,
+        only_additional_scientific_deck_delta_is_SNAP_storage_medium=True,
+        working_filename=WORK_SNAPSHOT_NAME,source_and_CAND_SNAP_are_separate=True,
+        Fortran_math_and_observer_callbacks_unchanged=True,RSS_saving_or_failure_cause_not_claimed=True)
+
+
+def working_snapshot_contract():
+    return dict(schema='AXMAT_PRIVATE_FILE_SNAPSHOT_WORK_CONTRACT_V1',
+        path=str(OUT/'AAA'/WORK_SNAPSHOT_NAME),relative_path='AAA/'+WORK_SNAPSHOT_NAME,
+        filename=WORK_SNAPSHOT_NAME,initially_absent=True,independent_nonalias_regular_file=True,
+        absence_rechecked_immediately_before_native=True,raw_file_SHA_and_length_before_numeric_gates=True,
+        complete_logical_record_equality_to_separate_CAND_SNAP_required=True,
+        work_file_forecast_bytes_from_complete_original_CAND_SNAP=237955708,
+        failed_75972472_byte_CAND_SNAP_not_used_as_success_forecast=True,
+        forecast_is_not_an_individual_file_size_or_scientific_gate=True,
+        included_in_complete_SOURCE_OUT_archive_and_namespace=True,additional_archive_reservation_bytes=0)
+
+
+def working_snapshot_admission(d,require_absent=False,require_present=False):
+    if type(require_absent) is not bool or type(require_present) is not bool or (require_absent and require_present):
+        raise ValueError('explicit snapshot lifetime phase required')
+    if d['working_snapshot_contract']!=working_snapshot_contract():
+        raise ValueError('exact private XSM storage/lifetime/budget contract differs')
+    path=normal_path(OUT/'AAA'/WORK_SNAPSHOT_NAME,allow_missing=True)
+    if require_absent:absent(path)
+    if os.path.lexists(path):
+        require(path)
+        if path.stat().st_nlink!=1:raise ValueError('independent working XSM cannot have any hardlink alias')
+        for name in ('candidate_radial.xsm','parent_snapshots_closed.xsm','candidate_snapshots.xsm'):
+            other=OUT/'AAA'/name
+            if other.is_file() and path.samefile(other):
+                raise ValueError('working XSM cannot alias the source or separate output')
+    elif require_present:
+        raise ValueError('native private working snapshot missing')
+    return path
+
+
+def working_snapshot_raw_receipt(d):
+    path=working_snapshot_admission(d)
+    if not path.exists():return None
+    return dict(path=str(path),sha256=digest(path),bytes=path.stat().st_size,
+        before_numeric_gates=True,logical_record_equivalence_not_assumed_from_storage_type=True)
+
+
+def file_snapshot_storage_source_admission():
+    """Source/storage support and actual linked bytes, not a source-machine proof."""
+    prior=snapshot_lifetime_source_admission()
+    xsm=require(ROOT/'Ganlib/src/xsm_c.c',GANLIB_XSM_SOURCE_SHA)
+    kdi=require(ROOT/'Ganlib/src/kdi_c.c',GANLIB_KDI_SOURCE_SHA)
+    leak=require(ROOT/'src/SPOLEAK.f90',SPOLEAK_STORAGE_SOURCE_SHA)
+    files=dict(prior['dependency_files']);files[str(xsm)]=GANLIB_XSM_SOURCE_SHA;files[str(leak)]=SPOLEAK_STORAGE_SOURCE_SHA
+    files[str(kdi)]=GANLIB_KDI_SOURCE_SHA
+    require(DRAGON_STATIC_LIBRARY,DRAGON_STATIC_LIBRARY_SHA);files[str(DRAGON_STATIC_LIBRARY)]=DRAGON_STATIC_LIBRARY_SHA
+    xsm_members=archive_member_identities(GANLIB_STATIC_LIBRARY,{'xsm_c.o':GANLIB_XSM_MEMBER_SHA,'kdi_c.o':GANLIB_KDI_MEMBER_SHA})
+    leak_members=archive_member_identities(DRAGON_STATIC_LIBRARY,{'SPOLEAK.o':SPOLEAK_STORAGE_MEMBER_SHA})
+    text=xsm.read_text();f=leak.read_text()
+    for word in ('void xsmppd_c(', 'xsmput_c(iplist,namp,ilong,itype,iofdum);',
+        'free(iofdum); /* rlsara_c(iofdum) */','void xsmcl_c(',
+        'for (i = 1; i <= ipkep2->nad; ++i) free(ipkep2->iofset[i-1]);',
+        '/* RELEASE THE XSM FILE HANDLE. */','free(*iplist);','*iplist = NULL;'):
+        if word not in text:raise ValueError('actual XSM transfer/close source anchor differs')
+    if ("if ((ientry(1) /= 1).and.(ientry(1) /= 2)) &" not in f
+        or any(word not in f for word in ('call LCMGET(', 'call LCMGDL(', 'call LCMPUT('))):
+        raise ValueError('SPOLEAK supported LCM/XSM interface source differs')
+    if any(word not in kdi.read_text() for word in ('int_32 kdiput_c(', 'fwrite(', 'int_32 kdicl_c(', 'fclose(my_file->fd)')):
+        raise ValueError('actual disk-word write/close source anchor differs')
+    return dict(schema='AXMAT_FILE_SNAPSHOT_STORAGE_SOURCE_INPUT_V1',dependency_files=files,
+        prior_deferred_snapshot_lifetime_source_input=prior,
+        actual_linked_Ganlib_archive=dict(path=str(GANLIB_STATIC_LIBRARY),sha256=GANLIB_STATIC_LIBRARY_SHA),
+        actual_selected_Ganlib_xsm_member_bytes=xsm_members,
+        actual_linked_Dragon_archive=dict(path=str(DRAGON_STATIC_LIBRARY),sha256=DRAGON_STATIC_LIBRARY_SHA),
+        actual_selected_SPOLEAK_member_bytes=leak_members,
+        SPOLEAK_source_allows_modifiable_entry1_memory_or_XSM=True,
+        XSM_record_transfer_scratch_freed_and_close_releases_handles_in_source=True,
+        source_machine_equivalence_not_claimed=True,actual_RSS_saving_not_claimed=True,
+        prior_RSS_failure_cause_not_claimed=True,scientific_qualification=False)
+
+
+def validate_failed_deferred_capture_metadata(e,driver,w,stages,saved,raw):
+    """Only the observed FAILED cfb boundary; complete raw is not process success."""
+    error="RuntimeError('own-child 512 MiB RSS cap reached')"
+    if (e['schema']!='AXMAT_RANK1_MEMORY_DEDUP_DEFERRED_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1'
+        or e['record_producer']!='root' or e['actual_tool_terminal_return_observed'] is not True
+        or e['record_written_after_actual_terminal_return'] is not True or type(e['returncode']) is not int or e['returncode']!=1
+        or type(e['actual_tool_result']['exit_code']) is not int or type(e['actual_tool_result']['session_id']) is not int
+        or e['actual_tool_result']!=dict(initial_chunk_id='e54997',session_id=20098,terminal_chunk_id='fa9659',exit_code=1)
+        or e['source']!=dict(path=str(PREDECESSOR_DEFERRED_CAPTURE_SOURCE),sha256=PREDECESSOR_DEFERRED_CAPTURE_SHA)
+        or e['declaration']!=dict(path=str(FAILED_DEFERRED_CAPTURE_ROOT/'declaration.json'),sha256=FAILED_DEFERRED_CAPTURE_DECLARATION_SHA)
+        or e['command']!=['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12',str(PREDECESSOR_DEFERRED_CAPTURE_SOURCE),'run','--sha256',FAILED_DEFERRED_CAPTURE_DECLARATION_SHA]
+        or e['capture_only'] is not True or any(e[k] is not False for k in
+            ('production_solver_promoted','AAA_accuracy_qualified','ABA_admitted','native_RSS_proof_obtained'))
+        or e['capture_seal'] is not None or e['retries']!=0 or any(e[k] is not None for k in TAIL_FIELDS)
+        or e['failure']!=error or e['actual_native_RSS_mib']!=517.453125
+        or driver['classification']!='FAILED_RANK1_MEMORY_DEDUP_DEFERRED_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_NO_RETRY'
+        or driver['error']!=error or driver['capture_only'] is not True
+        or any(driver[k] is not False for k in ('production_solver_promoted','AAA_accuracy_qualified','ABA_admitted'))
+        or not 0<driver['elapsed_seconds']<TOTAL_WALL or driver['archive_bytes_before_closeout']!=1193363126
+        or w['command']!=[str(FAILED_DEFERRED_CAPTURE_ROOT/'runtime/Dragon')]
+        or type(w['returncode']) is not int or w['returncode']!=-15 or w['sampled_peak_rss_mib']!=517.453125
+        or w['limit_failure']!=error or w['rss_cap_mib']!=512 or w['own_child_only'] is not True or w['liveness_group_cleanup'] is not True
+        or not 0<w['elapsed_seconds']<w['wall_cap_seconds']<=STAGE_WALL
+        or len(stages)!=5 or [s['label'] for s in stages]!=['build/build_00','build/build_01','build/build_02','build/build_03','AAA/capture_replay']
+        or [s['status'] for s in stages]!=['PASS']*4+['FAILED']):
+        raise ValueError('actual failed cfb Root/driver/own-child stage boundary differs')
+    if (saved['classification']!='OBSERVED_FAILED_NAMESPACE_SNAPSHOT_NOT_SUCCESS_SEAL'
+        or any(saved[k] is not False for k in ('qualification','scientific_qualification','native_RSS_qualification','AAA_accuracy_qualified','ABA_admitted'))
+        or saved['actual_tool_exit_code']!=1 or saved['combined_bytes']!=1193399772
+        or saved['before_closeout_bytes']!=1193363126 or saved['postcloseout_driver_bytes']!=36646
+        or saved['raw_capture_file_count']!=6*NG+8
+        or saved['raw_complete_does_not_replace_original_512_MiB_process_gate'] is not True
+        or saved['factory_source']!=e['source'] or saved['declaration']!=e['declaration']
+        or saved['Root_run_terminal']!=dict(path=str(FAILED_DEFERRED_CAPTURE_TERM/'terminal_return.json'),sha256=FAILED_DEFERRED_CAPTURE_RECEIPT_SHA)
+        or set(saved['namespaces'])!={'SOURCE','OUT'}):
+        raise ValueError('whole observed failed namespace is input-only, never a seal')
+    ofiles=saved['namespaces']['OUT']['files']
+    raw_files={p:sha for p,sha in ofiles.items() if p.startswith('AAA/angular_') and p.endswith('.bin')}
+    if (raw['files']!=raw_files or len(raw_files)!=6*NG+8 or raw['raw_capture_count']!=6*NG+8
+        or raw['before_numeric_gates'] is not True
+        or raw['original_output_files']!={n:ofiles['AAA/'+n] for n in ('candidate_axial.xsm','candidate_snapshots.xsm')}
+        or any(name in ofiles for name in ('seal.json','audit/result.json','audit/audit.json'))):
+        raise ValueError('complete raw/outputs cannot grant failed process current diagnostic credit')
+    counts={name:sum(bool(re.fullmatch('AAA/angular_'+name+r'_g\d{3}\.bin',p)) for p in raw_files)
+            for name in ('source','collision','key_p1','key_p2','field','return')}
+    if any(count!=NG for count in counts.values()):raise ValueError('all actual complete failed raw group counts differ')
+    return counts
+
+
+def failed_deferred_capture_input():
+    files=dict(FAILED_DEFERRED_INPUT_FILE_SHAS);verify(files)
+    term=FAILED_DEFERRED_CAPTURE_TERM;old=FAILED_DEFERRED_CAPTURE_ROOT;src=FAILED_DEFERRED_CAPTURE_SOURCE
+    snapshot=ROOT/'validation/axial_material/rank1_memory_dedup_deferred_snapshot_failed_capture_namespace_20261007.json'
+    e=read(term/'terminal_return.json');driver=read(old/'driver_result.json');w=read(old/'AAA/capture_replay.watchdog.json')
+    saved=read(snapshot);raw=read(old/'raw_capture_receipt.json');stages=read(old/'AAA/stages.json')['stages']
+    counts=validate_failed_deferred_capture_metadata(e,driver,w,stages,saved,raw)
+    for key in ('source','declaration','driver_result','execution_claim','stage_index','raw_capture_receipt',
+                'full_stdout','full_stderr','actual_native_watch','actual_native_full_log'):
+        item=e[key]
+        if files.get(item['path'])!=item['sha256']:raise ValueError('failed cfb descriptor differs from actual hard pin')
+    if (saved['Root_declaration_terminal']!=e_pin(term/'declaration_terminal_return.json',files)
+        or require(term/'capture_full_stdout.json').stat().st_size!=0
+        or "RuntimeError('own-child 512 MiB RSS cap reached')" not in require(term/'capture_full_stderr.txt').read_text()):
+        raise ValueError('actual retained declaration/run proof differs')
+    namespaces=[];total=0
+    for kind,root,count in [('SOURCE',src,6),('OUT',old,2263)]:
+        entry=saved['namespaces'][kind]
+        if (set(entry)!={'root','files','file_bytes','symlinks','directories'} or entry['root']!=str(root)
+            or len(entry['files'])!=count or set(entry['files'])!=set(entry['file_bytes']) or entry['symlinks']!={}):
+            raise ValueError('complete frozen failed cfb namespace differs')
+        wanted={k:entry[k] for k in ('files','symlinks','directories')};verify_inventory(root,wanted)
+        for relative,size in entry['file_bytes'].items():
+            if type(size) is not int or size<0 or (root/relative).stat().st_size!=size:
+                raise ValueError('failed cfb original record lengths differ')
+            total+=size
+        namespaces.append(dict(root=str(root),inventory=wanted,original_file_bytes=entry['file_bytes']))
+    if total!=1193399772:raise ValueError('whole failed cfb retained byte count differs')
+    termfiles={str(Path(p).relative_to(term)):sha for p,sha in files.items() if Path(p).parent==term}
+    verify_inventory(term,dict(files=termfiles,symlinks={},directories=[]))
+    return dict(schema='AXMAT_FAILED_DEFERRED_CAPTURE_EXACT_INPUT_ONLY_V1',dependency_files=files,namespaces=namespaces,
+        actual_failed_Root_terminal=e_pin(term/'terminal_return.json',files),observed_failed_namespace=e_pin(snapshot,files),
+        actual_tool_exit_code=1,actual_native_return_code=-15,actual_native_sampled_RSS_mib=517.453125,
+        actual_complete_raw_record_count=6*NG+8,actual_complete_raw_group_counts=counts,
+        saved_before_closeout_bytes=1193363126,saved_final_source_out_bytes=1193399772,
+        retained_raw_files_not_copied=True,complete_raw_is_not_process_success=True,
+        failure_body_and_namespace_are_input_only=True,no_current_scientific_or_RSS_credit=True,
+        log_tail_is_not_a_precise_program_counter_or_failure_cause=True,
+        successful_capture_seal_exists=False,native_RSS_proof_obtained=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+
+
+def source_plan():
+    sender=require(BUILD_SOURCE/'FLU2DR64.f',SENDER_SHA).read_text()
+    kernel=dedup_kernel_source().read_text()
+    f=[]
+    anchor='     2 SPOT1P64_RANK1_TERMINAL,SPOT1P64_RANK1_PROGRESS'
+    f.append((anchor,anchor+',\n     3 SPOT1P64_RANK1_STATS\n      USE AXMAT_RANK1_CAPTURE_MOD, ONLY: AXMAT_CAPTURE_BEGIN,\n     1 AXMAT_CAPTURE_CONTEXT,AXMAT_CAPTURE_TERMINAL,\n     2 AXMAT_CAPTURE_PRENORMAL,AXMAT_CAPTURE_PUBLISH,\n     3 AXMAT_CAPTURE_SLOT7\n      INTEGER(KIND=8) AXMAT_STATS(6)'))
+    begin="      CALL SPOT1P64_CACHE_BEGIN(NGRP,IPHYS_CACHE.EQ.1,\n     1 (CXDOOR.EQ.'SPOT').AND.(NDIM.EQ.1).AND.(INSB.GT.0)\n     2 .AND.(IPHYS_CACHE.EQ.0))"
+    f.append((begin,begin+'\n      CALL AXMAT_CAPTURE_BEGIN(NGRP,NUNKNO,NREG,NMAT,NFUNL,\n     1 ITYPEC,ILEAK,LEAKSW,LREBAL,NCPTL,NCPTA,ITPIJ,NANIS,\n     2 NDIM,INSB,LSCAL,NLF,NLIN)'))
+    jt='      DO 270 JT=1,MAXINR'
+    f.append((jt,jt+'\n      CALL AXMAT_CAPTURE_CONTEXT(IT,JT)'))
+    accel='      IF(MOD(JT-1,NCTOT).GE.NCPTM) THEN\n         CALL FLU2AC64(NGRP,NUNKNO,IGDEB,FLUX(:,:,5:7),\n     1   AKEEP(5:7),ZMU64,LACCOK)\n         IF(.NOT.LACCOK)\n     1   CALL XABORT(\'FLU2DR64: INNER FLU2AC64 FAILED.\')\n         ZMU=REAL(ZMU64)\n      ELSE\n         ZMU=1.0\n      ENDIF'
+    before='      CALL AXMAT_CAPTURE_SLOT7(1,NUNKNO,NGRP,IGDEB,\n     1 MERGE(1,0,MOD(JT-1,NCTOT).GE.NCPTM),\n     2 FLUX(:,:,6),FLUX(:,:,7))\n'
+    after='\n      CALL AXMAT_CAPTURE_SLOT7(2,NUNKNO,NGRP,IGDEB,\n     1 MERGE(1,0,MOD(JT-1,NCTOT).GE.NCPTM),\n     2 FLUX(:,:,6),FLUX(:,:,7))'
+    f.append((accel,before+accel+after))
+    promote='      FLUX(:NUNKNO,:NGRP,3)=FLUX(:NUNKNO,:NGRP,7)'
+    f.append((promote,'      CALL AXMAT_CAPTURE_SLOT7(3,NUNKNO,NGRP,IGDEB,0,\n     1 FLUX(:,:,6),FLUX(:,:,7))\n'+promote))
+    success='         GO TO 410\n      ENDIF\n'
+    f.append((success,'         CALL SPOT1P64_RANK1_STATS(AXMAT_STATS(1),\n     1 AXMAT_STATS(2),AXMAT_STATS(3),AXMAT_STATS(4),\n     2 AXMAT_STATS(5),AXMAT_STATS(6))\n         CALL AXMAT_CAPTURE_TERMINAL(IEXTF,ITERF_LAST,\n     1 IGDEB_LAST,IINR_STATE,IUNK_EVAL,MAXOUT,MAXINR,\n     2 EEXT,EPSOUT,EUNK_LAST,EPSUNK,EINR_LAST,EPSINR,AKEFF,\n     3 AXMAT_STATS,FLUX(:,:,2),FLUX(:,:,3),\n     4 FLUX(:,:,7),FLUX(:,:,8))\n'+success))
+    normal='        IF(ITYPEC.LT.5) THEN\n          FLUX(:NUNKNO,:NGRP,3)=FLUX(:NUNKNO,:NGRP,3)*(AKEFF/FISOUR)'
+    f.append((normal,'        CALL AXMAT_CAPTURE_PRENORMAL(NUNKNO,NGRP,\n     1 FLUX(:NUNKNO,:NGRP,3))\n'+normal))
+    save='  510 CONTINUE\n      IF(C_ASSOCIATED(IPSOU)) THEN'
+    f.append((save,'  510 CONTINUE\n      CALL AXMAT_CAPTURE_PUBLISH(NUNKNO,NGRP,\n     1 FLUX(:NUNKNO,:NGRP,3),FLUX(:NUNKNO,:NGRP,4),\n     2 AKEFF,FISOUR)\n      IF(C_ASSOCIATED(IPSOU)) THEN'))
+    use='      USE GANLIB\n      TYPE(C_PTR) JPSYS,IPTRK'
+    f.append((use,'      USE GANLIB\n      USE AXMAT_RANK1_CAPTURE_MOD, ONLY: AXMAT_CAPTURE_INPUT,\n     1 AXMAT_CAPTURE_OUTPUT\n      TYPE(C_PTR) JPSYS,IPTRK'))
+    call='      CALL SPOF64(KPSYS,IPTRK,IMPX,NGEFF,NGIND,NREG,NMAT,NUN,MAT,\n     1 KEYFLX,F2,S2,TITR)'
+    f.append((call,'      CALL AXMAT_CAPTURE_INPUT(NGEFF,NGIND,NUN,S2,ILEAK,\n     1 B2,NPSYS)\n'+call+'\n      CALL AXMAT_CAPTURE_OUTPUT(NGEFF,NGIND,NUN,F2)'))
+    k=[]
+    use='  use AXMAT_WHITE_TRACE_MOD, only: AXMAT_WHITE_ON,AXMAT_WHITE_ROW, &\n    AXMAT_WHITE_PERIMETER,AXMAT_WHITE_KERNEL,AXMAT_WHITE_NOTE'
+    k.append((use,use+'\n  use AXMAT_RANK1_CAPTURE_MOD, only: AXMAT_CAPTURE_FIELD, &\n    AXMAT_CAPTURE_BLOCKS,AXMAT_CAPTURE_KEY,AXMAT_CAPTURE_KEY_VALIDATED'))
+    field='  deallocate(opposite,modal_cour,modal_flux,cell,face)'
+    k.append((field,'  call AXMAT_CAPTURE_FIELD(igroup,nmat,nsnap,mat1d,mat,ncode,opposite, &\n    vol1d,total,sgas,basis,vol2d,zcode,du,w,pl,radial2d,qext, &\n    weight,mass_m,total_m,radial_m,scat_m,source_m,mn,dn,white_angle, &\n    white_mode,cell,face,modal_flux,modal_cour,flux,cour,xnei,AXMAT_WHITE_ON, &\n    AXMAT_WHITE_ROW,AXMAT_WHITE_PERIMETER,ischm,lfixup)\n'+field))
+    key='    call SPOT1P64_RANK1_GUARD(igroup,key,phase,eligible,active)'
+    k.append((key,'    call AXMAT_CAPTURE_KEY(igroup,key,phase,eligible)\n'+key+'\n    call AXMAT_CAPTURE_KEY_VALIDATED(igroup,phase,active)'))
+    assembly='    enddo\n\n    if (cached_path) then\n      associate(plan => SPOT1P64_PLAN(igroup)%mode(first_mode))\n        if (cache_hit) then'
+    k.append((assembly,'    enddo\n\n    if (.not.cache_hit) call AXMAT_CAPTURE_BLOCKS(igroup,lower,diagonal, &\n      upper,cached_path,cache_hit)\n\n    if (cached_path) then\n      associate(plan => SPOT1P64_PLAN(igroup)%mode(first_mode))\n        if (cache_hit) then'))
+    for text,changes in ((sender,f),(kernel,k)):
+        changed=text
+        for old,new in changes:changed=once(changed,old,new)
+        for old,new in reversed(changes):changed=once(changed,new,old)
+        if changed!=text:raise ValueError('entire source inverse restoration differs')
+    return sender,f,kernel,k
+
+
+def terminal_contract(python):
+    return dict(schema=TERMINAL_SCHEMA,root=str(TERMINAL),receipt=str(TERMINAL/'terminal_return.json'),
+        record_producer='root',actual_tool_exit_zero_required=True,full_stdout_required=True,full_stderr_required=True,
+        record_written_after_actual_terminal_return_required=True,tail_fields=list(TAIL_FIELDS),
+        complete_archive_scope_roots=[str(SOURCE),str(OUT)],action='run',python=python,
+        scientific_qualification=False)
+
+
+def prepare(memory_seal,memory_terminal,memory_terminal_sha,dedup_seal,dedup_terminal,dedup_terminal_sha):
+    require_ready()
+    for p in (SOURCE,OUT,TERMINAL):absent(p)
+    b=builder();build=b.production_admission(BUILD_SEAL,str(BUILD_TERM/'terminal_return.json'),BUILD_TERM_SHA)
+    memory,md=actual_memory_admission(memory_seal,memory_terminal,memory_terminal_sha,build)
+    dedup,dd=actual_dedup_admission(dedup_seal,dedup_terminal,dedup_terminal_sha,build,memory)
+    bd=read(BUILD/'declaration.json');environment(bd)
+    full,production,_,_=modules();guard_files=guard_admission(full)
+    prepared=read(require(PROD/'prepared.json',PREPARED_SHA))
+    require(PROD/'AAA/run_status.json',STATUS_SHA)
+    for name,sha in prepared['local_files'].items():require(PROD/name,sha)
+    production.verify_sealed_directory(FINAL);production.verify_sealed_directory(PARENT)
+    require(FINAL/'result.json',FINAL_SEAL_SHA);require(PARENT/'result.json',PARENT_SEAL_SHA)
+    source_inputs={name:(FINAL/name).resolve(strict=True) for name in (
+        'initial_axial_track.xsm','initial_axial_macrolib.xsm','parent_axial_closed.xsm',
+        'parent_snapshots_closed.xsm','candidate_radial.xsm','candidate_system.xsm','basis_reference.xsm','route_contract.xsm')}
+    if sum(path.stat().st_size for path in source_inputs.values())!=517145800:
+        raise ValueError('the actual original complete private-copy byte reservation changed')
+    if source_inputs['parent_axial_closed.xsm']!=(PARENT/'closed_axial.xsm').resolve(strict=True) or source_inputs['parent_snapshots_closed.xsm']!=(PARENT/'closed_snapshots.xsm').resolve(strict=True):raise ValueError('real map011 parent inputs required')
+    sender,fchanges,kernel,kchanges=source_plan()
+    deck=require(FINAL/'picard_axial.x2m',ORIGINAL_DECK_SHA);native_log=require(FINAL/'picard_axial.log')
+    deferred_deck,deck_inverse=file_snapshot_deck(deck.read_text())
+    if (FINAL/'candidate_snapshots.xsm').stat().st_size!=working_snapshot_contract()['work_file_forecast_bytes_from_complete_original_CAND_SNAP']:
+        raise ValueError('complete original output, not failed partial output, must anchor the work-file forecast')
+    prior_failure=failed_dedup_capture_input()
+    lifetime_sources=snapshot_lifetime_source_admission()
+    deferred_failure=failed_deferred_capture_input()
+    file_storage_sources=file_snapshot_storage_source_admission()
+    actual_log=native_log.read_text()
+    if actual_log.count('AXMAT-MOMENT-ORDER SELECTOR')!=1 or not re.search(r'AXMAT-MOMENT-ORDER SELECTOR\s+32\s+3\s+2\s+3\s+1\s*$',actual_log,re.M):raise ValueError('actual current selector marker differs')
+    matches=re.findall(r'^AXMAT-RANK1-CACHE TERMINAL\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s*$',actual_log,re.M)
+    if len(matches)!=1:raise ValueError('one actual cache terminal record required')
+    original_cache=list(map(int,matches[0]))
+    for text,fields in [('FLU2DR-TERM OUTER-GATE=PASS',{'IEXTF':3,'MAXOUT':500}),('FLU2DR-TERM INNER-TERMINAL',{'ITERF':1,'MAXINR':740,'IGDEB':371,'STATE':1,'NGRP':370})]:
+        lines=[line for line in actual_log.splitlines() if text in line]
+        if len(lines)!=1:raise ValueError('one actual native terminal pair required')
+        for key,value in fields.items():
+            m=re.findall(r'\b'+key+r'\s*=\s*([+-]?\d+)\b',lines[0])
+            if len(m)!=1 or int(m[0])!=value:raise ValueError('native terminal input differs')
+    files=preserved_files(bd)
+    def merge(other):
+        for path,sha in other.items():
+            if path in files and files[path]!=sha:raise ValueError('conflicting explicit memory/current input identity')
+            files[path]=sha
+    merge(preserved_files(md))
+    merge({str(MEMORY_BUILD/name):sha for name,sha in read(MEMORY_BUILD/'seal.json')['files'].items()})
+    merge({str(MEMORY_SOURCE/name):sha for name,sha in md['source_inventory']['files'].items()})
+    merge(descriptor_files(memory))
+    memory_namespaces=[dict(root=str(folder),inventory=inventory(folder)) for folder in (MEMORY_SOURCE,MEMORY_BUILD)]
+    merge(preserved_files(dd))
+    merge({str(DEDUP_BUILD/name):sha for name,sha in read(DEDUP_BUILD/'seal.json')['files'].items()})
+    merge({str(DEDUP_SOURCE/name):sha for name,sha in dd['source_inventory']['files'].items()})
+    merge(descriptor_files(dedup))
+    merge(prior_failure['dependency_files'])
+    merge(lifetime_sources['dependency_files'])
+    merge(deferred_failure['dependency_files'])
+    merge(file_storage_sources['dependency_files'])
+    for item in deferred_failure['namespaces']:
+        merge({str(Path(item['root'])/relative):sha for relative,sha in item['inventory']['files'].items()})
+    for item in prior_failure['namespaces']:
+        merge({str(Path(item['root'])/relative):sha for relative,sha in item['inventory']['files'].items()})
+    dedup_namespaces=[dict(root=str(folder),inventory=inventory(folder)) for folder in (DEDUP_SOURCE,DEDUP_BUILD)]
+
+    for name,sha in read(BUILD/'seal.json')['files'].items():files[str(BUILD/name)]=sha
+    for name,sha in bd['source_inventory']['files'].items():files[str(BUILD_SOURCE/name)]=sha
+    for path,sha in descriptor_files(build).items():
+        if path in files and files[path]!=sha:raise ValueError('inherited actual build descriptor differs')
+        files[path]=sha
+    for name,sha in prepared['local_files'].items():files[str(PROD/name)]=sha
+    paths=[Path(__file__).resolve(),require(MODULE,MODULE_SHA),BUILDER,MEMORY_BUILDER,DEDUP_BUILDER,
+        require(PREDECESSOR_MEMORY_CAPTURE_SOURCE,PREDECESSOR_MEMORY_CAPTURE_SHA),
+        require(ORIGINAL_CAPTURE_SOURCE,ORIGINAL_CAPTURE_SHA),PROD/'prepared.json',PROD/'AAA/run_status.json',
+        BUILD/'declaration.json',BUILD/'seal.json',BUILD/'runtime/build_identity.json',BUILD_TERM/'terminal_return.json',
+        FINAL/'result.json',PARENT/'result.json',deck,native_log,*source_inputs.values(),
+        FINAL/'candidate_axial.xsm',FINAL/'candidate_snapshots.xsm',MEMORY_SOURCE/'SPOT1P64.f90',BUILD_SOURCE/'FLU2DR64.f',
+        MEMORY_BUILD/'declaration.json',MEMORY_BUILD/'seal.json',MEMORY_BUILD/'runtime/build_identity.json',MEMORY_TERM/'terminal_return.json',
+        DEDUP_SOURCE/'SPOT1P64.f90',DEDUP_SOURCE/'source_admission.json',
+        DEDUP_BUILD/'declaration.json',DEDUP_BUILD/'seal.json',DEDUP_BUILD/'runtime/build_identity.json',
+        DEDUP_TERM/'terminal_return.json',*guard_files,PROD/'runtime/run_bounded_dragon.py']
+    # Every input of the actual frozen link and compiler chain is byte-pinned.
+    parent_link=dd['production_link_command']
+    for token in parent_link:
+        p=Path(token)
+        if p.is_absolute() and p.is_file():paths.append(p)
+    for p in paths:
+        sha=digest(require(p));key=str(p)
+        if key in files and files[key]!=sha:raise ValueError('current input differs from inherited pin')
+        files[key]=sha
+    roots=[str(p) for p in b.validate_history_roots(b.history_roots(sorted(set(bd['resource_roots'])|set(md['resource_roots'])|set(dd['resource_roots'])|set(prepared['resource_roots'])|{str(SOURCE),str(OUT),str(TERMINAL)}),ART),ART)]
+    resources=resource(roots);before=resources.check();copied=sum(p.stat().st_size for p in source_inputs.values());reserve=copied+2*2**30
+    if before['artifact_bytes']+reserve>=HISTORY_CAP or before['disk_free_bytes']-reserve<FREE_FLOOR:raise ValueError('original capture reservation refused')
+    SOURCE.mkdir();OUT.mkdir()
+    for n in ('build','runtime','AAA','audit'):(OUT/n).mkdir()
+    shutil.copy2(MODULE,SOURCE/'rank1_cache_capture_angles.f90')
+    proofs={'FLU2DR64.f':patched(sender,fchanges,SOURCE/'FLU2DR64.f',str(BUILD_SOURCE/'FLU2DR64.f')),
+        'SPOT1P64.f90':patched(kernel,kchanges,SOURCE/'SPOT1P64.f90',str(DEDUP_SOURCE/'SPOT1P64.f90'))}
+    write_new(SOURCE/'source_admission.json',dict(patches=proofs,observer_only=True,native_expressions_changed=False,
+        original_compiled_kernel=pin(dedup_kernel_source()),original_compiled_sender=pin(BUILD_SOURCE/'FLU2DR64.f'),
+        inherited_current_build_admission=build,inherited_memory_build_admission=memory,inherited_dedup_build_admission=dedup,
+        memory_component_applied_before_observer_callbacks=True,dedup_component_applied_before_observer_callbacks=True,
+        full_source_inverse_byte_restoration=True))
+    inputs={};aliases={}
+    for name,origin in source_inputs.items():
+        target=OUT/'AAA'/name;shutil.copy2(origin,target)
+        if digest(target)!=digest(origin):raise ValueError('private input copy differs')
+        inputs[name]=dict(source=str(origin),sha256=digest(origin),private_copy=str(target))
+        original=FINAL/name
+        if original.is_symlink():aliases[str(original)]=dict(text=os.readlink(original),target=str(origin),sha256=digest(origin))
+    absent(OUT/'AAA'/WORK_SNAPSHOT_NAME)
+    with (OUT/'AAA/picard_axial.x2m').open('x') as stream:stream.write(deferred_deck)
+    copied_deck=pin(OUT/'AAA/picard_axial.x2m')
+    if copied_deck['sha256']!=deck_inverse['file_snapshot_sha256']:raise ValueError('new copied deck inverse binding differs')
+    shutil.copy2(PROD/'runtime/run_bounded_dragon.py',OUT/'runtime/run_bounded_dragon.py')
+    compiler=dd['build_commands'][0][0]
+    flags=dd['build_commands'][0][1:dd['build_commands'][0].index('-c')]
+    flags=[token.replace(str(DEDUP_SOURCE),str(SOURCE)).replace(str(DEDUP_BUILD),str(OUT)) for token in flags]
+    commands=[[compiler,*flags,'-c',str(SOURCE/n),'-o',str(OUT/'build'/Path(n).with_suffix('.o'))] for n in ('rank1_cache_capture_angles.f90','SPOT1P64.f90','FLU2DR64.f')]
+    link=[token.replace(str(DEDUP_BUILD/'build/SPOT1P64.o'),str(OUT/'build/SPOT1P64.o')).replace(str(BUILD/'build/FLU2DR64.o'),str(OUT/'build/FLU2DR64.o')).replace(str(DEDUP_BUILD/'runtime/Dragon'),str(OUT/'runtime/Dragon')) for token in parent_link]
+    idx=link.index(str(OUT/'build/SPOT1P64.o'));link.insert(idx,str(OUT/'build/rank1_cache_capture_angles.o'));commands.append(link)
+    inverse=list(link);inverse.remove(str(OUT/'build/rank1_cache_capture_angles.o'));inverse=[token.replace(str(OUT/'build/SPOT1P64.o'),str(DEDUP_BUILD/'build/SPOT1P64.o')).replace(str(OUT/'build/FLU2DR64.o'),str(BUILD/'build/FLU2DR64.o')).replace(str(OUT/'runtime/Dragon'),str(DEDUP_BUILD/'runtime/Dragon')) for token in inverse]
+    if inverse!=parent_link:raise ValueError('exact original link chain restoration differs')
+    for root in (SOURCE,OUT):
+        for p in root.rglob('*'):
+            if p.is_file():files[str(p)]=digest(p)
+    import numpy as np
+    d=dict(schema='AXMAT_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_DECLARATION_V1',files=files,source_inventory=inventory(SOURCE),
+        input_copies=inputs,input_aliases=aliases,build_commands=commands,inherited_current_build_admission=build,
+        inherited_memory_build_admission=memory,memory_component_namespaces=memory_namespaces,
+        inherited_dedup_build_admission=dedup,dedup_component_namespaces=dedup_namespaces,
+        original_production_prepared=pin(PROD/'prepared.json'),original_status=pin(PROD/'AAA/run_status.json'),
+        original_map012_seal=pin(FINAL/'result.json'),original_map011_seal=pin(PARENT/'result.json'),
+        original_deck=pin(deck),original_native_log=pin(native_log),original_cache_terminal=original_cache,
+        file_snapshot_deck_inverse=deck_inverse,file_snapshot_copied_deck=copied_deck,
+        deferred_snapshot_lifetime_sources=lifetime_sources,actual_failed_dedup_native_capture_input=prior_failure,
+        actual_failed_deferred_native_capture_input=deferred_failure,file_snapshot_storage_sources=file_storage_sources,
+        working_snapshot_contract=working_snapshot_contract(),
+        only_scientific_deck_delta_is_snapshot_copy_lifetime_and_storage_medium=True,
+        readonly_diagnostic_skips_only_current_build_interpreter_equality=True,
+        build_run_and_scientific_audit_require_original_build_interpreter=True,
+        original_scientific_calls_and_parameters_literal_unchanged=True,
+        snapshot_copy_avoids_logical_cache_co_residence=True,
+        snapshot_file_bytes_not_claimed_RSS_saving=True,prior_RSS_failure_cause_not_claimed=True,
+        original_link_command=parent_link,original_dense_link_command=bd["build_commands"][2],
+        exact_original_link_inverse_restoration=True,memory_link_inverse_original_dense_chain=True,
+        dedup_link_inverse_original_dense_chain=True,dedup_worst_reserve_before_duplicate_release_required=True,
+        full_first_miss_lower_IEEE_dictionary_independently_derived=True,
+        memory_cache_peak_not_claimed_word_equal_to_original=True,original_cache_count_indices=[0,1,2,4],
+        preserved_predecessors=dd['preserved_predecessors'],build_python_executable=str(Path(sys.executable).resolve()),
+        python_command=sys.executable,numeric_environment=dict(python=sys.version.split()[0],numpy=np.__version__),
+        native_library_aliases=bd['native_library_aliases'],native_dependency_alias_bindings=native_alias_bindings(bd['native_library_aliases']),
+        numerical_loader_environment=bd['numerical_loader_environment'],
+        resource_roots=roots,resource_scope_contract=b.resource_scope_contract(),resource_scope_policy=bd['resource_scope_policy'],
+        resources_before=before,artifact_budget_bytes=HISTORY_CAP,min_free_bytes=FREE_FLOOR,
+        private_input_copy_bytes=copied,archive_reserve_bytes=reserve,complete_archive_scope_roots=[str(SOURCE),str(OUT)],
+        total_wall_seconds=TOTAL_WALL,stage_wall_seconds=STAGE_WALL,rss_cap_mib=RSS,threads=1,numeric_children_at_once=1,retries=0,
+        original_capture_budget_inherited=True,precision_analysis_120_second_budget_not_changed=True,
+        actual_external_terminal_return_contract=terminal_contract(sys.executable),
+        reconstruction_relative_limit=5e-12,diagnostic_matrix_equation_limit=1e-10,
+        original_accuracy_thresholds_changed=False,coefficient_fitting=False,CE_data_used=False,
+        actual_native_RSS_under_512_proof_required=True,actual_native_RSS_under_512_obtained=False,
+        old_failed_capture_is_input_only=True,old_failed_memory_capture_is_input_only=True,
+        old_partial_capture_used_for_current_comparisons=False,
+        capture_only=True,production_solver_promoted=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+    write_new(OUT/'declaration.json',d)
+    print(json.dumps(dict(declaration=str(OUT/'declaration.json'),declaration_sha256=digest(OUT/'declaration.json')),allow_nan=False),flush=True)
+
+
+def declaration_admission(expected, require_build_interpreter=True):
+    require_ready()
+    if not re.fullmatch('[0-9a-f]{64}',expected or ''):raise ValueError('actual frozen declaration SHA256 is mandatory')
+    d=read(require(OUT/'declaration.json',expected))
+    if (d['schema']!='AXMAT_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_DECLARATION_V1' or d['total_wall_seconds']!=TOTAL_WALL
+        or d['stage_wall_seconds']!=STAGE_WALL or d['rss_cap_mib']!=RSS or d['retries']!=0 or d['threads']!=1
+        or d['numeric_children_at_once']!=1 or d['archive_reserve_bytes']!=d['private_input_copy_bytes']+2*2**30
+        or d['complete_archive_scope_roots']!=[str(SOURCE),str(OUT)]
+        or d['memory_link_inverse_original_dense_chain'] is not True
+        or d['memory_cache_peak_not_claimed_word_equal_to_original'] is not True
+        or d['original_cache_count_indices']!=[0,1,2,4]
+        or d['private_input_copy_bytes']!=517145800
+        or d['working_snapshot_contract']!=working_snapshot_contract()
+        or d['readonly_diagnostic_skips_only_current_build_interpreter_equality'] is not True
+        or d['build_run_and_scientific_audit_require_original_build_interpreter'] is not True
+        or d['only_scientific_deck_delta_is_snapshot_copy_lifetime_and_storage_medium'] is not True
+        or d['original_scientific_calls_and_parameters_literal_unchanged'] is not True
+        or d['snapshot_copy_avoids_logical_cache_co_residence'] is not True
+        or d['snapshot_file_bytes_not_claimed_RSS_saving'] is not True
+        or d['prior_RSS_failure_cause_not_claimed'] is not True
+        or d['actual_native_RSS_under_512_proof_required'] is not True
+        or d['actual_native_RSS_under_512_obtained'] is not False
+        or d['old_failed_capture_is_input_only'] is not True
+        or d['old_failed_memory_capture_is_input_only'] is not True
+        or d['old_partial_capture_used_for_current_comparisons'] is not False
+        or d['dedup_link_inverse_original_dense_chain'] is not True
+        or d['dedup_worst_reserve_before_duplicate_release_required'] is not True
+        or d['full_first_miss_lower_IEEE_dictionary_independently_derived'] is not True
+        or [item['root'] for item in d['memory_component_namespaces']]!=[str(MEMORY_SOURCE),str(MEMORY_BUILD)]
+        or [item['root'] for item in d['dedup_component_namespaces']]!=[str(DEDUP_SOURCE),str(DEDUP_BUILD)]
+        or d['original_link_command']!=d['inherited_dedup_build_admission']['production_link_command']
+        or d['actual_external_terminal_return_contract']!=terminal_contract(d['python_command'])
+        or d['artifact_budget_bytes']!=HISTORY_CAP or d['min_free_bytes']!=FREE_FLOOR
+        or d['capture_only'] is not True or any(d[key] is not False for key in (
+            'production_solver_promoted','AAA_accuracy_qualified','ABA_admitted','CE_data_used',
+            'coefficient_fitting','original_accuracy_thresholds_changed'))
+        or d['reconstruction_relative_limit']!=5e-12 or d['diagnostic_matrix_equation_limit']!=1e-10):raise ValueError('fixed diagnostic contract differs')
+    original_deck=require(d['original_deck']['path'],d['original_deck']['sha256'])
+    actual_deck,actual_inverse=file_snapshot_deck(original_deck.read_text())
+    if (d['file_snapshot_deck_inverse']!=actual_inverse
+            or d['file_snapshot_copied_deck']!=dict(path=str(OUT/'AAA/picard_axial.x2m'),sha256=actual_inverse['file_snapshot_sha256'])
+            or require(OUT/'AAA/picard_axial.x2m',actual_inverse['file_snapshot_sha256']).read_text()!=actual_deck):
+        raise ValueError('full original deck inverse/new byte pin changed')
+    environment(d, require_build_interpreter=require_build_interpreter);verify_inventory(SOURCE,d['source_inventory'])
+    for path,item in d['input_aliases'].items():
+        p=Path(path)
+        if not p.is_symlink() or os.readlink(p)!=item['text'] or str(p.resolve(strict=True))!=item['target']:
+            raise ValueError('original map012 input alias binding differs')
+        require(item['target'],item['sha256'])
+    if archive_bytes()>=d['archive_reserve_bytes']:raise ValueError('complete capture archive cap')
+    return d
+
+
+def child_admission(expected):
+    d=declaration_admission(expected);claim=read(OUT/'execution_claim.json');stages=read(OUT/'AAA/stages.json')['stages']
+    if claim['parent_pid']!=os.getppid() or claim['declaration_sha256']!=expected or not stages or stages[-1]['status']!='RUNNING' or stages[-1]['command']!=[sys.executable,*sys.argv]:raise ValueError('actual bounded parent/child/command differs')
+    resource(d['resource_roots']).check()
+    return d
+
+
+def read_stream(path,magic,header_count,arrays):
+    import numpy as np
+    with require(path).open('rb') as stream:
+        if stream.read(8)!=magic:raise ValueError('raw stream schema differs')
+        raw=stream.read(4*header_count)
+        if len(raw)!=4*header_count:raise ValueError('incomplete raw stream header')
+        header=np.frombuffer(raw,'<i4').copy();values=[]
+        for count in arrays:
+            raw=stream.read(8*count)
+            if len(raw)!=8*count:raise ValueError('incomplete actual REAL64 raw stream')
+            a=np.frombuffer(raw,'<f8').copy()
+            if not np.isfinite(a).all():raise ValueError('nonfinite raw stream words')
+            values.append(a)
+        if stream.read(1):raise ValueError('raw stream trailing bytes')
+    return header,values
+
+
+def audit_slots(capture):
+    import numpy as np
+    count=NUN*NG
+    h,arrays=read_stream(OUT/'AAA/angular_terminal_slots.bin',b'AXCTS001',4,[count]*4)
+    if h.tolist()!=[NUN,NG,3,1]:raise ValueError('actual terminal slot context differs')
+    old_outer,slot3,slot7,slot8=[a.reshape((NUN,NG),order='F') for a in arrays]
+    previous=None;rows=[]
+    for phase in (1,2,3):
+        h,a=read_stream(OUT/'AAA'/f'angular_slot7_phase{phase}.bin',b'AXCS7001',7,[count,count])
+        if h[:5].tolist()!=[phase,NUN,NG,3,1] or not 1<=h[5]<=NG+1 or h[6]!=0:raise ValueError('last original inner slot context/acceleration differs')
+        six,seven=[x.reshape((NUN,NG),order='F') for x in a]
+        if seven.tobytes()!=slot7.tobytes() or previous is not None and seven.tobytes()!=previous:raise ValueError('actual slot7 changed across terminal acceleration/promotion observations')
+        if phase==3 and (h[5]!=NG+1 or six.tobytes()!=seven.tobytes()):raise ValueError('all actual converged groups must promote terminal slot7')
+        previous=seven.tobytes()
+        if phase==1:
+            defect=abs(six[:1152]-seven[:1152]).reshape((1,NL,NZ,NR,NG),order='F')
+            scale=np.maximum(abs(seven[:1152]),abs(six[:1152])).reshape((1,NL,NZ,NR,NG),order='F')
+            np.savez(OUT/'audit/actual_inner_all_moment_defect.npz',defect=defect,scale=scale)
+        rows.append(dict(phase=phase,context=h.tolist(),actual_slot7_byte_exact=True))
+    if slot3.tobytes()!=slot7.tobytes():raise ValueError('terminal raw outer image differs from actual promoted slot7')
+    for g,group in enumerate(capture['groups']):
+        if (slot7[:,g].tobytes()!=group['returned'].tobytes() or slot3[:,g].tobytes()!=group['before_normal'].tobytes()
+            or slot8[:,g].tobytes()!=group['s2'].tobytes()):raise ValueError('last actual F2/S2 does not match original terminal slots')
+    np.savez(OUT/'audit/actual_outer_all_moment_defect.npz',defect=abs(old_outer[:1152]-slot3[:1152]),
+        scale=np.maximum(abs(old_outer[:1152]),abs(slot3[:1152])))
+    return dict(last_inner_context=[3,1],phases=rows,actual_last_F2_equals_terminal_slot7=True,
+        actual_slot7_equals_raw_slot3=True,actual_last_post_SIGS_S2_equals_slot8=True,
+        all_moment_iteration_defects_are_diagnostic_only=True,original_P0_convergence_gate_unchanged=True)
+
+
+def independent_first_miss_dictionary(g,group,rows):
+    """Only this capture's complete first-miss IEEE lower blocks determine storage."""
+    path=OUT/'AAA'/f'angular_collision_g{g:03d}.bin'
+    with path.open('rb') as stream:
+        if stream.read(8)!=b'AXCBL001':raise ValueError('complete actual first-miss collision schema required')
+        header=stream.read(32);payload=stream.read()
+    if len(header)!=32:raise ValueError('complete first-miss block header required')
+    h=struct.unpack('<8i',header);block_bytes=8*NA*NA*(NZ+1)
+    if (h[0]!=g or h[1]!=int(group['context'][5]) or h[1]<=0 or h[2]<=0 or h[3]<=0
+            or h[4:]!=(NA,NZ+1,1,0) or len(payload)!=3*block_bytes
+            or rows!=tuple(sorted(set(rows))) or not rows or any(not 1<=row<=NA for row in rows)):
+        raise ValueError('all complete first-miss49blocks must have actual group/sequence/row dimensions')
+    full=payload[:block_bytes]
+    if any(not math.isfinite(value[0]) for value in struct.iter_unpack('<d',full)):
+        raise ValueError('all original first-miss lower values must be finite')
+    first={};blocks=[];mapping=[];kept=set(rows)
+    for block in range(NZ+1):
+        packed=b''.join(full[8*((row-1)+NA*column+NA*NA*block):
+            8*((row-1)+NA*column+NA*NA*block)+8] for column in range(NA) for row in rows)
+        for column in range(NA):
+            for row in range(1,NA+1):
+                if row not in kept:
+                    pos=8*((row-1)+NA*column+NA*NA*block)
+                    if full[pos:pos+8]!=b'\0'*8:raise ValueError('omitted lower rows must retain exact unsigned zero bits')
+        if packed not in first:
+            first[packed]=len(blocks)+1;blocks.append(packed)
+        mapping.append(first[packed])
+    if not 1<=len(blocks)<=NZ+1:raise ValueError('exact dictionary count outside actual block bounds')
+    for block,which in enumerate(mapping):
+        packed=blocks[which-1]
+        for column in range(NA):
+            for ri,row in enumerate(rows):
+                pos=8*((row-1)+NA*column+NA*NA*block);source=8*(ri+len(rows)*column)
+                if full[pos:pos+8]!=packed[source:source+8]:raise ValueError('all full lower IEEE words must decode exactly')
+    row_bytes=4*len(rows);map_bytes=4*(NZ+1);dictionary_bytes=8*len(rows)*NA*len(blocks)
+    fixed=(16*NA*NA+12*NA)*(NZ+1)+row_bytes+map_bytes
+    worst=fixed+8*len(rows)*NA*(NZ+1);retained=fixed+dictionary_bytes
+    return dict(group=g,first_miss_context=list(h[1:4]),unique_count=len(blocks),blockmap=mapping,
+        full_first_miss_lower_sha256=hashlib.sha256(full).hexdigest(),
+        dictionary_sha256=hashlib.sha256(b''.join(blocks)).hexdigest(),
+        blockmap_sha256=hashlib.sha256(struct.pack('<'+str(NZ+1)+'i',*mapping)).hexdigest(),
+        full_lower_dictionary_decode_byte_exact=True,retained_rowmap_bytes=row_bytes,retained_blockmap_bytes=map_bytes,
+        dictionary_bytes=dictionary_bytes,worst_factor_reservation_bytes=worst,packed_factor_bytes=retained,
+        actual_duplicate_release_bytes=worst-retained)
+
+
+def audit_cache_events(capture,events,declaration):
+    """Derive current exact dictionary retention and worst-before-release peak.
+
+    Every first phase2 reserves all49packed blocks plus its blockmap before
+    STORE allocates unique blocks and releases duplicate value reservations.
+    Hits retain the original full32x32 decode workspace. No old partial fields
+    or prior dictionary cardinalities are consumed. This is not an RSS model.
+    """
+    import numpy as np
+    first=np.zeros((2,NG),dtype='<i4');counts=np.zeros((2,NG),dtype='<i4');latest=np.zeros((2,NG,3),dtype='<i4')
+    key_counts=[];factor_bytes=[];worst_factor_bytes=[];rowmaps=[];details=[]
+    for g,group in enumerate(capture['groups'],1):
+        a=unpack(group,int(capture['dimensions'][6]))
+        rows=tuple(int(i)+1 for i,v in enumerate(a['mu']) if float(v)>0)
+        if len(rows)!=NA//2 or not np.isfinite(a['mu']).all():raise ValueError('actual saved positive-angle row map differs')
+        lengths=[]
+        for phase in (1,2):
+            with (OUT/'AAA'/f'angular_key_p{phase}_g{g:03d}.bin').open('rb') as key_stream:
+                if key_stream.read(8)!=b'AXCKY001':raise ValueError('actual first key accounting schema differs')
+                h=np.frombuffer(key_stream.read(24),'<i4').copy();payload=key_stream.read()
+            if h.size!=6 or h[0]!=g or h[1]!=phase or h[5]<=0 or len(payload)!=8*int(h[5]):
+                raise ValueError('all actual retained raw/projected key element counts required')
+            lengths.append(int(h[5]))
+        dictionary=independent_first_miss_dictionary(g,group,rows)
+        amount=dictionary['packed_factor_bytes'];worst=dictionary['worst_factor_reservation_bytes']
+        key_counts.append(lengths);factor_bytes.append(amount);worst_factor_bytes.append(worst);rowmaps.append(rows)
+        details.append(dict(**dictionary,raw_key_element_count=lengths[0],projected_key_element_count=lengths[1],
+            actual_positive_angle_indices=list(rows),dense_lower_gross_bytes_removed=(NA-len(rows))*NA*(NZ+1)*8,
+            net_persistent_factor_storage_bytes_saved=(NA-len(rows))*NA*(NZ+1)*8-4*len(rows)
+                +dictionary['actual_duplicate_release_bytes']-dictionary['retained_blockmap_bytes']))
+    live=NG*4096;peak=live;computed_built=0;computed_reused=0;computed_hits=0;workspace=8*NA*NA
+    pending=None;previous_sequence=0
+    with (OUT/'AAA/angular_cache_events.bin').open('rb') as stream:
+        if stream.read(8)!=b'AXCKE001' or np.frombuffer(stream.read(8),'<i4').tolist()!=[NG,2]:raise ValueError('actual cache events schema differs')
+        row_count=0
+        while raw:=stream.read(32):
+            if len(raw)!=32:raise ValueError('truncated cache validation event')
+            seq,outer,inner,g,phase,nkey,hit,identical=map(int,np.frombuffer(raw,'<i4'))
+            if not(1<=g<=NG and phase in (1,2) and 1<=seq<=events['dispatches'] and outer>0 and inner>0 and nkey>0 and identical==1):raise ValueError('actual key validation event invalid')
+            i,j=phase-1,g-1
+            if hit!=int(counts[i,j]>0) or seq<=latest[i,j,0] or nkey!=key_counts[j][i]:
+                raise ValueError('actual chronological key identity/element count differs')
+            if phase==1:
+                if pending is not None or seq<previous_sequence:raise ValueError('actual raw/projected key call order differs')
+                pending=(seq,outer,inner,g,hit)
+            elif pending!=(seq,outer,inner,g,hit):
+                raise ValueError('projected identity must finish the same actual angular call')
+            bytes_key=8*nkey
+            peak=max(peak,live+bytes_key*(1 if hit else 2))
+            if not hit:
+                live+=bytes_key
+                first[i,j]=seq
+            if phase==2:
+                if hit:
+                    peak=max(peak,live+workspace)
+                    computed_hits+=1;computed_reused+=NZ+1
+                else:
+                    if details[j]['first_miss_context']!=[seq,outer,inner]:
+                        raise ValueError('first miss collision blocks must bind to this actual chronological factor build')
+                    peak=max(peak,live+worst_factor_bytes[j])
+                    if peak>536870912:raise ValueError('actual worst factor reservation must fit before duplicate release')
+                    live+=factor_bytes[j];computed_built+=NZ+1
+                pending=None;previous_sequence=seq
+            if not 0<live<=peak<=536870912:raise ValueError('independent packed allocation/reserve-before-allocate cap exceeded')
+            counts[i,j]+=1;latest[i,j]=[seq,outer,inner];row_count+=1
+    if pending is not None:raise ValueError('incomplete final projected key validation')
+    per=np.array(events['per_group_calls'])
+    if not np.array_equal(counts[0],per) or not np.array_equal(counts[1],per):raise ValueError('both raw and projected key must be validated on every actual angular call')
+    for g,group in enumerate(capture['groups']):
+        if any(not np.array_equal(latest[p,g],group['context'][1:4]) for p in (0,1)) or first[0,g]!=first[1,g] or first[1,g]!=group['context'][5]:raise ValueError('first miss/last actual field not bound to both cache keys')
+    built,reused,hits,actual_live,actual_peak,cap=map(int,capture['cache_stats'])
+    wanted=[computed_built,computed_reused,computed_hits,live,peak,536870912]
+    if [built,reused,hits,actual_live,actual_peak,cap]!=wanted or built!=NG*(NZ+1) or hits!=int(sum(per-1)) or reused!=hits*(NZ+1):
+        raise ValueError('actual terminal packed counters/live/peak must equal every chronological allocation/identity call')
+    old=declaration['original_cache_terminal']
+    if [built,reused,hits,cap]!=[old[i] for i in (0,1,2,4)]:
+        raise ValueError('actual memory-only replay must preserve original build/reuse/hit/cap counters')
+    gross=sum(d['dense_lower_gross_bytes_removed'] for d in details);map_bytes=sum(d['retained_rowmap_bytes'] for d in details)
+    blockmap_bytes=sum(d['retained_blockmap_bytes'] for d in details)
+    duplicates=sum(d['actual_duplicate_release_bytes'] for d in details)
+    if gross!=74260480 or map_bytes!=23680 or blockmap_bytes!=72520:
+        raise ValueError('actual all370 structural row/block map account differs')
+    saved=gross-map_bytes+duplicates-blockmap_bytes
+    if saved!=sum(item['net_persistent_factor_storage_bytes_saved'] for item in details):
+        raise ValueError('actual all370 exact persistent byte savings must include both maps and duplicate releases')
+    return dict(actual_key_events=row_count,all_370_first_cache_miss_blocks_bound=True,
+        every_actual_raw_and_projected_key_validation_archived=True,builtblocks=built,reusedblocks=reused,
+        validated_hits=hits,live_accounted_bytes=actual_live,peak_accounted_bytes=actual_peak,cap_bytes=cap,
+        independently_reconstructed_live_accounted_bytes=live,independently_reconstructed_peak_accounted_bytes=peak,
+        accounted_descriptor_bytes=NG*4096,actual_per_hit_full_decode_workspace_bytes=workspace,per_group_accounting=details,
+        all370_dense_lower_gross_bytes_removed=gross,all370_rowmap_bytes_added=map_bytes,
+        all370_blockmap_bytes_added=blockmap_bytes,all370_actual_duplicate_value_bytes_released=duplicates,
+        all370_actual_unique_count_histogram={str(n):sum(item['unique_count']==n for item in details) for n in range(1,NZ+2)},
+        all370_net_persistent_factor_bytes_saved=saved,all370_dictionary_decode_byte_exact=True,
+        worst_factor_reservation_peak_checked_before_duplicate_release=True,
+        no_prior_partial_dictionary_or_fields_used=True,original_build_reuse_hit_cap_word_equal=True,
+        old_peak_word_equality_required=False,accounted_bytes_are_not_measured_RSS=True)
+
+
+def independent_keys(group,a,g):
+    """Recreate both bit keys from captured primitive inputs in frozen loop order."""
+    import numpy as np
+    def f4(x):return struct.unpack('<i',np.asarray(x,dtype='<f4').tobytes())[0]
+    def f8(x):return struct.unpack('<q',np.asarray(x,dtype='<f8').tobytes())[0]
+    raw=[NR,NZ,1,len(a['total'])-1,3,1,int(a['ischm'][0]),NA,NL,int(a['lfixup'][0]),1,int(a['white_row'][0]),f8(a['white_perimeter'][0]),*map(int,a['ncode']),32,64]
+    for z in range(NZ):raw.extend([int(a['mat1d'][z]),f4(a['vol1d'][z])])
+    raw.extend(map(int,a['mat'].ravel(order='F')))
+    raw.extend(map(f4,a['total']))
+    raw.extend(map(f4,a['sgas'].ravel(order='F')))
+    raw.extend(map(f4,a['basis'].ravel(order='F')))
+    raw.extend(map(f4,a['vol2d']))
+    raw.extend(map(f8,a['radial2d'].ravel(order='F')))
+    for n in range(NA):
+        raw.extend([f4(a['mu'][n]),f4(a['w'][n])]);raw.extend(map(f4,a['pl'][:,n]))
+    raw.extend(map(f4,a['zcode']))
+    projected=[f8(float(a['zcode'][0])),f8(float(a['zcode'][1]))]
+    projected.extend(map(f8,a['weight']));projected.extend(map(f8,a['mass'].ravel(order='F')))
+    for z in range(NZ):projected.extend([f8(a['total_projected'][0,0,z]),f8(a['radial_projected'][0,0,z])])
+    projected.extend(map(f8,a['scat_projected'].ravel(order='F')))
+    for l in range(NL):
+        for n in range(NA):projected.extend([f8(a['mn'][n,l]),f8(a['dn'][l,n])])
+    projected.extend(map(f8,a['white_angle'].ravel(order='F')));projected.extend(map(f8,a['white_mode'].ravel(order='F')))
+    for phase,expected in ((1,raw),(2,projected)):
+        path=OUT/'AAA'/f'angular_key_p{phase}_g{g:03d}.bin'
+        with path.open('rb') as stream:
+            if stream.read(8)!=b'AXCKY001':raise ValueError('actual first native key schema differs')
+            h=np.frombuffer(stream.read(24),'<i4').copy();payload=stream.read()
+        if h.size!=6 or h[:3].tolist()!=[g,phase,int(group['context'][5])] or h[5]!=len(expected) or len(payload)!=8*len(expected) or payload!=np.asarray(expected,dtype='<i8').tobytes():raise ValueError('independent primitive reconstruction of actual native operator key differs')
+
+
+def stage_commands(d,expected):
+    return [*d['build_commands'],[str(OUT/'runtime/Dragon')],
+        [d['python_command'],str(Path(__file__).resolve()),'audit','--sha256',expected]]
+
+
+def stage_labels():
+    return [*[f'build/build_{i:02d}' for i in range(4)],'AAA/capture_replay','audit/audit']
+
+
+def check_watch(stage):
+    w=read((OUT/(stage['label']+'.log')).with_suffix('.watchdog.json'))
+    actual_wall=w['wall_cap_seconds'];stage_wall=stage['wall_cap_seconds']
+    if (w['returncode']!=0 or w['limit_failure'] is not None or not 0<=w['sampled_peak_rss_mib']<RSS
+        or w['command']!=stage['command'] or w['rss_cap_mib']!=RSS or not 0<actual_wall<=stage_wall<=STAGE_WALL
+        or not 0<=w['elapsed_seconds']<actual_wall or w['own_child_only'] is not True
+        or w['liveness_group_cleanup'] is not True or digest(OUT/(stage['label']+'.log'))!=stage['log_sha256']):raise ValueError('actual own-child watchdog/stage/log evidence differs')
+    return w
+
+
+def run(expected):
+    started=time.monotonic();d=declaration_admission(expected)
+    full,production,_,_=modules();guard_admission(full)
+    resources=resource(d['resource_roots']);resources.check()
+    write_new(OUT/'execution_claim.json',dict(parent_pid=os.getpid(),declaration_sha256=expected,
+        started_unix=time.time(),started_monotonic=started,retries=0))
+    remaining=TOTAL_WALL-(time.monotonic()-started)
+    if remaining<=0:raise ValueError('original whole capture budget exhausted')
+    runner=full.OwnRSSSerialExecutor(OUT,remaining,'AAA',resources)
+    result=dict(classification='FAILED_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_NO_RETRY',error=None,
+        capture_only=True,production_solver_promoted=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+    try:
+        for i,command in enumerate(d['build_commands']):
+            environment(d);runner.execute(OUT/'build',f'build_{i:02d}',command,STAGE_WALL)
+        write_new(OUT/'runtime/build_identity.json',dict(files={str(p.relative_to(OUT)):digest(p) for p in
+            [OUT/'runtime/Dragon',*sorted((OUT/'build').glob('*.o')),*sorted((OUT/'build').glob('*.mod'))]},
+            sole_private_overrides=['SPOT1P64.o','FLU2DR64.o'],all_other_original_link_inputs_unchanged=True,
+            source_proofs=d['source_inventory']))
+        try:
+            environment(d);working_snapshot_admission(d,require_absent=True)
+            runner.execute(OUT/'AAA','capture_replay',[str(OUT/'runtime/Dragon')],STAGE_WALL,
+                'AXMAT-PICARD-AXIAL-COMPLETE',deck='picard_axial.x2m')
+        finally:
+            captured=sorted((OUT/'AAA').glob('angular*.bin'))
+            write_new(OUT/'raw_capture_receipt.json',dict(files={str(p.relative_to(OUT)):digest(p) for p in captured},
+                original_output_files={name:digest(OUT/'AAA'/name) for name in ('candidate_axial.xsm','candidate_snapshots.xsm') if (OUT/'AAA'/name).is_file()},
+                raw_capture_count=len(captured),working_snapshot=working_snapshot_raw_receipt(d),
+                before_numeric_gates=True,selection='Every group chronological last actual call; first miss blocks and every operator key validation'))
+        if len(captured)!=6*NG+8:raise ValueError('complete raw angular/source/key/slot/block archive count differs')
+        runner.execute(OUT/'audit','audit',stage_commands(d,expected)[-1],STAGE_WALL,'AXMAT-RANK1-MEMORY-DEDUP-FILE-SNAPSHOT-NATIVE-ANGULAR-CAPTURE-AUDITED')
+        stages=read(OUT/'AAA/stages.json')['stages']
+        if len(stages)!=6 or [s['label'] for s in stages]!=stage_labels() or [s['command'] for s in stages]!=stage_commands(d,expected) or any(s['status']!='PASS' for s in stages):raise ValueError('exact six original capture stages must pass once')
+        audit_result=read(OUT/'audit/result.json')
+        if audit_result['classification']!='COMPLETE_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_ONLY' or any(not row['original_1e10_diagnostic_gate_passed'] for row in audit_result['groups']):raise ValueError('original capture diagnostic equation gate failed')
+        result.update(classification='COMPLETE_BOUNDED_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_ONLY',watchdogs=[check_watch(s) for s in stages],
+            original_map012_scientific_records_word_exact=True,complete_all_370_actual_terminal_fields=True)
+    except BaseException as error:
+        result['error']=repr(error);raise
+    finally:
+        try:
+            environment(d);verify_inventory(SOURCE,d['source_inventory']);snapshot=resources.check()
+            retained=archive_bytes();elapsed=time.monotonic()-started
+            if retained>=d['archive_reserve_bytes'] or elapsed>=TOTAL_WALL:raise ValueError('original whole capture/archive budget exceeded')
+            result.update(elapsed_seconds=elapsed,archive_bytes_before_closeout=retained,resources=snapshot,
+                complete_archive_scope_roots=[str(SOURCE),str(OUT)])
+        except BaseException as error:
+            result.update(classification='FAILED_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_NO_RETRY',error=repr(error),elapsed_seconds=time.monotonic()-started)
+            write_new(OUT/'driver_result.json',result);raise
+        write_new(OUT/'driver_result.json',result)
+    complete_inventory=inventory(OUT)
+    write_new(OUT/'seal.json',dict(schema='AXMAT_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_SEAL_V1',**complete_inventory))
+    try:
+        snapshot=resources.check();retained=archive_bytes();elapsed=time.monotonic()-started
+        if elapsed>=TOTAL_WALL or retained>=d['archive_reserve_bytes']:raise ValueError('mandatory complete post-seal tail failed')
+    except BaseException as error:
+        write_new(OUT/'closeout_failure.json',dict(error=repr(error),complete=False,AAA_accuracy_qualified=False,ABA_admitted=False));raise
+    print(json.dumps(dict(result=result,actual_tail_check='PASS',actual_elapsed_seconds=elapsed,
+        actual_archive_bytes=retained,actual_resources=snapshot),allow_nan=False),flush=True)
+
+
+def strict_terminal_json(path):
+    def pairs(items):
+        result={}
+        for key,value in items:
+            if key in result:raise ValueError('duplicate terminal JSON key')
+            result[key]=value
+        return result
+    return json.loads(require(path).read_text(),object_pairs_hook=pairs,
+        parse_constant=lambda value:(_ for _ in ()).throw(ValueError('nonfinite terminal JSON')))
+
+
+def terminal_file(path,sha):
+    path=Path(path)
+    normal_path(path)
+    if path.parent!=TERMINAL or path.is_symlink() or path.resolve(strict=True)!=path or not stat.S_ISREG(path.stat().st_mode):raise ValueError('real independent terminal regular file required')
+    require(path,sha);return path
+
+
+def external_terminal(d,seal_sha,result,path,sha):
+    receipt=terminal_file(path,sha)
+    if receipt!=TERMINAL/'terminal_return.json':raise ValueError('fixed Root terminal receipt required')
+    e=strict_terminal_json(receipt);decl_sha=digest(OUT/'declaration.json')
+    command=[d['python_command'],str(Path(__file__).resolve()),'run','--sha256',decl_sha]
+    if (e['schema']!=TERMINAL_SCHEMA or e['record_producer']!='root' or e['actual_tool_terminal_return_observed'] is not True
+        or e['record_written_after_actual_terminal_return'] is not True or type(e['returncode']) is not int or e['returncode']!=0
+        or e['command']!=command or e['source']!=pin(Path(__file__).resolve())
+        or d['files'][str(Path(__file__).resolve())]!=e['source']['sha256']
+        or e['declaration']!=dict(path=str(OUT/'declaration.json'),sha256=decl_sha)
+        or e['capture_seal']!=dict(path=str(OUT/'seal.json'),sha256=seal_sha)):raise ValueError('actual Root exit-zero/source/declaration/seal chain differs')
+    stdout=terminal_file(e['full_stdout']['path'],e['full_stdout']['sha256'])
+    if stdout==receipt or e['full_stdout']!=pin(stdout):raise ValueError('complete separately retained stdout required')
+    stderr=terminal_file(e['full_stderr']['path'],e['full_stderr']['sha256'])
+    if stderr in (receipt,stdout) or e['full_stderr']!=pin(stderr):raise ValueError('complete separately retained stderr required')
+    returned=strict_terminal_json(stdout);tail={key:returned[key] for key in TAIL_FIELDS}
+    if returned!=dict(result=result,**tail) or any(e[key]!=tail[key] for key in TAIL_FIELDS):raise ValueError('actual full stdout and sealed result/four tails differ')
+    elapsed,size,s=tail['actual_elapsed_seconds'],tail['actual_archive_bytes'],tail['actual_resources']
+    if (tail['actual_tail_check']!='PASS' or type(elapsed) not in (int,float) or not math.isfinite(elapsed)
+        or not result['elapsed_seconds']<=elapsed<TOTAL_WALL or type(size) is not int or size!=archive_bytes()
+        or not 0<size<d['archive_reserve_bytes'] or s['artifact_budget_bytes']!=HISTORY_CAP or s['min_free_bytes']!=FREE_FLOOR
+        or s['resource_scope_contract']!=d['resource_scope_contract'] or s['resource_scope_policy']!=d['resource_scope_policy']
+        or s['declared_resource_roots']!=d['resource_roots'] or not set(d['resource_roots']).issubset(s['resource_roots'])
+        or not size<=s['artifact_bytes']<=HISTORY_CAP or s['disk_free_bytes']<FREE_FLOOR):raise ValueError('actual complete terminal resource/wall/archive gates failed')
+    builder().validate_history_roots(s['resource_roots'],ART)
+    return dict(receipt=pin(receipt),full_stdout=pin(stdout),full_stderr=pin(stderr),command=command,schema=TERMINAL_SCHEMA,**tail)
+
+
+def diagnostic_admission(seal_sha,terminal_evidence,terminal_evidence_sha256):
+    require_ready()
+    if not re.fullmatch('[0-9a-f]{64}',seal_sha or '') or not re.fullmatch('[0-9a-f]{64}',terminal_evidence_sha256 or ''):
+        raise ValueError('actual capture seal and independent Root receipt hashes are mandatory')
+    seal=read(require(OUT/'seal.json',seal_sha))
+    if seal['schema']!='AXMAT_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_SEAL_V1':raise ValueError('new capture seal required')
+    actual_inventory=inventory(OUT);actual=actual_inventory['files']
+    if actual_inventory['directories']!=seal['directories'] or actual_inventory['symlinks']!=seal['symlinks']:
+        raise ValueError('complete sealed directory/alias namespace differs')
+    if set(actual)!=set(seal['files'])|{'seal.json'} or any(actual[name]!=sha for name,sha in seal['files'].items()):raise ValueError('complete raw capture/ledger/watch/output namespace differs')
+    d=declaration_admission(digest(OUT/'declaration.json'), require_build_interpreter=False);resource(d['resource_roots']).check()
+    result=read(OUT/'driver_result.json');audit_result=read(OUT/'audit/result.json');stages=read(OUT/'AAA/stages.json')['stages']
+    if (result['classification']!='COMPLETE_BOUNDED_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_ONLY' or result['error'] is not None
+        or len(stages)!=6 or [s['label'] for s in stages]!=stage_labels() or any(s['status']!='PASS' for s in stages)
+        or [s['command'] for s in stages]!=stage_commands(d,digest(OUT/'declaration.json'))
+        or audit_result['classification']!='COMPLETE_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_ONLY'
+        or len(audit_result['groups'])!=NG or any(not row['original_1e10_diagnostic_gate_passed'] for row in audit_result['groups'])
+        or any(result[key] is not False or audit_result[key] is not False for key in ('AAA_accuracy_qualified','ABA_admitted','production_solver_promoted'))):raise ValueError('only actual complete diagnostic result may be admitted')
+    for s in stages:check_watch(s)
+    raw=read(OUT/'raw_capture_receipt.json')
+    if raw['raw_capture_count']!=6*NG+8 or raw['before_numeric_gates'] is not True:raise ValueError('all raw operands retained before gates required')
+    verify({str(OUT/name):sha for name,sha in raw['files'].items()})
+    working_snapshot_admission(d,require_present=True)
+    if raw['working_snapshot']!=working_snapshot_raw_receipt(d):raise ValueError('sealed complete working XSM receipt differs')
+    proof=external_terminal(d,seal_sha,result,terminal_evidence,terminal_evidence_sha256)
+    return dict(schema='AXMAT_RANK1_MEMORY_DEDUP_FILE_SNAPSHOT_NATIVE_ANGULAR_CAPTURE_INPUT_ADMISSION_V1',admission='CURRENT_MAP012_NATIVE_ANGULAR_DIAGNOSTIC_ONLY',
+        capture_seal=pin(OUT/'seal.json'),declaration=pin(OUT/'declaration.json'),source=pin(Path(__file__).resolve()),
+        actual_external_terminal_evidence=dict(path=str(terminal_evidence),sha256=terminal_evidence_sha256),
+        actual_external_terminal_validation=proof,inherited_current_build_admission=d['inherited_current_build_admission'],
+        inherited_memory_build_admission=d['inherited_memory_build_admission'],
+        inherited_dedup_build_admission=d['inherited_dedup_build_admission'],
+        actual_native_RSS_under_512_guard_passed=True,scientific_qualification=False,
+        working_snapshot=raw['working_snapshot'],working_snapshot_storage='XSM_FILE',
+        readonly_consumer_current_interpreter_equality_not_required=True,
+        complete_parent_admissions_returned_without_filtering=True,
+        capture_only=True,AAA_accuracy_qualified=False,ABA_admitted=False,production_solver_promoted=False)
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action',choices=('prepare','run','audit','admit-diagnostic'))
+    parser.add_argument('--sha256');parser.add_argument('--memory-build-seal-sha256')
+    parser.add_argument('--memory-build-terminal-evidence');parser.add_argument('--memory-build-terminal-evidence-sha256')
+    parser.add_argument('--capture-seal-sha256');parser.add_argument('--terminal-evidence');parser.add_argument('--terminal-evidence-sha256')
+    parser.add_argument('--dedup-build-seal-sha256');parser.add_argument('--dedup-build-terminal-evidence')
+    parser.add_argument('--dedup-build-terminal-evidence-sha256')
+    a=parser.parse_args();require_ready()
+    if a.action=='prepare':prepare(a.memory_build_seal_sha256,a.memory_build_terminal_evidence,a.memory_build_terminal_evidence_sha256,
+        a.dedup_build_seal_sha256,a.dedup_build_terminal_evidence,a.dedup_build_terminal_evidence_sha256)
+    elif a.action=='run':run(a.sha256)
+    elif a.action=='audit':audit(a.sha256)
+    else:print(json.dumps(diagnostic_admission(a.capture_seal_sha256,a.terminal_evidence,a.terminal_evidence_sha256),allow_nan=False),flush=True)

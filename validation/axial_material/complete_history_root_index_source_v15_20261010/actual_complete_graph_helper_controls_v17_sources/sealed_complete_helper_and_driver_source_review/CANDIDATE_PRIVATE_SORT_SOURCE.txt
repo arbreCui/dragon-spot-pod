@@ -1,0 +1,32 @@
+def _sort_new_owned_graph_json_in_place(value):
+    """Normalize only private new JSON; retain the original clone semantics.
+
+    Builtin dictionaries/lists stay in place. Foreign keys, containers and
+    scalars use the original corresponding JSON clone, including the JSON
+    encoder's underlying text for str subclasses with overridden __str__.
+    Caller containers are never passed here: the producer owns all mutable
+    graph fields, and any borrowed caller strings are immutable scalars.
+    """
+    kind = type(value)
+    if kind is dict and all(type(key) is str for key in value):
+        entries = [(key, value[key]) for key in sorted(value)]
+        value.clear()
+        for key, part in entries:
+            value[key] = _sort_new_owned_graph_json_in_place(part)
+        return value
+    if kind is list:
+        for index, part in enumerate(value):
+            value[index] = _sort_new_owned_graph_json_in_place(part)
+        return value
+    if kind in (str, bool, type(None)):
+        return value
+    if kind in (int, float):
+        try:
+            if kind is int:
+                str(value)  # original JSON decimal conversion limit
+            elif not math.isfinite(value):
+                raise ValueError("nonfinite JSON value")
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise InputGraphError("snapshot/descriptors must be finite JSON data") from exc
+        return value
+    return _json_clone(value)

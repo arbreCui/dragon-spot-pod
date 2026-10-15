@@ -1,0 +1,38 @@
+SPOT 已完成 A 的14个早期提取临时文件回收（2026-10-15）
+
+结果：精确回收7组早期SQL索引/原值字节池，共14个文件，149,659,264字节。仅退役已被当前A完整字段核验消费完毕的派生临时产物，不声明其彼此字节重复。
+最终55快照的SQL与字节池、7份原始观察器XSM、原始A材料XSM、55个上下文、43份旧结果与5份新完整JSONL结果均保留。
+
+实际与独立核验
+修正版只读：5e92f5 / session90508 → c0ba8e，原整数0，未删除。
+唯一实际删除：340544 / session39138 → 92150e，原整数0，require_escalated；没有重试。
+独立后验：63ede6，原整数0；PASS_ACTUAL_EXACT14_COMPLETED_A_DERIVED_SPOOL_RETIREMENT_149659264B_METADATA_ONLY。
+Root凭证复核通过；14个目标路径双次确认缺席，6016个保留文件身份角色和全部结果身份通过双次核验。
+删除前逐文件完整SHA检查；占用检查返回1且输出与错误为空；逐目录文件描述符操作，紧接删除前再核原文件身份。没有读SQL数值或科学数组。
+
+资源记录
+删除后强制调用两类原资源扫描，实际记录时间均在最终删除后；原限制保持不变。
+完整64目录字节：删除前1,846,442,553，删除后1,699,370,727；两次之间生成的回执也计入累计目录，因此不把该净差直接当删除字节数。
+完整历史字节：79,264,897,425 → 79,115,238,161，差149,659,264，与14个原文件长度一致。
+外部元数据8,814,832字节；本进程已删除但仍打开字节0。SELF峰值99,368,960字节，5次同PID进程内存采样；原512MiB/600秒/1800秒/单线程/单子进程/无重试限制保持。
+
+首次失败保留
+v1只读真实4a4090返回1，FAILED_BEFORE_UNLINK、释放0字节；14目标当时仍在。原因是把只读系统工具/bin/ps与/usr/sbin/lsof的UID0按用户自有待删除文件处理。
+v2仅为这两个精确固定凭证增加只读元数据角色准入；待删除目标的用户所有权、原文件身份、SHA、无别名、无占用和目录操作保护不变。独立失败事实核验319f64返回0，原失败及全部原文件保留。
+
+未来使用规则
+历史5937输入完整表与摘要不改。实际仍存活的历史角色由5934变为5920，仅依据精确14文件退役回执、真实返回0、独立后验0和缺席检查作角色投影。
+旧八快照消费者不得继续收到已退役SQL/池路径作为当前输入。需要重放时应从保留的原始XSM重新提取并独立准入，不假定新SQLite字节与旧文件完全相同。
+
+结果入口
+current_A_early14_extract_spool_retirement_source_v2/EXECUTION_RECEIPT.json
+SHA256 aea63a103f2e214c7b880ff1305f1df5d22d87327b402a8b248da9bd94db19c7
+current_A_early14_extract_spool_retirement_source_v2/ROOT_EXECUTION_TRUE_TOOL_RETURNS.json
+SHA256 8444f63c11c1d341301c1438b6ffbeb532ea80efdba82f57b20ae4903bd68029
+current_A_early14_extract_spool_retirement_source_v2/actual_postverify_20261015/REVIEW.json
+SHA256 abd043720ae2df02e2a8bd31b9a68ea12d233358542c181ba8a6e9c7635c4b6a
+current_A_early14_extract_spool_retirement_source_v2/actual_postverify_20261015/TRUE_TOOL_RETURNS.json
+SHA256 d9eac727b48d82f508df9b0baa333cfdf4c8c528c076683efe92da26264ce411
+
+此前3个ASCII导出已释放346,861,973字节，本次不重复计入。接下来做48份完整结果的无损归档与解压逐字节校验，再执行独立B观察器构建、捕获及字段核验。
+本次为文件生命周期操作，物理/参考/AAA/ABA/目标完成资格均不提升。

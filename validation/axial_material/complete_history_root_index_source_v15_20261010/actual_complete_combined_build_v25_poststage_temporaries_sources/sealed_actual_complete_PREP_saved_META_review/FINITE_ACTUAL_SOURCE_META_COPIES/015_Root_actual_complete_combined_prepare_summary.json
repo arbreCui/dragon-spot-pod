@@ -1,0 +1,146 @@
+{
+  "schema": "ROOT_V25_ACTUAL_COMPLETE_COMBINED_PREPARE_SUMMARY_V1",
+  "status": "ACTUAL_COMPLETE_PREPARE_EXIT0_CLOSED_ONLY_NOT_COMPLETE_BUILD",
+  "actual_root_terminal": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_poststage_temporaries_receipts/Root_actual_prepare_tool_terminal_return.json",
+    "sha256": "725ce7a9b4b06d12aa73933ffbd916e395b69ceb172dddb8b615ad943f98f82e",
+    "identity": [
+      16777229,
+      49488923,
+      33188,
+      1,
+      2385,
+      1791638637410832006,
+      1791638637410832006
+    ]
+  },
+  "actual_host_result": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-complete-combined-prepare-host-v25-poststage-temporaries-20261010/result.json",
+    "sha256": "acad3379cfc6be2523b751b41daa635b8c8441fcb563b0295617faca98489160",
+    "identity": [
+      16777229,
+      49488699,
+      33188,
+      1,
+      561992,
+      1791638451171285534,
+      1791638451171285534
+    ]
+  },
+  "formal_PREP_terminal": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-sender-window-root-index-graph-trace-table-combined-terminal-v25-poststage-temporaries-20261010/declaration_terminal_return.json",
+    "sha256": "4629d056ae0393de5d230666c4ad4f68a62f60441192a1db7b0ed6c8ae685031",
+    "identity": [
+      16777229,
+      49488930,
+      33188,
+      1,
+      7814,
+      1791638637504548870,
+      1791638637504548870
+    ]
+  },
+  "actual_declaration": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-sender-window-root-index-graph-trace-table-combined-runtime-v25-poststage-temporaries-20261010/declaration.json",
+    "sha256": "09491f1c6173903721e91368ef47bdd18128a7dd483b9abc08dbdb423e29572f",
+    "identity": [
+      16777229,
+      49488696,
+      33188,
+      1,
+      8727449,
+      1791638450308196075,
+      1791638450308196075
+    ]
+  },
+  "actual_input_graph": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-sender-window-root-index-graph-trace-table-combined-runtime-v25-poststage-temporaries-20261010/input_graph.json",
+    "sha256": "3fc4ceec19afbabe6c8b1a1f86e8c71202d4ddd06c7e038cd57c2a8b45c265d3",
+    "identity": [
+      16777229,
+      49488690,
+      33188,
+      1,
+      45820548,
+      1791638447776820472,
+      1791638447776820472
+    ]
+  },
+  "all_source_files_verified_count": 11,
+  "all_original_pinned_inputs_unchanged_count": 306,
+  "whole_seconds": 203.68056645896286,
+  "child_seconds": 202.5237709170906,
+  "sampled_peak_rss_mib": 470.28125,
+  "whole_wall_cap_seconds": 1800,
+  "stage_wall_cap_seconds": 600,
+  "rss_mib": 512,
+  "joint_archive_bytes": 161214317,
+  "joint_archive_cap_bytes": 2147483648,
+  "history_cap_bytes": 103079215104,
+  "free_floor_bytes": 8589934592,
+  "threads": 1,
+  "children": 1,
+  "retries": 0,
+  "new_five_stage_build_executed": false,
+  "whole_combined_INPUT_admitted": false,
+  "new_native_transport_executed": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false,
+  "Root_actual_terminal": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_poststage_temporaries_receipts/Root_actual_prepare_tool_terminal_return.json",
+    "sha256": "725ce7a9b4b06d12aa73933ffbd916e395b69ceb172dddb8b615ad943f98f82e",
+    "identity": [
+      16777229,
+      49488923,
+      33188,
+      1,
+      2385,
+      1791638637410832006,
+      1791638637410832006
+    ]
+  },
+  "actual_complete_input_graph": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-sender-window-root-index-graph-trace-table-combined-runtime-v25-poststage-temporaries-20261010/input_graph.json",
+    "sha256": "3fc4ceec19afbabe6c8b1a1f86e8c71202d4ddd06c7e038cd57c2a8b45c265d3",
+    "identity": [
+      16777229,
+      49488690,
+      33188,
+      1,
+      45820548,
+      1791638447776820472,
+      1791638447776820472
+    ]
+  },
+  "actual_complete_creation_trace": {
+    "path": "/Users/wen/spot/validation/artifacts/axial-material-sender-window-root-index-graph-trace-table-combined-runtime-v25-poststage-temporaries-20261010/input_creation_python_open_trace.json",
+    "sha256": "ac36d3c02da3ca0dd903ee09446f450f433b591adddea6457236a76553861a5b",
+    "identity": [
+      16777229,
+      49488664,
+      33188,
+      1,
+      42759465,
+      1791638413375705555,
+      1791638413375705555
+    ]
+  },
+  "namespace_manifest": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_poststage_temporaries_receipts/Root_actual_complete_prepare_namespace_manifest.json",
+    "sha256": "9e457bc9039053735f72fdc5b8dff52f5ed69b8e8728aeda458c57eb803163d8",
+    "identity": [
+      16777229,
+      49488931,
+      33188,
+      1,
+      409076,
+      1791638637584280199,
+      1791638637584280199
+    ]
+  },
+  "original_caps_preserved": true,
+  "original_five_build_stages_executed": false,
+  "native_RSS_qualified": false,
+  "cleanup_performed": false
+}

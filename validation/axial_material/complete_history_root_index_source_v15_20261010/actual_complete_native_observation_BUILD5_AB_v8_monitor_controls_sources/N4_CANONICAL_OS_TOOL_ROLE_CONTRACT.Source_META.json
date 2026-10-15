@@ -1,0 +1,23 @@
+{
+  "schema": "N4_CANONICAL_OS_TOOL_ROLE_LIMITED_POSITIVE_NLINK_SOURCE_CONTRACT_V1",
+  "source_only": true,
+  "canonical_OS_tool_paths": {
+    "fortran": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15",
+    "c": "/usr/bin/gcc",
+    "cpp": "/usr/bin/cpp",
+    "ar": "/usr/bin/ar",
+    "lsof": "/usr/sbin/lsof",
+    "ps": "/bin/ps"
+  },
+  "explicit_tool_role_required": true,
+  "default_nlink": 1,
+  "allowed_tool_nlink": "exact int >=1, complete actual 7ID never rewritten",
+  "same_original_calls_paths_basename_flags": true,
+  "namespace_tree_and_joint_hardlink_prohibition_unchanged": true,
+  "new_original129_new_library_or_deck_generation": false,
+  "actual_independent_N4_Source_review": null,
+  "actual_Root_N4_Source_admission": null,
+  "actual_Root_N4_runtime_terminal": null,
+  "actual_tool_controls_execution": null,
+  "scientific_qualification_created": false
+}

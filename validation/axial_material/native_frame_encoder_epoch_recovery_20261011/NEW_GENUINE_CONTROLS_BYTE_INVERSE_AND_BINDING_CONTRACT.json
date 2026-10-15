@@ -1,0 +1,239 @@
+{
+  "schema": "EXACT_CURRENT_CONTROL_BINDING_REQUIREMENTS_EXTRACTED_FROM_UNCHANGED_SOURCE_V1",
+  "source_only": true,
+  "control_entry_Source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/native_frame_encoder_epoch_recovery_20261011/new_genuine_controls.py",
+    "size_bytes": 45471,
+    "sha256": "05adf2836e260c56e5ab2b39ee146eae1e1c2082b1a7843f0a59f7f191c5ffe6",
+    "identity": [
+      16777234,
+      49744439,
+      33188,
+      1,
+      45471,
+      1791725985921727423,
+      1791725985921727423
+    ]
+  },
+  "adapter_Source_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/native_frame_encoder_epoch_recovery_20261011/fresh_frame_observation_adapter.py",
+    "size_bytes": 118680,
+    "sha256": "70d2a5abb8379e825d186b933ac4a55c7434b90984f9ca89c23dc442c8e857af",
+    "identity": [
+      16777234,
+      49743583,
+      33188,
+      1,
+      118680,
+      1791725479122316458,
+      1791725479122316458
+    ]
+  },
+  "binding_schema": "ROOT_FRESH_FRAME_MONITOR_CONTROLS_SOURCE_BINDING_V1",
+  "policy": "FRESH_COMPLETE_CURRENT_CENSUS_TOTAL_2S_V1",
+  "original_caps": {
+    "whole_seconds": 1800,
+    "stage_seconds": 600,
+    "rss_mib": 512,
+    "joint_archive_bytes": 2147483648,
+    "history_bytes": 103079215104,
+    "free_floor_bytes": 8589934592,
+    "threads": 1,
+    "children_at_once": 1,
+    "retries": 0
+  },
+  "actual_control_execution": null,
+  "old_controls_qualification_inherited": false,
+  "original_N9_controls_Source_binding_historical_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources/Root_actual_N8_monitor_controls_Source_binding.json",
+    "sha256": "4db8beb550fec97ba40291c29e485cb80f8ae00ce6e13071109f82c01451f040",
+    "size_bytes": 26171,
+    "identity": [
+      16777229,
+      49543451,
+      33188,
+      1,
+      26171,
+      1791661398817254821,
+      1791661398817254821
+    ]
+  },
+  "original_N9_controls_Source_binding_current_file_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v9_link_count_monitor_controls_sources/Root_actual_N8_monitor_controls_Source_binding.json",
+    "size_bytes": 26171,
+    "sha256": "4db8beb550fec97ba40291c29e485cb80f8ae00ce6e13071109f82c01451f040",
+    "identity": [
+      16777234,
+      49543451,
+      33188,
+      1,
+      26171,
+      1791661398817254821,
+      1791661398817254821
+    ]
+  },
+  "currently_missing_author_Source_roles": [
+    "qualified_source_manifest",
+    "host_template",
+    "runtime_template",
+    "binder",
+    "postclose_writer",
+    "native_Source_archive",
+    "native_Source_index",
+    "observer_module",
+    "context_extractor",
+    "original_complete_native_walker",
+    "original_material_seed_contract",
+    "material_blueprint_Source",
+    "request_preparer",
+    "legacy_context_old_XSM_extractor",
+    "owner_scope_helper",
+    "monitor_controls_gate",
+    "monitor_controls_protocol",
+    "monitor_control_driver",
+    "monitor_control_child_Source",
+    "monitor_control_Source_binder",
+    "monitor_controls_postclose_qualifier"
+  ],
+  "required_actual_author_Source_contract_roles": [
+    "qualified_source_manifest",
+    "host_template",
+    "runtime_template",
+    "binder",
+    "postclose_writer",
+    "native_Source_archive",
+    "native_Source_index",
+    "observer_module",
+    "context_extractor",
+    "original_complete_native_walker",
+    "original_material_seed_contract",
+    "material_blueprint_Source",
+    "request_preparer",
+    "legacy_context_old_XSM_extractor",
+    "owner_scope_helper",
+    "monitor_controls_gate",
+    "monitor_controls_protocol",
+    "monitor_control_driver",
+    "monitor_control_child_Source",
+    "monitor_control_Source_binder",
+    "monitor_controls_postclose_qualifier"
+  ],
+  "required_current_pins": [
+    "adapter_Source_pin",
+    "control_entry_Source_pin",
+    "original_N9_controls_Source_binding_pin",
+    "owner_helper_Source_pin",
+    "actual_stdlib_subprocess_Source_pin",
+    "tool_pins"
+  ],
+  "original_source_binding_contract_checks": "All author Source owners full EOF current; owner helper equals base author.owner_scope_helper; stdlib/tool pins equal newly current Source binding. Old identities are historical only.",
+  "review_schema": "INDEPENDENT_FRESH_FRAME_MONITOR_CONTROLS_SOURCE_PRELAUNCH_REVIEW_V1",
+  "required_review": {
+    "source_only": true,
+    "all_checks_passed": true,
+    "blockers": [],
+    "new_Source_binding_pin": "exact final current binding full pin",
+    "adapter_Source_pin": "exact current adapter pin",
+    "control_entry_Source_pin": "exact actual entry pin"
+  },
+  "CLI": [
+    "--binding",
+    "ACTUAL_CURRENT_BINDING_PATH",
+    "--binding-sha256",
+    "ACTUAL_CURRENT_BINDING_SHA256",
+    "--independent-prelaunch-review",
+    "ACTUAL_NEW_CURRENT_REVIEW_PATH",
+    "--case",
+    "ONE_CASE_IN_ORDER"
+  ],
+  "case_execution_order": [
+    "closed-before-first",
+    "exit7",
+    "transient",
+    "unlinked-duplicates",
+    "escaped",
+    "echild",
+    "unobserved-cache",
+    "deadline",
+    "persistent-topology",
+    "journal-failure"
+  ],
+  "proposed_fresh_case_namespaces": {
+    "closed-before-first": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-closed-before-first-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-closed-before-first-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-closed-before-first-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "exit7": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-exit7-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-exit7-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-exit7-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "transient": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-transient-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-transient-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-transient-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "unlinked-duplicates": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-unlinked-duplicates-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-unlinked-duplicates-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-unlinked-duplicates-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "escaped": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-escaped-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-escaped-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-escaped-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "echild": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-echild-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-echild-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-echild-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "unobserved-cache": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-unobserved-cache-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-unobserved-cache-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-unobserved-cache-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "deadline": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-deadline-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-deadline-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-deadline-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "persistent-topology": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-persistent-topology-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-persistent-topology-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-persistent-topology-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    },
+    "journal-failure": {
+      "host": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-journal-failure-20261011-host",
+      "output": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-journal-failure-20261011-output",
+      "control": "/Users/wen/spot/validation/artifacts/axial-material-frame-encoder-epoch-recovery-journal-failure-20261011-control",
+      "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_sources_20261011",
+      "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_native_frame_encoder_epoch_recovery_controls_receipts_20261011"
+    }
+  },
+  "all_actual_cases_serial": true,
+  "no_namespace_literals_in_control_Source": true,
+  "namespace_changes_are_binding_data_only": true,
+  "actual_binding_created": false,
+  "actual_prelaunch_review_created": false,
+  "actual_control_execution_started": false
+}

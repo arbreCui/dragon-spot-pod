@@ -1,0 +1,25 @@
+当前150cm A/B真实反应多重性/TRANC：新增有限SOURCE/META确定合同
+
+本包只读24个有限Source/既有小型META，完整EOF/SHA7ID before/after；实际7852b7整数0已关闭，253项检查。没有解析原材料XSM/ASCII、ENDF/GNDF、任何raw数值数组；没有执行candidate/native/helper/API/guard、输运或poll Root构建。没有修改项目、原包或ART。完整Source正文与exact matching lines均保存。当前Root构建状态不在本包范围。
+
+先承接原结论，避免重复授信
+已有149项布局证据、4752项raw保存证据、原12通道MT与MF3/MF6来源结论及保存源相位证据不重复认证。全370群、8区、3矩、32裂变组件、19619 macro记录仍是当前A/B范围；未来AAA三物理区把8区映射为24mixture，不能混淆两种owner范围。原AAA7/8、nu-fission3.9525%>3%及ABA未准入不变。新persisted XSM逐位checker尚未实际运行；原始内存位、编译链和物理资格均不由Source推断。
+
+这次新增的确定来源事实
+material_inputs.py:122、140–141为CTRA APOL ANIS3及TONE TRAN PIJ。TONE.f:199默认KSPH=1，246–247的PIJ仅改IPHASE=2；TRAN仅选择已有ITRANC。这不证明实际SPH分支发生，TONDRV.f:355、391的KSPH/NBNRS条件仍需实际来源证明。
+LIBLIC.f:243调用LIBADD。LIBADD.f:144–194中APOL初始TRANC先可加入NTOT0−NTOT1，再加入经XDRLGS取得的原P1 production-transfer列和；源码明确TRANC可能同时含transport和leakage修正，不能叫吸收。CTRA APOL不是数据意义上'把全部散射转换成事件截面'。
+若实际TONSPH→TONCMI分支触发，TONCMI.f:173–216对相同存储采用不同规则。令h_g为实际SPH因子，S^l_(d<-g)为该同位素的完整原矩阵：TRANC'_g=TRANC_g/h_g；NUSIGF与普通named event edits乘h_g；NTOT0/NTOT1保持；P0/P2非对角项S'=h_g*S，对角项再加NTOT0_g*(1-h_g)；P1非对角项S'=S/h_d，对角项再加NTOT1_g*(1-1/h_g)。这些是Source条件式，不是本包实际数值观察。高阶Legendre矩可以有符号，不能强迫为非负反应率。
+由上述even-moment公式可推导（暂不计分步REAL32舍入）T_g−sum_d S'^0_(d<-g)=h_g*[T_g−sum_d S^0_(d<-g)]。这只是处理后的净账目恒等关系，没有给出真实吸收或实际h。TRANC则除h，最终TRANC不能无条件强迫等于最终NTOT0−NTOT1+SIGS01。TONCMI对P0 SIGS还保留独立vector更新，P1/P2 SIGS从DSUM更新，禁止以expanded scatter列和覆盖原SIGS00。
+TONDRV.f:349、401重新调用LIBMIX；LIBMIX.f:128→LIBDEN。LIBDEN.f:547–550、651–659逐实际isotope密度聚合已保存TRANC，不从最终P1重新计算；1010–1011把任何非零transport convention以macro flag2保存。每个最终named extra edit也按实际alias/mix/density聚合（918–965），SCAT/SIGS/SIGW各自保留生产规则（320–458）。原有限META显示62 isotope slots、18 declared extra edits，不能只留12已命名反应或把missing设0。TIMESPER/NORD/NXSPER/MASK/MASKL等存在时必须按真实分支处理，不能套统一简化权重。
+ASMDRV.f:223–242在实际激活时同时从P0总截面和self scatter减TRANC；ASM.f:352–355对NANI>1且ISTRM1关闭该修正。SPOASM.f:330–356的显式轴向矩读原NTOT0和SIGW，同时径向部分保持独立native corrected operator。取消共同项只能说明P0 removal代数结构；REAL32两次减法舍入、实际源分区与radial closure仍须分别保留。非零TRANC不得因global signed residual很小而抹掉。
+材料material_results.json原文明确：SPH boundary factor not saved, not independently replayed。因此既不能假设h=1，也不能以当前Source替代真实编译/处理链证明它的实际值。现有VALID_SNAPSHOTS范围不因此被改写；它一直不授coupled/CE精度。
+
+独立全局中子账目实际需要的字段
+事件账目需要每state、全部真实nuclide/温度/dilution与区域密度/别名绑定；原NTOT0及所有实际event通道，包括NFTOT；按原实际MF3获取event vector，按同MT的实际MF6中子product/yield/transfer获取出射中子数或group-effective production，尤其NX/NNP/N2A。原处理程序Source的MT2/5/16/17/28/37/51–91 transfer inventory与12named event vector不是同一集合；不能按通道名称指定nu=0/1/2/3/4，也不能用另一处理路线fallback作为本实际库的证据。实际Mo原库与28nuclide候选路线须分别保留，不共享未经证实的processing identity。若某event为0且production非0，要报告不相容；缺失字段、未保留GNDF或未确定来源都保持unknown，不能造0或造固定multiplicity。
+完整production账目需要原全部3矩稀疏IJJS/NJJS/IPOS/SCAT、所有padding、SIGW/SIGS原字段、source→destination方向；P0全destination求和参与neutron number，P1/P2需要用于完整角向方程并证明其角积分约定，不能删掉。真实fission event loss需NFTOT；出生需全32 NUSIGF/CHI与8区×8slot FISSIONINDEX、NESP=4/CHI-LIMITS、alias/isotope/mix绑定。对每component保留原sum_g CHI，不能重归一为1或用sum NUSIGF替代fission事件loss。
+设P_nf,g=sum_d S0_(d<-g)，E_r,g是实际event截面，nu_r,g为同一处理合同的实际有效中子yield。非裂变净损失事件账目为U_event,g=NFTOT_g+sum_(r非裂变)(1-nu_r,g)*E_r,g；transfer账目为U_transfer,g=NTOT0_g-P_nf,g。只有实际完整reaction coverage与处理/equivalence合同及逐项一致得到证明时，二者才可作为独立账目比较。两者都不能直接重命名为absorption。MGXEXP按NTOT0−SIGS00+N2N+2N3N+3N4N合成的ABSORPTION缺少此来源与覆盖证据，仍不能用于真实平衡。
+对完整有效本征参考，独立global关系应为：全部边界有符号outflow + sum_(真实cell,g) V*phi_g*U_event,g = [sum_(cell,g_src,f) V*phi_(g_src)*NUSIGF_(g_src,f)*sum_(g_dest)CHI_(g_dest,f)]/真实k。必须保留独立cell volumes/mixture maps、真实final fixed-point flux/source/k、上下端部全8区×全部群电流、全部49 fine planes/shared faces、径向white incoming/outgoing及反照1、真空边界；closure项单列，不能把闭合大抵消或电流望远镜恒等式作physical PASS。φ和源的全局nu-fission归一化沿用原一次分母；高阶源、边界残差、fixed point及稳定性仍缺独立参考证据。
+
+下一项唯一可实际核的合同
+完整native saved-byte evidence结束之后，由Root单独进行有界、无输运的最终MICROLIB→MACROLIB来源核对：A完整释放后B，以真实62isotope别名/ISOTOPESMIX/ISOTOPESDENS/原record presence和times/masks等分支，逐全部370×8重放TRANC、NTOT0/NTOT1、全部18 declared edits，全部3矩的SCAT/SIGW/SIGS，全部32 fission components与原64 FISSIONINDEX。先报告每个原record、原顺序、REAL32各步delta/舍入界及所有missing，不删除反应、造零、归一化CHI或改原3%gate。没有完整历史编译/浮点来源前，不称bit-exact arithmetic replay。此检查能够实测当前字段的聚合/处理合同；不能补回未保存SPH因子，也不自动授MF6multiplicity或physical balance。
+其输入沿已固定native fullscope，执行必须继承Root genuine guard及原1800whole/600stage/512MiB/2GiB joint HOCDE/96GiB history/free8GiB/thread1/child1/retry0，SQLite/streamspools全部计archive。当前包不含新执行checker/host，不预测时间/RSS PASS。Root现有build和native按原顺序串行；本Source调查不占用任何数值child。

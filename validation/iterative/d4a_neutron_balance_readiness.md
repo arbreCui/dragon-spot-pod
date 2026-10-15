@@ -1,5 +1,49 @@
 # Corrected D4-A neutron-balance readiness
 
+## Evidence epoch warning and repaired boundary spot-check
+
+The Sep 23 map-8 inventory and balance below belong to the superseded,
+pre-scattering-repair maps 1–11. Preserve them as historical diagnostics only;
+their small balance residuals are **not repaired-runtime physical acceptance**.
+
+On Sep 28, a transport-free read of the completed repaired 12-cell CLOSED/6
+run independently checked `candidate_radial.xsm/TRACK/#1`, `#2`, `#3` and
+`initial_axial_track.xsm`. All three radial planes contain `ICODE=-1..-6`,
+six `ALBEDO=1`, identity `BC-REFL+TRAN=1..12`, `KEYCUR$MCCG=133..144`, and
+boundary material indices `-1..-6` repeated twice. The axial track contains
+12 widths of 12.5 cm, `NCODE=(1,1)`, `ICODE=(0,0)`, `ZCODE=(0,0)`.
+The frozen CE geometry contains six white lateral planes with no albedo
+attribute and vacuum planes at z=0 and z=150 cm. These declarations are
+consistent with the existing conservative-white / axial-vacuum route; they do
+not independently validate the angular reflection kernel, local ray balance,
+the repaired global reaction balance or the remaining k bias.
+
+The existing GANLIB-only `d4a-neutron-balance-readiness-20260923/inventory`
+was used in read-only mode, with a 10-second cap per invocation; four calls
+plus CE XML inspection took 0.048 seconds. There was no compilation, transport,
+CE rerun or edit to the active map-7 inputs. Before/after hashes were identical:
+
+- Reader binary: `e0b39b2dc1c84181c92e1895621fdc8a5659efbb72e989312aadfe64b20113e8`.
+- Reader source: `ce36e2e02158753eddb61528ca17ce1208bfdb92f44563fb6cf2d3a8b9e87858`.
+- CLOSED/6 run `candidate_radial.xsm`: `2c366d9a4380933eee6979d895f5583781501ddbe0576e36b2853f3b59c7724d`.
+- CLOSED/6 run axial track: `a6ad22a6c0bc997b195f3b62f22fe799d6115ba3e7b2cb14c5c05e49955cbf03`.
+- Frozen CE `geometry.xml`: `137f8b3ad4ed9b0c4f81f48d1ab0fc182b6e929f95f3627be549f074682b049a`.
+
+The two map inputs match their existing map-6 result manifest; the CE geometry
+matches its source manifest. The map directory is
+`validation/artifacts/d4a-scattering-mesh12-picard-map6-20260927`; the CE
+directory is `validation/artifacts/d4a-corrected-ce-production-20260923`.
+This closes a declaration/epoch cross-check only, not a delivery acceptance row.
+
+The subsequent [repaired CLOSED/6 saved radial balance](d4a_radial_balance_result.md)
+uses the existing reader without rebuilding and checks all 1110 groups/planes.
+Its three `sum(abs(R_g))/sum(F_g)` values are 1.33976e-14, 1.37403e-14 and
+1.23068e-14. This is now current-epoch archive/operator evidence, still not an
+independent physical conservation or accuracy PASS: group rebalancing already
+enforces this integrated equation, and local radial face tallies remain absent.
+
+## Historical review (superseded physical state)
+
 2026-09-23. Read-only source/field review, **not a neutron-conservation PASS**.
 No transport, tracing, Dragon/OpenMC execution, production rebuild, or numerical
 balance calculation was performed. The active continuation was not touched.

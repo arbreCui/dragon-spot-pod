@@ -1,0 +1,45 @@
+SPOT 当前进度
+记录时间：2026-10-11 18:39，Asia/Shanghai
+
+整体判断
+SPOT 的核心是二维径向、降阶一维轴向和泄漏反馈耦合。旧 D4-A 十二单元案例已有九个完整耦合映射并通过原数学收敛门槛，但独立连续能量参考的 k 精度未通过；这仍不是已验证的生产发布。
+项目仍在组件研发与验证阶段，尚未完成可交付的材料对照。离线数据基线已有实际结果，在线双精度链的候选实现和构建内存问题正在推进；共同基底与 AAA 物理精度尚未达标。ABA 尚未开始。
+既定顺序：A/B 双精度快照及生产到在线读取验证 → AAA 同质控制 → 独立耦合参考准入 → ABA。物理输入、验收阈值和资源限制保持。
+
+已经完成的工作
+1. A/B 双精度离线快照已经生成，370 群保存终态和相关材料、系统、轨迹核验通过。这不代表直接双精度连续重启或在线 BOOT 已通过。
+2. v30 完整准备流程实际通过，约 312.79 秒，原监控样本峰值 486.703125 MiB；保存结果独立复核通过。
+3. v30 完整构建实际执行一次，约 261.57 秒时因原监控观测 512.6875 MiB 超过 512 MiB 上限而失败。实际只完成 build/link，完整五阶段未通过。全部输出、监控、真实工具返回及失败输入已保存，独立保存证据复核实际通过；失败结果没有变成构建通过。
+4. 声明数据的内存共享改动已实际通过 74 项专项检查。相同保存声明的独占 Python 对象占用从 12560578 字节降至 9687526 字节，减少约 2.74 MiB，类型、次序、浮点位及可变容器保持。该指标不是进程 RSS；完整构建是否守住 512 MiB 仍待实际验证。
+5. 候选源码已补齐真实双精度生产、FIXB 投影、独立 QFISS64、系统绑定到 BOOT/B2B 的接线。冻结源码独立静态审查通过 18 项检查，九处原源码完整逆变换保持。
+6. 候选双精度元数据模块及小控制已实际完成五个编译步骤、17 个正反控制，全部通过，包括 370 群输入位比较、独立裂变源方程及错误类型、绑定、篡改拒绝。这是人工控制数据的小规模验证；没有执行真实材料生产、真实 SPPROJ/FLUGPI/B2B 在线耦合，也不代替完整原生构建或物理验收。该实际结果的独立保存复核正在进行。
+
+仍未通过的科学门槛
+共同 rank2 基底：353/370 群通过，前 17 群失败。没有放宽原阈值或以 rank1 替代原目标。
+AAA 同质控制：原正式试验最大燃料端点误差约 3.95%，高于原 3% 门槛；后续角度修正诊断约 3.80%，也未达标。
+独立耦合参考尚未准入，ABA 尚未启动。目前不能给出通过验收的材料差异结论。
+
+接下来
+先在新目录验证减内存改动后的完整准备与完整构建，保留原 512 MiB 等限制及已有失败证据。
+完成真实在线调用入口的编译与生产到读取核验；小控制通过不能替代实际材料和完整在线链。
+继续查明前 17 群与 AAA 端点误差的原因；满足原门槛后再进行正式 AAA、独立参考准入和 ABA。
+
+清理按用户指示暂缓，本轮没有删除文件。目标仍为 active。
+
+主要结果位置
+A/B 原控制核验：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-AB-stability-root-review-20261011/REPORT.txt
+共同 rank2 核验：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-new-AB-common-rank2-root-review-20261011-v1/REPORT.txt
+v30 准备结果：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v30_installed6a_20261011_receipts/Root_actual_complete_combined_prepare_summary.json
+v30 完整构建失败结果：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v30_installed6a_20261011_receipts/Root_actual_failed_complete_combined_build_summary.json
+v30 失败结果独立保存复核：
+/private/tmp/SPOT_V30_actual_failed_FULL5_BUILD_independent_saved_META_xis05ham/actual_review/REVIEW.json
+内存共享实际专项结果：
+/private/tmp/Root_actual_owned_declaration_sharing_control_20261011.json
+在线双精度候选源码独立审查：
+/private/tmp/SPOT_ROOT64_BOOT_final_v2_independent_Source_review_haujoccl/REVIEW.json
+双精度小控制实际结果：
+/Users/wen/spot/validation/artifacts/axial-material-ROOT64-connected-typed-fixture-original-guard-20261011/Root_actual_typed_fixture_summary.json

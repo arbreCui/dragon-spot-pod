@@ -1,0 +1,7 @@
+SPOSTATE64：完整新Source候选，不是旧源码同字节恢复或科学资格。
+原SPOSTATE完整源码已保存；每项局部byte splice/rename及逐步SHA逆证保存于JSON。
+保留原四参LCM ABI、所有signature/geometry/FIXB/basis/layout/offset/Gram/POD检查、全部输出record布局、原signed SPOLE1D算子、SPD算法与数值门槛。
+FLUX64所有项/type4与SPOT-KEFF64/type4均mandatory，不能缺失或type2伪装；真实unknown64新增finite检查。原type2 FLUX/K为exactdemote镜像检查，仅用于mirror admission，不供norm、positivity、restriction、leakage或canonical state数值计算。
+全局nu-fission norm、active scalar positivity、逐floor体积限制均从unknown64运算；静态VOLUME/AREA/VOL1D/NUSIGF/basis仍是原输入，在REAL64乘法/累加时精确提升。Gram/RHS/solve/offspace保持原公式与顺序。始终输出真实SPOT-X-KEFF。
+新入口只形成canonical-state组件；不会生成GLOBAL64 producer认证、ROOT-QFISS64、native终态证据、epoch commit或实际BOOT，不能用本组件代替完整链。
+当前不修改dispatcher、decks、任何original src或已编译冻结ROOT64两文件。仅完成实际Source文本/EOF身份/精确逆证检查；没有Fortran语法编译PASS，没有Native、controls、AAA/ABA资格。下一步Root真实original-guard编译后，继续原生GLOBAL64、三plane投影、真实QFISS/e0/BOOT/B2I接线，所有原门槛保留。

@@ -1,0 +1,303 @@
+def require(condition, reason):
+    if not condition:raise ValueError(reason)
+
+def unique_object(pairs):
+    value={}
+    for key,item in pairs:
+        if key in value:raise ValueError('duplicate JSON key '+key)
+        value[key]=item
+    return value
+
+def metadata(role,start):
+    check_time(start)
+    with INPUTS[role][0].open('r',encoding='utf8') as stream:
+        return json.load(stream,object_pairs_hook=unique_object,
+                         parse_constant=lambda value: (_ for _ in ()).throw(ValueError('nonfinite JSON')))
+
+def bind_metadata(start):
+    seal=metadata('capture_seal',start);raw=metadata('capture_raw_receipt',start)
+    decl=metadata('capture_declaration',start);admit=metadata('capture_archival_admission',start)
+    audit=metadata('capture_audit_result',start);driver=metadata('capture_driver_result',start)
+    final=metadata('production_final_seal',start);status=metadata('production_run_status',start)
+    prepared=metadata('production_prepared',start);diagnostic=metadata('diagnostic_manifest',start)
+    diagresult=metadata('diagnostic_result',start);rootsummary=metadata('diagnostic_root_summary',start)
+    production=INPUTS['production_final_seal'][0].parent
+    capture=INPUTS['capture_seal'][0].parent
+    require(status['cases']['AAA']['classification']=='VALID_MET' and
+            status['cases']['AAA']['completed_maps']==12 and
+            status['cases']['AAA']['final_directory']==str(production),'original chronological final MET pointer changed')
+    require(final['classification']=='SEALED_STAGE_OUTPUTS','unsealed original map012')
+    for role in ('production_closed_axial','production_candidate_axial','track'):
+        name=INPUTS[role][0].name
+        require(final['sha256'][name]==INPUTS[role][1],'map012 sealed owner pin differs: '+role)
+    require(decl['original_production_prepared_sha256']==INPUTS['production_prepared'][1] and
+            decl['original_map012_seal_sha256']==INPUTS['production_final_seal'][1],'capture replay origin differs')
+    require(prepared['runtime_sources']['Dragon']['sha256']==admit['actual_frozen_executable_sha256']==
+            '51b2d3ff947daa3ea523932bcc28276b054632f0bfc6cf76fa21ac458a4f7be4','historical Dragon lineage differs')
+    require(admit['entire_frozen_compilation_source_identity_proved'] is False and
+            admit['scientific_source_correction_applied'] is False and
+            admit['shared_sources_or_libraries_modified'] is False,'archival source evidence scope changed')
+    require(decl['actual_source_contract']=={'ITPIJ':1,'NANIS':2,'NDIM':1,'INSB':1,'LSCAL':False,
+            'self_scattering_reduction_branch_reachable':False},'original source branch contract differs')
+    require(decl['final_call']['outer']==3 and decl['final_call']['inner']==1 and
+            decl['final_call']['group_ids']==list(range(1,NG+1)),'original all-group final call differs')
+    require(driver['classification']=='COMPLETE_BOUNDED_PRODUCTION_ANGULAR_CAPTURE_ONLY' and driver['error'] is None,
+            'original capture terminal did not complete')
+    require(audit['classification']=='COMPLETE_PRODUCTION_ANGULAR_CAPTURE_ONLY','capture audit scope differs')
+    for key in ('complete_production_370_groups','original_map012_scientific_records_word_exact',
+                'original_terminal_passed','all_three_moments_and_currents_byte_exact',
+                'original_keff_byte_exact','raw_fields_and_sources_unmodified'):
+        require(audit[key] is True,'original preserved capture evidence missing '+key)
+    for record in (audit,decl,driver):
+        require(record['AAA_accuracy_qualified'] is False and record['ABA_admitted'] is False,
+                'original evidence must not promote physics accuracy')
+    require(len(audit['groups'])==NG and [row['group'] for row in audit['groups']]==list(range(1,NG+1)),
+            'capture audit does not cover all original groups')
+    require(audit['chronological_inventory']=={'dispatches':136,'all_370_groups_last_context':[3,1],
+            'actual_NGIND_and_NPSYS_archived':True,'metric_based_selection':False},'capture inventory scope differs')
+    for role in ('capture_raw_receipt','capture_declaration','capture_archival_admission',
+                 'capture_driver_result','capture_audit_result','capture_claim'):
+        require(seal['files'][str(INPUTS[role][0].relative_to(capture))]==INPUTS[role][1],
+                'capture seal metadata binding differs '+role)
+    for role,(path,expected) in INPUTS.items():
+        if role.startswith(('capture_source_','capture_return_','capture_field_')) or role in (
+                'capture_published','capture_events','capture_pre_normal'):
+            relative=str(path.relative_to(capture))
+            require(raw['files'][relative]==seal['files'][relative]==expected,
+                    'complete selected raw capture pin differs '+role)
+        elif role in ('capture_callback_source','capture_sender_source','capture_sender_baseline','capture_receiver_source'):
+            require(decl['files'][str(path)]==expected,'declared capture source pin differs '+role)
+    require(raw['selection']=='Original terminal all-group last chronological calls' and raw['raw_capture_count']==1483,
+            'capture chronological receipt differs')
+    require(raw['original_output_files']['candidate_axial.xsm']==INPUTS['capture_candidate_axial'][1]==
+            INPUTS['production_candidate_axial'][1],'capture is not word-exact original map012 owner')
+    for role in ('diagnostic_full_flux','diagnostic_full_source'):
+        require(diagnostic['files'][INPUTS[role][0].name]['sha256']==INPUTS[role][1],
+                'actual saved diagnostic array pin differs '+role)
+    require(rootsummary['actual_payload_manifest']['sha256']==INPUTS['diagnostic_manifest'][1] and
+            rootsummary['actual_payload_result']['sha256']==INPUTS['diagnostic_result'][1],
+            'Root actual saved diagnostic lineage differs')
+    require(diagresult['full_physical_neutron_balance_qualified'] is False and
+            diagresult['AAA_qualified'] is False and diagresult['ABA_admitted'] is False,
+            'saved reaction diagnostic is not a physics acceptance')
+    inverse={}
+    for name,role,base in (('FLU2DR64.f','capture_sender_source','capture_sender_baseline'),
+                           ('SPOT1P64.f90','capture_receiver_source',None)):
+        patch=admit['patches'][name];text=INPUTS[role][0].read_text()
+        require(patch['candidate_sha256']==INPUTS[role][1] and patch['native_expressions_changed'] is False,
+                'capture is not a reversible archival-only source insertion')
+        for old,new in reversed(patch['replacements']):
+            require(text.count(new)==1,'ambiguous capture insertion inverse '+name)
+            text=text.replace(new,old,1)
+        digest=hashlib.sha256(text.encode()).hexdigest()
+        require(digest==patch['original_sha256'],'whole source insertion inverse differs '+name)
+        if base is not None:require(text.encode()==INPUTS[base][0].read_bytes(),'recovered compatible baseline source differs')
+        inverse[name]={'restored_sha256':digest,'capture_only_insertions_reversed':True,
+                       'entire_original_compiled_source_byte_identity_proved':False}
+    return {'origin':'chronological map012 original Dragon 51b','source_insertion_inverse':inverse,
+            'original_capture_full_scientific_word_exact_recorded':True,
+            'raw_scope':'all 370 last chronological S2, return, field files plus events/PRENORMAL/published; no collision/block payload requalification',
+            'sealed_capture_raw_files_total':1483,'selected_raw_capture_files':3+3*NG,
+            'no_new_credit_for_unread_raw_capture_collision_or_block_files':True}
+
+class Stream:
+    def __init__(self,role,before,start):
+        self.role=role;self.path=INPUTS[role][0];self.pinned=before[role];self.start=start
+        self.stream=self.path.open('rb');self.bytes=0
+        require(identity(os.fstat(self.stream.fileno()))==self.pinned['fd_7id_before'],'stream owner changed '+role)
+    def raw(self,count):
+        check_time(self.start);raw=self.stream.read(count);self.bytes+=len(raw)
+        require(len(raw)==count,'truncated stream '+self.role)
+        return raw
+    def magic(self,magic):require(self.raw(8)==magic,'undeclared stream schema '+self.role)
+    def words(self,dtype,count):
+        array=np.frombuffer(self.raw(np.dtype(dtype).itemsize*count),dtype=dtype).copy()
+        require(array.size==count and (array.dtype.kind!='f' or np.isfinite(array).all()),'invalid typed stream '+self.role)
+        return array
+    def close(self):
+        require(self.stream.read(1)==b'','unexpected trailing stream '+self.role)
+        require(self.bytes==self.pinned['size_bytes'],'incomplete stream consumption '+self.role)
+        require(identity(os.fstat(self.stream.fileno()))==self.pinned['fd_7id_before'],'stream fd changed '+self.role)
+        self.stream.close()
+        require(identity(self.path.stat())==self.pinned['target_7id_before'],'stream target changed '+self.role)
+
+def events(before,start):
+    stream=Stream('capture_events',before,start);stream.magic(b'AXCEV001')
+    require(stream.words('<i4',16).tolist()==[NG,NUN,NZ*NR,NMAT,NL,3,3,1,0,3,0,1,2,1,1,0],
+            'complete actual ITPIJ/ILEAK/LSCAL/geometry source event contract differs')
+    latest=np.zeros((NG,3),dtype='<i4');calls=np.zeros(NG,dtype='<i4');records=[]
+    while stream.bytes<stream.pinned['size_bytes']:
+        event=stream.words('<i4',4);seq,outer,inner,nactive=map(int,event)
+        require(seq==len(records)+1 and outer>0 and inner>0 and 1<=nactive<=NG,'invalid chronological event')
+        active=stream.words('<i4',nactive);npsys=stream.words('<i4',NG);b2=stream.words('<f4',4)
+        require(len(set(active.tolist()))==nactive and (active>=1).all() and (active<=NG).all() and
+                np.array_equal(active,np.flatnonzero(npsys)+1) and b2[3]==0,'original NGIND/NPSYS/SIGS guard differs')
+        latest[active-1]=[seq,outer,inner];calls[active-1]+=1
+        records.append({'dispatch':seq,'outer':outer,'inner':inner,'NGIND':active.tolist(),
+                        'NPSYS':npsys.tolist(),'B2_real32_hex':b2.tobytes().hex()})
+    stream.close();require(len(records)==136 and np.all(latest[:,1:]==[3,1]),'not all370 original terminal calls')
+    return latest,calls,records
+
+def equal_words(left,right,reason):
+    require(left.dtype==right.dtype and left.shape==right.shape and left.tobytes()==right.tobytes(),reason)
+
+def evaluate(out,before,start):
+    lineage=bind_metadata(start);latest,calls,event_records=events(before,start)
+    pub=Stream('capture_published',before,start);pub.magic(b'AXCAP001')
+    require(pub.words('<i4',11).tolist()==[NG,NUN,NZ,NA,NR,NL,NMAT,3,466,326,7883],'actual capture layout differs')
+    terminal=pub.words('<i4',9);real=pub.words('<f8',7);b2=pub.words('<f4',4);operands=pub.words('<f8',2)
+    require(terminal.tolist()==[3,1,371,1,1,500,740,136,NG],'actual original terminal differs')
+    require(real[0]<real[1] and real[2]<real[3] and real[4]<real[5] and
+            (real[[1,3,5]]>0).all(),'original native convergence receipt differs')
+    require((operands>0).all() and b2[3]==0,'invalid original normalization/SIGS guard')
+    equal_words(real[6:7],operands[:1],'actual terminal keff differs')
+    require(b2.tobytes().hex()==event_records[-1]['B2_real32_hex'],'last published B2 differs from chronological event')
+    normal=operands[0]/operands[1]
+    require(np.isfinite(normal) and normal>0,'invalid single global native normalization')
+    pre=Stream('capture_pre_normal',before,start);pre.magic(b'AXCPN001')
+    require(pre.words('<i4',2).tolist()==[NUN,NG],'actual PRENORMAL layout differs')
+    diagflux=Stream('diagnostic_full_flux',before,start);diagsource=Stream('diagnostic_full_source',before,start)
+    roles=('production_closed_axial','production_candidate_axial','capture_candidate_axial','track')
+    readers={role:XSM(INPUTS[role][0],before[role],start) for role in roles}
+    raw_s2=np.empty((NG,NUN),dtype='<f8');published_source=np.empty_like(raw_s2);published_flux=np.empty_like(raw_s2)
+    qext=np.empty((NG,1,NL,NZ,NR),dtype='<f8');projected=np.empty((NG,NL,NZ,1),dtype='<f8')
+    contexts=[];identities=[];counts={'S2_qext_words':0,'whole_R64_rhs_words':0,'all_unknowns_flux_words':0,
+                                    'SOUR32_words_per_XSM_owner':0,'projected_coefficients':0}
+    try:
+        track=readers['track'];state=track.array(track.root,'STATE-VECTOR','<i4',40,'ROOT')
+        require(tuple(state[[0,1,5,6,7,10,11]])==(384,NUN,NR,NZ,3,LL4,LL5),'original all-cell track layout differs')
+        entries={}
+        for role in roles[:-1]:
+            reader=readers[role];state=reader.array(reader.root,'STATE-VECTOR','<i4',40,'ROOT')
+            require(state[:2].tolist()==[NG,NUN],'original all-group XSM layout differs '+role)
+            if role=='production_closed_axial':
+                require(reader.text(reader.root,'SPOT-X-STATE','ROOT')=='CLOSED' and
+                        reader.array(reader.root,'SPOT-X-EPOCH','<i4',1,'ROOT').tolist()==[12],'wrong closed map012 owner')
+            require('SOUR64' not in reader.root and 'SPOT-R64' not in reader.root,'changed saved-source schema needs new review')
+            equal_words(reader.array(reader.root,'SPOT-KEFF64','<f8',1,'ROOT'),operands[:1],'map012/capture keff words differ '+role)
+            entries[role]={name:reader.list(reader.root,name,NG,'ROOT') for name in ('FLUX64','FLUX','SOUR')}
+        for group in range(1,NG+1):
+            check_time(start);context=pub.words('<i4',9)
+            require(context[0]==group and np.array_equal(context[1:4],latest[group-1]) and
+                    context[1]==context[4]==context[7] and context[5]>0 and context[6]==calls[group-1] and context[8]==0,
+                    'not actual all-group chronological last source phase')
+            final=pub.words('<f8',NUN);source=pub.words('<f8',NUN);prenormal=pre.words('<f8',NUN)
+            fields=Stream(f'capture_field_{group:03d}',before,start);fields.magic(b'AXCFD001');header=fields.words('<i4',8)
+            require(header[:4].tolist()==context[:4].tolist() and header[4:].tolist()==[466,326,7883,1490],
+                    'full angular field scope/phase differs')
+            packed={name:fields.words(dtype,count) for name,dtype,count in
+                    [('integer','<i4',466),('single','<f4',326),('double','<f8',7883)]};fields.close();a=unpack(packed,NMAT)
+            stream=Stream(f'capture_source_{group:03d}',before,start);stream.magic(b'AXCS2001')
+            require(stream.words('<i4',5).tolist()==context[:4].tolist()+[NUN],'full actual S2 phase differs')
+            s2=stream.words('<f8',NUN);stream.close()
+            stream=Stream(f'capture_return_{group:03d}',before,start);stream.magic(b'AXCRT001')
+            require(stream.words('<i4',5).tolist()==context[:4].tolist()+[NUN],'full actual returned phase differs')
+            returned=stream.words('<f8',NUN);stream.close()
+            require(a['ncode'].tolist()==[1,1] and (a['zcode']==0).all() and (a['w']>0).all() and
+                    (a['vol1d']>0).all(),'original quadrature/vacuum field contract differs')
+            equal_words(s2[:LL4],a['qext'].ravel(order='F'),'post-SIGS S2/qext raw words differ')
+            equal_words(0.5*(a['face'][:,:,:-1]+a['face'][:,:,1:]),a['cell'],'full diamond/shared face raw identity differs')
+            replay=np.zeros((NL,NZ),dtype='<f8')
+            for iz in range(NZ):
+                for region in range(NR):
+                    if a['mat'][iz,region]==0:continue
+                    for moment in range(NL):
+                        replay[moment,iz]+=(float(a['weight'][region])*float(a['basis'][region,0]))*float(a['qext'][0,moment,iz,region])
+            equal_words(replay,a['source_projected'][:,:,0],'all three source projection words differ')
+            assembled=np.concatenate([a['flux'].ravel(order='F'),a['current'].ravel(order='F'),a['xnei'].ravel(order='F')])
+            equal_words(assembled,returned,'all field moments/current/xnei do not match actual returned vector')
+            equal_words(returned,prenormal,'actual return does not match all-unknown PRENORMAL')
+            equal_words(returned*normal,final,'one global native REAL64 flux normalization words differ')
+            equal_words(s2*normal,source,'one global native REAL64 work RHS normalization words differ')
+            equal_words(diagflux.words('<f8',NUN),final,'actual all-unknown saved diagnostic FLUX64 differs')
+            demoted=source.astype('<f4');equal_words(diagsource.words('<f4',NUN),demoted,'actual saved diagnostic SOUR32 differs')
+            for role in roles[:-1]:
+                reader=readers[role]
+                row={}
+                for name,words,kind,dtype,value in [('FLUX64',2*NUN,4,'<f8',final),
+                        ('FLUX',NUN,2,'<f4',final.astype('<f4')),('SOUR',NUN,2,'<f4',demoted)]:
+                    entry=entries[role][name][group-1];require(entry[1:]==(words,kind),'wrong full XSM typed handle')
+                    raw=reader.read(entry[0],words);arr=np.frombuffer(raw,dtype=dtype)
+                    equal_words(arr,value,'captured published words differ from '+role+'/'+name)
+                    record={'offset_words':entry[0],'length_words':words,'type':kind,'sha256':hashlib.sha256(raw).hexdigest()}
+                    reader.records[f'{name}/{group}']=record;row[name]=record
+                identities.append({'owner':role,'group':group,'records':row})
+            raw_s2[group-1]=s2;published_source[group-1]=source;published_flux[group-1]=final
+            qext[group-1]=a['qext'];projected[group-1]=a['source_projected'];contexts.append(context.tolist())
+            counts['S2_qext_words']+=LL4;counts['whole_R64_rhs_words']+=NUN;counts['all_unknowns_flux_words']+=NUN
+            counts['SOUR32_words_per_XSM_owner']+=NUN;counts['projected_coefficients']+=NL*NZ
+        pub.close();pre.close();diagflux.close();diagsource.close()
+    finally:
+        for reader in readers.values():reader.close()
+    arrays={name:out.array(name,value) for name,value in [('raw_S2_all_unknowns_g_u',raw_s2),
+            ('published_work_source64_all_unknowns_g_u',published_source),('published_flux64_all_unknowns_g_u',published_flux),
+            ('qext_all_moments_g_mode_l_z_r',qext),('source_projected_all_moments_g_l_z_mode',projected)]}
+    out.json_file('layout.json',{'dimensions':{'groups':NG,'unknowns':NUN,'cells':NZ*NR,'faces':LL5,
+                    'axial_cells':NZ,'angles':NA,'radial_regions':NR,'moments':NL},'arrays':arrays,
+                    'all_unknowns_layout':{'flux_moments':[0,LL4],'face_current':[LL4,LL4+LL5],
+                    'xnei':[LL4+LL5,NUN]},'original_float_precision_preserved':True,
+                    'comparisons':'typed array shapes and native little-endian words exactly equal; no numerical tolerance'})
+    out.json_file('chronological_event_inventory.json',{'records':event_records,'group_final_contexts':contexts,
+                    'metric_selection':False,'all_groups_last_context':[3,1]})
+    out.json_file('full_XSM_saved_record_identities.json',{'records':identities,
+                    'scope':'all370 FLUX64/FLUX/SOUR handles in each of three fixed XSM owners, all1800 unknowns'})
+    return {'classification':'COMPLETE_SAVED_ALL_GROUP_WORK_RHS_PHASE_IDENTITIES_NOT_PHYSICAL_BALANCE_QUALIFIED',
+            'dimensions':{'groups':NG,'unknowns_per_group':NUN,'cells':NZ*NR,'faces':LL5,'moments':NL},
+            'checked_word_counts':counts,'all_complete_work_rhs_and_saved_source_phase_word_identities':True,
+            'one_original_global_normalization':{'AKEFF_real64_hex':operands[:1].tobytes().hex(),
+                    'FISOUR_real64_hex':operands[1:].tobytes().hex(),'quotient_real64_hex':np.array([normal],dtype='<f8').tobytes().hex()},
+            'lineage':lineage,'same_original_map012_saved_FLUX64_and_SOUR32_in_all_three_owners':True,
+            'reaction_multiplicity_contract_qualified':False,'source_fission_scatter_partition_qualified':False,
+            'final_flux_reconstructed_source_equals_actual_prior_iteration_work_rhs_assumed':False,
+            'entire_original_compilation_source_byte_identity_proved':False,
+            'full_physical_neutron_balance_qualified':False,'scientific_accuracy_qualified':False,
+            'AAA_qualified':False,'ABA_admitted':False,'same_MG_unreduced_reference_qualified':False,
+            'transport_launched':False,'original_physics_inputs_solver_and_thresholds_unchanged':True,
+            'no_clipping_fitting_extra_normalization_dropped_group_or_cell':True,
+            'requires_Root_actual_terminal_and_OwnRSS_receipts':True}
+
+def main():
+    global np
+    start=time.monotonic()
+    parser=argparse.ArgumentParser();parser.add_argument('--evaluator-sha256',required=True)
+    parser.add_argument('--out-root',required=True);args=parser.parse_args()
+    if SOURCE_STATUS!='READY':raise RuntimeError('UNREADY source-only candidate; Root source admission required')
+    require(sys.flags.optimize==0 and sys.gettrace() is None and sys.getprofile() is None,'uninstrumented interpreter required')
+    for name in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS'):
+        require(os.environ.get(name)=='1','original single thread environment required '+name)
+    import numpy as numpy
+    np=numpy
+    selfpath=Path(__file__).absolute();self_before=fresh_hash(selfpath,start)
+    require(self_before['sha256']==args.evaluator_sha256,'evaluator source pin differs')
+    require(Path(args.out_root)==DEFAULT_OUTPUT,'source plan fixes one fresh exclusive output namespace')
+    out=Output(DEFAULT_OUTPUT,start)
+    out.json_file('execution_claim.json',{'schema':'REFINED_AAA_SAVED_WORK_RHS_PHASE_READ_ONLY_RUN_CLAIM_V1',
+            'evaluator':self_before,'declared_limits':{'whole_seconds':WALL_SECONDS,'stage_seconds':WALL_SECONDS,
+            'own_rss_mib':RSS_LIMIT_MIB,'archive_bytes':ARCHIVE_LIMIT_BYTES,'threads':THREADS,'children':CHILDREN,'retries':RETRIES},
+            'parent_PID':os.getppid(),'PID':os.getpid(),'started_unix':time.time(),'normal_genuine_OwnRSS_supervision_required':True})
+    before={}
+    for role,(path,expected) in INPUTS.items():
+        item=fresh_hash(path,start);require(item['sha256']==expected,'immutable input full EOF pin differs '+role);before[role]=item
+    result=evaluate(out,before,start);after={}
+    for role,(path,expected) in INPUTS.items():
+        item=fresh_hash(path,start)
+        require(item['sha256']==expected and item['literal_7id_before']==before[role]['literal_7id_before'] and
+                item['target_7id_before']==before[role]['target_7id_before'] and
+                item['literal_symlink_text']==before[role]['literal_symlink_text'],'input changed across whole saved phase diagnostic '+role)
+        after[role]=item
+    self_after=fresh_hash(selfpath,start)
+    require(self_after['sha256']==self_before['sha256'] and
+            self_after['literal_7id_before']==self_before['literal_7id_before'] and
+            self_after['target_7id_before']==self_before['target_7id_before'],'evaluator source changed')
+    out.json_file('input_identities.json',{'before':before,'after':after,'evaluator_before':self_before,'evaluator_after':self_after})
+    result['elapsed_seconds_before_final_report']=time.monotonic()-start;out.json_file('result.json',result)
+    out.json_file('payload_manifest.json',{'schema':'REFINED_AAA_SAVED_SOURCE_PHASE_PAYLOAD_MANIFEST_V1',
+            'files':dict(out.files),'payload_bytes_before_manifest':out.bytes,'scientific_accuracy_qualified':False,
+            'requires_Root_actual_terminal_and_OwnRSS_receipts':True})
+    check_time(start)
+    print(json.dumps({'classification':result['classification'],'result':str(out.path/'result.json'),
+            'sha256':out.files['result.json']['sha256'],'payload_manifest':str(out.path/'payload_manifest.json'),
+            'manifest_sha256':out.files['payload_manifest.json']['sha256'],'archive_bytes':out.bytes,
+            'elapsed_seconds':time.monotonic()-start,'scientific_accuracy_qualified':False},indent=2,allow_nan=False))
+
+if __name__=='__main__':main()

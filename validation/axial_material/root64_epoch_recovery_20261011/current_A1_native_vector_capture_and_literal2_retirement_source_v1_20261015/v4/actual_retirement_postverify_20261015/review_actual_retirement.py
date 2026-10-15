@@ -1,0 +1,108 @@
+"""Independent retirement-only Source/metadata audit. No imports, capture, checks or deletion."""
+import ast,hashlib,json,os,resource,stat,sys,time
+from pathlib import Path
+BASE=Path('/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_A1_native_vector_capture_and_literal2_retirement_source_v1_20261015/v4')
+OLD=BASE.parent/'v2';ART=Path('/Users/wen/spot/validation/artifacts');REPORT=Path(__file__).parent/'REVIEW.json'
+CAPS=dict(whole_seconds=1800,stage_seconds=600,rss_mib=512,fresh_bytes=2147483648,history_bytes=103079215104,cold_reserve_bytes=20971764748,metadata_reserve_bytes=67108864,free_floor_bytes=8589934592,threads=1,children_at_once=1,retries=0)
+FALSE=dict(business_executed=False,numerical_executed=False,compiler_executed=False,files_deleted=False,capture_republished=False,capture_rerun=False,physics_qualified=False,scientific_accuracy_qualified=False,complete_reaction_authority_qualified=False,physical_neutron_balance_qualified=False,unreduced_reference_qualified=False,full_reference_qualified=False,formal_H150_NZ48_full_controls_qualified=False,historical_machine_bit_replay=False,historical_native_RAM_bits_verified=False,original_XSM_memory_bits_verified=False,finite18_replayed=False,temperature_interpolation_replayed=False,current_SPH_MASK_context_applied=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False)
+LARGE={str(ART/(root+'/'+name)) for root,names in [('axial-material-current-all34-original-ASCII-infinite-SCAT-producer-20261015-v1',('Root_actual_all34_original_ASCII_infinite_SCAT_summary.json','inventories/ACTUAL_ALL34_ORIGINAL_ASCII_INFINITE_SCAT_EVIDENCE.json')),('axial-material-current-eight-fuel-finite18-SCAT-producer-20261015-v2',('Root_actual_eight_fuel_finite18_SCAT_summary.json','inventories/ACTUAL_EIGHT_FUEL_FINITE18_SCAT_EVIDENCE.json'))] for name in names}
+started=time.monotonic();fullpins={};statpins={};checks=[]
+def need(ok,msg):
+ if type(ok) is not bool or not ok:raise RuntimeError(msg)
+def identity(s):return[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+def current(p):
+ q=Path(p['path']);s=q.lstat();compiler=str(q)=='/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gfortran-15' and p.get('sha256')=='0784ca5eb133cde6a2112eddb4000eb36c9d60eae1b18df1c1ba52fe97737492' and p['identity'][3]==2
+ need(q.is_absolute() and '..' not in q.parts and stat.S_ISREG(s.st_mode) and s.st_nlink==(2 if compiler else 1) and s.st_uid==os.getuid() and len(p['identity'])==7 and all(type(v) is int for v in p['identity']) and identity(s)==p['identity'] and s.st_size==p['size_bytes'] and not any(x.is_symlink() for x in (q,*q.parents)),'literal current7 '+str(q));return q
+def read(p,retain=True):
+ q=current(p);need(q.suffix in ('.json','.py','.log') and p['size_bytes']<(64 if str(q) in LARGE else 8)*2**20,'Source/bounded metadata only, no SCI/gzip/XSM/SQL/pool/compact bodies');h=hashlib.sha256();total=0;parts=[];fd=os.open(q,os.O_RDONLY|os.O_NOFOLLOW)
+ try:
+  need(identity(os.fstat(fd))==p['identity'],'opened exact7')
+  while True:
+   b=os.read(fd,2**20)
+   if not b:break
+   h.update(b);total+=len(b)
+   if retain:parts.append(b)
+  need(identity(os.fstat(fd))==p['identity'],'after EOF exact7')
+ finally:os.close(fd)
+ current(p);need(total==p['size_bytes'] and h.hexdigest()==p['sha256'],'full EOF SHA/size');fullpins[p['path']]=p;return b''.join(parts) if retain else None
+def fresh(q):
+ q=Path(q);s=q.lstat();need(q.suffix in ('.json','.py','.log') and s.st_size<(64 if str(q) in LARGE else 8)*2**20,'new Source/bounded metadata PF');p=dict(path=str(q),sha256=hashlib.sha256(q.read_bytes()).hexdigest(),size_bytes=s.st_size,identity=identity(s));current(p);return p
+def doc(p):return json.loads(read(p))
+def onlystat(p):current(p);statpins[p['path']]=p
+def unique(rows):
+ d={}
+ for p in rows:
+  need(p['path'] not in d or d[p['path']]==p,'one consistent literal PF per path');d[p['path']]=p
+ return list(d.values())
+def contains(v,p):return v==p or isinstance(v,dict) and any(contains(x,p) for x in v.values()) or isinstance(v,list) and any(contains(x,p) for x in v)
+def closed(v,key,p,outkey):
+ t=v[key];need(v['observed_closed'] is True and type(v['original_integer_exit_code']) is int and v['original_integer_exit_code']==0 and type(t['exit_code']) is int and t['exit_code']==0 and t.get('session_id') is None and json.loads(t['output'].strip().splitlines()[-1])[outkey]==p,'genuine integer closed0/stdout exactPF')
+def defs(raw):
+ lines=raw.decode().splitlines(keepends=True);return {n.name:''.join(lines[n.lineno-1:n.end_lineno]).encode() for n in ast.parse(raw).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+def has(text,parts,label):need(all(x in text for x in parts),label)
+
+
+import shlex
+REPORT=Path(__file__).parent/'REVIEW.json'
+def resources(v,roots):
+ h,j=v['original_history'],v['complete_joint'];need(j['resource_roots']==roots and j['artifact_budget_bytes']==2*2**30 and j['min_free_bytes']==8*2**30 and h['artifact_budget_bytes']==96*2**30 and h['min_free_bytes']==8*2**30 and h['artifact_bytes']+CAPS['cold_reserve_bytes']+64*2**20<96*2**30 and j['artifact_bytes']+v['explicit_external_metadata_bytes']+v['host_open_unlinked_bytes']<2*2**30 and j['disk_free_bytes']-CAPS['cold_reserve_bytes']-2*2**30>=8*2**30 and 0<v['host_SELF_peak_bytes']<512*2**20 and 0<v['whole_elapsed_seconds']<600,'recorded original54/cumulative/history/free/SELF512/time600 inside1800')
+def walk(roots):
+ total=count=0
+ for root in roots:
+  for parent,dirs,files in os.walk(root,followlinks=False):
+   need(not any((Path(parent)/n).is_symlink() for n in dirs),'no joint directory alias')
+   for name in files:
+    q=Path(parent)/name;s=q.lstat();need(stat.S_ISREG(s.st_mode) and s.st_nlink==1,'ordinary joint resource file');total+=s.st_size;count+=1
+ return total,count
+result=dict(schema='INDEPENDENT_ACTUAL_LITERAL2_A1_RETIREMENT_METADATA_POSTVERIFY_V1',status='STARTED',failure=None,metadata_only=True,scope='Actual Root retirement of the exact two completed A1 comparison spools only. Metadata/Source read and preserved files current7 only, historical removed targets absence only. No scientific bodies, capture replay, retirement rerun, publication or deletion by peer.',scientific_inputs_or_compact_bodies_read_or_hashed_by_peer=False,candidate_imported_or_executed=False,retirement_rerun_by_peer=False,native_engines_started_by_peer=0,publication_executed_by_peer=False,**FALSE)
+try:
+ ownfreeze_pin=fresh(Path(__file__).parent/'AUDITOR_SOURCE_ONLY_FREEZE.json');ownfreeze=doc(ownfreeze_pin);ownsource=fresh(Path(__file__).absolute());need(ownfreeze['source_pin']==ownsource and ownfreeze['frozen_before_actual_review'] is True,'own Source freeze before review')
+ readonly_pin=fresh(BASE/'READONLY_RETIREMENT_RECEIPT.json');execution_pin=fresh(BASE/'EXECUTION_RETIREMENT_RECEIPT.json');rtpin=fresh(BASE/'ROOT_RETIREMENT_READONLY_TRUE_TOOL_RETURNS.json');etpin=fresh(BASE/'ROOT_RETIREMENT_EXECUTION_TRUE_TOOL_RETURNS.json');ro,ex,rt,et=doc(readonly_pin),doc(execution_pin),doc(rtpin),doc(etpin)
+ need(readonly_pin['sha256']=='38349eb2cc01ad1aaa55929cc387f22cfd515babc6dfd3c252b34c669d40132b' and readonly_pin['size_bytes']==452547 and execution_pin['sha256']=='c607484ee05709c792b34448dc1dd0b61f9c238af20a38c83efd2f233d2d6f07' and execution_pin['identity']==[16777229,50487368,33188,1,455003,1792004660351130808,1792004660351130808],'exact original Root readonly and execution receipts')
+ closed(rt,'actual_terminal_return',readonly_pin,'receipt_pin');closed(et,'actual_terminal_return',execution_pin,'receipt_pin');need(rt['actual_initial_return']==rt['actual_terminal_return'] and et['actual_initial_return']==et['actual_terminal_return'] and rt['actual_terminal_return']['chunk_id']=='2c30ee' and et['actual_terminal_return']['chunk_id']=='bed23b','genuine actual immediate original int0 returns retained')
+ need(ro['schema']==ex['schema']=='LITERAL2_COMPLETED_A1_COMPARE_SPOOL_RETIREMENT_RECEIPT_V1' and ro['mode']=='check' and ex['mode']=='execute' and ro['status']=='READONLY_READY_EXACT_LITERAL2_A1' and ex['status']=='RETIRED_EXACT_LITERAL2_COMPLETED_A1_COMPARE_SPOOLS_ONLY' and ro['failure'] is ex['failure'] is None and ro['actual_released_pins']==[] and ro['actual_released_bytes']==0 and ro['files_deleted'] is False and ex['files_deleted'] is True,'readonly0 before successful exact retirement0 without partial failure')
+ plan=doc(ex['plan_pin']);source=read(ex['source_pin']);sfpin=fresh(BASE/'RETIREMENT_SOURCE_ONLY_FREEZE.json');sf=doc(sfpin);review=doc(sf['same_round_Source_review_pin']);closed(doc(sf['same_round_Source_tools_pin']),'actual_review_return',sf['same_round_Source_review_pin'],'review_pin');ready_pin=fresh(BASE/'SOURCE_REVIEW_READY.json');closed(doc(sf['actual_Source_generation_tool_pin']),'actual_Source_preparation_return',ready_pin,'ready_pin')
+ need(sf['schema']=='RETIREMENT_ONLY_REVIEWED_SOURCE_FREEZE_V1' and sf['control_plan_pin']==ro['plan_pin']==ex['plan_pin'] and sf['selected_retirement_source_pin']==ro['source_pin']==ex['source_pin'] and ex['review_pin']==sf['same_round_Source_review_pin'] and review['status']=='PASS_RETIREMENT_ONLY_V4_EXACT_LITERAL2_SOURCE_PRIOR_PUBLICATION1_RETAINED' and review['failure'] is None and ex['readonly_receipt_pin']==readonly_pin and ex['readonly_tools_pin']==rtpin and readonly_pin['identity'][5]<execution_pin['identity'][5],'same frozen Source/PLAN/peer0/gen0 and genuine prior readonly0 bound')
+ targets=plan['target_pins'];need(ex['exact_target_pins']==ro['exact_target_pins']==targets==ex['actual_released_pins'] and len(targets)==2 and sum(p['size_bytes'] for p in targets)==ex['actual_released_bytes']==202708660 and all(not os.path.lexists(p['path']) for p in targets),'exact historical literal2 fully absent, exact released2/202708660B; no additional target')
+ gone={p['path'] for p in targets};roots=plan['complete_joint_roots'];need(len(roots)==len(set(roots))==54 and roots==ro['complete_joint_roots']==ex['complete_joint_roots']==sf['complete_joint_roots']==review['complete_joint_roots'] and roots[:-2]==plan['inherited_complete_joint_roots'] and len(roots[:-2])==52 and roots[-2]==str(BASE.parent) and plan['original_caps']==ro['original_caps']==ex['original_caps']==sf['original_caps']==CAPS,'original52 + wholeTOP/output54 and all caps no reset')
+ for d in(ro,ex):
+  need(d['original_Root_exit_code_retained']==1 and d['old_reports_rewritten'] is False and d['completed_temporary_file_lifecycle_only'] is True and d['sameSHA_duplicate_claim'] is False and all(d.get(k,False) is False for k in FALSE if k!='files_deleted'),'only completed spool lifecycle, oldfailure1 retained, no physics/broad qualification')
+ has(source.decode(),['for p in TARGETS:full(p);resource_check()','fresh_process_preflight(a.mode,1)','fresh_process_preflight(a.mode,2)','identity(os.stat(q.name,dir_fd=directory,follow_symlinks=False))==p[\'identity\']','os.unlink(q.name,dir_fd=directory)'],'whole frozen Source full bothEOF/process/immediate dirFD7 gates');need(source.decode().index('for p in TARGETS:full(p)')<source.decode().index('fresh_process_preflight(a.mode,2)')<source.decode().index('os.unlink(q.name,dir_fd=directory)'),'both full target EOF precede first unlink in actual unchanged Source')
+ checks.append('Genuine actual readonly2c30ee0 then executionbed23b0; exact released2/202708660B and literal target absence, original Source/peer0/gen0 and fullEOF/dirFD7 gates bound.')
+ processpins=[]
+ for receipt in (ro,ex):
+  need(receipt['fresh_ps_lsof_checks_passed'] is True and len(receipt['fresh_ps_lsof_pins'])==2,'two genuine fresh preflight records per mode')
+  prev=0
+  for ordinal,p in enumerate(receipt['fresh_ps_lsof_pins'],1):
+   v=doc(p);need(p['path']==str(BASE/('ROOT_FRESH_PS_LSOF_'+('CHECK' if receipt['mode']=='check' else 'EXECUTE')+'_'+str(ordinal)+'.json')) and v['schema']=='ACTUAL_LITERAL2_A1_FRESH_PROCESS_AND_OPEN_HANDLE_PREFLIGHT_V1' and v['mode']==receipt['mode'] and v['failure'] is None and v['raw_observations_only'] is True and len(v['actual_returns'])==2 and type(v['started_wall_time_ns']) is int and type(v['finished_wall_time_ns']) is int and prev<v['started_wall_time_ns']<=v['finished_wall_time_ns']<receipt['fresh_ps_lsof_pins'][-1]['identity'][5]+10**10,'actual ordered bounded preflight metadata')
+   ps,ls=v['actual_returns'];need(ps['argv']==['/bin/ps','-axo','pid=,ppid=,stat=,command='] and type(ps['original_integer_exit_code']) is int and ps['original_integer_exit_code']==0 and ps['stderr']=='' and type(ls['original_integer_exit_code']) is int and ls['original_integer_exit_code']==1 and ls['stdout']==ls['stderr']=='' and ls['argv']==['/usr/sbin/lsof','-nP','-Fpcfn']+[p['path'] for p in targets] and len(ps['stdout'].encode())<8*2**20,'actual ps0 and exact target lsof1 empty no open handles');prev=v['finished_wall_time_ns'];processpins.append(p)
+  for k in ('resources_before','resources_after'):resources(receipt[k],roots)
+ checks.append('All four fresh PS/lsof saved raw metadata read fully; exactly two ordered check-mode and two execute-mode preflights, each ps0/lsof1-empty; original54 caps checked.')
+ cp=plan['actual_corrected_capture_proof_pins'];need(cp['host']==ex['capture_host_pin']==ro['capture_host_pin'] and cp['child']==ex['capture_child_pin']==ro['capture_child_pin'] and cp['post']==ex['capture_post_pin']==ro['capture_post_pin'] and cp['root_tools']==ex['capture_root_tools_pin']==ro['capture_root_tools_pin'] and cp['post_tools']==ex['capture_post_tools_pin']==ro['capture_post_tools_pin'] and plan['actual_compact_capture_full_pin']==ex['compact_vector_full_pin']==ro['compact_vector_full_pin'],'same original capture provenance and corrected post0')
+ h,e,post=doc(cp['host']),doc(cp['child']),doc(cp['post']);closed(doc(cp['root_tools']),'actual_terminal_return',cp['host'],'report_pin');closed(doc(cp['post_tools']),'actual_review_return',cp['post'],'review_pin');need(h['status']=='ACTUAL_A1_NATIVE_VECTOR_CAPTURE_26R4_104B_CLOSED0_ONLY' and h['failure'] is None and h['actual_evidence']==e and [e[k] for k in ('captured_original_record_count','captured_REAL32_words','captured_bytes')]==[4,26,104] and post['status']=='PASS_ACTUAL_A1_NATIVE_26_REAL32_104B_CAPTURE_PROVENANCE_ONLY' and post['failure'] is None,'original capture Root0/post0 unchanged')
+ preserved=unique(plan['preserved_current7_pins']+plan['preserved_full_provenance_pins']+post['all_actual_output_full_pins']+[p for p in h['fixed_current_pins'] if p['path'] not in gone]);need(len(h['fixed_current_pins'])==488 and len([p for p in h['fixed_current_pins'] if p['path'] in gone])==2 and ex['preserved_current7_pins']==ro['preserved_current7_pins']==plan['preserved_current7_pins'] and ex['preserved_full_provenance_pins']==ro['preserved_full_provenance_pins']==plan['preserved_full_provenance_pins'],'only intentional original input pair absent; other fixed486 and all preserved roles exact')
+ for p in preserved:onlystat(p)
+ for p in post['all_actual_output_full_pins']:need(p['path'] not in gone,'capture output8 independent of retired originals')
+ need(len(post['all_actual_output_full_pins'])==8,'all original capture8 retained current7 only')
+ for p in ex['closure_pins'].values():read(p,False)
+ old=doc(ex['actual_original_literal4_receipt_pin']);need(old['status']=='RETIRED_EXACT_LITERAL4_COMPLETED_COMPARE_SPOOLS_ONLY' and old['failure'] is None and old['actual_released_bytes']==405417320 and all(not os.path.lexists(p['path']) for p in old['actual_released_pins']),'old literal4 receipt and exact four absence retained')
+ prior=plan['prior_v3_failed_once_publication_pins'];v3pub=doc(prior['ROOT_FINAL_PUBLICATION_TRUE_TOOL_RETURNS.json']);v3receipt=doc(prior['RETIREMENT_SOURCE_PUBLICATION_RECEIPT.json']);need(v3pub['observed_closed'] is True and type(v3pub['original_integer_exit_code']) is int and v3pub['original_integer_exit_code']==1 and type(v3pub['actual_publication_return']['exit_code']) is int and v3pub['actual_publication_return']['exit_code']==1 and v3receipt['failure']=="KeyError('identity')",'original publication1 not rewritten to0');first=doc(post['preserved_initial_post_review_pin']);firsttools=doc(post['preserved_initial_post_true_tools_pin']);need(first['failure']=="PermissionError(1, 'Operation not permitted')" and firsttools['original_integer_exit_code']==1 and firsttools['actual_review_return']['exit_code']==1,'capture first post1 preserved')
+ for p in prior.values():read(p,False)
+ checks.append('Original capture outputs8/all other fixed486 + XSM/jsonl/comparison/failure/history provenance current7 only; old literal4 absence, original publication1 and first post1 retained without rewrite.')
+ for mode,argvname,tp,rec in [('check','ROOT_EXACT_READONLY_ARGV.json',rt,ro),('execute','ROOT_EXACT_EXECUTION_ARGV.json',et,ex)]:
+  ap=fresh(BASE/argvname);av=doc(ap);need(av['argv']==shlex.split(tp['argv_command']) and av['command']==tp['argv_command'] and av['source_pin']==rec['source_pin'] and av['plan_pin']==rec['plan_pin'],'exact actual mode argv and original PF integer schema')
+  if mode=='execute':need(av['readonly_receipt_pin']==readonly_pin and av['readonly_tools_pin']==rtpin,'actual execute argv binds prior readonly0')
+  name='READONLY' if mode=='check' else 'EXECUTION';lp=fresh(BASE/('ROOT_FINAL_LIGHT_'+name+'_REVIEW_20261015.json'));lv=doc(lp);ltp=fresh(BASE/('ROOT_FINAL_LIGHT_'+name+'_TRUE_TOOL_RETURNS_20261015.json'));lt=doc(ltp);tt=lt['actual_light_return'];need(lt['observed_closed'] is True and type(lt['original_integer_exit_code']) is int and lt['original_integer_exit_code']==0 and type(tt['exit_code']) is int and tt['exit_code']==0 and tt.get('session_id') is None and json.loads(tt['output'])['status']==lv['status'] and lv['status'].startswith('PASS') and lv['failure'] is None and lv['mode']==mode and lv['complete_joint_roots_count']==54,'necessary actual final LIGHT0 each mode retained')
+  for p in lv['checked_Source_and_metadata_pins']:read(p,False)
+ pub=doc(fresh(BASE/'RETIREMENT_SOURCE_PUBLICATION_RECEIPT.json'));pt=doc(fresh(BASE/'ROOT_FINAL_PUBLICATION_TRUE_TOOL_RETURNS.json'));closed(pt,'actual_publication_return',fresh(BASE/'RETIREMENT_SOURCE_PUBLICATION_RECEIPT.json'),'publication_receipt_pin');need(pub['status']=='RETIREMENT_ONLY_REVIEWED_SOURCE_FREEZE_PUBLISHED_ONLY' and pub['failure'] is None and pub['retirement_source_freeze_pin']==sfpin,'genuine fresh once v4 Source publication0')
+ joint,nfiles=walk(roots);extra=sum(p['size_bytes'] for p in plan['explicit_cumulative_metadata_file_pins'] if not any(Path(p['path']).is_relative_to(Path(root)) for root in roots));disk=os.statvfs(BASE);free=disk.f_bavail*disk.f_frsize;need(joint+extra<2*2**30 and free-CAPS['cold_reserve_bytes']-2*2**30>=8*2**30,'current54 cumulative2 and free8 intact')
+ for p in list(fullpins.values()):read(p,False)
+ for p in list(statpins.values()):current(p)
+ need(all(not os.path.lexists(p['path']) for p in targets) and fresh(Path(__file__).absolute())==ownsource and resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*(1 if sys.platform=='darwin' else 1024)<512*2**20 and time.monotonic()-started<600,'final exact absence/preservation/own freeze and bounded audit')
+ result.update(status='PASS_ACTUAL_EXACT_LITERAL2_A1_RETIREMENT_202708660B_METADATA_ONLY',failure=None,actual_readonly_receipt_pin=readonly_pin,actual_readonly_true_tools_pin=rtpin,actual_execution_receipt_pin=execution_pin,actual_execution_true_tools_pin=etpin,actual_Root_retirement_integer_exit_code=0,actual_Root_readonly_integer_exit_code=0,actual_released_pins=targets,actual_released_file_count=2,actual_released_bytes=202708660,actual_target_absence_checked_twice=True,actual_files_deleted_by_Root=True,readonly_released_bytes=0,readonly_files_deleted=False,all_four_fresh_ps_lsof_dual_EOF_pins=processpins,retirement_Source_freeze_pin=sfpin,retirement_Source_review_pin=sf['same_round_Source_review_pin'],retirement_Source_review_true_tools_pin=sf['same_round_Source_tools_pin'],actual_corrected_capture_proof_pins=cp,original_capture_output8_current7_only_pins=post['all_actual_output_full_pins'],remaining_original_capture_fixed_current7_count=486,all_preserved_dual_current7_only_pins=preserved,original_caps=CAPS,complete_joint_roots=roots,current_joint_root_bytes=joint,current_joint_regular_files=nfiles,current_explicit_external_metadata_bytes=extra,current_joint_plus_external_metadata_bytes=joint+extra,current_free_disk_bytes=free,old_Root_original_failure1_retained=True,old_v3_publication1_retained=True,old_capture_first_post1_retained=True,old_literal4_receipt_pin=ex['actual_original_literal4_receipt_pin'],verified_full_Source_metadata_pins=list(fullpins.values()),verified_dual_current7_only_pins=list(statpins.values()),auditor_Source_freeze_pin=ownfreeze_pin)
+except BaseException as error:result.update(status='FAILED_ACTUAL_LITERAL2_A1_RETIREMENT_METADATA_POSTVERIFY',failure=repr(error),verified_full_Source_metadata_pins=list(fullpins.values()),verified_current7_only_pins=list(statpins.values()))
+finally:
+ result.update(audit_source_pin=fresh(Path(__file__).absolute()),checks_completed=checks,elapsed_seconds=time.monotonic()-started,auditor_SELF_peak_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*(1 if sys.platform=='darwin' else 1024))
+ with REPORT.open('x') as f:json.dump(result,f,indent=2,allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
+ print(json.dumps(dict(status=result['status'],review_pin=fresh(REPORT),failure=result['failure'],**FALSE)),flush=True)
+if result['failure'] is not None:sys.exit(1)

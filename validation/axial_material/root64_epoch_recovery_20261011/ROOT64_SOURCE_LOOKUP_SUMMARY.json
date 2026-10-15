@@ -1,0 +1,35 @@
+{
+  "status": "READ_ONLY_SOURCE_BYTE_LOOKUP_COMPLETED",
+  "counts": {
+    "MISSING_NO_EXACT_COPY_FOUND": 60,
+    "EXACT_SAME_BYTE_COPY_FOUND": 22,
+    "CURRENT_BYTES_MATCH": 36
+  },
+  "wall_seconds": 1.9468914580002092,
+  "sampled_own_peak_bytes": 27017216,
+  "wall_cap_seconds": 600,
+  "sampled_own_rss_cap_bytes": 536870912,
+  "OS_RSS_hard_limit_claimed": false,
+  "scan": {
+    "files_seen": 219307,
+    "size_candidates_full_EOF_hashed": 954,
+    "candidate_bytes_full_EOF_hashed": 13864136,
+    "skipped": []
+  },
+  "mapping": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT64_CURRENT_SOURCE_MAPPING.json",
+    "size_bytes": 844133,
+    "sha256": "f0892920e4d5f64480b9fdbfdc27721ba0f546627474da784d64b4235916969b",
+    "identity": [
+      16777234,
+      49743964,
+      33188,
+      1,
+      844133,
+      1791725861925302366,
+      1791725861925302366
+    ],
+    "before_open_EOF_after_identity_equal": true
+  },
+  "science_or_current_identity_qualification": false
+}

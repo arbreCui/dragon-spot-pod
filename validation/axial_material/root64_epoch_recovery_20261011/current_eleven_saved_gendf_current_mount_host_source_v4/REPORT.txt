@@ -1,0 +1,56 @@
+Current GENDF Source v4 / actual current mount 29 / Source only
+
+This new package preserves all old packages and all original saved inputs.
+The eleven GENDF files remain at their original paths, with their original SHA,
+sizes and six non-device identity fields; total 154,650,680 B. The original
+14,078 B parser was copied whole and has the same SHA and complete bytes.
+Its MT5 P0 extraction is processed diagnostic evidence. It does not replay
+DRAGR packed raw words, apply current TONE/SPH/MASK, resolve all absent-NX
+nuclides, prove neutron balance, qualify a coupled reference, AAA or ABA.
+
+Actual Source-only writer: e1c601, EXIT0. Actual postfreeze finite author Source
+review: 7e1d77, EXIT0, 20,777 checks, 3,057 unique fullEOF files / 3,585,614,929 B.
+This includes all 2,012 current Common binding rows and all 3,040 selected
+current mount catalog rows. It is a Source review, never candidate execution.
+
+The host has exactly four scoped literal changes from v3: current Common
+path, two Source schema names, and explicit current metadata provenance in
+the actual report. The child has exactly two scoped changes: the one
+immutable compiler's real current device field and the Source schema name.
+The complete inverse restores all old guard and numerical Source bytes.
+The old compiler SHA and other six fields are unchanged; its exact nlink=2
+exception remains exclusive to this complete compiler role. Other immutable
+and owned input roles retain nlink=1. No old identity was rewritten or faked.
+
+Original limits remain stage 600 s / whole 1800 s / SELF and own child 512 MiB,
+one thread / one child / no retry, fresh 2 GiB / history 96 GiB /
+cold reserve 20,971,764,748 B / metadata 64 MiB / free floor 8 GiB.
+All five disjoint resource roles remain counted, including both complete
+Source trees and host open-unlinked bytes. Postwrite cap failure keeps the
+original same-owned-descriptor FAILED publication and refuses success.
+
+ROOT_REVIEWABLE_CURRENT_GENDF_V4_CLI_SOURCE_ONLY.json freezes the actual
+Source and host fullpins plus the proposed fresh output path. It is a recipe:
+actual_material_observation_report_pin and actual_full_executable_argv are
+null. The CLI builder requires explicit actual material summary/SHA/seven-id,
+checks the actual closed first-A report and prints a concrete command; it
+never launches the host or parser. Root must verify the frozen recipe and
+returned concrete CLI before execution. No future material report PF exists.
+
+Execution order remains Root true three-plane GLOBAL and online BOOT closed0,
+then saved full370 diagnostic closed0, then the actual current first-A
+material observation closed0 with its 979,740,136 B consumed copy lifecycle,
+then this eleven-input extraction. This package grants none of those gates.
+
+Frozen Source manifest SHA:
+5c42e7211c16eb4fa604510c05cad53acc0bce011fd99edb1e5b0a2c3b683b65
+Frozen host manifest SHA:
+503d70b85bbc1c310a6d3494bef1986214e1975083e402ea4ac46c2485b475ff
+Frozen CLI recipe SHA:
+3f97d588ae01f150ebc8d327d5e13e9a35f6381b41fc65db0a1bebeea6f6326a
+Final complete Source / real CLI closure SHA:
+23f7ef60292d7a9dff83ce926067273aafab02cd365c01d71dfa732b1e98896e
+
+Finite review and true Source-only terminal returns are retained in:
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_eleven_saved_gendf_current_mount_v4_finite_source_review_20261013/
+Root independent current Source review is still required before business.

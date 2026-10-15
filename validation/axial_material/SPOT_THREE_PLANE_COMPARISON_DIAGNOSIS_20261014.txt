@@ -1,0 +1,13 @@
+SPOT 三组材料比较与顺序错配诊断 — 2026-10-14
+
+完整读取三份原始平面材料档案，首次比较输出各 19,620 条 MACROLIB 记录。但原比较按遍历序号配对，两个容器的原始遍历顺序不同，导致 19,619 条不同名称的字段被错误配对，累计报告 9,501,687 个“差异”。该统计不能作为材料数值差异结论。
+
+对已保存比较记录按完整类型化路径重新对齐后，三份档案分别满足：19,620 条路径集合完全一致；所有类型、声明长度和字数一致；所有原始载荷 SHA256 一致。因此已有诊断指向遍历顺序错配，而非材料内容差异。尚须修正正式路径配对并逐原始字完成最终实际比较。
+
+首次主过程真实退出 1；末尾累计产物超过原 2 GiB 限额。原失败报告、全部日志和比较结果保留。没有把首次失败改成通过，没有提高预算或物理验收阈值。
+
+证据：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_COMPARE_THREE_V7_ACTUAL30_TRUE_TOOL_RETURNS_20261014.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_COMPARE_THREE_ACTUAL_SAVED_OUTPUT_TYPED_PATH_DIAGNOSIS_20261014.json
+
+下一步：利用本次保存的索引及原始字池完成按路径配对的正式比较，避免重新解码三份大档案；在保留所有结果文档和失败证据的前提下处理重复中间文件。AAA 精度、独立耦合参考和 ABA 尚未完成。

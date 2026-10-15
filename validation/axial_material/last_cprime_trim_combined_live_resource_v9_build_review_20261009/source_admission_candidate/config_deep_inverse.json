@@ -1,0 +1,40 @@
+{
+  "mother": {
+    "path": "/private/tmp/axmat_last_cprime_trim_v9_identity_source_draft_20261009/config.json",
+    "identity": [
+      16777229,
+      49199454,
+      33188,
+      1360,
+      1791496217166869844,
+      1791496217166869844,
+      1
+    ],
+    "size": 1360,
+    "sha256": "1ebda93564e525fca46f7153243a6a0084ee4f0375b0d9678305ae2802e0234c"
+  },
+  "candidate": {
+    "path": "/private/tmp/axmat_last_cprime_trim_v9_ready_source_admission_candidate_20261009/config.json",
+    "identity": [
+      16777229,
+      49203375,
+      33188,
+      1370,
+      1791499071981433793,
+      1791499071981433793,
+      1
+    ],
+    "size": 1370,
+    "sha256": "afc40f7a08839839eb724b8a3c6722f66f5d07cf71129a032ac065c0b7be634e"
+  },
+  "only_changed_fields": [
+    "factorySha",
+    "source_review_status"
+  ],
+  "inverse_fields": {
+    "factorySha": "f700f43b411904f002a59cddcd879e1aa4e92fa632417e7be0bd7292fbc32ada",
+    "source_review_status": "UNREADY_SOURCE_ONLY_LAST_PRIVATE_USES_PENDING_ROOT_ADMISSION"
+  },
+  "all_six_future_fields_None": true,
+  "full_deep_inverse_exact": true
+}

@@ -1,0 +1,32 @@
+SPOT 只读文件入口小样本控制：已核验结果
+日期：2026-10-16
+
+结果
+非科学小样本控制已实际完成：Root真实0，独立后验真实0。一次编译/链接、一个正常读取控制、三个异常控制，真实子进程退出码依次为[0,0,71,1,1]。三个异常控制的原始FAILED和错误字段完整保留，未改写成子进程0。
+正常控制在同一PID/进程组86671内继承三个只读描述符101/102/103，经过GNU Fortran启动后，使用libc打开/dev/fd入口，完整读取三个不同文件共1,809字节，并通过EOF、定位、重读和内核拒绝写入（EBADF）检查。
+关闭第三描述符实际触发原生拒绝71；篡改身份、重复底层文件分别在启动原生程序前被拒绝1。关闭第三描述符时，前两个小文件已可被读取，未声称所有拒绝发生在读取前。
+独立核验对28份新产生的程序、夹具、源码副本、日志、监控和报告共168,819字节完整盲SHA/长度/当前身份各检查两遍。旧科学快照、Dragon、对象和归档仅核当前身份，未读取科学正文或重新运行科学程序。
+
+执行与资源
+Root唯一执行a088c7/session15302→c0797d，真实0，无重试；独立后验唯一cf0d26/session70606→b2cd22，真实0。
+四份Source正式独立审阅bcac03/session24806→14c503真实0；后验Source全文预审851b3e真实0。执行前Root全文审阅、20参数核对和后验完成闭合检查分别保留。
+完整累计目录84→85；该控制新输出上限32MiB，Source/元数据上限8MiB，原SELF/child512MiB、stage600秒/whole1800秒、单线程/单子进程/重试0、fresh2GiB、history96GiB、冷存储/元数据/空闲预留均未放宽。
+Root结束资源样本：fresh=1,158,017,250字节，external=83,711,583字节，open-unlinked=0，SELF峰值118,472,704字节，耗时87.25705391698284秒。独立后验写前fresh=1,158,111,422字节。这些是已保存的实际样本，下一阶段仍须重新准入量测。
+五个很短的子进程监控采样峰值均为0.0MiB，原记录保留；这不表示实际内存为0，也不代表测得完整实际峰值。
+全部69个外部编译依赖及完整外部账继续计入，59处历史已退役路径继续缺失；全部保留结果、规范副本和归档仍在。
+
+边界与下一步
+本结果只证明本机只读描述符在同PID执行及libc读文件中的小样本行为，尚未证明GANLIB实际完整读取、生产启动器、完整PACK、B上下文或在线消费者合格。
+下一步采用没有异常测试开关的生产启动器，明确绑定三个规范A1/B2/A3快照与描述符，复用已构建Dragon，只执行打包并完整核验18棵物理树和3份RCON。新打包输出条件上限512MiB，完整累计目录将继承至86，不复制三份大输入，不放宽2GiB。
+后续GLOBAL/PROJECT需要同时存在的输入和中间副本仍须据源码重新设计资源安排，不能因为打包可放下就声称全链可运行。
+B在线读取尚未完成；AAA ν裂变误差3.9525259224%仍高于3%阈值。独立耦合参考和ABA未准入，主goal保持active。
+
+证据
+Root报告：/Users/wen/spot/validation/artifacts/axial-material-current-readonly-FD-same-PID-exec-control-20261016-v1/Root_actual_non_scientific_readonly_FD_exec_control_summary.json
+SHA256=503ceaa1c81d771fa87c0e8279389c5a7715bb3ed8a48aaa9524799d2e0092f8，bytes=64396
+Root真实工具回执：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_readonly_FD_same_PID_exec_control_source_v1_UNREADY/ROOT_ACTUAL_FD_CONTROL_TRUE_TOOL_RETURNS.json
+SHA256=c74e59161e311f931a0ebe07ca5fc31ad7e6f90962d7bbf03108fd5c3b4fb6a0，bytes=4251
+独立后验：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_readonly_FD_same_PID_exec_control_source_v1_UNREADY/actual_postverify_20261016/REVIEW.json
+SHA256=a3c1ba6ecd01c4d0dd5b669c182ddc426a7f97e4d245dc478ea4a44353edec20，bytes=332814
+独立后验真实工具回执：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_readonly_FD_same_PID_exec_control_source_v1_UNREADY/actual_postverify_20261016/TRUE_TOOL_RETURNS.json
+SHA256=22d5a80733e4edb5733450dc344e5fceca974b69399a8f9bfa6bf8bde5001176，bytes=2881

@@ -1,0 +1,106 @@
+UNREADY SOURCE DRAFT — 2026-10-15
+
+Scope is all48 complete JSONL results: immutable original43 registry (583122866B)
+plus every5 JSONL member of the genuine completed A2 Host output manifest
+(222114059B); combined805236925B. No rows are filtered, replaced by a summary,
+or decoded. Original43 registry and its30 historical A input-role intersections
+remain unchanged. The five current A2 results are a separate role family.
+
+Completed A2 authority is the genuine Root da510e integer0 and independent
+metadata post4d14cc integer0. Child evidence-only exit2/OwnRSS FAILED record,
+old issue1 reports and first A1 Root1/child1 remain preserved. A2 proved six
+current Source phases/19249 comparisons/55 events/eight snapshots with zero
+mismatch/current context issues/unknown producers. It did not qualify physics,
+reaction balance, AAA, reference or ABA.
+
+The Source draft consists of common metadata/resources support, one serial byte
+worker, and one original OwnRSS guarded parent. All three are AST-parsed only.
+The earlier author's byte-stream primitive was read as Source; its deterministic
+gzip and streamed SHA/length roundtrip sequence was retained in this design.
+The earlier nested-output64 proposal is not used: archive owns one fresh ART
+root and inherits the exact latest full prefix, currently64→65, without overlap.
+The Source package itself is already inside counted FTOP. Later B must inherit
+whatever full prefix actually exists then; it cannot keep a stale65 literal.
+
+No preparation/publication/execution admission is generated. Early14 actual
+receipt/Root tools/post/tools remain NULL in DRAFT_METADATA_SOURCE_SEED.json.
+Root must first complete their actual0/post0, retain original seven XSMs and
+final55 SQL/pool, then finalize the exact post schema/status/role projection
+from the actual keys. The worker requires actual released14 fullPFs/149659264B,
+all14 absent and actual genuine Root0/post0. Boolean draft assertions alone
+do not admit them: the actual receipt and tools are verified in common.admit().
+All66 remaining native context/XSM/final55 pair roles remain current7-only.
+The original science libraries, original material/observer XSMs, current NPZs,
+reports, comparisons, failure histories and processing inputs are preserved.
+
+Root archival execution is one original OwnRSSSerialExecutor child, serial48
+files, original stage600/whole1800/SELF512MiB/thread1/one child/retries0. Original
+production_inputs is preloaded under its actual module name; the whole original
+production/resource/history/guard Sources and import origins are checked. No
+guard class, MRO, clock, profile hook, compiler or scientific arithmetic changes.
+Root execution requires require_escalated for the unchanged PS guard. Archive
+Source preparation remains pending a oncepublisher/actual Source review binding;
+the UNREADY draft must not be run with improvised freezes.
+
+Per file: exact fullPF/current7→O_NOFOLLOW original stream→gzip level6 with empty
+filename and mtime0→compressed wholeEOF fullPF→complete streaming decompression
+SHA256/length equal the original saved plain SHA256/length→durable entry/index.
+Compression input SHA and decompressed SHA are both saved. No JSONL parsing,
+floating-point decoding or numerical re-evaluation is involved. Deterministic
+gzip is scoped to the same pinned interpreter/codec runtime and fixed settings,
+not cross-version identical gzip bytes; runtime versions are recorded. Original
+plain current7 is checked before and after every transfer. Data/entry directory
+fsync precedes any future retirement.
+
+All gzip payloads together must remain strictly below184MiB;8MiB is reserved
+for the complete index/entries/report/host/runtime/log/watch/bindings inside the
+strict192MiB total owning output cap. Every compressed write checks its next
+byte count before writing. Source/metadata component remains below16MiB. These
+are enforced upper bounds, not a prediction that805236925B will compress to fit.
+If cap/time/RSS/integrity fails, preserve all original plaintexts, partial gzip,
+entry metadata and genuine nonzero/first failure; never remove/retry the run.
+Runtime fit and compression ratio are UNPROVEN. No bytes have been reclaimed.
+
+Stat-only baseline in DRAFT_SOURCE_AST_AND_RESOURCE_FACTS.json includes complete
+current64 apparent bytes and explicit external metadata. Reserve192MiB output
+plus16MiB Source while all plain inputs coexist; no subtraction is made for
+future plaintext retirement or the not-yet-admitted149659264B early14 release.
+Original fulljoint2GiB/history96GiB/cold20971764748B/metadata64MiB/free8GiB
+reservations remain unchanged. Fresh original resource classes must rescan at
+actual Sourcegen/launch/final closure; these draft stat facts are not a future
+resource PASS. Open-unlinked bytes remain counted. Failed partial archival
+roots remain part of every later cumulative prefix.
+
+Future independent archive metadata post must bind genuine Root0/child0, final
+Source freeze/HF/CLI/Sourcepeer/raw returns, exact48 entry PFs/complete index,
+compressed archive fullEOF/current7 twice and all original48 plain current7.
+It must report its own honest scope: metadata/new compressed blindSHA, no
+independent numerical recomputation or old JSONL decoding. Root's actual
+streamed decompression proof supplies byte recovery evidence; a metadata-only
+post must not claim it independently decompressed unless it actually did so.
+Before running that post, audit actual report keys and freeze its Source.
+
+Only AFTER archival Root0 plus independent post0 may a separate exactplain
+retirement Source be authored/admitted. It requires the complete exact48 plain
+PF set, preserved archive/index/PFs and actual byte recovery evidence, fresh
+same-PID PS/resources, immediate lsof no-owner proof, directory-fd/no-follow
+identity checks, durable per-unlink journal and no retry/rollback. This draft
+contains NO plaintext unlink. The retirement receipt must explicitly convert
+only these exactplain paths to historical archived roles. Keep every result's
+complete bytes accessible through original-path + original-fullPF lookup.
+
+Old consumers must never receive nonexistent paths as live inputs. In
+particular30/43 original JSONLs were full5937 A guard roles; after completed A2
+and a future actual48 retirement receipt/post0, a new consumer must retain the
+original immutable PF table as historical, bind the exact archive lookup and
+retirement proof, and use a bounded verified decompression reader if it needs
+the result bytes. This cannot be implemented by simply removing guards or
+passing missing files to the original consumer. The new5 A2 output manifest
+will likewise remain historical plus exact archival lookup after retirement.
+No science operand, fullreaction authority, physics/AAA/ABA qualification is
+created by result archival or temporary-file lifecycle operations.
+
+Source author has not opened/hashed old JSONL/XSM/SQL/pool/SCI/GENDF/NPZ payloads,
+compressed/decompressed anything, run native/compiler/business code, queried
+PS/lsof, imported guard/business helpers, or deleted any file. All reads were
+primary Source, metadata JSON, or stat-only current7/resource observations.

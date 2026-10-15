@@ -1,0 +1,26 @@
+SPOT A材料聚合结果与清理记录（2026-10-14）
+
+已完成的实际结果
+A材料完整读回：55个上下文记录、8份原始快照，全部记录/类型/原始字/顺序保留，独立核验通过。
+修正MACROLIB计数合同：1个空根目录加19619个后代记录，完整保留总19620条；科学计算公式、物理输入和原验收阈值未改。
+完整聚合：scattering、scalar、fission、extras、overv_fallback、metadata六个分支全部完成。19249次字段比较、1829421个已知元素，数值差异0、未知宏库数据来源0。完整散射计算范围3285600项。
+原MASK、SPH实际分支核验通过，55上下文和8快照均保。独立后验真实通过；正常证据子程序按契约退出2，原FAILED记录保留，没有伪改为PASS。
+
+尚未完成
+存在1项OVERV控制缺口：双精度sqrt/libm舍入常数需独立模型与真实运行控制。全部370×8原字已比较，但历史机器位重放不成立，不能由零差异授予物理资格。
+完整最终构造、反应multiplicity、物理中子平衡、370群独立耦合参考、AAA精度、ABA和总目标均未通过。正式AAA νfission最大偏差3.9525259224%仍高于3%；六个未知角矩保持UNKNOWN。
+核数据GENDF和三层原始宏库对照尚未执行：GENDF发布路径映射和旧producer报告格式兼容已在执行前发现，正在精准修复，原错误凭证保留。
+
+清理结果
+累计实际旧清理33批、287份旧中间文件、37080958384字节（34.53GiB）。其中本轮map005..011七份已结束旧运行中间结果释放1621892132字节，最终map012、所有科学原始输入、当前运行结果、日志和结果文档保留。
+另此前运行正常关闭释放新临时库979740136字节，单列，不混旧清理累计。
+最后五项清理独立后验通过，9914保护项、110保留文件、5目录、35符号链接完整。释放后原完整运行储备余1274862685字节；这是聚合前快照，后续必须实时重新核验。
+
+核心实际结果位置
+Host: /Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-empty-root-cumulative12-20261014-v1/Root_actual_current_material_evidence_summary.json
+Child: /Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-empty-root-cumulative12-20261014-v1-evidence/ACTUAL_COMPLETE_FINAL_MICRO_MACRO_CONSTRUCTION_REPORT.json
+独立后验: /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_empty_root_cumulative12_first_A_aggregate_actual_evidence_postverify_20261014/REVIEW.json
+清理后验: /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_literal5_closed_old_map007011_actual_exact_release_postverify_20261014/REVIEW.json
+
+下一顺序
+修复具体接口兼容并完成GENDF与三层原始宏库对照；建立OVERV独立控制；核实反应与物理来源后准入独立370×9参考；再解决AAA精度并执行ABA。目标保持active，所有原物理输入、上限和阈值不变。

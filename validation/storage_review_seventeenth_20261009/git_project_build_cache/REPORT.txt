@@ -1,0 +1,13 @@
+第十七轮 Git/root native/build/cache 独立只读复查：新可安全删除候选0，批准逻辑和分配回收量均0。本代理只写TMP，不删文件、不改Git/项目、不gc/prune/clean/repack/fsck，不执行科学业务。
+
+与R16对比：Root本轮真实7fef04 EXIT0完整项目metadata基线，项目155,928,840KiB，相对R16after增加61,828KiB（60.37890625MiB）。总量增幅不证明具体新内容来源。独立fresh仅检查非validation核心3016普通文件，逐完整路径和七字段与R16已认可原metadata基线完全相同；新增/缺席/变化均0。核心独有inode分配146,280,448B（139.504MiB）。Root负责全项目before/after，本报告不冒充全项目内容或科学INPUT证明。
+
+编译HOLD：.o 1383项/35,663,872 allocated B；.a 8项/65,978,368B。8库及6原程序完整exact路径、logical/allocated、七field都与R16一致，详见REPORT.json。现V9factory仍读root libDragon.a，原trimproducer仍链接四库，auditor仍读取src/FLU.o，四Makefile明确archive/object/target依赖。相同size不证明重复，也没有新增full依赖排除/可靠恢复证据，旧compiled HOLD不解锁。root build/target/dist/node_modules等存在性见JSON；没有新不受依赖的小构建批次。
+
+缓存：完整159项与R16/R15/R12保留集合相同，逐现存身份完全相同；logical4,254,785B，uniqueinode allocated4,534,272B。原157项resource HOLD+2项封存源码衍生HOLD继续保留。R12真已删64项仍absent，不重复列为本轮收益；.ruff_cache无普通文件。没有新增可安全删除cache。
+
+Git只读真实count/du：.git 2,944,512KiB，objects2,713,612KiB，lost-found230,372KiB；loose 3166（较R16+77），packs3/packed6890，garbage0、prune-packable0。这些不是可达性/已备份证明，未读历史或大objects。lost-found 79份、logical235,627,205B/allocated235,900,928B，两最大恢复对象路径见JSON。HOLD .git/objects、refs、logs、index和lost-found；现大量未提交工作与永久恢复均无逐项可安全丢弃证明。R9归档捕获为旧文档来源证据，本次Git新增原因不推断，不批准清空恢复对象或任何Git维护。
+
+恢复和结果：97永久gzip七field与R16全同，当前logical2,569,078,721B/allocated2,569,285,632B；未重hash或解压全部恢复包。R9材料89gzip、R14 metadata8gzip、其manifest/ledger/RESTORE/恢复工具及唯一OUT9恢复主本继续保留。小恢复control和旧V8运行失败/coldV3 RSS失败/新cold声明收据全文SHA保持；R17 README/科学progress等按本轮Rootbefore SHA保持。所有报告、原结果、失败、stdio、seal、源码、永久恢复链和当前runtime/INPUT/全history资源仍HOLD；成功INPUT/PREP不取消旧失败或2000active八门要求。
+
+完整小机器证据/来源pin/精确路径/容量/比较指纹见REPORT.json；真实工具收据另封存。没有新增多MBbaseline、全项目walk或35GB内容读取。分配量不是APFS即时独占空闲承诺；本轮批准回收仍0。

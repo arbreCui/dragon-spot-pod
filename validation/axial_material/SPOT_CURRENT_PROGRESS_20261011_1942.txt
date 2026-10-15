@@ -1,0 +1,42 @@
+SPOT 当前进度
+记录时间：2026-10-11 19:42，Asia/Shanghai
+
+整体判断
+项目仍在组件研发与验证阶段，同温轴向材料对照尚未完成，尚不能作为已验证的生产发布。工程链有新的实际进展，科学验收仍未达标。
+本期目标保持：A/B 双精度快照及生产到在线读取核验 → AAA 同质控制 → 独立耦合参考准入 → ABA 材料变化对照。材料、温度、几何、原门槛和资源上限均保持。现在没有换材料或降低 rank。
+
+已完成和最新进展
+1. 旧 D4-A 十二单元案例完成九个完整耦合映射，原数学收敛和最终输出回放通过；独立连续能量参考的 k 精度仍失败。这是已收敛的组件案例，尚不是精度验收通过的发布。
+2. A/B 双精度离线保存态已生成，370 能群终态及材料、系统、轨迹核验通过。当前重入仍从旧 REAL32 镜像开始，真正连续双精度生产与在线 BOOT 读取尚未通过。
+3. 在线双精度候选链的小控制实际完成五个编译步骤和 17 个正反控制，全部通过；保存结果独立核验通过。
+4. 配套缓存模块与九个实际入口共十个编译步骤已实际通过，保存结果独立核验通过。尚未进行完整原生构建、实际链接和真实在线耦合；其中 KDRDRV 的原外部预处理合同已定位，后续构建须正确恢复该步骤。
+5. 减内存改动的 74 项专项控制通过。相同声明数据的独占对象占用减少约 2.74 MiB；这不是进程内存测量，也不是完整构建通过的证据。
+6. v31 新完整准备流程实际通过一次，原 host 约 304.79 秒，实际子进程约 303.47 秒，原监控样本峰值 469.046875 MiB，无监控超限；外层补充资源检查共 153 次。原结果写入器也实际通过，完整六域文件与工具返回已固定。此刻独立保存复核正在进行。
+7. 原 512 MiB、阶段 600 秒、整体 1800 秒、单线程、一个业务子进程、不重试，以及存储上限保持。v31 完整五阶段构建尚未执行。此前 v30 完整构建在 512.6875 MiB 时失败，仅 build/link 完成；该失败结果与全部证据保留。
+
+仍未通过的科学门槛
+共同 rank2 基底：353/370 能群通过，前 17 群失败。改为双精度读取后，新旧谱几乎相同；现有证据不支持“只是单精度读取或打印舍入导致失败”。真正连续双精度在线终态仍需验证，尚不能据此证明所有合法物理解都不可行。
+AAA 同质控制：原正式最大燃料端点误差约 3.95%，高于 3% 门槛；后续角度修正诊断约 3.80%，仍未通过。端部误差原因尚未确定。
+独立完整耦合参考尚未准入，ABA 尚未开始，目前没有通过验收的材料差异结论。
+
+下一步安排
+先完成新准备结果的保存复核，实际重跑原完整五阶段构建，验证能否守住 512 MiB。
+随后完成原生构建、真实双精度生产与投影到在线读取核验，保留原全部控制。
+查清 17 能群的共同基底问题；在真实运行中保存各阶终态散射源、裂变源、角度场和泄漏平衡，定位 AAA 端部误差。满足原门槛后再做正式 AAA、独立参考准入和 ABA。
+清理按用户指示暂缓，本轮没有删除文件。目标仍为 active。
+
+主要结果位置
+新 v31 准备结果：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v31_installed6a_20261011_receipts/Root_actual_complete_combined_prepare_summary.json
+新 v31 完整保存记录：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v31_installed6a_20261011_receipts/Root_actual_successful_PREP_namespace_and_streams_freeze.json
+十步实际入口编译结果：
+/Users/wen/spot/validation/artifacts/axial-material-ROOT64-real-entry-compile-only-original-guard-20261011-v2/Root_actual_real_entry_compile_only_summary.json
+A/B 原控制核验：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-AB-stability-root-review-20261011/REPORT.txt
+共同 rank2 全 370 群核验：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-new-AB-common-rank2-root-review-20261011-v1/REPORT.txt
+正式 AAA 结果：
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+此前 v30 完整构建失败结果：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v30_installed6a_20261011_receipts/Root_actual_failed_complete_combined_build_summary.json

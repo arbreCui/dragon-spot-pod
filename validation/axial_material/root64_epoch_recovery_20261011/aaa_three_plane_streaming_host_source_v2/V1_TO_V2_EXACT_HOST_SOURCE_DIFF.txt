@@ -1,0 +1,64 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_host_source_v1/build_streaming_runtime.py
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_host_source_v2/build_streaming_runtime.py
+@@ -19,7 +19,7 @@
+ spec=importlib.util.spec_from_file_location('streaming_build_original_common',COMMON)
+ c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+ SOURCE=REC/'aaa_three_plane_streaming_source_v1'
+-OUT=c.ART/'axial-material-new-AAA3-streaming-aliases-build-only-20261012-v1'
++OUT=c.ART/'axial-material-new-AAA3-streaming-aliases-build-only-20261012-v2'
+ ORDER=['SPOR64_XSM_STORE64.f90','SPOR64_XSM_RB64.f90','SPOR64_B2IX.f90',
+        'SPOR64_BOOT_PROJECTX64.f90','APACKX64.f90','BPROJX64.f90',
+        'SPOBOOX64.f90','SPOBVX64.f90','KDRDRV.F']
+@@ -41,22 +41,40 @@
+         result.append([compiler,*c.FLAGS,*includes,'-J'+str(out/'build'),
+                        '-c',str(SOURCE/name),'-o',str(out/'build'/(Path(name).stem+'.o'))])
+     link=list(base['records'][-1]['command'])
++    old_link_inputs=[x for x in link if x.endswith(('.o','.a'))]
++    if len(old_link_inputs)!=61 or sum(x.endswith('.o')for x in old_link_inputs)!=57 or sum(x.endswith('.a')for x in old_link_inputs)!=4:
++        raise RuntimeError('actual original57 objects plus4 archives required')
+     old=[i for i,x in enumerate(link)if Path(x).name=='KDRDRV.o']
+     if len(old)!=1 or link[-2]!='-o':raise RuntimeError('exact complete61 link structure')
+     link[old[0]]=str(out/'build/KDRDRV.o')
+     # Every old math/storage object is retained. Distinct new module aliases
+     # cannot substitute an old original module or its symbol.
+     link[-2:]=[str(out/'build'/(Path(n).stem+'.o'))for n in ORDER[:-1]]+['-o',str(out/'runtime/Dragon')]
++    expected_inputs=[str(out/'build/KDRDRV.o')if Path(x).name=='KDRDRV.o'else x for x in old_link_inputs]
++    expected_inputs+=[str(out/'build'/(Path(n).stem+'.o'))for n in ORDER[:-1]]
++    actual_inputs=[x for x in link if x.endswith(('.o','.a'))]
++    if actual_inputs!=expected_inputs or len(actual_inputs)!=69:
++        raise RuntimeError('exact complete69 input count and original61 plus8 order required')
+     result.append(link)
+     return result
+ 
+ def main():
+     parser=argparse.ArgumentParser()
+-    for prefix in ['current61','seventeen','source-freeze']:
++    for prefix in ['current61','seventeen','source-freeze','host-freeze']:
+         for suffix in ['summary','sha256','seven-id']:
+             parser.add_argument('--'+prefix+'-'+suffix,required=True)
+     args=parser.parse_args();start=time.monotonic()
++    hf,phf=load_external(args,'host_freeze')
++    if hf['schema']!='COMPLETE_AAA3_NEW_ALIAS_BUILD_HOST_SOURCE_ONLY_FREEZE_V2' or \
++       hf['compiler_executed'] is not False or hf['transport_executed'] is not False:
++        raise RuntimeError('complete external exact own Host Source freeze required')
++    if Path(hf['host_source']['path']).resolve()!=Path(__file__).resolve():
++        raise RuntimeError('independent Host freeze must bind this exact file')
++    c.same_pin(__file__,hf['host_source']);c.verify_rows(hf['dependencies'])
+     binding,fixed,support,helper,full,resources,before=c.initialize(OUT,start)
++    if before['artifact_bytes']+20971764748+64*2**20+2*2**30>=96*2**30:
++        raise RuntimeError('initial history96GiB must reserve fullfresh2GiB plus originalcold and metadata')
++    fixed+=[phf,hf['host_source']]+hf['dependencies']
+     base,pbase=load_external(args,'current61')
+     if base['schema']!='ACTUAL_COMPLETE_NATIVE_A23_FIVE_SOURCE_COMPLETE61_BUILD_ONLY_V1' or \
+        base['status']!='ACTUAL_A23_FIVE_COMPILE_AND_COMPLETE61_DRAGON_LINK_CLOSED0_ONLY' or \
+@@ -120,8 +138,8 @@
+     outputs=[c.pin(p)for directory in ['build','runtime']for p in (OUT/directory).iterdir()if p.is_file()]
+     good=failure is None and after_error is None and len(runner.records)==10 and all(x['status']=='PASS'for x in runner.records)
+     c.write(OUT/'Root_actual_build_only_summary.json',dict(
+-      schema='ACTUAL_AAA3_STREAMING_NINE_ALIAS_COMPLETE70_BUILD_ONLY_V1',
+-      status='ACTUAL_NINE_NEW_SOURCE_COMPILE_COMPLETE70_LINK_CLOSED0_ONLY'if good else 'ACTUAL_BUILD_FAILED_UNQUALIFIED',
++      schema='ACTUAL_AAA3_STREAMING_NINE_ALIAS_COMPLETE69_BUILD_ONLY_V1',
++      status='ACTUAL_NINE_NEW_SOURCE_COMPILE_COMPLETE69_LINK_CLOSED0_ONLY'if good else 'ACTUAL_BUILD_FAILED_UNQUALIFIED',
+       failure=failure,after_check_error=after_error,records=runner.records,
+       fixed_current_pins=fixed,output_pins=outputs,owned_runtime_pins=owned,
+       actual_watchdog_checks=watchdogs,old_nine_objects_identical_and_retained=True,

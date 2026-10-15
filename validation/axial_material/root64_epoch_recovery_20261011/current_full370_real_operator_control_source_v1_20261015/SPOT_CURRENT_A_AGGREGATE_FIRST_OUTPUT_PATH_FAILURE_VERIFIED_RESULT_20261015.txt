@@ -1,0 +1,18 @@
+SPOT 当前A完整聚合：首次输出路径判定失败已核验
+2026-10-15
+
+Source生成ab9955/0、独立Source审阅e8c9b9/0、发布be2c02/0、运行前检查103859/0。
+实际Root终端ed099c/1；原子进程63090/1，数学执行前输出目录门拒绝：output counted in fresh joint evidence。
+实际输出目录为已计入预算的owning root63/evidence，旧门要求其必须等于预算根目录，故未进入Source admission/engine/六阶段计算。
+原日志/守卫/6项输出/Root摘要全部保留；无child数值报告/无聚合结果；最终宿主资源检查True。
+独立failurefacts后验5c191c/0仅核对失败证据，不将Root1/child1当工程child2或物理成功。其首次历史清单适配错误a02481/1亦保留。
+历史输入5937完整PF表通过原request凭证+有序摘要保留；当前live5934，精确3个ASCII角色已实际退役；新proof合并后执行固定集合5949。原14SQL/pool和全部计算数据仍live。
+新v2将只修精确owning_host/evidence的计账门，保留全部63前缀后追加新OUT64。Budget实现、原数学、8快照/55事件/六阶段/19249比较及512MiB/600秒/1800秒/2GiB/320MiB输出上限不变。不得修改或重跑旧v1入口，不声明已完成聚合。
+physics/AAA/ABA及整体goal未完成。
+
+原实际返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_aggregate_after_actual_OVERV_control_source_v1/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+SHA256 f991c6a02048198b0d70d9c026fa98c778e7fdf2bb396095256c45ab6964dde3
+失败后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A_aggregate_after_actual_OVERV_control_source_v1/actual_postverify_20261015/first_actual_failure_metadata_assessment_v1/corrected_historical_reference_schema_v2/REVIEW.json
+SHA256 cac0c78d32bb5770f8d961910d725cb26d794fa24ea092e5efd6d30d12e463ed

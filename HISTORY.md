@@ -1,0 +1,1676 @@
+# Archived SPOT development log — saved 2026-09-25
+
+This is the previous README, preserved as historical evidence. Its “latest”
+statuses and execution commands are not current authorization or release guidance.
+Use [README.md](README.md) and the current quickstart for the repaired chain.
+
+# SPOT: Synthesis Proper Orthogonal Decomposition
+
+SPOT is a reduced-order iterative 2D/1D neutron-transport method. A fixed POD
+space represents radial dependence, online 2D fixed-source solves update the
+radial response, and a reduced 1D axial solve returns axial leakage. The final
+goal is one self-consistent state, not a prescribed number of iterations.
+
+The active method is deliberately small:
+
+- one volume-weighted POD basis, fixed during the iteration;
+- online radial transport at every outer step;
+- one reduced axial solve;
+- direct Picard with `alpha=1` as the validation method;
+- no fitted closure, relaxation, damping, clipping, flux floor, CMFD
+  correction, or empirical coupling coefficient.
+
+The current delivery target is the corrected D4-A component validation:
+the first accepted fixed point, an independent CE comparison, and a
+clean-checkout replay using the sealed runtime inputs. The reported floor
+power fractions are normalized nu-fission production, not absolute thermal
+power. Multi-assembly coupling and an IRENA full-core validation remain
+subsequent milestones. The [final-validation handoff](validation/iterative/d4a_final_validation_handoff.md)
+records the ordered inputs and existing commands to use after convergence.
+
+## Fast current-code gate
+
+Build the current source and run the transport-free contract and algebra
+suite from a clean checkout:
+
+```sh
+make -C src -j2
+make -C validation/iterative -j2
+make spot-fast
+```
+
+Success ends with `SPOT ACTIVE FAST PASS`.  The online D4-A transport path is
+the separately bounded workflow below; the fast gate does not claim a fixed
+point.
+
+## D4-A status
+
+**2026-09-23 validation hold:** an audit found that the frozen axial
+implementation omitted the declared higher scattering moments: radial P0
+records underfilled a three-column array, and FLU read spatial fields as
+angular orders. Saved maps 8/9 have zero P1 diagonals despite 6660 nonzero
+macrolib values. Existing receipts remain historical software evidence,
+not validation of the declared SCAT3 physics. Do not continue or accept the
+old runtime as the corrected release. The source repair, clean build and short
+regressions pass. On **2026-09-24**, the isolated repaired 3-cell axial solve
+completed in 37.46 seconds, exported its state and passed independent readback
+(`k64=1.2718148126934201`). This uses a frozen radial response: it is **not** a
+repaired coupled fixed point or a CE accuracy result. The earlier timeout and
+export-failure artifacts remain incomplete. See the
+[current handoff](validation/iterative/d4a_final_validation_handoff.md) and
+[repair evidence](validation/iterative/d4a_scattering_fix_result.md).
+
+The separately authorized repaired three-plane radial bootstrap has since
+completed in 2 h 14 min 47 s, passed unchanged solver gates, and produced a
+sealed, projectable **new CLOSED/0 initial state**. A repaired one-map entry
+now passes transport-free preflight. Its separately authorized first Picard
+map completed at 2026-09-24 20:41:26 Asia/Shanghai in 4 h 57 min 58 s, within
+the radial/axial caps of 32400/180 seconds, with no retry or second map.
+Independent replay confirms **CLOSED/1 / VALID_NOT_MET**: Rrho=5.43719e-5,
+Rleak=4.78501e-3, Ra=2.29332e-4, all above the unchanged 5e-7 gate. The repaired
+full map works, but coupled convergence and final accuracy are not established.
+The separately approved **map 2 is running** from this CLOSED/1, started at
+2026-09-24 22:07:28 Asia/Shanghai. Its radial/axial caps remain 32400/180 seconds;
+the overall deadline is September 25 at 07:10:28. No retry or automatic map 3
+is allowed. See the [repaired map-1 result and continuation](validation/iterative/d4a_scattering_picard_map1_result.md).
+
+The following numbers describe the superseded implementation:
+
+The 132-region IRENA D4-A legacy-input case reached a converged rank-two
+SPOD/Picard fixed point.  Direct Picard reached the unchanged three-component
+`5e-7` gate at map 8:
+
+```text
+k       = 1.2863778402485850
+R_rho   = 6.3952111273302137e-8
+R_L     = 3.4898525208435340e-7
+R_a     = 3.4971804373678926e-7
+status  = VALID_MET
+```
+
+The iteration contains no relaxation, damping, fitted closure, empirical
+coefficient, clipping, or model correction.  Its read-only normalized
+bottom/middle/top nu-fission production is
+`0.256479949 / 0.485561517 / 0.257958535`.
+
+This closes only a numerical regression.  A later audit found that the
+snapshots used the pre-2026-05-27 material model, whose bulk-density thermal
+expansion direction was physically inverted and whose MOX/EM10 bookkeeping
+was obsolete.  That legacy map 8 therefore remains a numerical regression,
+not a corrected-material result.  The recovered historical direct-3D ladder
+is an eight-region pin-cell problem, not the 132-region D4-A assembly, so its
+values remain excluded.  See
+[the map-8 result](validation/iterative/d4a_rank2_picard_maps6_to8_result.md)
+and [the accuracy boundary](validation/iterative/d4a_map8_accuracy_boundary.md).
+
+The corrected material route has now admitted all three physical snapshots
+at fuel temperatures 650/750/850 C with cladding/sodium at 620/475 C.  Their
+eigenvalues are `1.3707917928695679`, `1.3690495491027832`, and
+`1.3674149513244629`.  The fixed rank-two basis is admitted, and the unchanged
+axial-seed/three-radial-response chain has passed the strict B2I seal as
+`CLOSED/0`.  Corrected-material maps 1 through 9 have completed their online
+radial and reduced axial halves and passed the independent bitwise audit.
+Map 9 advances the chain to `CLOSED/9` and remains `VALID_NOT_MET`, with
+`R_rho=6.7427401995168168E-08`, `R_L=8.9211010879356053E-07`, and
+`R_a=3.5292261241480969E-06`. Only the first of the three defects passes the
+unchanged `5e-7` AND gate. The earlier map-9 attempt was interrupted and is
+not an accepted result. On 2026-09-23 a fresh continuation was stopped early
+after its implicit build changed the frozen executable identity. The exact
+canonical binary was restored; the runner now checks it without rebuilding.
+After a separate user approval, a fresh maps-9–12 continuation started with
+the corrected runner and unchanged binary hash. Its map 9 has now sealed;
+parent identity, the complete manifest, and byte-identical independent/gate
+replays pass. Map 10 has started under the same approved budget.
+It stops at the first MET or any failure, without automatic retry; see the
+[handoff](validation/iterative/d4a_final_validation_handoff.md).
+There is still no corrected-material fixed
+point, final `k`/power result, or final CE comparison. The frozen evidence is
+recorded in
+[the map-1 result](validation/iterative/d4a_corrected_map1_result.md),
+[the map-2 result](validation/iterative/d4a_corrected_map2_result.md),
+[the map-3 result](validation/iterative/d4a_corrected_map3_result.md),
+[the map-4 result](validation/iterative/d4a_corrected_map4_result.md),
+[the map-5 result](validation/iterative/d4a_corrected_map5_result.md),
+[the map-6 result](validation/iterative/d4a_corrected_map6_result.md),
+[the map-7 result](validation/iterative/d4a_corrected_map7_result.md), and
+[the corrected map-8 result](validation/iterative/d4a_corrected_map8_result.md).
+
+Read-only analysis of the actual online radial fields in corrected maps 6–8
+finds about 0.0312% outside the fixed rank-two space in the declared weighted
+flux norm. This is not an eigenvalue-error bound or rank-accuracy acceptance;
+see [the radial-shape diagnostic](validation/iterative/d4a_radial_offspace_result.md).
+The [neutron-balance field review](validation/iterative/d4a_neutron_balance_readiness.md)
+records what can be checked from map 8, and why neither a reflected-boundary
+identity nor the solver's own rebalance is an independent accuracy result.
+The subsequent [saved radial-balance diagnostic](validation/iterative/d4a_radial_balance_result.md)
+reports all 1110 plane/group budgets, with maximum normalized residual
+`9.47e-16`; this is consistency of the already rebalanced discrete fields,
+not a new convergence or physical-accuracy PASS.
+The [saved axial-current check](validation/iterative/d4a_axial_current_result.md)
+also reproduces all 1110 returned REAL64 leakage coefficients bit for bit;
+end currents point outward and internal-face cancellation is at roundoff.
+This verifies feedback consistency, not fixed-point convergence or 3D accuracy.
+
+The separately authorized early CE production finished in 111.22 seconds.
+Its CE-only replay now passes after an approved, exact-build compatibility
+fix for absent statepoint Git metadata: `k_CE=1.3030848883933903`, uncertainty
+`19.5504 pcm`. No transport retry occurred. This is not yet a SPOT--CE
+comparison PASS; see [the CE result and replay record](validation/d4_reference/d4a_ce_production_result_20260923.md).
+There is an important provisional accuracy risk: map 8's nonconverged
+`k=1.2721230284653975` is about `-1867.78 pcm` in reactivity relative to that
+reference, whereas its latest rho increment is about `0.105 pcm`.
+This is not a final comparison or an error bound. The three 50-cm diamond
+axial cells have no demonstrated mesh-convergence result; that is the first
+isolated sensitivity check to prepare, without tuning to CE or changing the
+running case. An isolated short probe reproduced the 3-cell k with an unchanged
+radial package; the 6-cell solve reached its 30-second cap and was not retried,
+so no mesh-sensitivity result is available yet. See
+[the probe record](validation/iterative/d4a_axial_mesh_probe_result.md) and
+[the active risk assessment](validation/iterative/d4a_final_validation_handoff.md).
+The read-only pin-rate path has also been exercised against the real CE
+result: all 651 pin/floor fractions align, with a provisional maximum
+relative difference of 1.8599% and relative RMS of 0.8752%. This is map 8,
+not a fixed point, and includes CE sampling noise; it is not a pin-accuracy
+PASS. See [the pin diagnostic](validation/d4_reference/d4a_pin_diagnostic_result.md).
+
+The shortest reproducible corrected-material build, bootstrap, Picard-map,
+and packaging path is the
+[corrected D4-A quickstart](validation/iterative/D4A_CORRECTED_QUICKSTART.md).
+The large frozen inputs and hash-pinned canonical Dragon are release data
+rather than Git source; until that release asset is published, a clean
+checkout cannot pass its restore step.
+
+## Equations
+
+For energy group $g$, construct the fixed radial basis from snapshots:
+
+$$
+W^{1/2}P_g=U_g\Sigma_g Z_g^T,
+\qquad B_g=W^{-1/2}U_{g,1:r_g}.
+$$
+
+The coupled state is
+
+$$
+x=(a,\rho,L),\qquad \rho=1/k,
+$$
+
+where $a$ contains the POD coordinates and $L$ is the plane-wise axial
+leakage. Given $x$, each radial plane solves
+
+$$
+[\mathcal A_\perp(L)-\mathcal S_\perp]u^+
+=\rho\,\mathcal F(Ba).
+$$
+
+Fission is frozen during that fixed-source solve. The new radial response is
+projected into the same basis, the axial problem is solved, and the returned
+state defines
+
+$$
+x^+=G(x).
+$$
+
+The baseline nonlinear iteration is simply
+
+$$
+x^{m+1}=G(x^m).
+$$
+
+When two actual residuals \(p=G(x^{m-1})-x^{m-1}\) and
+\(q=G(x^m)-x^m\) are available, the tested parameter-free accelerator is
+
+$$
+\beta=\frac{\lVert p\rVert_{HG}^2-\langle p,q\rangle_{HG}}
+{\lVert q-p\rVert_{HG}^2},\qquad
+y=(1-\beta)G(x^{m-1})+\beta G(x^m).
+$$
+
+The same \(\beta\) acts on \((a,\rho,L)\). Only a fresh physical map
+\(G(y)\) and the original three-component AND gate can accept it.
+
+Writing an $\alpha=1$ would add notation but no method. The rank $r$ is the
+number of retained radial basis functions; it is a discretization order, not
+a fitted physical parameter.
+
+The concise derivation is in
+[SPOT_doc/rederivation.md](SPOT_doc/rederivation.md).
+
+## Convergence contract
+
+For one raw map $x^+=G(x)$, SPOT reports three separate defects:
+
+$$
+R_\rho=|\rho^+-\rho|,
+$$
+
+$$
+R_L=
+\frac{\lVert L^+-L\rVert_\infty}
+{\max(\lVert L^+\rVert_\infty,\lVert L\rVert_\infty)},
+$$
+
+$$
+R_a^2=
+\frac{\sum_{s,g}H_s\Delta a_{s,g}^TM_g\Delta a_{s,g}}
+{\sum_{s,g}H_s(a^+_{s,g})^TM_ga^+_{s,g}}.
+$$
+
+All three must pass the declared tolerance. They are not combined into a
+tuned score. The dimensional $D_L=\lVert L^+-L\rVert_\infty$ is not part of
+the outer convergence gate.  It is used only as a same-unit direction
+diagnostic in the predeclared AA authorization screen and is never combined
+with the dimensionless defects.
+
+An inner solve that reaches its iteration cap without satisfying the strict
+terminal predicate is rejected; its last iterate is not accepted as $G(x)$.
+
+## Latest REAL64 rank-2 result
+
+The corrected strict-REAL64 leakage route has reached the unchanged outer
+fixed-point gate.  One radial solve and one axial solve, each bounded and
+without retry, completed through `PROJECTED -> RETURNED -> CLOSED/69`.
+The independent one-map checker and the separate convergence checker pass.
+The measured defect is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(3.1217481\times10^{-8},\,4.7437810\times10^{-9},\,
+6.9504965\times10^{-12}\ \mathrm{cm}^{-1},\,
+2.6517344\times10^{-9}).
+$$
+
+All three gated quantities are below `5e-7`, so the classification is
+`VALID_MET`; $D_L$ remains diagnostic only.  A detached-source rebuild and
+one zero-retry replay reproduced all six physical XSM outputs byte for byte.
+No rank increase, empirical coefficient, relaxation parameter, gate change
+or added model term was used.  See
+[the clean-replay result](validation/iterative/rank2_strict_leak64_clean_replay_result.md).
+
+### Exact rank-3 enrichment check
+
+The same three frozen snapshots also generate a nested rank-3 space whose
+first two modes reproduce rank 2 bitwise.  A locally gate-passing rank-2
+CLOSED state was embedded exactly by retaining those coordinates and setting
+the third to positive zero; all 8880 reconstructed physical values remain
+bitwise unchanged.  Its temporary directory lacks the complete binary/source
+receipt of the canonical clean replay, so this is a diagnostic input rather
+than a replacement publication result.  One unchanged rank-3 map completed
+its radial half, but its pure-Picard axial solve produced no terminal before
+the single 600-second hard limit.  It was terminated and not retried.
+
+This bounded attempt supplies no rank-3 fixed-point defect and is not evidence
+that a rank-3 fixed point is mathematically absent.  Rank 2 therefore remains
+the only certified result for the precision-supported snapshot space; no
+rank-2/rank-3 fixed-point error is inferred.  See
+[the bounded rank-3 result](validation/iterative/rank3_zero_embed_one_map_result.md).
+
+## Second-case preparation
+
+The independent second case is the 132-region IRENA D4-A 1/12 assembly.
+One bounded geometry-only TRACK build established the actual radial tuple
+`(NREG,NMAT,NSURF,NUNKNO,NCODE)=(132,6,12,144,6)`.  Here `NSURF=12` is the
+number of numerical surface-current unknowns, while `NCODE=6` remains the
+number of physical boundary/albedo code slots.  One first-state D4-A attempt
+was rejected because TONE reached its self-shielding iteration cap; it was
+stopped before publishing a snapshot.  After restoring the frozen TONE track,
+a dedicated 650 C TONE-only gate converged at iteration 4 with error
+`4.453e-6`, no cap warning and a normal Dragon end.  It executed no
+MCCGT/ASM/FLU and created no flux snapshot.  The no-transport implementation
+now carries these TRACK-authoritative
+runtime region, material, surface and unknown counts through
+`SPOR64_B2B -> SPOR64_A9 -> SPOR64_A8`, the `SPOR64_B2C` publication
+boundary, the assembled-to-close `B2K/B2N/B2S/B2R/B2W` lifecycle, and the
+next-epoch `B2H/B2I/B2J` projection lifecycle.
+`MXSEG` and the ACA connection count `LC` are also taken from TRACK rather
+than the pin case; `LC` now sizes `MCU/CF/CQ` and is not confused with the
+32-isotope fission dimension.  The pin replay remains byte-identical, while
+the actual D4-A tuple `(132,6,12,144)` passes the seconds-scale structural
+publication, solver-interface and projection gates.  These tests manufacture
+payload values with the real extents; they do not manufacture a transport
+result.  The three snapshot material states are now frozen a priori at fuel
+temperatures 650/750/850 C with cladding/sodium at 620/475 C, matching the
+accepted pin baseline's thermophysical sampling schedule while testing the
+assembly-scale D4-A radial configuration.  Temperature is an offline material
+coordinate that changes cross sections and densities; it is not the online
+reduced unknown.  POD will be applied to the resulting 132-region, 370-group
+flux fields.  The failed deck had accidentally copied the production radial
+tracking density `100.0` into the separate TONE/MERGMIX track.  The builder
+now restores its historical density `50.0`, keeps production transport at
+`100.0`, and requires both absence of the TONE-cap warning and an explicit
+terminal for all three states.  No tolerance or physical input changed.  The
+corrected, hash-locked, default-off deck passes its seconds-scale preflight;
+its material/TONE prefix is now also verified by the accepted one-state gate.
+One zero-retry three-state attempt was then made with a fixed 7200 s process
+bound.  State 1 again passed TONE, but its strict full-rank `FLU TYPE K` solve
+produced no terminal before the bound.  Dragon was cleaned up and no snapshot,
+archive or success receipt was published.  This is a bounded no-result, not
+evidence that the discrete problem diverges.  At that stage the physical
+archive had not yet been generated. A 600 s passive trace first located the cost inside
+MCCGF/MCGMRE. Byte-identical 1300 s, 1500 s and final 1900 s replays then
+proved seven MCGMRE solves reached their unchanged local criterion. The first
+complete scheduled `3 free + 3 accelerated` thermal cycle decreased through
+`IN(4..6)=0.104,0.0558,0.0414`; the next free step reached
+`IN(7)=0.0208`. The FLU2AC factors were computed variationally, not fitted.
+This supports continuing the unchanged route, but `IN(7)` remains about
+`4.16e4` times the FLU target; all seven records remain inside `OUT(0)`, with
+no `OUT(1)`, terminal or snapshot. No operator, tolerance or empirical
+coefficient changed.  A subsequent four-hour `EDIT 0` attempt lost its host
+supervisor and was sealed honestly as `FAILED / NOT_RUN / NO_RESULT`; it does
+not establish convergence or divergence.
+
+On 2026-08-25 the prepared observable `EDIT 1` route was executed exactly once
+with a 14400 s wall limit and zero retries.  TONE passed, all 25 completed
+inner solves reached their unchanged criterion, and from `OUT(2)` onward
+`keff` stayed in `1.367861--1.367864`.  The best explicitly printed outer flux
+residual was nevertheless `1.69e-6` at `OUT(20)`, versus the unchanged
+`5e-7` target; it later rose to `1.82e-5`, and the last completed
+`OUT(25)` eigenvalue residual was `1.32e-6`.  The run ended at its wall limit
+without the strict outer gate, a normal end or a snapshot.  Its classification
+is therefore `TIMEOUT / NOT_RUN / NO_RESULT`, not convergence or divergence.
+All five provenance manifests pass and no process from this run remains.
+
+The follow-up source/artifact audit found no retained raw flux pair with which
+to recompute a REAL64 norm, and the 14 printed flux defects vary by a factor of
+11.18 rather than forming a demonstrated precision plateau.  It did expose a
+smaller, definite inconsistency: production MCCG/GMRES used `EPSI=1e-5` while
+FLU required `EXTE=UNKT=THER=5e-7`.  Actual diagnostic MCCG solves had been
+accepted between `9.43e-7` and `5.91e-6`, so the linear solve was allowed to
+stop above the requested outer accuracy.
+
+The current snapshot builder uses the same declared `solver_eps=2e-6` for
+production MCCG and all three FLU gates.  TONE remains at `1e-5`; the physical
+operator, 3+3 variational schedule, REBA, GMRES/ACA and material state are
+unchanged.  The subsequent corrected three-snapshot archive, fixed rank-two
+basis, and `CLOSED/0` bootstrap all passed their independent gates.  Map 1 is
+now a checked `VALID_NOT_MET` state; later direct Picard maps must reduce the
+same three raw defects to the unchanged `5e-7` gate before a corrected
+convergence or accuracy result exists.
+See
+[the frozen D4-A contract](validation/iterative/second_case_d4a_contract.md)
+and [the FLU diagnostic result](validation/iterative/d4a_flu650_diagnostic_result.md).
+
+## Earlier rank-2 development history
+
+The latest standard AA(1) proposal
+
+$$
+q_7=0.71958187611175339\,l+0.28041812388824661\,m
+$$
+
+was evaluated exactly once as $n=G_2(q_7)$.  Its three fresh online radial
+fixed-source solves, one axial solve, strict terminals, independent checker,
+and 21/21 receipt all passed.  The physical residual $n-q_7$ is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,4.9907423\times10^{-4},\,
+7.3123374\times10^{-7}\ \mathrm{cm}^{-1},\,
+4.6393125\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass the unchanged $5\times10^{-7}$ AND gate; $R_L$
+fails.  SPOT still has no accepted rank-two fixed point.
+
+The next AA(1), using only $m-q_6$ and $n-q_7$, failed its two leakage
+direction screens.  Only then was standard unregularized AA(2) formed from
+$l-k,m-q_6,n-q_7$:
+
+$$
+q_8=0.37973124035268829\,l+
+0.10995812065327257\,m+
+0.51031063899403917\,n.
+$$
+
+Its direction ratios are `0.16177`, `0.45458`, and `0.46902`, all strictly
+below one.  Thus `AA1_DIRECTION_FAIL_AA2_DIRECTION_PASS`.  The diagnostic
+candidate has now been independently materialized as a hash-locked
+`AA2-RAW-FLUX` proposal with a passing 9/9 receipt.  It was evaluated exactly
+once as $o=G_2(q_8)$.  The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,4.5736086\times10^{-4},\,
+6.7011570\times10^{-7}\ \mathrm{cm}^{-1},\,
+3.9154634\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass; $R_L$ fails, so this remains `VALID_NOT_MET`.
+The next standard AA(1), using only $n-q_7,o-q_8$, passes all three
+parameter-free direction screens with ratios `0.99406`, `0.78328`, and
+`0.82927`; therefore AA(2) is skipped.  Its standard proposal
+
+$$
+q_9=0.14445266271586943\,n+0.85554733728413057\,o
+$$
+
+is now independently materialized as an `AA1-RAW-FLUX` carrier with a
+passing 9/9 receipt.  It was evaluated exactly once as $p=G_2(q_9)$.  The
+physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.7921806\times10^{-4},\,
+9.9517638\times10^{-7}\ \mathrm{cm}^{-1},\,
+1.7616507\times10^{-6}).
+$$
+
+Only $R_\rho$ passes, so this remains `VALID_NOT_MET`.  The next standard
+AA(1), using only $o-q_8,p-q_9$, passes all three direction screens with
+ratios `0.12765`, `0.82142`, and `0.89228`; therefore AA(2) is skipped.
+Its standard unconstrained proposal
+
+$$
+q_{10}=1.2246645215600993\,o-0.22466452156009933\,p
+$$
+
+is now independently materialized as an `AA1-RAW-FLUX` carrier with a
+passing 9/9 receipt.  It was evaluated exactly once as $r=G_2(q_{10})$.
+The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,9.4082235\times10^{-4},\,
+1.3784738\times10^{-6}\ \mathrm{cm}^{-1},\,
+5.5762475\times10^{-7}).
+$$
+
+$R_\rho$ passes; $R_L$ and $R_a$ fail, so this remains `VALID_NOT_MET`.
+The next standard AA(1), using only $p-q_9,r-q_{10}$, passes all three
+direction screens with ratios `0.50305`, `0.87863`, and `0.82135`;
+therefore AA(2) is skipped.  Its standard proposal
+
+$$
+q_{11}=0.21697843452735655\,p+0.78302156547264345\,r
+$$
+
+is independently materialized with a passing 9/9 receipt and was evaluated
+exactly once as $s=G_2(q_{11})$.  The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,4.3725852\times10^{-4},\,
+6.4066262\times10^{-7}\ \mathrm{cm}^{-1},\,
+4.0156419\times10^{-7}).
+$$
+
+$R_\rho$ and $R_a$ pass; only $R_L$ fails, so this remains
+`VALID_NOT_MET`.  The next standard AA(1), using only
+$r-q_{10},s-q_{11}$, passes all three direction screens with ratios
+`0.30785`, `0.94677`, and `0.98611`; therefore AA(2) is skipped.  Its
+standard proposal
+
+$$
+q_{12}=0.41267816249435374\,r+0.58732183750564626\,s
+$$
+
+is independently materialized with a passing 9/9 receipt and was evaluated
+exactly once as $t=G_2(q_{12})$.  The physical residual is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,4.6840479\times10^{-4},\,
+6.8629743\times10^{-7}\ \mathrm{cm}^{-1},\,
+5.1799520\times10^{-7}).
+$$
+
+$R_\rho$ passes; $R_L$ and $R_a$ fail, so this remains `VALID_NOT_MET`.
+The next standard AA(1), using only $s-q_{11},t-q_{12}$, passes all three
+direction screens with ratios `0.72586`, `0.72632`, and `0.90812`;
+therefore AA(2) is skipped.  No durable successor or second physical map
+was produced.  See the
+[latest map result](validation/iterative/rank2_current_rs_aa1_map_result.md).
+
+A numerical-resolution follow-up now establishes a narrower result.  At the
+same $q_{12}$ input, a warm-start REAL32 plane and the same plane with the
+MCCG inner threshold matched to $2.5\times10^{-7}$ both produced no strict
+return within separate 30-second bounds.  The existing mixed-precision
+REAL64 radial kernel then solved all three fixed-source planes in one
+22.14-second attempt at $2.5\times10^{-7}$.  Its three independently read
+balance diagnostics were `3.172963e-8`, `2.872780e-8`, and `3.606618e-8`,
+and all 31,080 REAL64-to-REAL32 compatibility values were bitwise correct.
+This proves that the $q_{12}$ radial half can return on the REAL64 lane.  One
+subsequent cold-start axial solve reached its 80-second bound and remains
+`NO_SCIENTIFIC_RESULT`.  The separately frozen warm-start deck was then run
+exactly once, with no retry.  It used the $q_{12}$ parent flux only as FLU's
+initial iterate while retaining the unchanged TYPE-K/SPOT equation, rank-2
+basis, direct leakage return, and $2.5\times10^{-7}$ inner terminal.  FLU
+completed normally in 32 seconds at `IEXTF=132`; all strict terminals passed.
+After deleting only two inherited proposal-lifecycle markers in a no-solve
+canonical copy, the independent checker passed and bitwise verified
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.2272492\times10^{-4},\,
+9.1240508\times10^{-7}\ \mathrm{cm}^{-1},\,
+7.6638114\times10^{-6}).
+$$
+
+At the unchanged $5\times10^{-7}$ outer gate, only $R_\rho$ passes; the
+half-tolerance result is therefore `VALID_NOT_MET`.  No relaxation,
+empirical parameter, altered equation, fallback, or retry was used.  The
+only production-code change separates a BOOT initial iterate's historical
+tolerance from the new equation's unchanged strict tolerance; CONT remains
+bitwise restricted to $2.5\times10^{-7}$.
+
+The first clean REAL64 continuation from that h/2 return has now also been
+completed.  B2I/B2J performed the no-transport `CLOSED/0 -> PROJECTED/1`
+staging, one `SpotStepR64` call solved the three CONT planes in about 22.13
+seconds, and one warm axial solve completed in about 14.46 seconds.  There
+was no retry.  The independent rank-two checker and the exact B2W admission
+both pass, giving
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.3067022\times10^{-6},\,
+9.2404662\times10^{-9}\ \mathrm{cm}^{-1},\,
+1.2853320\times10^{-6}).
+$$
+
+That first result remains `VALID_NOT_MET`: $R_\rho$ passes, while $R_L$ and
+$R_a$ fail.  AA(1) was not formed there because the adjacent older residual
+came from BOOT rather than the same finite-precision CONT map.  See the
+[first REAL64 CONT result](validation/iterative/rank2_h2_r64_cont_x1_map_result.md).
+
+The rank-two close path and lifecycle are now epoch-generic, and the next
+map has been completed as `CLOSED/1 -> PROJECTED/2 -> RETURNED/2 ->
+CLOSED/2`.  One bounded radial call and one warm axial call, with no retry,
+gave
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(0,\,1.0587314\times10^{-5},\,
+1.5512342\times10^{-8}\ \mathrm{cm}^{-1},\,
+1.1066465\times10^{-6}).
+$$
+
+The independent checker and production gates pass, but only $R_\rho$ passes
+the unchanged outer AND gate, so this is `VALID_NOT_MET`.  Two consecutive
+CONT residuals are now scientifically available.  Standard unregularized
+full-Gram AA(1) was evaluated only as an offline direction: its modal,
+leakage height-$L_2$, and $D_L$ ratios are `0.895356`, `1.105813`, and
+`0.564659`.  The leakage height-$L_2$ screen fails, so no AA state was
+materialized.  See the
+[second REAL64 CONT result](validation/iterative/rank2_h2_r64_cont_x2_map_result.md).
+
+A third consecutive CONT map has now completed the next lifecycle epoch,
+`CLOSED/2 -> PROJECTED/3 -> RETURNED/3 -> CLOSED/3`, again with one radial
+call, one warm axial call, and no retry:
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223470\times10^{-8},\,2.8206358\times10^{-6},\,
+4.1327439\times10^{-9}\ \mathrm{cm}^{-1},\,
+7.4996305\times10^{-7}).
+$$
+
+This remains `VALID_NOT_MET`: only $R_\rho$ passes.  The latest standard
+AA(1), using only $x_3-x_2$ and $x_4-x_3$, has modal, leakage
+height-$L_2$, and $D_L$ direction ratios `0.900503`, `0.974662`, and
+`0.957500`.  All three pass, so `AA1_DIRECTION_PASS_AA2_SKIPPED`.  The
+authorized affine direction is
+
+$$
+y=0.27113387220513907\,x_3+0.72886612779486093\,x_4.
+$$
+
+It has not yet been materialized or evaluated.  See the
+[third REAL64 CONT result](validation/iterative/rank2_h2_r64_cont_x3_map_result.md).
+
+## Historical validation record
+
+The fixed rank-1 trajectory has been evaluated through the predeclared final
+$x_8=G(x_7)$. Each
+valid map evaluation passed the independent fixed-basis, state, source, raw
+defect and restart checks; balance diagnostics are reported separately. The
+earlier legacy $x_3$ was superseded by the strict-inner result shown here.
+
+| map | $R_\rho$ | $R_L$ | $D_L\;[\mathrm{cm}^{-1}]$ | $R_a$ |
+|---|---:|---:|---:|---:|
+| $x_0\to x_1$ | $1.2811548\times10^{-6}$ | $7.9228532\times10^{-4}$ | $1.1616503\times10^{-6}$ | $9.2282558\times10^{-7}$ |
+| $x_1\to x_2$ | $0$ | $3.9564556\times10^{-4}$ | $5.8009755\times10^{-7}$ | $7.2377835\times10^{-7}$ |
+| $x_2\to x_3$ | $0$ | $4.3252643\times10^{-4}$ | $6.3417247\times10^{-7}$ | $3.2409694\times10^{-7}$ |
+| $x_3\to x_4$ | $0$ | $5.6855251\times10^{-4}$ | $8.3361374\times10^{-7}$ | $1.4817206\times10^{-6}$ |
+| $x_4\to x_5$ | $6.4057635\times10^{-8}$ | $3.1253506\times10^{-4}$ | $4.5823981\times10^{-7}$ | $2.3143260\times10^{-7}$ |
+| $x_5\to x_6$ | $0$ | $2.0941536\times10^{-4}$ | $3.0704541\times10^{-7}$ | $7.5835882\times10^{-7}$ |
+| $x_6\to x_7$ | $6.4057635\times10^{-8}$ | $3.0515094\times10^{-4}$ | $4.4741319\times10^{-7}$ | $1.5063945\times10^{-7}$ |
+| $x_7\to x_8$ | $6.4057635\times10^{-8}$ | $3.7849612\times10^{-4}$ | $5.5495184\times10^{-7}$ | $2.6731298\times10^{-7}$ |
+
+At the unchanged $5\times10^{-7}$ outer gate, the final x8 is
+`VALID_NOT_MET`: $R_\rho$ and $R_a$ pass at 0.128115 and 0.534626 times
+the tolerance, but $R_L$ fails by a factor of 756.992233. Relative to x7,
+x8 $R_L$, $D_L$ and $R_a$ increased by 24.0357%, 24.0356% and 77.4522%,
+respectively. These changes do not establish divergence or a cycle; they do
+establish that the predeclared direct rank-1 census ended without satisfying
+the discrete fixed-point gate.
+
+One leakage-driven Anderson(1) candidate was also passed through the real
+nonlinear map once. Its returned defects were
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4057635\times10^{-8},\,2.4458920\times10^{-4},\,
+3.5861740\times10^{-7},\,1.1292181\times10^{-6}).
+$$
+
+Relative to direct $x_6$, $R_L$ increased by 16.8% and $R_a$ by 48.9%.
+That candidate is rejected. This is not a general theorem against Anderson;
+it is enough reason not to add another coefficient now.
+
+The full concise evidence boundary is
+[validation/iterative/current_result.md](validation/iterative/current_result.md).
+Detailed historical scaffolding remains recoverable from the Git tag
+`archive-pre-lean-20260814`.
+
+## Validation
+
+Run the active no-transport gate with:
+
+```sh
+make spot-fast
+```
+
+It compiles the production Picard procedure, the generic continuation decks
+and the independent Ganlib checker, and runs the algebra, source, state, rank,
+strict-inner, continuation and nonlinear-solver contract tests. It does not
+launch Dragon.
+
+The validation plan is
+[SPOT_doc/validation_plan.md](SPOT_doc/validation_plan.md).
+
+## Historical scientific record
+
+The valid x8 publication is independently checked and hash-receipted. The
+direct rank-1 Picard census is complete, and no x9 is defined. The retained
+x7 parent manifest is the frozen provenance for reproducing x8, not an
+authorization to continue the sequence.
+
+The transport-free x6--x8 residual-direction audit is complete. The last two
+leakage updates have auxiliary height-$L_2$ cosine $-0.969649$, and their
+unique production $D_L$ hotspot stays at plane 3, group 325 while reversing
+sign and increasing in magnitude. The modal $H_sM_g$ cosine is $-0.314863$.
+These are local observations, not a new acceptance score or proof of a cycle.
+Full values and input hashes are in
+[validation/iterative/residual_direction_result.md](validation/iterative/residual_direction_result.md).
+
+The nonlinear-solver boundary is now declared in
+[validation/iterative/nonlinear_solver_contract.md](validation/iterative/nonlinear_solver_contract.md).
+It preserves the map, basis, rank, tolerances and three-component gate, and
+requires a fresh strict $G$ evaluation for every proposed state. Full exact
+Newton is tested only as a parameter-free manufactured-problem oracle. The
+current real map has no validated exact Jacobian, so this result does not
+authorize production Newton/JFNK or another transport run. A minimal
+finite-difference probe additionally shows that the same linear manufactured
+direction yields quotients $0$, $1$ and $4/3$ across three binary32-scale
+perturbations. This establishes a publication-resolution obstruction, not a
+general failure of JFNK. Rank, mesh and reference studies remain downstream
+of a reproducible fixed point.
+
+The frozen real snapshot spectra have also been censused without transport.
+The worst optimal within-group reconstruction error falls from 1.5004% at
+rank 1 to 0.03408% at rank 2, while all 370 groups retain numerical rank 3.
+This is an offline representation diagnostic only: it does not explain the
+Picard result, qualify rank 2 or alter the active basis. Reproduce it with
+`make spot-rank-census` when the local hash-locked basis artifact is present;
+details are in
+[validation/iterative/rank_census_result.md](validation/iterative/rank_census_result.md).
+
+The genuine rank-2 trial space has now also been rebuilt from the same three
+original raw snapshots. A fresh rank-1 control reproduces the locked rank-1
+POD fields bitwise; the rank-2 first-mode prefix, all singular values and two
+repeated rank-2 builds are likewise bitwise consistent. An independent
+Ganlib-only checker recomputes the stored reconstruction and volume-Gram
+diagnostics without linking the SVD path. This creates only a local,
+Git-ignored, inactive basis package: Dragon, assembly, transport and Picard
+were not run, so no convergence or physical-accuracy conclusion follows.
+Reproduce it with `make spot-rank2-basis`; details are in
+[validation/iterative/rank2_basis_result.md](validation/iterative/rank2_basis_result.md).
+
+One separately declared rank-2 sensitivity map was then attempted from the
+same raw x7 axial solution.  The radial half completed with all three strict
+fixed-source terminals.  The host wrapper reported an 80-second timeout; the
+durable axial log establishes only that execution entered `FLU` and produced
+no terminal or normal end.  No axial candidate, raw defects, independent map
+audit or result publication exists, so the classification is `INVALID_MAP`
+(reported reason `TIMEOUT_BEFORE_TERMINAL`), not physical nonconvergence.  The
+successful radial staging is retained locally under a hash receipt; no run is
+retried or continued automatically.  See
+[validation/iterative/rank2_map_attempt_result.md](validation/iterative/rank2_map_attempt_result.md).
+
+A separate default-off axial-only host was frozen to consume that exact radial
+staging without rerunning a radial equation.  It permits one unchanged axial solve
+under a 420-second operational wall bound, followed by the same independent
+rank-2 audit.  The separately authorized run completed normally and passed
+the independent checker. Its scientific classification is `VALID_NOT_MET`:
+the map is valid, but the stopping-rule defects $R_\rho$, $R_L$ and $R_a$
+all exceed `5.0e-7`. This
+establishes rank sensitivity at the frozen x7 parent, not rank adequacy,
+iteration convergence or physical accuracy. The first operational attempt
+remains `INVALID_MAP`; see
+[validation/iterative/rank2_axial_only_result.md](validation/iterative/rank2_axial_only_result.md).
+
+A subsequent read-only Ganlib audit partitions that valid rank-2 update
+exactly in the stored Gram metric. The mode-2 diagonal term is `77.53%` of
+the update numerator while it is about `0.003582%` of the current state
+Gram-metric squared norm; the net signed cross share is `2.35e-9`. This
+basis-dependent partition locates the large modal response, but does not
+establish instability, rank adequacy or physical accuracy. See
+[validation/iterative/rank2_mode2_anatomy_result.md](validation/iterative/rank2_mode2_anatomy_result.md).
+
+The one direct rank-2 continuation
+$x^{(2)}_2=G_2(x^{(2)}_1)$ has now also completed. It consumed the valid but
+tolerance-not-met candidate without re-encoding and passed every strict and
+independent validity gate. All three stopping defects decreased, but the map
+remains `VALID_NOT_MET`. The full modal updates have local norm ratio
+`0.864118` and cosine `-0.874929`; the basis-dependent, $G_{22}$-restricted
+mode-2 updates have ratio `0.932560` and cosine `-0.915973`. Thus both are
+strongly anti-aligned and shrink only modestly, while the leakage defect falls
+sharply. This does not prove a cycle, convergence or divergence, and no third
+rank-2 map is defined. See
+[validation/iterative/rank2_next_map_result.md](validation/iterative/rank2_next_map_result.md).
+
+The next solver study is reduced to one formula, without transport or a new
+iterate. A modal-projected Anderson(1) screen in the full Gram-height
+metric gives the unique least-squares weight `0.5388643265136009` on the
+latest rank-2 state and
+`0.4611356734863991` on the preceding state. The same scalar would act on
+the complete coupled state, while its coefficient is formed only in the
+physical POD modal metric, so no mixed-unit whole-state norm or empirical
+relaxation parameter is introduced. That state has now been deterministically
+published as a hash-locked AX proposal plus an explicitly labelled x2 raw-flux
+snapshot carrier. An independent Ganlib-only checker verifies the fixed basis,
+publication arithmetic, carrier identity and strict positivity at all 8880
+reconstructed points. Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: it is not a map evaluation or
+convergence evidence. See
+[validation/iterative/rank2_solver_decision.md](validation/iterative/rank2_solver_decision.md)
+and
+[validation/iterative/rank2_modal_aa1_candidate_result.md](validation/iterative/rank2_modal_aa1_candidate_result.md).
+
+That proposal has now been tested by exactly one fresh strict map
+$z=G_2(y_{\rm pub})$. All three radial terminals, the axial terminal, the
+independent fixed-basis/defect/restart audit and the full checksum receipt
+pass. The result is nevertheless `VALID_NOT_MET`:
+$R_\rho=6.57635\times10^{-5}$, $R_L=2.26566\times10^{-3}$ and
+$R_a=4.66468\times10^{-4}$, all above `5.0e-7`. The three components are
+locally smaller than for the direct second rank-2 map, but one cross-input
+comparison is not a convergence factor or proof of Anderson superiority,
+rank adequacy or physical accuracy. No retry or subsequent map was started;
+see
+[validation/iterative/rank2_modal_aa1_map_result.md](validation/iterative/rank2_modal_aa1_map_result.md).
+
+The next AA(1) history update has now been checked offline from the two actual
+evaluated pairs $x_1\to x_2$ and $y_{\rm pub}\to z$. The unique weight on
+$z$ is `0.9302745506696768`, so the possible next proposal is
+$w=0.0697254493303232x_2+0.9302745506696768z$. Its REAL32 publication
+keeps all 8880 reconstructed points strictly positive. That proposal has now
+been deterministically materialized with an explicitly labelled `Z-RAW-FLUX`
+carrier and independently checked down to the complete lagged SYSTEM and
+fixed-source payload. Its status is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon run, new map or convergence
+evidence exists. See
+[validation/iterative/rank2_modal_aa1_next_history_result.md](validation/iterative/rank2_modal_aa1_next_history_result.md)
+and
+[validation/iterative/rank2_modal_aa1_next_candidate_result.md](validation/iterative/rank2_modal_aa1_next_candidate_result.md).
+
+The separately authorized map \(v=G_2(w_{\rm pub})\) has now run exactly once.
+Its pre-Dragon `Z-RAW-FLUX` gate, three radial terminals, axial terminal,
+independent audit and 21-entry receipt all pass. The classification is
+`VALID_NOT_MET`:
+\(R_\rho=8.34905\times10^{-7}\),
+\(R_L=8.67273\times10^{-4}\), and
+\(R_a=4.44166\times10^{-5}\), all above `5.0e-7`. Every component is locally
+smaller than for the preceding proposal map, but this is not a convergence
+factor or an accuracy claim. No retry or subsequent map was started; see
+[validation/iterative/rank2_modal_aa1_next_map_result.md](validation/iterative/rank2_modal_aa1_next_map_result.md).
+
+The newest read-only AA(1) history calculation uses the two actual pairs
+\(y_{\rm pub}\to z\) and \(w_{\rm pub}\to v\). The unique full-Gram modal
+weight on \(v\) is `0.956973882871698711`, giving the possible raw formula
+\(u=0.0430261171283013z+0.956973882871699v\). Its denominator is strictly
+positive and all 8880 publication-preflight values are strictly positive.
+The affine screen ratio `0.882410` is not a map residual or convergence
+factor. That formula has now been deterministically published with the
+latest returned \(v\) payload and an explicit `V-RAW-FLUX` lifecycle. The
+independent full-carrier and snapshot audit passes, including 8880/8880
+strictly positive reconstructions. Its status is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no map or Dragon run was performed;
+see
+[validation/iterative/rank2_modal_aa1_u_history_result.md](validation/iterative/rank2_modal_aa1_u_history_result.md)
+and
+[validation/iterative/rank2_modal_aa1_u_candidate_result.md](validation/iterative/rank2_modal_aa1_u_candidate_result.md).
+
+The separately authorized \(G_2(u_{\rm pub})\) map has now completed exactly
+once. Its exact `V-RAW-FLUX` parent gate, four strict solve terminals,
+independent audit and 21-entry receipt all pass. It remains `VALID_NOT_MET`:
+\(R_\rho=8.34905\times10^{-7}\),
+\(R_L=4.03982\times10^{-4}\), and
+\(R_a=1.43357\times10^{-5}\), all above `5.0e-7`. Leakage and modal defects
+decreased locally relative to the preceding map, while \(R_\rho\) increased
+very slightly; this is not an asymptotic convergence claim. There was no
+retry, and no successor was started automatically; see
+[validation/iterative/rank2_modal_aa1_u_map_result.md](validation/iterative/rank2_modal_aa1_u_map_result.md).
+
+A later separately authorized direct Picard continuation from that returned
+state has also completed exactly once. It is valid but remains
+`VALID_NOT_MET`:
+\(R_\rho=6.42235\times10^{-7}\),
+\(R_L=5.21752\times10^{-4}\), and
+\(R_a=7.24633\times10^{-6}\). Relative to the preceding map,
+\(R_\rho\) and \(R_a\) decreased by about 23.1% and 49.5%, while
+\(R_L\) increased by about 29.2%. The defects are therefore not
+componentwise monotone, and no convergence or accuracy claim follows. No
+successor map was started; see
+[validation/iterative/rank2_modal_aa1_u_next_map_result.md](validation/iterative/rank2_modal_aa1_u_next_map_result.md).
+
+A no-Dragon REAL64 localization now explains the leakage rebound. Both
+adjacent \(R_L\) denominators are the identical middle-state value
+`1.46519986446946859e-3 cm^-1`; \(D_L\) increased by 29.1523%. Its unique
+hotspot moved from snapshot 1/group 328 with a positive increment to snapshot
+1/group 326 with a larger negative increment. This is local oscillatory
+evidence, not proof of a two-cycle or its cause; see
+[validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md](validation/iterative/rank2_modal_aa1_u_leakage_localization_result.md).
+
+The next no-Dragon step now uses those two genuinely consecutive Picard
+maps to materialize one standard modal Anderson(1) proposal. The computed,
+unclipped latest-output weight is `0.6723407962072613`, so
+
+$$
+x_{\mathrm{AA1}}=0.3276592037927387\,x_2+
+0.6723407962072613\,x_3.
+$$
+
+The same scalar is applied to `(A,rho,L)`. Raw flux is not interpolated: the
+proposal carries the complete latest returned \(x_3\) payload under the
+truthful `X3-RAW-FLUX` marker. Its independent checker passes all 8880
+strict-positivity points and the exact snapshot lifecycle. This candidate
+publication stage itself did not evaluate a map and makes no convergence
+claim.
+See
+[validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md](validation/iterative/rank2_modal_aa1_consecutive_candidate_result.md).
+
+Its default-off one-map host has now been executed once under separate
+authorization, with no retry. The dedicated `proposal-x3` gate, three radial
+terminals, axial terminal, independent audit and 21-entry receipt all pass.
+The result is valid but not converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(1.2844695\times10^{-7},\,4.2083074\times10^{-4},\,
+1.6578761\times10^{-6}).
+$$
+
+At `5.0e-7`, $R_\rho$ passes but $R_L$ and $R_a$ fail. The defects are
+all lower than in the immediately preceding direct Picard map, but the
+parents differ, so this is not a convergence factor or proof of Anderson
+superiority. No successor map was started; see
+[validation/iterative/rank2_modal_aa1_consecutive_map_result.md](validation/iterative/rank2_modal_aa1_consecutive_map_result.md).
+
+The next step has now been completed offline using the two latest evaluated
+residuals $p=x_3-x_2$ and
+$q=x_{\mathrm{AA1}}^+-x_{\mathrm{AA1}}$. Standard modal Anderson(1) gives
+the unique, unclipped coefficient `0.8591556991759952`, hence
+
+$$
+x_{\mathrm{next}}=
+0.1408443008240048x_3+
+0.8591556991759952x_{\mathrm{AA1}}^+.
+$$
+
+All 8880 reconstructed points are positive. The complete latest raw carrier
+is preserved as `AA1-RAW-FLUX`, and the independent publication/lifecycle
+audit passes. This is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: this stage
+launched no Dragon and produced no new defect or convergence conclusion.
+See
+[validation/iterative/rank2_modal_aa1_post_candidate_result.md](validation/iterative/rank2_modal_aa1_post_candidate_result.md).
+
+Its dedicated default-off host was then authorized exactly once, with no
+retry. The strict `AA1-RAW-FLUX` preflight, three radial terminals, axial
+terminal, independent audit and 21-entry receipt all pass. The result is
+valid but not converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223481\times10^{-8},\,4.5636753\times10^{-4},\,
+1.3428559\times10^{-6}).
+$$
+
+Only $R_\rho$ meets `5.0e-7`; $R_L$ and $R_a$ fail. Relative to the preceding
+evaluated proposal map, the leakage defect rose about 8.44%, so the update is
+not componentwise improving. This is a cross-input comparison, not a
+convergence factor or proof of Anderson superiority. No successor map was
+started; see
+[validation/iterative/rank2_modal_aa1_post_map_result.md](validation/iterative/rank2_modal_aa1_post_map_result.md).
+
+The two latest valid maps now define one further seconds-scale, no-Dragon
+rolling AA(1) proposal:
+
+$$
+x_{\mathrm{roll}}=
+0.4392205811942803x_{\mathrm{AA1}}^+
++0.5607794188057197x_{\mathrm{next}}^+.
+$$
+
+The coefficient is the unique standard Gram-height minimizer; it is naturally
+convex and was not clipped or tuned. The independently checked publication
+keeps all 8880 reconstructed points positive and carries the complete latest
+returned raw payload as `XNP-RAW-FLUX`. This is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: the predicted modal residual reduction
+is not a real stopping defect, and no Dragon or successor map was started.
+See
+[validation/iterative/rank2_modal_aa1_rolling_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_candidate_result.md).
+
+Its dedicated host was then executed exactly once, with no retry. The strict
+`XNP-RAW-FLUX` preflight, three radial terminals, axial terminal, independent
+audit and 21-entry receipt all pass. The result is valid but not converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(0,\,3.6004863\times10^{-4},\,1.4537807\times10^{-6}).
+$$
+
+At `5.0e-7`, only $R_\rho$ passes. Relative to the preceding evaluated map,
+$R_L$ and diagnostic $D_L$ fell about 21.1%, while $R_a$ rose about 8.26%.
+Because the parents differ, this is not a convergence factor or monotone
+convergence evidence. No successor proposal or map was started; see
+[validation/iterative/rank2_modal_aa1_rolling_map_result.md](validation/iterative/rank2_modal_aa1_rolling_map_result.md).
+
+Using this map and the preceding valid map, the next standard rolling AA(1)
+proposal has now been materialized offline:
+
+$$
+x_{\mathrm{roll2}}=
+0.7941295518990515x_{\mathrm{next}}^+
++0.2058704481009485x_{\mathrm{roll}}^+.
+$$
+
+The coefficient is the unmodified Gram-height result. Independent checks pass
+the fixed rank-two publication, complete latest `XRP-RAW-FLUX` carrier, true
+snapshot lifecycle and 8880/8880 positive reconstructions. Its classification
+is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
+convergence conclusion was produced. See
+[validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md](validation/iterative/rank2_modal_aa1_rolling_next_candidate_result.md).
+
+Its dedicated default-off host was then executed exactly once, with no retry.
+The strict `XRP-RAW-FLUX` preflight, three radial terminals, axial terminal,
+independent audit and 21-entry receipt all pass. The map is valid but not
+converged:
+
+$$
+(R_\rho,R_L,R_a)=
+(1.2844695\times10^{-7},\,4.1544793\times10^{-4},\,
+7.7744807\times10^{-7}).
+$$
+
+Only $R_\rho$ meets `5.0e-7`; leakage remains the dominant failure. Relative
+to the preceding different-parent map, $R_L$ rose about 15.39% while $R_a$
+fell about 46.52% but still failed. This mixed comparison is not a convergence
+factor or monotone-convergence claim. No retry or successor map was started;
+see
+[validation/iterative/rank2_modal_aa1_rolling_next_map_result.md](validation/iterative/rank2_modal_aa1_rolling_next_map_result.md).
+
+The latest three valid map residuals were then used once in the same
+Gram-height metric to materialize the standard AA(2) proposal
+
+$$
+x_{\mathrm{AA2}}=
+0.7766427453x_{mathrm{next}}^+
+-0.5452141528x_{mathrm{roll}}^+
++0.7685714076x_{mathrm{roll2}}^+.
+$$
+
+The finite two-by-two system has strictly positive determinant. No condition
+threshold, regularization, pseudoinverse, nonnegativity constraint or fallback
+was used; the negative coefficient is the unmodified standard solution.
+Independent checks pass exact publication, the latest `AA2-RAW-FLUX` carrier
+and 8880/8880 positive reconstructions. This is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map or stopping defect was
+produced. See
+[validation/iterative/rank2_modal_aa2_candidate_result.md](validation/iterative/rank2_modal_aa2_candidate_result.md).
+
+Its dedicated host was then executed exactly once, with no retry. The exact
+`AA2-RAW-FLUX` preflight, all four strict solve terminals, independent audit
+and 21-entry receipt pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223481\times10^{-8},\,5.0408973\times10^{-4},\,
+1.0079586\times10^{-6}),
+$$
+
+so the classification is `VALID_NOT_MET`. Only $R_\rho$ passes `5.0e-7`;
+leakage remains the dominant failure. Relative to the preceding
+different-parent map, $R_\rho$ fell about 50.0%, but $R_L$ and $R_a$ rose
+about 21.34% and 29.65%. This mixed comparison is not a convergence factor or
+monotonicity claim. No retry, successor proposal or successor map was
+started as part of that map evaluation; see
+[validation/iterative/rank2_modal_aa2_map_result.md](validation/iterative/rank2_modal_aa2_map_result.md).
+
+The three-pair AA(2) window was then shifted forward once, offline, to
+\((x_{\mathrm{roll}},x_{\mathrm{roll2}},x_{\mathrm{AA2}})\). The exact
+standard solve materialized
+
+$$
+x_{\mathrm{rAA2}}=
+-1.2827949098x_{\mathrm{roll}}^+
++0.2370041391x_{\mathrm{roll2}}^+
++2.0457907708x_{\mathrm{AA2}}^+.
+$$
+
+The determinant is finite and strictly positive. The unmodified
+extrapolating weights were not clipped or regularized, and all 8880 published
+rank-two flux values remain strictly positive. This is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map or stopping defect was
+produced, and no map host was prepared as part of that offline stage. See
+[validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md](validation/iterative/rank2_modal_aa2_rolling_next_candidate_result.md).
+
+Its dedicated host was then frozen and executed exactly once, with no retry.
+The carrier preflight, all four strict solve terminals, independent audit and
+21-entry receipt pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(1.2844697\times10^{-7},\,1.1701448\times10^{-3},\,
+1.7994707\times10^{-6}),
+$$
+
+so the classification is `VALID_NOT_MET`. Only $R_\rho$ passes `5.0e-7`;
+leakage remains the dominant failure. Relative to the preceding
+different-parent map, all three stopping defects increased. This finite
+cross-input comparison is not a convergence factor, a stability result or a
+general verdict on Anderson(2). No retry or successor was started as part of
+that map evaluation; see
+[validation/iterative/rank2_modal_aa2_rolling_next_map_result.md](validation/iterative/rank2_modal_aa2_rolling_next_map_result.md).
+
+The complete returned state was then used directly as the parent of exactly
+one Picard successor, with no mixing or retry. All four strict solve
+terminals, the independent continued-state audit and the 21-entry receipt
+pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223470\times10^{-8},\,6.2880209\times10^{-4},\,
+1.4780076\times10^{-6}),
+$$
+
+so the classification is `VALID_NOT_MET`: only $R_\rho$ passes `5.0e-7`.
+Relative to its direct parent, the three stopping defects fell about 50.0%,
+46.26% and 17.86%. This is one local componentwise improvement, not a
+convergence factor, contraction result, convergence-order measurement or
+future prediction. No retry or further successor was started; see
+[validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md](validation/iterative/rank2_modal_aa2_rolling_next_picard_map_result.md).
+
+A subsequent no-Dragon three-state audit reproduced both adjacent maps'
+defects bit for bit. The unique leakage hotspot remains at snapshot 1/group
+327: its signed increment changes from
+`+1.7144775e-6` to `-9.2131086e-7 cm^-1`. The common leakage scale is
+unchanged, so the 46.26% reduction in $R_L$ comes from the smaller absolute
+update. This is a locally damped sign reversal, not a contraction proof.
+Strict inner termination passed and the outer map remains unclosed; the data
+do not identify rank two or finite inner error as the cause. No new map was
+started as part of that audit; see
+[validation/iterative/rank2_latest_picard_direction_result.md](validation/iterative/rank2_latest_picard_direction_result.md).
+
+The complete latest returned state was then used for exactly one further
+direct Picard map. All strict solve terminals, the independent audit and the
+21-entry receipt pass. The unchanged gate gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223470\times10^{-8},\,4.7549514\times10^{-4},\,
+2.9019324\times10^{-6}),
+$$
+
+so the result is `VALID_NOT_MET`. Relative to its direct parent, $R_L$ falls
+about 24.38% while $R_a$ rises about 96.34%; the defects are no longer
+componentwise decreasing. This mixed step proves neither convergence nor
+divergence. No retry or further map was started; see
+[validation/iterative/rank2_latest_picard_next_map_result.md](validation/iterative/rank2_latest_picard_next_map_result.md).
+
+The latest two direct modal residuals are nearly opposed in the existing
+Gram-height metric, with cosine `-0.985084` and norm ratio `1.963408`.
+Therefore the smallest parameter-free next study is one standard modal
+Anderson(1) proposal,
+
+$$
+y=0.6636421413x_3+0.3363578587x_4.
+$$
+
+The publication-aware state $Q(y)$ has now been materialized and independently
+checked offline. All 8880 published rank-two flux points are positive, the
+complete $x_4$ raw carrier is retained, and the nine-entry receipt passes.
+Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
+map host was produced. See
+[validation/iterative/rank2_latest_modal_aa1_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_candidate_result.md).
+
+That proposal was then evaluated by the unchanged physical map exactly once.
+The strict `X4-RAW-FLUX` preflight, three online radial solves, one axial
+solve, independent checker and 21-entry receipt all pass. The unchanged gate
+gives
+
+$$
+(R_\rho,R_L,R_a)=
+(6.4223470\times10^{-8},\,6.5357267\times10^{-4},\,
+8.4905090\times10^{-7}),
+$$
+
+so the result is `VALID_NOT_MET`: only $R_\rho$ passes. Relative to the
+historical direct $x_4=G_2(x_3)$ evaluation, $R_a$ falls about 70.74% but
+$R_L$ rises about 37.45%; this is not
+componentwise improvement and is not proof for or against AA(1). No retry or
+successor was started. See
+[validation/iterative/rank2_latest_modal_aa1_map_result.md](validation/iterative/rank2_latest_modal_aa1_map_result.md).
+
+The next decision has now been made without another transport solve. Using
+the two real residuals \(p=x_4-x_3\) and \(q=z-Q(y)\), the unique standard
+modal AA(1) coefficient is
+
+$$
+\beta=0.7766660303945517,
+\qquad
+t=0.2233339696054483x_4+0.7766660303945517z.
+$$
+
+The affine modal screen is `0.1927051998914537` of the latest residual. The
+same coefficient, without fitting leakage separately, gives offline leakage
+height-$L_2$ and $D_L$ ratios `0.7632785965453454` and
+`0.7073369976148646`. The publication preflight is positive at 8880/8880
+points. This is only a read-only directional decision: no candidate, Dragon
+run or new stopping defect was produced. The next minimal step is to
+materialize and independently check \(Q(t)\) offline. See
+[validation/iterative/rank2_latest_modal_aa1_history_result.md](validation/iterative/rank2_latest_modal_aa1_history_result.md).
+
+That selected state has now been deterministically materialized as \(Q(t)\).
+The independent checker reproduces the standard coefficient and publication,
+verifies the complete returned-\(z\) `Z-RAW-FLUX` AX/snapshot carrier, and
+accepts all 8880 reconstructed points. The nine-entry receipt passes. Its
+classification is `MATERIALIZED_PROPOSAL_NOT_EVALUATED`: the publication
+stage itself ran no Dragon or map and produced no stopping defect. A separate
+default-off host was then activated exactly once for the unchanged
+$G_2(Q(t))$, using the strict `proposal-z` gate, a 120-second radial bound
+and an 80-second axial bound. The carrier preflight and all three radial
+strict terminals passed, but the axial solve produced no strict terminal
+before the 80-second process bound. The classification is therefore
+`INVALID_MAP` with reason `TIMEOUT_BEFORE_TERMINAL`: no candidate, stopping
+defect, or scientific map result exists, and there was no retry. See
+[validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_next_candidate_result.md).
+The subsequent no-Dragon timing census found 14 strict historical completions
+with the identical axial deck under the established 420-second cap; their
+recorded CPU times are 132--141 seconds. Because exact wall times were not
+recorded, this shows only that the 80-second cap was operationally aggressive,
+not how long $Q(t)$ would require or that it would complete under a larger
+cap.
+A separately authorized recovery then evaluated the same $G_2(Q(t))$
+exactly once from fresh radial staging. It changed no parent, rank, basis,
+deck, equation, tolerance, AA(1) coefficient, or stopping gate; it restored
+only the established external axial process cap from 80 to 420 seconds. All
+four strict solves and the independent checker passed. The valid raw defects
+are
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(6.4223480867\times10^{-8},\,
+4.4345562393\times10^{-4},\,
+6.4974301495\times10^{-7}\ \mathrm{cm}^{-1},\,
+3.7041235150\times10^{-6}).
+$$
+
+The unchanged three-component AND gate therefore gives `VALID_NOT_MET`:
+$R_L$ and $R_a$ fail. The invalid 80-second attempt remains unchanged; none
+of its staging was reused, and no retry or successor map was started.
+The attempt record and frozen pre-run policy are
+[validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md](validation/iterative/rank2_latest_modal_aa1_next_map_attempt_result.md)
+and
+[validation/iterative/rank2_latest_modal_aa1_next_map_policy.md](validation/iterative/rank2_latest_modal_aa1_next_map_policy.md).
+The recovery policy is
+[validation/iterative/rank2_latest_modal_aa1_next_map_recovery_policy.md](validation/iterative/rank2_latest_modal_aa1_next_map_recovery_policy.md).
+The completed recovery result is
+[validation/iterative/rank2_latest_modal_aa1_next_map_recovery_result.md](validation/iterative/rank2_latest_modal_aa1_next_map_recovery_result.md).
+
+The subsequent no-Dragon audit used the two latest valid pairs
+$Q(y)\mapsto z$ and $Q(t)\mapsto u$. Standard modal AA(1), with no fitted or
+clipped coefficient, gives
+
+$$
+s=0.815637869982362540z+0.184362130017637404u.
+$$
+
+Its affine modal screen is `0.0390808376459939` of the latest residual and
+all 8880 publication points are positive. The leakage evidence is mixed:
+the same-coefficient height-$L_2$ screen is `0.8110507722462015` of the
+latest value, while the maximum $D_L$ screen is `1.1325277442611905`.
+Therefore this does not establish AA(1) superiority or convergence. It only
+makes the unique parameter-free $Q(s)$ eligible for a separate offline
+materialization. See
+[validation/iterative/rank2_latest_modal_aa1_recovery_history_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_history_result.md).
+
+That one eligible state has now been materialized and independently checked.
+The coefficient was recomputed from the four frozen publication-aware
+states; the same value was used for $A$, $\rho$ and $L$. The proposal
+copies the complete latest returned-$u$ carrier without mixing raw fluxes
+and is marked `PROPOSAL + U-RAW-FLUX`. The checker reproduces the REAL64 and
+REAL32 publication arithmetic, preserves the `Q(t) -> u` snapshot
+lifecycle, and accepts 8880/8880 positive reconstructed points. The 9/9
+receipt passes. Its classification is
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect or
+convergence decision was produced. The minimal `U-RAW-FLUX` host was then
+activated exactly once for the unchanged $G_2(Q(s))$, with 120/420-second
+process bounds. All four strict terminals, normal ends, the independent
+checker and 21/21 receipt passed. The raw result is
+
+$$
+(R_\rho,R_L,D_L,R_a)=
+(1.2844697306\times10^{-7},\,
+4.2079128466\times10^{-4},\,
+6.1653554440\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.6531418674\times10^{-6}).
+$$
+
+The classification is `VALID_NOT_MET`: $R_L$ and $R_a$ fail the unchanged
+AND gate. There was no retry, new proposal or successor map. See
+[validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_candidate_result.md).
+The frozen pre-run contract is
+[validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md](validation/iterative/rank2_latest_modal_aa1_recovery_map_policy.md).
+The completed result is
+[validation/iterative/rank2_latest_modal_aa1_recovery_map_result.md](validation/iterative/rank2_latest_modal_aa1_recovery_map_result.md).
+
+The subsequent no-Dragon audit used the actual pairs
+$Q(t)\mapsto u$ and $Q(s)\mapsto v$. The unrestricted standard modal AA(1)
+minimizer is
+
+$$
+x_{\mathrm{AA1}}=-2.43937066250607248u
+                 +3.43937066250607248v.
+$$
+
+This is a genuine extrapolation, not a tuned relaxation: the two modal
+residuals have cosine `0.9983735514`. Its modal affine screen is `0.1981` of
+the latest residual, but the same-coefficient leakage $L_2$ and $D_L$
+screens increase to `5.26` and `5.90` times their latest values. All 8880
+publication points remain positive. Thus the unique state is arithmetically
+eligible only for separate offline materialization; it is high risk and does
+not establish convergence, componentwise improvement, or AA(1) superiority.
+No proposal or map was started. See
+[validation/iterative/rank2_latest_modal_aa1_qv_history_result.md](validation/iterative/rank2_latest_modal_aa1_qv_history_result.md).
+
+That one unrestricted state has now been materialized offline, without
+clipping its coefficient:
+
+$$
+x_{\mathrm{AA1}}=-2.43937066250607248u
+                 +3.43937066250607248v.
+$$
+
+The same scalar publishes $(A,\rho,L)$. The complete raw AX and snapshot
+carrier comes only from the latest returned $v$ and is marked
+`V2-RAW-FLUX`; raw fluxes were not mixed. The independent checker binds the
+hash-locked $Q(t)\to u$ pair, verifies the $Q(s)\to v$ snapshot lifecycle,
+reproduces the REAL64/REAL32 publication, and accepts 8880/8880 points. The
+9/9 receipt passes. The result remains
+`MATERIALIZED_PROPOSAL_NOT_EVALUATED`: no Dragon, map, stopping defect, or
+convergence decision was produced. See
+[validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md](validation/iterative/rank2_latest_modal_aa1_qv_candidate_result.md).
+
+## Historical three-step convergence attempt
+
+The new bounded study is complete. First, a read-only comparison froze the
+genuine consecutive direct route. Second, one $x=G_2(w)$ was evaluated with
+fresh online radial transport; it was valid but not converged:
+
+\[
+(R_\rho,R_L,R_a)=
+(0,\,4.5994291504\times10^{-4},\,1.1437675695\times10^{-6}).
+\]
+
+Its leakage defect increased, while its two modal updates were nearly
+opposed (cosine `-0.990028`). The third and final step therefore used the
+unique standard full-Gram AA(1) state
+
+\[
+c=0.37810309349656490w+0.62189690650343510x.
+\]
+
+The coefficient was not fitted or clipped. One fresh $G_2(c)$ passed all
+strict inner terminals, the independent checker and the 21/21 receipt, but
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492191\times10^{-8},\,
+8.0189470417\times10^{-4},\,
+1.1749216355\times10^{-6}\ \mathrm{cm}^{-1},\,
+2.7219350042\times10^{-6}).
+\]
+
+Thus only $R_\rho$ passes the unchanged $5\times10^{-7}$ three-component
+AND gate. The result is `VALID_NOT_MET`: the physical map is valid, but the
+rank-two fixed point has not converged. No retry, fallback, empirical
+coefficient or successor map was started. See the
+[direct result](validation/iterative/rank2_vwx_picard_map_result.md),
+[direction decision](validation/iterative/rank2_vwx_direction_result.md),
+[AA(1) candidate](validation/iterative/rank2_vwx_aa1_candidate_result.md),
+and [final map](validation/iterative/rank2_vwx_aa1_map_result.md).
+
+That experiment started no automatic successor.
+
+## Historical bounded sequential AA(1) follow-up
+
+The next three-step study reused only existing mathematics and code. A
+no-Dragon audit found that the newest direct modal residual was 2.37980 times
+the preceding one, so another blind direct step was not selected. AA(2) was
+also rejected because accepting the current carrier sequence would require a
+new production mode. The existing standard sequential AA(1) uniquely gave
+
+\[
+y=1.6615840721007848x-0.66158407210078485d.
+\]
+
+This is an unclipped full-Gram extrapolation, not a fitted relaxation. The
+offline candidate retained 8880/8880 positive points and passed its 9/9
+receipt. Exactly one fresh $G_2(y)$ then passed all strict solve terminals,
+the independent checker and the 21/21 receipt. Its real defects are
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,1.2851779219\times10^{-3},\,
+1.8830178306\times10^{-6}\ \mathrm{cm}^{-1},\,
+4.6074323529\times10^{-7}).
+\]
+
+$R_\rho$ and $R_a$ pass, but $R_L$ remains 2570.36 times the unchanged
+tolerance. The classification is `VALID_NOT_MET`. The modal defect improved
+into tolerance while leakage worsened, so the current evidence shows a clear
+modal/leakage conflict rather than an inner-solver failure. No retry,
+fallback, empirical coefficient or successor map was started. See the
+[decision](validation/iterative/rank2_wxcd_aa1_decision_result.md),
+[candidate](validation/iterative/rank2_wxcd_aa1_candidate_result.md), and
+[real map](validation/iterative/rank2_wxcd_aa1_map_result.md).
+
+That result itself authorized no automatic successor.
+
+## Historical parameter-free AA(1) check
+
+The next separately declared three-step batch used the genuine consecutive
+maps \(q_{\mathrm{AA2}}\mapsto p\) and \(p\mapsto z\). Standard full-Gram
+AA(1), with no fitted or clipped coefficient, uniquely gave
+
+\[
+s=0.62153295893235927p+0.37846704106764067z.
+\]
+
+Before evaluation, the same weights reduced the modal, leakage
+height-\(L_2\), and \(D_L\) screens to `0.033998`, `0.534864`, and `0.720624`
+of the latest residual; the independently materialized proposal retained
+8880/8880 positive points. Exactly one fresh \(G_2(s)\), including three
+online radial solves, passed all strict terminals, the independent checker
+and the 21/21 receipt. Its raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,7.7972621269\times10^{-4},\,
+1.1424417607\times10^{-6}\ \mathrm{cm}^{-1},\,
+2.6297993459\times10^{-6}).
+\]
+
+Only \(R_\rho\) passes the unchanged \(5\times10^{-7}\) AND gate, so the
+classification is `VALID_NOT_MET`. The offline affine prediction was not
+used as acceptance and did not reproduce the nonlinear map outcome. No retry,
+fallback, empirical parameter or successor was started. See the
+[candidate](validation/iterative/rank2_current_aa2_picard_aa1_candidate_result.md)
+and [real map](validation/iterative/rank2_current_aa2_picard_aa1_map_result.md).
+
+## Historical minimum-order AA(2) continuation
+
+The following bounded batch first rejected the newest AA(1): its modal screen
+improved, but the same-weight leakage \(L_2\) and \(D_L\) screens increased to
+`3.27` and `3.95` times their current values. Only then were the three genuine
+maps \(q_{\mathrm{AA2}}\mapsto p\), \(p\mapsto z\), and \(s\mapsto t\)
+used in standard full-Gram AA(2):
+
+\[
+u=0.6095234759p+0.3127594889z+0.0777170352t.
+\]
+
+All weights are positive and were obtained from the unregularized 2-by-2
+system. The candidate passed its three componentwise authorization screens,
+8880/8880 positivity, independent checker and 9/9 receipt. Exactly one fresh
+\(G_2(u)\), including three online radial solves, then passed every strict
+terminal, the independent map checker and 21/21 receipt. Its raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.4091960058\times10^{-4},\,
+4.9950904213\times10^{-7}\ \mathrm{cm}^{-1},\,
+9.1538037695\times10^{-7}).
+\]
+
+Relative to the preceding map, the leakage measures fell by 56.28% and the
+modal defect by 65.19%. Nevertheless, \(R_L\) and \(R_a\) still fail the
+unchanged gate, so the classification is `VALID_NOT_MET`. No retry, fallback,
+empirical parameter or successor was started. See the
+[decision](validation/iterative/rank2_current_qpzst_aa2_decision_result.md),
+[candidate](validation/iterative/rank2_current_qpzst_aa2_candidate_result.md),
+and [real map](validation/iterative/rank2_current_qpzst_aa2_map_result.md).
+
+## Historical direct Picard check
+
+The newest standard AA(1), using \(s\mapsto t\) and \(u\mapsto v\), reduced
+the modal direction but increased both leakage directions. The sliding
+standard AA(2), using \(p\mapsto z\), \(s\mapsto t\), and \(u\mapsto v\),
+did the same. Both parameter-free Anderson candidates were rejected before a
+real map, so the latest returned state \(v\) was used directly.
+
+Exactly one \(w=G_2(v)\), including three online radial solves, passed every
+strict terminal, the independent checker, and the 21/21 receipt. Its raw
+result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,7.8300470403\times10^{-4},\,
+1.1472438928\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.5092725607\times10^{-6}).
+\]
+
+The unchanged AND gate contains \(R_\rho,R_L,R_a\): \(R_\rho\) passes,
+while \(R_L\) and \(R_a\) fail; dimensional \(D_L\) is diagnostic only.
+Relative to the parent map, the leakage defects increased by 129.67% and the
+modal defect by 64.88%, so the result is `VALID_NOT_MET`. This observed
+Picard step is not
+componentwise contractive, but one map does not prove global divergence or
+invalidate fixed-rank-two SPOD. No retry, fallback, empirical parameter, or
+successor was started. See the
+[decision](validation/iterative/rank2_current_stuv_decision_result.md) and
+[real map](validation/iterative/rank2_current_v_picard_map_result.md).
+
+## Historical chronological AA(2) continuation — previous window
+
+The newest consecutive AA(1), from \(u\mapsto v\) and \(v\mapsto w\), was
+rejected because its same-weight leakage directions increased. The latest
+three-map window \(s\mapsto t,u\mapsto v,v\mapsto w\) then gave the standard
+unregularized AA(2) state
+
+\[
+x=0.3128924934t+0.3453549519v+0.3417525548w.
+\]
+
+All weights are positive. Its modal, leakage height-\(L_2\), and \(D_L\)
+direction ratios were `0.062849`, `0.587018`, and `0.546809`; 8880/8880
+publication points were positive. Exactly one real \(G_2(x)\), including
+three online radial solves, passed every strict terminal, the independent
+checker, and the 21/21 receipt. It returned
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,6.2222828\times10^{-4},\,
+9.1167749\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.4721160\times10^{-6}).
+\]
+
+Relative to the parent map, leakage fell by 20.53% but \(R_a\) rose by
+63.80%. The original AND gate therefore still fails through \(R_L\) and
+\(R_a\), giving `VALID_NOT_MET`. This is local leakage improvement, not
+componentwise contraction or evidence of asymptotic convergence. No retry,
+fallback, empirical parameter, or successor was started. See the
+[decision](validation/iterative/rank2_current_uvvw_decision_result.md),
+[candidate](validation/iterative/rank2_current_stuvvw_aa2_candidate_result.md),
+and [real map](validation/iterative/rank2_current_stuvvw_aa2_map_result.md).
+
+## Historical chronological AA(2) continuation — latest AA(2) window
+
+The newest standard AA(1), using the actual map residuals from
+\(v\mapsto w\) and \(x\mapsto y\), was rejected because its leakage
+height-\(L_2\) direction increased by a factor `1.066406`.  Only then was
+the standard unregularized AA(2) window
+\(u\mapsto v,v\mapsto w,x\mapsto y\) used:
+
+\[
+q_2=0.3924817303v+0.2890750334w+0.3184432363y.
+\]
+
+Its modal, leakage height-\(L_2\), and \(D_L\) direction ratios were
+`0.029854`, `0.576288`, and `0.622210`; 8880/8880 publication points were
+positive.  Exactly one real \(G_2(q_2)\), including three online radial
+solves, passed every strict terminal, the independent checker, and the 21/21
+receipt.  It returned
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(0,\,3.9433305\times10^{-4},\,
+5.7776924\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.7262886\times10^{-6}).
+\]
+
+Against the preceding evaluated map \(x\mapsto y\), leakage fell by 36.63%
+while \(R_a\) rose by 10.28%.  This cross-input defect comparison is not a
+contraction factor.  The original AND gate still fails through \(R_L\) and
+\(R_a\), so the classification remains `VALID_NOT_MET`.  This is local
+leakage improvement, not componentwise defect decrease or evidence of
+asymptotic convergence.  No retry, fallback, empirical parameter, or
+successor was started.  See the
+[decision](validation/iterative/rank2_current_vwxy_decision_result.md),
+[candidate](validation/iterative/rank2_current_uvvwxy_aa2_candidate_result.md),
+and [real map](validation/iterative/rank2_current_uvvwxy_aa2_map_result.md).
+
+## Historical direct Picard continuation — previous window
+
+The standard AA(1) direction from \(x\mapsto y,q\mapsto z\) was rejected:
+its leakage height-\(L_2\) and \(D_L\) ratios were `11.1972` and `13.2371`.
+Only then was the latest three-pair standard unregularized AA(2) direction
+checked; its corresponding leakage ratios were `1.28482` and `1.22668`, so
+it was also rejected.  No Anderson proposal was published.
+
+The latest returned state \(z\) was therefore used unchanged in exactly one
+direct \(z^+=G_2(z)\).  Three online radial solves, the axial solve, every
+strict terminal, the independent checker, and the 21/21 receipt passed.  The
+raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,8.1007981\times10^{-4},\,
+1.1869124\times10^{-6}\ \mathrm{cm}^{-1},\,
+8.9336792\times10^{-7}).
+\]
+
+The original AND gate still fails through \(R_L\) and \(R_a\), so the
+classification is `VALID_NOT_MET`.  Against the preceding genuinely
+consecutive residual, leakage increased by 105.43% while \(R_a\) decreased
+by 67.23%.  These adjacent observations show a leakage/modal tradeoff, not
+an asymptotic contraction or divergence proof.  No retry, fallback,
+empirical parameter, or successor was started.  See the
+[decision](validation/iterative/rank2_current_xyqz_decision_result.md) and
+[real map](validation/iterative/rank2_current_z_picard_map_result.md).
+
+## Historical direct Picard continuation — later direct window
+
+The latest two genuine residuals $z-q$ and $r-z$ first defined standard AA(1):
+its modal direction ratio was `0.489069`, but its leakage height-$L_2$ and
+$D_L$ ratios were `1.54593` and `1.56696`, so it was rejected.  Only then
+was standard unregularized AA(2) evaluated from $y-x$, $z-q$, and $r-z$.
+Its corresponding ratios were `0.458935`, `1.83517`, and
+`2.10326`; it was also rejected.  Neither direction was authorized or
+published as a production map parent.
+
+The newest valid return $r$ was used unchanged in exactly one direct
+$r^+=G_2(r)$.  Three online radial solves, the axial solve, every strict
+terminal, the independent checker, and the 21/21 receipt passed.  The raw
+result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,7.4792564\times10^{-4},\,
+1.0958465\times10^{-6}\ \mathrm{cm}^{-1},\,
+3.6424204\times10^{-6}).
+\]
+
+The original AND gate still fails through $R_L$ and $R_a$, so the
+classification is `VALID_NOT_MET`.  Against the preceding genuinely
+consecutive residual, leakage decreased by 7.67% while $R_a$ increased by
+307.72%.  Together the last two direct maps show an alternating local
+leakage/modal tradeoff, not proof of a cycle, convergence, or divergence.
+No retry, fallback, empirical parameter, or successor was started.  See the
+[decision](validation/iterative/rank2_current_qzzr_decision_result.md) and
+[real map](validation/iterative/rank2_current_zplus_picard_map_result.md).
+
+## Historical returned-state AA(1) continuation
+
+The latest genuine residuals $r-z$ and $s-r$ define standard unregularized
+full-Gram AA(1):
+
+\[
+p=0.80686776173198704\,r+0.19313223826801298\,s.
+\]
+
+Its modal, leakage height-$L_2$, and dimensional leakage-direction ratios
+are `0.0551069`, `0.799194`, and `0.787927`.  All three pass the fixed
+parameter-free screen, so the minimum-order rule authorizes AA(1) and does
+not form AA(2).  The same weights act on $(a,\rho,L)$ before the existing
+publication rules.
+
+Exactly one $p^+=G_2(p)$ completed with three fresh online radial solves and
+one axial solve.  Strict terminals, the independent checker, and the 21/21
+receipt pass.  The raw result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223492\times10^{-8},\,4.8961883\times10^{-4},\,
+7.1738032\times10^{-7}\ \mathrm{cm}^{-1},\,
+2.6606584\times10^{-6}).
+\]
+
+The unchanged AND gate gives `VALID_NOT_MET`: only $R_\rho$ passes.  Relative
+to the preceding direct map evaluated at the different parent $r$, the
+defect magnitudes $R_L$, $D_L$, and $R_a$ are lower by 34.54%, 34.54%, and
+26.95%.  This cross-input comparison is not a contraction factor or proof
+of convergence.  No retry, fallback, AA(2), empirical parameter, or
+successor was started.  See the
+[proposal](validation/iterative/rank2_current_zrs_aa1_candidate_result.md)
+and [real map](validation/iterative/rank2_current_zrs_aa1_map_result.md).
+
+## Historical direct continuation from the AA(1) return
+
+Using the actual residuals $s-r$ and $t-p$, standard AA(1) reduced its modal
+direction to `0.335365` of the current residual but increased the leakage
+height-$L_2$ and $D_L$ directions to `4.52646` and `3.72196`.  Only after
+that failure, standard unregularized AA(2) on $r-z$, $s-r$, and $t-p$ was
+checked; its corresponding ratios were `0.0577970`, `1.70181`, and
+`1.18840`.  It also failed.  Neither affine state was materialized.
+
+The return $t$ was used unchanged in exactly one direct
+$t^+=G_2(t)$.  Three online radial solves, the axial solve, every strict
+terminal, the independent checker, and the 21/21 receipt passed.  The raw
+result is
+
+\[
+(R_\rho,R_L,D_L,R_a)=
+(6.4223481\times10^{-8},\,8.6092982\times10^{-4},\,
+1.2614182\times10^{-6}\ \mathrm{cm}^{-1},\,
+1.8950660\times10^{-6}).
+\]
+
+The unchanged AND gate gives `VALID_NOT_MET`: only $R_\rho$ passes.  Against
+the preceding genuinely adjacent residual $t-p$, $R_L$ and $D_L$ increased
+by 75.84%, while $R_a$ decreased by 28.77%.  This is a local leakage/modal
+tradeoff, not proof of a cycle, convergence, or divergence.  No retry,
+fallback, empirical parameter, or successor was started.  See the
+[decision](validation/iterative/rank2_current_zrspt_decision_result.md) and
+[real map](validation/iterative/rank2_current_t_picard_map_result.md).

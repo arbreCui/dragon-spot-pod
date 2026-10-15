@@ -1,0 +1,139 @@
+def sender_control_contract():
+    """Return the whole frozen source contract, never a tiny cases substitute."""
+    import copy
+    import re
+
+    def bound(path, wanted):
+        if (path is None or type(wanted) is not str
+                or re.fullmatch('[0-9a-f]{64}', wanted) is None or wanted == '0' * 64):
+            raise ValueError('UNREADY: actual sender control source pins required')
+        return require(path, wanted)
+
+    if type(SENDER_CONTROL_LAYOUT) is not dict or not SENDER_CONTROL_LAYOUT:
+        raise ValueError('UNREADY: complete Root-bound sender layout required')
+    specifications = [(SENDER_CONTROL_SOURCE, SENDER_CONTROL_SOURCE_SHA),
+                      (SENDER_CONTROL_CONTRACT, SENDER_CONTROL_CONTRACT_SHA),
+                      (SENDER_CONTROLS_AUDITOR, SENDER_CONTROLS_AUDITOR_SHA)]
+    # Reject every unbound pin before a permissive require(None) can read.
+    for path, wanted in specifications:
+        if (path is None or type(wanted) is not str
+                or re.fullmatch('[0-9a-f]{64}', wanted) is None or wanted == '0' * 64):
+            raise ValueError('UNREADY: control driver/whole contract/auditor SHA required')
+    driver, contract_path, auditor = [bound(path, wanted) for path, wanted in specifications]
+    contract = read(contract_path)
+    if type(contract) is not dict:
+        raise ValueError('whole sender contract object required')
+    normalized = copy.deepcopy(contract)
+    for name in ('source_driver', 'reference_unit'):
+        item = normalized.get(name)
+        if type(item) is not dict or set(item) != {'path', 'sha256', 'size_bytes', 'identity'}:
+            raise ValueError('complete source contract descriptor layout required')
+        del item['path']; del item['identity']
+    if normalized != SENDER_CONTROL_LAYOUT:
+        raise ValueError('entire complete Root-bound normalized sender layout differs')
+    if (contract['schema'] != 'AXMAT_FLUSP64_WINDOW_WRAPPER_CONTROL_CONTRACT_V1'
+            or contract['status'] != 'SOURCE_ONLY_UNREADY'
+            or contract['runtime_auditor_interface'] != 'audit_sender_controls(controls_root, contract) -> dict'
+            or contract['candidate_unit'] != 'link actual fullsender object; do not add or replace candidate wrapper source'
+            or contract['compiler_or_control_execution_performed'] is not False
+            or contract['actual_outputs'] is not None
+            or contract['original_68_controls_must_remain_unmodified'] is not True
+            or contract['all_four_negative_modes_required'] is not True):
+        raise ValueError('truthful complete source-only observer contract required')
+    if (contract['source_driver']['sha256'] != SENDER_CONTROL_SOURCE_SHA
+            or contract['source_driver']['size_bytes'] != driver.stat().st_size):
+        raise ValueError('formal driver bytes must equal complete contract source')
+    source = sender_source_admission()
+    ref_sha = source['proof']['reference_wrapper_sha256']
+    if (contract['reference_unit']['sha256'] != ref_sha
+            or contract['reference_unit']['size_bytes'] != len(source['reference_wrapper_text'].encode('utf-8'))):
+        raise ValueError('complete exact old reference wrapper must match sender proof')
+    modes = ('all', 'suffix', 'interior', 'scalar_first', 'scalar_last', 'scalar_one',
+             'sparse', 'empty_ileak0', 'empty_ileak3', 'transition',
+             'unsupported_reference_active', 'unsupported_candidate_active',
+             'unsupported_reference_empty', 'unsupported_candidate_empty')
+    cases = contract['cases']
+    if (type(cases) is not list or len(cases) != 14
+            or [case['name'] for case in cases] != list(modes) or tuple(SENDER_MODES) != modes):
+        raise ValueError('complete ten positive/four negative modes required')
+    projection = []; raw_total = 0; raw_count = 0; positive_steps = 0
+    reference_wrappers = 0; candidate_wrappers = 0; reference_observers = 0; candidate_observers = 0
+    manifest_rows = 0
+    for index, case in enumerate(cases):
+        name = case['name']; negative = index >= 10
+        if (case['case_id'] != index + 1 or case['args'] != [name]
+                or case['negative'] is not negative or case['expected_returncode'] != (1 if negative else 0)
+                or (case['nun'], case['ngrp']) != ((1800, 370) if name == 'all' else (12, 1 if name == 'scalar_one' else 8))
+                or (case['nreg'], case['nmat'], case['nmerg']) != (7, 4, 3)):
+            raise ValueError('exact fixture dimensions/case identity differ: ' + name)
+        projection.append(dict(name=name, args=[name], expected_returncode=1 if negative else 0,
+            expected_message='FLUSP64: UNSUPPORTED LEAKAGE MODEL.' if negative else None))
+        expected_raw = []
+        if negative:
+            active = case['ngrp'] if name.endswith('_active') else 0
+            target = 'reference' if 'reference' in name else 'candidate'
+            steps = [dict(step=1, active_groups=active)]
+            if (case.get('steps') is not None or case['ileak'] != 2
+                    or case['target'] != target or case['target_wrapper_calls'] != 1
+                    or case['observer_calls'] != 0 or case['manifest_lines'] != 0
+                    or case['manifest_size_bytes'] != 0
+                    or case['expected_message'] != 'FLUSP64: UNSUPPORTED LEAKAGE MODEL.'):
+                raise ValueError('exact unsupported-leak negative layout required: ' + name)
+            reference_wrappers += target == 'reference'
+            candidate_wrappers += target == 'candidate'
+        else:
+            steps = case['steps']
+            if [step['step'] for step in steps] != list(range(1, len(steps) + 1)):
+                raise ValueError('ascending complete declared steps required')
+            positive_steps += len(steps); reference_wrappers += len(steps); candidate_wrappers += len(steps)
+            if case['manifest_lines'] != len(steps):
+                raise ValueError('one positive manifest row per step required')
+            for step in steps:
+                active = step['active_groups']
+                if (type(active) is not int or not 0 <= active <= case['ngrp']
+                        or step['expected_route'] not in (0, 1, 2)
+                        or (step['expected_route'] == 0) != (active == 0)
+                        or step['reference_observer_calls'] != int(active > 0)
+                        or step['candidate_observer_calls'] != int(active > 0)):
+                    raise ValueError('exact observer call/route semantics differ')
+                reference_observers += step['reference_observer_calls']
+                candidate_observers += step['candidate_observer_calls']
+        for step in steps:
+            n, g, r, m, z, active = [case[k] for k in ('nun', 'ngrp', 'nreg', 'nmat', 'nmerg')] + [step['active_groups']]
+            size = 8 * (18 + g + 2*r + m + r + 4 + z*g + 8*n*g + 2*active + n*active) + 72
+            if not negative and step['each_raw_size_bytes'] != size:
+                raise ValueError('independent complete raw bytes formula differs')
+            for who in (('input',) if negative else ('input', 'reference', 'candidate')):
+                expected_raw.append(dict(name=name + '.s' + str(step['step']) + '.' + who + '.bin',
+                                         size_bytes=size, who=who))
+        if case['raw_files'] != expected_raw:
+            raise ValueError('whole exact raw-name/size/who layout differs: ' + name)
+        names = [item['name'] for item in expected_raw]
+        if (len(set(names)) != len(names)
+                or case['strict_case_namespace'] != ['execute.log', 'execute.watchdog.json', 'wrapper_manifest.jsonl'] + names):
+            raise ValueError('complete exact case namespace differs: ' + name)
+        raw_count += len(expected_raw); raw_total += sum(item['size_bytes'] for item in expected_raw)
+        manifest_rows += case['manifest_lines']
+    counts = dict(positive_cases=10, negative_cases=4, positive_steps=positive_steps,
+        positive_reference_wrapper_calls=positive_steps, positive_candidate_wrapper_calls=positive_steps,
+        negative_reference_wrapper_calls=reference_wrappers-positive_steps,
+        negative_candidate_wrapper_calls=candidate_wrappers-positive_steps,
+        positive_reference_observer_calls=reference_observers, positive_candidate_observer_calls=candidate_observers,
+        negative_observer_calls=0, wrapper_calls_total=reference_wrappers+candidate_wrappers,
+        observer_calls_total=reference_observers+candidate_observers, positive_raw_files=raw_count-4,
+        negative_raw_files=4, raw_files_total=raw_count, raw_bytes_total=raw_total, manifest_files=14)
+    if (counts != contract['planned_counts_not_actual']
+            or (raw_count, raw_total, reference_wrappers+candidate_wrappers,
+                reference_observers+candidate_observers, positive_steps, manifest_rows) != (70,288241824,48,34,22,22)
+            or projection != list(SENDER_CASES)):
+        raise ValueError('complete source plan counts/formula/operational projection differ')
+    raw_schema = contract['raw_schema']
+    if (raw_schema['schema'] != 'AXMAT_FLUSP64_WINDOW_OBSERVER_RAW_V1'
+            or raw_schema['exact_eof_required'] is not True
+            or raw_schema['byte_order'] != 'little' or raw_schema['word_type'] != 'signed int64'
+            or len(raw_schema['header_words']) != 18
+            or raw_schema['generic_bytes_formula'] != '8*(18+NGRP+2*NREG+NMAT+NREG+4+NMERG*NGRP+8*NUN*NGRP+2*NGEFF+NUN*NGEFF)+72'):
+        raise ValueError('complete exact raw interface/formula required')
+    for path, wanted in specifications:
+        bound(path, wanted)
+    return contract

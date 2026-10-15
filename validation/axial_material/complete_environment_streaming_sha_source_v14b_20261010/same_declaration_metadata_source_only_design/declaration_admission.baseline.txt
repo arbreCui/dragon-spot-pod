@@ -1,0 +1,62 @@
+def declaration_admission(expected,require_build_interpreter=True):
+    require_ready()
+    d=read(require(OUT/'declaration.json',expected))
+    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_BUILD_DECLARATION_V14B'
+            or d['family']!=FAMILY or d['source_root']!=str(SOURCE) or d['total_wall_seconds']!=1800 or d['stage_wall_seconds']!=600
+            or d['rss_cap_mib']!=512 or d['archive_reserve_bytes']!=2*2**30 or d['artifact_budget_bytes']!=96*2**30
+            or d['min_free_bytes']!=8*2**30 or d['threads']!=1 or d['numeric_children_at_once']!=1 or d['retries']!=0
+            or d['rank1_factor_cache_budget_bytes']!=536870912 or d['actual_full_FLU_entry_executed'] is not False
+            or d['AAA_accuracy_qualified'] is not False or d['ABA_admitted'] is not False
+            or d['native_RSS_proof_obtained'] is not False or d['fresh_512MiB_native_capture_required'] is not True
+            or d['actual_external_terminal_return_contract']!=terminal_contract(d['build_python_executable'])
+            or d['future_actual_factor_cache_observer_required']!=cache_observer_contract()):
+        raise ValueError('immutable original caps and memory-only input scope differ')
+    if d['production_link_command']!=d['build_commands'][2]:raise ValueError('explicit actual production link command differs')
+    stream_admission=stream_environment_helper_source_admission()
+    if d["stream_environment_helper_admission"] != stream_admission:
+        raise ValueError("entire actual helper SOURCE/control admission changed")
+    for original_path, copied_name, wanted in (
+            (STREAM_ENVIRONMENT_HELPER,"complete_environment_streaming_sha_helper_v14b.py",STREAM_ENVIRONMENT_HELPER_SHA),
+            (STREAM_ENVIRONMENT_SOURCE_PROOF,"stream_environment_helper_source_patch_proof.json",STREAM_ENVIRONMENT_SOURCE_PROOF_SHA),
+            (STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS,"stream_environment_helper_controls_admission.json",STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS_SHA)):
+        if require(SOURCE/copied_name,wanted).read_bytes()!=require(original_path,wanted).read_bytes():
+            raise ValueError("actual SOURCE helper evidence copies differ; never import the copy")
+    source_admission=read(require(SOURCE/"source_admission.json"))
+    if (source_admission["schema"] != "AXMAT_SENDER_CONTIGUOUS_FLUX_WINDOW_STREAMING_SHA_SOURCE_ADMISSION_V14B"
+            or source_admission["stream_environment_helper_admission"] != stream_admission):
+        raise ValueError("whole source admission must bind exact helper controls independently")
+    if not 0 < d["complete_archive_forecast"]["forecast_complete_with_sender_and_stream_helper_bytes"] < ARCHIVE_RESERVE:
+        raise ValueError("complete three-copy streaming helper forecast must fit original2GiB")
+    environment(d,require_build_interpreter);helper().verify_inventory(SOURCE,d['source_inventory'])
+    if exact_directories(SOURCE)!=d["source_directories"]:raise ValueError("complete source directory namespace changed")
+    prior=d['inherited_rank1_factor_cache_admission']
+    if predecessor_admission(PARENT_SEAL,prior['actual_external_terminal_evidence']['path'],prior['actual_external_terminal_evidence']['sha256'])!=prior:
+        raise ValueError('actual compulsory complete parent return changed')
+    memory_prior=d['inherited_rank1_factor_cache_memory_admission']
+    if memory_predecessor_admission(MEMORY_SEAL_SHA,memory_prior['actual_external_terminal_evidence']['path'],
+            memory_prior['actual_external_terminal_evidence']['sha256'],prior)!=memory_prior:
+        raise ValueError('actual compulsory complete memory return changed')
+    memory_failed=d['actual_failed_compact_memory_native_capture_evidence']
+    if failed_memory_capture_admission(memory_failed['terminal']['sha256'])!=memory_failed:
+        raise ValueError('retained failed compact-memory capture changed')
+    failed=d['actual_failed_native_capture_evidence']
+    if failed_capture_admission(failed['terminal']['sha256'])!=failed:raise ValueError('retained failed capture identity changed')
+    changed,c=patch_admission(d['patch_helper']['sha256'],d['controls_source']['sha256'])
+    if c!=d['control_contract'] or complete_archive_forecast(c,changed,sender_source_admission(),sender_control_contract())!=d['complete_archive_forecast'] or production_cache_shape_forecast(prior,c)!=d['stored_production_shape_cache_forecast']:
+        raise ValueError('complete source/controls/shape/archive contract changed')
+    for name,key in (('SPOT1P64.f90','kernel'),('SPOT1P64.original_reference.f90','reference_kernel'),('SPOT1P64.dense_reference.f90','dense_reference_kernel')):
+        if (SOURCE/name).read_text()!=changed[key]:raise ValueError('actual new complete source differs from reversible source proof')
+    if (SOURCE/'rank1_factor_cache_last_cprime_trim_controls.f90').read_bytes()!=CONTROL_SOURCE.read_bytes():raise ValueError('actual controls source differs')
+    if (SOURCE/'keycodec_controls.f90').read_bytes()!=require(KEYCODEC_CONTROL_SOURCE,KEYCODEC_CONTROL_SHA).read_bytes():
+        raise ValueError('fresh independent keycodec source differs')
+    if d['sender_source_admission']!=sender_source_admission() or d['sender_control_contract']!=sender_control_contract():
+        raise ValueError('new complete sender source/receiver/wrapper contract changed')
+    if (SOURCE/'FLU2DR64.f').read_text()!=d['sender_source_admission']['sender_text'] or (SOURCE/'FLUSP64.original_reference_unit.f').read_text()!=d['sender_source_admission']['reference_wrapper_text']:
+        raise ValueError('private compiled sender/reference source bytes changed')
+    if (SOURCE/'sender_window_controls.f90').read_bytes()!=require(SENDER_CONTROL_SOURCE,SENDER_CONTROL_SOURCE_SHA).read_bytes():
+        raise ValueError('new actual wrapper driver bytes differ')
+    if d['original_stage_count']!=68 or d['complete_stage_count']!=86 or len(d['build_commands'])!=12:
+        raise ValueError('all original68 and18 new stages required')
+    if d['control_contract']['original45_required'] is not True or len(stage_labels(d))!=86:
+        raise ValueError('old complete45 and new independent23 stages mandatory')
+    return d

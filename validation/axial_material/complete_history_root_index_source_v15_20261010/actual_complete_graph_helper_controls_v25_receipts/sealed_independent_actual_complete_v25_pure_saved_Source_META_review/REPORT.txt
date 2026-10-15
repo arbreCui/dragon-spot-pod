@@ -1,0 +1,5 @@
+PASS: V25 saved actual complete PURE success SOURCE/META only.
+Original5stage/fixtures/61reject/owner4+3+2+2 and new5+13+3 complete; actual outer0 and genuine child0.
+All184+199 Source archive members and original directories lossless; direct5Source bytes unchanged.
+Original64MiB cap retained: HOD62499039B and currentHODE63392917B. No new jointQ/fresh/build/INPUT/native/science credit.
+Largegraph/trace payload not reread.

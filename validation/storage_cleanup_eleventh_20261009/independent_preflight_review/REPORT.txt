@@ -1,0 +1,21 @@
+第十一轮固定15项删除前独立只读审查：PASS
+
+冻结范围：manifest5a2462 / cleanup source8ee7，不扩展候选或科学INPUT准入。
+唯一最终 reader 实际6ec0b6 / session77481 →91ad69，builtin int EXIT0 / CLOSED。
+Root预检真实3cf8b4 /84533 →55000b EXIT0；恢复默认真实2908e4 EXIT0，仅列15项，restoredFalse。
+首次只读 reader 的green报告字段适配失败真实EXIT1保存在reader_attempt01_stopped；不将其记为成功、不涉及清理/恢复/业务。
+
+完整SHA fresh范围：15候选（9greenNPZ +6coarse含1bin）、17独立inode保留主本、4164来源及审查pin、32585份原结果文档（3,797,135,364 bytes）。候选所有singlelink、fullSHA/size与主本完全相同，候选identity保持，全部来源/文档原SHA保持。
+源inverse：T10母本仅REPORT身份和suffix whitelist两区变化；最终.xsm .npz .bin允许项完整审查。原guards/fullSHA/identity/固定manifest/预检绑定/只逐文件unlink/保留检查/恢复规则不变。
+15路径与原manifest entry及保留主本恢复映射核闭合。旧完整manifest/重放/通用读取器需要先从保留主本恢复这15个原路径；原inode/ctime不可重建；以前轮次另依原恢复方案。
+保护零交集：saved graph35647 canonical /86 namespaces /186 aliases /228资源根仍存在，旧保护索引、cold6248/1534、prior9124恢复来源、历轮显式保留来源、687 symbolic links及入站target。这里只审15路径零交集，未执行graph/API/科学验证。6个不同SHA的bootstrap HOLD文件仅fresh身份+已有完整审查pin，均保持；默认迭代seed原身份保持，无额外大型数据扫描。
+全项目身份/链接文本/目录前后完全相等（排除.git与本轮报告目录）：173928 regular paths /687 links /6945 dirs。
+前后snapshot SHA605d019f617ffdb3208a346962aaefbb68a722c6fc558ffefe9ff99cae661d1b，与Root真实预检精确一致。
+
+候选逻辑843,222,425 bytes；allocated843,251,712 bytes，0.78533935546875GiB。这是冻结候选预计量，不是已回收量。
+本独审删0文件、formal/ART/源码/.git写0、业务/构建/恢复执行0。只有固定manifest与source及baseline仍相同才适用于Root apply前；实际删除结果尚未产生。
+
+JSON proof: independent_preapply_review.json SHA8c3e21474e0915246c7c0115498f2f95664dd7de2d3ceafdde6f60d8c7a8cef4
+完整fresh SHA记录：independent_full_SHA_records.json
+实际工具收据：actual_tool_receipt.json
+已封存source-only静态inverse：/private/tmp/spot_storage_eleventh_final_8ee7_source_only_independent_review_20261009/SOURCE_ONLY_REPORT.txt SHA53fb79b549b4d916497dea6e486f2ccc3dbcc29cc5da910a81dbc05cf2a6e085

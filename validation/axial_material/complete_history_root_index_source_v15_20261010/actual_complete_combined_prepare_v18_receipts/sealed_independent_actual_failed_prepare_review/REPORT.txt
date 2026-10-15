@@ -1,0 +1,9 @@
+V18 准备失败封存的一遍有限只读复核通过。
+真实 Root 026dfe/session 47917 → d1800c，严格整数退出码 1，已关闭，无重试或关闭后轮询。
+实际 watchdog：子进程 -15，160.698918 秒，峰值 514.421875 MiB 超过原 512 MiB，own-child 与进程组清理 true。只能确认 RSS 上限触发；具体业务源码行未观察。
+H/S/O/T/D 全部 53 个普通文件、13 个子目录、0 个链接，连同 E 及 canonical 全 SHA/7ID 前后保持，35 冻结 SOURCE 与 canonical/host 匹配原 prelaunch。
+原 1800/600 秒、512 MiB、2 GiB、history 96/free 8 GiB、1 thread/1 child/0 retry 仍保持。
+五个封存 namespace 合计 42,851,094 B；Root summary 写入前联计 43,215,212 B；包含新增 summary/REPORT 的当前 H/S/O/T/D/E+canonical 联计 43,219,485 B，均低于 2 GiB。
+没有成功 declaration/input_graph/seal/driver_result，T 仅 failed_prepare_terminal_return，不能当作成功凭证。
+原 host 最终输入复核未到达。这里只复核 35 冻结 source + canonical/host 和此次封存，不能声称全部物理输入 final pass。
+没有新的 PREP、whole INPUT、完整构建、native、AAA 或 ABA 成功信用。本审查不运行 API/业务/数值，不导入 driver，不改项目/ART，仅标准库源码/元数据及完整字节哈希。

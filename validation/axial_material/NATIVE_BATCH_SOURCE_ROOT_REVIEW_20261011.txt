@@ -1,0 +1,11 @@
+完整原生编译批次候选：Root Source 复核意见（2026-10-11）
+候选仅为 Source，尚未准入编译或材料执行。全部1336原单元与1观察模块、原命令/依赖和五阶段路径已保留，Root已完整阅读实现；旧失败构建、N9 D/E和物理输入未改。
+
+必须先解决的具体边界：旧每个gfortran/gcc驱动分别是原OwnRSS的512MiB采样对象；新单库批次将采样对象改为Python控制器，编译器驱动也成为未采样后代。虽然原OwnRSS类/MRO及512数字不改，这并不保留原每驱动的采样范围。候选诚实标记compiler_RSS_qualified=False，但不能凭控制器低内存宣称原编译器内存资格通过。Root因此暂不启动这份候选的全构建；需要在不放宽原边界的情况下补齐实际每驱动监控/内存拒绝和自身真实wait、明确计账与原时间约束，再进行新的真实控制。
+
+监测侧的新完整帧候选与旧Q也须分开资格化。新帧可以因短命非owner进程导致整帧失败，再在同一固定观察窗内重新取得全部PS/lsof/PS，但不能接收旧非零或不全的扫描。业务重启次数仍0；任何未知owner、记录失败、资源越限或总期限仍立即失败。尚无新的实控通过记录。
+
+本意见没有新增完整构建、actual A/B context、物理中子平衡、全370群耦合参考、AAA精度或ABA资格。清理仍暂缓。
+
+Source: /private/tmp/axmat_fullNative_guarded_library_batch_Source_fa7n4zcm/full_native_library_batch_UNREADY.py
+SHA256: fe55973aabdb6a1625bb0aa2297962f2f07de46dc1fd8039fb8326ecba656a99

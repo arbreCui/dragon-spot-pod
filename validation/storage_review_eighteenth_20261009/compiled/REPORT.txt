@@ -1,0 +1,14 @@
+第十八轮非 artifacts 构建/Git/缓存独立只读复查：向Root提出1372个精确编译候选待完整固定清单核验，logical64,798,176B、allocated67,629,056B；尚无删除批准，批准逻辑/分配回收量均0。仅写TMP，无项目或Git修改，无科学业务。
+
+有限非validation核心3016普通文件，完整路径与七字段排序指纹和R17完全相同；独有inode logical140,073,927B、allocated146,280,448B。未全项目walk或读取Git历史内容。build/target/dist/node_modules/vendor/tmp/temp等精确存在性见机器报告；没有新增可安全退役的根构建或临时批次。
+
+当前必需：lib/Darwin_arm64/libDragon.a、Trivac/lib/Darwin_arm64/libTrivac.a、Utilib/lib/Darwin_arm64/libUtilib.a、Ganlib/lib/Darwin_arm64/libGanlib.a仍被当前V9/原trim链接源码直接引用；src/FLU.o仍被原activity auditor直接读取。上述source SHA和原行上下文fresh匹配。库/程序完整路径、logical/allocated和七字段与R17相同。
+实际frozen集合与Makefile再生引用分开：完整binding expected37395和graph canonical35647/namespace86/alias186/resource 236+231交叉核。4个.o真的命中frozen输入，精确路径在候选屏幕文件中，继续HOLD。11个不受frozen保护但在current依赖源码被basename引用，保守交Root审核上下文。其余1368个.o有保留源文件全文SHA+原Makefile再生规则，不命中上述保护，作为可清理候选；并非因为Makefile引用就全部保留。四src库全文与Darwin保留主本比较，4个byte-exact副本候选，0个不同字节HOLD。全部.mod、Darwin主库、bin/原程序不在候选。compiled_candidate_screen.json给每项exact路径/七身份/逻辑分配量/保留源或主本SHA及再生入口；这不是已执行清理或完整Root固定清单批准。
+
+缓存159项，R18/R17完整records完全相同，fresh七身份逐项匹配；logical4,254,785B，uniqueinode allocated4,534,272B。原resource HOLD及2个当前canonical源衍生HOLD继续保留；R12已删除64项仍absent，不重复报收益。有限核心.pyc为0；.ruff_cache无普通文件，没有新安全项。
+
+Git统计只读：.git2,945,248KiB、objects2,714,348KiB、lost-found230,372KiB；loose3253较R17变化+87，总Git分配统计变化+736KiB；packs3、packed6890、garbage0、prune-packable0。统计不证明可达性或备份，不归因新增历史捕获。lost-found79份七身份指纹与R17相同，logical235,627,205B、allocated235,900,928B。两最大exact路径见JSON；大量未提交工作与恢复链仍需保留objects/refs/logs/index/lost-found，不进行gc/prune/clean/repack/fsck。
+
+所有结果文档、失败/stdout/stderr/seal、永久恢复包及控制/ledger/RESTORE、唯一OUT9恢复主本与当前runtime/INPUT/full-history依赖保留。小不可变恢复/失败控制逐SHA核实；大永久gzip未重新全文hash/解压。完整冷INPUT和新增finalization成功不能取消旧失败、独立2000active/八精度门或恢复职责。本轮Rootbefore只作metadata概览，不冒充科学内容验证。
+
+REPORT.json保存小来源pins、exact路径、分配/逻辑量与指纹；真实工具终态另外封存。一次查找旧TMP源错用不存在文件名而EXIT1，已保留观察后找到真实源文件，不是业务失败或业务重试。

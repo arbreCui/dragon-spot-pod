@@ -1,0 +1,17 @@
+SPOT 继续执行结果：空间、原始数据和传输控制 — 2026-10-14
+
+已完成且有实际运行与独立后验：
+1. 精确退役 A2/A3 已完成比较的 4 份临时索引/字池，释放 405,417,320 字节（约 387 MiB）。A1、3 份原 XSM、完整结果/明细/日志/文档保留，历史失败不改写。
+2. 从永久压缩档案流式核验 Am241/Pu238/Pu239/Pu240 共 284,814,387 原始字节，4×8 个温度网格完整，共 3,120 个反应区段。数据没有丢失，也无需重跑 NJOY。
+3. 真实 track 0 的 16 动作全维度组件控制通过：48 层、370 群、9 矩，543,260,640 个比较值，逐位差异为 0。
+
+两次早期运行失败（MF3 特殊布局、NumPy 布尔类型）及全部报告完整保留。修正只处理实际格式/类型问题，没有改变物理输入、阈值或资源上限。
+
+当前材料仍是 34 个唯一核素引用、62 个正密度槽。本轮没有更换材料。完整反应生产权威、全射线控制、AAA 物理精度、独立耦合参考及 ABA 尚未通过；整体 goal 继续 active。
+
+正在准备下一最小控制：先对已验证四核的 32 个温度节点逐字核对无限稀释 SCAT00/NJJS00/IJJS00，然后扩大到全部 34 核素。后续有限稀释须覆盖真实 low9/high9 两批；Mo 须原 ipflag=1 分支。通过原门槛后再进入完整传输控制、AAA 独立参考和 ABA。
+
+结果文档：
+/Users/wen/spot/validation/axial_material/SPOT_COMPLETED_COMPARE_SPOOL_RETIREMENT_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_FOUR_NUCLIDE_ORIGINAL_ASCII_RECOVERY_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_ONE_REAL_TRACK_FULL_DIMENSION_COMPONENT_RESULT_20261014.txt

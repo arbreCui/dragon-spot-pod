@@ -10,13 +10,39 @@ fail() {
   exit 2
 }
 
+RUNTIME=
+REPAIRED_DRAGON_SHA=873ad14272a2f0765d95e6de067194a01708ccf9aa88d58cd782049e6d331fef
+REPAIRED_RUNTIME_SHA=8888d5772c39472fe4d4895120737370fd471200c4ace9e7bf41ed8c7e74db1b
+REPAIRED_BOOTSTRAP_SHA=acab72a87521339f9eb0540130d0fc4ea1946b59df6bb5db4fcb83cd3528eb1c
+MESH12_RUNTIME_SHA=af7069315a59ae6de9c0bd3edd6f497bf4dcaef1140917b4239c32bcff8da12b
+MESH12_BOOTSTRAP_SHA=805c06e1ec873809a890be3a90afe1b8c16ec57272c3eaa5c315aa8feb64b32f
+hash() { shasum -a 256 "$1" | awk '{print $1}'; }
+if [ "${1:-}" = --repaired-runtime ]; then
+  [ "$#" -ge 2 ] || fail "missing repaired runtime directory"
+  RUNTIME=$(CDPATH= cd -- "$2" && pwd -P) || fail "repaired runtime is missing"
+  shift 2
+fi
 if [ "$#" -ne 3 ]; then
-  echo "usage: $0 corrected-build-directory completed-map-directory fresh-portable-directory" >&2
+  echo "usage: $0 [--repaired-runtime directory] corrected-bootstrap-directory completed-map-directory fresh-portable-directory" >&2
   exit 2
 fi
 
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 CHECKER_DIR=$HERE
+if [ -n "$RUNTIME" ]; then
+  # Preserve the old epoch; select the new runtime and seed only as a pair.
+  if [ "$(hash "$RUNTIME/runtime.sha256")" = "$MESH12_RUNTIME_SHA" ]; then
+    REPAIRED_RUNTIME_SHA=$MESH12_RUNTIME_SHA
+    REPAIRED_BOOTSTRAP_SHA=$MESH12_BOOTSTRAP_SHA
+  fi
+  test "$(hash "$RUNTIME/runtime.sha256")" = "$REPAIRED_RUNTIME_SHA" ||
+    fail "repaired runtime manifest identity differs"
+  (cd "$RUNTIME" && shasum -a 256 -c runtime.sha256 >/dev/null) ||
+    fail "repaired runtime does not verify"
+  test "$(hash "$RUNTIME/Dragon")" = "$REPAIRED_DRAGON_SHA" ||
+    fail "repaired Dragon identity differs"
+  CHECKER_DIR=$RUNTIME
+fi
 test -d "$CHECKER_DIR" && test ! -L "$CHECKER_DIR" ||
   fail "CHECKER_DIR must be a regular directory"
 CHECKER_DIR=$(CDPATH= cd -- "$CHECKER_DIR" && pwd -P)
@@ -31,9 +57,14 @@ BUILD=$(CDPATH= cd -- "$1" && pwd -P)
 
 # The bootstrap receipt is the corrected-lineage authority. Check it before
 # reading any claim made by the completed map.
-test -f "$BUILD/d4a_bootstrap_result.sha256" &&
-  test ! -L "$BUILD/d4a_bootstrap_result.sha256" ||
-  fail "corrected build is missing regular d4a_bootstrap_result.sha256"
+BOOTSTRAP_RECEIPT=d4a_bootstrap_result.sha256
+if [ -n "$RUNTIME" ]; then
+  BOOTSTRAP_RECEIPT=result.sha256
+  test "$(hash "$BUILD/$BOOTSTRAP_RECEIPT")" = "$REPAIRED_BOOTSTRAP_SHA" ||
+    fail "repaired bootstrap identity differs"
+fi
+test -f "$BUILD/$BOOTSTRAP_RECEIPT" && test ! -L "$BUILD/$BOOTSTRAP_RECEIPT" ||
+  fail "corrected bootstrap receipt is missing or a symlink"
 BOOTSTRAP_NAMES='d4a_seed_axial.xsm
 d4a_seed_snapshots.xsm
 initial_radial_track.bin
@@ -51,21 +82,52 @@ b2i_bootstrap.log'
 
 manifest_names() {
   receipt=$1
-  LC_ALL=C grep -Eqv '^[0-9a-f]{64}  [A-Za-z0-9_.-]+$' "$receipt" &&
+  pattern='^[0-9a-f]{64}  [A-Za-z0-9_.-]+$'
+  if [ "${2:-}" = repaired ]; then
+    pattern='^[0-9a-f]{64}  (runtime/)?[A-Za-z0-9_.-]+$'
+  fi
+  LC_ALL=C grep -Eqv "$pattern" "$receipt" &&
     return 1
   sed -E 's/^[0-9a-f]{64}  //' "$receipt"
 }
 
-test "$(manifest_names "$BUILD/d4a_bootstrap_result.sha256")" = \
-  "$BOOTSTRAP_NAMES" || fail "corrected bootstrap receipt has the wrong inventory"
-(cd "$BUILD" && shasum -a 256 -c d4a_bootstrap_result.sha256 >/dev/null) ||
+if [ -z "$RUNTIME" ]; then
+  test "$(manifest_names "$BUILD/$BOOTSTRAP_RECEIPT")" = \
+    "$BOOTSTRAP_NAMES" || fail "corrected bootstrap receipt has the wrong inventory"
+fi
+(cd "$BUILD" && shasum -a 256 -c "$BOOTSTRAP_RECEIPT" >/dev/null) ||
   fail "corrected bootstrap receipt does not verify"
 
 test -d "$2" && test ! -L "$2" || fail "map source must be a regular directory"
 SOURCE=$(CDPATH= cd -- "$2" && pwd -P)
 test "$SOURCE" != "$BUILD" || fail "corrected build and map source must differ"
+if [ -n "$RUNTIME" ]; then
+  test -f "$SOURCE/result.sha256" && test ! -L "$SOURCE/result.sha256" ||
+    fail "repaired source has no regular result manifest"
+  names=$(manifest_names "$SOURCE/result.sha256" repaired) ||
+    fail "repaired source manifest contains unsupported paths"
+  actual=$(cd "$SOURCE" && find . \( -type f -o -type l \) ! -path ./result.sha256 -print |
+    sed 's|^./||' | LC_ALL=C sort)
+  test "$actual" = "$(printf '%s\n' "$names" | LC_ALL=C sort)" ||
+    fail "repaired source inventory differs from its manifest"
+  test "$(find "$SOURCE" -mindepth 1 -type d -print)" = "$SOURCE/runtime" ||
+    fail "repaired source must contain only the runtime subdirectory"
+  test "$(hash "$SOURCE/runtime/runtime.sha256")" = "$REPAIRED_RUNTIME_SHA" ||
+    fail "source belongs to a different runtime"
+  (cd "$SOURCE" && shasum -a 256 -c result.sha256 >/dev/null) &&
+    (cd "$SOURCE/runtime" && shasum -a 256 -c runtime.sha256 >/dev/null) ||
+    fail "repaired source receipt does not verify"
+fi
 DEST_ARG=$3
 test ! -e "$DEST_ARG" && test ! -L "$DEST_ARG" || fail "output must be fresh"
+if [ -n "$RUNTIME" ]; then
+  # Resolve before creating parents: rejecting a destination must not add
+  # even an empty directory beneath sealed inputs or the running runtime.
+  prospective=$(python3 -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve())' "$DEST_ARG")
+  case "$prospective/" in "$SOURCE/"*|"$BUILD/"*|"$RUNTIME/"*)
+    fail "output cannot be inside an input directory" ;;
+  esac
+fi
 mkdir -p "$(dirname -- "$DEST_ARG")"
 DEST_PARENT=$(CDPATH= cd -- "$(dirname -- "$DEST_ARG")" && pwd -P)
 DEST="$DEST_PARENT/$(basename -- "$DEST_ARG")"
@@ -210,7 +272,10 @@ for name in $FIXED_INPUTS; do
     fail "$name does not match the corrected build"
 done
 
-test ! -e "$SOURCE/result.sha256" || fail "source is already frozen"
+if [ -z "$RUNTIME" ]; then
+  test ! -e "$SOURCE/result.sha256" || fail "source is already frozen"
+fi
+test ! -e "$SOURCE/source_result.sha256" || fail "source is already a portable copy"
 test ! -e "$SOURCE/symlink_provenance.tsv" || fail "source already has link provenance"
 test ! -e "$SOURCE/portable_classification.txt" ||
   fail "source already has a portable classification"
@@ -234,6 +299,11 @@ done
 
 STAGE=$(mktemp -d "$DEST.tmp.XXXXXX") || fail "cannot create staging directory"
 cp -R "$SOURCE/." "$STAGE/"
+if [ -n "$RUNTIME" ]; then
+  # Preserve the original map receipt byte-for-byte. The new outer receipt
+  # additionally seals materialized links and the portable classification.
+  cp "$SOURCE/result.sha256" "$STAGE/source_result.sha256"
+fi
 printf 'name\timmediate_target\tresolved_source\n' > "$STAGE/symlink_provenance.tsv"
 
 for name in $INPUT_LINKS; do
@@ -275,9 +345,16 @@ for name in $FIXED_INPUTS; do
   cmp -s "$STAGE/$name" "$BUILD/$name" ||
     fail "$name changed while packaging"
 done
+if [ -n "$RUNTIME" ]; then
+  (cd "$SOURCE" && shasum -a 256 -c result.sha256 >/dev/null) &&
+    (cd "$STAGE" && shasum -a 256 -c source_result.sha256 >/dev/null) &&
+    (cd "$BUILD" && shasum -a 256 -c result.sha256 >/dev/null) &&
+    (cd "$RUNTIME" && shasum -a 256 -c runtime.sha256 >/dev/null) ||
+    fail "repaired source, copied payload or pinned inputs changed during packaging"
+fi
 (cd "$STAGE" &&
   find . -type f ! -name result.sha256 -print | LC_ALL=C sort |
-    while IFS= read -r file; do shasum -a 256 "$file"; done > result.sha256 &&
+    while IFS= read -r file; do shasum -a 256 "${file#./}"; done > result.sha256 &&
   shasum -a 256 -c result.sha256 >/dev/null) ||
   fail "portable receipt verification failed"
 

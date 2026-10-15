@@ -1,0 +1,7 @@
+PASS: finite current cold AAA native and offline snapshot admission read paths exclude exact 18 regular +18 parent symlinks.
+Report SHA256: f055e095769fe065a11b24cf3b29693d8bc887c485da39495964ff2f7af7d6cf
+Current plan SHA256: b0cf9e8577d91ee6c3be70eada54d3f7f20078335e60db08a43ed1b3a093b79a; initial old plan SHA noted transparently.
+Offline explicit union: 672 paths; all static read groups: 38055 paths.
+Candidate exact/resolved/device-inode intersections: 0/0/0. Missing current paths: 0.
+Business import/call/native/numerical/candidate payload read/hash/project write/delete/35GB rehash: 0.
+Current graph/expected37395 closure is complementary pinned peer scope. No candidate-specific blocker.

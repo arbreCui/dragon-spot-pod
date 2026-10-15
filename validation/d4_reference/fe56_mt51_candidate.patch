@@ -1,0 +1,11 @@
+diff --git a/src/groupr.f90 b/src/groupr.f90
+--- a/src/groupr.f90
++++ b/src/groupr.f90
+@@ -5860,6 +5860,7 @@
+    if (mfd.eq.6.and.mtd.eq.18) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.19) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.51) nz=nsigz
++   if (mfd.eq.6.and.mtd.eq.51) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.102) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.301) nz=nsigz
+    if (mfd.eq.3.and.mtd.eq.302) nz=nsigz

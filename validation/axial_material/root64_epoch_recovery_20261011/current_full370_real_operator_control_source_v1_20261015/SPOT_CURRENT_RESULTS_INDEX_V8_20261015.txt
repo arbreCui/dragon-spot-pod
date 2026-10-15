@@ -1,0 +1,27 @@
+SPOT 最新结果入口（2026-10-15，B2索引恢复与精确回收已核验）
+
+1. A/B完整六阶段构造已核验：各8快照、55上下文、19249字段、1829421已知元素；不匹配、上下文问题、未知来源均0。原evidence-only child2/FAILED记录不变。
+   SPOT_CURRENT_A_FULL_AGGREGATE_OVERV_RESOLVED_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B_FULL_SIXPHASE_VERIFIED_RESULT_20261015.txt
+2. B2选定9个旧只读角色已完成当前epoch完整字节桥接，未冒领全部4790项传递认证。
+   SPOT_CURRENT_NATIVE_B2_EPOCH_BYTES_VERIFIED_RESULT_20261015.txt
+3. B2完整物理提取已核验：62798记录/7958目录/8766extent，含全部19620宏记录。物理槽位原文及SQL现由完整归档恢复映射保存；原字节池继续保留。
+   SPOT_CURRENT_B2_COMPLETE_PHYSICAL_TREE_EXTRACTION_VERIFIED_RESULT_20261015.txt
+4. B55/B2完整typed宏观树与原字比较：19620记录、2264152个32位原字；双向路径一致，原字差异0、元数据差异0。第二版368秒完成；首版超时失败及8份部分结果保留，原阈值未提高。
+   SPOT_CURRENT_B55_B2_FULL_TYPED_WORD_COMPARISON_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_B55_B2_COMPLETE_COMPARE_V1_TIMEOUT_VERIFIED_FACTS_20261015.txt
+5. 本步SQL gzip已独立完整解压校验全部52441088原字节；回收原SQL与17639368字节失败残片，共70080456字节。7,025,974字节完整SQL gzip、条目、150267572字节原pool及全部结果/文档保留。Root只读0/独立post0/精确执行0/独立post0均已闭合。
+   SPOT_CURRENT_B2_SQL_MEMBER0_AND_EXACT2_RECOVERY_VERIFIED_RESULT_20261015.txt
+6. 先前成对SQL/pool归档触24MiB载荷界，真实Root1/child1及Host空watch/childreceipt均保留；没有成对成功index，不能把单SQL恢复通过当成完整pair归档通过。
+   SPOT_CURRENT_B2_SQL_POOL_ARCHIVE_V2_CAP_FAILURE_VERIFIED_FACTS_20261015.txt
+7. 更早的物理槽位34371817字节原文回收、汇总原文169615994字节回收、B四产品归档回收、48份原文及14旧SQL临时产物回收继续保留，不重复计算删除量。
+   SPOT_CURRENT_B2_PHYSICAL_DIRECTORY_ARCHIVE_AND_RETIREMENT_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_BAGG_PRESENCE_ARCHIVE_AND_RETIREMENT_VERIFIED_RESULT_20261015.txt
+   SPOT_CURRENT_RESULTS_INDEX_V7_20261015.txt
+
+下一顺序：继续归档原pool并复用已完成SQL归档，随后分批归档已完成的大中间产物，为真正含B2的PROJECT/GLOBAL/ARCHIVE腾出原累计2GiB限制内的足够空间；生成完整18树/6GLOBAL上下文并实测当前B consumer；之后AAA物理控制→独立耦合参考准入→ABA。候选pool归档和A1/A3+formal当前epoch桥目前均是Source准备，未执行或准入。
+
+磁盘仍有约177GB可用；当前约束是原验证累计产物2GiB额度。旧三层上下文PACK/GLOBAL/PROJECT实存约470/517/749MB，不能据旧A实测假定新B空间；新B正式运行预算仍须独立闭合。
+仍未完成：当前B在线消费、AAA物理精度、完整反应处理与多重性来源、温度插值、完整370群算子控制、独立耦合参考。AAA既有ν裂变偏差3.9525259224%仍超过3%阈值。完整字节等价及本步回收不代表物理验收完成，总goal保持active。
+
+这是最新导航。旧入口V7及以前、失败现场、所有完整结果与原始凭证保留为历史。

@@ -1,0 +1,34 @@
+Installed6a original full fresh protocol Source-only, independent v28 family.
+
+No host/driver/helper/controller was imported or executed. No canonical payload
+was read, no Q or Native/solver/PS was created, and no project file was written.
+Original v25 Source is immutable; new sources and inverse evidence are TMP only.
+
+The new driver binds the actual installed 152950-byte 6a helper and the entire
+current v25 stored graph. Independent expected all27 return constructors remain
+the original bcd implementation; this does not run an old fresh baseline.
+The future once-only fresh phase reads all37445 canonical files plus the graph.
+It retains default complete snapshot, all three full lossless gzip artifacts,
+same inactive builtin owned map consumption, all9 snapshot fields, complete
+type/order/value/IEEE/counts and every consumed/default encoded byte against
+the same-phase default gzip through full EOF. Four positive and three rejection
+controls and their AST remain exactly original. No fields or rows are selected.
+
+Original genuine OwnRSS supervisor/MRO and complete guard block are byte-exact.
+Caps remain1800/600s,512MiB,archive64MiB,history96GiB,free8GiB,threads1,
+children1,retries0. Actual prior v27 pure protocol remains60/60,distinct evidence;
+it does not qualify the new full fresh phase. New family binds actual complete
+v27 host/control report, genuine untruncated launch/closed0 tool receipt and
+Root closed binding. Publication tool output truncation is not parsed as facts.
+Intentional protocol fixture symlinks are not followed by normal Source pins.
+
+All original Sources and ordinary actual receipts were fullEOF+7ID pinned before
+and after preparation. Full replacement inverse recovers original bytes/SHA/AST.
+Only expected_return_from_old/run in driver and _full_controls/main in host
+change, plus binding constants and honest descriptions. All original copied
+ancestry files are byte-identical and are not reused as new-helper PASS results.
+
+This is NOT an executed full fresh result, NOT new6aQ, NOT a whole-build512MiB
+pass and NOT science admission. Root independent Source review is required before
+the future unique host launch. Own-worker/child process observation must use the
+original require_escalated route; do not patch monitoring or retry old family.

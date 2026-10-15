@@ -1,0 +1,10 @@
+既有 Root 联合 helper Q 的有限保存 META 独审通过；只写新 TMP 报告，不创建、修改 Q/canonical/D/E，也不运行项目 API、guard、业务、数值或构建。
+Q 固定 SHA 29ac1abd0df3ff9d1d71a3239842e1c97cb2619cc4627292b0d25f6e16218bb2，19363 B；Root metadata writer 7b37a2 真实严格整数 EXIT0/CLOSED。
+151 输入可重建：83 个原 60 秒独审 pins 与 72 个 V21b 独审 pins，共享 8，去重 147；两份独审 REVIEW 与两份真实审查工具返回再加 4，共 151。全部 fresh EOF SHA256/七项 identity 前后相同。
+原协议 13 字段逐项源于完整 actual report、fixture、codec：2 个 str subtype、61 拒绝、old graph 36776 files/237767 requirements/62332 trace、new creation trace 63379 保留；两次旧图 strict entrance、原语义/wire hash、全类型/顺序/值/floatbits、caller nonmutation 保持，不把新 trace 替换旧 trace。
+两次实际 Root 原协议 5e1034 和 full fresh 59fbf2 均 int EXIT0/CLOSED；两份独立保存审查 2eb342/45cf76 int0 绑定，未重复轮询。
+资源合同分开：原协议 whole60/stage60，实际16.883993 s/15.591447 s/384.140625 MiB；完整 fresh whole1800/stage600，实际30.821749 s/29.531129 s/watch340.3125 MiB，driver self350.1875 MiB 是另一个观测。两者均原RSS512/64MiB/history96GiB/free8GiB/1thread/1child/0retry。
+完整三 gzip 独立全 EOF/CRC/size/SHA 检查，27 全返回字段及所有嵌套 type/order/value/floatbits 完整相等、wire bytes相等；37112 条全实际读取记录：37111 canonical+1 graph，各 read/path/open attempt1，4 正控+3拒绝完整。
+完整当前 graph 仅按显式 pin stream hash；未解析其它 ART 或数值，未做 ART/history glob。Root 在既有四个指定 namespace 的归档测量不重跑，64MiB合同与原/新增测量分开保存。
+helper dc01... 完整 SHA、147870 B 和精确七项身份一致，PID/guard/stream合同保留；子 stderr 与 stdout 是原 runner 合并流，不能声称独立 child stderr 为空。
+联合 Q 只准入 helper 元数据协议。所有 whole build/INPUT/native/AAA/ABA/physics 标志仍 false；本审查不创建任何新 Q 或科学资格。

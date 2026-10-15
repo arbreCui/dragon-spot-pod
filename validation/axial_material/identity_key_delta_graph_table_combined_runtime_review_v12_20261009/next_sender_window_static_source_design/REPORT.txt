@@ -1,0 +1,13 @@
+V12 失败后的 FLUSP64 工作区最小内存设计（仅源码审查）
+
+结论：可优先去掉连续活动群的 F2 整批输出副本，S2 源项副本暂保留。正式源码尚未修改，未编译、未运行控制或数值。
+
+真实来源是已封存 rank1-build-admission/FLU2DR64.f 的 FLUSP64（1611–1666行），不是名为 FLUSP64F2 的独立函数。V12实际runtime8328的declaration/link与binary identity明确保留sender对象74b22；其debug绑定这份SOURCE路径。SOURCE11全部鲜SHA与原inventory精确相等，Fortran源由该继承编译来源提供。
+
+1635行 F2/S2 各allocate(NUN,NGEFF)，1642–1643复制SUN/FUN。1659调用SPOF64，1662再复制F2→FUN，1664释放。F2在全部群求解中始终驻留。FLU2DR64四调用944/948/1074/1078均使用FLUX的plane2旧场、plane8源、plane7输出，无重叠；批量NPSYS是连续IGDEB..NGRP，标量是单群。SPOF64仅把FUN三个区段交SPOT1P64的INTENT(OUT)，不读取incoming FUN，qext/SUN是INTENT(IN)且不保存pointer。原全群顺序和浮点操作可不变。
+
+最小设计：私有检测first/last活动群，只有last-first+1==NGEFF时，将FUN(1,NGIND(1))按原explicit-shape序列关联传给SPOF64；不需要新增pointer/TARGET或修改公共ABI。仅不连续活动群仍allocate原F2并原gather/scatter。原S2全部copy与泄漏修正式逐字保留。不能用vector-subscript制造隐藏temporary；也不能把S2直接aliasSUN，因为当前B1 SIGS的S2减leak会改掉caller FLUX plane8。
+
+payload公式为8*NUN*NGEFF。原SPOT布局NUN=8*(3*48+49+32)=1800，完整370群窗口可少5,328,000字节=5.081176758 MiB，单群14,400字节。失效采样时的精确NGEFF没有单独动态记录；此为条件设计估算，不能当真实RSS削减或达标。
+
+实际V12原watch记录PID62748，sample512.890625MiB>原512，return-15，own_wait4未观察且四字段None；0maps、无科学资格。cache记账峰302850600与processRSS是不同口径。新改动须新source/object/runtime来源和额外连续/稀疏/空群/泄漏/只读输入/逐位输出控制，保留全部68控制以及原物理、Float64、OwnPID512和预算，再按Root唯一新版本完整执行。旧失败不可重试或改写。本报告只证明源码最小候选与边界，不证明运行利益。

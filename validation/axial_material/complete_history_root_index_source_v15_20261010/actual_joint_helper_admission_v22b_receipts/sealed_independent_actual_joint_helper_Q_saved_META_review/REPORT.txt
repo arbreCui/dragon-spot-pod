@@ -1,0 +1,5 @@
+PASS: actual Q 89d2f03c, actual Root writer1b6bd5 typed0 closed.
+Independently reconstructed exactly173 full input-pin routes; all full EOF/SHA7ID checked twice.
+All original31 top fields and original13 protocol/9 caps/22 fresh fields retained, new Q37/fresh26 complete; 27 refers to full public verifier return fields, distinct from nested Q fields. Actual pure1084 and fresh686 saved reviews bind distinct trials; new measurements and caps remain honest.
+Four original pre-summary selfcapture nulls are resolved via same-peer exact root/name postcapture fullpins. No field is omitted.
+Software helper metadata protocol/fresh verifier qualification only. Whole build/INPUT/native/AAA/ABA/physical balance remain false. No reviewed API or business code was run, no graph/material/gzip decoded, no project original written.

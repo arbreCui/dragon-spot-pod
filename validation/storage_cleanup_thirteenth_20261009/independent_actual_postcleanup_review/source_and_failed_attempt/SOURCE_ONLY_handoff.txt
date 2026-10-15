@@ -1,0 +1,8 @@
+R13 固定两条旧失败runtime副本退役后的独立后验源码：已准备，尚未执行。
+
+源码 SHA 34e7f0240c30873546222a552814a4659c18314470155fb1b58127aff702a11a；future config SHA 311200de14c71da3c6152fa52df7e68e62c2cd350b81ef00bd2bf47bedd9ad02。实际Root删除与独审终态全部None，后验输出目录不存在。静态parse/compile工具7ca5e0真实EXIT0仅证明本源码可解析，不代表清理成功。
+等待Root明确actual cleanup EXIT0/CLOSED消息后，才以真实工具观察和原stdout/stderr绑定plan，再执行独立只读检查。未知事实不预填；不凭文件存在猜true0。
+固定manifest完整SHA810e1bb9ed07c24b633cf92e057551d8c3f7ebfdf2c474fb87f4096770dc25db。后验只接受两候选缺席、retirement ledger精确两条、OUT9主本和原132control全SHA/身份保持；restore映射仅静态核对，不调用restore。
+从原完整inventory重建Root cleanup序列化DFS before指纹，独立fresh逐路径metadata重建after，再与真preflight/cleanup before-after对齐。除R13新文档树、.git及两候选外，全部路径/普通文件七字段/链接目标保持，README纳入。目录路径完整保持；validation父因R13新增可变size/nlink/mtime/ctime，两个runtime父因固定unlink可变size/mtime/ctime；dev/ino/mode及其他目录七字段必须保持。
+当前graph全SHA及实际namespace/alias/absence/resource roots集合metadata逐项核对。完整namespace census无科学bytes读取；只完整hash固定control+主本+graph等审计文件，不跑35GB全科学INPUT。cache集合从实际inventory派生。
+本阶段仅TMP源码、计划、记录文档；未执行后验/删除/恢复/API/PREP/RUN/native，不写formal/ART，无科学信用。

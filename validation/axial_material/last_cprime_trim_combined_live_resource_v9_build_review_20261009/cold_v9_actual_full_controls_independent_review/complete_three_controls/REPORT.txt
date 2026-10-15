@@ -1,0 +1,11 @@
+完整三controls只读后验reader模板已SOURCE-ONLY准备，未运行reader。没有业务import/exec/controls/fixture/native/API/Rootwriter或当前LIVE结果读取；只读known actual binding metadata与原已审源码/owner路径身份。future controls EXIT/result/seal/CT/stdout/kernel/RSS/tails无填入；default config UNREADY会在任何binding/control读之前拒绝。
+
+原fc8d6完整scope保留，current copied dd2fad host/d4da controls而非旧双control。whole binding expected owner union全37395路径（实际派生值在JSON），moduleowners/runtimepreload全部保留；只封小expected-map/七field身份流指纹，不复制多MB清单，也不重hash35GB。此owner capture在Root真正closed controls EXIT0消息后执行，明确不是伪造precontrol观测；全部新controls输出排除，source-only配置仍未绑定任何controls实际值。Root已有真正全binding source+graph/joint准入ae157固定source identity；source template future descriptor/stdout仍None，实际读者需另外真实配置。
+
+实际后验将：全runtime及控制archive逐byte SHA与完整seal ns严格相同；claim/result/stages/positive-oversize-short三watch/log/ownPID分配/marker/cleanup；full stdout=result+四tail及独立CT四key genuine builtin-int0/实际copied argv/recordaftertool。正常/short须自身Darwin wait4PID/status/ru_maxrss BYTES，kernelMiB=raw/2**20，observed=max(livePSMiB,kernelMiB)<512；short kernel>=16，缺receipt拒绝不变0。oversize FAILED仅原live>=512的-15/-9预期拒绝，missing kernel四fields真实None；全controls必须Root真0。
+
+normalMRO/完整源callables：通过真正binding stdout和controls source_identity相等，独立静态compile code（不执行module）推导原Py3.14.4 code digests，原typed编码3pure functions与dd2 host byte/AST exact。完整SerialExecutor/resource_monitor/qualify_aba原BASE byte、真实来源描述符/原bounded4functions/dynamic resourceclass同。helper/business全部不调用。
+
+原60/120/512/64MiB/thread1/child1/retry0、96GiB/free8完整资源不变。记录尾dynamic roots全保留，并fresh metadata计数当前原根/动态union和free；只允许有独立Rootreceipt证据的CT在record-after-tool新增造成时点差，不要求旧tail金额等于后写入收据后的新金额，不放宽其它scope/caps。所有读者输出仅固定TMP，后验仅controls-only无science/AAA/ABA/native信用。
+
+可执行只读入口：audit_actual_controls_readonly.py（当前不执行）；Root实际事实绑定到config且真实终态明确后才允许运行。若实际非零，继续UNREADY并审核真实failure，不能把本模板或旧控件当PASS。源准备/AST审/完整scope报告和真实工具收据均保留。

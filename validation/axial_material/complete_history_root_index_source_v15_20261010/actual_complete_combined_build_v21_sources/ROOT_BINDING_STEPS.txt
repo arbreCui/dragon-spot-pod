@@ -1,0 +1,38 @@
+V21 完整五阶段 build generator 只源码模板接线；本包不是 READY、不是业务或构建结果。
+
+精确基线：
+B/actual_complete_combined_build_v20_sources/combined_build_host.py，SHA d5fa7063b8031d5efecd50e157062e7b2faae771788fe105f2d8486d37f19128。
+生成器 B/actual_complete_combined_build_v20_sources/sealed_actual_bound_SOURCE_generation/generate_build_host.py，SHA c8cf1a7c0a3e60c4cfb2edfc88e496e9fedccb25330c11c5bbb7421d23c52f72。
+新 generator Source 全字节逆回 c8cf；c8cf 3 changes 逆回 dc48；d5fa host 17 changes 逆回 cf2c，再13 changes 逆回37d。原完整 host 算法、检查次序、guard/MRO、资源和stage不会改写。
+V21 将原17个 host retarget 增加4个 helper/Q literal substitutions 共21（15 fixed+6真实PREP动态），新helperdc01/newQ29ac。原 component b6b3/ad1d、3c1856 support、真实619/705/production/bounded/resource保持。
+
+必须先完成的真实步骤：
+1. 安装并独审 Root固定 READY canonical Source：/Users/wen/spot/validation/axial_material/prepare_sender_window_root_index_graph_trace_table_combined_runtime_v21.py，SHA023abc88dd60e89cb49ebacb881f555850b7732149b14caf14503bd135a391e5。安装 exact Source/7ID、joint helper Q 与六未来业务 pins=None；本包不安装、不执行该 Source。
+2. 在 V21 全新 PREP namespace 正常执行一次完整 PREP，取得真实 Root integerEXIT0/CLOSED、正式 declaration_terminal_return、完整 declaration、source_admission、input_graph、creation trace。
+3. Root仅META封存完整H/SOURCE/OUT/TERMINAL/PREP_SOURCE五namespace与全部原输入 fullEOF SHA/精确7ID，并保存真实 Root成功terminal、summary/namespace schema V21。必须有 SOURCE/files/source_admission.json 完整真实pin；不能以 Source PASS或helper Q替代PREP0。
+4. 独立复核真实 PREP保存证据；从该同一 Root summary/namespace取得九个必需生成器参数。
+
+未来仅标准库 Source render 的参数顺序（这里所有未来实际 SHA 均未填写）：
+generate_build_host.py
+  B/actual_complete_combined_prepare_v21_receipts/Root_actual_complete_combined_prepare_summary.json
+  actual SUMMARY_SHA
+  actual ROOT_TERMINAL_SHA
+  actual NAMESPACE_SHA
+  actual DECLARATION_SHA
+  actual SOURCE_ADMISSION_SHA
+  actual FORMAL_PREP_TERMINAL_SHA
+  actual COMPLETE_GRAPH_SHA
+  actual COMPLETE_CREATION_TRACE_SHA
+
+生成器读取 Source 和 Root保存META，拒绝直接读取 ART；五个 prepared输出path/SHA/七项typed identity只从Root真实完整namespace交叉核对，source_admission来自SOURCE而非OUT。真实 Root terminal必须整数0、closed/no live session/no repoll，全部原caps/flags/type完整保留。源候选只有在真实参数全部匹配后才render host和fullinverse；不能填None、零散旧V20成功哈希或预造PREP成功。
+请复制本sealed设计包到新的TMP生成位置后才运行该标准库生成器；不要修改本已封存包。
+
+render后的入口候选：新TMP/combined_build_host.py 与 Root_finite_build_host_source_inverse.json。Root需独立有限SOURCE复核后，byte-exact安装到B/actual_complete_combined_build_v21_sources，完整SOURCE inventory前后动态pin并freeze；正常HOST为新 axial-material-complete-combined-build-host-v21-20261010，不能复用旧失败V20。
+
+原host固定输入完整范围：
+support、READYcanonical、原v15 component source+seal+terminal；新helper/newQ；所有build SOURCE_ARCHIVE文件；
+真实V21 declaration/formalPREPterminal/input_graph/creationtrace；所有 prepared SOURCE（含source_admission）和TERMINAL文件；
+真实RootPREP terminal与固定summary；真实original619与resource Module Source。运行前后全部不变。
+资源联合范围为HOST+SOURCE+OUT+TERMINAL+buildSOURCE_ARCHIVE（2GiB），正常outerwhole1800，五inner每项600，RSS512/history96GiB/free8GiB/1thread/1child/0retry。
+完整五stage：build/link、metadata/objects、metadata/executable、metadata/dependencies、audit/audit。每个原command必须精确且PASS，所有5watch/raw4log-before-identity/fullseal+runtime identity/原4tails完整保留。
+正常whole build不代替后续完整INPUT、native RSS、AAA原8项、ABA或物理平衡准入。Q只helper元数据资格。

@@ -201,6 +201,30 @@ class ExportResultTest(unittest.TestCase):
         self.assertNotEqual(completed.returncode, 0)
         self.assertFalse(output.exists())
 
+    def test_resealed_pass_label_cannot_hide_a_large_residual(self) -> None:
+        map_dir, obs_dir, output = self.root / "map", self.root / "observables", self.root / "output"
+        make_map(map_dir)
+        make_observables(obs_dir, map_dir)
+        gate = map_dir / "gate.log"
+        gate.write_text(gate.read_text().replace("1.0000000000000000E-08 PASS", "1.0000000000000000E-03 PASS"))
+        seal_map(map_dir)
+        completed = self.run_export(map_dir, obs_dir, output)
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("exceeds the declared gate", completed.stderr)
+        self.assertFalse(output.exists())
+
+    def test_resealed_relaxed_threshold_is_refused(self) -> None:
+        map_dir, obs_dir, output = self.root / "map", self.root / "observables", self.root / "output"
+        make_map(map_dir)
+        make_observables(obs_dir, map_dir)
+        gate = map_dir / "gate.log"
+        gate.write_text(gate.read_text().replace("4.9999999999999998E-07", "1.0000000000000000E-03"))
+        seal_map(map_dir)
+        completed = self.run_export(map_dir, obs_dir, output)
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("does not use the declared 5e-7 gate", completed.stderr)
+        self.assertFalse(output.exists())
+
     def test_tampered_observables_are_refused_without_output(self) -> None:
         map_dir = self.root / "map"
         obs_dir = self.root / "observables"

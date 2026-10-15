@@ -1,0 +1,267 @@
+def require(condition, reason):
+    if not condition:raise ValueError(reason)
+
+def unique_object(pairs):
+    value={}
+    for key,item in pairs:
+        require(key not in value,'duplicate diagnostic metadata key '+key)
+        value[key]=item
+    return value
+
+def strict_metadata(path):
+    return json.loads(path.read_text(),object_pairs_hook=unique_object,
+            parse_constant=lambda value: (_ for _ in ()).throw(ValueError('nonfinite diagnostic metadata')))
+
+def diagnostic_identity(value):
+    return {key:getattr(value,key) for key in IDENTITY_KEYS}
+
+def metadata_inputs(contract):
+    # Deliberately do not call regular-file-only support.pin on these literals:
+    # the original producer's literal/target/fd/alias contract permits symlinks.
+    records={}
+    for role,entry in contract.items():
+        path=Path(entry['path']);literal=diagnostic_identity(path.lstat());target=diagnostic_identity(path.stat())
+        alias=os.readlink(path) if stat.S_ISLNK(literal['st_mode']) else None
+        require(stat.S_ISREG(target['st_mode']),'diagnostic input target is not a regular file '+role)
+        require(literal==diagnostic_identity(path.lstat()) and target==diagnostic_identity(path.stat()),
+                'diagnostic input changed during metadata observation '+role)
+        require(alias==(os.readlink(path) if path.is_symlink() else None),'diagnostic literal alias changed '+role)
+        records[role]={'literal_7id':literal,'target_7id':target,'literal_symlink_text':alias}
+    return records
+
+def source_archive_pins(support):
+    require(SOURCE_ARCHIVE.is_dir() and not SOURCE_ARCHIVE.is_symlink(),'ordinary fixed SOURCE archive required')
+    pins={}
+    for path in sorted(SOURCE_ARCHIVE.rglob('*')):
+        require(not path.is_symlink(),'SOURCE archive must not contain aliases')
+        if path.is_file():pins[str(path)]=support.pin(path)
+        else:require(path.is_dir(),'ordinary SOURCE archive member required')
+    require(pins,'complete SOURCE archive must be populated before the one child')
+    wanted=(CONTRACT_SHA,'58d1cad3ed22b3d56f7db4d721ed3166cae04fd7d86e5c95f6c9df1532023fb9',
+            'a99db7ea44374e9c86159f102aa7f32c7fcaff0b7311ba71db341caff417dece',
+            '06623a9481878b4eeb543cdcafe005dfc0a361d4e9f819e331a1d566cdf5dd57',
+            '73806690ec7abf26771978c7beec67df5f4c3ec7b2274d444053c0a212323efc',
+            'bd86427d38677730da4738ddf9a6ac7fd43610a0075dbd760eb2ee3860db671e',
+            '4104f091a85aa3b302ed4e0092535b833d82eb62c904b01e8baf60cfada0d34d',TARGET_SHA)
+    actual={entry['sha256'] for entry in pins.values()}
+    require(all(digest in actual for digest in wanted),'full author/independent/READY binding SOURCE evidence required')
+    return pins
+
+def admitted_input_contract(support, source_pins):
+    paths=[Path(path) for path,entry in source_pins.items() if Path(path).name=='input_contract.json' and entry['sha256']==CONTRACT_SHA]
+    require(len(paths)==1,'one fixed original input contract required')
+    record=strict_metadata(paths[0]);contract=record['inputs']
+    require(record['schema']=='AXMAT_SAVED_SOURCE_PHASE_SOURCE_ONLY_INPUT_CONTRACT_V1' and
+            record['numeric_payload_parsed'] is False and type(contract) is dict and len(contract)==1140,
+            'complete fixed original source-only contract required')
+    require(all(record[key] is None for key in ('future_actual_evaluator_pin','future_actual_host_pin',
+            'future_actual_output_pins','future_actual_terminal_pin')),'source-only contract must not impersonate actual receipts')
+    tree=ast.parse(TARGET.read_text());assignment={}
+    for node in tree.body:
+        if isinstance(node,ast.Assign):
+            for name in node.targets:
+                if isinstance(name,ast.Name):assignment[name.id]=node.value
+    require(ast.literal_eval(assignment['SOURCE_STATUS'])=='READY','Root admitted READY source required')
+    require(ast.literal_eval(assignment['WALL_SECONDS'])==60.0 and
+            ast.literal_eval(assignment['RSS_LIMIT_MIB'])==512.0 and
+            ast.literal_eval(assignment['THREADS'])==ast.literal_eval(assignment['CHILDREN'])==1 and
+            ast.literal_eval(assignment['RETRIES'])==0,'immutable admitted producer limits required')
+    node=assignment['INPUTS'];require(isinstance(node,ast.Dict),'fixed literal INPUTS table required')
+    actual={}
+    for key,value in zip(node.keys,node.values):
+        role=ast.literal_eval(key)
+        require(type(role) is str and role not in actual and isinstance(value,ast.Tuple) and len(value.elts)==2,
+                'strict literal producer input entry required')
+        call,digest=value.elts
+        require(isinstance(call,ast.Call) and isinstance(call.func,ast.Name) and call.func.id=='Path' and
+                len(call.args)==1 and not call.keywords,'fixed literal producer Path required')
+        path=ast.literal_eval(call.args[0]);sha=ast.literal_eval(digest)
+        require(type(path) is str and Path(path).is_absolute() and valid_sha(sha),'fixed literal path/SHA required')
+        actual[role]={'path':path,'expected_sha256':sha}
+    require(set(actual)==set(contract) and len(actual)==1140,'all1140 original roles must remain exact')
+    for role,entry in contract.items():
+        require(actual[role]=={'path':entry['path'],'expected_sha256':entry['expected_sha256']},
+                'fixed producer and archived contract differ '+role)
+    for prefix in ('capture_source_','capture_return_','capture_field_'):
+        require({role for role in actual if role.startswith(prefix)}=={prefix+f'{group:03d}' for group in range(1,371)},
+                'all370 source/return/field input roles required')
+    require(sum(entry['observed_metadata_7id']['st_size'] for entry in contract.values())==96042876,
+            'original full saved-source input byte scope differs')
+    return contract,support.pin(paths[0],CONTRACT_SHA)
+
+def valid_sha(value):
+    return type(value) is str and len(value)==64 and all(char in '0123456789abcdef' for char in value)
+
+def validate_identity_record(record,path,sha,observation,reason):
+    keys={'path','sha256','size_bytes','literal_7id_before','literal_7id_after','target_7id_before',
+          'target_7id_after','fd_7id_before','fd_7id_after','literal_symlink_text'}
+    require(type(record) is dict and set(record)==keys and record['path']==path and record['sha256']==sha,
+            'complete fresh EOF receipt path/SHA/key set differs '+reason)
+    require(type(record['size_bytes']) is int and record['size_bytes']>=0,'fresh EOF byte count differs '+reason)
+    for key in ('literal_7id_before','literal_7id_after','target_7id_before','target_7id_after','fd_7id_before','fd_7id_after'):
+        value=record[key]
+        require(type(value) is dict and set(value)==set(IDENTITY_KEYS) and
+                all(type(value[item]) is int for item in IDENTITY_KEYS),'full typed seven-field identity required '+reason)
+    require(record['literal_7id_before']==record['literal_7id_after']==observation['literal_7id'] and
+            record['target_7id_before']==record['target_7id_after']==record['fd_7id_before']==record['fd_7id_after']==observation['target_7id'] and
+            record['literal_symlink_text']==observation['literal_symlink_text'] and
+            record['size_bytes']==record['target_7id_before']['st_size'],
+            'actual literal/target/fd/alias/EOF identity differs '+reason)
+
+
+def validate_input_receipts(identity_receipt,contract,before,after,target_observation):
+    require(set(identity_receipt)=={'before','after','evaluator_before','evaluator_after'},'whole input receipt scope differs')
+    require(set(identity_receipt['before'])==set(identity_receipt['after'])==set(contract) and len(contract)==1140,
+            'all1140 before/after fresh EOF records required')
+    require(before==after,'one unchanged outer metadata observation required for every input literal')
+    for role,entry in contract.items():
+        left=identity_receipt['before'][role];right=identity_receipt['after'][role]
+        validate_identity_record(left,entry['path'],entry['expected_sha256'],before[role],role+' before')
+        validate_identity_record(right,entry['path'],entry['expected_sha256'],after[role],role+' after')
+        require(left==right and left['size_bytes']==entry['observed_metadata_7id']['st_size'],
+                'fixed complete input changed across whole saved-source child '+role)
+    require(sum(identity_receipt['before'][role]['size_bytes'] for role in contract)==96042876,
+            'all1140 complete original input bytes required')
+    for name in ('evaluator_before','evaluator_after'):
+        validate_identity_record(identity_receipt[name],str(TARGET),TARGET_SHA,target_observation,name)
+    require(identity_receipt['evaluator_before']==identity_receipt['evaluator_after'],'actual evaluator changed across child')
+
+
+def validate_phase_payload(support,admission,contract,input_before,input_after,target_observation):
+    report=strict_metadata(OUTPUT/'result.json');manifest=strict_metadata(OUTPUT/'payload_manifest.json')
+    classification='COMPLETE_SAVED_ALL_GROUP_WORK_RHS_PHASE_IDENTITIES_NOT_PHYSICAL_BALANCE_QUALIFIED'
+    require(admission['classification']==report['classification']==classification and
+            admission['scientific_accuracy_qualified'] is False,'narrow complete saved-source phase identity scope required')
+    for key in ('reaction_multiplicity_contract_qualified','source_fission_scatter_partition_qualified',
+            'final_flux_reconstructed_source_equals_actual_prior_iteration_work_rhs_assumed',
+            'entire_original_compilation_source_byte_identity_proved','full_physical_neutron_balance_qualified',
+            'scientific_accuracy_qualified','AAA_qualified','ABA_admitted','same_MG_unreduced_reference_qualified','transport_launched'):
+        require(report[key] is False,'no science/balance/source-partition qualification permitted '+key)
+    for key in ('all_complete_work_rhs_and_saved_source_phase_word_identities',
+            'same_original_map012_saved_FLUX64_and_SOUR32_in_all_three_owners','original_physics_inputs_solver_and_thresholds_unchanged',
+            'no_clipping_fitting_extra_normalization_dropped_group_or_cell','requires_Root_actual_terminal_and_OwnRSS_receipts'):
+        require(report[key] is True,'full saved work-RHS identity predicate missing '+key)
+    require(report['dimensions']=={'groups':370,'unknowns_per_group':1800,'cells':384,'faces':392,'moments':3} and
+            all(type(value) is int for value in report['dimensions'].values()),'complete group/cell/face/moment scope required')
+    require(report['checked_word_counts']=={'S2_qext_words':426240,'whole_R64_rhs_words':666000,
+            'all_unknowns_flux_words':666000,'SOUR32_words_per_XSM_owner':666000,'projected_coefficients':53280} and
+            all(type(value) is int for value in report['checked_word_counts'].values()),'complete original compared word counts required')
+    require(admission['result']==str(OUTPUT/'result.json') and
+            admission['sha256']==support.pin(OUTPUT/'result.json')['sha256'] and
+            admission['payload_manifest']==str(OUTPUT/'payload_manifest.json') and
+            admission['manifest_sha256']==support.pin(OUTPUT/'payload_manifest.json')['sha256'],
+            'actual complete saved-source result/manifest stdout pins required')
+    binary={
+        'raw_S2_all_unknowns_g_u':([370,1800],5328000),
+        'published_work_source64_all_unknowns_g_u':([370,1800],5328000),
+        'published_flux64_all_unknowns_g_u':([370,1800],5328000),
+        'qext_all_moments_g_mode_l_z_r':([370,1,3,48,8],3409920),
+        'source_projected_all_moments_g_l_z_mode':([370,3,48,1],426240)}
+    names={name+'.bin' for name in binary}|{'execution_claim.json','layout.json','chronological_event_inventory.json',
+            'full_XSM_saved_record_identities.json','input_identities.json','result.json','payload_manifest.json'}
+    require(OUTPUT.is_dir() and not OUTPUT.is_symlink() and {path.name for path in OUTPUT.iterdir()}==names and len(names)==12,
+            'exact full12 flat payload file set required')
+    actual={}
+    for path in OUTPUT.iterdir():
+        require(path.is_file() and not path.is_symlink(),'ordinary whole output payload required')
+        pinned=support.pin(path);actual[path.name]={'sha256':pinned['sha256'],'size_bytes':pinned['identity'][4]}
+    require(manifest['schema']=='REFINED_AAA_SAVED_SOURCE_PHASE_PAYLOAD_MANIFEST_V1' and
+            manifest['scientific_accuracy_qualified'] is False and manifest['requires_Root_actual_terminal_and_OwnRSS_receipts'] is True,
+            'actual saved-source manifest scope differs')
+    members={name:value for name,value in actual.items() if name!='payload_manifest.json'}
+    require(len(members)==11 and manifest['files']==members,'all11 full-byte manifest members required')
+    require(type(manifest['payload_bytes_before_manifest']) is int and
+            manifest['payload_bytes_before_manifest']==sum(value['size_bytes'] for value in members.values()) and
+            type(admission['archive_bytes']) is int and admission['archive_bytes']==sum(value['size_bytes'] for value in actual.values()),
+            'complete output byte counts differ')
+    layout=strict_metadata(OUTPUT/'layout.json')
+    require(layout['dimensions']=={'groups':370,'unknowns':1800,'cells':384,'faces':392,
+            'axial_cells':48,'angles':32,'radial_regions':8,'moments':3} and
+            all(type(value) is int for value in layout['dimensions'].values()),'complete original field layout required')
+    require(layout['all_unknowns_layout']=={'flux_moments':[0,1152],'face_current':[1152,1544],'xnei':[1544,1800]} and
+            layout['original_float_precision_preserved'] is True and set(layout['arrays'])==set(binary),'all1800 original unknown positions required')
+    for name,(shape,size) in binary.items():
+        record=layout['arrays'][name];entry=actual[name+'.bin']
+        require(record['file']==name+'.bin' and record['dtype']=='<f8' and record['shape']==shape and
+                all(type(value) is int for value in record['shape']) and record['order']=='C' and
+                record['bytes']==entry['size_bytes']==size and record['sha256']==entry['sha256'],
+                'full raw array shape/precision/byte pin differs '+name)
+    require(sum(actual[name+'.bin']['size_bytes'] for name in binary)==19820160,'all full arrays required')
+    receipts=strict_metadata(OUTPUT/'input_identities.json')
+    validate_input_receipts(receipts,contract,input_before,input_after,target_observation)
+    chronology=strict_metadata(OUTPUT/'chronological_event_inventory.json')
+    require(chronology['metric_selection'] is False and chronology['all_groups_last_context']==[3,1] and
+            len(chronology['records'])==136 and len(chronology['group_final_contexts'])==370,'whole chronological inventory required')
+    last={};calls={group:0 for group in range(1,371)}
+    for seq,row in enumerate(chronology['records'],1):
+        require(type(row['dispatch']) is int and row['dispatch']==seq and
+                type(row['outer']) is int and row['outer']>0 and type(row['inner']) is int and row['inner']>0,
+                'strict original dispatch context required')
+        active=row['NGIND'];system=row['NPSYS']
+        require(type(active) is list and 1<=len(active)<=370 and all(type(value) is int and 1<=value<=370 for value in active) and
+                type(system) is list and len(system)==370 and all(type(value) is int for value in system) and
+                active==[group for group,value in enumerate(system,1) if value!=0],'full actual original active-group inventory required')
+        b2=bytes.fromhex(row['B2_real32_hex']);require(len(b2)==16,'native B2 precision required')
+        bvalues=struct.unpack('<4f',b2)
+        require(all(math.isfinite(value) for value in bvalues) and bvalues[3]==0,'original post-SIGS guard required')
+        for group in active:last[group]=[seq,row['outer'],row['inner']];calls[group]+=1
+    require(set(last)==set(range(1,371)) and all(value[1:]==[3,1] for value in last.values()),'all groups last actual context required')
+    for group,context in enumerate(chronology['group_final_contexts'],1):
+        require(len(context)==9 and all(type(value) is int for value in context) and
+                context[:4]==[group]+last[group] and context[1]==context[4]==context[7] and context[5]>0 and
+                context[6]==calls[group] and context[8]==0,'full selected last source/return/field context differs')
+    owners={'production_closed_axial','production_candidate_axial','capture_candidate_axial'}
+    saved=strict_metadata(OUTPUT/'full_XSM_saved_record_identities.json');seen=set()
+    require(len(saved['records'])==1110,'all three fixed XSM owners times370 groups required')
+    for row in saved['records']:
+        require(row['owner'] in owners and type(row['group']) is int and 1<=row['group']<=370 and
+                (row['owner'],row['group']) not in seen and set(row['records'])=={'FLUX64','FLUX','SOUR'},'complete unique original XSM owner/group required')
+        seen.add((row['owner'],row['group']))
+        for name,length,kind in (('FLUX64',3600,4),('FLUX',1800,2),('SOUR',1800,2)):
+            entry=row['records'][name]
+            require(set(entry)=={'offset_words','length_words','type','sha256'} and
+                    type(entry['offset_words']) is int and entry['offset_words']>=0 and
+                    type(entry['length_words']) is int and entry['length_words']==length and
+                    type(entry['type']) is int and entry['type']==kind and valid_sha(entry['sha256']),
+                    'full native XSM type/length/index/raw pin required')
+    require(seen=={(owner,group) for owner in owners for group in range(1,371)},'all1110 XSM owner/group rows required')
+    normalization=report['one_original_global_normalization']
+    require(set(normalization)=={'AKEFF_real64_hex','FISOUR_real64_hex','quotient_real64_hex'},'one original global normalization required')
+    values=[]
+    for name in ('AKEFF_real64_hex','FISOUR_real64_hex','quotient_real64_hex'):
+        raw=bytes.fromhex(normalization[name]);require(len(raw)==8,'native REAL64 normalization word required')
+        value=struct.unpack('<d',raw)[0];require(math.isfinite(value) and value>0,'positive finite original normalization operand required');values.append(value)
+    require(struct.pack('<d',values[0]/values[1]).hex()==normalization['quotient_real64_hex'],
+            'original single global REAL64 quotient words differ')
+    lineage=report['lineage']
+    require(lineage['origin']=='chronological map012 original Dragon 51b' and
+            lineage['original_capture_full_scientific_word_exact_recorded'] is True and
+            lineage['sealed_capture_raw_files_total']==1483 and lineage['selected_raw_capture_files']==1113 and
+            lineage['no_new_credit_for_unread_raw_capture_collision_or_block_files'] is True,'original recorded capture lineage scope required')
+    for name,sha in (('FLU2DR64.f','90bedc3f7cc4d320355dbbf43988ca8fb43e59dbee493a7f19fa8c050c42e8a5'),
+            ('SPOT1P64.f90','7544212ac8419f9c73688c12339c8779358a24f4065523fbbf891cc4fe1c79e0')):
+        entry=lineage['source_insertion_inverse'][name]
+        require(entry['restored_sha256']==sha and entry['capture_only_insertions_reversed'] is True and
+                entry['entire_original_compiled_source_byte_identity_proved'] is False,'reversible SOURCE insertion scope required')
+    claim=strict_metadata(OUTPUT/'execution_claim.json')
+    require(claim['schema']=='REFINED_AAA_SAVED_WORK_RHS_PHASE_READ_ONLY_RUN_CLAIM_V1' and
+            claim['normal_genuine_OwnRSS_supervision_required'] is True and
+            claim['evaluator']==receipts['evaluator_before'] and
+            claim['declared_limits']=={'whole_seconds':60.0,'stage_seconds':60.0,'own_rss_mib':512.0,
+            'archive_bytes':67108864,'threads':1,'children':1,'retries':0},'unchanged producer run claim required')
+    require(type(admission['elapsed_seconds']) in (int,float) and 0<=admission['elapsed_seconds']<WHOLE_CAP and
+            type(report['elapsed_seconds_before_final_report']) in (int,float) and
+            0<=report['elapsed_seconds_before_final_report']<WHOLE_CAP,'original complete diagnostic elapsed budget required')
+    return {'input_roles':1140,'input_bytes':96042876,'payload_files':12,'manifest_members':11,
+            'full_binary_files':5,'full_binary_bytes':19820160,'all_saved_work_RHS_word_identities_verified_by_fixed_child':True,
+            'whole_input_EOF_receipts_and_outer_literal_target_alias_identities_checked':True,
+            'source_partition_qualified':False,'full_physical_neutron_balance_qualified':False,
+            'AAA_qualified':False,'ABA_admitted':False}
+
+def joint_archive_bytes(support):
+    # SOURCE and Root receipts live outside ART. Preserve the original ART-only
+    # complete-history helper; account all new diagnostic material separately.
+    roots=(HOST,OUTPUT,SOURCE_ARCHIVE,ROOT_RECEIPTS)
+    total=support.archive_bytes(roots)
+    if not any(TARGET.is_relative_to(root) for root in roots):total+=TARGET.lstat().st_size
+    return total

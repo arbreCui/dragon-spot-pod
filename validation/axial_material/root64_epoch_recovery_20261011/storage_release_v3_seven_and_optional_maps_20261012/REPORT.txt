@@ -1,0 +1,16 @@
+旧文件清理实际结果
+2026-10-12 06:57:41 Asia/Shanghai
+
+本包两批已实际完成：
+1. v3旧失败三段输入副本7个，499457228B；真实执行7c9b9f/session69354→43c5fe EXIT0。保留导致标识修复的initial_pack.xsm及全部结果、日志、运行文件和原生产者。
+2. 旧source-factor分支map003/map004的6个早期中间raw，1427734232B；真实执行2dd0b3/session12290→7b0bfd EXIT0。该分支完成12map并WAITING_REFERENCE，不是失败分支；map005–012、bootstrap、training和全部结果文档均保留。
+
+两批共13文件1927191460B；连同此前四批累计62文件8388085920B，约7.81GiB。各条完整目标SHA和七项身份保存在两份EXACT清单。没有删除当前科学输入，没有修改计算逻辑或资源门槛；被删旧中间raw和失败副本不再支持其旧路径的原样重放。
+
+独立后验真实19c633/session37959→9c05c5 EXIT0，4217个去重保留/保护/Source/凭证文件14410808545B完整EOF稳定核验，3783当前项及38新增v5项保持；两个分支inventory恰好minus7/minus6，63/347普通文件和0/89符号链接保留。APFS父目录按删除条数自然变化，其他目录完整七项身份不变。
+
+本次关闭资源记录history78269060170B、94837普通文件、free210944000000B；保留原cold20971764748B、metadata64MiB和未来fresh2GiB后剩1623797674B。该数值属于本次清理关闭时刻，后续运行重新检查。Root已启动原限制下的pipeline v5，但本清理凭证不给予三段、AAA精度、参考或ABA资格；总体目标未完成。
+
+真实工具原文：ROOT_ACTUAL_TWO_BATCH_TRUE_CLOSED_TOOL_RETURNS.json
+独立复核：independent_postverify/INDEPENDENT_TRUE_CLOSED_TWO_BATCH_POSTVERIFY.json
+执行逐文件结果：failed-v3-seven_ACTUAL_RELEASE_RECEIPT.json及optional-map003004-six_ACTUAL_RELEASE_RECEIPT.json

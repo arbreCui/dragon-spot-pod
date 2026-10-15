@@ -1,3 +1,8 @@
+> Historical pin-cell development record, not the current repaired D4-A result.
+> See [current handoff](d4a_final_validation_handoff.md) and
+> [validation plan](../../SPOT_doc/validation_plan.md). Old next-step directions
+> below are inactive.
+
 # Current SPOD/Picard result
 
 ## Frozen method

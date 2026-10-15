@@ -1,0 +1,621 @@
+{
+  "schema": "RESULT43_CURRENT_A_AGGREGATION_INPUT_INTERSECTION_SOURCE_ONLY_V1",
+  "registry_metadata_path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/RESULT43_ARCHIVE_SAVED_FULL_PIN_METADATA_REGISTRY_20261015.json",
+  "original_request_metadata_path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/first_A_empty_root_cumulative12_aggregate_request_20261014_v1/CURRENT_ACTUAL_MATERIAL_EVIDENCE_REQUEST.json",
+  "registry_result_bodies_opened": false,
+  "result_JSONL_SHA_recomputed": false,
+  "numerical_executed": false,
+  "original_input_count": 5937,
+  "result_registry_count": 43,
+  "exact_input_intersection_count": 30,
+  "exact_original_input_intersection_pins": [
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-eight-roots-20261014-v1-evidence/A/complete_producer_coverage.jsonl",
+      "sha256": "91fb0967ae9662584cf5ce3929179b15c31ae4f0068c9a7580e89fe4f468888b",
+      "size_bytes": 16143088,
+      "identity": [
+        16777229,
+        50176674,
+        33188,
+        1,
+        16143088,
+        1791972417046937600,
+        1791972417046937600
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-eight-roots-20261014-v1-evidence/A/complete_original_coverage.jsonl",
+      "sha256": "e25c5465ccba65b07999db2cb651b13ec813d711decc5cd39224706fd2ffe461",
+      "size_bytes": 13679716,
+      "identity": [
+        16777229,
+        50176667,
+        33188,
+        1,
+        13679716,
+        1791972417047262226,
+        1791972417047262226
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-eight-roots-20261014-v1-evidence/A/complete_field_comparisons.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "identity": [
+        16777229,
+        50176668,
+        33188,
+        1,
+        0,
+        1791972415948607467,
+        1791972415948620634
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-eight-roots-20261014-v1-evidence/A/all_presence_branch_and_missing.jsonl",
+      "sha256": "c88db6385d2c3b0c35a9de963489a662f6e5f2b90f84634c3ae58c14fe5b0ce8",
+      "size_bytes": 180,
+      "identity": [
+        16777229,
+        50176670,
+        33188,
+        1,
+        180,
+        1791972417047443976,
+        1791972417047443976
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-eight-roots-20261014-v1-evidence/A/all_numeric_mismatches.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "identity": [
+        16777229,
+        50176669,
+        33188,
+        1,
+        0,
+        1791972415948654967,
+        1791972415948669926
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/all_context_words.jsonl",
+      "sha256": "d3f216896b7ec431daf0080bfad9c2c550ff5d69d20f151a7ff9cd05f5963648",
+      "size_bytes": 595529,
+      "identity": [
+        16777229,
+        50164706,
+        33188,
+        1,
+        595529,
+        1791967921670028964,
+        1791967921670028964
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000055_final-complete-micro/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "2a2443e3385f51faf3642d8ba5b132cc9f51c171a8b20d256d11062145c733f7",
+      "size_bytes": 10225432,
+      "identity": [
+        16777229,
+        50164772,
+        33188,
+        1,
+        10225432,
+        1791967926640694405,
+        1791967926640694405
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000055_final-complete-micro/complete_native_physical_directory_slots.jsonl",
+      "sha256": "ea287b5a560f140bbbf40010917cc916a681f5f19aa99538752942f6d34cf5ee",
+      "size_bytes": 10992765,
+      "identity": [
+        16777229,
+        50164768,
+        33188,
+        1,
+        10992765,
+        1791967926640988698,
+        1791967926640988698
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000055_final-complete-micro/complete_native_logical_record_inventory.jsonl",
+      "sha256": "705bfbc0a912ecf9d6a01dff663b654108957b3b567330a61c26678139853d96",
+      "size_bytes": 10225432,
+      "identity": [
+        16777229,
+        50164771,
+        33188,
+        1,
+        10225432,
+        1791967926474919702,
+        1791967926474919702
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000054_postmacro-LIBMIX/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "a3272b4387a058cb950dab2d6768b9ede7b806efad6ed41868b9f3f6f7e72d62",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164764,
+        33188,
+        1,
+        8294295,
+        1791967925866165133,
+        1791967925866165133
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000054_postmacro-LIBMIX/complete_native_physical_directory_slots.jsonl",
+      "sha256": "fd8cf0dd3acd80bcdbace9fc61308af938d08041ec4cb96e7f94bdc23478e208",
+      "size_bytes": 7217049,
+      "identity": [
+        16777229,
+        50164760,
+        33188,
+        1,
+        7217049,
+        1791967925866582342,
+        1791967925866582342
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000054_postmacro-LIBMIX/complete_native_logical_record_inventory.jsonl",
+      "sha256": "d3428cdf8d79894073125deb1b7623f5216d7fc8fe3455cd8c6bde45edc4081e",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164763,
+        33188,
+        1,
+        8294295,
+        1791967925731600707,
+        1791967925731600707
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000052_oldmacro-LIBDEN/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "a99a3b877a9452edcd202a182ba3e4a9fea6e2b6c7c168eaba4e146db52019d4",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164756,
+        33188,
+        1,
+        8294295,
+        1791967925263513787,
+        1791967925263513787
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000052_oldmacro-LIBDEN/complete_native_physical_directory_slots.jsonl",
+      "sha256": "fd8cf0dd3acd80bcdbace9fc61308af938d08041ec4cb96e7f94bdc23478e208",
+      "size_bytes": 7217049,
+      "identity": [
+        16777229,
+        50164752,
+        33188,
+        1,
+        7217049,
+        1791967925263925704,
+        1791967925263925704
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000052_oldmacro-LIBDEN/complete_native_logical_record_inventory.jsonl",
+      "sha256": "725795b71ad605bcc48d58ff3f67791dfa3ab056169000c42d70469081121c6b",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164755,
+        33188,
+        1,
+        8294295,
+        1791967925130938865,
+        1791967925130938865
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000051_oldmacro-pre-LIBMIX/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "a99a3b877a9452edcd202a182ba3e4a9fea6e2b6c7c168eaba4e146db52019d4",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164748,
+        33188,
+        1,
+        8294295,
+        1791967924657434640,
+        1791967924657434640
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000051_oldmacro-pre-LIBMIX/complete_native_physical_directory_slots.jsonl",
+      "sha256": "fd8cf0dd3acd80bcdbace9fc61308af938d08041ec4cb96e7f94bdc23478e208",
+      "size_bytes": 7217049,
+      "identity": [
+        16777229,
+        50164744,
+        33188,
+        1,
+        7217049,
+        1791967924657851724,
+        1791967924657851724
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000051_oldmacro-pre-LIBMIX/complete_native_logical_record_inventory.jsonl",
+      "sha256": "725795b71ad605bcc48d58ff3f67791dfa3ab056169000c42d70469081121c6b",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164747,
+        33188,
+        1,
+        8294295,
+        1791967924523234466,
+        1791967924523234466
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000010_postmacro-LIBMIX/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "a99a3b877a9452edcd202a182ba3e4a9fea6e2b6c7c168eaba4e146db52019d4",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164740,
+        33188,
+        1,
+        8294295,
+        1791967924052001913,
+        1791967924052001913
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000010_postmacro-LIBMIX/complete_native_physical_directory_slots.jsonl",
+      "sha256": "fd8cf0dd3acd80bcdbace9fc61308af938d08041ec4cb96e7f94bdc23478e208",
+      "size_bytes": 7217049,
+      "identity": [
+        16777229,
+        50164736,
+        33188,
+        1,
+        7217049,
+        1791967924052438789,
+        1791967924052438789
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000010_postmacro-LIBMIX/complete_native_logical_record_inventory.jsonl",
+      "sha256": "725795b71ad605bcc48d58ff3f67791dfa3ab056169000c42d70469081121c6b",
+      "size_bytes": 8294295,
+      "identity": [
+        16777229,
+        50164739,
+        33188,
+        1,
+        8294295,
+        1791967923918580114,
+        1791967923918580114
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000008_oldmacro-LIBDEN/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "f35398965ac5881708961d74d7265ebbacf9eb234f5dba9f25f30d4e8397390b",
+      "size_bytes": 8136126,
+      "identity": [
+        16777229,
+        50164732,
+        33188,
+        1,
+        8136126,
+        1791967923450129026,
+        1791967923450129026
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000008_oldmacro-LIBDEN/complete_native_physical_directory_slots.jsonl",
+      "sha256": "ef89c165df255b8c7b27f74bd7ecfeabdae7f879dd7f5b041c49f8ffb0f55e79",
+      "size_bytes": 7118104,
+      "identity": [
+        16777229,
+        50164726,
+        33188,
+        1,
+        7118104,
+        1791967923450414360,
+        1791967923450414360
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000008_oldmacro-LIBDEN/complete_native_logical_record_inventory.jsonl",
+      "sha256": "cac8fb4a66ded26a862d5ab4cd5c3996bd74388e3d7ff8a898b5ae1d922f47e9",
+      "size_bytes": 8136126,
+      "identity": [
+        16777229,
+        50164731,
+        33188,
+        1,
+        8136126,
+        1791967923318077981,
+        1791967923318077981
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000007_oldmacro-pre-LIBMIX/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "f35398965ac5881708961d74d7265ebbacf9eb234f5dba9f25f30d4e8397390b",
+      "size_bytes": 8136126,
+      "identity": [
+        16777229,
+        50164722,
+        33188,
+        1,
+        8136126,
+        1791967922858597620,
+        1791967922858597620
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000007_oldmacro-pre-LIBMIX/complete_native_physical_directory_slots.jsonl",
+      "sha256": "ef89c165df255b8c7b27f74bd7ecfeabdae7f879dd7f5b041c49f8ffb0f55e79",
+      "size_bytes": 7118104,
+      "identity": [
+        16777229,
+        50164718,
+        33188,
+        1,
+        7118104,
+        1791967922858860413,
+        1791967922858860413
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000007_oldmacro-pre-LIBMIX/complete_native_logical_record_inventory.jsonl",
+      "sha256": "cac8fb4a66ded26a862d5ab4cd5c3996bd74388e3d7ff8a898b5ae1d922f47e9",
+      "size_bytes": 8136126,
+      "identity": [
+        16777229,
+        50164721,
+        33188,
+        1,
+        8136126,
+        1791967922728422038,
+        1791967922728422038
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000004_postmacro-LIBMIX/complete_native_xsmnxt_export_record_order.jsonl",
+      "sha256": "f35398965ac5881708961d74d7265ebbacf9eb234f5dba9f25f30d4e8397390b",
+      "size_bytes": 8136126,
+      "identity": [
+        16777229,
+        50164714,
+        33188,
+        1,
+        8136126,
+        1791967922259179198,
+        1791967922259179198
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000004_postmacro-LIBMIX/complete_native_physical_directory_slots.jsonl",
+      "sha256": "ef89c165df255b8c7b27f74bd7ecfeabdae7f879dd7f5b041c49f8ffb0f55e79",
+      "size_bytes": 7118104,
+      "identity": [
+        16777229,
+        50164710,
+        33188,
+        1,
+        7118104,
+        1791967922259475324,
+        1791967922259475324
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-fullfield-extract-six-roots-20261014-v1-evidence/A/000004_postmacro-LIBMIX/complete_native_logical_record_inventory.jsonl",
+      "sha256": "cac8fb4a66ded26a862d5ab4cd5c3996bd74388e3d7ff8a898b5ae1d922f47e9",
+      "size_bytes": 8136126,
+      "identity": [
+        16777229,
+        50164713,
+        33188,
+        1,
+        8136126,
+        1791967922125976525,
+        1791967922125976525
+      ]
+    }
+  ],
+  "remaining_result_registry_non_input_pins": [
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-three-plane-raw-macro-compare-after-GENDF-cumulative25-20261014-v1-evidence/A3/complete_macro_comparison.jsonl",
+      "sha256": "a19aedb16da33d5f04555c501932b5304dbe6992f2d2c1e292498e477e38ada1",
+      "size_bytes": 20413399,
+      "identity": [
+        16777229,
+        50187745,
+        33188,
+        1,
+        20413399,
+        1791980284761073036,
+        1791980284761073036
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-three-plane-raw-macro-compare-after-GENDF-cumulative25-20261014-v1-evidence/A2/complete_macro_comparison.jsonl",
+      "sha256": "a19aedb16da33d5f04555c501932b5304dbe6992f2d2c1e292498e477e38ada1",
+      "size_bytes": 20413399,
+      "identity": [
+        16777229,
+        50187734,
+        33188,
+        1,
+        20413399,
+        1791980281272759671,
+        1791980281272759671
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-three-plane-raw-macro-compare-after-GENDF-cumulative25-20261014-v1-evidence/A1/physical.jsonl",
+      "sha256": "b9b72ad2f281ca6b4c881fc3734412f68debcdd80ff03ceec4372b02786b4c60",
+      "size_bytes": 34371817,
+      "identity": [
+        16777229,
+        50187718,
+        33188,
+        1,
+        34371817,
+        1791980277793875118,
+        1791980277793875118
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-three-plane-raw-macro-compare-after-GENDF-cumulative25-20261014-v1-evidence/A1/complete_macro_comparison.jsonl",
+      "sha256": "a19aedb16da33d5f04555c501932b5304dbe6992f2d2c1e292498e477e38ada1",
+      "size_bytes": 20413399,
+      "identity": [
+        16777229,
+        50187722,
+        33188,
+        1,
+        20413399,
+        1791980277726298634,
+        1791980277726298634
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-empty-root-cumulative12-20261014-v1-evidence/A/complete_producer_coverage.jsonl",
+      "sha256": "994ddc9e47cec38f3fd4d5fce9a62532aa5b0e509d90ddca8fa73df43bb9bfe8",
+      "size_bytes": 15899217,
+      "identity": [
+        16777229,
+        50180781,
+        33188,
+        1,
+        15899217,
+        1791974927464605894,
+        1791974927464605894
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-empty-root-cumulative12-20261014-v1-evidence/A/complete_original_coverage.jsonl",
+      "sha256": "e25c5465ccba65b07999db2cb651b13ec813d711decc5cd39224706fd2ffe461",
+      "size_bytes": 13679716,
+      "identity": [
+        16777229,
+        50180745,
+        33188,
+        1,
+        13679716,
+        1791974927492718691,
+        1791974927492718691
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-empty-root-cumulative12-20261014-v1-evidence/A/complete_field_comparisons.jsonl",
+      "sha256": "115f3f07990803c9070370d236cc2e1683b0daa0f8b10d1b1e6682388ff9fc66",
+      "size_bytes": 22918163,
+      "identity": [
+        16777229,
+        50180746,
+        33188,
+        1,
+        22918163,
+        1791974927492732691,
+        1791974927492732691
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-empty-root-cumulative12-20261014-v1-evidence/A/all_presence_branch_and_missing.jsonl",
+      "sha256": "cbacf26a7ac3d9aa0fe6b850912bdfb1238bc63d54cd18a867647ccabe581250",
+      "size_bytes": 169611468,
+      "identity": [
+        16777229,
+        50180748,
+        33188,
+        1,
+        169611468,
+        1791974927492923941,
+        1791974927492923941
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-first-A-complete-aggregate-empty-root-cumulative12-20261014-v1-evidence/A/all_numeric_mismatches.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "identity": [
+        16777229,
+        50180747,
+        33188,
+        1,
+        0,
+        1791974872456664842,
+        1791974872456680592
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-saved-three-macro-typed-path-compare-20261014-v1/comparison/A3_canonical_macro_comparison.jsonl",
+      "sha256": "38fc2551c2e4b3abf64a1743d2a05c18dc718176704f7179e7fbb8f98f000538",
+      "size_bytes": 11646174,
+      "identity": [
+        16777229,
+        50192949,
+        33188,
+        1,
+        11646174,
+        1791982751165196232,
+        1791982751165196232
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-saved-three-macro-typed-path-compare-20261014-v1/comparison/A2_canonical_macro_comparison.jsonl",
+      "sha256": "38fc2551c2e4b3abf64a1743d2a05c18dc718176704f7179e7fbb8f98f000538",
+      "size_bytes": 11646174,
+      "identity": [
+        16777229,
+        50192948,
+        33188,
+        1,
+        11646174,
+        1791982748727984167,
+        1791982748727984167
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current-saved-three-macro-typed-path-compare-20261014-v1/comparison/A1_canonical_macro_comparison.jsonl",
+      "sha256": "38fc2551c2e4b3abf64a1743d2a05c18dc718176704f7179e7fbb8f98f000538",
+      "size_bytes": 11646174,
+      "identity": [
+        16777229,
+        50192945,
+        33188,
+        1,
+        11646174,
+        1791982746290296096,
+        1791982746290296096
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-original-a11-NX-formatter-component-20261014-v1/component/all_original_NX_word_formatter_details.jsonl",
+      "sha256": "db911ef67922287a8d18cb1a8916b447ec758c913dd722f54d5eef4879b5032a",
+      "size_bytes": 3208000,
+      "identity": [
+        16777229,
+        50205828,
+        33188,
+        1,
+        3208000,
+        1791987475799935240,
+        1791987475799935240
+      ]
+    }
+  ],
+  "result_body_does_not_supply_model_operand_arrays": true,
+  "all_intersection_roles_still_guard_required_inputs_until_actual_aggregate_closed": true,
+  "removal_or_archive_before_new_aggregate_not_permitted": true,
+  "full_fixed_input_blind_SHA_guard_required_before_math_phase": true
+}

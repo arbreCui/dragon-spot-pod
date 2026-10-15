@@ -1,0 +1,1 @@
+V14b受限纯元数据诊断SOURCE草稿：UNREADY。四个真实函数全源只读，source_inputs会重复sender/helper准入读并取Oct07父声明，但不导入/运行failedV13工厂。未来normalcanonical import后四函数各直接调用一次，选定canonical code被动sys.setprofile记调用/返回、inclusive/exclusive选定帧时间和完整边；不替换函数或MRO。原120秒/512MiB/64MiB/96GiB/free8/线程1/子1/重试0保留。完整return JSON及所有源码/控制证明literal SHA/7ID前后独立保留；不算新增86数学stage、不授组件/native/AAA/ABA。此稿未执行任何业务/metadata API或benchmark。

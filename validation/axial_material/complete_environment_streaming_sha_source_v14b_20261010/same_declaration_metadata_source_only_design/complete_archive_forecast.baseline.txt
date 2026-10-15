@@ -1,0 +1,59 @@
+def complete_archive_forecast(c, changed, sender, contract):
+    """Append sender storage to the unchanged complete inherited cache forecast."""
+    base = archive_forecast(c, changed)
+    if (sender != sender_source_admission() or contract != sender_control_contract()
+            or sender['proof']['native_RSS_verified'] is not False
+            or sender['proof']['observed_native_RSS_saving'] is not None):
+        raise ValueError('same whole bound sender contract and source-only proof required')
+    raw_bytes = sum(item['size_bytes'] for case in contract['cases'] for item in case['raw_files'])
+    rows = sum(case['manifest_lines'] for case in contract['cases'])
+    if (raw_bytes, rows) != (288241824,22):
+        raise ValueError('exact complete additional sender raw forecast required')
+    additional_source = {
+        'FLU2DR64.f': len(sender['sender_text'].encode('utf-8')),
+        'FLUSP64.original_reference_unit.f': len(sender['reference_wrapper_text'].encode('utf-8')),
+        'sender_window_controls.f90': require(SENDER_CONTROL_SOURCE, SENDER_CONTROL_SOURCE_SHA).stat().st_size,
+        'sender_patch_helper.py': require(SENDER_PATCH_HELPER, SENDER_PATCH_HELPER_SHA).stat().st_size,
+        'sender_source_patch_proof.json': require(SENDER_SOURCE_PROOF, SENDER_SOURCE_PROOF_SHA).stat().st_size,
+        'sender_source_only_INPUT.json': require(SENDER_SOURCE_INPUT, SENDER_SOURCE_INPUT_SHA).stat().st_size,
+        'sender_control_contract.json': require(SENDER_CONTROL_CONTRACT, SENDER_CONTROL_CONTRACT_SHA).stat().st_size,
+        'sender_controls_auditor.py': require(SENDER_CONTROLS_AUDITOR, SENDER_CONTROLS_AUDITOR_SHA).stat().st_size,
+    }
+    # No second nonraw reservation: retain the original single 1GiB allowance.
+    if (base['nonraw_binary_diff_watch_log_and_metadata_allowance_bytes'] != 1*2**30
+            or base['original_archive_reserve_bytes'] != ARCHIVE_RESERVE or ARCHIVE_RESERVE != 2*2**30):
+        raise ValueError('original 1GiB nonraw and 2GiB complete cap must remain exact')
+    sender_source_bytes = sum(additional_source.values())
+    manifest_allowance = rows * 2048
+    complete_bytes = base['forecast_complete_bytes'] + raw_bytes + sender_source_bytes + manifest_allowance
+    if complete_bytes >= ARCHIVE_RESERVE:
+        raise ValueError('whole cache+sender SOURCE/OUT forecast exceeds original2GiB')
+    result = dict(base)
+    result.update(sender_exact_additional_control_raw_bytes=raw_bytes,
+        sender_exact_additional_SOURCE_file_bytes=additional_source,
+        sender_exact_additional_SOURCE_bytes=sender_source_bytes,
+        sender_manifest_files=14, sender_manifest_rows=rows,
+        sender_manifest_json_allowance_bytes=manifest_allowance,
+        forecast_complete_with_sender_bytes=complete_bytes,
+        inherited_cache_forecast_fields_retained_exact=True,
+        original_single_nonraw_1GiB_allowance_retained=True,
+        actual_complete_SOURCE_OUT_2GiB_cap_remains_mandatory=True,
+        sender_raw_plan_is_not_actual_output_or_native_RSS=True)
+    if any(result[key] != value for key, value in base.items()):
+        raise ValueError('inherited cache/raw/source forecast fields must not change')
+    stream_admission = stream_environment_helper_source_admission()
+    stream_source = {
+        "complete_environment_streaming_sha_helper_v14b.py": require(STREAM_ENVIRONMENT_HELPER, STREAM_ENVIRONMENT_HELPER_SHA).stat().st_size,
+        "stream_environment_helper_source_patch_proof.json": require(STREAM_ENVIRONMENT_SOURCE_PROOF, STREAM_ENVIRONMENT_SOURCE_PROOF_SHA).stat().st_size,
+        "stream_environment_helper_controls_admission.json": require(STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS, STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS_SHA).stat().st_size,
+    }
+    stream_source_bytes = sum(stream_source.values())
+    complete_with_stream = result["forecast_complete_with_sender_bytes"] + stream_source_bytes
+    if complete_with_stream >= ARCHIVE_RESERVE:
+        raise ValueError("whole cache+sender+three stream SOURCE copies exceed original2GiB")
+    result.update(stream_helper_exact_additional_SOURCE_file_bytes=stream_source,
+        stream_helper_exact_additional_SOURCE_bytes=stream_source_bytes,
+        forecast_complete_with_sender_and_stream_helper_bytes=complete_with_stream,
+        stream_helper_admission=stream_admission,
+        every_prior_cache_and_sender_forecast_field_retained_exact=True)
+    return result

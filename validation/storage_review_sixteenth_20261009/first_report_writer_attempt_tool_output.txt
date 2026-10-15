@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/private/tmp/spot_save_sixteenth_storage_review_20261009.py", line 35, in <module>
+    assert g['cache_set']['count'] == 159 and g['cache_set']['new_paths'] == []
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

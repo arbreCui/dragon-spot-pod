@@ -1,0 +1,202 @@
+def sender_source_admission():
+    """Pinned source INPUT only: no helper import/call or execution credit."""
+    import ast
+    import hashlib
+    import re
+
+    def sha(value):
+        if (type(value) is not str or re.fullmatch('[0-9a-f]{64}', value) is None
+                or value == '0' * 64):
+            raise ValueError('UNREADY: actual sender source SHA required')
+        return value
+
+    def owned(path, expected):
+        if path is None:
+            raise ValueError('UNREADY: actual sender source path required')
+        return require(path, sha(expected))
+
+    def text_digest(text):
+        return hashlib.sha256(text.encode('utf-8')).hexdigest()
+
+    def text(path):
+        # Preserve complete bytes/newlines rather than universal-newline edits.
+        return Path(path).read_bytes().decode('utf-8')
+
+    def description(path):
+        value = pin(path)
+        return dict(path=value['path'], bytes=Path(path).stat().st_size,
+                    sha256=value['sha256'])
+
+    def fixed_statements(source):
+        result = []
+        for line in source.splitlines():
+            if not line.strip() or line[0] in '*cC!':
+                continue
+            if len(line) < 6:
+                raise ValueError('invalid fixed-form source statement')
+            if line[5] not in ' 0':
+                if not result:
+                    raise ValueError('fixed-form continuation has no predecessor')
+                result[-1] += line[6:].strip()
+            else:
+                result.append(line[6:].strip())
+        return [re.sub(r'\s+', '', line).upper() for line in result]
+
+    # require(expected=None) is permissive in the inherited factory, so every
+    # new SHA is explicitly rejected before any source file is opened.
+    specifications = (
+        ('helper', SENDER_PATCH_HELPER, SENDER_PATCH_HELPER_SHA),
+        ('original_sender', SENDER_SOURCE, SENDER_SOURCE_SHA),
+        ('candidate_sender', CANDIDATE_SENDER_SOURCE, CANDIDATE_SENDER_SHA),
+        ('proof', SENDER_SOURCE_PROOF, SENDER_SOURCE_PROOF_SHA),
+        ('source_INPUT', SENDER_SOURCE_INPUT, SENDER_SOURCE_INPUT_SHA),
+    )
+    for label, path, expected in specifications:
+        sha(expected)
+        if path is None or not Path(path).is_absolute():
+            raise ValueError('UNREADY: explicit absolute sender input required: ' + label)
+    paths = {label: owned(path, expected) for label, path, expected in specifications}
+    original_sha = 'bb901bfed9a4199a5b4c98c58c93bf3b3dda597fd2047bfed6d267c8dcadac81'
+    receiver_sha = '876eed542d97a368dd40e00ff92b1310cd106b03cbf766b618afda74f8566df2'
+    if sha(SENDER_SOURCE_SHA) != original_sha:
+        raise ValueError('complete original fixed sender parent differs')
+    helper_text = text(paths['helper'])
+    tree = ast.parse(helper_text)
+    top_literals = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name) and target.id in ('ORIGINAL_SENDER_SHA256', 'WRAPPER_START'):
+                    if target.id in top_literals:
+                        raise ValueError('duplicate helper source literal')
+                    top_literals[target.id] = ast.literal_eval(node.value)
+    start = '      SUBROUTINE FLUSP64('
+    if top_literals != dict(ORIGINAL_SENDER_SHA256=original_sha, WRAPPER_START=start):
+        raise ValueError('helper original full-source/whole-wrapper literal differs')
+    functions = [node for node in tree.body if isinstance(node, ast.FunctionDef)
+                 and node.name == 'patch_sender']
+    if len(functions) != 1:
+        raise ValueError('one literal helper patch_sender definition required')
+    literal_edits = [node.value for node in functions[0].body
+                     if isinstance(node, ast.Assign) and len(node.targets) == 1
+                     and isinstance(node.targets[0], ast.Name) and node.targets[0].id == 'edits']
+    if len(literal_edits) != 1:
+        raise ValueError('one helper literal five-region edit table required')
+    edits = ast.literal_eval(literal_edits[0])
+    names = ['private_window_state_and_explicit_receiver_interface',
+             'ascending_active_window_detection_and_conditional_allocation',
+             'retain_copy_in_only_for_sparse_fallback',
+             'direct_output_window_or_original_sparse_solve_and_scatter',
+             'release_only_the_allocated_output_fallback']
+    if (type(edits) is not list or len(edits) != 5
+            or any(type(edit) is not dict or set(edit) != {'name', 'old', 'new'}
+                   or any(type(edit[key]) is not str or not edit[key] for key in ('name', 'old', 'new'))
+                   or edit['old'] == edit['new'] for edit in edits)
+            or [edit['name'] for edit in edits] != names):
+        raise ValueError('complete independent five-region helper literals required')
+    proof = read(paths['proof'])
+    if type(proof) is not dict or proof.get('edits') != edits:
+        raise ValueError('pinned proof must equal helper AST literal edits')
+    sender = text(paths['candidate_sender'])
+    original = text(paths['original_sender'])
+    # Independent full-source inverse; never call helper.patch_sender().
+    inverse = sender
+    for edit in reversed(edits):
+        if inverse.count(edit['new']) != 1:
+            raise ValueError('nonunique complete sender inverse region: ' + edit['name'])
+        inverse = inverse.replace(edit['new'], edit['old'], 1)
+    if inverse != original or text_digest(inverse) != original_sha:
+        raise ValueError('complete five-region inverse differs from exact original sender')
+    # Independently verify original replacement uniqueness in forward order.
+    forward = original
+    for edit in edits:
+        if forward.count(edit['old']) != 1:
+            raise ValueError('nonunique original sender region: ' + edit['name'])
+        forward = forward.replace(edit['old'], edit['new'], 1)
+    if forward != sender or text_digest(sender) != sha(CANDIDATE_SENDER_SHA):
+        raise ValueError('complete literal candidate source identity differs')
+    if original.count(start) != 1 or sender.count(start) != 1:
+        raise ValueError('one complete trailing private sender wrapper required')
+    old_prefix, old_tail = original.split(start)
+    new_prefix, new_tail = sender.split(start)
+    original_wrapper = start + old_tail
+    candidate_wrapper = start + new_tail
+    reference_wrapper = original_wrapper.replace(start, '      SUBROUTINE FLUSP64_REFERENCE(', 1)
+    if old_prefix != new_prefix:
+        raise ValueError('all source outside the private wrapper must remain byte exact')
+    unit = owned(paths['candidate_sender'].parent / 'FLUSP64.candidate_unit.f',
+                 proof.get('candidate_wrapper_sha256'))
+    reference = owned(paths['candidate_sender'].parent / 'FLUSP64.original_reference_unit.f',
+                      proof.get('reference_wrapper_sha256'))
+    if text(unit) != candidate_wrapper or text(reference) != reference_wrapper:
+        raise ValueError('complete candidate/reference units must derive from exact full sources')
+    source_input = read(paths['source_INPUT'])
+    if type(source_input) is not dict or type(source_input.get('original_receiver')) is not dict:
+        raise ValueError('complete pinned source INPUT and original receiver owner required')
+    receiver_item = source_input['original_receiver']
+    if (type(receiver_item.get('path')) is not str
+            or not Path(receiver_item['path']).is_absolute()
+            or receiver_item.get('sha256') != receiver_sha):
+        raise ValueError('actual fixed original SPOF64 source owner differs')
+    receiver_path = Path(receiver_item['path'])
+    receiver = owned(receiver_path, receiver_sha)
+    receiver_statements = fixed_statements(text(receiver))
+    if candidate_wrapper.count('      INTERFACE\n') != 1 or candidate_wrapper.count('      END INTERFACE\n') != 1:
+        raise ValueError('one private explicit receiver interface required')
+    interface_text = candidate_wrapper.split('      INTERFACE\n', 1)[1].split('      END INTERFACE\n', 1)[0]
+    interface_statements = fixed_statements(interface_text)
+    header = 'SUBROUTINESPOF64(KPSYS,IPTRK,IMPX,NGEFF,NGIND,NREG,NMAT,NUN,MAT,KEYFLX,FUNKNO,SUNKNO,TITR)'
+    declarations = ['INTEGERNGEFF,NGIND(NGEFF),IMPX,NREG,NMAT,NUN,MAT(NREG),KEYFLX(NREG)',
+                    'TYPE(C_PTR)KPSYS(NGEFF),IPTRK',
+                    'DOUBLEPRECISIONFUNKNO(NUN,NGEFF),SUNKNO(NUN,NGEFF)', 'CHARACTERTITR*72']
+    expected_interface = [header, 'USEGANLIB', declarations[0], declarations[1],
+                          declarations[2], declarations[3], 'ENDSUBROUTINESPOF64']
+    if (interface_statements != expected_interface
+            or receiver_statements.count(header) != 1
+            or any(receiver_statements.count(line) != 1 for line in declarations)):
+        raise ValueError('private thirteen-argument ABI/types/shapes must equal actual876eed receiver')
+    old_header = fixed_statements(original_wrapper)[0]
+    new_header = fixed_statements(candidate_wrapper)[0]
+    if old_header != new_header:
+        raise ValueError('private sender public calling ABI must remain exact')
+    expected_proof = dict(
+        schema='AXMAT_FLUSP64_CONTIGUOUS_OUTPUT_WINDOW_SOURCE_PATCH_V13',
+        scope='CONTIGUOUS_ACTIVE_OUTPUT_COPY_STORAGE_ONLY_WITH_ORIGINAL_SPARSE_FALLBACK',
+        original_sender_sha256=original_sha, candidate_sender_sha256=sha(CANDIDATE_SENDER_SHA),
+        original_wrapper_sha256=text_digest(original_wrapper),
+        candidate_wrapper_sha256=text_digest(candidate_wrapper),
+        reference_wrapper_sha256=text_digest(reference_wrapper), edits=edits,
+        complete_inverse_byteexact=True, sender_outside_wrapper_byteexact=True,
+        receiver_interface='ORIGINAL_EXPLICIT_SHAPE_SPOF64_WITHOUT_PUBLIC_ABI_CHANGE',
+        direct_window_condition='ascending active last-first+1 == NGEFF, NGEFF > 0',
+        source_copy_and_leakage_arithmetic_retained=True, sparse_gather_scatter_retained=True,
+        empty_active_set_returns_before_allocation=True, no_pointer_or_target_or_assumed_shape_added=True,
+        partial_output_on_failed_direct_call_must_not_be_reused=True,
+        successful_receiver_does_not_read_incoming_output_required=True,
+        caller_old_source_output_nonalias_required=True,
+        conditional_payload_saving_bytes=dict(formula='8 * NUN * NGEFF', NUN=1800, NGEFF=370, bytes=5328000),
+        observed_native_RSS_saving=None, native_RSS_verified=False,
+        AAA_accuracy_qualified=False, ABA_admitted=False)
+    if proof != expected_proof:
+        raise ValueError('entire independently reconstructed sender source proof differs')
+    expected_input = dict(schema='AXMAT_FLUSP64_CONTIGUOUS_OUTPUT_WINDOW_SOURCE_ONLY_INPUT_V13',
+        source_only=True, helper=description(paths['helper']), original_sender=description(paths['original_sender']),
+        candidate_sender=description(paths['candidate_sender']), proof=description(paths['proof']),
+        original_receiver=description(receiver), compiled=False, controls_executed=False,
+        native_RSS_verified=False, AAA_accuracy_qualified=False, ABA_admitted=False)
+    if source_input != expected_input:
+        raise ValueError('entire original source INPUT ownership/credit body differs')
+    source_paths = {**paths, 'candidate_unit': unit, 'reference_unit': reference, 'original_receiver': receiver}
+    source_inputs = {str(paths[label]): sha(expected) for label, path, expected in specifications}
+    source_inputs.update({str(unit): sha(proof['candidate_wrapper_sha256']),
+                          str(reference): sha(proof['reference_wrapper_sha256']),
+                          str(receiver): receiver_sha})
+    # Recheck all ownership pins after the complete text/JSON/AST inspection.
+    for path, expected in source_inputs.items():
+        owned(path, expected)
+    for label, path, expected in specifications:
+        owned(path, expected)
+    return dict(sender_text=sender, reference_wrapper_text=reference_wrapper,
+                candidate_wrapper_text=candidate_wrapper, proof=proof,
+                source_inputs=source_inputs,
+                source_input=dict(path=str(paths['source_INPUT']), sha256=sha(SENDER_SOURCE_INPUT_SHA)))

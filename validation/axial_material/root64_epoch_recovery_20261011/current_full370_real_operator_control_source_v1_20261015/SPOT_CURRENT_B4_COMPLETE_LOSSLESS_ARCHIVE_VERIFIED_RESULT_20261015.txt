@@ -1,0 +1,19 @@
+SPOT B 四产品完整无损归档结果（2026-10-15）
+
+已完成全部4个产品的无损归档，Root实际返回0、唯一归档子进程0、独立执行后核验0。完整索引覆盖原始423456221字节；4份完整gzip共90356033字节。第一份沿用原位置的已独立验证完整成员，新增3份56796317字节，无复制或链接旧成员。
+新增批次子进程用时17.804314833017997秒，峰值71.03125MiB，无资源限制失败；Root总用时23.516040084010456秒，完整74根及原累计2GiB等限制保留。
+
+产品归档对应：
+0 m.xsm，原始76594248字节，保留旧gzip33559716字节；原文副本已先经恢复校验及独立核验后精确退役。
+1 u.asc，原始305414157字节，新gzip53423026字节；原文当前仍保留。
+2 a.asc，原始39546544字节，新gzip2929591字节；原文当前仍保留。
+3 t.asc，原始1901272字节，新gzip443700字节；原文当前仍保留。
+新增三份均在真实归档时流式解压，长度和摘要逐项匹配原始完整凭证；独立后核验对4份gzip两次完整盲摘要，核对4条目与完整索引，没有重新读取原产品正文或解释科学数值。
+
+完整索引：validation/artifacts/axial-material-current-B4-complete-product-lossless-archive-20261015-v2/CURRENT_B4_LOSSLESS_ARCHIVE_INDEX.json
+实际报告：同目录Root_actual_B4_products_lossless_archive_summary.json
+Root真实回执：current_B4_complete_products_lossless_archive_source_v2_UNREADY/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+独立核验：同Source目录actual_postverify_20261015/REVIEW.json及TRUE_TOOL_RETURNS.json
+首批失败、其恢复验证、两文件空间回收凭证全部保留；未改写旧失败为成功。
+
+下一步：精确回收仍保留的三份原文副本346861973字节，保留所有4份完整gzip、归档条目、完整索引、计算快照、提取结果及文档；随后执行B六阶段汇总。无损归档成功不表示物理精度、AAA或ABA已验收。

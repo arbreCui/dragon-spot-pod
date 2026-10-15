@@ -1,0 +1,123 @@
+def _sort_new_owned_graph_json_in_place(value):
+    """Sort only the new producer's private JSON containers; no caller data."""
+    if type(value) is dict:
+        entries = [(key, value[key]) for key in sorted(value)]
+        value.clear()
+        for key, part in entries:
+            _sort_new_owned_graph_json_in_place(part)
+            value[key] = part
+    elif type(value) is list:
+        for part in value:
+            _sort_new_owned_graph_json_in_place(part)
+
+
+def create_fresh_complete_wire_graph(*, typed_snapshot, owners, namespaces=(), aliases=(), read_trace=(),
+                 newly_declared_input_paths=None, declared_new_source_roots=(),
+                 live_resource_roots=(), coverage_requirements=None, live_io_requirements=(),
+                 absence_inputs=None, consumer_scope=None):
+    """Create a JSON-only input graph after the real frozen input admission.
+
+    Owner forms: {owner,category,kind:'pin',path,sha256}, or
+    {owner,category,expected_files:{absolute_path:expected_sha256}}.  ``files``
+    and ``outputs`` are accepted as explicitly typed map names.  Use
+    explicit_sealed_namespace for exhaustive inventories.  New unpinned inputs
+    must be an explicit path -> {owner,category,reason} map; their role is only
+    NEWLY_DECLARED_INPUT_ONLY.  Unknown traced files always reject.
+
+    All nine closure categories must be populated.  Complete transitive owner
+    discovery and actual external declaration exit0 remain caller obligations.
+    This function writes no files and produces no terminal receipt.
+
+    Live subprocess stdio needs caller-supplied live_io_requirements: an exact
+    {kind:'subprocess_stdio',owner,reason,command:{literal_executable,executable,
+    argv,cwd,environment,path_environment},
+    scope:LIVE_IO_SCOPE} and, if used, capture_live_character_device(os.devnull).
+    Source/executable regular bytes still require typed owners.  Anonymous I/O
+    is never input bytes; saved commands/results are not replayed or qualified.
+
+    ``absence_inputs`` is an explicit path -> {owner,category,reason} map, for
+    known optional input candidates derived by the caller from true interpreter
+    paths/pinned source modules.  Trace discovery never creates such a contract.
+    Only genuine ENOENT, with all existing parents and aliases validated before
+    and after the full byte read, can cover that exact read-only path attempt.
+    Negative inputs never count as regular bytes or as any closure class.
+    """
+    _require(consumer_scope is None, "fresh complete producer cannot declare consumer scope")
+    normalized_owners = _owners(owners)
+    normalized_namespaces = [_namespace_descriptor(value) for value in namespaces]
+    alias_values = list(aliases)
+    for namespace in normalized_namespaces:
+        for name, value in namespace["symlinks"].items():
+            alias_values.append(dict(value, path=os.path.join(namespace["root"], name)))
+    normalized_aliases = _alias_map(alias_values)
+    normalized_new = _new_inputs(newly_declared_input_paths or {})
+    source_roots = sorted({_path(path) for path in declared_new_source_roots})
+    resource_roots = sorted({_path(path) for path in live_resource_roots})
+    traces = _trace_records(read_trace)
+    subprocess_records = _subprocess_records(read_trace)
+    live_io = _live_io(live_io_requirements)
+    absent_inputs = _absence_inputs(absence_inputs or {})
+    contract = _json_clone(coverage_requirements or {})
+    consumer = None if consumer_scope is None else _consumer_contract(consumer_scope)
+    if consumer is not None:
+        _require(not traces and not subprocess_records,
+                 "consumer declaration must not relabel/filter the original full-ready audit as its execution trace")
+    absence_observations = _absence_phase(absent_inputs, normalized_aliases)
+    requirements, actual, new_pins, fresh_parent = _phase(normalized_owners, normalized_namespaces,
+                                           normalized_aliases, normalized_new,
+                                           json_input=None if consumer is None else consumer["parent_input_graph"],
+                                           compact_requirements=True)
+    _absence_phase(absent_inputs, normalized_aliases, expected=absence_observations)
+    coverage = (_coverage if consumer is None else _consumer_coverage)(
+        _compact_requirement_dicts(requirements), actual, contract)
+    trace_coverage = _trace_coverage(traces, _compact_requirement_dicts(requirements), normalized_namespaces,
+                                     normalized_aliases, source_roots, resource_roots,
+                                     subprocess_records, live_io, absent_inputs)
+    _require(consumer is not None or trace_coverage["owned_file_attempts"] > 0,
+             "a real input-admission read trace must contain an owned regular-file attempt")
+    # Freeze the digest of every explicitly owned file alias, including aliases
+    # whose input declaration supplied only literal text and canonical target.
+    for alias in normalized_aliases.values():
+        if alias["kind"] == "file":
+            alias["sha256"] = actual[alias["target"]]["sha256"]
+    requirement_table = _wire_requirement_table_compact(requirements)
+    _validate_wire_requirement_table(requirement_table)
+    del requirements
+    graph = {
+        "schema": WIRE_GRAPH_SCHEMA, "scope": INPUT_SCOPE,
+        "consumer_scope": consumer,
+        "fresh_reader_contract": copy.deepcopy(FRESH_READER_CONTRACT),
+        "typed_snapshot": _json_clone(typed_snapshot),
+        "owners": _owner_table(normalized_owners, requirement_table), "namespaces": normalized_namespaces,
+        "aliases": [normalized_aliases[path] for path in sorted(normalized_aliases)],
+        "newly_declared_input_paths": normalized_new, "newly_declared_input_pins": new_pins,
+        "declared_new_source_roots": source_roots, "live_resource_roots": resource_roots,
+        "read_trace": {"schema": TRACE_SCHEMA,
+                       "coverage": "PYTHON_AUDIT_OPEN_ATTEMPTS_ONLY" if consumer is None else "NO_CONSUMER_EXECUTION_TRACE_CLAIMED",
+                       "records": traces, "subprocess_records": subprocess_records},
+        "live_io_requirements": live_io,
+        "live_io_scope": LIVE_IO_SCOPE,
+        "live_subprocess_results_are_not_saved_input_bytes_or_science": True,
+        "absence_inputs": absent_inputs, "absence_observations": absence_observations,
+        "absence_inputs_are_not_regular_bytes_or_science": True,
+        "coverage_requirements": contract, "closure_categories": list(CLOSURE_CATEGORIES),
+        "requirements": requirement_table,
+        "canonical_files": [actual[path] for path in sorted(actual)],
+        "coverage": coverage, "trace_coverage": trace_coverage,
+        "science_qualification_created": False,
+        "live_resources_verified": False, "external_declaration_exit0_verified": False,
+        "caller_must_verify_live_environment_modules_PID_time_and_resources": True,
+    }
+    if consumer is not None:
+        _consumer_lineage(graph, normalized_owners, normalized_namespaces, normalized_aliases, normalized_new,
+                          fresh_parent=fresh_parent)
+    # Canonical key insertion order matches original encode_graph_wire,
+    # without cloning the complete new graph (all containers are owned).
+    graph["content_sha256"] = None
+    _sort_new_owned_graph_json_in_place(graph)
+    graph["wire_encoding"] = {"schema": WIRE_ENCODING_SCHEMA, "source_graph_schema": SCHEMA,
+        "source_requirement_table_schema": REQUIREMENT_TABLE_SCHEMA,
+        "decoded_content_sha256": _wire_semantic_content_digest(dict(graph, wire_encoding=None))}
+    graph["content_sha256"] = _content_digest(graph)
+    return graph
+

@@ -1,0 +1,387 @@
+{
+  "proof": {
+    "schema": "AXMAT_RANK1_FACTOR_CACHE_MEMORY_DEDUP_SOURCE_PATCH_V1",
+    "parent_kernel_sha256": "c0fddcd2ddc4dba6969440024a9205fbb297727a6a045886acba626323ab5718",
+    "parent_patch_sha256": "d3e8a696363b58ab181d3ee6496d30fb50e44b83a5dd3079d697ae77233b0f78",
+    "dense_parent_kernel_sha256": "c017167b5c48bc922efb7353db8c11a91758add1c2c5a02c42bd2baaeba210a2",
+    "candidate_kernel_sha256": "343e731fa190d80f8d390831185aef11dabcab32f51a229a5761c827a4aeb1e1",
+    "inverse_kernel_sha256": "c0fddcd2ddc4dba6969440024a9205fbb297727a6a045886acba626323ab5718",
+    "edits": [
+      {
+        "old": "    integer :: rank1_lower_rows_count=0\n",
+        "new": "    integer :: rank1_lower_rows_count=0\n    integer :: rank1_lower_unique_count=0\n    integer, allocatable :: rank1_lower_blocks(:)\n",
+        "count": 1
+      },
+      {
+        "old": "    integer(int64) :: square,amount,blocks,row_bytes\n",
+        "new": "    integer(int64) :: square,amount,blocks,row_bytes,map_bytes\n",
+        "count": 1
+      },
+      {
+        "old": "    amount=amount+row_bytes\n",
+        "new": "    amount=amount+row_bytes\n    map_bytes=4_int64*blocks\n    if (map_bytes > RANK1_CAP-amount) &\n      call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')\n    amount=amount+map_bytes\n",
+        "count": 1
+      },
+      {
+        "old": "  ! Only ordinary rank1 uses this storage.  The full original matrix is\n  ! reconstructed before the original full-size MATMUL; no shortened dot\n  ! product, different factorization, or floating-point conversion is used.\n  subroutine SPOT1P64_RANK1_LOWER_STORE(igroup,lower,du)\n    integer, intent(in) :: igroup\n    double precision, intent(in) :: lower(:,:,:)\n    real, intent(in) :: du(:)\n    integer :: nstate,nblock,nrow,i,j,block,row\n    if (.not.rank1_enabled) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.all(ieee_is_finite(du))) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n    nstate=size(du)\n    nblock=size(lower,3)\n    nrow=count(du > 0.0)\n    if (nstate <= 0 .or. nblock <= 0 .or. nrow <= 0 .or. &\n        size(lower,1) /= nstate .or. size(lower,2) /= nstate) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n      if (plan%nstate /= nstate .or. plan%nblock /= nblock .or. &\n          plan%rank1_factor_bytes <= 0_int64 .or. &\n          plan%rank1_lower_rows_count /= nrow) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (allocated(plan%lower) .or. allocated(plan%rank1_lower_rows) .or. &\n          allocated(plan%rank1_lower)) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      ! Exact INTEGER64 bits, not a numerical zero test: omitted -0 is refused.\n      do block=1,nblock\n        do j=1,nstate\n          do i=1,nstate\n            if (du(i) > 0.0) cycle\n            if (transfer(lower(i,j,block),0_int64) /= 0_int64) &\n              call XABORT('SPOT1P64 RANK1 LOWER: NONZERO OR SIGNED ZERO OMITTED ROW.')\n          enddo\n        enddo\n      enddo\n      ! Persistent row indices and packed values were reserved by FACTORS.\n      allocate(plan%rank1_lower_rows(nrow),plan%rank1_lower(nrow,nstate,nblock))\n      row=0\n      do i=1,nstate\n        if (du(i) <= 0.0) cycle\n        row=row+1\n        plan%rank1_lower_rows(row)=i\n        plan%rank1_lower(row,:,:)=lower(i,:,:)\n      enddo\n    end associate\n  end subroutine SPOT1P64_RANK1_LOWER_STORE\n\n  subroutine SPOT1P64_RANK1_LOWER_VALIDATE(igroup,nstate,nblock,du)\n    integer, intent(in) :: igroup,nstate,nblock\n    real, intent(in) :: du(:)\n    integer :: nrow,i,row\n    if (.not.rank1_enabled .or. nstate <= 0 .or. nblock <= 0 .or. &\n        size(du) /= nstate) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.all(ieee_is_finite(du))) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n    nrow=count(du > 0.0)\n    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n      if (plan%nstate /= nstate .or. plan%nblock /= nblock .or. &\n          nrow <= 0 .or. allocated(plan%lower) .or. &\n          plan%rank1_lower_rows_count /= nrow) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (.not.allocated(plan%rank1_lower_rows) .or. &\n          .not.allocated(plan%rank1_lower)) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (size(plan%rank1_lower_rows) /= nrow .or. &\n          size(plan%rank1_lower,1) /= nrow .or. &\n          size(plan%rank1_lower,2) /= nstate .or. &\n          size(plan%rank1_lower,3) /= nblock) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (any(plan%rank1_lower_rows < 1) .or. &\n          any(plan%rank1_lower_rows > nstate)) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n      row=0\n      do i=1,nstate\n        if (du(i) <= 0.0) cycle\n        row=row+1\n        if (plan%rank1_lower_rows(row) /= i) &\n          call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n      enddo\n    end associate\n  end subroutine SPOT1P64_RANK1_LOWER_VALIDATE\n\n  subroutine SPOT1P64_RANK1_LOWER_LOAD(igroup,block,lower,du)\n    integer, intent(in) :: igroup,block\n    double precision, intent(out) :: lower(:,:)\n    real, intent(in) :: du(:)\n    integer :: row,nblock\n    if (.not.allocated(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    nblock=SPOT1P64_PLAN(igroup)%mode(1)%nblock\n    call SPOT1P64_RANK1_LOWER_VALIDATE(igroup,size(lower,1), &\n      nblock,du)\n    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n      if (size(lower,2) /= plan%nstate .or. block < 1 .or. &\n          block > plan%nblock) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      lower=0.0d0\n      do row=1,size(plan%rank1_lower_rows)\n        lower(plan%rank1_lower_rows(row),:)=plan%rank1_lower(row,:,block)\n      enddo\n    end associate\n  end subroutine SPOT1P64_RANK1_LOWER_LOAD\n\n",
+        "new": "  ! Only ordinary rank1 uses this storage.  Equality is INTEGER64 IEEE\n  ! equality. First occurrence defines dictionary order; 49 unique blocks\n  ! remain valid. Decode preserves full original matrix shape and arithmetic.\n  subroutine SPOT1P64_RANK1_LOWER_STORE(igroup,lower,du)\n    integer, intent(in) :: igroup\n    double precision, intent(in) :: lower(:,:,:)\n    real, intent(in) :: du(:)\n    integer :: nstate,nblock,nrow,i,j,block,row,prior,match,nunique\n    integer(int64) :: released_bytes\n    logical :: equal_bits\n    if (.not.rank1_enabled) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.all(ieee_is_finite(du))) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n    nstate=size(du); nblock=size(lower,3); nrow=count(du > 0.0)\n    if (nstate <= 0 .or. nblock <= 0 .or. nrow <= 0 .or. &\n        size(lower,1) /= nstate .or. size(lower,2) /= nstate) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n      if (plan%nstate /= nstate .or. plan%nblock /= nblock .or. &\n          plan%rank1_factor_bytes <= 0_int64 .or. &\n          plan%rank1_lower_rows_count /= nrow) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (allocated(plan%lower) .or. allocated(plan%rank1_lower_rows) .or. &\n          allocated(plan%rank1_lower) .or. allocated(plan%rank1_lower_blocks) .or. &\n          plan%rank1_lower_unique_count /= 0) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      do block=1,nblock\n        do j=1,nstate\n          do i=1,nstate\n            if (du(i) > 0.0) cycle\n            if (transfer(lower(i,j,block),0_int64) /= 0_int64) &\n              call XABORT('SPOT1P64 RANK1 LOWER: NONZERO OR SIGNED ZERO OMITTED ROW.')\n          enddo\n        enddo\n      enddo\n      ! FACTORS reserved all row/map and worst-case 49-unique value bytes.\n      ! No temporary packed matrix or floating-point equality is constructed.\n      allocate(plan%rank1_lower_rows(nrow),plan%rank1_lower_blocks(nblock))\n      row=0\n      do i=1,nstate\n        if (du(i) <= 0.0) cycle\n        row=row+1; plan%rank1_lower_rows(row)=i\n      enddo\n      nunique=0\n      do block=1,nblock\n        match=0\n        do prior=1,block-1\n          equal_bits=.true.\n          do j=1,nstate\n            do row=1,nrow\n              i=plan%rank1_lower_rows(row)\n              if (transfer(lower(i,j,block),0_int64) /= &\n                  transfer(lower(i,j,prior),0_int64)) equal_bits=.false.\n            enddo\n          enddo\n          if (equal_bits) then\n            match=plan%rank1_lower_blocks(prior)\n            exit\n          endif\n        enddo\n        if (match == 0) then\n          nunique=nunique+1; match=nunique\n        endif\n        plan%rank1_lower_blocks(block)=match\n      enddo\n      allocate(plan%rank1_lower(nrow,nstate,nunique))\n      do block=1,nblock\n        match=plan%rank1_lower_blocks(block)\n        if (block > 1) then\n          if (any(plan%rank1_lower_blocks(:block-1) == match)) cycle\n        endif\n        do j=1,nstate\n          do row=1,nrow\n            plan%rank1_lower(row,j,match)=lower(plan%rank1_lower_rows(row),j,block)\n          enddo\n        enddo\n      enddo\n      plan%rank1_lower_unique_count=nunique\n      released_bytes=8_int64*int(nrow,int64)*int(nstate,int64)*int(nblock-nunique,int64)\n      call SPOT1P64_RANK1_RELEASE(released_bytes)\n      plan%rank1_factor_bytes=plan%rank1_factor_bytes-released_bytes\n    end associate\n  end subroutine SPOT1P64_RANK1_LOWER_STORE\n\n  subroutine SPOT1P64_RANK1_LOWER_VALIDATE(igroup,nstate,nblock,du,check_unique)\n    integer, intent(in) :: igroup,nstate,nblock\n    real, intent(in) :: du(:)\n    logical, optional, intent(in) :: check_unique\n    integer :: nrow,i,row,block,highest,which,other,j,nunique\n    integer(int64) :: expected_bytes,square\n    logical :: equal_bits,deep\n    deep=.true.\n    if (present(check_unique)) deep=check_unique\n    if (.not.rank1_enabled .or. nstate <= 0 .or. nblock <= 0 .or. &\n        size(du) /= nstate) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.all(ieee_is_finite(du))) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n    nrow=count(du > 0.0)\n    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n      nunique=plan%rank1_lower_unique_count\n      if (plan%nstate /= nstate .or. plan%nblock /= nblock .or. &\n          nrow <= 0 .or. allocated(plan%lower) .or. &\n          plan%rank1_lower_rows_count /= nrow .or. nunique <= 0 .or. nunique > nblock) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (.not.allocated(plan%rank1_lower_rows) .or. .not.allocated(plan%rank1_lower) .or. &\n          .not.allocated(plan%rank1_lower_blocks)) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (size(plan%rank1_lower_rows) /= nrow .or. &\n          size(plan%rank1_lower,1) /= nrow .or. size(plan%rank1_lower,2) /= nstate .or. &\n          size(plan%rank1_lower,3) /= nunique .or. size(plan%rank1_lower_blocks) /= nblock) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      if (any(plan%rank1_lower_rows < 1) .or. any(plan%rank1_lower_rows > nstate)) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n      row=0\n      do i=1,nstate\n        if (du(i) <= 0.0) cycle\n        row=row+1\n        if (plan%rank1_lower_rows(row) /= i) &\n          call XABORT('SPOT1P64 RANK1 LOWER: INVALID ROW MAP.')\n      enddo\n      highest=0\n      do block=1,nblock\n        which=plan%rank1_lower_blocks(block)\n        if (which < 1 .or. which > nunique .or. which > highest+1) &\n          call XABORT('SPOT1P64 RANK1 LOWER: INVALID CANONICAL BLOCK MAP.')\n        highest=max(highest,which)\n      enddo\n      if (highest /= nunique) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID CANONICAL BLOCK MAP.')\n      if (deep) then\n        do which=1,nunique\n          do other=1,which-1\n            equal_bits=.true.\n            do j=1,nstate\n              do row=1,nrow\n                if (transfer(plan%rank1_lower(row,j,which),0_int64) /= &\n                    transfer(plan%rank1_lower(row,j,other),0_int64)) equal_bits=.false.\n              enddo\n            enddo\n            if (equal_bits) call XABORT('SPOT1P64 RANK1 LOWER: DUPLICATE DICTIONARY BLOCK.')\n          enddo\n        enddo\n      endif\n      ! Keep the parent's checked extreme-dimension boundary before products.\n      if (int(nstate,int64) > RANK1_CAP/24_int64/int(nstate,int64)) &\n        call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')\n      square=int(nstate,int64)*int(nstate,int64)\n      expected_bytes=16_int64*square+12_int64*int(nstate,int64)\n      if (int(nblock,int64) > RANK1_CAP/expected_bytes) &\n        call XABORT('SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.')\n      expected_bytes=expected_bytes*int(nblock,int64)+ &\n        8_int64*int(nrow,int64)*int(nstate,int64)*int(nunique,int64)+ &\n        4_int64*int(nrow,int64)+4_int64*int(nblock,int64)\n      if (expected_bytes /= plan%rank1_factor_bytes) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    end associate\n  end subroutine SPOT1P64_RANK1_LOWER_VALIDATE\n\n  subroutine SPOT1P64_RANK1_LOWER_LOAD(igroup,block,lower,du,already_dictionary_validated)\n    integer, intent(in) :: igroup,block\n    double precision, intent(out) :: lower(:,:)\n    real, intent(in) :: du(:)\n    logical, optional, intent(in) :: already_dictionary_validated\n    integer :: row,nblock\n    logical :: deep\n    deep=.true.\n    if (present(already_dictionary_validated)) then\n      if (already_dictionary_validated) deep=.false.\n    endif\n    if (.not.allocated(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (igroup < 1 .or. igroup > size(SPOT1P64_PLAN)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (.not.allocated(SPOT1P64_PLAN(igroup)%mode)) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    if (size(SPOT1P64_PLAN(igroup)%mode) /= 1) &\n      call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n    nblock=SPOT1P64_PLAN(igroup)%mode(1)%nblock\n    call SPOT1P64_RANK1_LOWER_VALIDATE(igroup,size(lower,1),nblock,du,deep)\n    associate(plan => SPOT1P64_PLAN(igroup)%mode(1))\n      if (size(lower,2) /= plan%nstate .or. block < 1 .or. block > plan%nblock) &\n        call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n      lower=0.0d0\n      do row=1,size(plan%rank1_lower_rows)\n        lower(plan%rank1_lower_rows(row),:)=plan%rank1_lower(row,:,plan%rank1_lower_blocks(block))\n      enddo\n    end associate\n  end subroutine SPOT1P64_RANK1_LOWER_LOAD\n\n",
+        "count": 1
+      },
+      {
+        "old": "                call SPOT1P64_RANK1_LOWER_LOAD(igroup,block,rank1_lower_work,du)\n",
+        "new": "                call SPOT1P64_RANK1_LOWER_LOAD(igroup,block,rank1_lower_work,du,.true.)\n",
+        "count": 1
+      },
+      {
+        "old": "    amount=amount+map_bytes\n",
+        "new": "    amount=amount+map_bytes\n    ! Last cprime is never read; keep every full original solve.\n    amount=amount-8_int64*square\n",
+        "region": "FACTORS_exact_one_dead_cprime_block_reservation_reduction",
+        "original_offset": 12669,
+        "old_sha256": "825790b84ec91538c7ca40df80223d383992fa8c70b3966e09639a639c06cb36",
+        "new_sha256": "34b320aa625875b4f1d5a53e669a7c5c0deb286ca14482e87a49007a07c900e4"
+      },
+      {
+        "old": "        4_int64*int(nrow,int64)+4_int64*int(nblock,int64)\n      if (expected_bytes /= plan%rank1_factor_bytes) &\n",
+        "new": "        4_int64*int(nrow,int64)+4_int64*int(nblock,int64)\n      expected_bytes=expected_bytes-8_int64*square\n      if (expected_bytes /= plan%rank1_factor_bytes) &\n",
+        "region": "LOWER_VALIDATE_exact_retained_accounting_reduction",
+        "original_offset": 21121,
+        "old_sha256": "5f67dac927c2cb43a30faf6d5c73dc962aa96c1deba46afa7b3646fc705189cc",
+        "new_sha256": "02a3a3f4263620441a76fc9e55b07559affc1d957b65e58b4e3a1e6b329b154d"
+      },
+      {
+        "old": "          allocate(plan%cprime(local_state,local_state,nfloor+1))\n",
+        "new": "          if (rank1_identity_active) then\n            allocate(plan%cprime(local_state,local_state,nfloor))\n          else\n            allocate(plan%cprime(local_state,local_state,nfloor+1))\n          endif\n",
+        "region": "ordinary_rank1_only_terminal_cprime_allocation_trim",
+        "original_offset": 50604,
+        "old_sha256": "54b170b72f18dd128f7a7ed2aa03e087120e295c46ea1999e106e54fe4cad63b",
+        "new_sha256": "e208b896c4f96d5191a92c46bf0d8513acb78cef81521ce28c97a29d6819370a"
+      },
+      {
+        "old": "            plan%cprime(:,:,block)=solve_pack(:,:local_state)\n",
+        "new": "            if (.not.rank1_identity_active .or. block <= nfloor) &\n              plan%cprime(:,:,block)=solve_pack(:,:local_state)\n",
+        "region": "ordinary_rank1_only_dead_terminal_store_guard",
+        "original_offset": 52181,
+        "old_sha256": "0f8eee7d1f7f5d13ed934aa6374efb7455cef9e01c5ef5059554966a3351d98e",
+        "new_sha256": "bd0a4740c87b284b31f18c4c9a9e675306b4bc530775b52b3fd6f4d220192b7a"
+      },
+      {
+        "old": "        if (cache_hit) then\n          do block=1,nfloor+1\n",
+        "new": "        if (cache_hit) then\n          if (rank1_identity_active) then\n            if (.not.allocated(plan%factor) .or. .not.allocated(plan%cprime)) &\n              call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n            if (any(shape(plan%factor) /= (/local_state,local_state,nfloor+1/))) &\n              call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n            if (any(shape(plan%cprime) /= (/local_state,local_state,nfloor/))) &\n              call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n          endif\n          do block=1,nfloor+1\n",
+        "region": "actual_cached_boundary_hit_ordinary_shapes_not_primitive_GATE",
+        "original_offset": 49320,
+        "old_sha256": "5f81827a5ae8f9d536642ea6cebfbec17be65d062b1e1192cc797c27d3122100",
+        "new_sha256": "251a0fe650ebfbd38e87309452a07ea495eadeb30ac92cf95ee6ca83d69e7c90"
+      }
+    ],
+    "complete_inverse_byteexact": true,
+    "scope": "ORDINARY_RANK1_LOWER_RAW_BIT_DICTIONARY_AND_UNUSED_TERMINAL_CPRIME_STORAGE_ONLY",
+    "activation": "unchanged rank1_identity_active call sites",
+    "dictionary_equality": "all retained INTEGER64 IEEE bits; +0 and -0 are distinct",
+    "dictionary_order": "first occurrence in original block order; no fixed unique count",
+    "fallback": "all nblock blocks unique is valid and reconstructs original full shape",
+    "hit_validation_sequence": "original boundary hit entry performs default complete LOWER_VALIDATE; only subsequent immutable-loop LOAD calls explicitly pass already_dictionary_validated=True",
+    "direct_LOAD_default": "complete deep dictionary validation; all LOAD paths always retain shape/rowmap/blockmap/index/accounting guards",
+    "persistent_accounting": "(16*nstate^2+12*nstate)*nblock+8*nrow*nstate*nunique+4*nrow+4*nblock-8*nstate^2",
+    "preallocation_accounting": "unchanged checked positive original worst bound minus exactly8*nstate^2 before RESERVE",
+    "construction_temporary_arrays": "none; comparisons and copies use scalar original-input elements",
+    "hit_temporary_accounting": "unchanged 8*nstate^2 before allocation and release after deallocation",
+    "new_plan_descriptor_fields_covered_by_parent_4096_bytes": true,
+    "rank1_factor_cache_budget_bytes": 536870912,
+    "additional_positive_requirements": [
+      "Permuted noncontiguous positive-angle rows, including positive-row -0 bits",
+      "Every full decoded block versus original full lower bytes before any numeric gate",
+      "Full original shape MATMUL outputs and complete flux/cour/xnei bitwise equal",
+      "All 370 row maps/dictionaries/block maps/factors/keys and exact live/peak bytes",
+      "Worst-case factor reservation, exact duplicate release and hit-workspace release independently counted",
+      "CLEAR releases every dictionary/block-map allocation and returns all counters/live/peak to zero"
+    ],
+    "factorization_and_pivots_unchanged": true,
+    "RHS_order_unchanged": true,
+    "legacy_and_uncached_formula_bytes_retained": true,
+    "sender_changed": false,
+    "other_runtime_objects_changed": false,
+    "actual_controls_executed": false,
+    "actual_full_FLU_entry_executed": false,
+    "actual_native_RSS_passed": false,
+    "AAA_accuracy_qualified": false,
+    "ABA_admitted": false,
+    "last_cprime_trim": {
+      "schema": "AXMAT_RANK1_UNUSED_TERMINAL_CPRIME_STORAGE_SOURCE_PATCH_V1",
+      "parent_dedup_kernel_sha256": "50071dfc713cd1a7f319e392706686c73ef250ea03049a91ef29d5dec341adb6",
+      "candidate_kernel_sha256": "343e731fa190d80f8d390831185aef11dabcab32f51a229a5761c827a4aeb1e1",
+      "complete_inverse_to_dedup_byteexact": true,
+      "inverse_kernel_sha256": "50071dfc713cd1a7f319e392706686c73ef250ea03049a91ef29d5dec341adb6",
+      "edits": [
+        {
+          "old": "    amount=amount+map_bytes\n",
+          "new": "    amount=amount+map_bytes\n    ! Last cprime is never read; keep every full original solve.\n    amount=amount-8_int64*square\n",
+          "region": "FACTORS_exact_one_dead_cprime_block_reservation_reduction",
+          "original_offset": 12669,
+          "old_sha256": "825790b84ec91538c7ca40df80223d383992fa8c70b3966e09639a639c06cb36",
+          "new_sha256": "34b320aa625875b4f1d5a53e669a7c5c0deb286ca14482e87a49007a07c900e4"
+        },
+        {
+          "old": "        4_int64*int(nrow,int64)+4_int64*int(nblock,int64)\n      if (expected_bytes /= plan%rank1_factor_bytes) &\n",
+          "new": "        4_int64*int(nrow,int64)+4_int64*int(nblock,int64)\n      expected_bytes=expected_bytes-8_int64*square\n      if (expected_bytes /= plan%rank1_factor_bytes) &\n",
+          "region": "LOWER_VALIDATE_exact_retained_accounting_reduction",
+          "original_offset": 21121,
+          "old_sha256": "5f67dac927c2cb43a30faf6d5c73dc962aa96c1deba46afa7b3646fc705189cc",
+          "new_sha256": "02a3a3f4263620441a76fc9e55b07559affc1d957b65e58b4e3a1e6b329b154d"
+        },
+        {
+          "old": "          allocate(plan%cprime(local_state,local_state,nfloor+1))\n",
+          "new": "          if (rank1_identity_active) then\n            allocate(plan%cprime(local_state,local_state,nfloor))\n          else\n            allocate(plan%cprime(local_state,local_state,nfloor+1))\n          endif\n",
+          "region": "ordinary_rank1_only_terminal_cprime_allocation_trim",
+          "original_offset": 50604,
+          "old_sha256": "54b170b72f18dd128f7a7ed2aa03e087120e295c46ea1999e106e54fe4cad63b",
+          "new_sha256": "e208b896c4f96d5191a92c46bf0d8513acb78cef81521ce28c97a29d6819370a"
+        },
+        {
+          "old": "            plan%cprime(:,:,block)=solve_pack(:,:local_state)\n",
+          "new": "            if (.not.rank1_identity_active .or. block <= nfloor) &\n              plan%cprime(:,:,block)=solve_pack(:,:local_state)\n",
+          "region": "ordinary_rank1_only_dead_terminal_store_guard",
+          "original_offset": 52181,
+          "old_sha256": "0f8eee7d1f7f5d13ed934aa6374efb7455cef9e01c5ef5059554966a3351d98e",
+          "new_sha256": "bd0a4740c87b284b31f18c4c9a9e675306b4bc530775b52b3fd6f4d220192b7a"
+        },
+        {
+          "old": "        if (cache_hit) then\n          do block=1,nfloor+1\n",
+          "new": "        if (cache_hit) then\n          if (rank1_identity_active) then\n            if (.not.allocated(plan%factor) .or. .not.allocated(plan%cprime)) &\n              call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n            if (any(shape(plan%factor) /= (/local_state,local_state,nfloor+1/))) &\n              call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n            if (any(shape(plan%cprime) /= (/local_state,local_state,nfloor/))) &\n              call XABORT('SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS.')\n          endif\n          do block=1,nfloor+1\n",
+          "region": "actual_cached_boundary_hit_ordinary_shapes_not_primitive_GATE",
+          "original_offset": 49320,
+          "old_sha256": "5f81827a5ae8f9d536642ea6cebfbec17be65d062b1e1192cc797c27d3122100",
+          "new_sha256": "251a0fe650ebfbd38e87309452a07ea495eadeb30ac92cf95ee6ca83d69e7c90"
+        }
+      ],
+      "ordinary_rank1_only": true,
+      "full_33_rhs_solve_unchanged": true,
+      "persistent_cprime_blocks": "nblock-1",
+      "bytes_saved_per_group": "8*nstate^2",
+      "actual_controls_executed": false,
+      "actual_native_RSS_passed": false,
+      "AAA_accuracy_qualified": false,
+      "ABA_admitted": false
+    },
+    "delegated_parent_helper": {
+      "path": "/Users/wen/spot/validation/axial_material/rank1_factor_cache_memory_dedup_patch.py",
+      "sha256": "6596aa9a11b8f86e837a23add01b24970a87ba4aabf6007fc3ada1925884ccf2"
+    }
+  },
+  "contract": {
+    "schema": "AXMAT_RANK1_FACTOR_CACHE_MEMORY_DEDUP_CONTROL_PLAN_V1",
+    "parent_kernel_sha256": "c0fddcd2ddc4dba6969440024a9205fbb297727a6a045886acba626323ab5718",
+    "dense_parent_kernel_sha256": "c017167b5c48bc922efb7353db8c11a91758add1c2c5a02c42bd2baaeba210a2",
+    "parent_patch_sha256": "d3e8a696363b58ab181d3ee6496d30fb50e44b83a5dd3079d697ae77233b0f78",
+    "parent_controls_sha256": "3ddb64b634026a70be5a5bf024ff09b00837e8d8942823a6c54f9834cca3ccd9",
+    "inherited_bitexact_pairs": 1146,
+    "permuted_bitexact_pairs": 6,
+    "all_bitexact_pairs": 1152,
+    "dense_reference_calls": 378,
+    "inherited_operator_negative_cases": 14,
+    "inherited_cap_negative_cases": 2,
+    "all_inherited_controls_must_reexecute": true,
+    "rank1_factor_cache_budget_bytes": 536870912,
+    "additional_positive_requirements": [
+      "All original 1152 full-field bitwise comparisons and 378 dense lower references repeat",
+      "Raw canonical dictionary, block indices and full decoded lower precede every bit/finite gate",
+      "Positive-row +0 and -0 stay distinct dictionary entries; omitted rows remain exact +0",
+      "All-unique fallback retains every original block without a uniqueness assumption",
+      "Worst-case factor reservation, duplicate release, decoded workspace release and CLEAR are checked"
+    ],
+    "additional_negative_cases": [
+      {
+        "name": "row_count",
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+      },
+      {
+        "name": "row_out_of_range",
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID ROW MAP."
+      },
+      {
+        "name": "row_duplicate_or_reordered",
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID ROW MAP."
+      },
+      {
+        "name": "packed_dimensions",
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+      },
+      {
+        "name": "omitted_nonzero",
+        "expected_message": "SPOT1P64 RANK1 LOWER: NONZERO OR SIGNED ZERO OMITTED ROW."
+      },
+      {
+        "name": "omitted_negative_zero",
+        "expected_message": "SPOT1P64 RANK1 LOWER: NONZERO OR SIGNED ZERO OMITTED ROW."
+      }
+    ],
+    "dedup_positive_command_args": [
+      "dedup-positive"
+    ],
+    "dedup_positive_fixtures": [
+      {
+        "name": "exact_repeated_blocks",
+        "nstate": 4,
+        "nrow": 2,
+        "nblock": 6,
+        "expected_unique": 3
+      },
+      {
+        "name": "permuted_rows_repeated_blocks",
+        "nstate": 4,
+        "nrow": 2,
+        "nblock": 6,
+        "expected_unique": 3
+      },
+      {
+        "name": "all_unique_fallback",
+        "nstate": 4,
+        "nrow": 2,
+        "nblock": 49,
+        "expected_unique": 49
+      }
+    ],
+    "dedup_negative_cases": [
+      {
+        "name": "block_index_out_of_range",
+        "args": [
+          "dedup-negative",
+          "block_index_out_of_range"
+        ],
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID CANONICAL BLOCK MAP."
+      },
+      {
+        "name": "block_map_dimensions",
+        "args": [
+          "dedup-negative",
+          "block_map_dimensions"
+        ],
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+      },
+      {
+        "name": "missing_unique_block",
+        "args": [
+          "dedup-negative",
+          "missing_unique_block"
+        ],
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+      },
+      {
+        "name": "noncanonical_first_occurrence",
+        "args": [
+          "dedup-negative",
+          "noncanonical_first_occurrence"
+        ],
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID CANONICAL BLOCK MAP."
+      },
+      {
+        "name": "duplicate_dictionary_value",
+        "args": [
+          "dedup-negative",
+          "duplicate_dictionary_value"
+        ],
+        "expected_message": "SPOT1P64 RANK1 LOWER: DUPLICATE DICTIONARY BLOCK."
+      },
+      {
+        "name": "dictionary_dimensions",
+        "args": [
+          "dedup-negative",
+          "dictionary_dimensions"
+        ],
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+      },
+      {
+        "name": "accounting_bytes",
+        "args": [
+          "dedup-negative",
+          "accounting_bytes"
+        ],
+        "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+      },
+      {
+        "name": "release_exceeds_live",
+        "args": [
+          "dedup-negative",
+          "release_exceeds_live"
+        ],
+        "expected_message": "SPOT1P64 RANK1 CACHE: INVALID ACCOUNTING RELEASE."
+      }
+    ],
+    "packed_stream": {
+      "version": 2,
+      "header_int64_count": 12,
+      "header": [
+        "version",
+        "nstate",
+        "nblock",
+        "nrow",
+        "group",
+        "factor_bytes",
+        "live",
+        "peak",
+        "cap",
+        "built",
+        "reused",
+        "hits"
+      ],
+      "body": [
+        "rowmap:int32[nrow]",
+        "blockmap:int32[nblock]",
+        "unique_count:int32[1]",
+        "dictionary:real64[nrow,nstate,nunique]"
+      ],
+      "order": "Fortran/little_endian"
+    },
+    "decoded_stream_is_original_full_all_blocks": true,
+    "primitive_stream": {
+      "version": 2,
+      "header_int64_count": 12,
+      "header": [
+        "version",
+        "nstate",
+        "nblock",
+        "row_count",
+        "allocated_rows",
+        "dictionary_dim1",
+        "dictionary_dim2",
+        "dictionary_dim3",
+        "factor_bytes",
+        "live",
+        "peak",
+        "cap"
+      ],
+      "body": [
+        "du:real32[nstate]",
+        "original_lower:real64[nstate,nstate,nblock]",
+        "allocated_rowmap:int32[allocated_rows]",
+        "map_count:int32[1]",
+        "unique_count:int32[1]",
+        "allocated_blockmap:int32[map_count]",
+        "allocated_dictionary:real64[dim1,dim2,dim3]"
+      ],
+      "original_memory_primitives_use_same_layout": true,
+      "order": "Fortran/little_endian"
+    },
+    "negative_identity_prime_dictionary_and_full_decode_archived": true,
+    "direct_LOAD_default_bad_dictionary_rejections_exercised": true,
+    "additional_stage_count": 9,
+    "total_planned_stage_count": 40,
+    "raw_before_gate": true,
+    "new_build_and_native_RSS_proof_required": true,
+    "observed_RSS_reduction_is_not_a_qualification": true,
+    "AAA_accuracy_qualified": false,
+    "ABA_admitted": false,
+    "last_cprime_trim": {
+      "schema": "AXMAT_RANK1_UNUSED_TERMINAL_CPRIME_STORAGE_SOURCE_PATCH_V1",
+      "ordinary_rank1_only": true,
+      "persistent_cprime_blocks": "nblock-1",
+      "bytes_saved_per_group": "8*nstate^2",
+      "actual_boundary_cprime_extent_required": true,
+      "all_original_40_stages_required": true,
+      "last_block_full_33_rhs_solve_retained": true,
+      "actual_controls_executed": false,
+      "actual_native_RSS_passed": false
+    }
+  },
+  "source_only": true,
+  "actual_controls_executed": false
+}

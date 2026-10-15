@@ -1,0 +1,6 @@
+V18 ecfdff… 有限独立 SOURCE 审查通过，无源码阻塞。
+10 + 4 + 13 项变更逆向整字节还原 ecfdff→feeb→82→0ea，70 项函数/类名称不变，仅 require_ready 与 complete_input_phase 改变，68 项其余定义完整不变。
+原 If/Assert/Raise AST和顺序、两 current predicates/owned-path检查、完整verify + 第二strict graph、两failed输入/length/negative检查、原完整图/trace/alias/namespace、whole七项和资源/guard/caps均保留。原gc3次，不新增。
+新增同SHA完整specs fresh读取/解析1次，发生在audit之后/current-after之前；length_specs保留原checker唯一使用字段完整对象。输出字段/顺序和计数来源保持，不修改caller。
+实际I/O副作用多一次完整读取/解析，可能更早拒绝中途变化；live事实时间戳仍实时测量。不能据源码证明所有深层对象释放、515峰值原因、V18预计RSS或PASS。
+候选仍UNREADY，未来6项business pins均None。本轮只读SOURCE/TMP，不导入/调用API、不business/numeric、不改canonical。

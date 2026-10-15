@@ -1,0 +1,17 @@
+SPOT 当前进展（2026-10-09）
+
+目标：完成同温轴向材料对照，先 AAA 同质控制，再通过独立参考验收，最后 ABA。当前仍是组件级验证。
+
+已完成：组件径向—轴向耦合能够运行并数值收敛；A/B 双精度快照和相关输入验证已有结果。最新 V10 内存优化的真实45阶段组件构建、控制测试、统一审计均 PASS，实际作业退出0；输出逐位一致，正式 runtime-input-only 复核也实际退出0。
+
+尚未完成：独立物理精度资格、完整程序的新版本内存实测、新的 AAA 验收和 ABA 材料对照。历史燃料裂变率分布误差超过原3%门槛；V9启动内存513.890625 MiB超过512 MiB，0个map。V10预计减少常驻缓存4,641,280字节（4.4263 MiB），这不是已测得的真实内存节省。
+
+下一步：新组件接入完整程序并完成有界构建；新 AAA 实测内存与耦合；原阈值下独立精度验收；通过后执行 ABA。当前不扩大清理范围。
+
+主要证据：
+/Users/wen/spot/validation/artifacts/axial-material-rank1-factor-cache-factor-diagonal-trim-build-20261009/audit/result.json
+/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-terminal-20261009/terminal_return.json
+/Users/wen/spot/validation/axial_material/factor_diagonal_trim_build_review_20261009/admit.stdout
+/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+
+独立只读复核：45阶段及全部封存文件、1152对逐位输出和新增codec原始结果均核验通过。组件控制测试自身进程最高RSS为310.515625 MiB；该实测不代表完整输运算例的内存资格。新完整程序入口仅绑定6项实际成功赋值，其余源码逆向核对一致，尚未执行新合并PREP/build。

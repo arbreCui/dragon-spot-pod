@@ -1,0 +1,64 @@
+SPOT 额外21项反应原始事件截面/中子产额捕获结果
+日期：2026-10-15（Asia/Shanghai）
+
+本轮结论
+原始数据捕获真实返回0，独立后验核验真实返回0。
+范围：17个核素、21个NU-MT反应组合、131个反应/温度记录、262个MF3/MF6段。
+完整流式读取17份原始文件，ASCII总量92,876,787字节；保存131份新NPZ操作数。
+MF3选中LIST 768条，MF6选中LIST 576条；保存P0矩阵有效载荷143,471,200字节。
+138个输出文件合计155,752,305字节，低于原192MiB输出上限。
+
+执行与资源
+Source生成：283199/0；独立Source审阅：18de53/0；一次发布：9379da/0；
+运行前轻量检查：fec054/0；实际运行终端：04953c/0；
+独立后验：1a4a1a/0。
+实际运行29.0503秒；子阶段24.6258秒；守卫采样内存峰值101.71875MiB。
+原上限512MiB、单阶段600秒、全程1800秒、单线程/单子进程/零重试不变。
+实际执行权限require_escalated用于原进程监控守卫，未绕过守卫。
+完整累计目录保持60个，运行后累计产物1,916,182,678字节，外部元数据8,540,858字节。
+
+当前捕获报告记录的现象（尚未独立重算）
+768个非零MF3事件截面行/温度组合；576个非零MF6产额行/温度组合。
+其中192个MF3非零入射行没有对应MF6入射LIST；0个MF6独有非零行。
+Cr50 MT44的生产/事件比约6.03262779528e-5，二者均非零。
+Mo95 MT24在共同观测且事件非零的行上比值1.99835111448至1.99999966363；
+Mo95 MT41对应比值1.99998136043。
+这些是原捕获报告中的数值诊断，不是物理验收阈值，也未证明原始产额加工分支。
+不能统一假定每项反应中子倍数为1，不能将未出现的LIST称为观测到的物理零。
+
+核验范围及限制
+独立后验对681个Source/元数据/新输出完整凭证进行了两次核对；
+对全部131个新NPZ完成两次盲SHA校验，核对了记录数量、布局及来源。
+31个旧科学输入/含科学数值文档只核对文件身份，未读旧数据体。
+后验未打开NPZ成员或数组，未重新计算矩阵、截面、产额或192行统计。
+捕获保留原MF3原始P0 LIST数值、MF6原始P0 LIST数值、LIST维度/范围、各自通量、
+入射存在掩码、原始P0矩阵和重建诊断。下一步将从这些新原始操作数独立重建20个派生数组并逐字节比较。
+P0操作数无法重新证明原ASCII字节或NL2的所有高阶数据，这些仍以本轮原捕获出处为据。
+
+失败记录保留
+v1参数字段构造失败真实返回1；v1 Source生成因单份元数据超过8MiB真实返回1。
+v2仅紧缩重复清单表示，数值计算、原运行守卫与上限不变。
+失败未覆盖、未改成成功，未在旧入口重试；没有删除任何结果文档。
+
+后续顺序
+1. 对本轮131份新操作数独立重建，确认20个派生数组及诊断统计。
+2. 核实原NJOY的实际产额加工分支及反应覆盖凭证。
+3. 推进SCI1的P1散射检查，再处理温度插值、全370群运行内存和正式准入缺口。
+
+整体goal仍在推进，尚未完成。
+当前B完整在线观测、AAA产额误差、独立耦合参考和ABA仍未通过；
+本轮捕获及文件核验不计作物理精度或整体goal完成。
+
+结果凭证
+实际宿主摘要：
+/Users/wen/spot/validation/artifacts/axial-material-current-extra21-reaction-event-production-capture-20261015-v1/Root_actual_extra21_original_ASCII_event_production_capture_summary.json
+SHA256 c4102bae1b87d3b6ffa03aaa0b6488c8e1028aa71097fc5d72d949859b66fe28
+实际真实工具返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+SHA256 81490fcac2d29a564fb13e6b8f4c088e2c0a6204bc92e15ea129ad07336de928
+独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/actual_postverify_20261015/REVIEW.json
+SHA256 a9043b0b4b96b9524bff9a806c4dc41e5de4f66e1d1df6ea8c9611c8fc0e9f53
+独立后验真实返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/actual_postverify_20261015/TRUE_TOOL_RETURNS.json
+SHA256 fbbbe85b7113da4dcc72ec68e1fa5d634f994c6b52825b0df783db80fc5eb982

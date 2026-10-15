@@ -1,0 +1,452 @@
+{
+  "schema": "COMPACT_ACTUAL_TEN_RELEASE_RESULT_DOCUMENT_ENTRIES_AND_BUDGET_V1",
+  "status": "READONLY_CURRENT_BUDGET_AND_ALL_TEN_RESULT_ENTRIES_COMPLETE",
+  "current_budget_snapshot_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/readonly_current_ART_budget_and_ten_release_document_index_20261013/CURRENT_ART_BUDGET_SNAPSHOT.json",
+    "sha256": "b37cc789b8d0587151e6c89e596466da6a2e45a566533d5f27c085d39c9ebe4f",
+    "size_bytes": 1355,
+    "identity": [
+      16777229,
+      50026681,
+      33188,
+      1,
+      1355,
+      1791879233022157533,
+      1791879233022157533
+    ]
+  },
+  "current_v11_true_closed_failed_tool_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_PIPELINE_V11_TRUE_TOOL_RETURNS_20261013.json",
+    "sha256": "53511ed4ab86d9f322255adabdbce3cd96ca38e8993bd9f1a6ee552e20986ec8",
+    "size_bytes": 5472,
+    "identity": [
+      16777229,
+      50021811,
+      33188,
+      1,
+      5472,
+      1791875685852748215,
+      1791875685852748215
+    ]
+  },
+  "all_ten_result_reports_and_actual_release_receipts_exist_full_EOF_stable": true,
+  "batches": [
+    {
+      "batch": 1,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/REPORT.txt",
+        "sha256": "f644edc8d29c1d798d7c03590ce3ee2614d36579fd7cb806235c8a7f76775499",
+        "size_bytes": 3307,
+        "identity": [
+          16777229,
+          49782752,
+          33188,
+          1,
+          3307,
+          1791750319152548248,
+          1791750319152548248
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_20261012/ACTUAL_EXACT_RELEASE_EXECUTION_RECEIPT.json",
+        "sha256": "2b5dd9b01e55d2a29b3d713646d9591125e2eaf3ecac5a898ef2242236c0d51c",
+        "size_bytes": 1976837,
+        "identity": [
+          16777229,
+          49782708,
+          33188,
+          1,
+          1976837,
+          1791750279689764541,
+          1791750279690598917
+        ]
+      },
+      "original_receipt_status": "EXACT_24_RELEASE_AND_RETENTION_VERIFIED",
+      "confirmed_historical_deleted_files": 24,
+      "confirmed_historical_logical_bytes": 3566694788,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true,
+      "old_REPORT_describes_preparation_but_links_actual_finished_receipt": true
+    },
+    {
+      "batch": 2,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/REPORT.txt",
+        "sha256": "08281a475089afe42314a0927503545ba31c8182819451a0047073d4f79f5032",
+        "size_bytes": 3337,
+        "identity": [
+          16777229,
+          49787531,
+          33188,
+          1,
+          3337,
+          1791751760029985546,
+          1791751760029985546
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_B_raw_20261012/ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json",
+        "sha256": "9ab029fbedc399b2cc0d87321b8c2fbb1992475987352f9f8d9114859bce85f3",
+        "size_bytes": 358128,
+        "identity": [
+          16777229,
+          49787645,
+          33188,
+          1,
+          358128,
+          1791751836136594980,
+          1791751836137047522
+        ]
+      },
+      "original_receipt_status": "EXACT_FIVE_OLD_FAILED_B_RELEASE_AND_RETENTION_VERIFIED",
+      "confirmed_historical_deleted_files": 5,
+      "confirmed_historical_logical_bytes": 467550984,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true,
+      "old_REPORT_describes_preparation_but_links_actual_finished_receipt": true
+    },
+    {
+      "batch": 3,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_AAA3_input_copies_20261012/REPORT.txt",
+        "sha256": "6a07b5d512915d6189e600a994ef6b5cc8474866c75620671aa4d45575f56055",
+        "size_bytes": 1701,
+        "identity": [
+          16777229,
+          49796609,
+          33188,
+          1,
+          1701,
+          1791757051924768930,
+          1791757051924768930
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_AAA3_input_copies_20261012/ACTUAL_EXACT_FOURTEEN_RELEASE_EXECUTION_RECEIPT.json",
+        "sha256": "147326108f21da416f373b826e9636d790a993f140cf096eba5564afc7704335",
+        "size_bytes": 186212,
+        "identity": [
+          16777229,
+          49796342,
+          33188,
+          1,
+          186212,
+          1791756830803964217,
+          1791756830804462053
+        ]
+      },
+      "original_receipt_status": "STOPPED_PARTIAL_OR_POSTCHECK_FAILURE_NO_AUTOMATIC_RETRY",
+      "confirmed_historical_deleted_files": 14,
+      "confirmed_historical_logical_bytes": 998914456,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true,
+      "separate_readonly_completed_postverification_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_AAA3_input_copies_20261012/ROOT_ACTUAL_READONLY_EXACT14_POSTVERIFICATION_RECEIPT.json",
+        "sha256": "a361ae855c1cbe31d31674e03063afda0c9531628afb42a3f16c07eefe742642",
+        "size_bytes": 354176,
+        "identity": [
+          16777229,
+          49796412,
+          33188,
+          1,
+          354176,
+          1791756913444627609,
+          1791756913444627609
+        ]
+      },
+      "original_true_closed_exit1_tool_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_AAA3_input_copies_20261012/ROOT_ACTUAL_EXACT14_TRUE_CLOSED_TOOL_RETURNS.json",
+        "sha256": "0c32d0d54d1777e5feed43e3d59f1bd0e845b9513b27605d6839091749e61a91",
+        "size_bytes": 1838,
+        "identity": [
+          16777229,
+          49796408,
+          33188,
+          1,
+          1838,
+          1791756911936259357,
+          1791756911936259357
+        ]
+      },
+      "interpretation": "14 actual unlinks occurred; original EXIT1 APFS-parent postcheck retained; separate original readonly postverification closed successfully without deletion retry."
+    },
+    {
+      "batch": 4,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/REPORT.txt",
+        "sha256": "bac3973cb97647c9e36d03e64c85c763cf984e4c8d6be99b182a529eb6d09f73",
+        "size_bytes": 4275,
+        "identity": [
+          16777229,
+          49791237,
+          33188,
+          1,
+          4275,
+          1791753275847820009,
+          1791753275847820009
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_source_factor_early_maps_20261012/ACTUAL_EXACT_SIX_RELEASE_EXECUTION_RECEIPT.json",
+        "sha256": "c48534bfbfed5ae9bb1d1c53b55896b9df53d96b9eef747a4d8fc046691f10cf",
+        "size_bytes": 427129,
+        "identity": [
+          16777229,
+          49791249,
+          33188,
+          1,
+          427129,
+          1791753283648081645,
+          1791753283648526854
+        ]
+      },
+      "original_receipt_status": "EXACT_SIX_EARLY_MAP_RELEASE_AND_RETENTION_VERIFIED",
+      "confirmed_historical_deleted_files": 6,
+      "confirmed_historical_logical_bytes": 1427734232,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true,
+      "old_REPORT_describes_preparation_but_links_actual_finished_receipt": true
+    },
+    {
+      "batch": 5,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/REPORT.txt",
+        "sha256": "f918eb7ec2b0a808aba2de801cba7e6743c1085ceac95572981b7a4bbbd76fe2",
+        "size_bytes": 1864,
+        "identity": [
+          16777229,
+          49806034,
+          33188,
+          1,
+          1864,
+          1791759461183010652,
+          1791759461183010652
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/failed-v3-seven_ACTUAL_RELEASE_RECEIPT.json",
+        "sha256": "e89d7b568f1392e78737070b1a67b49344ab8e7bbc58ca22cf929f5f5303f527",
+        "size_bytes": 356954,
+        "identity": [
+          16777229,
+          49804453,
+          33188,
+          1,
+          356954,
+          1791759167527951810,
+          1791759167528439724
+        ]
+      },
+      "original_receipt_status": "EXACT_SELECTED_BATCH_RELEASE_AND_RETENTION_VERIFIED",
+      "confirmed_historical_deleted_files": 7,
+      "confirmed_historical_logical_bytes": 499457228,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true
+    },
+    {
+      "batch": 6,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/REPORT.txt",
+        "sha256": "f918eb7ec2b0a808aba2de801cba7e6743c1085ceac95572981b7a4bbbd76fe2",
+        "size_bytes": 1864,
+        "identity": [
+          16777229,
+          49806034,
+          33188,
+          1,
+          1864,
+          1791759461183010652,
+          1791759461183010652
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_v3_seven_and_optional_maps_20261012/optional-map003004-six_ACTUAL_RELEASE_RECEIPT.json",
+        "sha256": "88b27938d7f64089a95246a8425345c55c638bab4aea062a3af2d2982fe6f5e2",
+        "size_bytes": 356474,
+        "identity": [
+          16777229,
+          49804501,
+          33188,
+          1,
+          356474,
+          1791759217992412472,
+          1791759217992894431
+        ]
+      },
+      "original_receipt_status": "EXACT_SELECTED_BATCH_RELEASE_AND_RETENTION_VERIFIED",
+      "confirmed_historical_deleted_files": 6,
+      "confirmed_historical_logical_bytes": 1427734232,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true
+    },
+    {
+      "batch": 7,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/REPORT.txt",
+        "sha256": "083e98ad16fc7b25a18717ed41fe463c5392d57b20a34f7588a006163cf0d7ee",
+        "size_bytes": 1655,
+        "identity": [
+          16777229,
+          49808027,
+          33188,
+          1,
+          1655,
+          1791761782954011422,
+          1791761782954011422
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_pipeline_v4_exact_six_20261012/ACTUAL_EXACT_SIX_FAILED_V4_RELEASE_RECEIPT.json",
+        "sha256": "3347e4afb00566635e5754997220e8801ac2b85eae6d5cc1f924bb29342b907e",
+        "size_bytes": 356825,
+        "identity": [
+          16777229,
+          49807391,
+          33188,
+          1,
+          356825,
+          1791760934493349651,
+          1791760934493798027
+        ]
+      },
+      "original_receipt_status": "EXACT_SIX_FAILED_V4_RELEASE_AND_ALL_RETENTION_VERIFIED",
+      "confirmed_historical_deleted_files": 6,
+      "confirmed_historical_logical_bytes": 970096676,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true
+    },
+    {
+      "batch": 8,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_closed_v7_v8_project_pair_20261013/REPORT.txt",
+        "sha256": "745facaa1325622d3b187c283270156164b7755cb84ee2b7e542d44ead4652cf",
+        "size_bytes": 6499,
+        "identity": [
+          16777229,
+          49980621,
+          33188,
+          1,
+          6499,
+          1791869118676924077,
+          1791869118676924077
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_closed_v7_v8_project_pair_20261013/ACTUAL_EXACT_TWO_PROJECT_PRIVATE_COPY_RELEASE_RECEIPT.json",
+        "sha256": "9294696fc115befeb919f70995cc0b5f0c8da8ae0a7bfd7b32e3ffca492e1638",
+        "size_bytes": 359503,
+        "identity": [
+          16777229,
+          50010663,
+          33188,
+          1,
+          359503,
+          1791868911294485386,
+          1791868911294917471
+        ]
+      },
+      "original_receipt_status": "EXACT_TWO_PRIVATE_PROJECT_RELEASE_ALL_RETAINED_FULL_EOF_VERIFIED",
+      "confirmed_historical_deleted_files": 2,
+      "confirmed_historical_logical_bytes": 1498711904,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true
+    },
+    {
+      "batch": 9,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_v5_v6_exact_eight_source_only_20261013/REPORT.txt",
+        "sha256": "05a5c0e96d50d639c0fa3c46cce275542d49ae0a8115fee96462abca68617940",
+        "size_bytes": 11351,
+        "identity": [
+          16777229,
+          50012537,
+          33188,
+          1,
+          11351,
+          1791870433484619418,
+          1791870433484619418
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_failed_v5_v6_exact_eight_source_only_20261013/ACTUAL_EXACT_EIGHT_RELEASE_RECEIPT.json",
+        "sha256": "bbcc9a7ecaddb95f49b050a4f4a79fc45ab41afba682d6d14111b791ae35788e",
+        "size_bytes": 363033,
+        "identity": [
+          16777229,
+          50013549,
+          33188,
+          1,
+          363033,
+          1791870263257314745,
+          1791870263257761413
+        ]
+      },
+      "original_receipt_status": "EXACT_EIGHT_PRIVATE_COPY_RELEASE_ALL_RETAINED_FULL_EOF_VERIFIED",
+      "confirmed_historical_deleted_files": 8,
+      "confirmed_historical_logical_bytes": 998909696,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true
+    },
+    {
+      "batch": 10,
+      "result_report_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/REPORT.txt",
+        "sha256": "b6a8ab0fa4be6d25ca1f481e40c73ba32261fe42c9d7632963b364e712891fa0",
+        "size_bytes": 5871,
+        "identity": [
+          16777229,
+          50023795,
+          33188,
+          1,
+          5871,
+          1791877599791822577,
+          1791877599791822577
+        ]
+      },
+      "actual_release_receipt_pin": {
+        "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/ACTUAL_SINGLE_OLD_V9_PROJECT_RELEASE_RECEIPT.json",
+        "sha256": "d3434e323460b4e8fe791cb4ae661fee9d704a8658d0c94f43cf205985de8a2f",
+        "size_bytes": 359088,
+        "identity": [
+          16777229,
+          50018462,
+          33188,
+          1,
+          359088,
+          1791873734657044650,
+          1791873734657515318
+        ]
+      },
+      "original_receipt_status": "EXACT_SINGLE_OLD_V9_PROJECT_RELEASE_ALL_RETAINED_FULL_EOF_VERIFIED",
+      "confirmed_historical_deleted_files": 1,
+      "confirmed_historical_logical_bytes": 749355952,
+      "result_document_entry_present": true,
+      "original_status_not_rewritten": true,
+      "physical_deleted_inputs_not_reopened": true
+    }
+  ],
+  "cumulative_confirmed_historical_deleted_files": 79,
+  "cumulative_confirmed_historical_logical_bytes": 12605160148,
+  "all_historical_deleted_paths_unique": true,
+  "original_exact14_execute_EXIT1_not_falsely_changed_to_EXIT0": true,
+  "original_early_REPORTs_not_rewritten": true,
+  "no_active_business_child_at_budget_snapshot": true,
+  "decimal_and_binary813_plus64MiB_inside_current_fresh2GiB_both_fit": true,
+  "retaining_diagnostic_plus_independent_next_fullfresh2GiB_not_admitted": true,
+  "physical_file_copied_or_deleted": false,
+  "original_Source_changed": false,
+  "existing_diagnostic_rerun": false,
+  "compiler_or_business_executed": false,
+  "AAA_qualified": false,
+  "ABA_admitted": false,
+  "goal_complete": false
+}

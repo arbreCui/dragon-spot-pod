@@ -1,0 +1,1 @@
+V12 producer仅绑定最终Root READY候选helper e8f源SHA，仍UNREADY；只有INPUT_HELPERS.graph SHA一处改动。65函数逐字同4dd，1region可完整逆回4dd，11region可完整逆回冻结66d。真实V11组件6pins原样保留，25future success/counts/inventory全部None。helper本体未canonical安装/执行观察，未prepare/run，不授新combined/native/AAA资格。只写新TMP，原source/proofs保留。

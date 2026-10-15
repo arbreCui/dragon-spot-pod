@@ -1,0 +1,78 @@
+{
+  "schema": "AXMAT_V21_FUTURE_ACTUAL_HELPER_SOURCE_BINDING_PLAN_V1",
+  "status": "UNREADY_FUTURE_ACTUAL_CONTRACT_DEFERRED",
+  "candidate": {
+    "path": "/private/tmp/axmat_v21_complete_runtime_UNREADY_source_design_20261010/prepare_sender_window_root_index_graph_trace_table_combined_runtime_v21.UNREADY.py",
+    "sha256": "75969eafb9e1eead11e25d8838c6e3be13ea64babdc56ee222252a5e11bded62",
+    "size_bytes": 181071,
+    "identity7": [
+      16777229,
+      49381002,
+      33188,
+      1,
+      181071,
+      1791590675140232141,
+      1791590675140232141
+    ]
+  },
+  "future_binding_parameters": [
+    "Root actual helper qualification summary path",
+    "Root actual helper qualification summary SHA256"
+  ],
+  "accepted_actual_qualification_schema": null,
+  "accepted_actual_qualification_status": null,
+  "new_helper_path_context": "/Users/wen/spot/validation/axial_material/combined_runtime_complete_input_graph_private_verifier_trace_consume_20261010.py",
+  "new_helper_SOURCE_context_sha256": "dc01d8cf4478f9dc918ecb828acf7d79a50fb93422bfcffe165df38978ede6a7",
+  "new_helper_SOURCE_context_bytes": 147870,
+  "new_helper_qualification_sha256": null,
+  "new_helper_qualification_identity7": null,
+  "future_actual_helper_source_path": null,
+  "future_actual_helper_source_sha256": null,
+  "future_actual_helper_source_bytes": null,
+  "future_actual_helper_source_identity7": null,
+  "mandatory_future_evidence": [
+    "Root actual original pure protocol controls typed integer EXIT0 CLOSED",
+    "Root actual complete current graph fresh verifier typed integer EXIT0 CLOSED",
+    "saved independent review of both full metadata results",
+    "actual installed canonical helper SOURCE exact SHA/bytes/7ID and unchanged EOF reread",
+    "actual Q exact full EOF SHA/7ID plus genuine Q schema/status/fields supplied by Root",
+    "all science/native/combined claims false until their own actual qualification"
+  ],
+  "ready_binding_not_implemented_or_executed": true,
+  "no_Q_read": true,
+  "minimal_future_runtime_changes_after_actual_evidence": [
+    "graph helper SHA None -> actual helper SHA",
+    "helper controls admission SHA None -> actual Q SHA",
+    "UNREADY doc/status -> truthful independently reviewed SOURCE_READY doc/status"
+  ],
+  "retain_unmodified": [
+    "all original 70 definitions except the approved strict decode lifetime source",
+    "full PREP and complete five build stages and whole INPUT logic",
+    "all original physics/component actual pins and all historical seven-key bodies",
+    "full graph trace namespaces aliases roots coverage and both complete fresh EOF reads",
+    "all original guards MRO and resource archive checks"
+  ],
+  "original_limits": {
+    "whole_wall_seconds": 1800,
+    "single_stage_wall_seconds": 600,
+    "rss_mib": 512,
+    "runtime_aggregate_archive_gib": 2,
+    "whole_INPUT_stdout_metadata_mib": 64,
+    "history_gib": 96,
+    "free_floor_gib": 8,
+    "thread_keys": 5,
+    "threads_each": 1,
+    "children": 1,
+    "retries": 0
+  },
+  "future_business_pins": {
+    "FUTURE_ACTUAL_COMBINED_DECLARATION_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_PREP_TERMINAL_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_SEAL_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_TERMINAL_SHA": null,
+    "FUTURE_ACTUAL_COMBINED_RUNTIME_SHA": null,
+    "FUTURE_ACTUAL_NATIVE_TERMINAL_SHA": null
+  },
+  "original_bcd_d490_not_reused_as_new_helper_qualification": true,
+  "source_review_grants_no_business_RSS_build_native_or_scientific_success": true
+}

@@ -1,0 +1,27 @@
+SPOT B 已完成临时产物精确16项回收：已执行并独立核验（2026-10-15）
+
+本步实际释放367,026,207字节：B早期7个快照的14份SQL索引/原字池149,659,264字节；已完成B2提取与比较的原字池150,267,572字节；失败pool归档残片67,099,371字节。不是完整pair归档成功，也没有解码或修改科学数值。
+
+清理依据是已完成的消费者结果及保留的原始native快照。保留全部B原始快照、B2原始156,880,856字节native文件、B最终55号SQL/原字池配对、55个上下文、全部结果明细和文档、有效归档及条目、失败记录。已删除临时文件的完整历史凭证继续保留；失败残片仅三字段身份记录，未读体或补造SHA。
+
+通过链：独立Source审阅70189e/0；Root只读a796b7/session58371→f5e0cf/0；独立只读post a0ff9d/session57700→eecd7e/0；Root唯一执行0dc427/session59559→26723b/0；独立执行post bcaa48/session14307→6d056e/0；Root最终闭合0d31b6/0。实际执行无重试。Root首轮最后检查误用了publisher参数名，检查返回1且未执行候选；核对实际worker参数后检查0，完整原返回已保存。
+
+凭证目录：current_B_early14_B2_pool_and_failed_partial_exact16_spool_lifecycle_source_v1_UNREADY/
+  PLAN.json SHA256 6a0329db333c71f07b604e48bda416ad571d40c1c183046dc3a1fb4d509a4bb6
+  READONLY_RECEIPT.json SHA256 8829c8be5b35032dc3ce261db579b23fd30d93cf126811b50ae4058ae03b255a
+  ROOT_READONLY_TRUE_TOOL_RETURNS.json SHA256 849da62a574d6b3804f3fede285344f6811a2fcd78a2d950262eebe2e19d9350
+  readonly_actual_postverify_20261015/REVIEW.json SHA256 cf5177486e640825c8ffb5bd15e3fd9046fdf1cf43e3f60d9b1acd4c894ab053
+  EXECUTION_RECEIPT.json SHA256 a20879cf6a150b26a07de94ae482b89a81c2f4b4662d53588f0fcec8f38eadc9
+  ROOT_EXECUTION_TRUE_TOOL_RETURNS.json SHA256 a66a679ade10f99ef01da91e7721ad79d1f5c9a6ad52f35d1cde0805bc2a1078
+  execute_actual_postverify_20261015/REVIEW.json SHA256 8258229fd4ed097740e5a95897c51a803d51ba2565e74d60763c2a89754dc880
+  execute_actual_postverify_20261015/TRUE_TOOL_RETURNS.json SHA256 141a73d4abcc5dcd316e2ea5d6621a19818e61c4a5c00c1dde7b70ebb08d5d82
+
+独立核验确认16项均不存在，两遍核对所有保留角色身份；执行前文件占用检查为空。原82目录累计范围、2GiB新产物总额、512MiB内存、600秒单阶段/1800秒总时限及其他原保护不变。本组件Source/凭证硬限8MiB。执行后原累计目录实存1,751,286,951字节，外部元数据16,376,587字节；这是该时点实测，不是后续任务预算。
+
+恢复与重放规则：未来若需早期SQL索引或pool，必须从保留的对应native原始快照重新完整提取，并独立准入新的产物。未承诺重新生成的SQL/pool与本次删除文件逐字节相同。保留的旧SQL gzip仍有效；它与旧pool的配对说明仅作历史，不自动适配未来新提取pool。旧“SQL必须搭配当时live原pool”的映射由本次临时产物生命周期结果明确取代，历史文档不改写。
+
+上一步64MiB pool归档真实失败继续保留：Root1/child1，没有完整pair成功index或新pool条目。见SPOT_CURRENT_B2_POOL_SOURCE8_CAP64_FAILURE_VERIFIED_FACTS_20261015.txt。本次临时产物回收没有降低其成功门槛。
+
+已完成科学证据不变：B六阶段8快照/55上下文/19249字段/1829421已知元素，问题/差异/未知来源均0；B2完整提取62798记录/7958目录/8766extent/19620宏记录；B55对B2完整19620记录、2264152原字比较，原字差异0、元数据差异0。
+
+下一步先归档28份非空B结果JSONL原文249,929,878字节；完整压缩与解压SHA/长度通过及独立post0后，另行审阅精确原文回收。空不匹配文件保持原位。之后闭合新B2在线PROJECT/GLOBAL/ARCHIVE预算与执行。当前B在线、AAA物理精度、独立耦合参考和ABA仍未完成；总goal保持active。

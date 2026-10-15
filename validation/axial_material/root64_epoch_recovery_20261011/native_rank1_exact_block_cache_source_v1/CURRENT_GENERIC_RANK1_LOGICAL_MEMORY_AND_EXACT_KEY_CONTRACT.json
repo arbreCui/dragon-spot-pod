@@ -1,0 +1,65 @@
+{
+  "schema": "NATIVE_RANK1_EXACT_CACHE_LOGICAL_MEMORY_AND_LHS_KEY_SOURCE_CONTRACT_V1",
+  "source_only": true,
+  "actual_cache_executed": false,
+  "maximum_generic_allocated_logical_bytes": 385875968,
+  "accounting": "Exact payload bytes plus compiled STORAGE_SIZE(plan)/8 times group count; checked before every cache allocation.",
+  "current_case_symbolic_shape": {
+    "groups": 370,
+    "rank": 1,
+    "radial_regions": 8,
+    "axial_cells": 48,
+    "angles": 32,
+    "scatter_moments": 3
+  },
+  "all49_factor_and_cprime_blocks_preserved": true,
+  "lower_positive_rows": 16,
+  "first_zero_lower_block_preserved": true,
+  "factor_cprime_compact_lower_pivot_and_rowmap_bytes_excluding_keys_and_descriptors": 378288000,
+  "complete_operator_key_bytes_per_group_formula": "6488 + 16*(NMAT+1), for the displayed 8/48/3/32/3 shape.",
+  "illustrative_key_and_payload_bounds": [
+    {
+      "NMAT": 24,
+      "bytes": 380836560,
+      "cache_MiB_excluding_compiled_descriptor": 363.1940460205078
+    },
+    {
+      "NMAT": 384,
+      "bytes": 382967760,
+      "cache_MiB_excluding_compiled_descriptor": 365.2265167236328
+    }
+  ],
+  "actual_NMAT_not_parsed_or_guessed": true,
+  "compiled_descriptor_bytes_not_predicted": true,
+  "retained_raw_key_fields": [
+    "all dims/group/scheme/fixup/translation",
+    "MAT1D/MAT",
+    "NCODE/opposite",
+    "VOL1D/TOTAL/SGAS/BASIS/VOL2D/ZCODE/U/W/PL",
+    "native RADIAL2D"
+  ],
+  "retained_actual_projected_key_fields": [
+    "mass_m",
+    "total_m",
+    "radial_m",
+    "scat_m",
+    "mn",
+    "dn",
+    "left/right albedo"
+  ],
+  "RHS_key_excluded_and_recomputed_every_call": [
+    "qext",
+    "source_m",
+    "flux",
+    "keff"
+  ],
+  "exact_zero_policy": "Only omitted rows whose every stored REAL64 representation is +0; all 32-column original positive-row bits retained.",
+  "restoration_policy": "Full original dense extents and zeros restored; original full-shape MATMUL including zero terms. No diagonal assumption.",
+  "original512_MiB_own_child_guard_remains_authority": true,
+  "heap_fragmentation_and_other_later_peak_not_promised": true,
+  "additional_temporaries_bound_condition": "Original lower/diagonal/upper plus unchanged fallback cprime/augmented and one compact plan build; actual OwnRSS512 still enforced.",
+  "original_stage600_and_whole1800_no_retry_unchanged": true,
+  "no_PHYS_property_written": true,
+  "all370_groups_original_rank_eps_and_pivot_rules_preserved": true,
+  "whole_Source_input_authority_and_external_producer_qualification_not_created": true
+}

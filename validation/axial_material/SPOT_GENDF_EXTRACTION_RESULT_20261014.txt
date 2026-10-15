@@ -1,0 +1,14 @@
+SPOT 核数据提取实际结果 — 2026-10-14
+
+11 份已保存 GENDF 核数据的 MT5 / P0 提取全部成功。主进程和提取子进程真实退出 0；完整 370 群、掩码、温度和稀释网格保留。没有改写原始核数据库。
+
+实际资源：主进程 33.49 秒，峰值约 139.05 MiB；提取子进程 10.35 秒，峰值 65.89 MiB。原有 512 MiB、单阶段 600 秒、总时长 1800 秒、单线程、累计新产物 2 GiB 限额保持。
+
+这一步提供核数据诊断依据。尚未执行原 DRAGR 压缩原始字回放、当前 SPH/MASK 应用及三组当前 MACRO 对照，不能据此认定反应多重性、中子平衡、独立耦合参考、AAA 精度或 ABA 已通过。
+
+实际证据：
+/Users/wen/spot/validation/artifacts/axial-material-current-eleven-saved-GENDF-complete-cumulative-seventeen-roots-20261014-v11/Root_actual_eleven_saved_gendf_extraction_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-current-eleven-saved-GENDF-complete-cumulative-seventeen-roots-20261014-v11-evidence/ACTUAL_ELEVEN_SAVED_GENDF_EXTRACTION_EVIDENCE.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ROOT_ACTUAL_GENDF_CUMULATIVE17_ACTUAL32_TRUE_TOOL_RETURNS_20261014.json
+
+后续：独立核验该批提取结果；继续三组材料对照，以及速度倒数项的独立舍入控制。

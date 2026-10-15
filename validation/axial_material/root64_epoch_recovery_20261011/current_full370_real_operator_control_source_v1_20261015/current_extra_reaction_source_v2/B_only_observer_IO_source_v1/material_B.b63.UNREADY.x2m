@@ -1,0 +1,34 @@
+* B: declared same-temperature composition sensitivity, no transport.
+SEQ_ASCII glow :: FILE './geometry.dat' ;
+XSM_FILE MAT_OUT :: FILE 'b63/m.xsm' ;
+SEQ_ASCII MICRO_OUT :: FILE 'b63/u.asc' ;
+SEQ_ASCII MACRO_OUT :: FILE 'b63/a.asc' ;
+SEQ_ASCII META_OUT :: FILE 'b63/t.asc' ;
+LINKED_LIST MICROLIB2 MACRO META ;
+MODULE GREP: ABORT: UTL: END: ;
+PROCEDURE AxMatTone rnr_cc rnr_interpol ;
+INTEGER ng nmix nfis ;
+MICROLIB2 := AxMatTone glow ::
+  0.2436 0.7564 750.0 620.0 475.0 ;
+MACRO := MICROLIB2 :: STEP UP MACROLIB ;
+GREP: MACRO :: GETVAL 'STATE-VECTOR' 1 >>ng<< ;
+GREP: MACRO :: GETVAL 'STATE-VECTOR' 2 >>nmix<< ;
+GREP: MACRO :: GETVAL 'STATE-VECTOR' 4 >>nfis<< ;
+IF ng 370 <> THEN
+  ECHO "AXMAT: wrong energy-group count" ; ABORT: ;
+ENDIF ;
+IF nmix 8 <> THEN
+  ECHO "AXMAT: wrong mixture count" ; ABORT: ;
+ENDIF ;
+IF nfis 32 <> THEN
+  ECHO "AXMAT: expected 32 fission components" ; ABORT: ;
+ENDIF ;
+MAT_OUT := MICROLIB2 ;
+MICRO_OUT := MICROLIB2 ;
+MACRO_OUT := MACRO ;
+META := MICROLIB2 ;
+META := UTL: META :: EDIT 0 DEL ISOTOPESLIST DEL MACROLIB ;
+META_OUT := META ;
+ECHO "AXMAT-MATERIAL-B-COMPLETE" ;
+END: ;
+QUIT "LIST" .

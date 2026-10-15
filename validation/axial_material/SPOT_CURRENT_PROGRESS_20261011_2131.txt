@@ -1,0 +1,51 @@
+SPOT 当前进度
+核对时间：2026-10-11 21:31，Asia/Shanghai
+
+整体判断
+SPOT 仍在组件研发和独立验证阶段。二维径向—一维轴向耦合方法已实现，有完整迭代收敛与输出回放成果；整体物理精度尚未通过，当前 goal 未完成。当前研究对象为 150 cm 单棒、三个各 50 cm 的同温燃料段，继续按 A/B 保存态与在线读取核验、AAA 同质控制、独立耦合参考准入、ABA 材料对照的顺序推进。清理暂缓，本轮没有删除文件。
+
+已经取得的结果
+1. 历史 D4-A 十二单元案例完成九次耦合迭代，原三项数值收敛门槛和最终输出回放通过。独立连续能量参考的 k 差为 -1095.56180 pcm，超过原允许值 558.65111 pcm，物理精度验收仍失败。
+2. A/B 双精度离线保存态及全 370 群读回已完成。最新原参数稳定性复核的 A/B 镜像缺陷分别约 1.9683e-8、1.9861e-8，低于原 2.5e-7 门槛，材料、系统、轨迹保存量核验通过。该流程仍从 REAL32 镜像重入后保存 REAL64，连续双精度生产及真实在线 BOOT 读取尚未取得资格。
+3. 在线双精度候选的小控制完成五个编译步骤和 17 个正反控制；匹配缓存模块和九个实际入口共十个编译步骤也通过。它们属于工程组件成果，完整原生构建、链接和真实在线耦合尚未完成。
+4. 10 月 11 日的科学保存数据审查确认原 AAA 分箱与全局归一化一致，A/B 保存反应量聚合逐位一致。误差分解表明约 99.99% 的诊断平方残差呈共同轴向形状，端部占主要部分；具体物理原因仍未证实。这缩小了排查范围，没有新增精度验收通过项。
+5. v31 完整准备流程历史真实成功：约 304.79 秒、原监控样本峰值 469.046875 MiB，低于原 512 MiB。项目内保存的准备摘要、冻结记录、声明、输入图及创建轨迹本轮全文 SHA 复核保持一致。新 v31 五阶段构建没有执行；此前 v30 构建在 512.6875 MiB 超过原 512 MiB 而失败，其失败证据保留。
+
+尚未通过的科学门槛
+共同 rank2：353/370 群通过，1–17 群失败。第 15 群比值为 7.4443980064e-7，低于原门槛 9.5367431641e-7；双精度保存态未消除该问题。
+AAA：正式 48 格/SN32 分支已数值收敛，完成 12 次 map、105 个步骤，原精度八项中七项通过。燃料端部裂变率最大误差 3.952526%，高于原 3%。后续角向修正分支保存诊断约 3.798223%，仍未达标，完整收尾也未通过，不能替代正式 AAA 资格。
+独立完整全 370 群未降阶耦合参考尚未准入，ABA 未开始。目前没有通过原验收的材料差异结论。
+
+当前工程卡点与本轮核对
+部分旧临时目录依赖已消失，当前设备身份也与旧凭证不同。不能直接复用旧身份通过记录继续构建，也不能只改身份数字而声称已重验。
+本轮读取原 v31 声明的 37,590 个文件路径，154 个路径当前缺失，全部位于临时目录；声明中的项目内路径当前没有缺失。本项是路径存在性核对，不是全部 37,590 文件的内容审计。
+原构建前检查列表共 747 项，其中 281 个路径当前缺失。旧 19:53 文档引用的临时独立复核报告当前也不在；此前 42 项通过只保留为历史记录，不能作为本轮当前文件复核。
+v31 构建 host 目录不存在，build、metadata、audit 输出目录为空，未发现新的构建阶段或结果。项目内关键准备文件的字节保持不变，但旧运行依赖尚未完整恢复和重新核验。临时文件消失原因目前没有证据可以确定。
+已找到两份关键脚本的项目内同字节留存副本。原合约及写入器仍绑定旧路径与身份，不能直接重跑；恢复工作须建立明确的新来源和真实当前核验。
+
+下一步顺序
+先补齐或明确重建缺失的必要源码与控制，把后续源码和凭证保存到项目内；按当前文件状态重新完成原完整控制和运行前核验。
+再按原限完成五阶段工程构建和完整原生构建、真实 A/B 材料上下文、连续双精度生产到在线读取验证。原 512 MiB、阶段 600 秒、整体 1800 秒、单线程、一个业务子进程和不重试条件保持。
+随后继续定位 17 群共同基底问题及 AAA 端部误差，补齐真实终态高阶矩、角度场、散射/裂变源项和中子平衡证据，按原门槛重新验收 AAA。满足条件后才准入独立耦合参考并执行 ABA。
+近期进展主要在工程和证据链；目前不能将准备成功、入口编译或源码修正计作整体物理验收完成。
+
+关键结果文档
+科学保存数据审查：
+/Users/wen/spot/validation/artifacts/axial-material-AAA-axial-error-and-reaction-review-20261011/REPORT.txt
+A/B 原参数稳定性：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-AB-stability-root-review-20261011/REPORT.txt
+共同 rank2：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-new-AB-common-rank2-root-review-20261011-v1/REPORT.txt
+正式 AAA：
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+v31 准备摘要：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v31_installed6a_20261011_receipts/Root_actual_complete_combined_prepare_summary.json
+v31 准备冻结记录：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v31_installed6a_20261011_receipts/Root_actual_successful_PREP_namespace_and_streams_freeze.json
+
+本轮关键准备文件全文 SHA 核对
+准备摘要：81140df38b35a29dce0eee849f0cb85fb9dd1c48d27e361a9029e2e0319a0d10
+准备冻结记录：ea18bf1b0167c0d38aefa02a2af7d47200f23c3b944ecb6b2cdb0a368aabc4f0
+声明：aec84038c3704b8e0dc924d63f9a97deb08046078268d9f85129f881aae4ffbb
+输入图：2bcd5b6bc3ed98124392fb5edbab0d4b3153c780f5a509a56a808233ee781430
+创建轨迹：3acdbbc1a2976a90726e17478750857a468fa3b5b81f79bdb0ace68a1d8ed17e

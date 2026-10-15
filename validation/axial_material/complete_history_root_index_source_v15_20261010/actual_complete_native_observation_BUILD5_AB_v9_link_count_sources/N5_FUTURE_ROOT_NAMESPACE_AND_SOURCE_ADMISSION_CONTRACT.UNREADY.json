@@ -1,0 +1,43 @@
+{
+  "source_only": true,
+  "status": "UNREADY_NEW_N5_ROOT_SOURCE_ADMISSION_REQUEST_BIND_REQUIRED",
+  "original_N4_namespaces": {
+    "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v4-host-20261010",
+    "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v4-runtime-20261010",
+    "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v4-control-20261010",
+    "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v4_sources",
+    "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v4_receipts"
+  },
+  "required_new_v5_namespaces": {
+    "host": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v5-host-20261010",
+    "output": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v5-runtime-20261010",
+    "control": "/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v5-control-20261010",
+    "source": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v5_sources",
+    "receipts": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_native_observation_BUILD5_AB_v5_receipts"
+  },
+  "N4_actual_Source_admission_applies_to_N4_only": true,
+  "N5_actual_Source_admission_pin": null,
+  "N5_independent_Source_peer_pin": null,
+  "N5_actual_request_pin": null,
+  "N5_actual_Source_binding_pin": null,
+  "N5_actual_runtime_or_host_controls_qualification_pin": null,
+  "N5_actual_observation_build_material_result_pin": null,
+  "N5_actual_Source_object_archive_link_binary_proof_pin": null,
+  "N5_actual_native_context_aggregation_qualification_pin": null,
+  "N5_scientific_qualification_pin": null,
+  "all_original_future_global_None_and_science_false_preserved": true,
+  "all_original154inputs_and_five_compile_group_contract_preserved": true,
+  "original_caps": {
+    "whole": 1800,
+    "stage": 600,
+    "rss_mib": 512,
+    "joint_HOCDE": 2147483648,
+    "history": 103079215104,
+    "free": 8589934592,
+    "threads": 1,
+    "children": 1,
+    "retries": 0
+  },
+  "no_general_lsof_rc_one_acceptance": true,
+  "only_actual_closed_diagnostic_PID_excluded": true
+}

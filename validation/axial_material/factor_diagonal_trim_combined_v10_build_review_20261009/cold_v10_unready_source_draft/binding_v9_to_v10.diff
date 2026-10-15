@@ -1,0 +1,96 @@
+--- /Users/wen/spot/validation/axial_material/cold_owned_specs_last_cprime_trim_component_input_intake_binding_20261009.json
++++ TMP source-only binding_v9_to_v10.diff
+@@ -1,42 +1,42 @@
+ {
+-  "schema": "AXMAT_COLD_COMPLETE_LAST_CPRIME_TRIM_COMPONENT_INPUT_INTAKE_V1",
++  "schema": "AXMAT_COLD_COMPLETE_FACTOR_DIAGONAL_TRIM_COMPONENT_INPUT_INTAKE_V1",
+   "semantics": "COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION",
+-  "draft_status": "REVIEWED_COMPLETE_COMPONENT_INPUT_REUSE_NO_COLD_CREDIT",
++  "draft_status": "UNREADY_V10_ACTUAL_COMPLETE_COMBINED_AND_BOUNDED_INPUT_NOT_BOUND",
+   "actual_bounded_api_terminal_evidence": {
+-    "path": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json",
+-    "sha256": "23acbccb31befbba6ae52ffaf80ae119fd3b7341faa263c18a45c0cd239062ba"
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json",
++    "sha256": null
+   },
+   "api_return": {
+-    "path": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.log",
+-    "sha256": "0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5"
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.log",
++    "sha256": null
+   },
+   "intake_proof_files": {
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/host.stdout": "cbf6d9379039bea8874ed4c8b298996216925c8e2ed2fb3a32887d72d505699c",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/result.json": "4b90ddfa50325c1c3f27c479dd1be5508856066e8ecee67fac41d1f8d1bec911",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/host.py": "180053eb92dbe4ff05ee87db75056ee2debca057aecd1b314e6ed648a9096aae",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/host.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/postterminal_recorder.py": "5bd181e59b3229398ec7725e8513da5cf055791400522935f5ebfc2b9bd0d03e",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/runtime/run_bounded_dragon.py": "bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.watchdog.json": "82b52569aef851f9cbc4a6b33403fcfb15fb5c828d83456162e90087fe71142b",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.log": "0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/STANDALONE_BOUNDED_RUNTIME_API_INTAKE/stages.json": "23905533d15bca99347b18d43af7413101108b44cdddb745d6ac73585ac38797",
+-    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json": "23acbccb31befbba6ae52ffaf80ae119fd3b7341faa263c18a45c0cd239062ba"
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/host.stdout": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/result.json": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/host.py": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/host.stderr": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/postterminal_recorder.py": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/runtime/run_bounded_dragon.py": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.watchdog.json": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/intake/admit.log": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/STANDALONE_BOUNDED_RUNTIME_API_INTAKE/stages.json": null,
++    "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009/Root_terminal_return.json": null
+   },
+   "intake_namespaces": [
+     {
+-      "root": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009",
++      "root": "/Users/wen/spot/validation/artifacts/axial-material-owned-specs-factor-diagonal-trim-v10-standalone-bounded-runtime-api-intake-evidence-20261009",
+       "inventory": {
+         "files": {
+-          "host.stdout": "cbf6d9379039bea8874ed4c8b298996216925c8e2ed2fb3a32887d72d505699c",
+-          "result.json": "4b90ddfa50325c1c3f27c479dd1be5508856066e8ecee67fac41d1f8d1bec911",
+-          "host.py": "180053eb92dbe4ff05ee87db75056ee2debca057aecd1b314e6ed648a9096aae",
+-          "host.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+-          "postterminal_recorder.py": "5bd181e59b3229398ec7725e8513da5cf055791400522935f5ebfc2b9bd0d03e",
+-          "runtime/run_bounded_dragon.py": "bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09",
+-          "intake/admit.watchdog.json": "82b52569aef851f9cbc4a6b33403fcfb15fb5c828d83456162e90087fe71142b",
+-          "intake/admit.log": "0e5727aee267c24c3a74c387c628b3633a23826e38c41eda1bfe14ecd02872f5",
+-          "STANDALONE_BOUNDED_RUNTIME_API_INTAKE/stages.json": "23905533d15bca99347b18d43af7413101108b44cdddb745d6ac73585ac38797",
+-          "Root_terminal_return.json": "23acbccb31befbba6ae52ffaf80ae119fd3b7341faa263c18a45c0cd239062ba"
++          "host.stdout": null,
++          "result.json": null,
++          "host.py": null,
++          "host.stderr": null,
++          "postterminal_recorder.py": null,
++          "runtime/run_bounded_dragon.py": null,
++          "intake/admit.watchdog.json": null,
++          "intake/admit.log": null,
++          "STANDALONE_BOUNDED_RUNTIME_API_INTAKE/stages.json": null,
++          "Root_terminal_return.json": null
+         },
+         "symlinks": {},
+         "directories": [
+@@ -62,17 +62,17 @@
+     }
+   },
+   "complete_historical_input_graph": {
+-    "path": "/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009/input_graph.json",
+-    "sha256": "0e365ebbaafa0d9e9b3a34eee89cc9c3e1de3ee47812d985135b8201bd001be3",
+-    "content_sha256": "f91b0168754de2d1e207eda794bd5b4ecd143f84c53f58c27fbb7d45e24ff946",
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009/input_graph.json",
++    "sha256": null,
++    "content_sha256": null,
+     "scope": "COMPLETE_HISTORICAL_INPUT_ONLY"
+   },
+   "binding_source": {
+-    "path": "/Users/wen/spot/validation/axial_material/cold_component_input_consumer_last_cprime_trim_own_pid_peak.py",
+-    "sha256": "2fa0cb00ec458e9bbbbdf2f15db703a1c0547b08d35f585b6c7e6e6274d06d59"
++    "path": "/Users/wen/spot/validation/axial_material/cold_component_input_consumer_factor_diagonal_trim_own_pid_peak_v10.py",
++    "sha256": "6e01b6f7ca6c7e2eff3392e5cff9ad7388ca0e692dd498cf835eb6a9439a2a8c"
+   },
+   "component_API_executed_in_cold_process": false,
+   "production_module_identity_overlay": false,
+   "science_qualification": false,
+-  "expected_complete_alias_count": 186
++  "expected_complete_alias_count": null
+ }

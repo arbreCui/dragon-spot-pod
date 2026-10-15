@@ -1,0 +1,39 @@
+SPOT 真正A1/B2/A3完整18树打包：已核验结果
+日期：2026-10-16
+
+结果
+新的A1/B2/A3打包已实际完成。Root真实0，唯一原生生产子进程真实0，Root内独立科学读回0，独立元数据后验真实0。该结果证明完整打包与原输入一致，尚不证明完整B上下文、在线消费者或物理精度。
+PACK为470,641,008字节，SHA256=e2ec2a195f680d630f21aa521c142732dd178249fc32358d72d3563e80f33d09；三个独立RCON各820字节。全部14份新产物共470,725,364字节，在512MiB条件上限内。
+
+完整科学核验
+逐一比较三个规范冷快照与新PACK内的TRACK、MICROLIB2、SYSTEM、FLUX、RCONTRACT、BOOT_BIND，共18棵完整物理树；包含每个目录、列表、类型、叶记录和全部数据字节，全部相同。三份独立输出RCON也与对应完整子树相同。
+三层严格顺序为A1/B2/A3，case依次为R64WARM-A-V1、R64WARM-B-V1、R64-A3-WARM1，epoch均0。每层370群、14未知量，三组完整群列表共1,110条type4双精度记录/层均通过；原生keff64与seal64原字节相等，32位镜像一致。中间层确实来自已保留的B冷快照，不是将A2改名。
+Root完整EOF文件SHA和独立科学树读回均在本次实际执行中完成。独立后验只核实际报告和文件身份，明确没有再次打开或散列PACK/RCON科学正文，未将元数据核验伪称再次科学计算。
+
+实现与实际记录
+直接复用刚构建的Dragon ec53b2aa…，没有编译、构建重跑或三份大输入工作副本。生产启动器只含正常路径，绑定三个规范输入与只读描述符101/102/103，同PID/进程组88030执行Dragon。GANLIB通过短/dev/fd入口实际读取，成功绕过原物理文件名72字符限制；没有符号链接、硬链接或科学输入复制。
+生产FD核心与已经实际通过的小样本核心逐字节相同；独立读回九个原数学函数与原v18逐字节相同，只在有界读取外增加预算回调。四份Python及一份准确deck全部纳入冻结与独立Source审阅。
+Source审阅1eab1e/session15412→703363真实0；Root唯一执行06af5a/session58365→2eb832真实0；独立后验唯一853930/session84895→32f062真实0，均未重试。执行前发现的目录元数据64KiB长度问题已在冻结前针对准确73,816字节角色修正，未发生生产失败重跑。
+
+资源
+原生生产实际监控耗时7.419903416011948秒，采样峰值20.328125MiB；Root独立科学读回10.631874750019051秒。Root保存结束样本SELF峰值119,980,032字节、耗时41.77683824999258秒。
+完整累计目录85→86，Source/元数据8MiB、新OUT512MiB；原SELF/child512MiB、stage600/whole1800秒、线程1、并发子进程1、重试0、fresh2GiB、history96GiB及全部预留保持。
+Root结束写前样本fresh=1,630,523,859字节、external=83,718,024字节、open-unlinked=0；独立后验写前fresh=1,630,582,032字节。全69外部编译依赖继续计账，59处历史已退役路径继续缺失。下一阶段仍需实际重新量测，不复用这些样本作未来保证。
+
+下一步与空间安排
+先从真正A1/B2/A3快照准备B轴向工程上下文、轴向宏观库/轨迹/系统与全局RCON，必须沿用原冻结参数和共享基；旧formal13的三层全A上下文不能冒充B兼容。
+旧GLOBAL publisher会同时保留完整私有stage和最终GLOBAL；旧PROJECT仍实读独立PACK并再复制完整GLOBAL。源码依赖和旧实际尺寸表明，当前不能提前删除PACK，也不能在原2GiB累计额度内直接照旧执行全链。详见Source_dependency_notes_20261016/PACK_GLOBAL_PROJECT_EXACT_SOURCE_PHASE_DEPENDENCIES_AND_CAPACITY_ONLY.json。
+下一批只读存储审计优先131个已完成NPZ共149,689,878字节，必须先新无损归档和恢复验证；七份规范原生副本仍承担历史恢复映射，结果文档继续保留。本轮没有新增删除或声称已释放这些字节。
+
+仍未完成
+B完整上下文/GLOBAL/PROJECT、B在线读取、AAA物理精度、完整反应/多重性、温度插值、完整370群算子、独立耦合参考和ABA。AAA ν裂变误差3.9525259224%仍超过3%阈值，主goal保持active。
+
+证据
+Root报告：/Users/wen/spot/validation/artifacts/axial-material-current-A1-B2-A3-complete18-PACK-readonly-FD-20261016-v1/Root_actual_A1_B2_A3_complete18_PACK_FD_summary.json
+SHA256=11d77c6da64f6e0fe0c80252af09cddb120f28a9bcb7ff027970a448224b6ca2，bytes=46370
+Root真实工具回执：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A1_B2_A3_complete18_PACK_FD_source_v1_UNREADY/ROOT_ACTUAL_PACK_TRUE_TOOL_RETURNS.json
+SHA256=5092a7569afe8ed2c6fccdd1a33e899f2ab43295e5aea340565dbecbd74a70c7，bytes=3616
+独立后验：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A1_B2_A3_complete18_PACK_FD_source_v1_UNREADY/actual_postverify_20261016/REVIEW.json
+SHA256=ac515d17171acf716da081b4eb944011e94a5a03381a50a471760b74472250b6，bytes=300931
+独立后验真实工具回执：/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_A1_B2_A3_complete18_PACK_FD_source_v1_UNREADY/actual_postverify_20261016/TRUE_TOOL_RETURNS.json
+SHA256=b1324adee344b5a1a36ca5b6d6f040cf635de711b6e82acf8fa2828b20204dda，bytes=2852

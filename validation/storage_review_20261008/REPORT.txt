@@ -1,0 +1,94 @@
+SPOT 存储审查与清理建议
+日期：2026-10-08
+项目：/Users/wen/spot
+本轮完成只读审查和逐文件清单，尚未删除、搬移、压缩任何试验数据。
+
+一、为什么占用这么大
+
+全项目实际分配占用约 251.66 GiB，其中 validation/artifacts 为 251.02 GiB，占 99.75%。项目代码、Git历史及其余目录合计约 0.64 GiB。大部分空间来自多轮试验保存的完整二进制状态、材料处理阶段副本和数值重放数组，文档并不是主要占用。
+
+按现存文件名称和扩展名分类、按唯一 inode 去重统计：
+  求解状态/快照 XSM：117.63 GiB
+  核数据处理 tape 文件：64.04 GiB
+  NumPy 数值数组：47.10 GiB
+  其他（库、轨道、清单、程序等）：21.83 GiB
+  HDF5：0.48 GiB
+  结果文档、图片、CSV等：0.34 GiB
+  日志：0.25 GiB
+
+扫描了 175,319 个普通文件路径、175,282 个不同 inode、673 个符号链接，无 stat 读取错误。目录占用来自 du，文件统计来自 lstat；本次没有重新读取或计算全部大载荷的摘要。GiB 为 1024^3 字节。相同文件大小本身不是重复证明；37组共享硬链接仅计一次，删除一侧名字不一定释放这些块。
+
+主要大目录（都位于 /Users/wen/spot/validation/artifacts）：
+  d4a-final-four-fuel-temperature-run-20261002        28.37 GiB
+  native-oblique-full-response-20260930              22.06 GiB
+  d4a-remaining-fuel-temperature-run-20261001         15.85 GiB
+  axial-material-production-qualified-AB-rank1-factor-cache-20261007   12.36 GiB
+  axial-material-production-qualified-AB-source-factor-20261006       12.36 GiB
+  axial-material-production-qualified-AB-white-trace-refined-envpin-20261005  12.36 GiB
+  d4a-actual-temperature-library-run-20261003          11.86 GiB
+  native-layered-full-20261001                        11.45 GiB
+  axial-material-production-qualified-AB-white-trace-20261004          11.18 GiB
+
+二、建议先清理的两批
+
+第一批：24个旧中间状态文件，5.272 GiB。
+完整根路径：
+/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-rank1-factor-cache-20261007/AAA/
+
+在 map001 至 map008 中，每轮只选择以下3个普通文件：
+  projected_proposal.xsm
+  candidate_radial.xsm
+  candidate_snapshots.xsm
+
+逐文件清单：first_batch_24_files.json。
+逻辑字节 5,660,882,240；分配块合计 5,660,934,144 字节；24个独立普通文件、nlink均为1。
+
+选择这批是为了保留更多已完成的 closed 状态和父级关系。全项目符号链接检查未发现链接指向这24个文件。保留所有目录、closed_axial/closed_snapshots、系统/checker状态、原源码、参数、prepared/declaration、training/archives/bootstrap、map011/map012、全部报告/日志/JSON/收据和结果图片。
+
+依赖审查和独立复核没有发现这24个文件被当前完整INPUT图、API descriptors、alias/namespace、原ordinary门、4份失败length map、79个negative目录、3个SOURCE目录要求、24个current absence、prepared.local_files或已审未来cold入口使用。Root另核24项确实属于独立排除依赖的清单，且文件stat一致。此结论限定于现有正式输入和已审入口，不等于所有历史重放工具都不需要它们。
+
+第二批：两套旧重放中的 .npz 数值数组，13.423 GiB。
+  /Users/wen/spot/validation/artifacts/native-oblique-full-response-20260930/replay/
+      4,643个 .npz，10.967 GiB
+  /Users/wen/spot/validation/artifacts/native-segment-composition-compact-20260929/replay/
+      2,896个 .npz，2.456 GiB
+
+逐文件清单：second_batch_replay_arrays.json。
+只选择这7,539个普通数组文件，保留两套完整primary主结果和replay中的所有小JSON、日志、参数、源码、比较收据。已有报告记录主结果和重放逐字比较通过；本次没有重新hash两份大数组。当前AAA输入图和显式依赖门不读这两个replay范围。
+
+这两批互不重叠，名义逻辑字节合计 18.695 GiB，当前分配块约18.710 GiB。实际磁盘回收量要在真实删除后另测，不能用清单算术保证APFS实际回收。
+
+共同代价：删除属于“退役旧数值重放”，不是保持每个旧包完整。旧map/result seal及legacy replay verifier会因缺少被删除载荷而不能完整重新验证。原seal、原结果和原结论不应改写；实际执行时另保存退役记录，明确哪些载荷已删除。保留下来的报告仍可阅读，但不能再宣称退役包全量字节完整可重验。
+
+三、与之前96 GiB存储限制的关系
+
+251.66 GiB是全项目磁盘占用。原96 GiB限制仅是轴向材料实验历史数据的预算，不是整个spot的体积上限。
+
+本次真正调用原DynamicHistoryResources只读核算：
+  当前轴向历史：87,188,443,161字节，81.2006 GiB
+  原完整cold预约：20,971,764,748字节，19.5315 GiB
+  合计：100.7320 GiB
+  超过原96 GiB：4.7320 GiB
+
+若按第一批24个文件退役，名义历史加原预约降至95.4599 GiB，原96 GiB内余约0.5401 GiB。因此可以先清理这批，而不必先把预算提高到104 GiB。第二批旧native数据不在轴向预算账本，清理它们增加实际磁盘空闲，但不会降低这个96 GiB计数。
+
+清单不是新的cold准入。本轮没有启用104 GiB、运行cold准备或AAA；正式继续时仍要重新通过原资源和全部科学/运行门，完成实际入口和内存保护测试。原预约是12-map预测，不能承诺100-map完整输出也装得下。AAA精度和ABA尚未完成。
+
+四、更多旧数据的处理方向
+
+材料流程：约64.04 GiB tape中，已有封存清单显示至少18.70 GiB为相同hash+size的阶段副本。可以进一步瘦身，但应先逐项核最终库和引用，再退役旧处理链；这不是本轮可直接整目录删的清单。必须保留28份最终材料源（约0.782 GiB）、实际使用的成品材料库、温度校验和roundtrip结果、参数与处理源码。
+
+旧迭代epoch：iterative-*约23.50 GiB，旧corrected-rank2约9.97 GiB，其中大量大状态已被修复版本取代。可以按完整旧epoch保留结果文档后退役，但要先摘出三快照/POD来源、clean replay和当前repaired12-cell map1–9，不能只根据“旧/失败”的名字整删。
+
+更大的轴向中间状态候选：独立审查另列旧rank1/white-trace地图中非当前依赖的大XSM。它们包含第一批，不能重复累计；扩大删除会影响历史父级链接和旧逐步重放，应另选择方案并明确退役范围。48文件替代方案会产生历史悬空parent links，本报告优先推荐保留父链的24文件方案。
+
+五、必须保留的核心资料
+
+  1. 所有项目源码、构建配置、README/HISTORY、方法推导与计划。
+  2. 所有结果报告、CSV/图片、参数/输入清单、终态、计时/内存监测和比较收据。
+  3. 当前29141文件INPUT图所需材料、快照、原生输入、参考与失败控制数据；两个被完整图引用的source-factor/refined-envpin production归档不能整删。
+  4. 当前A/B合格快照、共同基底、最新训练/bootstrap和最终map011/map012，以及当前原算子native capture与比较输入。
+  5. 当前D4-A repaired12-cell九轮谱系、最终观测和真实CE statepoint/reference；CE参考仅约15 MiB，保留成本很低。
+  6. 28份最终材料来源、实际成品库及唯一主科学参照；历史报告之外仍需这些实数数据支持下一步比较。
+
+支持材料在 review/ 中。summary.json 给出全目录容量统计；current_resource_observation.json保存本次真实预算观察；root_crosscheck.json保存独立清单核对与审查副本摘要。以上均为审查结果。本轮 files_deleted=0，bytes_freed=0。

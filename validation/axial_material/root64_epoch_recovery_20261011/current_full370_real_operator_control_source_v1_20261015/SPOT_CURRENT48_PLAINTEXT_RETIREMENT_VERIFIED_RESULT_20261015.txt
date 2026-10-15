@@ -1,0 +1,37 @@
+SPOT 48份已归档结果的未压缩副本退休结果（2026-10-15）
+
+结论：已移除精确48份未压缩JSONL副本，释放805,236,925字节；所有结果内容完整保留在48份gzip、原路径索引及逐项校验凭证中。压缩结果共68,959,717字节，逐流解压SHA/长度此前已与原完整凭证验证一致。未删结果字段、未知项或失败记录，未压缩或删除原始科学数据。
+
+实际与独立核验
+只读检查：fa0f44 / session57547 → 62c4df，真实整数0，未删除。
+唯一实际删除：78e402 / session2101 → e94abb，真实整数0，require_escalated，无重试。
+独立后验：0c0408，真实整数0；PASS_ACTUAL_EXACT48_PLAINTEXT_RETIREMENT_805236925B_COMPLETE_RESULT_ARCHIVES_RETAINED_METADATA_ONLY。
+Root再次核对完整SHA/身份及原整数0，48条原文路径双次缺席，48份gzip双次字节SHA及身份通过。66个原生数据角色、索引、48份逐项证明、报表、源代码及失败记录均保留。
+删除前逐文件完整SHA检查；占用检查返回1且输出/错误为空；每次在目录文件描述符上紧接删除前核对原身份并记录进度。
+首次Root命令组装的模板字段KeyError及原整数1已保存，尚未运行发布器或删除程序；随后按实际模板字段组装。它不属于业务执行失败，也未改写成业务成功。
+
+资源
+完整历史字节：79,186,098,851 → 78,380,861,926，差805,236,925，与48个目标原长度一致。
+完整65累计目录：1,774,947,295 → 970,084,925字节；两次之间生成的回执也计入，净差不直接当文件删除总量。
+外部元数据8,814,832字节；本进程已删除但仍打开字节0。SELF峰值51,658,752字节，实际约4.565秒。
+两类原资源扫描在最终操作后强制执行，原512MiB/600秒/1800秒/单线程/单子进程/无重试、2GiB累计、96GiB历史、冷保留与磁盘余量门保持。
+原worker未记录最后一个unlink的独立时间戳；后验依据冻结源码执行顺序、强制fresh标志及实际更新的扫描时间，不补写不存在的时间。
+
+保留结果入口
+完整压缩结果：validation/artifacts/axial-material-current-result48-lossless-archive-20261015-v1/archives
+原路径/原完整凭证/压缩凭证/逐字节还原证明：同目录上一级 RESULT43_LOSSLESS_ARCHIVE_INDEX.json
+归档说明：SPOT_CURRENT48_RESULTS_LOSSLESS_ARCHIVE_VERIFIED_RESULT_20261015.txt（该说明记录原文尚保留时的归档阶段；原文退休以本文为后续凭证）。
+实际退休回执：current_result48_plaintext_retirement_source_v1_UNREADY/EXECUTION_RECEIPT.json
+SHA256 f955c76eacb80184cfeb742a8bebda64bd9055d1096966e6969cd5bfa3d26452
+原始真实返回：同目录 ROOT_EXECUTION_TRUE_TOOL_RETURNS.json
+SHA256 e24d07f5df6e6b17b01f310a9898a091474a3a4c1a6667656ee338e3badcba76
+独立后验：同目录 actual_postverify_20261015/REVIEW.json
+SHA256 fa7e6b092a63074c3e02591d487c28a0aec34b52cfbc47d05f0d8a56e2efbfa8
+后验真实返回：同目录 actual_postverify_20261015/TRUE_TOOL_RETURNS.json
+SHA256 06c5d9f29031400a0e7d3d9ada4503174ba40d4e080f0a7329b7e4c9249ec40c
+
+空间收益与后续
+本轮另已回收14个旧SQL/字节池149,659,264字节；两批实际删除合计954,896,189字节。保留新归档产物及其元数据占用70,860,690字节；另有Source/回执等新增元数据，实际累计目录见回执，不把删除总数误称净释放。
+本次原文805,236,925−gzip68,959,717=736,277,208字节的内容压缩收益已实现，全部结果内容可还原。新Source与回执额外占用另计。
+旧30个历史输入角色及5个新A结果角色保持原历史PF，未来消费者须凭索引和真实退休0/post0读归档，不得把已缺席原文当存活输入。接下来继承完整65目录清单构建B观察器，新增产物根为第66个。
+物理精度、历史机器位、完整参考、AAA、ABA及目标完成资格不变。

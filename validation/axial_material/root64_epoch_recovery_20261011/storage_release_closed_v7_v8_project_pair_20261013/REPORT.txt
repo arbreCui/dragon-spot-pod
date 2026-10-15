@@ -1,0 +1,43 @@
+SPOT 旧中间投影副本精确两文件清理准备 — 2026-10-13（上海时间）
+
+当前状态：Source 已冻结；全部只读前置验证实际闭合 exit 0；尚未删除任何文件。主任务阅读 Source 并选择准确 SHA/7ID 后执行。
+
+仅两项候选：
+validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v7/AAA/projected_boot.xsm
+validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v8/AAA/projected_boot.xsm
+各 749,355,952 字节，共 1,498,711,904 字节，约 1.396 GiB。均为无符号链接、单硬链接的普通文件；完整 EOF SHA 和全部七个身份字段与各自已关闭失败流程 summary.output_pins 完全相同。
+
+两个流程各有 41 个实际执行阶段，其整体最终失败，Root 实际退出码均为 1。GLOBAL 和 PROJECT 单项执行已 PASS；BOOT 前置检验未通过。清理对象是失败整体中的私有深投影中间副本，清理不表示其数学或正式生产数据无效。删除后这两个旧 raw 路径不能直接重放该轮流程；其结果文档、执行日志、成功及失败证据、其他输出全部保留。
+
+保护范围：4,390 个去重普通文件完整 EOF SHA/7ID，包括 v9 冻结依赖全部 257 项、Current Common binding 的全部 2,012 项、实际当前 catalog 的全部 3,040 current_pin 行、当前 complete70 固定输入与输出、saved full370 v2 binding 的全部 3,315 项及 1,129 科学输入、材料 v2 实际 Source/必要冻结可达输入、GENDF 和独立参考 Source/必要当前输入。两候选与保护表的路径及设备/文件身份均不重合。两个旧目录除候选的全部 472 个普通文件完整验证；符号链接和目录入口清单完整保留。
+
+原始限制保持：history 96 GiB、future fresh 2 GiB、free floor 8 GiB、cold reserve 20,971,764,748 B、metadata 64 MiB、SELF 512 MiB、whole 1,800 秒、原 stage 600 秒、单线程/单业务子进程。准备时 ART 80,139,643,391 B，共 95,728 个普通文件；完整初始保留预算缺 246,785,547 B。两项删除后预计可恢复 1,251,926,357 B 预算余量，此处只是条件预测，真实释放及事后余量必须以 Root 实际执行 receipt 为准。
+
+执行采用 exact manifest SHA 和全部七身份字段外部参数；程序重新验证全部当前保护、两旧流程全部真实子进程退出及 Root 工具退出码、候选所有权与完整目录入口。只允许 unlink 两个固定文件名。每次删除持久记录真实动作；任何部分失败均停止且不自动重试。事后再次完整读到 EOF 验证所有保留文件、两项目不存在、ART 精确减少两文件及上述字节。受影响父目录只记录真实文件系统自然元数据变化，依据完整入口差验证，不假设 APFS 父目录链接数不变。
+
+Manifest：EXACT_TWO_CLOSED_FAILED_RUN_PROJECT_PRIVATE_COPY_MANIFEST.json
+SHA256 cd9959328b0f12ff88f5b858a9ffb41ae6221ca0da760e2b293a3b999b4d6c19
+Source freeze：COMPLETE_EXACT_TWO_PROJECT_RELEASE_SOURCE_FREEZE.json
+SHA256 506c02b59a9b18bc9e9d1045d2cd2878a1b9348a03d2a84215f1bbd5477671fe
+实际执行参数：ROOT_REVIEWABLE_EXACT_TWO_RELEASE_ARGV_SOURCE_ONLY.json（尚未执行）
+只读实际结果：READONLY_EXACT_TWO_PROJECT_PRIVATE_COPY_VERIFICATION_RECEIPT.json
+SHA256 cd1a8eafc124a08563a298dae4eedff0a45c51e96cd70c94be2a3045a4a69f48
+真实只读工具返回：ACTUAL_READONLY_SOURCE_VERIFICATION_TRUE_TOOL_RETURNS.json（a22a7f/session95311 → c9c365 exit 0）。
+
+AAA 精度、在线 BOOT、独立耦合参考和 ABA 均未因本清理准备获得完成资格；保持主任务既定顺序与原物理验收阈值。
+
+
+实际执行完成与独立后验 — 2026-10-13（上海时间）
+
+以下真实结果取代上文“尚未删除”和条件预测的当前状态；上文保留为准备时的历史记录。
+Root 实际精确删除仅两项旧 v7/v8 私有 PROJECT 中间副本，总 1,498,711,904 B；真实工具返回 7a746b/session82301 → 16fdee exit 0。实际 release receipt SHA256 9294696fc115befeb919f70995cc0b5f0c8da8ae0a7bfd7b32e3ffca492e1638（全部七个身份字段由真实 Root terminal 选择并已独立再次核验）。
+实际执行当时 ART 原 scope 普通文件从 95,728 减为 95,726，逻辑字节由 80,139,643,391 减为 78,640,931,487；精确减少两文件及上述字节。原 96 GiB history、2 GiB future fresh、20,971,764,748 B cold、64 MiB metadata、8 GiB free floor 均保留。完整初始保留预算由缺 246,785,547 B 转为实际剩余 1,251,926,357 B。此为执行 receipt 的当时真实观测；后续 v9 已创建新输出，当前并发预算观察不是清理的精确差额。
+
+独立只读后验实际 c37d98/session71800 → a09e7a exit 0。共 4,868 去重普通文件、4,887,336,546 B 完整读到 EOF，98,970 项检查；全 4,390 保护文件、全 472 保留文件的 SHA 与全部七个身份字段完全不变。全 60 个目录及完整普通文件/符号链接入口仅删除指定两项；受影响两父目录自然 nlink/大小/时间变化与真实执行 receipt 完全一致，其余目录全部七字段不变。全部旧 GLOBAL/PROJECT PASS、两个旧整体 FAILED/BOOT 未准入的事实及两轮各 41 个原受限子进程真实闭合 watchdog/log 证据均保留。
+后验 JSON：independent_postverify_20261013/INDEPENDENT_POSTRELEASE_FULL_EOF_REVIEW.json
+SHA256 9aed177c31b86bac98be0ebfe0cd22c2f2704392610b2f4263e31d29b4a25b94
+全部七字段 [16777229,50011028,33188,1,2008647,1791869087199691356,1791869087199691356]。
+真实后验工具返回：independent_postverify_20261013/ACTUAL_INDEPENDENT_POSTRELEASE_TRUE_TOOL_RETURNS.json。
+首版独立 review 0f1113/session47154 → 690020 exit 1 及 Source 保留：错误为审查脚本将 catalog 的 3,040 行误当 3,040 去重路径（实际 2,989），将 Common 的 2,012 行误当 2,012 去重路径（实际 2,011）。新 v2 逐个验证完整行 fullpin，再与去重角色路径集合严格比较；没有放宽或漏掉行。首版失败不是清理失败或科学数据改变，未重复删除任何文件。
+
+本次释放后这两个旧 private PROJECT raw 路径不能直接重放；所有结果文档、日志、其他输出及当前生产/科学输入保留。独立后验没有调用删除、准备、编译或业务流程。清理未赋予 AAA 精度、在线 BOOT、独立耦合参考或 ABA 任何完成资格。原目标及既定业务顺序继续保留。

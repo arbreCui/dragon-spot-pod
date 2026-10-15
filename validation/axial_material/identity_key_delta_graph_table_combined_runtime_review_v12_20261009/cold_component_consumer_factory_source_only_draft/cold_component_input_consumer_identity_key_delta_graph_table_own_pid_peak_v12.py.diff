@@ -1,0 +1,53 @@
+--- /private/tmp/axmat_v11_cold_component_input_consumer_source_only_20261009/cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py
++++ /private/tmp/axmat_v12_graph_table_cold_source_only_20261009/cold_component_input_consumer_identity_key_delta_graph_table_own_pid_peak_v12.py
+@@ -1,4 +1,4 @@
+-'UNREADY V11 complete cold INPUT consumer source-only candidate.\n\nAll complete fresh historical graph/owner/alias/absence/namespace gates remain compulsory. Original P12 bounded intake and separate P14 cold producer contracts remain intact. Every actual new success pin and observed count is absent. No component API or controller runs from this source-only candidate; no native, AAA or ABA credit.'
++'UNREADY V12 graph-table complete cold INPUT source-only identity candidate. Both strictly pinned graph readers decode the complete original graph. All genuine seven historical INPUT bodies, producerP14/analysisP12, physics, aliases, namespaces, OwnRSS MRO and budgets remain required. Only existing installed source identities are bound; future runtime/intake/cold success and observed counts remain None. No business or scientific qualification is conferred.'
+ import ast
+ import gc
+ import hashlib
+@@ -13,26 +13,26 @@
+ 
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT/'validation/artifacts'
+-SCHEMA = 'AXMAT_COLD_COMPLETE_CROSS_GROUP_IDENTITY_KEY_DELTA_COMPONENT_INPUT_INTAKE_V1'
++SCHEMA = 'AXMAT_COLD_COMPLETE_IDENTITY_KEY_DELTA_GRAPH_TABLE_COMPONENT_INPUT_INTAKE_V12'
+ WITNESS_SCHEMA = 'AXMAT_OWNED_SPECS_STANDALONE_BOUNDED_RUNTIME_API_INTAKE_ROOT_ACTUAL_RETURN_V1'
+ SEMANTICS = 'COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION'
+ STATUS = 'UNREADY'
+-INTAKE_ROOT = ART/'axial-material-owned-specs-cross-group-identity-key-delta-v11-standalone-bounded-runtime-api-intake-evidence-20261009'
++INTAKE_ROOT = Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-v12-standalone-bounded-runtime-api-intake-evidence-20261009')
+ INTAKE_ROOT_SHA = None
+ INTAKE_RETURN_SHA = None
+ THREADS = ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS',
+            'VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS')
+-GRAPH_SOURCE_SHA = '1d7c4d7a9ecc4546ceb4c7e0b81562329f874ca5302621ef5fc026f62c7f7643'
++GRAPH_SOURCE_SHA = 'e8f142bef9dede08e9e43eba995203dea17e0e48b6f383502ed18b89808a5c28'
+ CODEC_SOURCE_SHA = '758c6d39ecb4c37e5ff5b3d6639ab8404447719e7cfd3ff72336276a94bb2e69'
+ CHECK_SOURCE_SHA = '86e7d6340da59c74abcff57fa52bb07d690f51cc33fe76f330ece2e0d158258e'
+ SPECS = ROOT/'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+ SPECS_SHA = '2cad9a8a711ce49a6cfd14b897166c24102a047dac1d54d0add61f16c88a99fa'
+-API_SOURCE = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py'
+-API_SOURCE_SHA = None
+-API_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V11_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+-API_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
+-API_SOURCE_ROOT = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-admission-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
+-API_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
++API_SOURCE = Path('/Users/wen/spot/validation/axial_material/prepare_owned_specs_identity_key_delta_graph_table_combined_runtime_v12.py')
++API_SOURCE_SHA = '5af1feebc7d40549750e1daec6148ae073a4c85c1eb3242485e6d9e80826861b'
++API_SCHEMA = 'AXMAT_OWNED_SPECS_IDENTITY_KEY_DELTA_GRAPH_TABLE_COMBINED_RUNTIME_V12_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++API_BUILD = Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009')
++API_SOURCE_ROOT = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-source-v12-20261009')
++API_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-owned-specs-identity-key-delta-graph-table-combined-terminal-v12-20261009')
+ API_SEAL_SHA = None
+ API_TERMINAL_SHA = None
+ API_PREP_SHA = None
+@@ -71,7 +71,7 @@
+ TRIM_INPUT_SEMANTICS = 'ACTUAL_TRIM_3ARG_RETURN_IN_THIS_PREP_THEN_COMPLETE_FRESH_INPUT_REUSE_NO_API_REEXECUTION'
+ 
+ 
+-GRAPH_SOURCE = ROOT/'validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_requirements_varint_wire_compact_phase_20261009.py'
++GRAPH_SOURCE = Path('/Users/wen/spot/validation/axial_material/combined_runtime_complete_input_graph_canonical_file_table_storage_20261009.py')
+ TRIM_V10_PROOF = ROOT/'validation/axial_material/factor_diagonal_trim_source_v10_20261009/complete_c0_source_patch_proof.json'
+ TRIM_V10_PROOF_SHA = 'cdc033619d16f89cdd0e284ec87ad09701202bb5131860f39a70f773391214ea'
+ TRIM_V10_KERNEL_SHA = '5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809'

@@ -1,0 +1,75 @@
+"""Independent paired SQL/pool archive Source review; no business/helper import or payload reads."""
+import ast,hashlib,json,os,stat
+from pathlib import Path
+BASE=Path(__file__).absolute().parent;D=BASE.parent
+FULL={'path','sha256','size_bytes','identity'};ONLY={'path','size_bytes','identity'}
+def ids(s):return[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+def current(p):
+ assert type(p)is dict and set(p)in(FULL,ONLY)and type(p['size_bytes'])is int and type(p['identity'])is list and len(p['identity'])==7 and all(type(x)is int for x in p['identity'])
+ q=Path(p['path']);s=q.lstat();assert q.is_absolute()and not any(x.is_symlink()for x in(q,*q.parents))and stat.S_ISREG(s.st_mode)and ids(s)==p['identity']and s.st_size==p['size_bytes'];return q
+
+def full(p):
+ assert set(p)==FULL and p['size_bytes']<8*2**20
+ q=current(p);raw=q.read_bytes();assert len(raw)==p['size_bytes']and hashlib.sha256(raw).hexdigest()==p['sha256'];current(p);return raw
+
+def read(p):
+ v=json.loads(full(p));full(p);return v
+
+def pin(q):
+ q=q.absolute();s=q.lstat();b=q.read_bytes();assert ids(q.lstat())==ids(s);return dict(path=str(q),sha256=hashlib.sha256(b).hexdigest(),size_bytes=len(b),identity=ids(s))
+
+def zero(p,key,field,want):
+ v=read(p);r=v[key];assert v['observed_closed']is True and type(v['original_integer_exit_code'])is int and v['original_integer_exit_code']==0 and type(r['exit_code'])is int and r['exit_code']==0 and r.get('session_id')is None and json.loads(r['output'].splitlines()[-1])[field]==want;return v
+
+def unique(rows):
+ out={}
+ for p in rows:assert p['path']not in out or out[p['path']]==p;out[p['path']]=p
+ return list(out.values())
+
+authorpin=pin(D/'AUTHOR_PRE_ROOT_GENERATION_SOURCE_FREEZE.json');a=read(authorpin);assert authorpin['sha256']=='573f0df24c1b2e6096325d71f6bed264cecf2683801a09282f47bb5d69c588e6'and a['Source_only_frozen_before_Root_generation']is True and a['Source_preparer_or_publisher_executed_by_author']is False and a['product_byte_IO_gzip_or_compiler_executed_by_author']is False and a['source_author_stopped_editing']is True
+rp=pin(D/'SOURCE_REVIEW_READY.json');ready=read(rp);assert rp['sha256']=='d300146d37ec4066c296475c94759d222ed6bb30ae7f3b44688cd7f1b60546dd'and ready['schema']=='CURRENT_B2_PAIRED_SQL_POOL_ARCHIVE_SOURCE_REVIEW_READY_V1'and ready['source_only']is True and ready['product_payload_opened']is False and ready['gzip_executed']is False and ready['complete_source_file_pins']==a['whole_Source_file_pins']
+genpin=pin(D/'ROOT_SOURCE_PREPARATION_TRUE_TOOL_RETURNS.json');assert genpin['sha256']=='db2b75ceceee056b51bc64558509ec12e58ad00b363550fb4ee803372d7de961';gen=zero(genpin,'actual_Source_preparation_return','ready_pin',rp)
+source={}
+for q in a['whole_Source_file_pins']:
+ text=full(q).decode();full(q);ast.parse(text);source[Path(q['path']).name]=text
+assert len(source)==5
+worker=source['archive_B2_SQL_pool_serial.UNREADY.py'];common=source['B2_SQL_pool_archive_common.UNREADY.py'];host=source['run_guarded_B2_SQL_pool_archive.UNREADY.py'];prep=source['prepare_B2_SQL_pool_archive_Source.UNREADY.py'];pub=source['publish_B2_SQL_pool_archive_CLI.UNREADY.py']
+oldD=D.with_name('current_B2_SQL_pool_lossless_archive_source_v1_UNREADY');oldauthor=read(pin(oldD/'AUTHOR_PRE_ROOT_GENERATION_SOURCE_FREEZE.json'));inv=read(a['whole_inverse_pin'])
+for q in a['whole_Source_file_pins']:
+ oldpin=next(x for x in oldauthor['whole_Source_file_pins']if Path(x['path']).name==Path(q['path']).name);text=full(q).decode();old=full(oldpin).decode()
+ if Path(q['path']).name=='archive_B2_SQL_pool_serial.UNREADY.py':
+  assert text.count(inv['new_complete_line'])==1 and text.replace(inv['new_complete_line'],inv['old_complete_line'])==old and 'len(entries)==2'in inv['new_complete_line']
+ else:assert text==old
+assert not any((oldD/x).exists()for x in('PLAN.json','ROOT_SOURCE_PREPARATION_CLAIM.json','ROOT_ARCHIVE_EXECUTION_CLAIM.json'))
+original=read(a['source_static_evidence_pin'])if 'original48_Source_pin'in read(a['source_static_evidence_pin'])else None
+oldstatic=read(oldauthor['source_static_evidence_pin']);originalpin=oldstatic['original48_Source_pin'];originalsource=full(originalpin).decode()
+def archiveblock(s):
+ start=s.index('def archive_one(');return s[start:s.index('def main(',start)]
+block=archiveblock(worker);assert block==archiveblock(originalsource)and len(block.encode())==2311 and hashlib.sha256(block.encode()).hexdigest()=='db8a6b9fe2234c77f460274fe3d73d5fe43377089ef8341c305b8b20da892495'
+bindpin=a['final_admission_binding_pin'];binding=read(bindpin);template=read(a['whole_NULL_admission_binding_template_pin']);mutable=set(a['Root_final_binding_fields_filled_after_genuine_physical_exact1_retirement0']);assert set(binding)==set(template)and all(binding[k]==v for k,v in template.items()if k not in mutable)
+pp=ready['execution_binding_pin'];plan=read(pp);assert all(plan[k]==v for k,v in binding.items())and set(plan)-set(binding)=={'Source_only_current_cumulative_bytes_before_reservations','Source_generation_product_payload_opened','Source_generation_gzip_executed'}and plan['Source_generation_product_payload_opened']is False and plan['Source_generation_gzip_executed']is False
+assert binding['schema']=='CURRENT_B2_PAIRED_SQL_POOL_LOSSLESS_ARCHIVE_BINDING_V1'and binding['prerequisite_binding_complete']is True and binding['draft_unready']is False and binding['Source_admission_ready']is False
+caps=dict(whole_seconds=1800,stage_seconds=600,rss_mib=512,fresh_bytes=2147483648,history_bytes=103079215104,cold_reserve_bytes=20971764748,metadata_reserve_bytes=67108864,free_floor_bytes=8589934592,threads=1,children_at_once=1,retries=0);assert binding['original_caps']==ready['original_caps']==caps and binding['bounded_total_output_bytes']==32*2**20 and binding['bounded_archive_payload_bytes']==24*2**20 and binding['metadata_runtime_headroom_bytes']==8*2**20 and binding['bounded_Source_metadata_bytes']==16*2**20
+previous=read(binding['actual_physical_directory_retirement_plan_pin']);receipt=read(binding['actual_physical_directory_retirement_receipt_pin']);post=read(binding['actual_physical_directory_retirement_post_pin']);zero(binding['actual_physical_directory_retirement_Root_tools_pin'],'actual_terminal_return','receipt_pin',binding['actual_physical_directory_retirement_receipt_pin']);zero(binding['actual_physical_directory_retirement_post_tools_pin'],'actual_review_return','review_pin',binding['actual_physical_directory_retirement_post_pin'])
+historical=binding['historical_retired_physical_directory_full_pin'];assert historical['sha256']=='b9b72ad2f281ca6b4c881fc3734412f68debcdd80ff03ceec4372b02786b4c60'and historical['size_bytes']==34371817 and previous['exact_target_pins']==receipt['exact_target_pins']==receipt['actual_released_pins']==post['actual_released_pins']==[historical]
+assert receipt['failure']is None and receipt['status']=='RETIRED_CURRENT_B2_PHYSICAL_DIRECTORY_EXACT1_ORIGINAL_COMPLETE_BYTES_IN_ARCHIVE'and receipt['actual_released_bytes']==34371817 and receipt['files_deleted']is True and receipt['resources_after_original_classes_forced_fresh']is True and post['failure']is None and post['metadata_only']is True and post['status']=='PASS_ACTUAL_CURRENT_B2_PHYSICAL_DIRECTORY_EXACT1_RETIRED_COMPLETE_RESULT_BYTES_IN_ARCHIVE_METADATA_ONLY'and post['actual_Root_integer_exit_code']==0 and post['files_deleted']is True and post['files_deleted_by_post']is False and post['historical_deleted_fullPF_not_claimed_current']is True and post['exact_one_target_absent_verified_twice']is True
+assert not os.path.lexists(historical['path'])and not any(q.is_symlink()for q in Path(historical['path']).parents)
+ap=read(previous['inherited_complete_archive_plan_pin']);cp=previous['actual_archive_closure_pins'];idx=read(cp['index']);apost=read(cp['post']);zero(cp['Root_tools'],'actual_terminal_return','report_pin',cp['Host']);zero(cp['post_tools'],'actual_review_return','review_pin',cp['post'])
+gzip=previous['retained_physical_directory_gzip_pins'];entries=previous['retained_physical_directory_entry_pins'];row=idx['entries'][0];assert len(idx['entries'])==len(gzip)==len(entries)==1 and row['original_plain_full_pin']==historical and row['compressed_archive_full_pin']==gzip[0]and row['entry_pin']==entries[0]and row['compression_input_SHA']==row['streamed_decompressed_SHA']==historical['sha256']and row['compression_input_length']==row['streamed_decompressed_length']==34371817 and read(entries[0])=={k:v for k,v in row.items()if k!='entry_pin'}and gzip[0]['size_bytes']==1550218
+compareplan=read(ap['latest_complete_plan_pin']);pair=compareplan['native_B2_pair'];ordered=[pair['sqlite_pin'],pair['native_pool_pin']];assert binding['all2_plain_pins']==ordered and [q['size_bytes']for q in ordered]==[52441088,150267572]and binding['original_plain_total_bytes']==202708660 and binding['actual_B2_SQL_pool_original_pair']==dict(sqlite_pin=ordered[0],native_pool_pin=ordered[1])and binding['compression_order']=='SQL_THEN_ORIGINAL_POOL'and binding['future_consumer_must_restore_exact_SQL_pool_pair_together']is True
+expected=unique(previous['retained_current7_pins']+previous['retained_archive_metadata_current7_pins']+gzip+entries+[cp['index']]+previous['retained_B2_current_epoch_readonly_pins']);assert all(p in expected for p in ordered)and binding['retained_current7_pins']==[p for p in expected if p not in ordered]and binding['retained_failed_v1_current7_only_pins']==previous['retained_failed_v1_current7_only_pins']==post['retained_failed_v1_current7_only_pins']and len(binding['retained_failed_v1_current7_only_pins'])==8 and binding['retained_B2_current_epoch_readonly_pins']==previous['retained_B2_current_epoch_readonly_pins']and len(binding['retained_B2_current_epoch_readonly_pins'])==9
+assert binding['retained_physical_directory_gzip_pins']==gzip and binding['retained_physical_directory_entry_pins']==entries and binding['retained_physical_directory_index_pin']==cp['index']
+proofs=[binding[k]for k in('actual_physical_directory_retirement_plan_pin','actual_physical_directory_retirement_receipt_pin','actual_physical_directory_retirement_Root_tools_pin','actual_physical_directory_retirement_post_pin','actual_physical_directory_retirement_post_tools_pin')]+[previous['inherited_complete_archive_plan_pin']]+list(cp.values());assert binding['explicit_cumulative_metadata_file_pins']==unique(previous['explicit_cumulative_metadata_file_pins']+proofs)and binding['base_explicit_cumulative_metadata_file_pins']==previous['explicit_cumulative_metadata_file_pins']
+roots=binding['complete_joint_roots'];out=Path(binding['planned_actual_output_root']);assert roots==previous['complete_joint_roots']+[str(out)]and len(roots)==len(set(roots))==81 and len(previous['complete_joint_roots'])==80 and out.parent==Path('/Users/wen/spot/validation/artifacts')and not os.path.lexists(out)and all(not Path(x).is_relative_to(Path(y))for x in roots for y in roots if x!=y)
+retained=ordered+binding['retained_current7_pins']+binding['explicit_cumulative_metadata_file_pins']+binding['retained_B2_current_epoch_readonly_pins'];assert historical['path']not in{q['path']for q in retained+binding['retained_failed_v1_current7_only_pins']}and not{q['path']for q in binding['retained_B2_current_epoch_readonly_pins']}&{q['path']for q in binding['explicit_cumulative_metadata_file_pins']}
+for q in binding['retained_failed_v1_current7_only_pins']:assert set(q)==ONLY
+for repeat in range(2):
+ for q in retained+binding['retained_failed_v1_current7_only_pins']:current(q)
+# Source control flow: original claim precedes imports; exactly one actual OwnRSS child; full body only in Root-owned worker.
+assert host.index("with claim.open('x')")<host.index('c=bootstrap(')<host.index('helper,_=support.load')and 'full.OwnRSSSerialExecutor.__bases__==(production.SerialExecutor,)'in host and 'runner.execute(stage,'in host and ',command,600)'in host and "'production_inputs'"in common
+assert 'own_open_unlinked_bytes'in common and 'original_history'in common and 'DiskResources'in common and 'DynamicHistoryResources'in common and 'c.OUT_CAP+c.SOURCE_CAP<2*2**30'in host and 'resources.check()'in worker and 'resources.light()'in worker
+for term in('ordered_original_plain_count=2','completed_count=2','paired_SQL_pool_original_pins','paired_SQL_pool_archive_entry_pins','future_consumer_must_restore_exact_SQL_pool_pair_together=True'):assert term in worker
+assert "'len(entries)==1'"not in worker and 'os.unlink('not in worker and 'os.unlink('not in host and 'plain_retirement_authorized=False'in common
+for q in a['whole_Source_file_pins']+[pp,bindpin,rp,genpin]:full(q);full(q)
+r=dict(schema='INDEPENDENT_CURRENT_PAIRED_B2_SQL_POOL_LOSSLESS_ARCHIVE_SOURCE_REVIEW_V2',status='PASS_SOURCE_ONLY_CURRENT_PAIRED_B2_SQL_POOL_LOSSLESS_ARCHIVE',failure=None,source_only=True,binding_pin=pp,complete_source_file_pins=ready['complete_source_file_pins'],author_freeze_pin=authorpin,ready_pin=rp,genuine_Root_Source_generation_tools_pin=genpin,original_admission_binding_pin=bindpin,whole_single_count_fix_inverse_pin=a['whole_inverse_pin'],four_other_Source_whole_v1_equal=True,worker_single_count_fix_whole_inverse_restored=True,original48_archive_one_wholebytes_equal=True,archive_one_bytes=2311,archive_one_SHA='db8a6b9fe2234c77f460274fe3d73d5fe43377089ef8341c305b8b20da892495',superseded_v1_never_GEN_or_business_executed=True,ordered_exact_original_SQL_pool_pins=ordered,ordered_plain_bytes=[52441088,150267572],pair_total_bytes=202708660,both_exact_archived_members_required_for_recovery=True,actual_physical_directory_retirement_post_pin=binding['actual_physical_directory_retirement_post_pin'],actual_physical_directory_retirement_tools_pin=binding['actual_physical_directory_retirement_post_tools_pin'],only_historical_physical_exact1_absence_admitted=True,historical_physical_fullPF_never_current_relabelled=True,permanent_physical_archive_entry_index_current7_twice=True,complete_joint_roots=roots,output_cap_bytes=32*2**20,archive_payload_cap_bytes=24*2**20,runtime_metadata_headroom_bytes=8*2**20,Source_metadata_cap_bytes=16*2**20,original_caps=caps,all_other_SQL_pool_native_compare_details_docs_and_result_bytes_preserved_current7_twice=True,all_failed_v1_eight_roles_exact_three_field_stat_only=True,cold9_input_roles_remain_original_history_not_fresh_metadata=True,original_owning_class_MRO_claim_preload_wall_RSS_resource_guards_retained=True,Root_original_resource_class_fresh_admission_required_before_payload_IO=True,Source_only_current_cumulative_bytes_from_genuine_GEN=plan['Source_only_current_cumulative_bytes_before_reservations'],candidate_GEN_pub_worker_helpers_PS_lsof_native_or_cleanup_executed=False,original_SQL_pool_gzip_native_or_scientific_payload_opened_or_hashed=False,files_deleted=False,plain_retirement_authorized=False,numerical_executed=False,compiler_executed=False,physics_qualified=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False)
+f=BASE/'REVIEW.json';assert not f.exists();f.write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(dict(status=r['status'],review_pin=pin(f))))

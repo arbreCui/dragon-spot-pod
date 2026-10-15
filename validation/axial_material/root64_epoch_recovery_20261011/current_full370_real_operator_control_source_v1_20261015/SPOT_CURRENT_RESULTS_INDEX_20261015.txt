@@ -1,0 +1,26 @@
+SPOT 当前结果入口（2026-10-15）
+
+本目录下优先阅读以下结果说明，原始回执、独立复核和失败记录均从各说明进入。
+
+1. A 完整字段核验：已完成并独立复核通过。
+   SPOT_CURRENT_A_FULL_AGGREGATE_OVERV_RESOLVED_VERIFIED_RESULT_20261015.txt
+   8组快照、55个构造事件、6个完整阶段；19,249字段/1,829,421已知元素，不匹配、未知来源和当前字段问题均0。旧OVER V问题1保留，新当前控制凭证单独闭合。
+
+2. 旧临时文件回收：已完成并独立复核通过。
+   SPOT_CURRENT_A_EARLY14_TEMPORARY_SPOOL_RETIREMENT_VERIFIED_RESULT_20261015.txt
+   14个已完成提取的旧SQL/字节池，共149,659,264字节已释放。最终快照、原始数据及全部结果保留。
+   此前3个ASCII导出的346,861,973字节回收另见 SPOT_CURRENT_A_THREE_ASCII_RETIREMENT_VERIFIED_RESULT_20261015.txt，不重复计入本次新增释放。
+
+3. 完整结果无损归档：已完成并独立复核通过，未压缩原文副本仍保留。
+   SPOT_CURRENT48_RESULTS_LOSSLESS_ARCHIVE_VERIFIED_RESULT_20261015.txt
+   48份/805,236,925字节原文保存为68,959,717字节gzip；逐流解压SHA与长度等于原完整凭证。下一步将单独核验并移除这48份未压缩副本，保留压缩结果和完整索引。
+   压缩结果：validation/artifacts/axial-material-current-result48-lossless-archive-20261015-v1/archives
+   原路径与完整校验索引：同目录上一级 RESULT43_LOSSLESS_ARCHIVE_INDEX.json
+
+4. B 当前进度：构建入口草稿、5阶段编译/链接命令、独立输出路径、配置/头文件凭证已准备。当前C编译器为新IO编译路线，未声称恢复历史编译器或旧归档ABI。
+   尚未实际构建当前B新二进制，尚未执行新的B完整观察器捕获与字段核验。下一步在副本清理后继承完整最新资源目录清单执行。
+
+5. 总目标继续进行。
+   当前组件与字段证据不等于AAA精度或ABA验收通过。反应处理与多重性完整来源、温度插值、完整370群算子/独立耦合参考、AAA精度及ABA仍有未完成项。既定物理输入、原验收阈值和资源上限保持。
+
+此文档是结果导航，不替代各项真实原返回、完整文件凭证和独立核验报告。后续动作完成后更新相应状态。

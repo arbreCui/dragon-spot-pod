@@ -1,0 +1,21 @@
+Source author delivery only. All seven utility roles must receive independent Source review before execution.
+Independent utility report schema: INDEPENDENT_V25_POSTSTAGE_COMPLETE_UTILITIES_SOURCE_REVIEW_V1
+Status: PASS_COMPLETE_POSTSTAGE_UTILITIES_SOURCE_ONLY_UNREADY_NO_EXECUTION
+Required source_only/all_checks_typed_true exact True, blockers [], strict typed checks; qualified_complete_utility_manifest_pin and qualified_role_Source_pins with exact seven utility basename keys.
+Seal stdout must contain exact manifest_pin/review_pin; actual strict int0 closed/observed terminal, no live session.
+Root creates a fresh Source/META request by running Root_prepare_poststage_REQUEST.Source_META_only.py:
+--phase PREP --fresh-TMP-output /private/tmp/CHOSEN_FRESH_PREP_REQUEST.json
+--utility-manifest-sha256 ACTUAL_THIS_MF_SHA
+--utility-peer-manifest ACTUAL_PEER_MANIFEST --utility-peer-manifest-sha256 ACTUAL_SHA --utility-peer-seal ACTUAL_CLOSED_ZERO_SEAL --utility-peer-seal-sha256 ACTUAL_SHA
+--bound-manifest /private/tmp/spot_V25_poststage_temporaries_ACTUAL_READY_PREP_Source_ROOT_20261010/MANIFEST.json --bound-manifest-sha256 531b0b25f527f3f96767d6629ede54df3bac98ac205e762db859bb5ffe7507ef
+--binding-terminal /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_V25_poststage_PREP_Source_binding_tool_terminal_return.json --binding-terminal-sha256 c3cb0eb7ec35e33f83f64bd0f2f2adcddb35eb4112fab4a686b7353345cb39c2
+--bound-peer-manifest ACTUAL_NEW_BOUND_PREP_PEER_MANIFEST --bound-peer-manifest-sha256 ACTUAL_SHA --bound-peer-seal ACTUAL_NEW_BOUND_PREP_PEER_CLOSED_ZERO_SEAL --bound-peer-seal-sha256 ACTUAL_SHA
+Every file and all Source package members are required; no None-member filtering, shortened inputs, guessed peer or future business pin is accepted.
+Root then executes Root_complete_SOURCE_install_writer.py --request ACTUAL_PREP_REQUEST --request-sha256 ACTUAL_REQUEST_SHA under original Python -B, PYTHONOPTIMIZE unset and all five original thread variables=1.
+After true CLOSED0 Source installation, run installed PREP D/Root_complete_PREP_prelaunch.py under the same original environment. It preserves original support/helper/resource/MRO/caps; Root monitor access must already work. No changed guard or permissions are supplied by utility.
+Root_complete_PREP_E_snapshot.py prelaunch /private/tmp/CHOSEN_FRESH_SNAPSHOT.json records all current E without claiming rootID survives future E appends.
+Only then Root may run the actual complete new PREP host once, capture real terminal, use original bound writer, close writer, independently review actual saved META. No old PREP result supplies new success. Actual new bound PREP peer uses INDEPENDENT_ACTUAL_V25_POSTSTAGE_COMPLETE_PREP_BOUND_SOURCE_REVIEW_V1 / PASS_ACTUAL_Q_BOUND_COMPLETE_PREP_SOURCE_ONLY_NOT_INSTALLED_OR_EXECUTED, actual_complete_bound_Source_manifest_pin and actual_ready_role_Source_pins canonical/prepare_host/prepare_writer.
+After the original new BUILD Source binder and independent bound BUILD Source peer, create the second request with --phase BUILD and the same utility peer CLI, actual new BUILD bound manifest/binding terminal/bound peer/seal. Additionally require all eight --prep-summary-sha256 --prep-namespace-sha256 --prep-terminal-sha256 --prep-writer-terminal-sha256 --saved-prep-peer-manifest --saved-prep-peer-manifest-sha256 --saved-prep-peer-seal --saved-prep-peer-seal-sha256 values from actual new PREP facts. Old namespace facts are rejected.
+Root then executes Root_source_installer.py --request ACTUAL_BUILD_REQUEST --request-sha256 ACTUAL_SHA, closes it, then runs installed BUILD D/Root_prelaunch_checker.py in the original environment. The ordered BUILD fixed list follows the whole genuine host order including repeated paths; all full new D entries and original physical prerequisites are retained.
+Root alone may then execute the genuine five stages and original audit/tail/final input checks. Source PASS predicts neither RSS success nor whole INPUT/native/science qualification. Original 1800/600/512/2GiB/96GiB/8GiB/1/1/0 remains.
+No candidate binder/helper/guard/API/business/material/compile/native or numeric execution happened during this author delivery. No project or frozen Source/result namespace was modified.

@@ -1,0 +1,15 @@
+独立只读 Source review：HOST-only 下一修复有条件可行；不构成数值完成、AAA 或 ABA 准入。
+
+实际v13：50 records，16 PASS、34 FAILED；33为已闭合预期拒绝，最后BOOT_positive被原callback kill−15，watch原limit_failure为128MiB runtime/context/log/meta门槛。SELF peak233046016B。当前Q1=518589052B、MAC1=9893580B、PROJECT=749355952B；final两文件各44B canonical empty XSM占位，未seal。
+
+冻结寿命：SPOBOOX64:88–98拒绝所有旧Q/MAC及SOLVED；99开SOLVED。110–144串行p1..3，114先MAC、115再Q，117原QBUILD、128原BOOT ingress，137–140复制该p全部TRACK/MICROLIB2/SYSTEM/FLUX，141删flux、142删Q、143删MAC。全部p后145 seal、148完整pair readback、154删SOLVED。真实瞬间只有none、MAC-only、同p MAC+Q；Q-only、多Q、多MAC、异p均不合法。P3复制时仍须预算SOLVED全480MiB。
+
+最小存储Source：仅HOST给六个literal路径新增Q560MiB/MAC16MiB硬上界，只BOOT允许，最多各一且同p；MAC-only合法。求解forecast=800+480+560+16+128=1984MiB，余64MiB；seal forecast=800+480+480+128=1888MiB，余160MiB。Q/MAC负载与final负载互斥。不能给3Q/3MAC并行预算，不能减aux里的log/raw/meta，不得搬移/稀疏/删除逃逸。当前Q1不能证明后续560或final480必够，仍需下一真实执行门槛与闭合证据。
+
+final存在规则：CLE在module前已开两个lhs；blank影像为12Bheader+32Broot+720Bzero table，stdio缓冲使当前磁盘仅44B。Q/MAC live时两final必须是稳定exact canonical764B空影像的44..764B前缀，全部计aux；任何其它字节/尺寸即final负载，不准与Q/MAC共存。Q/MAC均无可能只是平面间隙，不能仅据此标seal；final负载出现后禁止Q/MAC再现。现有完整XSM parser要求zero table，不可盲读44B live占位。canonical hex见JSON。
+
+时刻风险：v13 fresh-main用base扫描和后续stat，Q增长会多扣main、Q销毁会误入aux。严格下一HOST应在有限OUT inventory同一pass直接累计全部非principal文件aux，同时保留original.check所有原guards；不能用cap值代扣或漏日志/原始账本。时序歧义须fail-closed，不得放宽pair规则。仅加cap字典不足，还需phase、同p、blank-final和真实aux分类。
+
+异常最小Source：run仅五个成功调用，无预期非零；删除error=None/except缓存/raise error，保留try execute/finally observation，正常返回后才原strict stash。执行错误自然保留对象+traceback，失败scratch原位。refuse保留原异常+tb，非精确sentinel先原raise；合法XABORT仍经原exit1、limit_failure=None、全部log/oracle验证后再stash，archive失败仍致败。若要求最终terminal类型/traceback保真，outer763/851也须保留首个fatal对象+tb，after/late作为secondary。原guard及archival准入完全不改。
+
+已完整EOF SHA256/当前7ID核对21个实际Source；v13 HOST精确匹配admitted freeze。Fortran旧freeze设备号16777234而当前16777229，九文件字节及其余六身份字段相同，完整当前7ID均精确匹配v13已绑定CURRENT_MOUNT catalog；未自行放宽历史身份。所有数学/物理输入/验收、50controls及原内存/时间/存储门槛不改。未创建/运行v14，未编译、未数值、未改/删/搬/截断旧文件，仅写本review TXT/JSON。

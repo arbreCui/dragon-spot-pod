@@ -1,0 +1,14 @@
+SPOT B 产品分批归档：第一个完整成员的独立恢复校验（2026-10-15）
+
+已完成：Root 唯一运行字节恢复校验，真实返回0；另一执行者的执行后元数据核验返回0。
+完整压缩文件000_m.xsm.gz为33559716字节。实际流式解压76594248字节，摘要6a533b9ee07fbd58f48c1bd0d0c6d587bbff7c2764f00679a2fd7ea519f7c6be，与已保存原始产品完整凭证完全一致。压缩文件前后两次完整摘要也一致。此次不读取原m.xsm正文、不写恢复文件、不启动子进程、不解释科学数值、不删除文件。
+Root峰值内存58720256字节，用时5.46507074998226秒；最终资源检查通过，完整73根范围及原资源限制保留。
+
+原四文件归档尝试仍是失败记录：在第二个成员时触发56MiB压缩载荷上限，Root1、独立watchdog子进程1、旧有限核验的child_codes=[]均保留。补充核验单独记录真实watchdog[1]，并未改写旧报告。此次只证明第一个成员完整可恢复，不表示四文件归档已完成，也不表示物理或耦合验收通过。
+
+原始恢复报告：current_B4_member0_independent_restore_byte_control_source_v2_UNREADY/ROOT_MEMBER0_INDEPENDENT_RESTORE_BYTE_CONTROL_REPORT.json
+真实工具回执：同目录ROOT_ACTUAL_TRUE_TOOL_RETURNS.json
+独立执行后核验：同目录actual_postverify_20261015/REVIEW.json及TRUE_TOOL_RETURNS.json
+原失败报告：validation/artifacts/axial-material-current-B4-complete-product-lossless-archive-20261015-v1/Root_actual_B4_products_lossless_archive_summary.json
+
+后续顺序：精确回收已可恢复的原文副本与失败残片；压缩其余三产品并建立覆盖全部四产品的完整索引；回收其余原文副本；执行B六阶段汇总。每一步以实际回执及独立核验为准。

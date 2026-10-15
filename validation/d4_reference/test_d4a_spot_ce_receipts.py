@@ -11,6 +11,7 @@ from pathlib import Path
 import shutil
 import tempfile
 from types import SimpleNamespace
+from unittest.mock import patch
 
 
 HERE = Path(__file__).resolve().parent
@@ -158,6 +159,36 @@ def test_fake_inputs(module, root: Path) -> None:
         lambda: module.read_statepoint_result(fake_statepoint, pin_rows()),
         "text-only OpenMC statepoint",
     )
+
+
+def test_repaired_lineage_forwarding(module) -> None:
+    build, map1, obs, runtime, bootstrap = map(
+        Path, ("/original-snapshots", "/map1", "/observables", "/repair-runtime", "/repair-bootstrap"))
+    with patch.object(module.sys, "argv", [str(CHECKER), "--corrected-build", str(build),
+            "--spot-map", str(map1), "--spot-observables", str(obs),
+            "--ce-result", "/ce", "--cross-sections", "/xs",
+            "--repaired-runtime", str(runtime), "--repaired-bootstrap", str(bootstrap)]):
+        args = module.parse_args()
+        if args.repaired_runtime != runtime or args.repaired_bootstrap != bootstrap:
+            raise RuntimeError("CE CLI lost repaired lineage arguments")
+    response = SimpleNamespace(returncode=0, stdout="D4A-CORRECTED-ACCEPT OVERALL PASS\n", stderr="")
+    with patch.object(module.subprocess, "run", return_value=response) as run:
+        module.run_spot_acceptance(build, [map1], obs, runtime, bootstrap)
+        expected = ["sh", str(module.SPOT_ACCEPTANCE), "--repaired-runtime", str(runtime),
+                    "--repaired-bootstrap", str(bootstrap), str(build), str(map1)]
+        if run.call_args.args[0] != expected:
+            raise RuntimeError("CE wrapper did not preserve repaired lineage arguments")
+        if run.call_args.kwargs["env"]["CHECKER_DIR"] != str(module.SPOT_CHECKER_DIR):
+            raise RuntimeError("CE wrapper allowed a checker environment substitution")
+        run.reset_mock()
+        for rt, boot in ((runtime, None), (None, bootstrap)):
+            expect_refusal(module, lambda: module.run_spot_acceptance(
+                build, [map1], obs, rt, boot), "incomplete repaired lineage options")
+        if run.called:
+            raise RuntimeError("incomplete repaired options launched a process")
+        run.return_value = SimpleNamespace(returncode=1, stdout="OVERALL FAIL-CLOSED\n", stderr="")
+        expect_refusal(module, lambda: module.run_spot_acceptance(
+            build, [map1], obs, runtime, bootstrap), "rejected repaired lineage")
 
 
 def test_spot_observables_receipt(module, root: Path) -> None:
@@ -421,6 +452,7 @@ def main() -> None:
         test_spot_observables_receipt(module, root)
         test_runtime_provenance(module, root)
     test_statepoint_contract(module)
+    test_repaired_lineage_forwarding(module)
     print(
         "D4A SPOT-CE SYNTHETIC PASS: exact 651-bin reconstruction accepted; "
         "one-ULP JSON mismatch, provenance relocation/hash mismatch, "

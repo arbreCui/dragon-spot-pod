@@ -21,7 +21,7 @@ program check_d4a_axial_mesh_probe
   call LCMOP(ref,trim(paths(1)),2,2,0)
   call LCMOP(sys,trim(paths(2)),2,2,0)
   call LCMOP(trk,trim(paths(3)),2,2,0)
-  call LCMOP(ax,trim(paths(4)),2,2,0)
+  if(trim(paths(4))/='-') call LCMOP(ax,trim(paths(4)),2,2,0)
   call LCMGET(ref,'STATE-VECTOR',sr)
   call LCMGET(sys,'STATE-VECTOR',st)
   if(sr(8)/=370.or.st(8)/=370) error stop 'GROUP COUNT'
@@ -51,7 +51,7 @@ program check_d4a_axial_mesh_probe
   call LCMGET(trk,'STATE-VECTOR',st)
   nf=st(7)
   if(st(6)/=132.or.st(8)/=3.or.mod(nf,3)/=0) error stop 'TRACK DIMENSIONS'
-  if(nf/=3.and.nf/=6.and.nf/=12) error stop 'UNDECLARED MESH'
+  if(nf/=3.and.nf/=6.and.nf/=12.and.nf/=24) error stop 'UNDECLARED MESH'
   allocate(mat(nf),dz(nf))
   call LCMGET(trk,'MAT1D',mat)
   call LCMGET(trk,'VOL1D',dz)
@@ -59,11 +59,17 @@ program check_d4a_axial_mesh_probe
     if(mat(i)/=(i-1)/(nf/3)+1) error stop 'TEMPERATURE ZONE'
     if(dz(i)/=150.0/real(nf)) error stop 'MESH WIDTH'
   enddo
-  call LCMGET(ax,'SPOT-KEFF64',k)
-  call LCMGET(ax,'SPOT-X-KEFF',kstate)
-  if(.not.ieee_is_finite(k).or.k<=0.0_dp.or.k/=kstate) error stop 'K AUTHORITY'
-  write(*,'(A,I0,A,ES24.16)') 'AXIAL-MESH-CHECK PASS NFLOOR=',nf,' K64=',k
-  call LCMCL(ax,1)
+  if(trim(paths(4))=='-') then
+    write(*,'(A,I0)') 'AXIAL-MESH-STRUCTURE-ONLY PASS NFLOOR=',nf
+  else
+    call LCMGET(ax,'STATE-VECTOR',sr)
+    if(sr(1)/=370.or.sr(2)/=st(2)) error stop 'AXIAL/TRACK DIMENSIONS'
+    call LCMGET(ax,'SPOT-KEFF64',k)
+    call LCMGET(ax,'SPOT-X-KEFF',kstate)
+    if(.not.ieee_is_finite(k).or.k<=0.0_dp.or.k/=kstate) error stop 'K AUTHORITY'
+    write(*,'(A,I0,A,ES24.16)') 'AXIAL-MESH-CHECK PASS NFLOOR=',nf,' K64=',k
+    call LCMCL(ax,1)
+  endif
   call LCMCL(trk,1)
   call LCMCL(sys,1)
   call LCMCL(ref,1)

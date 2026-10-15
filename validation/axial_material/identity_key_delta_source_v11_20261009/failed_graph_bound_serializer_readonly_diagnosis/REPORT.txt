@@ -1,0 +1,6 @@
+真实V11 combined失败发生在全图读取前的64MiB stat门，尚无execution_claim/driver_result/stages/seal。
+graph原始67,624,825B，超过67,108,864B原门515,961B。真实writer在combined create_complete_input_graph，不在graph helper；已是无indent紧凑JSON。
+全图STDlib严格JSON读取并重编码：仅EOF换行1B；无unicode转义/非ASCII字符。ensure_ascii True/False都得67,624,824B，仍超门515,960B。
+两种compact字节全文SHA与原图去1B换行完全相同，全部值、顺序、类型、浮点、字面字符串、所有owner/rows/ns/alias不变；canonical content SHA重新计算完全等于原图。
+因此不能交付满足原门的whitespace-only修复；未伪造新helper/新图/READY。原图和1d7 helper不改，读取上限不改。
+后续若要压缩完整表示，须Root选择单独lossless wire codec/schema审查；本轮没有实现该codec，更没有business或科学资格。

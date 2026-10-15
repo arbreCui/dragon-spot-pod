@@ -1,0 +1,46 @@
+--- /private/tmp/axmat-last-cprime-trim-cold-v9-input-v5-draft-20261009/prepare_historical_input_owned_specs_physical_last_cprime_trim_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak.py
++++ /private/tmp/axmat-last-cprime-trim-cold-v9-qualified-input-bound-candidate-20261009/prepare_historical_input_owned_specs_physical_last_cprime_trim_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak.py
+@@ -1,9 +1,4 @@
+-"""UNREADY last-cprime-trim cold source draft.
+-
+-Derived from frozen canonical v3. No actual winning combined runtime or new
+-bounded INPUT intake is bound; no old capture RSS or failed cold result is
+-promoted. Original controller, physical/deck functions and budgets are retained.
+-"""
++'Cold input reuse factory bound to qualified actual complete bounded INPUT.\n\nOriginal controller, physical/deck functions, budgets and acceptance gates\nremain intact. Cold preparation, own-PID controls, native RSS, AAA and ABA\nrequire their own actual evidence and are not qualified by this binding.'
+ import argparse
+ import ast
+ import copy
+@@ -78,17 +73,17 @@
+ COMBINED_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v9.py'
+ COMBINED_FACTORY_SHA = '44789bc288715c34d08dbfa91b9c05dfc78166c2b8fa048bbe0207b273419a46'
+ COMBINED_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009'
+-COMBINED_BUILD_SEAL = None
++COMBINED_BUILD_SEAL = 'ece13c5594c48bb22af8d507f1f40ef88457efa824e28200c6ddfced70cf3aed'
+ COMBINED_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009'/'terminal_return.json'
+-COMBINED_TERMINAL_SHA = None
+-COMBINED_RUNTIME = None
+-COMBINED_RUNTIME_SHA = None
++COMBINED_TERMINAL_SHA = '709a9592c8b4a56cba99c61b628db8fed91d0c49d76d75c360591f11fa1b9d27'
++COMBINED_RUNTIME = '/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009/runtime/Dragon'
++COMBINED_RUNTIME_SHA = '77fe179d3230eefcc7d9d7897650e414f342e7579ba65f9e6c641bfd9b1db7ba'
+ COMBINED_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_LAST_CPRIME_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V9_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+ COMBINED_ADMISSION = 'COMBINED_RUNTIME_INPUT_ONLY'
+ PRIVATE_INPUT_CONSUMER = ROOT/'validation/axial_material/cold_component_input_consumer_last_cprime_trim_own_pid_peak.py'
+-PRIVATE_INPUT_CONSUMER_SHA = '040f3ec2b201eeeba850c5dff72d66604784d99d97bf9f2c6c991e9ceb48d588'
++PRIVATE_INPUT_CONSUMER_SHA = '2fa0cb00ec458e9bbbbdf2f15db703a1c0547b08d35f585b6c7e6e6274d06d59'
+ COMPONENT_INTAKE_DESCRIPTOR = ROOT/'validation/axial_material/cold_owned_specs_last_cprime_trim_component_input_intake_binding_20261009.json'
+-COMPONENT_INTAKE_DESCRIPTOR_SHA = None
++COMPONENT_INTAKE_DESCRIPTOR_SHA = 'b37b9d5adda1fb4a5ffe0f4a4914d513f38f6f68d480be6145f8d4af041572dc'
+ INPUT_REUSE_SCHEMA = 'AXMAT_COLD_COMPLETE_LAST_CPRIME_TRIM_COMPONENT_INPUT_INTAKE_V1'
+ INPUT_REUSE_SEMANTICS = 'COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION'
+ CALLBACK_METADATA_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_LAST_CPRIME_TRIM_COMBINED_FILE_SNAPSHOT_COLD_INPUT_ADMISSION_V1'
+@@ -129,7 +124,7 @@
+ FROZEN_CANONICAL_COLD_FAILURE_SHA = '6654c38ad41f074aeeff05da8f9d4d8d11017051fc451317f0fb0af52567caf5'
+ COLD_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-last-cprime-trim-file-snapshot-terminal-scipy-env-physical-basis-own-pid-peak-v9-20261009'
+ CONTROL_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-last-cprime-trim-file-snapshot-own-rss-terminal-scipy-env-physical-basis-own-pid-peak-v9-20261009'
+-DRAFT_STATUS = 'UNREADY_TRIM_COMBINED_AND_BOUNDED_INTAKE_PENDING'
++DRAFT_STATUS = 'REVIEWED_TRIM_COLD_INPUT_REUSE_FACTORY_WITH_ACTUAL_BOUNDED_INTAKE'
+ SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_LAST_CPRIME_TRIM_COMBINED_FILE_SNAPSHOT_COLD_FACTORY_V1'
+ DECL_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_LAST_CPRIME_TRIM_COMBINED_FILE_SNAPSHOT_COLD_DECLARATION_ACTUAL_TERMINAL_V1'
+ COLD_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_LAST_CPRIME_TRIM_COMBINED_FILE_SNAPSHOT_COLD_ACTUAL_TERMINAL_V1'

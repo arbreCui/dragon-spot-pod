@@ -1,0 +1,40 @@
+SPOT 当前 A 完整字段核验结果（2026-10-15）
+
+结论：当前 A 的完整字段构造与当前 OVERV 控制凭证已闭合。独立后验核验通过；此结果属于组件与字段证据，不构成 AAA 精度通过、完整耦合参考准入或 ABA 完成。
+
+一、实际执行结果
+Root 唯一实际执行：初始工具 d0ee6b，运行会话 83320，最终真实工具 da510e，原整数返回码 0。执行权限 require_escalated，用于既有进程资源监控；没有重试。
+业务子进程保留原整数返回码 2（原程序规定的完整 evidence-only 返回码）。既有监控记录中的 FAILED 和 “own-child stage failed; no retry” 原样保留，未改写为业务子进程返回0。
+6 个完整阶段：scattering、scalar、fission、extras、overv_fallback、metadata。
+原范围：8 组快照、55 个构造事件、19,249 个字段、1,829,421 个已知元素。
+不匹配元素 0；未解决上下文或操作数问题 0；未知宏观字段生产来源 0。
+Root 墙钟时间约83.91秒；子进程约67.29秒；子进程监控峰值138.375MiB。原512MiB、每阶段600秒、整体1800秒、单线程、单子进程、无重试上限保持。
+
+二、OVERV 原问题的处理
+原旧报告的 SOURCE_CONTEXT_NOT_SAVED 问题1及旧报告本身完整保留。新运行通过既有真实当前控制与独立后验凭证验证同一最终55快照的370×8=2,960个OVERV字。
+新事件记录 SOURCE_CONTEXT_CURRENT_CONTROL_RESOLVED；没有对旧问题计数做减1修饰，没有恢复或声称原历史机器运算位。
+首次 A v1 的 Root1 / child1 输出路径门失败、源代码、实际返回与独立失败事实报告均保留。v2 只修正将 owning output/evidence 精确计入既有完整资源目录的门，数学源代码保持原样。
+
+三、独立后验
+真实工具 4d14cc 原整数0；状态 PASS_RECORDED_CURRENT_A_FULL_AGGREGATE_SOURCE_GAP0_METADATA_ONLY_CHILD2_PRESERVED。
+34份源代码、报告与新输出完整字节和SHA双次核验。5,987个固定角色与725个继承元数据角色检查原文件身份；旧科学文件、旧数据库和旧结果JSONL正文未读取。
+新JSONL只检查字节SHA、完整换行与记录布局，没有数值重算。
+保留历史5,937个输入完整凭证：5,934个当前存活输入，加此前精确退役的3个ASCII导出角色。实际请求另有控制及退役凭证，合并角色数5,949。
+
+四、空间与下一步
+完整64个累计目录中的字节1,836,082,477；外部元数据8,814,832；此实际资源快照的本进程已删除但仍打开字节0。总计仍低于原2GiB上限；完整历史、冷保留与磁盘余量也通过原检查。
+此前已回收3个A ASCII导出346,861,973字节，不将其再次计作新释放。
+下一步仅退役已被本次完整核验消费的14个早期SQL/字节池临时文件（149,659,264字节）；保留最终55快照、原始XSM、输入、全部结果文档及失败证据。结果JSONL拟经无损压缩、逐字节解压SHA验证后归档，实际释放量以真实回执为准。
+随后补齐B独立输出观察器构建资格与受控运行入口，执行当前B完整捕获、提取和字段核验。物理反应处理与多重性、温度插值、完整370群算子控制、AAA精度及ABA仍未完成。
+
+五、结果入口
+实际报告：validation/artifacts/axial-material-current-A-full-aggregate-after-actual-OVERV-control-20261015-v2/Root_actual_current_A_aggregate_after_OVERV_control_summary.json
+SHA256：5d511a1fe4cc125bb009420d5c447ccdd08d63366f3d0eef1527264eb37236a9
+实际原始返回：current_A_aggregate_after_actual_OVERV_control_source_v2/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+SHA256：e63e6675473027fd96951d4816ebbfbbd456b70fd953a050fa66151642a9aca5
+独立后验：current_A_aggregate_after_actual_OVERV_control_source_v2/actual_postverify_20261015/REVIEW.json
+SHA256：50afe9725c2bd382dc46ce739b8c7e6c52827c88f0d12e70679fbea81797967d
+独立真实返回：current_A_aggregate_after_actual_OVERV_control_source_v2/actual_postverify_20261015/TRUE_TOOL_RETURNS.json
+SHA256：ecc4ef797ae01681621c02f91f50c046b5fd0a514d793948d0aaac3d5621d331
+
+上述全部物理精度、历史机器位、完整参考、AAA、ABA及目标完成标志仍为false；原物理输入与验收阈值不变。

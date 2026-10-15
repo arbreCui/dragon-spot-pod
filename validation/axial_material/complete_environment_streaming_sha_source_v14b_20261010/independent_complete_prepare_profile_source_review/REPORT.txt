@@ -1,0 +1,3 @@
+最终e141 driver /85b host纯源码审通过。原driver1区、host2区完整逆回冻结母本，driver所有函数、host5个支持函数逐字保留；仅修实际声明准入选择名与严格watch PID/RSS/wall门。正常runpy执行当前canonical4f的唯一prepare-build，原10参数来自真实旧prepare输入；旧V13函数执行明确拒绝。
+原genuine619/705/38d/bc/f136监督器/MRO与全部资源检查不变；1800整体/600阶段/512MiB/全SOURCE+OUT+profile+host合计2GiB/历史96/free8/单线程单child零重试保持。双进程独立profile只观测有限aggregate/spans，不持有大API返回。
+仅授予SOURCE入口可运行判断；未调用入口、未prepare/编译/数值，Root真实退出与完整新声明/日志/profile仍需实际复核。无full86、nativeRSS、AAA或ABA资格。

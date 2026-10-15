@@ -1,0 +1,64 @@
+def complete_input_phase(d,phase,require_build_interpreter):
+    helpers=input_modules();g=helpers['graph'];checks=helpers['checks']
+    encoded=g.strict_json(str(INPUT_SPECS),INPUT_SPECS_SHA);specs=minimal_live_specs(encoded);del encoded;gc.collect()
+    original_aliases={row['path']:row['binding']for row in specs['aliases']
+        if row['expected_metadata']==dict(path=str(HISTORICAL_DECL),sha256=HISTORICAL_DECL_SHA)}
+    if len(original_aliases)!=2 or d['aliases']!=original_aliases:
+        raise ValueError('complete original two literal alias obligations differ')
+    # New implementation/copy endpoints have ordinary path semantics. The old
+    # 16f weak-alias inputs keep their original separate source-owned rights.
+    current_new_owned_paths(d)
+    before=current_input_predicates(helpers,specs,require_build_interpreter)
+    # All current-before and two-literal-alias checks above have completed.
+    # Re-read the whole fixed specs only when current-after actually needs them.
+    del specs,original_aliases
+    with g.ReadOpenAudit()as audit:
+        verified=g.verify_graph(d['input_graph']['path'],expected_sha256=d['input_graph']['sha256'],phase=phase)
+    if verified['consumer_scope']is not None or verified['graph_content_sha256']!=d['input_graph']['content_sha256']:
+        raise ValueError('whole immutable INPUT graph identity changed')
+    trace=audit.snapshot();graph_path=d['input_graph']['path']
+    regular=[x for x in trace['records']if x['kind']=='path'and x['path']!=graph_path]
+    paths={row['path']for row in regular}
+    graph_reads=[row for row in trace['records']if row['kind']=='path'and row['path']==graph_path]
+    if (len(regular)!=len(paths)or len(regular)!=verified['canonical_files_read']
+        or any(x['attempt_count']!=1 for x in regular)
+        or len(graph_reads)!=1 or graph_reads[0]['attempt_count']!=1):
+        raise ValueError('every canonical input and the external graph must be freshly opened once')
+    trace_digest=g._content_digest(trace);del trace,audit,regular,graph_reads;gc.collect()
+    # This is this phase's real verifier return; only its four used scalar counts
+    # survive. No public verifier result or graph is filtered or modified.
+    fresh_counts=(verified['canonical_files_read'],verified['actual_bytes_read'],
+        verified['logical_owner_requirements'],verified['exhaustive_namespaces_checked'])
+    del verified
+    # Full fresh EOF/SHA/identity/strict parsing occurs again, without a cache.
+    encoded=g.strict_json(str(INPUT_SPECS),INPUT_SPECS_SHA);specs=minimal_live_specs(encoded);del encoded
+    after=current_input_predicates(helpers,specs,require_build_interpreter)
+    current_new_owned_paths(d)
+    # Original current-after predicates consume all four fields. The remaining
+    # original length/negative-byte checker reads this complete field alone.
+    length_specs={'remaining_source_owned_requirements':specs['remaining_source_owned_requirements']}
+    del specs
+    graph=g.strict_json(d['input_graph']['path'],d['input_graph']['sha256'])
+    expected_snapshot=dict(semantics='HISTORICAL_PREP_INPUT_ONLY_REUSE_NO_API_REEXECUTION',
+        historical_whole_component_body=BODY_BINDING,historical_PREP=dict(path=str(HISTORICAL_PREP),sha256=HISTORICAL_PREP_SHA),
+        failed_historical_combined_RUN_promoted=False,original_component_APIs_executed_now=False,
+        prior_failed_PREP_input=failed_prepare_input(g)['binding'],
+        actual_last_cprime_trim_component_INPUT=d['actual_last_cprime_trim_component_INPUT'])
+    if graph['live_resource_roots']!=sorted(d['resource_roots']):
+        raise ValueError('explicit original directory-only resource scopes changed')
+    if graph['typed_snapshot']!=expected_snapshot:
+        raise ValueError('complete historical INPUT-only snapshot changed')
+    files,complete_aliases=graph_input_bindings(g,graph)
+    if d['files']!=files or d['complete_input_aliases']!=complete_aliases or paths!=set(files):
+        raise ValueError('declaration full canonical SHA/alias union or actual path opens differ')
+    # Full canonical union/alias comparisons above have completed.
+    del files,complete_aliases,paths,expected_snapshot
+    pins={row['path']:row for row in graph['canonical_files']}
+    lengths=checks.check_failed_lengths_and_owned_negative_bytes(g,length_specs,g._alias_map(graph['aliases']),pins)
+    failed_lengths=check_failed_prepare_phase(failed_prepare_input(g),graph['namespaces'],pins)
+    # No full historical body or expanded complete graph survives this helper.
+    del graph,pins,length_specs;gc.collect()
+    return dict(phase=phase,canonical_files=fresh_counts[0],bytes=fresh_counts[1],
+        logical_edges=fresh_counts[2],namespaces=fresh_counts[3],
+        trace_content_sha256=trace_digest,current_before=before,current_after=after,original_failed_lengths=lengths,prior_failed_PREP_lengths=failed_lengths,
+        historical_INPUT_only=True,original_component_APIs_executed_now=False,new_runtime_or_science_credit=False)

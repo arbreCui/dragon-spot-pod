@@ -1,0 +1,243 @@
+{
+  "schema": "UNREADY_B_AGGREGATE_OWNING_HOST_CONTRACT_GEN_PUB_STATIC_INTERFACE_V1",
+  "status": "SOURCE_ONLY_UNREADY_NO_ACTUAL_B4_OR_LATEST_BUDGET",
+  "all_Python_AST_passed": true,
+  "Python_Source_count": 15,
+  "request_builder_exact_signature_parameter_count": 1,
+  "owning_host_actual_builder_call_positional_count": 1,
+  "request_builder_keyword_dictionary_fully_spelled_out": true,
+  "worker_Budget_last_stamp_after_scan_retained": true,
+  "original_private_OwnRSS_SerialExecutor_preload_claim_journal_record_label_watchlog_child2_FAILED_pattern_retained": true,
+  "Source_file_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/B_original_input_binding.UNREADY.py",
+      "sha256": "5c4e58c4e6fa0a41a49d46cfe1163bdcbd26e3a2d09a622b692aa6146713aa1e",
+      "size_bytes": 8162,
+      "identity": [
+        16777229,
+        50872740,
+        33188,
+        1,
+        8162,
+        1792057749719967186,
+        1792059890583324841
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/aggregate_Source_contract.UNREADY.py",
+      "sha256": "55716b10bd8f273ad8439568f7118968f63b52b36247acfe659d06096755f8ac",
+      "size_bytes": 14725,
+      "identity": [
+        16777229,
+        50873031,
+        33188,
+        1,
+        14725,
+        1792060207836519035,
+        1792060207836519035
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/aggregate_stage_reservation.UNREADY.py",
+      "sha256": "2c2027a4cf1c3815b7ab9c7ebb5933e0f1e6715a9b3181902e94f86aab892f8b",
+      "size_bytes": 2273,
+      "identity": [
+        16777229,
+        50872749,
+        33188,
+        1,
+        2273,
+        1792059890585630971,
+        1792059890585630971
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/build_current_B_complete_aggregate_request.UNREADY.py",
+      "sha256": "4d6ef60c14afc36e4a0908d60c2ef7f25d415bad1c03d6166d53c8ad594f5c23",
+      "size_bytes": 6428,
+      "identity": [
+        16777229,
+        50872750,
+        33188,
+        1,
+        6428,
+        1792059890585722805,
+        1792059890585722805
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/complete_context_aware_MICROLIB_MACROLIB_aggregation_engine.UNREADY.py",
+      "sha256": "a79c41b5c130a1abe71e77238739de5c3fe530160e85fcd01f94bc2ac11c0fc3",
+      "size_bytes": 118729,
+      "identity": [
+        16777229,
+        50872746,
+        33188,
+        1,
+        118729,
+        1792059890585238095,
+        1792059890585238095
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/complete_observed_old_post_final_XSM_extractor.UNREADY.py",
+      "sha256": "079e6b9bca0f5e0ab43a41604ccd91c83112a0d040253dcc9101ae47b0efcb69",
+      "size_bytes": 52322,
+      "identity": [
+        16777229,
+        50872741,
+        33188,
+        1,
+        52322,
+        1792057749720494562,
+        1792059890583640717
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/current_B4_product_lifecycle_admission.UNREADY.py",
+      "sha256": "c832fc744f2d294f1febdd9fc8e395108f0833c5cea177bbb19aa0ceb46f4a3f",
+      "size_bytes": 5434,
+      "identity": [
+        16777229,
+        50872747,
+        33188,
+        1,
+        5434,
+        1792059890585348762,
+        1792059890585348762
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/current_B55_OVERV_control_evidence_admission.UNREADY.py",
+      "sha256": "2ea09715c1fd0c7ef1b5535b415f6a0f71992fe5c8459147c8f28d017607809e",
+      "size_bytes": 8596,
+      "identity": [
+        16777229,
+        50872745,
+        33188,
+        1,
+        8596,
+        1792059890584768094,
+        1792059890584768094
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/current_B_capture_metadata_admission.UNREADY.py",
+      "sha256": "b78379809de7d578087a83970e21793fab14257b5820b06a20954ff5f4ec2fba",
+      "size_bytes": 7979,
+      "identity": [
+        16777229,
+        50872744,
+        33188,
+        1,
+        7979,
+        1792057749720666854,
+        1792059890584572927
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/current_B_material_lineage_evidence.UNREADY.py",
+      "sha256": "68abfe4702eee0853db8b8340d92ecc46fad2f82c039542ba8ee34eb4c9e0c5b",
+      "size_bytes": 29627,
+      "identity": [
+        16777229,
+        50872748,
+        33188,
+        1,
+        29627,
+        1792059890585552221,
+        1792059890585552221
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/extract_actual_complete_context_with_SPH_decisions.UNREADY.py",
+      "sha256": "a9d1437055071a478ec2b5205d6c2c7ac38a0e33e25eb9f9bdfe72d753ba9f03",
+      "size_bytes": 13094,
+      "identity": [
+        16777229,
+        50872742,
+        33188,
+        1,
+        13094,
+        1792057749721158313,
+        1792059890583971134
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/prepare_current_B_aggregate_Source.UNREADY.py",
+      "sha256": "11d5d0c4f1fc9cd2d5adc9cbf3d66247e92f72b984f9e6526b6b145f115eb199",
+      "size_bytes": 3368,
+      "identity": [
+        16777229,
+        50873033,
+        33188,
+        1,
+        3368,
+        1792060207837000452,
+        1792060207837000452
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/publish_current_B_aggregate_CLI.UNREADY.py",
+      "sha256": "cee4badde87962e84318eaf385aee45d8fb8814f3369d07a06ad7a2d758426db",
+      "size_bytes": 3516,
+      "identity": [
+        16777229,
+        50873034,
+        33188,
+        1,
+        3516,
+        1792060207837119661,
+        1792060207837119661
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/run_guarded_current_B_complete_aggregate.UNREADY.py",
+      "sha256": "8e0d6717f425532e5c56b6c368ad7e0345d8da51a85e4ff925f2a37dc38f9207",
+      "size_bytes": 15925,
+      "identity": [
+        16777229,
+        50873032,
+        33188,
+        1,
+        15925,
+        1792060207836848410,
+        1792060207836848410
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/saved_native_data_access_adapter.UNREADY.py",
+      "sha256": "e4dc78c1bd84799c38c0ec05102e0555d243de8ae438c9c08a2296c3601ab742",
+      "size_bytes": 15624,
+      "identity": [
+        16777229,
+        50872743,
+        33188,
+        1,
+        15624,
+        1792057749721649814,
+        1792059890584302635
+      ]
+    }
+  ],
+  "admission_packet_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B_complete_aggregate_host_source_v1_UNREADY/DRAFT_OWNING_AGGREGATE_ADMISSION_PACKET_PENDING_TRUE_B4_AND_LATEST_BUDGET.json",
+    "sha256": "e0f719336c93cb4894b79d8f0778eacd143aa47c4bdaa77d73653528f94e3a58",
+    "size_bytes": 19147,
+    "identity": [
+      16777229,
+      50873035,
+      33188,
+      1,
+      19147,
+      1792060207843853425,
+      1792060207843853425
+    ]
+  },
+  "B4_all_actual_receipt_and_post_roles_still_NULL": true,
+  "latest_plan_and_full_prefix_and_current_budget_still_NULL": true,
+  "formal_Source_freeze_created": false,
+  "GEN_or_publisher_or_worker_or_helper_imported_or_executed": false,
+  "compiler_or_native_executed": false,
+  "scientific_payloads_read_or_hashed": false
+}

@@ -1,0 +1,198 @@
+{
+  "positive": {
+    "args": [
+      "factor-positive"
+    ],
+    "fixtures": [
+      {
+        "name": "factor_nstate1",
+        "nstate": 1,
+        "nblock": 2,
+        "nrhs": 3,
+        "signed_pattern": false,
+        "files": {
+          "factor_nstate1_inputs.bin": 96,
+          "factor_nstate1_before.bin": 236,
+          "factor_nstate1_after.bin": 220,
+          "factor_nstate1_outputs.bin": 168,
+          "factor_nstate1_clear.bin": 48
+        },
+        "total_binary_bytes": 768
+      },
+      {
+        "name": "factor_pivot4",
+        "nstate": 4,
+        "nblock": 2,
+        "nrhs": 3,
+        "signed_pattern": false,
+        "files": {
+          "factor_pivot4_inputs.bin": 480,
+          "factor_pivot4_before.bin": 920,
+          "factor_pivot4_after.bin": 856,
+          "factor_pivot4_outputs.bin": 696,
+          "factor_pivot4_clear.bin": 48
+        },
+        "total_binary_bytes": 3000
+      },
+      {
+        "name": "factor_signed_zero4",
+        "nstate": 4,
+        "nblock": 2,
+        "nrhs": 3,
+        "signed_pattern": true,
+        "files": {
+          "factor_signed_zero4_inputs.bin": 480,
+          "factor_signed_zero4_before.bin": 920,
+          "factor_signed_zero4_after.bin": 856,
+          "factor_signed_zero4_outputs.bin": 696,
+          "factor_signed_zero4_clear.bin": 48
+        },
+        "total_binary_bytes": 3000
+      }
+    ],
+    "manifest_rows": 3,
+    "memory_manifest_rows": 0,
+    "total_binary_bytes": 6768,
+    "completion_marker": "RAW_FACTOR_CONTROLS_COMPLETE"
+  },
+  "negative": [
+    {
+      "name": "pack_already_ready",
+      "operation": 1,
+      "args": [
+        "factor-negative",
+        "pack_already_ready"
+      ],
+      "expected_message": "SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.",
+      "files": {
+        "factor_negative_before.bin": 920,
+        "factor_negative_after.bin": 856,
+        "factor_negative_request.bin": 64
+      },
+      "total_binary_bytes": 1840,
+      "expected_real_intercept_exit_code": 0
+    },
+    {
+      "name": "load_full_square",
+      "operation": 2,
+      "args": [
+        "factor-negative",
+        "load_full_square"
+      ],
+      "expected_message": "SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.",
+      "files": {
+        "factor_negative_before.bin": 920,
+        "factor_negative_after.bin": 920,
+        "factor_negative_request.bin": 64
+      },
+      "total_binary_bytes": 1904,
+      "expected_real_intercept_exit_code": 0
+    },
+    {
+      "name": "load_block_zero",
+      "operation": 3,
+      "args": [
+        "factor-negative",
+        "load_block_zero"
+      ],
+      "expected_message": "SPOT1P64 RANK1 FACTOR: INVALID PACKED DIMENSIONS.",
+      "files": {
+        "factor_negative_before.bin": 920,
+        "factor_negative_after.bin": 856,
+        "factor_negative_request.bin": 64
+      },
+      "total_binary_bytes": 1840,
+      "expected_real_intercept_exit_code": 0
+    },
+    {
+      "name": "pack_temporary_cap",
+      "operation": 4,
+      "args": [
+        "factor-negative",
+        "pack_temporary_cap"
+      ],
+      "expected_message": "SPOT1P64 RANK1 CACHE: 512 MIB ACCOUNTED CAP EXCEEDED.",
+      "files": {
+        "factor_negative_before.bin": 920,
+        "factor_negative_after.bin": 920,
+        "factor_negative_request.bin": 64
+      },
+      "total_binary_bytes": 1904,
+      "expected_real_intercept_exit_code": 0
+    }
+  ],
+  "layouts": {
+    "snapshot": {
+      "header": "16 int64 little endian",
+      "fields": [
+        "version",
+        "nstate",
+        "nblock",
+        "ready",
+        "factor_dim1",
+        "factor_dim2",
+        "factor_dim3",
+        "rank1_factor_bytes",
+        "live",
+        "peak",
+        "cap",
+        "raw_key_count",
+        "operator_key_count",
+        "lower_row_count",
+        "lower_unique_count",
+        "cprime_extent3"
+      ],
+      "payload_order": [
+        "factor:REAL64[factor_dim1,factor_dim2,factor_dim3]",
+        "pivot:INT32[nstate,nblock]",
+        "pivot_value:REAL64[nstate,nblock]",
+        "cprime:REAL64[nstate,nstate,cprime_extent3]",
+        "raw_key:INT64[raw_key_count]",
+        "operator_key:INT64[operator_key_count]",
+        "lower_rows:INT32[lower_row_count]",
+        "lower_blocks:INT32[nblock]",
+        "lower_dictionary:REAL64[lower_row_count,nstate,lower_unique_count]"
+      ]
+    },
+    "inputs": {
+      "header": [
+        "version",
+        "nstate",
+        "nblock",
+        "nrhs"
+      ],
+      "header_type": "4 int64 little endian",
+      "payload_order": [
+        "matrix:REAL64[nstate,nstate,nblock]",
+        "input_rhs:REAL64[nstate,nrhs,nblock]"
+      ]
+    },
+    "outputs": {
+      "header": [
+        "version",
+        "nstate",
+        "nblock",
+        "nrhs"
+      ],
+      "header_type": "4 int64 little endian",
+      "payload_order": [
+        "decoded_factor:REAL64[nstate,nstate,nblock]",
+        "full_original_solve:REAL64[nstate,nrhs,nblock]",
+        "decoded_solve:REAL64[nstate,nrhs,nblock]",
+        "factor_info:INT32[nblock]",
+        "full_solve_info:INT32[nblock]",
+        "decoded_solve_info:INT32[nblock]"
+      ]
+    },
+    "clear": "6 int64: built,reused,hits,live,peak,cap",
+    "negative_request": "8 int64: version,operation,group,block,filler_accounted_bytes,packed_temporary_bytes,live_after_mutation,cap"
+  },
+  "original40_required": true,
+  "additional_stage_count": 5,
+  "total_planned_stage_count": 45,
+  "schema": "AXMAT_RANK1_FACTOR_DIAGONAL_CODEC_CONTROL_CONTRACT_V1",
+  "controls_source": {
+    "path": "/Users/wen/spot/validation/axial_material/rank1_factor_cache_factor_diagonal_trim_controls.f90",
+    "sha256": "82b19974518f44952f829ef388a9b5fdbf58e2b4b7df2d7f7d61f7839038def4"
+  }
+}

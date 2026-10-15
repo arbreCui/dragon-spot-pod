@@ -1,0 +1,11 @@
+完整 inactive audit snapshot 候选 Source 独审通过：SOURCE_ONLY_PASS_UNREADY_REQUIRES_NEW_FULL_QUALIFICATION。实际审查0ecb13严格整数0 CLOSED，479项完整 Source/META 检查，无blocker；未执行候选、helper、guard、业务或材料payload读取。
+
+完整作者包21成员+manifest、8完整Python AST、两完整inverse、其余80 top definitions完整字节/AST、全globals、原audit lifecycle、九snapshot字段和27verify字段均保留。默认False完整normalization/return不清map。True只能在实际固定complete_input_phase的fresh、inactive、exclusive、last-use调用合同下使用：完整normalize全部记录/role后len/sum，clear原builtin map，再原两完整clone；其它两caller仍default，canonical尚未接线。
+
+限制：exactclass/map/state/registry guard不检测外部别名或foreign builtin map所有权；unbound foreign receiver先读取_active，不能保证任意属性getter无副作用。最后loop value保留一份原record，normalized浅拷贝仍保nested data，subprocess/Popen maps不清。private clone失败后map可能已消费，不作事务性承诺。全计数调用时序已改变，不声称完整Call AST顺序相同。继承codec READY字段不授新helper资格；没有内存峰值归因、释放数量或构建PASS预测。
+
+需新完整pure控制：保留全部旧positive/negative/owner/trace/FD/Popen/callableidentity/fixtures/caps，补default-consume完整九字段/keys/order/types/bits比较、empty/duplicates、精确bool/type/state/staleACTIVE拒绝、失败前后状态、明确别名不受保护、真实subprocess身份保存。跨不同真实Popen运行的FD/inode等原观测不能被归一化掉以造全值相等；若比同一观测，应使用明确来源的disjoint builtin states。
+
+需新complete fresh：全部37111输入+externalgraph37112真实opens、27字段/原4positive3reject/完整gzip与trace/原genuine监督MRO/60s512MiB64MiB完整保留，并以新consume调用点完成全Source绑定。仅当新安装witness、两真实CLOSED0 host terminals及各自完整独立saved reviews成立，才可新jointQ；之后canonical接线与实际business构建另验。旧cf0/Q不迁移，science/RAM/AAA/ABA不获credit。
+
+完整证据与future controls在REVIEW.json。聚合设计仍封存不变，本任务不扩展数值数据子进程。

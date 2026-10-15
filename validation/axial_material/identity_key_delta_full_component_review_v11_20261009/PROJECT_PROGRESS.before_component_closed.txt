@@ -1,0 +1,22 @@
+SPOT 当前进展（2026-10-09）
+
+整体目标：完成并独立验证基于 POD 的径向—轴向耦合中子输运方法，目前研究对象是组件算例。当前工作是同温轴向材料对照：先验收 AAA（各高度均为 A）的同质控制，再做 ABA（中间区域改为 B）。清理暂缓。
+
+已经完成：
+1. 历史修复后的 D4-A 12格耦合算例经过9轮达到原数值收敛门槛；独立 CE 特征值比较仍未通过，因此不是已验证发布版。
+2. A/B 双精度快照及相关输入核验已有结果。
+3. V10 的45阶段组件构建与控制全部 PASS，输出逐位一致；完整程序5阶段构建与链接全部 PASS。
+4. 新 AAA 的运行包、正式输入与自身进程监控控制已通过。
+
+当前主要阻塞：V10 新 AAA 已实际退出1并关闭。前6阶段 PASS，第7阶段轴向启动自身进程采样峰值514.203125 MiB，超过原512 MiB上限而停止，0个完整耦合map。较低的缓存记账峰值不能证明整个进程内存达标。
+
+最新进展：V11 尝试无损减少不同能群重复存储的身份校验键，浮点求解代码保持原样。实际完成4个构建步骤、描述符检查、1个正例和20个预期拒绝负例，主机实际退出0并关闭。20个负例的原始监督器 FAILED 状态保留，实际退出23符合拒绝设计。独立逐字节核验已通过，完整键内容、差异位置、生命周期与计账一致；这仅是存储原语测试，尚未完成 V11 原45组件控制或新的完整程序/AAA验证。
+
+尚未完成：完整程序512 MiB资格、新AAA完整耦合验收、独立物理精度资格、ABA材料对照。历史同数据独立参考的燃料裂变率分布误差仍超过原3%门槛。数值收敛、编译通过和存储原语测试均不能替代物理精度验收。
+
+接下来顺序：独立核验 V11 无损存储，再做完整组件与程序回归；在原资源和精度门槛下重新验证AAA；通过独立参考验收后执行ABA。
+
+证据：
+/Users/wen/spot/validation/axial_material/identity_key_delta_codec_review_v11_20261009/Root_actual_codec_v4_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/factor_diagonal_trim_cold_v10_review_20261009/Root_actual_AAA_tool_terminal_return.json
+/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json

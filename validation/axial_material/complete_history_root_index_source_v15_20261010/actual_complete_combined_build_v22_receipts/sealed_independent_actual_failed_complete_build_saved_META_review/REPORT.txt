@@ -1,0 +1,6 @@
+PASS of actual saved FAILURE evidence only; V22 complete build failed the unchanged genuine512MiB own-child gate.
+Root197727/session70899 ->65203e actual closed strict EXIT1; genuine child PID21587 return-15,164.2412298329873s/513.375MiB, own-child cleanup true. Only build/link and metadata/objects PASS(2/5); remaining three and all four final tail credits absent.
+Pre-frozen complete Source writer d246 executed failure-only c48a3f actual closed EXIT0. Complete155 ordered original input pins full EOF unchanged; D123files/12 root-inclusive dirs freeze exact.
+All H/S/O/T/D/E complete saved files/dirs and honest later E append shape verified. Child merged stream and actual outer stderr retained separately; no independent child stderr claimed. Original budgets/modes preserved.
+Writer full joint ledger157670354B after summary is verified; current ledger separately includes later genuine writer receipt. Root extra nine namespace reserve checked separately, without altering original guard.
+No successful seal/driver/audit/terminal, no whole INPUT/native/AAA/ABA/physical balance qualification. Failed host final revalidation not reached; Root postclose155 pin check is not substituted for it. No reviewer API/helper/guard/business/numeric execution.

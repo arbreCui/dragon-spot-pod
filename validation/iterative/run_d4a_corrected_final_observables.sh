@@ -8,6 +8,15 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 DECK="$ROOT/validation/iterative/d4a_corrected_final_observables.x2m"
 DRAGON_BIN=${DRAGON_BIN:-"$ROOT/bin/Darwin_arm64/Dragon"}
 TIMEOUT_SECONDS=${TIMEOUT_SECONDS:-10}
+BOUNDED_DIR="$ROOT/validation/iterative"
+RUNTIME=
+BOOTSTRAP_RECEIPT=d4a_bootstrap_result.sha256
+REPAIRED_DRAGON_SHA=873ad14272a2f0765d95e6de067194a01708ccf9aa88d58cd782049e6d331fef
+REPAIRED_RUNTIME_SHA=8888d5772c39472fe4d4895120737370fd471200c4ace9e7bf41ed8c7e74db1b
+REPAIRED_BOOTSTRAP_SHA=acab72a87521339f9eb0540130d0fc4ea1946b59df6bb5db4fcb83cd3528eb1c
+MESH12_RUNTIME_SHA=af7069315a59ae6de9c0bd3edd6f497bf4dcaef1140917b4239c32bcff8da12b
+MESH12_BOOTSTRAP_SHA=805c06e1ec873809a890be3a90afe1b8c16ec57272c3eaa5c315aa8feb64b32f
+OBSERVABLE_DECK_SHA=46a70e2e1ed83b37b03d6a472bf94224557119c358a27fdc1875115f0f569259
 
 fail() {
   echo "D4A CORRECTED OBSERVABLES FAIL: $*" >&2
@@ -22,8 +31,19 @@ same() {
   test -f "$1" && test -f "$2" && test "$(hash "$1")" = "$(hash "$2")"
 }
 
+if [ "${1:-}" = --repaired-runtime ]; then
+  test "$#" -ge 2 || fail "--repaired-runtime requires a directory"
+  RUNTIME=$(CDPATH= cd -- "$2" 2>/dev/null && pwd -P) || fail "repaired runtime is missing"
+  test "$DRAGON_BIN" = "$ROOT/bin/Darwin_arm64/Dragon" ||
+    fail "DRAGON_BIN override is not allowed with --repaired-runtime"
+  DRAGON_BIN="$RUNTIME/Dragon"
+  BOUNDED_DIR=$RUNTIME
+  BOOTSTRAP_RECEIPT=result.sha256
+  shift 2
+fi
+
 test "$#" -eq 3 || {
-  echo "usage: $0 corrected-build final-map fresh-output-directory" >&2
+  echo "usage: $0 [--repaired-runtime directory] corrected-bootstrap final-map fresh-output-directory" >&2
   exit 2
 }
 
@@ -44,9 +64,43 @@ test "$(grep -c '^PROCEDURE ' "$DECK" || true)" -eq 0 ||
 case "$TIMEOUT_SECONDS" in
   ''|*[!0-9]*|0) fail "TIMEOUT_SECONDS must be a positive integer" ;;
 esac
-test ! -e "$OUTPUT" || fail "output directory must be fresh"
+test ! -e "$OUTPUT" && test ! -L "$OUTPUT" || fail "output directory must be fresh"
 
-for receipt in d4a_bootstrap_result.sha256; do
+if [ -n "$RUNTIME" ]; then
+  # A fine-mesh runtime must use its independently verified fine-mesh seed.
+  if [ "$(hash "$RUNTIME/runtime.sha256")" = "$MESH12_RUNTIME_SHA" ]; then
+    REPAIRED_RUNTIME_SHA=$MESH12_RUNTIME_SHA
+    REPAIRED_BOOTSTRAP_SHA=$MESH12_BOOTSTRAP_SHA
+  fi
+  # Explicitly select the already verified repair epoch. Do not relabel the
+  # old bootstrap or install/replace the canonical executable.
+  test -f "$DRAGON_BIN" && test ! -L "$DRAGON_BIN" &&
+    test "$(hash "$DRAGON_BIN")" = "$REPAIRED_DRAGON_SHA" ||
+    fail "repaired Dragon identity differs"
+  test "$(hash "$RUNTIME/runtime.sha256")" = "$REPAIRED_RUNTIME_SHA" ||
+    fail "repaired runtime manifest identity differs"
+  (cd "$RUNTIME" && shasum -a 256 -c runtime.sha256 >/dev/null) ||
+    fail "repaired runtime does not verify"
+  test "$(hash "$BUILD/result.sha256")" = "$REPAIRED_BOOTSTRAP_SHA" ||
+    fail "repaired bootstrap identity differs"
+  test "$(hash "$DECK")" = "$OBSERVABLE_DECK_SHA" ||
+    fail "read-only observables deck identity differs"
+  test -s "$FINAL/result.sha256" || fail "final repaired result manifest is missing"
+  for name in runtime/Dragon runtime/runtime.sha256 input_manifest.sha256 \
+    output_manifest.sha256 independent_check.log gate.log
+  do
+    awk -v name="$name" '$2 == name && NF == 2 && length($1) == 64 &&
+      $1 !~ /[^0-9a-f]/ {n++} END {exit n != 1}' "$FINAL/result.sha256" ||
+      fail "final repaired result does not manifest $name"
+  done
+  (cd "$FINAL" && shasum -a 256 -c result.sha256 >/dev/null) ||
+    fail "final repaired result does not verify"
+  same "$FINAL/runtime/Dragon" "$DRAGON_BIN" &&
+    same "$FINAL/runtime/runtime.sha256" "$RUNTIME/runtime.sha256" ||
+    fail "final result belongs to a different runtime"
+fi
+
+for receipt in "$BOOTSTRAP_RECEIPT"; do
   test -s "$BUILD/$receipt" || fail "$receipt is missing"
   (cd "$BUILD" && shasum -a 256 -c "$receipt" >/dev/null) ||
     fail "$receipt does not verify"
@@ -107,7 +161,7 @@ MAC_BEFORE=$(hash "$OUTPUT/initial_axial_macrolib.xsm")
 
 OMP_NUM_THREADS=1
 export OMP_NUM_THREADS
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$ROOT/validation/iterative" \
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$BOUNDED_DIR" \
   python3 -c \
   'import sys; from pathlib import Path; from run_bounded_dragon import run; run(Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3]), float(sys.argv[4]))' \
   "$DRAGON_BIN" "$OUTPUT/observables.x2m" \
@@ -119,6 +173,12 @@ test "$(hash "$OUTPUT/initial_axial_track.xsm")" = "$TRK_BEFORE" ||
   fail "axial track changed during extraction"
 test "$(hash "$OUTPUT/initial_axial_macrolib.xsm")" = "$MAC_BEFORE" ||
   fail "axial macrolib changed during extraction"
+if [ -n "$RUNTIME" ]; then
+  (cd "$BUILD" && shasum -a 256 -c result.sha256 >/dev/null) &&
+    (cd "$FINAL" && shasum -a 256 -c result.sha256 >/dev/null) &&
+    (cd "$RUNTIME" && shasum -a 256 -c runtime.sha256 >/dev/null) ||
+    fail "sealed repaired inputs changed during extraction"
+fi
 
 LOG="$OUTPUT/observables.log"
 test "$(grep -c '^>|D4A-CORRECTED-K-EFFECTIVE ' "$LOG" || true)" -eq 1 ||

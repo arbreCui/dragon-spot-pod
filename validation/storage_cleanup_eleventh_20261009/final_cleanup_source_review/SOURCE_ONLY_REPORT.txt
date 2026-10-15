@@ -1,0 +1,4 @@
+Final8ee7 source independent review PASS, pending15 fixedmanifest + actual Root preflight.
+Only REPORT dirname + one suffix whitelist literal differ from T10; whitelist now xsm/npz/bin. Complete source inverse exact;9 defs retained with main only whitelist delta;8 helper defs exact. Restore53a51f and doc baselinecc44/32585/3797135364 unchanged.
+Old7448 source-only review is superseded and cannot authorize final source. Root-directed4 bootstrap XSM differing SHA remain HOLD. Generic suffix eligibility is not deletion permission; forthcoming15 exact paths require complete manifest/source/data/dependency preflight review.
+No cleanup/preflight/restore/business executed, no project or formal write.

@@ -1,0 +1,19 @@
+{
+  "schema": "ACTUAL_FINAL_RESULT_DOCUMENT_WRITER_TRUE_TOOL_RETURN_V1",
+  "tool_return": {
+    "chunk_id": "f1d446",
+    "wall_time_seconds": 0.000015584,
+    "exit_code": 0,
+    "original_token_count": 128,
+    "output": "{\"status\": \"FINISHED_RESULT_DOCUMENT_ONLY_REAL_CLOSED_RECEIPTS\", \"report_pin\": {\"path\": \"/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/storage_release_old_v9_single_PROJECT_draft_source_20261013/REPORT.txt\", \"sha256\": \"b6a8ab0fa4be6d25ca1f481e40c73ba32261fe42c9d7632963b364e712891fa0\", \"size_bytes\": 5871, \"identity\": [16777229, 50023795, 33188, 1, 5871, 1791877599791822577, 1791877599791822577]}, \"deletion_executed_by_this_writer\": false, \"compiler_or_business_executed\": false}\n"
+  },
+  "original_integer_exit_code": 0,
+  "observed_closed": true,
+  "finished": true,
+  "result_documents_read": 4,
+  "Source_DAG_rebuilt": false,
+  "live_ART_budget_scanned": false,
+  "deletion_executed": false,
+  "compiler_or_business_executed": false,
+  "goal_complete": false
+}

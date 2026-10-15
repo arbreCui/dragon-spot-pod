@@ -1,0 +1,18 @@
+SPOT NX 原格式转换控制实际结果 — 2026-10-14
+
+原生 Fortran 控制一次完成编译、链接、运行，三个阶段 PASS，主过程真实退出 0。使用原 a11 完整语句、原 locale/精度声明和实际原编译选项，依次执行 a11 的 11 列 ASCII 格式化、原 E11.0 读回 double，再转换到原 binary32。
+
+完整处理 11 种核素、79 个温度的 29,230 个保存输入值，逐字比较原库实际存储的 9,294 个 NX 字。直接 binary64→binary32 回放的 1,282 个差异，经原格式转换后全部消失：转换后的 9,294 个字与当前原库完全一致，79 个温度全部一致。保存完整字符11、转换前后原始字及每个输入的身份和顺序，末尾零群原样验证。
+
+这明确解释了本批 NX 直接回放的全部位差异：实际生产链中的 ASCII 导出/读回会量化数据，不能跳过这一步。没有提高容差，没有拟合或改写当前材料截面。
+
+实际主过程约 56.21 秒，SELF 峰值约 102.66 MiB；原 512 MiB、单阶段 600 秒、总时长 1800 秒、单线程、单子进程、零重试、累计 2 GiB 限额保持。原 v1 程序类型失败、v2 直接回放差异以及全部日志和报告保留。
+
+范围：该实验验证原格式函数对当前保存字值的转换，并逐字对应当前原库 NX。历史 11 份完整 ASCII 文件已不存在，没有声称恢复完整历史文件或重现全部 NJOY 构建。完整 packed SCAT、当前 SPH/MASK 反应语义、物理中子平衡、AAA 精度、独立全群耦合参考和 ABA 资格仍为 false。
+
+证据：
+/Users/wen/spot/validation/artifacts/axial-material-original-a11-NX-formatter-component-20261014-v1/Root_actual_original_a11_NX_component_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-original-a11-NX-formatter-component-20261014-v1/component/ACTUAL_ORIGINAL_A11_NX_COMPONENT_RESULT.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/original_a11_NX_formatter_component_source_v1_20261014/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+
+后续：独立核验本次实际结果；将原格式转换纳入完整反应生产链回放，再补 SCAT 压缩与当前反应语义；正式传输控制前腾出完整范围需要的空间。整体目标 active。

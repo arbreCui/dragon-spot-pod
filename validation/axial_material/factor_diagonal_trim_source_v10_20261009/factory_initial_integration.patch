@@ -1,0 +1,365 @@
+--- frozen_last_cprime_factory
++++ validation/axial_material/prepare_qualified_AB_rank1_factor_cache_factor_diagonal_trim_production.py
+@@ -1,4 +1,4 @@
+-"""Independent ordinary-rank1 unused-terminal-cprime storage component.
++"""Independent ordinary-rank1 dead factor-diagonal storage component.
+ 
+ The complete 92d rank1 build and actual Root exit-zero witness are compulsory.
+ Only SPOT1P64.o changes in production; sender/SPOASM/white/all other inputs stay
+@@ -28,9 +28,9 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path('/Users/wen/spot')
+ ART = ROOT / "validation/artifacts"
+-SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-last-cprime-trim-build-admission-20261008"
+-OUT = ART / "axial-material-rank1-factor-cache-last-cprime-trim-build-20261008"
+-TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-last-cprime-trim-build-terminal-20261008"
++SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-admission-20261009"
++OUT = ART / "axial-material-rank1-factor-cache-factor-diagonal-trim-build-20261009"
++TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-terminal-20261009"
+ PARENT = ART / "axial-material-rank1-factor-cache-build-20261007"
+ PARENT_SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-build-admission-20261007"
+ PARENT_TERMINAL = ART / "axial-material-qualified-AB-rank1-factor-cache-build-terminal-20261007"
+@@ -65,7 +65,7 @@
+ SENDER_SOURCE_SHA = "bb901bfed9a4199a5b4c98c58c93bf3b3dda597fd2047bfed6d267c8dcadac81"
+ SENDER_OBJECT = PARENT / "build/FLU2DR64.o"
+ SENDER_OBJECT_SHA = "74b22d403667e78686aef52b97933478779d4dfeb250b1cd1cb86343c930cfb9"
+-PATCH_HELPER = ROOT / "validation/axial_material/rank1_factor_cache_last_cprime_trim_patch.py"
++PATCH_HELPER = ROOT / "validation/axial_material/rank1_factor_cache_factor_diagonal_trim_patch.py"
+ CONTROL_SOURCE = ROOT / "validation/axial_material/rank1_factor_cache_last_cprime_trim_controls.f90"
+ ORIGINAL_PATCH = ROOT / "validation/axial_material/rank1_factor_cache_patch.py"
+ ORIGINAL_PATCH_SHA = "c309a37bad260ebdf377370689b3295476c31fefde8269257c597666f6f78f3e"
+@@ -74,21 +74,35 @@
+ TOTAL_WALL, STAGE_WALL, RSS_CAP = 1800, 600, 512
+ ARCHIVE_RESERVE = 2 * 2**30
+ HISTORY_CAP, FREE_FLOOR = 96 * 2**30, 8 * 2**30
+-FAMILY = "RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD"
++FAMILY = "RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD"
+ HISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"
+ OBSERVER_EXPECTED = [32, 3, 2, 3, 1]
+-TERMINAL_SCHEMA = "AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1"
++TERMINAL_SCHEMA = "AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_ACTUAL_EXTERNAL_TERMINAL_RETURN_V1"
+ TAIL_FIELDS = ("actual_tail_check", "actual_elapsed_seconds", "actual_archive_bytes", "actual_resources")
+-SOURCE_STATUS = "READY_SOURCE_ONLY_FOR_ROOT_REVIEWED_COMPONENT_EXECUTION"
+-PATCH_HELPER_SHA = "7a625a87f797e59f30c61408fe50012fee8b718cd0b487d76005118ce5302836"
++SOURCE_STATUS = "UNREADY_FACTOR_DIAGONAL_TRIM_ACCOUNTING_AND_CONTROLS_PENDING"
++PATCH_HELPER_SHA = "d849ebbbe4dd7e59b17bd67e60a07f950aa7a2fc33f22011431c83c46cff1b6e"
+ CONTROL_SOURCE_SHA = "5b59f7202f9724b667549027bfedfea89581cd3b63c53087b993a1bcf2fc4ab2"
+-FACTORY_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_cache_memory_dedup_production.py"
+-FACTORY_SOURCE_PARENT_SHA = "4ae768d5e06b64685c1626326de6e93d2e87b7d502f991bf1d7c06f169622c29"
++FACTORY_SOURCE_PARENT = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_factor_cache_last_cprime_trim_production.py"
++FACTORY_SOURCE_PARENT_SHA = "8f6947392a087cd722fc2cbc3075db54c256c73bcf9dab72cac708392b5ef92a"
+ DELEGATED_DEDUP_PATCH = ROOT / "validation/axial_material/rank1_factor_cache_memory_dedup_patch.py"
+ DELEGATED_DEDUP_PATCH_SHA = "6596aa9a11b8f86e837a23add01b24970a87ba4aabf6007fc3ada1925884ccf2"
+ PARENT_DEDUP_KERNEL_SHA = "50071dfc713cd1a7f319e392706686c73ef250ea03049a91ef29d5dec341adb6"
+ TRIMMED_KERNEL_SHA = "343e731fa190d80f8d390831185aef11dabcab32f51a229a5761c827a4aeb1e1"
+ TRIM_SCHEMA = "AXMAT_RANK1_UNUSED_TERMINAL_CPRIME_STORAGE_SOURCE_PATCH_V1"
++
++# Old subproof remains343e; only the final composed candidate is5e0d.
++LAST_CPRIME_PATCH_HELPER = ROOT / "validation/axial_material/rank1_factor_cache_last_cprime_trim_patch.py"
++LAST_CPRIME_PATCH_HELPER_SHA = "7a625a87f797e59f30c61408fe50012fee8b718cd0b487d76005118ce5302836"
++LAST_CPRIME_KERNEL_SOURCE = ART / "axial-material-qualified-AB-rank1-factor-cache-last-cprime-trim-build-admission-20261008/SPOT1P64.f90"
++FACTOR_DIAGONAL_SOURCE = ROOT / "validation/axial_material/factor_diagonal_trim_source_v10_20261009/SPOT1P64.f90"
++FACTOR_DIAGONAL_KERNEL_SHA = "5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809"
++FACTOR_DIAGONAL_PROOF = ROOT / "validation/axial_material/factor_diagonal_trim_source_v10_20261009/source_patch_proof.json"
++FACTOR_DIAGONAL_PROOF_SHA = "dc1fe76a84e19f5125650423e2c034dc6ed26da906b8ef8aafdfe766bcd608f1"
++COMPLETE_C0_FACTOR_PROOF = ROOT / "validation/axial_material/factor_diagonal_trim_source_v10_20261009/complete_c0_source_patch_proof.json"
++COMPLETE_C0_FACTOR_PROOF_SHA = "cdc033619d16f89cdd0e284ec87ad09701202bb5131860f39a70f773391214ea"
++FACTOR_DIAGONAL_CONTROL_CONTRACT = ROOT / "validation/axial_material/factor_diagonal_trim_source_v10_20261009/control_contract.json"
++FACTOR_DIAGONAL_CONTROL_CONTRACT_SHA = "abc58ca49c84e03765a581fa0fd804023764f5a931bb04b87b0ed5c70b07cf2a"
++FACTOR_DIAGONAL_SCHEMA = "AXMAT_RANK1_DEAD_FACTOR_DIAGONAL_STORAGE_PATCH_V1"
+ 
+ 
+ def require_ready():
+@@ -283,7 +297,13 @@
+         KERNEL_SOURCE:KERNEL_SOURCE_SHA, KERNEL_OBJECT:KERNEL_OBJECT_SHA,
+         SENDER_SOURCE:SENDER_SOURCE_SHA, SENDER_OBJECT:SENDER_OBJECT_SHA,
+         WHITE_SOURCE:WHITE_SOURCE_SHA, WHITE_OBJECT:WHITE_OBJECT_SHA,
+-        ORIGINAL_PATCH:ORIGINAL_PATCH_SHA, ORIGINAL_CONTROL:ORIGINAL_CONTROL_SHA}
++        ORIGINAL_PATCH:ORIGINAL_PATCH_SHA, ORIGINAL_CONTROL:ORIGINAL_CONTROL_SHA,
++        LAST_CPRIME_PATCH_HELPER:LAST_CPRIME_PATCH_HELPER_SHA,
++        LAST_CPRIME_KERNEL_SOURCE:TRIMMED_KERNEL_SHA,
++        FACTOR_DIAGONAL_SOURCE:FACTOR_DIAGONAL_KERNEL_SHA,
++        FACTOR_DIAGONAL_PROOF:FACTOR_DIAGONAL_PROOF_SHA,
++        COMPLETE_C0_FACTOR_PROOF:COMPLETE_C0_FACTOR_PROOF_SHA,
++        FACTOR_DIAGONAL_CONTROL_CONTRACT:FACTOR_DIAGONAL_CONTROL_CONTRACT_SHA}
+     for path,wanted in expected.items():
+         require(path,wanted)
+     old = read(require(PARENT / "declaration.json"))
+@@ -331,28 +351,30 @@
+     require(DELEGATED_DEDUP_PATCH, DELEGATED_DEDUP_PATCH_SHA)
+     if not all(re.fullmatch(r"[0-9a-f]{64}", value or "") for value in (helper_sha,controls_sha)):
+         raise ValueError("actual independently reviewed memory source hashes required")
+-    patch = load(require(PATCH_HELPER,helper_sha),"rank1_last_cprime_trim_actual_patch")
++    patch = load(require(PATCH_HELPER,helper_sha),"rank1_factor_diagonal_trim_actual_patch")
+     require(CONTROL_SOURCE,controls_sha)
+     source = require(MEMORY_KERNEL_SOURCE,MEMORY_KERNEL_SOURCE_SHA).read_text()
+     changed = patch.patch_kernel(source)
+     dense = patch.dense_reference_kernel(require(KERNEL_SOURCE,KERNEL_SOURCE_SHA).read_text())
+-    original = load(require(ORIGINAL_PATCH,ORIGINAL_PATCH_SHA),"rank1_last_cprime_trim_actual_original_patch")
++    original = load(require(ORIGINAL_PATCH,ORIGINAL_PATCH_SHA),"rank1_factor_diagonal_trim_actual_original_patch")
+     # This genuine 754421 original is independently recompiled for uncached
+     # unit comparison, not falsely identified as the historical object bytes.
+     ref = original.patch_sources(require(ANG / "SPOT1P64.f90","7544212ac8419f9c73688c12339c8779358a24f4065523fbbf891cc4fe1c79e0").read_text(),
+         require(ART / "axial-material-source-factor-build-20261006/build/FLU2DR64.f",
+         "15b0a314886ed224204a53dc77e52fe79114ef00eee81230f80d28eaed4a8316").read_text())
+     c = copy.deepcopy(original.control_contract())
+-    c["schema"] = "AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_CONTROL_CONTRACT_V1"
+-    c["experiment"] = "rank1-factor-cache-last-cprime-trim-20261008"
++    c["schema"] = "AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_CONTROL_CONTRACT_V1"
++    c["experiment"] = "rank1-factor-cache-factor-diagonal-trim-20261009"
+     c["positive_cases"].append("permuted_angles")
+     c["inherited_dense_key_accounting_description"] = c["key_accounting"]
+-    c["key_accounting"] = "Raw/projected key bytes and 4096/group descriptor unchanged. Ordinary FACTORS retains the checked original full packed bound plus4*nblock map bytes minus8*nstate^2 for its unused terminal cprime block before RESERVE. Retained factors=(16*nstate^2+12*nstate)*nblock+4*npositive+4*nblock+8*npositive*nstate*nunique-8*nstate^2. STORE duplicate release8*npositive*nstate*(nblock-nunique), signed-zero bits and hit full-shape8*nstate^2 reconstruction are unchanged. Full33-column last-block SOLVE remains; only ordinary persistent cprime has nblock-1 blocks. Reservation peak is not RSS; legacy storage/arithmetic remain exact."
++    c["key_accounting"] = "Raw/projected key bytes and 4096/group descriptor unchanged. FACTORS keeps the original full packed bound plus4*nblock map bytes minus8*nstate^2 for terminal cprime before RESERVE. LOWER_STORE duplicate release8*npositive*nstate*(nblock-nunique) is unchanged. After every original full33-column build SOLVE, ordinary-rank1 PACK reserves P=8*nstate*(nstate-1)*nblock while full factor F=8*nstate^2*nblock remains allocated, then move_alloc releases F; permanent diagonal reduction D=8*nstate*nblock. Ready retained factors=(16*nstate^2+12*nstate)*nblock+4*npositive+4*nblock+8*npositive*nstate*nunique-8*nstate^2-D; actual ready factor shape[nstate-1,nstate,nblock], cprime[nstate,nstate,nblock-1]. Each build peak includes prior_live+raw_key+projected_key+postLOWER_prePACK_factors+P, along with unchanged raw/projected temporary-key and worst FACTORS reservations. Hit factor decode reuses the existing full-shape8*nstate^2 lower workspace after lower RHS use; public square FACTOR64/SOLVE64 and pivots/pivot_value are unchanged. Lower-only primitives with no allocated ready factor retain original reservation/accounting and zero factor shape. Reservation/storage saving is not RSS; legacy/dense/uncached arithmetic and all original40 stages/thresholds remain exact."
+ 
+     c["inherited_literal_control_source"] = dict(path=str(ORIGINAL_CONTROL),sha256=ORIGINAL_CONTROL_SHA)
+     c["positive_fixtures"].append(dict(name="permuted_angles",groups=2,nrhs=3,nreg2d=8,nfloor=48,
+         npq=32,nsct=3,nmode=1,white=True,rank1=True))
+     memory = patch.control_contract()
++    if memory != read(require(FACTOR_DIAGONAL_CONTROL_CONTRACT,FACTOR_DIAGONAL_CONTROL_CONTRACT_SHA)):
++        raise ValueError("entire inherited control contract plus factor storage addendum differs")
+     trim_contract = dict(schema=TRIM_SCHEMA,ordinary_rank1_only=True,
+         persistent_cprime_blocks="nblock-1",bytes_saved_per_group="8*nstate^2",
+         actual_boundary_cprime_extent_required=True,all_original_40_stages_required=True,
+@@ -360,6 +382,10 @@
+     if memory.get("last_cprime_trim") != trim_contract:
+         raise ValueError("explicit original40-case contract and ordinary cprime storage extent required")
+     c["last_cprime_trim"] = trim_contract
++    factor_contract = {'schema': 'AXMAT_RANK1_DEAD_FACTOR_DIAGONAL_STORAGE_PATCH_V1', 'ordinary_rank1_only': True, 'ready_factor_physical_shape': '[nstate-1,nstate,nblock]', 'public_solve_shape': '[nstate,nstate]', 'retained_build_all_original_factor_and_full_RHS_solves': True, 'all_original_40_stages_required': True, 'persistent_release_bytes': '8*nstate*nblock', 'transient_pack_reservation_bytes': '8*(nstate-1)*nstate*nblock', 'reused_square_workspace': 'rank1_lower_work', 'actual_native_RSS_passed': False}
++    if memory.get("factor_diagonal_trim") != factor_contract:
++        raise ValueError("explicit factor physical shape/public square solve/accounted pack contract required")
++    c["factor_diagonal_trim"] = copy.deepcopy(factor_contract)
+     c["memory_control_contract"] = memory
+     c["memory_positive_command_args"] = ["memory-positive"]
+     c["memory_negative_cases"] = [dict(item,args=["memory-negative",item["name"]])
+@@ -393,7 +419,7 @@
+     control_proof=control_source_equivalence()
+     proof=changed["proof"]
+     if (proof["parent_kernel_sha256"] != MEMORY_KERNEL_SOURCE_SHA or proof["complete_inverse_byteexact"] is not True
+-            or proof['scope']!='ORDINARY_RANK1_LOWER_RAW_BIT_DICTIONARY_AND_UNUSED_TERMINAL_CPRIME_STORAGE_ONLY'
++            or proof['scope']!='ORDINARY_RANK1_LOWER_DICTIONARY_TERMINAL_CPRIME_AND_DEAD_FACTOR_DIAGONAL_STORAGE_ONLY'
+             or proof['dense_parent_kernel_sha256']!=KERNEL_SOURCE_SHA
+             or proof['rank1_factor_cache_budget_bytes']!=536870912
+             or proof['new_plan_descriptor_fields_covered_by_parent_4096_bytes'] is not True
+@@ -406,8 +432,8 @@
+     trim=proof.get("last_cprime_trim",{})
+     if (trim.get("schema")!=TRIM_SCHEMA or trim.get("parent_dedup_kernel_sha256")!=PARENT_DEDUP_KERNEL_SHA
+             or trim.get("candidate_kernel_sha256")!=TRIMMED_KERNEL_SHA
+-            or proof.get("candidate_kernel_sha256")!=TRIMMED_KERNEL_SHA
+-            or hashlib.sha256(changed["kernel"].encode()).hexdigest()!=TRIMMED_KERNEL_SHA
++            or proof.get("candidate_kernel_sha256")!=FACTOR_DIAGONAL_KERNEL_SHA
++            or hashlib.sha256(changed["kernel"].encode()).hexdigest()!=FACTOR_DIAGONAL_KERNEL_SHA
+             or trim.get("complete_inverse_to_dedup_byteexact") is not True
+             or trim.get("inverse_kernel_sha256")!=PARENT_DEDUP_KERNEL_SHA
+             or trim.get("ordinary_rank1_only") is not True or trim.get("full_33_rhs_solve_unchanged") is not True
+@@ -415,6 +441,15 @@
+             or trim.get("actual_controls_executed") is not False or trim.get("actual_native_RSS_passed") is not False
+             or proof.get("delegated_parent_helper")!=dict(path=str(DELEGATED_DEDUP_PATCH),sha256=DELEGATED_DEDUP_PATCH_SHA)):
+         raise ValueError("complete c0/dedup inverse and no-arithmetic-change trim source proof required")
++    factor=proof.get("factor_diagonal_trim",{})
++    if (factor.get("schema")!=FACTOR_DIAGONAL_SCHEMA
++            or factor.get("parent_kernel_sha256")!=TRIMMED_KERNEL_SHA
++            or factor.get("candidate_kernel_sha256")!=FACTOR_DIAGONAL_KERNEL_SHA
++            or factor!=read(require(FACTOR_DIAGONAL_PROOF,FACTOR_DIAGONAL_PROOF_SHA))
++            or proof!=read(require(COMPLETE_C0_FACTOR_PROOF,COMPLETE_C0_FACTOR_PROOF_SHA))
++            or proof.get("delegated_last_cprime_helper")!=dict(path=str(LAST_CPRIME_PATCH_HELPER),sha256=LAST_CPRIME_PATCH_HELPER_SHA)
++            or changed["kernel"].encode()!=require(FACTOR_DIAGONAL_SOURCE,FACTOR_DIAGONAL_KERNEL_SHA).read_bytes()):
++        raise ValueError("complete c0->dedup->343e->factor diagonal source lineage differs")
+     return dict(kernel=changed["kernel"],reference_kernel=ref["reference_kernel"],dense_reference_kernel=dense["kernel"],
+         proof=proof,dense_reference_proof=dense["proof"],original_reference_proof=ref["proof"],control_source_proof=control_proof),c
+ 
+@@ -469,7 +504,7 @@
+     forecast=total+source_bytes+manifest_allowance+allowance
+     if forecast>=ARCHIVE_RESERVE:
+         raise ValueError('complete exact raw archive and all build/source allowances exceed original 2GiB')
+-    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_COMPLETE_ARCHIVE_FORECAST_V1',
++    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_COMPLETE_ARCHIVE_FORECAST_V1',
+         complete_scope_roots=[str(SOURCE),str(OUT)],complete_control_raw_binary_and_abort_message_bytes_upper_bound=total,
+         fixed_control_raw_binary_and_abort_message_bytes=total-variable_dictionary_upper,
+         variable_dictionary_raw_bytes_upper_bound=variable_dictionary_upper,
+@@ -485,7 +520,12 @@
+         read(PARENT/'declaration.json')['control_contract']))
+     f=contract['positive_fixtures'][0]
+     synthetic=cache_accounting(f); physical=cache_accounting(f,nmat=24)
+-    peak=physical['final_retained_bytes']+max(physical['raw_key_bytes'],physical['projected_key_bytes'],physical['hit_workspace_bytes'])
++    before=physical['descriptor_bytes']+(f['groups']-1)*physical['persistent_bytes_per_group']
++    key=physical['raw_key_bytes']+physical['projected_key_bytes']
++    pack_peak=before+key+physical['post_lower_pre_factor_pack_bytes_per_group']+physical['factor_pack_reservation_bytes_per_group']
++    hit_peak=physical['final_retained_bytes']+max(physical['raw_key_bytes'],physical['projected_key_bytes'],physical['hit_workspace_bytes'])
++    peak=max(before+2*physical['raw_key_bytes'],before+physical['raw_key_bytes']+2*physical['projected_key_bytes'],
++        before+key+physical['worst_factor_reservation_bytes_per_group'],pack_peak,hit_peak,physical['final_retained_bytes'])
+     if peak>=536870912:
+         raise ValueError('complete packed production cache forecast exceeds inherited accounted cap')
+     return dict(schema='AXMAT_RANK1_MEMORY_DEDUP_STORED_TRACK_FORECAST_V1',inherited_actual_shape_witness=original,
+@@ -493,6 +533,8 @@
+         NREG2D=8,NFLOOR=48,NPQ=32,NSCT=3,NSNAP=3,TRACK_material_bound=24,synthetic_controls_NMAT=3,
+         actual_positive_rows=16,synthetic_cache_accounting=synthetic,material_bound_cache_accounting=physical,
+         predicted_peak_accounted_bytes=peak,accounted_cache_cap_bytes=536870912,
++        predicted_last_build_pack_peak_accounted_bytes=pack_peak,predicted_hit_peak_accounted_bytes=hit_peak,
++        factor_pack_peak_includes_coexisting_full_and_packed_factors=True,
+         all370_dense_lower_gross_bytes_removed=370*16*32*49*8,
+         all370_persistent_rowmap_bytes_added=370*16*4,
+         all370_net_persistent_factor_storage_bytes_saved=370*(16*32*49*8-16*4),
+@@ -501,6 +543,8 @@
+         all370_additional_persistent_blockmap_bytes=370*49*4,
+         all370_unused_cprime_payload_bytes_removed=370*32*32*8,
+         unused_cprime_payload_saving_is_not_RSS_or_512MiB_proof=True,
++        all370_unused_factor_diagonal_payload_bytes_removed=f['groups']*physical['factor_diagonal_bytes_released_per_group'],
++        factor_diagonal_payload_saving_is_not_RSS_or_512MiB_proof=True,
+         dictionary_cardinality_not_inferred_from_prior_partial_capture=True,
+         forecast_is_not_actual_production_RSS_measurement=True,fresh_native_RSS_under_512_required=True)
+ 
+@@ -598,7 +642,7 @@
+     files[str(OUT/'runtime/run_bounded_dragon.py')]=digest(OUT/'runtime/run_bounded_dragon.py')
+     (SOURCE/'SPOT1P64.patch').write_text(''.join(difflib.unified_diff(MEMORY_KERNEL_SOURCE.read_text().splitlines(True),
+         changed['kernel'].splitlines(True),fromfile=str(MEMORY_KERNEL_SOURCE),tofile=str(SOURCE/'SPOT1P64.f90'))))
+-    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_SOURCE_ADMISSION_V1',
++    write_new(SOURCE/'source_admission.json',dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_SOURCE_ADMISSION_V1',
+         actual_original_source_objects=originals,source_patch_proof=changed['proof'],dense_reference_proof=changed['dense_reference_proof'],
+         inherited_completed_memory_source_admission=memory_parent['source_admission'],
+         actual_dictionary_parent_source=pin(MEMORY_KERNEL_SOURCE),dictionary_parent_is_not_dense_reference=True,
+@@ -611,7 +655,7 @@
+         reference_objects_unit_only=True,actual_full_FLU_entry_executed=False,native_RSS_proof_obtained=False,
+         fresh_512MiB_native_capture_required=True,scientific_qualification=False))
+     inv=h.inventory(SOURCE);files.update({str(SOURCE/name):sha for name,sha in inv['files'].items()})
+-    d=dict(schema='AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_DECLARATION_V1',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
++    d=dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_DECLARATION_V1',family=FAMILY,source_root=str(SOURCE),source_inventory=inv,source_directories=exact_directories(SOURCE),
+         files=files,build_commands=commands,production_link_command=commands[1],inherited_rank1_factor_cache_admission=parent,
+         inherited_rank1_factor_cache_memory_admission=memory_parent,actual_failed_compact_memory_native_capture_evidence=memory_failed,
+         actual_failed_cold_AAA_evidence=parent['actual_failed_cold_AAA_evidence'],actual_failed_native_capture_evidence=failed,
+@@ -644,7 +688,7 @@
+ def declaration_admission(expected,require_build_interpreter=True):
+     require_ready()
+     d=read(require(OUT/'declaration.json',expected))
+-    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_DECLARATION_V1'
++    if (not re.fullmatch(r'[0-9a-f]{64}',expected or '') or d['schema']!='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_DECLARATION_V1'
+             or d['family']!=FAMILY or d['source_root']!=str(SOURCE) or d['total_wall_seconds']!=1800 or d['stage_wall_seconds']!=600
+             or d['rss_cap_mib']!=512 or d['archive_reserve_bytes']!=2*2**30 or d['artifact_budget_bytes']!=96*2**30
+             or d['min_free_bytes']!=8*2**30 or d['threads']!=1 or d['numeric_children_at_once']!=1 or d['retries']!=0
+@@ -799,13 +843,24 @@
+     blocks=nh+1
+     unique_count=blocks if unique_count is None else unique_count
+     if type(unique_count) is not int or not 1<=unique_count<=blocks:raise ValueError('actual dictionary cardinality outside complete block range')
++    # FACTORS keeps its original checked reservation. LOWER_STORE alone
++    # releases duplicates; PACK runs only after all original build solves.
+     worst=(16*nq*nq+8*rows*nq+12*nq)*blocks+4*rows+4*blocks-8*nq*nq
+-    factors=(16*nq*nq+12*nq)*blocks+4*rows+4*blocks+8*rows*nq*unique_count-8*nq*nq
++    prepack=(16*nq*nq+12*nq)*blocks+4*rows+4*blocks+8*rows*nq*unique_count-8*nq*nq
++    ordinary_rank1=fixture['rank1']
++    dead=8*nq*blocks if ordinary_rank1 else 0
++    packed=8*nq*(nq-1)*blocks if ordinary_rank1 else 0
++    full=8*nq*nq*blocks if ordinary_rank1 else 0
++    factors=prepack-dead
+     return dict(descriptor_bytes=fixture['groups']*4096,raw_key_bytes=raw*8,projected_key_bytes=projected*8,
+         factor_bytes_per_group=factors,persistent_bytes_per_group=(raw+projected)*8+factors,
+         final_retained_bytes=fixture['groups']*(4096+(raw+projected)*8+factors),hit_workspace_bytes=8*nq*nq,
+         dictionary_unique_count=unique_count,dictionary_bytes=8*rows*nq*unique_count,block_map_bytes=4*blocks,
+-        worst_factor_reservation_bytes_per_group=worst,duplicate_unallocated_bytes_released=worst-factors,
++        worst_factor_reservation_bytes_per_group=worst,duplicate_unallocated_bytes_released=worst-prepack,
++        post_lower_pre_factor_pack_bytes_per_group=prepack,
++        factor_pack_reservation_bytes_per_group=packed,
++        factor_pack_full_allocation_release_bytes_per_group=full,
++        factor_diagonal_bytes_released_per_group=dead,
+         reservation_peak_is_not_actual_RSS=True)
+ 
+ 
+@@ -821,8 +876,10 @@
+                 first = before+2*account["raw_key_bytes"]
+                 second = before+account["raw_key_bytes"]+2*account["projected_key_bytes"]
+                 worst = before+account["raw_key_bytes"]+account["projected_key_bytes"]+account["worst_factor_reservation_bytes_per_group"]
++                pack = before+account["raw_key_bytes"]+account["projected_key_bytes"]+\
++                    account["post_lower_pre_factor_pack_bytes_per_group"]+account["factor_pack_reservation_bytes_per_group"]
+                 state["live"] += account["persistent_bytes_per_group"]
+-                state["peak"] = max(state["peak"], first, second, worst, state["live"])
++                state["peak"] = max(state["peak"], first, second, worst, pack, state["live"])
+                 state["built"] += fixture["nfloor"]+1
+             else:
+                 state["peak"] = max(state["peak"], state["live"]+max(
+@@ -1116,7 +1173,7 @@
+             forecast['fixed_control_raw_binary_and_abort_message_bytes']+actual_variable_bytes
+             or actual_raw_bytes>forecast['complete_control_raw_binary_and_abort_message_bytes_upper_bound']):
+         raise ValueError('complete fixed raw bytes and actual complete dictionaries must satisfy their independently declared exact/upper-bound forecast')
+-    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_FULL_RAW_CONTROLS_AUDIT_V1", status="PASS",
++    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_FULL_RAW_CONTROLS_AUDIT_V1", status="PASS",
+         counts=dict(fixtures=8, inherited_bitwise_source_pairs_reexecuted=1146, additional_permutation_source_pairs=6,
+             dense_reference_kernel_calls=memory["dense_reference_calls"], memory_module_negative_calls=6,
+             dictionary_positive_primitives=3,dictionary_module_negative_calls=8,original_stages_retained=31,total_declared_stages=40,
+@@ -1319,7 +1376,7 @@
+             write_new(OUT / "driver_result.json", result)
+             raise
+         write_new(OUT / "driver_result.json", result)
+-    write_new(OUT / "seal.json", dict(schema="AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_SEAL_V1", directories=exact_directories(OUT), files={
++    write_new(OUT / "seal.json", dict(schema="AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_SEAL_V1", directories=exact_directories(OUT), files={
+         str(path.relative_to(OUT)):digest(path) for path in OUT.rglob("*") if path.is_file() and not path.is_symlink()}))
+     try:
+         final_resources = resources.check()
+@@ -1446,7 +1503,7 @@
+     if not re.fullmatch(r"[0-9a-f]{64}", build_seal_sha or ""):
+         raise ValueError("the actual new rank-one-cache build seal hash is mandatory")
+     seal = read(require(OUT / "seal.json", build_seal_sha))
+-    if seal["schema"] != "AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_BUILD_SEAL_V1":
++    if seal["schema"] != "AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_BUILD_SEAL_V1":
+         raise ValueError("the actual complete new rank-one-cache build seal is required")
+     if exact_directories(OUT)!=seal["directories"]:raise ValueError("complete final directory namespace changed")
+     actual = {}
+@@ -1521,8 +1578,8 @@
+     # runtime identity that a consuming pipeline must compare exactly.
+     resources_for(d["resource_roots"]).check()
+     prior = d["inherited_rank1_factor_cache_admission"]
+-    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1",
+-        admission="RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_RUNTIME_INPUT_ONLY", build_root=str(OUT), source_root=str(SOURCE),
++    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1",
++        admission="RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY", build_root=str(OUT), source_root=str(SOURCE),
+         build_seal_sha256=build_seal_sha, corrected_runtime=pin(OUT / "runtime/Dragon"),
+         compiled_kernel_source=pin(SOURCE / "SPOT1P64.f90"),
+         source_admission=pin(SOURCE / "source_admission.json"),
+@@ -1751,13 +1808,16 @@
+     independent=independent_dictionary(full,n,b,tuple(expected_rows))
+     if any(stored[key]!=independent[key] for key in ('unique_count','blockmap','dictionary','dictionary_bytes','block_map_bytes')):
+         raise ValueError('complete first-occurrence IEEE dictionary and actual blockmap differ')
+-    factor=(16*n*n+12*n)*b+4*nrow+4*b+8*nrow*n*stored['unique_count']-8*n*n;work=8*n*n
++    factor=(16*n*n+12*n)*b+4*nrow+4*b+8*nrow*n*stored['unique_count']-8*n*n
++    # Lower-only primitives have neither a ready factor nor a diagonal trim.
++    if factor_shapes_expected:factor-=8*n*b
++    work=8*n*n
+     if (ph[5]!=factor or dh!=(1,n,b,nrow,ph[4],work,ph[6],ph[6]+work,max(ph[7],ph[6]+work),536870912,0,0)
+             or decode[96:]!=full):raise ValueError('full decode bits or precise allocated/workspace accounting differs')
+     row=dict(kind='packed',case=stem.rsplit('_g',1)[0],group=ph[4],file=stem+'_packed.bin',decoded_file=stem+'_decoded.bin',
+         before_live=ph[6],after_live=ph[6],workspace_bytes=work,peak=max(ph[7],ph[6]+work),
+         unique_count=stored['unique_count'],dictionary_bytes=stored['dictionary_bytes'],block_map_bytes=stored['block_map_bytes'],factor_bytes=ph[5],
+-        factor_shape=[n,n,b] if factor_shapes_expected else [0,0,0],
++        factor_shape=[n-1,n,b] if factor_shapes_expected else [0,0,0],
+         cprime_shape=[n,n,b-1] if factor_shapes_expected else [0,0,0])
+     return stored,row
+ 
+@@ -1913,7 +1973,11 @@
+             rowmap=stored['rowmap'];values=stored['dictionary']
+             dictionary_groups.append(dict(case=f['name'],group=group,unique_count=independent['unique_count'],
+                 dictionary_bytes=independent['dictionary_bytes'],block_map_bytes=independent['block_map_bytes'],
+-                actual_factor_bytes=account['factor_bytes_per_group'],worst_factor_reservation_bytes=account['worst_factor_reservation_bytes_per_group']))
++                actual_factor_bytes=account['factor_bytes_per_group'],worst_factor_reservation_bytes=account['worst_factor_reservation_bytes_per_group'],
++                post_lower_pre_factor_pack_bytes=account['post_lower_pre_factor_pack_bytes_per_group'],
++                factor_pack_reservation_bytes=account['factor_pack_reservation_bytes_per_group'],
++                factor_pack_full_allocation_release_bytes=account['factor_pack_full_allocation_release_bytes_per_group'],
++                factor_diagonal_bytes_released=account['factor_diagonal_bytes_released_per_group']))
+             decode=control_file(folder,stem+'_decoded.bin').read_bytes();dh=struct.unpack('<12q',decode[:96]);work=8*n*n
+             if dh!=(1,n,b,nrow,group,work,ph[6],ph[6]+work,max(ph[7],ph[6]+work),536870912,0,0):
+                 raise ValueError('full-shape decode temporary must be reserved before allocation and archived')
+@@ -1928,7 +1992,7 @@
+             if packed!=dict(kind='packed',case=f['name'],group=group,file=stem+'_packed.bin',decoded_file=stem+'_decoded.bin',
+                     before_live=ph[6],after_live=ph[6],workspace_bytes=work,peak=max(ph[7],ph[6]+work),
+                     unique_count=stored['unique_count'],dictionary_bytes=stored['dictionary_bytes'],block_map_bytes=stored['block_map_bytes'],factor_bytes=ph[5],
+-                    factor_shape=[n,n,b],cprime_shape=[n,n,b-1]):
++                    factor_shape=[n-1,n,b],cprime_shape=[n,n,b-1]):
+                 raise ValueError('full decode workspace must actually RELEASE and restore persistent live bytes')
+             extra_files.update((dense['file'],packed['file'],packed['decoded_file']));dense_calls+=1;lower_bits+=n*n*b
+     if cursor!=len(rows) or dense_calls!=378:raise ValueError('all370 plus lifecycle/signed/permuted dense memory coverage incomplete')
+@@ -1983,7 +2047,7 @@
+             raise ValueError('actual row/dim/+0/-0 guard must reject exactly, with no normal return')
+         negatives.append(dict(name=name,actual_message=message.rstrip(),actual_XABORT=pin(folder/'actual_XABORT.txt')))
+     dedup=dedup_controls_audit(d)
+-    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_LAST_CPRIME_TRIM_RAW_AUDIT_V1',status='PASS',
++    return dict(schema='AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RAW_AUDIT_V1',status='PASS',
+         dense_reference_calls=dense_calls,complete_lower_IEEE64_elements_compared=lower_bits,
+         actual_group_dictionary_accounting=dictionary_groups,dictionary_controls=dedup,
+         positive_extra_files=sorted(extra_files),rowmap_dimension_omitted_zero_negative_controls=negatives,

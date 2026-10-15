@@ -1,0 +1,1987 @@
+{
+  "schema": "ORIGINAL129_COMPLETE_MATERIAL_SEED_SOURCE_META_CONTRACT_V1",
+  "source_only": true,
+  "original129_input_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_full_AB_rawrecord_transfer_v22_admission_meta/Root_actual_rawrecord_SOURCE_admission.json",
+      "sha256": "7534059b4fdd9392f9c5b797808a86c69b1e6cdee371010f3e0ad02188fd5407",
+      "size_bytes": 2251,
+      "identity": [
+        16777229,
+        49402110,
+        33188,
+        1,
+        2251,
+        1791602228721717759,
+        1791602228721717759
+      ]
+    },
+    {
+      "path": "/private/tmp/axmat_rawrecord_fixed_historical_auditor_retention_SOURCE_20261010_tl856qp8/sealed_SOURCE_manifest.json",
+      "sha256": "641682743ba9f411dd5d09eae4c2df8c3dcce8178f325cc42da71dd1f84f9b4d",
+      "size_bytes": 64809,
+      "identity": [
+        16777229,
+        49400114,
+        33188,
+        1,
+        64809,
+        1791601053938130133,
+        1791601053938130133
+      ]
+    },
+    {
+      "path": "/private/tmp/axmat_full_AB_rawrecord_independent_SOURCE_review_20261010_gjmmbjxj/REVIEW.json",
+      "sha256": "85514d32a0052678f72f7fc23b9f1729eeca7b7a44ee5912da467408f42d3e2d",
+      "size_bytes": 326702,
+      "identity": [
+        16777229,
+        49400727,
+        33188,
+        1,
+        326702,
+        1791601268123200074,
+        1791601268123200074
+      ]
+    },
+    {
+      "path": "/private/tmp/axmat_full_AB_rawrecord_independent_SOURCE_review_20261010_gjmmbjxj/actual_SOURCE_review_tool_terminal_return.json",
+      "sha256": "29ca482e970bf4e975c62ecdc2e91ef06cdf6caf8e6fd717161a47060e0c7cab",
+      "size_bytes": 1088,
+      "identity": [
+        16777229,
+        49400779,
+        33188,
+        1,
+        1088,
+        1791601332818970899,
+        1791601332818970899
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_full_AB_rawrecord_transfer_v22_admission_meta/Root_actual_current150_AB_material_provenance_admission.json",
+      "sha256": "ac7ecfa6f05c1e2acb557d8c57c81fb1f97239528321124f73a25d98e9a15a85",
+      "size_bytes": 310354,
+      "identity": [
+        16777229,
+        49402111,
+        33188,
+        1,
+        310354,
+        1791602228724628226,
+        1791602228724628226
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/case_spec.json",
+      "sha256": "ac3e67ffdc25f5bfa45bca5170253de8e875c983550e5ee878ee30c5d1a4c2c4",
+      "size_bytes": 7887,
+      "identity": [
+        16777229,
+        48005120,
+        33188,
+        1,
+        7887,
+        1790963020298666616,
+        1790963020298666616
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/material_inputs.json",
+      "sha256": "935223ea827afe403a1ad5cdc8198fc38f9276d487839d7efa4a159f5c374916",
+      "size_bytes": 5604,
+      "identity": [
+        16777229,
+        48006646,
+        33188,
+        1,
+        5604,
+        1790963723445802112,
+        1790963723445802112
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/material_results.json",
+      "sha256": "b11d402b119052f4d0e639501266ec086b1137f1fe05b9fc417eef21dcdb4037",
+      "size_bytes": 2929,
+      "identity": [
+        16777229,
+        48013639,
+        33188,
+        1,
+        2929,
+        1790965237601769373,
+        1790965237601769373
+      ]
+    },
+    {
+      "path": "/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12",
+      "sha256": "ba725dca52e02b5382d6acf3e6ac92afb0d65662f1ce8820d75a59a095490860",
+      "size_bytes": 6672384,
+      "identity": [
+        16777229,
+        1058269,
+        33277,
+        1,
+        6672384,
+        1778161525128442423,
+        1778161525128493673
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/material_audit.json",
+      "sha256": "c85252e6520469d6c55bd83119dfc82d2e10680cc26def751712e3dde170830a",
+      "size_bytes": 42368,
+      "identity": [
+        16777229,
+        48011757,
+        33188,
+        1,
+        42368,
+        1790964841528808803,
+        1790964841528808803
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/material_audit.json",
+      "sha256": "1c45e10e83427afed7137751e05c96b7f4fe27cb6230427ec72012c5813f720e",
+      "size_bytes": 42364,
+      "identity": [
+        16777229,
+        48011861,
+        33188,
+        1,
+        42364,
+        1790964911312315351,
+        1790964911312315351
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/macro.ascii",
+      "sha256": "1ef4420e14d3c478c061f8b15b5967404c607a6b4a90103a0e32d013d5f592b5",
+      "size_bytes": 39546544,
+      "identity": [
+        16777229,
+        48006993,
+        33188,
+        1,
+        39546544,
+        1790963771609949825,
+        1790963771609949825
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/macro.ascii",
+      "sha256": "957502ec9462644ab789894a1f2bf465f2acc1b5390777b27dc52f26b833c1d3",
+      "size_bytes": 39546544,
+      "identity": [
+        16777229,
+        48007177,
+        33188,
+        1,
+        39546544,
+        1790963873709695232,
+        1790963873709695232
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/rnr_0burn.x2m",
+      "sha256": "6706fc1991dee9c3218b8acd8dc65b1e191dbcd5bfdb6753d5acaeb85b112dc2",
+      "size_bytes": 9180,
+      "identity": [
+        16777229,
+        7491453,
+        33216,
+        1,
+        9180,
+        1779830374157271526,
+        1779830374157415902
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/pincell/results_new_materials_pincell_20260527/dragon/rnr_pincell_glow.x2m",
+      "sha256": "83c2f296fcc71baf4eb2fb8d626622250326ad9cc6a1d1c24621ffebc54cf7c6",
+      "size_bytes": 7132,
+      "identity": [
+        16777229,
+        7540647,
+        33188,
+        1,
+        7132,
+        1779861625120135319,
+        1779861625120247235
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/pincell/results_new_materials_pincell_20260527/dragon/rnr_cc.c2m",
+      "sha256": "594e9e58aae950b003bd410440928c97b59cf67f70844033c69c05b78e8565b5",
+      "size_bytes": 10299,
+      "identity": [
+        16777229,
+        7540652,
+        33188,
+        1,
+        10299,
+        1779861625121991181,
+        1779861625122113764
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/pincell/results_new_materials_pincell_20260527/dragon/rnr_interpol.c2m",
+      "sha256": "255ddfc61a61026e0f36aefe5ad4cee0b41871fdbd25e2b77c540bd9bccb8ed2",
+      "size_bytes": 9173,
+      "identity": [
+        16777229,
+        7540653,
+        33188,
+        1,
+        9173,
+        1779861625122390512,
+        1779861625122504470
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/data/SpotD4Snap.c2m",
+      "sha256": "379fe409480d7f89cd094e4ed8e703d14c892185ca9c648947b0d2657e7c1311",
+      "size_bytes": 8392,
+      "identity": [
+        16777229,
+        36632467,
+        33188,
+        1,
+        8392,
+        1788458030371667012,
+        1788458030371667012
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/pincell/results_new_materials_pincell_20260527/dragon/rnr_pincell.dat",
+      "sha256": "d70e7308937e157ccaea03426cf02187827166be80d7806757e9f212729317ec",
+      "size_bytes": 2045,
+      "identity": [
+        16777229,
+        7540648,
+        33188,
+        1,
+        2045,
+        1779861625120518400,
+        1779861625120609066
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/data/rnr_0burn_spot_proc/rnr_cc.c2m",
+      "sha256": "594e9e58aae950b003bd410440928c97b59cf67f70844033c69c05b78e8565b5",
+      "size_bytes": 10299,
+      "identity": [
+        16777229,
+        913237,
+        33188,
+        1,
+        10299,
+        1788458036543797504,
+        1788458036543871463
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/data/rnr_0burn_spot_proc/rnr_interpol.c2m",
+      "sha256": "255ddfc61a61026e0f36aefe5ad4cee0b41871fdbd25e2b77c540bd9bccb8ed2",
+      "size_bytes": 9173,
+      "identity": [
+        16777229,
+        913238,
+        33188,
+        1,
+        9173,
+        1788458036545431311,
+        1788458036545507811
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/AxMatTone.c2m",
+      "sha256": "4f4d4afeb5ac988cab357e7edf7444fedf9a68f444511229a22e08c1310cc125",
+      "size_bytes": 5224,
+      "identity": [
+        16777229,
+        48006633,
+        33188,
+        1,
+        5224,
+        1790963723444079687,
+        1790963723444079687
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/geometry.dat",
+      "sha256": "d70e7308937e157ccaea03426cf02187827166be80d7806757e9f212729317ec",
+      "size_bytes": 2045,
+      "identity": [
+        16777229,
+        48006640,
+        33188,
+        1,
+        2045,
+        1790963723444512148,
+        1790963723444512148
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/material.x2m",
+      "sha256": "f7e76b2b052466ef707863f8cf6c17b854db003caec082e6205d1da21c147ee7",
+      "size_bytes": 1147,
+      "identity": [
+        16777229,
+        48006634,
+        33188,
+        1,
+        1147,
+        1790963723444178979,
+        1790963723444178979
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/rnr_cc.c2m",
+      "sha256": "594e9e58aae950b003bd410440928c97b59cf67f70844033c69c05b78e8565b5",
+      "size_bytes": 10299,
+      "identity": [
+        16777229,
+        48006641,
+        33188,
+        1,
+        10299,
+        1790963723444720690,
+        1790963723444720690
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/rnr_interpol.c2m",
+      "sha256": "255ddfc61a61026e0f36aefe5ad4cee0b41871fdbd25e2b77c540bd9bccb8ed2",
+      "size_bytes": 9173,
+      "identity": [
+        16777229,
+        48006642,
+        33188,
+        1,
+        9173,
+        1790963723444866608,
+        1790963723444866608
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/snapshot.x2m",
+      "sha256": "9363f7d7fdb9c261eb5ba361098da15af2d621aa1a97cafbbe0195deef29cc0c",
+      "size_bytes": 1508,
+      "identity": [
+        16777229,
+        48006635,
+        33188,
+        1,
+        1508,
+        1790963723444247146,
+        1790963723444247146
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/AxMatTone.c2m",
+      "sha256": "4f4d4afeb5ac988cab357e7edf7444fedf9a68f444511229a22e08c1310cc125",
+      "size_bytes": 5224,
+      "identity": [
+        16777229,
+        48006637,
+        33188,
+        1,
+        5224,
+        1790963723444339938,
+        1790963723444339938
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/geometry.dat",
+      "sha256": "d70e7308937e157ccaea03426cf02187827166be80d7806757e9f212729317ec",
+      "size_bytes": 2045,
+      "identity": [
+        16777229,
+        48006643,
+        33188,
+        1,
+        2045,
+        1790963723444943858,
+        1790963723444943858
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/material.x2m",
+      "sha256": "768986d3208834888b12a0120ec08151caf4dcfcc5e52c9f5f9a72c9b5ee7c1c",
+      "size_bytes": 1147,
+      "identity": [
+        16777229,
+        48006638,
+        33188,
+        1,
+        1147,
+        1790963723444400272,
+        1790963723444400272
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/rnr_cc.c2m",
+      "sha256": "594e9e58aae950b003bd410440928c97b59cf67f70844033c69c05b78e8565b5",
+      "size_bytes": 10299,
+      "identity": [
+        16777229,
+        48006644,
+        33188,
+        1,
+        10299,
+        1790963723445035234,
+        1790963723445035234
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/rnr_interpol.c2m",
+      "sha256": "255ddfc61a61026e0f36aefe5ad4cee0b41871fdbd25e2b77c540bd9bccb8ed2",
+      "size_bytes": 9173,
+      "identity": [
+        16777229,
+        48006645,
+        33188,
+        1,
+        9173,
+        1790963723445114984,
+        1790963723445114984
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/snapshot.x2m",
+      "sha256": "4426adac5155825ef6cf66ea5242f92a3259654b0ac2e6a1ea3159d7a112ad41",
+      "size_bytes": 1508,
+      "identity": [
+        16777229,
+        48006639,
+        33188,
+        1,
+        1508,
+        1790963723444456814,
+        1790963723444456814
+      ]
+    },
+    {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/Mo100/draglibshem370_endfb8r1_v5p1",
+      "sha256": "1767b8f9bba23207ca838077c2871b6b772c9f6fdf49ac9c7da89b7d8b1a1df8",
+      "size_bytes": 213902,
+      "identity": [
+        16777229,
+        2955103,
+        33188,
+        1,
+        213902,
+        1778486814809867567,
+        1778486814821589788
+      ]
+    },
+    {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/Mo92/draglibshem370_endfb8r1_v5p1",
+      "sha256": "7b140eed262cdf6e07aef1e6769e53a0fe64bdc7c81b1bd11830a4253feda584",
+      "size_bytes": 224257,
+      "identity": [
+        16777229,
+        2924659,
+        33188,
+        1,
+        224257,
+        1778485571954002189,
+        1778485571965717658
+      ]
+    },
+    {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/Mo94/draglibshem370_endfb8r1_v5p1",
+      "sha256": "3622473a978a237dde03fc8200c91cf5f9b3f945409094b548f015f97ae007ca",
+      "size_bytes": 221217,
+      "identity": [
+        16777229,
+        2928914,
+        33188,
+        1,
+        221217,
+        1778485750189797051,
+        1778485750201982354
+      ]
+    },
+    {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/Mo95/draglibshem370_endfb8r1_v5p1",
+      "sha256": "e8d02101d5f1476190502a35bce94f285e33f5be0455e1eaff1c1bfeb0c0f8cd",
+      "size_bytes": 243647,
+      "identity": [
+        16777229,
+        2933830,
+        33188,
+        1,
+        243647,
+        1778485922608187036,
+        1778485922619317380
+      ]
+    },
+    {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/Mo96/draglibshem370_endfb8r1_v5p1",
+      "sha256": "a3226799a1f32a6d55f837fe2720e7f158f527f0a70e037705dd0e9ccebb55e5",
+      "size_bytes": 219322,
+      "identity": [
+        16777229,
+        2937747,
+        33188,
+        1,
+        219322,
+        1778486101069154857,
+        1778486101081161076
+      ]
+    },
+    {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/Mo97/draglibshem370_endfb8r1_v5p1",
+      "sha256": "092044fd2ef243f539d4e5cef1e6dbc87e3af0a48720ecacff1765832908a3c5",
+      "size_bytes": 222272,
+      "identity": [
+        16777229,
+        2941211,
+        33188,
+        1,
+        222272,
+        1778486284250489484,
+        1778486284263779494
+      ]
+    },
+    {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/Mo98/draglibshem370_endfb8r1_v5p1",
+      "sha256": "d6e1741c6f567a68314180d34744ca95b54d30142af843a27b0dd6a867a00474",
+      "size_bytes": 219327,
+      "identity": [
+        16777229,
+        2945915,
+        33188,
+        1,
+        219327,
+        1778486464498546820,
+        1778486464514380709
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/LIBDEN.f",
+      "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+      "size_bytes": 39389,
+      "identity": [
+        16777229,
+        965709,
+        33188,
+        1,
+        39389,
+        1778161313087103591,
+        1778161313087103591
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/LIBDRB.f",
+      "sha256": "a6acc8d62eb83af3caf080e986a9b096999c53f2a67f83252b43006488885207",
+      "size_bytes": 24897,
+      "identity": [
+        16777229,
+        965720,
+        33188,
+        1,
+        24897,
+        1778161313087662300,
+        1778161313087662300
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/LIBIPS.f",
+      "sha256": "82cfc27c4213f293f8a1bc3daf87823130cedf67336f8bb2713d12714773c0c4",
+      "size_bytes": 1854,
+      "identity": [
+        16777229,
+        965740,
+        33188,
+        1,
+        1854,
+        1778161313088825342,
+        1778161313088825342
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/TONCMI.f",
+      "sha256": "837bb5d4b6b0df5bc25871b7c05d389add827715344900a6759f2ff8f543d3b4",
+      "size_bytes": 8028,
+      "identity": [
+        16777229,
+        966233,
+        33188,
+        1,
+        8028,
+        1778161313120024009,
+        1778161313120024009
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/TONDRV.f",
+      "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+      "size_bytes": 16065,
+      "identity": [
+        16777229,
+        966234,
+        33188,
+        1,
+        16065,
+        1778161313120078842,
+        1778161313120078842
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/TONSPH.f",
+      "sha256": "7493a5e6d0a02607b93cdc93308f746a2a39972d48e708fb4930b955aa4bda80",
+      "size_bytes": 11575,
+      "identity": [
+        16777229,
+        966239,
+        33188,
+        1,
+        11575,
+        1778161313120392384,
+        1778161313120392384
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/material.log",
+      "sha256": "59d2ea9bcbdf74a03f7dccb67cf1fd386b88ad57238f0671c90c7de09ced23e8",
+      "size_bytes": 16547,
+      "identity": [
+        16777229,
+        48006940,
+        33188,
+        1,
+        16547,
+        1790963771628336208,
+        1790963771628336208
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/material.xsm",
+      "sha256": "d1b58e6deb074c51d57cb3176e93400faeb020ea9e1d8342547821226900912a",
+      "size_bytes": 76594248,
+      "identity": [
+        16777229,
+        48006983,
+        33152,
+        1,
+        76594248,
+        1790963769683966788,
+        1790963769683966788
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/metadata.ascii",
+      "sha256": "2470a9b1b9c3dd6e1b719381b384bb0fa6fb4ca63fcb8b153460f93ab18aaa6a",
+      "size_bytes": 1901272,
+      "identity": [
+        16777229,
+        48006994,
+        33188,
+        1,
+        1901272,
+        1790963771625167234,
+        1790963771625167234
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/microlib.ascii",
+      "sha256": "0cae5d8bc1125921a1154a0b7f7e7a05f48473663fed31259193b34ae835c377",
+      "size_bytes": 305414157,
+      "identity": [
+        16777229,
+        48006984,
+        33188,
+        1,
+        305414157,
+        1790963771436417757,
+        1790963771436417757
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/material.log",
+      "sha256": "dbc2e252ab992d3ea49580274a4ac9fa47735b745e646ebe0932501726292a5c",
+      "size_bytes": 16547,
+      "identity": [
+        16777229,
+        48007132,
+        33188,
+        1,
+        16547,
+        1790963873733376081,
+        1790963873733376081
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/material.xsm",
+      "sha256": "6a533b9ee07fbd58f48c1bd0d0c6d587bbff7c2764f00679a2fd7ea519f7c6be",
+      "size_bytes": 76594248,
+      "identity": [
+        16777229,
+        48007173,
+        33152,
+        1,
+        76594248,
+        1790963871876719683,
+        1790963871876719683
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/metadata.ascii",
+      "sha256": "bfbe9dd1ee193d8fce2f3a447fe9d077a96bd117d45a25f48f7783d764d5b292",
+      "size_bytes": 1901272,
+      "identity": [
+        16777229,
+        48007178,
+        33188,
+        1,
+        1901272,
+        1790963873728420736,
+        1790963873728420736
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/microlib.ascii",
+      "sha256": "3481aa1b4b4d4674afdb21c5cf50e4b67461bce00a1f1ecf117c4b91f02515b3",
+      "size_bytes": 305414157,
+      "identity": [
+        16777229,
+        48007174,
+        33188,
+        1,
+        305414157,
+        1790963873538453730,
+        1790963873538453730
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-actual-temperature-material-runtime-20261003/references.json",
+      "sha256": "a6cdd10c1713f014ce3a9992c1af9e2de76f921bd78858b927a6439eedd12fdf",
+      "size_bytes": 4002,
+      "identity": [
+        16777229,
+        47980792,
+        33188,
+        1,
+        4002,
+        1790961479112185492,
+        1790961479112185492
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-fe56-actual-temperature-run-20260929/dragr/tape30",
+      "sha256": "75e1593937b74a01daed885efdf91a3b14ba2e68bf35952a7dd53b75f38a3e29",
+      "size_bytes": 47267760,
+      "identity": [
+        16777229,
+        47224200,
+        33188,
+        1,
+        47267760,
+        1790685130921985178,
+        1790685130921985178
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-fe56-library-path-audit-20260929/meta2.ascii",
+      "sha256": "3cf482acb0decb7b4587f64df334c5fb1df7e9d0c5bcb00e39d860ea46248ee9",
+      "size_bytes": 1197846,
+      "identity": [
+        16777229,
+        47032104,
+        33188,
+        1,
+        1197846,
+        1790625986178293066,
+        1790625986178293066
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-final-four-fuel-temperature-run-20261002/Pu241/expanded/high/dragr/tape30",
+      "sha256": "cafee6e8d4688a59c13a7391d4d8456cbfec77ce2691e64ae9f56b191156a16e",
+      "size_bytes": 68279824,
+      "identity": [
+        16777229,
+        47955603,
+        33188,
+        1,
+        68279824,
+        1790947597531425414,
+        1790947597531425414
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-final-four-fuel-temperature-run-20261002/Pu242/expanded/high/dragr/tape30",
+      "sha256": "749de9aab0650cff28977862da70ce66c3e338be4c7cc9df3af5453131a0a00e",
+      "size_bytes": 61201994,
+      "identity": [
+        16777229,
+        47956866,
+        33188,
+        1,
+        61201994,
+        1790948699926898543,
+        1790948699926898543
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-final-four-fuel-temperature-run-20261002/U235/expanded/high/dragr/tape30",
+      "sha256": "8f87f65cf3766aff64443dfe8dab72084aa312b4bd041c86390f143c664573c5",
+      "size_bytes": 69461325,
+      "identity": [
+        16777229,
+        47962299,
+        33188,
+        1,
+        69461325,
+        1790951992199885938,
+        1790951992199885938
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-final-four-fuel-temperature-run-20261002/U238/expanded/high/dragr/tape30",
+      "sha256": "267091ab5f94c435da8d6f2272ff0070a61305adaa947b4ab8bb91920777a8c6",
+      "size_bytes": 69372148,
+      "identity": [
+        16777229,
+        47966504,
+        33188,
+        1,
+        69372148,
+        1790954868493313223,
+        1790954868493313223
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-light-nuclide-actual-temperature-run-20261001/He4/dragr/tape30",
+      "sha256": "47b68d0158d23869e00b7578731811da5f630f752bacc81c27c2e764efb56c04",
+      "size_bytes": 4007887,
+      "identity": [
+        16777229,
+        47693112,
+        33188,
+        1,
+        4007887,
+        1790792691697494979,
+        1790792691697494979
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-light-nuclide-actual-temperature-run-20261001/Na23/dragr/tape30",
+      "sha256": "d1e776745cb861e3d0b337693bf4ae5668d3387cd883c0b366815cbccdbf51b8",
+      "size_bytes": 10362967,
+      "identity": [
+        16777229,
+        47690952,
+        33188,
+        1,
+        10362967,
+        1790792351004022539,
+        1790792351004022539
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-light-nuclide-actual-temperature-run-20261001/O16/dragr/tape30",
+      "sha256": "cfa6ee71c645fdd67b20db139085f94eef28b414de23625882207f094ccbf1b7",
+      "size_bytes": 9648126,
+      "identity": [
+        16777229,
+        47691602,
+        33188,
+        1,
+        9648126,
+        1790792513567934424,
+        1790792513567934424
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-fuel-temperature-run-20261001/Am241/expanded/high/dragr/tape30",
+      "sha256": "71e93e37d587078b0df4ab55c093e016c4967cf00c7a492f7486f265b48b8d69",
+      "size_bytes": 67957122,
+      "identity": [
+        16777229,
+        47834842,
+        33188,
+        1,
+        67957122,
+        1790876903253023871,
+        1790876903253023871
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-fuel-temperature-run-20261001/Pu238/expanded/high/dragr/tape30",
+      "sha256": "d290cf775c3930b02a4ab386b2c44db0c0902d8083b4902b573855be50747793",
+      "size_bytes": 64115017,
+      "identity": [
+        16777229,
+        47836422,
+        33188,
+        1,
+        64115017,
+        1790878069571201410,
+        1790878069571201410
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-fuel-temperature-run-20261001/Pu239/expanded/high/dragr/tape30",
+      "sha256": "b8d7d6096fa859ffc8f59ff472856987712f5025b81a15f1678eab92d9cb66e9",
+      "size_bytes": 79654228,
+      "identity": [
+        16777229,
+        47840390,
+        33188,
+        1,
+        79654228,
+        1790881286415553135,
+        1790881286415553135
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-fuel-temperature-run-20261001/Pu240/expanded/high/dragr/tape30",
+      "sha256": "01d0d08c39566e5c450df60e1ebd76288a89c77bede4e2f50884de1fb98dccca",
+      "size_bytes": 69419648,
+      "identity": [
+        16777229,
+        47842221,
+        33188,
+        1,
+        69419648,
+        1790882614850656147,
+        1790882614850656147
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Cr50/expanded/dragr/tape30",
+      "sha256": "2e7e1b229d30557d5fa9f640ef2f880a3dba55eefc67d688cea36e7f1cc42310",
+      "size_bytes": 13877252,
+      "identity": [
+        16777229,
+        47707943,
+        33188,
+        1,
+        13877252,
+        1790798937702031601,
+        1790798937702031601
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Cr52/expanded/dragr/tape30",
+      "sha256": "7993da56012da61847c539fbe85eafbd210357b30dead029f0a447ffba472277",
+      "size_bytes": 38585843,
+      "identity": [
+        16777229,
+        47710999,
+        33188,
+        1,
+        38585843,
+        1790801110525503798,
+        1790801110525503798
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Cr53/expanded/dragr/tape30",
+      "sha256": "7c0fdbf5a1cb65fef1d7f77f8e775a449b6ab77c34e97e3f73564a49ce04a688",
+      "size_bytes": 10913777,
+      "identity": [
+        16777229,
+        47708282,
+        33188,
+        1,
+        10913777,
+        1790799077848329511,
+        1790799077848329511
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Cr54/expanded/dragr/tape30",
+      "sha256": "30cfd75f3b5d7d71ec339e297cde3f9617b9c892a03ace94ab29c04ebf858402",
+      "size_bytes": 13996993,
+      "identity": [
+        16777229,
+        47708486,
+        33188,
+        1,
+        13996993,
+        1790799217143559219,
+        1790799217143559219
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Fe54/expanded/dragr/tape30",
+      "sha256": "5124deb42bfcec682a12f99763cb5bf6c1e6008da2f2f059d0b5520a50ea28ce",
+      "size_bytes": 9666244,
+      "identity": [
+        16777229,
+        47708659,
+        33188,
+        1,
+        9666244,
+        1790799367570751518,
+        1790799367570751518
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Fe57/expanded/dragr/tape30",
+      "sha256": "c897692bbcfe37edc10ac54eb8895ad280e2d65b5f5bb18eb22fc6720694c844",
+      "size_bytes": 14152304,
+      "identity": [
+        16777229,
+        47708874,
+        33188,
+        1,
+        14152304,
+        1790799511488689921,
+        1790799511488689921
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Fe58/expanded/dragr/tape30",
+      "sha256": "c72247570527b0291635d276b21667e68e686c161c88a53082bfc94c3d63a97b",
+      "size_bytes": 13604895,
+      "identity": [
+        16777229,
+        47709055,
+        33188,
+        1,
+        13604895,
+        1790799657358155024,
+        1790799657358155024
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Mn55/expanded/dragr/tape30",
+      "sha256": "fd465c4a885e99675ac2079bbea973b5cf96a06e3b1e40411dccd3a5af29ca3a",
+      "size_bytes": 13372426,
+      "identity": [
+        16777229,
+        47709228,
+        33188,
+        1,
+        13372426,
+        1790799800580436113,
+        1790799800580436113
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Ni58/expanded/dragr/tape30",
+      "sha256": "8d2476670a32df186247d7385e3cc95de19d7e4e8311649b6e193c46af602885",
+      "size_bytes": 9769298,
+      "identity": [
+        16777229,
+        47709422,
+        33188,
+        1,
+        9769298,
+        1790799966860274021,
+        1790799966860274021
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Ni60/expanded/dragr/tape30",
+      "sha256": "4e717481de0db7dbd097c343d6aec706c71d7d614b027b456468234dbdc0cbae",
+      "size_bytes": 11305444,
+      "identity": [
+        16777229,
+        47709639,
+        33188,
+        1,
+        11305444,
+        1790800120881205707,
+        1790800120881205707
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Ni61/expanded/dragr/tape30",
+      "sha256": "22e39f7c5835f81a6f427856ab6fd52371561eca041cd0514a7ae22b9d2a90f4",
+      "size_bytes": 13842705,
+      "identity": [
+        16777229,
+        47709853,
+        33188,
+        1,
+        13842705,
+        1790800270770600360,
+        1790800270770600360
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Ni62/expanded/dragr/tape30",
+      "sha256": "967172aacb01f456142453bccd7b67b75dfb5fc420367432cdd8a42079baac9e",
+      "size_bytes": 11365097,
+      "identity": [
+        16777229,
+        47710067,
+        33188,
+        1,
+        11365097,
+        1790800424548508123,
+        1790800424548508123
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Ni64/expanded/dragr/tape30",
+      "sha256": "9373f6fd91fc83684a975f2ef507d97d98e380491a39e0ad6a29207633c67aaf",
+      "size_bytes": 10636086,
+      "identity": [
+        16777229,
+        47710297,
+        33188,
+        1,
+        10636086,
+        1790800574473408792,
+        1790800574473408792
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Si28/expanded/dragr/tape30",
+      "sha256": "eb7c88018ec816cff097759eb36b3296a3afad083628368a7a9595c7e67846a0",
+      "size_bytes": 14322448,
+      "identity": [
+        16777229,
+        47710513,
+        33188,
+        1,
+        14322448,
+        1790800716893714345,
+        1790800716893714345
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-remaining-temperature-run-20261001/Ti48/expanded/dragr/tape30",
+      "sha256": "c9a323ad75ce252a25cc6000792ecb3936395189ce642d1640c17c973856c881",
+      "size_bytes": 10759083,
+      "identity": [
+        16777229,
+        47710696,
+        33188,
+        1,
+        10759083,
+        1790800867552036884,
+        1790800867552036884
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/material_audit.py",
+      "sha256": "cb461b94ae61917da63e813e3dae2261d8f48a20834b15b42d0cad9fe0b8ddc9",
+      "size_bytes": 18948,
+      "identity": [
+        16777229,
+        48008078,
+        33188,
+        1,
+        18948,
+        1790965006477571301,
+        1790965006477571301
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/d4_reference/check_d4a_material_candidate.py",
+      "sha256": "97cf957ad4f8a7fc8919ee7ec14f8ce8299fb11223aa637e9f89851f354f60aa",
+      "size_bytes": 11391,
+      "identity": [
+        16777229,
+        47978656,
+        33188,
+        1,
+        11391,
+        1790961435976308983,
+        1790961435976308983
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-tools-20261003/material_audit_used_for_ab.py",
+      "sha256": "90659465a03f6b9464df5a7780aabbce06aeb8c0bbfb746c3dc40eda1b6afed5",
+      "size_bytes": 18947,
+      "identity": [
+        16777229,
+        48012004,
+        33188,
+        1,
+        18947,
+        1790965006314744775,
+        1790965006314744775
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-tools-20261003/material_audit_implementation_retention.json",
+      "sha256": "1e5cc9cc2edba850080c61dbad8a71e7e76551dc920c8a0fb844017a3b8c5697",
+      "size_bytes": 1222,
+      "identity": [
+        16777229,
+        48012052,
+        33188,
+        1,
+        1222,
+        1790965033223686469,
+        1790965033223686469
+      ]
+    },
+    {
+      "path": "/private/tmp/axmat_rawrecord_fixed_historical_auditor_retention_SOURCE_20261010_tl856qp8/MATERIAL_AUDITOR_FULL_SOURCE_INVERSE.json",
+      "sha256": "e1755e33f677ad3ded8e5722d76f1abe4dd0d5db8610d015348ca25074b20ba8",
+      "size_bytes": 4680,
+      "identity": [
+        16777229,
+        49398973,
+        33188,
+        1,
+        4680,
+        1791600865959357187,
+        1791600865959364896
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_core/colorset_rebuild_20260527/ce_compare/fullpitch_pnl_s30_b0_closure_v1_20260907/native_records.py",
+      "sha256": "67fe414c25f5867e80cc0509c9951522253e572b92998c83c6b32a254c59342b",
+      "size_bytes": 7201,
+      "identity": [
+        16777229,
+        40211236,
+        33188,
+        1,
+        7201,
+        1788741834606385529,
+        1788741834606385529
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_core/colorset_rebuild_20260527/ce_compare/mc2027_csd_rr_evidence_v1_20260909/paper_parallel_20260910/finegroup_acceptance/stream_records.py",
+      "sha256": "dc2d4e5f6cfa6b6d312669f44db98df5873d049707672bb166b26719fad2df0f",
+      "size_bytes": 5225,
+      "identity": [
+        16777229,
+        40838365,
+        33188,
+        1,
+        5225,
+        1789042445375657789,
+        1789042445375657789
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/A/complete_typed_record_index.jsonl",
+      "sha256": "d8c1f916a8cb2bb055d00ff953a7ac10888d5cd5239a1ee6a2e530c449fc61ba",
+      "size_bytes": 11284447,
+      "identity": [
+        16777229,
+        49402765,
+        33188,
+        1,
+        11284447,
+        1791602535611261982,
+        1791602535611261982
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/A/complete_typed_payload.bin",
+      "sha256": "56dcfd220e5ca6b1a07b5962a2c52e9ff7961c8866a2f3617804ed510c5a900f",
+      "size_bytes": 26936867,
+      "identity": [
+        16777229,
+        49402766,
+        33188,
+        1,
+        26936867,
+        1791602535611160190,
+        1791602535611160190
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/A/original_macro.ascii",
+      "sha256": "1ef4420e14d3c478c061f8b15b5967404c607a6b4a90103a0e32d013d5f592b5",
+      "size_bytes": 39546544,
+      "identity": [
+        16777229,
+        49402762,
+        33188,
+        1,
+        39546544,
+        1791602534007444412,
+        1791602534007444412
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/A/complete_raw_header_span_inventory.jsonl",
+      "sha256": "470c45a11a32f8b33971aa736b0ba1d54a8ec7fa43037ef5ac36f250f0c624aa",
+      "size_bytes": 6257479,
+      "identity": [
+        16777229,
+        49402764,
+        33188,
+        1,
+        6257479,
+        1791602534349190108,
+        1791602534349190108
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/A/full_required_field_contract.jsonl",
+      "sha256": "95c2df0d00e5003056b14bb60bb39f58aee04e1ab720c42346cbb2fd75b6ba0b",
+      "size_bytes": 1305140,
+      "identity": [
+        16777229,
+        49402767,
+        33188,
+        1,
+        1305140,
+        1791602535653264739,
+        1791602535653264739
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/A/full_sparse_reference_spans.jsonl",
+      "sha256": "b8c9a783e8434518e26a5d7b9a38b3f52efd00ec9a31eb58e7bb0683250cd88e",
+      "size_bytes": 3048569,
+      "identity": [
+        16777229,
+        49402768,
+        33188,
+        1,
+        3048569,
+        1791602535653192655,
+        1791602535653192655
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/A/small_state_metadata.json",
+      "sha256": "7df6aa620bed55ddd341bb7ef15c762f9ffd72ec467f92d549e59c3d8ede5e0f",
+      "size_bytes": 5871,
+      "identity": [
+        16777229,
+        49402772,
+        33188,
+        1,
+        5871,
+        1791602537317911374,
+        1791602537317911374
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/B/complete_typed_record_index.jsonl",
+      "sha256": "0e117fe4145ae8317573b31a502b51495a0291481cce87657c5c521105369787",
+      "size_bytes": 11284447,
+      "identity": [
+        16777229,
+        49402776,
+        33188,
+        1,
+        11284447,
+        1791602538921043693,
+        1791602538921043693
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/B/complete_typed_payload.bin",
+      "sha256": "534387d22af234d7e16cabdd3f0b0a492b124f85246bc5c22c8203ce2380d714",
+      "size_bytes": 26936867,
+      "identity": [
+        16777229,
+        49402777,
+        33188,
+        1,
+        26936867,
+        1791602538920908151,
+        1791602538920908151
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/B/original_macro.ascii",
+      "sha256": "957502ec9462644ab789894a1f2bf465f2acc1b5390777b27dc52f26b833c1d3",
+      "size_bytes": 39546544,
+      "identity": [
+        16777229,
+        49402774,
+        33188,
+        1,
+        39546544,
+        1791602537349731391,
+        1791602537349731391
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/B/complete_raw_header_span_inventory.jsonl",
+      "sha256": "46d54af1b8de8359aa4bae53356c65b75c9ac71358ebb56d776b90b31cf79b39",
+      "size_bytes": 6257479,
+      "identity": [
+        16777229,
+        49402775,
+        33188,
+        1,
+        6257479,
+        1791602537679081382,
+        1791602537679081382
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/B/full_required_field_contract.jsonl",
+      "sha256": "95c2df0d00e5003056b14bb60bb39f58aee04e1ab720c42346cbb2fd75b6ba0b",
+      "size_bytes": 1305140,
+      "identity": [
+        16777229,
+        49402780,
+        33188,
+        1,
+        1305140,
+        1791602538964200954,
+        1791602538964200954
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/B/full_sparse_reference_spans.jsonl",
+      "sha256": "b8c9a783e8434518e26a5d7b9a38b3f52efd00ec9a31eb58e7bb0683250cd88e",
+      "size_bytes": 3048569,
+      "identity": [
+        16777229,
+        49402781,
+        33188,
+        1,
+        3048569,
+        1791602538963773869,
+        1791602538963773869
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-current150-AB-full-rawrecord-transfer-v22-20261010/B/small_state_metadata.json",
+      "sha256": "0457a7aaad107164e4a470eecb2c3603985d81078dc1a29bffbf401686a82be1",
+      "size_bytes": 5871,
+      "identity": [
+        16777229,
+        49402783,
+        33188,
+        1,
+        5871,
+        1791602540641995047,
+        1791602540641995047
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/snapshot_control_preflight.py",
+      "sha256": "f60309e54947de8dc43e7080fd19ca6255652d840493db23b37ff7003c6a0819",
+      "size_bytes": 6441,
+      "identity": [
+        16777229,
+        48049272,
+        33188,
+        1,
+        6441,
+        1790978313788594462,
+        1790978313788594462
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/qualified_snapshot_ingestion.py",
+      "sha256": "35661e6d087128191c51b0d4e4e197867fb83b728cb45b01d2eb37d59da0f0ee",
+      "size_bytes": 9086,
+      "identity": [
+        16777229,
+        48252803,
+        33188,
+        1,
+        9086,
+        1791046238138647341,
+        1791046238138647341
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/material_inputs.py",
+      "sha256": "a533750046980e979ad00b11de0761f2854fc75670484dd4338863af43438a5d",
+      "size_bytes": 13275,
+      "identity": [
+        16777229,
+        48005199,
+        33188,
+        1,
+        13275,
+        1790963307156547778,
+        1790963307156547778
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Ganlib/src/xsm_c.c",
+      "sha256": "3c13ed32782599fcc261be1764ce00ef61b3dc28cd62ad6d8741ce1b3f0df0e6",
+      "size_bytes": 44246,
+      "identity": [
+        16777229,
+        966502,
+        33188,
+        1,
+        44246,
+        1778161313139909509,
+        1778161313139909509
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Ganlib/src/lcm_c.c",
+      "sha256": "482694622199a3f42f05cb30bd3c4f5f57325494a356fa1a848188f1f0ccb637",
+      "size_bytes": 139413,
+      "identity": [
+        16777229,
+        966492,
+        33188,
+        1,
+        139413,
+        1778161313139245009,
+        1778161313139245009
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Ganlib/src/kdi_c.c",
+      "sha256": "14130f71d12209a5fd3e00ed70ab8a7068f973de2873c8efcf733361e3c74fb9",
+      "size_bytes": 3074,
+      "identity": [
+        16777229,
+        966488,
+        33188,
+        1,
+        3074,
+        1778161313138923176,
+        1778161313138923176
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Ganlib/src/ganlib.h",
+      "sha256": "3db87ee1c13a2084731f0d88d8f85a78152d749f2905b91108b3acd87ae559f7",
+      "size_bytes": 666,
+      "identity": [
+        16777229,
+        966480,
+        33188,
+        1,
+        666,
+        1778161313138469634,
+        1778161313138469634
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Ganlib/src/xsm.h",
+      "sha256": "b26a713309c917b04fb1f51be8fa481a11121b79601e47c898882b3c4a6b196b",
+      "size_bytes": 3841,
+      "identity": [
+        16777229,
+        966501,
+        33188,
+        1,
+        3841,
+        1778161313139814967,
+        1778161313139814967
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Ganlib/src/lcm.h",
+      "sha256": "42447798168b5efb8ae32ac8cfe0044948f6768ef5e433b3452a1cd1bed5a83c",
+      "size_bytes": 4086,
+      "identity": [
+        16777229,
+        966491,
+        33188,
+        1,
+        4086,
+        1778161313139101092,
+        1778161313139101092
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/PyGan/src/lcmmodule.c",
+      "sha256": "667b25a1e87bc1770925996a317752cff423205ac5d086e25d119d83f9da3b89",
+      "size_bytes": 36116,
+      "identity": [
+        16777229,
+        966575,
+        33188,
+        1,
+        36116,
+        1778161313172927218,
+        1778161313172927218
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/PyGan/src/pylcm.h",
+      "sha256": "e1614fb63f979a5a7db636dc5b8e7df1c49e995abaddcee7c09f5af144180316",
+      "size_bytes": 1083,
+      "identity": [
+        16777229,
+        966577,
+        33188,
+        1,
+        1083,
+        1778161313173031592,
+        1778161313173031592
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/LIBNFI.f",
+      "sha256": "7ba3d915c5fa3e247260cf06ddc86d08a571609c66ad4ec8bf63a06ea85ac34d",
+      "size_bytes": 6912,
+      "identity": [
+        16777229,
+        965756,
+        33188,
+        1,
+        6912,
+        1778161313089636967,
+        1778161313089636967
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/MACPXS.f",
+      "sha256": "4ec9d6533b5525f2a260e296969af418ee01327e544932ae3763d3a22378323d",
+      "size_bytes": 9716,
+      "identity": [
+        16777229,
+        965802,
+        33188,
+        1,
+        9716,
+        1778161313092504217,
+        1778161313092504217
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/MACIXS.f",
+      "sha256": "59821bd272ace61a1acdda9fff4eb5464db0b7ae52668aa93cb9f4d6617c08a5",
+      "size_bytes": 9886,
+      "identity": [
+        16777229,
+        965797,
+        33188,
+        1,
+        9886,
+        1778161313092132967,
+        1778161313092132967
+      ]
+    },
+    {
+      "path": "/Users/wen/dragon-5.1/Dragon/src/MAC.f",
+      "sha256": "9b4bc8a66f1eaa1122e44d9ba26ff7aa4f6c843eb9ac2c9b27fdf4941078b924",
+      "size_bytes": 9922,
+      "identity": [
+        16777229,
+        965795,
+        33188,
+        1,
+        9922,
+        1778161313091957592,
+        1778161313091957592
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_full_AB_rawrecord_transfer_v22_admitted_sources/transfer_full_AB_rawrecord_READY.py",
+      "sha256": "f9110f4d41c5d9e129daf225a2b0a3a052e47cedbd175920f25b2f660113eac6",
+      "size_bytes": 31604,
+      "identity": [
+        16777229,
+        49402298,
+        33188,
+        1,
+        31604,
+        1791602294651382276,
+        1791602294651382276
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_full_AB_rawrecord_transfer_v22_admitted_sources/full_AB_rawrecord_genuine_host_READY.py",
+      "sha256": "25e39ab08027d8e54544a358f9f1c32c25302ac95ae75e199a629b3d7e922c60",
+      "size_bytes": 17864,
+      "identity": [
+        16777229,
+        49402300,
+        33188,
+        1,
+        17864,
+        1791602294662102642,
+        1791602294662102642
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_prepare_sources/prepare_cli_host_v15.py",
+      "sha256": "3c1856f8ec16414d4f07fe4d88b3be2b859b1eb64d0c2624c9c7015c1b9a52a7",
+      "size_bytes": 11458,
+      "identity": [
+        16777229,
+        49347846,
+        33188,
+        1,
+        11458,
+        1791572772309959033,
+        1791572772309959033
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/prepare_qualified_AB_source_factor_production.py",
+      "sha256": "619ed1e3115e0f9f25fd20cc259d384891f2fff52d913acebd5d9ca8f39d5743",
+      "size_bytes": 61606,
+      "identity": [
+        16777229,
+        48505241,
+        33188,
+        1,
+        61606,
+        1791221930905555745,
+        1791221930905555745
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/moment_order_complete_history_resource_trie_20261010.py",
+      "sha256": "ebbb0235ca5eaf7f7d896c225925f6705d2ba32f70295d957206548571575022",
+      "size_bytes": 67755,
+      "identity": [
+        16777229,
+        49346381,
+        33188,
+        1,
+        67755,
+        1791571124018610806,
+        1791571124018610806
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/qualify_refined_AAA_layered_full.py",
+      "sha256": "70516d764e05cffa6e82e780a991ff64e56b9c29bc99f3f1b18bcb0ff63195c6",
+      "size_bytes": 27295,
+      "identity": [
+        16777229,
+        48412797,
+        33188,
+        1,
+        27295,
+        1791178916200089060,
+        1791178916200089060
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime/production_runner.py",
+      "sha256": "38de03ed0f5b3e2d82b4153a45d1e548d58a34747f526f8bcd51bbe01e935128",
+      "size_bytes": 57831,
+      "identity": [
+        16777229,
+        48394944,
+        33188,
+        1,
+        57831,
+        1791160028306226270,
+        1791160113744998562
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime/run_bounded_dragon.py",
+      "sha256": "bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09",
+      "size_bytes": 6019,
+      "identity": [
+        16777229,
+        48394937,
+        33261,
+        1,
+        6019,
+        1787952565114585932,
+        1791160113743448178
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime/snapshot_control_preflight.py",
+      "sha256": "f60309e54947de8dc43e7080fd19ca6255652d840493db23b37ff7003c6a0819",
+      "size_bytes": 6441,
+      "identity": [
+        16777229,
+        48394946,
+        33188,
+        1,
+        6441,
+        1790978313788594462,
+        1791160113745336106
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime/qualified_snapshot_ingestion.py",
+      "sha256": "4ea482a6f3536bdb61e0de2c0693a8f128893fd7e0ecdaa72b7bd424645f8658",
+      "size_bytes": 9191,
+      "identity": [
+        16777229,
+        48394950,
+        33188,
+        1,
+        9191,
+        1791160028307361527,
+        1791160113745918818
+      ]
+    }
+  ],
+  "states": {
+    "A": {
+      "material.x2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/material.x2m",
+        "sha256": "f7e76b2b052466ef707863f8cf6c17b854db003caec082e6205d1da21c147ee7",
+        "size_bytes": 1147,
+        "identity": [
+          16777229,
+          48006634,
+          33188,
+          1,
+          1147,
+          1790963723444178979,
+          1790963723444178979
+        ]
+      },
+      "AxMatTone.c2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/AxMatTone.c2m",
+        "sha256": "4f4d4afeb5ac988cab357e7edf7444fedf9a68f444511229a22e08c1310cc125",
+        "size_bytes": 5224,
+        "identity": [
+          16777229,
+          48006633,
+          33188,
+          1,
+          5224,
+          1790963723444079687,
+          1790963723444079687
+        ]
+      },
+      "geometry.dat": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/geometry.dat",
+        "sha256": "d70e7308937e157ccaea03426cf02187827166be80d7806757e9f212729317ec",
+        "size_bytes": 2045,
+        "identity": [
+          16777229,
+          48006640,
+          33188,
+          1,
+          2045,
+          1790963723444512148,
+          1790963723444512148
+        ]
+      },
+      "rnr_cc.c2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/rnr_cc.c2m",
+        "sha256": "594e9e58aae950b003bd410440928c97b59cf67f70844033c69c05b78e8565b5",
+        "size_bytes": 10299,
+        "identity": [
+          16777229,
+          48006641,
+          33188,
+          1,
+          10299,
+          1790963723444720690,
+          1790963723444720690
+        ]
+      },
+      "rnr_interpol.c2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/A/rnr_interpol.c2m",
+        "sha256": "255ddfc61a61026e0f36aefe5ad4cee0b41871fdbd25e2b77c540bd9bccb8ed2",
+        "size_bytes": 9173,
+        "identity": [
+          16777229,
+          48006642,
+          33188,
+          1,
+          9173,
+          1790963723444866608,
+          1790963723444866608
+        ]
+      }
+    },
+    "B": {
+      "material.x2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/material.x2m",
+        "sha256": "768986d3208834888b12a0120ec08151caf4dcfcc5e52c9f5f9a72c9b5ee7c1c",
+        "size_bytes": 1147,
+        "identity": [
+          16777229,
+          48006638,
+          33188,
+          1,
+          1147,
+          1790963723444400272,
+          1790963723444400272
+        ]
+      },
+      "AxMatTone.c2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/AxMatTone.c2m",
+        "sha256": "4f4d4afeb5ac988cab357e7edf7444fedf9a68f444511229a22e08c1310cc125",
+        "size_bytes": 5224,
+        "identity": [
+          16777229,
+          48006637,
+          33188,
+          1,
+          5224,
+          1790963723444339938,
+          1790963723444339938
+        ]
+      },
+      "geometry.dat": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/geometry.dat",
+        "sha256": "d70e7308937e157ccaea03426cf02187827166be80d7806757e9f212729317ec",
+        "size_bytes": 2045,
+        "identity": [
+          16777229,
+          48006643,
+          33188,
+          1,
+          2045,
+          1790963723444943858,
+          1790963723444943858
+        ]
+      },
+      "rnr_cc.c2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/rnr_cc.c2m",
+        "sha256": "594e9e58aae950b003bd410440928c97b59cf67f70844033c69c05b78e8565b5",
+        "size_bytes": 10299,
+        "identity": [
+          16777229,
+          48006644,
+          33188,
+          1,
+          10299,
+          1790963723445035234,
+          1790963723445035234
+        ]
+      },
+      "rnr_interpol.c2m": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/rnr_interpol.c2m",
+        "sha256": "255ddfc61a61026e0f36aefe5ad4cee0b41871fdbd25e2b77c540bd9bccb8ed2",
+        "size_bytes": 9173,
+        "identity": [
+          16777229,
+          48006645,
+          33188,
+          1,
+          9173,
+          1790963723445114984,
+          1790963723445114984
+        ]
+      }
+    }
+  },
+  "libraries": {
+    "DLIB_ACTUAL": {
+      "path": "/Users/wen/spot/validation/artifacts/d4a-actual-temperature-library-run-20261003/import/DLIB_370_bin",
+      "generation_sha256": "e78b87094b67bd4d1bcdc3a5dd2beeb168318853a48321473bb9b86df5ba19cc",
+      "actual_Root_current_fullpin": null
+    },
+    "DLIB8R1_370": {
+      "path": "/Users/wen/draglib_output/shem370_endfb8r1_v5p1/draglibshem370_endfb8r1_v5p1.xsm",
+      "generation_sha256": "66b9a7b3e8534a54cf590db63a7c1dbd96b4a95c636f0e3a6eee5b219bbcc1e9",
+      "actual_Root_current_fullpin": null
+    }
+  },
+  "material_original_provenance_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_full_AB_rawrecord_transfer_v22_admission_meta/Root_actual_current150_AB_material_provenance_admission.json",
+    "sha256": "ac7ecfa6f05c1e2acb557d8c57c81fb1f97239528321124f73a25d98e9a15a85",
+    "size_bytes": 310354,
+    "identity": [
+      16777229,
+      49402111,
+      33188,
+      1,
+      310354,
+      1791602228724628226,
+      1791602228724628226
+    ]
+  },
+  "whole_original_material_bytes_only": true,
+  "actual_material_payload_read_by_author": false,
+  "actual_new_runtime": null
+}

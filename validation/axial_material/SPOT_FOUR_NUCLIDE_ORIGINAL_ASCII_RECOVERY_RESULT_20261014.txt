@@ -1,0 +1,20 @@
+SPOT 四核原始扩展温度档案核验结果 — 2026-10-14
+
+Am241、Pu238、Pu239、Pu240 的原始 8 温度 ASCII GENDF 已从永久保留的 gzip primary 流式验证。没有重跑 NJOY，也未写出大型解压副本。
+
+实际 Root 运行返回 0：3167ec/session42225 → 7bf0f2。总耗时 32.513684584 秒。四份原始数据共 284,814,387 字节，解码后全 EOF SHA256 与原 GROUPR 输出、原 DRAGR tape24 输入、round9 封存记录一致。压缩文件本身的完整 SHA、CRC/ISIZE 也通过。
+
+每核都有完整 8 个 MF1 温度网格、10 个稀释节点和 370 群边界。MF3/MF6 区段分别为 Am241 736、Pu238 768、Pu239 792、Pu240 824，共 3,120；原 LIST 维度、实际入射组和 NG2 分布完整保留。实际 MF3 的 NG2=3 包括 MT452，以及 Pu239/Pu240 的 MT455，属于原 GROUPR 的比值记录格式。
+
+独立后验 1a9b51 返回 0，核验全部 11 个新文件和 169 个固定输入。原 v3 读取失败（MF3 通用 NG2==2 的错误假定）及其真实返回完整保留，未改写为成功。原路径/inode 未复原；权威是当前压缩 primary 身份、解码原始 SHA/size 与历史生产凭证。
+
+完整 34 核素回放的来源已找到：23 个 binary、这 4 个原 ASCII 压缩 primary、Mo7 原 ASCII。完整 34 核回放尚未执行。8 个燃料 low9 的归档来源也已找到，但本轮只核对元数据；完整 18 个有限稀释点还需要分别验证 low9/high9。
+
+本结果不声明 SCAT packed producer、当前 SPH/MASK、温度插值、物理平衡、AAA 或 ABA 通过。所有原资源限额保持。
+
+实际结果：
+/Users/wen/spot/validation/artifacts/axial-material-four-original-ASCII-GENDF-stream-inventory-20261014-v2/Root_actual_four_original_ASCII_GENDF_summary.json
+SHA256 9446e86d9b5a6ab01e0bb3ae0a1c12088464eb281b0beb9d2cc5598579ff379d
+独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/actual_four_original_ascii_gendf_streaming_source_v1_20261014/v4/independent_source_review_20261014/ACTUAL_RUNTIME_POSTVERIFY_REVIEW.json
+SHA256 41fe7f4bc9a48dffa9bc1b5b202f50cadff9f5e2059381a8c2083bff9b6e85a2

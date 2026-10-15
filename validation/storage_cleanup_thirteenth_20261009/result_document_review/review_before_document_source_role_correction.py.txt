@@ -1,0 +1,77 @@
+import collections,hashlib,json,os,stat
+from pathlib import Path
+W=Path('/Users/wen/spot');R=W/'validation/storage_cleanup_ninth_20261009';H=Path(__file__).resolve().parent
+pins=[]
+def identity(p):
+ s=p.lstat();assert stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode)
+ return [s.st_dev,s.st_ino,s.st_mode,s.st_size,s.st_mtime_ns,s.st_ctime_ns,s.st_nlink]
+def full(p):
+ before=identity(p);h=hashlib.sha256()
+ with p.open('rb') as f:
+  while b:=f.read(1024*1024):h.update(b)
+ assert before==identity(p);pins.append((str(p),before,h.hexdigest()));return h.hexdigest()
+def paths(x):
+ if isinstance(x,str):return {x} if x.startswith('/') else set()
+ if isinstance(x,dict):return set().union(*(paths(v)for v in x.values())) if x else set()
+ if isinstance(x,list):return set().union(*(paths(v)for v in x)) if x else set()
+ return set()
+m=json.loads((R/'manifest.json').read_text());full(R/'manifest.json')
+z=[r for r in m['candidates'] if r['category']=='GZIP_ARCHIVED_OLD_MATERIAL_INTERMEDIATE'];assert len(z)==89
+assert len({(r['size'],r['sha256'])for r in z})==89
+expected={r['compressed_backup']['path']:r['compressed_backup'] for r in z}
+source_paths=paths(m['source_and_review_pins'])
+allfiles=[p for p in R.rglob('*') if p.is_file() and not p.is_symlink()]
+groups=collections.defaultdict(list);gzlogical=gzallocated=doclogical=docallocated=0;inodes=set();allallocated=0
+for p in allfiles:
+ s=p.stat();h=full(p)
+ if (s.st_dev,s.st_ino) not in inodes:inodes.add((s.st_dev,s.st_ino));allallocated+=s.st_blocks*512
+ if str(p) in expected:
+  assert h==expected[str(p)]['sha256'] and s.st_size==expected[str(p)]['size']
+  assert identity(p)==expected[str(p)]['identity'];gzlogical+=s.st_size;gzallocated+=s.st_blocks*512
+ else:
+  assert p.suffix!='.gz';doclogical+=s.st_size;docallocated+=s.st_blocks*512
+  if s.st_size:groups[(s.st_size,h)].append(p)
+assert len(expected)==sum(1 for p in allfiles if str(p)in expected)
+assert len({(r['size'],r['sha256']) for r in expected.values()})==89
+baseline_path=Path('/private/tmp/spot_storage_tenth_root_audit_20261009/result_document_full_sha_baseline.json')
+baseline=json.loads(baseline_path.read_text());full(baseline_path)
+bd={str(W/r['path']) if not r['path'].startswith('/') else r['path']:r for r in baseline['rows']}
+dups=[];redundant=0
+for (size,sha),pp in groups.items():
+ if len(pp)<2:continue
+ rows=[]
+ for p in pp:
+  assert str(p) in bd and bd[str(p)]['sha256']==sha and bd[str(p)]['size']==size
+  rows.append(dict(path=str(p),bytes=size,allocated_bytes=p.stat().st_blocks*512,sha256=sha,in_ninth_fixed_source_review_pins=str(p)in source_paths,in_tenth_full_result_document_SHA_baseline=True))
+ redundant+=sum(p.stat().st_blocks*512 for p in pp[1:])
+ dups.append(dict(status='HOLD_RESULT_OR_SOURCE_PROOF_WITHOUT_DOC_RETIREMENT_RESTORE_MAPPING',rows=rows))
+assert len(dups)==7
+report_pins=[]
+for p in sorted((W/'validation').glob('storage_cleanup_*/REPORT.txt')):report_pins.append(dict(path=str(p),sha256=full(p),bytes=p.stat().st_size))
+assert len(report_pins)==12
+required=['REPORT.txt','manifest.json','retirement_ledger.jsonl','cleanup_result.json','cleanup_terminal_observation.json','restore_archived_material_intermediates.py','pack_old_material_intermediates.py','restore_retired_work_copies.py','packed_material_intermediate_backups.json','backup_creation_ledger.jsonl','backup_terminal_observation.json']
+for name in required:assert (R/name).is_file()
+strict=R/'reviews/actual_lossless_backup/independent_actual_lossless_backup_review.json'
+strict_report=json.loads(strict.read_text());strict_sha=full(strict)
+restore=(R/'restore_archived_material_intermediates.py').read_text()
+assert "manifest['candidates']" in restore and "r['compressed_backup']['path']" in restore
+assert 'from pack_old_material_intermediates import BASE, PACK, CHUNK, identity, pin, material_path, verify_gzip' in restore
+boundary=Path('/private/tmp/spot_storage_recheck_20261009_root13/fresh_boundary_and_cache_review.json');boundary_sha=full(boundary)
+whole=hashlib.sha256()
+for p,i,h in sorted(pins):whole.update((p+'\0'+json.dumps(i,separators=(',',':'))+'\0'+h+'\n').encode())
+largest=sorted([p for p in allfiles if str(p)not in expected],key=lambda p:p.stat().st_size,reverse=True)[:8]
+report=dict(schema='SPOT_STORAGE_THIRTEENTH_RESULT_DOCUMENTS_READONLY_REVIEW_V1',status='PASS_READONLY_REVIEW_NO_DELETE_CANDIDATES',recommendations=[],approved_delete_bytes=0,
+ ninth_directory=dict(path=str(R),file_count=len(allfiles),logical_bytes=gzlogical+doclogical,unique_inode_allocated_bytes=allallocated,gzip_count=89,gzip_logical_bytes=gzlogical,gzip_allocated_bytes=gzallocated,gzip_fraction_allocated=gzallocated/allallocated,non_gzip_count=len(allfiles)-89,non_gzip_logical_bytes=doclogical,non_gzip_allocated_bytes=docallocated),
+ all89_current_gzip_full_SHA_size_identity_equal_original_manifest=True,raw89_original_recorded_SHA_size_all_unique=True,gzip89_fresh_SHA_size_all_unique=True,strict_gzip_original_decode_not_repeated=True,prior_complete_strict_decode_evidence=dict(path=str(strict),sha256=strict_sha,status=strict_report.get('status')),
+ duplicate_nonempty_group_count=7,duplicate_nominal_redundant_allocated_bytes=redundant,duplicate_groups=dups,
+ largest_remaining_result_documents=[dict(path=str(p),bytes=p.stat().st_size,allocated_bytes=p.stat().st_blocks*512,status='HOLD_UNIQUE_RESULT_OR_RESTORATION_EVIDENCE_NO_IDENTICAL_RETAINED_FORMAL_COPY_PROVED')for p in largest],
+ gzip_retention_reason='89份归档是已退役原材料文件及第二轮120份副本的恢复主本；没有字节相同的其他归档可替换。必须先恢复原raw，再运行此前副本恢复映射。',
+ duplicate_documents_reason='七组副本均在第十轮完整结果文档SHA基线内，部分另被第九轮固定source/review pins直接绑定。保留最终报告及原审查证据；本轮不为0.367MiB另建文档退役和恢复层。',
+ minimal_final_result_and_restore_files=[str(R/name)for name in required],prior_twelve_result_reports=report_pins,
+ latest_Root_boundary_evidence=dict(path=str(boundary),sha256=boundary_sha,scope='Root另行实测图SHA不变/231根存在/159缓存仍为原HOLD/已删64缺席；本审查不重跑业务或全科学图。'),
+ preservation_scope='所有结果、日志、原seal、唯一材料和数值数据、V9成功SOURCE/OUT/TERM、完整输入/当前根与旧恢复主本保持。',
+ limitations=['只对第九轮222现存普通文件全读SHA并分组；未另行扫描全部35GB输入。','本报告没有再次解压89份归档；当前全部压缩字节与已完整严格解压通过的原manifest相等。','重复报告字节相同不等于原路径或身份可删除；旧完整凭据核验仍要求原路径，恢复不能还原inode/ctime。','空间是当前分配块数，不是APFS立即可释放空闲。'],
+ fresh_full_read_pin_count=len(pins),fresh_read_pin_binding_sha256=whole.hexdigest(),business_INPUT_API_constructor_PREP_RUN_native_or_watch_executed=False,formal_or_ART_written=False,files_deleted=0)
+rp=H/'REPORT.json'
+with rp.open('x') as f:json.dump(report,f,ensure_ascii=False,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
+print(json.dumps(dict(status=report['status'],report=str(rp),report_sha256=hashlib.sha256(rp.read_bytes()).hexdigest(),ninth_files=len(allfiles),gzip_allocated=gzallocated,doc_allocated=docallocated,duplicate_nominal_bytes=redundant,delete_candidates=0),ensure_ascii=False),flush=True)

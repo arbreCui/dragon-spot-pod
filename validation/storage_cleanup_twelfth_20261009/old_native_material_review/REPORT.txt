@@ -1,0 +1,24 @@
+第十二轮旧native/bootstrap与最终材料文件只读复查（2026-10-09）。
+
+结论：本次新固定可删项0，已批准回收量0。未删除、压缩或改formal/ART/.git/源码；未运行业务、构建、API、PREP或RUN。
+真实小范围工具5b3276 EXIT0 CLOSED，重新完整读取92个来源/旧编译副本/同SHA主本及原结果清单；只写TMP。
+
+第十轮22+第十一轮15项共37项已真实删除，全部原路径fresh不存在，明确从新候选中排除，不能重复计算空间。
+旧compiled母本曾全读4115产物，440同SHA候选376,635,392B仍为HOLD。仅同SHA不能解锁当前canonical/resource/恢复义务。
+本次受限复核51个旧native/bootstrap副本（37.mod /7.dylib /7executable），所有字节fresh完整SHA与保留主本一致且不同inode/singlelink；逻辑19,996,993B，分配20,119,552B（19.1875MiB）。其中47路径仍被原result.sha256明确封存。
+51完整exact paths/大小/SHA/同SHA主本/原seal条目保存在fresh_compiled_51_candidate_and_peer_SHA_records.json。举例：
+/Users/wen/spot/validation/artifacts/native-axial-coupling-20260928/build/spot_leakage.mod 2976B，主本/Users/wen/spot/spot_leakage.mod。
+/Users/wen/spot/validation/artifacts/d4a-scattering-bootstrap-prepared-20260924/Dragon 9,154,744B，与mesh12-bootstrap-prepared/Dragon同SHA。
+/Users/wen/spot/validation/artifacts/d4a-scattering-bootstrap-run-20260924/Dragon 9,154,744B，同上主本。
+这些路径没有新的current V8/V9 canonical/resource排除与固定恢复闭合，本次HOLD，不推荐现删；原输入、程序、签名库及数值结果保留。
+
+最大单文件必须保留：
+/Users/wen/spot/validation/artifacts/d4a-actual-temperature-library-run-20261003/merge/28-U238/tape30
+逻辑839,016,696B、分配839,020,544B；原fullSHA44772b86d87e90532f89e786369749b373114f0c0f3d90b282ded6b8432ca1c2，fresh原7field identity一致（已直接HOLD，未额外重读839MB）。
+它是28核素最终合并ASCII材料库，R3明确保留，R7 manifest retained_primaries直接保留；其sameSHA import/EXPORT已在R7退役。R7 restore_retired_work_copies.py必须直接打开这个原普通路径，以原fullSHA恢复已删import/EXPORT。压缩后退役原路径会打断既有恢复链，不满足“未直接保护的旧中间件”条件。当前canonical是否再命中不会解除这一独立HOLD。
+原result.sha256同时封存final tape30与import/EXPORT同SHA；原library构造/roundtrip源码、结果、输入、输出hash、receipt与R3/R7恢复文档均需保留。
+
+A/B完整输入各约12.36GiB、native主数据约22.5GiB仍按既有保留规则HOLD；同大小但不同SHA的bootstrap文件不是重复。89份材料gzip、历轮恢复主本、环境、current_input与当前V8/V9证据继续保留。
+本报告只为此次存储排查，不验证科学输入准入、不赋予新RSS/科学信用，不改历史seal或结果。Root可只处理其另审的普通缓存。
+
+limited_readonly_evidence.json SHA1cbc0602b8f047375805c1a54e5b3a2f578261df72c9bbce34cf37272b9233d8。

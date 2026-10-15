@@ -1,0 +1,11 @@
+****************************************************************
+* Solver-neutral export of the frozen D4-A map8 18-mixture     *
+* axial MACROLIB. No transport solve and no SPOD operation.    *
+****************************************************************
+XSM_FILE MAC :: FILE './initial_axial_macrolib.xsm' ;
+SEQ_ASCII REF_XS :: FILE './d4a_map8_370.mgx' ;
+MODULE MGXEXP: END: ;
+REF_XS := MGXEXP: MAC :: PN 2 ;
+ECHO "D4A-MAP8-MGXEXP-COMPLETE" ;
+END: ;
+QUIT "LIST" .

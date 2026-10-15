@@ -1,0 +1,69 @@
+--- validation/axial_material/complete_history_root_index_source_v15_20261010/actual_prepare_sources/source_snapshot_before_prelaunch_host_fix/prepare_cli_host_v15.py
++++ validation/axial_material/complete_history_root_index_source_v15_20261010/actual_prepare_sources/prepare_cli_host_v15.py
+@@ -80,7 +80,7 @@
+ 
+ def main():
+     started = time.monotonic()
+-    if len(sys.argv) != 1 or sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE'):
++    if len(sys.argv) != 1 or sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE') or sys.getprofile() is not None:
+         raise ValueError('fixed nonoptimized preparation host required')
+     if any(os.environ.get(k) != '1' for k in THREAD_KEYS) or Path(sys.executable).resolve() != PYTHON:
+         raise ValueError('declared single-thread Python3.12 required')
+@@ -89,18 +89,18 @@
+         if os.path.lexists(path):
+             raise ValueError('all actual preparation namespaces must be fresh; no retry: '+str(path))
+     inputs = [pin(DRIVER,DRIVER_SHA256),pin(TARGET,TARGET_SHA),pin(FULL,FULL_SHA),pin(PARENT,PARENT_SHA),pin(BOUNDED,BOUNDED_SHA)]
+-    diagnostic, diagnostic_pin = load(DRIVER,DRIVER_SHA256,'axmat_v15_complete_prepare_passive_profiler')
++    diagnostic, diagnostic_pin = load(DRIVER,DRIVER_SHA256,'axmat_v15_complete_prepare_unprofiled_driver')
+     inputs.append(pin(diagnostic.OLD_RECEIPT,diagnostic.OLD_RECEIPT_SHA))
+     inputs.append(pin(BASE/'Root_actual_resource_module_admission.json','5a0b2c1870ba1f0cced713bb3528fb9c13928aaf436859763c97edb19afd7676'))
+     h,hpin = load(OLD_HELPER,OLD_HELPER_SHA,'axmat_v15_complete_prepare_original619')
+-    resource_factory,rpin = load(RESOURCE_FACTORY,RESOURCE_SHA,'axmat_v15_complete_prepare_resources_f136')
++    resource_factory,rpin = load(RESOURCE_FACTORY,RESOURCE_SHA,'axmat_v15_complete_prepare_resources_root_index')
+     full,production = h.modules()
+     if full.OwnRSSSerialExecutor.__bases__ != (production.SerialExecutor,) or Path(full.__file__).resolve() != FULL or Path(production.__file__).resolve() != PARENT:
+         raise ValueError('genuine supervisor/MRO/source paths required')
+     h.guard_admission(full)
+     roots = resource_factory.history_roots([str(p) for p in (HOST_OUT,PROFILE_OUT,SOURCE,OUT,TERMINAL)],ART)
+-    resources = resource_factory.resources_for(roots,production.ResourceFailure)
+-        runner = None
++    resources = resource_factory.DynamicHistoryResources(ART,roots,8*2**30,96*2**30,production.ResourceFailure)
++    runner = None
+     try:
+         before = resources.check()
+         if before['artifact_bytes']+ARCHIVE_CAP >= 96*2**30 or before['disk_free_bytes']-ARCHIVE_CAP < 8*2**30:
+@@ -131,7 +131,7 @@
+         if stdout['classification'] != 'DECLARED_SENDER_CONTIGUOUS_FLUX_WINDOW_ROOT_INDEX_BUILD_ONLY_V15' or stdout['declaration'] != str(declaration) or stdout['declaration_sha256'] != pin(declaration)['sha256']:
+             raise ValueError('actual normal canonical preparation stdout required')
+         if child['status'] != 'PREPARE_RETURNED' or child['failure'] is not None or child['profile_used'] is not False or child['canonical_cli_completed'] is not True:
+-            raise ValueError('complete passive child profile required')
++            raise ValueError('complete unprofiled canonical child preparation return required')
+         if len(runner.records) != 1 or runner.records[0]['status'] != 'PASS' or type(watch['returncode']) is not int or watch['returncode'] != 0 or watch['command'] != command or watch['limit_failure'] is not None or watch['own_child_only'] is not True or watch['liveness_group_cleanup'] is not True:
+             raise ValueError('one actual guarded child PASS required')
+         if type(watch['pid']) is not int or watch['pid'] <= 0 or watch['rss_cap_mib'] != RSS_CAP or not 0 < watch['elapsed_seconds'] < watch['wall_cap_seconds'] <= runner.records[0]['wall_cap_seconds'] <= STAGE_CAP:
+@@ -143,9 +143,9 @@
+         for entry in inputs+[hpin,rpin]:
+             if pin(entry['path'],entry['sha256']) != entry:
+                 raise ValueError('complete preparation input source identity changed')
+-            value = dict(schema='AXMAT_V15_ROOT_COMPLETE_PREPARE_GENUINE_HOST_V1',status='ACTUAL_COMPLETE_PREPARE_CLOSED_EXTERNAL_ROOT_REQUIRED',
++        value = dict(schema='AXMAT_V15_ROOT_COMPLETE_PREPARE_GENUINE_HOST_V1',status='ACTUAL_COMPLETE_PREPARE_CLOSED_EXTERNAL_ROOT_REQUIRED',
+             input_sources=inputs,original_helper=hpin,resource_factory=rpin,actual_command=command,
+-            actual_full_merged_stdout_stderr=pin(log),actual_child_profile=pin(child_path),actual_watchdog=pin(watch_path),
++            actual_full_merged_stdout_stderr=pin(log),actual_child_prepare_result=pin(child_path),actual_watchdog=pin(watch_path),
+             actual_declaration=pin(declaration),actual_source_admission=pin(SOURCE/'source_admission.json'),
+             stage_records=runner.records,watchdog=watch,resources_before=before,resources_after=after,
+             profile_used=False,whole_elapsed_seconds=elapsed,whole_archive_bytes=archived,
+@@ -158,12 +158,10 @@
+             raise ValueError('final complete preparation host cap exceeded')
+         print(json.dumps(dict(status=value['status'],host_result=pin(HOST_OUT/'result.json'),actual_external_Root_terminal_still_required=True),allow_nan=False),flush=True)
+     except BaseException as error:
+-            if HOST_OUT.is_dir():
++        if HOST_OUT.is_dir():
+             write_new(HOST_OUT/'failed_host_result.json',dict(status='FAILED_COMPLETE_PREPARE_NO_RETRY',error=repr(error),
+                 stage_records=[] if runner is None else runner.records,profile_used=False,elapsed_seconds=time.monotonic()-started,
+                 full86_executed=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False))
+         raise
+-    finally:
+-    
+ if __name__ == '__main__':
+     main()

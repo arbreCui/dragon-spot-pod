@@ -1,0 +1,20 @@
+--- frozen_V5/child.py
++++ stopped_V6/child.py
+@@ -22,7 +22,7 @@
+     if hashlib.sha256(payload).hexdigest() != expected:
+         raise ValueError('external diagnostic config SHA differs')
+     value = json.loads(payload)
+-    if (value['schema'] != 'AXMAT_TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC_CONFIG_V1'
++    if (value['schema'] != 'AXMAT_TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC_CONFIG_V1'
+         or value['status'] != 'READY_ROOT_REVIEWED_INPUT_DIAGNOSTIC_ONLY'):
+         raise ValueError('UNREADY: stopped source diagnostic, no execution authorized by config')
+     if value['caps'] != dict(total_wall_seconds=1800,stage_wall_seconds=600,rss_mib=512,
+@@ -125,7 +125,7 @@
+             suppressed_boundary_events=suppressed,profile_disabled=True,
+             ru_maxrss_raw_bytes=raw,ru_maxrss_mib=raw/2**20),allow_nan=False),flush=True)
+     # No business calls occur after the hook is disabled.
+-    result = dict(schema='AXMAT_TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC_CHILD_V1',
++    result = dict(schema='AXMAT_TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC_CHILD_V1',
+         classification='COMPLETE_INPUT_ADMISSION_ALLOCATION_DIAGNOSTIC_ONLY',
+         actual_input_admission_returned=True,actual_true_build_interpreter_branch=True,
+         actual_call='declaration_admission(DECLSHA, True, prep_sha256=PREPSHA)',

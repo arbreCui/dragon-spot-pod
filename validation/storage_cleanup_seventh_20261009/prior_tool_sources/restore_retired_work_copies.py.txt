@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""List, or explicitly restore, only this cleanup round's exact work copies."""
+import argparse
+import hashlib
+import json
+import os
+import stat
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parent
+
+def digest(path):
+    value = hashlib.sha256()
+    with path.open('rb') as stream:
+        while block := stream.read(4 * 1024 ** 2):
+            value.update(block)
+    return value.hexdigest()
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--restore-all', action='store_true')
+    parser.add_argument('--path', help='Restore one exact path listed in the manifest.')
+    args = parser.parse_args()
+    if args.restore_all and args.path:
+        raise ValueError('choose --restore-all or --path')
+    manifest = json.loads((BASE / 'manifest.json').read_text())
+    rows = [row for row in manifest['candidates'] if row['category'] == 'EXACT_DUPLICATE_OLD_WORK_COPY']
+    if not args.restore_all and not args.path:
+        print(json.dumps({'restored': False, 'copies': [{'path': row['path'], 'retained_primary': row['retained_primary']} for row in rows]}, indent=2))
+        return
+    if args.path:
+        rows = [row for row in rows if row['path'] == args.path]
+        if len(rows) != 1:
+            raise ValueError('path is not an exact retired work copy')
+    project = BASE.parents[1]
+    for row in rows:
+        target, primary = Path(row['path']), Path(row['retained_primary'])
+        if not target.is_relative_to(project / 'validation/artifacts') or not primary.is_relative_to(project / 'validation/artifacts'):
+            raise ValueError('unexpected project path')
+        if target.is_symlink() or primary.is_symlink():
+            raise ValueError('symbolic endpoint')
+        info = primary.stat()
+        if not stat.S_ISREG(info.st_mode) or info.st_size != row['size'] or digest(primary) != row['sha256']:
+            raise ValueError(f'primary differs: {primary}')
+        if target.exists() and (not target.is_file() or target.stat().st_size != row['size'] or digest(target) != row['sha256']):
+            raise ValueError(f'existing target differs: {target}')
+    restored = []
+    for row in rows:
+        target, primary = Path(row['path']), Path(row['retained_primary'])
+        if target.exists():
+            continue
+        value = hashlib.sha256(); length = 0
+        with target.open('xb') as output:
+            try:
+                with primary.open('rb') as source:
+                    while block := source.read(4 * 1024 ** 2):
+                        value.update(block); length += len(block); output.write(block)
+                if length != row['size'] or value.hexdigest() != row['sha256']:
+                    raise ValueError('primary changed while copying')
+                output.flush(); os.fsync(output.fileno())
+            except BaseException:
+                output.close(); target.unlink(); raise
+        os.chmod(target, stat.S_IMODE(row['identity'][2]))
+        os.utime(target, ns=(row['identity'][4], row['identity'][4]))
+        restored.append(str(target))
+    print(json.dumps({'status': 'PASS', 'restored': restored, 'scope': 'This round only; earlier retired history may require separate restoration.'}))
+
+if __name__ == '__main__':
+    main()

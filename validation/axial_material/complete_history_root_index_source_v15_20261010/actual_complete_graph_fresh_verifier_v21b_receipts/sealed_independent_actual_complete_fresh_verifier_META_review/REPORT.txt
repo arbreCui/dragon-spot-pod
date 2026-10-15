@@ -1,0 +1,11 @@
+有限保存 META 独立复核通过，不运行项目、helper、guard、业务、数值或构建，不轮询已关闭会话。
+真实 Root 45eca8/session38770 → 59fbf2，严格整数 EXIT0/CLOSED；一项 genuine child PASS，0 retry，own-child cleanup true，limit_failure null。
+whole 30.821748542 s / child 29.531128833 s，watchdog 采样峰值 340.3125 MiB，driver 自报自身峰值 350.1875 MiB；两种真实观测都低于原 512 MiB，不能混称同一采样。
+58 个显式保存文件、33 个完整 Source、host 43 固定入口+原 helper/resource 两入口及全部显式 prelaunch pins 的完整 EOF SHA256/七项 identity 前后相同；当前 graph 只 stream hash，不解析其它 ART 或数值。
+完整三 gzip 的解压 EOF/CRC、大小和 SHA 独立检查；expected/actual 完整 27 字段及嵌套 type/order/value/floatbits 逐项相等，完整 JSON wire 字节相等，无删字段。
+当前完整图结果含 37111 canonical / 238441 requirements / 86 namespaces / 186 aliases / 479 absences。
+真实未过滤 trace 37112 条，每条 read/path/open attempt_count=1，37111 canonical + 1 外部完整 graph；无 subprocess reexecute；audit 不观测 open 成功或 native/HDF5/stat。
+4 项私有正控、3 项拒绝、caller 非消费不变/私有消费清空均有完整保存通过证据；实际 PID、claim、report、child stdout、watch 与 host 绑定一致。
+原 whole1800/stage600/RSS512/64MiB/history96GiB/free8GiB/1thread/1child/0retry 保持；Root 有限快照+manifest 1909966 B <64MiB。E 根目录后续保存 META 的条目计数/时间变化明确排除；其它显式目录完整七项一致。
+子输出是原 runner 合并 stdout/stderr，外部 parent 两流单独保存；不声称独立 child stderr 为空。
+这是真实当前完整图 fresh verifier 的成功证据，尚未创建 helper Q：Root 还需与独立原 60 秒协议凭证共同准入。它不授完整生产 INPUT、五阶段构建、native RSS、AAA、ABA 或物理准确性资格。旧 V21 失败证据未修改。

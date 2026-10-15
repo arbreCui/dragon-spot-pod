@@ -1,0 +1,15 @@
+SPOT B 四产品归档及全部原文副本回收完成（2026-10-15）
+
+已完成剩余u.asc/a.asc/t.asc三份原文副本回收346861973字节。Root只读0、独立只读核验0、Root实际回收0、独立执行后核验0均闭合；原资源及进程检查、精确文件身份、逐项日志、最后删除后强制新资源扫描均通过。
+
+与先前首个m.xsm副本76594248字节合计，已退役的原始产品副本恰好4项、423456221字节。另回收首次失败的不完整压缩残片25099039字节；残片不计为原始4产品之一。两次本批回收动作总移除448555260字节，属于删除量，未扣除新归档和核验文档占用。
+
+完整原始结果仍可由4份gzip恢复，合计90356033字节；4归档条目、完整索引、原生树、55上下文、8组完整提取结果、11输入及全部结果文档保留。每个原文副本都在字节恢复校验及独立复核通过后才移除；未改科学数值或原验收阈值。
+
+完整归档结果：SPOT_CURRENT_B4_COMPLETE_LOSSLESS_ARCHIVE_VERIFIED_RESULT_20261015.txt
+首个原文与失败残片回收：SPOT_CURRENT_B4_EXACT2_RECOVERY_VERIFIED_RESULT_20261015.txt
+本次实际回执：current_B4_remaining3_original_products_retirement_source_v1_UNREADY/EXECUTION_RECEIPT.json
+真实工具返回：同目录ROOT_EXECUTION_TRUE_TOOL_RETURNS.json
+独立执行后核验：同目录execute_actual_postverify_20261015/REVIEW.json及TRUE_TOOL_RETURNS.json
+
+下一步：将首1+后3的完整原文退役凭证纳入B六阶段汇总准入，保留所有8组SQL/字节池和55上下文，按原限制运行完整范围汇总。此存储阶段完成不代表总体物理、AAA或ABA验收完成。

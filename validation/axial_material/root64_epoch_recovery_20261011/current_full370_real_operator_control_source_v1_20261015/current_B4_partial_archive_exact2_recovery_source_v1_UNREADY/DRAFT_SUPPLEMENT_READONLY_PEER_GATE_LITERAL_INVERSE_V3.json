@@ -1,0 +1,147 @@
+{
+  "schema": "CURRENT_B4_EX2_DRAFT_SUPPLEMENT_AND_READONLY_PEER_GATE_SOURCE_DELTA_V1",
+  "source_only": true,
+  "formal_freeze": false,
+  "before_Source_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/recover_exact2_B4_partial_archive_paths.UNREADY.py",
+      "sha256": "0a0cfef223fc1a292aeb1e147702d670f66bb46de5e2fcbfbe142f764851a45f",
+      "size_bytes": 19237,
+      "identity": [
+        16777229,
+        50873124,
+        33188,
+        1,
+        19237,
+        1792060329501915519,
+        1792060329501915519
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/write_once_exact2_B4_recovery_reviewable_CLI.UNREADY.py",
+      "sha256": "3bbd34faa7483662b180798d51a1c5832cb9055f5d5ea50c5da61616c40c6826",
+      "size_bytes": 5328,
+      "identity": [
+        16777229,
+        50873125,
+        33188,
+        1,
+        5328,
+        1792060294788409894,
+        1792060294788409894
+      ]
+    }
+  ],
+  "after_Source_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/recover_exact2_B4_partial_archive_paths.UNREADY.py",
+      "sha256": "279a1190dfdff1ee308dad9a94c506d14a79a0ea8cee02ed0a12b531175d40ff",
+      "size_bytes": 23231,
+      "identity": [
+        16777229,
+        50873124,
+        33188,
+        1,
+        23231,
+        1792061310028419479,
+        1792061310028419479
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/write_once_exact2_B4_recovery_reviewable_CLI.UNREADY.py",
+      "sha256": "e8b5373bfd85a3cc050a0d8038d5f6f1f68f3272a7e5b368e5037eb9fe61e405",
+      "size_bytes": 6922,
+      "identity": [
+        16777229,
+        50873125,
+        33188,
+        1,
+        6922,
+        1792061310029757440,
+        1792061310029757440
+      ]
+    }
+  ],
+  "exact_literal_offset_replacements": {
+    "recover_exact2_B4_partial_archive_paths.UNREADY.py": [
+      {
+        "old_literal": " ap.add_argument('--readonly-receipt-pin');a=ap.parse_args();started=time.monotonic();state={};plan=None",
+        "new_literal": " ap.add_argument('--readonly-receipt-pin')\n for role in('readonly-tools','readonly-post','readonly-post-tools'):ap.add_argument('--'+role+'-pin')\n a=ap.parse_args();started=time.monotonic();state={};plan=None",
+        "replacement_character_offset": 3588
+      },
+      {
+        "old_literal": "   projection=plan['actual_failure_post_key_projection']\n   require(post['schema']==projection['schema']and post['status']==projection['status']and post['failure']is None\n    and post['metadata_only']is True and post[projection['Host_pin_field']]==cp['Host']\n    and post[projection['Root_tools_pin_field']]==cp['Root_tools']\n    and post[projection['first_failure_pin_field']]==cp['first_failure']\n    and post[projection['watchdog_pin_field']]==cp['watchdog']\n    and targets[1]in post[projection['all_new_output_pins_field']]\n    and post[projection['original4_pins_field']]==archiveplan['all4_product_pins'],'actual independent failure facts post0; exact incomplete archive fullPF')\n",
+        "new_literal": "   projection=plan['actual_failure_post_key_projection']\n   require(post['schema']==projection['schema']and post['status']==projection['status']and post['failure']is None\n    and post['metadata_only']is True and post[projection['Host_pin_field']]==cp['Host']\n    and post[projection['Root_tools_pin_field']]==cp['Root_tools']\n    and post['actual_Root_integer_exit_code']==1 and post['actual_recorded_child_integer_exit_codes']==[]\n    and host['actual_watchdog']is None and host['actual_child_receipt']is None,'original independent failed-Root1 post0 child_codes[] and Host NULL roles preserved')\n   sp=plan['actual_failure_supplemental_post_pin'];sup=full(sp,budget,True);stools=full(plan['actual_failure_supplemental_post_tools_pin'],budget,True)\n   genuine(stools,'actual_review_return',sp,'review_pin');projected=full(plan['actual_failure_supplemental_field_projection_pin'],budget,True)\n   require(projected['supplement_report_pin']==sp and projected['supplement_true_tools_pin']==plan['actual_failure_supplemental_post_tools_pin']\n    and sup['schema']==projected['supplement_schema']and sup['status']==projected['supplement_status']\n    and sup['failure']is None and sup['metadata_only']is True,'genuine supplemental metadata0 exact recorded-field projection')\n   require(sup['actual_Host_report_pin']==cp['Host']and sup['actual_Root_tools_pin']==cp['Root_tools']\n    and sup['prior_post_pin']==cp['post']and sup['prior_post_tools_pin']==cp['post_tools']\n    and sup['original_Host_actual_watchdog']is None and sup['original_Host_actual_child_receipt']is None\n    and sup['original_prior_post_recorded_child_integer_exit_codes']==[]\n    and sup['supplemental_actual_recorded_child_integer_exit_codes']==[1]\n    and sup['standalone_watchdog_pin']==cp['watchdog']and sup['standalone_watchdog']==watch\n    and sup['first_archive_failure_pin']==cp['first_failure']and sup['first_archive_failure']==failure\n    and sup['uniquely_completed_entry000_pin']==plan['retained_member0_entry_pin']\n    and sup['current_complete_member000_gzip_blind_fullEOF_twice_pin']==plan['retained_member0_gzip_pin']\n    and sup['incomplete_gzip001_current7_only_pin']==targets[1]\n    and sup['current_original_all4_plain_current7_only_pins']==archiveplan['all4_product_pins']\n    and sup['archive_all4_complete']is False and sup['streamed_decompressed_bytes_independently_recomputed_by_supplement']is False,\n    'actual standalone child1/member0/partial facts from supplemental0; never full4 success or independent stream inferred')\n",
+        "replacement_character_offset": 11495
+      },
+      {
+        "old_literal": "   require(entry['ordinal']==0 and entry['original_plain_full_pin']==original",
+        "new_literal": "   require(sup['recorded_complete_member000']==entry and entry['ordinal']==0 and entry['original_plain_full_pin']==original",
+        "replacement_character_offset": 14137
+      },
+      {
+        "old_literal": "   d.update(exact_target_pins=targets,actual_failed_archive_closure_pins=cp,actual_single_member_verification_closure_pins=vp,",
+        "new_literal": "   d.update(exact_target_pins=targets,actual_failed_archive_closure_pins=cp,actual_single_member_verification_closure_pins=vp,\n    actual_failure_supplemental_post_pin=sp,actual_failure_supplemental_post_tools_pin=plan['actual_failure_supplemental_post_tools_pin'],",
+        "replacement_character_offset": 17653
+      },
+      {
+        "old_literal": "    command=['/usr/sbin/lsof','-n','-P','-Fpcfn','--']+[p['path']for p in targets]\n",
+        "new_literal": "    require(plan['independent_readonly_post0_required_before_execute']is True and all(v is not None for v in(a.readonly_tools_pin,a.readonly_post_pin,a.readonly_post_tools_pin)),'independent actual readonly metadata post0 and tools required before unlink')\n    pchecktools=json.loads(a.readonly_tools_pin);checktools=full(pchecktools,budget,True)\n    genuine(checktools,'actual_readonly_return',pcheck,'receipt_pin');require(checktools['actual_readonly_permission_mode']=='require_escalated','actual original readonly permission route')\n    pcheckpost=json.loads(a.readonly_post_pin);pcheckposttools=json.loads(a.readonly_post_tools_pin)\n    checkpost=full(pcheckpost,budget,True);checkposttools=full(pcheckposttools,budget,True)\n    genuine(checkposttools,'actual_review_return',pcheckpost,'review_pin');contract=plan['readonly_post_report_contract']\n    require(checkpost['schema']==contract['schema']and checkpost['status']==contract['status']and checkpost['failure']is None\n     and checkpost['metadata_only']is True and checkpost['actual_readonly_receipt_pin']==pcheck\n     and checkpost['actual_readonly_tools_pin']==pchecktools and checkpost['source_pin']==ps and checkpost['plan_pin']==pp\n     and checkpost['exact_target_pins']==targets and checkpost['actual_released_pins']==[]and checkpost['actual_released_bytes']==0\n     and checkpost['files_deleted']is False and checkpost['resources_after_original_classes_forced_fresh']is True\n     and type(checkpost['actual_readonly_Root_integer_exit_code'])is int and checkpost['actual_readonly_Root_integer_exit_code']==0,\n     'separate genuine readonly metadata peer0 for exact same Source/plan/receipt/tools/targets/no-unlink/fresh resources')\n    d.update(actual_readonly_receipt_pin=pcheck,actual_readonly_tools_pin=pchecktools,\n     actual_readonly_post_pin=pcheckpost,actual_readonly_post_tools_pin=pcheckposttools)\n    command=['/usr/sbin/lsof','-n','-P','-Fpcfn','--']+[p['path']for p in targets]\n",
+        "replacement_character_offset": 19128
+      }
+    ],
+    "write_once_exact2_B4_recovery_reviewable_CLI.UNREADY.py": [
+      {
+        "old_literal": "ap.add_argument('--readonly-tools-pin');a=ap.parse_args()",
+        "new_literal": "ap.add_argument('--readonly-tools-pin');ap.add_argument('--readonly-post-pin');ap.add_argument('--readonly-post-tools-pin');a=ap.parse_args()",
+        "replacement_character_offset": 1763
+      },
+      {
+        "old_literal": " checkpin=None;checktoolspin=None",
+        "new_literal": " checkpin=None;checktoolspin=None;checkpostpin=None;checkposttoolspin=None",
+        "replacement_character_offset": 3169
+      },
+      {
+        "old_literal": "  argv+=['--readonly-receipt-pin',json.dumps(checkpin,separators=(',',':'))]",
+        "new_literal": "  need(plan['independent_readonly_post0_required_before_execute']is True and a.readonly_post_pin is not None and a.readonly_post_tools_pin is not None,'actual independent readonly metadata post0 required before execute publication')\n  checkpostpin=json.loads(a.readonly_post_pin);checkposttoolspin=json.loads(a.readonly_post_tools_pin);cp=read(checkpostpin);cpt=read(checkposttoolspin)\n  genuine(cpt,'actual_review_return',checkpostpin,'review_pin');contract=plan['readonly_post_report_contract']\n  need(cp['schema']==contract['schema']and cp['status']==contract['status']and cp['failure']is None and cp['metadata_only']is True\n   and cp['actual_readonly_receipt_pin']==checkpin and cp['actual_readonly_tools_pin']==checktoolspin\n   and cp['source_pin']==source and cp['plan_pin']==pp and cp['exact_target_pins']==plan['exact_target_pins']\n   and cp['actual_released_pins']==[]and cp['actual_released_bytes']==0 and cp['files_deleted']is False\n   and cp['resources_after_original_classes_forced_fresh']is True\n   and type(cp['actual_readonly_Root_integer_exit_code'])is int and cp['actual_readonly_Root_integer_exit_code']==0,\n   'genuine readonly post0 binds same receipt/tools/Source/plan/exact2 no-unlink and fresh original resources')\n  for role,p in(('readonly-receipt',checkpin),('readonly-tools',checktoolspin),('readonly-post',checkpostpin),('readonly-post-tools',checkposttoolspin)):\n   argv+=['--'+role+'-pin',json.dumps(p,separators=(',',':'))]",
+        "replacement_character_offset": 4106
+      },
+      {
+        "old_literal": "actual_readonly_receipt_pin=checkpin,actual_readonly_tools_pin=checktoolspin,",
+        "new_literal": "actual_readonly_receipt_pin=checkpin,actual_readonly_tools_pin=checktoolspin,\n  actual_readonly_post_pin=checkpostpin,actual_readonly_post_tools_pin=checkposttoolspin,",
+        "replacement_character_offset": 5974
+      }
+    ]
+  },
+  "parent_inverse_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_partial_archive_exact2_recovery_source_v1_UNREADY/DRAFT_LITERAL_OFFSET_WHOLE_INVERSE_EVIDENCE_V2.json",
+    "sha256": "dc340080010585886a16d8b4240503f7569f17e185362b9cd6a7e5ac2b6326c2",
+    "size_bytes": 22594,
+    "identity": [
+      16777229,
+      50873152,
+      33188,
+      1,
+      22594,
+      1792060329502366186,
+      1792060329502366186
+    ]
+  },
+  "actual_failure_supplement_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B4_complete_products_lossless_archive_source_v1_UNREADY/supplemental_failure_member0_metadata_source_v1_UNREADY/REVIEW.json",
+    "sha256": "448ea30b30c4adcbb978c7b480ea90ef057b6ab7a762b0dc928e5009fdc0dbd9",
+    "size_bytes": 16542,
+    "identity": [
+      16777229,
+      50873755,
+      33188,
+      1,
+      16542,
+      1792060950213179568,
+      1792060950213179568
+    ]
+  },
+  "future_member0_Root_and_peer_PFs_still_NULL": true,
+  "readonly_post0_mandatory_in_publisher_and_worker": true,
+  "Source_author_business_execution": false
+}

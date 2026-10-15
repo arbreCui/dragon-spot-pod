@@ -1,0 +1,30 @@
+SPOT B2 SQL／原字节池成对归档：真实容量上限失败事实（2026-10-15）
+
+结论
+本次成对归档未完成。Root真实退出1，原单子进程真实退出1；没有删除原SQL或原字节池，没有重试。独立失败事实复核真实退出0，只确认失败及已完成SQL成员的记录，不将失败变成成对归档成功。
+
+实际经过与结果
+归档固定顺序为SQL 52,441,088字节→原字节池150,267,572字节。原压缩函数保持不变，整轮归档输出上限32 MiB，其中压缩载荷24 MiB、运行和元数据8 MiB；另计Source 16 MiB。第二件文件压缩时触及24 MiB载荷上限，FIRST_ARCHIVE_FAILURE.json记录phase=ARCHIVE_1。独立watchdog为returncode=1、elapsed_seconds=8.970659082988277、sampled_peak_rss_mib=62.15625、limit_failure=null。未触及原600秒或512 MiB执行限制。
+
+Host的status=FAILED_B2_PAIRED_SQL_POOL_ARCHIVE_NO_RETRY_ORIGINAL_RETAINED，failure保持原own-child stage failed; no retry，actual_watchdog=null、actual_child_receipt=null，archive_complete=false。单独watchdog的真实child1记录与Host内空字段分别保留，不相互替代。最终原资源复查通过，仅说明失败现场仍在原资源限制内。
+
+完整SQL成员
+唯一完整条目archive_entry_000.json：原SQL SHA-256为97308f35ddea1e7cb846a21c88b84a7f41e8229ef9deb479fbffada4ff86fd8b，长度52,441,088字节；原实际压缩输入及流式解压得到的SHA／长度均完全一致。完整gzip为7,025,974字节，SHA-256=1e25b0de1e4bd51fc7728875d9f2263ab2c72c99551d293f6299c379b05e2496。独立复核盲读完整gzip两遍，核验完整SHA及文件身份；未重跑解压、读取SQL内容或解析科学值。后续单独Root恢复字节控制及退役仍须另有真实凭证，本文件不授权删除。
+
+失败残片
+字节池gzip残片为17,639,368字节，严格只记录path／size_bytes／七项文件身份，未读取或计算其内容SHA，也未推定完整或可恢复。没有第二条完整entry、成对归档index或成功child report。完整SQL与原字节池现在均保留；以后如独立处理，必须保留两者的精确恢复配对关系。
+
+全部81个累计范围、原2 GiB新产物限制、96 GiB历史限制、只读旧输入、完整物理目录归档映射、首次宏观比较超时的8份原失败文件及全部结果文档继续保留。本次复核未删除文件、未调用原生产器或编译器、未重跑科学比较。
+
+原始凭证
+Source目录：current_B2_SQL_pool_lossless_archive_source_v2_UNREADY
+Root原始工具返回：ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+  SHA-256=eeed874a503895454acbe59c841822cf69d6cf39c24df73cbc4173d51697952e
+实际Host：/Users/wen/spot/validation/artifacts/axial-material-current-B2-paired-SQL-pool-lossless-archive-20261015-v1/Root_actual_single_B2_SQL_pool_lossless_archive_summary.json
+  SHA-256=2d88cec03c74aae32d3955c1055eafa66f970ac0209b2df43d87db0fe77c0f51
+独立失败复核：failure_actual_postverify_20261015/REVIEW.json
+  SHA-256=cb04a5b9ff1c23082819ec9d25fd0919ccaffb5f2e508915459c5929a3fc4346
+独立真实工具返回：failure_actual_postverify_20261015/TRUE_TOOL_RETURNS.json
+  SHA-256=090a6c700f27efc94af0e40d0063e8c098882180fdbd565afc624ebc4c35ef59
+
+既有B55／B2完整比较19620记录、2264152原字的双零差异结果仍成立。本次存储处理没有新增在线消费、AAA物理精度、独立参考或ABA准入结论；总goal保持active。

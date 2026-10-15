@@ -1,0 +1,6 @@
+V9 原生唯一运行真实失败后验：证据范围 PASS，不是运行成功。
+Root cefa98/53935→afac4e 退出1并关闭。6个初始阶段PASS，第7 bootstrap_axial因原512MiB门失败：PID35128，513.890625MiB，-15，580次实时样本，已清理进程组；未获得wait4，四个kernel字段保持None。
+全部7个原始watch与日志、完成archives/training原seal及所有新生成/失败partial字节鲜SHA通过；bootstrap未封存，maps0，不授予数值资格。
+当前35647 canonical、37339 metadata及37395完整期望读集全7身份保持，235528行解码完整，86namespace/186alias/445absence不变；旧35GB未重新读取。236动态资源根和原96GiB/free8GiB门保持，按当前文件计算。
+stdout0/stderr3643完整留存，失败Root收据已绑定；成功seal/terminal/四尾缺席，无重试、无AAA精度或ABA准入。下一次必须新源独审与新鲜尝试，不能复用此失败bootstrap。
+本核验只读TMP，未调用业务或修改项目。SOURCE31/完整prepared型与顺序由互补评审负责，尚未在本报告假填joint。

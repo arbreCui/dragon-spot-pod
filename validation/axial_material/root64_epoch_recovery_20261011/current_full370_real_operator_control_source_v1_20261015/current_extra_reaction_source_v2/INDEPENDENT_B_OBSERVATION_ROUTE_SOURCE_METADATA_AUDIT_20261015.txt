@@ -1,0 +1,34 @@
+B完整观测最短路线：Source/metadata-only独立核查（2026-10-15）
+
+结论：原B输入可作为一次B-only材料构造观测的来源。它不是新的coupled/eigen transport入口。当前缺的是完整B观测、提取和context核验的真实闭合证据，而不是另造B物理配方。现入口仍只执行A；本核查不构成B运行准入。
+
+已确认的来源
+1. 原B material.x2m第1行明确“same-temperature composition sensitivity, no transport”；第11–12行传入0.2436/0.7564与750/620/475。原B AxMatTone.c2m第68–71行执行原+273.15，第73–123行保留原LIB/MIX/同位素配方，第124–128行执行原SALT/TONE材料构造。它提供当前62-slot/34个唯一NU的相同Source配方结构；实际B计数仍须由B运行与提取证明，不能继承A结果。
+2. 冻结v10 seed plan已保留B七项输入（第192–312行）。本次仅stat核对，七项native_stage_inputs的当前完整7ID均与冻结元数据相符。除material.x2m的A/B组成参数外，AxMatTone、geometry、rnr_cc、rnr_interpol及两库的声明SHA与A相同；两库仍指向原A目录的同一原文件。
+3. v10 producer第234–241行要求真实observer75 build/Root闭合与完整实际来源；第247行强制state_order=['A']，第315行明确actual_B_observation_executed=False。不能把现A完成记录重命名为B，也不能把warm-B终态archive冒作55个context事件/8棵old/post/final树。
+
+当前开放的薄输入路由gate
+原复制入口会新复制210627112+769113024=979740136字节两库；在extra21之后约1.925GB的既有joint范围上直接照搬会超过原2GiB。仅改A为B不能启动。
+v10 producer第78行严格要求LIBLIC/LIBSUB NAMFIL(:12)。原库绝对路径及“../A/DLIB_ACTUAL”超限，不能直接塞入三处FIL。observer75模块第34–35、56–64行将axobs文件写入child CWD，现Source没有独立输出目录参数。
+因此优先候选是：在原库目录以原短name只读两库；新observer IO显式输出目录参数/环境以及派生B deck的输出路径只写新的完整观测命名空间。此候选需完整原Source逆向等价、明确所有输入/输出路径、真实newbuild及原guard准入；不得覆盖原目录中的material.xsm、microlib.ascii、macro.ascii、metadata.ascii或任何旧axobs名字。也可评估确实仍存在、已计数且完整PF相符的A运行库，但已释放copy不是候选。不能创建symlink/hardlink、新两库copy、历史reset或放宽2GiB。
+
+后续最短顺序（仅可行性，不实施）
+采用执行时最新完整ledger前缀（Root正在推进rawreplay61；不固定现在的60或预测未来编号），为B观测、全部context、全部树、后续完整提取SQL/pool与6phase结果共同预留原预算。一次Root-only B材料构造观测，保留连续原事件次序、55event/8tree目标完整scope；真实缺失、不同计数、错误或非零返回原样保留，不能补零或预测成功。之后Root完整提取及独立保存证据核查，再进入B context六phase核验；不重跑已完成A，不先插入新的coupled transport支线。
+
+正式binding仍要求的实际gate
+FormalBinding._admit_lineage第266–286行要求同current CASE、三份原producer archive、三个all370 raw macro比较与0 mismatch、all_six_required_phases_finished=True、context/operand issues=0、全部必要reference producer已知、实际SPH/MASK/oldmacro选择及完整reaction multiplicity覆盖，并绑定真正的observation/extraction/aggregation/multiplicity/independent review和全部raw证据。B补齐本身不能自动把这些gate置真。
+context_state_check第1588–1637行要求完整context、所有snapshot pairs、真实完整提取coverage、所有原树及同一final micro；第1648–1666行分别执行scattering/scalar/fission/extras/overv_fallback/metadata并记录实际event/tree计数。
+当前A-only请求器第131、164–168行及scientific child第275–276行仍只接受A，未来B请求/绑定还须真实Source准入。FormalBinding第290–303行另要求实际完整kernel controls通过；不能用当前工程闭合或选定extra21捕获替代。保持B→AAA→reference→ABA目标次序，所有physics/AAA/reference/ABA资格保持False直到各自实际gate满足。
+
+authoritative文件（绝对路径，行号见上文）
+/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/material.x2m
+/Users/wen/spot/validation/artifacts/axial-material-inputs-20261003/B/AxMatTone.c2m
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_formal_first_A_short_FIL_producer_source_v10_20261014/CURRENT_FORMAL_COMPLETE_AB_ORIGINAL_MATERIAL_SEED_PLAN_SOURCE_ONLY.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_formal_first_A_short_FIL_producer_source_v10_20261014/produce_current_formal_material_observations.py
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_formal_material_authority_exact_cache70_post_literal3_latest_full50_source_v9_20261014/AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_material_evidence_compare_three_after_GENDF_cumulative_resources_source_v7_20261014/prepare_current_material_evidence_requests.py
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_material_evidence_compare_three_after_GENDF_cumulative_resources_source_v7_20261014/current_material_lineage_evidence.py
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_material_evidence_compare_three_after_GENDF_cumulative_resources_source_v7_20261014/complete_context_aware_MICROLIB_MACROLIB_aggregation_engine.UNREADY.py
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/full370_unreduced_eigen_reference_source_v2/current_formal_input_authority.py
+
+范围声明：只读Source和控制元数据，旧deck只按冻结来源与Source读取；旧SCI/GENDF/XSM/SQL/pool及science-valued文档数据体均未读取、哈希或解码。未import业务/helper，未运行native、compiler、PS、GEN或publication；未删除或修改旧输入。仅写本小TXT。可行性中的输出IO/路径方案尚未实施或获运行准入。

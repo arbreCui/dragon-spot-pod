@@ -1,0 +1,22 @@
+SPOT 八燃料18点有限稀释P0比较结果 — 2026-10-15
+
+实际计算和独立后验核验均已通过。
+范围：Am241、Pu238、Pu239、Pu240、Pu241、Pu242、U235、U238；各8个原温度、18个有限稀释点。16份原low/high档案、64个唯一温度、128份档案温度、1152个稀释节点、3456条SCAT00/NJJS00/IJJS00记录。
+共4,368,102个原始字逐字零差异。各low/high使用自身原无限稀释和弹性通量参考，按原REAL32稀释值选择SUBMAT；原热区处理、REAL32支撑及尾部裁剪、原数值函数保持不变。
+实际8个核素串行执行，各自完成报告均保留；总耗时234.9745秒，每个任务约19–36秒，采样峰值141.1875MiB，父任务峰值151,207,936字节。600秒/1800秒/512MiB、单线程/一次一个子进程/无重试/累计2GiB原限额保持。
+修复了空间检查扫描间隔：每次仍检查自身内存和时间，完整空间检查完成后再开始原0.25秒间隔，输出前后仍强制检查。原数值算法未改变。
+
+独立后验确认29个新输出的两次完整EOF哈希、474个固定输入的两次当前身份、8个原阶段记录及其报告/日志/监控闭合、8个完成报告到汇总的精确一致性、全部128份辅助索引列表与区段账本一致、全部稀释节点覆盖和零差异。原SCI和16份压缩档案仅做身份检查，未由后验重复读取数值内容或重算。
+原v4实际超时返回1保持不变；v5/v6为明确执行组织和检查调度修订后的新入口。首次后验自身身份参数错误也保留失败源码、报告和真实返回；最终核验使用Python整数纳秒身份。没有改写原计算结果、失败或重跑同一调用。
+
+实际结果：
+/Users/wen/spot/validation/artifacts/axial-material-current-eight-fuel-finite18-SCAT-producer-20261015-v2/Root_actual_eight_fuel_finite18_SCAT_summary.json
+SHA256 5ced33491fdb1b68bcb3434cc51266a3a649862371777bce4184e89f762197e1；20,838,064字节。
+实际返回：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_eight_fuel_finite18_SCAT_producer_source_v1_20261015/v6/ROOT_ACTUAL24_TRUE_TOOL_RETURNS.json
+独立后验：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_eight_fuel_finite18_SCAT_producer_source_v1_20261015/v6/actual_postverify_20261015/corrected_argument_identity_v2/REVIEW.json
+SHA256 2d51cbaf0a88fc89313679205ae4ffce8ffa3ede873fe5b592afcc115fc343ac。
+
+已核验累计空间约1.924GB，物理磁盘可用约199.6GB。为下一步完整控制的原累计限额，先实际捕获104字节当前原角度向量并独立核验，再精确退役A1两份已完成比较的临时索引和字池，可释放202,708,660字节；原始A1快照156,880,856字节、全部报告、JSONL和失败记录保留。此捕获及退役尚未执行，Source正在完善。
+本结果仅为八燃料有限稀释P0生产数据一致性；Cr52/Fe56、完整反应/当前温度插值、完整传输、正式SN32等价性、独立参考、AAA物理精度及ABA仍待验证。整体goal保持active。

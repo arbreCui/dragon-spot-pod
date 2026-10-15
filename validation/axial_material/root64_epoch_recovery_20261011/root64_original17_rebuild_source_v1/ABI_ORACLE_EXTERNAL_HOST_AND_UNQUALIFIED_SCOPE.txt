@@ -1,0 +1,33 @@
+NEW complete seventeen semantic component controls, Source-only. No old PASS inherited.
+Old /tmp fullfixture 40fdaeb6 was lost. It is not claimed recovered or byte-equivalent.
+Complete extant83core Source 94ab9ccc is the exact retained mother; all old fixture
+factory/helper bytes remain, but the83main is not used as a substitute for17controls.
+
+Full positive path actually calls CAN WRITE, GLOBAL PUBLISH, PROJECT ARCHIVE,
+all3plane QBUILD/QREAD and Native PUBLISH/READ/IMPORT. Synthetic values exercise
+true current serialization and readers without invoking a transport/physics solver.
+GLOBAL has six scalar regions plus eight face-current unknowns. Radial has two
+scalars and one signedzero surface unknown. All370groups and all32fission slots
+are complete and nonzero. Full physical macro/context trees are retained.
+
+All17 exact names come from the retained original fixed binding. The new declared
+oracle states every mutation and actual module status/count before execution.
+Coherent control has18th run phase because external host must register the real
+complete XSM EOF SHA/7ID afterprepare, then guard that independent manifest while
+the realrewrite program creates a new mathematically/contextually coherent graph.
+Persisted XSM is reopenedreadonly and actual internal readers must accept both
+phases. The actual external host comparison must reject changed SHA and7ID.
+Fortran refuses no coherent case; no fake metadata boolean stands in for rejection.
+
+Proposed host is the complete existing original guarded core runner with exact
+local reversible Source substitutions. It keeps real support imports, original
+MRO/OwnRSSSerialExecutor/Resources/check_watch/fullEOF7ID pin function, one thread,
+all original nine numeric flags, wholewall1800s/step600s/SELF512MiB, history96GiB,
+fresh2GiB/freefloor8GiB and original cold reserve. It has not been executed here.
+
+Parent must independently review and freeze Source/binding/host, then perform
+actual bounded compile/link and all20guarded process steps (2build+18casephases).
+Runtime failure is no retry. Current17semantic completion must be established
+from actual module assertions/statuses and actual host fullfile rejection.
+No oldfixture qualification, genuine producer/solver/transport/onlineBOOT,
+full-source archivebuild, formalAAA or ABA qualification is granted.

@@ -1,0 +1,48 @@
+{
+  "schema": "AXMAT_CURRENT_BALANCE_SYMMETRY_RULES_V1",
+  "case_spec_sha256": "ac3e67ffdc25f5bfa45bca5170253de8e875c983550e5ee878ee30c5d1a4c2c4",
+  "implementation_sha256": "1e42d9b6528c5e15f1692c220e6c3dfd0852e8324815cf8404cd52b75d17d357",
+  "statistics_implementation_sha256": "b8025562e2822ef4db054e09fc795ff40da3357531b68bf94f4850f3f6c7ddf5",
+  "intended_cases": {
+    "AAA": [
+      "A",
+      "A",
+      "A"
+    ],
+    "ABA": [
+      "A",
+      "B",
+      "A"
+    ]
+  },
+  "radial_regions": 8,
+  "axial_cells": 12,
+  "groups": 370,
+  "height_cm": 150,
+  "symmetry_relative_tolerance": 2.4999999999999998e-05,
+  "production_symmetry_definition": "For each radial profile separately, max(abs(f-mirror(f)))/max(abs(f)); for +z current use f+mirror(f), including the middle face. Identically zero profiles require exactly zero residual.",
+  "production_symmetry_scope": "New deterministic numerical symmetry screen; not a cross-method accuracy target.",
+  "epsilon64": 2.220446049250313e-16,
+  "telescoping_epsilon_multiplier": 64,
+  "telescoping_bound": "64*epsilon64*sum(abs(already group-summed region-face currents)); same stored face appears at both neighboring cells, so group accumulation errors cancel in this accounting identity and are not added as a physical balance allowance.",
+  "normalization_sum_bound": "For n nonnegative exported integrals, gamma(n+2)*sum(abs(integrals)), gamma(m)=m*u/(1-m*u), u=epsilon64/2. This checks the independently resummed denominator against the exporter summary.",
+  "independent_tally_relative_tolerance": 1e-09,
+  "physical_volume_relative_tolerance": 5e-06,
+  "block_lengths": [
+    5,
+    10
+  ],
+  "minimum_blocks": 20,
+  "active_batches": 250,
+  "bootstrap_replicates": 4000,
+  "bootstrap_seed": 310041,
+  "simultaneous_quantile": 0.95,
+  "quantile_method": "higher",
+  "simultaneous_family": "All CE region-by-tally-layer scalar-flux and nu-fission mirror pairs, all unique full-section net-current antisymmetric face pairs including the middle face, and signed negative/positive directional mirror pairs at every face; one joint family across all scores.",
+  "simultaneous_method": "Resample joint contiguous blocks; recompute one global nu-fission denominator per draw; residual draws minus observed residual vector are centered bootstrap errors. Divide each component by its bootstrap standard deviation and take the 95% quantile of the maximum absolute standardized error over the entire family. Simultaneous intervals are observed residual +/- q95*standard_deviation. A zero-variance component uses the maximum absolute centered error as its roundoff width. Both block lengths must contain the all-zero vector.",
+  "ce_symmetry_failure_status": "INCONCLUSIVE_SOURCE_SYMMETRY",
+  "cross_method_current_gate": null,
+  "cross_method_policy": "Report signed differences of full-section plane currents and real bottom/top/total escapes only. No current-accuracy threshold was declared in case_spec.",
+  "full_neutron_balance": "NOT_ASSESSED: no independent absorption/source tally; telescoping alone is not a neutron-balance proof.",
+  "qualification_scope": "PASS applies only to complete sign, telescoping-accounting and symmetry checks here. Input equivalence, fixed-point validity, source-history stability and shape/keff accuracy are separate prerequisites."
+}

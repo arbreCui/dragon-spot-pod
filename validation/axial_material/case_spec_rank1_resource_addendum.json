@@ -1,0 +1,21 @@
+{
+  "schema": "AXMAT_CE_RESOURCE_ADDENDUM_V1",
+  "status": "PREDECLARED_BEFORE_FORMAL_CE_TRANSPORT",
+  "case_spec_sha256": "566477ac8cc71c0a8c944c62b53ce7de02d6c5b065734b7a59f548e8bf05afea",
+  "scope": "Only the upper wall-time bound of each formal CE run changes; scientific inputs, sample counts, criteria and AAA-before-ABA order are unchanged.",
+  "reason": "The independent 25000-history geometry/tally smoke measured 4408.96 active particles per second. The prescribed 17.5 million total histories cannot plausibly finish in the initial 1800-second limit. Budget feasibility is corrected before any formal CE result exists.",
+  "smoke_native_result": "/Users/wen/spot/validation/artifacts/axial-material-ce-20261003/AAA-smoke/native_result.json",
+  "smoke_log_sha256": "6eabf43b14449033c4d30c2a7168dfc1ed24bd1b75ba992edcc658175962645d",
+  "formal_ce_wall_seconds_per_case": 5400,
+  "automatic_retries": 0,
+  "new_numeric_children_at_once": 1,
+  "threads": 1,
+  "formal_particles_per_batch": 50000,
+  "formal_inactive_batches": 100,
+  "formal_active_batches": 250,
+  "authorization": "User requested automatic execution of the ordered goal and routine approvals. This is a bounded pre-execution resource adjustment, not a change to any physical or statistical acceptance threshold.",
+  "parent_resource_addendum": {
+    "path": "/Users/wen/spot/validation/axial_material/case_spec_resource_addendum.json",
+    "sha256": "622048e67937ed9b4a2ec7a507e492d4c57ee6f730af0f5aec4590eda378bb6d"
+  }
+}

@@ -1,0 +1,51 @@
+Independent complete raw-record SOURCE review only
+
+Final derivative: /private/tmp/axmat_rawrecord_fixed_historical_auditor_retention_SOURCE_20261010_tl856qp8
+Manifest SHA: 641682743ba9f411dd5d09eae4c2df8c3dcce8178f325cc42da71dd1f84f9b4d
+REVIEW.json SHA: 85514d32a0052678f72f7fc23b9f1729eeca7b7a44ee5912da467408f42d3e2d
+Actual independent SOURCE review: 7f50bb typed EXIT0 CLOSED; 430 exact typed pass:true checks.
+
+The review qualifies the final SOURCE manifest, generator52b866, original wrapper098b2,
+host450497, and protocol45de90 with the exact admission schema/status. It does not
+qualify the old bce base for execution: that base has a real current-path mismatch
+for one protected historical material auditor Source.
+
+All 118 final members plus manifest and all directories/root were read to full EOF
+and pinned with exact seven-integer identities before/after. All 44 Python files
+were parsed as SOURCE AST without importing them. The base's full 51 files were
+preserved byte exact. Seven finite new-binder hunks restore the complete 6da2 base
+bytes and AST. Eleven original binder definitions are whole-source/AST unchanged;
+only material_admission/main change and one metadata/SOURCE-only retention helper
+is added. The whole original host/protocol/wrapper and original genuine guard
+Source snapshots remain byte exact; original host inverse restores776b fully.
+
+The one retained exception fixes only material_audit.py original906/currentcb461.
+All 54 logical producer sources and original expected SHA map remain, all current
+logical pins remain truthful, the other53 must match producer SHA, and the
+inputs.source_files8/generated12 strict original rules remain unchanged. Root's
+actual material precheck observed those8/12 pass; this SOURCE review did not read
+their material payloads or reperform material verification. The exact eight-field
+resolution binds current Sourcecb461, whole retained Source906, original retention
+mapping1e5cc, and fulle1755 Source inverse. Original A/B audit pins remain bound;
+the actual audit JSON files were not decoded here. The complete auditor one-hunk
+byte/AST inverse and seven unchanged definitions/default MATERIAL early-return
+semantics were independently checked from the package's complete SOURCE copies.
+
+Both original default reader calls retain all fields/headers/counts/order/extras,
+complete raw spans, exact integer types and parser64 plus rounded REAL32 bits.
+Full370/8/3/32 inventory, physical conditions, caps1800/two600/512MiB/2GiB/
+96GiB/free8GiB/thread1/child1/retry0 remain. Five positive/ten reject controls are
+SOURCE plans; none were executed here. D/E remain jointly counted separately from
+strict five ART history roots. stdout/stderr remain honestly merged child streams.
+
+This review did not import/execute any reviewed Source, reader/helper/guard/API,
+binder, protocol, transfer, native engine, numerical solver, or material payload.
+It did not enumerate ART or modify canonical/D/E/frozen packages. Runtime transfer,
+XSM memory bits, reaction multiplicity, physical/scientific accuracy, AAA and ABA
+stay unqualified; future success pins remain None. Root must supply real SOURCE
+and material admissions, independently inspect actual binding, then use the
+unchanged genuine host for actual two-stage execution and saved-evidence review.
+
+Own review-tool failures are preserved separately: one wrong inverse JSON key,
+one wrong text anchor, and a SOURCE UTF8 decode misclassification. Corrections only
+changed this private review script; no authored package or business code changed.

@@ -1,0 +1,37 @@
+SPOT 当前进度
+记录时间：2026-10-11 18:12，Asia/Shanghai
+
+整体判断
+项目仍处于组件研发与验证阶段。A/B 离线数据基线和主要验证流程已有实际结果；在线读取、共同基底和物理精度验收尚未全部通过，ABA 材料对照尚未开始。
+目标顺序保持：A/B 双精度快照及生产到在线读取验证 → AAA 同质控制 → 独立耦合参考准入 → ABA。既定物理输入和原验收门槛保持。
+
+已有实际结果
+1. A/B 双精度快照已生成，370 群终态及保存材料库、系统、轨迹检查通过。离线通过不能代替生产到在线启动的完整验证。
+2. 新一轮完整准备流程 v30 实际通过：约 312.79 秒，原监控样本峰值 486.703125 MiB。保存收据和输入冻结已完成，独立保存元数据审查实际返回 0。
+3. 构建输入已与该实际准备结果绑定，四个构建源文件完整安装；独立 Source 审查和原资源启动前核对通过。
+4. 完整五阶段构建已实际执行一次并失败：原监控在约 261.57 秒时观测到 512.6875 MiB，超过原 512 MiB 上限并终止子进程。实际只完成 build/link；后续 metadata/objects 阶段前的完整输入验证未完成。不能计作完整构建或运行内存验收通过。
+5. 真实失败工具返回、全部输出、监控、原失败收据已保存。Root 对六个完整结果目录的 53 个文件、153124245 字节和全部 820 条有序固定输入进行了完整保存核对。独立失败元数据复核正在继续；没有重试该失败目录。
+
+科学卡点
+共同 rank2 基底实测为 353/370 群通过，前 17 群未通过。不能通过放宽阈值或改作 rank1 来宣布原 rank2 目标完成。
+AAA 原正式试验的最大燃料端点误差约 3.95%；后续角度修正诊断约 3.80%，都高于原 3% 门槛。后续诊断不能替代新的完整正式验收。
+独立耦合参考尚未准入，ABA 尚未启动；当前不能交付通过验收的材料对照结论。
+
+下一步
+定位本次完整构建在第二阶段前验证中的内存超限位置，并在原限制内验证修正后的完整流程。
+完成生产端真实双精度通量和独立裂变源到在线启动入口的接线、编译及实际读取对照。旧入口仍使用单精度字段构造初值；仅有 type4 离线快照不足以证明接线通过。
+继续基于原数据追查前 17 群与 AAA 端点误差。门槛满足后，执行 AAA 正式验收、独立耦合参考准入和 ABA。
+
+清理按用户指示暂缓，没有删除文件。目标仍为 active，未宣称完成。
+
+结果位置
+A/B 原控制核验：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-AB-stability-root-review-20261011/REPORT.txt
+共同 rank2 核验：
+/Users/wen/spot/validation/artifacts/axial-material-original-controls-new-AB-common-rank2-root-review-20261011-v1/REPORT.txt
+v30 实际准备收据：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v30_installed6a_20261011_receipts/Root_actual_complete_combined_prepare_summary.json
+v30 实际完整构建失败收据：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v30_installed6a_20261011_receipts/Root_actual_failed_complete_combined_build_summary.json
+v30 失败完整目录和输出冻结：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v30_installed6a_20261011_receipts/Root_actual_nonzero_FULL5_BUILD_complete_namespace_and_streams_freeze.json

@@ -1,0 +1,7 @@
+V13 sender窗口控制源码草稿已封存；未编译、未运行。
+固定10正例+4真GANLIB不支持泄漏负例；44正例wrapper调用、4负例调用、34 observer调用。
+计划70 raw文件、288241824字节；每个完整8-plane输入/输出及S2/群映射均逐位审。
+observer用LOC核对真实输出地址：原reference非direct，新连续窗口direct，稀疏非direct；空群不调用。
+真实GANLIB对象；仅SPOF64观察器替代，不读取初始FUN，不赋予真实数学/512MiB/RSS/native资格。
+reference仅routine名字更改，完整逆向回原sender；candidate应直接链接Root真实fullsender对象。
+未来真正SPOF失败可留下direct窗口部分输出，禁止复用失败状态；原68控制全部保留。

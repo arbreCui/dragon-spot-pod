@@ -1,0 +1,15 @@
+2026-10-10 完整370群保存态源/反应诊断
+
+实际独立读取完成，Root21844c/session17312→b763a2整数退出0并关闭。全部370群、24材料、32裂变分量、384细单元、392细电流面保持；77原始数值数组完整保存，没有删群、删格、截记录、裁负值、改归一化或改物理门槛。原384行细单元和392行面电流导出所有列独立重建，最大差0。
+
+原genuine OwnRSS/正常资源来源下，全程2.29957秒、child139.03125MiB、完整SOURCE归档/host/payload在host结果前54659653字节；原whole/child60秒、512MiB、64MiB、单线程、单child、零重试保持。
+
+保存的SOUR32与最终通量重建标量源最大相对差1.3413243e-7；共同输运修正的绝对和6.4718671e-7。含横向闭合项的逐群逐单元残差绝对和0.000656485456，带符号总和-3.54440528e-7；不含该闭合项绝对和3.14223620。裂变源积分1.0000000025。这说明局部群项存在显著抵消，不能只看带符号总和便宣布完整物理平衡通过。
+
+本次未补出最终轴向R64工作源及源相位凭证，也未证明NX/NNP/N2A等反应通道的中子多重性/加工合同；未合成吸收公式。结果只能用于诊断，不能替代独立耦合参考。没有新transport、AAA原生内存或物理精度资格，历史AAA7/8和端部nu_fission3.9525%>3%仍未通过，ABA未准入。
+
+下一项物理证据：保留本次完整群/单元/面资料，核对同多群全阶输运与POD/边界响应，补足源相位和反应合同；不能凭本次差异小直接给端部偏差归因。工程线先完成无损完整图存储和临时副本释放的实际控制，再新namespace整套构建和受限AAA。
+
+实际证据：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_saved_reaction_ledger_receipts/Root_actual_saved_reaction_ledger_summary.json
+/Users/wen/spot/validation/artifacts/axial-material-AAA-refined-all-group-source-reaction-diagnostic-20261010/payload_manifest.json

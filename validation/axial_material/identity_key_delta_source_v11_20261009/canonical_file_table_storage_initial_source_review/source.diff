@@ -1,0 +1,137 @@
+--- /Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_requirements_varint_wire_compact_phase_20261009.py
++++ /private/tmp/axmat_complete_graph_canonical_file_table_storage_source_draft_20261009/combined_runtime_complete_input_graph_canonical_file_table_storage_20261009.py
+@@ -1,14 +1,11 @@
+-"""Fresh complete combined-runtime input graph with reviewed JSON buffer lifetimes.
+-
+-Strict JSON parsing releases the verified byte buffer before parsing decoded
+-text and clears temporary immutable-value indexes after parsing. Returned
+-values, mutable-container independence and all prior parsing gates remain.
+-The complete fresh reader, typed owner, namespace, alias, absence, trace and
+-verification mechanics retain the original contract. No scope or byte-owner
+-filtering, persistent filesystem cache, size-cap or resource-cap change is made.
+-This library grants no business, native RSS, cold AAA or ABA eligibility.
+-The reviewed caller must separately bind actual Root witnesses and original
+-complete transitive input obligations before executing a new business family.
++"""UNREADY source-only complete graph canonical-file table storage helper.
++
++The complete original graph values, canonical row sequence, requirements,
++owner/ns/alias/absence/trace scopes and original decoded content SHA survive
++explicit fixed-column storage. Ordinary JSON and all original fresh-byte,
++verification and resource gates retain their original behavior. Both strict
++JSON wrappers decode the new exact storage schema after the original parse.
++No business, native RSS, cold AAA or ABA admission is granted by this source.
+ """
+ 
+ from __future__ import annotations
+@@ -48,6 +45,10 @@
+                      "OWNED_EXHAUSTIVE_NAMESPACE_ALIAS_TARGET_BYTES", NEW_INPUT_ROLE)
+ ABSENCE_SCHEMA = 'AXMAT_COMBINED_RUNTIME_DECLARED_INPUT_ABSENCE_OBSERVATION_V1'
+ CHUNK_BYTES = 8 * 1024 * 1024
++GRAPH_STORAGE_SOURCE_STATUS = "UNREADY_SOURCE_ONLY_PENDING_ROOT_REVIEW"
++CANONICAL_FILE_TABLE_STORAGE_SCHEMA = "AXMAT_COMPLETE_INPUT_GRAPH_CANONICAL_FILE_TABLE_STORAGE_V1"
++CANONICAL_FILE_TABLE_STORAGE_COLUMNS = ("path", "sha256", "size_bytes")
++
+ MAX_JSON_BYTES = 64 * 1024 * 1024
+ FRESH_READER_CONTRACT = {
+     "schema": "AXMAT_REFERENCE_FRESH_UNION_SINGLE_PARENT_JSON_READER_V1",
+@@ -799,6 +800,74 @@
+     return {key: value[key] for key in sorted(value)}
+ 
+ 
++def _canonical_file_storage_values(values):
++    """Validate exactly the original three scalar pin values, never observe files."""
++    _require(type(values) is list and len(values) == len(CANONICAL_FILE_TABLE_STORAGE_COLUMNS),
++             "invalid canonical-file storage row shape")
++    _require(type(values[0]) is str and type(values[1]) is str
++             and type(values[2]) is int and values[2] >= 0,
++             "invalid canonical-file storage row scalar types")
++    _path(values[0])
++    _sha(values[1])
++    return values
++
++
++def encode_canonical_file_table_storage(graph):
++    """Return an explicit table view without modifying the caller's complete graph.
++
++    Other graph values are borrowed unchanged. Each canonical pin becomes a new
++    list of the same immutable scalars. Nothing is sorted, deduplicated or lost.
++    This codec never reads files or claims a byte/resource/science admission.
++    """
++    _require(type(graph) is dict and graph.get("schema") == WIRE_GRAPH_SCHEMA
++             and graph.get("scope") == INPUT_SCOPE,
++             "canonical-file storage requires the complete original wire graph")
++    original = graph.get("canonical_files")
++    _require(type(original) is list, "canonical-file storage input must be a complete list")
++    rows = []
++    for pin in original:
++        _require(type(pin) is dict and tuple(pin) == CANONICAL_FILE_TABLE_STORAGE_COLUMNS,
++                 "canonical-file storage pin fields/order differ")
++        rows.append(_canonical_file_storage_values([pin[key] for key in CANONICAL_FILE_TABLE_STORAGE_COLUMNS]))
++    _require(_sha(graph.get("content_sha256")) == _content_digest(graph),
++             "original graph content changed before storage encoding")
++    view = dict(graph)
++    view["canonical_files"] = {"columns": list(CANONICAL_FILE_TABLE_STORAGE_COLUMNS), "rows": rows}
++    return {"schema": CANONICAL_FILE_TABLE_STORAGE_SCHEMA, "graph": view}
++
++
++def decode_canonical_file_table_storage(storage):
++    """Restore the whole original graph from one exact transparent table schema.
++
++    Inputs are not modified. Restored canonical pin dicts are fresh and keep the
++    original path/sha256/size_bytes order. Other complete graph values survive.
++    Content SHA verification detects omitted, added or changed rows/fields.
++    Fresh-file/math/resource eligibility remains the original caller's job.
++    """
++    _require(type(storage) is dict and set(storage) == {"schema", "graph"}
++             and storage.get("schema") == CANONICAL_FILE_TABLE_STORAGE_SCHEMA,
++             "invalid complete graph storage header")
++    graph = storage["graph"]
++    _require(type(graph) is dict and graph.get("schema") == WIRE_GRAPH_SCHEMA
++             and graph.get("scope") == INPUT_SCOPE,
++             "invalid original decoded graph schema/scope")
++    table = graph.get("canonical_files")
++    _require(type(table) is dict and set(table) == {"columns", "rows"}
++             and type(table["columns"]) is list
++             and table["columns"] == list(CANONICAL_FILE_TABLE_STORAGE_COLUMNS)
++             and type(table["rows"]) is list,
++             "invalid canonical-file table header/columns")
++    pins = []
++    for row in table["rows"]:
++        values = _canonical_file_storage_values(row)
++        pins.append({key: value for key, value in zip(CANONICAL_FILE_TABLE_STORAGE_COLUMNS, values)})
++    restored = dict(graph)
++    restored["canonical_files"] = pins
++    _require(_sha(restored.get("content_sha256")) == _content_digest(restored),
++             "decoded complete graph content changed")
++    return restored
++
++
+ def strict_json(path, expected_sha256=None, *, aliases=(), max_bytes=MAX_JSON_BYTES):
+     """Read and parse a pinned JSON file once, rejecting duplicate/nonfinite data."""
+     _require(type(max_bytes) is int and max_bytes > 0, "invalid JSON read bound")
+@@ -819,7 +888,11 @@
+     except UnicodeError as exc:
+         raise InputGraphError(f"invalid UTF-8 JSON: {path}") from exc
+     del payload
+-    return _parse_strict_json_text(decoded, path)
++    result = _parse_strict_json_text(decoded, path)
++    del decoded
++    if type(result) is dict and result.get("schema") == CANONICAL_FILE_TABLE_STORAGE_SCHEMA:
++        return decode_canonical_file_table_storage(result)
++    return result
+ 
+ 
+ def _parse_strict_json_payload(payload, path):
+@@ -829,7 +902,11 @@
+         decoded = payload.decode("utf-8")
+     except UnicodeError as exc:
+         raise InputGraphError(f"invalid UTF-8 JSON: {path}") from exc
+-    return _parse_strict_json_text(decoded, path)
++    result = _parse_strict_json_text(decoded, path)
++    del decoded
++    if type(result) is dict and result.get("schema") == CANONICAL_FILE_TABLE_STORAGE_SCHEMA:
++        return decode_canonical_file_table_storage(result)
++    return result
+ 
+ 
+ def _parse_strict_json_text(decoded, path):

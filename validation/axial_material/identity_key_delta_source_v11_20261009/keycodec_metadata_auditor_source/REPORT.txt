@@ -1,0 +1,5 @@
+V11 component用独立键codec纯metadata审计模块草稿。
+只标准库正常import，无导入时读文件、无业务或子进程。
+完整复用已独审27键/6stats/20mutations模型，21固定目录；全raw精确98722B。
+所有调用内fresh read与7身份独立，原watch退出23/512/600与消息/EOF核验。
+尚未在新component实际调用，不赋予68stage/Root/seal/native/AAA资格。

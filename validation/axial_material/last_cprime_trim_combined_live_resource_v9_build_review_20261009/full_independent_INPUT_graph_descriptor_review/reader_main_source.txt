@@ -1,0 +1,259 @@
+def main():
+    # This binding is written only after Root reports real closed host EXIT0
+    # and the postterminal recorder has saved the complete durable payload.
+    # Preparation deliberately does not create this file.
+    binding = read_json(TMP / 'actual_input_binding.json')
+    assert binding['actual_terminal_observed'] is True
+    handle = binding['actual_host_tool_result']
+    assert type(handle['exit_code']) is int and handle['exit_code'] == 0
+    assert binding['actual_host_tool_closed'] is True
+    assert handle['initial_chunk_id'] == '0a5d42' and handle['session_id'] == 11005
+    assert type(handle['terminal_chunk_id']) is str and handle['terminal_chunk_id']
+    root_receipt = read_json(binding['Root_INPUT_receipt']['path'], binding['Root_INPUT_receipt']['sha256'])
+    assert root_receipt['schema'] == 'AXMAT_OWNED_SPECS_STANDALONE_BOUNDED_RUNTIME_API_INTAKE_ROOT_ACTUAL_RETURN_V1'
+    assert root_receipt['actual_tool'] == handle
+    assert type(root_receipt['actual_exit_code']) is int and root_receipt['actual_exit_code'] == 0
+    assert root_receipt['record_written_after_actual_tool_return'] is True
+    assert root_receipt['actual_bounded_runtime_input_admission_observed'] is True
+    root_scope = Path(binding['Root_INPUT_receipt']['path']).parent
+    assert root_scope == ROOT / 'validation/artifacts/axial-material-owned-specs-trim-v9-standalone-bounded-runtime-api-intake-evidence-20261009'
+    config = read_json(T / 'config.json')
+    source, out, term = (Path(config[key]) for key in ('SOURCE', 'OUT', 'TERM'))
+    assert config['factorySha'] == FACTORY_SHA
+    pin(config['F'], FACTORY_SHA)
+    declaration = read_json(out / 'declaration.json', DECL_SHA)
+    root_run = read_json(term / 'terminal_return.json', RUN_SHA)
+    root_prep = read_json(term / 'declaration_terminal_return.json', PREP_SHA)
+    seal = read_json(out / 'seal.json', SEAL_SHA)
+    assert config['declarationSha'] == DECL_SHA and config['prepSha'] == PREP_SHA
+    assert config['sealSha'] == SEAL_SHA and config['terminalSha'] == RUN_SHA
+    assert config['terminalPath'] == str(term / 'terminal_return.json') and config['failed_terminal_sha'] is None
+    assert type(root_run['actual_tool_result']['exit_code']) is int and root_run['actual_tool_result']['exit_code'] == 0
+    assert root_run['actual_tool_result']['closed'] is True
+    assert type(root_prep['actual_tool_result']['exit_code']) is int and root_prep['actual_tool_result']['exit_code'] == 0
+    assert root_prep['actual_tool_result']['closed'] is True
+    command = [declaration['python_command'], config['F'], 'admit', '--sha256', SEAL_SHA,
+               '--terminal-evidence', str(term / 'terminal_return.json'), '--terminal-evidence-sha256', RUN_SHA]
+    assert len(command) == 9 and root_receipt['actual_API_command'] == command
+    host_result = read_json(root_receipt['actual_host_result']['path'], root_receipt['actual_host_result']['sha256'])
+    assert host_result['actual_command'] == command
+    assert host_result['actual_run'] == dict(path=str(term / 'terminal_return.json'), sha256=RUN_SHA)
+    assert host_result['actual_PREP'] == dict(path=str(term / 'declaration_terminal_return.json'), sha256=PREP_SHA)
+    actual_input = read_json(root_receipt['whole_API_return']['path'], root_receipt['whole_API_return']['sha256'])
+    graph_path = out / 'input_graph.json'
+    graph = read_json(graph_path, GRAPH_SHA)
+    graph_bytes = PINS[str(graph_path)]['size']
+    assert declaration['input_graph'] == dict(path=str(graph_path), sha256=GRAPH_SHA, content_sha256=WIRE_SHA)
+    assert graph_bytes == 64644869 < 64 * 1024**2
+    assert graph['schema'] == 'AXMAT_COMBINED_RUNTIME_VERIFIED_INPUT_GRAPH_REQUIREMENTS_VARINT_WIRE_V1'
+    value = dict(graph)
+    value.pop('content_sha256')
+    wire_digest = digest(value)
+    assert wire_digest == graph['content_sha256'] == WIRE_SHA
+    table = graph['requirements']
+    assert table['columns'] == ['path', 'canonical_path', 'owner', 'category', 'binding_role']
+    assert table['duplicate_edges_retained'] is True
+    assert table['paths'] == sorted(set(table['paths'])) and table['owners'] == sorted(set(table['owners']))
+    roles, categories = {}, {}
+    duplicates, rows, previous_key = 0, 0, None
+    row_digest = hashlib.sha256()
+    for row in decode_rows(table):
+        p, canonical, owner, category, role = row
+        key = (table['paths'][canonical], table['owners'][owner], table['paths'][p], table['categories'][category], table['binding_roles'][role])
+        assert previous_key is None or previous_key <= key
+        duplicates += previous_key == key
+        previous_key = key
+        rows += 1
+        row_digest.update(json.dumps(row, separators=(',', ':')).encode('ascii') + b'\n')
+        role_name, category_name = table['binding_roles'][role], table['categories'][category]
+        roles[role_name] = roles.get(role_name, 0) + 1
+        categories[category_name] = categories.get(category_name, 0) + 1
+    assert rows == 235528
+    legacy = independent_legacy_digest(graph)
+    assert legacy == graph['wire_encoding']['decoded_content_sha256'] == LEGACY_SHA
+    canonical = {row['path']: row['sha256'] for row in graph['canonical_files']}
+    assert len(canonical) == len(graph['canonical_files']) == 35647
+    assert canonical == declaration['files']
+    expected_aliases = {row['path']: {key: value for key, value in row.items() if key != 'path'} for row in graph['aliases']}
+    assert len(expected_aliases) == len(graph['aliases']) == 186
+    assert typed_equal(expected_aliases, declaration['complete_input_aliases'])
+    roots = graph['live_resource_roots']
+    assert len(roots) == 231 and roots == declaration['resource_roots'] == declaration['resources_before']['resource_roots']
+    art = ROOT / 'validation/artifacts'
+    current_roots = dynamic_roots(roots, art)
+    assert set(roots).issubset(current_roots) and str(root_scope) in current_roots
+    root_validation(current_roots, art)
+    resource_before = resource_inventory(current_roots, art)
+    resource_free_before = shutil.disk_usage(art).free
+    assert declaration['artifact_budget_bytes'] == 96 * 1024**3
+    assert declaration['min_free_bytes'] == 8 * 1024**3
+    assert declaration['archive_reserve_bytes'] == 2 * 1024**3
+    assert resource_before['artifact_bytes'] + 2 * 1024**3 < 96 * 1024**3
+    assert resource_free_before - 2 * 1024**3 >= 8 * 1024**3
+    print('Actual INPUT complete graph fresh byte verification begins; current roots and file counts are independently derived:', len(current_roots), resource_before['regular_files'], flush=True)
+    pin(HELPER, HELPER_SHA)
+    spec = importlib.util.spec_from_file_location('independent_reviewed_input_metadata_graph', HELPER)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module.MAX_JSON_BYTES == 67108864 and module.CONSUMER_PHASES == ()
+    streams = dict(files=0, bytes=0, all_files_digest=hashlib.sha256())
+    original_stream = module._stream
+    def progress_stream(*args, **kwargs):
+        record, payload = original_stream(*args, **kwargs)
+        streams['files'] += 1
+        streams['bytes'] += record['size_bytes']
+        streams['all_files_digest'].update(json.dumps(record, sort_keys=True, separators=(',', ':')).encode() + b'\n')
+        if streams['files'] % 5000 == 0:
+            print('Complete pure metadata fresh input union:', streams['files'], flush=True)
+        return record, payload
+    module._stream = progress_stream
+    expected_canonical_bytes = sum(record['size_bytes'] for record in graph['canonical_files'])
+    assert expected_canonical_bytes == 35803098221
+    verification = module.verify_graph(str(graph_path), expected_sha256=GRAPH_SHA, phase='independent_actual_successful_V9_complete_three_argument_INPUT_metadata_review')
+    assert verification['classification'] == 'FRESH_INPUT_BYTES_NAMESPACES_ALIASES_VERIFIED_ONLY'
+    assert verification['canonical_files_read'] == len(canonical) and verification['actual_bytes_read'] == expected_canonical_bytes
+    assert verification['logical_owner_requirements'] == rows
+    assert verification['exhaustive_namespaces_checked'] == len(graph['namespaces']) == 86
+    assert verification['explicit_aliases_checked'] == len(graph['aliases']) == 186
+    assert verification['declared_absence_inputs_checked_before_and_after_bytes'] == len(graph['absence_inputs']) == 445
+    assert typed_equal(verification['typed_snapshot'], graph['typed_snapshot'])
+    for key in ('live_subprocesses_reexecuted', 'science_qualification_created', 'live_resources_verified', 'external_declaration_exit0_verified'):
+        assert verification[key] is False
+    assert streams['files'] == len(canonical) + 1 and streams['bytes'] == expected_canonical_bytes + graph_bytes
+    # Expected whole returned body is assembled from immutable JSON metadata,
+    # not by cloning/importing/calling the producer or its business functions.
+    specs_path = ROOT / 'validation/axial_material/combined_runtime_complete_historical_input_specs_20261007.json'
+    specs = read_json(specs_path, INPUT_SPECS_SHA)
+    bodies = specs['metadata']['historical_actual_components']
+    assert len(bodies) == 7 and digest(bodies) == 'a0b0445e79f91f5d3767ee57719937a5188608f6a22f77d62b17c5036950e130'
+    trim_pin = declaration['actual_last_cprime_trim_component_INPUT']
+    trim_body = read_json(trim_pin['path'], trim_pin['sha256'])
+    assert len(trim_body) == 73
+    terminal = dict(receipt=dict(path=str(term / 'terminal_return.json'), sha256=RUN_SHA),
+                    full_stdout=root_run['full_stdout'], full_stderr=root_run['full_stderr'],
+                    command=root_run['command'], schema=root_run['schema'],
+                    **{key: root_run[key] for key in ('actual_tail_check', 'actual_elapsed_seconds', 'actual_archive_bytes', 'actual_resources')})
+    descriptor_files = dict(declaration['files'])
+    added_descriptor_paths = []
+    def own(path, sha):
+        path = str(Path(path))
+        assert Path(path).is_absolute() and '..' not in Path(path).parts
+        assert type(sha) is str and len(sha) == 64 and all(ch in '0123456789abcdef' for ch in sha)
+        if path in descriptor_files:
+            assert descriptor_files[path] == sha
+        else:
+            added_descriptor_paths.append(path)
+        descriptor_files[path] = sha
+    for name, sha in seal['files'].items():
+        own(out / name, sha)
+    own(out / 'seal.json', SEAL_SHA)
+    for field in ('receipt', 'full_stdout', 'full_stderr'):
+        own(terminal[field]['path'], terminal[field]['sha256'])
+    own(graph_path, GRAPH_SHA)
+    for path_pin in (dict(path=str(term / 'declaration_terminal_return.json'), sha256=PREP_SHA), root_prep['source_inventory'], root_prep['full_stdout'], root_prep['full_stderr']):
+        own(path_pin['path'], path_pin['sha256'])
+    assert typed_equal(actual_input['descriptor_files'], descriptor_files)
+    # Canonical bytes have just been read once by the complete metadata helper.
+    # Only additional descriptor endpoints receive this supplementary full hash.
+    for path in added_descriptor_paths:
+        pin(path, descriptor_files[path])
+    def ordinary_pin(path):
+        key = str(path)
+        assert key in descriptor_files
+        return dict(path=key, sha256=descriptor_files[key])
+    expected = dict(schema=PREFIX+'_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1', admission='COMBINED_RUNTIME_INPUT_ONLY',
+        build_root=str(out), source_root=str(source), build_seal_sha256=SEAL_SHA, corrected_runtime=ordinary_pin(out/'runtime/Dragon'),
+        compiled_trim_kernel=ordinary_pin(ART/'axial-material-rank1-factor-cache-last-cprime-trim-build-20261008/build/SPOT1P64.o'),
+        inherited_compiled_dedup_kernel=ordinary_pin(ART/'axial-material-rank1-factor-cache-memory-dedup-build-20261007/build/SPOT1P64.o'),
+        compiled_physical_assembly=ordinary_pin(ART/'axial-material-spoasm-physical-abi-serial-guarded-build-20261007/build/SPOASM.o'),
+        actual_local_supervisor_helper=declaration['actual_local_supervisor_helper'],
+        actual_supervisor_constructor_preflight=declaration['actual_supervisor_constructor_preflight'],
+        source_admission=ordinary_pin(source/'source_admission.json'), compiled_link_identity=ordinary_pin(out/'audit/binary_identity.json'),
+        production_link_command=declaration['production_link_command'], actual_components=bodies,
+        actual_last_cprime_trim_admission=trim_body, actual_last_cprime_trim_component_INPUT=trim_pin,
+        trim_component_INPUT_semantics='ACTUAL_TRIM_3ARG_RETURN_IN_THIS_PREP_THEN_COMPLETE_FRESH_INPUT_REUSE_NO_API_REEXECUTION',
+        trim_API_executed_in_this_consumer=False, component_INPUT_semantics='HISTORICAL_PREP_REUSE_WITH_COMPLETE_FRESH_PHASES_NOT_API_REEXECUTION',
+        original_component_APIs_executed_now=False, historical_whole_component_body=declaration['historical_whole_component_body'],
+        actual_prepare_terminal_evidence=dict(path=str(term/'declaration_terminal_return.json'), sha256=PREP_SHA),
+        descriptor_files=descriptor_files, input_aliases=expected_aliases, historical_input_graph=declaration['input_graph'],
+        original_two_literal_aliases=declaration['aliases'], complete_literal_owner_edges_preserved_by_graph=True,
+        inherited_rank1_cache_admission=bodies['original92'], inherited_physical_admission=bodies['physical'], inherited_dedup_admission=bodies['dedup'],
+        inherited_rank1_factor_cache_memory_admission=bodies['dedup']['inherited_rank1_factor_cache_memory_admission'],
+        original_operator_capture_dependency=bodies['capture'], future_contract=bodies['original92']['future_contract'],
+        actual_external_terminal_evidence=terminal['receipt'], actual_external_terminal_validation=terminal,
+        resource_scope_policy='AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1', resource_scope_contract=declaration['resource_scope_contract'],
+        actual_resource_class_factory=bodies['dedup']['actual_resource_class_factory'], sole_object_changes=['SPOT1P64.o','SPOASM.o'],
+        all_other_original92_tokens_unchanged=True, mathematical_controls_inherited_not_newly_executed=True, physical_self_operator_changed=True,
+        retained_cache_mathematics_and_rhs_order_unchanged=True, observer_objects_linked=False,
+        future_actual_FLU_observer_required=trim_body['future_actual_FLU_observer_required'],
+        future_actual_factor_cache_observer_required=trim_body['future_actual_factor_cache_observer_required'],
+        white_closure_unchanged=True, angle_grid_unchanged=True, radial_arithmetic_unchanged=True, physical_data_unchanged=True,
+        collision_self_operator_unchanged=False, original_accuracy_thresholds_changed=False, no_CE_fitting=True,
+        original_operator_capture_RSS_scope_not_transferred=True, trim_native_RSS_proof_obtained=False,
+        fresh_trim_native_capture_required=trim_body['fresh_512MiB_native_capture_required'], fresh_combined_runtime_cold_AAA_required=True,
+        original_cold_storage_reservation_still_required=True, production_pipeline_prepared=False, native_transport_executed=False,
+        combined_runtime_native_RSS_proved=False, actual_full_FLU_entry_executed=False, AAA_accuracy_qualified=False, ABA_admitted=False)
+    factory_ast = ast.parse(Path(config['F']).read_text())
+    fn = next(node for node in factory_ast.body if isinstance(node, ast.FunctionDef) and node.name == 'production_admission')
+    result_ast = next(node.value for node in fn.body if isinstance(node, ast.Return))
+    all_source_keywords = [keyword.arg for keyword in result_ast.keywords]
+    assert len(all_source_keywords) == len(expected) == len(actual_input) == 65
+    assert all_source_keywords == list(expected) == list(actual_input)
+    assert typed_equal(actual_input, expected)
+    for keyword in result_ast.keywords:
+        if isinstance(keyword.value, (ast.Constant, ast.List)):
+            try:
+                literal = ast.literal_eval(keyword.value)
+            except ValueError:
+                continue
+            assert typed_equal(expected[keyword.arg], literal), keyword.arg
+    resource_after = resource_inventory(current_roots, art)
+    resource_free_after = shutil.disk_usage(art).free
+    assert resource_after == resource_before
+    assert dynamic_roots(roots, art) == current_roots
+    assert resource_after['artifact_bytes'] + 2 * 1024**3 < 96 * 1024**3
+    assert min(resource_free_before, resource_free_after) - 2 * 1024**3 >= 8 * 1024**3
+    assert pin(HELPER)['sha256'] == HELPER_SHA
+    for path, record in PINS.items():
+        assert identity(path) == record['identity']
+    assert typed_equal(read_json(T/'config.json'), config)
+    report = dict(schema='AXMAT_V9_ACTUAL_COMPLETE_THREE_ARGUMENT_RUNTIME_INPUT_GRAPH_AND_WHOLE_DESCRIPTOR_INDEPENDENT_REVIEW_V1',
+        status='PASS', scope='ACTUAL_COMPLETE_RUNTIME_INPUT_ONLY_NO_COLD_OR_NATIVE_OR_SCIENCE_QUALIFICATION',
+        actual_Root_INPUT_receipt_pin=PINS[binding['Root_INPUT_receipt']['path']], actual_host_tool_result=handle,
+        actual_terminal_int0_closed=True, original_admitted_factory_pin=PINS[config['F']], declaration_pin=PINS[str(out/'declaration.json')],
+        actual_PREP_pin=PINS[str(term/'declaration_terminal_return.json')], actual_RUN_pin=PINS[str(term/'terminal_return.json')], build_seal_pin=PINS[str(out/'seal.json')],
+        whole_API_return_pin=PINS[root_receipt['whole_API_return']['path']], original_three_argument_API_literal_command=command,
+        returned_whole_65_field_builtin_type_floatbits_insertion_order_and_values_equal=True, actual_whole_return_semantic_sha256=digest(actual_input),
+        independent_expected_whole_return_semantic_sha256=digest(expected), field_names=all_source_keywords,
+        returned_descriptor_files_count=len(descriptor_files), returned_descriptor_files_sha256=digest(descriptor_files),
+        original_graph_canonical_count=len(canonical), complete_descriptor_canonical_union_preserved=True,
+        additional_descriptor_endpoints_full_fresh_sha_verified=added_descriptor_paths,
+        returned_complete_aliases_count=len(expected_aliases), returned_complete_aliases_sha256=digest(expected_aliases),
+        whole_seven_original_components_sha256=digest(bodies), original_trim_complete_key_count=len(trim_body), whole_original_trim_sha256=digest(trim_body),
+        graph_pin=PINS[str(graph_path)], wire_content_sha256=wire_digest, same_V9_decoded_legacy_content_sha256=legacy,
+        complete_rows=rows, row_sequence_sha256=row_digest.hexdigest(), adjacent_duplicates_retained=duplicates, row_role_counts=roles, row_category_counts=categories,
+        every_column_symbol_range_canonical_varint_base64_and_order_verified=True, second_saved_full_decoded_row_table_built=False,
+        full_fresh_verification={key: verification[key] for key in ('schema','classification','scope','phase','graph_content_sha256','fresh_reader_contract','canonical_files_read','actual_bytes_read','byte_count_scope','logical_owner_requirements','exhaustive_namespaces_checked','explicit_aliases_checked','live_subprocesses_reexecuted','declared_absence_inputs_checked_before_and_after_bytes','science_qualification_created','live_resources_verified','external_declaration_exit0_verified','caller_must_verify_live_environment_modules_PID_time_and_resources')},
+        full_fresh_canonical_sequence_digest=streams['all_files_digest'].hexdigest(), graph_plus_union_read_count=streams['files'], graph_plus_union_read_bytes=streams['bytes'],
+        graph_declared_roots_count=len(roots), graph_declared_roots_sha256=digest(roots), current_dynamic_roots_count=len(current_roots), current_dynamic_roots=current_roots,
+        all_declared_history_roots_retained=True, current_dynamic_union_independently_derived=True, historical_RUN_file_count_not_reused_as_requirement=True,
+        full_history_resources=dict(before=resource_before, after=resource_after, disk_free_before=resource_free_before, disk_free_after=resource_free_after,
+            reserve_bytes=2*1024**3, artifact_budget_bytes=96*1024**3, min_free_bytes=8*1024**3,
+            fresh_current_identity_inventory_stable=True, historical_resource_byte_or_file_count_equality_claimed=False, filesystem_free_change_attributed_to_science=False),
+        stored_json_bytes=graph_bytes, unchanged_max_json_bytes=67108864, current_cap_slack_bytes=67108864-graph_bytes,
+        coverage_trace_owner_typed_snapshot_namespace_alias_and_absence_before_after_full_verified=True,
+        only_reviewed_metadata_helper_imported=True, no_business_factory_API_or_constructor_or_phase_or_native_child_called=True,
+        formal_or_ART_writes=False, files_deleted=0, isolated_metadata_review_only=True,
+        cold_prepared=False, fresh_native_RSS_credit=False, AAA_accuracy_qualified=False, ABA_admitted=False,
+        SOURCE_host_witness_and_watch_scope_separately_required=True, audit_source_pin=pin(Path(__file__)), full_observed_pins=PINS,
+        elapsed_seconds=time.monotonic()-START)
+    output = TMP/'complete_graph_and_whole_returned_INPUT_review.json'
+    with output.open('x') as stream:
+        json.dump(report, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+    print(json.dumps(dict(status='PASS', report=str(output), sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
+        canonical_fresh=len(canonical), complete_rows=rows, namespaces=86, aliases=186, absence=445,
+        descriptor_files=len(descriptor_files), current_dynamic_roots=len(current_roots), actual_elapsed_seconds=report['elapsed_seconds'])), flush=True)
+
+if __name__ == '__main__':
+    main()

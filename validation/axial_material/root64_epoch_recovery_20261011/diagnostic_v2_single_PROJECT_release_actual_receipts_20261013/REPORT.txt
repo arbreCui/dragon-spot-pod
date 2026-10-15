@@ -1,0 +1,41 @@
+单次组合诊断 v2 与自有 PROJECT 副本释放结果（2026-10-13）
+
+诊断真实关闭：7bcd4d/session16524 → c186a4，主控 EXIT0，仅诊断闭合。
+原 OwnRSSSerialExecutor 单次 pair_rank_type 子进程真实 EXIT1，准确出现一次
+“SPOBOOX64: EXPLICIT POSITIVE RANK REQUIRED.”，在正传输前拒绝；原 watchdog 已关闭本子进程组。
+父 SELF 峰 255983616B（244.125MiB），总时长 49.759615042s；原 SELF/child512MiB、stage600s、whole1800s 与所有存储预算未改变。
+45 条旧记录仅为未重执行的历史基线；本次新增真实阶段只有 index45 一条。
+原 serializer 保存完整46条，未改变旧45的标签、状态或原资源记录。无 GLOBAL、正 BOOT、完整50阶段或物理资格。
+本次244.125MiB不解释原 v11 548306944B（523MiB）失败，也未证明下一次完整运行可通过512MiB。
+
+释放真实关闭：36ecc7/session33542 → 287d10，EXIT0。
+只删除 /Users/wen/spot/validation/artifacts/axial-material-v11-pair-rank-type-pretransport-combination-memory-diagnostic-20261013-v2/AAA/projected_boot.xsm
+精确释放749355952B、1个普通文件；APFS父目录 nlink−1、size−32B。真实ps/lsof无writer或句柄，删除前收据已完整保存并fsync。
+全部原v11 fixed2643/currentowned163、原始输入/冻结Source，以及本诊断其余副本/runtime/deck/log/watch/scratch/stages/result均保留并通过原释放后完整EOF核验。
+原v11 PROJECT仍在：/Users/wen/spot/validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v11/AAA/projected_boot.xsm
+SHA256 ea56e0e58889469c81e1519713ca0df93a3ebb5f2b1a1fbd2e20b5d8be72833a，749355952B；原全部7ID未变。
+已删诊断副本PF（inode50028672）只作为历史删除证据，不能作为当前原始副本回放输入；原v11文件inode50021102为保留权威。
+
+释放收据时的真实ART：79522277304B，96551个文件，free 207854415872B。
+扣除原cold+64MiB metadata+完整fresh2GiB reserve后余 370580540B，initial reserve准入 true。
+旧业务清理累计仍为10批、79文件、12605160148B；本次诊断辅助释放单列，不加到旧业务计数。
+
+结果与真实工具证据（全部保留）：
+/Users/wen/spot/validation/artifacts/axial-material-v11-pair-rank-type-pretransport-combination-memory-diagnostic-20261013-v2/DIAGNOSTIC_REVIEW.json
+SHA256 147646e5c0b1117ca2f0c40db4986cba13c2fb093dfce1a6fd8ad5b44f301bc5
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/ACTUAL_SINGLE_PAIR_RANK_TYPE_COMBINATION_V2_ROOT_TRUE_TOOL_RETURNS_20261013.json
+SHA256 f036ffeec444cf3053d05a11485acff408f47ecc8043ba4742894a090595ff9b
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/diagnostic_v2_single_PROJECT_release_actual_receipts_20261013/ACTUAL_SINGLE_PROJECT_RELEASE_RECEIPT.json
+SHA256 17caa06876025939bf2365ae453a4bdabf98fe77746d9f4e1c78a5b494b5e80d
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/diagnostic_v2_single_PROJECT_release_actual_receipts_20261013/ROOT_ACTUAL_EXACT_OWN_DIAGNOSTIC_PROJECT_RELEASE_TRUE_TOOL_RETURNS.json
+SHA256 36ec93d4c40f24445a85f599dc66744051c28262566d7f494a6b655fb0447a5f
+
+原不可变脚本与既有独立审核入口继续保留：
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/v11_pair_rank_type_pretransport_combination_memory_diagnostic_source_v2
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/diagnostic_v2_single_PROJECT_release_source_v1
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_single_pair_rank_type_v2_source_review_20261013/REVIEW.json
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_single_pair_rank_type_v2_actual_postverify_20261013/Source_only_actual_postverifier.py
+/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/independent_diagnostic_v2_single_PROJECT_release_v1_source_review_20261013/REVIEW.json
+
+本报告仅整理已闭合证据；未新增诊断、删除、编译或科学业务，未修改任何冻结Source。
+engineering_qualified=false；AAA_qualified=false；ABA_admitted=false；goal_complete=false。

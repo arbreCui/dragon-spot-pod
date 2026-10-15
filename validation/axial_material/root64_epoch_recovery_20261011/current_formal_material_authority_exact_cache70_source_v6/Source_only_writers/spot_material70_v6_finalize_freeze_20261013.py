@@ -1,0 +1,87 @@
+from pathlib import Path
+import ast,hashlib,json,os,stat
+R=Path('/Users/wen/spot');REC=R/'validation/axial_material/root64_epoch_recovery_20261011';OLD=REC/'current_formal_material_authority_handle_lifetime69_source_v2';V4=REC/'current_formal_material_authority_exact_cache70_source_v5';NEW=REC/'current_formal_material_authority_exact_cache70_source_v6'
+COMMON=REC/'current_mount_full_identity_common_source_v1/guarded_warm_A_common.py';CAT=REC/'current_mount_identity_reattestation_20261012/CURRENT_MOUNT_FULL_EOF_IDENTITY_CATALOG.json';BUILD=R/'validation/artifacts/axial-material-new-native-rank1-exact-block-cache-complete70-build-only-20261012-v2/Root_actual_build_only_summary.json';BOOT_HOST=REC/'aaa_three_plane_streaming_pipeline_source_v10/run_actual_three_plane_pipeline.py';BOOT_HF=BOOT_HOST.parent/'COMPLETE_PIPELINE_HOST_SOURCE_FREEZE.json';SCI_HOST=REC/'saved_full370_terminal_audit_host_source_v2/run_actual_saved_full370_terminal_source_original_guard.py';SCI_HF=SCI_HOST.parent/'COMPLETE_SAVED_FULL370_GUARD_HOST_SOURCE_FREEZE.json'
+def pin(p):
+ p=Path(p);s=p.lstat();i=[s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+ with p.open('rb')as f:sha=hashlib.file_digest(f,'sha256').hexdigest()
+ assert [getattr(p.lstat(),k)for k in('st_dev','st_ino','st_mode','st_nlink','st_size','st_mtime_ns','st_ctime_ns')]==i
+ return dict(path=str(p),sha256=sha,size_bytes=s.st_size,identity=i)
+def write(p,d):
+ with p.open('x')as f:json.dump(d,f,indent=2,allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
+rows=[]
+def reattest(p):
+ now=pin(p['path']);assert(now['path'],now['sha256'],now['size_bytes'],now['identity'][1:])==(p['path'],p['sha256'],p['size_bytes'],p['identity'][1:])and now['identity'][0]==16777229 and p['identity'][0]in(16777234,16777229)
+ r=dict(historical_pin=p,current_pin=now,only_actual_device_field_transition=True)
+ if r not in rows:rows.append(r)
+ return now
+oldpins=[pin(p)for p in sorted(OLD.iterdir())if p.is_file()];oldplan=json.loads((OLD/'CURRENT_FORMAL_MATERIAL_AUTHORITY_SELECTED_HANDLE69_PLAN.json').read_bytes());oldsf=json.loads((OLD/'COMPLETE_CURRENT_MATERIAL_OBSERVATION_MATH_SOURCE_FREEZE.json').read_bytes());build=json.loads(BUILD.read_bytes());buildpin=pin(BUILD);compiler=pin(build['records'][0]['command'][0]);inv=json.loads((V4/'COMPLETE_CURRENT70_CURRENT_MATERIAL_SOURCE_INVERSE.json').read_bytes());copies=[dict(original=pin(Path(p['original']['path'])),copy=pin(NEW/Path(p['copy']['path']).name),entire_bytes_equal=True)for p in inv['entire_byte_copy_pins']]
+# True author prefreeze actual-record-shape/control-flow review is mandatory.
+prefreeze=NEW.parent/'material_exact_cache70_v6_author_finite_source_review_20261013/PRE_FREEZE_ACTUAL_FIELD_AND_FINAL_GUARD_REVIEW.json';p=pin(prefreeze);assert p['sha256']=='fe7ac554a75f8aa9e323d9fb3db3791d8f002a21667f6564af2e21ee797f3ace';checked=json.loads(prefreeze.read_bytes());assert checked['status']=='PRE_FREEZE_PRECISE_SOURCE_REVIEW_PASS_NO_IMPORT_OR_BUSINESS'and checked['actual_genuine_expected_negative_count_observed']==26 and checked['whole_finalguard_control_flow_verified_not_just_numericconstants']is True
+selected_v10_hf=pin(BOOT_HF);assert selected_v10_hf['sha256']=='aa75076e2ff7819eb164cecfd927b9485559b2282b0f7ac5ea9c8a5d9ead6861'and selected_v10_hf['identity']==[16777229,50013648,33188,1,146046,1791870345211171880,1791870345211171880]
+write(NEW/'PRE_FREEZE_ACTUAL_FIELD_AND_FINAL_GUARD_ADMISSION.json',dict(schema='PRE_FREEZE_ACTUAL_MATERIAL_V5_FIELD_AND_LAST_CAP_GUARD_REVIEW_BINDING',selected_author_prefreeze_review_pin=p,original_v5_math_source_and_helpers_not_changed=True,old_v5_frozen_Source_retained=True,new_Source_current_v10_static_binding_only=True,new_root_prerequisites_not_predicted=True,compiler_or_science_business_executed=False))
+write(NEW/'EXACT_V5_TO_V6_CURRENT_V10_SOURCE_BINDING_BYTE_DELTA.json',dict(schema='EXACT_V5_TO_V6_CURRENT_V10_SOURCE_BINDING_BYTE_DELTA_ONLY',source_only=True,modified_Source_full_old_new=[dict(name=n,old_fullpin=pin(V4/n),new_fullpin=pin(NEW/n),complete_old_text=(V4/n).read_text(),complete_new_text=(NEW/n).read_text())for n in('current_material_prerequisite_admission.py','build_current_observation_runtime.py','produce_current_formal_material_observations.py','run_current_material_lineage_evidence.py')],old_v5_FROZEN_static_Source_reports_retained=True,scientific_Source_changed=False,actual_business_executed=False))
+# Current plan pins and physical Source/math originals are actual EOF verified.
+plan=dict(oldplan)
+for name in list(plan):
+ if any(x in name for x in ('current_actual69','current_native_handle','current_build69','actual74')):del plan[name]
+plan['schema']='CURRENT_FORMAL_MATERIAL_AUTHORITY_SOURCE_PLAN_V3'
+plan['complete_source_copies']=[dict(original=reattest(r['original']),copy=pin(NEW/Path(r['copy']['path']).name),byte_exact=True)for r in oldplan['complete_source_copies']]
+plan['original4_math_source_copies']=[dict(original=reattest(r['original']),copy=pin(NEW/Path(r['copy']['path']).name),byte_exact=True)for r in oldplan['original4_math_source_copies']]
+for key in('current_case_spec_pin','protected_formal_and_producer_plan_pin','original_nine_Fortran_Source_freeze_pin','original_actual69_v4_report_pin'):plan[key]=reattest(oldplan[key])
+plan['current_actual70_build_report_pin']=buildpin
+plan['current_actual70_independent_review_pin']=pin(REC/'ROOT_INDEPENDENT_ACTUAL_COMPLETE70_CURRENT_MOUNT_BUILD_REVIEW_20261012.json')
+plan['current_cache_Source_freeze_pin']=pin(build['actual_new_Source_freeze_pin']['path'])
+plan['current_build70_host_Source_freeze_pin']=pin(build['actual_host_Source_freeze_pin']['path'])
+plan['current_actual_build_stage_count']=3;plan['required_link']='Five observation objects inserted immediately before first archive in actual complete70; preserve all70 inputs/order including SPOT1P64.o, complete75 link.'
+plan['original69_old9_and_remaining68_preserved']=True
+plan['actual75_observer_build_executed']=False;plan['mandatory_replacement_zero_based_link_index']=37
+plan['required_order']='true v10 AAA3 GLOBAL PROJECT onlineBOOT -> true saved full370 audit -> actual75 build -> actual one A capture -> actual extraction -> independent review -> actual aggregation and all three raw macro comparisons'
+seed=json.loads((OLD/'CURRENT_FORMAL_COMPLETE_AB_ORIGINAL_MATERIAL_SEED_PLAN_SOURCE_ONLY.json').read_bytes())
+seed['current_case_spec_pin']=reattest(seed['current_case_spec_pin'])
+for state in('A','B'):
+ for row in seed['states'][state]['native_stage_inputs']:row['input_pin']=reattest(row['input_pin'])
+write(NEW/'CURRENT_FORMAL_COMPLETE_AB_ORIGINAL_MATERIAL_SEED_PLAN_SOURCE_ONLY.json',seed)
+plan['current_seed_plan_pin']=pin(NEW/'CURRENT_FORMAL_COMPLETE_AB_ORIGINAL_MATERIAL_SEED_PLAN_SOURCE_ONLY.json')
+write(NEW/'CURRENT_FORMAL_MATERIAL_AUTHORITY_SELECTED_CACHE70_PLAN.json',plan)
+# Entire all70 runtime order plus5 observer inputs, linked75 no future output pins.
+old70=build['records'][-1]['command'][3:-2];assert len(old70)==70 and old70==build['actual_complete70_link_inputs']
+at=next(i for i,p in enumerate(old70)if p.endswith('.a'));assert at==58 and Path(old70[57]).name=='SPOT1P64.o'
+out=R/'validation/artifacts/axial-material-new-current-material-observer-complete75-build-only-20261013-v6'
+order=['AXMAT_CONTEXT_OBSERVATION_MOD.UNREADY.f90','LIBMIX.observe.UNREADY.f','LIBDEN.observe.UNREADY.f','TONDRV.context_observe.UNREADY.f','TONSPH.observe.UNREADY.f']
+added=[str(out/'build'/(Path(n).stem+'.o'))for n in order];new75=old70[:at]+added+old70[at:];assert len(new75)==75 and [p for p in new75 if p not in added]==old70
+# Explicit current view derivation only, historical JSON files untouched.
+write(NEW/'EXPLICIT_CURRENT_MATERIAL_ORIGIN_REATTESTATION_SOURCE_ONLY.json',dict(schema='EXPLICIT_CURRENT_MATERIAL_ORIGIN_FULL_EOF_REATTESTATION_SOURCE_ONLY_V3',rows=rows,actual_current_catalog_pin=pin(CAT),metadata_only_not_execution=True,old_source_package_unchanged=True))
+# Function inverse proof includes all science functions/classes, unchanged 4 helpers.
+changes=[]
+for name in('build_current_observation_runtime.py','produce_current_formal_material_observations.py','current_material_lineage_evidence.py','run_current_material_lineage_evidence.py','prepare_current_material_evidence_requests.py'):
+ a=(OLD/name).read_text();b=(NEW/name).read_text();ta=ast.parse(a);tb=ast.parse(b)
+ af={n.name:ast.get_source_segment(a,n)for n in ta.body if isinstance(n,(ast.FunctionDef,ast.ClassDef))};bf={n.name:ast.get_source_segment(b,n)for n in tb.body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+ same=[n for n in af if af[n]==bf.get(n)];changed=[n for n in af if af[n]!=bf.get(n)]
+ changes.append(dict(name=name,old_pin=pin(OLD/name),new_pin=pin(NEW/name),entire_unchanged_function_or_class_names=same,changed_function_or_class_names=changed,complete_old_source=a,complete_new_source=b))
+ if name=='produce_current_formal_material_observations.py':assert all(n in same for n in('original_shared_libraries','prepare_shared_libraries','recheck_shared_libraries','derive_original_procedure','copy_state_seeds','collect_state','release_closed_owned_library_copies'))
+ if name=='current_material_lineage_evidence.py':assert all(n in same for n in('Budget','extract','aggregate','compare_raw_macro','source_admission','admit_owning_stage'))
+ if name=='prepare_current_material_evidence_requests.py':assert a==b
+write(NEW/'COMPLETE_CURRENT70_CURRENT_MATERIAL_SOURCE_INVERSE.json',dict(schema='COMPLETE_CURRENT70_CURRENT_MATERIAL_SOURCE_AND_METADATA_INVERSE_V3',source_only=True,old_frozen_package_fullpins=oldpins,entire_byte_copy_pins=copies,changed_Source_full_old_new_bodies=changes,actual_complete70_origin_pin=buildpin,complete70_order=old70,observer_insertion_zero_based_index_in70=at,observer_objects=added,complete75_order=new75,all70_inputs_order_preserved=True,four_archives_preserved=True,only_metadata_admission_and_count_changes_not_math=True,compiler_exact_immutable_role_pin=compiler,no_future_output_pins_predicted=True,compiler_executed=False,material_job_executed=False,evidence_or_science_executed=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False))
+# MathSource freeze new paths but identical full5 hooks and all math copies.
+sf=dict(schema='COMPLETE_CURRENT_MATERIAL_OBSERVATION_MATH_SOURCE_FREEZE_V1',files=[pin(NEW/n)for n in order],original_math_sources=[reattest(p)for p in oldsf['original_math_sources']],current_plan_pin=pin(NEW/'CURRENT_FORMAL_MATERIAL_AUTHORITY_SELECTED_CACHE70_PLAN.json'),original_caps=oldsf['original_caps'],original_five_Source_order=order,complete_math_inverse_proof_pins=[pin(NEW/'COMPLETE_CURRENT70_CURRENT_MATERIAL_SOURCE_INVERSE.json')]+[pin(NEW/n)for n in('COMPLETE_CONTEXT_AWARE_SOURCE_FULL_INVERSE.json','COMPLETE_OBSERVATION_FORTRAN_SOURCE_INVERSE.json')],selected_actual70_report_pin=buildpin,compiler_executed=False,material_job_executed=False,candidate_imported_or_executed=False,scientific_accuracy_qualified=False,reaction_multiplicity_qualified=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False)
+write(NEW/'COMPLETE_CURRENT_MATERIAL_OBSERVATION_MATH_SOURCE_FREEZE.json',sf)
+bhf=dict(schema='COMPLETE_CURRENT_OBSERVATION_BUILD_HOST_SOURCE_ONLY_FREEZE_V3',host_source=pin(NEW/'build_current_observation_runtime.py'),dependencies=[pin(p)for p in sorted(NEW.iterdir())if p.is_file()and p.name!='build_current_observation_runtime.py']+[pin(COMMON),pin(COMMON.parent/'CURRENT_WARM_A_COMPLETE_HOST_SOURCE_BINDING.json'),pin(CAT),buildpin,pin(BOOT_HF),pin(BOOT_HOST),pin(SCI_HF),pin(SCI_HOST)],selected_actual_build70_report=buildpin,selected_original_actual69_handle_lifetime_report=pin(build['original_actual69_handle_lifetime_report_pin']['path']),selected_original_actual69_v4_report=pin(build['original_actual69_v4_report_pin']['path']),selected_native_exact_block_cache_source_freeze=pin(build['actual_new_Source_freeze_pin']['path']),selected_source_freeze_pin=pin(NEW/'COMPLETE_CURRENT_MATERIAL_OBSERVATION_MATH_SOURCE_FREEZE.json'),required_actual_AAA3_output_directory=str(R/'validation/artifacts/axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v10'),required_actual_saved_audit_output_directory=str(R/'validation/artifacts/axial-material-AAA-saved-full370-terminal-source-diagnostic-current-mount-guarded-20261013-v2'),required_actual_AAA3_host_freeze_pin=pin(BOOT_HF),required_actual_saved_audit_host_freeze_pin=pin(SCI_HF),required_future_receipt_arguments=['aaa3-summary','aaa3-sha256','aaa3-seven-id','saved-audit-summary','saved-audit-sha256','saved-audit-seven-id'],future_actual_receipts_not_predicted_or_pinned=True,all70_inputs_order_retained=True,new_link_input_count=75,planned_stage_count=6,compiler_executed=False,transport_executed=False,material_job_executed=False,original_caps=oldsf['original_caps'],requires_host_process_metadata_access=True,AAA_qualified=False,ABA_admitted=False,goal_complete=False)
+write(NEW/'COMPLETE_CURRENT_OBSERVATION_BUILD_HOST_SOURCE_FREEZE.json',bhf)
+# Static producer freeze has exact current70/buildSource origins; Root supplies
+# the actual75 report after true6stage closure, no future actual report pins.
+phf=dict(schema='COMPLETE_CURRENT_MATERIAL_OBSERVATION_HOST_SOURCE_ONLY_FREEZE_V3',host_source=pin(NEW/'produce_current_formal_material_observations.py'),dependencies=bhf['dependencies']+[pin(NEW/'COMPLETE_CURRENT_OBSERVATION_BUILD_HOST_SOURCE_FREEZE.json')],selected_actual_build70_report=buildpin,selected_build_host_freeze_pin=pin(NEW/'COMPLETE_CURRENT_OBSERVATION_BUILD_HOST_SOURCE_FREEZE.json'),selected_seed_plan_pin=plan['current_seed_plan_pin'],required_dynamic_actual75_report_arguments=['observer75-summary','observer75-sha256','observer75-seven-id'],future_actual75_report_not_predicted_or_pinned=True,material_job_executed=False,compiler_executed=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False)
+write(NEW/'COMPLETE_CURRENT_MATERIAL_OBSERVATION_HOST_SOURCE_FREEZE.json',phf)
+sourcefiles=[pin(p)for p in sorted(NEW.glob('*.py'))]+[pin(COMMON),pin(COMMON.parent/'CURRENT_WARM_A_COMPLETE_HOST_SOURCE_BINDING.json'),pin(CAT)]
+write(NEW/'COMPLETE_CURRENT_MATERIAL_EVIDENCE_SOURCE_FREEZE.json',dict(schema='COMPLETE_CURRENT_MATERIAL_EVIDENCE_SOURCE_ONLY_FREEZE_V1',complete_source_file_pins=sourcefiles,candidate_executed=False,compiler_executed=False,material_job_executed=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False))
+write(NEW/'COMPLETE_CURRENT_MATERIAL_EVIDENCE_HOST_SOURCE_FREEZE.json',dict(schema='COMPLETE_CURRENT_MATERIAL_EVIDENCE_HOST_SOURCE_ONLY_FREEZE_V1',host_source=pin(NEW/'run_current_material_lineage_evidence.py'),dependencies=sourcefiles+[pin(NEW/'COMPLETE_CURRENT_MATERIAL_EVIDENCE_SOURCE_FREEZE.json')],candidate_executed=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False))
+argv=['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12','-B',str(NEW/'build_current_observation_runtime.py')]
+for prefix,p in [('current70',buildpin),('source-freeze',pin(NEW/'COMPLETE_CURRENT_MATERIAL_OBSERVATION_MATH_SOURCE_FREEZE.json')),('host-freeze',pin(NEW/'COMPLETE_CURRENT_OBSERVATION_BUILD_HOST_SOURCE_FREEZE.json'))]:
+ for suffix,v in [('summary',p['path']),('sha256',p['sha256']),('seven-id',json.dumps(p['identity'],separators=(',',':')))]:argv+=['--'+prefix+'-'+suffix,v]
+argv+=['--output-dir',str(out)]
+write(NEW/'ROOT_REVIEWABLE_CURRENT70_OBSERVER75_STATIC_ARGV_AND_REQUIRED_ACTUAL_GATES_SOURCE_ONLY.json',dict(schema='CURRENT70_OBSERVER75_STATIC_SOURCE_ONLY_ARGV_WITH_MANDATORY_FUTURE_ACTUAL_ARGUMENTS_V3',static_argv=argv,mandatory_actual_arguments_to_append=['--aaa3-summary','--aaa3-sha256','--aaa3-seven-id','--saved-audit-summary','--saved-audit-sha256','--saved-audit-seven-id'],is_complete_executable_argv=False,incomplete_until_Root_supplies_actual_completed_receipts=True,environment={k:'1'for k in('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS','PYTHONDONTWRITEBYTECODE')},environment_to_remove=['PYTHONOPTIMIZE'],cwd=str(R),source_plan=sf['current_plan_pin'],actual70_report=buildpin,math_source_freeze=pin(NEW/'COMPLETE_CURRENT_MATERIAL_OBSERVATION_MATH_SOURCE_FREEZE.json'),build_host_freeze=pin(NEW/'COMPLETE_CURRENT_OBSERVATION_BUILD_HOST_SOURCE_FREEZE.json'),planned_complete75_link_order=new75,compiler_executed=False,material_job_executed=False,AAA_qualified=False,ABA_admitted=False,goal_complete=False))
+# Read whole old/new Source and AST only; no import/compile/build/material/evidence.
+for p in OLD.glob('*.py'):ast.parse(p.read_bytes())
+for p in NEW.glob('*.py'):ast.parse(p.read_bytes())
+for p in oldpins:assert pin(p['path'])==p
+print(json.dumps(dict(status='NEW_MATERIAL_CURRENT70_SOURCE_WRITTEN_NO_CANDIDATE_IMPORT_OR_BUSINESS_EXECUTION',namespace=str(NEW),Python_source_count=len(list(NEW.glob('*.py'))),byte_exact_file_count=len(copies),complete70_inputs=len(old70),complete75_inputs=len(new75),new_math_source_freeze=pin(NEW/'COMPLETE_CURRENT_MATERIAL_OBSERVATION_MATH_SOURCE_FREEZE.json'),new_build_host_freeze=pin(NEW/'COMPLETE_CURRENT_OBSERVATION_BUILD_HOST_SOURCE_FREEZE.json'))))

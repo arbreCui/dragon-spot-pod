@@ -1,0 +1,250 @@
+WIRE_GRAPH_SCHEMA = 'AXMAT_COMBINED_RUNTIME_VERIFIED_INPUT_GRAPH_REQUIREMENTS_VARINT_WIRE_V1'
+WIRE_REQUIREMENT_TABLE_SCHEMA = 'AXMAT_COMBINED_RUNTIME_COMPLETE_TYPED_REQUIREMENT_TABLE_VARINT_WIRE_V1'
+WIRE_ENCODING_SCHEMA = 'AXMAT_COMBINED_RUNTIME_LOSSLESS_REQUIREMENTS_GRAPH_ENCODING_V1'
+ROW_CODEC_SCHEMA = 'AXMAT_COMPLETE_FIVE_COLUMN_REQUIREMENT_ROWS_V1'
+ROW_CODEC_ENCODING = 'CANONICAL_UNSIGNED_LEB128_BASE64'
+
+
+def _encode_requirement_rows(rows, row_count):
+    """Encode every nonnegative integer, preserving row order and duplicates."""
+    _require(type(row_count) is int and row_count >= 0, "invalid requirement codec row count")
+    raw = bytearray()
+    count = 0
+    for row in rows:
+        _require(type(row) in (list, tuple) and len(row) == len(REQUIREMENT_COLUMNS),
+                 "invalid five-column requirement codec row")
+        for value in row:
+            _require(type(value) is int and value >= 0, "invalid unsigned requirement codec integer")
+            while value >= 128:
+                raw.append((value & 127) | 128)
+                value >>= 7
+            raw.append(value)
+        count += 1
+    _require(count == row_count, "requirement codec row count changed")
+    return {"schema": ROW_CODEC_SCHEMA, "encoding": ROW_CODEC_ENCODING,
+            "row_count": row_count, "column_count": len(REQUIREMENT_COLUMNS),
+            "data": base64.b64encode(raw).decode("ascii")}
+
+
+def _decoded_requirement_rows(codec, limits):
+    """Strict streaming inverse; no saved row becomes a filesystem authority."""
+    _require(type(codec) is dict and set(codec) == {
+        "schema", "encoding", "row_count", "column_count", "data"},
+        "unexpected requirement row codec fields")
+    _require(codec["schema"] == ROW_CODEC_SCHEMA and codec["encoding"] == ROW_CODEC_ENCODING
+             and type(codec["column_count"]) is int
+             and codec["column_count"] == len(REQUIREMENT_COLUMNS),
+             "requirement row codec contract changed")
+    count = codec["row_count"]
+    _require(type(count) is int and count >= 0, "invalid requirement codec row count")
+    data = codec["data"]
+    _require(type(data) is str and len(data) % 4 == 0,
+             "invalid canonical requirement base64 symbols or padding")
+    try:
+        raw = base64.b64decode(data.encode("ascii"), validate=True)
+    except (UnicodeEncodeError, ValueError, binascii.Error) as exc:
+        raise InputGraphError("invalid canonical requirement base64 symbols or padding") from exc
+    _require(base64.b64encode(raw).decode("ascii") == data,
+             "noncanonical requirement base64 symbols or padding")
+    _require(count * len(REQUIREMENT_COLUMNS) <= len(raw),
+             "truncated requirement codec rows")
+    position = 0
+    for _ in range(count):
+        row = []
+        for limit in limits:
+            value = 0
+            shift = 0
+            groups = 0
+            while True:
+                _require(position < len(raw), "truncated requirement codec integer")
+                octet = raw[position]
+                position += 1
+                groups += 1
+                value |= (octet & 127) << shift
+                # The same saved index must be within its actual symbol table.
+                # Reject immediately, before malicious continuation bytes can
+                # allocate a huge integer; no overflow/wrap/float conversion.
+                _require(value < limit, "invalid or out-of-range logical requirement index")
+                if octet < 128:
+                    _require(groups == 1 or octet != 0, "overlong requirement codec integer")
+                    break
+                shift += 7
+                _require(shift < max(1, limit.bit_length()),
+                         "invalid or out-of-range logical requirement index")
+            row.append(value)
+        yield tuple(row)
+    _require(position == len(raw), "extra requirement codec rows or bytes")
+
+
+def _validate_wire_requirement_table(table):
+    """Original symbols/contract, followed by the new strict row-wire gate."""
+    _require(isinstance(table, Mapping) and set(table) == {
+        "schema", "columns", "paths", "owners", "categories", "binding_roles",
+        "rows", "duplicate_edges_retained", "scope"},
+        "unexpected logical requirement table fields")
+    _require(table["schema"] == WIRE_REQUIREMENT_TABLE_SCHEMA
+             and table["columns"] == list(REQUIREMENT_COLUMNS)
+             and table["categories"] == list(CLOSURE_CATEGORIES)
+             and table["binding_roles"] == list(REQUIREMENT_ROLES)
+             and table["duplicate_edges_retained"] is True
+             and table["scope"] == INPUT_SCOPE, "logical requirement table contract changed")
+    for key, validate in (("paths", _path), ("owners", lambda name: _label(name, "requirement owner"))):
+        _require(isinstance(table[key], list), "logical requirement string table must be a list")
+        for value in table[key]:
+            _require(isinstance(value, str), "logical requirement symbols must be strings")
+            validate(value)
+        _require(table[key] == sorted(set(table[key])),
+                 "logical requirement string table is not sorted and unique")
+    limits = (len(table["paths"]), len(table["paths"]), len(table["owners"]),
+              len(CLOSURE_CATEGORIES), len(REQUIREMENT_ROLES))
+    for _ in _decoded_requirement_rows(table["rows"], limits):
+        pass
+
+
+def _wire_requirement_table_compact(requirements):
+    """Rebuild the complete table from real phase tuples; no full row matrix."""
+    for row in requirements:
+        _require(type(row) is tuple and len(row) == len(REQUIREMENT_COLUMNS),
+                 "unexpected private logical requirement tuple")
+        _path(row[0]); _path(row[1]); _label(row[2], "logical requirement owner")
+        _category(row[3])
+        _require(row[4] in REQUIREMENT_ROLES, "unknown logical requirement role")
+    ordered = sorted(requirements, key=lambda row: (row[1], row[2], row[0], row[3], row[4]))
+    paths = sorted({row[column] for row in ordered for column in (0, 1)})
+    names = sorted({row[2] for row in ordered})
+    path_ids = {value: index for index, value in enumerate(paths)}
+    owner_ids = {value: index for index, value in enumerate(names)}
+    category_ids = {value: index for index, value in enumerate(CLOSURE_CATEGORIES)}
+    role_ids = {value: index for index, value in enumerate(REQUIREMENT_ROLES)}
+    rows = ((path_ids[row[0]], path_ids[row[1]], owner_ids[row[2]],
+             category_ids[row[3]], role_ids[row[4]]) for row in ordered)
+    return {"schema": WIRE_REQUIREMENT_TABLE_SCHEMA, "columns": list(REQUIREMENT_COLUMNS),
+            "paths": paths, "owners": names, "categories": list(CLOSURE_CATEGORIES),
+            "binding_roles": list(REQUIREMENT_ROLES),
+            "rows": _encode_requirement_rows(rows, len(ordered)),
+            "duplicate_edges_retained": True, "scope": INPUT_SCOPE}
+
+
+def _compact_requirement_dicts(requirements):
+    # Ephemeral ordinary dictionaries feed the unchanged coverage/trace bodies.
+    # They contain every actual tuple field, not a custom Mapping/byte shortcut.
+    for row in requirements:
+        yield dict(zip(REQUIREMENT_COLUMNS, row))
+
+
+def _wire_encoding_contract(graph):
+    value = graph.get("wire_encoding")
+    _require(type(value) is dict and set(value) == {
+        "schema", "source_graph_schema", "source_requirement_table_schema", "decoded_content_sha256"},
+        "unexpected graph wire encoding fields")
+    _require(value["schema"] == WIRE_ENCODING_SCHEMA and value["source_graph_schema"] == SCHEMA
+             and value["source_requirement_table_schema"] == REQUIREMENT_TABLE_SCHEMA,
+             "graph wire encoding contract changed")
+    _sha(value["decoded_content_sha256"])
+    return value
+
+
+def _wire_semantic_content_digest(graph):
+    """Exact old canonical graph digest, streaming rows without full expansion."""
+    data = dict(graph)
+    data.pop("content_sha256", None)
+    data.pop("wire_encoding")
+    data["schema"] = SCHEMA
+    requirements = dict(data["requirements"])
+    requirements["schema"] = REQUIREMENT_TABLE_SCHEMA
+    limits = (len(requirements["paths"]), len(requirements["paths"]), len(requirements["owners"]),
+              len(CLOSURE_CATEGORIES), len(REQUIREMENT_ROLES))
+    encoder = json.JSONEncoder(sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False)
+    digest = hashlib.sha256()
+    def emit(value):
+        for piece in encoder.iterencode(value):
+            digest.update(piece.encode("utf-8"))
+    digest.update(b'{')
+    for index, key in enumerate(sorted(data)):
+        if index: digest.update(b',')
+        emit(key); digest.update(b':')
+        if key != "requirements":
+            emit(data[key]); continue
+        digest.update(b'{')
+        for column, field in enumerate(sorted(requirements)):
+            if column: digest.update(b',')
+            emit(field); digest.update(b':')
+            if field != "rows":
+                emit(requirements[field]); continue
+            digest.update(b'[')
+            for row_index, row in enumerate(_decoded_requirement_rows(requirements["rows"], limits)):
+                if row_index: digest.update(b',')
+                digest.update(('['+','.join(str(value)for value in row)+']').encode('ascii'))
+            digest.update(b']')
+        digest.update(b'}')
+    digest.update(b'}')
+    return digest.hexdigest()
+
+
+def encode_graph_wire(graph):
+    """Pure lossless representation conversion, with no admission or file read."""
+    graph = _json_clone(graph)
+    _require(type(graph) is dict and graph.get("schema") == SCHEMA
+             and "wire_encoding" not in graph, "complete legacy graph required for wire encoding")
+    _require(_sha(graph.get("content_sha256")) == _content_digest(graph), "input graph content changed")
+    _validate_requirement_table(graph["requirements"])
+    old_digest = graph["content_sha256"]
+    table = graph["requirements"]
+    rows = table["rows"]
+    table["rows"] = _encode_requirement_rows(rows, len(rows))
+    table["schema"] = WIRE_REQUIREMENT_TABLE_SCHEMA
+    del rows
+    graph["schema"] = WIRE_GRAPH_SCHEMA
+    graph["wire_encoding"] = {"schema": WIRE_ENCODING_SCHEMA, "source_graph_schema": SCHEMA,
+        "source_requirement_table_schema": REQUIREMENT_TABLE_SCHEMA, "decoded_content_sha256": old_digest}
+    graph["content_sha256"] = _content_digest(graph)
+    return graph
+
+
+def decode_graph_wire(graph):
+    """Pure explicit complete inverse for review; not used by the wire verifier."""
+    graph = _json_clone(graph)
+    _require(type(graph) is dict and graph.get("schema") == WIRE_GRAPH_SCHEMA,
+             "known complete wire graph required")
+    _require(_sha(graph.get("content_sha256")) == _content_digest(graph), "input graph content changed")
+    encoding = _wire_encoding_contract(graph)
+    _validate_wire_requirement_table(graph["requirements"])
+    _require(_wire_semantic_content_digest(graph) == encoding["decoded_content_sha256"],
+             "wire graph decoded semantic content changed")
+    table = graph["requirements"]
+    limits = (len(table["paths"]), len(table["paths"]), len(table["owners"]),
+              len(CLOSURE_CATEGORIES), len(REQUIREMENT_ROLES))
+    table["rows"] = [list(row)for row in _decoded_requirement_rows(table["rows"],limits)]
+    table["schema"] = REQUIREMENT_TABLE_SCHEMA
+    graph["schema"] = SCHEMA
+    graph["content_sha256"] = encoding["decoded_content_sha256"]
+    del graph["wire_encoding"]
+    return graph
+
+
+def create_wire_graph(**kwargs):
+    """Explicit new representation only; original create_graph stays byte-exact."""
+    return encode_graph_wire(create_graph(**kwargs))
+
+
+def iter_graph_requirement_rows(graph):
+    """Complete saved metadata rows only; never a fresh-byte admission.
+
+    A producer's expected-union extraction must still follow its actual fresh
+    creation or verification phase. This accessor grants no input ownership.
+    """
+    _require(isinstance(graph, Mapping) and graph.get("schema") in (SCHEMA, WIRE_GRAPH_SCHEMA),
+             "complete graph metadata required for requirement rows")
+    _require(_sha(graph.get("content_sha256")) == _content_digest(graph), "input graph content changed")
+    table = graph["requirements"]
+    if graph["schema"] == WIRE_GRAPH_SCHEMA:
+        encoding = _wire_encoding_contract(graph)
+        _validate_wire_requirement_table(table)
+        _require(_wire_semantic_content_digest(graph) == encoding["decoded_content_sha256"],
+                 "wire graph decoded semantic content changed")
+        limits = (len(table["paths"]), len(table["paths"]), len(table["owners"]),
+                  len(CLOSURE_CATEGORIES), len(REQUIREMENT_ROLES))
+        yield from _decoded_requirement_rows(table["rows"], limits)
+    else:
+        _validate_requirement_table(table)
+        yield from table["rows"]

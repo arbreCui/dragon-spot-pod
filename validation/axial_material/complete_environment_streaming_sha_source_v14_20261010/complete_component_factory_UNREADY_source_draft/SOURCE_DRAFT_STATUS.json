@@ -1,0 +1,54 @@
+{
+  "status": "UNREADY_SOURCE_ONLY_FROZEN",
+  "candidate_sha256": "c505c5637a7027008e30f125ee0b9c949b25de5f2c8a019ae6712f6a5a4d54c0",
+  "parent_sha256": "d2d2c7616d329cd8ffbf30f749de6ef8ae08d294240b653cfe8b92a3fe1c8633",
+  "new_pins": {
+    "STREAM_ENVIRONMENT_HELPER_SHA": null,
+    "STREAM_ENVIRONMENT_SOURCE_PROOF_SHA": null,
+    "STREAM_ENVIRONMENT_ACTUAL_HELPER_CONTROLS_SHA": null
+  },
+  "future_actual_component_success_pins": "all original FUTURE_ pins remain None",
+  "actual_helper_control_or_benchmark_read": false,
+  "actual_helper_control_pin_bound": false,
+  "obsolete_frozen_drafts": {
+    "initial": "64b84cf234b8f40a9bf519503a032fcccf64ee254f4078a9e09dd71b943e551f",
+    "hardlink_only": "d5f4748391d6078efa530f9b7a91734af4d406a6749c46a9a60342215f06b846"
+  },
+  "fixes": [
+    "ordinary legal hardlinks each retain their own absolute literal SHA",
+    "original helper34 definition scope counts FunctionDef plus ClassDef including nested methods;33 must remain byteexact"
+  ],
+  "actual_control_expected_descriptors": [
+    "actual_terminal_receipt",
+    "actual_result",
+    "actual_host_result",
+    "actual_stage_journal",
+    "actual_child_watchdog",
+    "actual_full_stdout",
+    "actual_full_stderr"
+  ],
+  "actual_control_expected_roots_and_inventories": [
+    "control_root",
+    "control_inventory",
+    "host_root",
+    "host_inventory",
+    "files absolute SHA map"
+  ],
+  "future_actual_receipt_schema": "AXMAT_V14_HELPER_ONLY_ROOT_ACTUAL_TERMINAL_RECEIPT_V1",
+  "future_actual_receipt_fields": [
+    "terminal_result complete real tool object with strict int exit_code0",
+    "session_closed true",
+    "action fixtures",
+    "stdout path+sha",
+    "stderr path+sha"
+  ],
+  "unknown_actual_receipt_layout_must_be_root_verified_before_any_ready_binding": true,
+  "component_business_run": false,
+  "compile": false,
+  "fixture_run": false,
+  "business_import": false,
+  "canonical_or_S13_or_failure_root_written": false,
+  "native_RSS_verified": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false
+}

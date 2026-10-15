@@ -1,0 +1,9 @@
+SOURCE候选尚未Root准入/实际运行。仅ROOT在V17全build实际关闭后安装driver e4eed与host固定SHA，执行一次。
+
+1. 将作者原包、独立SOURCE审查、READY接线包与本候选/finiteinverse完整归档至D，必须包含SHA锚58d1/a99/1eb/066/738/bd864/410/e4eed；input_contract.json只有一份原完整SHA。host安装D/saved_source_phase_diagnostic_host.py，canonical driver用计划原路径/e4eed。所有D文件在运行开始前冻结，运行凭证写E=B/actual_saved_source_phase_diagnostic_receipts。
+2. HOST与OUT必须同时fresh不存在；主host argv无参数；Root使用固定正常Python3.12 -B，PYTHONOPTIMIZE unset、PYTHONDONTWRITEBYTECODE=1及五个线程环境变量=1。SOURCE-only候选不是一次business retry许可。
+3. 原真实705/38de MRO、619 guard、bc bounded runner与ebbb resource helper完全按成熟3064 host调用。60s whole包含source/fullpin/standardlib contract admission、import、child、cleanup、payload verification与host result；60s stage/512MiB/1thread/1child/0retry不扩大。history96GiB/free8GiB维持原完整ART动态scope。D/E是ART之外路径，不传给只接受ARTdescendant的history_roots。
+4. 64MiB必须联合HOST+OUT+完整D+全部RootE+canonical290156B计数。E若实际另外选路径须在SOURCE候选的finite diff中显式绑定后再准入，不能漏计。host result及Root最终stdout/stderr/actualterminal/independentreview/newreceipts写完后，Root还需再次联合字节计数<64MiB、原history/free检查；不得把结束后的凭证写D改变已冻结source。
+5. host不对1140契约输入用regular-only support.pin；对其literal/target/alias独立stat，通过固定READY source AST与原JSON合同核对每role/path/SHA。child原成熟fresh_hash真正做每input全EOF SHA+literal/target/fd7ID/alias before/after；host完整核对全部1140输出receipt及outer before/after观察，不能以SOURCE observed metadata/SHA claim替代actual。
+6. 仅原typed-word检查通过可授保存work RHS/source phase字一致。完整sourcepartition/compiled byte identity/reactionmultiplicity/fullbalance/AAA/ABA/same-MG reference均仍false，不把科学未通过项改名为通过。
+7. 实际失败保留完整failed receipt，不复用namespace、不扩大cap/门槛。SOURCE预算估算不能代替真实RSS和whole时间测量。

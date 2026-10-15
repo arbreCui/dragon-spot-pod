@@ -1,0 +1,19 @@
+Cold 旧业务读取范围清理后核验 — 限定范围通过，尚无 cold 业务准入
+
+最终精确集合：1534 个唯一绝对 path-SHA，fresh regular/presence 全部通过。完整读取 3990682116 B（约3.717GiB），其中1531项有原源码/实际prepared、execution、run、audit、variant等原expected SHA且均一致；另3项只有真实直接read_text和fresh SHA pin，不声称其原数学重放通过。缺失0、非regular0、原expected SHA差异0。本范围未发现需恢复的文件。
+
+真实最终只读工具 53a4bb / session70190 -> ba5e27 CLOSED EXIT0，耗时 1.595560s。源码作者仅使用标准库读取/解析/AST，不import业务、不执行renderer、API、构造器、c.prepare、admit_snapshots、verify_offline_state或solver。只在TMP保存证据；正式SOURCE/ART没有写入。
+
+来源与方法：独立fresh核对ceaf7 factory和39e consumer模板；BASE prepared原7d2154e9、OLD prepared原024ffb92；真实844fe187 production_runner；prepared绑定的qualified_snapshot_ingestion及OLD numerical_layout helper。按prepare -> preflight -> admit_snapshots -> verify_offline_state原函数源码展开execution.files、run.outputs、audit protocol.files/outputs、archive/track/moments/material/producer/receiver直接pins，展开显式snapshot审核二次read，检查prepared local/input/spec/rank。再加原pinned_runtime_files两组runtime/boot manifest和指定名字循环、make_route_contract；这部分771个绝对path。
+
+Variant/环境边界：future ceaf declare实际copy的是OLD parent_variant，其files337项被原layout/pinned runtime直接require；仅验证BASE prepared local variant本身bytes，不把其5517项files自动变成future PREP读表。另按原layout明确require循环纳入closeout4 files、cold/result及两组saved_state/kernel JSON、parent compensated replay等实际直接descriptor。分析环境430个外部原expected文件也全量chunk SHA，始终只读；这不证明当前执行进程的Python/NumPy/SciPy/.14版本或线程准入已通过。
+
+原6194 protected map（SHA11f9f07e92ca6c11ccb90ed4bf58b9d98a0e726bf2893a40e457c32edbc9e161）只被fresh读取为历史保护对照。没有将6194全部存在/全SHA作业务准入；未展开未被实际read/pinned/require调用的所有JSON path descriptors。每条required保留owner、源码路径及精确JSON/循环字段；只合并同一绝对path且同SHA的owners，既不把同SHA不同路径视为存在等价，也不改变任何字段/阈值/数学。
+
+三个fresh-only例外：A audit_initialized的volume_normalization_check.json、negative_controls.json、normalization_negative_controls.json在原verify_offline_state是直接read_text，不在其audit.outputs冻结expected表。它们现存且完整fresh pin，原数学分析与negative-control比较本审未运行。B对应三项有原outputs expected SHA，已经比较。旧审核前两次脚本失败和早期较小scope真实记录完整保存，最终范围不借用它们赋予业务成功。
+
+七轮实际retirement manifest1183项及八轮13项与最终1534required路径交集均0（见actual_seventh_eighth_retirement_scope_intersections.json）。本审没有重新执行或重新审计cleanups的actual terminal；对缺失的恢复映射条件未触发，因为missing=0。
+
+仅metadata/将来阶段：resource_roots是目录空间核算；reference recipes/statepoint名字是后续另行准入；原非read descriptor保留作对象等价比较。未来cold SOURCE/OUTPUT、component intake/success fields仍UNREADY/None，不能因尚未生成而计作旧输入缺失。新F8组件/私有callback完整historical graph阶段、新SciPy命名空间、genuine MRO/OwnRSS控制、完整fresh PREP和实际AAA及独立物理准入仍待Root后续完成。这份presence/SHA范围核验不授予READY、physics、512MiB或API资格。
+
+交接文件：derived_required_path_SHA_owners.json；all_required_present_complete_fresh_SHA_identity.json；missing_or_changed_required_paths_and_retirement_mapping.json；actual_source_pins_and_function_definitions.json；all_source_and_receipt_fresh_pins.json；nonbusiness_metadata_and_scope_limits.json；independent_scoped_business_read_review.json；actual_readonly_tool_terminal_receipts.json；evidence_manifest.json。

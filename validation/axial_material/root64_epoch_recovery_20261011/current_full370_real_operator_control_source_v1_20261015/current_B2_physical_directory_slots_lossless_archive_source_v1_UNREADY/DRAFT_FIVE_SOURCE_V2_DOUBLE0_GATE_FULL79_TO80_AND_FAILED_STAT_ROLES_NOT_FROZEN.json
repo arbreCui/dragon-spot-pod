@@ -1,0 +1,155 @@
+{
+  "schema": "SOURCE_ONLY_B2_PHYSICAL_DIRECTORY_ARCHIVE_DRAFT_V2_PREFIX_AND_ZERO_GATE_V1",
+  "source_only": true,
+  "author_formal_freeze": false,
+  "whole_Source_file_pins": [
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B2_physical_directory_slots_lossless_archive_source_v1_UNREADY/B2_physical_directory_archive_common.UNREADY.py",
+      "sha256": "f28f061d1dce89e3624c9a5b539a210d83574e8f6d26611ab6b45d029a8bd51d",
+      "size_bytes": 17300,
+      "identity": [
+        16777229,
+        50883748,
+        33188,
+        1,
+        17300,
+        1792068515793488507,
+        1792068515793488507
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B2_physical_directory_slots_lossless_archive_source_v1_UNREADY/archive_single_B2_physical_directory_slots.UNREADY.py",
+      "sha256": "bf54da3c2cb7241fcd79094385bd92eddb589148232a0a07e8b09cdf077168aa",
+      "size_bytes": 7975,
+      "identity": [
+        16777229,
+        50883749,
+        33188,
+        1,
+        7975,
+        1792067843534224163,
+        1792067843534224163
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B2_physical_directory_slots_lossless_archive_source_v1_UNREADY/prepare_single_B2_physical_directory_archive_Source.UNREADY.py",
+      "sha256": "28580d7ac39d3099a9aba3572cc96c66d25a9cffd8c2a7030f694a5d6563b917",
+      "size_bytes": 3872,
+      "identity": [
+        16777229,
+        50883751,
+        33188,
+        1,
+        3872,
+        1792067635736405532,
+        1792067635736405532
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B2_physical_directory_slots_lossless_archive_source_v1_UNREADY/publish_single_B2_physical_directory_archive_CLI.UNREADY.py",
+      "sha256": "1e00b233de5fc045718dec7de1c4218a048699bf875d9dc9f4b456767cb19b3e",
+      "size_bytes": 3455,
+      "identity": [
+        16777229,
+        50883752,
+        33188,
+        1,
+        3455,
+        1792067843550328155,
+        1792067843550328155
+      ]
+    },
+    {
+      "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B2_physical_directory_slots_lossless_archive_source_v1_UNREADY/run_guarded_single_B2_physical_directory_archive.UNREADY.py",
+      "sha256": "1707bc519df66663cebcce86369715ee10d67fcc901a9711b1d1dd01d2cdac62",
+      "size_bytes": 10757,
+      "identity": [
+        16777229,
+        50883750,
+        33188,
+        1,
+        10757,
+        1792067635736315782,
+        1792067635736315782
+      ]
+    }
+  ],
+  "NULL_template_pin": {
+    "path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_B2_physical_directory_slots_lossless_archive_source_v1_UNREADY/NULL_V2_COMPARISON0_DOUBLE_ACTUAL_MISMATCH0_PENDING_FULL79_TO80_ARCHIVE_BINDING_TEMPLATE.json",
+    "sha256": "3a996955d48044f90e5d07a859d2540aa229602fcd5d08ffa8193257f8b8948a",
+    "size_bytes": 31421,
+    "identity": [
+      16777229,
+      50884480,
+      33188,
+      1,
+      31421,
+      1792068515796588180,
+      1792068515796588180
+    ]
+  },
+  "source_checks": {
+    "B2_physical_directory_archive_common.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": []
+    },
+    "archive_single_B2_physical_directory_slots.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": []
+    },
+    "prepare_single_B2_physical_directory_archive_Source.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": []
+    },
+    "publish_single_B2_physical_directory_archive_CLI.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": []
+    },
+    "run_guarded_single_B2_physical_directory_archive.UNREADY.py": {
+      "AST": true,
+      "unbound_module_globals": []
+    }
+  },
+  "common_precise_replacements": [
+    {
+      "old": "def current_all_retained(binding):\n for p in binding['all1_plain_pins']+binding['retained_current7_pins']:current7(p)\n",
+      "new": "def current_failed_v1(p,binding):\n require(type(p)is dict and set(p)=={'path','size_bytes','identity'}and p in binding['retained_failed_v1_current7_only_pins'],'only exact failed-v1 current7-only role; no SHA/fullPF claimed')\n q=Path(p['path']);s=q.lstat()\n require(q.is_absolute()and not any(x.is_symlink()for x in(q,*q.parents))and stat.S_ISREG(s.st_mode)and s.st_nlink==1 and s.st_uid==os.getuid()and type(p['size_bytes'])is int and type(p['identity'])is list and len(p['identity'])==7 and all(type(x)is int for x in p['identity'])and identity(s)==p['identity']and s.st_size==p['size_bytes'],'entire exact failed-v1 file stable current7, no partial body open/hash or generic missing skip')\n return s\n\ndef current_all_retained(binding):\n for p in binding['all1_plain_pins']+binding['retained_current7_pins']:current7(p)\n for p in binding['retained_failed_v1_current7_only_pins']:current_failed_v1(p,binding)\n"
+    },
+    {
+      "old": "post['schema']=='RECORDED_CURRENT_B55_NATIVEWARM_B2_COMPLETE_TYPED_COMPARISON_METADATA_POSTVERIFY_V1'and post['status']=='PASS_ACTUAL_CURRENT_B55_B2_COMPLETE_TYPED_COMPARISON_ROOT0_CHILD2_METADATA_ONLY_DIFFERENCES_RECORDED'",
+      "new": "post['schema']=='RECORDED_CURRENT_B55_NATIVEWARM_B2_COMPLETE_TYPED_COMPARISON_METADATA_POSTVERIFY_V2'and post['status']=='PASS_ACTUAL_CURRENT_B55_B2_COMPLETE_TYPED_COMPARISON_V2_ROOT0_CHILD2_METADATA_ONLY_DIFFERENCES_RECORDED'"
+    },
+    {
+      "old": " require(post['actual_comparison_counts']=={k:child[k]for k in('compared_all_macro_records','compared_original_payload_words','raw_word_mismatches','metadata_mismatches')},'actual mismatch counts preserved exactly; byte archival does not qualify online or lineage')",
+      "new": " require(binding['actual_comparison_counts']==post['actual_comparison_counts']=={k:child[k]for k in('compared_all_macro_records','compared_original_payload_words','raw_word_mismatches','metadata_mismatches')}and type(child['raw_word_mismatches'])is int and child['raw_word_mismatches']==0 and type(child['metadata_mismatches'])is int and child['metadata_mismatches']==0 and type(child['compared_original_payload_words'])is int and child['compared_original_payload_words']>0 and post['complete_typed_word_comparison_completed']is True and post['actual_exact_inventory_metadata_and_all_words_equal']is True,'genuine v2 complete19620/all words and both actual mismatch counts0; still no online or physics qualification manufactured')"
+    },
+    {
+      "old": " expected=unique(prior['retained_current7_pins']+prior['retained_B2_current_epoch_readonly_pins']+post['new_complete_output_full_pins'])\n require(p in expected and binding['retained_current7_pins']==[q for q in expected if q!=p]and binding['retained_B2_current_epoch_readonly_pins']==prior['retained_B2_current_epoch_readonly_pins'],'all comparison outputs, all SQL/pools, prior Bagg16/B4 archives/native/inputs and nine cold readonly B2 roles retained; only exact physical ledger separate target')",
+      "new": " failed=prior['retained_failed_v1_current7_only_pins'];ordinary=[q for q in prior['retained_current7_pins']if set(q)=={'path','sha256','size_bytes','identity'}]\n require(failed and all(type(q)is dict and set(q)=={'path','size_bytes','identity'}for q in failed)and [q for q in prior['retained_current7_pins']if q not in ordinary]==failed and binding['retained_failed_v1_current7_only_pins']==post['retained_failed_v1_current7_only_pins']==failed and post['prior_v1_Root1_child_minus15_unknown_counts_equality_preserved']is True and post['prior_v1_partial_payload_body_not_opened_or_hashed_by_post']is True,'entire failed-v1 tree remains only exact current7 roles, never SHA/fullPF or completed equality evidence')\n require(binding['prior_failed_v1_closure_pins']==post['prior_failed_v1_closure_pins']=={k:prior[k]for k in('actual_failed_v1_plan_pin','actual_failed_v1_Host_report_pin','actual_failed_v1_Root_tools_pin','actual_failed_v1_post_pin','actual_failed_v1_post_tools_pin','actual_failed_v1_final_CLI_pin')},'same genuine priorRoot1/child-15/failurepost0 closure remains separate from actual v2 success')\n expected=unique(ordinary+prior['retained_B2_current_epoch_readonly_pins']+post['new_complete_output_full_pins'])\n require(p in expected and binding['retained_current7_pins']==[q for q in expected if q!=p]and binding['retained_B2_current_epoch_readonly_pins']==prior['retained_B2_current_epoch_readonly_pins'],'all comparison outputs, all SQL/pools, prior Bagg16/B4 archives/native/inputs and nine cold readonly B2 roles retained; only exact physical ledger separate target')"
+    },
+    {
+      "old": "len(prefix)==78 and binding['complete_joint_roots']==prefix+[str(out)]and out.parent==ART and len(binding['complete_joint_roots'])==79",
+      "new": "len(prefix)==79 and binding['complete_joint_roots']==prefix+[str(out)]and out.parent==ART and len(binding['complete_joint_roots'])==80"
+    },
+    {
+      "old": "'entire latest78 plus exactly one owning archive79 root, all FTOP Source counted'",
+      "new": "'entire latest79 including both comparison roots plus exactly one owning archive80 root, all FTOP Source counted'"
+    },
+    {
+      "old": "  unlinked={}\n",
+      "new": "  for p in self.binding['retained_failed_v1_current7_only_pins']:current_failed_v1(p,self.binding)\n  unlinked={}\n"
+    }
+  ],
+  "common_reverse_restores_entire_prior_draft": true,
+  "original48_archive_one_wholebytes_equal": true,
+  "original48_archive_one_bytes": 2311,
+  "original48_archive_one_sha256": "db8a6b9fe2234c77f460274fe3d73d5fe43377089ef8341c305b8b20da892495",
+  "future_full_prefix_count": 80,
+  "inherited_full_prefix_count": 79,
+  "whole_new_output_bound": 8388608,
+  "archive_payload_bound": 4194304,
+  "Source_bound": 16777216,
+  "comparison_v2_actual_PFs_and_counts_and_resource_budget_all_NULL": true,
+  "failed_v1_3field_rows_never_passed_to_fullPF_or_metadata_SHA_helpers": true,
+  "GEN_or_pub_or_helper_or_scientific_or_body_or_gzip_or_cleanup_executed": false
+}

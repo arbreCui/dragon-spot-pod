@@ -1,0 +1,12 @@
+SPOT 等值literal/canonical不可变文本复用源码复核（2026-10-08）
+
+正式helper07b22c9f…只改_phase.add一处：fresh _resolve仍实际执行，
+解析后文本等于已验证literal时共享该不可变literal对象，不同值保持原值。
+这限于普通JSON字符串输入；没有跨不同literal合并canonical或新增缓存。
+所有独立归属记录、fresh读取和前后路径/命名空间/alias/SHA门保持。
+59函数/类节点中58原字节，完整逆向恢复父cebc。
+作者实际小文件2正8负及独审source-only通过，完整42独立dict和全部
+coverage/错误/每phase全canonical open一次等价。新identity断言通过。
+
+本结论只为源码及小文件等价。没有实际大图、生产512 MiB、
+原生/完整FLU/AAA/ABA通过；新factory必须另执行完整输入实测。

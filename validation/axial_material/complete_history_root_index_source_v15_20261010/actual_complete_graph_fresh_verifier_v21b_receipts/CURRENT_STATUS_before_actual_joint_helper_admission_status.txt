@@ -1,0 +1,42 @@
+SPOT 当前进度（2026-10-10）
+
+项目目前处于组件级二维/一维耦合输运与降阶模型验证阶段。目标是同温轴向材料对照：完成 A/B 快照及在线读取，验证 AAA 同质控制，补足独立耦合参考，最后开展 ABA 中段换材料对照。整体目标尚未完成。
+
+已完成：
+1. A/B 双精度材料快照和在线读取链路已实际通过，原材料、温度和几何条件保留。
+2. 完整组件 86 阶段与正式组件输入准入已实际通过：62 正常通过，24 按预期拒绝，零意外失败。
+3. 全 370 能群保存态和工作源相位一致性诊断已实际通过，覆盖 384 单元、392 面和 3 矩；保存证据独立复核已完成。这证明数据一致性，物理精度和完整中子平衡仍需另行验收。
+4. 最新 V20 整套准备与保存证据独立复核已通过：实际退出 0 并关闭，203.04 秒，采样峰值 474.578125 MiB，低于原 512 MiB 上限。37 份来源文件和 46 项固定输入前后保持一致。
+
+当前关口：
+1. 最新 V20 整套五阶段构建实际退出 1 并关闭：118.55 秒，采样峰值 512.6875 MiB，触发原 512 MiB 上限。只完成程序连接 1/5 阶段，其余四项未完成；无完整构建封存结果。Root 关闭后核对 24 份构建来源、46 项原准备输入及 63 份原准备目录文件均保持一致，失败证据已封存。具体触发峰值的源码位置尚未观测。
+2. 历史 AAA 已数值收敛，但原物理精度验收仅 7/8 通过。端部 nu_fission 最大偏差 3.9525259224%，超过原 3% 门槛；参考统计充分，阈值保持不变。
+3. 当前独立耦合参考、完整中子平衡及反应多重性证据仍需补足；新的原生耦合运行尚未通过，ABA 对照尚未开始。
+
+后续顺序：
+完成整套五阶段构建 → 完整最终输入核验 → 受限 AAA 运行 → 定位端部偏差并补齐独立参考与物理证据 → AAA 原 8 项全部通过后开展 ABA。
+
+清理暂缓，没有删除旧成果。goal 保持进行中。
+
+最新 V20 准备实际结果：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v20_receipts/Root_actual_complete_combined_prepare_summary.json
+
+原 AAA 精度验收：
+/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+
+科学验收缺口：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/CURRENT_SCIENTIFIC_GAPS.txt
+
+最新 V20 构建实际失败结果：
+/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v20_receipts/Root_actual_failed_complete_combined_build_summary.json
+
+内存修正新进展：完整核验器的私有中间态生命周期修改已通过有限独立源码复核并安装，仅供资格测试。原完整返回、全量检查、默认调用与 consumer 分支保留；当时原60秒协议和当前完整输入图的真实读取验证均尚未执行（原60秒协议已由下方更新通过），没有新整套准备、构建、INPUT或native资格。
+
+2026-10-10 新的实际结果：新核验器的原完整60秒控制协议已实际退出0并关闭（Root terminal 5e1034），16.883993秒，采样峰值384.140625 MiB。29份SOURCE与39项host固定输入关闭后完整SHA/七项身份核对保持一致；59,662,256字节归档低于原64 MiB。保存证据独立复核已通过。该原协议不调用verify_graph，当前完整输入图的真实全量核验尚未运行，新核验器总资格仍为空；整套构建仍是V20失败，原生耦合、AAA精度及ABA状态未改变。
+实际协议结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v21_receipts/Root_actual_pure_protocol_summary.json
+
+2026-10-10 全量核验的新实际结果：Root terminal 054e28 实际退出1并关闭，单次执行无重试。当前完整输入的 verify_graph 调用已返回，控制程序随后在 fresh_reader_contract 嵌套字段的插入顺序比较处失败；完整返回/读取轨迹 gzip 与成功报告均未生成，不能准入新核验器。子进程29.261444秒，采样峰值332.359375 MiB，低于512 MiB，未触发资源限制，清理已完成。冻结23份SOURCE、安装绑定凭证及当前完整输入关闭后全EOF/SHA/七项身份保持一致。失败结果已封存，当前进行保持全部比较规则的独立预期结果构造源码修正；整套构建、原生耦合、AAA精度7/8和ABA尚未开始的状态没有改变。
+实际失败结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_fresh_verifier_v21_receipts/Root_actual_failed_complete_fresh_verifier_summary.json
+
+2026-10-10 修正版完整全量核验实际通过：Root terminal 59fbf2 实际退出0并关闭；整套host30.821749秒，子进程29.531129秒，采样峰值340.3125 MiB<512 MiB。一次genuine阶段PASS，完整37111份canonical文件及1份外部输入图实际读取记录37112条；全部27个返回字段及嵌套类型/顺序/值保持，三个完整无损gzip全EOF/SHA核对一致，4正常与3拒绝控制完成。真实33份冻结SOURCE与所有固定输入关闭后保持一致。新核验器资格仍待保存证据独立复核与Root实际准入；最新完整构建仍为V20未通过，完整INPUT/原生耦合/AAA物理精度7/8/ABA状态不变。
+实际通过结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_fresh_verifier_v21b_receipts/Root_actual_v21b_full_fresh_verifier_summary.json

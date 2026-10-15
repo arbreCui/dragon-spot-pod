@@ -1,0 +1,24 @@
+第七轮实际删除独立终态复核：PASS，已停止。
+
+真实 Root 删除闭合为 f19b41/session33439 → 33fbc8 EXIT0 PASS。独立只读复核闭合为 1c2f74/session97220 → 876c3f EXIT0 PASS，48.9604 秒。
+
+精确绑定：
+manifest SHA 80db08c34dcaa406950eb3680287f016d619ee76ac9503232dbf8e9348ee6038
+preflight SHA 63b88ddaca81a980ae6d62f70305f8d07acede3257937ad11642a6f64b992518
+third-party preflight SHA b834a026f0a925d2f1a8f770be6091440df9354a562e8bf6da26c3d9fd03fe57
+cleanup result SHA ff3938cb499e56b4d185e3611fbf3f50d022afe8ec830ecb1e749763caed1b13
+ledger SHA c27cdc4181141f908137012511d512da28040e5aa2ca5f486ec32c725f6dbe8d
+Root actual closed terminal record SHA a06785d84eb06dd05368188b60263f649f8740ac68f28c89d6411e7793059904
+独审结果 independent_postdelete_review.json SHA a22a4f64299db33f26b8ffea867268496a9abb832aa15e848576ebf97e28045c。
+
+1183 个清单文件在审查前后全部精确 missing（以 lstat 验证，包含坏symlink检查）。1183 行真实 unlink ledger 与实际 preflight 顺序、path、原完整 SHA、7 项 identity、size、category、deleted=true 完全逐项一致，原清单唯一、logical 与 allocated 求和均对应实际结果。
+Root 记录实际删除 logical 7,639,813,773 B / allocated 7,642,398,720 B（7.1175384521484375 GiB）。Root 原 project allocated 176,339,615,744 → 168,697,643,008 B（157.11192321777344 GiB）；项目净减少 7,641,972,736 B。独审当时重新量得 project allocated 168697651200 B；后续正式保存报告/主README可能增加少量占用。
+
+1216 个必须保留的主副本和 540 个来源/结果文档/独审证据，总1756唯一文件、8,875,644,818 B：每个全部独立完整 fresh SHA 和 identity，不抽样、不只靠旧成功记录。主副本向量全等实际 preflight。当前材料成品、原 result documents、raw/.m 等列在声明证据范围的字节均未改变；数据具体路径与完整 proof 分别在 all_1216_retained_primaries_fresh_SHA_identity.json / all_540_source_review_evidence_fresh_SHA_identity.json。
+
+两次独立完整遍历项目非候选树，与实际 preflight/Root前后baseline全等：b1641e20aa2097be597feeaa7477cfdd695947e059301019141101b69666c8b5，175413 regular files / 687 symlinks / 6978 directories。范围为整个项目，排除本轮正式报告目录R及明确候选；该全树证明是完整文件identity/links文本/目录路径证明，不把它冒充所有项目文件全字节SHA。完整字节SHA覆盖严格为上述1756个主副本/证据，另含图、旧保护索引、工具和实际结果/terminal/ledger文件。
+
+完整新鲜 pinned V7 graph 9103f35a…与旧保护索引30893b4a…匹配原 identity/SHA；35,646 canonical files、235,528完整requirements rows、86 namespaces、186 aliases与全部88 critical roots检查均无candidate交集。两次fresh project symlink扫描687条与原exact fingerprint 1842485d68fae8dcd710b1b44aa1347c268760330907cab7210ea8e4548d577b 相同，无symlink指向删除候选。
+三工具8852b521…/15af4d81…/53a51f0f…原字节保持，formal cleanup与TMP源码全byteexact。latest15af tar工具仅以无--restore的默认参数执行纯stream reconstruction，子进程exit0、完整archive SHA/size匹配旧候选、restored=false，目标仍missing；实际过程记录在 actual_default_tar_stream_verification.json。未生成大副本、未恢复、未调用业务API/constructor/native/PREP/RUN。
+
+本代理实际删除0、apply0、restore0、正式写入0；所有新增证据仅在此TMP目录。原材料物理范围、caps、源图body与结果文档保留，不产生新的物理/RSS/输入API资格。该PASS是本次真实删除终态证据，不能替代未来业务admission。Root可正式复制报告，并在本次完成后更新主README/progress；旧整个历史manifest工作目录回放仍需按保存的恢复清单重建已退役工作副本。

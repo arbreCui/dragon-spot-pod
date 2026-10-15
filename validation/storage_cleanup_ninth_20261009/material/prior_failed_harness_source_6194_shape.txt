@@ -1,0 +1,361 @@
+"""Read-only source/protection/stage evidence review; write only this TMP folder.
+
+No project module import, API, constructor, solver, restore, unlink, or ART write.
+Unique numerical intermediate retirement does not promise byte-exact recovery.
+"""
+import ast
+import collections
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import stat
+import time
+
+ROOT = Path('/Users/wen/spot')
+ART = ROOT / 'validation/artifacts'
+OUT = Path('/private/tmp/spot_ninth_material_intermediate_readonly_review_20261009')
+SCAN = Path('/private/tmp/spot_ninth_storage_review_20261009/fresh_metadata_scan.json')
+OLD = ROOT / 'validation/storage_review_more_20261008/normalized_protection_index.json'
+R8 = ROOT / 'validation/storage_cleanup_eighth_20261009'
+COLD = Path('/private/tmp/spot_cold_business_read_scope_postcleanup_review_20261009')
+FAMILIES = ('d4a-final-four-fuel-temperature-run-20261002',
+            'd4a-remaining-fuel-temperature-run-20261001',
+            'd4a-remaining-temperature-run-20261001')
+PINS = {}
+START = time.monotonic()
+
+def identity(path):
+    s = path.lstat()
+    return [s.st_dev, s.st_ino, s.st_mode, s.st_size, s.st_mtime_ns, s.st_ctime_ns, s.st_nlink]
+
+def pin(path, expected=None):
+    path = Path(path)
+    key = str(path)
+    if key in PINS:
+        d = PINS[key]
+        assert identity(path) == d['identity'], ('changed cached identity', key)
+    else:
+        before = identity(path)
+        assert stat.S_ISREG(before[2]), ('not regular', key)
+        h = hashlib.sha256()
+        with path.open('rb') as f:
+            s = os.fstat(f.fileno())
+            assert [s.st_dev, s.st_ino, s.st_mode, s.st_size, s.st_mtime_ns, s.st_ctime_ns, s.st_nlink] == before
+            for block in iter(lambda: f.read(1024 * 1024), b''):
+                h.update(block)
+        assert identity(path) == before, ('changed full-read identity', key)
+        d = dict(path=key, sha256=h.hexdigest(), identity=before, bytes=before[3], stable_full_read=True)
+        PINS[key] = d
+    if expected is not None:
+        assert d['sha256'] == expected, ('expected SHA mismatch', key, expected, d['sha256'])
+    return d
+
+def read_json(path, expected=None):
+    d = pin(path, expected)
+    b = Path(path).read_bytes()
+    assert hashlib.sha256(b).hexdigest() == d['sha256'] and identity(Path(path)) == d['identity']
+    return json.loads(b)
+
+def seal(folder, name='result.sha256'):
+    p = folder / name
+    pin(p)
+    result = {}
+    for line in p.read_text().splitlines():
+        digest, relative = line.split(maxsplit=1)
+        relative = relative.lstrip('*')
+        target = folder / relative
+        assert not Path(relative).is_absolute() and '..' not in Path(relative).parts
+        assert target.is_relative_to(folder) and str(target) not in result
+        assert re.fullmatch('[0-9a-f]{64}', digest)
+        result[str(target)] = digest
+    return result
+
+def save(name, data):
+    p = OUT / name
+    assert not p.exists(), ('existing evidence', str(p))
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+def project_links():
+    rows = []
+    for parent, dirs, files in os.walk(ROOT, followlinks=False):
+        for name in dirs + files:
+            p = Path(parent) / name
+            if p.is_symlink():
+                rows.append([str(p), os.readlink(p), str(p.resolve())])
+    rows.sort()
+    return rows
+
+def intersects(path, files, dirs):
+    return path in files or any(Path(path).is_relative_to(Path(d)) for d in dirs)
+
+scan = read_json(SCAN, 'ff7ff86c9e225b22f3837a81147eed772ad3b92a08e9b46e6a9df552ab44891b')
+graph_path = Path(scan['graph_path'])
+graph = read_json(graph_path, '242e995536b1b1cb92a03a16dd7936814f646ea6c02d486c71b6e8e2fb5d9044')
+old = read_json(OLD, '30893b4a333c6dc39df420b136b095e076e0ad2ac6255336b8e3eb26ced49b86')
+eight = read_json(R8 / 'manifest.json')
+dynamic = read_json(R8 / 'cold_dynamic/current_cold_dynamic_protected_files.json',
+                    '11f9f07e92ca6c11ccb90ed4bf58b9d98a0e726bf2893a40e457c32edbc9e161')
+business = read_json(COLD / 'derived_required_path_SHA_owners.json',
+                     'ffc8b099bedb600ae6d83584b3630489b0ecff73f27d509e9f38a4c426d6a212')
+read_json(COLD / 'independent_scoped_business_read_review.json',
+          '8f3e50f1279f43e7199abb40ca20f272b05e4c1c1ee6973ac2f69d5745d74258')
+proof = read_json(COLD / 'actual_source_pins_and_function_definitions.json',
+                  '9f76472980a1b7566226f25681772face9a8516896c96a736b8760c6307b17c1')
+for row in proof:
+    pin(row['path'], row['sha256'])
+graph_files = {r['path'] for r in graph['canonical_files']}
+graph_dirs = set()
+for n in graph['namespaces']:
+    for k in ('root', 'canonical_root'):
+        if k in n:
+            graph_dirs.add(n[k])
+            graph_files.update(str(Path(n[k]) / x) for x in n['files'])
+for alias in graph['aliases']:
+    if alias['kind'] == 'directory':
+        graph_dirs.update((alias['path'], alias['target']))
+    else:
+        graph_files.update((alias['path'], alias['target']))
+old_files = set(old['protected_files']) | set(old['inbound_alias_targets'])
+old_dirs = set(old['protected_directories'])
+critical = set(eight['critical_roots'])
+cold6194 = set(dynamic['current_cold_dynamic_protected_files'])
+cold6248 = set(eight['current_cold_extra_protected_files'])
+business_files = {r['path'] for r in business}
+assert len(business_files) == 1534 and len(cold6194) == 6194 and len(cold6248) == 6248 and len(critical) == 88
+all_scan_files, all_scan_dirs = set(scan['protected_files']), set(scan['protected_dirs'])
+links_before = project_links()
+
+source_names = (
+ 'validation/d4_reference/remaining_temperature_batch.py',
+ 'validation/d4_reference/run_remaining_temperature_batch.py',
+ 'validation/d4_reference/run_remaining_fuel_temperatures.py',
+ 'validation/d4_reference/prepare_final_four_fuel_temperatures.py',
+ 'validation/d4_reference/run_final_four_fuel_temperatures.py',
+ 'validation/d4_reference/run_mt51_mf6_control.py',
+ 'validation/d4_reference/prepare_d4a_material_candidate.py',
+ 'validation/d4_reference/run_d4a_material_candidate_library.py',
+ 'validation/d4_reference/run_d4a_material_candidate.py',
+ 'validation/d4_reference/check_d4a_material_candidate.py',
+ 'validation/d4_reference/actual_temperature_material_result.md',
+ 'validation/d4_reference/light_nuclide_actual_temperature_plan.md',
+ 'validation/iterative/d4a_final_validation_handoff.md',
+ 'validation/storage_cleanup_third_20261008/manifest.json',
+ 'validation/storage_cleanup_third_20261008/cleanup_result.json',
+ 'validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v8.py',
+)
+source_evidence = []
+for name in source_names:
+    p = ROOT / name
+    if not p.is_file():
+        source_evidence.append(dict(path=str(p), exists=False, never_used_as_success_evidence=True))
+        continue
+    d = pin(p)
+    row = dict(d)
+    if p.suffix == '.py':
+        text = p.read_text()
+        tree = ast.parse(text)
+        names = {'stages', 'stage_check', 'graph', 'native_terminal', 'prepare', 'review',
+                 'source_plan', 'load', 'production_constructor', 'modules', 'graph_input_bindings', 'stage_inputs'}
+        row['source_definitions'] = [dict(name=n.name, line=n.lineno, end_line=n.end_lineno,
+                                        source=ast.get_source_segment(text, n))
+                                     for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name in names]
+    source_evidence.append(row)
+
+plan_root = ART / 'd4a-actual-temperature-material-prepared-20261003'
+plan_seal = seal(plan_root)
+plan = read_json(plan_root / 'preparation.json', plan_seal[str(plan_root / 'preparation.json')])
+assert len(plan['sources']) == 28
+retained = {}
+def retain(path, expected=None, role='retained evidence or final result'):
+    row = dict(pin(path, expected))
+    retained.setdefault(row['path'], dict(row, roles=[]))['roles'].append(role)
+    return row
+
+for r in plan['sources']:
+    assert '/pendf/tape30' not in r['path'] and '/groupr/tape30' not in r['path']
+    retain(r['path'], r['sha256'], '28 accepted final nuclear-data source')
+retain(plan['assets']['full_library']['path'], plan['assets']['full_library']['sha256'], 'original external production library')
+family_records = []
+candidates = []
+for family in FAMILIES:
+    folder = ART / family
+    original = seal(folder)
+    family_rec = dict(family=family, original_result_pin=pin(folder / 'result.sha256'),
+                      current_full_historical_manifest_not_reverified=True)
+    control = Path(str(folder) + '-control')
+    ctrlseal = seal(control)
+    run_status = read_json(control / 'run_status.json', ctrlseal[str(control / 'run_status.json')])
+    family_rec['actual_original_terminal'] = run_status
+    retain(control / 'run_status.json', ctrlseal[str(control / 'run_status.json')], 'original actual terminal, including failure')
+    retain(control / 'result.sha256', role='original controller seal')
+    retain(control / 'authorization.json', ctrlseal[str(control / 'authorization.json')], 'original historical authorization')
+    for name in ('inputs.json', 'staged_inputs.json', 'cached_inputs.json', 'cached_lineage.json', 'output_hashes.json', 'completed.json'):
+        q = folder / name
+        if q.is_file():
+            retain(q, original.get(str(q)), 'original saved provenance, never recomputed as new pass')
+    produced = read_json(folder / 'output_hashes.json', original[str(folder / 'output_hashes.json')])
+    reviewfolder = Path(str(folder) + '-review')
+    if reviewfolder.exists():
+        review_seal = seal(reviewfolder)
+        review = read_json(reviewfolder / 'review.json', review_seal[str(reviewfolder / 'review.json')])
+        assert review['original_result_manifest_sha256'] == pin(folder / 'result.sha256')['sha256']
+        family_rec['original_independent_review_status'] = review['status']
+        for q in reviewfolder.iterdir():
+            if q.is_file(): retain(q, review_seal.get(str(q)), 'original saved independent review')
+    else:
+        family_rec['original_independent_review_status'] = None
+        assert run_status['status'] == 'FAILED_NO_RETRY'
+    stage_files = sorted(q for q in folder.rglob('tape30') if q.parent.name in {'pendf', 'groupr'})
+    for p in stage_files:
+        key = str(p)
+        assert p.is_absolute() and '..' not in p.parts and p.parent.resolve() == p.parent
+        ident = identity(p)
+        assert stat.S_ISREG(ident[2]) and ident[6] == 1
+        protections = dict(current_V8_complete_canonical_namespace_alias=intersects(key, graph_files, graph_dirs),
+                           old_normalized=intersects(key, old_files, old_dirs),
+                           critical_roots88=intersects(key, set(), critical),
+                           eighth_cold6194=key in cold6194,
+                           eighth_cold6248=key in cold6248,
+                           actual_cold_business1534=key in business_files,
+                           root_fresh_union=intersects(key, all_scan_files, all_scan_dirs))
+        assert not any(protections.values()), ('protected candidate', key, protections)
+        assert not any(Path(key).is_relative_to(Path(link[2])) or key == link[2] for link in links_before)
+        d = pin(p, original[key])
+        assert produced[key] == d['sha256']
+        receipt = p.parent / 'receipt.json'
+        rec = read_json(receipt, original[str(receipt)])
+        assert rec['returncode'] == 0 and rec['output_sha256'] == d['sha256']
+        evidence = []
+        for name in ('receipt.json', 'input.in', 'input_hashes.json', 'native.log'):
+            q = p.parent / name
+            evidence.append(retain(q, original[str(q)], 'retained original stage source/receipt/log'))
+        log = (p.parent / 'native.log').read_text()
+        assert 'njoy' in log.lower() and 'error in' not in log.lower()
+        assert re.search(r'\n\s*\d+(?:\.\d+)?s\s*\n\s*\*{10,}\s*\Z', log)
+        ih = read_json(p.parent / 'input_hashes.json', original[str(p.parent / 'input_hashes.json')])
+        provenance = [dict(staged_original_input=path, expected_sha256=sha,
+                           current_exists=Path(path).is_file(), not_new_admission=True)
+                      for path, sha in ih.items()]
+        final_paths = sorted(q for q in (folder / p.relative_to(folder).parts[0]).rglob('tape30') if q.parent.name == 'dragr')
+        candidates.append(dict(**d, allocated_bytes=p.stat().st_blocks * 512,
+                               category='retired_material_numerical_intermediate_pendf_groupr_tape30',
+                               family=family, stage=p.parent.name,
+                               original_result_sha256=pin(folder / 'result.sha256')['sha256'],
+                               original_result_relative_path=str(p.relative_to(folder)),
+                               original_output_hash_manifest_sha256=pin(folder / 'output_hashes.json')['sha256'],
+                               original_stage_receipt=rec, retained_stage_evidence=evidence,
+                               historical_staged_input_provenance=provenance,
+                               retained_same_nuclide_final_dragr_paths=[str(q) for q in final_paths],
+                               protection_screen=protections,
+                               restoration=dict(primary=None, certified_exact_copy=None,
+                                   mode='historical_native_rebuild_only_no_byteexact_guarantee',
+                                   limitation='No retained primary certified. Retained source/decks/manifests record original identity, but rebuild needs original runtime and a separately authorized budget; rebuilt bytes must match old SHA before any old whole-seal or numerical replay may pass. No overwrite or retrospective manifest edits.')))
+    for p in sorted(q for q in folder.rglob('tape30') if q.parent.name == 'dragr'):
+        retain(p, original[str(p)], 'all control/expanded low/high final DRAGR nuclear libraries')
+    family_rec['candidate_count'] = len(stage_files)
+    family_records.append(family_rec)
+
+selected = {r['path'] for r in candidates}
+assert len(selected) == len(candidates) == 89
+assert not selected.intersection(retained)
+library = ART / 'd4a-actual-temperature-library-run-20261003'
+library_seal = seal(library)
+libinputs = read_json(library / 'inputs.json', library_seal[str(library / 'inputs.json')])
+assert not selected.intersection(libinputs)
+material = ART / 'd4a-actual-temperature-material-run-20261003'
+material_seal = seal(material)
+matinputs = read_json(material / 'inputs.json', material_seal[str(material / 'inputs.json')])
+assert not selected.intersection(matinputs)
+retain(library / 'merge/28-U238/tape30', library_seal[str(library / 'merge/28-U238/tape30')], 'final 28 nuclide merged library')
+retain(library / 'import/DLIB_370_bin', library_seal[str(library / 'import/DLIB_370_bin')], 'final private binary material library')
+for rfolder in (library, material):
+    rseal = seal(rfolder)
+    for name in ('result.sha256', 'completed.json', 'receipts.json', 'inputs.json', 'output_hashes.json'):
+        q = rfolder / name
+        retain(q, rseal.get(str(q)), 'completed final library/material result document')
+    for suffix in ('-control', '-review'):
+        qfolder = Path(str(rfolder) + suffix)
+        qseal = seal(qfolder)
+        for q in qfolder.iterdir():
+            if q.is_file(): retain(q, qseal.get(str(q)), 'final material/library original controller or independent review')
+for q in material.glob('material*/*'):
+    if q.is_file() and q.name in {'DLIB_ACTUAL', 'macro.ascii', 'microlib.ascii', 'metadata.ascii'}:
+        retain(q, material_seal.get(str(q)), 'all material result bodies and actual library copies')
+
+prepared_sources = []
+for prepared_name in ('d4a-remaining-temperature-twopass-prepared-20261001',
+                      'd4a-remaining-fuel-temperature-prepared-20261001',
+                      'd4a-final-four-fuel-temperature-prepared-20261002'):
+    pf = ART / prepared_name
+    for name in ('plan.json', 'preflight.json'):
+        q = pf / name
+        if not q.is_file(): continue
+        data = read_json(q)
+        for row in data.get('cases', []):
+            for key in ('endf', 'original_library', 'control_pendf'):
+                if key in row:
+                    p = Path(row[key])
+                    assert p.is_file(), ('original nuclear source missing', str(p))
+                    prepared_sources.append(dict(nuclide=row.get('nuclide'), source_role=key,
+                                                 prepared_receipt=str(q), pin=retain(p, role='original external nuclear source, retained')))
+
+# All other files within the three historical families are explicitly excluded.
+retained_metadata = []
+for family in FAMILIES:
+    folder = ART / family
+    for parent, dirs, files in os.walk(folder, followlinks=False):
+        for name in files:
+            p = Path(parent) / name
+            if str(p) not in selected:
+                retained_metadata.append(dict(path=str(p), identity=identity(p), retained=True))
+links_after = project_links()
+assert links_before == links_after
+for p, d in PINS.items(): assert identity(Path(p)) == d['identity'], ('final pinned identity changed', p)
+summary = dict(
+    status='PASS_READONLY_NARROW_RETIREMENT_RECOMMENDATION_NOT_APPLIED',
+    candidate_count=len(candidates), logical_bytes=sum(r['bytes'] for r in candidates),
+    allocated_bytes=sum(r['allocated_bytes'] for r in candidates),
+    allocated_GiB=sum(r['allocated_bytes'] for r in candidates) / 1024**3,
+    family_original_terminal_and_review_facts=family_records,
+    future_read_exclusion=dict(current_V8_graph_sha256=pin(graph_path)['sha256'],
+        canonical_files=len(graph['canonical_files']), namespaces=len(graph['namespaces']), aliases=len(graph['aliases']),
+        critical_roots=88, cold_dynamic_files=6194, eighth_cold_files=6248,
+        source_derived_actual_business_read_paths=1534, original_cold_source_fresh_pinned=True,
+        candidate_intersections_all_zero=True,
+        accepted_material_preparation_sources=28, final_library_inputs=len(libinputs), final_material_inputs=len(matinputs),
+        candidate_intersection_with_these_inputs=0,
+        source_proof='Current producer constructors and old input consumption scope preserved in source proof; these candidates are absent from that full scope. Material library construction consumes 28 final DRAGR sources only. Historical staging/review scripts explicitly read intermediate tapes and are retired for direct numerical replay. Future CE design is not claimed completed; all nuclear source, final DRAGR/control/expanded low/high, production and merged library plus actual material results are retained.'),
+    retained_final_and_evidence_full_sha_count=len(retained), original_source_pin_roles=len(prepared_sources),
+    full_read_pin_count=len(PINS), full_read_bytes=sum(r['bytes'] for r in PINS.values()),
+    fresh_symlinks=len(links_before), symlink_inventory_sha256=hashlib.sha256(json.dumps(links_before, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest(),
+    retained_other_historical_family_regular_or_link_rows=len(retained_metadata),
+    all_documents_logs_decks_sources_hashes_receipts_final_dragr_preserved=True,
+    old_fullseal_and_intermediate_numeric_replay_retired=True,
+    exact_restoration_certified=False, actual_deletion=None, deletion_count=0,
+    solver_or_API_executed=False, formal_or_artifact_writes=False,
+    review_elapsed_s=time.monotonic() - START,
+    limitations=['Only the final-four batch has COMPLETE and independent overall PASS. The other two whole batches are FAILED_NO_RETRY, with completed stage receipts/output SHA preserved. No failure is relabeled success.',
+                 'Fresh source/protection/result evidence supports narrow retirement of 89 intermediate tape30 files; no current API, solver, memory admission, physical accuracy or future CE execution is proved.',
+                 'Original whole historical manifests already include earlier-retired scratch files and are not fully reverified here. Original bytes and result status are preserved; no old seal is altered to ignore missing bodies.',
+                 'No certified retained primary per candidate. Deletion would require historical native reconstruction for original-path numeric replay, with no guarantee of identical rebuilt bytes. Retained material final results continue to be independently identified.',
+                 'Root must fresh-pin the final exact union and independently review it before any actual deletion; this report contains no actual space credit.'])
+save('exact_material_intermediate_retirement_candidates.json', candidates)
+save('current_hard_protection_and_business_read_exclusion.json', summary['future_read_exclusion'])
+save('original_source_and_final_material_dependency_source_evidence.json', source_evidence)
+save('retained_final_and_stage_evidence_fresh_SHA_identity.json', list(retained.values()))
+save('retained_original_nuclear_source_pin_roles.json', prepared_sources)
+save('other_retained_historical_family_file_identities.json', retained_metadata)
+save('all_full_read_SHA_identity_records.json', list(PINS.values()))
+save('fresh_project_symlink_inventory.json', links_before)
+save('independent_recommendation.json', summary)
+(OUT / 'REPORT.txt').write_text(
+    '只读建议：退休三批旧材料处理中89个PENDF/GROUPR tape30中间数值文件；未删除任何文件。\n'
+    f"候选逻辑{summary['logical_bytes']}B；名义分配{summary['allocated_bytes']}B / {summary['allocated_GiB']:.9f}GiB。\n"
+    '只有final-four整体已完成并独审通过；remaining-fuel/remaining-temperature整体FAILED_NO_RETRY，成功阶段收据与失败终态原样保留。\n'
+    '候选与当前V8完整canonical/namespace/alias、旧保护索引、88关键根、6194/6248 cold保护、源代码推导真实1534读路径及最终library/material输入表均无交集。\n'
+    '保留全部原核数据源、外部ENDF/原库、control/expanded低高DRAGR最终库、28核素最终merge、实际材料成品及全部文档、日志、甲板、收据、hash。\n'
+    '删除会退役旧完整seal及PENDF/GENDF数值重放：没有逐项认证exactprimary，不能承诺byteexact恢复；重新构建须另批预算且逐字节匹配原SHA后才能原路径复验。未重签任何历史清单。\n'
+    '当前建议不是实际清理结果、512MiB/API/PREP/RUN/物理或CE资格。Root需fresh精确union及第三方独审后再决定执行。\n')
+print(json.dumps({k: summary[k] for k in ('status','candidate_count','logical_bytes','allocated_bytes','allocated_GiB','full_read_pin_count','full_read_bytes','fresh_symlinks','review_elapsed_s')}, ensure_ascii=False), flush=True)

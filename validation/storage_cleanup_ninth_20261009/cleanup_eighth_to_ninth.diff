@@ -1,0 +1,61 @@
+--- eighth
++++ ninth
+@@ -3,7 +3,7 @@
+ from datetime import datetime, timezone
+ if not __debug__:
+  raise RuntimeError('Cleanup safety gates require Python optimization to be disabled')
+-ROOT=Path('/Users/wen/spot');OUT=ROOT/'validation/storage_cleanup_eighth_20261009'
++ROOT=Path('/Users/wen/spot');OUT=ROOT/'validation/storage_cleanup_ninth_20261009'
+ def safe_art_path(raw):
+  p=Path(raw)
+  if not p.is_absolute() or str(p)!=raw or '..' in p.parts or not p.is_relative_to(ROOT/'validation/artifacts') or p.parent.resolve(strict=True)!=p.parent:
+@@ -77,6 +77,24 @@
+    assert c['restoration_recipe_sha256']==pin(OUT/'tar/candidate.json')['sha256']
+    proc=subprocess.run(['/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12',str(OUT/'restore_retired_tar.py')],check=True,capture_output=True,text=True)
+    proof=json.loads(proc.stdout);assert proof['status']=='PASS' and proof['restored'] is False and proof['archive_sha256']==fresh['sha256']
++  elif c['category']=='TERMINAL_OLD_INTERMEDIATE_PAYLOAD':
++   relative=p.relative_to(ROOT/'validation/artifacts')
++   allowed_map=(relative.parts[0]=='axial-material-production-qualified-AB-compensated-20261004' and relative.parts[1]=='AAA' and relative.parts[2] in ('map001','map002','map003') and len(relative.parts)==4 and relative.name in ('candidate_radial.xsm','candidate_snapshots.xsm','projected_proposal.xsm'))
++   allowed_tape=(relative.parts[0] in ('d4a-final-four-fuel-temperature-run-20261002','d4a-remaining-fuel-temperature-run-20261001','d4a-remaining-temperature-run-20261001') and relative.name=='tape30' and relative.parent.name in ('pendf','groupr'))
++   assert allowed_map or allowed_tape,str(p)
++   proof=c['historical_payload_proof'];historic=pin(proof['path']);assert historic['sha256']==proof['sha256']
++   record=json.loads(Path(proof['path']).read_text())
++   if proof['format']=='JSON_SHA256_MAP':
++    assert allowed_map and record['classification']=='SEALED_STAGE_OUTPUTS' and proof['key']==p.name
++    assert Path(proof['path'])==p.parent/'result.json' and record['sha256'][proof['key']]==fresh['sha256']
++   elif proof['format']=='NJOY_RECEIPT_OUTPUT':
++    assert allowed_tape and Path(proof['path'])==p.parent/'receipt.json'
++    assert type(record['returncode']) is int and record['returncode']==0 and record['output_sha256']==fresh['sha256']
++    seal=pin(proof['result_manifest_path']);assert seal['sha256']==proof['result_manifest_sha256']
++    entries={line.split('  ',1)[1]:line.split('  ',1)[0] for line in Path(proof['result_manifest_path']).read_text().splitlines() if line}
++    owner=Path(proof['result_manifest_path']).parent
++    assert owner==ROOT/'validation/artifacts'/relative.parts[0] and entries[str(p.relative_to(owner))]==fresh['sha256']
++   else:raise ValueError('unrecognized historical payload proof')
+   else:
+    primary=retained[c['retained_primary']]
+    assert primary['sha256']==fresh['sha256'] and primary['size']==fresh['size'] and primary['path']!=fresh['path']
+@@ -91,13 +109,13 @@
+  assert sum(c['allocated_bytes'] for c in m['candidates'])==m['allocated_bytes']
+  assert sum(c['size'] for c in m['candidates'])==m['logical_bytes']
+  assert pin(Path(__file__))['sha256']==m['cleanup_source_sha256']
+- for c in m['candidates']:assert c['category'] in ('EXACT_DUPLICATE_OLD_WORK_COPY','EXACT_RECONSTRUCTIBLE_REHEARSAL_TAR')
++ for c in m['candidates']:assert c['category'] in ('EXACT_DUPLICATE_OLD_WORK_COPY','EXACT_RECONSTRUCTIBLE_REHEARSAL_TAR','TERMINAL_OLD_INTERMEDIATE_PAYLOAD')
+  for p in m['source_and_review_pins']:expected(p)
+  kept=[expected(p) for p in m['retained_primaries']]
+  close=closure(m,selected);link=links(selected)
+  if args.mode=='preflight':
+   before=inventory(selected);candidates=verify_candidates(m);after=inventory(selected);assert before==after
+-  value=dict(schema='SPOT_EIGHTH_ROOT_FRESH_EXACT_CONTENT_PREFLIGHT_V1',status='PASS',utc=datetime.now(timezone.utc).isoformat(),manifest_sha256=mp['sha256'],verified_candidates=candidates,verified_primaries=kept,preservation_baseline=before,symlink_screen=link,current_closure=close,capacity=capacity(),files_deleted=0,solver_or_API_executed=False)
++  value=dict(schema='SPOT_NINTH_ROOT_FRESH_EXACT_CONTENT_PREFLIGHT_V1',status='PASS',utc=datetime.now(timezone.utc).isoformat(),manifest_sha256=mp['sha256'],verified_candidates=candidates,verified_primaries=kept,preservation_baseline=before,symlink_screen=link,current_closure=close,capacity=capacity(),files_deleted=0,solver_or_API_executed=False)
+   result=write('preflight.json',value)
+   print(json.dumps(dict(status='PASS',mode='preflight',report=result['path'],sha256=result['sha256'],candidates=len(candidates),allocated_gib=m['allocated_bytes']/2**30,baseline=before)));return
+  assert args.preflight_sha256 and args.independent_sha256
+@@ -119,7 +137,7 @@
+  after_inventory=inventory(selected);assert after_inventory==baseline
+  assert links(selected)==link
+  for p in m['retained_primaries']+m['source_and_review_pins']+[m['graph_pin'],m['old_index_pin']]:expected(p)
+- result=dict(schema='SPOT_EIGHTH_ACTUAL_EXACT_OLD_WORK_RETIREMENT_V1',status='PASS',utc=datetime.now(timezone.utc).isoformat(),manifest_sha256=mp['sha256'],preflight_sha256=pp['sha256'],independent_preflight_sha256=rp['sha256'],deleted_files=len(selected),deleted_logical_bytes=m['logical_bytes'],deleted_allocated_bytes=m['allocated_bytes'],capacity_before=before,capacity_after=capacity(),nonselected_before=baseline,nonselected_after=after_inventory,symlink_check_after=link,all_retained_primaries_and_source_review_bytes_unchanged=True,solver_or_API_executed=False,new_scientific_credit=False,elapsed_seconds=time.monotonic()-start)
++ result=dict(schema='SPOT_NINTH_ACTUAL_EXACT_OLD_WORK_RETIREMENT_V1',status='PASS',utc=datetime.now(timezone.utc).isoformat(),manifest_sha256=mp['sha256'],preflight_sha256=pp['sha256'],independent_preflight_sha256=rp['sha256'],deleted_files=len(selected),deleted_logical_bytes=m['logical_bytes'],deleted_allocated_bytes=m['allocated_bytes'],capacity_before=before,capacity_after=capacity(),nonselected_before=baseline,nonselected_after=after_inventory,symlink_check_after=link,all_retained_primaries_and_source_review_bytes_unchanged=True,solver_or_API_executed=False,new_scientific_credit=False,elapsed_seconds=time.monotonic()-start)
+  saved=write('cleanup_result.json',result)
+  print(json.dumps(dict(status='PASS',mode='apply',report=saved['path'],sha256=saved['sha256'],deleted_files=len(selected),deleted_allocated_gib=m['allocated_bytes']/2**30,project_after_gib=result['capacity_after']['project_allocated_bytes']/2**30,nonselected_unchanged=True)))
+ if __name__=='__main__':main()

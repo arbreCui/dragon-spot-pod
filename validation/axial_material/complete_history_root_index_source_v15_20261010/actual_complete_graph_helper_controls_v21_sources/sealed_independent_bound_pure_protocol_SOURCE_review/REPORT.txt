@@ -1,0 +1,9 @@
+V21 原完整 60 秒控制生成器及真实绑定候选：有限 SOURCE 审查未发现 blocker。
+
+设计包 07eee generator/d717 manifest 未改，6 members 全 EOF SHA/7ID 前后保持。driver 仅三个 helper 常量换源，所有函数/class 逐字节相同；host 八项有限 retarget 完整逆回 de72，再逆回 82a/95fd。原 V16 公共 schema、所有完整控制、全部 checkpoint、真实 subtype/caller/type/order/floatbits 对照保持。
+
+真实绑定 driver fee784/host86dce7 与设计完整字节一致。Root 安装凭证 f8e83 metadata 中 closed True、exit_code 严格整数0、无 session_id；实际工具464ada output原字符串经Python JSON解析得完整 ns 整数7ID，与现安装 helper dc01 fresh SOURCE 逐位一致。读取的复制旧 manifest 只当 lineage，绑定目录10个普通文件全部独立SHA/7ID。新helper Q、完整图freshverify及future business/native pins均 None。
+
+原 genuine guard/MRO/resource、固定无profile argv、whole/stage60s、512MiB、JSON/output/完整HOST+OUT+SOURCE64MiB、history96GiB/free8GiB、1线程/1child/0retry、输入前后PIN和完整tails保持。
+
+审查未执行生成器 binding branch、helper/driver/host/guard/API/资源/业务/数值；未读ART payload，未改任何canonical或输入封存包。仍需原完整60秒协议真实运行及单独当前完整图fresh verifier实际阶段600/whole1800/RSS512；SOURCE通过不授内存、完整构建/INPUT、native/AAA/ABA资格。

@@ -1,0 +1,19 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_source_v1/APACKX64.f90
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_source_v2/APACKX64.f90
+@@ -17,6 +17,7 @@
+     ['SIGNATURE   ','LISTDIM     ','TRACK       ','MICROLIB2   ','SYSTEM      ','FLUX        ','RCONTRACT   ','BOOT_BIND   ']
+   character(len=12),parameter::cases(3)= &
+     ['R64WARM-A-V1 ','R64-A2-WARM1 ','R64-A3-WARM1 ']
++  character(len=12),parameter::archive_signature='L_ARCHIVE'
+   type(c_ptr)::inputs(6,3),outputs(6),list,item,seal
+   type(SPOR64_ROUTE_CONTRACT)::route
+   real(real64),allocatable::admitted(:,:)
+@@ -66,7 +67,7 @@
+     deallocate(admitted)
+   enddo
+   ! All three actual producers are independently admitted before the first write.
+-  call LCMPTC(kentry(1),'SIGNATURE',12,'L_ARCHIVE')
++  call LCMPTC(kentry(1),'SIGNATURE',12,archive_signature)
+   n=3;call LCMPUT(kentry(1),'LISTDIM',1,1,n)
+   do k=1,6
+     outputs(k)=LCMLID(kentry(1),fields(k),3)

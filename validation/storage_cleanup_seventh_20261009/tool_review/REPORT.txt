@@ -1,0 +1,17 @@
+第七轮清理/恢复工具独立静态审查已完成，STOPPED。
+
+最终仅通过源码结构审查；没有审批尚未提供的 1183 文件精确 union、88 critical roots 或实际 preflight，也没有运行 apply/restore、业务 API、PREP/RUN。
+
+修补前识别并通知 Root：三个工具只用词法 is_relative_to，允许 parent traversal/父目录 symlink；cleanup 安全门为 assert，可在优化模式失效；apply 未直接绑定 preflight 的 manifest SHA。
+Root 已添加普通 if/raise 的 canonical absolute/artifact containment/no parent traversal/real parent 校验，cleanup candidate verification 和每次 unlink 前均使用，restore 对 target/primary 和 metadata 写前使用。cleanup 顶层普通 if not __debug__ 拒绝优化模式；apply 直接核对 pf.manifest_sha256。完整diff仅这些安全修补。其余原有 enumeration/pin/regular/nlink1/closure/namespace/index/critical/link/two-phase baseline/ledger/fsync/terminal preservation gate 与 exact reconstruction body均保留。
+
+最终源码 SHA：
+cleanup_exact_files.py 8852b5213ee44039141ff67a35b97da27577d570b2097709b507d6a375057c56
+restore_retired_tar.py 15af4d8112e7299d3cd9a93d12b3208cc5330a3a60fc906cd5c2145f8e4c5c32
+restore_retired_work_copies.py 53a51f0f70c5194b13328d01b356d33260cd1b310753fda743b8ad6af6a687bd
+formal cleanup 与 TMP母本全字节一致；Root保存的三份 prior_tool_sources 与我初次 fresh snapshot全字节一致。没有掩盖首次source未安全的事实，且首次版本未执行清理或恢复。
+
+只编译/AST证明：exact Root Python3.12 的最终优化编译最后一条指令即 RuntimeError 的 RAISE_VARARGS，ROOT/main定义尾部不生成，任何删除逻辑不可达；编译对象从未执行。初始source有33个 assert raise gates，优化后0。真实中间proof 6beaf4 EXIT1来自harness期待不可达ROOT指令，修正harness a40dbe EXIT0；两次均为静态对象审查。初版系统Python3.14 opcode计数不兼容也被保留并解释，后续exact3.12证明独立完成。
+
+最终报告 final_source_review.json SHA 501025235d7ffc96d850c7ad2d5c6fc0463675b1f58607311fbea4a473919e44。
+交给 Root 组合精确 union/preflight，并由独立审者核对实际选择、完整88crit、true primary sources和最终 pins。实际删后另凭真实终态工具输出、ledger、post identity/absence/nonselected baseline复核；此 source PASS不能替代实际清理成功或物理资格。

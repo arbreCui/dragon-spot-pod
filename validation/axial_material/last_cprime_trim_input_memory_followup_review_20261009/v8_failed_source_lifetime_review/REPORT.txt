@@ -1,0 +1,26 @@
+V8 失败后源码生命周期独审：仅源码推断，未定位实际内存峰值语句。
+
+真实失败保持冻结：d68fa5/session22770→c5f80c EXIT1 CLOSED；audit child8231/-15，516.46875MiB，31.506s；audit.log空，无seal，四个tail字段仍None，无标准API、native/RSS/AAA/ABA新信用。终态原收据SHA d4cacd55b43b590647ca9c1e6ec1168c58f8ddea7ec52b925b9048c556497039。
+
+已纠正的一项推断
+当前正式wire helper1d7c4…7643，_content_digest在155–165行已经用浅层dict(graph)移除content_sha256，再JSONEncoder.iterencode逐片更新SHA；没有整图_json_clone/整图json.dumps/整图UTF8缓冲。verify_graph1863调用的就是该流式实现。单个大字符串仍可形成单个piece，不能把它说成64MiB整图副本。无需再做相同stream digest改动。
+
+仍存在的源码生命周期重叠
+1. F8:756解析8,162,042B完整immutable declaration成为d，含35,647file pins/186aliases；F8:775→environment613–621→complete_input_phase1206–1253期间d由caller持续持有。F8 strict_json_bytes200–218保留全部JSON门，但没有解析内本地immutable值共享。
+2. F8:1208完整读取19,356,767B历史specs，提取四份metadata后删encoded并GC。只有8componentrecords/3directoryowners/22requirements/10aliases留下；不能声称完整历史七键body一直与graph同时存活。actual_components369–386是标准admission中后续的独立整body路径。
+3. current helper:47–67已释放六个不用的declarations；capture14,627,341B和physical2,417,409B解析dict仍在declarations中直到函数返回，cd在82后、pd在103后已无后续用途，却延续至resources.check112。
+4. wire helper:_stream719–752在join749短暂同时持有chunks+joined bytes；strict_json818解码时payload+decoded重叠，821已删payload，随后decoded+parsed容器+local pools在867解析中重叠。64,639,433B保存文件小于64MiB不代表heap小于512MiB。
+5. verify_graph1871先_expand_owner_table528–587完整expected maps，再_owners988–1015完整归一化maps；二者在归一化时重叠。1891deque释放发生更晚。任何stream rewrite必须保留全部upfront owner验证和原错误优先序。
+6. _phase1297–1441仍保留完整235,528logical tuples、expected/resolution/literal maps、canonical set/sorted list、35,647fresh pin dict，以及caller d/graph。global wire路径json_input=None，canonical reader按原门逐文件fresh SHA且collect=False；不会为每份输入JSON都分配完整parsed对象。
+7. F8:1232在第一次verify已返回后再读graph，然后1242–1247同时生成fullfiles/aliases/literalcanonical/pins对照。两次完整graph解析是顺序发生，不得说两份完整parsed graph一定共存。
+8. PREP producer create_wire_graph467仍create完整legacygraph后，encode_graph_wire426完整clone再编码；此fullclone没有减少，也不是当前path verify1830的源码路径。
+
+优先的小改动验证计划（只用于新版本）
+A. F8自身strict_json_bytes做每次解析内部str/int共享；普通dict/list、原字典插入顺序、负零浮点、完整字段、原SHA/normal-path/read门及duplicate/nonfinite/深度/整数/UTF8错误顺序必须保持。先做独立纯AST抽取tiny，再对完整实际declaration纯metadata比较全返回/序列化字节。不能用跨phase cache或全局pool。收益未知，不能承诺512MiB。
+B. current helper两个最后使用点后，仅新增del declarations["capture"],cd与del declarations["physical"],pd。原六处delete/所有read/guard/真实snapshot/absence函数及完整返回JSON原样；扩展原50cases，weakref验证资源检查前这两份释放，错误优先序与原回包字节相同。此举不能消除capture解析时physical仍需持有的峰值。
+C. owner normalize只作后续研究，不能直接lazy化后把owner错误挪到filesystem读取之后；先证明完整符号/重复/空字段/不合法索引/别名/SHA错误次序、全owner roundtrip以及row/ns/alias/trace/resources一项不丢。
+D. 可选全实际graph纯metadata校验路线：只复制标准JSON/canonical sink例程，不import正式helperAPI，不执行phase。fresh storedbyte SHA绑定→仅除content_sha256→全字段ASCII compact sorted JSON reference SHA与iterencode SHA一致；wire_encoding也必须包含。再独立纯metadata确认decoded semantic、235528行、全owners/ns/aliases/trace/resource一致。这里未执行此路线，更未启动任何新业务诊断。
+
+所有结论仅来自固定源码和小metadata/保存字节的只读复核。原caps1800/600/512/2GiB/96GiB/free8/thread1/child1/retry0、数学、705/38de/bc4 MRO、完整所有输入/ns/alias/trace/fresh门保持；V8零重试，无formal/ART/project写、API/import/constructor/PREP/RUN或诊断业务执行。实际失败位置和新512MiB优化效果均未知。
+
+补充明确：两种digest已经流式。Stored wire _content_digest155–165按完整全部字段（只排除content_sha256）iterencode；decoded legacy _wire_semantic_content_digest387–421也按完整所有非row字段iterencode，并用严格varint iterator逐条编码原行。两者只有浅层dict，均不生成整图clone/dump/UTF8或完整numeric row matrix。禁止把这两处当未完成的stream优化或本次actual cause。最终只读复核24be95 EXIT0 CLOSED，原49962f成功版本及报告保留。

@@ -1,0 +1,5 @@
+完整 trace 的透明表编码源码草稿；没有截记录或提取子集。
+顶层 record 使用全部列名、顺序布局、严格字符串标签和全字符串表，保留缺失/null、所有类型、字段与行顺序、重复、attempts。嵌套 descriptor 与 subprocess 原值保留。
+原 create_graph/encode_graph_wire/verify_graph/phase/math/resource/consumer 逐字保留；仅两严格 JSON wrapper 添加新 schema 解码路由。独立 fresh producer 使用完整原 phase 与 coverage/trace 门。
+默认 pure encode/decode 不修改调用者；私有 consume 只用于 fresh parsed document，逐行释放后清空表；新图 wire 与旧 legacy digest 保留。
+所有输出 UNREADY；只做 AST/compile-source，不执行 helper、fixture 或业务。实际体积、完整 roundtrip 与 RSS 尚未验证；Root 后续受限纯元数据控制为必需。原64MiB/512MiB门不改。

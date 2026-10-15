@@ -1,0 +1,38 @@
+{
+  "schema": "AXMAT_COMBINED_RUNTIME_GRAPH_MECHANICS_DISPOSABLE_CHECKS_V1",
+  "source": {
+    "path": "/private/tmp/combined_runtime_complete_input_graph_mechanics_stopped_draft_20261007.py",
+    "sha256": "c8e58bcad7b9f4a6b1d6615050d41854397c4d102efd2af81b402b376827bb44"
+  },
+  "positive_groups": [
+    "all logical owners and exhaustive namespace edges retain two complete canonical files",
+    "disposable_entry: each complete canonical input read again once despite duplicate owners",
+    "disposable_next_phase: each complete canonical input read again once despite duplicate owners",
+    "original full input graph remains valid after disposable negative fixtures restored"
+  ],
+  "negative_cases": [
+    "same-size same-mtime changed input bytes",
+    "literal alias target changed",
+    "added regular namespace member",
+    "removed empty namespace directory",
+    "added empty namespace directory",
+    "invented science pass",
+    "invented current resources",
+    "invented Root declaration exit",
+    "lost duplicate logical edge",
+    "filtered canonical file",
+    "weakened complete input contract",
+    "Python audit relabelled as native complete trace",
+    "duplicate JSON key",
+    "JSON NaN",
+    "JSON overflow",
+    "invalid UTF8 JSON"
+  ],
+  "positive_count": 4,
+  "negative_count": 16,
+  "actual_project_APIs_executed": false,
+  "actual_native_children_executed": false,
+  "actual_artifact_families_created": false,
+  "production_performance_or_RSS_proved": false,
+  "scientific_qualification_created": false
+}

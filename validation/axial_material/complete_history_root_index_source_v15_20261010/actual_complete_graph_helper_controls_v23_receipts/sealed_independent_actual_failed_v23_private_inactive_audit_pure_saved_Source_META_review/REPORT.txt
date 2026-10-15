@@ -1,0 +1,6 @@
+PASS: actual failed genuine pure-control saved Source/META evidence is preserved.
+Root initial597f0b/session11505 -> terminal437ca4 strictEXIT1 CLOSED; no repoll/retry. Root postclose META writer93e463 strictEXIT0.
+Cause: three-item tuple witness meets a JSON-only comparator; no actual Popen value is held in that row.
+Full pure protocol/new5+13+3/ordered9field artifact were not completed; FreshV23 did not run. No new helper/RSS/build/INPUT/native/science qualification.
+H5/O31+2 original symlinks/D509+47dirs/Epre5+1dir all full EOF/7ID checked. HOD24976999; writer-timeHODE26707846; later real writer receipt2328; currentHODE26710174.
+RSS sample0.0 is an early unsampled failure. Only saved Source/META and small protocol outputs were read; no reviewed API or large material payload.

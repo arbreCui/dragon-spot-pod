@@ -660,6 +660,15 @@ program check_one_map_xsm
   endif
   call load_canonical_state(trim(paths(4)),1,'POD-FIXED',.true., &
     current_state,'CURRENT FIXED-BASIS STATE')
+  ! A fixed radial basis may come from another axial mesh. The two actual
+  ! map states, however, must use the CURRENT system's axial storage size.
+  if ((previous_state%state(2) /= current_system%state(9)).or. &
+      (current_state%state(2) /= current_system%state(9))) &
+    call fail('MAP AXIAL STORAGE DIMENSIONS DIFFER FROM CURRENT SYSTEM.')
+  call check_axial_storage(trim(paths(3)),current_system%state(9), &
+    current_system%ngroup,'PREVIOUS STATE')
+  call check_axial_storage(trim(paths(4)),current_system%state(9), &
+    current_system%ngroup,'CURRENT STATE')
   call compare_state_to_system(previous_state,reference_system, &
     'PREVIOUS STATE')
   call compare_state_to_system(current_state,current_system, &
@@ -722,7 +731,8 @@ contains
     call require_record(root,'STATE-VECTOR',nstate,1,owner)
     call LCMGET(root,'STATE-VECTOR',data%state)
     data%ngroup=data%state(8)
-    if ((data%ngroup /= 370).or.(data%state(14) /= 1)) &
+    if ((data%ngroup /= 370).or.(data%state(14) /= 1).or. &
+        (data%state(9) <= 0)) &
       call fail(trim(owner)//' INVALID SPOD STATE-VECTOR.')
 
     call require_record(root,'SPOT-FIXB',1,1,owner)
@@ -891,7 +901,11 @@ contains
     if ((reference%link_macro /= current%link_macro).or. &
         (reference%link_track /= current%link_track)) &
       call fail('SYSTEM INPUT LINK MARKERS DIFFER.')
-    if (any(reference%state /= current%state)) &
+    ! STATE(9) is an axial storage extent, not part of the frozen radial
+    ! POD package. Its positivity is checked on load; the CURRENT extent
+    ! is checked against both map states and their stored flux lists.
+    if (any(reference%state(:8) /= current%state(:8)).or. &
+        any(reference%state(10:) /= current%state(10:))) &
       call fail('SYSTEM STATE-VECTOR RECORDS DIFFER.')
     if (reference%ngroup /= current%ngroup) &
       call fail('SYSTEM GROUP COUNTS DIFFER.')
@@ -1225,6 +1239,32 @@ contains
     endif
     call LCMCL(root,1)
   end subroutine load_canonical_state
+
+
+  subroutine check_axial_storage(path,nunk,ngrp,owner)
+    character(len=*), intent(in) :: path,owner
+    integer, intent(in) :: nunk,ngrp
+    type(c_ptr) :: root,fluxes
+    integer :: g,length_found,type_found
+
+    if ((nunk <= 0).or.(ngrp <= 0)) &
+      call fail(trim(owner)//' NONPOSITIVE AXIAL STORAGE DIMENSIONS.')
+    call LCMOP(root,path,2,2,0)
+    call require_record(root,'FLUX',ngrp,10,owner)
+    fluxes=LCMGID(root,'FLUX')
+    do g=1,ngrp
+      call require_list_item(fluxes,g,nunk,2,trim(owner)//' FLUX')
+    enddo
+    call LCMLEN(root,'FLUX64',length_found,type_found)
+    if ((length_found /= 0).or.(type_found /= 99)) then
+      call require_record(root,'FLUX64',ngrp,10,owner)
+      fluxes=LCMGID(root,'FLUX64')
+      do g=1,ngrp
+        call require_list_item(fluxes,g,nunk,4,trim(owner)//' FLUX64')
+      enddo
+    endif
+    call LCMCL(root,1)
+  end subroutine check_axial_storage
 
 
   subroutine compare_state_to_system(state0,system0,owner)

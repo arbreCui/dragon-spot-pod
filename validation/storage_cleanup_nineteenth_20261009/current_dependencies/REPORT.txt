@@ -1,0 +1,5 @@
+旧AAA早期closed状态当前依赖审计
+状态：CURRENT_INDEX_EXCLUDED_PENDING_GLOBAL_LINK_RESTORE_AND_ORIGINAL_SOURCE_REVIEW
+固定范围18个常规closed_snapshots.xsm与18个下一map的parent symlink。最后3个closed、最后2个map及全部bootstrap保留。
+当前绑定真实字段为files（37395）；metadata.files为37339。当前canonical35647、namespace86、alias186、absence445与原ordinary26784逐项排除结果见机器报告。
+本次未读取4GB候选payload或35GB当前科学数据，未运行任何科学业务、未改项目、未删除。尚待全项目incoming links/旧恢复主本/原生产重算证据和候选全文SHA，未批准删除。

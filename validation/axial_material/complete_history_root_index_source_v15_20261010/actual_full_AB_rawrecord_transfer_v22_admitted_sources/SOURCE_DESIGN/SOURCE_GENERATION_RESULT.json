@@ -1,0 +1,26 @@
+{
+  "schema": "FIXED_HISTORICAL_RETENTION_SOURCE_GENERATION_RETURN_V1",
+  "source_only": true,
+  "package": "/private/tmp/axmat_rawrecord_fixed_historical_auditor_retention_SOURCE_20261010_tl856qp8",
+  "generator": {
+    "path": "/private/tmp/axmat_rawrecord_fixed_historical_auditor_retention_SOURCE_20261010_tl856qp8/generate_ROOT_actual_rawrecord_binding.py",
+    "sha256": "52b8665a6505c0965f3af5c9f42fa440a9dd6df2dcbca1d1f00e3146472fe58f",
+    "size_bytes": 34305,
+    "identity": [
+      16777229,
+      49398971,
+      33188,
+      1,
+      34305,
+      1791600865963427450,
+      1791600865963427450
+    ]
+  },
+  "hunk_count": 7,
+  "source_check_count": 92,
+  "caps_unchanged": true,
+  "original_bce_package_unchanged": true,
+  "all_actual_success_pins_remain_None": true,
+  "actual_binding_or_transfer_executed": false,
+  "independent_review_required": true
+}

@@ -1,0 +1,3 @@
+实际V14b纯元数据诊断独审通过，仅诊断资格。Root44597f/session2168→fd9c12严格int0 CLOSED；4完整return/profile、183输入全SHA/7ID前后、完整raw/源逆向及原监督器预算均核对。
+四直接调用各一次；内部sender3次、stream2次，均有真实code/profile链。四次所记录耗时总0.590748083秒，亚秒小门不足以证明能解决整个86阶段1800秒失败；Root已决定不实施这个小函数去重复方案。观测器开销未去除、generator计数为resume/yield区间，不能泛化为实际全阶段时间或原生数值通过。
+未导入/调用业务或metadata API，未重读28GB，未改canonical；无full86/native/AAA/ABA资格。

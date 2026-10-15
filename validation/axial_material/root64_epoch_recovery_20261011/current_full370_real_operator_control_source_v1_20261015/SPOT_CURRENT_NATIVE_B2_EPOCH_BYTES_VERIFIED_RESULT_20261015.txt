@@ -1,0 +1,18 @@
+SPOT 独立B2生产结果迁移后字节核验（2026-10-15）
+
+已完成Root唯一字节核验，真实返回0；独立执行后元数据核验真实返回0，Root再次核验通过。
+9个选定的直接输入、运行时和输出角色共325123030字节，全部流式读取到EOF，摘要与长度逐项等于原生产凭证，打开前/EOF/关闭后当前文件身份稳定。历史dev16777234与原ns/完整凭证保留，当前dev16777229另列，其余6身份字段完全保持。未覆盖旧报告、未生成新生产结果、未解码科学数值或复制数据文件。
+
+当前独立B2 archive：156880856字节，SHA f44b2dcb0441f9405b8c927b8fab8cb9903bad9e036dfbb66d025e9c2790c61c。
+实际复读的B2材料76594248字节、SHA6a533b9ee07fbd58f48c1bd0d0c6d587bbff7c2764f00679a2fd7ea519f7c6be，与本次B63原始m的已验证恢复凭证一致；没有访问已退役的B63原文路径。
+原独立B2的真实生产Root b77b5f返回0、独立复核fe36fd返回0，四个原阶段及其watchdog0事实保持。此次不是重新执行这四个阶段。
+
+完整75根及原资源限制保持，9个选定只读角色均由原history范围覆盖，不复制或悄悄加入新fresh数据根。最终记录的原资源扫描为history780根/79323001151字节、fresh joint1968168120字节、外部元数据16376587字节、未链接打开文件0；SELF57917440字节、累计约4.55秒，均在原限制内。
+
+本次真实报告：current_nativeWarmB2_epoch_bridge_source_v1_UNREADY/ROOT_CURRENT_EPOCH_B2_BLIND_BINDING_REPORT.json
+Root真实工具返回：同目录ROOT_ACTUAL_TRUE_TOOL_RETURNS.json
+独立执行后核验：同目录actual_postverify_20261015/REVIEW.json及TRUE_TOOL_RETURNS.json
+原生产真实工具返回：../ACTUAL_STORAGE_RELEASE_AND_B_CONTINUATION_TRUE_TOOL_RETURNS_20261012.json（上级REC目录）
+
+范围仅为9个选定角色的完整字节及当前身份，不是4790项传递链重新认证。完整B2物理树/宏观原字比较尚未执行，lineage、在线BOOT、物理精度、AAA、ABA和总目标均未由此次核验授予资格。
+下一步：无损归档已核验的B汇总presence明细并精确回收该原文，按真实新空间预算提取B2全部物理树，再与当前B55作完整19620 typed宏记录和全部原字比较。

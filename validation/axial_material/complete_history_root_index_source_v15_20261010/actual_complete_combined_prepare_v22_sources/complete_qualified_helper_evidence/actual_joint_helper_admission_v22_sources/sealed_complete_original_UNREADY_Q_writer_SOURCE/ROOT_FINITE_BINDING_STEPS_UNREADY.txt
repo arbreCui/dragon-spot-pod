@@ -1,0 +1,55 @@
+Do not run the final UNREADY writer. This file gives future Root-only Source steps.
+
+1. Verify this entire final sealed Source manifest and obtain independent Source
+   approval. Preserve original V21 writer/Q/helper/canonical and all V22 D freezes.
+
+2. After Source approval, bind only the final writer's required None globals and
+   WRITER_SOURCE_STATUS to READY_ROOT_ACTUAL_SAVED_META_BOUND_V22. Both new saved
+   META field shapes are already exact Source-adapted; no other function or body
+   modification is needed. Bind every PATH/SHA and the Source binding record native
+   seven exact Python integers from the actual existing pinned files below. Preserve
+   the final eight strict expected SHA values. Save a finite whole-byte/AST inverse
+   to this final59590a Source and Root actual Source-only binding tool return; ask
+   the independent Source reviewer to check the actual bound candidate. Do not run
+   any helper/guard/business during this Source binding.
+
+   PURE_BASE = /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v22_receipts/sealed_independent_actual_original_pure_protocol_review
+   PURE_PEER_PATH = PURE_BASE/INDEPENDENT_ACTUAL_PURE_PROTOCOL_META_REVIEW.json
+   PURE_PEER_SHA256 = 7afd373869bb7b130247dac45378918260a9110c25e548c4ee8ed4c1ce5a5bac
+   PURE_PEER_TOOL_PATH = PURE_BASE/ACTUAL_PURE_PROTOCOL_META_PEER_AUDIT_TOOL_RETURN.json
+   PURE_PEER_TOOL_SHA256 = 38285bb20003c83028460af861a02e2c86690f7bf1e842a0732dc05cb9cbac33
+   PURE_PEER_SEAL_PATH = PURE_BASE/INDEPENDENT_ACTUAL_PURE_PROTOCOL_META_PEER_SEAL.json
+   PURE_PEER_SEAL_SHA256 = 292237bebb6cea27559544c8dd357c7dc532ff8db741cc736bfd21e67b85f53a
+   PURE_PEER_SEAL_TOOL_PATH = PURE_BASE/ACTUAL_PURE_META_PEER_SEAL_TOOL_TERMINAL_RETURN.json
+   PURE_PEER_SEAL_TOOL_SHA256 = f889c4aabcc1487dd8b2253dba2568c5dccd193bf96ca77a41292437471526a7
+
+   FRESH_BASE = /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_fresh_verifier_v22_receipts/sealed_independent_actual_complete_fresh_verifier_review
+   FRESH_PEER_PATH = FRESH_BASE/INDEPENDENT_ACTUAL_COMPLETE_FRESH_VERIFIER_META_REVIEW.json
+   FRESH_PEER_SHA256 = a143da6f31aa8802d25799e8853591dcdc19ae5b4b285def64a8109c97df389f
+   FRESH_PEER_TOOL_PATH = FRESH_BASE/ACTUAL_COMPLETE_FRESH_VERIFIER_META_PEER_AUDIT_TOOL_RETURN.json
+   FRESH_PEER_TOOL_SHA256 = 701afc8dfdcf58e54c841956954b4a1c7bc3e6de68a4476dbc3c9f61823d171f
+   FRESH_PEER_SEAL_PATH = FRESH_BASE/INDEPENDENT_ACTUAL_COMPLETE_FRESH_VERIFIER_META_PEER_SEAL.json
+   FRESH_PEER_SEAL_SHA256 = ba5ff1e7600d8526393fbbce2087ece9cb46d142672de5d91b6881f597e8ea34
+   FRESH_PEER_SEAL_TOOL_PATH = FRESH_BASE/ACTUAL_COMPLETE_FRESH_META_PEER_SEAL_TOOL_TERMINAL_RETURN.json
+   FRESH_PEER_SEAL_TOOL_SHA256 = bf1c914537e6c11f78cbfb8e2edb00fead93667868e662dced65f88940879331
+
+   FRESH_SOURCE_BINDING_RECORD_PATH = /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v22_sources/sealed_full_qualification_ROOT_BOUND_SOURCE/ALL_FOUR_ACTUAL_SOURCE_BINDING_INVERSES.json
+   FRESH_SOURCE_BINDING_RECORD_SHA256 = 5cdfb1fead9d8df8a6158cf203028578f6b453ab614863a81540f5172812abe3
+   FRESH_SOURCE_BINDING_RECORD_IDENTITY7 = [16777229,49400000,33188,1,16493,1791600978260704687,1791600978260713937]
+
+3. Root after bound Source independent approval may execute only the new standard
+   library writer with Python optimize disabled, retaining actual command/terminal
+   tool return. Example form (BOUND_WRITER is a new actual bound Source filename):
+   /Users/wen/miniforge3/envs/openmc-dev/bin/python3.12 -B BOUND_WRITER
+   Never run this package's UNREADY candidate or reuse an old actual Q result.
+   The writer freshly reads/hashes the entire declared saved metadata/pins, keeps
+   true snapshot scope, and writes Q with exclusive creation only. Actual output:
+   /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_complete_graph_private_owner_namespace_helper_admission_v22.json
+   Prospective schema AXMAT_ROOT_COMPLETE_GRAPH_PRIVATE_OWNER_NAMESPACE_HELPER_ACTUAL_JOINT_ADMISSION_V22
+   Prospective status QUALIFIED_ORIGINAL_FULL_PROTOCOL_AND_COMPLETE_CURRENT_GRAPH_METADATA_VERIFIER_ONLY_V22
+   New Q does not qualify complete build, whole INPUT, native RSS, AAA/ABA or physics.
+
+4. Independent finite saved META review of the actual new Q and Root actual closed
+   writer terminal is required before binding any new canonical/PREP Source. Use
+   EXACT_FUTURE_CANONICAL_GENUINE_PREP_SOURCE_LOCATIONS.json and the full minimal
+   plan; do not change original functions/math/input scope/caps or sixfutureNone.

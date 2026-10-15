@@ -1,0 +1,69 @@
+--- /Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph.py
++++ combined_runtime_reviewed_metadata_historical_input_graph_low_peak_json_20261008.py
+@@ -563,17 +563,34 @@
+     for alias in declared.values():
+         if alias["kind"] == "file" and alias["target"] == canonical and "sha256" in alias:
+             _require(alias["sha256"] == pin["sha256"], f"JSON alias target digest changed: {alias['path']}")
+-    return _parse_strict_json_payload(payload, path)
++    # Exact bytes have already passed SHA, size/stability and alias gates.
++    # Release the complete byte buffer before allocating the JSON object graph.
++    try:
++        decoded = payload.decode("utf-8")
++    except UnicodeError as exc:
++        raise InputGraphError(f"invalid UTF-8 JSON: {path}") from exc
++    del payload
++    return _parse_strict_json_text(decoded, path)
+ 
+ 
+ def _parse_strict_json_payload(payload, path):
++    """Compatibility byte entrance; interpret all fresh bytes with old gates."""
++    _require(type(payload) is bytes, "fresh JSON payload must be immutable bytes")
++    try:
++        decoded = payload.decode("utf-8")
++    except UnicodeError as exc:
++        raise InputGraphError(f"invalid UTF-8 JSON: {path}") from exc
++    return _parse_strict_json_text(decoded, path)
++
++
++def _parse_strict_json_text(decoded, path):
+     """Interpret fresh pinned bytes, sharing only equal immutable metadata values.
+ 
+     Pools are local to this one parse. They cannot store file observations or
+     bypass later reads. Mutable lists/dicts, owner rows and namespaces remain
+     independent. Floats are never pooled, preserving signed zero exactly.
+     """
+-    _require(type(payload) is bytes, "fresh JSON payload must be immutable bytes")
++    _require(type(decoded) is str, "freshly decoded JSON payload must be immutable text")
+     strings = {}
+     integers = {}
+ 
+@@ -598,7 +615,7 @@
+         return {text(key): value_strings(value) for key, value in parsed.items()}
+ 
+     try:
+-        result = json.loads(payload.decode("utf-8"), object_pairs_hook=object_pairs,
++        result = json.loads(decoded, object_pairs_hook=object_pairs,
+                             parse_int=integer, parse_constant=_invalid_constant,
+                             parse_float=_finite_float)
+         return value_strings(result)
+@@ -608,12 +625,19 @@
+         strings.clear()
+         integers.clear()
+         try:
+-            return json.loads(payload.decode("utf-8"), object_pairs_hook=_unique_sorted_object,
++            return json.loads(decoded, object_pairs_hook=_unique_sorted_object,
+                               parse_constant=_invalid_constant, parse_float=_finite_float)
+         except (UnicodeError, json.JSONDecodeError) as exc:
+             raise InputGraphError(f"invalid UTF-8 JSON: {path}") from exc
+     except (UnicodeError, json.JSONDecodeError) as exc:
+         raise InputGraphError(f"invalid UTF-8 JSON: {path}") from exc
++
++    finally:
++        # The recursive value_strings closure otherwise keeps this local pool
++        # index alive until cyclic GC. Result values retain their immutable
++        # sharing; no mutable result container or input edge is removed.
++        strings.clear()
++        integers.clear()
+ 
+ 
+ def _scan_namespace(root, aliases):

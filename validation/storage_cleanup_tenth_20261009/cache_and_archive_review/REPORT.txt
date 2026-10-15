@@ -1,0 +1,32 @@
+第十轮只读缓存、编译产物与压缩包复核（2026-10-09）
+
+结论：未发现可解除旧4115项编译产物HOLD的大项。本报告只读盘点；未删除任何文件，未修改项目、formal、ART或历史seal，未运行业务import/API/constructor/PREP/RUN/native/build。主goal暂停，V8失败原结果继续冻结，V9 source-only身份草案不提供删除或成功信用。
+
+容量口径
+Root当前du项目约149.699 GiB，validation/artifacts约144.0 GiB。复用Root完整metadata，共173810 regular路径、173773 unique(dev,ino)。除Git外unique inode allocated合计146.908153534 GiB；文件行直接相加会重复计算37个hardlink路径。此处按(dev,ino)去重，目录/Git纳入与否使其不等于du总项目数；st_blocks也不能证明APFS实际净释放量。分类有包含关系，不能把compiled与pycache再相加。
+
+明确候选及处理状态
+1. .ruff_cache三个regular文件：12288 B（12 KiB）。路径CACHEDIR.TAG、.gitignore、0.15.14/7217266486644075063。没有落在本次读取的V8canonical/namespace、旧保护index、coldextra、alias target标记内。属可再生的小型检查缓存，可单独按精确文件评估；本轮没有批准删除，未提供完整当前open-file/活动writer排除。空间收益很小，不能视作大项。
+2. __pycache__共220文件，5.718750 MiB；其中ART外61文件，1.417969 MiB。只读header检查61项均有同目录对应.py来源，58项时间戳与size匹配，3项不同；这只证实cache线索，不构成完整原始ownership/seal/重建或动态排除证明。保留HOLD，不使用目录或后缀通配删除。
+3. 当前统一compiled筛选4095文件，1.208969116 GiB。筛选仅.o/.mod/.a/.dylib/.so/.pyc以及Dragon/dragon/Trivac/Ganlib basename；不强行与旧4115完整native binary检查对等。362项有至少一项保护标记，3733项无静态标记仍不等于动态依赖已排除。全部HOLD。
+4. 压缩包90文件，2.429405212 GiB。其中89个tape30.gz，2.410457611 GiB，是第九轮120个已移除workcopies的永久恢复来源，绝不能作为下载或缓存再删。第九轮原备份账本的历史容量不重写，当前metadata observation也不替代gzip内容SHA/inverse。
+5. 唯一其余压缩包为cold cp314 SciPy wheel：validation/artifacts/axial-material-cold-cp314-scipy-dependency-20261008/wheels/scipy-1.17.1-cp314-cp314-macosx_14_0_arm64.whl，19.402344 MiB。既有检查明确KEEP_ENTIRE_FAMILY：cold factory绑定SCIPY_DEPENDENCY_ROOT/PYTHONPATH；未完整卸载/解除pin前保留wheel、installed .so/.dylib、receipt与环境材料。
+
+旧4115 HOLD复核
+来源：storage_cleanup_ninth_20261009/reviews/npz/compiled_exact_screen_and_holds.json及review_compiled_full_hash.py。原完整hash4115文件/1479431936 B；440个潜在同SHA副本376635392 allocated B，仅是content screen，approved_compiled_deletion_paths=[]。类分布227.mod、63.o、143 executable binary、7.dylib。当前没有新增完整原receipt+当前动态依赖排除+保留primary/restore的路径证明，因此0项解锁。
+第八轮仅3个严格Dragon候选已实际处理，不能重复计成新候选。其余12 private .a、R64归一化/A-B snapshot/依赖修正/rebalance runtime/build、失败V2-V8封包、1699旧.o、153旧未保护pyc等原HOLD理由继续有效。新V8 metadata图为35647canonical、86namespace、186alias、228live resource roots；图字段live_resources_verified=False且science_qualification_created=False，只作为保存的输入保护资料，不赋予新执行信用。图未出现的路径仍可能由execution/protocol遍历或offline verifier访问。
+
+大项误判排除
+material成品validation/artifacts/d4a-actual-temperature-library-run-20261003/merge/28-U238/tape30当前839020544 allocated B（800.152344 MiB）为最终产品，明确HOLD。两批完整输入、native layered/oblique primary、最终DRAGR库/材料sources、42 material/seed copies、生产归档与动态cold snapshots、当前环境与唯一程序/源码继续保留；不凭size、旧/失败标签或同SHA副本自动删除。.git已含恢复history，不能手工删pack/object，当前约2.79 GiB也不是可丢弃缓存证明。
+
+必须保留的结果与恢复文档
+- validation/storage_review_20261008、storage_review_more_20261008与storage_cleanup第一至第九轮完整资料：REPORT、manifest、retirement_ledger、cleanup/preflight/terminal observation、independent review、source pin、restore程序、permanent packed_material_intermediates全部留存。
+- validation/README.md及各轮progress、原result.json/result.sha256/execution/protocol/stages/日志/watchdog/参数/source diff/seal；失败与成功原状态不改写。
+- 当前graph/canonical/namespace/alias/旧保护index/cold dynamic proof、当前producer与consumer的source inverse/审阅资料、V8失败资料以及V9 UNREADY source-only handoff。
+- Root result_document_metadata_inventory.json的32452份匹配结果/source/report/visual文档仅是metadata保留基线，本次不以其后缀删除其余未列文件。不能删除目录或环境以绕过精确文件边界。
+
+证据与限制
+source_pins.json保存本次使用的metadata、规则与旧完整hash报告source SHA。compiled_current_filter_HOLD_inventory.json、archive_and_small_cache_inventory.json保留精确路径/空间口径。无新业务执行、无新完整compiled重hash、无RSS承诺，所有未消除的不确定性继续HOLD。
+实际审计工具的只读命令63d4ac完成ps comm读取，但广泛输出截断；后续a8fcd6子进程ps被sandbox拒绝（EPERM、EXIT1），因此本报告没有声称当前所有文件均无人打开。未申请扩大权限。此失败不影响metadata/HOLD结论。
+
+补充真实终态：41e182的首轮精确metadata终态检查EXIT1，原因仅为4个永久gzip当前st_blocks比Root inventory观察时变小，共3284992 B；93个cache/archive的dev/ino/size/mode/mtime/ctime均保持相同。此观察保存fresh_archive_allocation_observation.json，不推断原因或删除收益。正文容量是Root inventory观察时刻，原历史容量/账本不修改；后续终态以身份/逻辑大小/元数据时间稳定核验，不要求allocated静止。

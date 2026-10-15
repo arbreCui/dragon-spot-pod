@@ -1,0 +1,19 @@
+SPOT 当前继续执行结果 — 2026-10-15
+
+已完成并独立核验：
+1. 退役 A2/A3 已完成比较的 4 个临时索引/字池，释放 405,417,320 字节，原档案、结果和日志保留。
+2. 四个燃料的原 8T ASCII GENDF 无损档案验证通过：284,814,387 字节、每核 8 个网格、共 3,120 个反应区段。
+3. 真实 track0 的 16 动作组件控制通过：48 层、370 群、9 矩，543,260,640 个值逐位零差异，耗时约 217 秒。
+4. 四核/32T 的无限稀释 P0 散射与索引回放通过：96 个记录、1,926,639 个原始字逐字零差异，耗时约 39 秒。
+
+所有实际运行及独立后验均保留真实返回；旧失败不改写。原材料、几何、温度和阈值未改变，原资源限额保持。当前材料为 34 个唯一核素引用、62 个正密度槽。
+
+下一顺序：扩大无限稀释 producer 比较到全部 34 核；完整有限稀释分别覆盖 fuel low9/high9，保留原 REAL32 tail 处理；Mo 使用原 ipflag1 分支和 SCI2 路由。补齐当前混合材料的 SPH/MASK 与反应语义后，执行完整射线控制，再按原门槛准入 AAA 独立耦合参考与 ABA。
+
+全 34 核/有限 18 点/完整传输/AAA 精度/独立参考/ABA 尚未通过。整体 goal 仍 active。
+
+结果文档：
+/Users/wen/spot/validation/axial_material/SPOT_COMPLETED_COMPARE_SPOOL_RETIREMENT_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_FOUR_NUCLIDE_ORIGINAL_ASCII_RECOVERY_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_ONE_REAL_TRACK_FULL_DIMENSION_COMPONENT_RESULT_20261014.txt
+/Users/wen/spot/validation/axial_material/SPOT_FOUR_NUCLIDE_INFINITE_SCAT_RESULT_20261015.txt

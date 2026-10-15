@@ -1,0 +1,129 @@
+"""One pure complete metadata helper control, unchanged genuine guard."""
+import importlib.util
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import sys
+import time
+BASE=Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010')
+SUPPORT=BASE/'actual_prepare_sources/prepare_cli_host_v15.py'
+SUPPORT_SHA='3c1856f8ec16414d4f07fe4d88b3be2b859b1eb64d0c2624c9c7015c1b9a52a7'
+HOST = Path('/Users/wen/spot/validation/artifacts/axial-material-complete-graph-inactive-audit-helper-controls-host-v24-20261010')
+OUT = Path('/Users/wen/spot/validation/artifacts/axial-material-complete-graph-inactive-audit-helper-controls-v24-20261010')
+SOURCE_ARCHIVE = Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v24_sources')
+TARGET = Path('/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v24_sources/pure_helper_controls.py')
+TARGET_SHA = 'ae8d794317c2aad5b12d5a27edd177a14dd080fe21c62a07650b1f94f980d087'
+SEAL_SHA='b6b3b1477835bd6e312ac833d4cc681e0b7ca15482964f88daf0edb581d60206'
+TERM_SHA='ad1d11d68f2ae052068bd6d752ce7b2d64c6cbfcf699713aa684cdc347655d7e'
+SOURCE_STATUS = 'READY_SOURCE_BOUND_BY_ROOT'
+BOUND_HELPER_PIN = {'path': '/Users/wen/spot/validation/axial_material/combined_runtime_complete_input_graph_private_inactive_audit_snapshot_consume_20261010.py', 'sha256': '3b181f6366d5084fd6ccc87c1a6e7b757b706b7ba38cdf9156e1381cdb010092', 'identity': [16777229, 49430225, 33188, 1, 150986, 1791616446797499263, 1791616446797506096]}
+INSTALL_WITNESS_PIN = {'path': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v23_receipts/Root_actual_complete_helper_SOURCE_install_tool_return.json', 'sha256': 'a305a84b712276aecadd5ebc7fced99d0d58b68a061e228747f0ccfbeed63c12', 'identity': [16777229, 49430235, 33188, 1, 3119, 1791616459497124406, 1791616459497124406]}
+SOURCE_INSTALL_RECORD_PIN = {'path': '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v23_receipts/Root_actual_complete_helper_SOURCE_install_record.json', 'sha256': '079d4dfec16d0df86459abc2fc9238f7aabade38fca8c7adc0659a50f37dc5cf', 'identity': [16777229, 49430227, 33188, 1, 317665, 1791616446825314827, 1791616446825314827]}
+AUDIT_CONTROL_PATH = '/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_graph_helper_controls_v24_sources/inactive_audit_snapshot_controls_SOURCE_ONLY.py'
+AUDIT_CONTROL_SHA256 = 'd439eb9641f45e09c17814a38a16dc7e2cbb6120fc09119df901e415daf28483'
+AUDIT_CONTROL_SOURCE_BYTES = 23962
+WHOLE_CAP,STAGE_CAP,RSS_CAP,ARCHIVE_CAP=60,60,512,64*2**20
+
+def load_snapshot_control_Source(path, sha256, source_bytes):
+    # New controller dependency is full-pinned before and after import/use.
+    source = Path(path)
+    before = source.lstat()
+    identity_before = [before.st_dev, before.st_ino, before.st_mode, before.st_nlink,
+                       before.st_size, before.st_mtime_ns, before.st_ctime_ns]
+    if before.st_size != source_bytes or hashlib.sha256(source.read_bytes()).hexdigest() != sha256:
+        raise ValueError('complete private snapshot controller SOURCE differs')
+    spec = importlib.util.spec_from_file_location('actual_root_private_snapshot_metadata_controls', source)
+    if spec is None or spec.loader is None:
+        raise ValueError('private snapshot controller loader missing')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    after = source.lstat()
+    if identity_before != [after.st_dev, after.st_ino, after.st_mode, after.st_nlink,
+                          after.st_size, after.st_mtime_ns, after.st_ctime_ns]:
+        raise ValueError('private snapshot controller SOURCE changed during import')
+    return module, dict(path=str(source), sha256=sha256, size_bytes=source_bytes, identity=identity_before)
+
+
+def main():
+    started=time.monotonic()
+    if SOURCE_STATUS != 'READY_SOURCE_BOUND_BY_ROOT' or any(type(p) is not dict for p in (BOUND_HELPER_PIN, INSTALL_WITNESS_PIN, SOURCE_INSTALL_RECORD_PIN)) or type(AUDIT_CONTROL_PATH) is not str or type(TARGET_SHA) is not str:
+        raise ValueError('UNREADY pure host requires actual installed helper and SOURCE witness bindings before I/O')
+    if len(sys.argv)!=1 or sys.flags.optimize or os.environ.get('PYTHONOPTIMIZE') or sys.getprofile() is not None:
+        raise ValueError('fixed unprofiled nonoptimized read-only admission host required')
+    import hashlib
+    if hashlib.sha256(SUPPORT.read_bytes()).hexdigest()!=SUPPORT_SHA:
+        raise ValueError('fixed normal support source required')
+    spec=importlib.util.spec_from_file_location('axmat_v15_normal_readonly_admission_support',SUPPORT)
+    support=importlib.util.module_from_spec(spec);sys.modules[spec.name]=support;spec.loader.exec_module(support)
+    support_pin=support.pin(SUPPORT,SUPPORT_SHA)
+    if any(os.environ.get(k)!='1' for k in support.THREAD_KEYS) or Path(sys.executable).resolve()!=support.PYTHON:
+        raise ValueError('original single-thread Python required')
+    if os.path.lexists(HOST) or os.path.lexists(OUT):raise ValueError('fresh one-use controls host and output required; no retry')
+    inputs=[support.pin(TARGET,TARGET_SHA),support.pin(BOUND_HELPER_PIN['path'],BOUND_HELPER_PIN['sha256']),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-owned-specs-identity-key-delta-graph-table-combined-runtime-v12-20261009/input_graph.json'),'4ba5f793ca13018d2d9ac5d29d76827a1503b0368c7e5c9f70ba08e0435f0c9e'),support.pin(Path('/Users/wen/spot/validation/artifacts/axial-material-sender-window-root-index-graph-table-combined-runtime-v15-20261010/input_creation_python_open_trace.json'),'e0a9fc9254bf0b5717498b489d5e1f2e4dbe09ac5fc80983c27af4fefbc92fa0'),support_pin,support.pin(support.TARGET,support.TARGET_SHA),support.pin(support.OUT/'seal.json',SEAL_SHA),support.pin(support.TERMINAL/'terminal_return.json',TERM_SHA),support.pin(INSTALL_WITNESS_PIN['path'],INSTALL_WITNESS_PIN['sha256']),support.pin(SOURCE_INSTALL_RECORD_PIN['path'],SOURCE_INSTALL_RECORD_PIN['sha256']),support.pin(AUDIT_CONTROL_PATH,AUDIT_CONTROL_SHA256)]+[support.pin(p) for p in sorted(SOURCE_ARCHIVE.rglob('*')) if p.is_file()]
+    helper,hpin=support.load(support.OLD_HELPER,support.OLD_HELPER_SHA,'axmat_v15_admission_original619')
+    resource,rpin=support.load(support.RESOURCE_FACTORY,support.RESOURCE_SHA,'axmat_v15_admission_real_resource_module')
+    full,production=helper.modules();helper.guard_admission(full)
+    if full.OwnRSSSerialExecutor.__bases__!=(production.SerialExecutor,) or Path(full.__file__).resolve()!=support.FULL or Path(production.__file__).resolve()!=support.PARENT:
+        raise ValueError('unchanged genuine supervisor required')
+    roots=resource.history_roots([str(HOST),str(OUT),str(support.SOURCE),str(support.OUT),str(support.TERMINAL)],support.ART)
+    resources=resource.DynamicHistoryResources(support.ART,roots,8*2**30,96*2**30,production.ResourceFailure)
+    runner=None
+    try:
+        before=resources.check()
+        if before['artifact_bytes']+ARCHIVE_CAP>=96*2**30 or before['disk_free_bytes']-ARCHIVE_CAP<8*2**30:
+            raise ValueError('complete original resource reserve required')
+        HOST.mkdir()
+        for name in ('runtime','run','GRAPH_PROTOCOL_CONTROLS'):(HOST/name).mkdir()
+        shutil.copy2(support.BOUNDED,HOST/'runtime/run_bounded_dragon.py')
+        remaining=WHOLE_CAP-(time.monotonic()-started)
+        if remaining<=0:raise ValueError('whole admission budget exhausted')
+        runner=full.OwnRSSSerialExecutor(HOST,remaining,'GRAPH_PROTOCOL_CONTROLS',resources)
+        if type(runner) is not full.OwnRSSSerialExecutor or runner.resources is not resources:raise ValueError('genuine runner binding required')
+        command=[str(support.PYTHON),'-B',str(TARGET),'--output-dir',str(OUT)]
+        runner.execute(HOST/'run','admit',command,STAGE_CAP)
+        log=HOST/'run/admit.log';watch_path=HOST/'run/admit.watchdog.json'
+        admission=json.loads(log.read_text());watch=json.loads(watch_path.read_text())
+        expected='ACTUAL_PURE_HELPER_CONTROLS_PASS_NO_RUNTIME_OR_SCIENCE_ADMISSION'
+        if admission['status']!=expected or Path(admission['report']['path'])!=OUT/'ACTUAL_REPORT.json':raise ValueError('actual complete helper controls required')
+        report_pin=support.pin(OUT/'ACTUAL_REPORT.json',admission['report']['sha256'])
+        control_report=json.loads((OUT/'ACTUAL_REPORT.json').read_text())
+        if control_report['schema']!='AXMAT_ROOT_BOUNDED_PURE_HELPER_CONTROLS_V16' or control_report['status']!=expected or control_report['actual_success_pins'] is None:raise ValueError('actual complete controls report required')
+        if any(control_report[k] is not False for k in ('business_component_executed','fresh_runtime_INPUT_qualified','native_RSS_qualified','AAA_accuracy_qualified','ABA_admitted')):raise ValueError('pure helper science boundaries required')
+        if control_report['helper']['sha256']!=inputs[1]['sha256'] or control_report['full_new_creation_trace']['original_insertion_order_compact_source']['size_bytes']!=35211756:raise ValueError('normal exact helper and complete creation trace controls required')
+        if control_report['full_old_saved_graph']['complete_original_metadata']['complete_counts']['read_trace_records']!=62332:raise ValueError('whole original graph controls required')
+        accepted=control_report['small_fixture']['accepted_str_subclass_equivalence_controls']
+        if len(accepted)!=2 or {case['case'] for case in accepted}!={'plain_accepted_str','accepted_str_with_str_override'} or any(case[key] is not True for case in accepted for key in ('complete_builtin_output_values_types_order_floatbits_equal','complete_caller_identity_type_order_value_attrs_floatbits_unchanged')):raise ValueError('complete original accepted subtype equivalence and caller integrity required')
+        owners_control=control_report['private_owner_consume_controls']
+        if owners_control['schema']!='AXMAT_V22_PRIVATE_OWNER_CONSUME_ACTUAL_CONTROL_V1' or owners_control['status']!='ACTUAL_PRIVATE_OWNER_CONTROLS_RETURNED_METADATA_ONLY':raise ValueError('actual new complete private owner controls required')
+        owner_positive=owners_control['positive_controls'];owner_negative=owners_control['private_guard_rejections'];owner_subtypes=owners_control['accepted_str_subclass_equivalence_controls'];owner_partial=owners_control['partial_invalid_second_owner_rejections']
+        if len(owner_positive)!=4 or {case['case'] for case in owner_positive}!={'default_list','default_tuple','explicit_False_list','owned_builtin_list_True'} or any(case['full_normalized_descriptor_types_order_values_attrs_floatbits_equal_default'] is not True or case['expected_complete_descriptor_signature']!=case['actual_complete_descriptor_signature'] for case in owner_positive):raise ValueError('all new original default and private owner descriptor controls required')
+        if any(case['caller_full_identity_type_order_value_attrs_floatbits_unchanged'] is not True for case in owner_positive if case['case']!='owned_builtin_list_True') or any(case['owned_list_completely_cleared_after_success'] is not True for case in owner_positive if case['case']=='owned_builtin_list_True'):raise ValueError('default caller integrity and complete successful private list clearing required')
+        if len(owner_negative)!=3 or {case['case'] for case in owner_negative}!={'nonbool_consume','tuple_True','list_subclass_True'} or any(case['class']!='InputGraphError' or case['message']!='private owner consume needs a bool and an exclusively owned builtin list' or case['caller_full_identity_type_order_value_attrs_floatbits_unchanged'] is not True for case in owner_negative):raise ValueError('all private owner flag/list guards and rejection caller integrity required')
+        if len(owner_subtypes)!=2 or {case['case'] for case in owner_subtypes}!={'plain_accepted_str','accepted_str_with_str_override'} or any(case['default_caller_full_identity_type_order_value_attrs_floatbits_unchanged'] is not True or case['owned_list_completely_cleared_after_success'] is not True or case['complete_normalized_descriptor_types_order_value_strattrs_floatbits_equal_default'] is not True or case['expected_complete_descriptor_signature']!=case['actual_complete_descriptor_signature'] for case in owner_subtypes):raise ValueError('complete accepted owner str subtypes attributes and floatbits required')
+        if len(owner_partial)!=2 or {case['case'] for case in owner_partial}!={'invalid_second_owner_default','invalid_second_owner_owned_True'} or any(case['class']!='InputGraphError' or case['message']!='missing file owner' for case in owner_partial):raise ValueError('original invalid second owner rejection class and message required')
+        if any(owners_control[key] is not True for key in ('first_valid_slot_None_after_original_validate_and_append','invalid_second_slot_original_identity_and_value_unchanged','default_partial_caller_unchanged','original_owner_rejection_class_order_message_preserved','original_protocol_controls_fixtures_and_caps_unchanged','no_new_fixture_file_or_IO_created')) or owners_control['new_helper_qualification_created'] is not False or owners_control['business_or_science_qualification_created'] is not False:raise ValueError('private last-use sequencing and metadata-only scope required')
+        audit_controls, audit_control_pin = load_snapshot_control_Source(AUDIT_CONTROL_PATH, AUDIT_CONTROL_SHA256, AUDIT_CONTROL_SOURCE_BYTES)
+        private_pin = control_report['private_inactive_audit_snapshot_controls_order_preserved_artifact']
+        private_path = OUT/'ACTUAL_PRIVATE_INACTIVE_AUDIT_SNAPSHOT_CONTROLS.json'
+        if Path(private_pin['path']) != private_path or support.pin(private_path,private_pin['sha256']) != {k:private_pin[k] for k in ('path','sha256','identity')} or private_pin['size_bytes'] != private_pin['identity'][4]:raise ValueError('full order-preserving private control artifact pin differs')
+        private_report = json.loads(private_path.read_text())
+        audit_controls.validate_small_control_report(private_report)
+        if json.dumps(private_report,sort_keys=True,separators=(',',':'),allow_nan=False) != json.dumps(control_report['private_inactive_audit_snapshot_controls'],sort_keys=True,separators=(',',':'),allow_nan=False):raise ValueError('all private report content must equal the original sorted public report content')
+        if control_report['private_snapshot_control_Source'] != audit_control_pin:raise ValueError('actual complete private control SOURCE report pin differs')
+        if len(runner.records)!=1 or runner.records[0]['status']!='PASS' or type(watch['returncode']) is not int or watch['returncode']!=0 or watch['command']!=command or watch['limit_failure'] is not None or watch['own_child_only'] is not True or watch['liveness_group_cleanup'] is not True or not 0<=watch['sampled_peak_rss_mib']<RSS_CAP:
+            raise ValueError('one genuine bounded read-only child PASS required')
+        after=resources.check();elapsed=time.monotonic()-started;archived=support.archive_bytes((HOST,OUT,SOURCE_ARCHIVE))
+        if not elapsed<WHOLE_CAP or not archived<ARCHIVE_CAP:raise ValueError('unchanged admission host caps exceeded')
+        for entry in inputs+[hpin,rpin]:
+            if support.pin(entry['path'],entry['sha256'])!=entry:raise ValueError('normal complete pinned inputs changed')
+        value=dict(schema='AXMAT_V24_GENUINE_PRIVATE_INACTIVE_AUDIT_PURE_PROTOCOL_CONTROLS_HOST_V1',status='ACTUAL_PURE_GRAPH_PROTOCOL_CONTROLS_EXTERNAL_ROOT_REQUIRED',input_sources=inputs,original_helper=hpin,resource_factory=rpin,actual_canonical_command=command,actual_control_report=report_pin,actual_admission_stdout=support.pin(log),actual_watchdog=support.pin(watch_path),watchdog=watch,stage_records=runner.records,resources_before=before,resources_after=after,whole_seconds=elapsed,archive_before_result_bytes=archived,whole_wall_cap_seconds=WHOLE_CAP,stage_wall_cap_seconds=STAGE_CAP,rss_cap_mib=RSS_CAP,archive_cap_bytes=ARCHIVE_CAP,threads=1,children_at_once=1,retries=0,profile_used=False,supervisor_class_or_MRO_modified=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False)
+        support.write_new(HOST/'result.json',value)
+        if support.archive_bytes((HOST,OUT,SOURCE_ARCHIVE))>=ARCHIVE_CAP or time.monotonic()-started>=WHOLE_CAP:raise ValueError('final admission host caps exceeded')
+        print(json.dumps(dict(status=value['status'],actual_host_result=support.pin(HOST/'result.json'),actual_admission_stdout=support.pin(log),actual_external_Root_terminal_required=True),allow_nan=False),flush=True)
+    except BaseException as error:
+        if HOST.is_dir():support.write_new(HOST/'failed_host_result.json',dict(status='FAILED_PURE_GRAPH_PROTOCOL_CONTROLS_NO_RETRY',error=repr(error),stage_records=[] if runner is None else runner.records,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False))
+        raise
+
+if __name__=='__main__':main()

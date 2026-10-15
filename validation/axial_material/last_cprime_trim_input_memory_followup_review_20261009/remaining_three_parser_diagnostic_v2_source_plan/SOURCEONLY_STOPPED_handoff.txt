@@ -1,0 +1,26 @@
+SOURCEONLY STOPPED handoff — isolated metadata parser watch V2 (2026-10-09)
+
+Status: SOURCE_ONLY_V2_REMAINING_THREE_PENDING_INDEPENDENT_REVIEW_AND_ROOT_EXECUTION. No V2 watchdog, worker, parser of business input, PREP/RUN/native/build or formal/ART mutation occurred. All writes are within this new TMP directory.
+
+Original diagnostic remains c8a0a5/session66201 → 24b476 EXIT1 CLOSED. The pinned original source e5177791ee5c88e36aa5f161f917c8baa4106fc62556bb3e5b6e0d39eb6a9e63 called original_DECL once. Its parent NameError happened in receipt assembly after cleanup and fresh source/data pins. child_report, stdout, 59 actual own-PID RSS samples (57 stable, 2 phase-transition ambiguous), sampled peak55.46875MiB, all five named retained phases observed are real prior evidence. No parent watchdog receipt and no actual child wait-returncode were saved. V2 must preserve original child wait-returncode None, prior parent actual exit1 and overall complete four-case watchdog qualification False. The prior packet and byte-exact failed-tool copy remain preserved. No reconstructed child0 or retrospective success receipt exists.
+
+Mother line125 actually had data_before=data_before,data_after=after_data. Only the data_before right-value was undefined. V2 uses data_before=before_data,data_after=after_data; the serialized keys remain data_before/data_after. The after_data right-value was already correct. run_case is otherwise byte exact. identity/pin/atomic/clean_owned_group/read_phase/own_rss are exact source and AST. Worker9039034ef548abc7ef02683c90e1b36fbaff5c99ebed91a873443fe843ad9552 is byte exact, copied without editing. PLAN changes to this new directory. New prior-loader/comparison helpers and replacement main implement only the explicitly requested remaining-case contract; complete_source_positional_inverse.json restores the entire original watch byte for byte.
+
+Fixed remaining sequence:
+1 candidate_DECL
+2 original_FULL_SEVEN_INPUT
+3 candidate_FULL_SEVEN_INPUT
+original_DECL is excluded by exact literal and per-case guard; never rerun. One fresh Popen child at a time, original120s/512MiB caps, thread1, .02s sampling, zero retries, failure break and same own-group TERM/KILL/reap remain. All source/data SHA pins are unchanged. Future new output directory must not exist and cannot be the old failed packet or inside it.
+
+The prior loader validates the7 fixed prior metadata/file SHA pins and actual tool1 before any new child. It checks original source/data/worker PID11722/thread environment, reconstructs phase aggregates only from actual raw samples, excludes the2 ambiguous phase samples, and preserves its failed-parent qualification. Only actual child output/type/insertion-order whole JSON digest fields may be baseline evidence; no returncode or parent pass is inferred. New comparisons use the same named actually stable retained-value phases and report process-RSS differences only. New remaining3 can have their own actual child exits and an independent diagnostic success if all genuinely pass and output hashes match. Full four-case qualification is always False and combined/native/AAA/ABA/physics/V8 allocation-line credit always absent.
+
+Plan actual_business_RUNNING_stage/actual_child_PID/actual_measurements/actual_output/actual_tool_terminal and all five new future outcome fields remain None; actual_watch_started is False. The known original baseline is explicitly named separately and is not bound as a future outcome. Future command is a plan, not a tool receipt or authorization record.
+
+Source-only validation: complete positional byte inverse; unchanged6 original helper definitions; unchanged worker; run_case one-right-value repair only; source compilation without execution;8 pure AST synthetic tiny fixtures. Fixtures reproduce the original NameError in the isolated receipt expression, confirm the corrected fields, enforce exact3-case schedule, compare complete output fields, detect mismatch, confirm same-phase arithmetic/input dicts unchanged, and reject missing stable phase. No watch or worker was imported/executed, no business parser was invoked. Original Python3.12 source audit790779 EXIT0 is real and distinct from prior Root diagnostic EXIT1.
+
+watch SHA 5983010d03389ac3a6170d349c09761c88381d1bce3894fd9545faeff98c5271
+worker SHA9039034ef548abc7ef02683c90e1b36fbaff5c99ebed91a873443fe843ad9552
+plan SHA b53c869644a2605d3f23a635eb242b54e1981bbdb453d11ed864518207fba8cf
+full inverse SHA ca2e95f66dbd3096036da4275b87e2d864f232669fe386fc97241d1c2884e853
+
+Retain the original failed packet path and all its source/child/sample/tool files: the V2 future loader deliberately binds them. Root and result_preservation must independently review V2 before any actual diagnostic execution. This handoff provides no execution, RSS optimization benefit, physical/science or READY credit.

@@ -1,0 +1,263 @@
+SPOT当前整体进度（2026-10-11T11:00:01.870211+08:00）
+
+总体目标是二维径向与一维轴向耦合方法的独立精度验证。旧D4-A装配算例完成九次耦合迭代并满足数值收敛，独立CE精度仍未通过；当前150 cm单棒AAA→ABA是排查材料、边界和耦合误差的研究子线。三段各50 cm，A/B均为同温燃料。项目整体尚未验收，清理暂缓。
+
+已完成：A/B真实双精度快照与全370群严格读回；分区输运、P2角向、逐群总截面、WHITE边界传输四个组件各6项实际检查通过。组件控制不替代完整真实材料耦合精度。
+
+最新工程进展：d19监测修正的10项新控制已真实达到预期并独立复核；随后新16项编译控制真实执行一次，16项均观察到原期望结果，独立保存复核通过。五个正常库/链接阶段PASS、四个故意异常阶段保持FAILED，十一项前置拒绝没有启动新业务；这些属于不同层次，不相加为控制总数。完整两流和58个真实退出记录保存，74次原总2秒监测窗口均接受，invalid/fatal为0；整次入口约61.68秒。有限当前进程范围检查无已记录遗留；小控制RSS采样为0，不授予完整Native内存或科学精度资格。
+
+最新完整构建：具体20份输入/源码及A/B工作流绑定、独立完整运行前检查通过。真实工具86af28/session74929执行一次，最终f331ee CLOSED EXIT1，整次85.61171816696879秒。Ganlib的16条和Utilib的10条实际命令所属阶段PASS；Trivac已有3条命令返回，阶段FAILED。60个真退出凭证均0、unknown为空；退出不代替完整当前范围检查或全历史清理证明。
+
+第一次记录错误为同一固定总2秒窗口3次invalid后的第4帧完整写前核验返回时超限，第87条未追加；原postfailure_freeze_checked=False及原保护错误保留。日志真94行（65 candidate、21 invalid、8失败后诊断/清理），summary95仅是尝试数；另有1条完整candidate未持久化。第4帧写前account独立耗时未保存，不猜测或放宽限时。完整两流0/4039字节。完整库/链接、真实A/B材料观察未完成。当前范围：已保存的有限当前完整表无已记录PID/进程组命中；该记录写后account完成证据仍待独立核验；保存复核：独立保存复核尚待完成。旧版本完整构建失败独审仍按旧版本保留。
+
+科学卡点：原统一rank2只有353/370群满足原门槛，1至17群未准入。另一条rank1 AAA诊断的端部裂变产生率误差由3.952526%降至3.798223%，仍大于3%；保守5%下界3.526347%也大于门槛。后续正式发布失败，无新的正式AAA资格；ABA未开始、未准入。两条卡点尚不能认定同因。真实材料反应聚合、同数据完整独立耦合参考、WHITE全轨迹闭合及物理中子平衡仍待完成。
+
+下一步：完成本次失败的完整当前范围检查和独立保存复核，补齐固定2秒窗口内真实核验计时，准备保留真写前/写后完整预算和全部证据的最小修正。先独立审查和验证，再在原上限内完成完整构建、真实材料反应核验、同数据独立参考与中子平衡，定位AAA端部误差；原全部准入通过后执行ABA。
+
+本轮16项编译实测：/Users/wen/spot/validation/artifacts/axial-material-invalid-prepost-d19-grouped16-controls-v1-20261011-host/REPORT.txt
+本轮16项独立保存复核：/Users/wen/spot/validation/artifacts/axial-material-invalid-prepost-d19-grouped16-controls-v1-20261011-host/SAVED_RESULT_REVIEW.txt
+最新完整构建失败事实：/Users/wen/spot/validation/artifacts/axial-material-grouped-native-AB-d19-v2-20261011-host/failed_host_result.json
+最新结果报告：/Users/wen/spot/validation/artifacts/axial-material-grouped-native-AB-d19-v2-20261011-host/REPORT.txt
+最新AAA保存诊断：/Users/wen/spot/validation/artifacts/axial-material-AAA-rank1-cache-diagnostic-closeout-20261007/REPORT.txt
+完整构建失败独审：/Users/wen/spot/validation/artifacts/axial-material-grouped-native-AB-v1-20261011-host/SAVED_RESULT_REVIEW.txt
+机器可读进度：/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+
+此前记录（保留）：
+
+SPOT最新进度（2026-10-11T08:15:17.696746+08:00）
+
+当前目标：150 cm单棒、三个50 cm同温A/B燃料区，验证二维径向与一维轴向耦合。先完成AAA（三段同材料）同质控制，再执行ABA（中段换B材料）。整体验收尚未完成；清理按用户要求暂缓。
+
+已经完成：A/B真实双精度快照、严格读回、共同训练消费及全370群保存复核。分区输运、完整P2角向、逐群总截面和WHITE原始流入/透射/端部泄漏四个组件各6项实际检查通过。此前10项新监测控制和四工具小任务已完成独立保存复核。
+
+最新工程进展：原分组直接编译方案的固定16项小控制已真正执行一次并关闭，所有期望结果均观察到，独立保存复核已完成。5个正向库/链接阶段PASS，4个故意制造异常的实际阶段保持FAILED，另11项前置拒绝没有启动新业务；这些是不同层次的记录，不相加为控制总数。覆盖真实模块依赖、原编译参数、预处理对象映射、归档/模块复制和最终链接。整次入口约60.10秒，58个编译器/监护退出记录闭合，74个完整窗口被接受，invalid/fatal均0；保留完整真实stdout/stderr。当前关闭检查只支持已记录进程/组在当次检查中无遗留，不证明持续或历史清理。小任务RSS采样为0，不授予有效Native内存资格，也不能预测完整构建耗时。
+
+下一版完整入口与工作流源码已准备，独立静态审查通过，仍保持UNREADY；尚未建立具体完整运行准入，也没有用新方案完成1337个原编译单元及真实A/B材料上下文。旧完整构建的超内存或观察失败仍为失败。小控制、源码审查和保存复核均不计作完整构建或科学精度完成。
+
+科学卡点一：原统一rank2仍只有353/370群满足原门槛，1至17群未准入。保存原始基底、GREP及独立SVD读回一致，不能靠宣称双精度已接通来绕过门槛。
+
+科学卡点二：另立rank1的旧AAA诊断为原8项7/8，端部裂变产生率最大偏差3.952526%>3%。10/07后续保存统计为3.798223%，保守5%下界3.526347%也超过3%；较旧结果改善约0.154303个百分点，仍未达标。后续运行在publication末尾总预算失败，保存统计只作有限诊断，没有正式AAA资格；不能以7/8相同推断修正无作用，也不能把它视为原rank2 AAA已通过。
+
+真实材料TRANC、SPH/MASK、反应多重性及完整聚合核验，同数据全370群/150 cm独立耦合参考、全轨迹WHITE闭合和物理中子平衡仍待完成。ABA未开始、未准入；不提供项目完成百分比。
+
+下一步顺序：完成完整运行的具体准入与有界构建，取得真实A/B材料上下文并核对反应聚合；据此继续检查原rank2未达门槛的17群，补齐独立参考和中子平衡，定位AAA端部误差。原rank2科学准入和AAA原八项验收全部通过后，才执行ABA。原物理输入、rank2约定、精度门槛和9资源上限保持。
+
+关键结果：
+最新16项实测：/Users/wen/spot/validation/artifacts/axial-material-original-grouped16-tiny-controls-v3-20261011-host/REPORT.txt
+最新16项独立保存复核：/Users/wen/spot/validation/artifacts/axial-material-original-grouped16-tiny-controls-v3-20261011-host/SAVED_RESULT_REVIEW.txt
+完整入口源码静态审查：/private/tmp/axmat_full_workflow_v3_CLI_v2_Source_review__3hlm6qb/SOURCE_REVIEW.txt
+原rank2保存复核：/Users/wen/spot/validation/artifacts/axial-material-real64-common-rank2-training-20261011/training/rank_admission_saved_replay.json
+旧已复核AAA诊断记录：/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+后续AAA有限保存诊断：/Users/wen/spot/validation/artifacts/axial-material-AAA-rank1-cache-diagnostic-closeout-20261007/REPORT.txt
+机器可读进度：/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+
+此前记录（保留）：
+
+本次完整准备真实通过（2026-10-10T18:44:27.640586+00:00）
+
+临时对象回收修正已实际安装，完整准备真实EXIT0关闭：whole203.790466秒、child202.580179秒，原监控采样峰值477.625MiB低于原512；424保护输入及415源码文件保持，真实外层两流分别保存且stderr0字节，子进程仍原合并捕获。正式收尾已生成，保存结果独审进行中；新的完整BUILD尚未启动，不能把PREP内存值当作BUILD修正效果。材料真实链接数修正完整Source作者639项通过及封存，独立Source复核进行中，尚无真实k输出或新的完整12项控制通过。旧控制02超时及旧BUILD513.546875MiB失败保留。科学验收仍AAA7/8、端部3.952526%超过原3%，ABA未开始；仍需真实材料反应聚合、同数据未降阶独立参考和中子平衡。原物理、精度及资源条件保持；清理暂缓，goal active。
+
+本次准备正式结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_memory_observation_capture_pre_graph_gc_receipts/Root_actual_complete_combined_prepare_summary.json
+
+此前记录（保留）：
+
+最新实际控制与构建修正进展（2026-10-10T18:28:43.470779+00:00）
+
+当前是150 cm单棒三段同温组件验证，A/B均为燃料。A/B快照及读回通过；AAA已收敛，原精度7/8，端部裂变产生率偏差3.952526%超过原3%，ABA未启动。最新完整准备207.661236秒、486.6875 MiB及保存复核通过；最新完整构建前两内部阶段PASS后，第三阶段图核验入口附近513.546875 MiB超过原512而失败，根因尚未全部证明。材料采集真实控制01 EXIT0并完成当前组关闭和原资源收尾；控制02真实EXIT1：119次完整扫描中118次看到后代持有的29字节REG文件，真实名称没有代码期待的删除后缀，计数始终0，释放条件未成立，原600秒期限触发，原终止组PermissionError和关闭watchdog时deadline异常保留。Root实际后检查当前无遗留，未补作原清理成功。291源码与3回执文件冻结保持，后续10项控制未启动，整套监控未资格化，无新A/B观测。链接数读取最小修正正在完整Source派生；单行临时对象回收修正的完整Source独审520项通过，真实PREP入口Source绑定已完成，尚未安装或执行业务，内存效果未验证。科学精度未新增。下一步在原输入、物理、精度和9资源上限下完整验证两项修正、完成材料上下文及反应聚合，建立同数据未降阶独立参考和中子平衡，AAA原8项全通过后执行ABA；清理暂缓，goal active。
+
+控制01正式收尾：/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-monitor-controls-case01-control-20261010/Root_actual_case_postclose.json
+控制02真实失败收尾：/Users/wen/spot/validation/artifacts/axial-material-complete-native-observation-BUILD5-AB-v8-monitor-controls-case02-control-20261010/Root_actual_failed_case_postclose_summary.json
+机器可读进度：/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+
+此前记录（保留）：
+
+最新实际结果与用户状态核对（2026-10-10T17:59:27.123645+00:00）
+
+当前是150 cm单棒、三个50 cm轴向段的同温组件验证，A/B均为燃料。A/B双精度快照及读回已通过；AAA数值收敛，原精度8项中7项通过，端部裂变产生率最大偏差3.952526%高于原3%，ABA未启动。最新完整准备207.661236秒、采样峰值486.6875 MiB低于原512，正式收尾及31项保存复核通过。新完整构建已实际执行一次并失败关闭：前两个内部阶段build/link与metadata/objects有真实PASS，受监控子进程178.536197秒、采样峰值513.546875 MiB触发原512上限；完整构建未通过。100条内存记录将超限位置缩小到第三阶段before_metadata_executable的完整输入图核验入口，尚未证明根因；历史self高水位不能等同当前RSS或真实guard峰值。810保护输入及778源码文件保持，失败正式收尾已保存，不补作未到达的原host最终核验。材料采集四项修正154项独立源码检查和实际绑定31项启动前检查通过，但12项真实控制及新A/B观测尚未执行。科学精度没有新增通过项。下一步处理构建内存峰值并完成实际材料采集，补齐真实反应聚合、同数据未降阶独立参考及中子平衡，定位端部误差；AAA原8项全通过后执行ABA。原输入、物理条件、验收和资源上限保持；清理暂缓，goal active。
+
+构建真实失败结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v25_memory_observation_capture_receipts/Root_actual_failed_complete_combined_build_summary.json
+AAA正式结果：/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+机器可读进度：/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+
+此前记录（保留）：
+
+最新用户状态核对（2026-10-10T17:26:19.338979+00:00）
+
+当前是150 cm单棒三段同温轴向验证，A/B均为燃料。A/B双精度快照及读回已通过；AAA数值收敛，精度8项中7项通过，端部裂变产生率最大偏差3.952526%高于原3%，ABA未启动。最新完整准备真实成功：207.661236秒、采样峰值486.6875 MiB低于原512，正式收尾和31项保存复核通过。材料采集四项代码修正154项独立源码检查通过，尚未进行新控制或A/B观测。新构建入口接线仍在修正声明元数据读取路径，实际0b88da失败发生在输出创建和业务执行之前；新完整构建尚未运行，此前512.109375 MiB超原512的失败保留。近期推进是工程和数据可信度，科学精度未新增通过项。接下来完成实际构建/采集验证、真实反应聚合和同数据未降阶独立参考与中子平衡，按原8项重验AAA，全通过后执行ABA。清理暂缓，goal active。
+
+当前结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/sealed_independent_actual_P4_complete_PREP_saved_review_consumer_view_20261011/REVIEW.json
+材料代码复核：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/sealed_independent_N8_V2_four_blocker_Source_review_20261011/REVIEW.json
+AAA正式结果：/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+
+此前记录（保留）：
+
+最新实际完整准备与材料采集修复（2026-10-10T17:04:14.378042+00:00）
+
+P4完整准备已真实EXIT0关闭并生成正式收尾记录：207.661236秒，采样峰值486.6875 MiB低于原512，395项保护输入全EOF/SHA7ID保持、386源码文件/34子目录冻结不变。真实外层stdout/stderr分别保存，stderr为空；子进程仍原合并捕获，不称独立子stderr为空。完整联合结果164070586字节在原2GiB内。保存结果独审进行中，尚未执行新BUILD。N8材料观测Source独审102项98通过4失败：成功结果字段错接、控制07/10具体拒绝证据、已有整数条件、完整raw pins消费；四项最小修复正在派生，未准入实际控制或A/B观测。AAA精度仍7/8、端部3.952526%超过原3%，ABA未开始；清理暂缓，goal active。
+
+此前记录（保留）：
+
+最新实际准备与记录缺口（2026-10-10T16:29:12.952919+00:00）
+
+V3完整内存观测Source独审186项与实际三角色绑定独审38项通过；已真实安装并冻结381源码文件/32目录。Root一次完整准备实际EXIT0关闭，whole216.313147秒、child215.059935秒、采样峰值472.796875 MiB低于原512，390项完整保护输入全EOF/SHA/7ID复核不变。此次外层启动未分别重定向stdout/stderr，只有真实工具合并文本；不能证明独立stderr为空，因此尚未生成正式PREP终端或执行BUILD。完整实际结果保持，未伪造empty stderr、未运行冻结metadata writer、未重跑旧命名空间。恢复采用新capture命名空间并保持原输入/物理/阈值/caps，实际启动前分别捕获两流。AAA科学精度仍7/8，端部3.952526%高于原3%，ABA未开始；清理暂缓，goal active。
+
+此前记录（保留）：
+
+最新实际材料诊断进展（2026-10-10T15:04:42.196603+00:00）
+
+SPOT仍在单组件同温轴向验证。A/B双精度快照及保存态读回保持通过；AAA数值收敛、原精度7/8，端部裂变产生率3.952526%超过原3%，ABA未开始。新材料观测N7完整Source5213项及实际绑定4299项独审通过后，由Root实际一次运行并EXIT1关闭：原PS选中host51052、编译器51076和watchdog51077，原lsof返回1、stderr为空，完整stdout仅有host与watchdog文件记录，缺编译器；随后原SIGTERM清理遇PermissionError。11条原始诊断完整保存无记录错误，真实host14.147055秒；watchdog9.764044秒包括额外失败诊断与清理，采样RSS0.0为早退，不能计作原生内存资格。尚未查询原扫描时进程state，不能确定退出竞态原因；末尾编译器return0不能倒推原扫描时状态。Root实际后检查三组当前均无遗留，不补作原清理通过。Root保存完整HOCDE常规文件23,380,698字节，D186/24及E5/1完全冻结，154原有序输入完整EOF保持；保存证据独审18项通过，完整审查包已保存到项目，没有新的A/B材料上下文结果。构建仍第一链接后至第二元数据记录前512.109375 MiB超过512而失败，内存观测新Source正在完整派生。未放宽输入、物理条件、原验收及资源上限，没有新增科学资格；清理继续暂缓，goal active。
+
+下一步：完成N7真实失败Source/小META保存独审；针对短命编译子进程与完整PS/lsof现场提出有限修正，必须保留全部真实活进程、后代及进程组、原strict扫描/9caps/MRO/guard Source并完整新controls后实际验证，不将lsof1改记成功。同时完成构建阶段内存journal新Source独审、resource实际环境小META接线与新完整PREP/BUILD诊断。随后完成真实材料上下文和反应聚合、同数据未降阶全370群150cm耦合参考与独立平衡，AAA原8项全通过后执行ABA。
+
+此前记录（保留）：
+
+最新实际构建进展（2026-10-10T14:16:02.170431+00:00）
+
+SPOT仍处于单组件同温轴向验证，科学验收尚未完成。A/B双精度快照及保存态读回已通过；AAA完整耦合数值收敛，精度原八项中七项通过，端部裂变产生率最大偏差3.952526%高于原3%，ABA未开始。最新完整准备203.680566秒、470.28125 MiB成功并通过31项保存独审。新完整构建已实际一次执行并失败关闭：外层受监控子进程127.648495秒、采样峰值512.109375 MiB触发原512上限，真实Root终端251fd3 EXIT1；已保存第一build/link PASS，第二metadata/objects尚无RUNNING行，未完成五阶段或整体收尾。失败位置只能界定为第一PASS落盘后至第二RUNNING落盘前；此前收尾释放代码在五阶段之后，本次未到达。原失败收尾完整保存，734源码文件冻结、766项有序输入Root完整EOF后核对保持；此后核对不替代未到达的原host最终核验。材料观测N6仍是严格进程文件扫描失败、随后的终止组权限错误并关闭，无新A/B材料上下文结果。两次失败的进程组已实际后检查确认无遗留。原输入、物理条件、验收阈值和资源上限保持；无新增科学资格，清理继续暂缓，goal active。
+
+下一步：完成本次新构建失败保存独审，随后给第一链接后至第二元数据步骤前的完整输入复核添加有限、独立文件的内存阶段观测，保持原完整两次图解析及所有核验。完成新材料观测失败原始PS/lsof和清理异常的有限仪器化源码独审，再由Root在fresh命名空间实际诊断；不提高上限、不重跑旧命名空间。工程闭合后补齐真实材料上下文、最终反应聚合、同数据未降阶全370群有限高度耦合参考与独立中子平衡，定位并复验AAA，原八项全部通过后执行ABA。
+
+此前记录（保留）：
+
+最新整体进展（2026-10-10T13:52:58.608417+00:00）
+
+SPOT目前仍在单组件同温轴向验证阶段，目标尚未完成。A/B双精度快照和保存态读回已通过。AAA完整耦合已数值收敛，但独立精度验收仍为7/8：端部裂变产生率最大偏差3.952526%，超过原3%门槛，ABA尚未开始。最新完整准备实际成功，203.680566秒、采样峰值470.28125 MiB低于原512 MiB，306项完整输入保持，保存独审31项通过。新五阶段构建入口源码19项独审通过，修正后的完整构建尚未实际运行；旧构建五阶段内检通过但整体收尾512.578125 MiB超限的失败事实保留。材料观测绑定入口4037项源码独审通过后实际启动，一次编译命令返回0并生成一个对象，随后的严格进程文件监控失败，终止进程组又遇权限错误，整次运行EXIT1关闭；无新A/B材料结果，无新增RSS或科学资格。已实际后检查确认PID47658及其子进程/进程组当前无遗留；该后检查不补作原清理成功或原lsof输出。清理继续暂缓，goal保持active。
+
+下一步：先保留材料观测失败证据，补齐进程监控原始诊断并按原资源上限修复核验；实际执行新五阶段构建及完整收尾。随后完成A/B真实材料处理上下文、最终反应聚合、同数据未降阶全370群有限高度独立耦合参考与中子平衡，定位AAA端部误差并按原八项重验；全部通过后执行ABA材料界面对照。
+
+此前记录（保留）：
+
+最新实际进展（2026-10-10T13:32:04.211620+00:00）
+
+SPOT仍在单组件独立验证阶段。A/B快照及读回已通过；AAA数值收敛，原精度7/8，端部nu_fission3.952526%超过3%，ABA未开始。本轮新完整准备实际成功关闭：203.680566秒，峰值470.28125 MiB低于原512，304有序输入及两项原helper/resource共306项保持；原完整收尾记录已保存，独立保存复核进行中。收尾临时变量释放修正尚未经过新的完整五阶段构建。共享库材料观测源码4375项独审通过，Root实际源码准入和绑定完成；绑定入口独审进行中，尚未进行N6编译或材料观测。旧五阶段内检虽全部通过，整体收尾512.578125 MiB超限失败事实保留。没有新增科学精度资格，清理暂缓，goal继续。
+
+下一步：完成本次准备保存独审和材料观测绑定入口独审，在原限内实际执行共享库完整原生编译及A/B观测；完成新收尾修正的五阶段构建与整体核验。随后补齐真实上下文、最终反应聚合、同数据未降阶全370群有限高度耦合参考和独立中子平衡，定位并复验AAA端部误差；AAA原八项全通过后执行ABA。
+
+此前记录（保留）：
+
+最新整体状态（2026-10-10T13:07:30.106901+00:00）
+
+SPOT仍处于单组件独立验证阶段，整体验收未完成。A/B双精度快照及保存态读回已通过；AAA完整耦合数值收敛，独立精度原八项中七项通过，端部nu_fission偏差3.952526%超过3%，ABA未开始。五个内部构建阶段已全部通过，但整体收尾峰值512.578125 MiB超过原512 MiB而失败。材料观测初始进程扫描失败后，只读对照确认包含已关闭的扫描子进程会使文件检查返回1，仅排除该实际已关闭PID后返回0；修正已通过独立源码复核，尚未实际完成观测。原A/B重复库布局按实际输入和旧产物大小超过原2 GiB容量；共享单份库的新源码已封存、独审进行中，新布局实际容量及输出一致性仍未知。收尾内存修正源码已通过独审并完成准备入口源码绑定，完整新准备和构建尚未执行。近期推进主要是工程和数据核验，没有新增科学精度通过项。清理暂缓，goal继续。
+
+下一步：完成当前两项独立源码复核后，在原资源上限内实际核验收尾内存修正及共享库材料观测；补齐A/B真实处理上下文与最终反应聚合，建立同数据未降阶耦合参考，定位AAA端部误差；按原八项重验AAA，全部通过后执行ABA，最后汇总精度与总成本。
+
+原7/8是AAA精度检查数，不是整个项目完成百分比；源码检查通过不代表实际资源或物理验收通过。
+
+此前记录（保留）：
+
+最新整体状态（2026-10-10T12:31:28.664270+00:00）
+
+SPOT仍在组件级独立验证阶段。A/B双精度快照及保存态读回已完成；AAA完整耦合数值收敛，原独立精度7/8，端部nu_fission最大偏差3.952526%高于3%；ABA未开始。最近五个内部构建阶段全部PASS，但整套收尾512.578125 MiB超过原512，整体失败已关闭并保存复核通过。材料上下文观测入口实际启动后停在初始进程打开文件扫描，尚未进入编译或材料运行。收尾临时变量释放修正已通过658项源码独审，实际运行和内存达标仍待验证。清理暂缓，goal继续且未完成。
+
+已确认的科学结果：AAA完整耦合12个map、105步骤，原三项收敛残差通过；k偏差−294.072 pcm通过，通量L2 0.5854%通过；nu_fission端部最大偏差3.9525%、区间[3.6802%,4.6964%]超过原3%，AAA尚未取得完整精度资格。不能把7/8作为整体完成比例。
+
+最近工程结果：五个内部构建阶段全部PASS；整体在316.023987秒、512.578125 MiB超过原512上限后失败关闭，保存证据3423项复核通过。材料上下文观测实际入口在初始进程文件扫描失败，尚未进入编译与A/B材料运行，保存失败13项复核通过。收尾释放三个临时变量的源码修正658项独审通过，仍需新入口准备与实际运行，不能据此声称内存或精度已达标。
+
+下一步：先解决构建收尾内存和材料观测入口检查并按原上限实际核验；补齐A/B真实材料上下文与最终反应聚合，建立同数据未降阶耦合参考，定位AAA端部误差；按原八项重验AAA，全部通过后执行ABA材料界面对照，最后汇总精度与总成本。
+
+正式AAA结果：/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+机器可读当前进度：/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+
+此前记录（保留）：
+
+最新实际进展（2026-10-10T12:02:42.500879+00:00）
+完整准备和保存独审通过。新完整构建五阶段记录均PASS，但随后整套收尾在316.023987秒、512.578125 MiB超过原512 MiB上限，Root退出1并关闭，整体构建仍未通过。原328份Source和360项固定输入不变；真实失败结果已保存，独立保存复核进行中。
+科学状态：A/B快照与读取一致性已通过；AAA数值收敛，原精度验收8项中7项通过，端部裂变产生率3.9525%超过3%；ABA未开始。最近增加的是工程和数据核验，没有新科学精度通过结果。
+下一步：定位并消除整套收尾的内存峰值，补齐真实材料处理上下文及反应聚合，建立同数据未降阶有限高度耦合参考，复验AAA；AAA原八项全部通过后执行ABA。清理暂缓。
+失败结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v25_monitor_access_receipts/Root_actual_failed_complete_combined_build_summary.json
+此前记录：
+
+最新实际进展（2026-10-10T11:57:14.722770+00:00）
+完整准备及保存独审已通过；完整五阶段构建已实际启动，运行前328份冻结Source和360项固定输入检查通过，目前尚未关闭，不计作构建成功。AAA精度仍8项中7项通过，端部裂变产生率3.9525%高于原3%；ABA未开始，清理暂缓。
+已完成A/B双精度快照及读取一致性、AAA数值收敛。下一步补齐真实材料上下文和反应聚合，建立同数据未降阶耦合参考，定位并复验AAA端部误差，AAA全通过后再执行ABA。
+此前记录：
+
+最新实际进展（2026-10-10T11:28:01.357540+00:00）
+完整准备成功并通过保存独审：203.821717秒、478.359375 MiB，21204项全通过；五阶段构建入口已完成真实Source绑定与独审，完整安装及原限预检准备中。材料观测Source修正66项独审通过，尚未运行观测。AAA精度仍7/8，端部裂变产生率3.952526%高于原3%；ABA未开始，清理暂缓。
+完整保存复核仅证明准备结果可信；Source通过不授构建/观测/物理精度资格。
+此前记录：
+
+最新实际进展（2026-10-10T11:13:21.966910+00:00）
+原监控权限问题已解决，新完整准备实际成功关闭：203.821717秒、478.359375 MiB，低于原512 MiB上限；完整收尾记录已保存，独立保存复核进行中。五阶段构建尚未执行；AAA精度仍7/8，ABA未开始，清理暂缓。
+原准备子进程PID36969正常返回0、limit_failure=None；Root实际终态505668，原已冻结收尾writer af20d1成功。原输入、监控、物理和验收门槛不变；本次成功不授完整构建或科学资格。材料观测Source四项真实合同缺口已有限修正，最终独审进行中，未编译或生成新观察数据。
+结果：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_monitor_access_receipts/Root_actual_complete_combined_prepare_summary.json
+此前记录：
+
+SPOT 最新整体进展（2026-10-10；核对时间 2026-10-10T10:40:15.136281+00:00；清理暂缓）
+
+当前目标：验证固定POD空间的二维径向与一维轴向耦合中子输运方法。当前重点是150 cm单针组件的同温轴向材料对照；AAA三段都是A，ABA只把中段换成B，A/B均为燃料。完整验收尚未完成。
+
+A/B快照及保存读取一致性已有实际通过结果；AAA精度仍7/8，端部裂变率最大偏差3.9525%高于3%，ABA未开始。完整主流程新源码已接入，最新准备因进程监控权限失败关闭，未测得RSS；上次完整构建仍仅2/5阶段通过。最近增加的是工程和数据核验，没有新的物理精度验收通过结果。
+
+已完成：A/B双精度快照、在线读取和完整保存态一致性检查；AAA细网格完整耦合数值收敛。AAA独立精度八项中七项通过，k与通量项通过，端部裂变率份额不通过。保存态一致性和数值收敛分别保留其证明范围。
+
+最新工程结果：完整主流程模板79项源码独审和绑定后41项源码独审通过，已实际接入93文件、7子目录。此次准备真实执行后失败关闭：原进程内存监控被执行环境拒绝，子进程在0.452778秒时返回-15，没有有效RSS测量。随后只读权限检查确认原监控在允许的环境中可用，且该子进程已不存在。冻结源码及原输入未改，资源上限未放宽。失败完整记录已保存，没有新的整套构建或物理验收资格。
+
+主要待办：先在允许原监控工作的执行环境中完成受原限约束的完整准备和五阶段构建；补齐真实材料处理上下文、编译来源与反应聚合，再建立同数据未降阶有限高度耦合参考，定位AAA端部裂变率误差。AAA原八项全部通过后再执行ABA。清理暂缓。
+材料上下文六处入口错误已修复并通过54项源码独审；仍需真实新构建、观测生产、原生提取和最终反应聚合的实际证据。独立耦合参考和中子平衡仍待验证。
+
+结果入口：
+AAA正式结果：/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+最新准备失败：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_receipts/Root_actual_failed_complete_combined_prepare_summary.json
+机器可读总进度：/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+科学缺口：/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/CURRENT_SCIENTIFIC_GAPS.txt
+
+总goal继续，未完成；本次状态核对未启动新的输运或清理。
+
+历史记录（以下保留此前原文，其当时状态已有后续进展）：
+
+SPOT 当前整体进展（2026-10-10；清理暂缓）
+
+目标：验证固定 POD 空间的二维径向＋一维轴向中子输运方法，得到自洽、独立验证且总成本可复现的结果。当前是单组件及轴向材料对照的科学精度验证，尚未形成完整验收的生产版本。
+当前实验为单个六角针栅元、8径向区、150 cm燃料柱，三段各50 cm且同温。AAA三段都是A；ABA仅中段换成B，A/B均为燃料。先通过AAA，再做ABA。
+
+已完成的主要结果：
+1. 历史D4-A修复后九轮完整耦合迭代达到原收敛门槛，最终结果回放通过；独立连续能k精度未通过。该历史几何不能替代当前AAA/ABA。
+2. 当前A/B双精度快照和在线读取完成；86项组件检查全部符合预期。完整370群保存态与源相位一致性已验证。
+3. A/B完整原始记录软件转移实际成功，每材料保留19,619条记录、2,264,113个数值，两种原始ASCII读取器一致；保存结果独审4,752项通过。这证明完整软件转移，尚不证明原生数据逐位一致或物理精度。
+4. V22完整准备实际通过：194.019894秒，峰值474 MiB，低于原512 MiB；313项固定输入保持一致，保存结果独审10,170项通过。
+5. 最新V22完整构建实际失败关闭：只完成build/link、metadata/objects共2/5阶段。164.241230秒时峰值513.375 MiB，超过原512 MiB上限，监督器终止子进程并清理其进程组。失败结果独审7,972项通过，确认失败证据可信；没有授予整套构建或输入资格。155项固定输入和123份冻结源码保持不变。
+
+当前两个卡点：
+工程方面，完整构建仍略超内存上限；私有audit内存候选已通过479项独立源码审查，尚需完整实际控制与新资格后接入。新增完整pure控制V23已实际一次执行并失败关闭：外部437ca4 EXIT1。失败发生在新增私有状态检查：子进程身份记录是(key,typename,id)元组，原只接受JSON值的比较器在该元组处断言失败；不是已证实的helper状态改变，也不是本次内存超限。完整协议尚未完成，采样RSS0.0只因很早退出，不能计作零内存或内存修正成功。D509文件/47目录及E执行前5文件/1目录均全EOF与身份保持；完整失败H/O/D/E约26.71MB已保存，已保存失败证据独审2,922项通过，完整审查包63文件已保留到项目；这只证明失败证据可信，不授控制或内存资格。新helper资格未授予，V23 fresh未执行，正式canonical未接入。正在准备V24有限检查器修正：保留完整原字段和子进程实际身份，对私有元组作正确比较；原输入、门槛和资源上限不变。原生V23修正版已在fresh目录实际完整执行，外部工具5a01da退出0并关闭；A/B每材料宏观库19,619记录、2,264,113数值，微观库23,895记录、18,670,730数值，完整保存态与原ASCII数值位差异均为0。两库完整记录域一致、零长记录无遗漏；原LCM复制物理记录顺序一致。直接XSM再导出API顺序与旧ASCII不相同，此区别原样保留，没有名称排序。子进程37.247113秒、采样峰值49.96875 MiB，whole39.105851秒，完整H/O/C/D/E保存约1.046 GB，均在原限内；D957文件及执行前E374文件保持冻结不变。完整成功证据已保存，19,431项独立已保存源码/小元数据复核通过，完整审查包已保存到项目；独审没有重新读取材料或SQLite大载荷，其全EOF数值证据归属Root实际执行与保存。新原生walker异常控制尚未执行，历史RAM位、原二进制源码关联、完整build/INPUT和科学资格仍未授予。V22首次检查器条件错误失败结果原样保留。
+科学方面，AAA正式原精度验收仍7/8：端部燃料裂变率份额最大偏差3.952526%，超过原3%门槛，独立参考统计充分；k与通量项通过。后续候选内层偏差3.798223%仍未过线，完整收尾也失败，没有新的AAA合格结果。ABA尚未开始。
+最近新增完整原生保存态数值位一致证据，仍属工程与数据核验，没有新的正式物理精度通过结果，不能宣布整体目标完成。
+
+数据与物理仍需闭合的范围：
+原生保存态数值位已实际核对且保存证据独审通过，尚需新walker完整异常控制；最终微观到宏观反应聚合、真实反应多重性和输运修正；径向/角向/轴向交换及白边界、真空端部；同数据未降阶有限高度全多群耦合参考；独立中子平衡和分辨率验证。
+新253项有限源码/元数据调查已明确：若TONE的SPH分支实际执行，最终TRANC及不同散射矩有不同变换规则，不能把最终TRANC无条件套回初始APOL公式，也不能假设未保存的SPH因子为1。此为源码事实，尚未做完整材料数值重放或证明真实物理平衡。
+原FISSIONINDEX的256/64合同差异保持；已核源码解释64=8区×8同位素槽，32裂变组件=8槽×4能量相关谱，不能把布局解释当作原生数据或物理授信。
+
+接下来按顺序：
+1. 完整A/B原生保存态逐位检查已实际成功；成功保存证据独审已通过；补齐新walker控制与最终反应聚合所需历史状态观测。完整构建的私有audit内存候选已通过479项独立源码审查，但尚未接入正式流程，仍需完整实际控制后准入；保留原资源上限和全部范围。
+2. 核对最终反应聚合与边界交换，建立同数据未降阶耦合参考，定位AAA端部误差并按原八项重新验收。
+3. AAA八项全部通过后，再做ABA材料界面对照与独立验证，汇总精度和总成本。
+
+结果入口（相对于本目录）：
+实际V22准备：actual_complete_combined_prepare_v22_receipts/Root_actual_complete_combined_prepare_summary.json
+实际V22构建失败：actual_complete_combined_build_v22_receipts/Root_actual_failed_complete_combined_build_summary.json
+实际原生检查失败：actual_complete_native_AB_persisted_XSM_ASCII_v22_receipts/Root_actual_complete_native_postclose_summary.json
+实际原生检查成功：actual_complete_native_AB_persisted_XSM_ASCII_v23_receipts/Root_actual_complete_native_postclose_summary.json
+实际V22失败独审：actual_complete_combined_build_v22_receipts/sealed_independent_actual_failed_complete_build_saved_META_review/REVIEW.json
+完整raw数据转移：actual_full_AB_rawrecord_transfer_v22_admitted_receipts/Root_actual_full_AB_rawrecord_summary.json
+新反应/TRANC源码调查：finite_current150_AB_reaction_TRANC_post_TONE_source_META_20261010/REPORT.txt
+科学缺口：CURRENT_SCIENTIFIC_GAPS.txt
+正式AAA：/Users/wen/spot/validation/artifacts/axial-material-AAA-white-trace-refined-closeout-20261005/REPORT.txt
+实验声明：/Users/wen/spot/validation/axial_material/case_spec.json
+机器可读总进度：/Users/wen/spot/validation/axial_material/last_cprime_trim_build_review_20261008/current_progress.json
+
+总goal继续，尚未完成。清理暂缓。本轮实际执行新的完整pure协议控制，已关闭失败并全量保存，定位私有元组比较器问题；新helper与构建资格未授予，fresh未执行。A/B原生保存态既有成功仍保留；未运行新的中子输运，AAA仍7/8，ABA尚未开始，未删除文件。
+
+V24 最新实际控制（2026-10-10）：子进程完整旧协议及新增私有5/13/3控制实际PASS，16.655067秒、采样峰值396.53125 MiB；外层工具a1dcb2 EXIT1并关闭。完整原输出加重复未压缩Source使H+O+D约80.606 MB，超过原64 MiB归档上限，完整HODE约81.917 MB均已保存；D353文件/30目录与执行前E3文件/1目录保持不变。子控制成功不能替代整次外层准入，新helper Q仍无，freshV24未运行，正式构建仍2/5，AAA仍7/8、ABA未开始。正在准备新V25无损完整Source归档：不删成员或记录、不放宽门槛，逐成员解压SHA/bytes核验，五个运行Source入口原字节单独保留。旧XSM全树提取和上下文继承的完整Source已补齐并保留196文件，尚未独审或实际执行；字符转换、DOUBLE运算、未初始化分量、同输入观测生产和编译来源仍待闭合。未删除文件。
+
+V24 已保存失败证据独审16,447项通过，完整审查包61文件已保留。这确认子控制PASS和外层归档FAIL证据可信，不授整体协议、新helper、构建或科学资格。V25母Source已封存，独立源码复核进行中，尚未实际运行。
+
+V25最新实际进展：无损完整Source归档已逐成员解压复读并冻结，全部成员/manifest/目录保留，五个运行入口原字节单独保存。完整pure外部ca2666严格EXIT0关闭：15.438756秒、393.703125 MiB、正常HOD62.499 MB；完整fresh外部d1d77b严格EXIT0关闭：31.954344秒、338.4375 MiB、完整HODE5.203 MB，均满足原限。fresh完整保留27字段、37111规范文件+1图读取共37112次实际读取、三完整gzip与六输出；同一实际phase释放前后全部21,411,449个wire字节和九字段一致，owned records map全清空且其他state不变。两次完整保存证据独审正在进行，新helper Q尚未授予，canonical未接入，正式构建仍2/5。未运行新的输运，AAA仍7/8、ABA未启动；原输入、门槛和caps不变，未清理文件。
+
+V25实际成功的已保存证据独审已完成并完整保留：pure55整体检查及辅助136小控制，fresh42整体检查，全typedTrue/blockers[]；真Source审查、封存和封存后复读均CLOSED0。Root完整保留pure68文件、fresh33文件（分别真实01d879/9b8c47），未修改冻结D或原实际结果。新联合helper元数据Qwriter正在独审，Q尚未写、canonical未接入，正式构建仍2/5、AAA仍7/8、ABA未开始，清理暂缓。
+
+V25最新实际进展：Root 94520a CLOSED0生成联合helper元数据凭证c6efd7（689741B）；保存结果48项独审全typedTrue/blockers[]，Root79b8c6完整保留11文件。此前pure55/fresh42已保存独审保持。新凭证仅覆盖辅助模块，canonical尚未接入，完整PREP/BUILD未重跑。完整材料上下文Source40项独审38通过，发现六处真实入口错误，六hunk修正版完整211文件已保留，独立Source复核进行中。正式构建仍2/5、AAA仍7/8（nu_fission 3.9525%高于3%阈值）、ABA未开始；清理暂缓，goal继续。
+
+材料上下文六hunk修正的54项独立Source复核全部通过；Root5754d4完整保留16文件，Rootf05c95真实CLOSED0完成Source-only准入，完整209 Source成员及目录重新核验。尚未生产AXOBSCTXv2实际观察、未运行old/pre/post/final extraction或聚合，物理验收仍AAA7/8、ABA未开始。
+
+完整V25 canonical/PREP/BUILD UNREADY Source 79项独审通过且真seal/postseal CLOSED0，Root0571d2完整保留26文件。Rootb4bd6d实际标准库Source绑定CLOSED0，产生canonical7861841/214072B、host0d38c4、writer22579b、完整340显式typed owners和69实际Source_META读取pin、全部六未来业务pin仍None。绑定结果完整Source独审进行中，尚未安装canonical，尚未运行新PREP/BUILD；AAA7/8、ABA未开始。

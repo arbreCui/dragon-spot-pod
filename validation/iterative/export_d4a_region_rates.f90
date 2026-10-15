@@ -9,17 +9,19 @@ program export_d4a_region_rates
   use, intrinsic :: ieee_arithmetic, only : ieee_is_finite
   implicit none
 
-  integer, parameter :: nstate=40,nradial=132,nfloor=3,nreg=396,nmix=18
+  integer, parameter :: nstate=40,nradial=132,nmix=18
   integer, parameter :: nsnap=3,nbase=6,nfuel=25,max_xsm_path=72
   type(c_ptr) :: objects(3),jpflux,jpmacro,kpmacro
   character(len=1024) :: paths(4)
   character(len=12) :: names(3)=['AX_FLUX     ','AX_TRACK    ','AX_MACRO    ']
   integer :: iflux(nstate),itrack(nstate),imacro(nstate)
-  integer :: mat(nreg),keyflx(nreg),mat1d(nfloor),ngrp,nunk,nfis
+  integer :: nfloor,nreg,ngrp,nunk,nfis
+  integer, allocatable :: mat(:),keyflx(:),mat1d(:)
   integer :: i,igr,ireg,ibm,ifis,ifloor,isnap,radial,ilong,itylcm,out,ios
-  real(real32) :: volume(nreg)
-  real(real32), allocatable :: unknown(:),nufis(:)
-  real(real64) :: rate(nsnap),region_rate(nreg),nusigf,total_rate,contribution
+  real(real32), allocatable :: volume(:),unknown(:),nufis(:)
+  real(real64), allocatable :: region_rate(:)
+  real(real64) :: rate(nsnap),nusigf,total_rate,contribution
+  real(real64) :: zone_rate(nsnap,nradial),zone_volume(nsnap,nradial)
   logical :: fissile(nmix),fuel_radial(nradial),exists
 
   if (command_argument_count() /= 4) call fail( &
@@ -50,9 +52,12 @@ program export_d4a_region_rates
   ngrp=iflux(1)
   nunk=itrack(2)
   nfis=imacro(4)
+  nfloor=itrack(7)
+  nreg=itrack(1)
   if (ngrp /= 370 .or. imacro(1) /= ngrp .or. nunk <= 0 .or. &
-      iflux(2) /= nunk .or. itrack(1) /= nreg .or. itrack(4) /= nmix .or. &
-      itrack(6) /= nradial .or. itrack(7) /= nfloor .or. &
+      iflux(2) /= nunk .or. int(nfloor,int64)*nradial /= nreg .or. &
+      nfloor < nsnap .or. mod(nfloor,nsnap) /= 0 .or. itrack(4) /= nmix .or. &
+      itrack(6) /= nradial .or. &
       itrack(8) /= nsnap .or. imacro(2) /= nmix) &
     call fail('INCONSISTENT D4-A FLUX/TRACK/MACROLIB DIMENSIONS.')
   if (nfis <= 0 .or. int(nfis,int64)*nmix > huge(nfis)) call fail('INVALID NFIS.')
@@ -61,18 +66,22 @@ program export_d4a_region_rates
   call require_record(objects(2),'KEYFLX',nreg,1)
   call require_record(objects(2),'VOLUME',nreg,2)
   call require_record(objects(2),'MAT1D',nfloor,1)
+  allocate(mat(nreg),keyflx(nreg),volume(nreg),mat1d(nfloor),region_rate(nreg))
   call LCMGET(objects(2),'MATCOD',mat)
   call LCMGET(objects(2),'KEYFLX',keyflx)
   call LCMGET(objects(2),'VOLUME',volume)
   call LCMGET(objects(2),'MAT1D',mat1d)
-  if (any(mat1d /= [1,2,3])) call fail('D4-A FLOOR/SNAPSHOT MAP MUST BE 1,2,3.')
+  do ifloor=1,nfloor
+    if (mat1d(ifloor) /= 1+(ifloor-1)/(nfloor/nsnap)) &
+      call fail('D4-A CELL/SNAPSHOT MAP MUST BE THREE EQUAL CONTIGUOUS BLOCKS 1,2,3.')
+  enddo
   if (any(mat < 1) .or. any(mat > nmix)) call fail('MATCOD INDEX OUT OF RANGE.')
   if (any(keyflx < 1) .or. any(keyflx > nunk)) call fail('KEYFLX INDEX OUT OF RANGE.')
   do i=1,nreg
     if (any(keyflx(:i-1) == keyflx(i))) call fail('DUPLICATE REGION KEYFLX INDEX.')
   enddo
   if (any(.not.ieee_is_finite(volume)) .or. any(volume <= 0.0_real32)) &
-    call fail('VOLUME MUST BE FINITE AND POSITIVE IN ALL 396 REGIONS.')
+    call fail('VOLUME MUST BE FINITE AND POSITIVE IN ALL REGIONS.')
   do radial=1,nradial
     ibm=mat((radial-1)*nfloor+1)
     if (ibm < 1 .or. ibm > nbase) call fail('INVALID FIRST-FLOOR BASE MATERIAL.')
@@ -99,7 +108,7 @@ program export_d4a_region_rates
     call LCMGDL(jpflux,igr,unknown)
     if (any(.not.ieee_is_finite(unknown))) call fail('NON-FINITE FLUX UNKNOWN.')
     if (any(unknown(keyflx) <= 0.0_real32)) &
-      call fail('REGION FLUX MUST BE POSITIVE IN ALL 396 REGIONS.')
+      call fail('REGION FLUX MUST BE POSITIVE IN ALL REGIONS.')
     call LCMLEL(jpmacro,igr,ilong,itylcm)
     if (itylcm /= 0) call fail('MACROLIB GROUP ITEM MUST BE A DIRECTORY.')
     kpmacro=LCMGIL(jpmacro,igr)
@@ -156,10 +165,23 @@ program export_d4a_region_rates
   enddo
   if (count(fuel_radial) /= nfuel) call fail('EXPECTED EXACTLY 25 FUEL RADIAL REGIONS.')
 
+  ! Integrate numerical cells first, then sum by physical snapshot. Do not
+  ! average fluxes or normalize cells separately. CSV "floor" remains 1..3.
+  zone_rate=0.0_real64
+  zone_volume=0.0_real64
+  do radial=1,nradial
+    do ifloor=1,nfloor
+      ireg=(radial-1)*nfloor+ifloor
+      isnap=mat1d(ifloor)
+      zone_rate(isnap,radial)=zone_rate(isnap,radial)+region_rate(ireg)
+      zone_volume(isnap,radial)=zone_volume(isnap,radial)+real(volume(ireg),real64)
+    enddo
+  enddo
+
   write(*,'(A)') 'D4A-REGION DIAGNOSTIC_ONLY; NO CONVERGENCE OR FINAL ACCEPTANCE CLAIM'
   write(*,'(A)') 'D4A-REGION FLUX_PRECISION=REAL32 ACCUMULATION=REAL64'
   write(*,'(A)') 'D4A-REGION FISSILE_MATERIALS=4,10,16; OTHER NUSIGF COMPONENTS=0'
-  write(*,'(A,I0,A,I0)') 'D4A-REGION CHECKED_REGIONS=',nreg,' EXPORTED_FUEL_REGIONS=',nfuel*nfloor
+  write(*,'(A,I0,A,I0)') 'D4A-REGION CHECKED_REGIONS=',nreg,' EXPORTED_FUEL_REGIONS=',nfuel*nsnap
   write(*,'(A,ES24.16E3)') 'D4A-REGION GLOBAL_NU_FISSION_RATE ',total_rate
   write(*,'(A,1P,3E16.8)') 'D4A-REGION NU-FISSION-FRACTIONS ',rate/total_rate
   call SPORATE(3,names,[2,2,2],[2,2,2],objects)
@@ -169,11 +191,10 @@ program export_d4a_region_rates
   write(out,'(A)') 'radial_region,floor,material,volume,nu_fission_rate,global_fraction'
   do radial=1,nradial
     if (.not.fuel_radial(radial)) cycle
-    do ifloor=1,nfloor
-      ireg=(radial-1)*nfloor+ifloor
+    do isnap=1,nsnap
       write(out,'(I0,2(A,I0),3(A,ES24.16E3))',iostat=ios) &
-        radial,',',ifloor,',',mat(ireg),',',real(volume(ireg),real64), &
-        ',',region_rate(ireg),',',region_rate(ireg)/total_rate
+        radial,',',isnap,',',4+(isnap-1)*nbase,',',zone_volume(isnap,radial), &
+        ',',zone_rate(isnap,radial),',',zone_rate(isnap,radial)/total_rate
       if (ios /= 0) call fail('CSV WRITE FAILED.')
     enddo
   enddo

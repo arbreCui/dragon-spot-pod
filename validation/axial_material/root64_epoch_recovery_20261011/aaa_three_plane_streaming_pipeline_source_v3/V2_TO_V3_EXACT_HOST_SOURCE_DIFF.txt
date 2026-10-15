@@ -1,0 +1,233 @@
+--- /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v2/run_actual_three_plane_pipeline.py
++++ /Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/aaa_three_plane_streaming_pipeline_source_v3/run_actual_three_plane_pipeline.py
+@@ -22,7 +22,7 @@
+ spec=importlib.util.spec_from_file_location('pipeline_original_common',COMMON)
+ c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
+ HERE=Path(__file__).resolve().parent
+-OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v2'
++OUT=c.ART/'axial-material-new-AAA3-streaming-actual-operator-global-BOOT-20261012-v3'
+ WORK=OUT/'AAA'
+ MI=2**20
+ ROOT_NAMES={'AX':'ax_current.xsm','AXTRACK':'axial_track.xsm','AXSYSTEM':'initial_system.xsm',
+@@ -129,7 +129,7 @@
+         for suffix in ['summary','sha256','seven-id']:p.add_argument('--'+prefix+'-'+suffix,required=True)
+     args=p.parse_args();start=time.monotonic()
+     hf,phf=ext(args,'host_freeze')
+-    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V2' or \
++    if hf['schema']!='COMPLETE_ACTUAL_AAA3_STREAMING_PIPELINE_HOST_SOURCE_FREEZE_V3' or \
+        Path(hf['host_source']['path']).resolve()!=Path(__file__).resolve():
+         raise RuntimeError('exact owning complete Host Source freeze')
+     c.same_pin(__file__,hf['host_source']);c.verify_rows(hf['dependencies'])
+@@ -145,6 +145,31 @@
+         raise RuntimeError('actual69 complete original57objects+4archives+8newaliases build required')
+     c.closed_report(build,helper,Path(pbuild['path']).parent,10)
+     c.verify_rows(build['fixed_current_pins']);c.verify_rows(build['output_pins'])
++    direct_binding_path=HERE/'DIRECT_ALIAS_ENTRY_BINDING.json'
++    if not all(any(row['path']==str(HERE/name)for row in hf['dependencies'])
++               for name in ['DIRECT_ALIAS_ENTRY_BINDING.json','direct_alias_entry_controls.f90']):
++        raise RuntimeError('direct-entry binding and Fortran main must belong to the complete frozen Host Source')
++    direct_probe_source_pin=next(row for row in hf['dependencies']
++                                 if row['path']==str(HERE/'direct_alias_entry_controls.f90'))
++    direct_binding=json.loads(direct_binding_path.read_text())
++    link_command=build['records'][-1]['command']
++    direct_original_inputs=direct_binding['actual_original_ordered_69_link_inputs']
++    removed_main=direct_binding['excluded_original_main_pin']
++    if direct_binding['schema']!='DECLARED_ACTUAL_COMPONENT_DIRECT_ALIAS_ENTRY_BINDING_V1' or \
++       direct_binding['selected_actual_build69_report_pin']!=pbuild or \
++       direct_binding['new_probe_source']!=str(HERE/'direct_alias_entry_controls.f90') or \
++       direct_binding['only_main_object_replacement']is not True or \
++       direct_binding['physics_qualification']is not False or \
++       link_command[:3]!=[build['records'][0]['command'][0],'-O2','-ffp-contract=off'] or \
++       link_command[-2:]!=['-o',next(row['path']for row in build['output_pins']if Path(row['path']).name=='Dragon')] or \
++       link_command[3:-2]!=[row['path']for row in direct_original_inputs] or \
++       len(direct_original_inputs)!=69 or \
++       sum(Path(row['path']).suffix=='.o'for row in direct_original_inputs)!=65 or \
++       sum(Path(row['path']).suffix=='.a'for row in direct_original_inputs)!=4 or \
++       [row for row in direct_original_inputs if Path(row['path']).name=='DRAGON.o']!=[removed_main] or \
++       set(direct_binding['three_direct_control_modes'])!={'pack_original_alias','initial_contract_alias','view_system_alias'}:
++        raise RuntimeError('exact actual ordered69 inputs with only original DRAGON main replacement required')
++    c.verify_rows(direct_original_inputs)
+     seventeen,p17=c.admit17(args.seventeen_summary,args.seventeen_sha256,args.seventeen_seven_id,helper)
+     sf,psf=ext(args,'source_freeze')
+     if psf!=hf['selected_fortran_freeze']:raise RuntimeError('exact external selected frozen Fortran Source required')
+@@ -153,7 +178,7 @@
+     plan,producer_fixed,producer_reports=data.validate_actual_producers(c,args)
+     for row in producer_reports:c.closed_report(row,helper,Path(row['actual_output_pin']['path']).parent.parent,4)
+     fixed=unique(fixed+[phf,hf['host_source'],pbuild,p17,psf]+hf['dependencies']+sf['files']+
+-                 [sf['formal_and_actual_input_plan']]+producer_fixed+build['fixed_current_pins']+build['output_pins']+
++                 [sf['formal_and_actual_input_plan']]+producer_fixed+build['fixed_current_pins']+build['output_pins']+direct_original_inputs+
+                  seventeen['fixed_current_pins']+seventeen['output_pins'])
+     c.verify_rows(fixed)
+     resources=PhaseResources(base_resources)
+@@ -166,7 +191,8 @@
+     runner=full.OwnRSSSerialExecutor(OUT,1800-(time.monotonic()-start),'AAA3-streaming',resources)
+     if type(runner)is not full.OwnRSSSerialExecutor or runner.resources is not resources:raise RuntimeError('genuine original supervisor')
+     ledger=[];proofs=[];cases=[];failure=None;after_error=None;result=None
+-    new_storage_cases=[];lifecycle_cases=[];scratch_ledger=[]
++    new_storage_cases=[];lifecycle_cases=[];scratch_ledger=[];direct_alias_cases=[]
++    direct_alias_build=None
+     def stable():
+         c.check_full_current(fixed,owned);resources.check()
+         if time.monotonic()-start>=1800:raise RuntimeError('original whole1800 elapsed cap')
+@@ -278,6 +304,57 @@
+                           actual_log_pin=c.pin(lp),actual_watchdog_pin=c.pin(wp),original_execution_record_index=len(runner.records)-1,
+                           original_execution_record_label=record['label'],all_actual_assertions_completed=True))
+         stable()
++    def direct_refuse(label,message):
++        # This actual child has its own main, so it never invokes CLE or creates
++        # CLE scratch. Three target validation guards precede REDGET/material use.
++        if direct_alias_build is None or label not in direct_binding['three_direct_control_modes']:
++            raise RuntimeError('actual closed direct-entry executable and declared mode required')
++        declared=direct_binding['three_direct_control_modes'][label]
++        if declared['expected_abort']!=message or declared['material_payload_inspected']is not False or \
++           declared['transport_executed']is not False:
++            raise RuntimeError('exact structural entry scope and unmodified target refusal required')
++        clean_driver_scratch_before();input_pins=[]
++        for name in declared['actual_readonly_input_filenames']:
++            path=WORK/name
++            row=next((row for row in owned if row['path']==str(path)),None)
++            if row is None:raise RuntimeError('direct control uses only current full pinned owned readonly inputs')
++            c.same_pin(path,row);input_pins.append(row)
++        if len({tuple(row['identity'][:2])for row in input_pins})!=len(input_pins):
++            raise RuntimeError('actual input files remain physically distinct; only supplied c_ptr is deliberately repeated')
++        for name in declared['fresh_private_output_filenames']:
++            path=WORK/name
++            if path.exists()or path.is_symlink():raise RuntimeError('fresh finite private direct-control outputs only')
++        command=[str(OUT/'runtime/direct_alias_entry_controls'),label]
++        stable();error=None
++        try:runner.execute(WORK,label,command,600)
++        except RuntimeError as exc:error=str(exc)
++        record=runner.records[-1];wp=WORK/(label+'.watchdog.json');lp=WORK/(label+'.log')
++        w=json.loads(wp.read_text());text=lp.read_text()
++        clean_driver_scratch_before()
++        forbidden=['SPOR64_BOOTB64-CENSUS:','ACTUAL_XSM_SEALED_PAIR_COMPLETE_COPY_READBACK_V1',
++          'ACTUAL-AAA3-TRUE-ONLINE-BOOT-COMPLETE','ACTUAL-AAA3-NATIVE-GLOBAL-COMPLETE',
++          'SPOT-R64 B2I BOOTSTRAP COMMITTED','SPOT-X-REAL64-TERMINAL',
++          'kernel error','INCONSISTENT CALL','TARGET GUARD RETURNED']
++        if error!='own-child stage failed; no retry'or record['status']!='FAILED'or \
++           type(w.get('pid'))is not int or w['pid']<=0 or type(w['returncode'])is not int or w['returncode']!=1 or \
++           w['limit_failure']is not None or w['command']!=command or record['command']!=command or \
++           text.count('ACTUAL-AAA3-DIRECT-ALIAS-CONTROL: '+label)!=1 or text.count(message)!=1 or \
++           any(mark in text for mark in forbidden)or \
++           w['rss_cap_mib']!=512 or w['own_child_only']is not True or w['liveness_group_cleanup']is not True or \
++           not 0<w['elapsed_seconds']<w['wall_cap_seconds']<=record['wall_cap_seconds']<=600 or \
++           not 0<=w['sampled_peak_rss_mib']<512:
++            raise RuntimeError('only exact actual component direct-entry exit1 guard closes this structural control')
++        for row in input_pins:c.same_pin(row['path'],row)
++        case=dict(case=label,expected_abort=message,actual_exit_code=w['returncode'],actual_abort_message_exact=True,
++          entry_invocation='ACTUAL_COMPONENT_DIRECT_CALL_WITH_DISTINCT_NAMES_AND_DUPLICATE_C_PTR',
++          actual_component=declared['component'],actual_closed_build_evidence=direct_alias_build,
++          declared_operand_construction=declared,actual_readonly_input_full_pins=input_pins,
++          component_structural_guard_only=True,CLE_dispatch_executed=False,transport_executed=False,
++          pre_transport_abort_at_frozen_validation_branch=True,no_positive_solver_or_seal_trace=True,
++          actual_log_pin=c.pin(lp),actual_watchdog_pin=c.pin(wp),
++          original_execution_record_index=len(runner.records)-1,original_execution_record_label=record['label'],
++          all_actual_assertions_completed=True)
++        cases.append(case);direct_alias_cases.append(label);stable()
+     def cleanup(names,why,evidence):
+         for name in names:
+             if(WORK/name).exists():release(name,why,evidence)
+@@ -290,6 +367,32 @@
+             raise RuntimeError('exclusive same-inode regular single-link private writable clone')
+         owned[:]=[x for x in owned if x['path']!=str(target)];return row
+     try:
++        # Replace ONLY the main object in the original actual ordered69 link.
++        # Every component/core/alias object and all four archives remain exact.
++        resources.phase='direct_alias_probe_build'
++        compiler=build['records'][0]['command'][0]
++        includes=[x for x in build['records'][0]['command']if x.startswith('-I')]
++        probe_obj=OUT/'build/direct_alias_entry_controls.o'
++        probe_exe=OUT/'runtime/direct_alias_entry_controls'
++        probe_compile=[compiler,*c.FLAGS,*includes,'-J'+str(OUT/'build'),'-c',
++                       str(HERE/'direct_alias_entry_controls.f90'),'-o',str(probe_obj)]
++        probe_inputs=[str(probe_obj)if row['path']==removed_main['path']else row['path']for row in direct_original_inputs]
++        probe_link=[*link_command[:3],*probe_inputs,'-o',str(probe_exe)]
++        if len(probe_inputs)!=69 or probe_inputs.count(str(probe_obj))!=1 or \
++           any(actual!=original['path']for actual,original in zip(probe_inputs,direct_original_inputs)
++               if original['path']!=removed_main['path']):
++            raise RuntimeError('exact one-main-only ordered link replacement')
++        direct_indices=[]
++        for label,command in [('direct_alias_compile',probe_compile),('direct_alias_link',probe_link)]:
++            stable();runner.execute(OUT/'build',label,command,600)
++            helper.check_watch(OUT,runner.records[-1]);direct_indices.append(len(runner.records)-1);stable()
++        probe_obj_pin=retain(probe_obj);probe_exe_pin=retain(probe_exe)
++        direct_alias_build=dict(actual_compile_link_record_indices=direct_indices,
++          actual_new_main_frozen_source_pin=direct_probe_source_pin,
++          actual_compile_command=probe_compile,actual_link_command=probe_link,
++          original_ordered_69_inputs=direct_original_inputs,removed_original_main_pin=removed_main,
++          actual_new_main_full_pin=probe_obj_pin,actual_new_executable_full_pin=probe_exe_pin,
++          retained_original_component_and_archive_count=68,only_main_replaced=True,physics_qualification=False)
+         # These copies are only access aliases. Reports and original producer pins
+         # remain independent fixed inputs throughout every stage and publication.
+         for i,row in enumerate(plan['producers'],1):
+@@ -306,10 +409,12 @@
+         for label,deck,message in [
+           ('pack_missing_original',negpack.replace('A1 A2 A3 :: ;','A1 A2 :: ;'),'APACKX64: FOUR OUTPUTS AND THREE INDEPENDENT INPUTS REQUIRED.'),
+           ('pack_memory_outputs',negpack.replace("XSM_FILE PACK :: FILE './negative_packout.xsm' ;",'LINKED_LIST PACK ;'),'APACKX64: STRICT FRESH XSM / READONLY XSM ORDER REQUIRED.'),
+-          ('pack_original_alias',negpack.replace('A1 A2 A3 :: ;','A1 A1 A3 :: ;'),'APACKX64: INDEPENDENT DISTINCT OPERANDS REQUIRED.'),
++          ('pack_original_alias',None,'APACKX64: INDEPENDENT DISTINCT OPERANDS REQUIRED.'),
+           ('pack_wrong_order',negpack.replace('A1 A2 A3 :: ;','A2 A1 A3 :: ;'),'APACKX64: OWN PLANE CASE REQUIRED.'),
+           ('pack_no_fake_options',negpack.replace('A1 A2 A3 :: ;','A1 A2 A3 :: SYNTHETIC ;'),'APACKX64: NO SYNTHETIC PRODUCER OPTIONS ALLOWED.')]:
+-            storage_refuse(label,deck+'END: ; QUIT "LIST" .\n',message)
++            if label=='pack_original_alias':
++                direct_refuse(label,message);new_storage_cases.append(label)
++            else:storage_refuse(label,deck+'END: ; QUIT "LIST" .\n',message)
+             cleanup(['negative_packout.xsm','negative_rcon1.xsm','negative_rcon2.xsm','negative_rcon3.xsm'],
+                     'unqualified pre-kernel APACK private outputs',cases[-1])
+         resources.phase='pack';run('pack',packdeck+'ECHO "ACTUAL-AAA3-INDEPENDENT-PACK-COMPLETE" ;\nEND: ; QUIT "LIST" .\n','ACTUAL-AAA3-INDEPENDENT-PACK-COMPLETE')
+@@ -336,9 +441,10 @@
+           ('initial_wrong_rank_type','RANK 1.0',operands,'SPOOPP64: EXPLICIT POSITIVE RANK REQUIRED.'),
+           ('initial_zero_rank','RANK 0',operands,'SPOOPP64: EXPLICIT POSITIVE RANK REQUIRED.'),
+           ('initial_missing_plane_contract','RANK 1','MACRO AXTRACK PACK BASIS GRCON RCON1 RCON2','SPOOPP64: NINE FULL OPERANDS REQUIRED.'),
+-          ('initial_contract_alias','RANK 1','MACRO AXTRACK PACK BASIS GRCON RCON1 RCON1 RCON3','SPOOPP64: CONTRACT OPERAND ALIAS.'),
++          ('initial_contract_alias',None,None,'SPOOPP64: CONTRACT OPERAND ALIAS.'),
+           ('initial_wrong_plane_order','RANK 1','MACRO AXTRACK PACK BASIS GRCON RCON2 RCON1 RCON3','SPOASMP64: GENUINE COMPLETE NATIVE INPUT REQUIRED.')]:
+-            refuse(label,initial(params,ops),message)
++            if label=='initial_contract_alias':direct_refuse(label,message)
++            else:refuse(label,initial(params,ops),message)
+             if(WORK/'negative_system.xsm').exists():release('negative_system.xsm','unqualified initial operator negative output',cases[-1])
+         for mutation in ['missing_seal','wrong_case','wrong_plane','wrong_epoch','flux32','source32','LPOD_only']:
+             copy(c.pin(WORK/'initial_pack.xsm'),'negative_pack.xsm')
+@@ -413,8 +519,10 @@
+         for label,head,ops,message in [
+           ('view_missing_operand',precheck,viewops.rsplit(' ',1)[0],'SPOBVX64: EXACT FOURTEEN ORDERED OPERANDS REQUIRED.'),
+           ('view_memory_output',precheck.replace("XSM_FILE AXOUT :: FILE './negative_ax.xsm' ;",'LINKED_LIST AXOUT ;'),viewops,'SPOBVX64: FRESH PRIVATE XSM OUTPUT PAIR REQUIRED.'),
+-          ('view_system_alias',precheck,viewops.replace('SYS1 SYS2 SYS3','SYS1 SYS1 SYS3'),'SPOBVX64: OPERAND ALIAS OR REPEATED NAME.')]:
+-            storage_refuse(label,head+'AXOUT ARCOUT := SPOBVX64: '+ops+' :: RANK 1 EDIT 0 ;\nEND: ; QUIT "LIST" .\n',message)
++          ('view_system_alias',None,None,'SPOBVX64: OPERAND ALIAS OR REPEATED NAME.')]:
++            if label=='view_system_alias':
++                direct_refuse(label,message);new_storage_cases.append(label)
++            else:storage_refuse(label,head+'AXOUT ARCOUT := SPOBVX64: '+ops+' :: RANK 1 EDIT 0 ;\nEND: ; QUIT "LIST" .\n',message)
+             cleanup(['negative_ax.xsm','negative_archive.xsm'],'unqualified pre-kernel view-pair outputs',cases[-1])
+         for label,params,message in [
+           ('pair_missing_rank','EDIT 0','SPOBOOX64: RANK HAS NO DEFAULT.'),
+@@ -460,9 +568,11 @@
+         result=data.final_readback(WORK/'closed_boot_axial.xsm',WORK/'closed_boot_archive.xsm')
+         result=dict(actual_terminal=result,AX_full_pin=axpin,ARCHIVE_full_pin=arcpin,actual_Fortran_complete_copy_readback=readbacks[0])
+         c.write(OUT/'Root_actual_complete_BOOT_terminal_readback.json',result);stable()
+-        if len(runner.records)!=48 or sum(x['status']=='PASS'for x in runner.records)!=15 or \
++        if len(direct_alias_cases)!=3 or len(set(direct_alias_cases))!=3:
++            raise RuntimeError('all three actual structural component alias guards required')
++        if len(runner.records)!=50 or sum(x['status']=='PASS'for x in runner.records)!=17 or \
+            sum(x['status']=='FAILED'for x in runner.records)!=33:
+-            raise RuntimeError('all48 genuine stages:15 success plus33 exact intended exit1 refusals')
++            raise RuntimeError('all50 genuine stages:17 success plus33 exact intended exit1 refusals')
+     except BaseException as exc:failure=type(exc).__name__+': '+str(exc)
+     finally:
+         try:stable();after=resources.check()
+@@ -473,6 +583,7 @@
+     raw=dict(schema='ACTUAL_AAA3_COMPLETE_EXECUTION_PREPUBLICATION_RECORD_V1',
+       failure=failure,after_check_error=after_error,records=runner.records,fixed_current_pins=fixed,
+       owned_runtime_pins=owned,actual_operator_refusals=cases,actual_complete_readback_proofs=proofs,
++      actual_direct_structural_alias_control_names=direct_alias_cases,actual_direct_alias_build=direct_alias_build,
+       actual_terminal=result,actual_private_release_ledger=ledger,actual_closed_CLE_scratch_archival_ledger=scratch_ledger,
+       private_release_ledger_scope='HOST_OWNED_UNLINK_ONLY',
+       frozen_Fortran_internal_disposal=dict(names=['BOOT-MAC-1/2/3.xsm','BOOT-Q-1/2/3.xsm','BOOT-SOLVED-STAGE.xsm'],
+@@ -502,6 +613,7 @@
+       complete_unmodified_execution_records_pin=rawpin,actual_closed_CLE_scratch_archival_ledger=scratch_ledger,
+       failure=failure,after_check_error=after_error,records=compact_records,fixed_current_pins=fixed,
+       owned_runtime_pins=owned,actual_terminal=result,
++      actual_direct_structural_alias_control_names=direct_alias_cases,actual_direct_alias_build=direct_alias_build,
+       actual_operator_refusals=[{k:v for k,v in case.items()if k!='record'}for case in cases],
+       actual_complete_readback_proofs=proofs,
+       actual_private_release_ledger=[dict(released_full_pin=x['released_full_pin'],reason=x['reason'],

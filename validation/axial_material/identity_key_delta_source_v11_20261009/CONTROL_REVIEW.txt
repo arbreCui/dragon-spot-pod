@@ -1,0 +1,98 @@
+SOURCE-ONLY DRAFT. No compilation, control execution, transport run, or PASS.
+
+Candidate module source:
+/private/tmp/axmat-rank1-cross-group-identity-key-delta-source-v11-20261009/SPOT1P64.f90
+SHA256 0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5
+
+The driver must link against that actual SPOT1P64_CACHE_MOD and its ordinary
+kernel dependencies. It supplies an XABORT capture stub. It contains no copy of
+the candidate encoding, matching, decoding, threshold selection, or accounting
+implementation. No floating operations are applied to any identity word.
+
+Invocation contract (not executed):
+  keycodec_controls positive
+  keycodec_controls negative MUTATION PHASE
+PHASE is 1 or 2. Each invocation needs its own fresh working directory; output
+files use status='new'. Positive normal termination must be actual exit 0.
+Negative expected rejection is actual exit 23 plus actual_xabort.txt exactly
+matching 'SPOT1P64 RANK1 CACHE: IMMUTABLE OPERATOR CHANGED.' including newline.
+An unexpected normal return writes unexpected_return.txt and exits 1.
+Any other actual XABORT exits 97. A driver marker alone does not satisfy a gate.
+
+Positive coverage:
+- Phase 1 owner=5, phase 2 owner=2, each first owner uses full storage.
+- Both phases: zero delta, single delta, multi delta, n=6/d=3 strict 36<48,
+  n=6/d=4 equality full fallback, n=6/d=5 greater full fallback, n=7 different
+  size full fallback. Actual stored words and positions are archived.
+- Keys include 64-bit integer min/max/all-one values and untouched IEEE bit
+  patterns for positive/negative zero, infinities, quiet/signaling NaN payloads.
+- Fresh ineligible groups remain without mode allocation for either phase.
+- Phase 1 ready guard gives no hit; ready phase 2 guards increment hits twice;
+  a not-ready phase 2 repeat leaves hits unchanged.
+- CLEAR resets all counters and releases the plan; the second lifecycle has
+  new phase owners 9 and 3, new inputs, one fresh ready hit, then another CLEAR.
+- Disabled lifecycle returns inactive without a plan and keeps zero counters.
+The ready marker is explicitly set for a counter primitive; no factor build,
+kernel computation, full FLU call, or physical qualification is implied.
+
+Negative mutations, each separately for phases 1 and 2:
+  unchanged_word          input word not in the delta differs
+  difference_word         input word represented by the delta differs
+  stored_difference_word  actual stored delta value differs
+  base_word               actual anchor word not in the delta differs
+  input_length            GUARD input length differs
+  load_length             KEY_LOAD output length differs
+  ineligible_existing     eligible becomes false for a created group
+  corrupt_index_zero      actual delta index becomes 0
+  corrupt_index_high      actual delta index becomes n+1
+  missing_anchor          actual owner payload is deallocated
+The pre-mutation keys and representations are retained before the malformed
+attempt record. Attempt records deliberately do not invoke KEY_LOAD first.
+The declared final operation must itself reject; normal return never counts.
+
+Raw binary layout (all files explicit little endian, stream, no record markers):
+keycodec_manifest.jsonl provides ordered file names and event IDs.
+For kind=key_snapshot, the file contains:
+  int64 header[32]
+  int64 input[header5]
+  int64 actual_payload[header12]
+  int32 actual_positions[header13]
+  int64 actual_anchor_payload[header14]
+  int64 actual_KEY_LOAD_decoded[header6]
+Header positions are one-based:
+  1 schema=1; 2 event ID; 3 group; 4 phase; 5 original/attempt input word count;
+  6 actual decoded word count; 7 KEY_STATS full key count;
+  8 KEY_STATS stored word count; 9 KEY_STATS stored position count;
+  10 KEY_STATS compressed flag; 11 KEY_STATS owner;
+  12 actual payload array length; 13 actual position array length;
+  14 actual owner payload array length; 15 group mode allocated flag;
+  16 ready flag; 17 actual GUARD active flag (attempt records deliberately 0);
+  18 built; 19 reuses; 20 validated hits; 21 live bytes; 22 peak bytes; 23 cap;
+  24 declared groups=12; 25 plan allocated flag; 26 positions allocated flag;
+  27 payload allocated flag; 28 anchor positions allocated flag;
+  29 anchor payload allocated flag; 30 decode-request flag; 31-32 reserved 0.
+Kinds stats_snapshot contain only int64[10]:
+  schema=1, event ID, built, reuses, hits, live, peak, cap,
+  plan allocated flag, declared groups=12.
+Ineligible/disabled snapshots have no mode and no decoded/stored data.
+
+Required independent review after real execution:
+1. Verify exact candidate/compiler/source/object identities and actual terminal
+   receipts, full stdout, status and exit per invocation, capped own-PID evidence.
+2. Parse every binary to exact EOF. Use actual array lengths to check observed
+   KEY_STATS lengths/allocation flags rather than trusting header claims.
+3. Reconstruct complete delta keys independently from archived anchor/index/
+   value arrays, and byte-compare every input to actual KEY_LOAD decoded words.
+   Check all omitted words, all changed words, strictly increasing indices,
+   strict 12*d<8*n selection and full fallback on equality/different length.
+4. Independently sum persistent payloads (8 bytes/value, 4 bytes/index) plus
+   unchanged 12*4096 descriptor reserve; compare all live/peak/cap counters.
+   No factor allocation occurs, so built/reuses remain zero throughout.
+5. Check ready-hit deltas and all CLEAR/new lifecycle/disabled counters.
+6. Verify each negative has the exact intended raw mutation, original files,
+   actual exact XABORT and exit23, with no unexpected_return.txt.
+7. Retain and rerun all original 40/45 mathematical/identity/rawcodec controls;
+   adapt raw archive parsing to the new representation without dropping checks.
+   Existing controls/physical qualification are not replaced by this primitive.
+8. Only a new genuine native bounded AAA run can prove reduced own-PID RSS.
+   These synthetic primitive results cannot grant native/AAA/ABA qualification.

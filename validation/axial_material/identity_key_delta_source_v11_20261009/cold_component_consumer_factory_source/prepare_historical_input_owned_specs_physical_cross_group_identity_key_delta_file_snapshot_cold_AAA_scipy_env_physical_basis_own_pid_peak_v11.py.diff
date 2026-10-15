@@ -1,0 +1,260 @@
+--- /Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_physical_factor_diagonal_trim_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak_v10.py
++++ /Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_physical_cross_group_identity_key_delta_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak_v11.py
+@@ -1,4 +1,4 @@
+-'UNREADY factor-diagonal V10 cold source-only integration draft.\n\nFrozen53 top-level and2 nested factory definitions preserve all original\nphysics, producer3.14/analysis3.12 contracts, resource/own-PID512 caps, original\ncontroller/basis/decks/budgets and four tails. New combined and bounded INPUT\nsuccess pins remain absent; neither V9 failure nor old native observations\nqualify this family. Complete actual INPUT is required before any declaration.'
++'UNREADY V11 cold source-only integration candidate.\n\nOriginal P14 producer/P12 analysis and complete fresh INPUT, physical basis, decks, controller, OwnRSS MRO, budgets and closeout gates are retained. New combined/intake/component/cold success witnesses and observed counts remain absent. No controller, fixture or numerical execution is authorized by these source-only files.'
+ import argparse
+ import ast
+ import copy
+@@ -22,8 +22,8 @@
+ ART = ROOT / "validation/artifacts"
+ OLD = ART / "axial-material-production-qualified-AB-white-trace-refined-envpin-20261005"
+ PARENT_SOURCE = ART / "axial-material-qualified-AB-white-trace-refined-envpin-admission-20261005"
+-SOURCE = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-admission-scipy-env-physical-basis-own-pid-peak-v10-20261009'
+-OUTPUT = ART/'axial-material-production-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-scipy-env-physical-basis-own-pid-peak-v10-20261009'
++SOURCE = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-admission-scipy-env-physical-basis-own-pid-peak-v11-20261009'
++OUTPUT = ART/'axial-material-production-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-scipy-env-physical-basis-own-pid-peak-v11-20261009'
+ BUILD_FACTORY = ROOT / "validation/axial_material/prepare_qualified_AB_rank1_cache_production.py"
+ BUILD = ART / "axial-material-rank1-factor-cache-build-20261007"
+ BUILD_FACTORY_SHA = "92d73658e349ea2b2816b2b770549ca22378c2595f2c9e5c9331bbf91c6abf8a"
+@@ -37,7 +37,7 @@
+ PREPARED_SHA = "024ffb9263e3d3b6cf10301d6fe2bac5a87a9b368008440e01038982291a6d53"
+ CAPTURE_SEAL = "16f67ec74e41d3282a7e90fe342e0165c81a8fb97a6cfc1cd72615e6a9ac9c0a"
+ OLD_RUNTIME_SHA = "51b2d3ff947daa3ea523932bcc28276b054632f0bfc6cf76fa21ac458a4f7be4"
+-EXPERIMENT = 'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-scipy-env-physical-basis-own-pid-peak-v10-20261009'
++EXPERIMENT = 'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-scipy-env-physical-basis-own-pid-peak-v11-20261009'
+ OBSERVER_PREFIX = "AXMAT-MOMENT-ORDER SELECTOR "
+ OBSERVER_EXPECTED = [32, 3, 2, 3, 1]
+ HISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"
+@@ -68,25 +68,25 @@
+ CONTROLS_SHA = 'd4da69dbf099f8527e50d837c27ec9fc94aa105e37530ccfe8c11d68a7767393'
+ DECK_HELPER = ROOT/'validation/axial_material/combined_cold_file_snapshot_decks.py'
+ DECK_HELPER_SHA = '6606ff241ae98ca193bd1e1c002ac066661fbba76a151c42ea2f62f8b979aee0'
+-FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_physical_factor_diagonal_trim_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak_v10.py'
++FORMAL_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_physical_cross_group_identity_key_delta_file_snapshot_cold_AAA_scipy_env_physical_basis_own_pid_peak_v11.py'
+ FORMAL_FACTORY_SHA = None  # Documentary unknown; external AXMAT_COLD_FACTORY_SHA256 avoids a self-hash cycle.
+-COMBINED_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_factor_diagonal_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v10.py'
+-COMBINED_FACTORY_SHA = 'c55ca2680d9e1326979649f835d9612a8fd80df5aecee1adc25765c419329efc'
+-COMBINED_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'
+-COMBINED_BUILD_SEAL = '3d1094466cb03a08d3bdb08eee0a1f4f3c2b75bb676400beaf5fe7a4892001b5'
+-COMBINED_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009'/'terminal_return.json'
+-COMBINED_TERMINAL_SHA = 'aec9364827742e68d545ef7ea63ad7d656201c9de13938a1ddceb4b13bbc2bd9'
+-COMBINED_RUNTIME = '/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-factor-diagonal-trim-live-resource-scopes-v10-20261009/runtime/Dragon'
+-COMBINED_RUNTIME_SHA = '39a372accd844132ca811ef04b984d8663a353068e19035795d4a028ea108256'
+-COMBINED_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_FACTOR_DIAGONAL_TRIM_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V10_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++COMBINED_FACTORY = ROOT/'validation/axial_material/prepare_historical_input_owned_specs_cross_group_identity_key_delta_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v11.py'
++COMBINED_FACTORY_SHA = None
++COMBINED_BUILD = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'
++COMBINED_BUILD_SEAL = None
++COMBINED_TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009'/'terminal_return.json'
++COMBINED_TERMINAL_SHA = None
++COMBINED_RUNTIME = '/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-cross-group-identity-key-delta-live-resource-scopes-v11-20261009/runtime/Dragon'
++COMBINED_RUNTIME_SHA = None
++COMBINED_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_PHYSICAL_DEDUP_RUNTIME_LIVE_RESOURCE_SCOPES_V11_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+ COMBINED_ADMISSION = 'COMBINED_RUNTIME_INPUT_ONLY'
+-PRIVATE_INPUT_CONSUMER = ROOT/'validation/axial_material/cold_component_input_consumer_factor_diagonal_trim_own_pid_peak_v10.py'
+-PRIVATE_INPUT_CONSUMER_SHA = '5911db3dec1cf377a47fa90f89add39fe3bcb7d2a206375cb6c07029f20f07b4'
+-COMPONENT_INTAKE_DESCRIPTOR = ROOT/'validation/axial_material/cold_owned_specs_factor_diagonal_trim_component_input_intake_binding_v10_20261009.json'
+-COMPONENT_INTAKE_DESCRIPTOR_SHA = '14a803e7f230d69fc9a82cdcd325333e7a080eec8117285e8a60c99758d27b48'
+-INPUT_REUSE_SCHEMA = 'AXMAT_COLD_COMPLETE_FACTOR_DIAGONAL_TRIM_COMPONENT_INPUT_INTAKE_V1'
++PRIVATE_INPUT_CONSUMER = ROOT/'validation/axial_material/cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py'
++PRIVATE_INPUT_CONSUMER_SHA = None
++COMPONENT_INTAKE_DESCRIPTOR = ROOT/'validation/axial_material/cold_owned_specs_cross_group_identity_key_delta_component_input_intake_binding_v11_20261009.json'
++COMPONENT_INTAKE_DESCRIPTOR_SHA = None
++INPUT_REUSE_SCHEMA = 'AXMAT_COLD_COMPLETE_CROSS_GROUP_IDENTITY_KEY_DELTA_COMPONENT_INPUT_INTAKE_V1'
+ INPUT_REUSE_SEMANTICS = 'COMPLETE_FRESH_COLD_INPUT_REUSE_NOT_COMPONENT_API_REEXECUTION'
+-CALLBACK_METADATA_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_INPUT_ADMISSION_V1'
++CALLBACK_METADATA_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_INPUT_ADMISSION_V1'
+ SCIPY_HELPER = ROOT/'validation/axial_material/cold_scipy_environment_admission_namespace_v3_20261008.py'
+ SCIPY_HELPER_SHA = '35a9aca4355d577395a5bf73fb79caa24b457c7a31febc7547de93b5a1e49557'
+ SCIPY_DEPENDENCY_ROOT = ART/'axial-material-cold-cp314-scipy-dependency-20261008'
+@@ -122,12 +122,12 @@
+ OWN_PID_SUPERVISOR_SHA = 'ac51e68866f96547fa620fd971a911f93841a824412c3fe0a050bdbce00ae76b'
+ FROZEN_CANONICAL_COLD_FAILURE = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-file-snapshot-terminal-scipy-env-canonical-code-20261008/cold_failure_terminal_return.json'
+ FROZEN_CANONICAL_COLD_FAILURE_SHA = '6654c38ad41f074aeeff05da8f9d4d8d11017051fc451317f0fb0af52567caf5'
+-COLD_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-terminal-scipy-env-physical-basis-own-pid-peak-v10-20261009'
+-CONTROL_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-factor-diagonal-trim-file-snapshot-own-rss-terminal-scipy-env-physical-basis-own-pid-peak-v10-20261009'
+-DRAFT_STATUS = 'REVIEWED_TRIM_COLD_INPUT_REUSE_FACTORY_WITH_ACTUAL_BOUNDED_INTAKE'
+-SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_FACTORY_V1'
+-DECL_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_DECLARATION_ACTUAL_TERMINAL_V1'
+-COLD_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_ACTUAL_TERMINAL_V1'
++COLD_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-terminal-scipy-env-physical-basis-own-pid-peak-v11-20261009'
++CONTROL_TERMINAL = ART/'axial-material-qualified-AB-historical-input-owned-specs-physical-cache-memory-dedup-cross-group-identity-key-delta-file-snapshot-own-rss-terminal-scipy-env-physical-basis-own-pid-peak-v11-20261009'
++DRAFT_STATUS = 'UNREADY'
++SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_FACTORY_V1'
++DECL_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_DECLARATION_ACTUAL_TERMINAL_V1'
++COLD_TERMINAL_SCHEMA = 'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_ACTUAL_TERMINAL_V1'
+ COLD_TAIL = ('full_closeout_tail_gate','actual_elapsed_seconds','actual_archive_bytes','actual_resources')
+ ORIGINAL_COMPLETE_12_MAP_CASE_BYTES = 13265348616
+ ORIGINAL_COLD_RESERVE_BYTES = 20971764748
+@@ -142,21 +142,35 @@
+     '    executor = make_executor(work, budget.total_seconds, case, resources,\n'
+     '                             info["own_child_supervision"])\n')
+ DECK_HOOK = '    from combined_cold_file_snapshot_decks import defer_freshly_generated_axial_decks\n    generated_manifest_path = output / "decks/production_inputs.json"\n    generated_manifest = json.loads(generated_manifest_path.read_text())\n    original_generated_decks = {name: (output / "decks" / name).read_bytes()\n                                for name in generated_manifest["deck_sha256"]}\n    deferred_decks, deferred_proof = defer_freshly_generated_axial_decks(original_generated_decks)\n    for name in ("bootstrap_axial.x2m", "picard_axial.x2m"):\n        if generated_manifest["deck_sha256"][name] != deferred_proof["independent_deck_inverses"][name]["original_sha256"]:\n            raise Refusal("generator-only original complete deck identity differs")\n        (output / "decks" / name).write_bytes(deferred_decks[name])\n        generated_manifest["deck_sha256"][name] = sha256(output / "decks" / name)\n    generated_manifest["runner_deferred_snapshot_inputs"] = deferred_proof\n    dump_json(generated_manifest_path, generated_manifest)\n    dump_json(output / "decks/deferred_snapshot_inverse.json", deferred_proof)\n'
+-TRIM_FACTORY = Path('/Users/wen/spot/validation/axial_material/prepare_qualified_AB_rank1_factor_cache_factor_diagonal_trim_production.py')
+-TRIM_FACTORY_SHA = 'd82d89daa779c8e1f3087e5c49f05279d35a9b3320ea1ae0257f7eaa586ebc8e'
+-TRIM_SOURCE = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-admission-20261009')
+-TRIM_BUILD = Path('/Users/wen/spot/validation/artifacts/axial-material-rank1-factor-cache-factor-diagonal-trim-build-20261009')
+-TRIM_TERMINAL = Path('/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-rank1-factor-cache-factor-diagonal-trim-build-terminal-20261009')
+-TRIM_DECL_SHA = 'f03dab4ce9e8376b4f64491dc934489df1ddd766c3bd38e4ba58a1771c966501'
+-TRIM_SEAL_SHA = 'c8a5fa37aad42efb5bf80ea1db66506d75ffd5571ff46f86d8358724e53430d4'
+-TRIM_TERMINAL_SHA = 'e9ff017a011fdb543bfecde70c6911eba58225075d3affbb02ebd241d2860b25'
+-TRIM_KERNEL_SHA = '5e0d4afc9a4ebfb6f26b2e3c4ab98c53f501afa861c33a098e6ab55031c5e809'
+-TRIM_OBJECT_SHA = 'fc3441c2523283b5026528c9f11e6d1edeba9ec202f55a0a1258e7ef3e09a6d1'
+-TRIM_RUNTIME_SHA = '821151dea83ebcf1c8870f889028dd10e45367a7883b09259ee096eb3cef266e'
+-TRIM_SOURCE_ADMISSION_SHA = '58246aa23b6a81bdfd9a5f805d0fc5982519653a31b8b8db434e65c5d2d001a0'
+-TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
++TRIM_FACTORY = Path('/Users/wen/spot/validation/axial_material/prepare_qualified_AB_rank1_factor_cache_cross_group_identity_key_delta_production.py')
++TRIM_FACTORY_SHA = 'f136baab5047a8727cfd2c0abb5399acf617c25c4f4e7692242419e6f9daef4e'
++TRIM_SOURCE = ART/'axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-admission-v11-20261009'
++TRIM_BUILD = ART/'axial-material-rank1-factor-cache-cross-group-identity-key-delta-build-v11-20261009'
++TRIM_TERMINAL = ART/'axial-material-qualified-AB-rank1-factor-cache-cross-group-identity-key-delta-build-terminal-v11-20261009'
++TRIM_DECL_SHA = None
++TRIM_SEAL_SHA = None
++TRIM_TERMINAL_SHA = None
++TRIM_KERNEL_SHA = '0800cb54194a7736cb0309703dc2d1fe658171ce1496d6c22ac19fb0ebfcfff5'
++TRIM_OBJECT_SHA = None
++TRIM_RUNTIME_SHA = None
++TRIM_SOURCE_ADMISSION_SHA = None
++TRIM_SCHEMA = 'AXMAT_RANK1_FACTOR_CACHE_CROSS_GROUP_IDENTITY_KEY_DELTA_PRODUCTION_RUNTIME_INPUT_ADMISSION_V1'
+ TRIM_FACTOR_STORAGE_CONTRACT = {'schema': 'AXMAT_RANK1_DEAD_FACTOR_DIAGONAL_STORAGE_PATCH_V1', 'ordinary_rank1_only': True, 'ready_factor_physical_shape': '[nstate-1,nstate,nblock]', 'public_solve_shape': '[nstate,nstate]', 'retained_build_all_original_factor_and_full_RHS_solves': True, 'all_original_40_stages_required': True, 'persistent_release_bytes': '8*nstate*nblock', 'transient_pack_reservation_bytes': '8*(nstate-1)*nstate*nblock', 'reused_square_workspace': 'rank1_lower_work', 'actual_native_RSS_passed': False}
+ TRIM_INPUT_SEMANTICS = 'ACTUAL_TRIM_3ARG_RETURN_IN_THIS_PREP_THEN_COMPLETE_FRESH_INPUT_REUSE_NO_API_REEXECUTION'
++
++
++TRIM_CONTROL_COUNTS = None
++EXPECTED_API_DESCRIPTOR_COUNT = None
++EXPECTED_API_ALIAS_COUNT = None
++EXPECTED_INTAKE_PAYLOAD_COUNT = None
++FUTURE_ACTUAL_COMBINED_PREP_TERMINAL_SHA = None
++FUTURE_ACTUAL_COLD_DECLARATION_TERMINAL_SHA = None
++FUTURE_ACTUAL_COLD_PREPARED_SHA = None
++FUTURE_ACTUAL_COLD_BINDING_SHA = None
++FUTURE_ACTUAL_COLD_CONTROL_SEAL_SHA = None
++FUTURE_ACTUAL_COLD_CONTROL_TERMINAL_SHA = None
++FUTURE_ACTUAL_COLD_TERMINAL_SHA = None
++FUTURE_ACTUAL_COLD_CLOSEOUT_SEAL_SHA = None
+ 
+ 
+ def digest(path):
+@@ -264,7 +278,7 @@
+ def require_input_ready():
+     if sys.flags.optimize!=0 or 'PYTHONOPTIMIZE' in os.environ:
+         raise ValueError('source predicates require optimize0 before project input read')
+-    if DRAFT_STATUS != 'REVIEWED_TRIM_COLD_INPUT_REUSE_FACTORY_WITH_ACTUAL_BOUNDED_INTAKE':
++    if DRAFT_STATUS != 'REVIEWED_IDENTITY_KEY_DELTA_COLD_INPUT_REUSE_FACTORY_WITH_ACTUAL_BOUNDED_INTAKE':
+         raise ValueError('UNREADY: no bounded intake, canonical cold fixture or business permission')
+     for p in (FORMAL_FACTORY,COMBINED_FACTORY,COMBINED_BUILD,COMBINED_TERMINAL,COMBINED_RUNTIME,
+               DECK_HELPER,CAPTURE_SUCCESS_FACTORY,CAPTURE_SUCCESS_TERMINAL,
+@@ -272,9 +286,14 @@
+         if p is None or not Path(p).is_absolute():raise ValueError('unbound actual canonical INPUT/source path')
+     for s in (COMBINED_FACTORY_SHA,COMBINED_BUILD_SEAL,COMBINED_TERMINAL_SHA,
+               COMBINED_RUNTIME_SHA,CAPTURE_SUCCESS_FACTORY_SHA,CAPTURE_SUCCESS_SEAL,CAPTURE_SUCCESS_TERMINAL_SHA,
+-              PRIVATE_INPUT_CONSUMER_SHA,COMPONENT_INTAKE_DESCRIPTOR_SHA):nonzero_sha(s)
++              PRIVATE_INPUT_CONSUMER_SHA,COMPONENT_INTAKE_DESCRIPTOR_SHA,TRIM_DECL_SHA,TRIM_SEAL_SHA,
++              TRIM_TERMINAL_SHA,TRIM_OBJECT_SHA,TRIM_RUNTIME_SHA,TRIM_SOURCE_ADMISSION_SHA):nonzero_sha(s)
+     if Path(__file__).resolve()!=Path(FORMAL_FACTORY) or digest(__file__)!=nonzero_sha(os.environ.get('AXMAT_COLD_FACTORY_SHA256')):
+         raise ValueError('TMP/source identity cannot perform a cold business action')
++    if type(TRIM_CONTROL_COUNTS)is not dict or not TRIM_CONTROL_COUNTS:
++        raise ValueError('UNREADY: actual complete68 component count body required')
++    for count in (EXPECTED_API_DESCRIPTOR_COUNT,EXPECTED_API_ALIAS_COUNT,EXPECTED_INTAKE_PAYLOAD_COUNT):
++        if type(count)is not int or count<=0:raise ValueError('UNREADY: independently observed actual counts missing')
+ 
+ def factory_source_descriptor():
+     require_input_ready()
+@@ -380,64 +399,12 @@
+ 
+ 
+ def last_cprime_trim_return_admission(combined):
+-    """Validate an entire actual unit INPUT return without executing its API.
+-
+-    The old seven-key body is retained, including its old operator capture.
+-    Those old observations provide no new trim/corrected-runtime RSS credit.
++    """Use the normally imported complete cold INPUT gate, never producer API.
++
++    It checks the entire original return plus V11 full source/control evidence;
++    the retained factor admission label alone cannot supply V11 credit.
+     """
+-    whole=combined['actual_components'];value=combined['actual_last_cprime_trim_admission']
+-    if (type(value)is not dict or value['schema']!=TRIM_SCHEMA
+-        or value['admission']!='RANK1_FACTOR_CACHE_FACTOR_DIAGONAL_TRIM_RUNTIME_INPUT_ONLY'
+-        or value['build_root']!=str(TRIM_BUILD)or value['source_root']!=str(TRIM_SOURCE)
+-        or value['build_seal_sha256']!=TRIM_SEAL_SHA
+-        or value['compiled_kernel']!=dict(path=str(TRIM_BUILD/'build/SPOT1P64.o'),sha256=TRIM_OBJECT_SHA)
+-        or value['compiled_kernel_source']!=dict(path=str(TRIM_SOURCE/'SPOT1P64.f90'),sha256=TRIM_KERNEL_SHA)
+-        or value['corrected_runtime']!=dict(path=str(TRIM_BUILD/'runtime/Dragon'),sha256=TRIM_RUNTIME_SHA)
+-        or value['actual_external_terminal_evidence']!=dict(path=str(TRIM_TERMINAL/'terminal_return.json'),sha256=TRIM_TERMINAL_SHA)
+-        or value['source_admission']!=dict(path=str(TRIM_SOURCE/'source_admission.json'),sha256=TRIM_SOURCE_ADMISSION_SHA)
+-        or value['source_patch_proof']!=value['source_admission']
+-        or value['factor_diagonal_codec_controls_passed']is not True
+-        or value['factor_diagonal_storage_contract']!=TRIM_FACTOR_STORAGE_CONTRACT
+-        or value['cache_unit_control_counts']['total_declared_stages']!=45
+-        or value['cache_unit_control_counts']['inherited_last_cprime_stages_retained']!=40
+-        or value['cache_unit_control_counts']['factor_codec_positive_fixtures']!=3
+-        or value['cache_unit_control_counts']['factor_codec_module_negative_calls']!=4
+-        or value['cache_unit_control_counts']['factor_codec_public_factor_calls']!=6
+-        or value['cache_unit_control_counts']['factor_codec_public_solve_calls']!=12
+-        or value['inherited_rank1_factor_cache_admission']!=whole['original92']
+-        or value['inherited_rank1_factor_cache_memory_admission']!=whole['dedup']['inherited_rank1_factor_cache_memory_admission']
+-        or value['resource_scope_policy']!='AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1'
+-        or value['resource_scope_contract']!=whole['original92']['resource_scope_contract']
+-        or any(value[k]is not True for k in ('lower_structural_zero_rows_losslessly_packed',
+-            'lower_repeated_blocks_losslessly_deduplicated','full_shape_MATMUL_and_RHS_order_unchanged',
+-            'all_original_memory_and_dictionary_controls_bitwise_passed',
+-            'canonical_dictionary_signed_zero_and_all_unique_fallback_verified',
+-            'dictionary_dimensions_indices_canonical_and_release_negative_controls_passed',
+-            'fresh_cold_AAA_required','fresh_512MiB_native_capture_required'))
+-        or any(value[k]is not False for k in ('native_RSS_proof_obtained','actual_full_FLU_entry_executed',
+-            'production_pipeline_prepared','AAA_accuracy_qualified','ABA_admitted'))):
+-        raise ValueError('entire actual trim unit INPUT identity/ancestry/scope differs')
+-    if (combined['compiled_trim_kernel']!=value['compiled_kernel']
+-        or combined['inherited_compiled_dedup_kernel']!=whole['dedup']['compiled_kernel']
+-        or combined['future_actual_FLU_observer_required']!=value['future_actual_FLU_observer_required']
+-        or combined['future_actual_factor_cache_observer_required']!=value['future_actual_factor_cache_observer_required']
+-        or combined['trim_component_INPUT_semantics']!=TRIM_INPUT_SEMANTICS
+-        or combined['trim_API_executed_in_this_consumer']is not False
+-        or combined['original_operator_capture_RSS_scope_not_transferred']is not True
+-        or combined['trim_native_RSS_proof_obtained']is not False
+-        or combined['fresh_trim_native_capture_required']is not True):
+-        raise ValueError('new selected trim object and unchanged old-capture scope required')
+-    item=combined['actual_last_cprime_trim_component_INPUT']
+-    if (item['path']!=str(Path(combined['source_root'])/'trim_component_admission_INPUT.json')
+-        or type(item['sha256'])is not str or re.fullmatch('[0-9a-f]{64}',item['sha256'])is None
+-        or item['sha256']=='0'*64 or combined['descriptor_files'].get(item['path'])!=item['sha256']
+-        or item['semantics']!=TRIM_INPUT_SEMANTICS
+-        or item['actual_component_API_called_in_this_PREP']is not True
+-        or item['original_historical_seven_key_body_unchanged']is not True
+-        or item['old_capture_RSS_transferred']is not False
+-        or item['trim_native_RSS_proof_obtained']is not False):
+-        raise ValueError('whole independently executed trim INPUT must be an explicit graph owner')
+-    return value
++    return input_consumer().last_cprime_trim_return_admission(combined)
+ 
+ 
+ def component_return_admission(physical,dedup,capture,combined,*,fresh_input_phase=None):
+@@ -634,7 +601,7 @@
+     change(anchor,anchor+'\n    shutil.copy2(Path(__file__).with_name("combined_cold_own_rss_host.py"), runtime / "combined_cold_own_rss_host.py")'
+         +'\n    shutil.copy2(Path(__file__).with_name("combined_cold_own_rss_controls.py"), runtime / "combined_cold_own_rss_controls.py")'
+         +'\n    shutil.copy2(Path(__file__).with_name("combined_cold_file_snapshot_decks.py"), runtime / "combined_cold_file_snapshot_decks.py")'
+-        +'\n    shutil.copy2(Path(__file__).with_name("cold_component_input_consumer_factor_diagonal_trim_own_pid_peak_v10.py"), runtime / "cold_component_input_consumer_factor_diagonal_trim_own_pid_peak_v10.py")'
++        +'\n    shutil.copy2(Path(__file__).with_name("cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py"), runtime / "cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py")'
+         +'\n    shutil.copy2(Path(__file__).with_name("physical_common_basis_admission.py"), runtime / "physical_common_basis_admission.py")')
+     change('    write_inputs(output / "decks", config)\n','    write_inputs(output / "decks", config)\n'+DECK_HOOK)
+     change(CONSTRUCTOR_BEFORE,CONSTRUCTOR_AFTER)
+@@ -730,7 +697,7 @@
+         add_expected(files,failed[item]['path'],failed[item]['sha256'])
+     verify(files);return files
+ 
+-ADMISSION_HOST = '"""Actual terminal admission, axial selector and exact rank1 cache log guards."""\nimport copy\nimport hashlib\nimport importlib\nimport importlib.util\nimport json\nfrom pathlib import Path\nimport re\nimport sys\n\nEXPECTED_BUILD_ROOT = __BUILD_ROOT__\nEXPECTED_BUILD_SEAL = __BUILD_SEAL__\nEXPECTED_RUNTIME_SHA = __RUNTIME_SHA__\nEXPECTED_RUNTIME_PATH = __RUNTIME_PATH__\nFACTORY_DESCRIPTOR = __FACTORY_DESCRIPTOR__\nEXPECTED_PARENT_PREPARED_SHA = __PREPARED_SHA__\nEXPECTED_BUILD_FACTORY = __BUILD_FACTORY__\nEXPECTED_BUILD_FACTORY_SHA = __BUILD_FACTORY_SHA__\nEXPECTED_TERMINAL_EVIDENCE = __TERMINAL_EVIDENCE__\nEXPECTED_TERMINAL_VALIDATION = __TERMINAL_VALIDATION__\nEXPECTED_TERMINAL_CHAIN = __TERMINAL_CHAIN__\nEXPECTED_CORRECTION_SCOPE = __CORRECTION_SCOPE__\nEXPECTED_RESOURCE_SCOPE_CONTRACT = __RESOURCE_SCOPE_CONTRACT__\nOBSERVER_PREFIX = "AXMAT-MOMENT-ORDER SELECTOR "\nOBSERVER_EXPECTED = [32, 3, 2, 3, 1]\nHISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"\nCACHE_OBSERVER_PREFIX = "AXMAT-RANK1-CACHE TERMINAL "\nCACHE_BUDGET_BYTES = 512 * 2**20\nCACHE_OBSERVER_CONTRACT = dict(prefix=CACHE_OBSERVER_PREFIX,\n    columns=["builtblocks", "reusedblocks", "validated_hits", "peak_accounted_bytes", "cap_bytes"],\n    cap_bytes=CACHE_BUDGET_BYTES, exact_operator_identity_required=True,\n    positive_build_reuse_and_validation_required=True, all_actual_full_logs_required=True)\n\n\ndef require(path, wanted):\n    path = Path(path)\n    with path.open("rb") as stream:\n        observed = hashlib.file_digest(stream, "sha256").hexdigest()\n    if observed != wanted:\n        raise ValueError("moment-order admission dependency changed: " + str(path))\n    return path\n\n\ndef actual_build_factory():\n    factory = require(EXPECTED_BUILD_FACTORY, EXPECTED_BUILD_FACTORY_SHA)\n    name = factory.stem\n    old = sys.modules.get(name)\n    if old is not None and Path(old.__file__).resolve()!=factory.resolve():\n        raise ValueError("existing actual resource factory binding differs")\n    sys.path.insert(0,str(factory.parent));builder=importlib.import_module(name)\n    if Path(builder.__file__).resolve()!=factory.resolve():\n        raise ValueError("normally imported genuine resource factory differs")\n    return builder\n\n\ndef complete_history_resources(artifacts_root, roots, min_free_bytes, max_bytes, failure_type):\n    builder = actual_build_factory()\n    return builder.DynamicHistoryResources(artifacts_root, roots, min_free_bytes, max_bytes, failure_type)\n\n\ndef metadata(item):\n    path = require(item["path"], item["sha256"])\n    local = require(Path(__file__).with_name("rank1_factor_cache_admission.json"), item["sha256"])\n    data = json.loads(local.read_text())\n    if (data[\'schema\']!=\'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_FACTOR_DIAGONAL_TRIM_COMBINED_FILE_SNAPSHOT_COLD_INPUT_ADMISSION_V1\'\n        or data[\'correction_scope\']!=EXPECTED_CORRECTION_SCOPE\n        or data[\'resource_scope_policy\']!=HISTORY_SCOPE_POLICY\n        or data[\'resource_scope_contract\']!=EXPECTED_RESOURCE_SCOPE_CONTRACT\n        or data[\'combined_runtime\']!=dict(path=EXPECTED_RUNTIME_PATH,sha256=EXPECTED_RUNTIME_SHA)\n        or data[\'collision_self_operator_unchanged\'] is not False\n        or any(data[k] is not True for k in (\'physical_inputs_unchanged\',\'common_training_unchanged\',\n            \'white_closure_unchanged\',\'radial_arithmetic_unchanged\',\'original_controls_and_gates_unchanged\',\n            \'fresh_training_bootstrap_and_maps_required\',\'all_actual_axial_selector_observers_required\',\n            \'all_actual_rank1_factor_cache_observers_required\',\'reference_reassessment_pending\',\n            \'old_reference_recipe_is_dependency_only\',\n            \'new_actual_prepared_status_observables_physical_and_collector_receipt_rebinding_required\'))\n        or any(data[k] is not False for k in (\'old_moment_closure_numerical_replay_claimed\',\'CE_fitting\',\n            \'reference_qualification_created\',\'AAA_accuracy_qualified\',\'ABA_admitted\'))):\n        raise ValueError(\'truthful combined-runtime INPUT contract required\')\n    fpath=require(FACTORY_DESCRIPTOR[\'path\'],FACTORY_DESCRIPTOR[\'sha256\'])\n    stem=fpath.stem\n    old=sys.modules.get(stem)\n    if old is not None and Path(old.__file__).resolve()!=fpath.resolve():raise ValueError(\'foreign factory binding\')\n    sys.path.insert(0,str(fpath.parent));factory=importlib.import_module(stem)\n    if Path(factory.__file__).resolve()!=fpath.resolve():raise ValueError(\'actual normal factory source changed\')\n    data=factory.materialize_metadata(data,item,phase=\'private-rank1/metadata\')\n    actual=data[\'actual_components\']\n    if (actual!=data[\'actual_components\'] or actual[\'original92\']!=data[\'build_admission\']\n        or actual[\'combined\']!=data[\'combined_runtime_admission\']\n        or actual[\'combined\'][\'corrected_runtime\']!=data[\'combined_runtime\']):\n        raise ValueError(\'entire actual dual/capture/combined admission return changed\')\n    return data\n\n\ndef admit_actual_axial_selector(text, log):\n    log = Path(log)\n    if log.read_text(errors="replace") != text:\n        raise ValueError("axial selector guard must consume the complete actual archived solver log")\n    rows = []\n    stem = OBSERVER_PREFIX.rstrip()\n    pattern = re.compile(r"\\s*" + re.escape(stem) + r"\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s*")\n    for line_number, line in enumerate(text.splitlines(), 1):\n        if stem not in line:\n            continue\n        match = pattern.fullmatch(line)\n        if match is None:\n            raise ValueError("malformed actual axial selector observer at line " + str(line_number))\n        values = [int(value) for value in match.groups()]\n        if values != OBSERVER_EXPECTED:\n            raise ValueError("actual axial selector differs at line " + str(line_number) + ": " + str(values))\n        rows.append(dict(line=line_number, actual=values))\n    if not rows:\n        raise ValueError("mandatory actual axial selector observer is missing")\n    with log.open("rb") as stream:\n        observed = hashlib.file_digest(stream, "sha256").hexdigest()\n    return dict(status="PASS", log=dict(path=str(log.resolve()), sha256=observed),\n        observer_prefix=OBSERVER_PREFIX, expected=OBSERVER_EXPECTED, actual_observers=rows,\n        all_actual_observers_checked=True, complete_solver_log_checked=True,\n        scientific_accuracy_qualification=False)\n\n\ndef admit_actual_rank1_factor_cache(text, log, selector_count):\n    log = Path(log)\n    if log.read_text(errors="replace") != text:\n        raise ValueError("cache guard requires the complete actual archived solver log")\n    if type(selector_count) is not int or selector_count < 1:\n        raise ValueError("complete actual axial selector count is required")\n    rows = []\n    stem = CACHE_OBSERVER_PREFIX.rstrip()\n    for line_number, line in enumerate(text.splitlines(), 1):\n        if stem not in line:\n            continue\n        words = line.split()\n        if (len(words) != 7 or words[:2] != stem.split()\n                or any(re.fullmatch("[0-9]+", word) is None for word in words[2:])):\n            raise ValueError("malformed actual rank1 cache observer at line " + str(line_number))\n        values = [int(word) for word in words[2:]]\n        built, reused, validated, peak, cap = values\n        if (not all(value > 0 for value in values) or cap != CACHE_BUDGET_BYTES or peak > cap\n                or built % 49 != 0 or reused % 49 != 0 or built > 370 * 49\n                or validated < reused // 49):\n            raise ValueError("actual rank1 cache reuse/operator/resource guard differs at line " + str(line_number))\n        rows.append(dict(line=line_number, actual=values))\n    if len(rows) != selector_count:\n        raise ValueError("every actual completed axial FLU selector requires its cache terminal record")\n    with log.open("rb") as stream:\n        observed = hashlib.file_digest(stream, "sha256").hexdigest()\n    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_ACTUAL_FULL_LOG_GUARD_V1", status="PASS",\n        log=dict(path=str(log.resolve()), sha256=observed), observer_contract=CACHE_OBSERVER_CONTRACT,\n        selector_count=selector_count, actual_observers=rows, all_actual_observers_checked=True,\n        complete_solver_log_checked=True, fixed_operator_identity_validation_recorded=True,\n        cache_budget_is_not_a_process_RSS_measurement=True, scientific_accuracy_qualification=False)\n\n\ndef admit_rank1_factor_cache_variant(variant):\n    revision = variant.get("rank1_factor_cache_revision", {})\n    data = metadata(revision["admission"])\n    if (variant["candidate_runtime"] != data["combined_runtime"]\n            or revision.get("fresh_complete_coupling_required") is not True\n            or revision.get("physical_inputs_changed") is not False\n            or revision.get("white_closure_changed") is not False\n            or revision.get("original_thresholds_changed") is not False):\n        raise ValueError("new runtime variant differs from moment-order build admission")\n    parent_item = data["parent_variant"]\n    parent = json.loads(require(parent_item["path"], parent_item["sha256"]).read_text())\n    restored = copy.deepcopy(variant)\n    for key in ("candidate_runtime", "files"):\n        restored[key] = parent[key]\n    del restored["rank1_factor_cache_revision"]\n    if restored != parent:\n        raise ValueError("original layout, white-trace operator or parent admissions changed")\n    return dict(status="PASS_SEALED_RANK1_FACTOR_CACHE_RUNTIME_INPUT_ONLY", scientific_qualification=False)\n\n\ndef admit_rank1_factor_cache_receiver(receipts, resolved, spec):\n    data = metadata(receipts["rank1_factor_cache_revision"])\n    if receipts["online_receiver_sha256"] != EXPECTED_RUNTIME_SHA:\n        raise ValueError("new receiver identity is not the independently controlled runtime")\n    old_item = data["parent_producer_receipt"]\n    old = json.loads(require(old_item["path"], old_item["sha256"]).read_text())\n    restored = copy.deepcopy(receipts)\n    for key in ("online_receiver_sha256", "conditional_white_receiver_variant", "scope"):\n        restored[key] = old[key]\n    del restored["rank1_factor_cache_revision"]\n    if restored != old:\n        raise ValueError("original offline producer, payload, mirror or training records changed")\n    for name, pin in data["original_inputs"].items():\n        if name != "material_results" and resolved[name] != pin:\n            raise ValueError("physical/material input changed: " + name)\n    if (spec["production"]["groups"] != 370 or spec["production"]["scat"] != 3\n            or spec["production"]["sn"] != 32 or spec["geometry"]["cells_per_zone"] != 16\n            or spec["basis"]["requested_rank"] != 1 or spec["basis"]["training_slots"] != list("ABA")):\n        raise ValueError("moment-order runtime cannot substitute a proxy geometry or training set")\n    return dict(status="PASS_SAME_OFFLINE_PRODUCERS_AND_LEGACY_BOOT_INPUTS", runtime_correction_is_online_only=True)\n'
++ADMISSION_HOST = '"""Actual terminal admission, axial selector and exact rank1 cache log guards."""\nimport copy\nimport hashlib\nimport importlib\nimport importlib.util\nimport json\nfrom pathlib import Path\nimport re\nimport sys\n\nEXPECTED_BUILD_ROOT = __BUILD_ROOT__\nEXPECTED_BUILD_SEAL = __BUILD_SEAL__\nEXPECTED_RUNTIME_SHA = __RUNTIME_SHA__\nEXPECTED_RUNTIME_PATH = __RUNTIME_PATH__\nFACTORY_DESCRIPTOR = __FACTORY_DESCRIPTOR__\nEXPECTED_PARENT_PREPARED_SHA = __PREPARED_SHA__\nEXPECTED_BUILD_FACTORY = __BUILD_FACTORY__\nEXPECTED_BUILD_FACTORY_SHA = __BUILD_FACTORY_SHA__\nEXPECTED_TERMINAL_EVIDENCE = __TERMINAL_EVIDENCE__\nEXPECTED_TERMINAL_VALIDATION = __TERMINAL_VALIDATION__\nEXPECTED_TERMINAL_CHAIN = __TERMINAL_CHAIN__\nEXPECTED_CORRECTION_SCOPE = __CORRECTION_SCOPE__\nEXPECTED_RESOURCE_SCOPE_CONTRACT = __RESOURCE_SCOPE_CONTRACT__\nOBSERVER_PREFIX = "AXMAT-MOMENT-ORDER SELECTOR "\nOBSERVER_EXPECTED = [32, 3, 2, 3, 1]\nHISTORY_SCOPE_POLICY = "AXMAT_DYNAMIC_AXIAL_FAMILY_COMPLETE_HISTORY_V1"\nCACHE_OBSERVER_PREFIX = "AXMAT-RANK1-CACHE TERMINAL "\nCACHE_BUDGET_BYTES = 512 * 2**20\nCACHE_OBSERVER_CONTRACT = dict(prefix=CACHE_OBSERVER_PREFIX,\n    columns=["builtblocks", "reusedblocks", "validated_hits", "peak_accounted_bytes", "cap_bytes"],\n    cap_bytes=CACHE_BUDGET_BYTES, exact_operator_identity_required=True,\n    positive_build_reuse_and_validation_required=True, all_actual_full_logs_required=True)\n\n\ndef require(path, wanted):\n    path = Path(path)\n    with path.open("rb") as stream:\n        observed = hashlib.file_digest(stream, "sha256").hexdigest()\n    if observed != wanted:\n        raise ValueError("moment-order admission dependency changed: " + str(path))\n    return path\n\n\ndef actual_build_factory():\n    factory = require(EXPECTED_BUILD_FACTORY, EXPECTED_BUILD_FACTORY_SHA)\n    name = factory.stem\n    old = sys.modules.get(name)\n    if old is not None and Path(old.__file__).resolve()!=factory.resolve():\n        raise ValueError("existing actual resource factory binding differs")\n    sys.path.insert(0,str(factory.parent));builder=importlib.import_module(name)\n    if Path(builder.__file__).resolve()!=factory.resolve():\n        raise ValueError("normally imported genuine resource factory differs")\n    return builder\n\n\ndef complete_history_resources(artifacts_root, roots, min_free_bytes, max_bytes, failure_type):\n    builder = actual_build_factory()\n    return builder.DynamicHistoryResources(artifacts_root, roots, min_free_bytes, max_bytes, failure_type)\n\n\ndef metadata(item):\n    path = require(item["path"], item["sha256"])\n    local = require(Path(__file__).with_name("rank1_factor_cache_admission.json"), item["sha256"])\n    data = json.loads(local.read_text())\n    if (data[\'schema\']!=\'AXMAT_HISTORICAL_INPUT_OWNED_SPECS_SCIPY_ENV_CROSS_GROUP_IDENTITY_KEY_DELTA_COMBINED_FILE_SNAPSHOT_COLD_INPUT_ADMISSION_V1\'\n        or data[\'correction_scope\']!=EXPECTED_CORRECTION_SCOPE\n        or data[\'resource_scope_policy\']!=HISTORY_SCOPE_POLICY\n        or data[\'resource_scope_contract\']!=EXPECTED_RESOURCE_SCOPE_CONTRACT\n        or data[\'combined_runtime\']!=dict(path=EXPECTED_RUNTIME_PATH,sha256=EXPECTED_RUNTIME_SHA)\n        or data[\'collision_self_operator_unchanged\'] is not False\n        or any(data[k] is not True for k in (\'physical_inputs_unchanged\',\'common_training_unchanged\',\n            \'white_closure_unchanged\',\'radial_arithmetic_unchanged\',\'original_controls_and_gates_unchanged\',\n            \'fresh_training_bootstrap_and_maps_required\',\'all_actual_axial_selector_observers_required\',\n            \'all_actual_rank1_factor_cache_observers_required\',\'reference_reassessment_pending\',\n            \'old_reference_recipe_is_dependency_only\',\n            \'new_actual_prepared_status_observables_physical_and_collector_receipt_rebinding_required\'))\n        or any(data[k] is not False for k in (\'old_moment_closure_numerical_replay_claimed\',\'CE_fitting\',\n            \'reference_qualification_created\',\'AAA_accuracy_qualified\',\'ABA_admitted\'))):\n        raise ValueError(\'truthful combined-runtime INPUT contract required\')\n    fpath=require(FACTORY_DESCRIPTOR[\'path\'],FACTORY_DESCRIPTOR[\'sha256\'])\n    stem=fpath.stem\n    old=sys.modules.get(stem)\n    if old is not None and Path(old.__file__).resolve()!=fpath.resolve():raise ValueError(\'foreign factory binding\')\n    sys.path.insert(0,str(fpath.parent));factory=importlib.import_module(stem)\n    if Path(factory.__file__).resolve()!=fpath.resolve():raise ValueError(\'actual normal factory source changed\')\n    data=factory.materialize_metadata(data,item,phase=\'private-rank1/metadata\')\n    actual=data[\'actual_components\']\n    if (actual!=data[\'actual_components\'] or actual[\'original92\']!=data[\'build_admission\']\n        or actual[\'combined\']!=data[\'combined_runtime_admission\']\n        or actual[\'combined\'][\'corrected_runtime\']!=data[\'combined_runtime\']):\n        raise ValueError(\'entire actual dual/capture/combined admission return changed\')\n    return data\n\n\ndef admit_actual_axial_selector(text, log):\n    log = Path(log)\n    if log.read_text(errors="replace") != text:\n        raise ValueError("axial selector guard must consume the complete actual archived solver log")\n    rows = []\n    stem = OBSERVER_PREFIX.rstrip()\n    pattern = re.compile(r"\\s*" + re.escape(stem) + r"\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s+([+-]?\\d+)\\s*")\n    for line_number, line in enumerate(text.splitlines(), 1):\n        if stem not in line:\n            continue\n        match = pattern.fullmatch(line)\n        if match is None:\n            raise ValueError("malformed actual axial selector observer at line " + str(line_number))\n        values = [int(value) for value in match.groups()]\n        if values != OBSERVER_EXPECTED:\n            raise ValueError("actual axial selector differs at line " + str(line_number) + ": " + str(values))\n        rows.append(dict(line=line_number, actual=values))\n    if not rows:\n        raise ValueError("mandatory actual axial selector observer is missing")\n    with log.open("rb") as stream:\n        observed = hashlib.file_digest(stream, "sha256").hexdigest()\n    return dict(status="PASS", log=dict(path=str(log.resolve()), sha256=observed),\n        observer_prefix=OBSERVER_PREFIX, expected=OBSERVER_EXPECTED, actual_observers=rows,\n        all_actual_observers_checked=True, complete_solver_log_checked=True,\n        scientific_accuracy_qualification=False)\n\n\ndef admit_actual_rank1_factor_cache(text, log, selector_count):\n    log = Path(log)\n    if log.read_text(errors="replace") != text:\n        raise ValueError("cache guard requires the complete actual archived solver log")\n    if type(selector_count) is not int or selector_count < 1:\n        raise ValueError("complete actual axial selector count is required")\n    rows = []\n    stem = CACHE_OBSERVER_PREFIX.rstrip()\n    for line_number, line in enumerate(text.splitlines(), 1):\n        if stem not in line:\n            continue\n        words = line.split()\n        if (len(words) != 7 or words[:2] != stem.split()\n                or any(re.fullmatch("[0-9]+", word) is None for word in words[2:])):\n            raise ValueError("malformed actual rank1 cache observer at line " + str(line_number))\n        values = [int(word) for word in words[2:]]\n        built, reused, validated, peak, cap = values\n        if (not all(value > 0 for value in values) or cap != CACHE_BUDGET_BYTES or peak > cap\n                or built % 49 != 0 or reused % 49 != 0 or built > 370 * 49\n                or validated < reused // 49):\n            raise ValueError("actual rank1 cache reuse/operator/resource guard differs at line " + str(line_number))\n        rows.append(dict(line=line_number, actual=values))\n    if len(rows) != selector_count:\n        raise ValueError("every actual completed axial FLU selector requires its cache terminal record")\n    with log.open("rb") as stream:\n        observed = hashlib.file_digest(stream, "sha256").hexdigest()\n    return dict(schema="AXMAT_RANK1_FACTOR_CACHE_ACTUAL_FULL_LOG_GUARD_V1", status="PASS",\n        log=dict(path=str(log.resolve()), sha256=observed), observer_contract=CACHE_OBSERVER_CONTRACT,\n        selector_count=selector_count, actual_observers=rows, all_actual_observers_checked=True,\n        complete_solver_log_checked=True, fixed_operator_identity_validation_recorded=True,\n        cache_budget_is_not_a_process_RSS_measurement=True, scientific_accuracy_qualification=False)\n\n\ndef admit_rank1_factor_cache_variant(variant):\n    revision = variant.get("rank1_factor_cache_revision", {})\n    data = metadata(revision["admission"])\n    if (variant["candidate_runtime"] != data["combined_runtime"]\n            or revision.get("fresh_complete_coupling_required") is not True\n            or revision.get("physical_inputs_changed") is not False\n            or revision.get("white_closure_changed") is not False\n            or revision.get("original_thresholds_changed") is not False):\n        raise ValueError("new runtime variant differs from moment-order build admission")\n    parent_item = data["parent_variant"]\n    parent = json.loads(require(parent_item["path"], parent_item["sha256"]).read_text())\n    restored = copy.deepcopy(variant)\n    for key in ("candidate_runtime", "files"):\n        restored[key] = parent[key]\n    del restored["rank1_factor_cache_revision"]\n    if restored != parent:\n        raise ValueError("original layout, white-trace operator or parent admissions changed")\n    return dict(status="PASS_SEALED_RANK1_FACTOR_CACHE_RUNTIME_INPUT_ONLY", scientific_qualification=False)\n\n\ndef admit_rank1_factor_cache_receiver(receipts, resolved, spec):\n    data = metadata(receipts["rank1_factor_cache_revision"])\n    if receipts["online_receiver_sha256"] != EXPECTED_RUNTIME_SHA:\n        raise ValueError("new receiver identity is not the independently controlled runtime")\n    old_item = data["parent_producer_receipt"]\n    old = json.loads(require(old_item["path"], old_item["sha256"]).read_text())\n    restored = copy.deepcopy(receipts)\n    for key in ("online_receiver_sha256", "conditional_white_receiver_variant", "scope"):\n        restored[key] = old[key]\n    del restored["rank1_factor_cache_revision"]\n    if restored != old:\n        raise ValueError("original offline producer, payload, mirror or training records changed")\n    for name, pin in data["original_inputs"].items():\n        if name != "material_results" and resolved[name] != pin:\n            raise ValueError("physical/material input changed: " + name)\n    if (spec["production"]["groups"] != 370 or spec["production"]["scat"] != 3\n            or spec["production"]["sn"] != 32 or spec["geometry"]["cells_per_zone"] != 16\n            or spec["basis"]["requested_rank"] != 1 or spec["basis"]["training_slots"] != list("ABA")):\n        raise ValueError("moment-order runtime cannot substitute a proxy geometry or training set")\n    return dict(status="PASS_SAME_OFFLINE_PRODUCERS_AND_LEGACY_BOOT_INPUTS", runtime_correction_is_online_only=True)\n'
+ def declare():
+     require_input_ready()
+     if os.path.lexists(SOURCE) or os.path.lexists(OUTPUT) or os.path.lexists(COLD_TERMINAL) or os.path.lexists(CONTROL_TERMINAL):
+@@ -787,7 +754,7 @@
+     for src, wanted, name in ((HOST, HOST_SHA, "combined_cold_own_rss_host.py"),
+         (CONTROLS, CONTROLS_SHA, "combined_cold_own_rss_controls.py"),
+         (DECK_HELPER, DECK_HELPER_SHA, "combined_cold_file_snapshot_decks.py"),
+-        (PRIVATE_INPUT_CONSUMER, PRIVATE_INPUT_CONSUMER_SHA, "cold_component_input_consumer_factor_diagonal_trim_own_pid_peak_v10.py"),
++        (PRIVATE_INPUT_CONSUMER, PRIVATE_INPUT_CONSUMER_SHA, "cold_component_input_consumer_cross_group_identity_key_delta_own_pid_peak_v11.py"),
+         (PHYSICAL_BASIS_HELPER, PHYSICAL_BASIS_HELPER_SHA, "physical_common_basis_admission.py"),
+         (SCIPY_HELPER, SCIPY_HELPER_SHA, "cold_scipy_environment_admission_namespace_v3_20261008.py")):
+         shutil.copy2(require(src, wanted), SOURCE / name)

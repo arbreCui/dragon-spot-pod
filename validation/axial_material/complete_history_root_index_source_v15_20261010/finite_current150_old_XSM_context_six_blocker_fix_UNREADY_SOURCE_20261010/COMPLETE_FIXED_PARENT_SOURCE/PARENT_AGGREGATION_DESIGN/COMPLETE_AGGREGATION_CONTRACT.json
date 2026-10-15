@@ -1,0 +1,1639 @@
+{
+  "schema": "FINAL_COMPLETE_MICROLIB_MACROLIB_AGGREGATION_SOURCE_DESIGN_V1",
+  "status": "SOURCE_DESIGN_ONLY_UNREADY_DATA_ACCESS_ADAPTER_NOT_COMPLETE_ENGINE",
+  "source_only": true,
+  "actual_material_payload_read": false,
+  "native_API_executed": false,
+  "source_scope": {
+    "states_in_actual_execution_order": [
+      "A",
+      "B"
+    ],
+    "isotope_slots": 62,
+    "groups": 370,
+    "mixtures": 8,
+    "moments": 3,
+    "declared_extra_edits": 18,
+    "fission_spectra": 4,
+    "fission_isotope_slots": 8,
+    "macro_fission_components": 32,
+    "original_FISSIONINDEX_integer_elements": 64,
+    "delayed_precursor_groups": 6,
+    "full_original_macro_records_per_state": 19619,
+    "full_original_macro_physical_headers_per_state": 19990,
+    "full_original_macro_numeric_values_per_state": 2264113,
+    "full_scattering_mathematical_domain_per_state": 3285600,
+    "all_original_presence_order_types_padding_empty_nodes_and_bytes_retained": true
+  },
+  "original_caps": {
+    "whole_seconds": 1800,
+    "stage_seconds": 600,
+    "rss_mib": 512,
+    "joint_archive_bytes": 2147483648,
+    "history_bytes": 103079215104,
+    "free_floor_bytes": 8589934592,
+    "threads": 1,
+    "children_at_once": 1,
+    "retries": 0
+  },
+  "complete_saved_native_schema": {
+    "complete_saved_sql_columns": [
+      "key",
+      "ordinal",
+      "api_key",
+      "row",
+      "micro_ordinal",
+      "macro_ordinal"
+    ],
+    "numeric_values_in_SQL": false,
+    "source_byte_pool": "complete_native_original_value_bytes.bin",
+    "byte_pool_has_MAGIC": false,
+    "pool_spans_not_XSM_offset": true,
+    "all_full_native_records_streamed": true,
+    "SQLite_cache_KiB": 8192,
+    "mmap_size": 0,
+    "temp_store": "FILE",
+    "read_only_URI": true,
+    "bounded_pread_bytes": 1048576,
+    "whole_material_ASCII_or_XSM_decode": false,
+    "no_business_API_or_helper_import": true
+  },
+  "existing_253_contract_pin": {
+    "path": "/private/tmp/axmat_reaction_TRANC_post_TONE_contract_SOURCE_META_20261010_9khfi2e_/SOURCE_META_CONTRACT.json",
+    "sha256": "029ec4005924186777fd0250790d2d07e710c5e9c7b883295957ef3354efa02f",
+    "size_bytes": 36086,
+    "identity": [
+      16777229,
+      49413234,
+      33188,
+      1,
+      36086,
+      1791608928596574456,
+      1791608928596574456
+    ]
+  },
+  "new_exact_SOURCE_facts": [
+    {
+      "role": "TONE",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONE.f",
+        "sha256": "6308dc66815faaff8577bc70a80497d0b7aad7afc2308f232b6cf3fd0a525f28",
+        "size_bytes": 9415,
+        "identity": [
+          16777229,
+          914109,
+          33188,
+          1,
+          9415,
+          1778159901728075800,
+          1778159901728075800
+        ]
+      },
+      "needle": "CALL LCMGET(IPLIB,'ISOTOPESSHI',LSHI)",
+      "complete_matching_lines": [
+        {
+          "line": 170,
+          "text": "      CALL LCMGET(IPLIB,'ISOTOPESSHI',LSHI)"
+        }
+      ]
+    },
+    {
+      "role": "TONE",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONE.f",
+        "sha256": "6308dc66815faaff8577bc70a80497d0b7aad7afc2308f232b6cf3fd0a525f28",
+        "size_bytes": 9415,
+        "identity": [
+          16777229,
+          914109,
+          33188,
+          1,
+          9415,
+          1778159901728075800,
+          1778159901728075800
+        ]
+      },
+      "needle": "IGRMIN=IPAR(9)+1",
+      "complete_matching_lines": [
+        {
+          "line": 153,
+          "text": "      IGRMIN=IPAR(9)+1"
+        }
+      ]
+    },
+    {
+      "role": "TONE",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONE.f",
+        "sha256": "6308dc66815faaff8577bc70a80497d0b7aad7afc2308f232b6cf3fd0a525f28",
+        "size_bytes": 9415,
+        "identity": [
+          16777229,
+          914109,
+          33188,
+          1,
+          9415,
+          1778159901728075800,
+          1778159901728075800
+        ]
+      },
+      "needle": "IGRMAX=IPAR(10)",
+      "complete_matching_lines": [
+        {
+          "line": 154,
+          "text": "      IGRMAX=IPAR(10)"
+        }
+      ]
+    },
+    {
+      "role": "TONE",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONE.f",
+        "sha256": "6308dc66815faaff8577bc70a80497d0b7aad7afc2308f232b6cf3fd0a525f28",
+        "size_bytes": 9415,
+        "identity": [
+          16777229,
+          914109,
+          33188,
+          1,
+          9415,
+          1778159901728075800,
+          1778159901728075800
+        ]
+      },
+      "needle": "CALL LCMSIX(IPLIB,'SHIBA',1)",
+      "complete_matching_lines": [
+        {
+          "line": 185,
+          "text": "         CALL LCMSIX(IPLIB,'SHIBA',1)"
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "MASKL(:NGRO)=.FALSE.",
+      "complete_matching_lines": [
+        {
+          "line": 335,
+          "text": "      MASKL(:NGRO)=.FALSE."
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "MASKL(LLL)=.TRUE.",
+      "complete_matching_lines": [
+        {
+          "line": 337,
+          "text": "      MASKL(LLL)=.TRUE."
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "MASK(IBM)=(MIX(ISO).EQ.IBM).AND.(LSHI(ISO).GT.0)",
+      "complete_matching_lines": [
+        {
+          "line": 341,
+          "text": "      MASK(IBM)=(MIX(ISO).EQ.IBM).AND.(LSHI(ISO).GT.0)"
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "ITSTMP=0",
+      "complete_matching_lines": [
+        {
+          "line": 345,
+          "text": "      ITSTMP=0"
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "IPAR(1)=IGRMIN",
+      "complete_matching_lines": [
+        {
+          "line": 423,
+          "text": "      IPAR(1)=IGRMIN"
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "IPAR(2)=IGRMAX",
+      "complete_matching_lines": [
+        {
+          "line": 424,
+          "text": "      IPAR(2)=IGRMAX"
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "CALL LCMPUT(IPLIB,'STATE-VECTOR',NSTATE,1,IPAR)",
+      "complete_matching_lines": [
+        {
+          "line": 432,
+          "text": "      CALL LCMPUT(IPLIB,'STATE-VECTOR',NSTATE,1,IPAR)"
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "IF(MAT(IREG).EQ.IBM) GO TO 85",
+      "complete_matching_lines": [
+        {
+          "line": 186,
+          "text": "          IF(MAT(IREG).EQ.IBM) GO TO 85"
+        }
+      ]
+    },
+    {
+      "role": "TONDRV",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/TONDRV.f",
+        "sha256": "9c87a0c399a15ea3a646967f77eac6fb38a838f3f63e35ee0ff4879953893956",
+        "size_bytes": 16065,
+        "identity": [
+          16777229,
+          914102,
+          33188,
+          1,
+          16065,
+          1778159901727668884,
+          1778159901727668884
+        ]
+      },
+      "needle": "IF(MIX(ISO).EQ.IBM) LSHI(ISO)=0",
+      "complete_matching_lines": [
+        {
+          "line": 189,
+          "text": "          IF(MIX(ISO).EQ.IBM) LSHI(ISO)=0"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "PARAMETER (NBLK=50,NSTATE=40,IOUT=6,MAXESP=4)",
+      "complete_matching_lines": [
+        {
+          "line": 68,
+          "text": "      PARAMETER (NBLK=50,NSTATE=40,IOUT=6,MAXESP=4)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "DATA NORD/'    ',' LIN',' QUA'/",
+      "complete_matching_lines": [
+        {
+          "line": 97,
+          "text": "      DATA NORD/'    ',' LIN',' QUA'/"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "CALL LCMLEN(IPLIB,'TIMESPER',ILONG,ITYLCM)",
+      "complete_matching_lines": [
+        {
+          "line": 134,
+          "text": "      CALL LCMLEN(IPLIB,'TIMESPER',ILONG,ITYLCM)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "CALL XABORT('LIBDEN: XS PERTURBATION FORBIDDEN.')",
+      "complete_matching_lines": [
+        {
+          "line": 137,
+          "text": "          CALL XABORT('LIBDEN: XS PERTURBATION FORBIDDEN.')"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "MASKK=(ILONG.EQ.-1)",
+      "complete_matching_lines": [
+        {
+          "line": 171,
+          "text": "      MASKK=(ILONG.EQ.-1)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "LALL=NBMIX.GT.NBM0",
+      "complete_matching_lines": [
+        {
+          "line": 235,
+          "text": "         LALL=NBMIX.GT.NBM0"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "GAR(IBM,IBLK)=GAR(IBM,IBLK)+GA1(LLL)*DEN(ISOT)",
+      "complete_matching_lines": [
+        {
+          "line": 368,
+          "text": "         GAR(IBM,IBLK)=GAR(IBM,IBLK)+GA1(LLL)*DEN(ISOT)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "GAF(IBM,IG1,IBLK)=GAF(IBM,IG1,IBLK)+GA2(IOF)*DEN(ISOT)*FACT",
+      "complete_matching_lines": [
+        {
+          "line": 371,
+          "text": "         GAF(IBM,IG1,IBLK)=GAF(IBM,IG1,IBLK)+GA2(IOF)*DEN(ISOT)*FACT"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IOF0=IOF0+NJJ(LLL)",
+      "complete_matching_lines": [
+        {
+          "line": 360,
+          "text": "      IOF0=IOF0+NJJ(LLL)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "FACT=FACT*TIMFCT",
+      "complete_matching_lines": [
+        {
+          "line": 377,
+          "text": "  130 FACT=FACT*TIMFCT"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "LOGL=LOGL.OR.(MASKL(IG1).AND.(GAF(IBM,IG1,IBLK).NE.0.0))",
+      "complete_matching_lines": [
+        {
+          "line": 404,
+          "text": "      LOGL=LOGL.OR.(MASKL(IG1).AND.(GAF(IBM,IG1,IBLK).NE.0.0))"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IGMIN=LLL",
+      "complete_matching_lines": [
+        {
+          "line": 436,
+          "text": "         IGMIN=LLL"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IGMAX=LLL",
+      "complete_matching_lines": [
+        {
+          "line": 437,
+          "text": "         IGMAX=LLL"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "CHECK(IBM,IG1,M)=CHECK(IBM,IG1,M)+SCAT(IPOSDE)",
+      "complete_matching_lines": [
+        {
+          "line": 449,
+          "text": "         CHECK(IBM,IG1,M)=CHECK(IBM,IG1,M)+SCAT(IPOSDE)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "CALL LCMPUT(KPLIB,'SIGW'//CM,NBMIX,2,GAR(1,1))",
+      "complete_matching_lines": [
+        {
+          "line": 457,
+          "text": "         CALL LCMPUT(KPLIB,'SIGW'//CM,NBMIX,2,GAR(1,1))"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF(CV(:2).EQ.'NW') GO TO 770",
+      "complete_matching_lines": [
+        {
+          "line": 920,
+          "text": "      IF(CV(:2).EQ.'NW') GO TO 770"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF(CV.EQ.'TRANC') GO TO 770",
+      "complete_matching_lines": [
+        {
+          "line": 921,
+          "text": "      IF(CV.EQ.'TRANC') GO TO 770"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF((CV(:3).EQ.'BST').OR.(CV(:3).EQ.'CST')) GO TO 770",
+      "complete_matching_lines": [
+        {
+          "line": 922,
+          "text": "      IF((CV(:3).EQ.'BST').OR.(CV(:3).EQ.'CST')) GO TO 770"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF(CV(:8).EQ.'H-FACTOR') GO TO 770",
+      "complete_matching_lines": [
+        {
+          "line": 923,
+          "text": "      IF(CV(:8).EQ.'H-FACTOR') GO TO 770"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF(ILONG.EQ.0) GO TO 720",
+      "complete_matching_lines": [
+        {
+          "line": 938,
+          "text": "         IF(ILONG.EQ.0) GO TO 720"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF(KFIS.GT.NFISS0*NESP) THEN",
+      "complete_matching_lines": [
+        {
+          "line": 751,
+          "text": "         IF(KFIS.GT.NFISS0*NESP) THEN"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IOF=(KFIS-1)*NBMIX*NESP+(ISP-1)*NBMIX+IBM",
+      "complete_matching_lines": [
+        {
+          "line": 755,
+          "text": "            IOF=(KFIS-1)*NBMIX*NESP+(ISP-1)*NBMIX+IBM"
+        },
+        {
+          "line": 767,
+          "text": "               IOF=(KFIS-1)*NBMIX*NESP+(ISP-1)*NBMIX+IBM"
+        },
+        {
+          "line": 844,
+          "text": "                 IOF=(KFIS-1)*NBMIX*NESP+(ISP-1)*NBMIX+IBM"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF((NDEL.GT.0).AND.(ISP.EQ.1)) THEN",
+      "complete_matching_lines": [
+        {
+          "line": 855,
+          "text": "              IF((NDEL.GT.0).AND.(ISP.EQ.1)) THEN"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "WRITE(TEXT12,'(6HNUSIGF,I2.2,A4)') NDEL,NORD(IXSPER)",
+      "complete_matching_lines": [
+        {
+          "line": 799,
+          "text": "                 WRITE(TEXT12,'(6HNUSIGF,I2.2,A4)') NDEL,NORD(IXSPER)"
+        },
+        {
+          "line": 856,
+          "text": "                 WRITE(TEXT12,'(6HNUSIGF,I2.2,A4)') NDEL,NORD(IXSPER)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "CALL LCMPUT(IPLIB,'LAMBDA-D',NDEL*NFISSI,2,GA3)",
+      "complete_matching_lines": [
+        {
+          "line": 1062,
+          "text": "            CALL LCMPUT(IPLIB,'LAMBDA-D',NDEL*NFISSI,2,GA3)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "IF(IBM.GT.0) VOLMIX(IBM)=VOLI(ISOT)",
+      "complete_matching_lines": [
+        {
+          "line": 160,
+          "text": "          IF(IBM.GT.0) VOLMIX(IBM)=VOLI(ISOT)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "FLUX(IBM,IGR,1)=NWTMIX(IGR)*VOLMIX(IBM)",
+      "complete_matching_lines": [
+        {
+          "line": 1104,
+          "text": "                FLUX(IBM,IGR,1)=NWTMIX(IGR)*VOLMIX(IBM)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "FLUX(IBM,IGR,2)=NWTMIX(IGR)*VOLMIX(IBM)",
+      "complete_matching_lines": [
+        {
+          "line": 1112,
+          "text": "                FLUX(IBM,IGR,2)=NWTMIX(IGR)*VOLMIX(IBM)"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "ENEAVG=SQRT(GA1(LLL)*GA1(LLL+1))",
+      "complete_matching_lines": [
+        {
+          "line": 996,
+          "text": "         ENEAVG=SQRT(GA1(LLL)*GA1(LLL+1))"
+        }
+      ]
+    },
+    {
+      "role": "LIBDEN",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBDEN.f",
+        "sha256": "bb21763658a021fce79392e98e1beb5143ffb220e37c6e673bffb1d3ec34c14e",
+        "size_bytes": 39389,
+        "identity": [
+          16777229,
+          913571,
+          33188,
+          1,
+          39389,
+          1778159901694292842,
+          1778159901694292842
+        ]
+      },
+      "needle": "GAR(IBM,1)=REAL(ZNU)",
+      "complete_matching_lines": [
+        {
+          "line": 999,
+          "text": "         GAR(IBM,1)=REAL(ZNU)"
+        }
+      ]
+    },
+    {
+      "role": "LIBIPS",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBIPS.f",
+        "sha256": "82cfc27c4213f293f8a1bc3daf87823130cedf67336f8bb2713d12714773c0c4",
+        "size_bytes": 1854,
+        "identity": [
+          16777229,
+          913602,
+          33188,
+          1,
+          1854,
+          1778159901695943092,
+          1778159901695943092
+        ]
+      },
+      "needle": "IF(ISONAM(1,ISOT).NE.ISONAM(1,JSOT)) CYCLE",
+      "complete_matching_lines": [
+        {
+          "line": 52,
+          "text": "          IF(ISONAM(1,ISOT).NE.ISONAM(1,JSOT)) CYCLE"
+        }
+      ]
+    },
+    {
+      "role": "LIBIPS",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBIPS.f",
+        "sha256": "82cfc27c4213f293f8a1bc3daf87823130cedf67336f8bb2713d12714773c0c4",
+        "size_bytes": 1854,
+        "identity": [
+          16777229,
+          913602,
+          33188,
+          1,
+          1854,
+          1778159901695943092,
+          1778159901695943092
+        ]
+      },
+      "needle": "IF(ISONAM(2,ISOT).NE.ISONAM(2,JSOT)) CYCLE",
+      "complete_matching_lines": [
+        {
+          "line": 53,
+          "text": "          IF(ISONAM(2,ISOT).NE.ISONAM(2,JSOT)) CYCLE"
+        }
+      ]
+    },
+    {
+      "role": "LIBIPS",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBIPS.f",
+        "sha256": "82cfc27c4213f293f8a1bc3daf87823130cedf67336f8bb2713d12714773c0c4",
+        "size_bytes": 1854,
+        "identity": [
+          16777229,
+          913602,
+          33188,
+          1,
+          1854,
+          1778159901695943092,
+          1778159901695943092
+        ]
+      },
+      "needle": "IF(ISONAM(3,ISOT).NE.ISONAM(3,JSOT)) CYCLE",
+      "complete_matching_lines": [
+        {
+          "line": 54,
+          "text": "          IF(ISONAM(3,ISOT).NE.ISONAM(3,JSOT)) CYCLE"
+        }
+      ]
+    },
+    {
+      "role": "LIBIPS",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBIPS.f",
+        "sha256": "82cfc27c4213f293f8a1bc3daf87823130cedf67336f8bb2713d12714773c0c4",
+        "size_bytes": 1854,
+        "identity": [
+          16777229,
+          913602,
+          33188,
+          1,
+          1854,
+          1778159901695943092,
+          1778159901695943092
+        ]
+      },
+      "needle": "IPISO(ISOT)=IPISO(JSOT) ! set JSOT-th isotope",
+      "complete_matching_lines": [
+        {
+          "line": 56,
+          "text": "          IPISO(ISOT)=IPISO(JSOT) ! set JSOT-th isotope"
+        }
+      ]
+    },
+    {
+      "role": "LIBMIX",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBMIX.f",
+        "sha256": "608ef67a4f8ee9513b12949cfb9e378cc03d267badbd4ae1a2c3a3dba4eb6a82",
+        "size_bytes": 4787,
+        "identity": [
+          16777229,
+          913609,
+          33188,
+          1,
+          4787,
+          1778159901696265842,
+          1778159901696265842
+        ]
+      },
+      "needle": "NED=ISTATE(13)",
+      "complete_matching_lines": [
+        {
+          "line": 69,
+          "text": "      NED=ISTATE(13)"
+        }
+      ]
+    },
+    {
+      "role": "LIBMIX",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBMIX.f",
+        "sha256": "608ef67a4f8ee9513b12949cfb9e378cc03d267badbd4ae1a2c3a3dba4eb6a82",
+        "size_bytes": 4787,
+        "identity": [
+          16777229,
+          913609,
+          33188,
+          1,
+          4787,
+          1778159901696265842,
+          1778159901696265842
+        ]
+      },
+      "needle": "NBESP=ISTATE(16)",
+      "complete_matching_lines": [
+        {
+          "line": 70,
+          "text": "      NBESP=ISTATE(16)"
+        }
+      ]
+    },
+    {
+      "role": "LIBMIX",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBMIX.f",
+        "sha256": "608ef67a4f8ee9513b12949cfb9e378cc03d267badbd4ae1a2c3a3dba4eb6a82",
+        "size_bytes": 4787,
+        "identity": [
+          16777229,
+          913609,
+          33188,
+          1,
+          4787,
+          1778159901696265842,
+          1778159901696265842
+        ]
+      },
+      "needle": "NDEL=ISTATE(19)",
+      "complete_matching_lines": [
+        {
+          "line": 71,
+          "text": "      NDEL=ISTATE(19)"
+        }
+      ]
+    },
+    {
+      "role": "LIBMIX",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBMIX.f",
+        "sha256": "608ef67a4f8ee9513b12949cfb9e378cc03d267badbd4ae1a2c3a3dba4eb6a82",
+        "size_bytes": 4787,
+        "identity": [
+          16777229,
+          913609,
+          33188,
+          1,
+          4787,
+          1778159901696265842,
+          1778159901696265842
+        ]
+      },
+      "needle": "NPART=ISTATE(26)",
+      "complete_matching_lines": [
+        {
+          "line": 72,
+          "text": "      NPART=ISTATE(26)"
+        }
+      ]
+    },
+    {
+      "role": "LIBMIX",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBMIX.f",
+        "sha256": "608ef67a4f8ee9513b12949cfb9e378cc03d267badbd4ae1a2c3a3dba4eb6a82",
+        "size_bytes": 4787,
+        "identity": [
+          16777229,
+          913609,
+          33188,
+          1,
+          4787,
+          1778159901696265842,
+          1778159901696265842
+        ]
+      },
+      "needle": "STERN=ISTATE(27)",
+      "complete_matching_lines": [
+        {
+          "line": 73,
+          "text": "      STERN=ISTATE(27)"
+        }
+      ]
+    },
+    {
+      "role": "LIBADJ",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/src/LIBADJ.f",
+        "sha256": "55545c25ec0d9c0dc9897b3db132af1fd43e4edeb67da9e864715b2571c12556",
+        "size_bytes": 4771,
+        "identity": [
+          16777229,
+          913560,
+          33188,
+          1,
+          4771,
+          1778159901693752884,
+          1778159901693752884
+        ]
+      },
+      "needle": "IF(NBESP.NE.0) CALL XABORT('LIBADJ: MULTIPLE FISSION SPECTRA NOT'",
+      "complete_matching_lines": [
+        {
+          "line": 60,
+          "text": "      IF(NBESP.NE.0) CALL XABORT('LIBADJ: MULTIPLE FISSION SPECTRA NOT'"
+        }
+      ]
+    },
+    {
+      "role": "XDRCST",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/Utilib/src/XDRCST.f",
+        "sha256": "c1ab83ca9c63096e62456f60c7f49aadc267cba3d8fd9c376d7437bba789a14c",
+        "size_bytes": 7135,
+        "identity": [
+          16777229,
+          913186,
+          33188,
+          1,
+          7135,
+          1778159901651510342,
+          1778159901651510342
+        ]
+      },
+      "needle": "PARAMETER       (EVJOULE=1.60217653D-19,AMUKG=1.66053886D-27,",
+      "complete_matching_lines": [
+        {
+          "line": 70,
+          "text": "      PARAMETER       (EVJOULE=1.60217653D-19,AMUKG=1.66053886D-27,"
+        }
+      ]
+    },
+    {
+      "role": "XDRCST",
+      "source_fullpin": {
+        "path": "/Users/wen/spot/Utilib/src/XDRCST.f",
+        "sha256": "c1ab83ca9c63096e62456f60c7f49aadc267cba3d8fd9c376d7437bba789a14c",
+        "size_bytes": 7135,
+        "identity": [
+          16777229,
+          913186,
+          33188,
+          1,
+          7135,
+          1778159901651510342,
+          1778159901651510342
+        ]
+      },
+      "needle": "XDRCST=1.67492728D-27",
+      "complete_matching_lines": [
+        {
+          "line": 109,
+          "text": "        XDRCST=1.67492728D-27"
+        }
+      ]
+    },
+    {
+      "role": "saved_native_walker_Source_only",
+      "source_fullpin": {
+        "path": "/private/tmp/axmat_native_host_BINDER_STRICT_SCOPE_UNREADY_SOURCE_20261010_gs2tnzvo/complete_native_XSM_ASCII_checker_v4.UNREADY.py",
+        "sha256": "5c50b197032b8875b9b800c0b3d8301f922846871f9d90d3190960b1e62eaf1e",
+        "size_bytes": 51545,
+        "identity": [
+          16777229,
+          49411533,
+          33188,
+          1,
+          51545,
+          1791607992726217016,
+          1791607992726225433
+        ]
+      },
+      "needle": "self.db.execute('PRAGMA cache_size=-8192')",
+      "complete_matching_lines": [
+        {
+          "line": 121,
+          "text": "        self.db.execute('PRAGMA cache_size=-8192')"
+        }
+      ]
+    },
+    {
+      "role": "saved_native_walker_Source_only",
+      "source_fullpin": {
+        "path": "/private/tmp/axmat_native_host_BINDER_STRICT_SCOPE_UNREADY_SOURCE_20261010_gs2tnzvo/complete_native_XSM_ASCII_checker_v4.UNREADY.py",
+        "sha256": "5c50b197032b8875b9b800c0b3d8301f922846871f9d90d3190960b1e62eaf1e",
+        "size_bytes": 51545,
+        "identity": [
+          16777229,
+          49411533,
+          33188,
+          1,
+          51545,
+          1791607992726217016,
+          1791607992726225433
+        ]
+      },
+      "needle": "self.db.execute('PRAGMA mmap_size=0')",
+      "complete_matching_lines": [
+        {
+          "line": 122,
+          "text": "        self.db.execute('PRAGMA mmap_size=0')"
+        }
+      ]
+    },
+    {
+      "role": "saved_native_walker_Source_only",
+      "source_fullpin": {
+        "path": "/private/tmp/axmat_native_host_BINDER_STRICT_SCOPE_UNREADY_SOURCE_20261010_gs2tnzvo/complete_native_XSM_ASCII_checker_v4.UNREADY.py",
+        "sha256": "5c50b197032b8875b9b800c0b3d8301f922846871f9d90d3190960b1e62eaf1e",
+        "size_bytes": 51545,
+        "identity": [
+          16777229,
+          49411533,
+          33188,
+          1,
+          51545,
+          1791607992726217016,
+          1791607992726225433
+        ]
+      },
+      "needle": "self.db.execute('PRAGMA temp_store=FILE')",
+      "complete_matching_lines": [
+        {
+          "line": 123,
+          "text": "        self.db.execute('PRAGMA temp_store=FILE')"
+        }
+      ]
+    },
+    {
+      "role": "saved_native_walker_Source_only",
+      "source_fullpin": {
+        "path": "/private/tmp/axmat_native_host_BINDER_STRICT_SCOPE_UNREADY_SOURCE_20261010_gs2tnzvo/complete_native_XSM_ASCII_checker_v4.UNREADY.py",
+        "sha256": "5c50b197032b8875b9b800c0b3d8301f922846871f9d90d3190960b1e62eaf1e",
+        "size_bytes": 51545,
+        "identity": [
+          16777229,
+          49411533,
+          33188,
+          1,
+          51545,
+          1791607992726217016,
+          1791607992726225433
+        ]
+      },
+      "needle": "(folder/'complete_native_original_value_bytes.bin').open('xb')",
+      "complete_matching_lines": [
+        {
+          "line": 695,
+          "text": "        payload = stack.enter_context((folder/'complete_native_original_value_bytes.bin').open('xb'))"
+        }
+      ]
+    },
+    {
+      "role": "saved_native_walker_Source_only",
+      "source_fullpin": {
+        "path": "/private/tmp/axmat_native_host_BINDER_STRICT_SCOPE_UNREADY_SOURCE_20261010_gs2tnzvo/complete_native_XSM_ASCII_checker_v4.UNREADY.py",
+        "sha256": "5c50b197032b8875b9b800c0b3d8301f922846871f9d90d3190960b1e62eaf1e",
+        "size_bytes": 51545,
+        "identity": [
+          16777229,
+          49411533,
+          33188,
+          1,
+          51545,
+          1791607992726217016,
+          1791607992726225433
+        ]
+      },
+      "needle": "records = DiskRecords(folder/'complete_native_original_path_index.sqlite')",
+      "complete_matching_lines": [
+        {
+          "line": 696,
+          "text": "        records = DiskRecords(folder/'complete_native_original_path_index.sqlite')"
+        }
+      ]
+    },
+    {
+      "role": "original_material_audit_Source_only",
+      "source_fullpin": {
+        "path": "/private/tmp/axmat_complete_native_XSM_ASCII_UNREADY_SOURCE_20261010_vs7f_ff8/SOURCE_PROVENANCE/03_material_audit.py",
+        "sha256": "cb461b94ae61917da63e813e3dae2261d8f48a20834b15b42d0cad9fe0b8ddc9",
+        "size_bytes": 18948,
+        "identity": [
+          16777229,
+          49406518,
+          33188,
+          1,
+          18948,
+          1791604838475687576,
+          1791604838475687576
+        ]
+      },
+      "needle": "replay[:, 24:281] = core.density_mix(returned, densities, mixtures, 8)[:, 24:281]",
+      "complete_matching_lines": [
+        {
+          "line": 267,
+          "text": "            replay[:, 24:281] = core.density_mix(returned, densities, mixtures, 8)[:, 24:281]"
+        }
+      ]
+    },
+    {
+      "role": "original_material_audit_Source_only",
+      "source_fullpin": {
+        "path": "/private/tmp/axmat_complete_native_XSM_ASCII_UNREADY_SOURCE_20261010_vs7f_ff8/SOURCE_PROVENANCE/03_material_audit.py",
+        "sha256": "cb461b94ae61917da63e813e3dae2261d8f48a20834b15b42d0cad9fe0b8ddc9",
+        "size_bytes": 18948,
+        "identity": [
+          16777229,
+          49406518,
+          33188,
+          1,
+          18948,
+          1791604838475687576,
+          1791604838475687576
+        ]
+      },
+      "needle": "for order in (0, 1):",
+      "complete_matching_lines": [
+        {
+          "line": 224,
+          "text": "            for order in (0, 1):"
+        },
+        {
+          "line": 259,
+          "text": "    for order in (0, 1):"
+        }
+      ]
+    }
+  ],
+  "adapter_pin": {
+    "path": "/private/tmp/axmat_FINAL_micro_macro_complete_aggregation_SOURCE_design_20261010_88j33pvs/saved_native_data_access_adapter.UNREADY.py",
+    "sha256": "e4dc78c1bd84799c38c0ec05102e0555d243de8ae438c9c08a2296c3601ab742",
+    "size_bytes": 15624,
+    "identity": [
+      16777229,
+      49416642,
+      33188,
+      1,
+      15624,
+      1791610795080113804,
+      1791610795080113804
+    ]
+  },
+  "implemented_Source_scope": [
+    "typed fullpin/fullEOF future Root-only verifier",
+    "bounded complete record data-access stream",
+    "read-only saved SQLite/paired native pool accessor",
+    "fixed small complete62 input context capture"
+  ],
+  "NOT_implemented_Source_scope": [
+    "full scalar/18extra/three-moment aggregation",
+    "prompt+six delayed fission aggregation",
+    "exact independent binary32 arithmetic/control suite",
+    "complete original19619 coverage classification and verdict",
+    "genuine aggregation host/binder and Root actual input receipts"
+  ],
+  "exact_algorithm_document": "COMPLETE_AGGREGATION_EXECUTION_DESIGN.md",
+  "current_saved_contract_vs_historical_call_context_separate": true,
+  "actual_historical_inputs_not_automatically_in_saved_SQL": [
+    "track MAT mixture presence",
+    "pre-call old MACROLIB and old FISSIONINDEX",
+    "old TIMESTAMP/ITSTMP for any non-TONE route",
+    "SPH transient factors and Source/compiler/binary linkage"
+  ],
+  "immediately_readable_future_actual_context": [
+    "SHIBA/STATE-VECTOR",
+    "ISOTOPESSHI",
+    "TIMESPER presence",
+    "all62 alias/mix/density/temp",
+    "actual18 ADDXSNAME",
+    "all64 FISSIONINDEX",
+    "CHI-LIMITS",
+    "STATE19 NDEL6"
+  ],
+  "next_actual_step": "After Root actual native CLOSED plus finite independent saved review, read pinned SQLite/pool small context; implement full rulebook under same genuine caps; no direct adapter execution.",
+  "remaining_actual_pins": null,
+  "aggregate_engine_complete": false,
+  "aggregation_executed": false,
+  "original_native_RAM_bits_verified": false,
+  "Source_binary_link_proved": false,
+  "historical_masked_arithmetic_replay_qualified": false,
+  "MF6_multiplicity_qualified": false,
+  "physical_neutron_balance_qualified": false,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false,
+  "scientific_accuracy_qualified": false,
+  "new_runtime_Q_created": false
+}

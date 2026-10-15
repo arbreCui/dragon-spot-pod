@@ -1,0 +1,72 @@
+SPOT 第八轮旧文件复核与实际清理结果（2026-10-09，Asia/Shanghai）
+
+已实际删除13个有保留主文件的旧重复副本，文件分配占用
+423,231,488字节（0.394165 GiB），逻辑长度423,204,200字节。
+实际删除退出0；删除前预检与独立复核、删除后独立复核均PASS。
+项目在删除窗口内从157.124 GiB降至156.730 GiB。
+系统空闲两端均为196,608,000,000字节，仅记录实测值，
+不把文件块数计作APFS即时新增空闲量。
+
+本轮精确删除范围：
+1. 十个旧native重放的track_data.bin输入或输出镜像副本，
+   分配396,042,240字节（0.368843 GiB）；同族原inputs/runs主本全部保留。
+   双端原result.sha256均明确绑定各自路径和相同完整SHA。
+2. 三个旧Dragon程序副本，分配27,189,248字节（25.929688 MiB）：
+   gmres-activity-build/source/src/Dragon，保留同族已安装bin/Dragon；
+   iterative-d4a-rank2-map8-observables/Dragon及
+   iterative-d4a-rank2-picard-map8/frozen_runtime/Dragon，
+   保留d4a-corrected-closed0-runtime-release-20260920/Dragon。
+   两个iterative副本及release有原清单摘要；gmres的src副本没有独立seal，
+   依据原Makefile链接后复制安装的命令、原安装凭证及完整字节相同证明。
+没有整目录删除，也没有按旧日期或失败名称删除唯一数据。
+
+保留结果及当前依赖：
+所有结果文档、源码、日志、参数、原封存记录、材料成品、主输入、
+唯一主结果与当前V7失败证据保持。主项目bin/lib及当前探针库不动。
+两组各约12.36 GiB的完整当前输入和native分层/斜向响应主数据继续保留。
+42个材料/seed副本、2个未封存准备文件、41个生产快照归档本轮均保留。
+源码审查发现，下一步cold准备的原controller会经过admit_snapshots调用
+verify_offline_state，实际读取最终A/B execution继承清单中的31个旧副本。
+它们虽然不在当前V7静态图内，仍是下一步动态依赖，不能删。
+其余11个材料副本尚无完整动态依赖排除证明，因此也保留。
+
+本轮新增保护：
+从两套真实prepared、producer receipts、execution、run/audit/protocol及
+variant/material清单独立重建6,194个动态路径，加85个明确保留路径，
+去重后6,248项纳入清理拒绝条件，全部与13个候选无交集。
+这是清理路径保护，并非对所有旧路径的存在、cold INPUT或物理验收准入。
+原V7图35,646个规范文件、235,528条关系、86个命名空间、186个别名、
+225个资源根、旧保护索引、88个关键根和687条链接也全部排除候选。
+本轮未调用业务API、PREP、RUN、求解或恢复操作，未新增内存、AAA或ABA通过信用。
+
+核验与实际记录：
+Root全读13候选、12个保留主文件及392份保留来源/审查证据。
+独立预检重新全读419文件4,507,657,333字节，并重建完整动态路径集合；
+独立删除后复核重新全读408文件4,084,462,783字节，核实13项均缺席、
+实际账本逐项一致，保留主本及证据仍保持原字节和身份。
+删除窗口内其余175,600个普通文件、687条链接和6,988个目录路径，
+双次核对指纹保持一致：
+a119cda17e943b45cac5e06de7368e83feb70e386698b1c49caaab2461eb74d4。
+该指纹核对路径/身份/大小/时间/链接，未声称全项目每份大数据全部再次内容hash。
+本轮报告目录排除并单独留档；主README和进度在终态独审后有记录地更新。
+
+真实工具关闭：
+Root预检d5a6fb/session95703→9c6ead，EXIT0；
+独立预检fdd9ef/session17459→ae058f，EXIT0；
+Root实际删除471f35/session26508→7058d5，EXIT0；
+独立删除后复核ce1b2a/session56472→4ce7d0，EXIT0。
+具体原始工具观察、实际结果及独立报告均保存。
+
+详细清单manifest.json，实际逐项账本retirement_ledger.jsonl；
+实际删除cleanup_result.json，真实退出cleanup_terminal_observation.json；
+独立终态independent_actual_cleanup_review.json。
+原历史result.sha256、seal、execution和结果文档不重写。
+旧完整清单校验、copy审计、重建及重放须先从保留主文件恢复退役路径；
+更早七轮缺项需按各自清单恢复，不能宣称旧包仍原样全量完整。
+restore_retired_work_copies.py默认仅列13项映射，显式--path/--restore-all才写回；
+拒绝覆盖不同文件或写到项目之外，并核验完整SHA。
+
+八轮累计退役9,731项，文件分配占用105,731,637,248字节
+（98.470261 GiB）；不是系统即时空闲增量，也不是项目历次净变化。
+本轮清单与前七轮9718项无重叠，旧账本路径均鲜查仍缺席。
+下一步科学工作仍需新V8完整构建及原有冷启动/AAA/独立参考/ABA验证。

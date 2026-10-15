@@ -1,0 +1,7 @@
+V13 wrapper原始字节审计器源码独审通过，仅SOURCE_CONTRACT。
+最终64262e源码完整对应053747 driver/74ec contract；18字段、所有输入bits/title/maps、8planes、完整S2/输出/EOF逐项核对。
+原B1顺序及重复KEY、负零、稀疏fallback/连续LOC、2步与4步carry、4真实XABORT负例均有明确门。
+计划70 raw/288241824B；all 1800×370每record47970208B。原34observer不加2710真实SPOT数学调用。
+新增全树7身份前后/unique nlink1和pin hash闭窗解决验证与hash之间变化；释放标签已改成实际数据transition。
+线程1/单child/0retry来自原factory/SerialExecutor源门，不在旧watch里伪造字段。
+未导入审计模块，未运行controls/fixture/编译/业务，也未写项目。所有实际输出与RSS/native资格仍None/false。

@@ -1,0 +1,67 @@
+UNREADY SOURCE design only. No material payload, actual macro/XSM data, existing
+full graph/numeric artifacts or reviewed API was read/decoded/imported/executed.
+Only explicit original SOURCE and bounded small META/text/AST/hash were used.
+No canonical, project, old frozen D/E/artifact namespace or sealed package changed.
+
+Original wrapper098b2a31499B and its complete14-file f862d8 Source package are
+retained byteexact. Original8058f9 full378-check independent Source peer is fully
+retained and reused only for the original wrapper Source, never for new-source Q.
+New standalone wording1hunk explains actual REAL32 overflow/nonfinite rejection
+and finite ordinary rounding/underflow acceptance; no mathematical edit to the
+wrapper or readers. Both default full readers/fields/layout/lifetimes stay intact.
+
+New future Root binder is standard-library-only and does not import reviewed
+APIs. It validates two real admission files and original current material sources
+before creating fresh D/E or any READY Source. It checks the original150cm case,
+same temperatures/ratios/geometry/boundaries, original3%/1%/global normalization,
+full370/8/32 metadata and all62 audited temperatures. Real macro input SHA comes
+from the complete actual material audit source_sha256, not a snapshot archive.
+The original protected-source union is fully freshly SHA7ID verified at binding.
+No material bytes are decoded by the binder and no success pins are guessed.
+
+Future binder creates SOURCE-ready wrapper through exactly3 global retargets,
+protocol through1 status retarget, and genuine host through13 fixed global
+bindings. All original functions/caps/control ASTs and complete byte inverses
+must remain unchanged. Original transfer/reaction/scientific and protocol actual
+success pins remain None. Binding is frozen first and excludes final wrapperSHA;
+host pins final READYwrapper externally, avoiding a circular hash requirement.
+
+The new normal host's full12-hunk SOURCE adaptation inverse reconstructs original
+776bf8 normal PREPhost bytes and AST. Exact original unprofiled/thread/Python/
+module/SHA/MRO/resource/free/history/remaining-budget guard chunks are preserved.
+Actual support3c185/619/705/38de/bc4/ebbb Source is copied whole and pinned. No
+class/mock/guard/resource/production implementation is edited or replaced.
+Its two serial stages are full tiny protocol then all actual A/B raw transfer,
+original whole1800/stage600/RSS512/joint2GiB/history96/free8/thread1/child1/retry0.
+Only ART descendants are history roots; SourceD/receiptsE still count separately
+in full joint archive checks. Whole axial-family dynamic history remains intact.
+
+Full protocol Source contains all seven LCM kinds, nested string/int keys, exact
+wide signed integers, REAL32/parser64/REAL64 signedzero and ordinary finite
+rounding/underflow, padded characters, three toy raw moments, toy fission columns,
+unknown extra reaction and complete original spans/typed payloads. It predeclares
+five positive and ten rejection controls with actual observations saved; no
+control ran. Current physical370/8/3/32 data remain a separate full transfer stage.
+
+273 finite SOURCE checks actually passed under standard-library AST/hash tools,
+2dcc5f typedint0 CLOSED. Saved273/273 count and12 inverse hunks were confirmed by
+actualdfd7ad typedint0 bounded META read. Three actual SOURCE review tool failures
+are retained (syntax punctuation, originalpeer value-vs-pass field, resolve-vs-
+solve suffix); true corrections are recorded. None was a business retry or a
+material/parser/guard test. Details and complete actual returns are included.
+
+Root reported real v22 prerequisite EOF pins34a5e2, with single-link/no-ancestor-
+alias A/B macros; that receipt is acknowledged only as external design context.
+This package neither reads the payload nor inserts these as new qualification.
+Actual binder CLI metadata/source-admission dependencies and exact schema routes
+are documented in ROOT_TRUE_FUTURE_STEPS and the UNREADY contract JSONs. The
+existing v22 receipt directory must not be overwritten: choose fresh D/E for the
+new Source binding or independently review a finite Source adaptation first.
+
+Required next operation remains SOURCE peer review of this newly sealed package.
+Only afterward may Root create real material/Source admissions, run Source-only
+binder, obtain bound Source review/freeze and perform the single genuine normal
+operation after its current build closes. Actual Root typedEXIT0 CLOSED and full
+saved-data/watch/budget independent review are essential. No runtime/RSS claim,
+original XSM memorybits, true reaction/multiplicity, physical neutron balance,
+same-MG coupled150cm reference, AAA accuracy or ABA admission is established here.

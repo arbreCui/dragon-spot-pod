@@ -1,0 +1,40 @@
+--- /private/tmp/axmat_last_cprime_trim_v9_identity_source_draft_20261009/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v9.py
++++ /private/tmp/axmat_last_cprime_trim_v9_ready_source_admission_candidate_20261009/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v9.py
+@@ -1,16 +1,15 @@
+-"""UNREADY V9 source-only last private declaration-use integration.
+-
+-Derived from frozen V8 source without retrying or promoting its failed RUN.
+-Only new-family identity and the reviewed private current-helper source
+-identity are retargeted. The original strict_json_bytes parser is unchanged.
+-The graph wire helper, complete seven-key historical INPUT and complete
+-actual trim INPUT remain unchanged, with all aliases/namespaces/bytes/gates.
+-All original dynamic historical resource roots remain selected by the same
+-source functions, including prior failed families; no static root-count
+-prediction is an actual resource admission or an INPUT success receipt.
+-Every new Root PREP/build/API/runtime witness remains absent and required.
+-The original source gate rejects this UNREADY TMP draft before business.
+-No memory, runtime, numerical, native, AAA or ABA credit is created here.
++"""V9 source admission candidate for final private declaration last uses.
++
++The reviewed current helper releases capture and physical declarations at
++verified final uses. The original strict_json_bytes parser remains unchanged.
++All mathematics, MRO, five stages, four tails, caps, complete historical INPUT,
++complete actual trim INPUT, graph wire and dynamic resource selection retain
++their original source contracts and gates.
++Memory benefit remains unproved until a genuine complete Root-owned RUN.
++Frozen V8 and diagnostic parent failures retain their original outcomes.
++This TMP source is rejected by the unchanged formal-path business gate.
++Every new PREP/build/API/runtime witness remains absent and required.
++This source creates no scientific, native, AAA or ABA qualification.
+ """
+ import argparse
+ import gc
+@@ -37,7 +36,7 @@
+ OUT = ART/'axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009'
+ TERMINAL = ART/'axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v9-20261009'
+ FAMILY = 'HISTORICAL_INPUT_TRIM_COMBINED_RUNTIME_LINK_V9'
+-DRAFT_STATUS = 'UNREADY_SOURCE_ONLY_LAST_PRIVATE_USES_PENDING_ROOT_ADMISSION'
++DRAFT_STATUS = 'READY_REVIEWED_TRIM_COMPONENT_INPUT_REUSE_FORMAL_FACTORY'
+ CAPTURE_SEAL_SHA = '12756df88672c4438149119026edba0b2ef78780dffa5dcc522bcd06771d5296'
+ CAPTURE_TERMINAL_SHA = 'd5496707eb1ad08826eec599dbf6035b9e39df67cf68a92e84db62bcbb753e63'
+ CAPTURE_FACTORY = ROOT/'validation/axial_material/prepare_rank1_cache_memory_dedup_file_snapshot_native_angular_capture.py'

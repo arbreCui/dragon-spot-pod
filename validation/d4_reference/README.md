@@ -2,6 +2,18 @@
 
 ## Current decision
 
+For current execution and repaired-runtime selection, use the
+[handoff](../iterative/d4a_final_validation_handoff.md) and
+[quickstart](../iterative/D4A_CORRECTED_QUICKSTART.md). The
+[saved-evidence report](d4a_evidence_report.md) compares the explicitly selected
+completed repaired maps; the [research plan](../../SPOT_doc/validation_plan.md)
+defines the remaining error-isolation work.
+
+The [current-input scattering audit](d4a_scattering_data_audit.md) localizes the
+matched-MG-reference obstacle to saved microscopic Fe56 data in steel mixtures
+near 1 MeV. This is a data-path finding, not a k-error attribution or a repaired
+reference. The historical export measurements below remain historical.
+
 The converged map-8 state is not an accuracy parent.  It used the legacy
 material procedures and is retained only as a numerical SPOD/Picard
 regression.  The corrected physical epoch has now admitted its three radial

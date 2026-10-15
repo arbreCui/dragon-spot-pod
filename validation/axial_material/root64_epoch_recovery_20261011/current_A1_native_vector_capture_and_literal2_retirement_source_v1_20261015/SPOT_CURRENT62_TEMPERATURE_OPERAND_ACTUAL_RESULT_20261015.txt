@@ -1,0 +1,16 @@
+SPOT 62槽原始温度字值捕获实际结果 — 2026-10-15
+
+Root 实际执行 f59794 / session95151，终止 38b4de，整数 0；原始真工具返回位于 current_temperature_operand_capture_source_v1/v5/ROOT_ACTUAL_TRUE_TOOL_RETURNS.json。
+仅捕获四个原记录 TEMP/USED/RNAME/MIX，共 1984 字节、62 槽。全部 62 个实际 REAL32 温度字与原案例摄氏参数+273.15后的预期 REAL32 字完全相等。
+475 °C → 原保存 REAL32 748.1500244140625 K，little-endian字 9a093b44，1 槽，逐字相等。
+620 °C → 原保存 REAL32 893.1500244140625 K，little-endian字 9a495f44，24 槽，逐字相等。
+750 °C → 原保存 REAL32 1023.1500244140625 K，little-endian字 9ac97f44，37 槽，逐字相等。
+
+原始输出 SHA256: 489407f046ecb452dedcfcbde689d3148079b9d8d912efea36e817c4a1123e4f，1984 字节。
+Root 报告 SHA256: 29a034cf32b53641416370158c99349f27b9bc83bdc59f853ec9092945222e47。
+子报告 SHA256: 9a1dc69ff682782b8d1f8b74f109744cf95d4b33555d1eba5abdcd78caff4b4d。
+科学输入始终只读。完整输入校验按原方法：Root 每文件 1 次 EOF，子进程原构造和 close 各 1 次，共每文件 3 次；1984 字节仅指选定 payload 捕获量。
+子进程 SELF 峰值 33,505,280 字节；监视采样峰值原报告 0.0，不能把零采样解释为零内存。保留原 56 根累计、512 MiB/600s/1800s/单进程/不重试等限制。
+
+独立 Source 核验 f1b85d 整数0已通过；旧 v2/v3 拒绝准入及 v4 不准入的元数据错误均原样保留。截至本记录，实际捕获后验核验正在进行。
+此结果只核对实际存储温度、核素名称和混合编号及 C→K 字值一致性。温度插值、数据库节点选择、SPH、反应完整性、物理精度、AAA、ABA 和总目标未因此通过。

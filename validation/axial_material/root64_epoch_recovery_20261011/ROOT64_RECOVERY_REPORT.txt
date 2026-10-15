@@ -1,0 +1,49 @@
+ROOT64 当前周期源码恢复检索（2026-10-11）
+
+结论：当前项目中未找到已经完成五个编译步骤和十七个控制的完整 ROOT64 新实现及其控制源码。其原字节证明和已编译对象仍保留；这些不能替代丢失的源码，也不能把旧设备身份改成当前身份来继续准入。本检索没有执行 Native、编译、控制、数值计算或清理。
+
+本轮真实检索范围：
+1. 项目 regular files 219307 项，包含 ignored validation/artifacts；排除 .git/.aws/.codex/.agents 和本恢复输出目录。954 个符合历史 expected size 的文件完整 EOF 哈希，合计13864136字节。118个历史固定输入中36个原路径内容匹配、22个存在完整同字节副本、60个未找到。
+2. 项目 Source tar archives共28副本/7唯一字节包；2032个成员，候选及源码成员完整读取20037184字节。未找到缺失输入的完整同字节成员，也未找到新 MODULE SPOR64_BOOT64/SUBROUTINE SPOBOOT64/PROGRAM TEST_ROOT64_BOOT_CONNECTED 实现签名。
+3. 项目 Python、Fortran、patch、diff、txt及不超过8MiB的JSON/JSONL/NDJSON中检索相同源码声明签名，没有发现完整实现或嵌入源码。大于8MiB的JSON仅作为当前mapping的具体已读binding来源，不声明全部文本内容搜索。
+4. 全EOF pin均记录当前实际device/inode/mode/nlink/size/mtime_ns/ctime_ns，并核验before/open/EOF/after一致。历史device16777229不转换；当前device16777234不称作历史身份仍有效。
+
+关键未找到项（历史expected SHA）：
+sources/SPOBOOT64.f90：3061 B，2a053e7ed89145c6f9c70b59cb406b9c532102afb7b1756cbcf2a158adf469b8
+sources/SPOPROJ64.f90：10193 B，87aa2fb637728d26aadb7f0f1bf29da2a3b90bd3281d71586117850a35209482
+sources/SPOR64_BOOT64.f90：31550 B，5f88b893a3316acf24ed7f9a681993aaa7fa81e6c7e048ea14cbcd9e71a5ae70
+sources/AXMAT_SNAPSHOT_DRIVER64.f：57867 B，6ef73fc2639464f6019a8b590bf4c20c1176a8322676acc1fc34b545fae08e10
+controls/test_ROOT64_BOOT_connected.f90：8591 B，40fdaeb6264f71c58cfc1ae477333e2467e3f56313aeb9985805711a8536e55d
+controls/COMPILE_PLAN_SOURCE_ONLY.py：4157 B，b6ca68ad1f498084ed13a79b6c84c92cfc7b63429b75686090274f449347f06c
+/private/tmp/Root_run_ROOT64_connected_typed_fixture_original_guards_20261011.py：7996 B，acadae1aa39742b3a3d9ba50cf2e104a1bcd37b088e09cdcd81b75aed487b8a9
+同族原始派生器、完整inverse、最终Source frozen manifest、独立Source review亦未找到同字节副本。完整清单及每项来源在ROOT64_CURRENT_SOURCE_MAPPING.json。
+
+当前可用的实际实现本体：
+/Users/wen/spot/validation/artifacts/axial-material-r64-system-normalization-20261003/build/AXMAT_SNAPSHOT_DRIVER64.f
+57348 B，ab98848880334ce3b3b680261a40dd4841ca02cb8588bc5e7da649e223bcc46e。是历史修改前driver（包括实际REAL64 SPOT-KEFF64等保存），不是缺失的57867 B ROOT64 producer新driver。
+/Users/wen/spot/src/SPOPROJ.f90
+9358 B，8d7e93d4b850b45f31303d1cd8ad1c64496014c34d0edf7fc1b08b8932f153a7。是历史SPOPROJ64修改前原本，不能称为10193 B新投影实现。
+/Users/wen/spot/src/SPOR64_VERIFY.f90
+5896 B，19b1e8653cfa26efe465d9ec7aee6955f38de32f3343757c476a486b40e25173。
+/Users/wen/spot/src/SPOR64_RCONTRACT.f90
+3671 B，8463fa31e5d96e6764dc1fd4884342e22cbe778ed9af89f59cc12d8012d4c5d6。
+/Users/wen/spot/src/SPOR64_B2B.f90
+33658 B，b14fba851630d1de660b38d71fb82939489423d0b1ceb4541711a61a2e8459b2。是未加新BOOT接线的历史原本。
+/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-sender-contiguous-flux-window-root-index-build-admission-v15-20261010/FLU2DR64.f
+60101 B，cd8e419c19f3a473beb6ded27705c513a07363a1a37e003c64266c5ef9cf5fb1。不是缺失的60620 B新producer接线版本。
+/Users/wen/spot/validation/axial_material/production_inputs.py
+13023 B，92bf4e8955fda48e9547cc29afb7aad7cc262ba91ffbd536cb94df02d735346e。不是缺失的13051 B BOOT64输入派生版本。
+以上同字节对应均有expected pin及实际当前完整pin可查询；本检索没有把源码复制进src或修改其内容。
+
+当前保留的原控制描述与结果，不是控制源码：
+/Users/wen/spot/validation/artifacts/axial-material-ROOT64-connected-typed-fixture-original-guard-20261011/Root_fixed_source_and_exact_command_binding.json
+保留五个原编译/链接命令、十七个正反控制名称及具体调用参数、原guard引用与原源码pin。控制名称是positive/global_wrong_scope/missing_producer_seal/root_flux32_disguised/wrong_root_mirror/missing_global64/bad_seed_epoch/fabricated_projected/uncommitted_source/wrong_source_epoch/wrong_source_dimensions/mutated_macro/mutated_track/mutated_system/different_route/qfiss32_disguised/coherent_source_tamper。
+同目录Root_actual_typed_fixture_summary.json、Root_actual_fixture_tool_returns.json及build/*.log/*.watchdog.json保留原实际22阶段退出结果；build/SPOR64_BOOT64.o/test_ROOT64_BOOT_connected.o/typed_control_unqualified存在，但对象和可执行文件不恢复完整Fortran本体。
+两个入口编译目录的SPOBOOT64.o、SPOPROJ64.o及v2 AXMAT_SNAPSHOT_DRIVER64.o仍存在；不把它们当作可重建的源码或当前链接准入。
+
+执行凭证：
+recover_root64_source_mapping.py原v1遇真实cycle symlink后退出1，原Source与真实failure tool保留；v2只把inventory改为lstat+regular-file判定，真实342ae0失败和8d3ec4/9d0967退出0没有改写。
+v2检索1.946891458秒，sampled own peak27017216 B（约25.77MiB）；阶段600秒和自身512MiB采样守卫，不声称Darwin强制OS RSS硬上限或完整实验resource scope已获得新资格。
+archive检索真实36aaea退出0，0.493969709秒。原全部工具返回以未解析stdout字符串保存在对应TRUE_TOOLS JSON。
+
+接续工作边界：可基于这些原本重新实现并独立审查新的durable ROOT64链，保留原全部正反控制后真实重新编译/执行；不能补造旧Source、旧peer review或旧identity0，不能声称原17控制已覆盖新实现。

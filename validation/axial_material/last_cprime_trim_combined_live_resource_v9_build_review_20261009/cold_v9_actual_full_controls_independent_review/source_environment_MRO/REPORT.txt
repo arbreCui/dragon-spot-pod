@@ -1,0 +1,8 @@
+PASS：V9 三项控制的完整源码/环境/MRO/惰性代码编译、原始日志/watch/stages/result、封存及独立 Root 退出凭证复核。
+原实际 controls 085698/session92301→5c78de 真0 CLOSED；本独审 e8ba44 真0 CLOSED，无业务重跑。
+positive PID29480：kernel36.609375MiB，PASS；oversize PID29487：ps596.546875MiB/-15，原512MiB保护预期FAILED，全部kernel字段仍None；short PID29490：live0采样但kernel36.75MiB，PASS。
+完整 stdout 136307B/stderr0；10控制文件/3目录+独立CT3文件，收尾91.976394458s、完整archive61047970B，原caps不变。
+全31 SOURCE、1860环境文件、391模块源码拥有者、43已准备文件、18原源码函数、11实际callable代码摘要及4清理helper摘要均完整对照；37395完整owner联合和图/资源由互补独审补齐，本文不单独授予whole scope。
+原raw watch保留源码字段顺序，result经原write_once sort_keys=True边界后全类型/数值floatbits比较；原FAILED stage没有PASS专有log_sha256，原log仍由观察和seal完整SHA绑定。
+三个TMP reader失败均完整保留：语法1、跨raw/排序后JSON边界1、FAILED原记录形状1；只改审查器，未改任何业务字节或重试控制。
+不重读35GB数值，不import/执行业务，不修改项目。无Dragon/native/输运/AAA/ABA/精度信用；原legacy250与独立2000active/8gate未来政策仍按原合同区分。

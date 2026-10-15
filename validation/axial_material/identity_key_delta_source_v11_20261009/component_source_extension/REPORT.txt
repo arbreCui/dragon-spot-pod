@@ -1,0 +1,5 @@
+V11 正式组件所需源码扩展草稿：UNREADY
+
+完整helper先委托真实V10 d849补丁链，再追加6处整数key存储差异；整份候选可逆回c0原文。旧lower/factor/last-Cprime proof整体保留，仅追加新identity contract。
+原45阶段调用与数值routine均原字节；控制源只3处观测增量。原dense/packed二进制字段不改，新文件记录c017完整key与candidate实际values/indices/base/KEY_LOAD解码/KEY_STATS。
+后续独立审计必须逐group完整byte比较c017与decoded，检查所有真实存储形式和完整cap记账；本草稿未导入helper、未编译或执行任何业务，实际内存及科学资格均未知。

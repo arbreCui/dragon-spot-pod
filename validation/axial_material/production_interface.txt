@@ -1,0 +1,189 @@
+Production SPOT interface for the same-temperature AAA / ABA pin experiment
+
+Scope
+  production_inputs.py writes input decks only. It neither constructs material
+  data nor executes, compiles, or modifies any existing solver. Use the repaired
+  production Dragon and lifecycle tools from one pinned, separately built runtime.
+  The retained radial map is the production characteristic solver, not a network.
+
+Material-owner inputs (all newly declared, no historical material substitution)
+  training_snapshots.xsm: L_ARCHIVE with three slots A/B/A.
+  AAA/case_snapshots.xsm: the same A state in all three slots.
+  ABA/case_snapshots.xsm: A/B/A slots.
+  initial_radial_track.bin: one identical eight-region radial geometry track.
+  Preserve the TRACK/MICROLIB2/SYSTEM/FLUX archive object names expected by BACKUP.
+  All slots must share geometry, MATCOD, KEYFLX, volumes and temperature.
+  Actual compositions, density calculation and library lineage are owned by the
+  material preparation stage and must be sealed before execution. No composition
+  or temperature is assigned by this generator.
+
+Declared production shape
+  370 energy groups, 8 radial regions, 3 physical 50 cm zones, 32 fission
+  components; 12 axial cells (4 per zone), SN8, SCAT3, constant diamond and vacuum
+  axial ends. Defaults reproduce the existing pin radial control values and use
+  the current pin axial ACCE 3 0 policy. Controls may only change by a separately
+  declared config before a run; the generator does not select them from results.
+
+Preparation order
+  1. Generate decks into a new directory. The JSON manifest records dimensions,
+     deck hashes, dependencies and make_route_contract arguments for both cases.
+  2. Execute common_basis.x2m once with training_snapshots.xsm. This calls the
+     production SPOPOD through ASM. The standalone generator gates rank before
+     publication. production_runner stages its own version that saves the full
+     common_basis.xsm first, then independently reads its POD-RANK-G and
+     POD-SIGMA-G records with rank_precision.x2m. Every one of 370 groups must
+     have rank=2 and sigma2 > 9.5367431640625e-7*sigma1, as frozen before basis
+     construction in case_spec_rank_addendum.json. The latter is a conservative
+     REAL32 input-distinguishability screen, not a POD accuracy criterion. Preserve
+     all three singular values, the full XSM and log even on failure, classify
+     INCONCLUSIVE_RANK_INPUT_PRECISION, and stop before any case bootstrap.
+     Never pad modes, lower this gate, retrain per case or fit rank to CE results.
+  3. Copy the same common_basis.xsm bytes to basis_reference.xsm in each case.
+     Seal and verify that identical hash in every later stage. The case setup and
+     radial map always use FIXB; only the training deck can construct a POD basis.
+  4. Execute case_setup.x2m separately for AAA and ABA. It writes each case's own
+     initial_axial_track.xsm, initial_axial_macrolib.xsm and initial_system.xsm.
+     ASM FIXB checks radial dimensions, snapshot count, volumes and retained rank.
+  5. Create route_contract.xsm using the manifest's make_route_contract arguments.
+     Copy SpotRefR64.c2m, SpotPlaneR64.c2m and SpotStepR64.c2m from the pinned runtime.
+
+Bootstrap in each fresh case directory
+  bootstrap_axial.x2m -> seed_axial.xsm, seed_snapshots.xsm.
+  bootstrap_radial.x2m -> refreshed_snapshots.xsm (three actual TYPE-S solves).
+  b2i_seal_bootstrap seed_axial.xsm initial_axial_track.xsm
+    refreshed_snapshots.xsm route_contract.xsm closed_axial.xsm
+    closed_snapshots.xsm
+  The bootstrap is CLOSED/0 only, with no previous-map defect or MET claim.
+
+One subsequent map in its own fresh directory
+  Stage parent closed pair as parent_axial_closed.xsm and
+  parent_snapshots_closed.xsm; retain the same basis, track, macro and contract.
+  prepare_r64_next_projected parent_axial_closed.xsm
+    parent_snapshots_closed.xsm initial_axial_track.xsm route_contract.xsm
+    projected_proposal.xsm
+  Execute picard_radial.x2m -> candidate_radial.xsm, candidate_system.xsm.
+  admit_candidate_radial candidate_radial.xsm route_contract.xsm
+  Execute picard_axial.x2m -> candidate_axial.xsm, candidate_snapshots.xsm.
+  close_r64_returned candidate_axial.xsm candidate_snapshots.xsm
+    route_contract.xsm closed_axial.xsm closed_snapshots.xsm
+  Execute checker_parent.x2m on its private copy (does not alter the parent).
+  check_one_map_xsm --reencoded basis_reference.xsm candidate_system.xsm
+    parent_for_checker.xsm candidate_axial.xsm candidate_snapshots.xsm
+  The first map uses --reencoded; map 2 onward uses --continued.
+  check_convergence_gate closed_axial.xsm
+  Require independent replay and the existing three-defect AND gate. A valid
+  NOT_MET is not a transport failure; it requires another bounded direct map.
+
+Execution-owner obligations
+  Use run_bounded_dragon with explicit wall-time caps, OMP_NUM_THREADS=1 and
+  regular pinned executables. Hash all physical inputs and runtime dependencies
+  before/after; require normal Dragon termination and stage completion markers.
+  Never run the old run_pin_current_picard.sh, which uses the historical CLOSED/69
+  parent and builds shared source trees. Never use SpotSnapBld's historical hard-
+  coded material densities as freshly declared A/B evidence. No script generated
+  here grants a numerical accuracy PASS; independent same-data comparison remains
+  a separate stage.
+
+Runner declaration and sequence
+  production_runner.py preflight DECLARATION --sha256 DECLARATION_SHA is read-only.
+  production_runner.py prepare DECLARATION OUTPUT --sha256 DECLARATION_SHA writes
+  a fresh isolated runtime/deck directory, without executing any numerical stage.
+  The declaration has schema_version=1, the case_spec experiment_id, cases=[AAA,ABA],
+  production_config=ProductionConfig fields, and budgets with exactly:
+    setup_seconds=120, bootstrap_axial_seconds=300, bootstrap_radial_seconds=600,
+    radial_seconds=300, axial_seconds=300, host_seconds=120,
+    max_maps=100, total_seconds=21600.
+  These are per-case limits. The AAA budget includes common archive/basis setup;
+  ABA receives its own new wall clock and map budget. All execution is serial,
+  one numerical child and one thread; no automatic retries or threshold changes.
+  resource_roots is an explicit list of absolute, nonoverlapping directories
+  strictly below this project's validation/artifacts. Include this experiment's
+  material, CE v1/v2, tool, metadata-control and new production directories;
+  never add the old D4/native trees. A future production directory may not exist
+  yet, but prepare OUTPUT must be covered by one declared root. Roots and their
+  ancestors may not be symlinks. The declaration hash freezes this accounting
+  scope; no automatic directory discovery expands it.
+  The runner requires >=8 GiB free space and <=12 GiB total regular-file apparent
+  bytes across these roots, including outputs from earlier experiment stages.
+  It does not follow file/directory symlinks, so aliases to old immutable data
+  are not charged. The production runtime copies and all actual new files are
+  charged. Checks run at preflight, after preparation, before/after every stage,
+  and once per second while a numerical child runs. Exceeding either limit or
+  being unable to verify the declared scope terminates the current child group,
+  retains logs/files and writes FAIL_RESOURCE; nothing is deleted or retried.
+  Stage and case records retain the measured bytes and the reason for refusal.
+  Include case_spec and rank_addendum descriptors, each {path:absolute,sha256:hex}.
+  inputs contains exactly eight descriptors with the same path/hash format:
+    snapshot_A, snapshot_B, radial_track_A, radial_track_B, snapshot_log_A,
+    snapshot_log_B, material_manifest, material_results.
+  material_results must be schema_version=1, classification=VALID_SNAPSHOTS,
+  runtime_sha256 equal the repaired Dragon identity, inputs_manifest_sha256 equal
+  material_manifest, and states A/B each with groups=370,regions=8,snapshots=1,
+  fission_components=32 and archive_sha256/radial_track_sha256/snapshot_log_sha256.
+  The manifest's actual source geometry and configuration are checked against
+  case_spec: seven radii, hex size, DEFAUL=0/albedo=1 white boundary, temperatures,
+  A/B recipes, offline controls and slot order. Axial mesh, vacuum ends and solver
+  controls are bound to the same specification. A/B track bytes must match.
+
+  After verifying completion receipts, hashes and log markers, preflight reads
+  the actual single-slot XSM archives without loading or executing a solver.
+  FLUX/EPS-CONVERGE and TRACK/REAL-PARAM must satisfy the preserved-control
+  predicates in SPOR64_B2B.f90:296-307 and 374-379, including exact REAL32 bit
+  identity to the declared route controls, finite values and zero trailing
+  fields. Refusals report actual and allowed bits; no metadata is rewritten.
+  This is only a two-record compatibility check. Full B2B admission and every
+  scientific acceptance gate still apply. prepare copies and hash-freezes
+  snapshot_control_preflight.py with the production runtime. The reader loads
+  only when production preflight reaches this mandatory check, so resource-only
+  CE bundles do not depend on it; missing readers refuse production preflight.
+
+  Run with the copied script to use its frozen implementation:
+    python3 OUTPUT/runtime/production_runner.py run OUTPUT/prepared.json
+      --sha256 PREPARED_SHA
+  This defaults to AAA only. AAA VALID_MET yields AAA/run_status.json with
+  classification=WAITING_REFERENCE. It never starts ABA automatically.
+  The case directory is a permanent attempt claim, including failure; do not
+  delete it to retry. Every stage and retained state is preserved and hashed.
+
+  After independent reference qualification, explicitly run:
+    python3 OUTPUT/runtime/production_runner.py run OUTPUT/prepared.json
+      --sha256 PREPARED_SHA --case ABA
+      --reference-qualification QUALIFICATION.json --reference-sha256 QUAL_SHA
+  The reference receipt must include schema_version=1,case=AAA,
+  classification=AAA_REFERENCE_QUALIFIED,
+  method=independent_continuous_energy_openmc, and the exact experiment_id.
+  Bind prepared_sha256,case_spec_sha256,rank_addendum_sha256,
+  aaa_run_status_sha256 and common_basis_sha256. checks must explicitly report
+  PASS for input_equivalence,source_convergence,block_stability,
+  statistical_resolution,keff,scalar_flux,nu_fission,currents_balance_symmetry.
+  evidence must contain exactly statistics,input_equivalence,
+  currents_balance_symmetry file descriptors. The statistics report must have
+  classification=STATISTICAL_COMPARISON_PASS (or an explicit status=PASS wrapper);
+  the other two sealed JSON reports must have status=PASS.
+  The execution owner composes this receipt only after reviewing
+  all independent reports under case_spec. A statistics-only PASS is insufficient.
+  The runner verifies these reports and the sealed AAA/basis lineage before
+  creating ABA, and reuses the exact admitted common basis without retraining.
+  ABA also stops WAITING_REFERENCE after MET; a fixed point alone is never an
+  accuracy acceptance for either case.
+
+Runtime/path contract
+  The small runtime copies 12 individually hash-pinned repaired production and
+  metadata members. Large material inputs remain immutable external files and
+  appear through short stage aliases. All XSM arguments and CLE file literals
+  are relative basenames below the Ganlib 72-character host-path limit; only
+  OS executable paths and Python provenance paths are absolute. Thus a long
+  artifact directory does not become a long XSM filename. Copied run execution
+  does not use its derived repository ROOT or rebuild from shared sources.
+  Dragon depends on the installed Homebrew GCC libgfortran/libquadmath/libgcc
+  runtime and macOS libSystem. Binary/member hashes do not seal the OS itself.
+
+Shared read-only resource interface
+  Other explicitly scheduled experiment runners may import DiskResources and
+  ResourceFailure from this frozen production_runner.py with its production_inputs.py
+  dependency. Importing does not inspect disk or start a process. Construct
+  DiskResources(artifacts_root:Path, roots:list[str], min_free_bytes:int,
+                max_bytes:int) then call check() before/during work.
+  check returns a measurements dictionary, or raises ResourceFailure with a
+  snapshot attribute containing the measurements and reason. Each caller must
+  terminate its own child process group and preserve its own failure receipt.

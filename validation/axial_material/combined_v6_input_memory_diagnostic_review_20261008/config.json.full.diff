@@ -1,0 +1,103 @@
+--- frozen_V5/config.json
++++ stopped_V6/config.json
+@@ -1,10 +1,10 @@
+ {
+-  "V4_function_interval_evidence_transferred_to_V5": false,
++  "V5_function_interval_evidence_transferred_to_V6": false,
+   "actual_PREP": {
+-    "path": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v5-20261008/declaration_terminal_return.json",
+-    "sha256": "1d108602bd15b55d14dcdf89c7aa439d5d3b20b16cb11c4861551ac8b6b987dc"
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v6-20261008/declaration_terminal_return.json",
++    "sha256": "684742fbb37dee634f22a8a3d00c4f400a7aafd85d1a2b3a66700855b70cbb5f"
+   },
+-  "base": "/Users/wen/spot/validation/artifacts/axial-material-trim-combined-v5-python-input-memory-diagnostic-20261008",
++  "base": "/Users/wen/spot/validation/artifacts/axial-material-trim-combined-v6-python-input-memory-diagnostic-20261008",
+   "bounded_helper_sha256": "bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09",
+   "build_seal": null,
+   "caps": {
+@@ -19,28 +19,28 @@
+     "total_wall_seconds": 1800
+   },
+   "child_source": {
+-    "path": "/private/tmp/axmat-trim-v5-input-allocation-diagnostic-source-draft-20261008/child.py",
+-    "sha256": "9f01d08ac89b31c609c7d2607b4549b09f643fe7dfa7fb8fc62d54e6b981f04f"
++    "path": "/private/tmp/axmat-trim-v6-input-allocation-diagnostic-source-draft-20261008/child.py",
++    "sha256": "83cdb306d1408dc901e8b1bbd8e13f92fe05c1c23b075892a6d894aa9a5e64d5"
+   },
+   "declaration": {
+-    "path": "/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v5-20261008/declaration.json",
+-    "sha256": "de3f7329697ebac95dc0ec55e4aeb69ced55aea04a813f3bb373126d778ae98f"
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-historical-input-physical-dedup-combined-runtime-build-owned-specs-last-cprime-trim-live-resource-scopes-v6-20261008/declaration.json",
++    "sha256": "da73dec778985527b751441c396750504316ccdb241b80ba1ccac89cb41b69fd"
+   },
+   "factory": {
+-    "path": "/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v5.py",
+-    "sha256": "331824f74c560dca5ea3de63776f3efb6d0c05a16ea7c044d87563ba02da1a60"
++    "path": "/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v6.py",
++    "sha256": "6bcef269814a120f0cf8a5e9d068a6de0b509017690b8ae646b50b2ef27d8921"
+   },
+   "failed_RUN_is_not_success_input": true,
+   "failed_RUN_provenance_INPUT_only": {
+-    "path": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v5-20261008/terminal_return.json",
+-    "sha256": "900cd5c8238cebede6583f31cbd94e8970c6c8488b42abbe05609cffe910a247"
++    "path": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-historical-input-physical-dedup-combined-runtime-build-terminal-owned-specs-last-cprime-trim-live-resource-scopes-v6-20261008/terminal_return.json",
++    "sha256": "49b675cc09124d1d9e1513719ab8d636ce033a8bc8d42d45cffaed6284d0ab32"
+   },
+   "failed_RUN_provenance_is_not_an_admission_dependency_or_success": true,
+-  "family": "TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC",
++  "family": "TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC",
+   "hook_overhead_inside_original_limits": true,
+   "host_source": {
+-    "path": "/private/tmp/axmat-trim-v5-input-allocation-diagnostic-source-draft-20261008/host.py",
+-    "sha256": "b2b3d746573be1c141100835d19cbf3b54a1ff86f43644f949e49839f372f481"
++    "path": "/private/tmp/axmat-trim-v6-input-allocation-diagnostic-source-draft-20261008/host.py",
++    "sha256": "03ffdee9f7df0adb74f50d179045426e1a852406d012d92dc8cb6d26dffa9c13"
+   },
+   "maximum_boundary_events": 1024,
+   "normal_performance_or_scientific_qualification_claimed": false,
+@@ -62,7 +62,7 @@
+         "trim_component_input",
+         "supervisor_constructor_preflight"
+       ],
+-      "path": "/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v5.py"
++      "path": "/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v6.py"
+     },
+     {
+       "functions": [
+@@ -79,7 +79,7 @@
+         "_trace_records",
+         "_trace_coverage"
+       ],
+-      "path": "/Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_pooled_phase_paths_20261008.py"
++      "path": "/Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_same_literal_phase_identity_20261008.py"
+     },
+     {
+       "functions": [
+@@ -111,12 +111,12 @@
+       "sha256": "0e7423bb39c6a6c5c55e2ba12dede62d3d779dd1805342eedc39e6bf40e5c779"
+     },
+     "factory": {
+-      "path": "/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v5.py",
+-      "sha256": "331824f74c560dca5ea3de63776f3efb6d0c05a16ea7c044d87563ba02da1a60"
++      "path": "/Users/wen/spot/validation/axial_material/prepare_historical_input_owned_specs_trim_combined_physical_dedup_file_snapshot_runtime_build_live_resource_scopes_v6.py",
++      "sha256": "6bcef269814a120f0cf8a5e9d068a6de0b509017690b8ae646b50b2ef27d8921"
+     },
+     "graph": {
+-      "path": "/Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_pooled_phase_paths_20261008.py",
+-      "sha256": "cebc6d3c1198b404d79799dec939b7eb67ddfc384977a9e2d1ca6cd956bb3eb1"
++      "path": "/Users/wen/spot/validation/axial_material/combined_runtime_reviewed_metadata_historical_input_graph_same_literal_phase_identity_20261008.py",
++      "sha256": "07b22c9f2f4fba626fbe7f4faec5edd9cbbc15f0e0f4f4edf5858aac489be612"
+     },
+     "ordinary": {
+       "path": "/Users/wen/spot/validation/axial_material/combined_runtime_current_ordinary_path_checks.py",
+@@ -124,8 +124,8 @@
+     }
+   },
+   "python_executable": "/Users/wen/miniforge3/envs/openmc-dev/bin/python3.12",
+-  "result_path": "/Users/wen/spot/validation/artifacts/axial-material-trim-combined-v5-python-input-memory-diagnostic-20261008/diagnostic/result.json",
+-  "schema": "AXMAT_TRIM_V5_INPUT_ALLOCATION_DIAGNOSTIC_CONFIG_V1",
++  "result_path": "/Users/wen/spot/validation/artifacts/axial-material-trim-combined-v6-python-input-memory-diagnostic-20261008/diagnostic/result.json",
++  "schema": "AXMAT_TRIM_V6_INPUT_ALLOCATION_DIAGNOSTIC_CONFIG_V1",
+   "scope": "ONE_REAL_DECLARATION_INPUT_ADMISSION_TRUE_BUILD_INTERPRETER_BRANCH_WITH_ORIGINAL_CONSTRUCTOR_PREFLIGHT",
+   "status": "UNREADY_STOPPED_SOURCE_ONLY_ROOT_REVIEW_REQUIRED",
+   "supervisor_source": {

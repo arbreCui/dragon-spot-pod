@@ -1,0 +1,17 @@
+V12 完整运行输入独立只读审查：PASS
+
+实际唯一 host 3900c7/session49432 → bbe76b，int0 CLOSED；postrecorder 8ea1c6 真0。持久化载荷9件，加独立Root回执共10件，26,415,645载荷字节；完整25,695,231B API 返回与正式返回逐字节相同，host全stdout JSON与result完全一致，stderr0。
+
+全36804 descriptor准确来源合并；36776 canonical完整7字段身份前后稳定；237767条完整五列 requirements、重复数与原排序、owners、86 namespace、186 aliases、449 absence、完整62332 trace records和181554 attempts保持。storage→wire→原semantic SHA均准确，原64MiB界未提高。
+
+图声明260资源根完整保留，当前动态根由实际目录重新推导，不固定旧filecount；原96GiB/free8GiB及2GiB保留量均核实。所有新额外descriptor端点完整SHA，本reader没有第二次读取35GB或调用业务phase；历史主输入全fresh字节证明来自唯一真实guarded API g._phase，独立metadata读前后稳定。
+
+互补源码/body审完成65字段全部550009节点、5634 binary64位，真实七INPUT、V11 trim完整75字段、30计数、68阶段和SOURCE11/5af/e8来源。3次图reader假设错误及5项body reader错误全部透明保留，均只修TMP审查代码，业务未重跑。
+
+本审实际 e58493/session18566 → 2e4f41 int0 CLOSED；小联合798012 int0 CLOSED。只授予完整runtime INPUT审查通过；C/B/F未改，cold/native/AAA/ABA均false。
+
+主报告：REPORT.json
+全域联合：combined_scope_binding.json
+真实图审回执：actual_readonly_tool_terminal_return.json
+真实联合回执：actual_joint_tool_terminal_return.json
+完整小证据清单：evidence_file_manifest.json

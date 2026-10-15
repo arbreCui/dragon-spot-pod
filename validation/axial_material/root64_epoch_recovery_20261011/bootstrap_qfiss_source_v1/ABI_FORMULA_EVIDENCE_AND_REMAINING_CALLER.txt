@@ -1,0 +1,165 @@
+NEW SOURCE ONLY: bootstrap QFISS64 v1, 2026-10-11
+
+No compiler, parser, native executable, transport, or numerical job was run by
+this Source writer. Original src and earlier frozen candidates are unchanged.
+There is no claim of recovering old producer bytes, inheriting the original
+17 controls, meeting the rank2 floor, qualifying AAA, or starting ABA.
+
+Complete Sources and public ABI
+
+1. SPOR64_BOOT_CANONICAL64.f90
+   module SPOR64_BOOT_CANONICAL64
+   SPOR64_BOOT_CANONICAL64_WRITE(ipax,ipaxtrack,ipaxsystem,ipaxmacro,ok)
+   SPOR64_BOOT_CANONICAL64_CHECK(ipax,ipaxtrack,ipaxsystem,ipaxmacro,ok)
+   Four actual C_ptr objects; logical ok is initially false. WRITE executes
+   the complete original SPOSTATE64 mathematics and publishes every canonical
+   record only after the entire calculation and preflights succeed. CHECK
+   independently recomputes that mathematics and compares every canonical
+   field bitwise. Neither uses REDGET or a REAL32 flux fallback.
+   This module preserves global nu-fission normalization, signed face-current
+   leakage, geometry/offset/layout checks, complete Gram assembly/Cholesky,
+   FIXB/POD markers and every high-order unknown. Groups=370, fission slots=32.
+   Geometry and original material/basis records retain their original type2
+   storage; each original arithmetic conversion to REAL64 is preserved.
+
+2. SPOR64_BOOT_CONTEXT64.f90
+   module SPOR64_BOOT_CONTEXT64
+   SPOR64_BOOT_CONTEXT64_GLOBAL_CHECK(ipglobal,ipax,ipaxtrack,ipaxsystem,
+       ipaxmacro,iparchive,ipcontract,contract,ok)
+   SPOR64_BOOT_CONTEXT64_READ(ipprojected,ipglobal,ipax,ipaxtrack,
+       ipaxsystem,ipaxmacro,iparchive,ipcontract,contract,ok)
+   Inputs are explicit independently supplied full C_ptr contexts. The loaded
+   contract is SPOR64_ROUTE_CONTRACT, not a guessed default. Complete recursive
+   AX/TRACK/SYSTEM/MACROLIB3/ARCHIVE/RCON trees must match GLOBAL64 copies.
+   Actual canonical AX fields are recomputed, not certified by their labels.
+   Reader checks every native and mirror item of all three planes and all370
+   groups. Every scalar equals the fixed-space contraction of the exact same
+   canonical coordinates. Every non-scalar unknown retains the original
+   archive FLUX64 bits. Region/current maps must be complete and unique.
+
+3. SPOR64_BOOTQ64.f90
+   module SPOR64_BOOTQ64
+   SPOR64_BOOTQ64_BUILD(ipprojected,ipglobal,ipax,ipaxtrack,ipaxsystem,
+       ipaxmacro,iparchive,ipcontract,plane_index,ipmacro_out,ipsource_out,status)
+   SPOR64_BOOTQ64_READ(ipprojected,ipglobal,ipax,ipaxtrack,ipaxsystem,
+       ipaxmacro,iparchive,ipcontract,plane_index,ipmacro,ipsource,q64,rho64,status)
+   plane_index=1..3. Refused=1, committed=2, loaded=3. q64 is allocatable
+   REAL64(nunk,370), initially absent on READ refusal; rho64 initially zero.
+   BUILD preserves the complete original B2N preflight and arithmetic, with a
+   distinct new PROJECTED-BOOT/e0 ingress. The old B2N and e>0 admission remain
+   unchanged. The outputs must be separate fresh roots; all input/output alias
+   pairs are rejected. EMPTY_ROOT permits full disk-backed XSM outputs.
+   READ recomputes the full source and full MACRO0 trees in private XSM stages,
+   compares every output record/tree bitwise, destroys the private stages, and
+   only then reads the exact ROOT-QFISS64 values. The private file names are
+   BQ64-MAC-ST and BQ64-SRC-ST; pre-existing files are refused. The actual host
+   must provide a fresh exclusive working directory. No footprint qualification
+   is claimed before a monitored actual runtime under the 512MiB gate.
+
+Exact bootstrap layouts (names are <=12 characters)
+
+GLOBAL64 root: exactly21 records
+ SIGNATURE VERSION NPLANE EPOCH ROLE STATE CASE KEFF64 RHO64 NORM64
+ RESIDUALS COUNTERS INNER-STATE CAPS TERM-EPS AX AXTRACK AXSYSTEM AXMACRO
+ ARCHIVE RCON
+ SIGNATURE='L_GLOBAL64', VERSION=1, NPLANE=3, EPOCH=0,
+ ROLE='GLOBAL-K64', STATE='GLOBAL-DONE', CASE=loaded RCON case_name.
+ KEFF64/RHO64/NORM64 are type4 scalar and exactly the canonical AX fields;
+ RHO64 is bitwise 1/KEFF64. RESIDUALS and TERM-EPS are type4 length3,
+ [EEXT,EUNK_LAST,EINR_LAST] and [EPSOUT,EPSUNK,EPSINR]. TERM-EPS is the exact
+ reversed REAL64 promotion of the original AX EPS-CONVERGE type2 declaration.
+ All three AX epsilon bit images equal this case's eps_axial_bits; no invented
+ 9-numeric-flag change or threshold relaxation is introduced. CAPS is integer2
+ [MAXOUT,MAXINR], matching AX STATE-VECTOR[12,11]. COUNTERS integer2 is actual
+ [outer,inner], >=[2,1] and strictly below the declared caps. INNER-STATE=1.
+ Residuals are finite, nonnegative, and strictly below their exact TERM-EPS.
+ AX TYPE-K header has STATE[3]=1 and STATE[6]=2 and OPTION matches RCON.
+ Full AX FLUX64/FLUX and SOUR64/SOUR arrays are real native authority/type2
+ mirrors; all370 items are checked. No mirror supplies a missing native value.
+
+PROJECTED archive: exactly8 records
+ SIGNATURE LISTDIM SPOT-ITER-K TRACK MICROLIB2 FLUX SPOT-R64 GLOBAL64
+ GLOBAL64 is the full global tree and must equal the separately supplied root.
+ TRACK/MICROLIB2 contain all three original complete directory trees unchanged.
+ Root SPOT-R64: exactly4 records RHO NPLANE STATE EPOCH.
+ STATE is type3, 4words/16characters, 'PROJECTED-BOOT'; EPOCH=0.
+ This new14-character lifecycle state is never truncated to legacy12characters.
+
+Each PROJECTED plane: exactly16 records
+ SPOT-R64 FLUX SIGNATURE STATE-VECTOR EPS-CONVERGE IMERGE-LEAK KEYFLX
+ OPTION LINK.MACRO LINK.TRACK LINK.SYSTEM SPOT-LEAK1D LEAK1D64 ROOT-FLUX64
+ VOLUME64 WEIGHT64
+ Plane SPOT-R64: exactly5 records RHO FLUX STATE EPOCH PLANE.
+ STATE is 16characters PROJECTED-BOOT; EPOCH=0 and PLANE equals list index1..3.
+ SPOT-R64/FLUX and ROOT-FLUX64 are both370-item type10 lists of exact type4
+ native nunk values. They match each other, the actual canonical FIXB scalar
+ contraction, and original native non-scalar values. FLUX is only type2 mirror.
+ LEAK1D64 is exact canonical SPOT-X-L plane slice; SPOT-LEAK1D is its mirror.
+ VOLUME64=real(TRACK VOLUME32,real64); WEIGHT64=VOLUME64/sum(VOLUME64),
+ exactly the existing ROOT64 geometric contract. These geometric conversions
+ do not promote legacy flux. RCON radial tolerances/caps/acce/option and original
+ geometry/material preflights remain mandatory and bitwise.
+
+SOURCE root: exactly8 records
+ SIGNATURE STATE-VECTOR SPOT-FROZEN SPOT-KEFF SPOT-QINT DSOUR SPOT-R64
+ ROOT-QFISS64
+ Source SPOT-R64: exactly8 records RHO PLANE STATE QFISS EPOCH NORM GLOBAL64 SEED.
+ STATE='FROZEN-QFIS' in12characters, EPOCH=0 is the last output mutation/commit.
+ GLOBAL64 and SEED are complete recursive copies of the supplied global and
+ this exact PROJECTED-BOOT/e0 plane. They are binding copies, not new terminal
+ solves, independent global provenance, or standalone external witnesses.
+ QFISS and ROOT-QFISS64 are full370 type4 items of nunk values; their arrays
+ are identical. DSOUR is outerlist1, innerlist370, type2 nunk demote mirrors.
+ SPOT-KEFF and SPOT-QINT are one-time type2 mirrors. NORM is the same canonical
+ global nu-fission normalization. No e1 or SOLVED/e0 label is synthesized.
+
+Original physical formula and operation order
+
+For ir=1..nreg, ifis=1..32, h=1..370:
+ product64=real(NUSIGF(im,ifis,h),real64)*phi64(KEYFLX(ir),h)
+ fis64=fis64+product64
+For g=1..370, inside the same region/fission-slot nest:
+ contribution64=real(CHI(im,ifis,g),real64)*fis64
+ contribution64=contribution64*rho64
+ q64(KEYFLX(ir),g)=q64(KEYFLX(ir),g)+contribution64
+Every remaining native unknown starts and stays positive numerical zero.
+The complete original source loop nest is byte-identical to B2N. Multiplication
+and addition stay separate; there is no FMA assumption, reassociation, clipping,
+additional normalization, reduction intrinsic, or new physical model.
+The original volume integral retains g->ir order; volume64 has already been
+bit-checked equal to the original real(volume32,real64) operand. The original
+positive-first-integral, finite/nonnegative, range and demote checks remain.
+MACRO0 is LCMEQU of the entire selected MACROLIB, with only every NUSIGF array
+set to +0.0_real32. Original SPOT-FROZEN/SPOT-KEFF metadata is added. CHI, all
+scattering groups, nested isotope/material physics, and every other physical
+record retain the original tree. The full parent MICROLIB2 remains in GLOBAL64
+and PROJECTED archive. Full-tree READ recomputation detects other record edits.
+
+Evidence and dependencies
+
+*.exact_local_byte_inverse.json records every actual original-to-new splice and
+reconstructs the complete original SPOSTATE64 and B2N bytes exactly. Their full
+original Sources are saved in original_exact/. FORMULA_SEGMENT_BYTE_EVIDENCE.json
+independently compares actual emitted Source segments, without numerical runs.
+SOURCE_PINS_DEPENDENCIES_AND_REMAINING_SCOPE.json binds all actual Source inputs
+and emitted Sources by complete SHA256/7ID. SOURCE_ONLY_WRITER_ACTUAL_TOOL_RETURN.json
+records the actual successful tool receipt. Compilation requires GANLIB,
+SPOR64_VERIFY, SPOR64_RCONTRACT, SPOR64_SCHEMA, frozen SPOR64_BOOT64 and
+SPOT_LEAKAGE. New module order: CANONICAL64 -> CONTEXT64 -> BOOTQ64.
+Current opaque libGanlib/libDragon may be separately pinned build dependencies;
+their Source-to-object mapping is not asserted by this Source-only package.
+
+Remaining actual caller and qualification scope
+
+Root is implementing a separate GLOBAL/projection publisher; q owns the full
+global REAL64 driver/caller. The actual terminal arrays, keff, residuals,
+counters and inner state must enter that publisher directly after the real
+strict branch and post-normalization, and bit-match AX native values. The
+source/canonical/context copies cannot prove this call happened. Independent
+host full-file SHA/7ID input/output binding must reject coherent tampering.
+The real GLOBAL64 -> three PROJECTED-BOOT/e0 -> this QFISS64 -> strict typed
+TYPE-S BOOT -> B2I CLOSED0 path has not run. Original full17 controls, GLOBAL /
+QFISS full370 type4 / epoch / nested context / route / coherent-tamper controls,
+and actual monitored bootstrap runtime remain required. Scientific rank2
+floor9.5367431640625e-7, material choice and 3% AAA gate are unchanged. This Source
+package grants no independent-reference admission or ABA permission.

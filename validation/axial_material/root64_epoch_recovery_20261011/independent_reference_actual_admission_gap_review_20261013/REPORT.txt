@@ -1,0 +1,45 @@
+独立 full370 reference v2 的实际准入缺口 — 2026-10-13，只读审查
+
+结论：现存候选保留全 370 群、九个物理 P2 球谐矩、32 个裂变谱/核素通道，未使用 POD；但现在不能准入真实独立参考。当前材料/反应/角向/物理控制和受限运行凭证未产生，运行入口的 current 身份重绑定也未完成。这是组件同温轴向 AAA→ABA 工作；不扩成全堆芯问题。
+
+实际审核 1f4a10 exit 0。完整阅读 17 原包文件以及另一个 v2 inverse proof（当前目录18项）；9份 Python 仅解析 AST，无候选 import。全17 old→new byte inverse、全部11数学来源（10份原字节、一份严格唯一 import路径逆变换）和旧153项 Source review完整检查。全259去重文件1,016,412,395 B完整 EOF、13,646项检查，current SHA/七字段保留；历史dev34→当前29仅此字段变化被逐项明确记录，不伪造旧身份或未来receipt。原Source/文档未改，没有编译、kernel或reference业务。详见 FULL_CURRENT_PF_SOURCE_AND_ACTUAL_ADMISSION_GAP_REVIEW.json，SHA f7b3f741eb942dc03b3d4638f63cc576bb5965a896165bcb7eb1e766f55223d5。
+
+需先纠正一次调查误说：实际A1/A2/A3 producer summary.records均只有4个production PASS，actual_native_terminal与当前plan对应。A2/A3的“17+4”是两份独立receipt；17 entry controls各5成功+12严格exit1拒绝，未在producer.records内。当前actual_success_report的all-PASS和load_model的len4可匹配这三个真实summary，并不存在此前猜测的21条必拒绝。此次另外逐查三份entry控制的12个actual watchdog/log/唯一原abort，全部原资源条件和拒绝事实保留，绝不把原FAILED负例改为伪PASS。生产summary.fixed_current_pins已绑定这些entry报告；未来reference具体authority仍应验证完整可达生产/entry闭合证据及日志/七字段，而不忽略这一链。
+
+一、现在即可明确修正/补足的代码与metadata工作
+
+1. current mount硬阻碍。CURRENT_FORMAL_FULL370_INPUT_PLAN_SOURCE_ONLY.json内部protected-plan/case/prepared/axial-track身份仍写dev16777234；actual值为16777229，SHA、size、其他六字段完全不变。current_formal_input_authority.py:74 strict recheck做完整字典比较，:88 read递归使用旧内部pin，所以直接运行会拒绝，不能只给外层plan新PF绕过。需在真正运行前一次明确current Source/metadata重绑定，保持原数学、阈值和严格完整PF；旧v2文件保留。本审查没有擅自新增reference版本，没有发明material/GENDF/kernel未来PF。
+
+2. 真实受限host尚缺。17份包是函数/支持Source；没有完成真正compile/control/solve的Root owning wrapper、外CLI和实际KernelBinding origin/control报告。Budget(:27)只提供子进程600秒/512MiB checkpoint，不能代替原own-child外部监控、RootSELF512、whole1800、history96GiB、fresh2GiB、cold20971764748+metadata64MiB、free8GiB、单线程/单业务子进程和零数值重试。必须沿既有真正守卫实现，保留当前全部Source/include/库/编译来源。accumulator包含white_transfer→multigroup→transport，所需ABI源码完整，不能误说缺multigroup符号；实际导出/编译凭证仍待产生。所有Source都是普通single-link，未来host若绑定实际immutable compiler必须沿原允许nlink2完整PF角色，不把compiler当owned文件。
+
+3. 实际证据准入应更完整。FormalBinding._admit_lineage(:264)检查schema/计数/布尔并recheck所列reports/raw证据，但未读取这些report的闭合/测量正文以推导那些资格字段。_admit_kernel_controls(:288)仅检查all_actual_controls_passed及结构、允许complete_actual_evidence_pins空列表，且没有逐个Gram/reflection/constant/white/392轴向面实际测量字段。它们现在被缺失receipt挡住，不构成已经错误通过；但生产future writer/adapter时必须把资格字段联结到真正Root闭合工具、原watchdog/log和独立审查/实际数组，拒绝空证据。KernelBinding实际build report也须完整Source/include和输出库来源，不能只有自身Source在列表中。可以现在设计/修这些严格入口，不能提前把future状态填true。
+
+4. 全参考返回始终UNQUALIFIED是诚实状态。WholeRayOperator.apply(:193)报告unfitted_physical_white_relative而不以它作为终态物理验收；solve_full370(:133)只检查固定点/正性/归一化/coverage，返回dominant-mode、angular-mesh、physical-reaction-balance均false。这些输出不应被误标完整reference。需在实际参考资格报告中明确检查原物理账本、角向误差和独立性；也不应为了容易通过更换reference模型、拟合边界normalizer或放宽原AAA精度。
+
+二、必须真正产生的数据/资格，不能靠Source修补替代
+
+1. 当前AAA材料authority。material最终v6 Source已完整冻结，但actual75 observer build、单A新建构造capture、完整context extraction/aggregation以及三独立warm producer的all370 rawwords比较都未执行。新建一次同物理A构造，只有实际六阶段、完整62同位素/density/温度、真实MAT elimination/MASK/old MACROLIB、SPH true/false决定与TONE/IRSET上下文、精确P0/P1/P2及32裂变通道的payload和presence/稀疏覆盖全部对齐，才可绑定当前AAA。沿48层重复第一A宏观材料只有在这份实际权威比较完成后才成立；不得假装追回三份旧warm生产未保存的历史context。
+
+2. B/ABA是后续明确范围。现存FormalBinding.load_model(:305)只读取三个A producer，用first A沿48层重复，case强制AAA；完整三A数组相等还由代码重新算digest，未设ABA路径。支持函数layer_material_ids能表达ABA，却不等于真实B authority已实现。当前material v6 state_order仅A，B warm typed370 snapshot已存在但不是B完整observer/SPH/MASK历史。先完成AAA实际authority/原精度关，再为B同温完整材料链和ABA原区间[0,50,100,150]做精确扩展；不要为此提前替换输入或建另一个目标。
+
+3. GENDF与反应。GENDF current hostv4/parserv2都仅Source，未做11个nonzeroNX文件154,650,680B的真实extract。原parser保留temperature/dilution/grid、reaction存在/缺失与presence mask；只取P0并按binary64 math.fsum归约，MF3是事件XS、MF6已经包含neutron production，NX是MT5而非默认单位乘数。23个其他NXabsence及Mo七同位素等所有必要生产来源仍须逐项实证；缺MF6不得zero-fill或凭MT名字定yield。这个P0诊断不是DRAGR REAL32 packed words回放，不能直接成为物理reaction authority。需把真实extract与实际MICROLIB/DRAGR选择温度/稀释、压缩矩阵、density/SPH/MASK阶段和原macro rawwords对应起来，解释NTOT0/TRANC、capture/fission/n,xn等物理生产/损失。原完整32谱通道、signed P1/P2不能合并或修补。
+
+4. 九矩/角向关联。当前9未知由1536个独立angular states更新，未读取或zero-fill已观测三轴向矩之外六未知；独立正的isotropic初始ansatz是显式模型初值，不是六矩观测。原formal捕获矩的rectangular索引也不能直接当9个physical spherical P2索引。XMU与ZMU几何方向分别保持，v2的initial measure WZMU*ZMU修正及完整rays/states/U/W/PL摘要已做Source证明，但不是实际Gram/reflection/constant控制。必须以真实固定角向数据检验Gram正交/度数归一化、轴向/平面reflection parity、实际current stored AREA/volume与ray measure、常通量/显式source线性映射、white incoming/output和392轴向面/304外表面等共享/全局流。
+
+5. formal SN32关联仍缺。formal U/W/PL已加载并绑定digest，实际operator只用原native四polar×96 azimuth×双axial sign×双orientation，11364条original ray各16action=181824；96角已经在track中，绝不再乘96。offset order16/32是飞行积分offset规则，不是formal SN32。当前operator固定len(polars)=4，formal32数据不参与实际transport，只绑定不会变。须先定义/证明它与formal32轴向模型、9-moment表示和原WHITE规则的关系，再做预先冻结的角向/offset细化误差与独立控制；不能只因case标签写SN32就继承。旧helpers的ac3e case scope和true-returning callback支持也不能代替新的fbe336 concrete authority。
+
+三、真实静态规模与可在原定义内优化的候选
+
+当前white准备每181824 action都分配/清零local_transfer=(48,48,370)和local_leakage=(2,8,48,370)，合1,136,640个double、9,093,120 B/action；总至少1,653,347,450,880 B局部清零，最后dense aggregate循环206,668,431,360项，尚未含113-bit几何、光学长度/exp和Python/ABI开销。这个精确Source循环量不是实测墙钟，不能据此宣称已超600秒或已能在600秒内完成。
+常驻T=(288,288,370)245,514,240 B、L=(2,8,288,370)13,639,680 B；full phi9约10,229,760 B、P0/P1/P2 scatter64约26,284,800 B、单ray最大fields19,180,800 B、16-state精确q缓存18,186,240 B。order32/nr≤15/Nz48几何Piece和长度静态原始upper约75,769,344 B，尚未计vector capacity/copy、Boost/Python/SciPy、实际材料读入和IO缓冲；原512MiB是否成立仍以真实监控为准。每operator.apply须两次181824 complete sweep，另370个288维white LU系统/文件读取；group_chunk现在仅管理LU，volume sweep仍全370。500outer/740inner是上限而不是性能承诺。
+
+候选A：只按实际touch的(entry_layer,exit_layer)和(axial_side,region,entry_layer)键做per-ray sparse累加。保留每key所有chord原顺序、每个group原顺序、先per-ray合计再乘原angular/track weight一次；final全局每key/ray顺序不变。不能改成逐chord直接全局累加，那个会改变浮点关联。仅可跳过确切+0并证明signed-zero和非负T/L的边界语义；不丢小非零项、不threshold剪枝、不拟合weight。以原dense一ray/多ray、全部370、所有原field/zero/signed-source/高光学长度、两orientation/axial sign等控制比较位和账本，并独立验证完整full组/触点coverage。
+
+候选B：一次ray的原113-bit geometry只构造一次，然后C++内部按原group顺序1..4 chunk处理local transfer/leakage并写完整370的全局T/L或明确受限group缓存。可把临时约9MB降到相应chunk量，同时保持每group相同chord/per-ray加和序列。不得在Python把每chunk重新生成所有181824 ray几何导致93倍开销；不得缓存全角向场或删组。输出完整T/L和white closure、LU与物理normalizer仍沿原定义。磁盘顺序/载入改变须保持每group数组exact bits与input身份/计数。稀疏和chunk可以组合，但需先有原dense oracle有限受控验证，再测真实全scope成本，不放宽512/600/1800或减少370/9矩。
+
+四、建议Root紧接当前主线的动作
+
+先闭合真实三plane/GLOBAL/onlineBOOT工程和saved370实际源审查；按既定门再编译75、单A observer构造、完整context/aggregation和三A rawbit权威比较。并行可设计一次reference current metadata/入口补足及保原数学的white实现控制，暂不编译/运行未准入reference。实际GENDF11 extract与完整NX/DRAGR/微观物理对应之后，才产生可读取的ACTUAL_CURRENT_FORMAL_FULL370_MATERIAL_LINEAGE_V1 master实际证据。
+再创建真正kernel build origin与NDIM3 current控制host，逐原来源/原界限检查Gram/reflection/constant、真实geometry/white/轴向流、全部370/9/full32和实际成本，保存Root真终态、每个watch/log/input/output完整PF和独立review，正式SN32关联与角向误差不跳过。拥有这些真实receipt之后，执行未降阶AAA全370特征问题并验证完整物理reference资格，最后按原formal AAA的全部误差门（包括原nu-fission3%）评估；当前7/8不能变成8/8。AAA通过后再补B完整authority、按同输入/原阈值执行ABA。没有需要在这一步自动建新的私有库或全核模型。
+
+保留审查自身的真实初版失败8844de exit1：错误仅为审查器误假设11数学源全literal相同，而原proof明确声明terminal_AB helper有一个严格import-path改写。初版Source及真工具返回保留；新readonly v2按原one_import_path_rebind做完整逆变换，没有修改或放宽reference数学。完整目标继续未达成；不将此只读结果、旧153个Source绿色、全map或三矩capture计作参考/精度完成。

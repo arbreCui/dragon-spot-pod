@@ -1,0 +1,7 @@
+V11 combined组件接口TMP草稿已接线，仍UNREADY。
+真实f136新schema与兼容旧标签分别核验；不要求返回体不存在的cross_group flag。
+独立校验新68=原45+2driver+21codec、全部源证明和sealed control/audit/result；不以标签授予新资格。
+top0800、原5e完整proof、343e旧subproof三层保持；新6region逆回5e，旧全c0 proof逐值不改。
+65顶层/70全部函数中，仅trim_component_contract与trim_component_input改动，其余63顶层函数逐字保留。
+原genuine3arg调用/整7INPUT/数学/owner图/namespace/alias/absence/完整动态roots/caps全保留；无module/class overlay。
+六实际构建凭据仍None，未来combined/INPUT/cold资格均未获得；未读取live作业产物、未导入或执行业务。

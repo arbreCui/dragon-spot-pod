@@ -1,0 +1,11 @@
+额外21通道反应捕获：第一入口准入生成失败
+日期：2026-10-15
+
+Source生成实际73061c退出1：计划文件预序列化超过原单个8MiB检查，在打开PLAN.json之前停止。生成的7168字节来源证明保留。PLAN/READY/SF/HF/CLI/独占声明与实际输出目录均未创建；没有开始科学捕获。
+原冻结Source、作者自身预检失败以及Root参数读取字段失败均保留。Root纠正参数字段后只执行了一次Source生成，未重试。
+问题来自将17核素的完整旧MF3/MF6清单嵌入计划，含大量未选通道的重复元数据。新入口将保留选定262段的直接信息和完整清单的有序摘要/计数，通过流式读取复核摘要，保留全文件原SHA及身份。原数值解析、矩阵、掩码与有符号诊断算法保持。
+不提高8MiB单文件、16MiBSource元数据、192MiB实际输出或2GiB累计上限。实际输出尚未创建，因此仍按既有59根追加同一待用输出为60根；新Source位于已计数的同一个上层目录。
+
+原返回：current_extra_reaction_source_v1/ROOT_SOURCE_PREPARATION_TRUE_TOOL_RETURNS.json
+原冻结：current_extra_reaction_source_v1/AUTHOR_PRE_ROOT_GENERATION_SOURCE_FREEZE.json
+整体目标仍active，反应完整性、物理精度、独立参考、AAA与ABA仍未通过。

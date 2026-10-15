@@ -1,0 +1,20 @@
+--- /Users/wen/spot/validation/storage_cleanup_tenth_20261009/cleanup_fixed_duplicates.py
++++ /Users/wen/spot/validation/storage_cleanup_eleventh_20261009/cleanup_fixed_duplicates.py
+@@ -10,7 +10,7 @@
+ from pathlib import Path
+ 
+ ROOT = Path('/Users/wen/spot')
+-REPORT = ROOT / 'validation/storage_cleanup_tenth_20261009'
++REPORT = ROOT / 'validation/storage_cleanup_eleventh_20261009'
+ 
+ def identity(s):
+     return [s.st_dev, s.st_ino, s.st_mode, s.st_size, s.st_mtime_ns, s.st_ctime_ns, s.st_nlink]
+@@ -88,7 +88,7 @@
+         if r['category'] != 'EXACT_DUPLICATE_OLD_WORK_COPY' or r['identity'][6] != 1 or r['retained_primary'] not in primaries:
+             raise ValueError('unapproved candidate')
+         p = check_pin(r, True)
+-        if p.name in {'result.json', 'result.sha256', 'seal.json'} or p.suffix not in {'.xsm'}:
++        if p.name in {'result.json', 'result.sha256', 'seal.json'} or p.suffix not in {'.xsm', '.npz', '.bin'}:
+             raise ValueError('result/source deletion denied')
+     for r in m['retained_primaries']:
+         check_pin(r, True)

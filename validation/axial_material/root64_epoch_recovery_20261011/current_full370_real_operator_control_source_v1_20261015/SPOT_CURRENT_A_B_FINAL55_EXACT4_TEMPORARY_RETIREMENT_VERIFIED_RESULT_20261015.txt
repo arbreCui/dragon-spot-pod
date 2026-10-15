@@ -1,0 +1,29 @@
+SPOT A/B最终55号四份已完成临时索引及数据池回收：已执行并独立核验（2026-10-15）
+
+精确回收A/B最终55号各一份SQLite索引16,953,344字节及原字池74,693,004字节，四文件合183,292,696字节。它们是已完成消费者使用的派生产物；两份对应canonical原生快照、全部科学结果、结果文档、28份永久明细归档及恢复索引、空差异文件和其他有效归档均保留。未承诺被删除SQL/pool文件已归档或可逐字节复造。
+
+六组完成证据：A六阶段8快照/55上下文/19249字段、A对三个producer全typed比较58860记录/6792456原字、B六阶段8快照/55上下文/19249字段/1829421已知元素、B55对B2完整19620记录/2264152原字、A与B各2960字OVERV控制。六组真实Root0和独立post0的原始角色、计数及零差异已核；两组OVERV各三阶段0。原evidence-only child2/FAILED不改写，也不因此宣称物理验收通过。
+
+实际链：独立Source审阅1712fc/0；Root只读f2d229/session86630→61816c/0；独立只读post44a415/session78056→46e621/0；Root唯一执行670821/session51893→849683/0；独立执行post4fa509/session74005→e073d2/0；Root最终闭合4531a5/0。实际无重试。执行前占用检查1且标准输出/错误输出均空，逐项即时身份核验、精确删除并同步；最终独立两遍确认仅四目标不存在、保留角色身份不变。
+
+凭证目录：current_A_B_final55_exact4_completed_spool_lifecycle_source_v1_UNREADY/
+  PLAN.json SHA256 3389a6ca79ba94c116d23c717d7509a4e222de784200b71e21f9318cdf90e4dd
+  READONLY_RECEIPT.json SHA256 4bf46c7b9c969fabc458774e93bf750a7d95153e496ee40b2a1066f167ab7a75
+  ROOT_READONLY_TRUE_TOOL_RETURNS.json SHA256 515d76634da57173702e735b17dc23a7ab746bdd3d6404d9dbd67c6c465c10e1
+  readonly_actual_postverify_20261015/REVIEW.json SHA256 7d08155e7fbfe93d5bf9db14f9ed97bddf0cf1beafeaf458441eee628234272b
+  EXECUTION_RECEIPT.json SHA256 fc547fea79b809daa03d11e49ed3b04a553b360c2a3ba7de0f46446274f4925e
+  ROOT_EXECUTION_TRUE_TOOL_RETURNS.json SHA256 ae43ed5176f6d724104bdc3b8023057af801492a58edd8456b9255e0e07b10e9
+  execute_actual_postverify_20261015/REVIEW.json SHA256 174766e87f817134e5b4c22571150c79c2a90ac1e31f9591efff0637b939eb1e
+  execute_actual_postverify_20261015/TRUE_TOOL_RETURNS.json SHA256 17f43eb9b3b8d506051bd180d0141d9ef9c787e373c9cc54e6ec5629a6ff5cc4
+
+此前A final pair未列入上一阶段选定主保留表，不能由此推断不存在；本次以其实际消费request、原独立结果凭证及当前文件身份另行准入。作者额外清单假定被预执行检查拦下的真实返回1保留，修正的只是作者准备脚本，该错误不在冻结执行核心内，实际候选没有失败或重试。
+
+原83目录累计范围、2GiB产物总额、历史96GiB、512MiB内存、600秒阶段/1800秒总时限及其他原保护不变，组件Source/凭证硬限8MiB。执行后累计目录1,358,959,542字节，外部元数据16,376,587字节，打开但已删除文件0；独立post写前累计1,359,191,616字节。这是当时快照，后续预算必须重新扫描。
+
+未来若需这些SQL/pool，须从保留的原始native重新完整提取，并独立准入新的当前产物；不承诺与旧SQLite/pool文件字节相同，不自动将旧SQL gzip与新pool配对。已核的指定新B在线Source只读取native；没有声称所有未来科学消费者永远不需要派生pair。旧请求和结果中的历史fullPF保持历史事实，不改为当前身份，也没有泛化缺失豁免。
+
+本轮三批删除总量367,026,207+249,929,878+183,292,696=800,248,781字节，未扣新归档及新增Source/凭证，不能当净空间变化。两份原始native和全部结果继续保留。
+
+下一批原始native冗余正在只读审计：必须保留字节相同的完整原生副本或已验证完整归档及精确恢复映射，并另做Root完整字节控制与独立后验，不能套用临时spool回收理由。当前尚未删除这批原始native。
+
+B在线、AAA物理验收、独立耦合参考及ABA未完成。AAA ν裂变3.9525259224%仍超过原3%阈值；总goal保持active。

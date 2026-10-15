@@ -118,3 +118,9 @@ validation/iterative/b2i_seal_bootstrap
 validation/iterative/make_route_contract
 validation/iterative/export_d4a_pin_geometry
 validation/iterative/export_d4a_region_rates
+
+# Large lossless local backups; result documents and recovery metadata remain visible
+/validation/storage_cleanup_ninth_20261009/packed_material_intermediates/
+
+# R20 lossless intermediate archives are local data; keep reports and recovery metadata visible
+/validation/storage_cleanup_twentieth_20261009/archives/

@@ -1,0 +1,30 @@
+Root 用法（此失败只使用 failure-only writer；通用成功设计是 SOURCE reference，未执行）：
+
+1. 核对最终 writer SOURCE SHA，并由独立 Source reviewer 评审。禁止修改已冻结 D/H/S/O/T、canonical，禁止重跑原 session 59931/构建。
+2. Root 已真实保存：
+   E/Root_actual_build_tool_terminal_return.json
+   SHA 38815705e9e27c62e423dd4501ff41308d6ec1c219ea8ab9c264a27807420791
+   E/Root_prelaunch_complete_build_source_freeze.json
+   SHA 0825b81036f1f7ad71a41444e4a87384a518f7d8ed7e9e38ee659f916e42909b
+   E/Root_final_prelaunch_source_input_and_reserve_check.json
+   SHA a9024656df7debc840a8f5f1394bae05ba31360c542e5a8b9d2da3d749164b42
+   （这些是 Root 消息提供的固定真实 pins；本包 Source 审查不读本次 actual ART。）
+3. Root 对真实 E/parent_stdout.log、E/parent_stderr.log 完整 EOF stream hash 后作为必需参数提供；不得造空文件或子进程独立 stderr。
+4. Root 可按以下参数通过标准库解释器执行一次 failure-only META writer；本 subagent 没有执行它：
+   python3 <sealed_package>/write_actual_failed_build_postclose_META.py
+     --writer-sha256 7cbe4b7e2dfee381cf6b60fd720c38d1f4a38119d8b48506a3d330a1789ec6e9
+     --root-terminal <E>/Root_actual_build_tool_terminal_return.json
+     --root-terminal-sha256 38815705e9e27c62e423dd4501ff41308d6ec1c219ea8ab9c264a27807420791
+     --source-freeze <E>/Root_prelaunch_complete_build_source_freeze.json
+     --source-freeze-sha256 0825b81036f1f7ad71a41444e4a87384a518f7d8ed7e9e38ee659f916e42909b
+     --prelaunch-pins <E>/Root_final_prelaunch_source_input_and_reserve_check.json
+     --prelaunch-pins-sha256 a9024656df7debc840a8f5f1394bae05ba31360c542e5a8b9d2da3d749164b42
+     --parent-stdout <E>/parent_stdout.log
+     --parent-stdout-sha256 <actual_root_parent_stdout_full_EOF_SHA>
+     --parent-stderr <E>/parent_stderr.log
+     --parent-stderr-sha256 <actual_root_parent_stderr_full_EOF_SHA>
+   E 固定为 /Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v21_receipts
+   仅 stdlib META，拒绝 EXIT0，不能生成 T/terminal_return.json。
+5. Root 保存该 META writer 的真实 initial/terminal typed tool returns；工具失败不得当成功，也不得重跑原构建或覆盖 partial metadata。
+6. 限定枚举新的 saved manifest+显式原 pins、完整 EOF/7ID，独立审核，再保存 peer 报告与最终合计 archive。E snapshot 是 writer 创建 manifest/summary 之前；以后 META tool receipt/peer append 不冒称 E root 7ID 一直稳定。
+7. 状态保留完整：原1800/600/512/2GiB/96/free8/1thread/1child/0retry；当前只有实际动态 prefix阶段，不是全五阶段成功，host 未到达 input finalPASS，Root postclose pinpass 不能替代它。无 wholeINPUT/native/RSSphysics/AAA/ABA 资格。

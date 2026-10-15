@@ -1,0 +1,142 @@
+{
+  "source_only": true,
+  "status": "UNREADY_ALL_NEW_BUSINESS_RESULTS_UNKNOWN",
+  "namespaces": {
+    "canonical": "/Users/wen/spot/validation/axial_material/prepare_sender_window_root_index_graph_trace_table_combined_runtime_v25_poststage_temporaries.py",
+    "prepare_D": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_poststage_temporaries_sources",
+    "prepare_E": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_poststage_temporaries_receipts",
+    "build_D": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v25_poststage_temporaries_sources",
+    "build_E": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v25_poststage_temporaries_receipts",
+    "prepare_H": "/Users/wen/spot/validation/artifacts/axial-material-complete-combined-prepare-host-v25-poststage-temporaries-20261010",
+    "build_H": "/Users/wen/spot/validation/artifacts/axial-material-complete-combined-build-host-v25-poststage-temporaries-20261010",
+    "S": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-sender-window-root-index-graph-trace-table-combined-source-v25-poststage-temporaries-20261010",
+    "O": "/Users/wen/spot/validation/artifacts/axial-material-sender-window-root-index-graph-trace-table-combined-runtime-v25-poststage-temporaries-20261010",
+    "T": "/Users/wen/spot/validation/artifacts/axial-material-qualified-AB-sender-window-root-index-graph-trace-table-combined-terminal-v25-poststage-temporaries-20261010"
+  },
+  "known_actual_helper_Q": {
+    "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/Root_actual_complete_graph_private_inactive_audit_helper_admission_v25.json",
+    "sha256": "c6efd7accfdc897642853a286bd0c0fa7caac91879a02aaf34dae2d3e2162d9b",
+    "schema": "AXMAT_ROOT_COMPLETE_GRAPH_PRIVATE_INACTIVE_AUDIT_HELPER_ACTUAL_JOINT_ADMISSION_V25",
+    "status": "QUALIFIED_ORIGINAL_FULL_PROTOCOL_AND_COMPLETE_CURRENT_GRAPH_METADATA_VERIFIER_ONLY_V25"
+  },
+  "new_PREP_BUILD_result_pins": {
+    "declaration": null,
+    "PREP_terminal": null,
+    "graph": null,
+    "trace": null,
+    "PREP_summary": null,
+    "BUILD_seal": null,
+    "BUILD_terminal": null,
+    "runtime": null,
+    "host_final_input_PASS": null
+  },
+  "new_actual_Source_binding_install_freeze_and_independent_peers": {
+    "author_Source_peer": null,
+    "Root_PREP_binding": null,
+    "bound_PREP_Source_peer": null,
+    "PREP_install_and_freeze": null,
+    "PREP_saved_META_peer": null,
+    "Root_BUILD_binding": null,
+    "bound_BUILD_Source_peer": null,
+    "BUILD_install_and_freeze": null,
+    "BUILD_saved_META_peer": null
+  },
+  "original_caps": {
+    "whole_seconds": 1800,
+    "stage_seconds": 600,
+    "rss_mib": 512,
+    "joint_HSOTDE_bytes": 2147483648,
+    "history_bytes": 103079215104,
+    "free_floor_bytes": 8589934592,
+    "threads": 1,
+    "children": 1,
+    "retries": 0
+  },
+  "original_install_interface_Source_pins": {
+    "prepare_installer": {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_monitor_access_sources/Root_complete_SOURCE_install_writer.py",
+      "sha256": "7405ab44b66c3403fe92c4ce4dd1b018ec3066eba30e896f4904a23d4cc51bea",
+      "size_bytes": 10050,
+      "identity": [
+        16777229,
+        49465780,
+        33188,
+        1,
+        10050,
+        1791629829563082384,
+        1791629829563082384
+      ]
+    },
+    "prepare_prelaunch": {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_monitor_access_sources/Root_complete_PREP_prelaunch.py",
+      "sha256": "b9be02bd0a8beb065ae3534297dd4b4191d7a571820c82be5df02fb6111a66c2",
+      "size_bytes": 7872,
+      "identity": [
+        16777229,
+        49465778,
+        33188,
+        1,
+        7872,
+        1791629829562710341,
+        1791629829562710341
+      ]
+    },
+    "prepare_E_snapshot": {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_monitor_access_sources/Root_complete_PREP_E_snapshot.py",
+      "sha256": "c92e6975a91c4422e950ab9836d4199abad70b60566bddad863c649635ca0c9d",
+      "size_bytes": 2297,
+      "identity": [
+        16777229,
+        49465779,
+        33188,
+        1,
+        2297,
+        1791629829562891300,
+        1791629829562891300
+      ]
+    },
+    "prepare_namespace_author": {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_prepare_v25_monitor_access_sources/sealed_namespace_only_complete_PREP_Source/spot_derive_v25_monitor_access_complete_PREP_Source_ROOT.py",
+      "sha256": "fb7d892ced43dd0e6b068a13855ee515d29c0dffe7cf2452740b4bafbcd47734",
+      "size_bytes": 5014,
+      "identity": [
+        16777229,
+        49465741,
+        33188,
+        1,
+        5014,
+        1791629829546976542,
+        1791629829546976542
+      ]
+    },
+    "build_installer": {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v25_monitor_access_sources/Root_source_installer.py",
+      "sha256": "0ed8616bb194079d5d8573f4d511b2fc3912e5d9e54af775d3c9f474b512e783",
+      "size_bytes": 17267,
+      "identity": [
+        16777229,
+        49474876,
+        33188,
+        1,
+        17267,
+        1791632908620162478,
+        1791632908620170020
+      ]
+    },
+    "build_prelaunch": {
+      "path": "/Users/wen/spot/validation/axial_material/complete_history_root_index_source_v15_20261010/actual_complete_combined_build_v25_monitor_access_sources/Root_prelaunch_checker.py",
+      "sha256": "1bd6fd97fa480f3ddbeaff822286e1c9910d5edde947062fb1f4b0c41f355ad7",
+      "size_bytes": 13935,
+      "identity": [
+        16777229,
+        49474877,
+        33188,
+        1,
+        13935,
+        1791632908620419604,
+        1791632908620425896
+      ]
+    }
+  },
+  "all_no_science_or_whole_INPUT_qualification": true
+}

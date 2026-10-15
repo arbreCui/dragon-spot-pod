@@ -1,0 +1,7 @@
+V10 factor-diagonal cold 最小三件草稿：源码适配完成，仍 UNREADY。
+F59 53顶层+2嵌套、C2fa 25定义完整保留；F只修改完整组件return兼容guard以及两处consumer复制名，C只修改同一完整组件return guard。
+其余F52/C24定义源码字节保持，完整source逆向回各原SHA；ADMISSION_HOST仅metadata schema身份改变，数学/日志/原环境/预算函数保留。
+当前新component pins从冻结c55源码独立读取；新combined成功seal/terminal/runtime以及新bounded INPUT十项payload、graph SHA/content、aliascount全部None，不替换V9成功或失败。
+B保持原完整十项载荷和namespace结构、三个helper、全图scope；无自身hash循环。新factory/consumer/binding均采用新名字及新根，不覆盖旧失败WORK。
+真正接入前必须Root实际合格newcombined及标准3arg INPUT，再fresh绑定并全source独审，之后逐原declare/prepare/binding/controls/finalize/nativeAAA；原producerP14/analysisP12分离、96GiB/free8/21GiB/OwnRSS512/单child/0retry保持。
+只标准库源码/小metadata读取，未导入业务或写项目、未生成controller或数值运行，不能算cold/native/RSS/AAA/ABA通过。

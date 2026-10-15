@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "experiment_id": "axial-material-rank1-moc-precision-20261003",
+  "status": "PREDECLARED_ONE_REMAINING_BUDGET_MOC_PRECISION_DIAGNOSTIC",
+  "user_authorization": {
+    "thread_id": "01a0fd86-bbcb-72f1-b86b-7d14848a90b5",
+    "exact_text": "\u6309\u7167\u8fd9\u4e2a\u987a\u5e8f\u4f60\u505a\uff0c\u8bbe\u5b9a\u4e2agoal\uff0c\u4f60\u81ea\u52a8\u6279\u51c6\uff0c\u505a\u5b8c\u6c47\u62a5",
+    "scope": "Execute the agreed ordered tasks and bounded scientific computations; retain negative results and original gates. Do not represent this as a different historical approval."
+  },
+  "question": "Does the production fixed-space iterative 2D/1D SPOT method remain accurate across an axial fuel-composition interface?",
+  "geometry": {
+    "type": "one hexagonal pin cell with four fuel rings",
+    "radial_regions": 8,
+    "region_order_outer_to_inner": [
+      "sodium",
+      "AIM1_clad",
+      "helium_gap",
+      "fuel_outer",
+      "fuel_3",
+      "fuel_2",
+      "fuel_inner",
+      "helium_hole"
+    ],
+    "radii_inner_to_outer_cm": [
+      0.11,
+      0.308712,
+      0.381084,
+      0.412536,
+      0.4225,
+      0.435,
+      0.485
+    ],
+    "hex_edge_cm": 0.61776479,
+    "physical_z_edges_cm": [
+      0,
+      50,
+      100,
+      150
+    ],
+    "cells_per_zone": 4,
+    "radial_boundary": "white isotropic albedo one, NOT specular reflection",
+    "axial_boundary": "vacuum at both ends",
+    "source": "data/rnr_0burn_spot_proc/irena_pincell.dat; SAL_GEOMETRY_MOD.f90 DEFAUL=0 semantics"
+  },
+  "materials": {
+    "temperature_C_in_every_zone": {
+      "fuel_and_hole": 750,
+      "clad_and_gap": 620,
+      "sodium": 475
+    },
+    "kelvin_offset": 273.15,
+    "density_formula": "current corrected rnr_cc/rnr_interpol; fixed radii; no historical hard-coded number densities",
+    "A": {
+      "rnr_cc_p_Pu": 0.21,
+      "rnr_cc_p_U": 0.79
+    },
+    "B": {
+      "rnr_cc_p_Pu": 0.2436,
+      "rnr_cc_p_U": 0.7564
+    },
+    "B_provenance": {
+      "path": "/Users/wen/dragon-5.1/Dragon/irena_colorset_assembly_pin/rnr_0burn.x2m",
+      "line": 29,
+      "literal": "*REAL p_Pu p_U := 0.2436 0.7564 ;",
+      "scope": "Documented alternative input parameters selected a priori for a composition sensitivity experiment; not claimed to be an independently validated IRENA axial design. Interpret p_Pu according to rnr_cc, including its isotope/Am bookkeeping."
+    },
+    "unchanged": [
+      "isotope vectors within the fuel branches",
+      "oxygen-to-metal ratio",
+      "compaction",
+      "structural compositions",
+      "density law",
+      "geometry",
+      "temperature conditions"
+    ],
+    "draglib_route": "already completed actual-temperature candidate for its 28 nuclides; unchanged original library for Mo; no new nuclear-data processing",
+    "new_material_data_checks_required": true
+  },
+  "cases": {
+    "AAA": [
+      "A",
+      "A",
+      "A"
+    ],
+    "ABA": [
+      "A",
+      "B",
+      "A"
+    ]
+  },
+  "basis": {
+    "training_slots": [
+      "A",
+      "B",
+      "A"
+    ],
+    "requested_rank": 1,
+    "fixed_once_for_both_cases": true,
+    "groupwise_rank_admission": "Every group must support the declared rank before case execution; preserve singular spectra. Refuse otherwise; no padding with roundoff, per-case retraining, or rank fitting to CE.",
+    "gram_matrix": "retained in full"
+  },
+  "production": {
+    "implementation": "existing repaired Dragon cf469c8, SHA256 873ad14272a2f0765d95e6de067194a01708ccf9aa88d58cd782049e6d331fef",
+    "groups": 370,
+    "fission_components": 32,
+    "sn": 8,
+    "scat": 3,
+    "axial_spatial": "constant diamond",
+    "picard_alpha": 1,
+    "outer_gate_each": 5e-07,
+    "radial_controls": {
+      "eps": 2.5e-07,
+      "eps_mccg": 2.5e-08,
+      "maxout": 500,
+      "maxinr": 740,
+      "acce": [
+        3,
+        3
+      ]
+    },
+    "axial_controls": {
+      "eps": 5e-08,
+      "maxout": 500,
+      "maxinr": 740,
+      "acce": [
+        3,
+        0
+      ],
+      "rebalance": "OFF"
+    },
+    "offline_snapshot_controls": {
+      "eps": 2.5e-07,
+      "eps_mccg": 2.5e-08,
+      "maxout": 500,
+      "tone_eps": 1e-05,
+      "tone_maxit": 20
+    },
+    "control_provenance": "Current pin REAL64 controls for the online path; corrected snapshot EPSI/FLU consistency for new offline fields. No live-runtime modification."
+  },
+  "reference": {
+    "primary": "independent continuous-energy OpenMC model with identical declared geometry/material formulas/boundaries",
+    "scope": "Total method-plus-data difference; does not isolate POD truncation from MG processing or synthesis closure.",
+    "nuclear_data": "/Users/wen/openmc-workspace/data/endfb-viii.1-hdf5/cross_sections.xml",
+    "threads": 1,
+    "particles_per_batch": 50000,
+    "inactive_batches": 100,
+    "active_batches": 250,
+    "statepoint_every_active_batch": true,
+    "seed_AAA": 310031,
+    "seed_ABA": 310033,
+    "scores": [
+      "region-by-cell scalar flux",
+      "region-by-cell nu-fission",
+      "layer totals",
+      "all axial face net current",
+      "signed directional crossing bins"
+    ],
+    "normalization": "one global integrated nu-fission normalization; no per-layer or per-group scaling",
+    "mg_reference": "Only admissible after exact raw-data transfer checks; no clipping/renormalization. Not a prerequisite for the explicitly limited CE total-error comparison."
+  },
+  "predeclared_decisions": {
+    "aaa_first": "AAA must reach a valid fixed point and pass reference input/statistical and declared observable checks before full ABA execution.",
+    "keff": {
+      "sigma_pcm_max": 50,
+      "abs_reactivity_difference_pcm_max": "500 + 3*sigma_pcm",
+      "inherited_from": "existing D4 external comparison criterion"
+    },
+    "shape_targets": {
+      "meaning": "New experiment engineering screening targets, not existing D4 acceptance claims or universal reactor accuracy standards.",
+      "fission_normalized_scalar_flux_volume_weighted_relative_l2_max": 0.01,
+      "normalized_nu_fission_max_relative_difference_in_fuel_bins": 0.03,
+      "statistical_rule": "Estimate covariance after global normalization from contiguous active-batch blocks, with at least 20 blocks. Report 95% bootstrap upper limits and block-length sensitivity. Do not label PASS when source convergence, block stability, or statistical resolution is inadequate."
+    },
+    "currents_and_balance": "Retain signs; report physical interface/escape and telescoping balance. Symmetric AAA/ABA should have reflected axial scalar/rate profiles and antisymmetric +z current within numerical/statistical uncertainty. No clipping or k-only acceptance.",
+    "failure": "Preserve failed/incomplete outputs. Diagnose a failed AAA before ABA. Any revised numerical experiment is separately declared before execution; do not change thresholds after seeing results.",
+    "optional_sensitivity": "If justified, change only axial cells 12->24, SN8->SN16, or an independently admitted common rank. Report sensitivity, not an additive error attribution."
+  },
+  "resource_caps": {
+    "new_numeric_children_at_once": 1,
+    "new_child_threads": 1,
+    "material_TONE_wall_s_per_state": 600,
+    "offline_snapshot_wall_s_per_state": 160,
+    "common_basis_wall_s": 120,
+    "bootstrap_radial_wall_s": 600,
+    "axial_wall_s": 300,
+    "map_radial_wall_s": 300,
+    "postchecks_wall_s": 120,
+    "max_maps_per_case": 100,
+    "total_wall_s_per_spot_case": 21500,
+    "ce_smoke_wall_s": 120,
+    "ce_production_wall_s_per_case": 1800,
+    "disk_min_free_GiB": 8,
+    "new_case_artifact_budget_GiB": 12,
+    "automatic_retries_after_solver_failure": 0,
+    "notes": "Caps are limits, not runtime promises. Existing material/native jobs retain their separate already-declared supervisors and caps. Routine implementation/debug fixes may be tested in new directories; no overwrite or numerical gate relaxation."
+  },
+  "parallel_closeout": {
+    "d4_three_material_states": "Owned by existing task 019f6077-95da-7622-96dc-06b1021b75b2; 1800s original bounded run, no duplicate dispatch; stop at material-data result.",
+    "native_layered_full": "Owned by existing task 01a0e4a4-ad2f-76f2-9f38-8fed84cbd3ee; complete original 2191-job scope, independent review and seal; no expansion into a new eigenproblem project."
+  },
+  "excluded": [
+    "automatic new D4 production chain",
+    "whole-core calculation",
+    "nonfissile axial-layer production support",
+    "long-term maintenance of a second nuclear-data library",
+    "replacement of production solver with toy network"
+  ],
+  "diagnostic_scope": {
+    "classification": "SEPARATE_UNIFORM_RANK1_SENSITIVITY",
+    "parent_spec": {
+      "path": "/Users/wen/spot/validation/axial_material/case_spec.json",
+      "sha256": "ac3e67ffdc25f5bfa45bca5170253de8e875c983550e5ee878ee30c5d1a4c2c4"
+    },
+    "parent_result": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-v2-20261003/training/rank_admission.json",
+      "sha256": "7d36a8a0fba4f1810a02aee1843d553e66d2f4caf194904fd40edbdcbd5bc049"
+    },
+    "independent_diagnostic": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-tools-20261003/independent_rank_diagnostic.json",
+      "sha256": "d169945946444e6ee94bfa038d1a611cffc639e29d97cf3a312aa3373a04a680"
+    },
+    "reason": "The original rank2 input-resolution gate failed in groups 1-17 before any physical online solve. The existing fixed-basis interface accepts a uniform positive rank only. This separate experiment uses uniform rank1 to diagnose an admitted reduced space without changing the solver or parent gates.",
+    "limitations": [
+      "The original rank2 experiment remains INCONCLUSIVE_RANK_INPUT_PRECISION.",
+      "Uniform rank1 discards a resolvable second direction in 353 groups. Maximum second-to-first singular-value ratio is about 0.0148874; this is not an accuracy bound.",
+      "No rank is chosen or fitted using CE outcomes. All original keff, shape, input, source-history and current/symmetry gates remain required.",
+      "This diagnosis cannot establish rank2 performance or attribute total CE difference solely to POD truncation."
+    ],
+    "authority": "Original case_spec predeclared_decisions.optional_sensitivity and failure permit a separately predeclared independently admitted common rank.",
+    "case_order": "Complete AAA fixed point and all independent comparisons before ABA; retain any numerical, physics or statistical failure without automatic retry."
+  },
+  "previous_compatibility_revision": {
+    "parent_spec": {
+      "path": "/Users/wen/spot/validation/axial_material/case_spec_rank1_sensitivity.json",
+      "sha256": "566477ac8cc71c0a8c944c62b53ce7de02d6c5b065734b7a59f548e8bf05afea"
+    },
+    "parent_failure": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-production-rank1-20261003/AAA/run_status.json",
+      "sha256": "26861a27e4343b3ab9ac4ef9e8400572736aea5c8fa45ab0e7505eda540cbc04"
+    },
+    "evidence": {
+      "bootstrap_radial.log": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-production-rank1-20261003/AAA/bootstrap/bootstrap_radial.log",
+        "sha256": "51b53fe0e13c5f6c8d4b6eb55ff4ba6849a249dcf4bc881243f0f4154e23e44a"
+      },
+      "seed_snapshots.xsm": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-production-rank1-20261003/AAA/bootstrap/seed_snapshots.xsm",
+        "sha256": "156fd199e9b815891208913761b1e1bcd08de12639fba80a7b3a4f45095a9b9c"
+      },
+      "route_contract.xsm": {
+        "path": "/Users/wen/spot/validation/artifacts/axial-material-production-rank1-20261003/AAA/bootstrap/route_contract.xsm",
+        "sha256": "7765bc9b7cc1d4e84a21b10b95f47ab98fa5024b8d42dfe5a6e1c9107e7ff955"
+      }
+    },
+    "reason": "B2B rejected before its numerical core: actual seed EPS-CONVERGE is REAL32(2e-6), but the route accepts REAL32(2.5e-7) or REAL32(5e-8); actual TRACK REAL-PARAM(1) is REAL32(2e-6), but route eps_mccg is REAL32(1e-5). These are exact control-identity mismatches, not an observed physical accuracy result.",
+    "changes": [
+      "Regenerate both A/B offline snapshots from the identical already-audited material XSM with EPS tightened from 2e-6 to 2.5e-7.",
+      "Retain actual tracking EPSI=2e-6; tighten online route eps_mccg from 1e-5 to 2e-6 to match the track.",
+      "Reconstruct one common rank1 basis from the new snapshots, admit it independently, and freeze it for both AAA and ABA."
+    ],
+    "preserved": [
+      "All physical material, temperature, geometry and boundary definitions.",
+      "Independent CE model, particles, seeds, source/statistical rules and all physical accuracy gates.",
+      "Original rank2 INCONCLUSIVE and first rank1 FAILED_NO_RETRY remain unchanged.",
+      "No solver source/binary patch and no metadata relabeling to claim tighter convergence."
+    ],
+    "budget_accounting": "New snapshots have 1000 seconds per state (previous snapshots were under 22 seconds each); new SPOT case has 21500 seconds, reserving 100 seconds for the prior failed preparation/initial solves. No new formal CE run has occurred. Disk and one-new-solver limits remain unchanged.",
+    "stop": "Each new declared attempt is one-shot. Preserve failures; no automatic retry of a failed instance."
+  },
+  "inner_moc_precision_diagnostic": {
+    "parent_spec": {
+      "path": "/Users/wen/spot/validation/axial_material/case_spec_rank1_compatible.json",
+      "sha256": "d2cd317eeceea2046a20ae1c652ff706de85103bfc78457e67dc6d348ab0b0e9"
+    },
+    "failure_analysis": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-tools-20261003/compatible_snapshot_failure_analysis.json",
+      "sha256": "70d4dd7ecc8a8f7fa3c7335603215d50e20169527596ede05ba4e02b621f460a"
+    },
+    "independent_failure_review": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-tools-20261003/compatible_snapshot_failure_independent_review.json",
+      "sha256": "99071b4fdb7774c63845f638adf723b2a37e1786669e6d1a72d8510807aeb772"
+    },
+    "remaining_budget_evidence": {
+      "path": "/Users/wen/spot/validation/artifacts/axial-material-tools-20261003/compatible_snapshot_stopped_receipt.json",
+      "sha256": "d7387c626de46055d155b15e3555beaecb50620c42bc4f77034ed588d8ee050e"
+    },
+    "source_evidence": {
+      "MCCGT.f": {
+        "path": "/Users/wen/spot/src/MCCGT.f",
+        "sha256": "967c99b7ba3b1d945cb5822563514732fd1b4d89c7cc0d697ae0083d3799ad89"
+      },
+      "MCCGF.f": {
+        "path": "/Users/wen/spot/src/MCCGF.f",
+        "sha256": "621fba6d02d1b1efae2d6d6db8e61d1463a3a24bcf4d0efe3579bfba97c55546"
+      },
+      "MCGFLX.f": {
+        "path": "/Users/wen/spot/src/MCGFLX.f",
+        "sha256": "89f03dca19474663460736359ff1acf0b3648086d2780286033b85824333344f"
+      },
+      "MCGMRE.f": {
+        "path": "/Users/wen/spot/src/MCGMRE.f",
+        "sha256": "f29c0325f2dce3a9c2a9bedc9d5b803154445e5b9c1a8382f8c930827c26b7a6"
+      },
+      "FLU2DR.f": {
+        "path": "/Users/wen/spot/src/FLU2DR.f",
+        "sha256": "32b731774a9be68ce849c22148d17e2ff31bb04a84d97ebd81806a0121002eb5"
+      }
+    },
+    "hypothesis": "MCCGT EPSI is the actual groupwise MOC/GMRES stopping tolerance, not automatically tightened by FLU EPS. The previous 2e-6 MOC criterion was eight times looser than the required 2.5e-7 outer change. Its role in stagnation is a candidate explanation, not a proved error bound or unique cause.",
+    "single_change": "Tighten the actual offline TRACK EPSI and its matching online eps_mccg from 2e-6 to 2.5e-8, one tenth of the unchanged 2.5e-7 outer target. Recompute A/B snapshots from identical audited material copies. No residual threshold is loosened and no result is relabeled.",
+    "budget": "One newly declared attempt, at most 160 seconds per state. Previous measured A snapshot time totals 1021.7945192910265s, so with this cap it remains below the original 1200s state budget (1181.7945192910265s plus bounded cleanup). B previously used 21.524306374951266s. New SPOT case remains capped at 21500s; no prior compatible production or formal CE has run.",
+    "stop": "No automatic retry. If this declared diagnosis does not produce qualified A and B snapshots within its caps, stop this pin numerical sequence and report the failure. Do not add another snapshot experiment within this work item.",
+    "unchanged": [
+      "All material, geometry, temperature, boundary and CE physical definitions.",
+      "Outer snapshot EPS=2.5e-7, online radial EPS=2.5e-7 and axial EPS=5e-8.",
+      "Every coupling, input-precision, source-history, CE accuracy, balance and symmetry gate.",
+      "Uniform rank1 sensitivity status; prior rank2 and rank1 failures remain unchanged.",
+      "Candidate Dragon binary and all solver source remain unmodified."
+    ]
+  }
+}

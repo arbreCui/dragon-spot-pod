@@ -1,0 +1,51 @@
+旧 B 失败运行 raw XSM 的第二批精确释放审查包，2026-10-12
+
+本包仅准备和只读核验。实际删除结果以
+ACTUAL_EXACT_FIVE_RELEASE_EXECUTION_RECEIPT.json 为准。
+
+EXACT_5_OLD_FAILED_B_RAW_RELEASE_MANIFEST.json
+SHA256: b68db5930449ab7458973442054e0686ed27208af782d1f00e036f677c51f407
+7ID: [16777234,49787317,33188,1,1568695,1791751596888809625,1791751596888809625]
+
+仅选择旧 Bv1/B/new_native_B.xsm、snapshot_B.xsm、material.xsm，
+及旧 Bv2-initial-storage-reserve/B/snapshot_B.xsm、material.xsm。
+精确完整路径、完整 EOF SHA256 和 7ID 均见 manifest。
+5 文件均为 ordinary non-symlink、nlink=1，共 467,550,984 B。
+
+旧 Bv1 实际整体失败：history96GiB original cold reserve；虽执行输运，
+native readback 未完成，不能算生产资格通过。
+旧 Bv2 实际整体失败：PermissionError(1, Operation not permitted)，
+未执行输运。两次完整失败报告、binding、日志、watchdog、来源及 runtime
+继续保留；目录中其他 26 个普通文件全部完整 EOF SHA/7ID 固定。
+
+实际当前 Bv3 四步骤全部 PASS、真实 native producer 闭合，及 A23 full61
+六步骤全部 PASS 均为释放前提。扩展保护 3,429 个完整 EOF SHA/7ID pins，
+覆盖原 current17/core83/AB ingress/编译来源/A1/Bentry/B frozen host，
+current Bv3 fixed/owned/output 与 Source freeze、A23 actual61 fixed/owned/
+output、warm A23 v2 的 2163 个固定输入及冻结源码，及纯 saved-data AAA
+计划的全部 1129 个 SHA 输入。该 AAA 计划的现源码与 retained_as 保存的
+初始 predecessor 源码也固定保护，旧 path 的历史 hash 未当作当前 hash。
+
+全部 5 raw 的路径和 dev/inode 与当前及即将运行的保护闭包均不相交。
+成功科学 map、科学基线、当前 Bv3 raw、A1/A23 和 saved-data AAA 输入
+没有列入目标。历史两失败运行会失去这 5 raw 的回放输入，结果记录保留。
+
+实际准备：a79c4a/session95131 -> 16d5ad EXIT0。
+实际执行前只读验证：1e542e/session62027 -> d39a77 EXIT0。
+ACTUAL_READONLY_EXACT_FIVE_VERIFICATION_RECEIPT.json
+SHA256: 69eb39e1d247d8df7ffbc0a4a6d67416896b1312e98bdcac53ffdb991ccc3c70
+7ID: [16777234,49787348,33188,1,174708,1791751637837409522,1791751637837409522]
+没有由准备/只读验证程序删除文件或启动科学计算。
+
+执行脚本默认只读，--execute 才删除。执行前重新完整 EOF 核对 Source、
+两次失败报告、当前/计划依赖、5 目标、26 保留文件和精确目录清点；
+逐文件只对明确清单路径 unlink，不删除目录，不宽泛匹配。每次删除
+前再次完整核验、记录单项结果。删除后完整核验所有保留和保护 pins，
+并要求完整历史逻辑字节精确减少 467,550,984 B、普通文件数减少 5。
+出现偏差立即停止，不自动重试。Root 应在并发 artifact 写入结束后执行，
+以使历史前后字节差可核验。原 96 GiB/cold/fresh/metadata/free 约束不改。
+
+只读验证观察：历史 79,203,478,294 B、94,379 个普通文件；原所有初始
+预留之外余量为 689,379,550 B。此为当时观察，不替代执行前后实际值。
+所有大文件以 1 MiB 块流式读取，SELF 512 MiB、全过程 1800 秒。
+释放不构成三平面、在线 BOOT、AAA、ABA 或整个 goal 的完成。

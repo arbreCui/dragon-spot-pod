@@ -1,0 +1,28 @@
+SPOT EXTRA21 ORIGINAL PROCESSING BRANCH SOURCE AUDIT — 2026-10-15
+
+范围与结论
+本次只读取下列 local primary Source 和冻结 capture Source。没有打开、解码或哈希旧 ENDF/SCI/GENDF/SQL/pool/XSM payload，也没有读取或哈希新 NPZ；没有导入候选/科学 helper，没有数值计算、业务、native、编译、PS、删除或再执行捕获。Root 提供的成功捕获及比值摘要只作为待解释现象。本审计不是独立数值复核。
+source_only=True; numerical_executed=False; business_executed=False; old_science_unopened=True; new_NPZ_unopened=True; physics_qualified=False; AAA_qualified=False; ABA_admitted=False; goal_complete=False。
+
+GENDF MF6 标签不能证明实际 getmf6/getff 分支，也不能单独证明原反应物理 neutron multiplicity。Root 摘要中的 Mo95 MT24/41 比值约2只与某些 Source 路径相容；Cr50 MT44 低比值及 MF3非零但MF6入射LIST缺失的行仍需要实际 processing / evaluation 凭证解释，不得据此填ν1、认定零产额、挑选修正系数或宣布反应闭合。
+
+精确 Source 引用（G=groupr.f90，D=original_dragr.f90，C=capture Source；完整当前 Source PF 见末尾）
+1. 输出标签合并：G:293–294区分内部mfd6（MF4/5 neutron matrix）和mfd8（ENDF File6 neutron matrix）。G:1176–1184的自动nextr处理可从6转8；G:12003–12013只把ZAP=1产物的MT列入mf6表。G:869及897却将内部8写成GENDF MF6。因此即使MF6全部群记录/哈希正确，仍缺实际mfd、auto选择及原产品分支证据。
+2. 不同yield来源：G:7120将mfd6 continuum送入200分支；G:7185–7196以default yld1初始化，并对MT24/41设yld2，对其它指定MT设2/3/4，裂变则读取MF1 MT456；G:7232–7235把yield乘入continuum feed。只有证明实际执行该分支才可归因，MT名或约2不能代替分支凭证。G:7438–7444的mfd8调用getmf6，裂变另乘MF1 MT456，不能把非裂变21项捕获当完整fission producer证明。
+3. ENDF File6并非只有一个yield算法：G:7625–7679选择MAT/MT及ZAP、LIP、LAW、LCT；G:8031–8036插值TAB1的pe并累加yld，G:8093将pe用于连续谱积分。LAW2–5在G:8143–8147直接返回getdis；后者G:9776–9788按MF3 LRflag确定yld并选择角分布读取路径，G:9917将yield乘入概率，G:9938–9945还减少小值有效位。MF3 Q/LR从G:6795–6799取得。当前capture保存完整GENDF section-header SHA，却没有把原评价产品ZAP/LIP/LAW/LCT、TAB1 yield曲线或Q/LR数值声明为已捕获。
+4. 群数据已含生产因子：G:110–115说明积分feed*xsec*flux；实际累加见G:6076–6098。displa在G:6268–6271（NL>1）或6302–6305（NL1）除群flux并保留7位有效数字。D:2238–2249原FMATR直接把群系数加到矩阵，D:2352–2354原FVECT取第一flux行/第二event行，没有再次除flux。C:54、58–63使用原matrix和固定outgoing顺序计算processed群诊断，C:78明确own_flux_division_performed=False；不能二次除flux、重新格式化或把群比值当逐点评价ν(E)。
+5. 入射缺失的多种路径：G:797–798在阈值/评价最高能界之外跳过入射群；G:6021–6035存在panel截面零路径。G:6159、6272对NL>1 transfer以1e-9决定非零输出范围，G:6306的NL1 transfer以1e-12清零；G:894仅igzero非零或最后入射群才写LIST。G:8035允许TAB1值零，G:8065–8072的无覆盖入射panel跳过贡献。必须分别保留“LIST缺失”“观察到的零”“重建时零初始化”；C:57、63、75、78–79已保留这些区别，D:2191–2193/2307–2308的零初始化不等于评价物理零。
+6. 不能猜低比值必由370群截断造成：G:8154–8177会把非法upscatter移入ingroup，并在yld与test均非零时按yld/test归一；test为零则返回。G:8120–8122的离散first/last outgoing bin有效边界扩展到0/1e10。实际是否发生能量支持缺口、归一、零feed或输出裁剪，取决于处理分支和真实输入，不能由GENDF标签或比值猜测。原阈值/归一规则不应因观察结果而调整。
+7. 输入/版本链仍需绑定：G:487通过conver(nendf,nend2,nend3)建立处理副本；G:495–508按MAT/T选PENDF，G:6760从npend取MF3；getmf6读nend3，getff MF4/5路由又涉及nend2及原nendf。此处当前Source PF只标识本次审阅文件，不证明这些字节就是历史GENDF producer实际执行的版本或二进制。
+
+最小下一证据路线
+先做已有Source/处理元数据盘点，逐17核素/21通道绑定：原evaluation及processed PENDF/GENDF完整PF、MAT/T、原GROUPR请求cards（mfd及auto）、实际resolved mfd/MT的处理stdout、group mesh/weighting/econst、原NJOY Source/可执行文件/build指纹和真正处理成功返回。Source在G:839–840打印实际mfd/MT，因此有对应原日志时先保全该小凭证；缺失要明确UNKNOWN，不制造历史receipt或以GENDF MF6反推mfd。
+在上述绑定后，只由Root做有界选择性证据捕获：对应原MF3 Q/LR及同T PENDF截面支持，ENDF File6 neutron product ZAP/LIP/LAW/LCT、TAB1 yield插值与入射支持/LAW数据范围；若resolved mfd6则选择实际MF4/MF5 feed及谱支持。针对Cr50 MT44和MF3-only非零行，首先确认真实分支、阈值/支持、igzero与输出裁剪条件，再复核原积分/归一前后守恒；不会靠缺失填零或靠常数补yield。
+新131 NPZ可先做独立逐字段/逐bit重建来验证capture算术，但该结果只证明新保存操作数的重建，不能替代原processing分支/评价yield凭证。MT5与extra通道的exclusive/lumped partition、其它MF3生产/损失及DRAFIS NFTOT/NUSIGF/CHI仍分别欠缺完整实际闭合证据；此次选定非裂变捕获不准入complete_multiplicity、physics、AAA或ABA。原科学阈值及case保持。
+
+当前审阅 Source 完整PF（SHA是Source正文，不是任何旧science payload）：
+G = {"path": "/Users/wen/spot/validation/artifacts/d4a-mt51-mf6-control-prepared-20261001/candidate/source/src/groupr.f90", "sha256": "95d95f3de609a6ae9cb304ef5fd464c77f85397c8a6ba07c121b38598986557b", "size_bytes": 486744, "identity": [16777229, 47730380, 33188, 1, 486744, 1790808119400265575, 1790808119400265575]}
+D = {"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/original_dragr.f90", "sha256": "047ed05e54c54aad2681ce1796bec72f47a0118a2d80295d0d9929e4e42381ac", "size_bytes": 123030, "identity": [16777229, 50541527, 33188, 1, 123030, 1792013439847125454, 1792013439847125454]}
+C = {"path": "/Users/wen/spot/validation/axial_material/root64_epoch_recovery_20261011/current_full370_real_operator_control_source_v1_20261015/current_extra_reaction_source_v2/capture_extra21_original_ascii_event_production.py", "sha256": "5e39132de98b3bbe52be19ddd45a31bdd659b066d74607aba50adec200c9e605", "size_bytes": 23795, "identity": [16777229, 50541521, 33188, 1, 23795, 1792013439850687215, 1792013439850687215]}
+
+冻结：本TXT创建后停止写入；无额外Source框架、无科学执行。

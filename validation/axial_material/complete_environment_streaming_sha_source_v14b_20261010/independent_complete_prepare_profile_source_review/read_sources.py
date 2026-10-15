@@ -1,0 +1,44 @@
+import ast,hashlib,json
+from pathlib import Path
+R=Path('/Users/wen/spot'); D=Path('/private/tmp/axmat_v14b_complete_prepare_profile_sources_final_readonly_review_20261010')
+S=R/'validation/axial_material/complete_environment_streaming_sha_source_v14b_20261010/actual_complete_prepare_profile_sources'
+old=S/'source_snapshot_before_profile_scope_and_actual_wall_guard_fix'
+F=R/'validation/axial_material/prepare_qualified_AB_sender_contiguous_flux_window_streaming_sha_production_v14b.py'
+receipt=R/'validation/axial_material/sender_contiguous_flux_window_source_v13_20261009/actual_component_execution_receipts/Root_actual_prepare_tool_return.json'
+pins={S/'prepare_profile_driver.py':'e14182d3020361499faf9fb9e56bc41ad258f98a4c07d5357723131973ba6237',S/'prepare_profile_host.py':'85b62eb8f1092331b0cc69cf04935380cc501ce73ff0defbd3228fa07d8757ff',old/'prepare_profile_driver.py':'2cd2773ac3ec0d8d885eda2b42168fb60bdb726050ccdc65480974a6a0d12b00',old/'prepare_profile_host.py':'252f033ff80318bc2a1be5bdb6d0ad7064f51e262fa05a4011a3d4b40f2ff47e',F:'4fbd1b054c6516b410181144f088d540a64a8ab793d480fb2c89de0d1252199c',receipt:'d69437dc3f3df2fc8b36adb7c3077410e6d3052e153d4568ea7e0b52ac856f82'}
+for name,sha in [('prepare_qualified_AB_source_factor_production.py','619ed1e3115e0f9f25fd20cc259d384891f2fff52d913acebd5d9ca8f39d5743'),('prepare_qualified_AB_rank1_factor_cache_cross_group_identity_key_delta_production.py','f136baab5047a8727cfd2c0abb5399acf617c25c4f4e7692242419e6f9daef4e'),('qualify_refined_AAA_layered_full.py','70516d764e05cffa6e82e780a991ff64e56b9c29bc99f3f1b18bcb0ff63195c6')]:pins[R/'validation/axial_material'/name]=sha
+P=R/'validation/artifacts/axial-material-production-qualified-AB-white-trace-refined-envpin-20261005/runtime'
+pins[P/'production_runner.py']='38de03ed0f5b3e2d82b4153a45d1e548d58a34747f526f8bcd51bbe01e935128';pins[P/'run_bounded_dragon.py']='bc4ff7a5dc82ed023b726f2304b6a298954f54d7891414925b7d6d68dd80cf09'
+def identity(p):
+ s=p.stat();return [s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns]
+raw={}; evidence=[]
+for p,wanted in pins.items():
+ a=identity(p);b=p.read_bytes();z=identity(p);observed=hashlib.sha256(b).hexdigest();assert a==z and observed==wanted,(p,observed)
+ raw[p]=b;evidence.append(dict(path=str(p),sha256=observed,size_bytes=len(b),identity_before=a,identity_after=z))
+driver=raw[S/'prepare_profile_driver.py'].decode();host=raw[S/'prepare_profile_host.py'].decode();od=raw[old/'prepare_profile_driver.py'].decode();oh=raw[old/'prepare_profile_host.py'].decode()
+oldliteral="'production_admission', 'declaration', 'capture_admission'";newliteral="'production_admission', 'declaration_admission', 'capture_admission'"
+assert od.count(oldliteral)==1 and driver==od.replace(oldliteral,newliteral,1)
+extra="        if type(watch['pid']) is not int or watch['pid'] <= 0 or watch['rss_cap_mib'] != RSS_CAP or not 0 < watch['elapsed_seconds'] < watch['wall_cap_seconds'] <= runner.records[0]['wall_cap_seconds'] <= STAGE_CAP:\n            raise ValueError('actual child PID and original wall/RSS limit metadata required')\n"
+assert host.count(extra)==1
+hinverse=host.replace(extra,'',1).replace(pins[S/'prepare_profile_driver.py'],pins[old/'prepare_profile_driver.py'],1)
+assert hinverse==oh
+for s in (driver,host,od,oh):ast.parse(s)
+def definitions(s):
+ t=ast.parse(s);return {(n.name,n.lineno):ast.get_source_segment(s,n) for n in ast.walk(t) if isinstance(n,ast.FunctionDef)}
+dd=definitions(driver);doo=definitions(od)
+assert {x.splitlines()[0]:x for x in dd.values()}=={x.splitlines()[0]:x for x in doo.values()}
+ho=definitions(oh);hn=definitions(host)
+for name in ('identity','pin','write_new','load','archive_bytes'):
+ assert next(v for k,v in ho.items() if k[0]==name)==next(v for k,v in hn.items() if k[0]==name)
+for need in ["runpy.run_path(str(TARGET), run_name='__main__')","sys.argv = argv[1:]","sys.setprofile(profile.observe)","sys.setprofile(None)","if code.co_name != 'digest':","profiler_cleared=sys.getprofile() is None","sha_or_guard_calls_skipped=False, callable_or_class_replaced=False"]:assert need in driver,need
+for need in ["full,production = h.modules()","h.guard_admission(full)","full.OwnRSSSerialExecutor.__bases__ != (production.SerialExecutor,)","runner = full.OwnRSSSerialExecutor(HOST_OUT,remaining,'COMPLETE_PREPARE',resources)","runner.execute(HOST_OUT/'run','prepare',command,STAGE_CAP)","WHOLE_CAP, STAGE_CAP, RSS_CAP = 1800, 600, 512","ARCHIVE_CAP = 2 * 2**30",extra,"archive_bytes((HOST_OUT,PROFILE_OUT,SOURCE,OUT))", "before['artifact_bytes']+ARCHIVE_CAP >= 96*2**30", "before['disk_free_bytes']-ARCHIVE_CAP < 8*2**30", "sys.setprofile(None)"]:assert need in host,need
+rr=json.loads(raw[receipt]); assert type(rr['terminal']['exit_code']) is int and rr['terminal']['exit_code']==0 and rr['session_closed'] is True
+argv=rr['input']['argv'];assert len(argv)==23 and argv[2]=='prepare-build'
+expected=['--rank1-cache-build-seal-sha256','--rank1-cache-terminal-evidence','--rank1-cache-terminal-evidence-sha256','--failed-capture-terminal-evidence-sha256','--memory-build-seal-sha256','--memory-terminal-evidence','--memory-terminal-evidence-sha256','--failed-memory-capture-terminal-evidence-sha256','--patch-helper-sha256','--controls-source-sha256']
+assert argv[3::2]==expected
+newargv=list(argv);newargv[1]=str(F)
+report=dict(schema='AXMAT_V14B_COMPLETE_PREPARE_PASSIVE_PROFILE_FINAL_SOURCE_READONLY_REVIEW_V1',status='PASS_SOURCE_ONLY_FOR_ROOT_SINGLE_BOUNDED_PREPARE',inputs=evidence,driver_one_region_full_inverse=True,host_two_region_full_inverse=True,driver_original_functions_byteexact=True,host_support_functions_byteexact=['identity','pin','write_new','load','archive_bytes'],host_main_change_only='strict actual watchdog PID/RSS/wall metadata guard added',correct_declaration_admission_profile_key=True,real_prior_prepare_receipt=dict(path=str(receipt),sha256=pins[receipt],exit_code=0,session_closed=True,old_declaration_sha256='ccdbad6c0e6d767ee98b9e7287c5f3be8120604f57069730289bbd761b947b0f'),new_canonical_argv=newargv,argv_source_is_old_actual_parameters_not_old_factory_execution=True,normal_runpy_main=True,canonical_business_source_unchanged=True,passive_only_no_callable_replacements=True,no_large_API_return_deepcopy=True,host_and_child_profile_scopes_separate=True,old_failed_V13_code_calls_explicitly_refused=True,complete_raw_canonical_stdout_stderr_guard='Original prepare stdout is JSON parsed from the unchanged genuine executor merged log; any extra nonJSON stderr makes success gate fail. Root external full stdout/stderr and typed tool terminal remain separately required.',actual_caps=dict(whole_seconds=1800,child_stage_seconds=600,own_child_RSS_MiB=512,complete_archive_bytes=2*2**30,archive_roots=['HOST_OUT','PROFILE_OUT','SOURCE','OUT'],TERMINAL_must_remain_absent=True,complete_dynamic_history_cap_GiB=96,free_disk_GiB=8,threads=1,children_at_once=1,retries=0),fresh_namespaces='5 exact roots are checked lexists before creation; review does not recheck now because Root may start its unique authorized job.',finally_cleanup=dict(driver_profiler_cleared_and_argv_restored=True,host_profiler_cleared=True,source_pins_rechecked=True,profile_written_on_normal_or_business_failure=True,failed_host_receipt_preserves_stage_records=True),scientific_bounds=dict(full86_executed=False,compile_or_transport_executed=False,native_RSS_verified=False,AAA_accuracy_qualified=False,ABA_admitted=False),reviewer_actions=dict(business_import=False,helper_call=False,fixture=False,compile=False,benchmark=False,Root_poll=False,canonical_write=False,historical_payload_hash=False),remaining_actual_requirements=['Root observed typed real terminal exit code/closed job','fresh declaration and SOURCE whole inventory/source identity','actual complete child/host profiling records, watchdog/stages and all full streams','all original source/physical/recipe and budget gates; no inference from this SOURCE review'])
+for p in pins:assert identity(p)==next(x['identity_after'] for x in evidence if x['path']==str(p))
+(D/'REPORT.json').write_text(json.dumps(report,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
+(D/'REPORT.txt').write_text('最终e141 driver /85b host纯源码审通过。原driver1区、host2区完整逆回冻结母本，driver所有函数、host5个支持函数逐字保留；仅修实际声明准入选择名与严格watch PID/RSS/wall门。正常runpy执行当前canonical4f的唯一prepare-build，原10参数来自真实旧prepare输入；旧V13函数执行明确拒绝。\n原genuine619/705/38d/bc/f136监督器/MRO与全部资源检查不变；1800整体/600阶段/512MiB/全SOURCE+OUT+profile+host合计2GiB/历史96/free8/单线程单child零重试保持。双进程独立profile只观测有限aggregate/spans，不持有大API返回。\n仅授予SOURCE入口可运行判断；未调用入口、未prepare/编译/数值，Root真实退出与完整新声明/日志/profile仍需实际复核。无full86、nativeRSS、AAA或ABA资格。\n',encoding='utf-8')
+print(json.dumps(dict(status=report['status'],report=str(D/'REPORT.json'),driver=pins[S/'prepare_profile_driver.py'],host=pins[S/'prepare_profile_host.py']),ensure_ascii=False))

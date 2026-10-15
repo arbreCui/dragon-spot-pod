@@ -1,0 +1,227 @@
+{
+  "schema": "AXMAT_RANK1_FACTOR_CACHE_MEMORY_DEDUP_CONTROL_PLAN_V1",
+  "parent_kernel_sha256": "c0fddcd2ddc4dba6969440024a9205fbb297727a6a045886acba626323ab5718",
+  "dense_parent_kernel_sha256": "c017167b5c48bc922efb7353db8c11a91758add1c2c5a02c42bd2baaeba210a2",
+  "parent_patch_sha256": "d3e8a696363b58ab181d3ee6496d30fb50e44b83a5dd3079d697ae77233b0f78",
+  "parent_controls_sha256": "3ddb64b634026a70be5a5bf024ff09b00837e8d8942823a6c54f9834cca3ccd9",
+  "inherited_bitexact_pairs": 1146,
+  "permuted_bitexact_pairs": 6,
+  "all_bitexact_pairs": 1152,
+  "dense_reference_calls": 378,
+  "inherited_operator_negative_cases": 14,
+  "inherited_cap_negative_cases": 2,
+  "all_inherited_controls_must_reexecute": true,
+  "rank1_factor_cache_budget_bytes": 536870912,
+  "additional_positive_requirements": [
+    "All original 1152 full-field bitwise comparisons and 378 dense lower references repeat",
+    "Raw canonical dictionary, block indices and full decoded lower precede every bit/finite gate",
+    "Positive-row +0 and -0 stay distinct dictionary entries; omitted rows remain exact +0",
+    "All-unique fallback retains every original block without a uniqueness assumption",
+    "Worst-case factor reservation, duplicate release, decoded workspace release and CLEAR are checked"
+  ],
+  "additional_negative_cases": [
+    {
+      "name": "row_count",
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+    },
+    {
+      "name": "row_out_of_range",
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID ROW MAP."
+    },
+    {
+      "name": "row_duplicate_or_reordered",
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID ROW MAP."
+    },
+    {
+      "name": "packed_dimensions",
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+    },
+    {
+      "name": "omitted_nonzero",
+      "expected_message": "SPOT1P64 RANK1 LOWER: NONZERO OR SIGNED ZERO OMITTED ROW."
+    },
+    {
+      "name": "omitted_negative_zero",
+      "expected_message": "SPOT1P64 RANK1 LOWER: NONZERO OR SIGNED ZERO OMITTED ROW."
+    }
+  ],
+  "dedup_positive_command_args": [
+    "dedup-positive"
+  ],
+  "dedup_positive_fixtures": [
+    {
+      "name": "exact_repeated_blocks",
+      "nstate": 4,
+      "nrow": 2,
+      "nblock": 6,
+      "expected_unique": 3
+    },
+    {
+      "name": "permuted_rows_repeated_blocks",
+      "nstate": 4,
+      "nrow": 2,
+      "nblock": 6,
+      "expected_unique": 3
+    },
+    {
+      "name": "all_unique_fallback",
+      "nstate": 4,
+      "nrow": 2,
+      "nblock": 49,
+      "expected_unique": 49
+    }
+  ],
+  "dedup_negative_cases": [
+    {
+      "name": "block_index_out_of_range",
+      "args": [
+        "dedup-negative",
+        "block_index_out_of_range"
+      ],
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID CANONICAL BLOCK MAP."
+    },
+    {
+      "name": "block_map_dimensions",
+      "args": [
+        "dedup-negative",
+        "block_map_dimensions"
+      ],
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+    },
+    {
+      "name": "missing_unique_block",
+      "args": [
+        "dedup-negative",
+        "missing_unique_block"
+      ],
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+    },
+    {
+      "name": "noncanonical_first_occurrence",
+      "args": [
+        "dedup-negative",
+        "noncanonical_first_occurrence"
+      ],
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID CANONICAL BLOCK MAP."
+    },
+    {
+      "name": "duplicate_dictionary_value",
+      "args": [
+        "dedup-negative",
+        "duplicate_dictionary_value"
+      ],
+      "expected_message": "SPOT1P64 RANK1 LOWER: DUPLICATE DICTIONARY BLOCK."
+    },
+    {
+      "name": "dictionary_dimensions",
+      "args": [
+        "dedup-negative",
+        "dictionary_dimensions"
+      ],
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+    },
+    {
+      "name": "accounting_bytes",
+      "args": [
+        "dedup-negative",
+        "accounting_bytes"
+      ],
+      "expected_message": "SPOT1P64 RANK1 LOWER: INVALID PACKED DIMENSIONS."
+    },
+    {
+      "name": "release_exceeds_live",
+      "args": [
+        "dedup-negative",
+        "release_exceeds_live"
+      ],
+      "expected_message": "SPOT1P64 RANK1 CACHE: INVALID ACCOUNTING RELEASE."
+    }
+  ],
+  "packed_stream": {
+    "version": 2,
+    "header_int64_count": 12,
+    "header": [
+      "version",
+      "nstate",
+      "nblock",
+      "nrow",
+      "group",
+      "factor_bytes",
+      "live",
+      "peak",
+      "cap",
+      "built",
+      "reused",
+      "hits"
+    ],
+    "body": [
+      "rowmap:int32[nrow]",
+      "blockmap:int32[nblock]",
+      "unique_count:int32[1]",
+      "dictionary:real64[nrow,nstate,nunique]"
+    ],
+    "order": "Fortran/little_endian"
+  },
+  "decoded_stream_is_original_full_all_blocks": true,
+  "primitive_stream": {
+    "version": 2,
+    "header_int64_count": 12,
+    "header": [
+      "version",
+      "nstate",
+      "nblock",
+      "row_count",
+      "allocated_rows",
+      "dictionary_dim1",
+      "dictionary_dim2",
+      "dictionary_dim3",
+      "factor_bytes",
+      "live",
+      "peak",
+      "cap"
+    ],
+    "body": [
+      "du:real32[nstate]",
+      "original_lower:real64[nstate,nstate,nblock]",
+      "allocated_rowmap:int32[allocated_rows]",
+      "map_count:int32[1]",
+      "unique_count:int32[1]",
+      "allocated_blockmap:int32[map_count]",
+      "allocated_dictionary:real64[dim1,dim2,dim3]"
+    ],
+    "original_memory_primitives_use_same_layout": true,
+    "order": "Fortran/little_endian"
+  },
+  "negative_identity_prime_dictionary_and_full_decode_archived": true,
+  "direct_LOAD_default_bad_dictionary_rejections_exercised": true,
+  "additional_stage_count": 9,
+  "total_planned_stage_count": 40,
+  "raw_before_gate": true,
+  "new_build_and_native_RSS_proof_required": true,
+  "observed_RSS_reduction_is_not_a_qualification": true,
+  "AAA_accuracy_qualified": false,
+  "ABA_admitted": false,
+  "last_cprime_trim": {
+    "schema": "AXMAT_RANK1_UNUSED_TERMINAL_CPRIME_STORAGE_SOURCE_PATCH_V1",
+    "ordinary_rank1_only": true,
+    "persistent_cprime_blocks": "nblock-1",
+    "bytes_saved_per_group": "8*nstate^2",
+    "actual_boundary_cprime_extent_required": true,
+    "all_original_40_stages_required": true,
+    "last_block_full_33_rhs_solve_retained": true,
+    "actual_controls_executed": false,
+    "actual_native_RSS_passed": false
+  },
+  "factor_diagonal_trim": {
+    "schema": "AXMAT_RANK1_DEAD_FACTOR_DIAGONAL_STORAGE_PATCH_V1",
+    "ordinary_rank1_only": true,
+    "ready_factor_physical_shape": "[nstate-1,nstate,nblock]",
+    "public_solve_shape": "[nstate,nstate]",
+    "retained_build_all_original_factor_and_full_RHS_solves": true,
+    "all_original_40_stages_required": true,
+    "persistent_release_bytes": "8*nstate*nblock",
+    "transient_pack_reservation_bytes": "8*(nstate-1)*nstate*nblock",
+    "reused_square_workspace": "rank1_lower_work",
+    "actual_native_RSS_passed": false
+  }
+}

@@ -1,0 +1,9 @@
+UNREADY Root-only member0 independent restored-byte control Source
+
+Only complete000_m.xsm.gz will be blindly SHA checked twice and streamed once to EOF, comparing decompressed SHA/length with the saved original m.xsm fullPF. No restored file is written, no numeric/type/header interpretation occurs, no child is created, and the original m.xsm body is never opened. All four originals and79retainers receive current7 checks.
+
+The exclusive Root claim precedes project imports/metadata and gzip IO. The exact frozen B4_common.Resources(binding,started,600) is reused without c.admit or changing any original class. Each data chunk checks SELF512/stage600 and both original B4 component bounds. Complete original joint/history/cold/meta/free/open-unlinked scans remain, at startup/end and every five seconds measured from completion of the previous full scan. A separate new Source16MiB bound is checked. Repeated directory inventories are omitted from saved resource metadata; original scalar facts and the entire joint root list are retained. No new owning ledger root is created.
+
+The original failed Root1, real watch child1 and phaseARCHIVE_1 are admitted separately from the original limited failure post0, whose Host.actual_watchdogNULL and recorded_child_codes[] remain unchanged. The child1/entry0 supplement proof is still NULL, and actual_preconditions_closed remains false. Only after its genuine independent post0 may Root finalize a separate fullPF binding and run this Source once. No GEN/pub or verifier/byte IO has been performed by this author.
+
+Success would prove only that member0 complete bytes are restorable. It cannot mark the whole4 archive complete or authorize retirement by itself. A separate member0 metadata peer0 and exact2 cleanup admission remain necessary. All scientific/AAA/ABA/goal flags remain false.

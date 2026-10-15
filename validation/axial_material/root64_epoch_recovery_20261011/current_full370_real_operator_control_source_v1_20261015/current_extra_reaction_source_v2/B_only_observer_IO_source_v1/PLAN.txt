@@ -1,0 +1,59 @@
+B-only IO Source draft, 2026-10-15
+
+Status: reviewable UNFROZEN Source draft only. No GEN/READY/publication, compiler,
+native execution or business admission has occurred. Root remains sole executor.
+
+Native cwd is the existing original SCI library directory A. B deck comes from
+the original B role in the exact v10 seed/current fbe336 case. The consumed A
+procedure/geometry roles have the separately bound original B Source SHA/size;
+identities remain distinct. SCI bodies have not been read/hash by this task.
+Three library FIL literals remain DLIB_ACTUAL, DLIB_ACTUAL, DLIB8R1_370 (11bytes).
+No library copy, link, cache reuse from old A, old file overwrite or output drop.
+
+Fresh native output directory is b63, currently absent, explicitly counted as
+next B root after complete latest62. Root creates only that new directory entry
+in the old cwd; every native-created file/cache/scratch is within b63. The four
+paths b63/m.xsm, b63/u.asc, b63/a.asc, b63/t.asc are <=12bytes. Observer filenames
+use the same explicit prefix, unchanged64byte buffer/payload/LCMEQU. CLE source
+.c2m lookup remains readonly original basename; all .o2m/.l2m, _DUMMY, _mainNNN,
+_procedureNNN, _FIL000 and anonymous TRACK_T_f use fresh OSnames. DELETE and
+cleanup refuse unbound paths. Original HENTRY12 names and readonly mode2 remain.
+
+Original OwnRSSSerialExecutor/SerialExecutor/bounded monitor are not edited or
+subclassed. A thin child exec changes native cwd in the original owned PID,
+preserving original stdout/stderr FD, stdin B deck and process group. Root's
+unchanged guard logs/watch/stages are inside the new counted B root. Capture
+core checks MRO/Source/resources/bounded/PID/claim, exact Source/inputs before and
+after, old cwd entries current7 on both success and failure, and preserves the
+original native nonzero. Full Root host/receipt integration is still a gate.
+
+The actual75 link argv is the build oracle: replace only observer module object
+path; retain every other old object and all4archives in exact order; add3C IO
+overrides before the first archive. This is a new link (old explicit object count
++3), not original75 binary. A new genuine bounded build and independent binary
+qualification remain required. No whole Ganlib rebuild is planned by Source.
+The exact C compiler/configuration and all existing object/archive PFs must be
+admitted by Root; no old binary/object/archive body was read/hash by this task.
+
+B input binding and manifest require original B deck, current case, separate
+native cwd/observation directory and actual55contexts/8trees. Active extractor
+and aggregation scopes are explicitly B. Original decoder/context parser/saved
+adapter/six-phase model are whole Source copies. Original protected A comparison
+function is whole and unreachable through the B CLI. No global A-to-B replace.
+Evidence child exit2 and every physics/AAA/reference/ABA qualification false are
+preserved. The independent saved B extraction review is required before reuse.
+
+Only old-file stat/current7 budget evidence was used: four complete products
+423456221B; 55contexts125254B; 8trees145813636B; full extraction438863526B. Reference
+capture+extraction total1008258637B, before newbuild/aggregation/control overhead.
+This is a reservation floor/reference, not prediction or maximum for new B.
+Complete new-output upper-bound proof and safe-retirement actual0/latest-prefix
+binding must precede Root admission. Original2GiB/96GiB/8GiB/cold reserve and
+512MiB/600s/1800s/one-child/one-thread/no-retry caps are unchanged. Refuse before
+business if the full bound does not fit; do not delete or omit any output.
+
+Static Source check actual chunk637381 returned integer0. 21Source files,
+11Python ASTs, 6whole-file inverse proofs, 8whole scientific Source equalities,
+and collector IO-only function inverse passed. This is Source evidence only.
+Budget/author freeze and all subsequent business gates remain open. Goal order
+continues B complete observation/construction -> AAA -> reference -> ABA.

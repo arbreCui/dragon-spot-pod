@@ -1,0 +1,4 @@
+V14 兼容 helper 839ea8 源码及独立控制驱动草稿只读核对通过。原619只有digest区域变化，全部其它原函数整段字节不变，完整单区域逆回原源。
+外部默认摘要恢复原fresh file_digest；ctx支持固定cwd相对path且保留symlink/..打开语义，nativealias初读失败延后到原guard/normalexit，全部链/目标/fd七身份、全EOF/长度、上下文清理与owner源约束保持。
+驱动仅正常加载未来正式canonical helper，SHA仍None且UNREADY。21组独立helper-only控制和可选old619→new完整环境计时动作只写源码，未创建fixture、未执行helper/控制/benchmark。
+必须Root先绑定最终SHA并用真实120秒/512MiB/64MiB收集器执行。可选计时含profile/openhook开销，不保证真实full86节时；不增加原数学控制计数，不授native/AAA/ABA资格。

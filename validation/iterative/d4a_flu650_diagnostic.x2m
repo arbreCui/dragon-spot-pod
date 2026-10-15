@@ -1,0 +1,27 @@
+****************************************************************
+* D4-A: one fixed 650 C full-rank FLU diagnostic.              *
+* No snapshot, POD, axial solve or persistent archive.          *
+****************************************************************
+
+SEQ_ASCII glow_rnr :: FILE './geometry.dat' ;
+SEQ_BINARY TRACK_f ;
+
+LINKED_LIST TRACK MICROLIB2 SYSTEM FLUX ;
+
+MODULE DELETE: END: ;
+PROCEDURE SpotD4Snap rnr_cc rnr_interpol ;
+
+REAL T_comb := 650.0 ;
+REAL T_clad := 620.0 ;
+REAL T_Na := 475.0 ;
+REAL solver_eps := 5.0E-7 ;
+
+ECHO "D4A-FLU650-DIAGNOSTIC-STATE" T_comb T_clad T_Na ;
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := SpotD4Snap glow_rnr ::
+  <<T_comb>> <<T_clad>> <<T_Na>> <<solver_eps>> ;
+ECHO "D4A-FLU650-DIAGNOSTIC-COMPLETE" ;
+
+MICROLIB2 SYSTEM FLUX TRACK TRACK_f := DELETE:
+  MICROLIB2 SYSTEM FLUX TRACK TRACK_f ;
+END: ;
+QUIT "LIST" .
