@@ -2,17 +2,22 @@ SPOT 重装备份入口 — 2026-10-16
 
 代码与结果文档：
   https://github.com/arbreCui/dragon-spot-pod/tree/codex/reinstall-backup-20261016
-这是现有公开仓库中的备份分支。计算大文件、核数据库、环境和迁移
-清单保存在 iCloud，不纳入此公开提交。
+这是现有公开仓库中的备份分支。大型计算文件、核数据库和私有迁移
+清单不纳入此公开提交。
 
-完整项目数据与恢复工具：
-  iCloud Drive / SPOTResetBackup-20261016
-该目录中的 BACKUP_MANIFEST.json 绑定逐文件 SHA256、归档分片和恢复工具。
-使用前先把所有恢复文件与 parts/ 分片下载到本机，运行：
-  python3 restore_spot.py --help
-按工具提供的参数先完整校验，再恢复到一个不存在的新目录。
-完整云端备份和恢复检查的状态以该目录中的 RESET_READINESS.txt、
-CLOUD_VERIFICATION.json 为准；本源码提交本身不代表大型数据已上传完成。
+完整项目数据与恢复工具（现有私有仓库，需登录有权限的 GitHub 账户）：
+  https://github.com/arbreCui/dragon-reset-backup-20261014/releases/tag/spot-snapshot-20261016
+正式发布后先下载 download_spot_backup.py，按该发布的 README.txt 下载全部
+资料，再依次使用 restore_spot.py 和 restore_git_history.py 恢复至新目录。
+验收以 RESET_READINESS.txt、FINAL_VERIFICATION.json 和实际发布状态为准。
+411 个小片共约 51.7 GB；逐片服务器 SHA256、完整本机归档读回及实际下载
+恢复抽测分开记录，抽测不代表在另一台机器完整恢复了全部科研目录。
+
+第二份副本位于 iCloud Drive / SPOTResetBackup-20261016，保留原 28 大片。
+它的清单与 GitHub 411 小片不可混用。iCloud 是否全部上传须另看
+ICLOUD_STATUS_AT_DELIVERY.json；本机存在副本不能证明云端完整。
+早期恢复入口或审计中的 iCloud-only/待补备描述保留其原时点状态，
+新增 RESET_READINESS.txt 给出本次最终更新，包括 Mo7 补备与清理回执。
 
 外部科学依赖：
   iCloud Drive / DragonResetBackup-20261014
